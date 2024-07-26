@@ -81,6 +81,15 @@ async function getAllInfuraJsonRpcRequests(
   return allInfuraJsonRpcRequests;
 }
 
+function getSpecifiedJsonRpcRequests(
+  jsonRpcRequestArray: JsonRpcRequest[],
+  methodsToGet: string[],
+) {
+  return jsonRpcRequestArray.filter(({ method }) =>
+    methodsToGet.includes(method),
+  );
+}
+
 describe('Account Tracker API Usage', function () {
   it('should not make eth_call or eth_getBalance requests before the UI is opened and should make those requests after the UI is opened', async function () {
     const RPC_METHODS_TO_TEST = ['eth_call', 'eth_getBalance'];
@@ -103,13 +112,16 @@ describe('Account Tracker API Usage', function () {
         let allInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
           mockedEndpoint,
         );
-        let ethCallAndGetBalanceRequests = allInfuraJsonRpcRequests.filter(
-          ({ method }) => RPC_METHODS_TO_TEST.includes(method),
+        let ethCallAndGetBalanceRequests = getSpecifiedJsonRpcRequests(
+          allInfuraJsonRpcRequests,
+          RPC_METHODS_TO_TEST,
         );
 
         assert.ok(
           ethCallAndGetBalanceRequests.length === 0,
-          'An eth_call or eth_getBalance request has been made to infura before opening the UI',
+          `An ${RPC_METHODS_TO_TEST.join(
+            ' or ',
+          )} request has been made to infura before opening the UI`,
         );
 
         await unlockWallet(driver);
@@ -118,13 +130,16 @@ describe('Account Tracker API Usage', function () {
         allInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
           mockedEndpoint,
         );
-        ethCallAndGetBalanceRequests = allInfuraJsonRpcRequests.filter(
-          ({ method }) => RPC_METHODS_TO_TEST.includes(method),
+        ethCallAndGetBalanceRequests = getSpecifiedJsonRpcRequests(
+          allInfuraJsonRpcRequests,
+          RPC_METHODS_TO_TEST,
         );
 
         assert.ok(
           ethCallAndGetBalanceRequests.length > 0,
-          'No eth_call or eth_getBalance request has been made to infura since opening the UI',
+          `No ${RPC_METHODS_TO_TEST.join(
+            ' or ',
+          )} request has been made to infura since opening the UI`,
         );
       },
     );
@@ -163,19 +178,23 @@ describe('Account Tracker API Usage', function () {
         const currentInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
           mockedEndpoint,
         );
-        const initialEthCallAndGetBalanceRequests =
-          initialInfuraJsonRpcRequests.filter(({ method }) =>
-            RPC_METHODS_TO_TEST.includes(method),
-          );
-        const currentEthCallAndGetBalanceRequests =
-          currentInfuraJsonRpcRequests.filter(({ method }) =>
-            RPC_METHODS_TO_TEST.includes(method),
-          );
+
+        const initialEthCallAndGetBalanceRequests = getSpecifiedJsonRpcRequests(
+          initialInfuraJsonRpcRequests,
+          RPC_METHODS_TO_TEST,
+        );
+
+        const currentEthCallAndGetBalanceRequests = getSpecifiedJsonRpcRequests(
+          currentInfuraJsonRpcRequests,
+          RPC_METHODS_TO_TEST,
+        );
 
         assert.ok(
           initialEthCallAndGetBalanceRequests.length ===
             currentEthCallAndGetBalanceRequests.length,
-          'An eth_call or eth_getBalance request has been made to infura after closing the UI',
+          `An ${RPC_METHODS_TO_TEST.join(
+            ' or ',
+          )} request has been made to infura after closing the UI`,
         );
       },
     );
