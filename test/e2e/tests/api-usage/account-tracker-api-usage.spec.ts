@@ -83,6 +83,8 @@ async function getAllInfuraJsonRpcRequests(
 
 describe('Account Tracker API Usage', function () {
   it('should not make eth_call or eth_getBalance requests before the UI is opened and should make those requests after the UI is opened', async function () {
+    const RPC_METHODS_TO_TEST = ['eth_call', 'eth_getBalance'];
+
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
@@ -102,7 +104,7 @@ describe('Account Tracker API Usage', function () {
           mockedEndpoint,
         );
         let ethCallAndGetBalanceRequests = allInfuraJsonRpcRequests.filter(
-          ({ method }) => method === 'eth_getBalance' || method === 'eth_call',
+          ({ method }) => RPC_METHODS_TO_TEST.includes(method),
         );
 
         assert.ok(
@@ -117,7 +119,7 @@ describe('Account Tracker API Usage', function () {
           mockedEndpoint,
         );
         ethCallAndGetBalanceRequests = allInfuraJsonRpcRequests.filter(
-          ({ method }) => method === 'eth_getBalance' || method === 'eth_call',
+          ({ method }) => RPC_METHODS_TO_TEST.includes(method),
         );
 
         assert.ok(
@@ -129,6 +131,12 @@ describe('Account Tracker API Usage', function () {
   });
 
   it('should not make eth_call or eth_getBalance requests after the UI is closed', async function () {
+    const RPC_METHODS_TO_TEST = [
+      'eth_getBlockByNumber',
+      'eth_call',
+      'eth_getBalance',
+    ];
+
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
@@ -156,14 +164,12 @@ describe('Account Tracker API Usage', function () {
           mockedEndpoint,
         );
         const initialEthCallAndGetBalanceRequests =
-          initialInfuraJsonRpcRequests.filter(
-            ({ method }) =>
-              method === 'eth_getBalance' || method === 'eth_call',
+          initialInfuraJsonRpcRequests.filter(({ method }) =>
+            RPC_METHODS_TO_TEST.includes(method),
           );
         const currentEthCallAndGetBalanceRequests =
-          currentInfuraJsonRpcRequests.filter(
-            ({ method }) =>
-              method === 'eth_getBalance' || method === 'eth_call',
+          currentInfuraJsonRpcRequests.filter(({ method }) =>
+            RPC_METHODS_TO_TEST.includes(method),
           );
 
         assert.ok(
