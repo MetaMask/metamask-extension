@@ -88,6 +88,9 @@ export const createDriverTransport = (driver: Driver) => {
     const generatedKey = uuid();
     return new Promise((resolve, reject) => {
       const execute = async () => {
+        if (method === 'eth_requestAccounts') {
+          await new Promise((resolve) => { setTimeout(resolve, 1000) })
+        }
         await addToQueue({
           name: 'transport',
           resolve,
