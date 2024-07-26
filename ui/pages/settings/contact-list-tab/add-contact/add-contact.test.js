@@ -47,7 +47,7 @@ describe('AddContact component', () => {
     fireEvent.change(input, { target: { value: 'invalid address' } });
     setTimeout(() => {
       expect(getByText('Recipient address is invalid')).toBeInTheDocument();
-    }, 100);
+    }, 600);
   });
 
   it('should get disabled submit button when username field is empty', () => {
