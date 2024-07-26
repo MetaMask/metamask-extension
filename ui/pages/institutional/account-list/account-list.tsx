@@ -27,35 +27,16 @@ import {
   Text,
 } from '../../../components/component-library';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-
-type CustodianDetails = {
-  coin: string;
-  id: string;
-};
-
-type LabelItem = {
-  key: string;
-  value: string;
-};
-
-type Account = {
-  address: string;
-  name: string;
-  custodianDetails?: CustodianDetails;
-  labels?: LabelItem[];
-  chainId?: string;
-  balance?: string;
-  token?: string;
-};
+import { Account } from '../custody/custody';
 
 type CustodyAccountListProps = {
   rawList?: boolean;
-  accounts: Account[];
+  accounts: Account[] | null | undefined;
   onAccountChange?: (account: Account) => void;
   selectedAccounts?: { [key: string]: boolean };
   onCancel?: () => void;
   onAddAccounts?: (custody?: string) => void;
-  custody?: string;
+  custody?: string | null;
   children?: React.ReactNode;
 };
 
@@ -92,7 +73,7 @@ const CustodyAccountList: React.FC<CustodyAccountListProps> = ({
           data-testid="custody-account-list"
         >
           {accounts
-            .sort((a, b) =>
+            ?.sort((a, b) =>
               a.name
                 .toLocaleLowerCase()
                 .localeCompare(b.name.toLocaleLowerCase()),
@@ -229,7 +210,7 @@ const CustodyAccountList: React.FC<CustodyAccountListProps> = ({
               size={ButtonSize.Lg}
               className="custody-account-list__button"
               disabled={disabled}
-              onClick={() => onAddAccounts && onAddAccounts(custody)}
+              onClick={() => onAddAccounts && custody && onAddAccounts(custody)}
             >
               {t('connect')}
             </Button>

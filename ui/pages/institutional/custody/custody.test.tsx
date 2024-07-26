@@ -1,9 +1,11 @@
 import React from 'react';
+import { Dispatch } from 'redux';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor, screen, act } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import Fuse from 'fuse.js';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { Account } from './custody';
 import CustodyPage from '.';
 
 const mockedConnectCustodyAddresses = jest
@@ -11,7 +13,7 @@ const mockedConnectCustodyAddresses = jest
   .mockReturnValue({ type: 'TYPE' });
 const mockedGetCustodianJWTList = jest
   .fn()
-  .mockImplementation(() => async (dispatch) => {
+  .mockImplementation(() => async (dispatch: Dispatch) => {
     const jwtList = ['jwt1', 'jwt2', 'jwt3'];
     dispatch({ type: 'TYPE', payload: jwtList });
     return jwtList;
@@ -29,7 +31,26 @@ jest.mock('../../../store/institutional/institution-background', () => ({
   }),
 }));
 
-jest.mock('fuse.js');
+jest.mock('fuse.js', () => {
+  return {
+    __esModule: true,
+    default: jest.fn().mockImplementation(() => {
+      return {
+        search: jest.fn().mockReturnValue([
+          {
+            name: 'Saturn Test A',
+            address: '0x123',
+          },
+        ]),
+        setCollection: jest.fn(),
+        list: [],
+      };
+    }),
+  };
+});
+
+type MockedFuseType = jest.MockedClass<typeof Fuse>;
+const MockedFuse = Fuse as unknown as MockedFuseType;
 
 describe('CustodyPage', function () {
   const mockStore = {
@@ -240,20 +261,22 @@ describe('CustodyPage', function () {
   });
 
   it('renders custody accounts list when I have accounts from connectRequest', async () => {
-    mockedGetCustodianAccounts.mockImplementation(() => async (dispatch) => {
-      const accounts = [
-        {
-          name: 'Saturn Test Name',
-          address: '0x123',
-          balance: '0x1',
-          custodianDetails: 'custodianDetails',
-          labels: [{ key: 'key', value: 'testLabels' }],
-          chanId: 'chanId',
-        },
-      ];
-      dispatch({ type: 'TYPE', payload: accounts });
-      return accounts;
-    });
+    mockedGetCustodianAccounts.mockImplementation(
+      () => async (dispatch: Dispatch) => {
+        const accounts = [
+          {
+            name: 'Saturn Test Name',
+            address: '0x123',
+            balance: '0x1',
+            custodianDetails: 'custodianDetails',
+            labels: [{ key: 'key', value: 'testLabels' }],
+            chanId: 'chanId',
+          },
+        ];
+        dispatch({ type: 'TYPE', payload: accounts });
+        return accounts;
+      },
+    );
 
     const newMockStore = {
       ...mockStore,
@@ -288,11 +311,13 @@ describe('CustodyPage', function () {
   });
 
   it('renders custodian list, initiates connect custodian, displays jwt token list, clicks connect button, and finally shows "no accounts available" message', async () => {
-    mockedGetCustodianAccounts.mockImplementation(() => async (dispatch) => {
-      const accounts = [];
-      dispatch({ type: 'TYPE', payload: accounts });
-      return accounts;
-    });
+    mockedGetCustodianAccounts.mockImplementation(
+      () => async (dispatch: Dispatch) => {
+        const accounts: Account[] = [];
+        dispatch({ type: 'TYPE', payload: accounts });
+        return accounts;
+      },
+    );
 
     act(() => {
       renderWithProvider(<CustodyPage />, store);
@@ -354,10 +379,12 @@ describe('CustodyPage', function () {
       },
     ];
 
-    mockedGetCustodianAccounts.mockImplementation(() => async (dispatch) => {
-      dispatch({ type: 'TYPE', payload: accounts });
-      return accounts;
-    });
+    mockedGetCustodianAccounts.mockImplementation(
+      () => async (dispatch: Dispatch) => {
+        dispatch({ type: 'TYPE', payload: accounts });
+        return accounts;
+      },
+    );
 
     const newMockStore = {
       ...mockStore,
@@ -392,10 +419,12 @@ describe('CustodyPage', function () {
   });
 
   it('handles connection errors correctly', async () => {
-    mockedGetCustodianAccounts.mockImplementation(() => async (dispatch) => {
-      dispatch({ type: 'TYPE', payload: [] });
-      throw new Error('Test Error');
-    });
+    mockedGetCustodianAccounts.mockImplementation(
+      () => async (dispatch: Dispatch) => {
+        dispatch({ type: 'TYPE', payload: [] });
+        throw new Error('Test Error');
+      },
+    );
 
     const newMockStore = {
       ...mockStore,
@@ -428,10 +457,12 @@ describe('CustodyPage', function () {
   });
 
   it('handles authentication errors correctly', async () => {
-    mockedGetCustodianAccounts.mockImplementation(() => async (dispatch) => {
-      dispatch({ type: 'TYPE', payload: [] });
-      throw new Error('401: Unauthorized');
-    });
+    mockedGetCustodianAccounts.mockImplementation(
+      () => async (dispatch: Dispatch) => {
+        dispatch({ type: 'TYPE', payload: [] });
+        throw new Error('401: Unauthorized');
+      },
+    );
 
     const newMockStore = {
       ...mockStore,
@@ -518,18 +549,22 @@ describe('CustodyPage', function () {
       },
     ];
 
-    mockedGetCustodianAccounts.mockImplementation(() => async (dispatch) => {
-      dispatch({ type: 'TYPE', payload: accounts });
-      return accounts;
-    });
+    mockedGetCustodianAccounts.mockImplementation(
+      () => async (dispatch: Dispatch) => {
+        dispatch({ type: 'TYPE', payload: accounts });
+        return accounts;
+      },
+    );
 
-    Fuse.mockImplementation(() => ({
+    MockedFuse.mockImplementation(() => ({
       search: jest.fn().mockReturnValue([
         {
           name: 'Saturn Test A',
           address: '0x123',
         },
       ]),
+      setCollection: jest.fn(),
+      list: [],
     }));
 
     const newMockStore = {
