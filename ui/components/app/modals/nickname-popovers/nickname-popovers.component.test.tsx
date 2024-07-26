@@ -20,7 +20,6 @@ const mockAccount = createMockInternalAccount({
 const mockNonEvmAccount = createMockInternalAccount({
   name: 'Account 1',
   address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
-  // @ts-expect-error type not defined in js file
   type: BtcAccountType.P2wpkh,
 });
 
