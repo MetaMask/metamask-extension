@@ -19,6 +19,10 @@ async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
       .withJsonBodyIncluding({ method: 'eth_blockNumber' })
       .times(50)
       .thenCallback(() => {
+        // We need to ensure the mocked block number keeps increasing,
+        // as this results in block tracker listeners firing, which is
+        // needed for the potential account tracker network requests being
+        // tested against here.
         blockNumber.value += 1;
 
         return {
