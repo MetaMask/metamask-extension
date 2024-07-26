@@ -38,7 +38,6 @@ export const ConfirmInfoRowTypedSignData = ({
       <Box style={{ marginLeft: -8 }}>
         <DataTree
           data={sanitizedMessage.value}
-          isPermit={isPermit}
           primaryType={primaryType}
           tokenDecimals={tokenDecimals}
         />
