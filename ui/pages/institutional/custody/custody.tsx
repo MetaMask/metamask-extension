@@ -159,8 +159,9 @@ const CustodyPage = () => {
   const { address } = useSelector(getSelectedInternalAccount);
   const connectRequest = connectRequests ? connectRequests[0] : undefined;
 
-  const isCheckBoxSelected =
-    accounts && Object.keys(selectedAccounts).length === accounts.length;
+  const isCheckBoxSelected = !!(
+    accounts && Object.keys(selectedAccounts).length === accounts.length
+  );
   const custodianURL =
     matchedCustodian?.onboardingUrl || matchedCustodian?.website;
 
@@ -492,7 +493,7 @@ const CustodyPage = () => {
     }
   };
 
-  const handleQrConnectionRequest = (message: string) => {
+  const _setQrConnectionRequest = (message: string) => {
     setQrConnectionRequest(message);
   };
 
@@ -687,7 +688,7 @@ const CustodyPage = () => {
               name="selectAllAccounts"
               value={''}
               onChange={(e) => setSelectAllAccounts(e)}
-              checked={isCheckBoxSelected ?? undefined}
+              checked={isCheckBoxSelected}
             />
             <Label marginLeft={2} htmlFor="selectAllAccounts">
               {t('selectAllAccounts')}
@@ -715,7 +716,7 @@ const CustodyPage = () => {
           }}
           custodianName={selectedCustodianDisplayName}
           custodianURL={custodianURL}
-          setQrConnectionRequest={handleQrConnectionRequest}
+          setQrConnectionRequest={_setQrConnectionRequest}
         />
       )}
     </Box>
