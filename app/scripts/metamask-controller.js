@@ -208,6 +208,7 @@ import {
   getFeatureFlagsByChainId,
   getSmartTransactionsOptInStatus,
   getCurrentChainSupportsSmartTransactions,
+  getHardwareWalletType,
 } from '../../shared/modules/selectors';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import { BaseUrl } from '../../shared/constants/urls';
@@ -1032,6 +1033,7 @@ export default class MetamaskController extends EventEmitter {
         'KeyringController:getAccounts',
         'AccountsController:setSelectedAccount',
         'AccountsController:getAccountByAddress',
+        'AccountsController:setAccountName',
       ],
     });
 
@@ -1077,7 +1079,6 @@ export default class MetamaskController extends EventEmitter {
         snapKeyringBuildMessenger,
         getSnapController,
         persistAndUpdateAccounts,
-        (address) => this.preferencesController.setSelectedAddress(address),
         (address) => this.removeAccount(address),
         this.metaMetricsController.trackEvent.bind(this.metaMetricsController),
         getSnapName,
@@ -1457,9 +1458,10 @@ export default class MetamaskController extends EventEmitter {
       'PushPlatformNotificationsController:onNewNotifications',
       (notification) => {
         this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.PushNotificationReceived,
           category: MetaMetricsEventCategory.PushNotifications,
+          event: MetaMetricsEventName.NotificationReceived,
           properties: {
+            notification_channel: 'push',
             notification_type: notification.type,
             chain_id: notification?.chain_id,
           },
@@ -1470,11 +1472,14 @@ export default class MetamaskController extends EventEmitter {
       'PushPlatformNotificationsController:pushNotificationClicked',
       (notification) => {
         this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.PushNotificationClicked,
           category: MetaMetricsEventCategory.PushNotifications,
+          event: MetaMetricsEventName.NotificationClicked,
           properties: {
+            notification_id: notification.id,
             notification_type: notification.type,
             chain_id: notification?.chain_id,
+            notification_is_read: notification.isRead,
+            click_type: 'push_notification',
           },
         });
       },
@@ -1660,6 +1665,7 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:addRequest`,
           'NetworkController:findNetworkClientIdByChainId',
           'NetworkController:getNetworkClientById',
+          'AccountsController:getSelectedAccount',
         ],
         allowedEvents: [`NetworkController:stateChange`],
       });
@@ -1686,8 +1692,6 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.store.getState().advancedGasFee[
           this.networkController.state.providerConfig.chainId
         ],
-      getSelectedAddress: () =>
-        this.accountsController.getSelectedAccount().address,
       incomingTransactions: {
         includeTokenTransfers: false,
         isEnabled: () =>
@@ -1941,6 +1945,20 @@ export default class MetamaskController extends EventEmitter {
         trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
+        getMetaMetricsProps: async () => {
+          const selectedAddress =
+            this.accountsController.getSelectedAccount().address;
+          const accountHardwareType = await getHardwareWalletType(
+            this._getMetaMaskState(),
+          );
+          const accountType = await this.getAccountType(selectedAddress);
+          const deviceModel = await this.getDeviceModel(selectedAddress);
+          return {
+            accountHardwareType,
+            accountType,
+            deviceModel,
+          };
+        },
       },
       {
         supportedChainIds: getAllowedSmartTransactionsChainIds(),
@@ -3230,7 +3248,6 @@ export default class MetamaskController extends EventEmitter {
         accountsController.setAccountName.bind(accountsController),
 
       setAccountLabel: (address, label) => {
-        this.preferencesController.setAccountLabel(address, label);
         const account = this.accountsController.getAccountByAddress(address);
         if (account === undefined) {
           throw new Error(`No account found for address: ${address}`);

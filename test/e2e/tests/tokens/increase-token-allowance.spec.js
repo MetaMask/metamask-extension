@@ -133,7 +133,7 @@ describe('Increase Token Allowance', function () {
     );
 
     await driver.fill('[placeholder="Account 2"]', newAccountName);
-    await driver.clickElement({ text: 'Create', tag: 'button' });
+    await driver.clickElement({ text: 'Add account', tag: 'button' });
     await driver.findElement({
       css: '[data-testid="account-menu-icon"]',
       text: newAccountName,
