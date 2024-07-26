@@ -75,9 +75,6 @@
   "asset": {
     "message": "Activ"
   },
-  "attemptingConnect": {
-    "message": "Se încearcă conectarea la blockchain."
-  },
   "attributions": {
     "message": "Atribuții"
   },

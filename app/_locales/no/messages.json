@@ -75,9 +75,6 @@
   "asset": {
     "message": "Ressurs"
   },
-  "attemptingConnect": {
-    "message": "Prøver å opprette forbindelse med blokkjede"
-  },
   "attributions": {
     "message": "Henvisninger"
   },

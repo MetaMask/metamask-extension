@@ -33,9 +33,6 @@
   "approve": {
     "message": "Goedkeuren"
   },
-  "attemptingConnect": {
-    "message": "Poging om verbinding te maken met blockchain."
-  },
   "attributions": {
     "message": "Bevoegdheden"
   },

@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Cố gắng hủy hoán đổi miễn phí"
   },
-  "attemptingConnect": {
-    "message": "Đang cố gắng kết nối với chuỗi khối."
-  },
   "attributions": {
     "message": "Ghi nhận đóng góp"
   },
