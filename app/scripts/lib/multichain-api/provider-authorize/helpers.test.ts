@@ -110,7 +110,7 @@ describe('provider_authorize helpers', () => {
       expect(findNetworkClientIdByChainId).toHaveBeenCalledWith('0x5');
     });
 
-    it('does not upsert the valdiated network configuration and returns undefined if a network client does already exist for the chainId', async () => {
+    it('does not upsert the validated network configuration and returns undefined if a network client already exists for the chainId', async () => {
       findNetworkClientIdByChainId.mockReturnValue('existingNetworkClientId');
       const result = await validateAndUpsertEip3085({
         eip3085Params: {},
