@@ -14,16 +14,16 @@ export enum PrimaryTypePermit {
 /**
  * EIP-712 Permit PrimaryTypes
  */
-export enum PrimaryType {
-  Order = 'Order',
-  OrderComponents = 'OrderComponents',
-  Permit = 'Permit',
-  PermitBatch = 'PermitBatch',
-  PermitBatchTransferFrom = 'PermitBatchTransferFrom',
-  PermitSingle = 'PermitSingle',
-  PermitTransferFrom = 'PermitTransferFrom',
-}
+export const PrimaryType = {
+  ...PrimaryTypeOrder,
+  ...PrimaryTypePermit,
+} as const;
 
-export const PRIMARY_TYPES_ORDER: string[] = Object.values(PrimaryTypeOrder);
-export const PRIMARY_TYPES_PERMIT: string[] = Object.values(PrimaryTypePermit);
-export const PRIMARY_TYPES: string[] = Object.values(PrimaryType);
+// Create a type from the const object
+export type PrimaryType = (typeof PrimaryType)[keyof typeof PrimaryType];
+
+export const PRIMARY_TYPES_ORDER: PrimaryTypeOrder[] =
+  Object.values(PrimaryTypeOrder);
+export const PRIMARY_TYPES_PERMIT: PrimaryTypePermit[] =
+  Object.values(PrimaryTypePermit);
+export const PRIMARY_TYPES: PrimaryType[] = Object.values(PrimaryType);
