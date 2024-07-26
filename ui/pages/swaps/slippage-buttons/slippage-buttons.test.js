@@ -1,4 +1,3 @@
-// This file has been updated to address failing tests related to maskImage style and radio button selection
 import React from 'react';
 
 jest.mock('react', () => ({
@@ -6,11 +5,10 @@ jest.mock('react', () => ({
   useRef: jest.fn(),
 }));
 
-import { renderWithProvider, fireEvent, screen, waitFor, within } from '../../../../test/jest';
+import { renderWithProvider, fireEvent, screen, waitFor } from '../../../../test/jest';
 import { act } from '@testing-library/react';
 import { Slippage } from '../../../../shared/constants/swaps';
 import SlippageButtons from './slippage-buttons';
-import { prettyDOM } from '@testing-library/react';
 
 const createProps = (customProps = {}) => {
   return {
@@ -78,9 +76,10 @@ describe('SlippageButtons', () => {
   });
 
   it('sets a default slippage when clicked', () => {
+    const onSelect = jest.fn();
     renderWithProvider(
       <SlippageButtons
-        {...createProps({ currentSlippage: Slippage.default })}
+        {...createProps({ currentSlippage: Slippage.default, onSelect })}
       />,
     );
     const advancedOptionsButton = screen.getByText('Advanced options').closest('button');
@@ -88,12 +87,14 @@ describe('SlippageButtons', () => {
     const defaultSlippageButton = screen.getByRole('radio', { name: '2%' });
     fireEvent.click(defaultSlippageButton);
     expect(defaultSlippageButton).toHaveClass('button-group__button--active', 'radio-button--active');
+    expect(onSelect).toHaveBeenCalledWith(Slippage.default);
   });
 
   it('sets a high slippage when clicked', () => {
+    const onSelectMock = jest.fn();
     renderWithProvider(
       <SlippageButtons
-        {...createProps({ currentSlippage: Slippage.default })}
+        {...createProps({ currentSlippage: Slippage.default, onSelect: onSelectMock })}
       />,
     );
     const advancedOptionsButton = screen.getByText('Advanced options').closest('button');
@@ -101,12 +102,14 @@ describe('SlippageButtons', () => {
     const highSlippageButton = screen.getByRole('radio', { name: '3%' });
     fireEvent.click(highSlippageButton);
     expect(highSlippageButton).toHaveClass('button-group__button--active', 'radio-button--active');
+    expect(onSelectMock).toHaveBeenCalledWith(Slippage.high);
   });
 
   it('sets a custom slippage value', async () => {
+    const onSelectMock = jest.fn();
     const { getByText, getByRole } = renderWithProvider(
       <SlippageButtons
-        onSelect={jest.fn()}
+        onSelect={onSelectMock}
         maxAllowedSlippage={15}
         currentSlippage={2}
       />,
@@ -127,6 +130,11 @@ describe('SlippageButtons', () => {
     fireEvent.change(input, { target: { value: '5' } });
 
     expect(input).toHaveValue('5');
+
+    // Simulate blur event to trigger onSelect
+    fireEvent.blur(input);
+
+    expect(onSelectMock).toHaveBeenCalledWith(5);
   });
 
   it('toggles the advanced options and changes the icon', async () => {
