@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import configureStore from '../../../../store/store';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { AssetPicker } from './asset-picker';
 
 const store = (
@@ -21,10 +22,11 @@ const store = (
           conversionRate: 11.1,
         },
       },
-      providerConfig: {
-        chainId: '0x1',
-        ticker: nativeTicker,
+      selectedNetworkClientId: 'networkClientId',
+      networkConfigurations: {
+        networkClientId: { chainId: CHAIN_IDS.MAINNET, ticker: nativeTicker },
       },
+
       useTokenDetection: true,
       tokenList,
     },

@@ -5,6 +5,7 @@ import { NetworkType } from '@metamask/controller-utils';
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import ConfirmPageContainerHeader from '.';
 
 jest.mock('../../../../../../app/scripts/lib/util', () => ({
@@ -15,9 +16,9 @@ jest.mock('../../../../../../app/scripts/lib/util', () => ({
 describe('Confirm Detail Row Component', () => {
   const mockState = {
     metamask: {
-      providerConfig: {
-        type: 'rpc',
-        chainId: '0x5',
+      selectedNetworkClientId: 'goerli',
+      networkConfigurations: {
+        goerli: { chainId: CHAIN_IDS.GOERLI },
       },
       selectedNetworkClientId: NetworkType.goerli,
       networksMetadata: {

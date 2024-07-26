@@ -23,7 +23,7 @@ jest.mock('react-router-dom', () => ({
 
 const render = ({
   stateChanges = {},
-  provider = {},
+  selectedNetworkClientId = 'goerli',
   networkConfigurations = {},
   location = {},
   isUnlocked = true,
@@ -32,10 +32,7 @@ const render = ({
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      providerConfig: {
-        ...mockState.metamask.providerConfig,
-        ...(provider ?? {}),
-      },
+      selectedNetworkClientId,
       networkConfigurations: {
         ...mockState.metamask.networkConfigurations,
         ...(networkConfigurations ?? {}),
@@ -201,7 +198,7 @@ describe('App Header', () => {
       };
 
       const { getByText } = render({
-        provider: mockProviderConfig,
+        selectedNetworkClientId: mockProviderConfig.id,
         networkConfigurations: mockNetworkConfigurations,
         isUnlocked: true,
       });
@@ -222,7 +219,7 @@ describe('App Header', () => {
       };
 
       const { getByText } = render({
-        provider: mockProviderConfig,
+        selectedNetworkClientId: mockProviderConfig.id,
         networkConfigurations: mockNetworkConfigurations,
         isUnlocked: true,
       });

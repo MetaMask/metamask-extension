@@ -39,12 +39,7 @@ describe('NewNetworkInfo', () => {
   describe('fetch token successfully', () => {
     const state = {
       metamask: {
-        providerConfig: {
-          ticker: 'ETH',
-          nickname: '',
-          chainId: '0x1',
-          type: 'mainnet',
-        },
+        selectedNetworkClientId: 'mainnet',
         useExternalServices: true,
         useTokenDetection: false,
         currencyRates: {},
@@ -111,8 +106,6 @@ describe('NewNetworkInfo', () => {
         .get('/tokens/0x3?occurrenceFloor=100&includeNativeAssets=false')
         .reply(200, '{"error":"ChainId 0x3 is not supported"}');
 
-      state.metamask.providerConfig.ticker = null;
-
       const store = configureMockStore()(state);
       const { container, getByTestId } = renderWithProvider(
         <NewNetworkInfo />,
@@ -133,12 +126,8 @@ describe('NewNetworkInfo', () => {
     describe('add token link', () => {
       const newState = {
         metamask: {
-          providerConfig: {
-            ticker: 'ETH',
-            nickname: '',
-            chainId: '0x1',
-            type: 'mainnet',
-          },
+          selectedNetworkClientId: 'mainnet',
+
           useExternalServices: true,
           useTokenDetection: true,
           currencyRates: {},

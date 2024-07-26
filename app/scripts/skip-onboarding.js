@@ -60,14 +60,14 @@ function generateAnnouncementControllerState() {
 function generateNetworkControllerState() {
   return {
     ...defaultFixture().data.NetworkController,
-    providerConfig: {
-      chainId: '0xaa36a7',
-      rpcPrefs: {
-        blockExplorerUrl: 'https://sepolia.etherscan.io',
-      },
-      ticker: 'SepoliaETH',
-      type: 'sepolia',
-    },
+    // providerConfig: {
+    //   chainId: '0xaa36a7',
+    //   rpcPrefs: {
+    //     blockExplorerUrl: 'https://sepolia.etherscan.io',
+    //   },
+    //   ticker: 'SepoliaETH',
+    //   type: 'sepolia',
+    // },
     networkConfigurations: {
       networkConfigurationId: {
         chainId: '0xaa36a7',

@@ -14,10 +14,12 @@ describe('Wrong Network Notification', function () {
     ...testData,
     metamask: {
       ...testData.metamask,
-      providerConfig: {
-        type: 'test',
-        chainId: toHex(3),
+
+      selectedNetworkClientId: 'networkClientId',
+      networkConfigurations: {
+        networkClientId: { chainId: toHex(3) },
       },
+
       accountsByChainId: {
         [toHex(1)]: {
           '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': { balance: '0x0' },
@@ -76,10 +78,6 @@ describe('Wrong Network Notification', function () {
       ...mockStore,
       metamask: {
         ...mockStore.metamask,
-        providerConfig: {
-          type: 'test',
-          chainId: toHex(3),
-        },
         accountsByChainId: {
           [toHex(1)]: {
             '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': { balance: '0x0' },
@@ -102,10 +100,6 @@ describe('Wrong Network Notification', function () {
       ...mockStore,
       metamask: {
         ...mockStore.metamask,
-        providerConfig: {
-          type: 'test',
-          chainId: toHex(3),
-        },
         accountsByChainId: {
           [toHex(3)]: {
             '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': { balance: '0x0' },

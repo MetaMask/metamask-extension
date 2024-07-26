@@ -25,12 +25,11 @@ jest.mock('../../../ducks/app/app.ts', () => {
 describe('Privacy Settings Onboarding View', () => {
   const mockStore = {
     metamask: {
-      networkConfigurations: {},
+      // networkConfigurations: {},
+      selectedNetworkClientId: 'mainnet',
+
       preferences: {
         petnamesEnabled: true,
-      },
-      providerConfig: {
-        type: 'test',
       },
       incomingTransactionsPreferences: {
         [CHAIN_IDS.MAINNET]: true,

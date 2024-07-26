@@ -9,6 +9,7 @@ import {
 import { GAS_ESTIMATE_TYPES } from '@metamask/gas-fee-controller';
 import * as actionConstants from '../../store/actionConstants';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import reduceMetamask, {
   getBlockGasLimit,
   getConversionRate,
@@ -133,10 +134,9 @@ describe('MetaMask Reducers', () => {
             status: NetworkStatus.Available,
           },
         },
-        providerConfig: {
-          type: 'testnet',
-          chainId: '0x5',
-          ticker: 'TestETH',
+        selectedNetworkClientId: 'goerli',
+        networkConfigurations: {
+          goerli: { chainId: CHAIN_IDS.GOERLI, ticker: 'TestETH' },
         },
         accounts: {
           '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
@@ -526,9 +526,6 @@ describe('MetaMask Reducers', () => {
         getIsNetworkBusyByChainId(
           {
             metamask: {
-              providerConfig: {
-                chainId: '0x2',
-              },
               gasFeeEstimatesByChainId: {
                 '0x1': {
                   gasFeeEstimates: { networkCongestion: 0.67 },
@@ -546,9 +543,6 @@ describe('MetaMask Reducers', () => {
         getIsNetworkBusyByChainId(
           {
             metamask: {
-              providerConfig: {
-                chainId: '0x2',
-              },
               gasFeeEstimatesByChainId: {
                 '0x1': {
                   gasFeeEstimates: { networkCongestion: 0.66 },
@@ -566,9 +560,6 @@ describe('MetaMask Reducers', () => {
         getIsNetworkBusyByChainId(
           {
             metamask: {
-              providerConfig: {
-                chainId: '0x2',
-              },
               gasFeeEstimatesByChainId: {
                 '0x1': {
                   gasFeeEstimates: { networkCongestion: 0.65 },

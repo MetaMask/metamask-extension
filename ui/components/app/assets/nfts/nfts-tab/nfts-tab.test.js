@@ -183,7 +183,11 @@ const render = ({
         [CHAIN_IDS.MAINNET]: {},
         [CHAIN_IDS.GOERLI]: {},
       },
-      providerConfig: { chainId, type: NETWORK_TYPES.MAINNET },
+      selectedNetworkClientId: 'networkClientId',
+      networkConfigurations: {
+        networkClientId: { id: 'networkClientId', chainId },
+      },
+
       accounts: {
         [selectedAddress]: {
           address: selectedAddress,

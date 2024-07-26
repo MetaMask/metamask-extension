@@ -62,11 +62,8 @@ function getEvmState(): TestState {
       preferences: {
         showFiatInTestnets: false,
       },
-      providerConfig: {
-        type: 'mainnet',
-        ticker: 'ETH',
-        chainId: '0x1',
-      },
+      selectedNetworkClientId: 'mainnet',
+
       currentCurrency: 'ETH',
       currencyRates: {
         ETH: {
@@ -193,6 +190,7 @@ describe('Multichain Selectors', () => {
         ...getEvmState(),
         metamask: {
           ...getEvmState().metamask,
+          selectedNetworkClientId: mockNetwork.id,
           providerConfig: mockNetwork,
           networkConfigurations: {
             [mockNetwork.id]: mockNetwork,

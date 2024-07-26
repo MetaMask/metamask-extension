@@ -38,6 +38,7 @@ import {
   ConnectionRequest,
 } from '../../../shared/constants/mmi-controller';
 import AccountTracker from '../lib/account-tracker';
+import { getCurrentChainId } from '../../../ui/selectors';
 import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
 import { PreferencesController } from './preferences';
@@ -851,7 +852,7 @@ export default class MMIController extends EventEmitter {
       );
     }
     const selectedChainId = parseInt(
-      this.networkController.state.providerConfig.chainId,
+      getCurrentChainId({ metamask: this.networkController.state }),
       16,
     );
     if (selectedChainId !== chainId && chainId === 1) {

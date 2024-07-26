@@ -54,9 +54,7 @@ describe('Confirm Remove Account', () => {
   const state = {
     metamask: {
       completedOnboarding: true,
-      providerConfig: {
-        chainId: '0x99',
-      },
+      selectedNetworkClientId: 'mainnet',
       internalAccounts: {
         accounts: {
           [mockAccount.id]: mockAccount,

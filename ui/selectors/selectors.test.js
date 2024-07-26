@@ -6,6 +6,7 @@ import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
 import {
   CHAIN_IDS,
+  FANTOM_DISPLAY_NAME,
   LOCALHOST_DISPLAY_NAME,
   NETWORK_TYPES,
   OPTIMISM_DISPLAY_NAME,
@@ -276,12 +277,6 @@ describe('Selectors', () => {
       expect(
         selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
           metamask: {
-            providerConfig: {
-              ...mockState.metamask.networkConfigurations
-                .testNetworkConfigurationId,
-              chainId: '0x1',
-              type: 'rpc',
-            },
             transactions: [
               {
                 id: 0,
@@ -334,13 +329,10 @@ describe('Selectors', () => {
         },
         queuedRequestCount: 0,
         transactions: [],
-        providerConfig: {
-          ...mockState.metamask.networkConfigurations
-            .testNetworkConfigurationId,
-          chainId: '0x1',
-          type: 'rpc',
-          id: 'mainnet',
-        },
+        selectedNetworkClientId:
+          mockState.metamask.networkConfigurations.testNetworkConfigurationId
+            .id,
+        networkConfigurations: mockState.metamask.networkConfigurations,
       },
     };
 
@@ -355,10 +347,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          providerConfig: {
-            ...state.metamask.providerConfig,
-            id: NETWORK_TYPES.LINEA_SEPOLIA,
-          },
+          selectedNetworkClientId: NETWORK_TYPES.LINEA_SEPOLIA,
         },
       });
       expect(networkToSwitchTo).toBe(null);
@@ -369,10 +358,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          providerConfig: {
-            ...state.metamask.providerConfig,
-            id: NETWORK_TYPES.LINEA_SEPOLIA,
-          },
+          selectedNetworkClientId: NETWORK_TYPES.LINEA_SEPOLIA,
           transactions: [
             {
               id: 0,
@@ -390,10 +376,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          providerConfig: {
-            ...state.metamask.providerConfig,
-            id: NETWORK_TYPES.LINEA_SEPOLIA,
-          },
+          selectedNetworkClientId: NETWORK_TYPES.LINEA_SEPOLIA,
           queuedRequestCount: 1,
         },
       });
@@ -607,20 +590,26 @@ describe('Selectors', () => {
     });
   });
 
+  // todo
   describe('#getRpcPrefsForCurrentProvider', () => {
     it('returns an empty object if state.metamask.providerConfig is empty', () => {
       expect(
         selectors.getRpcPrefsForCurrentProvider({
-          metamask: { providerConfig: {} },
+          metamask: {},
         }),
       ).toStrictEqual({});
     });
+
     it('returns rpcPrefs from the providerConfig', () => {
       expect(
         selectors.getRpcPrefsForCurrentProvider({
           metamask: {
-            providerConfig: {
-              rpcPrefs: { blockExplorerUrl: 'https://test-block-explorer' },
+            selectedNetworkClientId: 'networkClientId',
+            networkConfigurations: {
+              networkClientId: {
+                chainId: '0x1',
+                rpcPrefs: { blockExplorerUrl: 'https://test-block-explorer' },
+              },
             },
           },
         }),
@@ -789,14 +778,9 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          providerConfig: {
-            ...mockState.metamask.networkConfigurations
-              .testNetworkConfigurationId,
-            // 0x1 would collide with Ethereum Mainnet
-            chainId: '0x1',
-            // type of "rpc" signals custom network
-            type: 'rpc',
-          },
+          selectedNetworkClientId:
+            mockState.metamask.networkConfigurations.testNetworkConfigurationId
+              .id,
         },
       };
 
@@ -810,12 +794,7 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          providerConfig: {
-            ...mockState.metamask.providerConfig,
-            chainId: '0x1',
-            // Changing type to 'mainnet' represents Ethereum Mainnet
-            type: 'mainnet',
-          },
+          selectedNetworkClientId: 'mainnet',
         },
       };
       const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
@@ -1233,12 +1212,24 @@ describe('Selectors', () => {
   });
 
   it('#getIsBridgeChain', () => {
-    mockState.metamask.providerConfig.chainId = '0xa';
-    const isOptimismSupported = selectors.getIsBridgeChain(mockState);
+    const isOptimismSupported = selectors.getIsBridgeChain({
+      metamask: {
+        selectedNetworkClientId: 'networkClientId',
+        networkConfigurations: {
+          networkClientId: { chainId: CHAIN_IDS.OPTIMISM },
+        },
+      },
+    });
     expect(isOptimismSupported).toBeTruthy();
 
-    mockState.metamask.providerConfig.chainId = '0xfa';
-    const isFantomSupported = selectors.getIsBridgeChain(mockState);
+    const isFantomSupported = selectors.getIsBridgeChain({
+      metamask: {
+        selectedNetworkClientId: 'networkClientId',
+        networkConfigurations: {
+          networkClientId: { chainId: CHAIN_IDS.FANTOM },
+        },
+      },
+    });
     expect(isFantomSupported).toBeFalsy();
   });
 

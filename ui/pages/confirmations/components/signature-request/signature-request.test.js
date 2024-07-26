@@ -37,14 +37,16 @@ const baseProps = {
 };
 const mockStore = {
   metamask: {
-    providerConfig: {
-      chainId: '0x539',
-      nickname: 'Localhost 8545',
-      rpcPrefs: {},
-      rpcUrl: 'http://localhost:8545',
-      ticker: 'ETH',
-      type: 'rpc',
+    selectedNetworkClientId: 'networkClientId',
+    networkConfigurations: {
+      networkClientId: {
+        chainId: '0x539',
+        nickname: 'Localhost 8545',
+        rpcUrl: 'http://localhost:8545',
+        ticker: 'ETH',
+      },
     },
+
     preferences: {
       useNativeCurrencyAsPrimaryCurrency: true,
     },
@@ -121,17 +123,17 @@ const generateUseSelectorRouter = (opts) => (selector) => {
 
   switch (selector) {
     case getProviderConfig:
-      return opts.metamask.providerConfig;
+      return getProviderConfig(opts);
     case getCurrentCurrency:
       return opts.metamask.currentCurrency;
     case getNativeCurrency:
-      return opts.metamask.providerConfig.ticker;
+      return getProviderConfig(opts).ticker;
     case getTotalUnapprovedMessagesCount:
       return opts.metamask.unapprovedTypedMessagesCount;
     case getPreferences:
       return opts.metamask.preferences;
     case conversionRateSelector:
-      return opts.metamask.currencyRates[opts.metamask.providerConfig.ticker]
+      return opts.metamask.currencyRates[getProviderConfig(opts).ticker]
         ?.conversionRate;
     case getSelectedAccount:
       return mockSelectedInternalAccount;

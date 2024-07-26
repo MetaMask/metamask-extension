@@ -934,7 +934,7 @@ export function getShowExtensionInFullSizeView(state) {
 }
 
 export function getTestNetworkBackgroundColor(state) {
-  const currentNetwork = state.metamask.providerConfig.ticker;
+  const currentNetwork = getProviderConfig(state).ticker;
   switch (true) {
     case currentNetwork?.includes(GOERLI_DISPLAY_NAME):
       return BackgroundColor.goerli;
@@ -1811,6 +1811,8 @@ export const getCurrentNetwork = createDeepEqualSelector(
       providerConfig.type === 'rpc'
         ? (network) => network.id === providerConfig.id
         : (network) => network.id === providerConfig.type;
+    // console.log(allNetworks)
+    // console.log(providerConfig)
     return allNetworks.find(filter);
   },
 );

@@ -4,11 +4,12 @@ import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType } from '@metamask/keyring-api';
 import nock from 'nock';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { getSelectedNetworkClientId } from '../../../selectors';
 import AssetPage from './asset-page';
 
 // Mock the price chart
@@ -40,18 +41,12 @@ describe('AssetPage', () => {
       tokenList: {},
       currentCurrency: 'usd',
       accounts: {},
+
+      selectedNetworkClientId: 'networkClientId',
       networkConfigurations: {
-        test: {
-          id: 'test',
-          chainId: CHAIN_IDS.MAINNET,
-        },
+        networkClientId: { chainId: CHAIN_IDS.MAINNET, ticker: 'ETH' },
       },
-      providerConfig: {
-        id: '1',
-        type: 'test',
-        ticker: 'ETH',
-        chainId: CHAIN_IDS.MAINNET,
-      },
+
       currencyRates: {
         ETH: {
           conversionRate: 123,
@@ -194,7 +189,10 @@ describe('AssetPage', () => {
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
         ...mockStore,
-        metamask: { ...mockStore.metamask, providerConfig: { chainId } },
+        metamask: {
+          ...mockStore.metamask,
+          selectedNetworkClientId: NETWORK_TYPES.SEPOLIA,
+        },
       }),
     );
     const buyButton = queryByTestId('token-overview-buy');
@@ -207,7 +205,10 @@ describe('AssetPage', () => {
       ...mockStore,
       metamask: {
         ...mockStore.metamask,
-        providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+        selectedNetworkClientId: 'networkClientId',
+        networkConfigurations: {
+          networkClientId: { chainId: CHAIN_IDS.POLYGON },
+        },
       },
     };
     const mockedStore = configureMockStore([thunk])(
@@ -252,12 +253,14 @@ describe('AssetPage', () => {
   });
 
   it('should not show the Bridge button if chain id is not supported', async () => {
-    const chainId = CHAIN_IDS.SEPOLIA;
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
         ...mockStore,
-        metamask: { ...mockStore.metamask, providerConfig: { chainId } },
+        metamask: {
+          ...mockStore.metamask,
+          selectedNetworkClientId: NETWORK_TYPES.SEPOLIA,
+        },
       }),
     );
     const bridgeButton = queryByTestId('token-overview-bridge');

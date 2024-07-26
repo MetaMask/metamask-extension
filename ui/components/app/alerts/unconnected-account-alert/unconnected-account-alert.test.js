@@ -111,9 +111,7 @@ describe('Unconnected Account Alert', () => {
       accounts,
       accountsByChainId,
       keyrings,
-      providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
-      },
+      selectedNetworkClientId: 'mainnet',
       permissionHistory: {
         'https://test.dapp': {
           eth_accounts: {

@@ -67,10 +67,9 @@ const render = async ({ txProps, contextProps } = {}) => {
   const store = configureStore({
     metamask: {
       currencyRates: {},
-      providerConfig: {
-        chainId: CHAIN_IDS.GOERLI,
-        nickname: GOERLI_DISPLAY_NAME,
-        type: NETWORK_TYPES.GOERLI,
+      selectedNetworkClientId: 'goerli',
+      networkConfigurations: {
+        goerli: { chainId: CHAIN_IDS.GOERLI },
       },
       selectedNetworkClientId: 'goerli',
       networksMetadata: {

@@ -705,13 +705,6 @@ const state = {
     connectedStatusPopoverHasBeenShown: true,
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Tokens',
-    providerConfig: {
-      type: 'sepolia',
-      ticker: 'ETH',
-      nickname: 'Sepolia',
-      rpcUrl: '',
-      chainId: '0xaa36a7',
-    },
     network: '5',
     accounts: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {

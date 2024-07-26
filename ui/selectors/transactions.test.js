@@ -46,9 +46,11 @@ describe('Transaction Selectors', () => {
           unapprovedMsgs: {
             1: msg,
           },
-          providerConfig: {
-            chainId: '0x5',
+          selectedNetworkClientId: 'goerli',
+          networkConfigurations: {
+            goerli: { chainId: CHAIN_IDS.GOERLI },
           },
+
           internalAccounts: {
             accounts: {
               'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -94,8 +96,9 @@ describe('Transaction Selectors', () => {
           unapprovedPersonalMsgs: {
             1: msg,
           },
-          providerConfig: {
-            chainId: '0x5',
+          selectedNetworkClientId: 'goerli',
+          networkConfigurations: {
+            goerli: { chainId: CHAIN_IDS.GOERLI },
           },
         },
       };
@@ -125,8 +128,9 @@ describe('Transaction Selectors', () => {
           unapprovedTypedMessages: {
             1: msg,
           },
-          providerConfig: {
-            chainId: '0x5',
+          selectedNetworkClientId: 'goerli',
+          networkConfigurations: {
+            goerli: { chainId: CHAIN_IDS.GOERLI },
           },
         },
       };
@@ -163,10 +167,8 @@ describe('Transaction Selectors', () => {
     const createState = (smartTransaction) => {
       return {
         metamask: {
-          providerConfig: {
-            nickname: 'mainnet',
-            chainId: CHAIN_IDS.MAINNET,
-          },
+          selectedNetworkClientId: 'mainnet',
+
           featureFlags: {},
           internalAccounts: {
             accounts: {
@@ -391,10 +393,8 @@ describe('Transaction Selectors', () => {
     it('selects the current network transactions', () => {
       const state = {
         metamask: {
-          providerConfig: {
-            nickname: 'mainnet',
-            chainId: CHAIN_IDS.MAINNET,
-          },
+          selectedNetworkClientId: 'mainnet',
+
           featureFlags: {},
           internalAccounts: {
             accounts: {
@@ -448,10 +448,8 @@ describe('Transaction Selectors', () => {
     it('should not duplicate incoming transactions', () => {
       const state = {
         metamask: {
-          providerConfig: {
-            nickname: 'mainnet',
-            chainId: CHAIN_IDS.MAINNET,
-          },
+          selectedNetworkClientId: 'mainnet',
+
           featureFlags: {},
           internalAccounts: {
             accounts: {
@@ -537,10 +535,8 @@ describe('Transaction Selectors', () => {
 
       const state = {
         metamask: {
-          providerConfig: {
-            nickname: 'mainnet',
-            chainId: CHAIN_IDS.MAINNET,
-          },
+          selectedNetworkClientId: 'mainnet',
+
           internalAccounts: {
             accounts: {
               'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -640,10 +636,8 @@ describe('Transaction Selectors', () => {
 
     const state = {
       metamask: {
-        providerConfig: {
-          nickname: 'mainnet',
-          chainId: CHAIN_IDS.MAINNET,
-        },
+        selectedNetworkClientId: 'mainnet',
+
         internalAccounts: {
           accounts: {
             'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -729,9 +723,11 @@ describe('Transaction Selectors', () => {
     const mockChainId = 'mockChainId';
     const mockedState = {
       metamask: {
-        providerConfig: {
-          chainId: mockChainId,
+        selectedNetworkClientId: 'networkClientId',
+        networkConfigurations: {
+          networkClientId: { chainId: mockChainId },
         },
+
         pendingApprovalCount: 2,
         pendingApprovals: {
           1: {
@@ -806,9 +802,8 @@ describe('Transaction Selectors', () => {
     it('returns transactions with status of approved or signed for all networks', () => {
       const state = {
         metamask: {
-          providerConfig: {
-            chainId: CHAIN_IDS.MAINNET,
-          },
+          selectedNetworkClientId: 'mainnet',
+
           transactions: [
             {
               id: 0,
@@ -851,9 +846,8 @@ describe('Transaction Selectors', () => {
     it('returns an empty array if there are no approved or signed transactions', () => {
       const state = {
         metamask: {
-          providerConfig: {
-            chainId: CHAIN_IDS.MAINNET,
-          },
+          selectedNetworkClientId: 'mainnet',
+
           transactions: [
             {
               id: 0,
@@ -879,9 +873,8 @@ describe('Transaction Selectors', () => {
     it('returns all transactions for all networks', () => {
       const state = {
         metamask: {
-          providerConfig: {
-            chainId: CHAIN_IDS.MAINNET,
-          },
+          selectedNetworkClientId: 'mainnet',
+
           transactions: [
             {
               id: 0,
@@ -918,16 +911,7 @@ describe('Transaction Selectors', () => {
     });
 
     it('returns an empty array if there are no transactions', () => {
-      const state = {
-        metamask: {
-          providerConfig: {
-            chainId: CHAIN_IDS.MAINNET,
-          },
-        },
-      };
-
-      const results = getTransactions(state);
-
+      const results = getTransactions({});
       expect(results).toStrictEqual([]);
     });
   });

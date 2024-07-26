@@ -37,21 +37,15 @@ describe('EthOverview', () => {
 
   const mockStore = {
     metamask: {
-      providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
-        nickname: MAINNET_DISPLAY_NAME,
-        type: NETWORK_TYPES.MAINNET,
-        ticker: 'ETH',
-      },
+      selectedNetworkClientId: 'networkClientId',
       networkConfigurations: {
-        testNetworkConfigurationId: {
+        networkClientId: {
+          chainId: CHAIN_IDS.MAINNET,
+          ticker: 'ETH',
           rpcUrl: 'https://testrpc.com',
-          chainId: '0x89',
-          nickname: 'Custom Mainnet RPC',
-          type: 'rpc',
-          id: 'custom-mainnet',
         },
       },
+
       accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
           '0x1': { address: '0x1', balance: '0x1F4' },
@@ -204,18 +198,9 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          providerConfig: {
-            ...mockStore.metamask.providerConfig,
-            chainId: '0xa86a',
-          },
+          selectedNetworkClientId: 'networkClientId',
           networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x89',
-              nickname: 'Custom Mainnet RPC',
-              type: 'rpc',
-              id: 'custom-mainnet',
-            },
+            networkClientId: { chainId: '0xa86a' },
           },
         },
       };
@@ -303,18 +288,9 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          providerConfig: {
-            ...mockStore.metamask.providerConfig,
-            chainId: '0xfa',
-          },
+          selectedNetworkClientId: 'networkClientId',
           networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x89',
-              nickname: 'Custom Mainnet RPC',
-              type: 'rpc',
-              id: 'custom-mainnet',
-            },
+            networkClientId: { chainId: 0xa86a },
           },
         },
       };
@@ -368,10 +344,9 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          providerConfig: {
-            type: 'test',
-            chainId: CHAIN_IDS.GOERLI,
-            nickname: GOERLI_DISPLAY_NAME,
+          selectedNetworkClientId: 'networkClientId',
+          networkConfigurations: {
+            networkClientId: { chainId: CHAIN_IDS.GOERLI },
           },
         },
       };
@@ -393,19 +368,10 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          providerConfig: {
-            chainId: '0x89',
-            type: 'rpc',
-            id: 'custom-mainnet',
-          },
+
+          selectedNetworkClientId: 'networkClientId',
           networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x89',
-              nickname: 'Custom Mainnet RPC',
-              type: 'rpc',
-              id: 'custom-mainnet',
-            },
+            networkClientId: { chainId: '0x89' },
           },
         },
       };
@@ -427,19 +393,10 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          providerConfig: {
-            chainId: '0x89',
-            type: 'rpc',
-            id: 'custom-mainnet',
-          },
+
+          selectedNetworkClientId: 'networkClientId',
           networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x89',
-              nickname: 'Custom Mainnet RPC',
-              type: 'rpc',
-              id: 'custom-mainnet',
-            },
+            networkClientId: { chainId: '0x89' },
           },
         },
       };

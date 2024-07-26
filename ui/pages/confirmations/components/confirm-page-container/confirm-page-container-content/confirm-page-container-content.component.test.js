@@ -10,14 +10,15 @@ import {
   USER_OP_CONTRACT_DEPLOY_ERROR_KEY,
 } from '../../../../../helpers/constants/error-keys';
 import { shortenAddress } from '../../../../../helpers/utils/util';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import ConfirmPageContainerContent from './confirm-page-container-content.component';
 
 describe('Confirm Page Container Content', () => {
   const mockStore = {
     metamask: {
-      providerConfig: {
-        type: 'test',
-        chainId: '0x5',
+      selectedNetworkClientId: 'goerli',
+      networkConfigurations: {
+        goerli: { chainId: CHAIN_IDS.GOERLI },
       },
       addressBook: {
         '0x5': {

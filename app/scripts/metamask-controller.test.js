@@ -244,14 +244,7 @@ const firstTimeState = {
     },
   },
   NetworkController: {
-    providerConfig: {
-      type: NETWORK_TYPES.RPC,
-      rpcUrl: ALT_MAINNET_RPC_URL,
-      chainId: MAINNET_CHAIN_ID,
-      ticker: ETH,
-      nickname: 'Alt Mainnet',
-      id: NETWORK_CONFIGURATION_ID_1,
-    },
+    selectedNetworkClientId: NETWORK_CONFIGURATION_ID_1,
     networkConfigurations: {
       [NETWORK_CONFIGURATION_ID_1]: {
         rpcUrl: ALT_MAINNET_RPC_URL,
@@ -278,7 +271,6 @@ const firstTimeState = {
         id: NETWORK_CONFIGURATION_ID_1,
       },
     },
-    selectedNetworkClientId: NetworkType.mainnet,
     networksMetadata: {
       [NetworkType.mainnet]: {
         EIPS: {

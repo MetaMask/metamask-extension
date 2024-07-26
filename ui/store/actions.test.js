@@ -19,7 +19,6 @@ const middleware = [thunk];
 const defaultState = {
   metamask: {
     currentLocale: 'test',
-    providerConfig: { chainId: '0x1' },
     accounts: {
       '0xFirstAddress': {
         balance: '0x0',
@@ -245,9 +244,6 @@ describe('Actions', () => {
       background.getState.callsFake((cb) =>
         cb(null, {
           currentLocale: 'test',
-          providerConfig: {
-            chainId: '0x1',
-          },
           accounts: {
             '0xAnotherAddress': {
               balance: '0x0',
@@ -2077,9 +2073,6 @@ describe('Actions', () => {
         getState: sinon.stub().callsFake((cb) =>
           cb(null, {
             currentLocale: 'test',
-            providerConfig: {
-              chainId: '0x1',
-            },
             accounts: {
               '0xFirstAddress': {
                 balance: '0x0',

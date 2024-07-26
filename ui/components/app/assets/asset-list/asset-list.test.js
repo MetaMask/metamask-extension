@@ -77,7 +77,10 @@ const render = (balance = ETH_BALANCE, chainId = CHAIN_IDS.MAINNET) => {
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      providerConfig: { chainId, ticker: 'ETH', type: NETWORK_TYPES.MAINNET },
+      selectedNetworkClientId: 'networkClientId',
+      networkConfigurations: {
+        networkClientId: { id: 'networkClientId', chainId },
+      },
       currencyRates: {
         ETH: {
           conversionRate: CONVERSION_RATE,

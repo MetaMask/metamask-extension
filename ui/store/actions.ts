@@ -1566,8 +1566,8 @@ export function updateMetamaskState(
     const { currentLocale } = currentState;
     const currentInternalAccount = getSelectedInternalAccount(state);
     const selectedAddress = currentInternalAccount?.address;
-    const { currentLocale: newLocale, providerConfig: newProviderConfig } =
-      newState;
+    const { currentLocale: newLocale } = newState;
+    const newProviderConfig = getProviderConfig({ metamask: newState });
     const newInternalAccount = getSelectedInternalAccount({
       metamask: newState,
     });

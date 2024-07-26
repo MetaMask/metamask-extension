@@ -1,4 +1,4 @@
-import { ProviderConfig } from '@metamask/network-controller';
+// import { ProviderConfig } from '@metamask/network-controller';
 import { CaipChainId } from '@metamask/utils';
 import { isBtcMainnetAddress, isBtcTestnetAddress } from '../../lib/multichain';
 

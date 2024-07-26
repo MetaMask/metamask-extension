@@ -15,20 +15,12 @@ describe('Confirm Detail Row Component', () => {
   const mockState = {
     metamask: {
       currencyRates: {},
-      providerConfig: {
-        chainId: CHAIN_IDS.GOERLI,
-        nickname: GOERLI_DISPLAY_NAME,
-        type: NETWORK_TYPES.GOERLI,
+      selectedNetworkClientId: 'goerli',
+      networkConfigurations: {
+        goerli: { chainId: CHAIN_IDS.GOERLI },
       },
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
-      },
-      selectedNetworkClientId: NetworkType.mainnet,
-      networksMetadata: {
-        [NetworkType.mainnet]: {
-          EIPS: {},
-          status: NetworkStatus.Available,
-        },
       },
       internalAccounts: defaultMockState.metamask.internalAccounts,
     },

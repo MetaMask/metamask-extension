@@ -13,12 +13,11 @@ import { TokenListItem } from '.';
 
 const state = {
   metamask: {
-    providerConfig: {
-      ticker: CURRENCY_SYMBOLS.ETH,
-      nickname: '',
-      chainId: CHAIN_IDS.MAINNET,
-      type: NETWORK_TYPES.MAINNET,
+    selectedNetworkClientId: 'networkClientId',
+    networkConfigurations: {
+      networkClientId: { chainId: CHAIN_IDS.MAINNET },
     },
+
     useTokenDetection: false,
     currencyRates: {},
     preferences: {

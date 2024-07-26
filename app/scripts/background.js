@@ -50,6 +50,8 @@ import {
   FakeLedgerBridge,
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
+import { getProviderConfig } from '../../ui/ducks/metamask/metamask';
+import { getCurrentChainId } from '../../ui/selectors';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -732,7 +734,7 @@ export function setupController(
 
   setupEnsIpfsResolver({
     getCurrentChainId: () =>
-      controller.networkController.state.providerConfig.chainId,
+      getCurrentChainId({ metamask: controller.networkController.state }),
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
       controller.preferencesController,
     ),

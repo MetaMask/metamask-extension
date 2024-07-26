@@ -12,11 +12,7 @@ import CancelTransactionGasFee from './cancel-transaction-gas-fee.component';
 describe('CancelTransactionGasFee Component', () => {
   const defaultState = {
     metamask: {
-      providerConfig: {
-        chainId: CHAIN_IDS.GOERLI,
-        nickname: GOERLI_DISPLAY_NAME,
-        type: NETWORK_TYPES.GOERLI,
-      },
+      selectedNetworkClientId: 'mainnet',
       currencyRates: {},
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: false,

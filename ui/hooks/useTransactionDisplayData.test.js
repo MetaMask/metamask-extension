@@ -204,7 +204,6 @@ const renderHookWithRouter = (cb, tokenAddress) => {
     metamask: {
       ...mockState.metamask,
       completeOnboarding: true,
-      providerConfig: { chainId: CHAIN_IDS.MAINNET, ticker: 'ETH' },
       currentCurrency: 'ETH',
       useCurrencyRateCheck: false, // to force getShouldShowFiat to return false
       preferences: {

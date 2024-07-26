@@ -98,13 +98,6 @@ describe('MMIController', function () {
           'NetworkController:infuraIsUnblocked',
         ],
       }),
-      state: {
-        providerConfig: {
-          type: NETWORK_TYPES.SEPOLIA,
-          chainId: CHAIN_IDS.SEPOLIA,
-          ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
-        },
-      },
       infuraProjectId: 'mock-infura-project-id',
     });
 

@@ -108,8 +108,17 @@ const baseStore = {
         accounts: ['0x0'],
       },
     ],
-    selectedNetworkClientId: NetworkType.mainnet,
+    selectedNetworkClientId: NetworkType.goerli,
+    networkConfigurations: {
+      goerli: { id: 'goerli', chainId: CHAIN_IDS.GOERLI },
+      // 'mainnet': {id:'mainnet', chainId: CHAIN_IDS.MAINNET },
+    },
+
+    // selectedNetworkClientId: NetworkType.mainnet,
     networksMetadata: {
+      goerli: { EIPS: {} },
+      optimism: { EIPS: {} },
+      sepolia: { EIPS: {} },
       [NetworkType.mainnet]: {
         EIPS: {},
         status: NetworkStatus.Available,
@@ -121,11 +130,11 @@ const baseStore = {
     },
     currentCurrency: 'USD',
     currencyRates: {},
-    providerConfig: {
-      chainId: CHAIN_IDS.GOERLI,
-      nickname: GOERLI_DISPLAY_NAME,
-      type: NETWORK_TYPES.GOERLI,
-    },
+    // providerConfig: {
+    //   chainId: CHAIN_IDS.GOERLI,
+    //   nickname: GOERLI_DISPLAY_NAME,
+    //   type: NETWORK_TYPES.GOERLI,
+    // },
     featureFlags: {
       sendHexData: false,
     },
@@ -354,11 +363,12 @@ describe('Confirm Transaction Base', () => {
     const state = {
       metamask: {
         ...baseStore.metamask,
-        providerConfig: {
-          ...baseStore.metamask.providerConfig,
-          chainId: CHAIN_IDS.OPTIMISM,
+        selectedNetworkClientId: 'optimism',
+        networkConfigurations: {
+          optimism: { chainId: CHAIN_IDS.OPTIMISM },
         },
       },
+
       confirmTransaction: {
         ...baseStore.confirmTransaction,
         txData: {
@@ -1015,13 +1025,7 @@ describe('Confirm Transaction Base', () => {
               txParams,
             },
           ],
-          providerConfig: {
-            type: NETWORK_TYPES.SEPOLIA,
-            ticker: 'ETH',
-            nickname: 'Sepolia',
-            rpcUrl: '',
-            chainId: CHAIN_IDS.SEPOLIA,
-          },
+          selectedNetworkClientId: 'sepolia',
         },
         confirmTransaction: {
           ...baseStore.confirmTransaction,

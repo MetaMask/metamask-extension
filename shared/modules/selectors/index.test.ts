@@ -36,9 +36,6 @@ describe('Selectors', () => {
             balance: '0x15f6f0b9d4f8d000',
           },
         },
-        providerConfig: {
-          chainId: CHAIN_IDS.MAINNET,
-        },
         swapsState: {
           swapsFeatureFlags: {
             ethereum: {
@@ -59,13 +56,14 @@ describe('Selectors', () => {
         smartTransactionsState: {
           liveness: true,
         },
-        networkConfigurations: {
-          'network-configuration-id-1': {
-            chainId: CHAIN_IDS.MAINNET,
-            ticker: CURRENCY_SYMBOLS.ETH,
-            rpcUrl: 'https://mainnet.infura.io/v3/',
-          },
-        },
+        selectedNetworkClientId: 'mainnet',
+        // networkConfigurations: {
+        //   'network-configuration-id-1': {
+        //     chainId: CHAIN_IDS.MAINNET,
+        //     ticker: CURRENCY_SYMBOLS.ETH,
+        //     rpcUrl: 'https://mainnet.infura.io/v3/',
+        //   },
+        // },
       },
     };
   };
@@ -99,10 +97,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          providerConfig: {
-            ...state.metamask.providerConfig,
-            chainId: CHAIN_IDS.POLYGON,
-          },
+          selectedNetworkClientId: 'sepolia',
         },
       };
       const result = getCurrentChainSupportsSmartTransactions(newState);
@@ -159,9 +154,9 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          providerConfig: {
-            ...state.metamask.providerConfig,
-            chainId: CHAIN_IDS.POLYGON,
+          selectedNetworkClientId: 'polygon',
+          networkConfigurations: {
+            polygon: { chainId: CHAIN_IDS.POLYGON, rpcUrl: '' },
           },
         },
       };
@@ -174,9 +169,9 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          providerConfig: {
-            ...state.metamask.providerConfig,
-            chainId: CHAIN_IDS.BSC,
+          selectedNetworkClientId: 'bsc',
+          networkConfigurations: {
+            bsc: { chainId: CHAIN_IDS.BSC, rpcUrl: '' },
           },
         },
       };
@@ -189,10 +184,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          providerConfig: {
-            ...state.metamask.providerConfig,
-            chainId: CHAIN_IDS.LINEA_MAINNET,
-          },
+          selectedNetworkClientId: 'linea-mainnet',
         },
       };
       expect(getSmartTransactionsEnabled(newState)).toBe(false);
@@ -286,9 +278,9 @@ describe('Selectors', () => {
             ...state.metamask.preferences,
             smartTransactionsOptInStatus: null,
           },
-          providerConfig: {
-            ...state.metamask.providerConfig,
-            chainId: CHAIN_IDS.POLYGON,
+          selectedNetworkClientId: 'polygon',
+          networkConfigurations: {
+            polygon: { chainId: CHAIN_IDS.POLYGON, rpcUrl: '' },
           },
         },
       };
@@ -305,6 +297,7 @@ describe('Selectors', () => {
             ...state.metamask.preferences,
             smartTransactionsOptInStatus: null,
           },
+          selectedNetworkClientId: 'network-configuration-id-1',
           networkConfigurations: {
             'network-configuration-id-1': {
               chainId: CHAIN_IDS.MAINNET,

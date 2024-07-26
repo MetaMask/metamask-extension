@@ -30,9 +30,9 @@ type SmartTransactionsMetaMaskState = {
         };
       };
     };
-    providerConfig: {
-      chainId: Hex;
-    };
+    // providerConfig: {
+    //   chainId: Hex;
+    // };
     swapsState: {
       swapsFeatureFlags: {
         ethereum: {

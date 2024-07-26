@@ -10,7 +10,14 @@ import {
 } from './tx-verification-middleware';
 
 const getMockNetworkController = (chainId: `0x${string}` = '0x1') =>
-  ({ state: { providerConfig: { chainId } } } as unknown as NetworkController);
+  ({
+    state: {
+      selectedNetworkClientId: 'networkClientId',
+      networkConfigurations: {
+        networkClientId: { chainId },
+      },
+    },
+  } as unknown as NetworkController);
 
 const mockTrustedSigners: Partial<Record<EXPERIENCES_TYPE, Hex>> = {
   [EXPERIENCES_TYPE.METAMASK_BRIDGE]:

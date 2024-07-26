@@ -178,9 +178,9 @@ const baseStore = {
       showFiatInTestnets: true,
     },
     currentCurrency: 'USD',
-    providerConfig: {
-      chainId: CHAIN_IDS.GOERLI,
-      nickname: GOERLI_DISPLAY_NAME,
+    selectedNetworkClientId: 'goerli',
+    networkConfigurations: {
+      goerli: { chainId: CHAIN_IDS.GOERLI },
     },
     nativeCurrency: 'ETH',
     featureFlags: {
@@ -375,10 +375,9 @@ describe('SendPage', () => {
         metamask: {
           ...mockSendState.metamask,
           gasEstimateType: 'none',
-          providerConfig: {
-            chainId: CHAIN_IDS.GOERLI,
-            nickname: GOERLI_DISPLAY_NAME,
-            type: NETWORK_TYPES.GOERLI,
+          selectedNetworkClientId: 'goerli',
+          networkConfigurations: {
+            goerli: { chainId: CHAIN_IDS.GOERLI },
           },
         },
       };

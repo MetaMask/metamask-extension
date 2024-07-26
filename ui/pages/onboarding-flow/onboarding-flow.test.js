@@ -40,10 +40,8 @@ describe('Onboarding Flow', () => {
         accounts: {},
         selectedAccount: '',
       },
-      providerConfig: {
-        type: NETWORK_TYPES.GOERLI,
-        chainId: '0x0',
-      },
+      selectedNetworkClientId: 'mainnet',
+
       incomingTransactionsPreferences: {
         [CHAIN_IDS.MAINNET]: true,
       },
