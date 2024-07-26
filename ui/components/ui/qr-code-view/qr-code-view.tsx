@@ -23,12 +23,9 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
-export default connect(mapStateToProps)(QrCodeView);
-
 function mapStateToProps(state: CombinedBackgroundAndReduxState) {
   const { buyView, warning } = state.appState;
   return {
-    // Qr code is not fetched from state. 'message' and 'data' props are passed instead.
     buyView,
     warning,
   };
@@ -81,13 +78,18 @@ function QrCodeView({
         header
       )}
       {warning ? <span className="qr-code__error">{warning}</span> : null}
-      <div
-        data-testid="qr-code-image"
-        className="qr-code__wrapper"
-        dangerouslySetInnerHTML={{
-          __html: qrImage.createTableTag(5, 24),
-        }}
-      />
+      <Box className="qr-code__wrapper" marginBottom={4}>
+        <Box
+          data-testid="qr-code-image"
+          className="qr-code__image"
+          dangerouslySetInnerHTML={{
+            __html: qrImage.createTableTag(5, 16),
+          }}
+        />
+        <Box className="qr-code__logo">
+          <img src="images/logo/metamask-fox.svg" alt="Logo" />
+        </Box>
+      </Box>
       {accountName ? (
         <Text
           variant={TextVariant.bodyLgMedium}
@@ -151,3 +153,5 @@ QrCodeView.propTypes = {
     data: PropTypes.string.isRequired,
   }).isRequired,
 };
+
+export default connect(mapStateToProps)(QrCodeView);
