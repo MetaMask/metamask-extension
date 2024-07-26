@@ -47,14 +47,6 @@ function onboardingFixture() {
             status: NetworkStatus.Available,
           },
         },
-        // providerConfig: {
-        //   ticker: 'ETH',
-        //   type: 'rpc',
-        //   rpcUrl: 'http://localhost:8545',
-        //   chainId: CHAIN_IDS.LOCALHOST,
-        //   nickname: 'Localhost 8545',
-        //   id: 'networkConfigurationId',
-        // },
         networkConfigurations: {
           networkConfigurationId: {
             chainId: CHAIN_IDS.LOCALHOST,
@@ -230,12 +222,6 @@ class FixtureBuilder {
 
   withNetworkControllerOnMainnet() {
     merge(this.fixture.data.NetworkController, {
-      // providerConfig: {
-      //   chainId: CHAIN_IDS.MAINNET,
-      //   nickname: '',
-      //   rpcUrl: '',
-      //   type: NETWORK_TYPES.MAINNET,
-      // },
     });
     return this;
   }

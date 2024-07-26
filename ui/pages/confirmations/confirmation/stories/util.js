@@ -28,11 +28,7 @@ const STORE_MOCK = {
         id: 'testId',
         origin: 'npm:@test/test-snap',
       },
-    },
-    // providerConfig: {
-    //   type: NetworkType.rpc,
-    //   nickname: 'Test Network',
-    // },
+    },,
     selectedNetworkClientId: 'testNetworkClientId',
     subjectMetadata: {
       'npm:@test/test-snap': {

@@ -78,9 +78,6 @@ describe('ConfirmInfoRowAddress', () => {
             petnamesEnabled: false,
           },
           selectedNetworkClientId: 'mainnet',
-          // providerConfig: {
-          //   chainId: CHAIN_IDS.MAINNET,
-          // },
           addressBook: {
             [CHAIN_IDS.MAINNET]: {
               [TEST_ADDRESS]: {

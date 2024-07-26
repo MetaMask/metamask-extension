@@ -13,9 +13,6 @@ const chainIdMock = '0x1';
 
 const storeMock = configureStore({
   metamask: {
-    // providerConfig: {
-    //   chainId: chainIdMock,
-    // },
     useTokenDetection: true,
     tokenList: {
       '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d': {

@@ -145,10 +145,6 @@ export const createSwapsMockStore = () => {
           status: NetworkStatus.Available,
         },
       },
-      // providerConfig: {
-      //   chainId: CHAIN_IDS.MAINNET,
-      //   ticker: 'ETH',
-      // },
       preferences: {
         showFiatInTestnets: true,
         smartTransactionsOptInStatus: true,
