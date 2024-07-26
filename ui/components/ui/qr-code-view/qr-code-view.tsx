@@ -56,7 +56,6 @@ function QrCodeView({
           {message.map((msg, index) => (
             <Text
               key={index}
-              data-testid="qr-code-message"
               variant={TextVariant.bodyXs}
               color={TextColor.warningDefault}
             >
