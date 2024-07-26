@@ -7,9 +7,15 @@ const meta: Meta<typeof PageContainerHeader> = {
   component: PageContainerHeader,
   argTypes: {
     // Define args types here if any
+    children: {
+      control: {
+        type: 'text',
+      },
+    },
   },
   args: {
     // Define default args here if any
+    children: 'Page Container Header',
   },
 };
 
