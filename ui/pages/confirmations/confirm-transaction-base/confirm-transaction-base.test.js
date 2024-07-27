@@ -107,10 +107,7 @@ const baseStore = {
     selectedNetworkClientId: NetworkType.goerli,
     networkConfigurations: {
       goerli: { id: 'goerli', chainId: CHAIN_IDS.GOERLI },
-      // 'mainnet': {id:'mainnet', chainId: CHAIN_IDS.MAINNET },
     },
-
-    // selectedNetworkClientId: NetworkType.mainnet,
     networksMetadata: {
       goerli: { EIPS: {} },
       optimism: { EIPS: {} },
@@ -426,10 +423,10 @@ describe('Confirm Transaction Base', () => {
           },
         },
         gasEstimateType: GasEstimateTypes.feeMarket,
-        selectedNetworkClientId: NetworkType.mainnet,
+        selectedNetworkClientId: NetworkType.goerli,
         networksMetadata: {
           ...baseStore.metamask.networksMetadata,
-          [NetworkType.mainnet]: {
+          [NetworkType.goerli]: {
             EIPS: {
               1559: true,
             },
@@ -536,10 +533,9 @@ describe('Confirm Transaction Base', () => {
           },
         },
         gasEstimateType: GasEstimateTypes.feeMarket,
-        selectedNetworkClientId: NetworkType.mainnet,
         networksMetadata: {
           ...baseStore.metamask.networksMetadata,
-          [NetworkType.mainnet]: {
+          [NetworkType.goerli]: {
             EIPS: {
               1559: true,
             },
@@ -675,10 +671,9 @@ describe('Confirm Transaction Base', () => {
           },
         },
         gasEstimateType: GasEstimateTypes.feeMarket,
-        selectedNetworkClientId: NetworkType.mainnet,
         networksMetadata: {
           ...baseStore.metamask.networksMetadata,
-          [NetworkType.mainnet]: {
+          [NetworkType.goerli]: {
             EIPS: {
               1559: true,
             },

@@ -223,7 +223,9 @@ describe('Multichain Selectors', () => {
       const state = getEvmState();
 
       const evmMainnetNetwork = getProviderConfig(state);
-      expect(getMultichainProviderConfig(state)).toBe(evmMainnetNetwork);
+      const multichainProviderConfig = getMultichainProviderConfig(state);
+      delete multichainProviderConfig.rpcPrefs.imageUrl;
+      expect(multichainProviderConfig).toStrictEqual(evmMainnetNetwork);
     });
 
     it('returns a MultichainProviderConfig if account is non-EVM (bip122:*)', () => {
@@ -326,7 +328,7 @@ describe('Multichain Selectors', () => {
     it('returns current chain ID if account is EVM (other)', () => {
       const state = getEvmState();
 
-      state.metamask.providerConfig.chainId = CHAIN_IDS.SEPOLIA;
+      state.metamask.selectedNetworkClientId = 'sepolia';
       expect(getMultichainCurrentChainId(state)).toEqual(CHAIN_IDS.SEPOLIA);
     });
 
@@ -351,7 +353,7 @@ describe('Multichain Selectors', () => {
     it('returns false if account is EVM (testnet)', () => {
       const state = getEvmState();
 
-      state.metamask.providerConfig.chainId = CHAIN_IDS.SEPOLIA;
+      state.metamask.selectedNetworkClientId = 'sepolia';
       expect(getMultichainIsMainnet(state)).toBe(false);
     });
 

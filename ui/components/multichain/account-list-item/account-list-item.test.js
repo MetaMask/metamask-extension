@@ -250,6 +250,7 @@ describe('AccountListItem', () => {
                 networkClientId: {
                   chainId: CHAIN_IDS.SEPOLIA,
                   nickname: SEPOLIA_DISPLAY_NAME,
+                  ticker: 'ETH',
                 },
               },
 

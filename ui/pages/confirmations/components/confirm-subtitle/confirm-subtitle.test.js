@@ -52,7 +52,7 @@ describe('ConfirmSubTitle', () => {
       [mockSelectedInternalAccount.address]: {
         [mockState.metamask.networkConfigurations[
           mockState.metamask.selectedNetworkClientId
-        ]]: [{ address: '0x9' }],
+        ].chainId]: [{ address: '0x9' }],
       },
     };
     store = configureStore(mockState);
