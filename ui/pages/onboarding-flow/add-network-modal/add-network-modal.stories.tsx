@@ -6,10 +6,26 @@ const meta: Meta<typeof AddNetworkModal> = {
   title: 'Components/OnboardingFlow/AddNetworkModal',
   component: AddNetworkModal,
   argTypes: {
-    // Define the argTypes for the component props if needed
+    showHeader: { control: 'boolean' },
+    isNewNetworkFlow: { control: 'boolean' },
+    addNewNetwork: { control: 'boolean' },
+    onEditNetwork: { action: 'onEditNetwork' },
+    networkToEdit: { control: 'object' },
+    onRpcUrlAdd: { action: 'onRpcUrlAdd' },
+    prevActionMode: { control: 'text' },
+    networkFormInformation: { control: 'object' },
+    setNetworkFormInformation: { action: 'setNetworkFormInformation' },
   },
   args: {
-    // Define the default args for the component props if needed
+    showHeader: false,
+    isNewNetworkFlow: false,
+    addNewNetwork: true,
+    onEditNetwork: () => {},
+    networkToEdit: null,
+    onRpcUrlAdd: () => {},
+    prevActionMode: null,
+    networkFormInformation: {},
+    setNetworkFormInformation: () => {},
   },
 };
 
@@ -18,6 +34,14 @@ type Story = StoryObj<typeof AddNetworkModal>;
 
 export const DefaultStory: Story = {
   args: {
-    // Define the default args for the default story if needed
+    showHeader: false,
+    isNewNetworkFlow: false,
+    addNewNetwork: true,
+    onEditNetwork: () => {},
+    networkToEdit: null,
+    onRpcUrlAdd: () => {},
+    prevActionMode: null,
+    networkFormInformation: {},
+    setNetworkFormInformation: () => {},
   },
 };
