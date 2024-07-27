@@ -114,10 +114,14 @@ const NetworksForm = ({
   // Validate the network name when it changes
   useEffect(() => {
     const chainIdHex = toHex(chainId);
+
+    const matchedNetwork = safeChains?.find(
+      ({ chainId }) => toHex(chainId) === chainIdHex,
+    );
+
     const expectedName = !chainIdHex
       ? undefined
-      : NETWORK_TO_NAME_MAP[chainIdHex] ??
-        safeChains?.find(({ chainId }) => toHex(chainId) === chainIdHex)?.name;
+      : NETWORK_TO_NAME_MAP[chainIdHex] ?? matchedNetwork?.name;
 
     const mismatch = expectedName && expectedName !== name;
     setSuggestedName(mismatch ? expectedName : undefined);
@@ -135,7 +139,10 @@ const NetworksForm = ({
   // Validate the ticker when it changes
   useEffect(() => {
     const chainIdHex = toHex(chainId);
-    console.log('safeChains -----', safeChains);
+
+    const matchedNetwork = safeChains?.find(
+      ({ chainId }) => toHex(chainId) === chainIdHex,
+    );
     const expectedSymbol = !chainIdHex
       ? undefined
       : safeChains?.find(({ chainId }) => toHex(chainId) === chainIdHex)
@@ -152,6 +159,16 @@ const NetworksForm = ({
           }
         : undefined,
     }));
+
+    if (!matchedNetwork) {
+      setWarnings((state) => ({
+        ...state,
+        ticker: {
+          key: 'failedToFetchTickerSymbolData',
+          msg: t('failedToFetchTickerSymbolData'),
+        },
+      }));
+    }
   }, [chainId, ticker, safeChains]);
 
   // Validate the chain ID when it changes
@@ -210,15 +227,18 @@ const NetworksForm = ({
     const rpcUrl =
       rpcUrls?.rpcEndpoints?.[rpcUrls?.defaultRpcEndpointIndex]?.url;
 
+    console.log('HERE **********', rpcUrl);
     if (rpcUrl) {
       jsonRpcRequest(templateInfuraRpc(rpcUrl), 'eth_chainId')
         .then((response) => {
+          console.log('INSIDE THEN **********', response);
           if (chainId === undefined || chainId == '') {
             setChainId(hexToDecimal(response));
           }
           setFetchedChainId(response);
         })
         .catch((err) => {
+          console.log('HERE 111 **********', err);
           setFetchedChainId(undefined);
           log.warn('Failed to fetch the chainId from the endpoint.', err);
           setErrors((state) => ({
@@ -554,7 +574,6 @@ const NetworksForm = ({
           }}
           value={ticker}
         />
-        {console.log('HERE ++++++++', warnings.ticker)}
         {ticker && warnings.ticker?.msg ? (
           <HelpText
             variant={TextVariant.bodySm}

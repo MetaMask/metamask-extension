@@ -152,7 +152,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       : ACTION_MODES.LIST,
   );
 
-  console.log('actionMode ********', actionMode);
   const networkFormState = useNetworkFormState(editedNetwork);
   const { rpcUrls, setRpcUrls, blockExplorers, setBlockExplorers } =
     networkFormState;

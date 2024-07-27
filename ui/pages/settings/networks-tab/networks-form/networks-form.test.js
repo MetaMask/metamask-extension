@@ -361,7 +361,7 @@ describe('NetworkForm Component', () => {
       target: { value: 'abcd' },
     });
 
-    const expectedSymbolWarning = 'Suggested ticker symbol:';
+    const expectedSymbolWarning = 'Suggested currency symbol:';
     expect(await screen.findByText(expectedSymbolWarning)).toBeInTheDocument();
 
     expect(
@@ -417,7 +417,7 @@ describe('NetworkForm Component', () => {
       await screen.queryByTestId('network-form-ticker-suggestion'),
     ).toBeInTheDocument();
 
-    const expectedSymbolWarning = 'Suggested ticker symbol:';
+    const expectedSymbolWarning = 'Suggested currency symbol:';
     expect(await screen.findByText(expectedSymbolWarning)).toBeInTheDocument();
 
     fireEvent.change(currencySymbolField, {

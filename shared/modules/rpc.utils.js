@@ -16,6 +16,8 @@ export async function jsonRpcRequest(rpcUrl, rpcMethod, rpcParams = []) {
   const headers = {
     'Content-Type': 'application/json',
   };
+
+  console.log('HEADER -----', headers);
   // Convert basic auth URL component to Authorization header
   const { origin, pathname, username, password, search } = new URL(rpcUrl);
   // URLs containing username and password needs special processing
@@ -26,6 +28,21 @@ export async function jsonRpcRequest(rpcUrl, rpcMethod, rpcParams = []) {
     headers.Authorization = `Basic ${encodedAuth}`;
     fetchUrl = `${origin}${pathname}${search}`;
   }
+
+  console.log('fetchUrl -----', fetchUrl);
+
+  console.log('options -----', {
+    method: 'POST',
+    body: JSON.stringify({
+      id: Date.now().toString(),
+      jsonrpc: '2.0',
+      method: rpcMethod,
+      params: rpcParams,
+    }),
+    headers,
+    cache: 'default',
+  });
+
   const jsonRpcResponse = await fetchWithTimeout(fetchUrl, {
     method: 'POST',
     body: JSON.stringify({
@@ -36,7 +53,10 @@ export async function jsonRpcRequest(rpcUrl, rpcMethod, rpcParams = []) {
     }),
     headers,
     cache: 'default',
-  }).then((httpResponse) => httpResponse.json());
+  }).then((httpResponse) => {
+    console.log('THEN *********', httpResponse);
+    return httpResponse.json();
+  });
 
   if (
     !jsonRpcResponse ||
