@@ -229,11 +229,9 @@ class FixtureBuilder {
   }
 
   withNetworkControllerOnMainnet() {
-    this.fixture.data.NetworkController = {
-      providerConfig: { chainId: CHAIN_IDS.MAINNET, type: 'mainnet' },
-      selectedNetworkClientId: 'mainnet',
-    };
-    return this;
+    return this.withNetworkController({
+      providerConfig: { id: 'mainnet' },
+    });
   }
 
   withNetworkControllerDoubleGanache() {

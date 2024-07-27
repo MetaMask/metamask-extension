@@ -112,7 +112,14 @@ async function switchToNotificationPopoverValidateDetails(
     window.stateHooks?.getCleanAppState?.(),
   );
 
-  const { chainId } = notificationWindowState.metamask.providerConfig;
+  const {
+    metamask: { selectedNetworkClientId, networkConfigurations },
+  } = notificationWindowState;
+
+  const chainId =
+    selectedNetworkClientId === 'mainnet'
+      ? '0x1'
+      : networkConfigurations[selectedNetworkClientId].chainId;
   assert.equal(chainId, expectedDetails.chainId);
 }
 
