@@ -1,6 +1,5 @@
 import { toChecksumAddress } from 'ethereumjs-util';
 import { EthAccountType } from '@metamask/keyring-api';
-import { toHex } from '@metamask/controller-utils';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import {

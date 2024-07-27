@@ -1,7 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { GasRecommendations } from '../../../../shared/constants/gas';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 

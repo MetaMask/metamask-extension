@@ -140,7 +140,6 @@ import {
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import { fetchBlockedTokens } from '../../pages/swaps/swaps.util';
-import state from '../../../.storybook/test-data';
 import {
   getDisabledSwapAndSendNetworksFromAPI,
   getSwapAndSendQuotes,

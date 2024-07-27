@@ -5,7 +5,6 @@ import { merge } from 'lodash';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { IndividualFiatDisplay, TotalFiatDisplay } from './fiat-display';
 import { FIAT_UNAVAILABLE } from './types';
 

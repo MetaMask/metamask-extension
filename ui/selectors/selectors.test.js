@@ -6,7 +6,6 @@ import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
 import {
   CHAIN_IDS,
-  FANTOM_DISPLAY_NAME,
   LOCALHOST_DISPLAY_NAME,
   NETWORK_TYPES,
   OPTIMISM_DISPLAY_NAME,

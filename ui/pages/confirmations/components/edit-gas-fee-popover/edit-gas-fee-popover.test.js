@@ -11,11 +11,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 
-import {
-  NETWORK_TYPES,
-  CHAIN_IDS,
-  GOERLI_DISPLAY_NAME,
-} from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import EditGasFeePopover from './edit-gas-fee-popover';
 
@@ -67,7 +63,6 @@ const render = async ({ txProps, contextProps } = {}) => {
   const store = configureStore({
     metamask: {
       currencyRates: {},
-      selectedNetworkClientId: 'goerli',
       networkConfigurations: {
         goerli: { chainId: CHAIN_IDS.GOERLI },
       },

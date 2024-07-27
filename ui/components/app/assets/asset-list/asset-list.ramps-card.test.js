@@ -2,10 +2,7 @@ import React from 'react';
 import { renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import {
-  CHAIN_IDS,
-  NETWORK_TYPES,
-} from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import AssetList from './asset-list';
@@ -25,7 +22,6 @@ const mockSelectedInternalAccount =
 const render = (
   selectedInternalAccount = mockSelectedInternalAccount,
   balance = ETH_BALANCE,
-  chainId = CHAIN_IDS.MAINNET,
 ) => {
   const state = {
     ...mockState,

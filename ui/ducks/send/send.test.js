@@ -1530,7 +1530,6 @@ describe('Send Slice', () => {
                 [mockAddress1]: { balance: '0x0' },
               },
             },
-            selectedNetworkClientId: 'goerli',
             networkConfigurations: {
               goerli: { chainId: CHAIN_IDS.GOERLI },
             },

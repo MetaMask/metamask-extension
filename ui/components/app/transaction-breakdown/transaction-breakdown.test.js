@@ -3,11 +3,6 @@ import configureMockStore from 'redux-mock-store';
 import { within } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
-import {
-  MAINNET_DISPLAY_NAME,
-  NETWORK_TYPES,
-  CHAIN_IDS,
-} from '../../../../shared/constants/network';
 import TransactionBreakdown from '.';
 
 function getActualDataFrom(transactionBreakdownRows) {

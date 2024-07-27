@@ -134,7 +134,6 @@ describe('MetaMask Reducers', () => {
             status: NetworkStatus.Available,
           },
         },
-        selectedNetworkClientId: 'goerli',
         networkConfigurations: {
           goerli: { chainId: CHAIN_IDS.GOERLI, ticker: 'TestETH' },
         },

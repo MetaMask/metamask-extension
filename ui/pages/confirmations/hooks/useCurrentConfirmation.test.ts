@@ -8,7 +8,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Hex, Json } from '@metamask/utils';
+import { Json } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';

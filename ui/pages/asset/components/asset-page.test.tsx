@@ -9,7 +9,6 @@ import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
-import { getSelectedNetworkClientId } from '../../../selectors';
 import AssetPage from './asset-page';
 
 // Mock the price chart
@@ -184,7 +183,6 @@ describe('AssetPage', () => {
   });
 
   it('should disable the buy button on unsupported chains', () => {
-    const chainId = CHAIN_IDS.SEPOLIA;
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({

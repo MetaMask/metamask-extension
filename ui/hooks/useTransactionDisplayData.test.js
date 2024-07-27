@@ -13,7 +13,6 @@ import configureStore from '../store/store';
 import transactions from '../../test/data/transaction-data.json';
 import messages from '../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
-import { CHAIN_IDS } from '../../shared/constants/network';
 import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import { formatDateWithYearContext } from '../helpers/utils/util';
 import { getMessage } from '../helpers/utils/i18n-helper';

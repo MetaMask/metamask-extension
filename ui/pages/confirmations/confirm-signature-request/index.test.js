@@ -3,10 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { EthAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
-import {
-  CHAIN_IDS,
-  GOERLI_DISPLAY_NAME,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import ConfTx from '.';
 
 const mockState = {

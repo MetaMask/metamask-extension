@@ -17,12 +17,7 @@ import {
   removeAndIgnoreNft,
   setRemoveNftMessage,
 } from '../../../../../store/actions';
-import {
-  CHAIN_IDS,
-  CURRENCY_SYMBOLS,
-  MAINNET_DISPLAY_NAME,
-  NETWORK_TYPES,
-} from '../../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import NftDetails from './nft-details';
 
 jest.mock('copy-to-clipboard');

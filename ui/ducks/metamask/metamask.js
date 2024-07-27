@@ -344,13 +344,13 @@ const builtInNetworkConfigurations = {
 export function getProviderConfig(state) {
   const networkConfigurations = {
     ...builtInNetworkConfigurations,
-    ...getNetworkConfigurations(state)
+    ...getNetworkConfigurations(state),
   };
 
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
   const networkConfiguration = networkConfigurations[selectedNetworkClientId];
   const { type, ...rest } = networkConfiguration ?? {};
-  return {...rest, id: selectedNetworkClientId, type: type ?? 'rpc'};
+  return { ...rest, id: selectedNetworkClientId, type: type ?? 'rpc' };
 }
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>

@@ -10,7 +10,6 @@ import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils
 import {
   SEPOLIA_DISPLAY_NAME,
   CHAIN_IDS,
-  NETWORK_TYPES,
 } from '../../../../shared/constants/network';
 import { AccountListItem, AccountListItemMenuTypes } from '.';
 

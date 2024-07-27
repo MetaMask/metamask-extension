@@ -50,7 +50,6 @@ import {
   FakeLedgerBridge,
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
-import { getProviderConfig } from '../../ui/ducks/metamask/metamask';
 import { getCurrentChainId } from '../../ui/selectors';
 import migrations from './migrations';
 import Migrator from './lib/migrator';

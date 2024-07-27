@@ -160,7 +160,6 @@ import {
 import {
   CHAIN_IDS,
   NETWORK_TYPES,
-  TEST_NETWORK_TICKER_MAP,
   NetworkStatus,
 } from '../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
@@ -500,7 +499,7 @@ export default class MetamaskController extends EventEmitter {
       initialNetworkControllerState = {
         selectedNetworkConfiguration: networkConfig.id,
         networkConfigurations: {
-          [networkConfig.id]: networkConfig
+          [networkConfig.id]: networkConfig,
         },
       };
     } else if (
@@ -508,7 +507,7 @@ export default class MetamaskController extends EventEmitter {
       process.env.METAMASK_ENVIRONMENT === 'test'
     ) {
       initialNetworkControllerState = {
-        selectedNetworkClientId: NETWORK_TYPES.SEPOLIA
+        selectedNetworkClientId: NETWORK_TYPES.SEPOLIA,
       };
     }
     this.networkController = new NetworkController({
@@ -836,7 +835,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: this.controllerMessenger.getRestricted({
         name: 'PPOMController',
         allowedEvents: ['NetworkController:stateChange'],
-        allowedActions: ['NetworkController:getNetworkClientById']
+        allowedActions: ['NetworkController:getNetworkClientById'],
       }),
       storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
       provider: this.provider,
