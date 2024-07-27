@@ -587,7 +587,7 @@ describe('Custom network', function () {
           fixtures: new FixtureBuilder()
             .withNetworkController({
               networkConfigurations: {
-                networkConfigurationId: {
+                networkConfigurationId2: {
                   rpcUrl: networkURL,
                   chainId: chainID,
                   nickname: networkNAME,
