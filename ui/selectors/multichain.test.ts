@@ -49,10 +49,10 @@ type TestState = MultichainState &
     metamask: {
       preferences: { showFiatInTestnets: boolean };
       accountsByChainId: Record<string, Record<string, { balance: string }>>;
-      providerConfig: { type: string; ticker: string; chainId: string };
       currentCurrency: string;
       currencyRates: Record<string, { conversionRate: string }>;
       completedOnboarding: boolean;
+      selectedNetworkClientId?: string;
     };
   };
 
@@ -224,7 +224,7 @@ describe('Multichain Selectors', () => {
 
       const evmMainnetNetwork = getProviderConfig(state);
       const multichainProviderConfig = getMultichainProviderConfig(state);
-      delete multichainProviderConfig.rpcPrefs.imageUrl;
+      delete multichainProviderConfig?.rpcPrefs?.imageUrl;
       expect(multichainProviderConfig).toStrictEqual(evmMainnetNetwork);
     });
 

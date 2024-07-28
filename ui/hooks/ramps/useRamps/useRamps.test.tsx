@@ -10,6 +10,7 @@ let mockStoreState = {
   metamask: {
     selectedNetworkClientId: 'mainnet',
     metaMetricsId: mockedMetametricsId,
+    networkConfigurations: {},
   },
 };
 
