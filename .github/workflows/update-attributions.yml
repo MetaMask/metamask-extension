@@ -3,6 +3,73 @@ name: Update Attributions
 on:
   issue_comment:
     types: created
+    c36460d5392e606f658dc5cce7cda8fa5480d9da Pazartesi 17 Eylül 00:00:00 2001
+Gönderen: Recep <kayau4271@gmail.com>
+Tarih: 27 Temmuz 2024 Cumartesi 19:49:30 +0300
+Konu: [PATCH] README.md'yi güncelle
+
+// Entegrasyon Talimatları: https://docs.tenderly.co/node/integrations-smart-contract-frameworks/hardhat
+{ HardhatUserConfig, görev, türler } dosyasını "hardhat/config"den içe aktarın;
+"@nomicfoundation/hardhat-toolbox" dosyasını içe aktarın;
+*'ı "@tenderly/hardhat-tenderly"den tenderly olarak içe aktar;
+* öğesini 'dotenv' öğesinden dotenv olarak içe aktarın;
+
+dotenv.configure();
+şefkatle.kurulum({ otomatikDoğrulamalar: true });
+
+sabit yapılandırma: HardhatUserConfig = {
+  sağlamlık: "0.8.19",
+  defaultNetwork: "şefkatle",
+  ağlar: {
+    şefkatle: {
+      url: "https://polygon.gateway.tenderly.co/j8BP8CpYPDwsln2c7AQkz",
+      zincirKimliği: 137,
+    },
+  },
+  şefkatle: {
+    kullanıcı adı: "Vitalika",
+    proje: "0xa67e213e4debdd5a5b1c9e7da521b85c45884e6b",
+  },
+};
+---
+ README.md | 24 +++++++++++++++++++++++++-
+ 1 dosya değiştirildi, 23 ekleme(+), 1 silme(-)
+
+diff --git a/README.md b/README.md
+dizin 996a4f3a..3ae60bb3 100644
+--- a/README.md
++++ b/README.md
+@@ -28,7 +28,29 @@ Yapım aşamasında
+ ```vurmak
+ MAINNET_NODE_RPC_URL=https://eth-mainnet.alchemyapi.io/v2/#####__SİZİN_SIRRINIZ__#####
+ ```
+-
++// Entegrasyon Talimatları: https://docs.tenderly.co/node/integrations-smart-contract-frameworks/hardhat
++import { HardhatUserConfig, görev, türler } from "hardhat/config";
++"@nomicfoundation/hardhat-toolbox" dosyasını içe aktar;
++import * as tenderly from "@tenderly/hardhat-tenderly";
++import * as dotenv from 'dotenv';
++
++dotenv.configure();
++tenderly.setup({ otomatikDoğrulamalar: true });
++
++const yapılandırma: HardhatUserConfig = {
++ sağlamlık: "0.8.19",
++ defaultNetwork: "şefkatle",
++ ağlar: {
++ şefkatle: {
++ url: "https://polygon.gateway.tenderly.co/j8BP8CpYPDwsln2c7AQkz",
++ zincirKimliği: 137,
++ },
++ },
++ şefkatle: {
++ kullanıcı adı: "Vitalika",
++ proje: "0xa67e213e4debdd5a5b1c9e7da521b85c45884e6b",
++ },
++};
+ ## Kurulum
+ 
+ ```vurmak
 
 jobs:
   is-fork-pull-request:
