@@ -5,6 +5,9 @@ import GanacheContractAddressRegistry from '../../seeder/ganache-contract-addres
 import { Driver } from '../../webdriver/driver';
 import { BridgePage, getBridgeFixtures } from './bridge-test-utils';
 
+const EXPECTED_PORTFOLIO_URL =
+  'https://portfolio.metamask.io/bridge?metametricsId=null&metricsEnabled=false&marketingEnabled=false';
+
 describe('Click bridge button from asset page @no-mmi', function (this: Suite) {
   it('loads portfolio tab when flag is turned off', async function () {
     await withFixtures(
@@ -25,18 +28,13 @@ describe('Click bridge button from asset page @no-mmi', function (this: Suite) {
         // ETH
         await bridgePage.loadAssetPage(contractRegistry);
         await bridgePage.load('coin-overview');
-        await bridgePage.verifyPortfolioTab(
-          'https://portfolio.metamask.io/bridge?metametricsId=null',
-        );
-
+        await bridgePage.verifyPortfolioTab(EXPECTED_PORTFOLIO_URL);
         await bridgePage.reloadHome();
 
         // TST
         await bridgePage.loadAssetPage(contractRegistry, 'TST');
         await bridgePage.load('token-overview');
-        await bridgePage.verifyPortfolioTab(
-          'https://portfolio.metamask.io/bridge?metametricsId=null',
-        );
+        await bridgePage.verifyPortfolioTab(EXPECTED_PORTFOLIO_URL);
       },
     );
   });

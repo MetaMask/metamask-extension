@@ -217,20 +217,6 @@ export default function PrivacySettings() {
       },
     });
 
-    const eventName =
-      profileSyncingProps.isProfileSyncingEnabled || participateInMetaMetrics
-        ? MetaMetricsEventName.OnboardingWalletAdvancedSettingsWithAuthenticating
-        : MetaMetricsEventName.OnboardingWalletAdvancedSettingsWithoutAuthenticating;
-
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: eventName,
-      properties: {
-        isProfileSyncingEnabled: profileSyncingProps.isProfileSyncingEnabled,
-        participateInMetaMetrics,
-      },
-    });
-
     history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
   };
 
@@ -241,27 +227,11 @@ export default function PrivacySettings() {
           name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
           turnOffProfileSyncing: () => {
             profileSyncingProps.setIsProfileSyncingEnabled(false);
-            trackEvent({
-              category: MetaMetricsEventCategory.Onboarding,
-              event:
-                MetaMetricsEventName.OnboardingWalletAdvancedSettingsTurnOffProfileSyncing,
-              properties: {
-                participateInMetaMetrics,
-              },
-            });
           },
         }),
       );
     } else {
       profileSyncingProps.setIsProfileSyncingEnabled(true);
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event:
-          MetaMetricsEventName.OnboardingWalletAdvancedSettingsTurnOnProfileSyncing,
-        properties: {
-          participateInMetaMetrics,
-        },
-      });
     }
   };
 

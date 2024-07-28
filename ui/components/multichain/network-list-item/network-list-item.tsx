@@ -34,6 +34,7 @@ import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
 import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../helpers/utils/feature-flags';
 
+// todo see if can detect overflow and show tooltip
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 
 export const NetworkListItem = ({
@@ -47,6 +48,8 @@ export const NetworkListItem = ({
   onDeleteClick,
   onEditClick,
   onRpcEndpointClick,
+  startAccessory,
+  showEndAccessory = true,
 }) => {
   const t = useI18nContext();
   const networkRef = useRef<HTMLInputElement>(null);
@@ -122,6 +125,11 @@ export const NetworkListItem = ({
       width={BlockSize.Full}
       onClick={onClick}
     >
+      {startAccessory ? (
+        <Box marginInlineEnd={2} marginTop={1}>
+          {startAccessory}
+        </Box>
+      ) : null}
       {selected && (
         <Box
           className="multichain-network-list-item__selected-indicator"
@@ -202,13 +210,15 @@ export const NetworkListItem = ({
       </Box>
 
       {renderButton()}
-      <NetworkListItemMenu
-        anchorElement={networkListItemMenuElement}
-        isOpen={networkOptionsMenuOpen}
-        onDeleteClick={onDeleteClick}
-        onEditClick={onEditClick}
-        onClose={() => setNetworkOptionsMenuOpen(false)}
-      />
+      {showEndAccessory ? (
+        <NetworkListItemMenu
+          anchorElement={networkListItemMenuElement}
+          isOpen={networkOptionsMenuOpen}
+          onDeleteClick={onDeleteClick}
+          onEditClick={onEditClick}
+          onClose={() => setNetworkOptionsMenuOpen(false)}
+        />
+      ) : null}
     </Box>
   );
 };
@@ -246,4 +256,12 @@ NetworkListItem.propTypes = {
    * Represents if the network item should be keyboard selected
    */
   focus: PropTypes.bool,
+  /**
+   * Represents start accessory
+   */
+  startAccessory: PropTypes.node,
+  /**
+   * Represents if we need to show menu option
+   */
+  showEndAccessory: PropTypes.bool,
 };

@@ -898,42 +898,6 @@ describe('Selectors', () => {
     // });
   });
 
-  describe('#getIsNetworkSupportedByBlockaid', () => {
-    it('returns true if current network is Linea', () => {
-      const modifiedMockState = {
-        ...mockState,
-        metamask: {
-          networkConfigurationsByChainId: {
-            [CHAIN_IDS.LINEA_MAINNET]: {
-              chainId: CHAIN_IDS.LINEA_MAINNET,
-              rpcEndpoints: [{}],
-            },
-          },
-        },
-      };
-      const isSupported =
-        selectors.getIsNetworkSupportedByBlockaid(modifiedMockState);
-      expect(isSupported).toBe(true);
-    });
-
-    it('returns false if current network is Goerli', () => {
-      const modifiedMockState = {
-        ...mockState,
-        metamask: {
-          networkConfigurationsByChainId: {
-            [CHAIN_IDS.GOERLI]: {
-              chainId: CHAIN_IDS.GOERLI,
-              rpcEndpoints: [{}],
-            },
-          },
-        },
-      };
-      const isSupported =
-        selectors.getIsNetworkSupportedByBlockaid(modifiedMockState);
-      expect(isSupported).toBe(false);
-    });
-  });
-
   describe('#getAllEnabledNetworks', () => {
     const networkConfigurationsByChainId = {
       [CHAIN_IDS.MAINNET]: {

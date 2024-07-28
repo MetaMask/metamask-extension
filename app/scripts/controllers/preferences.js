@@ -97,6 +97,7 @@ export default class PreferencesController {
         showTokenAutodetectModal: null,
         showMultiRpcModal: null,
         showNftAutodetectModal: null, // null because we want to show the modal only the first time
+        isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: false,
       },
       // ENS decentralized website resolution
