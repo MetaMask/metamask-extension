@@ -67,22 +67,6 @@ export type RPCDefinition = {
 };
 
 /**
- * For each chain that we support fiat onramps for, we provide a set of
- * configuration options that help for initializing the connectiong to the
- * onramp providers.
- */
-type BuyableChainSettings = {
-  /**
-   * The native currency for the given chain
-   */
-  nativeCurrency: CurrencySymbol | TestNetworkCurrencySymbol;
-  /**
-   * The network name or identifier
-   */
-  network: string;
-};
-
-/**
  * Throughout the extension we set the current provider by referencing its
  * "type", which can be any of the values in the below object. These values
  * represent the built-in networks of MetaMask, including test nets, as well
@@ -158,6 +142,8 @@ export const CHAIN_IDS = {
   CHZ: '0x15b38',
   NUMBERS: '0x290b',
   SEI: '0x531',
+  BERACHAIN: '0x138d5',
+  METACHAIN_ONE: '0x1b6e6',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -259,6 +245,8 @@ export const MOONRIVER_DISPLAY_NAME = 'Moonriver';
 export const SCROLL_DISPLAY_NAME = 'Scroll';
 export const SCROLL_SEPOLIA_DISPLAY_NAME = 'Scroll Sepolia';
 export const OP_BNB_DISPLAY_NAME = 'opBNB';
+export const BERACHAIN_DISPLAY_NAME = 'Berachain Artio';
+export const METACHAIN_ONE_DISPLAY_NAME = 'Metachain One Mainnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -296,6 +284,7 @@ export const CURRENCY_SYMBOLS = {
   AVALANCHE: 'AVAX',
   BNB: 'BNB',
   BUSD: 'BUSD',
+  BTC: 'BTC', // Do we wanna mix EVM and non-EVM here?
   CELO: 'CELO',
   DAI: 'DAI',
   GNOSIS: 'XDAI',
@@ -549,6 +538,9 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.OPBNB]: OP_BNB_DISPLAY_NAME,
+  [CHAIN_IDS.ZKSYNC_ERA]: ZK_SYNC_ERA_DISPLAY_NAME,
+  [CHAIN_IDS.BERACHAIN]: BERACHAIN_DISPLAY_NAME,
+  [CHAIN_IDS.METACHAIN_ONE]: METACHAIN_ONE_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -907,108 +899,6 @@ export const UNSUPPORTED_RPC_METHODS = new Set([
 ]);
 
 export const IPFS_DEFAULT_GATEWAY_URL = 'dweb.link';
-
-// The first item in transakCurrencies must be the
-// default crypto currency for the network
-const BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME = 'ethereum';
-
-export const BUYABLE_CHAINS_MAP: {
-  [K in Exclude<
-    ChainId,
-    | typeof CHAIN_IDS.LOCALHOST
-    | typeof CHAIN_IDS.OPTIMISM_TESTNET
-    | typeof CHAIN_IDS.OPTIMISM_GOERLI
-    | typeof CHAIN_IDS.BASE_TESTNET
-    | typeof CHAIN_IDS.OPBNB_TESTNET
-    | typeof CHAIN_IDS.OPBNB
-    | typeof CHAIN_IDS.BSC_TESTNET
-    | typeof CHAIN_IDS.POLYGON_TESTNET
-    | typeof CHAIN_IDS.AVALANCHE_TESTNET
-    | typeof CHAIN_IDS.FANTOM_TESTNET
-    | typeof CHAIN_IDS.MOONBEAM_TESTNET
-    | typeof CHAIN_IDS.LINEA_GOERLI
-    | typeof CHAIN_IDS.LINEA_SEPOLIA
-    | typeof CHAIN_IDS.GOERLI
-    | typeof CHAIN_IDS.SEPOLIA
-    | typeof CHAIN_IDS.GNOSIS
-    | typeof CHAIN_IDS.AURORA
-    | typeof CHAIN_IDS.ARBITRUM_GOERLI
-    | typeof CHAIN_IDS.BLAST
-    | typeof CHAIN_IDS.FILECOIN
-    | typeof CHAIN_IDS.POLYGON_ZKEVM
-    | typeof CHAIN_IDS.SCROLL
-    | typeof CHAIN_IDS.SCROLL_SEPOLIA
-    | typeof CHAIN_IDS.WETHIO
-    | typeof CHAIN_IDS.CHZ
-    | typeof CHAIN_IDS.NUMBERS
-    | typeof CHAIN_IDS.SEI
-  >]: BuyableChainSettings;
-} = {
-  [CHAIN_IDS.MAINNET]: {
-    nativeCurrency: CURRENCY_SYMBOLS.ETH,
-    network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
-  },
-  [CHAIN_IDS.BSC]: {
-    nativeCurrency: CURRENCY_SYMBOLS.BNB,
-    network: 'bsc',
-  },
-  [CHAIN_IDS.POLYGON]: {
-    nativeCurrency: CURRENCY_SYMBOLS.MATIC,
-    network: 'polygon',
-  },
-  [CHAIN_IDS.AVALANCHE]: {
-    nativeCurrency: CURRENCY_SYMBOLS.AVALANCHE,
-    network: 'avaxcchain',
-  },
-  [CHAIN_IDS.FANTOM]: {
-    nativeCurrency: CURRENCY_SYMBOLS.FANTOM,
-    network: 'fantom',
-  },
-  [CHAIN_IDS.CELO]: {
-    nativeCurrency: CURRENCY_SYMBOLS.CELO,
-    network: 'celo',
-  },
-  [CHAIN_IDS.OPTIMISM]: {
-    nativeCurrency: CURRENCY_SYMBOLS.ETH,
-    network: 'optimism',
-  },
-  [CHAIN_IDS.ARBITRUM]: {
-    nativeCurrency: CURRENCY_SYMBOLS.ARBITRUM,
-    network: 'arbitrum',
-  },
-  [CHAIN_IDS.CRONOS]: {
-    nativeCurrency: CURRENCY_SYMBOLS.CRONOS,
-    network: 'cronos',
-  },
-  [CHAIN_IDS.MOONBEAM]: {
-    nativeCurrency: CURRENCY_SYMBOLS.GLIMMER,
-    network: 'moonbeam',
-  },
-  [CHAIN_IDS.MOONRIVER]: {
-    nativeCurrency: CURRENCY_SYMBOLS.MOONRIVER,
-    network: 'moonriver',
-  },
-  [CHAIN_IDS.HARMONY]: {
-    nativeCurrency: CURRENCY_SYMBOLS.ONE,
-    network: 'harmony',
-  },
-  [CHAIN_IDS.PALM]: {
-    nativeCurrency: CURRENCY_SYMBOLS.PALM,
-    network: 'palm',
-  },
-  [CHAIN_IDS.LINEA_MAINNET]: {
-    nativeCurrency: CURRENCY_SYMBOLS.ETH,
-    network: 'linea',
-  },
-  [CHAIN_IDS.ZKSYNC_ERA]: {
-    nativeCurrency: CURRENCY_SYMBOLS.ETH,
-    network: 'zksync',
-  },
-  [CHAIN_IDS.BASE]: {
-    nativeCurrency: CURRENCY_SYMBOLS.ETH,
-    network: 'base',
-  },
-};
 
 export const FEATURED_RPCS: RPCDefinition[] = [
   {

@@ -23,7 +23,7 @@ describe('Add Network Modal', () => {
     mockNetworkMenuRedesignToggle.mockImplementation(() => false);
 
     const mockStore = configureMockStore([])({
-      metamask: { useSafeChainsListValidation: true },
+      metamask: { useSafeChainsListValidation: true, orderedNetworkList: {} },
     });
 
     const { container } = renderWithProvider(
@@ -40,7 +40,7 @@ describe('Add Network Modal', () => {
     mockNetworkMenuRedesignToggle.mockReturnValue(true);
 
     const mockStore = configureMockStore([thunk])({
-      metamask: { useSafeChainsListValidation: true },
+      metamask: { useSafeChainsListValidation: true, orderedNetworkList: {} },
     });
 
     const { queryByText } = renderWithProvider(
@@ -50,7 +50,7 @@ describe('Add Network Modal', () => {
 
     await waitFor(() => {
       expect(queryByText('Cancel')).not.toBeInTheDocument();
-      expect(queryByText('Save')).toBeInTheDocument();
+      expect(queryByText('Next')).toBeInTheDocument();
     });
   });
 });

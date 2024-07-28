@@ -43,7 +43,7 @@ export default class AppStateController extends EventEmitter {
       fullScreenGasPollTokens: [],
       recoveryPhraseReminderHasBeenShown: false,
       recoveryPhraseReminderLastShown: new Date().getTime(),
-      outdatedBrowserWarningLastShown: new Date().getTime(),
+      outdatedBrowserWarningLastShown: null,
       nftsDetectionNoticeDismissed: false,
       showTestnetMessageInDropdown: true,
       showBetaHeader: isBeta(),

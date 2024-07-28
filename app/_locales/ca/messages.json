@@ -75,9 +75,6 @@
   "asset": {
     "message": "Actius"
   },
-  "attemptingConnect": {
-    "message": "Intentant conectar a blockchain."
-  },
   "attributions": {
     "message": "Atribucions"
   },

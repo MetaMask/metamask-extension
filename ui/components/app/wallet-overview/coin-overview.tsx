@@ -3,15 +3,13 @@ import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { zeroAddress } from 'ethereumjs-util';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { CaipChainId } from '@metamask/utils';
-///: END:ONLY_INCLUDE_IF
+import type { Hex } from '@metamask/utils';
 import { I18nContext } from '../../../contexts/i18n';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
-  getShouldShowFiat,
   getPreferences,
   getTokensMarketData,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -20,19 +18,22 @@ import {
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { showPrimaryCurrency } from '../../../../shared/modules/currency-display.utils';
 import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
+import {
+  getMultichainIsEvm,
+  getMultichainProviderConfig,
+  getMultichainShouldShowFiat,
+} from '../../../selectors/multichain';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 
 export type CoinOverviewProps = {
   balance: string;
   balanceIsCached: boolean;
-  className: string;
-  classPrefix: string;
-  chainId: CaipChainId | number;
-  showAddress: boolean;
+  className?: string;
+  classPrefix?: string;
+  chainId: CaipChainId | Hex;
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   // FIXME: This seems to be for Ethereum only
   defaultSwapsToken?: SwapsEthToken;
@@ -65,9 +66,10 @@ export const CoinOverview = ({
   ///: END:ONLY_INCLUDE_IF
 
   const t = useContext(I18nContext);
-  const showFiat = useSelector(getShouldShowFiat);
+  const isEvm = useSelector(getMultichainIsEvm);
+  const showFiat = useSelector(getMultichainShouldShowFiat);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  const { ticker, type, rpcUrl } = useSelector(getProviderConfig);
+  const { ticker, type, rpcUrl } = useSelector(getMultichainProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     ticker,
@@ -131,9 +133,11 @@ export const CoinOverview = ({
                 hideTitle
               />
             )}
-            <PercentageAndAmountChange
-              value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
-            />
+            {isEvm && (
+              <PercentageAndAmountChange
+                value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
+              />
+            )}
           </div>
         </Tooltip>
       }
