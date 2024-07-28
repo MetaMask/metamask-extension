@@ -122,7 +122,7 @@ export function useConfirmationAlertMetrics() {
   return { trackAlertMetrics };
 }
 
-function getAlertsName(alerts: Alert[]): string[] {
+function getAlertNames(alerts: Alert[]): string[] {
   return alerts.map((alert) => {
     if (isUuid(alert.key)) {
       return ALERTS_NAME_METRICS[AlertsName.Blockaid];
