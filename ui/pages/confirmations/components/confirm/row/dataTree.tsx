@@ -1,4 +1,3 @@
-import { BigNumber } from 'bignumber.js';
 import React, { memo } from 'react';
 
 import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
@@ -11,11 +10,8 @@ import {
   ConfirmInfoRowAddress,
   ConfirmInfoRowDate,
   ConfirmInfoRowText,
+  ConfirmInfoRowTextTokenUnits,
 } from '../../../../../components/app/confirm/info/row';
-import {
-  formatAmount,
-  formatAmountMaxPrecision,
-} from '../../simulation-details/formatAmount';
 
 type ValueType = string | Record<string, TreeData> | TreeData[];
 
@@ -81,16 +77,8 @@ const DataField = memo(
       );
     }
     if (isPermit && label === 'value') {
-      const valueBN = new BigNumber(
-        parseInt(value, 10) / Math.pow(10, tokenDecimals),
-      );
-      const tokenValue = formatAmount('en-US', valueBN);
-      const tokenValueMaxPrecision = formatAmountMaxPrecision('en-US', valueBN);
       return (
-        <ConfirmInfoRowText
-          text={tokenValue}
-          tooltip={tokenValueMaxPrecision}
-        />
+        <ConfirmInfoRowTextTokenUnits value={value} decimals={tokenDecimals} />
       );
     }
     if (isPermit && label === 'deadline') {

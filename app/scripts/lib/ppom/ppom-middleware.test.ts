@@ -16,6 +16,7 @@ import { createPPOMMiddleware } from './ppom-middleware';
 import {
   generateSecurityAlertId,
   handlePPOMError,
+  isChainSupported,
   validateRequestWithPPOM,
 } from './ppom-util';
 import { SecurityAlertResponse } from './types';
@@ -23,6 +24,7 @@ import { SecurityAlertResponse } from './types';
 jest.mock('./ppom-util');
 
 const SECURITY_ALERT_ID_MOCK = '123';
+const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
 
 const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
   securityAlertId: SECURITY_ALERT_ID_MOCK,
@@ -69,6 +71,10 @@ const createMiddleware = (
     addSignatureSecurityAlertResponse: () => undefined,
   };
 
+  const accountsController = {
+    listAccounts: () => [{ address: INTERNAL_ACCOUNT_ADDRESS }],
+  };
+
   return createPPOMMiddleware(
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -82,6 +88,8 @@ const createMiddleware = (
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     appStateController as any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    accountsController as any,
     updateSecurityAlertResponse,
   );
 };
@@ -90,6 +98,7 @@ describe('PPOMMiddleware', () => {
   const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
   const handlePPOMErrorMock = jest.mocked(handlePPOMError);
+  const isChainSupportedMock = jest.mocked(isChainSupported);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -97,6 +106,7 @@ describe('PPOMMiddleware', () => {
     validateRequestWithPPOMMock.mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
     generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
     handlePPOMErrorMock.mockReturnValue(SECURITY_ALERT_RESPONSE_MOCK);
+    isChainSupportedMock.mockResolvedValue(true);
   });
 
   it('updates alert response after validating request', async () => {
@@ -167,6 +177,7 @@ describe('PPOMMiddleware', () => {
   });
 
   it('does not do validation if user is not on a supported network', async () => {
+    isChainSupportedMock.mockResolvedValue(false);
     const middlewareFunction = createMiddleware({
       chainId: '0x2',
     });
@@ -193,6 +204,26 @@ describe('PPOMMiddleware', () => {
     const req = {
       ...JsonRpcRequestStruct,
       method: 'eth_someRequest',
+      securityAlertResponse: undefined,
+    };
+
+    await middlewareFunction(
+      req,
+      { ...JsonRpcResponseStruct },
+      () => undefined,
+    );
+
+    expect(req.securityAlertResponse).toBeUndefined();
+    expect(validateRequestWithPPOM).not.toHaveBeenCalled();
+  });
+
+  it('does not do validation when request is send to users own account', async () => {
+    const middlewareFunction = createMiddleware();
+
+    const req = {
+      ...JsonRpcRequestStruct,
+      params: [{ to: INTERNAL_ACCOUNT_ADDRESS }],
+      method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
     };
 

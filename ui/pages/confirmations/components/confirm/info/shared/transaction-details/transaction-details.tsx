@@ -12,7 +12,7 @@ import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { selectPaymasterAddress } from '../../../../../../../selectors/account-abstraction';
 import { currentConfirmationSelector } from '../../../../../selectors';
-import { useKnownMethodDataInTransaction } from '../../hooks/known-method-data-in-transaction';
+import { useFourByte } from '../../hooks/useFourByte';
 
 const OriginRow = () => {
   const t = useI18nContext();
@@ -68,10 +68,9 @@ const MethodDataRow = () => {
     currentConfirmationSelector,
   ) as TransactionMeta;
 
-  const { knownMethodData } =
-    useKnownMethodDataInTransaction(currentConfirmation);
+  const methodData = useFourByte(currentConfirmation);
 
-  if (!knownMethodData?.name) {
+  if (!methodData) {
     return null;
   }
 
@@ -80,7 +79,7 @@ const MethodDataRow = () => {
       label={t('methodData')}
       tooltip={t('methodDataTransactionDesc')}
     >
-      <ConfirmInfoRowText text={knownMethodData.name} />
+      <ConfirmInfoRowText text={methodData.name} />
     </ConfirmInfoRow>
   );
 };

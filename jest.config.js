@@ -3,10 +3,11 @@ module.exports = {
     '<rootDir>/app/scripts/**/*.(js|ts|tsx)',
     '<rootDir>/shared/**/*.(js|ts|tsx)',
     '<rootDir>/ui/**/*.(js|ts|tsx)',
+    '<rootDir>/development/build/transforms/**/*.js',
   ],
   coverageDirectory: './coverage',
   coveragePathIgnorePatterns: ['.stories.*', '.snap'],
-  coverageReporters: ['html', 'json'],
+  coverageReporters: process.env.CI ? ['json'] : ['html', 'json'],
   reporters: [
     'default',
     [
@@ -26,7 +27,7 @@ module.exports = {
     '<rootDir>/app/scripts/**/*.test.(js|ts|tsx)',
     '<rootDir>/shared/**/*.test.(js|ts|tsx)',
     '<rootDir>/ui/**/*.test.(js|ts|tsx)',
-    '<rootDir>/development/fitness-functions/**/*.test.(js|ts|tsx)',
+    '<rootDir>/development/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/helpers.test.js',
   ],
   testTimeout: 5500,
