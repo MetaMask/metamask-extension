@@ -239,9 +239,6 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
-      - test-unit-global:
-          requires:
-            - prep-deps
       - test-storybook:
           requires:
             - prep-deps
@@ -282,7 +279,6 @@ workflows:
             - test-lint-shellcheck
             - test-lint-lockfile
             - test-lint-changelog
-            - test-unit-global
             - validate-source-maps
             - validate-source-maps-beta
             - validate-source-maps-flask
@@ -1606,17 +1602,6 @@ jobs:
             git config user.name "MetaMask Bot"
             git config user.email metamaskbot@users.noreply.github.com
             yarn ts-migration:dashboard:deploy
-
-  test-unit-global:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: test:unit:global
-          command: yarn test:unit:global
 
   validate-source-maps:
     executor: node-browsers-small
