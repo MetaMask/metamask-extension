@@ -302,7 +302,7 @@ function maybeDetectPhishing(theController) {
       redirectTab(details.tabId, redirectHref);
       return {};
     },
-    { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },
+    { urls: ['<all_urls>'] },
     isManifestV2 ? ['blocking'] : [],
   );
 }

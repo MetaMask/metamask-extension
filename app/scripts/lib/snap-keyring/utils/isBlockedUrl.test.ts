@@ -21,6 +21,7 @@ describe('isBlockedUrl', () => {
           version: 1,
           lastUpdated: 0,
           name: ListNames.MetaMask,
+          requestBlocklist: [],
         },
       ],
     },
