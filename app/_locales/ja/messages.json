@@ -275,7 +275,7 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "新しいアカウントを追加"
+    "message": "新しいイーサリアムアカウントを追加"
   },
   "addNewToken": {
     "message": "新しいトークンを追加"
@@ -1653,6 +1653,9 @@
   "enableToken": {
     "message": "$1を有効にする",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "enableTokenAutoDetection": {
+    "message": "トークンの自動検出を有効にする"
   },
   "enabled": {
     "message": "有効"

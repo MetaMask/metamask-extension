@@ -275,7 +275,7 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "एक नया अकाउंट जोड़ें"
+    "message": "एक नया Ethereum अकाउंट जोड़ें"
   },
   "addNewToken": {
     "message": "नया टोकन जोड़ें"
@@ -1653,6 +1653,9 @@
   "enableToken": {
     "message": "$1 इनेबल करें",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "enableTokenAutoDetection": {
+    "message": "टोकन ऑटोडिटेक्शन चालू करें"
   },
   "enabled": {
     "message": "इनेबल किया गया"

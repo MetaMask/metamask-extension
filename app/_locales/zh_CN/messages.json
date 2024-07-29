@@ -1654,6 +1654,9 @@
     "message": "启用 $1",
     "description": "$1 is a token symbol, e.g. ETH"
   },
+  "enableTokenAutoDetection": {
+    "message": "启用代币自动检测"
+  },
   "enabled": {
     "message": "已启用"
   },
