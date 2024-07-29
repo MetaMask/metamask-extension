@@ -685,7 +685,9 @@ function trackDappView(remotePort) {
 function filterStreamMessageSize(portStream, maxSize = MAX_MESSAGE_LENGTH) {
   const filterStream = createFilterStream(portStream, {
     inputFilter: (msg, _encoding) => {
+      const start = new Date()
       const stringifiedMsg = JSON.stringify(msg);
+      console.log('time', (new Date()) - start)
       if (stringifiedMsg.length < maxSize) {
         return true;
       }
