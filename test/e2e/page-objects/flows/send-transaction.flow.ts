@@ -37,6 +37,7 @@ export const sendTransaction = async (
   const confirmTxPage = new ConfirmTxPage(driver);
   await confirmTxPage.check_pageIsLoaded(gasfee, totalfee);
   await confirmTxPage.confirmTx();
+  await driver.delay(100000);
 
   // user should land on homepage after transaction is confirmed
   await homePage.check_pageIsLoaded();

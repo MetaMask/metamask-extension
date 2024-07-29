@@ -457,6 +457,7 @@
     "@lavamoat/allow-scripts": "^3.0.4",
     "@lavamoat/lavadome-core": "0.0.10",
     "@lavamoat/lavapack": "^6.1.0",
+    "@ledgerhq/hw-app-eth": "6.26.1",
     "@lgbot/madge": "^6.2.0",
     "@lydell/node-pty": "^1.0.1",
     "@metamask/api-specs": "^0.9.3",
@@ -755,7 +756,8 @@
       "$root$": true,
       "core-js-pure": true,
       "resolve-url-loader>es6-iterator>d>es5-ext": false,
-      "resolve-url-loader>es6-iterator>d>es5-ext>esniff>es5-ext": false
+      "resolve-url-loader>es6-iterator>d>es5-ext>esniff>es5-ext": false,
+      "@ledgerhq/hw-app-eth>@ledgerhq/domain-service>eip55>keccak": false
     }
   },
   "packageManager": "yarn@4.2.2"
