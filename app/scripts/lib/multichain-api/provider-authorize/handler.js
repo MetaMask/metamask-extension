@@ -75,10 +75,8 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
   const networkClientIdsAdded = [];
 
   try {
-    const { flattenedRequiredScopes, flattenedOptionalScopes } = validateAndFlattenScopes(
-      requiredScopes,
-      optionalScopes,
-    );
+    const { flattenedRequiredScopes, flattenedOptionalScopes } =
+      validateAndFlattenScopes(requiredScopes, optionalScopes);
 
     const validScopedProperties = processScopedProperties(
       flattenedRequiredScopes,
