@@ -76,9 +76,6 @@ const initialState = {
       conversionRate: null,
     },
   },
-  providerConfig: {
-    ticker: 'ETH',
-  },
 };
 
 /**
