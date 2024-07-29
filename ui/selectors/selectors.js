@@ -1384,13 +1384,13 @@ export const getTokenList = createSelector(
 export const getRemoteTokens = createSelector(
   getRemoteTokenList,
   (_state, addresses) => addresses,
-  (remoteTokenList, addresses) => addresses.map((address) => remoteTokenList[address.toLowerCase()])
+  (remoteTokenList, addresses) => addresses.map((address) => remoteTokenList[address?.toLowerCase()])
 );
 
 export const getMemoizedMetadataContract = createSelector(
   (state, _address) => getTokenList(state),
   (_state, address) => address,
-  (tokenList, address) => tokenList[address.toLowerCase()]
+  (tokenList, address) => tokenList[address?.toLowerCase()]
 );
 
 export const getMetadataContractName = createSelector(
