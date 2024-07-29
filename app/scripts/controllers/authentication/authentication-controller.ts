@@ -119,7 +119,7 @@ export default class AuthenticationController extends BaseController<
   #isUnlocked = false;
 
   #keyringController = {
-    setupLockedState: () => {
+    setupLockedStateSubscriptions: () => {
       const { isUnlocked } = this.messagingSystem.call(
         'KeyringController:getState',
       );
@@ -157,7 +157,7 @@ export default class AuthenticationController extends BaseController<
 
     this.#metametrics = metametrics;
 
-    this.#keyringController.setupLockedState();
+    this.#keyringController.setupLockedStateSubscriptions();
     this.#registerMessageHandlers();
   }
 

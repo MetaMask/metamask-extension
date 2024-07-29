@@ -164,7 +164,7 @@ export default class UserStorageController extends BaseController<
   #isUnlocked = false;
 
   #keyringController = {
-    setupLockedState: () => {
+    setupLockedStateSubscriptions: () => {
       const { isUnlocked } = this.messagingSystem.call(
         'KeyringController:getState',
       );
@@ -195,7 +195,7 @@ export default class UserStorageController extends BaseController<
     });
 
     this.getMetaMetricsState = params.getMetaMetricsState;
-    this.#keyringController.setupLockedState();
+    this.#keyringController.setupLockedStateSubscriptions();
     this.#registerMessageHandlers();
   }
 

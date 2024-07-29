@@ -252,7 +252,7 @@ export class MetamaskNotificationsController extends BaseController<
   #isUnlocked = false;
 
   #keyringController = {
-    setupLockedState: (onUnlock: () => Promise<void>) => {
+    setupLockedStateSubscriptions: (onUnlock: () => Promise<void>) => {
       const { isUnlocked } = this.messagingSystem.call(
         'KeyringController:getState',
       );
@@ -472,7 +472,7 @@ export class MetamaskNotificationsController extends BaseController<
 
     this.#registerMessageHandlers();
     this.#clearLoadingStates();
-    this.#keyringController.setupLockedState(
+    this.#keyringController.setupLockedStateSubscriptions(
       this.#pushNotifications.initializePushNotifications,
     );
     this.#accounts.initialize();
