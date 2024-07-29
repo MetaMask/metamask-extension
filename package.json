@@ -40,7 +40,6 @@
     "dapp-forwarder": "concurrently -k -n forwarder,dapp -p '[{time}][{name}]' 'yarn forwarder' 'yarn dapp'",
     "test:unit": "jest",
     "test:unit:watch": "jest --watch",
-    "test:unit:global": "mocha test/unit-global/*.test.js",
     "test:unit:coverage": "jest --coverage",
     "test:integration": "jest --config jest.integration.config.js",
     "test:integration:coverage": "jest --config jest.integration.config.js --coverage",
