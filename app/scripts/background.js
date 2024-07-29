@@ -686,13 +686,10 @@ function trackDappView(remotePort) {
 function filterStreamMessageSize(portStream, maxSize = MAX_MESSAGE_LENGTH) {
   const filterStream = createFilterStream(portStream, {
     inputFilter: (msg, _encoding) => {
-      const start = new Date()
       try {
         assertObjectMaxSize(msg, maxSize)
-        console.log('time', (new Date()) - start)
         return true
       } catch (err) {
-        console.log('time', (new Date()) - start)
         console.warn(
           'message exceeded size limit and will be dropped', err
         );
