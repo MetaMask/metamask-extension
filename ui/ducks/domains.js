@@ -1,9 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import log from 'loglevel';
-import ensNetworkMap from 'ethereum-ens-network-map';
 import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
-import { Web3Provider } from '@ethersproject/providers';
 
 import {
   getChainIdsCaveat,
@@ -17,10 +15,7 @@ import {
   getSnapMetadata,
 } from '../selectors';
 import { handleSnapRequest } from '../store/actions';
-import {
-  CHAIN_IDS,
-  CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP,
-} from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import {
   CONFUSING_ENS_ERROR,
   ENS_ILLEGAL_CHARACTER,
@@ -56,8 +51,6 @@ const initialState = {
 export const domainInitialState = initialState;
 
 const name = 'DNS';
-
-let web3Provider = null;
 
 const slice = createSlice({
   name,
@@ -145,7 +138,6 @@ const slice = createSlice({
     builder.addCase(CHAIN_CHANGED, (state, action) => {
       if (action.payload !== state.chainId) {
         state.stage = 'UNINITIALIZED';
-        web3Provider = null;
       }
     });
   },
@@ -167,19 +159,6 @@ export function initializeDomainSlice() {
   return (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
-    const networkName = CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP[chainId];
-    const chainIdInt = parseInt(chainId, 16);
-    const ensAddress = ensNetworkMap[chainIdInt.toString()];
-    const networkIsSupported = Boolean(ensAddress);
-    if (networkIsSupported) {
-      web3Provider = new Web3Provider(global.ethereumProvider, {
-        chainId: chainIdInt,
-        name: networkName,
-        ensAddress,
-      });
-    } else {
-      web3Provider = null;
-    }
     dispatch(enableDomainLookup(chainId));
   };
 }
@@ -282,37 +261,19 @@ export function lookupDomainName(domainName) {
     } else {
       await dispatch(lookupStart(trimmedDomainName));
       log.info(`Resolvers attempting to resolve name: ${trimmedDomainName}`);
-      let resolutions = [];
-      let fetchedResolutions;
+      const resolutions = [];
       let hasSnapResolution = false;
-      let error;
-      let address;
-      try {
-        address = await web3Provider?.resolveName(trimmedDomainName);
-      } catch (err) {
-        error = err;
-      }
       const chainId = getCurrentChainId(state);
       const chainIdInt = parseInt(chainId, 16);
-      if (address) {
-        resolutions = [
-          {
-            resolvedAddress: address,
-            protocol: 'Ethereum Name Service',
-            addressBookEntryName: getAddressBookEntry(state, address)?.name,
-            domainName: trimmedDomainName,
-          },
-        ];
-      } else {
-        fetchedResolutions = await fetchResolutions({
-          domain: trimmedDomainName,
-          chainId: `eip155:${chainIdInt}`,
-          state,
-        });
-        hasSnapResolution = fetchedResolutions.length > 0;
-        if (hasSnapResolution) {
-          resolutions = fetchedResolutions;
-        }
+
+      const fetchedResolutions = await fetchResolutions({
+        domain: trimmedDomainName,
+        chainId: `eip155:${chainIdInt}`,
+        state,
+      });
+      hasSnapResolution = fetchedResolutions.length > 0;
+      if (hasSnapResolution) {
+        resolutions.push(...fetchedResolutions);
       }
 
       // Due to the asynchronous nature of looking up domains, we could reach this point
@@ -325,13 +286,11 @@ export function lookupDomainName(domainName) {
       await dispatch(
         lookupEnd({
           resolutions,
-          error,
+          // TODO: get error(s) from snap(s)
+          error: undefined,
           chainId,
           network: chainIdInt,
-          domainType:
-            hasSnapResolution || (!hasSnapResolution && !address)
-              ? 'Other'
-              : ENS,
+          domainType: 'Other',
           domainName: trimmedDomainName,
         }),
       );
