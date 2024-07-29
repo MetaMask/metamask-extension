@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getNonTestNetworks, getTestNetworks } from '../../../selectors/index';
 import {
@@ -8,14 +9,16 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  Checkbox
+  Checkbox,
+  Text,
+  Box,
 } from '../../component-library';
 import { NetworkListItem } from '../index';
 
 export const EditNetworksModal = ({ onClose }) => {
   const t = useI18nContext();
-    const nonTestNetworks = useSelector(getNonTestNetworks);
-    const testNetworks = useSelector(getTestNetworks);
+  const nonTestNetworks = useSelector(getNonTestNetworks);
+  const testNetworks = useSelector(getTestNetworks);
   return (
     <Modal
       isOpen
@@ -33,6 +36,14 @@ export const EditNetworksModal = ({ onClose }) => {
         >
           {t('editNetworksTitle')}
         </ModalHeader>
+        <Box padding={4}>
+          <Checkbox
+            label={t('selectAll')}
+            isChecked={true}
+            // onClick={() => (allAreSelected() ? deselectAll() : selectAll())}
+            // isIndeterminate={isIndeterminate}
+          />
+        </Box>
         {nonTestNetworks.map((network) => (
           <NetworkListItem
             name={network.nickname}
@@ -44,6 +55,9 @@ export const EditNetworksModal = ({ onClose }) => {
             startAccessory={<Checkbox isChecked={true} />}
           />
         ))}
+        <Box padding={4}>
+          <Text variant={TextVariant.bodyMdMedium}>{t('testnets')}</Text>
+        </Box>
         {testNetworks.map((network) => (
           <NetworkListItem
             name={network.nickname}
@@ -53,6 +67,7 @@ export const EditNetworksModal = ({ onClose }) => {
               console.log(network.id);
             }}
             startAccessory={<Checkbox isChecked={true} />}
+            showEndAccessory={false}
           />
         ))}
       </ModalContent>

@@ -2981,6 +2981,9 @@
     "message": "Do you want this site to do the following?",
     "description": "Description below header used on Permission Connect screen for native permissions."
   },
+  "testnets":{
+    "message ": "Testnets"
+  },
   "nativeToken": {
     "message": "The native token on this network is $1. It is the token used for gas fees. ",
     "description": "$1 represents the name of the native token on the current network"
