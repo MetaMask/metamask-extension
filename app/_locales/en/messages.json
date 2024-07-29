@@ -1740,6 +1740,9 @@
   "enableTokenAutoDetection": {
     "message": "Enable token autodetection"
   },
+  "enable_auto_detection_toggle_automatically": {
+    "message": "Users with the Basic Functionality toggle on will have this automatically turned on in the Metamask Extension v12.3.0"
+  },
   "enabled": {
     "message": "Enabled"
   },
