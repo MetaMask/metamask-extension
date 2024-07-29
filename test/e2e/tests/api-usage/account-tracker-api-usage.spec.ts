@@ -178,6 +178,8 @@ describe('Account Tracker API Usage', function () {
         );
 
         await driver.openNewURL('about:blank');
+        // The delay is intentionally 20000, to ensure we cover at least 1 polling
+        // loop of time for the block tracker.
         await driver.delay(20000);
 
         const currentInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
