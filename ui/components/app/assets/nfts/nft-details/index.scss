@@ -8,6 +8,12 @@ $spacer-break-small: 16px;
 .tokenId-popover {
   max-width: 228px;
   word-wrap: break-word;
+  text-align: center;
+
+  @include design-system.screen-sm-max {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
 }
 
 .buttonDescriptionContainer {

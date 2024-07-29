@@ -306,7 +306,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
     if (text.length <= MAX_TOKEN_ID_LENGTH) {
       return text;
     }
-    return `${text.slice(0, chars + 2)}...${text.slice(-chars)}`;
+    return `${text.slice(0, chars)}...${text.slice(-chars)}`;
   };
 
   return (

@@ -101,6 +101,8 @@ const NftDetailInformationRow: React.FC<NftDetailInformationRowProps> = ({
                 flip
                 backgroundColor={BackgroundColor.overlayAlternative}
                 className="tokenId-popover"
+                paddingLeft={4}
+                paddingRight={4}
               >
                 <Text
                   variant={TextVariant.bodySm}
