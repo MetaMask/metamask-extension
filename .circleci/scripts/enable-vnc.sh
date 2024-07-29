@@ -6,8 +6,12 @@
 set -e
 set -u
 set -o pipefail
+set -x
 
 cd "${HOME}/project"
+
+# Required to target the main X display
+export DISPLAY=:1.0
 
 readonly LOCK_FILE="installed.lock"
 if [ ! -f "${LOCK_FILE}" ]; then
@@ -19,13 +23,10 @@ if [ ! -f "${LOCK_FILE}" ]; then
   touch "${LOCK_FILE}"
 fi
 
-# Required to target the main X display
-export DISPLAY=:1
-
-# Background
-fbsetbg -c app/images/icon-512.png
-
 # Start VNC server
 if ! pgrep tigervncserver > /dev/null; then
   tigervncserver -SecurityTypes none -desktop fluxbox
 fi
+
+# Background
+fbsetbg -c "${HOME}/project/app/images/icon-512.png"
