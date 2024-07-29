@@ -92,6 +92,10 @@ function getSpecifiedJsonRpcRequests(
 
 describe('Account Tracker API Usage', function () {
   it('should not make eth_call or eth_getBalance requests before the UI is opened and should make those requests after the UI is opened', async function () {
+    // Note: we are not testing that eth_getBlockByNumber is not called before the UI
+    // is opened because there is a known bug that results in it being called if the
+    // user is already onboarded: https://github.com/MetaMask/MetaMask-planning/issues/2151
+    // Once that issue is resolved, we can add eth_getBlockByNumber to the below array.
     const RPC_METHODS_TO_TEST = ['eth_call', 'eth_getBalance'];
 
     await withFixtures(
@@ -112,13 +116,13 @@ describe('Account Tracker API Usage', function () {
         let allInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
           mockedEndpoint,
         );
-        let ethCallAndGetBalanceRequests = getSpecifiedJsonRpcRequests(
+        let rpcMethodsToTestRequests = getSpecifiedJsonRpcRequests(
           allInfuraJsonRpcRequests,
           RPC_METHODS_TO_TEST,
         );
 
         assert.ok(
-          ethCallAndGetBalanceRequests.length === 0,
+          rpcMethodsToTestRequests.length === 0,
           `An ${RPC_METHODS_TO_TEST.join(
             ' or ',
           )} request has been made to infura before opening the UI`,
@@ -130,13 +134,13 @@ describe('Account Tracker API Usage', function () {
         allInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
           mockedEndpoint,
         );
-        ethCallAndGetBalanceRequests = getSpecifiedJsonRpcRequests(
+        rpcMethodsToTestRequests = getSpecifiedJsonRpcRequests(
           allInfuraJsonRpcRequests,
           RPC_METHODS_TO_TEST,
         );
 
         assert.ok(
-          ethCallAndGetBalanceRequests.length > 0,
+          rpcMethodsToTestRequests.length > 0,
           `No ${RPC_METHODS_TO_TEST.join(
             ' or ',
           )} request has been made to infura since opening the UI`,
@@ -145,7 +149,7 @@ describe('Account Tracker API Usage', function () {
     );
   });
 
-  it('should not make eth_call or eth_getBalance requests after the UI is closed', async function () {
+  it('should not make eth_call or eth_getBalance or eth_getBlockByNumber requests after the UI is closed', async function () {
     const RPC_METHODS_TO_TEST = [
       'eth_getBlockByNumber',
       'eth_call',
@@ -179,19 +183,19 @@ describe('Account Tracker API Usage', function () {
           mockedEndpoint,
         );
 
-        const initialEthCallAndGetBalanceRequests = getSpecifiedJsonRpcRequests(
+        const initialRpcMethodsToTestRequests = getSpecifiedJsonRpcRequests(
           initialInfuraJsonRpcRequests,
           RPC_METHODS_TO_TEST,
         );
 
-        const currentEthCallAndGetBalanceRequests = getSpecifiedJsonRpcRequests(
+        const currentRpcMethodsToTestRequests = getSpecifiedJsonRpcRequests(
           currentInfuraJsonRpcRequests,
           RPC_METHODS_TO_TEST,
         );
 
         assert.ok(
-          initialEthCallAndGetBalanceRequests.length ===
-            currentEthCallAndGetBalanceRequests.length,
+          initialRpcMethodsToTestRequests.length ===
+            currentRpcMethodsToTestRequests.length,
           `An ${RPC_METHODS_TO_TEST.join(
             ' or ',
           )} request has been made to infura after closing the UI`,
