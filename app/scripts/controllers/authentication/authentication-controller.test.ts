@@ -1,6 +1,7 @@
 import { ControllerMessenger } from '@metamask/base-controller';
 import AuthenticationController, {
   AllowedActions,
+  AllowedEvents,
   AuthenticationControllerState,
 } from './authentication-controller';
 import {
@@ -26,7 +27,7 @@ describe('authentication/authentication-controller - constructor() tests', () =>
   test('should initialize with default state', () => {
     const metametrics = createMockAuthMetaMetrics();
     const controller = new AuthenticationController({
-      messenger: createAuthenticationMessenger(),
+      messenger: createMockAuthenticationMessenger().messenger,
       metametrics,
     });
 
@@ -37,7 +38,7 @@ describe('authentication/authentication-controller - constructor() tests', () =>
   test('should initialize with override state', () => {
     const metametrics = createMockAuthMetaMetrics();
     const controller = new AuthenticationController({
-      messenger: createAuthenticationMessenger(),
+      messenger: createMockAuthenticationMessenger().messenger,
       state: mockSignedInState(),
       metametrics,
     });
@@ -249,11 +250,14 @@ describe('authentication/authentication-controller - getSessionProfile() tests',
 });
 
 function createAuthenticationMessenger() {
-  const messenger = new ControllerMessenger<AllowedActions, never>();
+  const messenger = new ControllerMessenger<AllowedActions, AllowedEvents>();
   return messenger.getRestricted({
     name: 'AuthenticationController',
-    allowedActions: [`SnapController:handleRequest`],
-    allowedEvents: [],
+    allowedActions: [
+      `SnapController:handleRequest`,
+      'KeyringController:getState',
+    ],
+    allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
   });
 }
 
@@ -279,6 +283,10 @@ function createMockAuthenticationMessenger() {
       throw new Error(
         `MOCK_FAIL - unsupported SnapController:handleRequest call: ${params?.request.method}`,
       );
+    }
+
+    if (actionType === 'KeyringController:getState') {
+      return { isUnlocked: true };
     }
 
     throw new Error(`MOCK_FAIL - unsupported messenger call: ${actionType}`);

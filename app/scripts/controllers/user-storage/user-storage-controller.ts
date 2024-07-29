@@ -3,6 +3,11 @@ import {
   RestrictedControllerMessenger,
   StateMetadata,
 } from '@metamask/base-controller';
+import type {
+  KeyringControllerGetStateAction,
+  KeyringControllerLockEvent,
+  KeyringControllerUnlockEvent,
+} from '@metamask/keyring-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import {
   AuthenticationControllerGetBearerToken,
@@ -75,8 +80,9 @@ export type UserStorageControllerEnableProfileSyncing =
 export type UserStorageControllerDisableProfileSyncing =
   ActionsObj['disableProfileSyncing'];
 
-// Allowed Actions
 export type AllowedActions =
+  // Keyring Requests
+  | KeyringControllerGetStateAction
   // Snap Requests
   | HandleSnapRequest
   // Auth Requests
@@ -89,13 +95,17 @@ export type AllowedActions =
   | MetamaskNotificationsControllerDisableMetamaskNotifications
   | MetamaskNotificationsControllerSelectIsMetamaskNotificationsEnabled;
 
+export type AllowedEvents =
+  | KeyringControllerLockEvent
+  | KeyringControllerUnlockEvent;
+
 // Messenger
 export type UserStorageControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
   Actions | AllowedActions,
-  never,
+  AllowedEvents,
   AllowedActions['type'],
-  never
+  AllowedEvents['type']
 >;
 
 /**
@@ -151,6 +161,25 @@ export default class UserStorageController extends BaseController<
     },
   };
 
+  #isUnlocked = false;
+
+  #keyringController = {
+    setupLockedState: () => {
+      const { isUnlocked } = this.messagingSystem.call(
+        'KeyringController:getState',
+      );
+      this.#isUnlocked = isUnlocked;
+
+      this.messagingSystem.subscribe('KeyringController:unlock', () => {
+        this.#isUnlocked = true;
+      });
+
+      this.messagingSystem.subscribe('KeyringController:lock', () => {
+        this.#isUnlocked = false;
+      });
+    },
+  };
+
   getMetaMetricsState: () => boolean;
 
   constructor(params: {
@@ -166,6 +195,7 @@ export default class UserStorageController extends BaseController<
     });
 
     this.getMetaMetricsState = params.getMetaMetricsState;
+    this.#keyringController.setupLockedState();
     this.#registerMessageHandlers();
   }
 
@@ -376,6 +406,12 @@ export default class UserStorageController extends BaseController<
   async #snapSignMessage(message: `metamask:${string}`): Promise<string> {
     if (this.#_snapSignMessageCache[message]) {
       return this.#_snapSignMessageCache[message];
+    }
+
+    if (!this.#isUnlocked) {
+      throw new Error(
+        '#snapSignMessage - unable to call snap, wallet is locked',
+      );
     }
 
     const result = (await this.messagingSystem.call(

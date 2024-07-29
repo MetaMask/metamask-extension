@@ -17,6 +17,7 @@ import {
 } from './mocks/mockStorage';
 import UserStorageController, {
   AllowedActions,
+  AllowedEvents,
 } from './user-storage-controller';
 import {
   mockEndpointGetUserStorage,
@@ -288,10 +289,11 @@ describe('user-storage/user-storage-controller - enableProfileSyncing() tests', 
 function mockUserStorageMessenger() {
   const messenger = new ControllerMessenger<
     AllowedActions,
-    never
+    AllowedEvents
   >().getRestricted({
     name: 'UserStorageController',
     allowedActions: [
+      'KeyringController:getState',
       'SnapController:handleRequest',
       'AuthenticationController:getBearerToken',
       'AuthenticationController:getSessionProfile',
@@ -301,7 +303,7 @@ function mockUserStorageMessenger() {
       'MetamaskNotificationsController:disableMetamaskNotifications',
       'MetamaskNotificationsController:selectIsMetamaskNotificationsEnabled',
     ],
-    allowedEvents: [],
+    allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
   });
 
   const mockSnapGetPublicKey = jest.fn().mockResolvedValue('MOCK_PUBLIC_KEY');
@@ -394,6 +396,10 @@ function mockUserStorageMessenger() {
 
     if (actionType === 'AuthenticationController:performSignOut') {
       return mockAuthPerformSignOut();
+    }
+
+    if (actionType === 'KeyringController:getState') {
+      return { isUnlocked: true };
     }
 
     function exhaustedMessengerMocks(action: never) {
