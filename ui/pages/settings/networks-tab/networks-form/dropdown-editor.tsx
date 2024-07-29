@@ -30,10 +30,11 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 export enum DropdownEditorStyle {
   /** When open, the dropdown overlays elements that follow  */
   Popover,
-  /** When open, dropdown pushes down elements that follow */
+  /** When open, the dropdown pushes down elements that follow */
   Box,
 }
 
+/** A dropdown for selecting, adding, and deleting items */
 export const DropdownEditor = <Item,>({
   title,
   placeholder,
@@ -50,6 +51,7 @@ export const DropdownEditor = <Item,>({
   itemIsDeletable = () => true,
   renderItem,
 }: {
+  renderer: {foo:() => string}
   title: string;
   placeholder: string;
   items?: Item[];
@@ -63,18 +65,19 @@ export const DropdownEditor = <Item,>({
   onDropdownOpened?: () => void;
   itemKey: (item: Item) => string;
   itemIsDeletable?: (item: Item, items: Item[]) => boolean;
-  renderItem: (item?: Item) => string | ReactNode;
+  renderItem: (item: Item | undefined, isList: boolean) => string | ReactNode;
 }) => {
   const t = useI18nContext();
   const dropdown = useRef(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const content = () => (
+  const renderDropdownList = () => (
     <Box>
       {items?.map((item, index) => (
         <Box
           alignItems={AlignItems.center}
-          padding={4}
+          paddingLeft={4}
+          paddingRight={4}
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
           key={itemKey(item)}
@@ -93,7 +96,7 @@ export const DropdownEditor = <Item,>({
               backgroundColor={BackgroundColor.primaryDefault}
             />
           )}
-          {renderItem(item)}
+          {renderItem(item, true)}
           {itemIsDeletable(item, items) && (
             <ButtonIcon
               marginLeft={1}
@@ -175,29 +178,27 @@ export const DropdownEditor = <Item,>({
         borderRadius={BorderRadius.LG}
         borderColor={borderColor}
         borderWidth={1}
-        paddingTop={2}
-        paddingBottom={2}
         paddingLeft={4}
         paddingRight={4}
         ref={dropdown}
       >
         {items?.[selectedItemIndex] ? (
-          renderItem(items?.[selectedItemIndex])
+          renderItem(items?.[selectedItemIndex], false)
         ) : (
           <Input
             className="networks-tab__item-placeholder"
             placeholder={placeholder}
             readOnly
             tabIndex={-1}
-            marginTop={1}
-            marginBottom={1}
+            paddingTop={3}
+            paddingBottom={3}
           />
         )}
         <ButtonIcon
           marginLeft="auto"
           iconName={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
           ariaLabel={title}
-          size={ButtonIconSize.Sm}
+          size={ButtonIconSize.Md}
         />
       </Box>
       {style == DropdownEditorStyle.Popover ? (
@@ -213,7 +214,7 @@ export const DropdownEditor = <Item,>({
           isOpen={isDropdownOpen}
           onClickOutside={() => setIsDropdownOpen(!isDropdownOpen)}
         >
-          {content()}
+          {renderDropdownList()}
         </Popover>
       ) : (
         <Box
@@ -222,7 +223,7 @@ export const DropdownEditor = <Item,>({
           borderColor={BorderColor.borderMuted}
           borderRadius={BorderRadius.LG}
         >
-          {content()}
+          {renderDropdownList()}
         </Box>
       )}
     </Box>

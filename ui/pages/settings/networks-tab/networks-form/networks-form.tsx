@@ -52,7 +52,9 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
+  BorderColor,
   BorderRadius,
+  BorderStyle,
   Display,
   FlexDirection,
   FontWeight,
@@ -64,6 +66,7 @@ import {
 import DropdownEditor, { DropdownEditorStyle } from './dropdown-editor';
 import { useSafeChains } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
+import { SizeNumber } from '../../../../components/component-library/box/box.types';
 
 const NetworksForm = ({
   networkFormState,
@@ -357,7 +360,7 @@ const NetworksForm = ({
           onChange={(e: any) => {
             setName(e.target?.value);
           }}
-          label={t('name')}
+          label={t('networkName')}
           labelProps={{
             children: undefined,
             variant: TextVariant.bodyMdMedium,
@@ -371,6 +374,7 @@ const NetworksForm = ({
           value={name}
         />
         <DropdownEditor
+          renderer={{foo: () => ''}}
           title={t('defaultRpcUrl')}
           placeholder={t('addAUrl')}
           style={DropdownEditorStyle.Popover}
@@ -378,7 +382,10 @@ const NetworksForm = ({
           itemKey={(endpoint) => endpoint.url}
           selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
           error={Boolean(errors.rpcUrl)}
-          renderItem={(item) => {
+          renderItem={(item, isList) => {
+            if (!item) return null;
+            item.name = item.type == RpcEndpointType.Infura ? 'Infura' : item.name;
+
             const displayEndpoint = (endpoint?: string) => {
               if (!endpoint) {
                 return '\u00A0';
@@ -394,34 +401,44 @@ const NetworksForm = ({
               return `${url.host}${url.pathname === '/' ? '' : url.pathname}`;
             };
 
+            let padding: SizeNumber = 2;
+            if (!item?.name) {
+              padding = isList ? 4 : 3;
+            }
+
             return (
               <Box
                 display={Display.Flex}
-                alignItems={AlignItems.center}
-                width={BlockSize.EightTwelfths}
+                flexDirection={FlexDirection.Column}
+                paddingTop={padding}
+                paddingBottom={padding}
+                {...(!item?.name && isList && {
+                  borderWidth: 2,
+                  borderStyle: BorderStyle.solid,
+                  borderColor:BorderColor.transparent
+                })}
               >
+                <Box>
                 <Text
                   as="button"
                   padding={0}
-                  marginTop={1}
-                  marginBottom={1}
                   color={TextColor.textDefault}
-                  variant={TextVariant.bodyMd}
+                  variant={TextVariant.bodyMdMedium}
                   backgroundColor={BackgroundColor.transparent}
                   ellipsis
                 >
                   {item?.name ? item.name : displayEndpoint(item?.url)}
                 </Text>
-
+                </Box>
                 {item?.name && (
+                   <Box>
                   <Text
                     color={TextColor.textAlternative}
-                    variant={TextVariant.bodyMd}
+                    variant={TextVariant.bodySm}
                     ellipsis
                   >
-                    &nbsp;{'•'}&nbsp;
                     {displayEndpoint(item.url)}
-                  </Text>
+                  </Text></Box>
                 )}
               </Box>
             );
@@ -609,15 +626,16 @@ const NetworksForm = ({
           renderItem={(item) => (
             <Text
               as="button"
-              padding={0}
-              marginTop={1}
-              marginBottom={1}
+              paddingLeft={0}
+              paddingRight={0}
+              paddingTop={3}
+              paddingBottom={3}
               color={TextColor.textDefault}
               variant={TextVariant.bodyMd}
               backgroundColor={BackgroundColor.transparent}
               ellipsis
             >
-              {item ?? '\u00A0'}
+              {item}
             </Text>
           )}
         />

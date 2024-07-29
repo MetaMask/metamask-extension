@@ -31,7 +31,7 @@ const AddBlockExplorerModal = ({
 
   useEffect(() => {
     if (url?.length > 0 && !isWebUrl(url)) {
-      setError(isWebUrl(`https://${url}`) ? t('urlErrorMsg') : t('invalidRPC'));
+      setError(isWebUrl(`https://${url}`) ? t('urlErrorMsg') : t('invalidRPC')); // todo this says rpc
     } else {
       setError(undefined);
     }
