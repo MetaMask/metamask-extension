@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
@@ -193,6 +193,14 @@ export const AccountListMenu = ({
 
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
+
+  const renderCount = useRef(0);
+  useEffect(() => {
+    renderCount.current += 1;
+    console.log(
+      `AccountListMenu Component has re-rendered ${renderCount.current} times`,
+    );
+  });
 
   let searchResults = updatedAccountsList;
   if (searchQuery) {
