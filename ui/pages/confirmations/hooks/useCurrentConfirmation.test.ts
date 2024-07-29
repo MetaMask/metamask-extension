@@ -204,7 +204,7 @@ describe('useCurrentConfirmation', () => {
     expect(currentConfirmation).toBeUndefined();
   });
 
-  it('returns undefined if message is SIWE', () => {
+  it('returns if message is SIWE', () => {
     const currentConfirmation = runHook({
       message: {
         ...MESSAGE_MOCK,
@@ -214,7 +214,10 @@ describe('useCurrentConfirmation', () => {
       redesignedConfirmationsEnabled: true,
     });
 
-    expect(currentConfirmation).toBeUndefined();
+    expect(currentConfirmation).toStrictEqual({
+      id: APPROVAL_MOCK.id,
+      msgParams: { siwe: { isSIWEMessage: true } },
+    });
   });
 
   it('returns undefined if developer and user settings are enabled and transaction has incorrect type', () => {
