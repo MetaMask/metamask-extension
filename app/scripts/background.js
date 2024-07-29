@@ -692,10 +692,10 @@ function filterStreamMessageSize(portStream, maxSize = MAX_MESSAGE_LENGTH) {
         console.log('time', (new Date()) - start)
         return true
       } catch (err) {
+        console.log('time', (new Date()) - start)
         console.warn(
           'message exceeded size limit and will be dropped', err
         );
-        console.log('time', (new Date()) - start)
       }
       return false;
     },
