@@ -12,7 +12,6 @@ import { DataTree } from '../dataTree';
 
 export const ConfirmInfoRowTypedSignData = ({
   data,
-  isPermit,
   tokenDecimals,
 }: {
   data: string;
