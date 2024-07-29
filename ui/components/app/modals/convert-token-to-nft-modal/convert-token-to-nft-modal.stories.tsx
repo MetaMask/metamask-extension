@@ -114,9 +114,3 @@ export const DefaultStory: Story = {};
 
 DefaultStory.storyName = 'Default';
 
-export const ConfirmConversion: Story = {
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await fireEvent.click(canvas.getByText('Yes'));
-  },
-};
