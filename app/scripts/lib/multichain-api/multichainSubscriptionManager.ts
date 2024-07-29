@@ -1,4 +1,5 @@
 import {
+  NetworkController,
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
 } from '@metamask/network-controller';
@@ -25,8 +26,8 @@ export type SubscriptionManager = {
 const createSubscriptionManager = require('@metamask/eth-json-rpc-filters/subscriptionManager');
 
 type MultichainSubscriptionManagerOptions = {
-  findNetworkClientIdByChainId: NetworkControllerFindNetworkClientIdByChainIdAction['handler'];
-  getNetworkClientById: NetworkControllerGetNetworkClientByIdAction['handler'];
+  findNetworkClientIdByChainId: NetworkController['findNetworkClientIdByChainId']
+  getNetworkClientById: NetworkController['getNetworkClientById'];
 };
 
 export default class MultichainSubscriptionManager extends SafeEventEmitter {
@@ -36,9 +37,9 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
     };
   };
 
-  private findNetworkClientIdByChainId: NetworkControllerFindNetworkClientIdByChainIdAction['handler'];
+  private findNetworkClientIdByChainId: NetworkController['findNetworkClientIdByChainId'];
 
-  private getNetworkClientById: NetworkControllerGetNetworkClientByIdAction['handler'];
+  private getNetworkClientById: NetworkController['getNetworkClientById'];
 
   private subscriptionManagerByChain: { [scope: string]: SubscriptionManager };
 
