@@ -41,6 +41,15 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
 import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
+import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/socket-background-to-mocha';
+import {
+  OffscreenCommunicationTarget,
+  OffscreenCommunicationEvents,
+} from '../../shared/constants/offscreen-communication';
+import {
+  FakeLedgerBridge,
+  FakeTrezorBridge,
+} from '../../test/stub/keyring-bridge';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -393,6 +402,14 @@ async function initialize() {
 
     let isFirstMetaMaskControllerSetup;
 
+    // We only want to start this if we are running a test build, not for the release build.
+    // `navigator.webdriver` is true if Selenium, Puppeteer, or Playwright are running.
+    // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
+    // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
+    if (process.env.IN_TEST && window.navigator?.webdriver) {
+      getSocketBackgroundToMocha();
+    }
+
     if (isManifestV3) {
       // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
       // miliseconds. This keeps the service worker alive.
@@ -412,10 +429,19 @@ async function initialize() {
       await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
     }
 
+    const overrides = inTest
+      ? {
+          keyrings: {
+            trezorBridge: FakeTrezorBridge,
+            ledgerBridge: FakeLedgerBridge,
+          },
+        }
+      : {};
+
     setupController(
       initState,
       initLangCode,
-      {},
+      overrides,
       isFirstMetaMaskControllerSetup,
       initData.meta,
       offscreenPromise,
@@ -1205,9 +1231,23 @@ function setupSentryGetStateGlobal(store) {
 
 async function initBackground() {
   await onInstall();
-  initialize().catch(log.error);
+  try {
+    await initialize();
+    if (process.env.IN_TEST) {
+      // Send message to offscreen document
+      if (browser.offscreen) {
+        browser.runtime.sendMessage({
+          target: OffscreenCommunicationTarget.extension,
+          event: OffscreenCommunicationEvents.metamaskBackgroundReady,
+        });
+      } else {
+        window.document?.documentElement?.classList.add('controller-loaded');
+      }
+    }
+  } catch (error) {
+    log.error(error);
+  }
 }
-
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
   initBackground();
 }

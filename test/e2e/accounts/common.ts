@@ -11,7 +11,6 @@ import {
   validateContractDetails,
   multipleGanacheOptions,
   regularDelayMs,
-  openDapp,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
@@ -86,6 +85,9 @@ export async function installSnapSimpleKeyring(
     tag: 'button',
   });
 
+  // Wait until popup is closed before proceeding
+  await driver.waitUntilXWindowHandles(2);
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
 
   await driver.waitForSelector({
@@ -123,6 +125,12 @@ export async function importKeyAndSwitch(driver: Driver) {
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Create',
   });
+  // Click the add account button on the naming modal
+  await driver.clickElement({
+    css: '[data-testid="submit-add-account-with-name"]',
+    text: 'Add account',
+  });
+  // Click the ok button on the success modal
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Ok',
@@ -149,6 +157,12 @@ export async function makeNewAccountAndSwitch(driver: Driver) {
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Create',
   });
+  // Click the add account button on the naming modal
+  await driver.clickElement({
+    css: '[data-testid="submit-add-account-with-name"]',
+    text: 'Add account',
+  });
+  // Click the ok button on the success modal
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Ok',
@@ -185,20 +199,8 @@ async function switchToAccount2(driver: Driver) {
 }
 
 export async function connectAccountToTestDapp(driver: Driver) {
-  try {
-    // Do an unusually fast switchToWindowWithTitle, just 1 second
-    await driver.switchToWindowWithTitle(
-      WINDOW_TITLES.TestDApp,
-      null,
-      1000,
-      1000,
-    );
-  } catch {
-    await driver.switchToWindowWithTitle(
-      WINDOW_TITLES.ExtensionInFullScreenView,
-    );
-    await openDapp(driver);
-  }
+  await switchToOrOpenDapp(driver);
+
   await driver.clickElement('#connectButton');
 
   await driver.delay(regularDelayMs);
@@ -383,8 +385,14 @@ export async function createBtcAccount(driver: Driver) {
     text: messages.addNewBitcoinAccount.message,
     tag: 'button',
   });
-  await driver.clickElementAndWaitToDisappear({
-    text: 'Create',
-    tag: 'button',
-  });
+  await driver.clickElementAndWaitToDisappear(
+    {
+      text: 'Add account',
+      tag: 'button',
+    },
+    // Longer timeout than usual, this reduces the flakiness
+    // around Bitcoin account creation (mainly required for
+    // Firefox)
+    5000,
+  );
 }
