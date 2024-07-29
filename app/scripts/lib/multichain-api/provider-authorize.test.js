@@ -9,7 +9,6 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
-import { unsubscribe } from 'diagnostics_channel';
 
 jest.mock('./scope', () => ({
   ...jest.requireActual('./scope'),
