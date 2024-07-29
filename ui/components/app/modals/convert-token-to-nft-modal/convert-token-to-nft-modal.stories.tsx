@@ -3,7 +3,6 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Provider, useSelector } from 'react-redux';
 import configureStore from '../../../../store/store';
 import ConvertTokenToNFTModal from './convert-token-to-nft-modal';
-import { within, fireEvent } from '@storybook/testing-library'; // Importing within and fireEvent
 
 const storeMock = configureStore({
   metamask: {
