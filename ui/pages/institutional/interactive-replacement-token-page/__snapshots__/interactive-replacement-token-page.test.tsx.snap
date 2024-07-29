@@ -27,7 +27,6 @@ exports[`Interactive Replacement Token Page should reject if there are errors 1`
     >
       <div
         class="mm-box interactive-replacement-token-page mm-box--margin-right-7 mm-box--margin-left-7 mm-box--display-flex mm-box--color-text-alternative"
-        overflowwrap="break-word"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
@@ -79,10 +78,9 @@ exports[`Interactive Replacement Token Page should reject if there are errors 2`
     >
       <div
         class="mm-box interactive-replacement-token-page mm-box--margin-right-7 mm-box--margin-left-7 mm-box--display-flex mm-box--color-text-alternative"
-        overflowwrap="break-word"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--color-text-default"
           data-testid="connect-error-message"
         >
           Please go to displayName and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again.

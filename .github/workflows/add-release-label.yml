@@ -12,25 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     steps:
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-
-      - run: corepack enable
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-            fetch-depth: 0 # This is needed to checkout all branches
+          fetch-depth: 0 # This is needed to checkout all branches
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-
-      - name: Install dependencies
-        run: yarn --immutable
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
 
       - name: Get the next semver version
         id: get-next-semver-version
