@@ -1,8 +1,10 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { InternalAccountTypes } from '@metamask/keyring-api';
 import {
   getUpdatedAndSortedAccounts,
   getInternalAccounts,
+  getSelectedInternalAccount,
 } from '../../../../../selectors';
 import { AccountListItem } from '../../..';
 import {
@@ -24,8 +26,10 @@ export const SendPageYourAccounts = () => {
 
   // Your Accounts
   const accounts = useSelector(getUpdatedAndSortedAccounts);
-  const internalAccounts = useSelector(getInternalAccounts);
+  const internalAccounts: InternalAccountTypes[] =
+    useSelector(getInternalAccounts);
   const mergedAccounts = mergeAccounts(accounts, internalAccounts);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
 
   return (
     <SendPageRow>
@@ -34,6 +38,7 @@ export const SendPageYourAccounts = () => {
       {mergedAccounts.map((account: any) => (
         <AccountListItem
           account={account}
+          selected={selectedAccount.address === account.address}
           key={account.address}
           isPinned={Boolean(account.pinned)}
           onClick={() => {

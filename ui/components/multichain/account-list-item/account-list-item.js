@@ -49,7 +49,6 @@ import {
   isAccountConnectedToCurrentTab,
   getShowFiatInTestnets,
   getUseBlockie,
-  getSelectedInternalAccount,
 } from '../../../selectors';
 import {
   getMultichainIsTestnet,
@@ -73,7 +72,7 @@ const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
 
 export const AccountListItem = ({
   account,
-  selected = false,
+  selected,
   onClick,
   closeMenu,
   accountsCount,
@@ -147,7 +146,6 @@ export const AccountListItem = ({
   const isConnected =
     currentTabOrigin && currentTabIsConnectedToSelectedAddress;
   const isSingleAccount = accountsCount === 1;
-  const selectedAccount = useSelector(getSelectedInternalAccount);
 
   const renderCount = useRef(0);
   useEffect(() => {
@@ -428,9 +426,7 @@ export const AccountListItem = ({
           account={account}
           onClose={() => setAccountOptionsMenuOpen(false)}
           closeMenu={closeMenu}
-          disableAccountSwitcher={
-            isSingleAccount && selectedAccount.address === account.address
-          }
+          disableAccountSwitcher={isSingleAccount && selected}
           isOpen={accountOptionsMenuOpen}
           onActionClick={onActionClick}
           activeTabOrigin={currentTabOrigin}
@@ -467,7 +463,7 @@ AccountListItem.propTypes = {
   /**
    * Represents if this account is currently selected
    */
-  selected: PropTypes.bool,
+  selected: PropTypes.bool.isRequired,
   /**
    * Function to execute when the item is clicked
    */
