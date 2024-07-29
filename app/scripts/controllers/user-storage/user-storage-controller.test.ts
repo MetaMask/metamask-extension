@@ -74,6 +74,24 @@ describe('user-storage/user-storage-controller - performGetStorage() tests', () 
     ).rejects.toThrow();
   });
 
+  test('rejects if wallet is locked', async () => {
+    const { messengerMocks } = arrangeMocks();
+
+    // Mock wallet is locked
+    messengerMocks.mockKeyringControllerGetState.mockReturnValue({
+      isUnlocked: false,
+    });
+
+    const controller = new UserStorageController({
+      messenger: messengerMocks.messenger,
+      getMetaMetricsState: () => true,
+    });
+
+    await expect(
+      controller.performGetStorage('notification_settings'),
+    ).rejects.toThrow();
+  });
+
   // @ts-expect-error This is missing from the Mocha type definitions
   test.each([
     [
@@ -140,6 +158,24 @@ describe('user-storage/user-storage-controller - performSetStorage() tests', () 
         isProfileSyncingEnabled: false,
         isProfileSyncingUpdateLoading: false,
       },
+    });
+
+    await expect(
+      controller.performSetStorage('notification_settings', 'new data'),
+    ).rejects.toThrow();
+  });
+
+  test('rejects if wallet is locked', async () => {
+    const { messengerMocks } = arrangeMocks();
+
+    // Mock wallet is locked
+    messengerMocks.mockKeyringControllerGetState.mockReturnValue({
+      isUnlocked: false,
+    });
+
+    const controller = new UserStorageController({
+      messenger: messengerMocks.messenger,
+      getMetaMetricsState: () => true,
     });
 
     await expect(
@@ -348,6 +384,10 @@ function mockUserStorageMessenger() {
       MetamaskNotificationsControllerDisableMetamaskNotifications['handler']
     >().mockResolvedValue();
 
+  const mockKeyringControllerGetState = typedMockFn<
+    () => { isUnlocked: boolean }
+  >().mockReturnValue({ isUnlocked: true });
+
   jest.spyOn(messenger, 'call').mockImplementation((...args) => {
     const [actionType, params] = args;
     if (actionType === 'SnapController:handleRequest') {
@@ -399,7 +439,7 @@ function mockUserStorageMessenger() {
     }
 
     if (actionType === 'KeyringController:getState') {
-      return { isUnlocked: true };
+      return mockKeyringControllerGetState();
     }
 
     function exhaustedMessengerMocks(action: never) {
@@ -420,5 +460,6 @@ function mockUserStorageMessenger() {
     mockMetamaskNotificationsIsMetamaskNotificationsEnabled,
     mockMetamaskNotificationsDisableNotifications,
     mockAuthPerformSignOut,
+    mockKeyringControllerGetState,
   };
 }

@@ -82,6 +82,20 @@ describe('authentication/authentication-controller - performSignIn() tests', () 
     await testAndAssertFailingEndpoints('token');
   });
 
+  // When the wallet is locked, we are unable to call the snap
+  test('Should error when wallet is locked', async () => {
+    const { messenger, mockKeyringControllerGetState } =
+      createMockAuthenticationMessenger();
+    const metametrics = createMockAuthMetaMetrics();
+
+    // Mock wallet is locked
+    mockKeyringControllerGetState.mockReturnValue({ isUnlocked: false });
+
+    const controller = new AuthenticationController({ messenger, metametrics });
+
+    await expect(controller.performSignIn()).rejects.toThrow();
+  });
+
   async function testAndAssertFailingEndpoints(
     endpointFail: 'nonce' | 'login' | 'token',
   ) {
@@ -174,6 +188,8 @@ describe('authentication/authentication-controller - getBearerToken() tests', ()
     const metametrics = createMockAuthMetaMetrics();
     const { messenger } = createMockAuthenticationMessenger();
     mockAuthenticationFlowEndpoints();
+
+    // Invalid/old state
     const originalState = mockSignedInState();
     if (originalState.sessionData) {
       originalState.sessionData.accessToken = 'ACCESS_TOKEN_1';
@@ -192,6 +208,36 @@ describe('authentication/authentication-controller - getBearerToken() tests', ()
     const result = await controller.getBearerToken();
     expect(result).toBeDefined();
     expect(result).toBe(MOCK_ACCESS_TOKEN);
+  });
+
+  // If the state is invalid, we need to re-login.
+  // But as wallet is locked, we will not be able to call the snap
+  test('Should throw error if wallet is locked', async () => {
+    const metametrics = createMockAuthMetaMetrics();
+    const { messenger, mockKeyringControllerGetState } =
+      createMockAuthenticationMessenger();
+    mockAuthenticationFlowEndpoints();
+
+    // Invalid/old state
+    const originalState = mockSignedInState();
+    if (originalState.sessionData) {
+      originalState.sessionData.accessToken = 'ACCESS_TOKEN_1';
+
+      const d = new Date();
+      d.setMinutes(d.getMinutes() - 31); // expires at 30 mins
+      originalState.sessionData.expiresIn = d.toString();
+    }
+
+    // Mock wallet is locked
+    mockKeyringControllerGetState.mockReturnValue({ isUnlocked: false });
+
+    const controller = new AuthenticationController({
+      messenger,
+      state: originalState,
+      metametrics,
+    });
+
+    await expect(controller.getBearerToken()).rejects.toThrow();
   });
 });
 
@@ -227,6 +273,8 @@ describe('authentication/authentication-controller - getSessionProfile() tests',
     const metametrics = createMockAuthMetaMetrics();
     const { messenger } = createMockAuthenticationMessenger();
     mockAuthenticationFlowEndpoints();
+
+    // Invalid/old state
     const originalState = mockSignedInState();
     if (originalState.sessionData) {
       originalState.sessionData.profile.identifierId = 'ID_1';
@@ -246,6 +294,36 @@ describe('authentication/authentication-controller - getSessionProfile() tests',
     expect(result).toBeDefined();
     expect(result.identifierId).toBe(MOCK_LOGIN_RESPONSE.profile.identifier_id);
     expect(result.profileId).toBe(MOCK_LOGIN_RESPONSE.profile.profile_id);
+  });
+
+  // If the state is invalid, we need to re-login.
+  // But as wallet is locked, we will not be able to call the snap
+  test('Should throw error if wallet is locked', async () => {
+    const metametrics = createMockAuthMetaMetrics();
+    const { messenger, mockKeyringControllerGetState } =
+      createMockAuthenticationMessenger();
+    mockAuthenticationFlowEndpoints();
+
+    // Invalid/old state
+    const originalState = mockSignedInState();
+    if (originalState.sessionData) {
+      originalState.sessionData.profile.identifierId = 'ID_1';
+
+      const d = new Date();
+      d.setMinutes(d.getMinutes() - 31); // expires at 30 mins
+      originalState.sessionData.expiresIn = d.toString();
+    }
+
+    // Mock wallet is locked
+    mockKeyringControllerGetState.mockReturnValue({ isUnlocked: false });
+
+    const controller = new AuthenticationController({
+      messenger,
+      state: originalState,
+      metametrics,
+    });
+
+    await expect(controller.getSessionProfile()).rejects.toThrow();
   });
 });
 
@@ -269,6 +347,10 @@ function createMockAuthenticationMessenger() {
     .fn()
     .mockResolvedValue('MOCK_SIGNED_MESSAGE');
 
+  const mockKeyringControllerGetState = jest
+    .fn()
+    .mockReturnValue({ isUnlocked: true });
+
   mockCall.mockImplementation((...args) => {
     const [actionType, params] = args;
     if (actionType === 'SnapController:handleRequest') {
@@ -286,13 +368,18 @@ function createMockAuthenticationMessenger() {
     }
 
     if (actionType === 'KeyringController:getState') {
-      return { isUnlocked: true };
+      return mockKeyringControllerGetState();
     }
 
     throw new Error(`MOCK_FAIL - unsupported messenger call: ${actionType}`);
   });
 
-  return { messenger, mockSnapGetPublicKey, mockSnapSignMessage };
+  return {
+    messenger,
+    mockSnapGetPublicKey,
+    mockSnapSignMessage,
+    mockKeyringControllerGetState,
+  };
 }
 
 function mockAuthenticationFlowEndpoints(params?: {
