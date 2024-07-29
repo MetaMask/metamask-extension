@@ -17,7 +17,7 @@ export const __HMR_READY__ = Boolean(process.env.__HMR_READY__) || false;
 /**
  * Target browsers
  */
-export const Browsers = ['brave', 'chrome', 'firefox', 'opera'] as const;
+export const Browsers = ['brave', 'chrome', 'firefox'] as const;
 export type Browser = (typeof Browsers)[number];
 
 const slash = `(?:\\${sep})?`;
