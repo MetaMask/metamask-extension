@@ -5798,9 +5798,14 @@ export default class MetamaskController extends EventEmitter {
               this.networkController.findNetworkClientIdByChainId.bind(
                 this.networkController,
               ),
-            getInternalAccounts: this.accountsController.listAccounts.bind(
-              this.accountsController,
-            ),
+            upsertNetworkConfiguration:
+              this.networkController.upsertNetworkConfiguration.bind(
+                this.networkController,
+              ),
+            removeNetworkConfiguration:
+              this.networkController.removeNetworkConfiguration.bind(
+                this.networkController,
+              ),
           });
         },
         [MESSAGE_TYPE.PROVIDER_REQUEST]: (request, response, next, end) => {

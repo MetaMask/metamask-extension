@@ -21,20 +21,20 @@ describe('Scope Assert', () => {
   });
 
   describe('assertScopeSupported', () => {
-    const findNetworkClientIdByChainId = jest.fn();
+    const isChainIdSupported = jest.fn();
 
     describe('scopeString', () => {
       it('checks if the scopeString is supported', () => {
         try {
           assertScopeSupported('scopeString', validScopeObject, {
-            findNetworkClientIdByChainId,
+            isChainIdSupported,
           });
         } catch (err) {
           // noop
         }
         expect(MockSupported.isSupportedScopeString).toHaveBeenCalledWith(
           'scopeString',
-          findNetworkClientIdByChainId,
+          isChainIdSupported,
         );
       });
 
@@ -42,7 +42,7 @@ describe('Scope Assert', () => {
         MockSupported.isSupportedScopeString.mockReturnValue(false);
         expect(() => {
           assertScopeSupported('scopeString', validScopeObject, {
-            findNetworkClientIdByChainId,
+            isChainIdSupported,
           });
         }).toThrow(
           new EthereumRpcError(5100, 'Requested chains are not supported'),
@@ -64,7 +64,7 @@ describe('Scope Assert', () => {
               methods: ['eth_chainId'],
             },
             {
-              findNetworkClientIdByChainId,
+              isChainIdSupported,
             },
           );
         } catch (err) {
@@ -86,7 +86,7 @@ describe('Scope Assert', () => {
               methods: ['eth_chainId'],
             },
             {
-              findNetworkClientIdByChainId,
+              isChainIdSupported,
             },
           );
         }).toThrow(
@@ -104,7 +104,7 @@ describe('Scope Assert', () => {
               notifications: ['chainChanged'],
             },
             {
-              findNetworkClientIdByChainId,
+              isChainIdSupported,
             },
           );
         } catch (err) {
@@ -127,7 +127,7 @@ describe('Scope Assert', () => {
               notifications: ['chainChanged'],
             },
             {
-              findNetworkClientIdByChainId,
+              isChainIdSupported,
             },
           );
         }).toThrow(
@@ -151,7 +151,7 @@ describe('Scope Assert', () => {
               accounts: ['eip155:1:0xdeadbeef'],
             },
             {
-              findNetworkClientIdByChainId,
+              isChainIdSupported,
             },
           ),
         ).toBeUndefined();
@@ -160,13 +160,13 @@ describe('Scope Assert', () => {
   });
 
   describe('assertScopesSupported', () => {
-    const findNetworkClientIdByChainId = jest.fn();
+    const isChainIdSupported = jest.fn();
 
     it('does not throw an error if no scopes are defined', () => {
       assertScopesSupported(
         {},
         {
-          findNetworkClientIdByChainId,
+          isChainIdSupported,
         },
       );
     });
@@ -180,7 +180,7 @@ describe('Scope Assert', () => {
             scopeString: validScopeObject,
           },
           {
-            findNetworkClientIdByChainId,
+            isChainIdSupported,
           },
         );
       }).toThrow(
@@ -198,7 +198,7 @@ describe('Scope Assert', () => {
             scopeStringB: validScopeObject,
           },
           {
-            findNetworkClientIdByChainId,
+            isChainIdSupported,
           },
         ),
       ).toBeUndefined();

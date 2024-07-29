@@ -1,10 +1,15 @@
 import * as Validation from './validation';
 import * as Transform from './transform';
-import * as Assert from './assert';
-import { processScopes } from './authorization';
+import * as Filter from './filter';
+import {
+  bucketScopes,
+  processScopedProperties,
+  validateAndFlattenScopes,
+} from './authorization';
 import { ScopeObject } from './scope';
 
 jest.mock('./validation', () => ({
+  validateScopedPropertyEip3085: jest.fn(),
   validateScopes: jest.fn(),
 }));
 const MockValidation = jest.mocked(Validation);
@@ -14,10 +19,10 @@ jest.mock('./transform', () => ({
 }));
 const MockTransform = jest.mocked(Transform);
 
-jest.mock('./assert', () => ({
-  assertScopesSupported: jest.fn(),
+jest.mock('./filter', () => ({
+  bucketScopesBySupport: jest.fn(),
 }));
-const MockAssert = jest.mocked(Assert);
+const MockFilter = jest.mocked(Filter);
 
 const validScopeObject: ScopeObject = {
   methods: [],
@@ -29,20 +34,15 @@ describe('Scope Authorization', () => {
     jest.resetAllMocks();
   });
 
-  describe('processScopes', () => {
-    const findNetworkClientIdByChainId = jest.fn();
-
+  describe('validateAndFlattenScopes', () => {
     it('validates the scopes', () => {
       try {
-        processScopes(
+        validateAndFlattenScopes(
           {
             'eip155:1': validScopeObject,
           },
           {
             'eip155:5': validScopeObject,
-          },
-          {
-            findNetworkClientIdByChainId,
           },
         );
       } catch (err) {
@@ -68,13 +68,7 @@ describe('Scope Authorization', () => {
         },
       });
 
-      processScopes(
-        {},
-        {},
-        {
-          findNetworkClientIdByChainId,
-        },
-      );
+      validateAndFlattenScopes({}, {});
       expect(MockTransform.flattenMergeScopes).toHaveBeenCalledWith({
         'eip155:1': validScopeObject,
       });
@@ -83,7 +77,7 @@ describe('Scope Authorization', () => {
       });
     });
 
-    it('checks if the flattend and merged scopes are supported', () => {
+    it('returns the flattened and merged scopes', () => {
       MockValidation.validateScopes.mockReturnValue({
         validRequiredScopes: {
           'eip155:1': validScopeObject,
@@ -97,74 +91,7 @@ describe('Scope Authorization', () => {
         transformed: true,
       }));
 
-      processScopes(
-        {},
-        {},
-        {
-          findNetworkClientIdByChainId,
-        },
-      );
-      expect(MockAssert.assertScopesSupported).toHaveBeenCalledWith(
-        { 'eip155:1': validScopeObject, transformed: true },
-        {
-          findNetworkClientIdByChainId,
-        },
-      );
-      expect(MockAssert.assertScopesSupported).toHaveBeenCalledWith(
-        { 'eip155:5': validScopeObject, transformed: true },
-        {
-          findNetworkClientIdByChainId,
-        },
-      );
-    });
-
-    it('throws an error if the flattened and merged scopes are not supported', () => {
-      MockValidation.validateScopes.mockReturnValue({
-        validRequiredScopes: {
-          'eip155:1': validScopeObject,
-        },
-        validOptionalScopes: {
-          'eip155:5': validScopeObject,
-        },
-      });
-      MockAssert.assertScopesSupported.mockImplementation(() => {
-        throw new Error('unsupported scopes');
-      });
-
-      expect(() => {
-        processScopes(
-          {},
-          {},
-          {
-            findNetworkClientIdByChainId,
-          },
-        );
-      }).toThrow(new Error('unsupported scopes'));
-    });
-
-    it('returns the flatten and merged scopes if they are all supported', () => {
-      MockValidation.validateScopes.mockReturnValue({
-        validRequiredScopes: {
-          'eip155:1': validScopeObject,
-        },
-        validOptionalScopes: {
-          'eip155:5': validScopeObject,
-        },
-      });
-      MockTransform.flattenMergeScopes.mockImplementation((value) => ({
-        ...value,
-        transformed: true,
-      }));
-
-      expect(
-        processScopes(
-          {},
-          {},
-          {
-            findNetworkClientIdByChainId,
-          },
-        ),
-      ).toStrictEqual({
+      expect(validateAndFlattenScopes({}, {})).toStrictEqual({
         flattenedRequiredScopes: {
           'eip155:1': validScopeObject,
           transformed: true,
@@ -172,6 +99,228 @@ describe('Scope Authorization', () => {
         flattenedOptionalScopes: {
           'eip155:5': validScopeObject,
           transformed: true,
+        },
+      });
+    });
+  });
+
+  describe('bucketScopes', () => {
+    beforeEach(() => {
+      let callCount = 0;
+      MockFilter.bucketScopesBySupport.mockImplementation(() => {
+        callCount += 1;
+        return {
+          supportedScopes: {
+            'mock:A': {
+              methods: [`mock_method_${callCount}`],
+              notifications: [],
+            },
+          },
+          unsupportedScopes: {
+            'mock:B': {
+              methods: [`mock_method_${callCount}`],
+              notifications: [],
+            },
+          },
+        };
+      });
+    });
+
+    it('buckets the scopes by supported', () => {
+      const isChainIdSupported = jest.fn();
+      bucketScopes(
+        {
+          wallet: {
+            methods: [],
+            notifications: [],
+          },
+        },
+        {
+          isChainIdSupported,
+          isChainIdSupportable: jest.fn(),
+        },
+      );
+
+      expect(MockFilter.bucketScopesBySupport).toHaveBeenCalledWith(
+        {
+          wallet: {
+            methods: [],
+            notifications: [],
+          },
+        },
+        {
+          isChainIdSupported,
+        },
+      );
+    });
+
+    it('buckets the mayble supportable scopes', () => {
+      const isChainIdSupportable = jest.fn();
+      bucketScopes(
+        {
+          wallet: {
+            methods: [],
+            notifications: [],
+          },
+        },
+        {
+          isChainIdSupported: jest.fn(),
+          isChainIdSupportable,
+        },
+      );
+
+      expect(MockFilter.bucketScopesBySupport).toHaveBeenCalledWith(
+        {
+          'mock:B': {
+            methods: [`mock_method_1`],
+            notifications: [],
+          },
+        },
+        {
+          isChainIdSupported: isChainIdSupportable,
+        },
+      );
+    });
+
+    it('returns the bucketed scopes', () => {
+      expect(
+        bucketScopes(
+          {
+            wallet: {
+              methods: [],
+              notifications: [],
+            },
+          },
+          {
+            isChainIdSupported: jest.fn(),
+            isChainIdSupportable: jest.fn(),
+          },
+        ),
+      ).toStrictEqual({
+        supportedScopes: {
+          'mock:A': {
+            methods: [`mock_method_1`],
+            notifications: [],
+          },
+        },
+        supportableScopes: {
+          'mock:A': {
+            methods: [`mock_method_2`],
+            notifications: [],
+          },
+        },
+        unsupportableScopes: {
+          'mock:B': {
+            methods: [`mock_method_2`],
+            notifications: [],
+          },
+        },
+      });
+    });
+  });
+
+  describe('processScopedProperties', () => {
+    it('excludes scopeStrings that are not defined in either required or optional scopes', () => {
+      expect(
+        processScopedProperties(
+          {
+            'eip155:1': validScopeObject,
+          },
+          {
+            'eip155:5': validScopeObject,
+          },
+          {
+            'eip155:10': {},
+          },
+        ),
+      ).toStrictEqual({});
+    });
+
+    it('includes scopeStrings that are defined in either required or optional scopes', () => {
+      expect(
+        processScopedProperties(
+          {
+            'eip155:1': validScopeObject,
+          },
+          {
+            'eip155:5': validScopeObject,
+          },
+          {
+            'eip155:1': {},
+            'eip155:5': {},
+          },
+        ),
+      ).toStrictEqual({
+        'eip155:1': {},
+        'eip155:5': {},
+      });
+    });
+
+    it('validates eip3085 properties', () => {
+      processScopedProperties(
+        {
+          'eip155:1': validScopeObject,
+        },
+        {},
+        {
+          'eip155:1': {
+            eip3085: {
+              foo: 'bar',
+            },
+          },
+        },
+      );
+      expect(MockValidation.validateScopedPropertyEip3085).toHaveBeenCalledWith(
+        'eip155:1',
+        {
+          foo: 'bar',
+        },
+      );
+    });
+
+    it('excludes invalid eip3085 properties', () => {
+      MockValidation.validateScopedPropertyEip3085.mockImplementation(() => {
+        throw new Error('invalid eip3085 params');
+      });
+      expect(
+        processScopedProperties(
+          {
+            'eip155:1': validScopeObject,
+          },
+          {},
+          {
+            'eip155:1': {
+              eip3085: {
+                foo: 'bar',
+              },
+            },
+          },
+        ),
+      ).toStrictEqual({
+        'eip155:1': {},
+      });
+    });
+
+    it('includes valid eip3085 properties', () => {
+      expect(
+        processScopedProperties(
+          {
+            'eip155:1': validScopeObject,
+          },
+          {},
+          {
+            'eip155:1': {
+              eip3085: {
+                foo: 'bar',
+              },
+            },
+          },
+        ),
+      ).toStrictEqual({
+        'eip155:1': {
+          eip3085: {
+            foo: 'bar',
+          },
         },
       });
     });

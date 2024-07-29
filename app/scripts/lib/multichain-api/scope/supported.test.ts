@@ -39,22 +39,16 @@ describe('Scope Support', () => {
     });
 
     it('returns true for the ethereum namespace when a network client exists for the reference', () => {
-      const findNetworkClientIdByChainIdMock = jest
-        .fn()
-        .mockReturnValue('networkClientId');
+      const isChainIdSupportedMock = jest.fn().mockReturnValue(true);
       expect(
-        isSupportedScopeString('eip155:1', findNetworkClientIdByChainIdMock),
+        isSupportedScopeString('eip155:1', isChainIdSupportedMock),
       ).toStrictEqual(true);
     });
 
     it('returns false for the ethereum namespace when a network client does not exist for the reference', () => {
-      const findNetworkClientIdByChainIdMock = jest
-        .fn()
-        .mockImplementation(() => {
-          throw new Error('failed to find network client for chainId');
-        });
+      const isChainIdSupportedMock = jest.fn().mockReturnValue(false);
       expect(
-        isSupportedScopeString('eip155:1', findNetworkClientIdByChainIdMock),
+        isSupportedScopeString('eip155:1', isChainIdSupportedMock),
       ).toStrictEqual(false);
     });
   });

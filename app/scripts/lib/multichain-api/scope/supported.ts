@@ -1,4 +1,3 @@
-import { NetworkClientId } from '@metamask/network-controller';
 import {
   CaipAccountId,
   Hex,
@@ -26,7 +25,7 @@ export const validNotifications = [
 
 export const isSupportedScopeString = (
   scopeString: string,
-  findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId,
+  isChainIdSupported: (chainId: Hex) => boolean,
 ) => {
   const isNamespaceScoped = isCaipNamespace(scopeString);
   const isChainScoped = isCaipChainId(scopeString);
@@ -46,16 +45,7 @@ export const isSupportedScopeString = (
     const { namespace, reference } = parseCaipChainId(scopeString);
     switch (namespace) {
       case KnownCaipNamespace.Eip155:
-        try {
-          findNetworkClientIdByChainId(toHex(reference));
-          return true;
-        } catch (err) {
-          console.log(
-            'failed to find network client that can serve chainId',
-            err,
-          );
-        }
-        return false;
+        return isChainIdSupported(toHex(reference));
       default:
         return false;
     }
