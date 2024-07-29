@@ -1,9 +1,5 @@
 import React from 'react';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
-import {
-  AlertsActionMetrics,
-  UseAlertSystemMetricsProps,
-} from '../../../../pages/confirmations/hooks/useConfirmationAlertMetrics';
 import { useAlertMetrics } from './alertMetricsContext';
 
 jest.mock('react', () => ({
@@ -16,21 +12,27 @@ describe('useAlertMetrics', () => {
     jest.resetAllMocks();
   });
 
-  it('provides trackAlertMetrics function from context', () => {
+  it('provides trackAlertActionClicked, trackAlertRender, and trackInlineAlertClicked functions from context', () => {
     (React.useContext as jest.Mock).mockReturnValue({
-      trackAlertMetrics: jest.fn(),
+      trackAlertActionClicked: jest.fn(),
+      trackAlertRender: jest.fn(),
+      trackInlineAlertClicked: jest.fn(),
     });
+    const ALERT_KEY_MOCK = 'testKey';
     const { result } = renderHookWithProvider(useAlertMetrics);
 
     expect(result.current).toBeDefined();
-    expect(result.current.trackAlertMetrics).toBeDefined();
-    expect(typeof result.current.trackAlertMetrics).toBe('function');
+    expect(typeof result.current.trackAlertActionClicked).toBe('function');
+    expect(typeof result.current.trackAlertRender).toBe('function');
+    expect(typeof result.current.trackInlineAlertClicked).toBe('function');
 
-    const mockProps: UseAlertSystemMetricsProps = {
-      alertKey: 'testKey',
-      action: AlertsActionMetrics.InlineAlertClicked,
-    };
-    expect(() => result.current.trackAlertMetrics(mockProps)).not.toThrow();
+    expect(() =>
+      result.current.trackAlertActionClicked(ALERT_KEY_MOCK),
+    ).not.toThrow();
+    expect(() => result.current.trackAlertRender(ALERT_KEY_MOCK)).not.toThrow();
+    expect(() =>
+      result.current.trackInlineAlertClicked(ALERT_KEY_MOCK),
+    ).not.toThrow();
   });
 
   it('throws an error if used outside of AlertMetricsProvider', () => {

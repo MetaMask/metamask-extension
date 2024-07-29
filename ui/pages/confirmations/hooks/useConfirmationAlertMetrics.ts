@@ -9,11 +9,6 @@ import { confirmSelector } from '../../../selectors';
 import { AlertsName } from './alerts/constants';
 import { useTransactionEventFragment } from './useTransactionEventFragment';
 
-export type UseAlertSystemMetricsProps = {
-  alertKey?: string;
-  action?: AlertsActionMetrics;
-};
-
 export type AlertMetricsProperties = {
   alert_visualized: string[];
   alert_visualized_count: number;
@@ -33,10 +28,18 @@ export const ALERTS_NAME_METRICS: Record<AlertsName | string, string> = {
   [AlertsName.Blockaid]: 'blockaid',
 };
 
-export enum AlertsActionMetrics {
-  AlertVisualized = 'AlertVisualized',
-  InlineAlertClicked = 'InlineAlertClicked',
-  AlertActionClicked = 'AlertActionClicked',
+function uniqueFreshArrayPush<T>(array: T[], value: T): T[] {
+  return [...new Set([...array, value])];
+}
+
+function getAlertNames(alerts: Alert[]): string[] {
+  return alerts.map((alert) => getAlertName(alert.key));
+}
+
+function getAlertName(alertKey: string): string {
+  return isUuid(alertKey)
+    ? ALERTS_NAME_METRICS[AlertsName.Blockaid]
+    : ALERTS_NAME_METRICS[alertKey] ?? alertKey;
 }
 
 export function useConfirmationAlertMetrics() {
@@ -58,75 +61,72 @@ export function useConfirmationAlertMetrics() {
     currentConfirmation?.type as TransactionType,
   );
 
-  const trackAlertMetrics = useCallback(
-    (props?: UseAlertSystemMetricsProps) => {
-      const { alertKey, action } = props ?? {};
-      if (!isValidType || !alertKey || !action) {
-        return;
-      }
-
-      setMetricsProperties((prevState) => {
-        const newState = { ...prevState };
-        const alertName = isUuid(alertKey)
-          ? ALERTS_NAME_METRICS[AlertsName.Blockaid]
-          : ALERTS_NAME_METRICS[alertKey] ?? alertKey;
-
-        switch (action) {
-          case AlertsActionMetrics.AlertVisualized:
-            newState.alert_visualized = [
-              ...new Set([...prevState.alert_visualized, alertName]),
-            ];
-            newState.alert_visualized_count = newState.alert_visualized.length;
-            break;
-          case AlertsActionMetrics.InlineAlertClicked:
-            newState.alert_key_clicked = [
-              ...new Set([...prevState.alert_key_clicked, alertName]),
-            ];
-            break;
-          case AlertsActionMetrics.AlertActionClicked:
-            newState.alert_action_clicked = [
-              ...new Set([...prevState.alert_action_clicked, alertName]),
-            ];
-            break;
-          default:
+  const properties =
+    isValidType && alerts.length > 0
+      ? {
+          alert_triggered_count: alerts.length,
+          alert_triggered: getAlertNames(alerts),
+          alert_resolved_count: alerts.filter((alert) =>
+            isAlertConfirmed(alert.key),
+          ).length,
+          alert_resolved: getAlertNames(
+            alerts.filter((alert) => isAlertConfirmed(alert.key)),
+          ),
+          ...metricsProperties,
         }
-        return newState;
-      });
-    },
-    [isValidType],
-  );
+      : undefined;
+
+  const trackAlertRender = useCallback((alertKey: string) => {
+    setMetricsProperties((prevState) => {
+      const newState = { ...prevState };
+      const alertName = getAlertName(alertKey);
+      newState.alert_visualized = uniqueFreshArrayPush(
+        prevState.alert_visualized,
+        alertName,
+      );
+      newState.alert_visualized_count = newState.alert_visualized.length;
+      return newState;
+    });
+  }, []);
+
+  const trackInlineAlertClicked = useCallback((alertKey: string) => {
+    setMetricsProperties((prevState) => {
+      const newState = { ...prevState };
+      const alertName = getAlertName(alertKey);
+      newState.alert_key_clicked = uniqueFreshArrayPush(
+        prevState.alert_key_clicked,
+        alertName,
+      );
+      return newState;
+    });
+  }, []);
+
+  const trackAlertActionClicked = useCallback((alertKey: string) => {
+    setMetricsProperties((prevState) => {
+      const newState = { ...prevState };
+      const alertName = getAlertName(alertKey);
+      newState.alert_action_clicked = uniqueFreshArrayPush(
+        prevState.alert_action_clicked,
+        alertName,
+      );
+      return newState;
+    });
+  }, []);
+
+  const updateAlertMetrics = useCallback(() => {
+    if (!properties) {
+      return;
+    }
+    updateTransactionEventFragment({ properties }, ownerId);
+  }, [properties, updateTransactionEventFragment, ownerId]);
 
   useEffect(() => {
-    if (isValidType && alerts.length > 0) {
-      const properties = {
-        alert_triggered_count: alerts.length,
-        alert_triggered: getAlertsName(alerts),
-        alert_resolved_count: alerts.filter((alert) =>
-          isAlertConfirmed(alert.key),
-        ).length,
-        alert_resolved: getAlertsName(
-          alerts.filter((alert) => isAlertConfirmed(alert.key)),
-        ),
-        ...metricsProperties,
-      };
-      updateTransactionEventFragment({ properties }, ownerId);
-    }
-  }, [
-    metricsProperties,
-    alerts,
-    isValidType,
-    ownerId,
-    updateTransactionEventFragment,
-  ]);
+    updateAlertMetrics();
+  }, [updateAlertMetrics]);
 
-  return { trackAlertMetrics };
-}
-
-function getAlertNames(alerts: Alert[]): string[] {
-  return alerts.map((alert) => {
-    if (isUuid(alert.key)) {
-      return ALERTS_NAME_METRICS[AlertsName.Blockaid];
-    }
-    return ALERTS_NAME_METRICS[alert.key] ?? alert.key;
-  });
+  return {
+    trackAlertRender,
+    trackInlineAlertClicked,
+    trackAlertActionClicked,
+  };
 }

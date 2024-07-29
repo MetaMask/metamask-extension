@@ -5,7 +5,6 @@ import mockState from '../../../../test/data/mock-state.json';
 import { Severity } from '../../../helpers/constants/design-system';
 import {
   useConfirmationAlertMetrics,
-  AlertsActionMetrics,
   ALERTS_NAME_METRICS,
 } from './useConfirmationAlertMetrics';
 import * as transactionEventFragmentHook from './useTransactionEventFragment';
@@ -89,7 +88,9 @@ describe('useConfirmationAlertMetrics', () => {
       STATE_MOCK,
     );
 
-    expect(result.current.trackAlertMetrics).toBeInstanceOf(Function);
+    expect(result.current.trackAlertRender).toBeInstanceOf(Function);
+    expect(result.current.trackInlineAlertClicked).toBeInstanceOf(Function);
+    expect(result.current.trackAlertActionClicked).toBeInstanceOf(Function);
   });
 
   it('calls updateTransactionEventFragment with correct properties on initialization', () => {
@@ -103,9 +104,9 @@ describe('useConfirmationAlertMetrics', () => {
 
   const testCases = [
     {
-      description: 'updates metrics properties when AlertVisualized is called',
+      description: 'updates metrics properties when trackAlertRender is called',
       alertKey: AlertsName.GasFeeLow,
-      action: AlertsActionMetrics.AlertVisualized,
+      action: 'trackAlertRender',
       expectedProperties: {
         alert_visualized: [ALERT_NAME_METRICS_MOCK],
         alert_visualized_count: 1,
@@ -113,18 +114,18 @@ describe('useConfirmationAlertMetrics', () => {
     },
     {
       description:
-        'updates metrics properties when InlineAlertClicked is called',
+        'updates metrics properties when trackInlineAlertClicked is called',
       alertKey: AlertsName.GasFeeLow,
-      action: AlertsActionMetrics.InlineAlertClicked,
+      action: 'trackInlineAlertClicked',
       expectedProperties: {
         alert_key_clicked: [ALERT_NAME_METRICS_MOCK],
       },
     },
     {
       description:
-        'updates metrics properties when AlertActionClicked is called',
+        'updates metrics properties when trackAlertActionClicked is called',
       alertKey: AlertsName.GasFeeLow,
-      action: AlertsActionMetrics.AlertActionClicked,
+      action: 'trackAlertActionClicked',
       expectedProperties: {
         alert_action_clicked: [ALERT_NAME_METRICS_MOCK],
       },
@@ -133,17 +134,11 @@ describe('useConfirmationAlertMetrics', () => {
       description:
         'updates metrics properties when receives alertKey as a valid UUID',
       alertKey: UUID_ALERT_KEY_MOCK,
-      action: AlertsActionMetrics.AlertVisualized,
+      action: 'trackAlertRender',
       expectedProperties: {
         alert_visualized: [ALERTS_NAME_METRICS[AlertsName.Blockaid]],
         alert_visualized_count: 1,
       },
-    },
-    {
-      description: 'handles default case when action is not recognized',
-      alertKey: AlertsName.GasFeeLow,
-      action: 'UnknownAction' as AlertsActionMetrics,
-      expectedProperties: {},
     },
   ];
 
@@ -157,7 +152,10 @@ describe('useConfirmationAlertMetrics', () => {
     }: {
       description: string;
       alertKey: string;
-      action: AlertsActionMetrics;
+      action:
+        | 'trackAlertRender'
+        | 'trackInlineAlertClicked'
+        | 'trackAlertActionClicked';
       expectedProperties: Record<string, unknown>;
     }) => {
       const finalExpectedProperties = {
@@ -171,10 +169,7 @@ describe('useConfirmationAlertMetrics', () => {
       );
 
       act(() => {
-        result.current.trackAlertMetrics({
-          alertKey,
-          action,
-        });
+        result.current[action](alertKey);
       });
 
       expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(

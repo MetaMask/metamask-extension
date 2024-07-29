@@ -6,7 +6,6 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import * as useAlertsModule from '../../../../hooks/useAlerts';
 import mockState from '../../../../../test/data/mock-state.json';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
-import { AlertsActionMetrics } from '../../../../pages/confirmations/hooks/useConfirmationAlertMetrics';
 import { AlertModal } from './alert-modal';
 
 const onProcessActionMock = jest.fn();
@@ -19,10 +18,13 @@ jest.mock('../contexts/alertActionHandler', () => ({
   useAlertActionHandler: jest.fn(() => mockAlertActionHandlerProviderValue),
 }));
 
-const mockTrackAlertMetrics = jest.fn();
+const mockTrackAlertActionClicked = jest.fn();
+const mockTrackAlertRender = jest.fn();
 jest.mock('../contexts/alertMetricsContext', () => ({
   useAlertMetrics: jest.fn(() => ({
-    trackAlertMetrics: mockTrackAlertMetrics,
+    trackAlertActionClicked: mockTrackAlertActionClicked,
+    trackInlineAlertClicked: jest.fn(),
+    trackAlertRender: mockTrackAlertRender,
   })),
 }));
 
@@ -260,7 +262,7 @@ describe('AlertModal', () => {
   });
 
   describe('Track alert metrics', () => {
-    it('calls trackAlertMetrics when alert modal is opened', () => {
+    it('calls mockTrackAlertRender when alert modal is opened', () => {
       const { getByText } = renderWithProvider(
         <AlertModal
           ownerId={OWNER_ID_MOCK}
@@ -272,13 +274,10 @@ describe('AlertModal', () => {
       );
 
       expect(getByText(ALERT_MESSAGE_MOCK)).toBeInTheDocument();
-      expect(mockTrackAlertMetrics).toHaveBeenCalledWith({
-        alertKey: FROM_ALERT_KEY_MOCK,
-        action: AlertsActionMetrics.AlertVisualized,
-      });
+      expect(mockTrackAlertRender).toHaveBeenCalledWith(FROM_ALERT_KEY_MOCK);
     });
 
-    it('calls trackAlertMetrics when action button is clicked', () => {
+    it('calls trackAlertActionClicked when action button is clicked', () => {
       const { getByText } = renderWithProvider(
         <AlertModal
           ownerId={OWNER_ID_MOCK}
@@ -293,10 +292,9 @@ describe('AlertModal', () => {
 
       fireEvent.click(getByText(ACTION_LABEL_MOCK));
 
-      expect(mockTrackAlertMetrics).toHaveBeenCalledWith({
-        alertKey: CONTRACT_ALERT_KEY_MOCK,
-        action: AlertsActionMetrics.AlertActionClicked,
-      });
+      expect(mockTrackAlertActionClicked).toHaveBeenCalledWith(
+        CONTRACT_ALERT_KEY_MOCK,
+      );
     });
   });
 });

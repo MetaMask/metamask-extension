@@ -19,12 +19,13 @@ jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn(),
 }));
 
-const mockTrackAlertMetrics = jest.fn();
 jest.mock(
   '../../../../../components/app/alert-system/contexts/alertMetricsContext',
   () => ({
     useAlertMetrics: jest.fn(() => ({
-      trackAlertMetrics: mockTrackAlertMetrics,
+      trackInlineAlertClicked: jest.fn(),
+      trackAlertRender: jest.fn(),
+      trackAlertActionClicked: jest.fn(),
     })),
   }),
 );
@@ -177,19 +178,6 @@ describe('ConfirmFooter', () => {
     const submitButton = getAllByRole('button')[1];
     fireEvent.click(submitButton);
     expect(mockFn).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls trackAlertMetrics when the cancel button is clicked', () => {
-    const { getAllByRole } = render();
-    const cancelButton = getAllByRole('button')[0];
-    fireEvent.click(cancelButton);
-    expect(mockTrackAlertMetrics).toHaveBeenCalled();
-  });
-
-  it('calls trackAlertMetrics when the confirm button is clicked', () => {
-    const { getByTestId } = render();
-    fireEvent.click(getByTestId('confirm-footer-button'));
-    expect(mockTrackAlertMetrics).toHaveBeenCalled();
   });
 
   describe('ConfirmButton', () => {

@@ -10,7 +10,9 @@ import {
 
 jest.mock('../contexts/alertMetricsContext', () => ({
   useAlertMetrics: jest.fn(() => ({
-    trackAlertMetrics: jest.fn(),
+    trackInlineAlertClicked: jest.fn(),
+    trackAlertRender: jest.fn(),
+    trackAlertActionClicked: jest.fn(),
   })),
 }));
 

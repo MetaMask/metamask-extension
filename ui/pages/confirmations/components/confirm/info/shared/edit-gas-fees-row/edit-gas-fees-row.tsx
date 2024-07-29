@@ -17,6 +17,7 @@ import {
 } from '../../../../../../../selectors';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 
 export const EditGasFeesRow = ({
   fiatFee,
@@ -40,7 +41,7 @@ export const EditGasFeesRow = ({
 
   return (
     <ConfirmInfoAlertRow
-      alertKey="estimatedFee"
+      alertKey={RowAlertKey.EstimatedFee}
       ownerId={transactionMeta.id}
       label={t('estimatedFee')}
       tooltip={t('estimatedFeeTooltip')}

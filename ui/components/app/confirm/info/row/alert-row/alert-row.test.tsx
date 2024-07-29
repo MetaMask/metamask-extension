@@ -5,7 +5,6 @@ import { Text } from '../../../../../component-library';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
 import { Severity } from '../../../../../../helpers/constants/design-system';
 import mockState from '../../../../../../../test/data/mock-state.json';
-import { AlertsActionMetrics } from '../../../../../../pages/confirmations/hooks/useConfirmationAlertMetrics';
 import { ConfirmInfoAlertRow, ConfirmInfoAlertRowProps } from './alert-row';
 
 const onProcessActionMock = jest.fn();
@@ -18,10 +17,12 @@ jest.mock('../../../../alert-system/contexts/alertActionHandler', () => ({
   useAlertActionHandler: jest.fn(() => mockAlertActionHandlerProviderValue),
 }));
 
-const mockTrackAlertMetrics = jest.fn();
+const mockTrackInlineAlertClicked = jest.fn();
 jest.mock('../../../../alert-system/contexts/alertMetricsContext', () => ({
   useAlertMetrics: jest.fn(() => ({
-    trackAlertMetrics: mockTrackAlertMetrics,
+    trackInlineAlertClicked: mockTrackInlineAlertClicked,
+    trackAlertRender: jest.fn(),
+    trackAlertActionClicked: jest.fn(),
   })),
 }));
 
@@ -130,16 +131,15 @@ describe('AlertRow', () => {
     });
 
     describe('Track alert metrics', () => {
-      it('calls trackAlertMetrics when inline alert is clicked', () => {
+      it('calls trackInlineAlertClicked when inline alert is clicked', () => {
         const { getByTestId } = renderAlertRow({
           alertKey: KEY_ALERT_KEY_MOCK,
           ownerId: OWNER_ID_MOCK,
         });
         fireEvent.click(getByTestId('inline-alert'));
-        expect(mockTrackAlertMetrics).toHaveBeenCalledWith({
-          alertKey: KEY_ALERT_KEY_MOCK,
-          action: AlertsActionMetrics.InlineAlertClicked,
-        });
+        expect(mockTrackInlineAlertClicked).toHaveBeenCalledWith(
+          KEY_ALERT_KEY_MOCK,
+        );
       });
     });
 

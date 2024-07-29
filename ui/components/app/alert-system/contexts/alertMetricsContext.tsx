@@ -1,19 +1,26 @@
 import React, { createContext, useContext, ReactNode, useMemo } from 'react';
-import {
-  UseAlertSystemMetricsProps,
-  useConfirmationAlertMetrics,
-} from '../../../../pages/confirmations/hooks/useConfirmationAlertMetrics';
+import { useConfirmationAlertMetrics } from '../../../../pages/confirmations/hooks/useConfirmationAlertMetrics';
 
 const AlertMetricsContext = createContext<{
-  trackAlertMetrics: (props?: UseAlertSystemMetricsProps) => void;
+  trackAlertActionClicked: (alertKey: string) => void;
+  trackAlertRender: (alertKey: string) => void;
+  trackInlineAlertClicked: (alertKey: string) => void;
 } | null>(null);
 
 export const AlertMetricsProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const { trackAlertMetrics } = useConfirmationAlertMetrics();
+  const { trackAlertActionClicked, trackAlertRender, trackInlineAlertClicked } =
+    useConfirmationAlertMetrics();
 
-  const value = useMemo(() => ({ trackAlertMetrics }), [trackAlertMetrics]);
+  const value = useMemo(
+    () => ({
+      trackAlertActionClicked,
+      trackAlertRender,
+      trackInlineAlertClicked,
+    }),
+    [trackAlertActionClicked, trackAlertRender, trackInlineAlertClicked],
+  );
 
   return (
     <AlertMetricsContext.Provider value={value}>

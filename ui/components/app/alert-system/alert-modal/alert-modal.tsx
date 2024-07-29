@@ -36,10 +36,6 @@ import useAlerts from '../../../../hooks/useAlerts';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { useAlertActionHandler } from '../contexts/alertActionHandler';
 import { AlertProvider } from '../alert-provider';
-import {
-  AlertsActionMetrics,
-  UseAlertSystemMetricsProps,
-} from '../../../../pages/confirmations/hooks/useConfirmationAlertMetrics';
 import { useAlertMetrics } from '../contexts/alertMetricsContext';
 
 export type AlertModalProps = {
@@ -262,33 +258,24 @@ function AcknowledgeButton({
 function ActionButton({
   action,
   onClose,
-  metrics,
+  alertKey,
 }: {
   action?: { key: string; label: string };
   onClose: (request: { recursive?: boolean } | void) => void;
-  metrics: {
-    trackAlertMetrics: ({
-      alertKey,
-      action,
-    }: UseAlertSystemMetricsProps) => void;
-    alertKey: string;
-  };
+  alertKey: string;
 }) {
   const { processAction } = useAlertActionHandler();
-  const { trackAlertMetrics, alertKey } = metrics;
+  const { trackAlertActionClicked } = useAlertMetrics();
 
   const handleClick = useCallback(() => {
     if (!action) {
       return;
     }
-    trackAlertMetrics({
-      alertKey,
-      action: AlertsActionMetrics.AlertActionClicked,
-    });
+    trackAlertActionClicked(alertKey);
 
     processAction(action.key);
     onClose({ recursive: true });
-  }, [action, onClose, processAction, trackAlertMetrics, alertKey]);
+  }, [action, onClose, processAction, trackAlertActionClicked, alertKey]);
 
   if (!action) {
     return null;
@@ -322,7 +309,7 @@ export function AlertModal({
   enableProvider = true,
 }: AlertModalProps) {
   const { isAlertConfirmed, setAlertConfirmed, alerts } = useAlerts(ownerId);
-  const { trackAlertMetrics } = useAlertMetrics();
+  const { trackAlertRender } = useAlertMetrics();
 
   const handleClose = useCallback(
     (...args) => {
@@ -335,12 +322,9 @@ export function AlertModal({
 
   useEffect(() => {
     if (selectedAlert) {
-      trackAlertMetrics({
-        alertKey: selectedAlert.key,
-        action: AlertsActionMetrics.AlertVisualized,
-      });
+      trackAlertRender(selectedAlert.key);
     }
-  }, [selectedAlert, trackAlertMetrics]);
+  }, [selectedAlert, trackAlertRender]);
 
   if (!selectedAlert) {
     return null;
@@ -408,10 +392,7 @@ export function AlertModal({
                       key={action.key}
                       action={action}
                       onClose={handleClose}
-                      metrics={{
-                        trackAlertMetrics,
-                        alertKey: selectedAlert.key,
-                      }}
+                      alertKey={selectedAlert.key}
                     />
                   ),
                 )}
