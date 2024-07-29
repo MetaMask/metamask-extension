@@ -10,6 +10,7 @@ const {
 } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
+const { debounce } = require('lodash');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
 const { WindowHandles } = require('../background-socket/window-handles');
 
@@ -132,6 +133,7 @@ class Driver {
     this.timeout = timeout;
     this.exceptions = [];
     this.errors = [];
+    this.eventProcessingStack = [];
     this.windowHandles = new WindowHandles(this.driver);
 
     // The following values are found in
@@ -1127,8 +1129,6 @@ class Driver {
   }
 
   async checkBrowserForConsoleErrors(_ignoredConsoleErrors) {
-    const ignoreAllErrors = _ignoredConsoleErrors.includes('ignore-all');
-
     const ignoredConsoleErrors = _ignoredConsoleErrors.concat([
       // Third-party Favicon 404s show up as errors
       'favicon.ico - Failed to load resource: the server responded with a status of 404',
@@ -1136,23 +1136,51 @@ class Driver {
       'Failed to load resource: the server responded with a status of 429',
       // 4Byte
       'Failed to load resource: the server responded with a status of 502 (Bad Gateway)',
+      // Sentry error that is not actually a problem
+      'Event fragment with id transaction-added-',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');
 
+    // Flush the event processing stack 50ms after the last event is added
+    const debounceEventProcessingStack = debounce(
+      this.#flushEventProcessingStack.bind(this),
+      50,
+    );
+
     this.driver.onLogEvent(cdpConnection, (event) => {
       if (event.type === 'error') {
         if (event.args.length !== 0) {
-          const newError = this.#getErrorFromEvent(event);
+          event.ignoredConsoleErrors = ignoredConsoleErrors;
 
-          const ignored = logBrowserError(ignoredConsoleErrors, newError);
+          this.eventProcessingStack.push(event);
 
-          if (!ignored && !ignoreAllErrors) {
-            this.errors.push(newError);
-          }
+          debounceEventProcessingStack();
         }
       }
     });
+  }
+
+  #flushEventProcessingStack() {
+    let completeErrorText = '';
+
+    // Combine all events together that have arrived in the last 50ms, because they are actually just one error
+    this.eventProcessingStack.forEach((event) => {
+      completeErrorText += `${this.#getErrorFromEvent(event)}\n`;
+    });
+    completeErrorText = completeErrorText.trim();
+
+    const { ignoredConsoleErrors } = this.eventProcessingStack[0];
+
+    const ignored = logBrowserError(ignoredConsoleErrors, completeErrorText);
+
+    const ignoreAllErrors = ignoredConsoleErrors.includes('ignore-all');
+
+    if (!ignored && !ignoreAllErrors) {
+      this.errors.push(completeErrorText);
+    }
+
+    this.eventProcessingStack = [];
   }
 
   #getErrorFromEvent(event) {
