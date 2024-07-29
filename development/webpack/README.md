@@ -79,24 +79,10 @@ yarn test:unit:webpack
 
 This will run the test suite for the build tool. These tests are also run as part of the MetaMask test suite in CI.
 
-To output a JSON coverage report, run the following command:
+To output an HTML, JSON, and text coverage reports, run the following command:
 
 ```bash
-yarn test:coverage:webpack
-```
-
-The above test commands utilize our internal test runner, which runs the commands in a background shell – great for
-robots, but it prevents pretty formatting and colors that us humans enjoy. To run the tests in a normal shell, run the
-following command:
-
-```bash
-yarn tsx --test development/webpack/test/*.test.ts
-```
-
-And to output HTML coverage reports (to [`coverage/index.html`](../../coverage/index.html)), run the following command:
-
-```bash
-yarn nyc --reporter=html tsx --test development/webpack/test/*.test.ts
+yarn test:unit:webpack:coverage
 ```
 
 Test coverage should be around 100% for the build tool, exceptions are made for some edge cases that are overly

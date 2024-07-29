@@ -37,7 +37,7 @@ import {
   getSelectedAccountCachedBalance,
   getAddressBookEntryOrAccountName,
 } from '../../selectors';
-import NftDefaultImage from '../../components/app/nft-default-image/nft-default-image';
+import NftDefaultImage from '../../components/app/assets/nfts/nft-default-image/nft-default-image';
 import { getAssetImageURL, shortenAddress } from '../../helpers/utils/util';
 import {
   AlignItems,

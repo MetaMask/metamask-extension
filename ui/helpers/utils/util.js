@@ -63,6 +63,30 @@ export function formatDateWithYearContext(
     now.year === dateTime.year ? formatThisYear : fallback,
   );
 }
+
+export function formatDateWithSuffix(timestamp) {
+  const date = DateTime.fromMillis(timestamp * 1000); // Convert to milliseconds
+  const { day } = date;
+  const suffix = getOrdinalSuffix(day);
+
+  return date.toFormat(`MMM d'${suffix}', yyyy`);
+}
+
+function getOrdinalSuffix(day) {
+  if (day > 3 && day < 21) {
+    return 'th';
+  } // because 11th, 12th, 13th
+  switch (day % 10) {
+    case 1:
+      return 'st';
+    case 2:
+      return 'nd';
+    case 3:
+      return 'rd';
+    default:
+      return 'th';
+  }
+}
 /**
  * Determines if the provided chainId is a default MetaMask chain
  *
@@ -223,24 +247,30 @@ export function getRandomFileName() {
  * @param {number} options.truncatedCharLimit - The maximum length of the string.
  * @param {number} options.truncatedStartChars - The number of characters to preserve at the beginning.
  * @param {number} options.truncatedEndChars - The number of characters to preserve at the end.
+ * @param {boolean} options.skipCharacterInEnd - Skip the character at the end.
  * @returns {string} The shortened string.
  */
 export function shortenString(
   stringToShorten = '',
-  { truncatedCharLimit, truncatedStartChars, truncatedEndChars } = {
+  {
+    truncatedCharLimit,
+    truncatedStartChars,
+    truncatedEndChars,
+    skipCharacterInEnd,
+  } = {
     truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
     truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
     truncatedEndChars: TRUNCATED_ADDRESS_END_CHARS,
+    skipCharacterInEnd: false,
   },
 ) {
   if (stringToShorten.length < truncatedCharLimit) {
     return stringToShorten;
   }
 
-  return `${stringToShorten.slice(
-    0,
-    truncatedStartChars,
-  )}...${stringToShorten.slice(-truncatedEndChars)}`;
+  return `${stringToShorten.slice(0, truncatedStartChars)}...${
+    skipCharacterInEnd ? '' : stringToShorten.slice(-truncatedEndChars)
+  }`;
 }
 
 /**
@@ -259,6 +289,7 @@ export function shortenAddress(address = '') {
     truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
     truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
     truncatedEndChars: TRUNCATED_ADDRESS_END_CHARS,
+    skipCharacterInEnd: false,
   });
 }
 

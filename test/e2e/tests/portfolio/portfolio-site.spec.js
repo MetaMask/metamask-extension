@@ -42,10 +42,10 @@ describe('Portfolio site', function () {
         await driver.switchToWindowWithTitle('E2E Test Page', windowHandles);
 
         // Verify site
-        assert.equal(
-          await driver.getCurrentUrl(),
-          'https://portfolio.metamask.io/?metamaskEntry=ext_portfolio_button&metametricsId=null',
-        );
+        const currentUrl = await driver.getCurrentUrl();
+        const expectedUrl =
+          'https://portfolio.metamask.io/?metamaskEntry=ext_portfolio_button&metametricsId=null&metricsEnabled=false&marketingEnabled=false';
+        assert.equal(currentUrl, expectedUrl);
       },
     );
   });

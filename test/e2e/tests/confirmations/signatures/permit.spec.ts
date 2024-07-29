@@ -1,9 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import {
-  scrollAndConfirmAndAssertConfirm,
-  withRedesignConfirmationFixtures,
-} from '../helpers';
+import { MockedEndpoint } from 'mockttp';
 import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
@@ -14,6 +11,11 @@ import {
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
+  scrollAndConfirmAndAssertConfirm,
+  withRedesignConfirmationFixtures,
+} from '../helpers';
+import { TestSuiteArguments } from '../transactions/shared';
+import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
@@ -22,11 +24,7 @@ import {
   copyAddressAndPasteWalletAddress,
 } from './signature-helpers';
 
-describe('Confirmation Signature - Permit', function (this: Suite) {
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-    return;
-  }
-
+describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
@@ -34,12 +32,8 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
         driver,
         ganacheServer,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-        mockedEndpoint: unknown;
-      }) => {
-        const addresses = await ganacheServer.getAccounts();
+      }: TestSuiteArguments) => {
+        const addresses = await (ganacheServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
 
         await unlockWallet(driver);
@@ -51,7 +45,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
         await assertHeaderInfoBalance(driver);
         await assertAccountDetailsMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData_v4',
         );
 
@@ -65,7 +59,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
 
         await assertSignatureMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData_v4',
           'Permit',
           ['redesigned_confirmation', 'permit'],
@@ -82,10 +76,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        mockedEndpoint: unknown;
-      }) => {
+      }: TestSuiteArguments) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signPermit');
@@ -99,15 +90,15 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.waitForSelector({
-          css: '#signPermitResult',
-          text: 'Error: User rejected the request.',
-        });
-        assert.ok(rejectionResult);
+        const rejectionResult = await driver.findElement('#signPermitResult');
+        assert.equal(
+          await rejectionResult.getText(),
+          'Error: User rejected the request.',
+        );
 
         await assertSignatureMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData_v4',
           'Permit',
           ['redesigned_confirmation', 'permit'],

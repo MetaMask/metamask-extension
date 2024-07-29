@@ -1,8 +1,7 @@
 import * as Sentry from '@sentry/browser';
-import { Dedupe, ExtraErrorData } from '@sentry/integrations';
 
 import { AllProperties } from '../../../shared/modules/object.utils';
-import { FilterEvents } from './sentry-filter-events';
+import { filterEvents } from './sentry-filter-events';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 
 /* eslint-disable prefer-destructuring */
@@ -246,6 +245,8 @@ export const SENTRY_BACKGROUND_STATE = {
     preferences: {
       autoLockTimeLimit: true,
       hideZeroBalanceTokens: true,
+      redesignedConfirmationsEnabled: true,
+      isRedesignedConfirmationsDeveloperEnabled: false,
       showExtensionInFullSizeView: true,
       showFiatInTestnets: true,
       showTestNetworks: true,
@@ -253,6 +254,7 @@ export const SENTRY_BACKGROUND_STATE = {
       useNativeCurrencyAsPrimaryCurrency: true,
       petnamesEnabled: true,
       showTokenAutodetectModal: false,
+      showConfirmationAdvancedDetails: true,
     },
     useExternalServices: false,
     selectedAddress: false,
@@ -424,6 +426,8 @@ export const SENTRY_UI_STATE = {
     welcomeScreenSeen: true,
     confirmationExchangeRates: true,
     useSafeChainsListValidation: true,
+    bitcoinSupportEnabled: false,
+    bitcoinTestnetSupportEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,
@@ -587,6 +591,14 @@ export default function setupSentry({ release, getState }) {
     return getMetaMetricsEnabled();
   }
 
+  /**
+   * Sentry throws on initialization as it wants to avoid polluting the global namespace and
+   * potentially clashing with a website also using Sentry, but this could only happen in the content script.
+   * This emulates NW.js which disables these validations.
+   * https://docs.sentry.io/platforms/javascript/best-practices/shared-environments/
+   */
+  globalThis.nw = {};
+
   Sentry.init({
     dsn: sentryTarget,
     debug: METAMASK_DEBUG,
@@ -629,10 +641,10 @@ export default function setupSentry({ release, getState }) {
        *
        * @see https://github.com/MetaMask/metamask-extension/pull/15677
        */
-      new FilterEvents({ getMetaMetricsEnabled }),
-      new Dedupe(),
-      new ExtraErrorData(),
-      new Sentry.BrowserProfilingIntegration(),
+      filterEvents({ getMetaMetricsEnabled }),
+      Sentry.dedupeIntegration(),
+      Sentry.extraErrorDataIntegration(),
+      Sentry.browserProfilingIntegration(),
     ],
     release,
     /**
@@ -661,11 +673,11 @@ export default function setupSentry({ release, getState }) {
    * a new sentry session.
    */
   const startSession = async () => {
-    const hub = Sentry.getCurrentHub?.();
-    const options = hub.getClient?.().getOptions?.() ?? {};
-    if (hub && (await getSentryEnabled()) === true) {
+    const client = Sentry.getClient();
+    const options = client?.getOptions?.() ?? {};
+    if (client && (await getSentryEnabled()) === true) {
       options.autoSessionTracking = true;
-      hub.startSession();
+      Sentry.startSession();
     }
   };
 
@@ -675,11 +687,11 @@ export default function setupSentry({ release, getState }) {
    * the current sentry session.
    */
   const endSession = async () => {
-    const hub = Sentry.getCurrentHub?.();
-    const options = hub.getClient?.().getOptions?.() ?? {};
-    if (hub && (await getSentryEnabled()) === false) {
+    const client = Sentry.getClient();
+    const options = client?.getOptions?.() ?? {};
+    if (client && (await getSentryEnabled()) === false) {
       options.autoSessionTracking = false;
-      hub.endSession();
+      Sentry.endSession();
     }
   };
 
@@ -689,8 +701,8 @@ export default function setupSentry({ release, getState }) {
    * the Sentry client.
    */
   const toggleSession = async () => {
-    const hub = Sentry.getCurrentHub?.();
-    const options = hub.getClient?.().getOptions?.() ?? {
+    const client = Sentry.getClient();
+    const options = client?.getOptions?.() ?? {
       autoSessionTracking: false,
     };
     const isSentryEnabled = await getSentryEnabled();

@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { withRedesignConfirmationFixtures } from '../helpers';
+import { MockedEndpoint } from 'mockttp';
 import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
@@ -10,20 +10,18 @@ import {
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
+import { withRedesignConfirmationFixtures } from '../helpers';
+import { TestSuiteArguments } from '../transactions/shared';
 import {
+  assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
+  assertSignatureMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
-  assertSignatureMetrics,
-  assertAccountDetailsMetrics,
 } from './signature-helpers';
 
-describe('Confirmation Signature - Personal Sign', function (this: Suite) {
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-    return;
-  }
-
+describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite) {
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
@@ -31,12 +29,8 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         driver,
         ganacheServer,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-        mockedEndpoint: unknown;
-      }) => {
-        const addresses = await ganacheServer.getAccounts();
+      }: TestSuiteArguments) => {
+        const addresses = await (ganacheServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
 
         await unlockWallet(driver);
@@ -51,7 +45,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         await assertPastedAddress(driver);
         await assertAccountDetailsMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'personal_sign',
         );
         await switchToNotificationWindow(driver);
@@ -60,7 +54,11 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         await driver.clickElement('[data-testid="confirm-footer-button"]');
 
         await assertVerifiedPersonalMessage(driver, publicAddress);
-        await assertSignatureMetrics(driver, mockedEndpoints, 'personal_sign');
+        await assertSignatureMetrics(
+          driver,
+          mockedEndpoints as MockedEndpoint[],
+          'personal_sign',
+        );
       },
     );
   });
@@ -71,10 +69,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        mockedEndpoint: unknown;
-      }) => {
+      }: TestSuiteArguments) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#personalSign');
@@ -92,7 +87,11 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
           text: 'Error: User rejected the request.',
         });
         assert.ok(rejectionResult);
-        await assertSignatureMetrics(driver, mockedEndpoints, 'personal_sign');
+        await assertSignatureMetrics(
+          driver,
+          mockedEndpoints as MockedEndpoint[],
+          'personal_sign',
+        );
       },
     );
   });

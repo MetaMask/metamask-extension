@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { MockedEndpoint } from 'mockttp';
 import { WINDOW_TITLES, getEventPayloads } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 
@@ -7,8 +8,7 @@ export const WALLET_ETH_BALANCE = '25';
 
 export async function assertSignatureMetrics(
   driver: Driver,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mockedEndpoints: any,
+  mockedEndpoints: MockedEndpoint[],
   type: string,
   primaryType: string = '',
   uiCustomizations = ['redesigned_confirmation'],
@@ -48,8 +48,7 @@ export async function assertSignatureMetrics(
 
 export async function assertAccountDetailsMetrics(
   driver: Driver,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mockedEndpoints: any,
+  mockedEndpoints: MockedEndpoint[],
   type: string,
 ) {
   const events = await getEventPayloads(driver, mockedEndpoints);
@@ -72,12 +71,14 @@ export async function assertAccountDetailsMetrics(
 
 export async function clickHeaderInfoBtn(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElement('button[data-testid="header-info-button"]');
+  await driver.clickElement(
+    'button[data-testid="header-info__account-details-button"]',
+  );
 }
 
 export async function assertHeaderInfoBalance(driver: Driver) {
   const headerBalanceEl = await driver.findElement(
-    '[data-testid="header-balance"]',
+    '[data-testid="confirmation-account-details-modal__account-balance"]',
   );
   await driver.waitForNonEmptyElement(headerBalanceEl);
   assert.equal(await headerBalanceEl.getText(), `${WALLET_ETH_BALANCE}\nETH`);
@@ -85,8 +86,9 @@ export async function assertHeaderInfoBalance(driver: Driver) {
 
 export async function copyAddressAndPasteWalletAddress(driver: Driver) {
   await driver.clickElement('[data-testid="address-copy-button-text"]');
+  await driver.delay(500); // Added delay to avoid error Element is not clickable at point (x,y) because another element obscures it, happens as soon as the mouse hovers over the close button
   await driver.clickElement(
-    '[data-testid="account-details-modal-close-button"]',
+    '[data-testid="confirmation-account-details-modal__close-button"]',
   );
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.findElement('#eip747ContractAddress');

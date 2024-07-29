@@ -39,7 +39,6 @@ export type CoinOverviewProps = {
   defaultSwapsToken?: SwapsEthToken;
   isBridgeChain: boolean;
   isBuyableChain: boolean;
-  isBuyableChainWithoutSigning: boolean;
   ///: END:ONLY_INCLUDE_IF
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
@@ -55,7 +54,6 @@ export const CoinOverview = ({
   defaultSwapsToken,
   isBridgeChain,
   isBuyableChain,
-  isBuyableChainWithoutSigning,
   ///: END:ONLY_INCLUDE_IF
   isSwapsChain,
   isSigningEnabled,
@@ -152,7 +150,6 @@ export const CoinOverview = ({
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             isBridgeChain,
             isBuyableChain,
-            isBuyableChainWithoutSigning,
             defaultSwapsToken,
             ///: END:ONLY_INCLUDE_IF
             classPrefix,

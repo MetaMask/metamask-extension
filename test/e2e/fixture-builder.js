@@ -88,6 +88,8 @@ function onboardingFixture() {
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
           showTokenAutodetectModal: false,
+          isRedesignedConfirmationsDeveloperEnabled: false,
+          showConfirmationAdvancedDetails: false,
         },
         useExternalServices: true,
         theme: 'light',
@@ -537,6 +539,11 @@ class FixtureBuilder {
     return this.withPreferencesController({
       useTransactionSimulations: false,
     });
+  }
+
+  withPreferencesControllerAndFeatureFlag(flags) {
+    merge(this.fixture.data.PreferencesController, flags);
+    return this;
   }
 
   withAccountsController(data) {
