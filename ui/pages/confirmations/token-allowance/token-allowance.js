@@ -75,11 +75,16 @@ import { ConfirmPageContainerWarning } from '../components/confirm-page-containe
 import CustomNonce from '../components/custom-nonce';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 import { BlockaidResultType } from '../../../../shared/constants/security-provider';
+import { QueuedRequestsBannerAlert } from '../confirmation/components/queued-requests-banner-alert/queued-requests-banner-alert';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getAccountType } from '../../../selectors/selectors';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
+import {
+  AccountType,
+  CustodyStatus,
+} from '../../../../shared/constants/custody';
 ///: END:ONLY_INCLUDE_IF
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
@@ -239,8 +244,8 @@ export default function TokenAllowance({
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiApprovalFlow = () => {
-    if (accountType === 'custody') {
-      fullTxData.custodyStatus = 'created';
+    if (accountType === AccountType.CUSTODY) {
+      fullTxData.custodyStatus = CustodyStatus.CREATED;
       fullTxData.metadata = fullTxData.metadata || {};
 
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
@@ -442,6 +447,7 @@ export default function TokenAllowance({
         marginLeft={4}
         marginRight={4}
       />
+      <QueuedRequestsBannerAlert />
       {isSuspiciousResponse(txData?.securityProviderResponse) && (
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}
