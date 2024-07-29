@@ -1767,6 +1767,9 @@
   "editNetworkLink": {
     "message": "edit the original network"
   },
+  "editNetworksTitle": {
+    "message": "Edit networks"
+  },
   "editNonceField": {
     "message": "Edit nonce"
   },
@@ -2981,18 +2984,12 @@
     "message": "Do you want this site to do the following?",
     "description": "Description below header used on Permission Connect screen for native permissions."
   },
-  "testnets":{
-    "message ": "Testnets"
-  },
   "nativeToken": {
     "message": "The native token on this network is $1. It is the token used for gas fees. ",
     "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "Edit network details"
-  },
-  "editNetworksTitle": {
-    "message": "Edit networks"
   },
   "nativeTokenScamWarningDescription": {
     "message": "This network doesn't match its associated chain ID or name. Many popular tokens use the name $1, making it a target for scams. Scammers may trick you into sending them more valuable currency in return. Verify everything before you continue.",
@@ -5913,6 +5910,9 @@
   },
   "testNetworks": {
     "message": "Test networks"
+  },
+  "testnets": {
+    "message": "Testnets"
   },
   "theme": {
     "message": "Theme"
