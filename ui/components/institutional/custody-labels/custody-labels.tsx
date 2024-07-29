@@ -11,11 +11,7 @@ import {
   TextVariant,
   Display,
 } from '../../../helpers/constants/design-system';
-
-type LabelItem = {
-  key: string;
-  value: string;
-};
+import { LabelItem } from '../../../pages/institutional/custody/custody';
 
 type CustodyLabelsProps = {
   labels: LabelItem[];

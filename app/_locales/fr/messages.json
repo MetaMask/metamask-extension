@@ -278,7 +278,13 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "Ajouter un nouveau compte"
+    "message": "Ajouter un nouveau compte Ethereum"
+  },
+  "addNewBitcoinAccount": {
+    "message": "Ajouter un nouveau compte Bitcoin (Bêta)"
+  },
+  "addNewBitcoinTestnetAccount": {
+    "message": "Ajouter un nouveau compte Bitcoin (Testnet)"
   },
   "addNewToken": {
     "message": "Ajouter un nouveau jeton"
@@ -632,6 +638,9 @@
   "attemptToCancelSwapForFree": {
     "message": "Tentative d’annuler gratuitement le swap"
   },
+  "attributes": {
+    "message": "Attributs"
+  },
   "attributions": {
     "message": "Attributions"
   },
@@ -756,6 +765,22 @@
   "bitcoinActivityNotSupported": {
     "message": "L’activité Bitcoin n’est pas prise en charge"
   },
+  "bitcoinSupportSectionTitle": {
+    "message": "Bitcoin"
+  },
+  "bitcoinSupportToggleDescription": {
+    "message": "En activant cette fonctionnalité, vous aurez la possibilité d’ajouter un compte Bitcoin à votre extension MetaMask dérivée de votre phrase secrète de récupération existante. Toute utilisation de cette fonctionnalité bêta expérimentale se fait à vos risques et périls. Pour nous faire part de vos commentaires sur cette nouvelle expérience Bitcoin, veuillez remplir ce $1.",
+    "description": "$1 is the link to a product feedback form"
+  },
+  "bitcoinSupportToggleTitle": {
+    "message": "Activer « Ajouter un nouveau compte Bitcoin (Bêta) »"
+  },
+  "bitcoinTestnetSupportToggleDescription": {
+    "message": "En activant cette fonctionnalité, vous aurez la possibilité d’ajouter un compte Bitcoin pour le réseau de test."
+  },
+  "bitcoinTestnetSupportToggleTitle": {
+    "message": "Activer « Ajouter un nouveau compte Bitcoin (Testnet) »"
+  },
   "blockExplorerAccountAction": {
     "message": "Compte",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -822,6 +847,9 @@
   },
   "blockies": {
     "message": "Blockies"
+  },
+  "boughtFor": {
+    "message": "Acheté pour"
   },
   "bridge": {
     "message": "Pont"
@@ -943,6 +971,9 @@
   },
   "coingecko": {
     "message": "CoinGecko"
+  },
+  "collectionName": {
+    "message": "Nom de la collection"
   },
   "comboNoOptions": {
     "message": "Aucune option trouvée",
@@ -1249,6 +1280,9 @@
   "createSnapAccountTitle": {
     "message": "Créer un compte"
   },
+  "creatorAddress": {
+    "message": "Adresse du créateur"
+  },
   "crossChainSwapsLink": {
     "message": "Échanges inter-réseaux avec MetaMask Portfolio"
   },
@@ -1436,6 +1470,12 @@
   "dataHex": {
     "message": "Hex"
   },
+  "dataUnavailable": {
+    "message": "données non disponibles"
+  },
+  "dateCreated": {
+    "message": "Date de création"
+  },
   "dcent": {
     "message": "D’Cent"
   },
@@ -1514,6 +1554,12 @@
   },
   "developerOptions": {
     "message": "Options pour les développeurs"
+  },
+  "developerOptionsEnableConfirmationsRedesignDescription": {
+    "message": "Active ou désactive la fonction de restructuration des confirmations actuellement en phase de développement"
+  },
+  "developerOptionsEnableConfirmationsRedesignTitle": {
+    "message": "Restructuration des confirmations"
   },
   "developerOptionsNetworkMenuRedesignDescription": {
     "message": "Permet de changer le design du menu « Réseaux »"
@@ -1712,6 +1758,9 @@
   "editGasTooLow": {
     "message": "Délai de traitement inconnu"
   },
+  "editNetworkLink": {
+    "message": "modifier le réseau d’origine"
+  },
   "editNonceField": {
     "message": "Modifier le nonce"
   },
@@ -1748,6 +1797,9 @@
   },
   "enableTokenAutoDetection": {
     "message": "Activer la détection automatique des jetons"
+  },
+  "enable_auto_detection_toggle_automatically": {
+    "message": "Cette option sera automatiquement activée dans l’extension Metamask v12.3.0 si l’option « Fonctionnalité de base » est déjà activée"
   },
   "enabled": {
     "message": "Activé"
@@ -1881,6 +1933,12 @@
   "etherscanViewOn": {
     "message": "Afficher sur Etherscan"
   },
+  "existingChainId": {
+    "message": "Les informations que vous avez saisies sont associées à un ID de chaîne existant."
+  },
+  "existingRpcUrl": {
+    "message": "Cette URL est associée à un autre ID de chaîne."
+  },
   "expandView": {
     "message": "Agrandir la vue"
   },
@@ -1935,6 +1993,9 @@
     "message": "L’importation de fichier ne fonctionne pas ? Cliquez ici !",
     "description": "Helps user import their account from a JSON file"
   },
+  "findTheRightChainId": {
+    "message": "Trouvez le bon ID de chaîne sur :"
+  },
   "flaskWelcomeUninstall": {
     "message": "vous devriez désinstaller cette extension",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -1973,6 +2034,9 @@
   },
   "forgotPassword": {
     "message": "Mot de passe oublié ?"
+  },
+  "form": {
+    "message": "formulaire"
   },
   "from": {
     "message": "de"
@@ -2181,6 +2245,12 @@
   },
   "highLowercase": {
     "message": "élevé"
+  },
+  "highestCurrentBid": {
+    "message": "Offre actuelle la plus élevée"
+  },
+  "highestFloorPrice": {
+    "message": "Prix plancher le plus élevé"
   },
   "history": {
     "message": "Historique"
@@ -3195,6 +3265,9 @@
   "nonceField": {
     "message": "Personnaliser le nonce de transaction"
   },
+  "nonceFieldDesc": {
+    "message": "Activez cette option pour modifier le nonce (numéro de transaction) lors de l’envoi d’actifs. Il s’agit d’une fonctionnalité avancée que vous devez utiliser avec prudence."
+  },
   "nonceFieldHeading": {
     "message": "Nonce personnalisé"
   },
@@ -3397,6 +3470,9 @@
   },
   "numberOfNewTokensDetectedSingular": {
     "message": "1 nouveau jeton trouvé dans ce compte"
+  },
+  "numberOfTokens": {
+    "message": "Nombre de jetons"
   },
   "ofTextNofM": {
     "message": "de"
@@ -3982,6 +4058,12 @@
   "prev": {
     "message": "Préc."
   },
+  "price": {
+    "message": "Prix"
+  },
+  "priceUnavailable": {
+    "message": "prix non disponible"
+  },
   "primaryCurrencySetting": {
     "message": "Devise principale"
   },
@@ -4133,6 +4215,9 @@
   },
   "quoteRate": {
     "message": "Cotation"
+  },
+  "rank": {
+    "message": "Rang"
   },
   "reAddAccounts": {
     "message": "ajouter de nouveau tous les autres comptes"
@@ -4693,6 +4778,9 @@
   "showIncomingTransactionsExplainer": {
     "message": "Ce processus fait appel à différentes API tierces pour chaque réseau et expose ainsi votre adresse Ethereum et votre adresse IP."
   },
+  "showLess": {
+    "message": "Afficher moins"
+  },
   "showMore": {
     "message": "Afficher plus"
   },
@@ -4914,6 +5002,9 @@
   },
   "snapDetailWebsite": {
     "message": "Site web"
+  },
+  "snapHomeMenu": {
+    "message": "Menu d’accueil du Snap"
   },
   "snapInstallRequest": {
     "message": "L’installation de $1 lui accorde les autorisations suivantes.",
@@ -5931,6 +6022,9 @@
   "tokenShowUp": {
     "message": "Il se peut que vos jetons n’apparaissent pas automatiquement dans votre portefeuille. "
   },
+  "tokenStandard": {
+    "message": "Jeton standard"
+  },
   "tokenSymbol": {
     "message": "Symbole du jeton"
   },
@@ -5940,6 +6034,9 @@
   "tokensFoundTitle": {
     "message": "$1 nouveaux jetons trouvés",
     "description": "$1 is the number of new tokens detected"
+  },
+  "tokensInCollection": {
+    "message": "Jetons dans la collection"
   },
   "tooltipApproveButton": {
     "message": "Je comprends"
@@ -5973,6 +6070,9 @@
   },
   "transactionCreated": {
     "message": "Transaction créée avec une valeur de $1 sur $2."
+  },
+  "transactionDataFunction": {
+    "message": "Fonction"
   },
   "transactionDetailDappGasMoreInfo": {
     "message": "Site suggéré"
@@ -6146,6 +6246,9 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
+  "unMatchedChain": {
+    "message": "Selon nos informations, cette URL ne correspond pas à celle d’un fournisseur connu pour cet ID de chaîne."
+  },
   "unapproved": {
     "message": "Non autorisé"
   },
@@ -6197,6 +6300,9 @@
   "update": {
     "message": "Mise à jour"
   },
+  "updateOrEditNetworkInformations": {
+    "message": "Mettez à jour vos informations ou"
+  },
   "updateRequest": {
     "message": "Demande de mise à jour"
   },
@@ -6229,6 +6335,9 @@
   },
   "useNftDetection": {
     "message": "Détection automatique des NFT"
+  },
+  "useNftDetectionDescriptionText": {
+    "message": "Laissez MetaMask ajouter les NFT que vous possédez en utilisant des services tiers. La détection automatique des NFT révèle votre adresse IP et l’adresse de votre compte à ces services. Si vous activez cette fonctionnalité, un lien pourrait être établi entre votre adresse IP et votre adresse Ethereum, et entrainer l’affichage de faux NFT parachutés par des arnaqueurs. Vous pouvez ajouter des jetons manuellement pour éviter ce risque."
   },
   "usePhishingDetection": {
     "message": "Utiliser la fonction anti-hameçonnage"
@@ -6420,6 +6529,9 @@
   },
   "whatsThis": {
     "message": "Qu’est-ce que c’est ?"
+  },
+  "wrongChainId": {
+    "message": "Cet ID de chaîne ne correspond pas au nom du réseau."
   },
   "wrongNetworkName": {
     "message": "Selon nos informations, il se peut que le nom du réseau ne corresponde pas exactement à l’ID de chaîne."
