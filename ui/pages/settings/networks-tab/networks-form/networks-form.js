@@ -89,6 +89,7 @@ import {
 import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../../helpers/utils/feature-flags';
 import { ACTION_MODES } from '../../../../components/multichain/network-list-menu/network-list-menu';
 import InfoTooltip from '../../../../components/ui/info-tooltip';
+import { createSHA256Hash } from '../../../../../app/scripts/controllers/user-storage/encryption';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -967,6 +968,9 @@ const NetworksForm = ({
             source_connection_method:
               MetaMetricsNetworkEventSource.CustomNetworkForm,
             token_symbol: ticker,
+          },
+          sensitiveProperties: {
+            rpcUrl: createSHA256Hash(rpcUrl),
           },
         });
         if (networkMenuRedesign) {
