@@ -17,6 +17,7 @@ import {
 } from './mocks/mockStorage';
 import UserStorageController, {
   AllowedActions,
+  AllowedEvents,
 } from './user-storage-controller';
 import {
   mockEndpointGetUserStorage,
@@ -66,6 +67,24 @@ describe('user-storage/user-storage-controller - performGetStorage() tests', () 
         isProfileSyncingEnabled: false,
         isProfileSyncingUpdateLoading: false,
       },
+    });
+
+    await expect(
+      controller.performGetStorage('notification_settings'),
+    ).rejects.toThrow();
+  });
+
+  test('rejects if wallet is locked', async () => {
+    const { messengerMocks } = arrangeMocks();
+
+    // Mock wallet is locked
+    messengerMocks.mockKeyringControllerGetState.mockReturnValue({
+      isUnlocked: false,
+    });
+
+    const controller = new UserStorageController({
+      messenger: messengerMocks.messenger,
+      getMetaMetricsState: () => true,
     });
 
     await expect(
@@ -139,6 +158,24 @@ describe('user-storage/user-storage-controller - performSetStorage() tests', () 
         isProfileSyncingEnabled: false,
         isProfileSyncingUpdateLoading: false,
       },
+    });
+
+    await expect(
+      controller.performSetStorage('notification_settings', 'new data'),
+    ).rejects.toThrow();
+  });
+
+  test('rejects if wallet is locked', async () => {
+    const { messengerMocks } = arrangeMocks();
+
+    // Mock wallet is locked
+    messengerMocks.mockKeyringControllerGetState.mockReturnValue({
+      isUnlocked: false,
+    });
+
+    const controller = new UserStorageController({
+      messenger: messengerMocks.messenger,
+      getMetaMetricsState: () => true,
     });
 
     await expect(
@@ -288,10 +325,11 @@ describe('user-storage/user-storage-controller - enableProfileSyncing() tests', 
 function mockUserStorageMessenger() {
   const messenger = new ControllerMessenger<
     AllowedActions,
-    never
+    AllowedEvents
   >().getRestricted({
     name: 'UserStorageController',
     allowedActions: [
+      'KeyringController:getState',
       'SnapController:handleRequest',
       'AuthenticationController:getBearerToken',
       'AuthenticationController:getSessionProfile',
@@ -301,6 +339,7 @@ function mockUserStorageMessenger() {
       'MetamaskNotificationsController:disableMetamaskNotifications',
       'MetamaskNotificationsController:selectIsMetamaskNotificationsEnabled',
     ],
+    allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
   });
 
   const mockSnapGetPublicKey = jest.fn().mockResolvedValue('MOCK_PUBLIC_KEY');
@@ -344,6 +383,10 @@ function mockUserStorageMessenger() {
     typedMockFn<
       MetamaskNotificationsControllerDisableMetamaskNotifications['handler']
     >().mockResolvedValue();
+
+  const mockKeyringControllerGetState = typedMockFn<
+    () => { isUnlocked: boolean }
+  >().mockReturnValue({ isUnlocked: true });
 
   jest.spyOn(messenger, 'call').mockImplementation((...args) => {
     const [actionType, params] = args;
@@ -395,6 +438,10 @@ function mockUserStorageMessenger() {
       return mockAuthPerformSignOut();
     }
 
+    if (actionType === 'KeyringController:getState') {
+      return mockKeyringControllerGetState();
+    }
+
     function exhaustedMessengerMocks(action: never) {
       throw new Error(`MOCK_FAIL - unsupported messenger call: ${action}`);
     }
@@ -413,5 +460,6 @@ function mockUserStorageMessenger() {
     mockMetamaskNotificationsIsMetamaskNotificationsEnabled,
     mockMetamaskNotificationsDisableNotifications,
     mockAuthPerformSignOut,
+    mockKeyringControllerGetState,
   };
 }
