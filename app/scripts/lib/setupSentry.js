@@ -969,7 +969,7 @@ function toMetamaskUrl(origUrl) {
 }
 
 function getState() {
-  return global.stateHooks?.getSentryState?.() || {};
+  return globalThis.stateHooks?.getSentryState?.() || {};
 }
 
 function integrateLogging() {
