@@ -50,6 +50,7 @@ import {
   FakeLedgerBridge,
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
+import { createFilterStream } from '../../shared/modules/filter-stream';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -86,6 +87,8 @@ const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_COLOR_NOTIFICATION = '#D73847';
 const BADGE_LABEL_APPROVAL = '\u22EF'; // unicode ellipsis
 const BADGE_MAX_NOTIFICATION_COUNT = 9;
+
+const MAX_MESSAGE_LENGTH = 1000000;
 
 // Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
@@ -679,6 +682,26 @@ function trackDappView(remotePort) {
   }
 }
 
+function filterStreamMessageSize(portStream, maxSize = MAX_MESSAGE_LENGTH) {
+  const filterStream = createFilterStream(portStream, {
+    inputFilter: (msg, _encoding) => {
+      const stringifiedMsg = JSON.stringify(msg);
+      if (stringifiedMsg.length < maxSize) {
+        return true;
+      }
+      console.warn(
+        `message exceeded size limit and will be dropped: ${stringifiedMsg.slice(
+          0,
+          1000,
+        )}...`,
+      );
+      return false;
+    },
+  });
+
+  return filterStream;
+}
+
 /**
  * Initializes the MetaMask Controller with any initial state and default language.
  * Configures platform-specific error reporting strategy.
@@ -869,8 +892,9 @@ export function setupController(
     ) {
       const portStream =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+      const filteredStream = filterStreamMessageSize(portStream);
       controller.setupPhishingCommunication({
-        connectionStream: portStream,
+        connectionStream: filteredStream,
       });
     } else {
       // this is triggered when a new tab is opened, or origin(url) is changed
@@ -898,8 +922,9 @@ export function setupController(
   connectExternalExtension = (remotePort) => {
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+    const filteredStream = filterStreamMessageSize(portStream);
     controller.setupUntrustedCommunicationEip1193({
-      connectionStream: portStream,
+      connectionStream: filteredStream,
       sender: remotePort.sender,
     });
   };
@@ -916,9 +941,10 @@ export function setupController(
 
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+    const filteredStream = filterStreamMessageSize(portStream);
 
     controller.setupUntrustedCommunicationCaip({
-      connectionStream: portStream,
+      connectionStream: filteredStream,
       sender: remotePort.sender,
     });
   };
