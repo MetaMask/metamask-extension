@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Intente cancelar el intercambio de forma gratuita"
   },
-  "attemptingConnect": {
-    "message": "Intentando una conexión a la cadena de bloques."
-  },
   "attributions": {
     "message": "Atribuciones"
   },

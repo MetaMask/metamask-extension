@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Versuch, den Swap kostenlos zu stornieren"
   },
-  "attemptingConnect": {
-    "message": "Versuch einer Verbindung zur Blockchain."
-  },
   "attributions": {
     "message": "Zuschreibungen"
   },
