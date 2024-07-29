@@ -58,21 +58,21 @@ function revokePermissionsImplementation(
   revokePermissionsForOrigin(permissionKeys);
 
   const permissions = getPermissionsForOrigin(origin) || {};
-  const caip25endowment = permissions?.[Caip25EndowmentPermissionName];
-  const caip25caveat = caip25endowment?.caveats.find(
+  const caip25Endowment = permissions?.[Caip25EndowmentPermissionName];
+  const caip25Caveat = caip25Endowment?.caveats.find(
     ({ type }) => type === Caip25CaveatType,
   );
 
   if (
     process.env.BARAD_DUR &&
     permissionKeys.includes(RestrictedMethods.eth_accounts) &&
-    caip25caveat
+    caip25Caveat
   ) {
     // should we remove accounts from required scopes? if so doesn't that mean we should
-    // just revoke the caip25endowment entirely?
+    // just revoke the caip25Endowment entirely?
 
     const requiredScopesWithoutEip155Accounts = {};
-    Object.entries(caip25caveat.value.requiredScopes).forEach(
+    Object.entries(caip25Caveat.value.requiredScopes).forEach(
       ([scopeString, scopeObject]) => {
         const { namespace } = parseScopeString(scopeString);
         requiredScopesWithoutEip155Accounts[scopeString] = {
@@ -84,7 +84,7 @@ function revokePermissionsImplementation(
     );
 
     const optionalScopesWithoutEip155Accounts = {};
-    Object.entries(caip25caveat.value.optionalScopes).forEach(
+    Object.entries(caip25Caveat.value.optionalScopes).forEach(
       ([scopeString, scopeObject]) => {
         const { namespace } = parseScopeString(scopeString);
         optionalScopesWithoutEip155Accounts[scopeString] = {
@@ -96,7 +96,7 @@ function revokePermissionsImplementation(
     );
 
     updateCaveat(origin, Caip25EndowmentPermissionName, Caip25CaveatType, {
-      ...caip25caveat.value,
+      ...caip25Caveat.value,
       requiredScopes: requiredScopesWithoutEip155Accounts,
       optionalScopes: optionalScopesWithoutEip155Accounts,
     });

@@ -55,10 +55,12 @@ export const bucketScopes = (
       isChainIdSupported,
     });
 
-  const { supportedScopes: supportableScopes, unsupportedScopes: unsupportableScopes } =
-    bucketScopesBySupport(maybeSupportableScopes, {
-      isChainIdSupported: isChainIdSupportable,
-    });
+  const {
+    supportedScopes: supportableScopes,
+    unsupportedScopes: unsupportableScopes,
+  } = bucketScopesBySupport(maybeSupportableScopes, {
+    isChainIdSupported: isChainIdSupportable,
+  });
 
   return { supportedScopes, supportableScopes, unsupportableScopes };
 };

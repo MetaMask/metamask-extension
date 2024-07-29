@@ -38,19 +38,19 @@ function getPermissionsImplementation(
 ) {
   // caveat values are frozen and must be cloned before modified
   const permissions = { ...getPermissionsForOrigin() } || {};
-  const caip25endowment = permissions[Caip25EndowmentPermissionName];
-  const caip25caveat = caip25endowment?.caveats.find(
+  const caip25Endowment = permissions[Caip25EndowmentPermissionName];
+  const caip25Caveat = caip25Endowment?.caveats.find(
     ({ type }) => type === Caip25CaveatType,
   );
   delete permissions[Caip25EndowmentPermissionName];
 
-  if (process.env.BARAD_DUR && caip25caveat) {
+  if (process.env.BARAD_DUR && caip25Caveat) {
     delete permissions[RestrictedMethods.eth_accounts];
 
     const ethAccounts = [];
     const sessionScopes = mergeScopes(
-      caip25caveat.value.requiredScopes,
-      caip25caveat.value.optionalScopes,
+      caip25Caveat.value.requiredScopes,
+      caip25Caveat.value.optionalScopes,
     );
 
     Object.entries(sessionScopes).forEach(([_, { accounts }]) => {
@@ -68,7 +68,7 @@ function getPermissionsImplementation(
 
     if (ethAccounts.length > 0) {
       permissions[RestrictedMethods.eth_accounts] = {
-        ...caip25endowment,
+        ...caip25Endowment,
         parentCapability: RestrictedMethods.eth_accounts,
         caveats: [
           {
