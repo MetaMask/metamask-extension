@@ -1,4 +1,3 @@
-import { SecurityAlertResponse } from '../../types/confirm';
 import {
   BlockaidResultType,
   SecurityProvider,
@@ -13,6 +12,7 @@ import {
   REASON_TO_DESCRIPTION_TKEY,
   REASON_TO_TITLE_TKEY,
 } from '../../components/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+import { SecurityAlertResponse } from '../../types/confirm';
 
 /**
  * Returns the corresponding AlertSeverity based on the provided BlockaidResultType.
@@ -38,11 +38,13 @@ export function getProviderAlertSeverity(
  *
  * @param securityAlertResponse - The security alert response to normalize.
  * @param t - The translation function.
+ * @param reportUrl - URL to report.
  * @returns The normalized Alert object.
  */
 export function normalizeProviderAlert(
   securityAlertResponse: SecurityAlertResponse,
   t: ReturnType<typeof useI18nContext>,
+  reportUrl?: string,
 ): Alert {
   return {
     key: securityAlertResponse.securityAlertId || '',
@@ -61,5 +63,6 @@ export function normalizeProviderAlert(
       ] || REASON_TO_DESCRIPTION_TKEY.other,
     ),
     provider: SecurityProvider.Blockaid, // TODO: Remove this once we support more providers and implement a way to determine it.
+    reportUrl,
   };
 }

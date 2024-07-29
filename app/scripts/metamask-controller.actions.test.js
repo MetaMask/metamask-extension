@@ -222,11 +222,6 @@ describe('MetaMaskController', function () {
     const decimals = 18;
 
     it('two parallel calls with same token details give same result', async function () {
-      const supportsInterfaceStub = jest.fn().mockResolvedValue(false);
-      jest
-        .spyOn(metamaskController.tokensController, '_createEthersContract')
-        .mockResolvedValue({ supportsInterface: supportsInterfaceStub });
-
       const [token1, token2] = await Promise.all([
         metamaskController.getApi().addToken({ address, symbol, decimals }),
         metamaskController.getApi().addToken({ address, symbol, decimals }),
@@ -235,10 +230,6 @@ describe('MetaMaskController', function () {
     });
 
     it('networkClientId is used when provided', async function () {
-      const supportsInterfaceStub = jest.fn().mockResolvedValue(false);
-      jest
-        .spyOn(metamaskController.tokensController, '_createEthersContract')
-        .mockResolvedValue({ supportsInterface: supportsInterfaceStub });
       const callSpy = jest
         .spyOn(metamaskController.controllerMessenger, 'call')
         .mockReturnValue({ configuration: { chainId: '0xa' } });

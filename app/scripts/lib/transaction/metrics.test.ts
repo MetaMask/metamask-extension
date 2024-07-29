@@ -19,12 +19,10 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-///: END:ONLY_INCLUDE_IF(blockaid)
 import {
   handleTransactionAdded,
   handleTransactionApproved,
@@ -74,6 +72,10 @@ const mockTransactionMetricsRequest = {
   trackEvent: jest.fn(),
   getIsSmartTransaction: jest.fn(),
   getSmartTransactionByMinedTxHash: jest.fn(),
+  getRedesignedConfirmationsEnabled: jest.fn(),
+  getMethodData: jest.fn(),
+  getIsRedesignedConfirmationsDeveloperEnabled: jest.fn(),
+  getIsConfirmationAdvancedDetailsOpen: jest.fn(),
 } as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {
@@ -154,6 +156,7 @@ describe('Transaction metrics', () => {
       transaction_speed_up: false,
       transaction_type: TransactionType.simpleSend,
       ui_customizations: null,
+      transaction_advanced_view: null,
     };
 
     expectedSensitiveProperties = {

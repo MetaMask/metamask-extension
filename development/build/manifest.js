@@ -9,6 +9,9 @@ const IS_MV3_ENABLED =
 const baseManifest = IS_MV3_ENABLED
   ? require('../../app/manifest/v3/_base.json')
   : require('../../app/manifest/v2/_base.json');
+const baradDurManifest = IS_MV3_ENABLED
+  ? require('../../app/manifest/v3/_barad_dur.json')
+  : require('../../app/manifest/v2/_barad_dur.json');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 
 const { TASKS, ENVIRONMENT } = require('./constants');
@@ -41,6 +44,7 @@ function createManifestTasks({
         );
         const result = mergeWith(
           cloneDeep(baseManifest),
+          process.env.BARAD_DUR ? cloneDeep(baradDurManifest) : {},
           platformModifications,
           browserVersionMap[platform],
           await getBuildModifications(buildType, platform),
@@ -67,6 +71,7 @@ function createManifestTasks({
       ...manifest.permissions,
       'webRequestBlocking',
       'http://localhost/*',
+      'tabs', // test builds need tabs permission for switchToWindowWithTitle
     ];
   });
 
@@ -76,6 +81,7 @@ function createManifestTasks({
       ...manifest.permissions,
       'webRequestBlocking',
       'http://localhost/*',
+      'tabs', // test builds need tabs permission for switchToWindowWithTitle
     ];
   });
 

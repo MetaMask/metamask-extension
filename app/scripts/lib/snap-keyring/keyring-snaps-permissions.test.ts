@@ -8,6 +8,12 @@ import {
   keyringSnapPermissionsBuilder,
 } from './keyring-snaps-permissions';
 
+const PORTFOLIO_ORIGINS: string[] = [
+  'https://portfolio.metamask.io',
+  'https://dev.portfolio.metamask.io',
+  'https://ramps-dev.portfolio.metamask.io',
+];
+
 describe('keyringSnapPermissionsBuilder', () => {
   const mockController = new SubjectMetadataController({
     subjectCacheLimit: 100,
@@ -23,6 +29,43 @@ describe('keyringSnapPermissionsBuilder', () => {
   mockController.addSubjectMetadata({
     origin: 'https://some-dapp.com',
     subjectType: SubjectType.Website,
+  });
+
+  describe('Portfolio origin', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each(PORTFOLIO_ORIGINS)(
+      'returns the methods that can be called by %s',
+      (origin: string) => {
+        const permissions = keyringSnapPermissionsBuilder(
+          mockController,
+          origin,
+        );
+        expect(permissions()).toStrictEqual([
+          KeyringRpcMethod.ListAccounts,
+          KeyringRpcMethod.GetAccount,
+          KeyringRpcMethod.GetAccountBalances,
+          KeyringRpcMethod.SubmitRequest,
+        ]);
+      },
+    );
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each(PORTFOLIO_ORIGINS)(
+      '%s cannot create an account',
+      (origin: string) => {
+        const permissions = keyringSnapPermissionsBuilder(
+          mockController,
+          origin,
+        );
+        expect(permissions()).not.toContain(KeyringRpcMethod.CreateAccount);
+      },
+    );
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each(PORTFOLIO_ORIGINS)('%s can submit a request', (origin: string) => {
+      const permissions = keyringSnapPermissionsBuilder(mockController, origin);
+      expect(permissions()).toContain(KeyringRpcMethod.SubmitRequest);
+    });
   });
 
   it('returns the methods metamask can call', () => {

@@ -35,7 +35,8 @@ export const useMultichainAccountTotalFiatBalance = (
     isERC721: boolean;
     image: string;
   }[];
-  totalWeiBalance: string;
+  totalWeiBalance?: string;
+  totalBalance?: string;
   loading: boolean;
   orderedTokenList: { iconUrl: string; symbol: string; fiatBalance: string }[];
 } => {
@@ -70,19 +71,14 @@ export const useMultichainAccountTotalFiatBalance = (
     // BalancesController might not have updated it yet!
     return EMPTY_VALUES;
   }
-  const { amount } =
-    balances[account.id][
-      MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19[
-        ticker as keyof typeof MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19
-      ]
-    ];
+  const { amount: balance } = balances[account.id][asset];
 
   const totalFiatBalance =
     getTokenFiatAmount(
       1, // coin to native conversion rate is 1:1
       Number(conversionRate), // native to fiat conversion rate
       currentCurrency,
-      amount,
+      balance,
       ticker,
       false,
       false,
@@ -101,7 +97,7 @@ export const useMultichainAccountTotalFiatBalance = (
   return {
     formattedFiat,
     totalFiatBalance,
-    totalWeiBalance: '', // Not supported
+    totalBalance: balance,
     tokensWithBalances: [], // TODO: support tokens
     loading: false, // TODO: support tokens
     orderedTokenList: [nativeTokenValues], // TODO: support tokens

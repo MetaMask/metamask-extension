@@ -4,6 +4,7 @@ const {
   withFixtures,
   openDapp,
   unlockWallet,
+  openMenuSafe,
   largeDelayMs,
   veryLargeDelayMs,
   WINDOW_TITLES,
@@ -69,9 +70,7 @@ describe('4byte setting', function () {
         await unlockWallet(driver);
 
         // goes to the settings screen
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
 
