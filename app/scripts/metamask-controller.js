@@ -5633,6 +5633,10 @@ export default class MetamaskController extends EventEmitter {
           'SnapInterfaceController:updateInterface',
           origin,
         ),
+        resolveInterface: this.controllerMessenger.call.bind(
+          'SnapInterfaceController:resolveInterface',
+          origin,
+        ),
         getSnap: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:get',
