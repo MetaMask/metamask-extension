@@ -90,12 +90,12 @@ async function requestPermissionsImplementation(
     );
 
     const permissions = getPermissionsForOrigin(origin);
-    const caip25endowment = permissions[Caip25EndowmentPermissionName];
-    const caip25caveat = caip25endowment?.caveats.find(
+    const caip25Endowment = permissions[Caip25EndowmentPermissionName];
+    const caip25Caveat = caip25Endowment?.caveats.find(
       ({ type }) => type === Caip25CaveatType,
     );
-    if (caip25caveat) {
-      const { optionalScopes, ...caveatValue } = caip25caveat.value;
+    if (caip25Caveat) {
+      const { optionalScopes, ...caveatValue } = caip25Caveat.value;
       const optionalScope = {
         methods: validRpcMethods,
         notifications: validNotifications,
@@ -110,7 +110,7 @@ async function requestPermissionsImplementation(
       );
 
       const newOptionalScopes = {
-        ...caip25caveat.value.optionalScopes,
+        ...caip25Caveat.value.optionalScopes,
         [scopeString]: optionalScope,
       };
 
@@ -120,8 +120,8 @@ async function requestPermissionsImplementation(
       });
 
       const sessionScopes = mergeScopes(
-        caip25caveat.value.requiredScopes,
-        caip25caveat.value.optionalScopes,
+        caip25Caveat.value.requiredScopes,
+        caip25Caveat.value.optionalScopes,
       );
 
       Object.entries(sessionScopes).forEach(([_, { accounts }]) => {
@@ -138,7 +138,7 @@ async function requestPermissionsImplementation(
       });
 
       grantedPermissions[RestrictedMethods.eth_accounts] = {
-        ...caip25endowment,
+        ...caip25Endowment,
         parentCapability: RestrictedMethods.eth_accounts,
         caveats: [
           {
@@ -148,7 +148,7 @@ async function requestPermissionsImplementation(
         ],
       };
     } else {
-      const caip25grantedPermissions = grantPermissions({
+      const caip25GrantedPermissions = grantPermissions({
         subject: { origin },
         approvedPermissions: {
           [Caip25EndowmentPermissionName]: {
@@ -172,7 +172,7 @@ async function requestPermissionsImplementation(
       });
 
       grantedPermissions[RestrictedMethods.eth_accounts] = {
-        ...caip25grantedPermissions[Caip25EndowmentPermissionName],
+        ...caip25GrantedPermissions[Caip25EndowmentPermissionName],
         parentCapability: RestrictedMethods.eth_accounts,
         caveats: ethAccountsPermission.caveats,
       };
