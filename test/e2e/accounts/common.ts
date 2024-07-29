@@ -85,6 +85,9 @@ export async function installSnapSimpleKeyring(
     tag: 'button',
   });
 
+  // Wait until popup is closed before proceeding
+  await driver.waitUntilXWindowHandles(2);
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
 
   await driver.waitForSelector({
@@ -122,6 +125,12 @@ export async function importKeyAndSwitch(driver: Driver) {
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Create',
   });
+  // Click the add account button on the naming modal
+  await driver.clickElement({
+    css: '[data-testid="submit-add-account-with-name"]',
+    text: 'Add account',
+  });
+  // Click the ok button on the success modal
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Ok',
@@ -148,6 +157,12 @@ export async function makeNewAccountAndSwitch(driver: Driver) {
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Create',
   });
+  // Click the add account button on the naming modal
+  await driver.clickElement({
+    css: '[data-testid="submit-add-account-with-name"]',
+    text: 'Add account',
+  });
+  // Click the ok button on the success modal
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Ok',
@@ -370,8 +385,14 @@ export async function createBtcAccount(driver: Driver) {
     text: messages.addNewBitcoinAccount.message,
     tag: 'button',
   });
-  await driver.clickElementAndWaitToDisappear({
-    text: 'Create',
-    tag: 'button',
-  });
+  await driver.clickElementAndWaitToDisappear(
+    {
+      text: 'Add account',
+      tag: 'button',
+    },
+    // Longer timeout than usual, this reduces the flakiness
+    // around Bitcoin account creation (mainly required for
+    // Firefox)
+    5000,
+  );
 }

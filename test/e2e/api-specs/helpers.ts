@@ -58,22 +58,18 @@ export const pollForResult = async (
           `return window['${generatedKey}'];`,
         );
 
-        while (result === null) {
-          // Continue polling if result is not set
+        if (result) {
+          // clear the result
+          await driver.executeScript(`delete window['${generatedKey}'];`);
+        } else {
           await driver.delay(500);
-          result = await driver.executeScript(
-            `return window['${generatedKey}'];`,
-          );
         }
-
-        // clear the result
-        await driver.executeScript(`delete window['${generatedKey}'];`);
 
         return result;
       },
     });
   });
-  if (result !== undefined) {
+  if (result !== undefined && result !== null) {
     return result;
   }
   return pollForResult(driver, generatedKey);
@@ -86,50 +82,47 @@ export const createDriverTransport = (driver: Driver) => {
     params: unknown[] | Record<string, unknown>,
   ) => {
     const generatedKey = uuid();
-    return new Promise((resolve, reject) => {
-      const execute = async () => {
-        await addToQueue({
-          name: 'transport',
-          resolve,
-          reject,
-          task: async () => {
-            // don't wait for executeScript to finish window.ethereum promise
-            // we need this because if we wait for the promise to resolve it
-            // will hang in selenium since it can only do one thing at a time.
-            // the workaround is to put the response on window.asyncResult and poll for it.
-            driver.executeScript(
-              ([m, p, g]: [
-                string,
-                unknown[] | Record<string, unknown>,
-                string,
-              ]) => {
-                window[g] = null;
-                window.ethereum
-                  .request({ method: m, params: p })
-                  .then((r: unknown) => {
-                    window[g] = { result: r };
-                  })
-                  .catch((e: ErrorObject) => {
-                    window[g] = {
-                      error: {
-                        code: e.code,
-                        message: e.message,
-                        data: e.data,
-                      },
-                    };
-                  });
-              },
-              method,
-              params,
-              generatedKey,
-            );
+    addToQueue({
+      name: 'transport',
+      resolve: () => {
+        // noop
+      },
+      reject: () => {
+        // noop
+      },
+      task: async () => {
+        // don't wait for executeScript to finish window.ethereum promise
+        // we need this because if we wait for the promise to resolve it
+        // will hang in selenium since it can only do one thing at a time.
+        // the workaround is to put the response on window.asyncResult and poll for it.
+        driver.executeScript(
+          ([m, p, g]: [
+            string,
+            unknown[] | Record<string, unknown>,
+            string,
+          ]) => {
+            window[g] = null;
+            window.ethereum
+              .request({ method: m, params: p })
+              .then((r: unknown) => {
+                window[g] = { result: r };
+              })
+              .catch((e: ErrorObject) => {
+                window[g] = {
+                  error: {
+                    code: e.code,
+                    message: e.message,
+                    data: e.data,
+                  },
+                };
+              });
           },
-        });
-      };
-      return execute();
-    }).then(async () => {
-      const response = await pollForResult(driver, generatedKey);
-      return response;
+          method,
+          params,
+          generatedKey,
+        );
+      },
     });
+    return pollForResult(driver, generatedKey);
   };
 };
