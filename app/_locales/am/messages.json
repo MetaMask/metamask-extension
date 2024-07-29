@@ -69,9 +69,6 @@
   "asset": {
     "message": "ሐብት"
   },
-  "attemptingConnect": {
-    "message": "ከ blockchain ጋር ለመገናኘት መሞከር።"
-  },
   "attributions": {
     "message": "አይነታ"
   },

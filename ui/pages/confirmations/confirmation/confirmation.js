@@ -24,7 +24,6 @@ import {
 import MetaMaskTemplateRenderer from '../../../components/app/metamask-template-renderer';
 import ConfirmationWarningModal from '../components/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { Size, TextColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -529,10 +528,7 @@ export default function ConfirmationPage({
       <div className="confirmation-page__content">
         {templatedValues.networkDisplay ? (
           <Box justifyContent="center" marginTop={2}>
-            <NetworkDisplay
-              indicatorSize={Size.XS}
-              labelProps={{ color: TextColor.textDefault }}
-            />
+            <NetworkDisplay />
           </Box>
         ) : null}
         {

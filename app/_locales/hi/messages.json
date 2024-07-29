@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "स्वैप को मुफ्त में कैंसिल करने की कोशिश करें"
   },
-  "attemptingConnect": {
-    "message": "ब्लॉकचेन से कनेक्ट करने की कोशिश कर रहे हैं।"
-  },
   "attributions": {
     "message": "एट्रीब्यूशन्स"
   },
