@@ -72,6 +72,14 @@ const config: PlaywrightTestConfig = {
         headless: true,
       },
     },
+    {
+      name: 'global',
+      testMatch: '/global/specs/**.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        headless: true,
+      },
+    },
   ],
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
