@@ -81,7 +81,7 @@ describe('Test Snap Images', function () {
         // switch back to test-snaps window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
-        // find and click cat image test
+        // find and click png image test
         await driver.clickElement('#showPNGImage');
 
         // switch to notification window
@@ -89,12 +89,6 @@ describe('Test Snap Images', function () {
 
         // check snaps ui image using waitForSelector
         await driver.waitForSelector('[data-testid="snaps-ui-image"]');
-
-        // click ok to close window
-        await driver.clickElement('[data-testid="confirmation-submit-button"]');
-
-        // switch back to test-snaps window
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
       },
     );
   });
