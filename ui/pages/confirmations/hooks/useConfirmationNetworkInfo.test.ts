@@ -4,19 +4,12 @@ import useConfirmationNetworkInfo from './useConfirmationNetworkInfo';
 
 describe('useConfirmationNetworkInfo', () => {
   it('returns display name and image when confirmation chainId is present', () => {
-    // const providerConfig = {
-    //   chainId: '0x1',
-    //   rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
-    //   ticker: 'ETH',
-    //   type: 'mainnet',
-    // };
     const { result } = renderHookWithProvider(
       () => useConfirmationNetworkInfo(),
       {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          // providerConfig,
           selectedNetworkClientId: 'mainnet',
         },
         confirm: {
@@ -54,35 +47,7 @@ describe('useConfirmationNetworkInfo', () => {
     );
 
     expect(result.current.networkDisplayName).toBe('Custom Mainnet RPC');
-    // note: images arent supported in state, i think?
-    // expect(result.current.networkImageUrl).toBe('./some_image');
   });
-
-  // // todo shouldnt be possible now? cant have providerconfig with chain id that doesnt match a network
-  // it('should return empty strings if no matching network is found', () => {
-  //   const { result } = renderHookWithProvider(
-  //     () => useConfirmationNetworkInfo(),
-  //     {
-  //       ...mockState,
-  //       metamask: {
-  //         ...mockState.metamask,
-  //         selectedNetworkClientId: 'networkClientId',
-  //         networkConfigurations: {
-  //           networkClientId: {
-  //             id: 'networkClientId',
-  //             chainId: '0x7',
-  //           },
-  //         },
-  //       },
-  //       confirm: {
-  //         currentConfirmation: { id: '1', msgParams: {} },
-  //       },
-  //     },
-  //   );
-
-  //   expect(result.current.networkDisplayName).toBe('');
-  //   expect(result.current.networkImageUrl).toBe('');
-  // });
 
   it('returns correct details about custom network whose chainId is same as a network pre-defined in extension', () => {
     const customNetwork = {

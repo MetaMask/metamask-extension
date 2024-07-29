@@ -57,13 +57,6 @@ describe('Selectors', () => {
           liveness: true,
         },
         selectedNetworkClientId: 'mainnet',
-        // networkConfigurations: {
-        //   'network-configuration-id-1': {
-        //     chainId: CHAIN_IDS.MAINNET,
-        //     ticker: CURRENCY_SYMBOLS.ETH,
-        //     rpcUrl: 'https://mainnet.infura.io/v3/',
-        //   },
-        // },
       },
     };
   };
