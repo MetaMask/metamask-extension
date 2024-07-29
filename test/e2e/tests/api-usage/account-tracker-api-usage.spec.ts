@@ -5,6 +5,7 @@ import {
   withFixtures,
   defaultGanacheOptions,
   unlockWallet,
+  veryLargeDelayMs,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
@@ -112,7 +113,7 @@ describe('Account Tracker API Usage', function () {
         driver: Driver;
         mockedEndpoint: MockedEndpoint[];
       }) => {
-        await driver.delay(3000);
+        await driver.delay(veryLargeDelayMs);
         let allInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
           mockedEndpoint,
         );
@@ -129,7 +130,7 @@ describe('Account Tracker API Usage', function () {
         );
 
         await unlockWallet(driver);
-        await driver.delay(3000);
+        await driver.delay(veryLargeDelayMs);
 
         allInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
           mockedEndpoint,
@@ -171,7 +172,7 @@ describe('Account Tracker API Usage', function () {
         mockedEndpoint: MockedEndpoint[];
       }) => {
         await unlockWallet(driver);
-        await driver.delay(3000);
+        await driver.delay(veryLargeDelayMs);
         const initialInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
           mockedEndpoint,
         );
