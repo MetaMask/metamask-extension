@@ -1798,7 +1798,8 @@ export default class MetamaskController extends EventEmitter {
           `${this.loggingController.name}:add`,
         ],
       }),
-      isEthSignEnabled: false,
+      // TODO remove this option
+      isEthSignEnabled: () => false,
       getAllState: this.getState.bind(this),
       getCurrentChainId: () =>
         this.networkController.state.providerConfig.chainId,
