@@ -5,6 +5,11 @@ $link-title-width: 160px;
 $spacer-break-large: 24px;
 $spacer-break-small: 16px;
 
+.tokenId-popover {
+  max-width: 228px;
+  word-wrap: break-word;
+}
+
 .buttonDescriptionContainer {
   position: absolute;
   bottom: 0;

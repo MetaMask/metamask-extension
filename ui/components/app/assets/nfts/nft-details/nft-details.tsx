@@ -77,6 +77,8 @@ import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
 
+const MAX_TOKEN_ID_LENGTH = 15;
+
 export default function NftDetails({ nft }: { nft: Nft }) {
   const {
     image,
@@ -298,6 +300,13 @@ export default function NftDetails({ nft }: { nft: Nft }) {
       .toNumber();
 
     return formatCurrency(new Numeric(value, 10).toString(), currency);
+  };
+
+  const renderShortTokenId = (text: string, chars: number) => {
+    if (text.length <= MAX_TOKEN_ID_LENGTH) {
+      return text;
+    }
+    return `${text.slice(0, chars + 2)}...${text.slice(-chars)}`;
   };
 
   return (
@@ -608,7 +617,12 @@ export default function NftDetails({ nft }: { nft: Nft }) {
               }
             />
           ) : null}
-          <NftDetailInformationRow title={t('tokenId')} value={tokenId} />
+          <NftDetailInformationRow
+            title={t('tokenId')}
+            value={renderShortTokenId(tokenId, 5)}
+            fullValue={tokenId}
+            withPopover={tokenId.length > MAX_TOKEN_ID_LENGTH}
+          />
           <NftDetailInformationRow
             title={t('tokenSymbol')}
             value={collection?.symbol}
