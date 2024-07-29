@@ -38,7 +38,7 @@ export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioProps> = ({
   type RadioOptions = [{ value: string; name: string }];
 
   useEffect(() => {
-    if (initialValue) {
+    if (initialValue && value !== initialValue) {
       setValue(initialValue);
     }
   }, [initialValue]);
