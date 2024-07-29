@@ -191,7 +191,7 @@ async function addEthereumChainHandler<
     } catch (error: unknown) {
       endApprovalFlow({ id: approvalFlowId });
       // TODO: Remove at `@metamask/json-rpc-engine@8.0.2`: `JsonRpcEngineEndCallback` (type of `end`), is redefined from `(error?: JsonRpcEngineCallbackError) => void` to `(error?: unknown) => void`.
-    // @ts-expect-error intentionally passing unhandled error of any type into `end`
+      // @ts-expect-error intentionally passing unhandled error of any type into `end`
       return end(error);
     }
 
