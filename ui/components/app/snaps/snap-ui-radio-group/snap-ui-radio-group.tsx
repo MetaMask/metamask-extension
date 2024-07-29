@@ -14,11 +14,13 @@ import {
   Text,
 } from '../../../component-library';
 
+export type SnapUIRadioOption = { value: string; name: string };
+
 export type SnapUIRadioProps = {
   name: string;
   label?: string;
   error?: string;
-  options: { name: string; value: string }[];
+  options: SnapUIRadioOption[];
   form?: string;
 };
 
@@ -35,8 +37,6 @@ export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioProps> = ({
 
   const [value, setValue] = useState(initialValue ?? '');
 
-  type RadioOptions = [{ value: string; name: string }];
-
   useEffect(() => {
     if (initialValue && value !== initialValue) {
       setValue(initialValue);
@@ -48,8 +48,8 @@ export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioProps> = ({
     handleInputChange(name, newValue, form);
   };
 
-  const displayRadioOptions = (options: RadioOptions) => {
-    return options.map((option: { value: string; name: string }) => {
+  const displayRadioOptions = (options: SnapUIRadioOption[]) => {
+    return options.map((option: SnapUIRadioOption) => {
       return (
         <Box display={Display.Flex} alignItems={AlignItems.center}>
           <input
@@ -80,7 +80,7 @@ export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioProps> = ({
       flexDirection={FlexDirection.Column}
     >
       {label && <Label htmlFor={name}>{label}</Label>}
-      {displayRadioOptions(props.options as RadioOptions)}
+      {displayRadioOptions(props.options)}
       {error && (
         <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
           {error}
