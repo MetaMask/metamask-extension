@@ -19,8 +19,8 @@ export function showInteractiveReplacementTokenBanner({
   url,
   oldRefreshToken,
 }: {
-  url: string;
-  oldRefreshToken: string;
+  url?: string;
+  oldRefreshToken?: string;
 }) {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {

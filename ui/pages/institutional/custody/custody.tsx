@@ -9,6 +9,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import Fuse from 'fuse.js';
+import { Location as HistoryLocation } from 'history';
+import { ICustodianType } from '@metamask-institutional/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -19,6 +21,8 @@ import {
   Box,
   Text,
   TextFieldSearch,
+  TextFieldSearchSize,
+  ButtonIconSize,
 } from '../../../components/component-library';
 import {
   AlignItems,
@@ -30,7 +34,6 @@ import {
   BlockSize,
   TextAlign,
   BackgroundColor,
-  Size,
 } from '../../../helpers/constants/design-system';
 import {
   CUSTODY_ACCOUNT_DONE_ROUTE,
@@ -57,6 +60,60 @@ import ManualConnectCustodian from '../manual-connect-custodian';
 import CustodianAccountsConnected from '../custodian-accounts-connected';
 import CustodianListView from '../custodian-list-view';
 
+export type LabelItem = {
+  key: string;
+  value: string;
+};
+
+export type CustodianDetails = {
+  coin: string;
+  id: string;
+};
+
+export type Account = {
+  address: string;
+  name: string;
+  custodianDetails?: CustodianDetails;
+  labels?: LabelItem[];
+  chainId?: string;
+  balance?: string;
+  token?: string;
+};
+
+/**
+ * @todo - Remove after MetaMask Institutional 778 PR is merged
+ * and a new version for the package 'types' has been published
+ * with the new ICustodianType
+ */
+type Custodian = {
+  type: string;
+  iconUrl: string;
+  name: string;
+  onboardingUrl: string;
+  website: string;
+  envName: string;
+  apiUrl: string;
+  apiVersion: string;
+  displayName: string;
+  refreshTokenUrl: string;
+  websocketApiUrl: string;
+  isNoteToTraderSupported: boolean;
+  isQRCodeSupported: boolean;
+  isManualTokenInputSupported?: boolean;
+  custodianPublishesTransaction: boolean;
+};
+
+type AccountDetails = {
+  name: string;
+  custodianDetails?: CustodianDetails;
+  labels?: LabelItem[];
+  chainId?: string;
+  balance?: string;
+  token: string;
+  custodyType: string;
+  custodyName: string;
+};
+
 const CustodyPage = () => {
   const t = useI18nContext();
   const history = useHistory();
@@ -73,33 +130,44 @@ const CustodyPage = () => {
     setIsConfirmConnectCustodianModalVisible,
   ] = useState(false);
   const [selectedAccounts, setSelectedAccounts] = useState({});
-  const [selectedCustodianName, setSelectedCustodianName] = useState('');
-  const [selectedCustodianImage, setSelectedCustodianImage] = useState(null);
+  const [selectedCustodianName, setSelectedCustodianName] = useState<
+    string | null
+  >('');
+  const [selectedCustodianImage, setSelectedCustodianImage] = useState<
+    string | null
+  >(null);
+
   const [selectedCustodianDisplayName, setSelectedCustodianDisplayName] =
     useState('');
-  const [matchedCustodian, setMatchedCustodian] = useState(null);
-  const [selectedCustodianType, setSelectedCustodianType] = useState('');
+  const [matchedCustodian, setMatchedCustodian] = useState<Custodian | null>();
+  const [selectedCustodianType, setSelectedCustodianType] = useState<
+    string | null
+  >('');
   const [connectError, setConnectError] = useState('');
-  const [currentJwt, setCurrentJwt] = useState('');
+  const [currentJwt, setCurrentJwt] = useState<string>('');
   const [selectError, setSelectError] = useState('');
-  const [jwtList, setJwtList] = useState([]);
+  const [jwtList, setJwtList] = useState<string[]>([]);
   const [addNewTokenClicked, setAddNewTokenClicked] = useState(false);
   const [chainId, setChainId] = useState(parseInt(currentChainId, 16));
-  const [accounts, setAccounts] = useState();
+  const [accounts, setAccounts] = useState<Account[] | undefined | null>();
   const [showQRCodeModal, setShowQRCodeModal] = useState(false);
-  const [qrConnectionRequest, setQrConnectionRequest] = useState(null);
+  const [qrConnectionRequest, setQrConnectionRequest] = useState<string | null>(
+    null,
+  );
   const [searchQuery, setSearchQuery] = useState('');
   const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
   const { address } = useSelector(getSelectedInternalAccount);
   const connectRequest = connectRequests ? connectRequests[0] : undefined;
-  const isCheckBoxSelected =
-    accounts && Object.keys(selectedAccounts).length === accounts.length;
+
+  const isCheckBoxSelected = Boolean(
+    accounts && Object.keys(selectedAccounts).length === accounts.length,
+  );
   const custodianURL =
     matchedCustodian?.onboardingUrl || matchedCustodian?.website;
 
   let searchResults = accounts;
 
-  if (searchQuery) {
+  if (searchQuery && accounts) {
     const fuse = new Fuse(accounts, {
       threshold: 0.0,
       location: 0,
@@ -115,13 +183,13 @@ const CustodyPage = () => {
   }
 
   const custodianListViewItems = useMemo(() => {
-    const custodianItems = [];
+    const custodianItems: React.ReactNode[] = [];
 
     const sortedCustodians = [...custodians].sort((a, b) =>
       a.envName.toLowerCase().localeCompare(b.envName.toLowerCase()),
     );
 
-    function shouldShowInProduction(custodian) {
+    function shouldShowInProduction(custodian: ICustodianType) {
       return (
         'production' in custodian &&
         !custodian.production &&
@@ -129,11 +197,11 @@ const CustodyPage = () => {
       );
     }
 
-    function isHidden(custodian) {
+    function isHidden(custodian: ICustodianType) {
       return 'hidden' in custodian && custodian.hidden;
     }
 
-    function isNotSelectedCustodian(custodian) {
+    function isNotSelectedCustodian(custodian: ICustodianType) {
       return (
         'envName' in custodian &&
         connectRequest &&
@@ -142,14 +210,15 @@ const CustodyPage = () => {
       );
     }
 
-    async function handleButtonClick(custodian) {
+    async function handleButtonClick(custodian: Custodian) {
       try {
         const custodianByDisplayName = findCustodianByEnvName(
           custodian.envName,
           custodians,
-        );
+        ) as Custodian | null;
 
-        const jwtListValue = await dispatch(
+        // @ts-expect-error todo - come back later
+        const jwtListValue: string[] = await dispatch(
           mmiActions.getCustodianJWTList(custodian.envName),
         );
 
@@ -159,11 +228,11 @@ const CustodyPage = () => {
         setCurrentJwt(jwtListValue[0] || '');
         setJwtList(jwtListValue);
 
-        if (custodianByDisplayName.isManualTokenInputSupported) {
+        if (custodianByDisplayName?.isManualTokenInputSupported) {
           setSelectedCustodianType(custodian.type);
         } else {
           setMatchedCustodian(custodianByDisplayName);
-          custodianByDisplayName.isQRCodeSupported
+          custodianByDisplayName?.isQRCodeSupported
             ? setShowQRCodeModal(true)
             : setIsConfirmConnectCustodianModalVisible(true);
         }
@@ -237,7 +306,7 @@ const CustodyPage = () => {
 
   const handleConnectError = useCallback(
     (e) => {
-      const getErrorMessage = (error) => {
+      const getErrorMessage = (error: Error) => {
         const detailedError = error.message.split(':');
         const errorCode = parseInt(detailedError[0], 10);
 
@@ -300,14 +369,14 @@ const CustodyPage = () => {
           setConnectError('');
           setQrConnectionRequest(null);
 
-          const accountsValue = await dispatch(
+          const accountsValue = (await dispatch(
             mmiActions.getCustodianAccounts(
               custodianToken,
               custodianName || custodianType,
               custodianType,
               true,
             ),
-          );
+          )) as unknown as Account[];
 
           setAccounts(accountsValue);
 
@@ -342,7 +411,6 @@ const CustodyPage = () => {
     };
 
     handleFetchConnectRequest();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -350,27 +418,25 @@ const CustodyPage = () => {
       if (!isNaN(chainId)) {
         const jwt = currentJwt || jwtList[0];
 
-        if (jwt && jwt.length) {
+        if (jwt?.length && selectedCustodianName && selectedCustodianType) {
           setAccounts(
-            await dispatch(
+            (await dispatch(
               mmiActions.getCustodianAccounts(
                 jwt,
                 selectedCustodianName,
                 selectedCustodianType,
                 true,
               ),
-            ),
+            )) as unknown as Account[],
           );
         }
       }
     }
 
-    if (parseInt(chainId, 16) !== chainId) {
+    if (parseInt(String(chainId), 16) !== chainId) {
       setChainId(parseInt(currentChainId, 16));
       handleNetworkChange();
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentChainId]);
 
   useEffect(() => {
@@ -395,25 +461,40 @@ const CustodyPage = () => {
       : global.platform.closeCurrentWindow();
   };
 
-  const setSelectAllAccounts = (e) => {
-    const allAccounts = {};
+  const setSelectAllAccounts = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const allAccounts: {
+      [key: string]: {
+        name: string;
+        custodianDetails?: CustodianDetails;
+        token: string;
+        labels?: LabelItem[];
+        chainId?: string;
+        custodyType: string;
+        custodyName: string;
+      };
+    } = {};
 
     if (e.currentTarget.checked) {
-      accounts.forEach((account) => {
-        allAccounts[account.address] = {
-          name: account.name,
-          custodianDetails: account.custodianDetails,
-          labels: account.labels,
-          token: currentJwt,
-          chainId: account.chainId,
-          custodyType: selectedCustodianType,
-          custodyName: selectedCustodianName,
-        };
-      });
+      accounts &&
+        accounts.forEach((account) => {
+          allAccounts[account.address] = {
+            name: account.name,
+            custodianDetails: account.custodianDetails,
+            labels: account.labels,
+            token: currentJwt,
+            chainId: account.chainId,
+            custodyType: selectedCustodianType || '',
+            custodyName: selectedCustodianName || '',
+          };
+        });
       setSelectedAccounts(allAccounts);
     } else {
       setSelectedAccounts({});
     }
+  };
+
+  const _setQrConnectionRequest = (message: string) => {
+    setQrConnectionRequest(message);
   };
 
   if (loading) {
@@ -454,7 +535,7 @@ const CustodyPage = () => {
           jwtList={jwtList}
           token={currentJwt}
           loading={loading}
-          custodianName={selectedCustodianName}
+          custodianName={selectedCustodianName || t('custodian')}
           custodianType={selectedCustodianType}
           addNewTokenClicked={addNewTokenClicked}
           connectRequest={connectRequest}
@@ -471,10 +552,11 @@ const CustodyPage = () => {
       {accounts && accounts.length > 0 && (
         <CustodyAccountList
           custody={selectedCustodianName}
-          accounts={searchResults}
+          accounts={searchResults || []}
           onAccountChange={(account) => {
             setSelectedAccounts((prevSelectedAccounts) => {
-              const updatedSelectedAccounts = { ...prevSelectedAccounts };
+              const updatedSelectedAccounts: { [key: string]: AccountDetails } =
+                { ...prevSelectedAccounts };
 
               if (updatedSelectedAccounts[account.address]) {
                 delete updatedSelectedAccounts[account.address];
@@ -485,8 +567,8 @@ const CustodyPage = () => {
                   labels: account.labels,
                   token: currentJwt,
                   chainId: account.chainId,
-                  custodyType: selectedCustodianType,
-                  custodyName: selectedCustodianName,
+                  custodyType: selectedCustodianType || '',
+                  custodyName: selectedCustodianName || '',
                 };
               }
 
@@ -497,19 +579,24 @@ const CustodyPage = () => {
           onAddAccounts={async () => {
             try {
               const selectedCustodian = custodians.find(
-                (custodian) => custodian.envName === selectedCustodianName,
+                (custodian: ICustodianType) =>
+                  custodian.envName === selectedCustodianName,
               );
-              const firstAccountId = Object.keys(selectedAccounts).shift();
+              const firstAccountId: string | undefined =
+                Object.keys(selectedAccounts).shift();
 
-              await dispatch(
-                mmiActions.connectCustodyAddresses(
-                  selectedCustodianType,
-                  selectedCustodianName,
-                  selectedAccounts,
-                ),
-              );
+              if (selectedCustodianType && selectedCustodianName) {
+                await dispatch(
+                  mmiActions.connectCustodyAddresses(
+                    selectedCustodianType,
+                    selectedCustodianName,
+                    selectedAccounts as string[],
+                  ),
+                );
+              }
 
-              dispatch(setSelectedInternalAccount(firstAccountId));
+              firstAccountId &&
+                dispatch(setSelectedInternalAccount(firstAccountId));
 
               trackEvent({
                 category: MetaMetricsEventCategory.MMI,
@@ -523,19 +610,25 @@ const CustodyPage = () => {
 
               await removeConnectRequest();
 
-              history.push({
+              const state = {
+                imgSrc: selectedCustodian?.iconUrl,
+                title: t('custodianAccountAddedTitle', [
+                  selectedCustodian?.displayName || 'Custodian',
+                ]),
+                description: t('custodianAccountAddedDesc'),
+              };
+              const newLocation: Partial<HistoryLocation> = {
                 pathname: CUSTODY_ACCOUNT_DONE_ROUTE,
-                state: {
-                  imgSrc: selectedCustodian && selectedCustodian.iconUrl,
-                  title: t('custodianAccountAddedTitle', [
-                    (selectedCustodian && selectedCustodian.displayName) ||
-                      'Custodian',
-                  ]),
-                  description: t('custodianAccountAddedDesc'),
-                },
-              });
+                state,
+              };
+
+              history.push(newLocation);
             } catch (e) {
-              setSelectError(e.message);
+              if (e instanceof Error) {
+                setSelectError(e.message);
+              } else {
+                setSelectError('An unknown error occurred');
+              }
             }
           }}
           onCancel={async () => {
@@ -568,14 +661,14 @@ const CustodyPage = () => {
           {accounts.length > 1 ? (
             <Box paddingBottom={4} paddingTop={0}>
               <TextFieldSearch
-                size={Size.SM}
+                size={TextFieldSearchSize.Sm}
                 width={BlockSize.Full}
                 placeholder={t('searchAccounts')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 clearButtonOnClick={() => setSearchQuery('')}
                 clearButtonProps={{
-                  size: Size.SM,
+                  size: ButtonIconSize.Sm,
                 }}
                 inputProps={{ autoFocus: true }}
               />
@@ -593,8 +686,7 @@ const CustodyPage = () => {
               id="selectAllAccounts"
               data-testid={`select-all-accounts-selected-${isCheckBoxSelected}`}
               name="selectAllAccounts"
-              marginLeft={2}
-              value={{}}
+              value={''}
               onChange={(e) => setSelectAllAccounts(e)}
               checked={isCheckBoxSelected}
             />
@@ -624,7 +716,7 @@ const CustodyPage = () => {
           }}
           custodianName={selectedCustodianDisplayName}
           custodianURL={custodianURL}
-          setQrConnectionRequest={setQrConnectionRequest}
+          setQrConnectionRequest={_setQrConnectionRequest}
         />
       )}
     </Box>
