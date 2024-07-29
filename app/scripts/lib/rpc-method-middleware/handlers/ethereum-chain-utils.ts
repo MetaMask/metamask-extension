@@ -1,5 +1,15 @@
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import { ApprovalType } from '@metamask/controller-utils';
+import {
+  Hex,
+  Json,
+  JsonRpcParams,
+  JsonRpcRequest,
+  JsonRpcResponse,
+  isJsonRpcError,
+} from '@metamask/utils';
+import { JsonRpcEngineEndCallback } from 'json-rpc-engine';
+import { OriginString } from '@metamask/permission-controller';
 
 import {
   BUILT_IN_INFURA_NETWORKS,
@@ -16,12 +26,25 @@ import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
 import { PermissionNames } from '../../../controllers/permissions';
 import { getValidUrl } from '../../util';
+import {
+  EndApprovalFlow,
+  FindNetworkConfigurationBy,
+  GetCaveat,
+  GetChainPermissionsFeatureFlag,
+  RequestPermittedChainsPermission,
+  RequestUserApproval,
+  SetActiveNetwork,
+} from './types';
 
-export function findExistingNetwork(chainId, findNetworkConfigurationBy) {
+export function findExistingNetwork(
+  chainId: Hex,
+  findNetworkConfigurationBy: FindNetworkConfigurationBy,
+) {
   if (
-    Object.values(BUILT_IN_INFURA_NETWORKS)
-      .map(({ chainId: id }) => id)
-      .includes(chainId)
+    ((inputId: Hex): inputId is keyof typeof CHAIN_ID_TO_TYPE_MAP =>
+      Object.values(BUILT_IN_INFURA_NETWORKS)
+        .map(({ chainId: id }) => id)
+        .find((id) => id === inputId) !== undefined)(chainId)
   ) {
     return {
       chainId,
@@ -34,8 +57,9 @@ export function findExistingNetwork(chainId, findNetworkConfigurationBy) {
   return findNetworkConfigurationBy({ chainId });
 }
 
-export function validateChainId(chainId) {
-  const _chainId = typeof chainId === 'string' && chainId.toLowerCase();
+export function validateChainId(chainId: Hex): Hex {
+  const _chainId = chainId.toLowerCase() as Hex;
+
   if (!isPrefixedFormattedHexString(_chainId)) {
     throw ethErrors.rpc.invalidParams({
       message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
@@ -51,7 +75,9 @@ export function validateChainId(chainId) {
   return _chainId;
 }
 
-export function validateSwitchEthereumChainParams(req, end) {
+export function validateSwitchEthereumChainParams<
+  Params extends JsonRpcParams = { chainId: Hex } & JsonRpcParams,
+>(req: JsonRpcRequest<Params>) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
     throw ethErrors.rpc.invalidParams({
       message: `Expected single, object parameter. Received:\n${JSON.stringify(
@@ -69,10 +95,14 @@ export function validateSwitchEthereumChainParams(req, end) {
     });
   }
 
-  return validateChainId(chainId, end);
+  return validateChainId(chainId);
 }
 
-export function validateAddEthereumChainParams(params, end) {
+export function validateAddEthereumChainParams(
+  params: {
+    chainId: Hex;
+  } & Record<string, Json>,
+) {
   if (!params || typeof params !== 'object') {
     throw ethErrors.rpc.invalidParams({
       message: `Expected single, object parameter. Received:\n${JSON.stringify(
@@ -101,14 +131,14 @@ export function validateAddEthereumChainParams(params, end) {
     });
   }
 
-  const _chainId = validateChainId(chainId, end);
+  const _chainId = validateChainId(chainId);
   if (!rpcUrls || !Array.isArray(rpcUrls) || rpcUrls.length === 0) {
     throw ethErrors.rpc.invalidParams({
       message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
     });
   }
 
-  const isLocalhostOrHttps = (urlString) => {
+  const isLocalhostOrHttps = (urlString: string) => {
     const url = getValidUrl(urlString);
     return (
       url !== null &&
@@ -118,11 +148,15 @@ export function validateAddEthereumChainParams(params, end) {
     );
   };
 
-  const firstValidRPCUrl = rpcUrls.find((rpcUrl) => isLocalhostOrHttps(rpcUrl));
+  const firstValidRPCUrl = rpcUrls.find(
+    (rpcUrl) => typeof rpcUrl === 'string' && isLocalhostOrHttps(rpcUrl),
+  );
   const firstValidBlockExplorerUrl =
     blockExplorerUrls !== null && Array.isArray(blockExplorerUrls)
-      ? blockExplorerUrls.find((blockExplorerUrl) =>
-          isLocalhostOrHttps(blockExplorerUrl),
+      ? blockExplorerUrls.find(
+          (blockExplorerUrl) =>
+            typeof blockExplorerUrl === 'string' &&
+            isLocalhostOrHttps(blockExplorerUrl),
         )
       : null;
 
@@ -185,14 +219,14 @@ export function validateAddEthereumChainParams(params, end) {
   };
 }
 
-export async function switchChain(
-  res,
-  end,
-  origin,
-  chainId,
-  requestData,
-  networkClientId,
-  approvalFlowId,
+export async function switchChain<Result extends Json = Json>(
+  res: JsonRpcResponse<Result>,
+  end: JsonRpcEngineEndCallback,
+  origin: OriginString,
+  chainId: Hex,
+  requestData: Record<string, Json>,
+  networkClientId: string,
+  approvalFlowId: string,
   {
     getChainPermissionsFeatureFlag,
     setActiveNetwork,
@@ -200,6 +234,13 @@ export async function switchChain(
     requestUserApproval,
     getCaveat,
     requestPermittedChainsPermission,
+  }: {
+    getChainPermissionsFeatureFlag: GetChainPermissionsFeatureFlag;
+    setActiveNetwork: SetActiveNetwork;
+    endApprovalFlow: EndApprovalFlow;
+    requestUserApproval: RequestUserApproval;
+    getCaveat: GetCaveat;
+    requestPermittedChainsPermission: RequestPermittedChainsPermission;
   },
 ) {
   try {
@@ -210,10 +251,7 @@ export async function switchChain(
           caveatType: CaveatTypes.restrictNetworkSwitching,
         }) ?? {};
 
-      if (
-        permissionedChainIds === undefined ||
-        !permissionedChainIds.includes(chainId)
-      ) {
+      if (!permissionedChainIds?.includes(chainId)) {
         await requestPermittedChainsPermission([
           ...(permissionedChainIds ?? []),
           chainId,
@@ -229,19 +267,22 @@ export async function switchChain(
 
     await setActiveNetwork(networkClientId);
     res.result = null;
-  } catch (error) {
+  } catch (error: unknown) {
     // We don't want to return an error if user rejects the request
     // and this is a chained switch request after wallet_addEthereumChain.
     // approvalFlowId is only defined when this call is of a
     // wallet_addEthereumChain request so we can use it to determine
     // if we should return an error
     if (
+      isJsonRpcError(error) &&
       error.code === errorCodes.provider.userRejectedRequest &&
       approvalFlowId
     ) {
       res.result = null;
       return end();
     }
+    // TODO: Remove at `@metamask/json-rpc-engine@8.0.2`: `JsonRpcEngineEndCallback` (type of `end`), is redefined from `(error?: JsonRpcEngineCallbackError) => void` to `(error?: unknown) => void`.
+    // @ts-expect-error intentionally passing unhandled error of any type into `end`
     return end(error);
   } finally {
     if (approvalFlowId) {
