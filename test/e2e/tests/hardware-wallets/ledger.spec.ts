@@ -245,7 +245,7 @@ describe('Ledger Hardware', function () {
         await buildQuote(driver, {
           amount: 1,
           swapTo: 'USDC',
-          hardwareWallet: true
+          hardwareWallet: true,
         });
         await reviewQuote(driver, {
           amount: 1,

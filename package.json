@@ -447,6 +447,7 @@
     "@lavamoat/allow-scripts": "^3.0.4",
     "@lavamoat/lavadome-core": "0.0.10",
     "@lavamoat/lavapack": "^6.1.0",
+    "@ledgerhq/hw-app-eth": "6.26.1",
     "@lgbot/madge": "^6.2.0",
     "@metamask/api-specs": "^0.9.3",
     "@metamask/auto-changelog": "^2.1.0",
@@ -708,7 +709,8 @@
       "tsx>esbuild": false,
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": false,
       "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false,
-      "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false
+      "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false,
+      "@ledgerhq/hw-app-eth>@ledgerhq/domain-service>eip55>keccak": false
     }
   },
   "packageManager": "yarn@4.2.2"

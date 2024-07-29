@@ -928,7 +928,11 @@ function setupBundlerDefaults(
       [
         babelify,
         {
-          only: ['./**/node_modules/firebase', './**/node_modules/@firebase'],
+          only: [
+            './**/node_modules/firebase',
+            './**/node_modules/@firebase',
+            // './**/node_modules/@ledgerHQ/hw-app-eth',
+          ],
           global: true,
         },
       ],

@@ -1,3 +1,5 @@
+import LedgerHWAppEth from '@ledgerHQ/hw-app-eth';
+
 export const KNOWN_PUBLIC_KEY =
   '02065bc80d3d12b3688e4ad5ab1e9eda6adf24aec2518bfc21b87c99d4c5077ab0';
 
@@ -83,7 +85,8 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
     return true;
   }
 
-  async deviceSignTransaction() {
+  async deviceSignTransaction(params) {
+    console.log('============> params', params);
     return Promise.resolve({ v: '', r: '', s: '' });
   }
 }
