@@ -278,7 +278,7 @@ export function getAccountTypeForKeyring(keyring) {
 /**
  * Get MetaMask accounts, including account name and balance.
  */
-export const getMetaMaskAccounts = createSelector(
+export const getMetaMaskAccounts = createDeepEqualSelector(
   getInternalAccounts,
   getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
@@ -392,7 +392,7 @@ export function getInternalAccount(state, accountId) {
  * @param accounts - The object containing the accounts.
  * @returns The array of internal accounts sorted by keyring.
  */
-export const getInternalAccountsSortedByKeyring = createSelector(
+export const getInternalAccountsSortedByKeyring = createDeepEqualSelector(
   getMetaMaskKeyrings,
   getMetaMaskAccounts,
   (keyrings, accounts) => {
@@ -445,7 +445,7 @@ export function getMetaMaskCachedBalances(state) {
 /**
  * Get ordered (by keyrings) accounts with InternalAccount and balance
  */
-export const getMetaMaskAccountsOrdered = createSelector(
+export const getMetaMaskAccountsOrdered = createDeepEqualSelector(
   getInternalAccountsSortedByKeyring,
   getMetaMaskAccounts,
   (internalAccounts, accounts) => {
