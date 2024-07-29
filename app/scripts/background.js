@@ -1244,6 +1244,7 @@ async function initBackground() {
         window.document?.documentElement?.classList.add('controller-loaded');
       }
     }
+    localStore.cleanUpMostRecentRetrievedState();
   } catch (error) {
     log.error(error);
   }

@@ -113,4 +113,31 @@ describe('LocalStore', () => {
       expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
     });
   });
+
+  describe('cleanUpMostRecentRetrievedState', () => {
+    it('should set mostRecentRetrievedState to null if it is defined', async () => {
+      const localStore = setup({
+        localMock: {
+          get: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({ appState: { test: true } }),
+            ),
+        },
+      });
+      await localStore.get();
+
+      // mostRecentRetrievedState should be { appState: { test: true } } at this stage
+      await localStore.cleanUpMostRecentRetrievedState();
+      expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
+    });
+
+    it('should not set mostRecentRetrievedState if it is null', async () => {
+      const localStore = setup();
+
+      expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
+      await localStore.cleanUpMostRecentRetrievedState();
+      expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
+    });
+  });
 });

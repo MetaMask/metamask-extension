@@ -63,6 +63,7 @@ export default class ExtensionStore {
     if (!this.isSupported) {
       return undefined;
     }
+
     const result = await this._get();
     // extension.storage.local always returns an obj
     // if the object is empty, treat it as undefined
@@ -113,6 +114,12 @@ export default class ExtensionStore {
         }
       });
     });
+  }
+
+  cleanUpMostRecentRetrievedState() {
+    if (this.mostRecentRetrievedState) {
+      this.mostRecentRetrievedState = null;
+    }
   }
 }
 
