@@ -3,7 +3,7 @@ import { Scope } from './scope';
 
 // per scope middleware to handle legacy middleware
 export default class MultichainMiddlewareManager {
-  private middlewaresByScope: Record<Scope, any> = {};
+  private middlewaresByScope: Record<Scope, { destroy: () => void }> = {};
 
   private middlewareCountByDomainAndScope: Record<
     Scope,
@@ -11,8 +11,7 @@ export default class MultichainMiddlewareManager {
   > = {};
 
   removeMiddleware(scope: Scope, domain?: string) {
-    this.middlewareCountByDomainAndScope[scope] =
-      this.middlewareCountByDomainAndScope[scope] || {};
+    this.middlewareCountByDomainAndScope[scope] ??= {};
     if (domain) {
       this.middlewareCountByDomainAndScope[scope][domain] -= 1;
     }

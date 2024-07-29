@@ -7,7 +7,7 @@ import { parseCaipChainId } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { Scope } from './scope';
 
-type SubscriptionManager = {
+export type SubscriptionManager = {
   events: {
     on: (
       event: string,
@@ -64,9 +64,6 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
   }
 
   subscribe(scope: Scope, domain: string) {
-    this.subscriptionsCountByScope[scope] =
-      this.subscriptionsCountByScope[scope] || 0;
-    this.subscriptionsCountByScope[scope] += 1;
     let subscriptionManager;
     if (this.subscriptionManagerByChain[scope]) {
       subscriptionManager = this.subscriptionManagerByChain[scope];
@@ -91,6 +88,8 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
       'notification',
       this.subscriptionsByChain[scope][domain],
     );
+    this.subscriptionsCountByScope[scope] ??= 0;
+    this.subscriptionsCountByScope[scope] += 1;
     return subscriptionManager;
   }
 
