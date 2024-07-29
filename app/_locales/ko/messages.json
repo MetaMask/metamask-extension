@@ -278,7 +278,13 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "새 계정 추가"
+    "message": "새 이더리움 계정 추가"
+  },
+  "addNewBitcoinAccount": {
+    "message": "새 비트코인 계정 추가(베타)"
+  },
+  "addNewBitcoinTestnetAccount": {
+    "message": "새 비트코인 계정 추가(테스트넷)"
   },
   "addNewToken": {
     "message": "신규 토큰 추가"
@@ -632,6 +638,9 @@
   "attemptToCancelSwapForFree": {
     "message": "무료 스왑 취소 시도"
   },
+  "attributes": {
+    "message": "속성"
+  },
   "attributions": {
     "message": "속성"
   },
@@ -756,6 +765,22 @@
   "bitcoinActivityNotSupported": {
     "message": "비트코인 활동이 지원되지 않습니다."
   },
+  "bitcoinSupportSectionTitle": {
+    "message": "비트코인"
+  },
+  "bitcoinSupportToggleDescription": {
+    "message": "이 기능을 켜면 기존 비밀복구구문에서 파생된 MetaMask 확장에 비트코인 계정을 추가할 수 있는 옵션을 이용할 수 있습니다. 이 기능은 실험적 베타 기능이므로 사용자의 책임하에 사용해야 합니다. 이 새로운 비트코인 경험에 대한 피드백을 보내려면 이 $1을(를) 작성해 주세요.",
+    "description": "$1 is the link to a product feedback form"
+  },
+  "bitcoinSupportToggleTitle": {
+    "message": "'새 비트코인 계정 추가(베타)' 활성화"
+  },
+  "bitcoinTestnetSupportToggleDescription": {
+    "message": "이 기능을 켜면 테스트 네트워크에 비트코인 계정을 추가할 수 있는 옵션이 제공됩니다."
+  },
+  "bitcoinTestnetSupportToggleTitle": {
+    "message": "'새 비트코인 계정 추가(테스트넷)' 활성화"
+  },
   "blockExplorerAccountAction": {
     "message": "계정",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -822,6 +847,9 @@
   },
   "blockies": {
     "message": "Blockies"
+  },
+  "boughtFor": {
+    "message": "매수:"
   },
   "bridge": {
     "message": "브리지"
@@ -943,6 +971,9 @@
   },
   "coingecko": {
     "message": "CoinGecko"
+  },
+  "collectionName": {
+    "message": "컬렉션 이름"
   },
   "comboNoOptions": {
     "message": "옵션을 찾을 수 없습니다",
@@ -1249,6 +1280,9 @@
   "createSnapAccountTitle": {
     "message": "계정 생성"
   },
+  "creatorAddress": {
+    "message": "크리에이터 주소"
+  },
   "crossChainSwapsLink": {
     "message": "MetaMask Portfolio로 네트워크 간 스왑"
   },
@@ -1436,6 +1470,12 @@
   "dataHex": {
     "message": "헥스"
   },
+  "dataUnavailable": {
+    "message": "데이터 사용 불가"
+  },
+  "dateCreated": {
+    "message": "생성일"
+  },
   "dcent": {
     "message": "D'Cent"
   },
@@ -1514,6 +1554,12 @@
   },
   "developerOptions": {
     "message": "개발자 옵션"
+  },
+  "developerOptionsEnableConfirmationsRedesignDescription": {
+    "message": "현재 개발 중인 확인 재설계 기능을 활성화 또는 비활성화합니다."
+  },
+  "developerOptionsEnableConfirmationsRedesignTitle": {
+    "message": "확인 재설계"
   },
   "developerOptionsNetworkMenuRedesignDescription": {
     "message": "네트워크 메뉴를 새로운 디자인으로 전환"
@@ -1712,6 +1758,9 @@
   "editGasTooLow": {
     "message": "알 수 없는 처리 시간"
   },
+  "editNetworkLink": {
+    "message": "원본 네트워크 편집"
+  },
   "editNonceField": {
     "message": "논스 편집"
   },
@@ -1748,6 +1797,9 @@
   },
   "enableTokenAutoDetection": {
     "message": "토큰 자동 감지 활성화"
+  },
+  "enable_auto_detection_toggle_automatically": {
+    "message": "기본 기능을 사용하면 Metamask 확장 v12.3.0에서 이 기능이 자동으로 켜집니다"
   },
   "enabled": {
     "message": "활성화됨"
@@ -1881,6 +1933,12 @@
   "etherscanViewOn": {
     "message": "Etherscan에서 보기"
   },
+  "existingChainId": {
+    "message": "입력한 정보는 기존 체인 ID와 연결되어 있습니다."
+  },
+  "existingRpcUrl": {
+    "message": "이 URL은 다른 체인 ID랑 연결되어 있습니다."
+  },
   "expandView": {
     "message": "보기 확장"
   },
@@ -1935,6 +1993,9 @@
     "message": "파일 가져오기가 작동하지 않나요? 여기를 클릭하세요.",
     "description": "Helps user import their account from a JSON file"
   },
+  "findTheRightChainId": {
+    "message": "다음에서 적합한 것을 찾아보세요"
+  },
   "flaskWelcomeUninstall": {
     "message": "이 확장 프로그램을 삭제해야 합니다",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -1973,6 +2034,9 @@
   },
   "forgotPassword": {
     "message": "비밀번호를 잊으셨나요?"
+  },
+  "form": {
+    "message": "양식"
   },
   "from": {
     "message": "발신"
@@ -2181,6 +2245,12 @@
   },
   "highLowercase": {
     "message": "높음"
+  },
+  "highestCurrentBid": {
+    "message": "현재 최고 입찰"
+  },
+  "highestFloorPrice": {
+    "message": "최고 바닥 가격"
   },
   "history": {
     "message": "기록"
@@ -3195,6 +3265,9 @@
   "nonceField": {
     "message": "트랜잭션 논스 맞춤화"
   },
+  "nonceFieldDesc": {
+    "message": "자산을 전송할 때 논스(트랜잭션 번호)를 변경하려면 이 기능을 켭니다. 이 기능은 고급 기능이므로 신중하게 사용하세요."
+  },
   "nonceFieldHeading": {
     "message": "맞춤 논스"
   },
@@ -3397,6 +3470,9 @@
   },
   "numberOfNewTokensDetectedSingular": {
     "message": "계정에서 1개의 새 토큰을 찾았습니다"
+  },
+  "numberOfTokens": {
+    "message": "토큰 수"
   },
   "ofTextNofM": {
     "message": "/"
@@ -3982,6 +4058,12 @@
   "prev": {
     "message": "이전"
   },
+  "price": {
+    "message": "가격"
+  },
+  "priceUnavailable": {
+    "message": "가격 사용 불가"
+  },
   "primaryCurrencySetting": {
     "message": "기본 통화"
   },
@@ -4133,6 +4215,9 @@
   },
   "quoteRate": {
     "message": "견적 비율"
+  },
+  "rank": {
+    "message": "순위"
   },
   "reAddAccounts": {
     "message": "다른 계정을 다시 추가"
@@ -4693,6 +4778,9 @@
   "showIncomingTransactionsExplainer": {
     "message": "이는 네트워크마다 다른 제삼자 API에 의존하며, 이더리움 주소와 IP 주소가 노출됩니다."
   },
+  "showLess": {
+    "message": "간략히 보기"
+  },
   "showMore": {
     "message": "더 보기"
   },
@@ -4914,6 +5002,9 @@
   },
   "snapDetailWebsite": {
     "message": "웹사이트"
+  },
+  "snapHomeMenu": {
+    "message": "Snap 홈 메뉴"
   },
   "snapInstallRequest": {
     "message": "$1 설치는 다음과 같은 권한을 허용합니다.",
@@ -5931,6 +6022,9 @@
   "tokenShowUp": {
     "message": "토큰이 지갑에 자동으로 표시되지 않을 수 있습니다. "
   },
+  "tokenStandard": {
+    "message": "토큰 표준"
+  },
   "tokenSymbol": {
     "message": "토큰 기호"
   },
@@ -5940,6 +6034,9 @@
   "tokensFoundTitle": {
     "message": "$1개의 새 토큰을 찾았습니다",
     "description": "$1 is the number of new tokens detected"
+  },
+  "tokensInCollection": {
+    "message": "컬렉션 내 토큰"
   },
   "tooltipApproveButton": {
     "message": "이해했습니다"
@@ -5973,6 +6070,9 @@
   },
   "transactionCreated": {
     "message": "$2에서 $1 값으로 생성된 트랜잭션"
+  },
+  "transactionDataFunction": {
+    "message": "기능"
   },
   "transactionDetailDappGasMoreInfo": {
     "message": "추천 사이트"
@@ -6146,6 +6246,9 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
+  "unMatchedChain": {
+    "message": "기록에 따르면 이 URL은 이 체인 ID의 알려진 제공업체와 일치하지 않습니다."
+  },
   "unapproved": {
     "message": "승인되지 않음"
   },
@@ -6197,6 +6300,9 @@
   "update": {
     "message": "업데이트"
   },
+  "updateOrEditNetworkInformations": {
+    "message": "정보를 업데이트하거나"
+  },
   "updateRequest": {
     "message": "업데이트 요청"
   },
@@ -6229,6 +6335,9 @@
   },
   "useNftDetection": {
     "message": "NFT 자동 감지"
+  },
+  "useNftDetectionDescriptionText": {
+    "message": "MetaMask가 제삼자 서비스를 이용하여 회원님의 NFT를 추가할 수 있도록 합니다. NFT를 자동 감지하면 이러한 서비스에 IP와 계정 주소가 노출됩니다. 이 기능을 켜면 IP 주소가 이더리움 주소와 연결되고 사기꾼이 에어드랍한 가짜 NFT가 표시될 수 있습니다. 이러한 위험을 피하기 위해 수동으로 토큰을 추가할 수 있습니다."
   },
   "usePhishingDetection": {
     "message": "피싱 감지 사용"
@@ -6420,6 +6529,9 @@
   },
   "whatsThis": {
     "message": "이것은 무엇인가요?"
+  },
+  "wrongChainId": {
+    "message": "이 체인 ID는 네트워크 이름과 일치하지 않습니다."
   },
   "wrongNetworkName": {
     "message": "기록에 따르면 네트워크 이름이 이 체인 ID와 일치하지 않습니다."
