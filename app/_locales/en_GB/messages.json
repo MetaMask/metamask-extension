@@ -4591,10 +4591,13 @@
   "seedPhraseIntroRecommendedButtonCopy": {
     "message": "Secure my wallet (recommended)"
   },
-  "seedPhraseIntroSidebarBulletOne": {
+  "seedPhraseIntroSidebarBulletFour": {
     "message": "Write down and store in multiple secret places"
   },
-  "seedPhraseIntroSidebarBulletTwo": {
+  "seedPhraseIntroSidebarBulletOne": {
+    "message": "Save in a password manager"
+  },
+  "seedPhraseIntroSidebarBulletThree": {
     "message": "Store in a safe deposit box"
   },
   "seedPhraseIntroSidebarCopyOne": {
