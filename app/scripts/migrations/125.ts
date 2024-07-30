@@ -16,11 +16,12 @@ export async function migrate(
   return versionedData;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function transformState(state: Record<string, any>) {
-  const preferencesControllerState = state?.PreferencesController;
+function transformState(state: Record<string, unknown>) {
+  const preferencesControllerState = state?.PreferencesController as
+    | Record<string, unknown>
+    | undefined;
 
-  if (preferencesControllerState?.preferences) {
+  if (preferencesControllerState) {
     const isBasicFunctionalityToggleEnabled =
       preferencesControllerState?.useExternalServices;
     const isTokenDetectionEnabled =
