@@ -107,7 +107,6 @@ export class ConfirmationsRejectRule implements Rule {
         reject,
         task: async () => {
           try {
-            await this.driver.waitUntilXWindowHandles(3);
             await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
             const text = 'Cancel';
