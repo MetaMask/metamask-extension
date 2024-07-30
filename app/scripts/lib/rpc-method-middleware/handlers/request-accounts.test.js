@@ -4,8 +4,11 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '../../multichain-api/caip25permissions';
+import {
+  validNotifications,
+  validRpcMethods,
+} from '../../multichain-api/scope';
 import requestEthereumAccounts from './request-accounts';
-import { validNotifications, validRpcMethods } from '../../multichain-api/scope';
 
 jest.mock('../../util', () => ({
   ...jest.requireActual('../../util'),
