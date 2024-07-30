@@ -4579,13 +4579,10 @@
   "seedPhraseIntroRecommendedButtonCopy": {
     "message": "I-secure ang aking wallet (inirerekomenda)"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "Isulat at itago sa maraming sikretong lugar."
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "I-save sa tagapamahala ng password"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "Itago sa safe-deposit box."
   },
   "seedPhraseIntroSidebarCopyOne": {

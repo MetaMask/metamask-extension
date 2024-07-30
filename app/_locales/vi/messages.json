@@ -4579,13 +4579,10 @@
   "seedPhraseIntroRecommendedButtonCopy": {
     "message": "Bảo mật ví của tôi (khuyến khích)"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "Viết ra và cất ở nhiều nơi bí mật."
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Lưu trong một trình quản lý mật khẩu"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "Lưu giữ trong hộp ký gửi an toàn."
   },
   "seedPhraseIntroSidebarCopyOne": {
