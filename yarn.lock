@@ -7954,7 +7954,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/types@npm:8.19.0, @sentry/types@npm:^8.19.0":
+"@sentry/types@npm:8.19.0":
   version: 8.19.0
   resolution: "@sentry/types@npm:8.19.0"
   checksum: 10/8812f7394c6c031197abc04d80e5b5b3693742dc065b877c535a9ceb538aabd60ee27fc2b13824e2b8fc264819868109bbd4de3642fd1c7bf30d304fb0c21aa9
@@ -25336,7 +25336,6 @@ __metadata:
     "@segment/loosely-validate-event": "npm:^2.0.0"
     "@sentry/browser": "npm:^8.19.0"
     "@sentry/cli": "npm:^2.19.4"
-    "@sentry/types": "npm:^8.19.0"
     "@sentry/utils": "npm:^8.19.0"
     "@storybook/addon-a11y": "npm:^7.6.19"
     "@storybook/addon-actions": "npm:^7.6.19"
