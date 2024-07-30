@@ -319,6 +319,10 @@ describe('Sentry errors', function () {
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const { level } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
+
+          // Left for debugging purposes
+          console.log(mockJsonBody.exception.values);
+
           // Verify request
           assert.equal(type, 'TypeError');
           assert(value.includes(migrationError));
