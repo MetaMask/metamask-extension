@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import {
   AvatarAccount,
   AvatarAccountSize,
+  AvatarNetwork,
+  AvatarNetworkSize,
   AvatarTokenSize,
   Box,
   Text,
@@ -32,6 +34,7 @@ import { formatDate } from '../../../helpers/utils/util';
  * @param props.dateApproved - Timestamp when permission is approved.
  * @param props.accounts - List of accounts for which permission is requested, approved or revoked.
  * @param props.approved - Boolean value in case a permission has been approved, but there is no date to show.
+ * @param props.networks
  * @returns React element rendering permission status with or without account icons displayed as AvatarGroup.
  */
 export const PermissionCellStatus = ({
@@ -39,66 +42,101 @@ export const PermissionCellStatus = ({
   approved,
   dateApproved,
   accounts,
+  networks,
 }) => {
   const t = useI18nContext();
 
   const renderAccountsGroup = () => (
-    <Box
-      as="span"
-      className="permission-cell__status__accounts-group-box"
-      display={Display.InlineFlex}
-    >
-      <Tooltip
-        position="bottom"
-        html={
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.center}
-          >
-            <Text
-              variant={TextVariant.headingSm}
-              color={TextColor.textAlternative}
-              textAlign={TextAlign.Center}
-            >
-              {t('accounts')}
-            </Text>
-            <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-              {accounts.map((account, index) => (
-                <Box
-                  key={`${account.avatarValue}_${index}`}
-                  display={Display.Flex}
-                  justifyContent={JustifyContent.flexStart}
-                  alignItems={AlignItems.center}
-                  marginTop={2}
-                >
-                  <AvatarAccount
-                    address={account.avatarValue}
-                    size={AvatarAccountSize.Xs}
-                    borderColor={BorderColor.backgroundDefault}
-                  />
-                  <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
-                    {account.avatarName}
-                  </Text>
-                </Box>
-              ))}
-            </Box>
+    <>
+      {process.env.CHAIN_PERMISSIONS ? (
+        <Box
+          as="span"
+          className="permission-cell__status__accounts-group-box"
+          display={Display.InlineFlex}
+        >
+          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+            {networks?.map((network, index) => (
+              <Box
+                key={`${network.nickname}_${index}`}
+                display={Display.Flex}
+                justifyContent={JustifyContent.flexStart}
+                alignItems={AlignItems.center}
+                marginTop={2}
+              >
+                <AvatarNetwork
+                  size={AvatarNetworkSize.Xs}
+                  src={network.rpcPrefs?.imageUrl}
+                  name={network.nickname}
+                />
+                <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
+                  {network.avatarName}
+                </Text>
+              </Box>
+            ))}
           </Box>
-        }
-      >
-        <AvatarGroup
-          limit={3}
-          members={accounts}
-          avatarType={AvatarType.ACCOUNT}
-          size={AvatarTokenSize.Xs}
-          width={BlockSize.Min}
-          borderColor={BorderColor.backgroundDefault}
-          marginLeft={4}
-          paddingLeft={4}
-        />
-      </Tooltip>
-    </Box>
+        </Box>
+      ) : (
+        <Box
+          as="span"
+          className="permission-cell__status__accounts-group-box"
+          display={Display.InlineFlex}
+        >
+          <Tooltip
+            position="bottom"
+            html={
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                justifyContent={JustifyContent.center}
+                alignItems={AlignItems.center}
+              >
+                <Text
+                  variant={TextVariant.headingSm}
+                  color={TextColor.textAlternative}
+                  textAlign={TextAlign.Center}
+                >
+                  {t('accounts')}
+                </Text>
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
+                >
+                  {accounts.map((account, index) => (
+                    <Box
+                      key={`${account.avatarValue}_${index}`}
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.flexStart}
+                      alignItems={AlignItems.center}
+                      marginTop={2}
+                    >
+                      <AvatarAccount
+                        address={account.avatarValue}
+                        size={AvatarAccountSize.Xs}
+                        borderColor={BorderColor.backgroundDefault}
+                      />
+                      <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
+                        {account.avatarName}
+                      </Text>
+                    </Box>
+                  ))}
+                </Box>
+              </Box>
+            }
+          >
+            <AvatarGroup
+              limit={3}
+              members={accounts}
+              avatarType={AvatarType.ACCOUNT}
+              size={AvatarTokenSize.Xs}
+              width={BlockSize.Min}
+              borderColor={BorderColor.backgroundDefault}
+              marginLeft={4}
+              paddingLeft={4}
+            />
+          </Tooltip>
+        </Box>
+      )}
+    </>
   );
 
   const getStatusMessage = () => {
@@ -144,4 +182,5 @@ PermissionCellStatus.propTypes = {
   approved: PropTypes.bool,
   dateApproved: PropTypes.number,
   accounts: PropTypes.array,
+  networks: PropTypes.array,
 };
