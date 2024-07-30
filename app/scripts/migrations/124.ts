@@ -7,6 +7,18 @@ type VersionedData = {
 
 export const version = 124;
 
+/**
+ * This migration sets the preference `redesignedTransactionsEnabled` if the
+ * user has existing data.
+ *
+ * @param originalVersionedData - Versioned MetaMask extension state, exactly
+ * what we persist to dist.
+ * @param originalVersionedData.meta - State metadata.
+ * @param originalVersionedData.meta.version - The current state version.
+ * @param originalVersionedData.data - The persisted MetaMask state, keyed by
+ * controller.
+ * @returns Updated versioned MetaMask extension state.
+ */
 export async function migrate(
   originalVersionedData: VersionedData,
 ): Promise<VersionedData> {
@@ -16,19 +28,17 @@ export async function migrate(
   return versionedData;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function transformState(state: Record<string, any>) {
-  const preferencesControllerState = state?.PreferencesController;
+function transformState(state: Record<string, unknown>): void {
+  const preferencesControllerState = state?.PreferencesController as
+    | Record<string, unknown>
+    | undefined;
 
-  if (preferencesControllerState?.preferences) {
-    const isBasicFunctionalityToggleEnabled =
-      preferencesControllerState?.useExternalServices;
-    const isTokenDetectionEnabled =
-      preferencesControllerState?.useTokenDetection;
-    if (isBasicFunctionalityToggleEnabled && !isTokenDetectionEnabled) {
-      preferencesControllerState.useTokenDetection = true;
-    }
+  const preferences = preferencesControllerState?.preferences as
+    | Record<string, unknown>
+    | undefined;
+
+  if (preferences) {
+    // Existing MetaMask users will have the option off by default
+    preferences.redesignedTransactionsEnabled = false;
   }
-
-  return state;
 }
