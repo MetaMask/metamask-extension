@@ -4579,13 +4579,10 @@
   "seedPhraseIntroRecommendedButtonCopy": {
     "message": "내 지갑 보호(권장)"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "적어서 여러 비밀 장소에 보관하세요."
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "비밀번호 수탁자에 저장"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "대여 금고에 보관."
   },
   "seedPhraseIntroSidebarCopyOne": {

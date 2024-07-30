@@ -4579,13 +4579,10 @@
   "seedPhraseIntroRecommendedButtonCopy": {
     "message": "Cüzdanımı koru (önerilir)"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "Birden fazla gizli yerde not ederek saklayın."
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Bir şifre yöneticisine kaydedin"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "Bir kasada saklayın."
   },
   "seedPhraseIntroSidebarCopyOne": {
