@@ -1890,7 +1890,9 @@
     "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
       "packages": {
         "@metamask/json-rpc-engine": true,
-        "@metamask/safe-event-emitter": true
+        "@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "uuid": true
       }
     },
     "@metamask/notification-controller": {
