@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   useHistory,
@@ -41,6 +41,7 @@ import {
   getParticipateInMetaMetrics,
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
+  getSelectedAccount,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -64,6 +65,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box, Icon, IconName } from '../../component-library';
 import IconButton from '../../ui/icon-button';
+import { ReceiveModal } from '../../multichain/receive-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
@@ -93,7 +95,9 @@ const CoinButtons = ({
 }) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
+  const [showReceiveModal, setShowReceiveModal] = useState(false);
 
+  const { address: selectedAddress } = useSelector(getSelectedAccount);
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -311,27 +315,6 @@ const CoinButtons = ({
       });
     }
   }, [isBridgeChain, chainId, metaMetricsId]);
-
-  const handlePortfolioOnClick = useCallback(() => {
-    const url = getPortfolioUrl(
-      '',
-      'ext_portfolio_button',
-      metaMetricsId,
-      isMetaMetricsEnabled,
-      isMarketingEnabled,
-    );
-    global.platform.openTab({ url });
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.PortfolioLinkClicked,
-      properties: {
-        location: 'Home',
-        text: 'Portfolio',
-        chain_id: chainId,
-        token_symbol: 'ETH',
-      },
-    });
-  }, [chainId, metaMetricsId]);
   ///: END:ONLY_INCLUDE_IF
 
   return (
@@ -413,15 +396,28 @@ const CoinButtons = ({
       }
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        <IconButton
-          className={`${classPrefix}-overview__button`}
-          data-testid={`${classPrefix}-overview-portfolio`}
-          Icon={
-            <Icon name={IconName.Diagram} color={IconColor.primaryInverse} />
-          }
-          label={t('portfolio')}
-          onClick={handlePortfolioOnClick}
-        />
+        <>
+          {showReceiveModal && (
+            <ReceiveModal
+              address={selectedAddress}
+              onClose={() => setShowReceiveModal(false)}
+            />
+          )}
+          <IconButton
+            className={`${classPrefix}-overview__button`}
+            data-testid={`${classPrefix}-overview-portfolio`}
+            Icon={
+              <Icon
+                name={IconName.ScanBarcode}
+                color={IconColor.primaryInverse}
+              />
+            }
+            label={t('receive')}
+            onClick={() => {
+              setShowReceiveModal(true);
+            }}
+          />
+        </>
         ///: END:ONLY_INCLUDE_IF
       }
     </Box>
