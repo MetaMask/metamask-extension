@@ -42,6 +42,7 @@ import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
 } from '../snap-keyring/metrics';
+import { REDESIGN_TRANSACTION_TYPES } from '../../../../ui/pages/confirmations/utils';
 
 export type TransactionMetricsRequest = {
   createEventFragment: (
@@ -90,6 +91,10 @@ export type TransactionMetricsRequest = {
   getSmartTransactionByMinedTxHash: (
     txhash: string | undefined,
   ) => SmartTransaction;
+  getRedesignedTransactionsEnabled: () => boolean;
+  getMethodData: (data: string) => Promise<{ name: string }>;
+  getIsRedesignedConfirmationsDeveloperEnabled: () => boolean;
+  getIsConfirmationAdvancedDetailsOpen: () => boolean;
 };
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
@@ -787,7 +792,6 @@ async function buildEventFragmentProperties({
     currentTokenBalance,
     originalApprovalAmount,
     finalApprovalAmount,
-    contractMethodName,
     securityProviderResponse,
     simulationFails,
   } = transactionMeta;
@@ -799,6 +803,14 @@ async function buildEventFragmentProperties({
     query,
     transactionMetricsRequest.getTokenStandardAndDetails,
   );
+
+  let contractMethodName;
+  if (transactionMeta.txParams.data) {
+    const { name } = await transactionMetricsRequest.getMethodData(
+      transactionMeta.txParams.data,
+    );
+    contractMethodName = name;
+  }
 
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -955,6 +967,7 @@ async function buildEventFragmentProperties({
   }
 
   const uiCustomizations = [];
+  let isAdvancedDetailsOpen = null;
 
   /** securityProviderResponse is used by the OpenSea <> Blockaid provider */
   // eslint-disable-next-line no-lonely-if
@@ -977,7 +990,25 @@ async function buildEventFragmentProperties({
   if (simulationFails) {
     uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
   }
+  const isRedesignedConfirmationsDeveloperSettingEnabled =
+    transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled() ||
+    Boolean(process.env.ENABLE_CONFIRMATION_REDESIGN);
 
+  const isRedesignedTransactionsUserSettingEnabled =
+    transactionMetricsRequest.getRedesignedTransactionsEnabled();
+
+  if (
+    (isRedesignedConfirmationsDeveloperSettingEnabled ||
+      isRedesignedTransactionsUserSettingEnabled) &&
+    REDESIGN_TRANSACTION_TYPES.includes(transactionMeta.type as TransactionType)
+  ) {
+    uiCustomizations.push(
+      MetaMetricsEventUiCustomization.RedesignedConfirmation,
+    );
+
+    isAdvancedDetailsOpen =
+      transactionMetricsRequest.getIsConfirmationAdvancedDetailsOpen();
+  }
   const smartTransactionMetricsProperties =
     getSmartTransactionMetricsProperties(
       transactionMetricsRequest,
@@ -1008,6 +1039,7 @@ async function buildEventFragmentProperties({
     ...blockaidProperties,
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
+    transaction_advanced_view: isAdvancedDetailsOpen,
     ...smartTransactionMetricsProperties,
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

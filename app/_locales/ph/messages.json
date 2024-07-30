@@ -900,9 +900,6 @@
   "nonceField": {
     "message": "I-customize ang nonce ng transaksyon"
   },
-  "nonceFieldDescription": {
-    "message": "I-on ito para baguhin ang nonce (numero ng transaksyon) sa mga screen ng kumpirmasyon. Isa itong advanced na feature, gamitin nang may pag-iingat."
-  },
   "nonceFieldHeading": {
     "message": "Custom na Nonce"
   },
@@ -1116,13 +1113,10 @@
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "Isulat ito at itabi sa maraming tagong lugar."
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "I-save sa password manager"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "Ilagay sa safe-deposit box."
   },
   "seedPhraseIntroSidebarCopyOne": {

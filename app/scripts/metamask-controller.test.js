@@ -27,6 +27,7 @@ import {
   RatesController,
   TokenListController,
 } from '@metamask/assets-controllers';
+import ObjectMultiplex from '@metamask/object-multiplex';
 import { TrezorKeyring } from '@metamask/eth-trezor-keyring';
 import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import { NETWORK_TYPES } from '../../shared/constants/network';
@@ -41,8 +42,9 @@ import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import {
   BalancesController as MultichainBalancesController,
-  BTC_AVG_BLOCK_TIME,
+  BALANCES_UPDATE_TIME as MULTICHAIN_BALANCES_UPDATE_TIME,
 } from './lib/accounts/BalancesController';
+import { BalancesTracker as MultichainBalancesTracker } from './lib/accounts/BalancesTracker';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
 
@@ -458,17 +460,20 @@ describe('MetaMaskController', () => {
         },
       );
 
+      const metamaskVersion = process.env.METAMASK_VERSION;
+      afterEach(() => {
+        // reset `METAMASK_VERSION` env var
+        process.env.METAMASK_VERSION = metamaskVersion;
+      });
+
       it('should details with LoggingController', async () => {
         const mockVersion = '1.3.7';
-        const mockGetVersionInfo = jest.fn().mockReturnValue(mockVersion);
+        process.env.METAMASK_VERSION = mockVersion;
 
         jest.spyOn(LoggingController.prototype, 'add');
 
         const localController = new MetaMaskController({
           initLangCode: 'en_US',
-          platform: {
-            getVersion: mockGetVersionInfo,
-          },
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
         });
@@ -486,7 +491,7 @@ describe('MetaMaskController', () => {
 
       it('should openExtensionInBrowser if version is 8.1.0', () => {
         const mockVersion = '8.1.0';
-        const mockGetVersionInfo = jest.fn().mockReturnValue(mockVersion);
+        process.env.METAMASK_VERSION = mockVersion;
 
         const openExtensionInBrowserMock = jest.fn();
 
@@ -494,7 +499,6 @@ describe('MetaMaskController', () => {
         new MetaMaskController({
           initLangCode: 'en_US',
           platform: {
-            getVersion: mockGetVersionInfo,
             openExtensionInBrowser: openExtensionInBrowserMock,
           },
           browser: browserPolyfillMock,
@@ -1403,8 +1407,287 @@ describe('MetaMaskController', () => {
         });
 
         metamaskController.setupTrustedCommunication(streamTest, messageSender);
+
         await promise;
         streamTest.end();
+      });
+
+      it('uses a new multiplex to set up a connection', () => {
+        jest.spyOn(metamaskController, 'setupControllerConnection');
+
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          cb(chunk);
+        });
+
+        metamaskController.setupTrustedCommunication(streamTest, {});
+
+        expect(metamaskController.setupControllerConnection).toHaveBeenCalled();
+        expect(
+          metamaskController.setupControllerConnection,
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            _name: 'controller',
+            _parent: expect.any(ObjectMultiplex),
+          }),
+        );
+      });
+
+      const createTestStream = () => {
+        const {
+          promise: onFinishedCallbackPromise,
+          resolve: onFinishedCallbackResolve,
+        } = deferredPromise();
+        const { promise: onStreamEndPromise, resolve: onStreamEndResolve } =
+          deferredPromise();
+        const testStream = createThroughStream((chunk, _, cb) => {
+          expect(chunk.name).toStrictEqual('controller');
+          onStreamEndResolve();
+          cb();
+        });
+
+        return {
+          onFinishedCallbackPromise,
+          onStreamEndPromise,
+          onFinishedCallbackResolve,
+          testStream,
+        };
+      };
+
+      it('sets up a controller connection which emits a controllerConnectionChanged event when the controller connection is created and ended, and activeControllerConnections are updated accordingly', async () => {
+        const mockControllerConnectionChangedHandler = jest.fn();
+
+        const {
+          onStreamEndPromise,
+          onFinishedCallbackPromise,
+          onFinishedCallbackResolve,
+          testStream,
+        } = createTestStream();
+
+        metamaskController.on(
+          'controllerConnectionChanged',
+          (activeControllerConnections) => {
+            mockControllerConnectionChangedHandler(activeControllerConnections);
+            if (
+              mockControllerConnectionChangedHandler.mock.calls.length === 2
+            ) {
+              onFinishedCallbackResolve();
+            }
+          },
+        );
+
+        expect(metamaskController.activeControllerConnections).toBe(0);
+
+        metamaskController.setupTrustedCommunication(testStream, {});
+
+        expect(mockControllerConnectionChangedHandler).toHaveBeenCalledTimes(1);
+        expect(mockControllerConnectionChangedHandler).toHaveBeenLastCalledWith(
+          1,
+        );
+
+        expect(metamaskController.activeControllerConnections).toBe(1);
+
+        await onStreamEndPromise;
+        testStream.end();
+
+        await onFinishedCallbackPromise;
+
+        expect(metamaskController.activeControllerConnections).toBe(0);
+        expect(mockControllerConnectionChangedHandler).toHaveBeenCalledTimes(2);
+        expect(mockControllerConnectionChangedHandler).toHaveBeenLastCalledWith(
+          0,
+        );
+      });
+
+      it('can be called multiple times to set up multiple controller connections, which can be ended independently', async () => {
+        const mockControllerConnectionChangedHandler = jest.fn();
+
+        const testStreams = [
+          createTestStream(),
+          createTestStream(),
+          createTestStream(),
+          createTestStream(),
+          createTestStream(),
+        ];
+        metamaskController.on(
+          'controllerConnectionChanged',
+          (activeControllerConnections) => {
+            const initialChangeHandlerCallCount =
+              mockControllerConnectionChangedHandler.mock.calls.length;
+            mockControllerConnectionChangedHandler(activeControllerConnections);
+
+            if (
+              initialChangeHandlerCallCount === 5 &&
+              activeControllerConnections === 4
+            ) {
+              testStreams[1].onFinishedCallbackResolve();
+            }
+            if (
+              initialChangeHandlerCallCount === 7 &&
+              activeControllerConnections === 2
+            ) {
+              testStreams[3].onFinishedCallbackResolve();
+              testStreams[4].onFinishedCallbackResolve();
+            }
+            if (
+              initialChangeHandlerCallCount === 9 &&
+              activeControllerConnections === 0
+            ) {
+              testStreams[2].onFinishedCallbackResolve();
+              testStreams[0].onFinishedCallbackResolve();
+            }
+          },
+        );
+
+        metamaskController.setupTrustedCommunication(
+          testStreams[0].testStream,
+          {},
+        );
+        metamaskController.setupTrustedCommunication(
+          testStreams[1].testStream,
+          {},
+        );
+        metamaskController.setupTrustedCommunication(
+          testStreams[2].testStream,
+          {},
+        );
+        metamaskController.setupTrustedCommunication(
+          testStreams[3].testStream,
+          {},
+        );
+        metamaskController.setupTrustedCommunication(
+          testStreams[4].testStream,
+          {},
+        );
+
+        expect(metamaskController.activeControllerConnections).toBe(5);
+
+        await testStreams[1].promise;
+        testStreams[1].testStream.end();
+
+        await testStreams[1].onFinishedCallbackPromise;
+
+        expect(metamaskController.activeControllerConnections).toBe(4);
+
+        await testStreams[3].promise;
+        testStreams[3].testStream.end();
+
+        await testStreams[4].promise;
+        testStreams[4].testStream.end();
+
+        await testStreams[3].onFinishedCallbackPromise;
+        await testStreams[4].onFinishedCallbackPromise;
+
+        expect(metamaskController.activeControllerConnections).toBe(2);
+
+        await testStreams[2].promise;
+        testStreams[2].testStream.end();
+
+        await testStreams[0].promise;
+        testStreams[0].testStream.end();
+
+        await testStreams[2].onFinishedCallbackPromise;
+        await testStreams[0].onFinishedCallbackPromise;
+
+        expect(metamaskController.activeControllerConnections).toBe(0);
+      });
+
+      // this test could be improved by testing for actual behavior of handlers,
+      // without touching rawListeners from test
+      it('attaches listeners for trusted communication streams and removes them as streams close', async () => {
+        jest
+          .spyOn(metamaskController, 'triggerNetworkrequests')
+          .mockImplementation();
+        jest
+          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .mockReturnValue({ completedOnboarding: true });
+        const mockControllerConnectionChangedHandler = jest.fn();
+
+        const testStreams = [
+          createTestStream(),
+          createTestStream(2),
+          createTestStream(3),
+          createTestStream(4),
+          createTestStream(5),
+        ];
+        const baseUpdateListenerCount =
+          metamaskController.rawListeners('update').length;
+
+        metamaskController.on(
+          'controllerConnectionChanged',
+          (activeControllerConnections) => {
+            const initialChangeHandlerCallCount =
+              mockControllerConnectionChangedHandler.mock.calls.length;
+            mockControllerConnectionChangedHandler(activeControllerConnections);
+            if (
+              initialChangeHandlerCallCount === 8 &&
+              activeControllerConnections === 1
+            ) {
+              testStreams[1].onFinishedCallbackResolve();
+              testStreams[3].onFinishedCallbackResolve();
+              testStreams[4].onFinishedCallbackResolve();
+              testStreams[2].onFinishedCallbackResolve();
+            }
+            if (
+              initialChangeHandlerCallCount === 9 &&
+              activeControllerConnections === 0
+            ) {
+              testStreams[0].onFinishedCallbackResolve();
+            }
+          },
+        );
+
+        metamaskController.setupTrustedCommunication(
+          testStreams[0].testStream,
+          {},
+        );
+        metamaskController.setupTrustedCommunication(
+          testStreams[1].testStream,
+          {},
+        );
+        metamaskController.setupTrustedCommunication(
+          testStreams[2].testStream,
+          {},
+        );
+        metamaskController.setupTrustedCommunication(
+          testStreams[3].testStream,
+          {},
+        );
+        metamaskController.setupTrustedCommunication(
+          testStreams[4].testStream,
+          {},
+        );
+
+        await testStreams[1].promise;
+
+        expect(metamaskController.rawListeners('update')).toHaveLength(
+          baseUpdateListenerCount + 5,
+        );
+
+        testStreams[1].testStream.end();
+        await testStreams[3].promise;
+        testStreams[3].testStream.end();
+        testStreams[3].testStream.end();
+
+        await testStreams[4].promise;
+        testStreams[4].testStream.end();
+        await testStreams[2].promise;
+        testStreams[2].testStream.end();
+        await testStreams[1].onFinishedCallbackPromise;
+        await testStreams[3].onFinishedCallbackPromise;
+        await testStreams[4].onFinishedCallbackPromise;
+        await testStreams[2].onFinishedCallbackPromise;
+        expect(metamaskController.rawListeners('update')).toHaveLength(
+          baseUpdateListenerCount + 1,
+        );
+
+        await testStreams[0].promise;
+        testStreams[0].testStream.end();
+
+        await testStreams[0].onFinishedCallbackPromise;
+
+        expect(metamaskController.rawListeners('update')).toHaveLength(
+          baseUpdateListenerCount,
+        );
       });
     });
 
@@ -2240,12 +2523,31 @@ describe('MetaMaskController', () => {
         type: BtcAccountType.P2wpkh,
         methods: [BtcMethod.SendMany],
         address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+        // We need to have a "Snap account" account here, since the MultichainBalancesController will
+        // filter it out otherwise!
+        metadata: {
+          name: 'Bitcoin Account',
+          importTime: Date.now(),
+          keyring: {
+            type: KeyringType.snap,
+          },
+          snap: {
+            id: 'npm:@metamask/bitcoin-wallet-snap',
+          },
+        },
       };
       let localMetamaskController;
+      let spyBalancesTrackerUpdateBalance;
 
       beforeEach(() => {
         jest.useFakeTimers();
         jest.spyOn(MultichainBalancesController.prototype, 'updateBalances');
+        jest
+          .spyOn(MultichainBalancesController.prototype, 'updateBalance')
+          .mockResolvedValue();
+        spyBalancesTrackerUpdateBalance = jest
+          .spyOn(MultichainBalancesTracker.prototype, 'updateBalance')
+          .mockResolvedValue();
         localMetamaskController = new MetaMaskController({
           showUserConfirmation: noop,
           encryptor: mockEncryptor,
@@ -2284,11 +2586,30 @@ describe('MetaMaskController', () => {
       });
 
       it('calls updateBalances after the interval has passed', async () => {
-        jest.advanceTimersByTime(BTC_AVG_BLOCK_TIME);
-        // 2 calls because 1 is during startup
+        // 1st call is during startup:
+        // updatesBalances is going to call updateBalance for the only non-EVM
+        // account that we have
         expect(
           localMetamaskController.multichainBalancesController.updateBalances,
-        ).toHaveBeenCalledTimes(2);
+        ).toHaveBeenCalledTimes(1);
+        expect(spyBalancesTrackerUpdateBalance).toHaveBeenCalledTimes(1);
+        expect(spyBalancesTrackerUpdateBalance).toHaveBeenCalledWith(
+          mockNonEvmAccount.id,
+        );
+
+        // Wait for "block time", so balances will have to be refreshed
+        jest.advanceTimersByTime(MULTICHAIN_BALANCES_UPDATE_TIME);
+
+        // Check that we tried to fetch the balances more than once
+        // NOTE: For now, this method might be called a lot more than just twice, but this
+        // method has some internal logic to prevent fetching the balance too often if we
+        // consider the balance to be "up-to-date"
+        expect(
+          spyBalancesTrackerUpdateBalance.mock.calls.length,
+        ).toBeGreaterThan(1);
+        expect(spyBalancesTrackerUpdateBalance).toHaveBeenLastCalledWith(
+          mockNonEvmAccount.id,
+        );
       });
     });
   });
