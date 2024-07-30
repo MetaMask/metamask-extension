@@ -8,16 +8,12 @@ import {
   ModalContent,
   ModalOverlay,
   ModalHeader,
-  TextFieldSearch,
   Box,
-  ButtonIconSize,
-  TextFieldSearchSize,
   AvatarTokenSize,
   AvatarToken,
   Text,
 } from '../../../component-library';
 import {
-  BlockSize,
   BorderRadius,
   TextVariant,
   TextAlign,
@@ -61,6 +57,7 @@ import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-uti
 import { Asset, Collection, Token } from './types';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 import AssetList from './AssetList';
+import { Search } from './asset-picker-modal-search';
 
 type AssetPickerModalProps = {
   isOpen: boolean;
@@ -280,41 +277,6 @@ export function AssetPickerModal({
     sendingAssetSymbol,
   ]);
 
-  const Search = useCallback(
-    ({
-      isNFTSearch = false,
-      props,
-    }: {
-      isNFTSearch?: boolean;
-      props?: React.ComponentProps<typeof Box>;
-    }) => (
-      <Box padding={4} {...props}>
-        <TextFieldSearch
-          borderRadius={BorderRadius.LG}
-          placeholder={t(isNFTSearch ? 'searchNfts' : 'searchTokens')}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          error={false}
-          autoFocus
-          autoComplete={false}
-          width={BlockSize.Full}
-          clearButtonOnClick={() => setSearchQuery('')}
-          clearButtonProps={{
-            size: ButtonIconSize.Sm,
-          }}
-          showClearButton
-          className="asset-picker-modal__search-list"
-          inputProps={{
-            'data-testid': 'asset-picker-modal-search-input',
-          }}
-          endAccessory={null}
-          size={TextFieldSearchSize.Lg}
-        />
-      </Box>
-    ),
-    [searchQuery],
-  );
-
   return (
     <Modal
       className="asset-picker-modal"
@@ -350,7 +312,11 @@ export function AssetPickerModal({
         <Box className="modal-tab__wrapper">
           {isDest ? (
             <>
-              <Search props={{ paddingTop: 1 }} />
+              <Search
+                props={{ paddingTop: 1 }}
+                searchQuery={searchQuery}
+                onChange={(value) => setSearchQuery(value)}
+              />
               <AssetList
                 handleAssetChange={handleAssetChange}
                 asset={asset}
@@ -369,7 +335,10 @@ export function AssetPickerModal({
                 name={t('tokens')}
                 tabKey="tokens"
               >
-                <Search />
+                <Search
+                  searchQuery={searchQuery}
+                  onChange={(value) => setSearchQuery(value)}
+                />
                 <AssetList
                   handleAssetChange={handleAssetChange}
                   asset={asset}
@@ -388,7 +357,13 @@ export function AssetPickerModal({
                   collectionDataFiltered={collectionDataFiltered}
                   previouslyOwnedCollection={previouslyOwnedCollection}
                   onClose={onClose}
-                  renderSearch={() => Search({ isNFTSearch: true })}
+                  renderSearch={() => (
+                    <Search
+                      isNFTSearch
+                      searchQuery={searchQuery}
+                      onChange={(value) => setSearchQuery(value)}
+                    />
+                  )}
                 />
               </Tab>
             </Tabs>
