@@ -2,7 +2,6 @@ import * as Sentry from '@sentry/browser';
 import { createModuleLogger, createProjectLogger } from '@metamask/utils';
 import { logger } from '@sentry/utils';
 import { AllProperties } from '../../../shared/modules/object.utils';
-import { filterEvents } from './sentry-filter-events';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 
 const projectLogger = createProjectLogger('sentry');
@@ -461,65 +460,24 @@ export default function setupSentry() {
   log('Initializing');
 
   integrateLogging();
-  setSentryClient({ autoSessionTracking: false, force: true });
+  setSentryClient();
 
   return {
     ...Sentry,
-    startSession,
-    endSession,
-    toggleSession,
   };
 }
 
-function getClientOptions({ autoSessionTracking }) {
+function getClientOptions() {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
 
   return {
-    /**
-     * autoSessionTracking defaults to true and operates by sending a session
-     * packet to sentry. This session packet does not appear to be filtered out
-     * via our beforeSend or FilterEvents integration. To avoid sending a
-     * request before we have the state tree and can validate the users
-     * preferences, we initiate this to false. Later, in startSession and
-     * endSession we modify this option and start the session or end the
-     * session manually.
-     *
-     * In sentry-install we call toggleSession after the page loads and state
-     * is available, this handles initiating the session for a user who has
-     * opted into MetaMetrics. This script is ran in both the background and UI
-     * so it should be effective at starting the session in both places.
-     *
-     * In the MetaMetricsController the session is manually started or stopped
-     * when the user opts in or out of MetaMetrics. This occurs in the
-     * setParticipateInMetaMetrics function which is exposed to the UI via the
-     * MetaMaskController.
-     *
-     * In actions.ts, after sending the updated participateInMetaMetrics flag
-     * to the background, we call toggleSession to ensure sentry is kept in
-     * sync with the user's preference.
-     *
-     * Types for the global Sentry object, and the new methods added as part of
-     * this effort were added to global.d.ts in the types folder.
-     */
-    autoSessionTracking,
     beforeBreadcrumb: beforeBreadcrumb(getState),
     beforeSend: (report) => rewriteReport(report, getState),
     debug: METAMASK_DEBUG,
     dsn: sentryTarget,
     environment,
     integrations: [
-      /**
-       * Filtering of events must happen in this FilterEvents custom
-       * integration instead of in the beforeSend handler because the Dedupe
-       * integration is unaware of the beforeSend functionality. If an event is
-       * queued in the sentry context, additional events of the same name will
-       * be filtered out by Dedupe even if the original event was not sent due
-       * to the beforeSend method returning null.
-       *
-       * @see https://github.com/MetaMask/metamask-extension/pull/15677
-       */
-      filterEvents({ getMetaMetricsEnabled }),
       Sentry.dedupeIntegration(),
       Sentry.extraErrorDataIntegration(),
     ],
@@ -533,6 +491,7 @@ function getClientOptions({ autoSessionTracking }) {
     // we can safely turn them off by setting the `sendClientReports` option to
     // `false`.
     sendClientReports: false,
+    transport: makeTransport,
   };
 }
 
@@ -653,34 +612,8 @@ async function getMetaMetricsEnabled() {
   }
 }
 
-/**
- * Returns whether Sentry should be enabled or not. If the build type is mmi
- * it will always be enabled, if it's main it will first check for MetaMetrics
- * value before returning true or false
- *
- * @returns `true` if Sentry should be enabled, depends on the build type and
- * whether MetaMetrics is on or off for all build types except mmi
- */
-async function getSentryEnabled() {
-  // For MMI we want Sentry always logging, doesn't depend on MetaMetrics being on or off
-  if (METAMASK_BUILD_TYPE === 'mmi') {
-    return true;
-  }
-  return getMetaMetricsEnabled();
-}
-
-function setSentryClient({ autoSessionTracking, force }) {
-  const client = Sentry.getClient();
-  const options = client?.getOptions() ?? {};
-
-  if (options.autoSessionTracking === autoSessionTracking && !force) {
-    log('Client already initialized with desired options', {
-      autoSessionTracking,
-    });
-    return false;
-  }
-
-  const clientOptions = getClientOptions({ autoSessionTracking });
+function setSentryClient() {
+  const clientOptions = getClientOptions();
   const { dsn, environment, release } = clientOptions;
 
   /**
@@ -692,7 +625,6 @@ function setSentryClient({ autoSessionTracking, force }) {
   globalThis.nw = {};
 
   log('Updating client', {
-    autoSessionTracking,
     environment,
     dsn,
     release,
@@ -703,65 +635,6 @@ function setSentryClient({ autoSessionTracking, force }) {
   addDebugListeners();
 
   return true;
-}
-
-/**
- * As long as a reference to the Sentry Hub can be found, and the user has
- * opted into MetaMetrics, change the autoSessionTracking option and start
- * a new sentry session.
- */
-async function startSession() {
-  const isSentryEnabled = await getSentryEnabled();
-
-  if (!isSentryEnabled) {
-    log('Not starting session as Sentry is disabled');
-    return;
-  }
-
-  if (setSentryClient({ autoSessionTracking: true })) {
-    log('Enabled auto session tracking');
-  }
-
-  Sentry.startSession();
-
-  log('Started session manually');
-}
-
-/**
- * As long as a reference to the Sentry Hub can be found, and the user has
- * opted out of MetaMetrics, change the autoSessionTracking option and end
- * the current sentry session.
- */
-async function endSession() {
-  const isSentryEnabled = await getSentryEnabled();
-
-  if (isSentryEnabled) {
-    log('Not ending session as Sentry is enabled');
-    return;
-  }
-
-  if (setSentryClient({ autoSessionTracking: false })) {
-    log('Disabled auto session tracking');
-  }
-
-  Sentry.endSession();
-
-  log('Ended session manually');
-}
-
-/**
- * Call the appropriate method (either startSession or endSession) depending
- * on the state of metaMetrics optin and the state of autoSessionTracking on
- * the Sentry client.
- */
-async function toggleSession() {
-  const isSentryEnabled = await getSentryEnabled();
-
-  if (isSentryEnabled) {
-    await startSession();
-  } else {
-    await endSession();
-  }
 }
 
 /**
@@ -977,10 +850,12 @@ function integrateLogging() {
     return;
   }
 
-  logger.log = (...args) => {
-    const message = args[0].replace('Sentry Logger [log]: ', '');
-    log(message, ...args.slice(1));
-  };
+  for (const loggerType of ['log', 'error']) {
+    logger[loggerType] = (...args) => {
+      const message = args[0].replace(`Sentry Logger [${loggerType}]: `, '');
+      log(message, ...args.slice(1));
+    };
+  }
 
   log('Integrated logging');
 }
@@ -1000,12 +875,24 @@ function addDebugListeners() {
       return;
     }
 
-    log('Sent completed session', data);
+    log('Completed session', data);
   });
 
   client?.on('afterSendEvent', (event) => {
-    log('Sent event', event);
+    log('Event', event);
   });
 
   log('Added debug listeners');
+}
+
+function makeTransport(options) {
+  return Sentry.makeFetchTransport(options, async (...args) => {
+    const metricsEnabled = await getMetaMetricsEnabled();
+
+    if (!metricsEnabled) {
+      throw new Error('Network request skipped as metrics disabled');
+    }
+
+    return await fetch(...args);
+  });
 }
