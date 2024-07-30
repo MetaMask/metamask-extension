@@ -292,7 +292,6 @@ exports[`ConfirmSendEther should render correct information for for confirm send
           >
             <div
               class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-              ethlogoheight="24"
               title="0"
             >
               <div

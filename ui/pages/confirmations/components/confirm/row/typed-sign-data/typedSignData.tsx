@@ -12,7 +12,6 @@ import { DataTree } from '../dataTree';
 
 export const ConfirmInfoRowTypedSignData = ({
   data,
-  isPermit,
   tokenDecimals,
 }: {
   data: string;
@@ -38,7 +37,7 @@ export const ConfirmInfoRowTypedSignData = ({
       <Box style={{ marginLeft: -8 }}>
         <DataTree
           data={sanitizedMessage.value}
-          isPermit={isPermit}
+          primaryType={primaryType}
           tokenDecimals={tokenDecimals}
         />
       </Box>
