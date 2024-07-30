@@ -110,7 +110,6 @@ describe('AssetList', () => {
         handleAssetChange={handleAssetChangeMock}
         asset={{ balance: '1', type: AssetType.native }}
         tokenList={tokenList}
-        memoizedSwapsBlockedTokens={new Set([])}
       />,
     );
 
@@ -124,7 +123,6 @@ describe('AssetList', () => {
         handleAssetChange={handleAssetChangeMock}
         asset={{ balance: '1', type: AssetType.native }}
         tokenList={tokenList}
-        memoizedSwapsBlockedTokens={new Set([])}
       />,
     );
 
@@ -153,8 +151,7 @@ describe('AssetList', () => {
         handleAssetChange={handleAssetChangeMock}
         asset={{ balance: '1', type: AssetType.native }}
         tokenList={tokenList}
-        sendingAssetSymbol="IRRELEVANT"
-        memoizedSwapsBlockedTokens={new Set(['0xtoken1'])}
+        isTokenDisabled={(token) => token.address === '0xToken1'}
       />,
     );
 
