@@ -3,7 +3,6 @@ const {
   defaultGanacheOptions,
   withFixtures,
   openDapp,
-  DAPP_URL,
   DAPP_ONE_URL,
   unlockWallet,
   WINDOW_TITLES,
@@ -84,17 +83,20 @@ describe('Dapp interactions', function () {
           '[data-testid ="account-options-menu-button"]',
         );
 
-        await driver.clickElement({ text: 'Connected sites', tag: 'div' });
+        await driver.clickElement({ text: 'All Permissions', tag: 'div' });
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Got it',
+          tag: 'button',
+        });
 
         const connectedDapp1 = await driver.isElementPresent({
-          text: DAPP_URL,
-          tag: 'bdi',
+          text: '127.0.0.1:8080',
+          tag: 'p',
         });
         const connectedDapp2 = await driver.isElementPresent({
-          text: DAPP_ONE_URL,
-          tag: 'bdi',
+          text: '127.0.0.1:8081',
+          tag: 'p',
         });
-
         assert.ok(connectedDapp1, 'Account not connected to Dapp1');
         assert.ok(connectedDapp2, 'Account not connected to Dapp2');
       },

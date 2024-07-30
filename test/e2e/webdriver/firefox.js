@@ -9,6 +9,7 @@ const {
 } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
 const { retry } = require('../../../development/lib/retry');
+const { isHeadless } = require('../../helpers/env');
 
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
@@ -35,9 +36,10 @@ class FirefoxDriver {
    * @param {object} options - the options for the build
    * @param options.responsive
    * @param options.port
+   * @param options.constrainWindowSize
    * @returns {Promise<{driver: !ThenableWebDriver, extensionUrl: string, extensionId: string}>}
    */
-  static async build({ responsive, port }) {
+  static async build({ responsive, port, constrainWindowSize }) {
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX);
     const options = new firefox.Options().setProfile(templateProfile);
 
@@ -58,7 +60,7 @@ class FirefoxDriver {
     if (process.env.CI === 'true') {
       options.setBinary('/opt/firefox/firefox');
     }
-    if (process.env.SELENIUM_HEADLESS) {
+    if (isHeadless('SELENIUM')) {
       // TODO: Remove notice and consider non-experimental when results are consistent
       console.warn(
         '*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons',
@@ -86,7 +88,7 @@ class FirefoxDriver {
     const extensionId = await fxDriver.installExtension('dist/firefox');
     const internalExtensionId = await fxDriver.getInternalId();
 
-    if (responsive) {
+    if (responsive || constrainWindowSize) {
       await driver.manage().window().setRect({ width: 320, height: 600 });
     }
 

@@ -45,9 +45,6 @@
   "approved": {
     "message": "அங்கீகரிக்கப்பட்ட"
   },
-  "attemptingConnect": {
-    "message": "இணைக்க முயற்சி செய்க ப்ளாக்சைன்"
-  },
   "attributions": {
     "message": "பண்புகளும்"
   },
@@ -358,9 +355,6 @@
   },
   "send": {
     "message": "அனுப்பு"
-  },
-  "sendTokens": {
-    "message": "டோக்கன்களை அனுப்பவும்"
   },
   "settings": {
     "message": "அமைப்புகள்"

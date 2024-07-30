@@ -6,7 +6,8 @@ import { useSelector } from 'react-redux';
 import { Box, Text } from '../../../../components/component-library';
 import {
   Display,
-  FONT_WEIGHT,
+  FlexWrap,
+  FontWeight,
   TextColor,
   TextVariant,
   TypographyVariant,
@@ -112,7 +113,7 @@ export default function GasTiming({
     return (
       <Typography
         variant={TypographyVariant.H7}
-        fontWeight={FONT_WEIGHT.BOLD}
+        fontWeight={FontWeight.Bold}
         className={classNames('gas-timing', 'gas-timing--negative')}
       >
         {t('editGasTooLow')}
@@ -191,16 +192,16 @@ export default function GasTiming({
   };
 
   return (
-    <Box display={Display.Flex}>
-      <Text color={TextColor.textMuted} variant={TextVariant.bodyXs}>
+    <Box display={Display.Flex} flexWrap={FlexWrap.Wrap}>
+      <Text
+        color={TextColor.textMuted}
+        variant={TextVariant.bodySm}
+        paddingInlineEnd={1}
+      >
         {text}
       </Text>
 
-      <Text
-        variant={TextVariant.bodyXs}
-        marginLeft={1}
-        color={getColorFromAttitude()}
-      >
+      <Text variant={TextVariant.bodySm} color={getColorFromAttitude()}>
         <span data-testid="gas-timing-time">~{time}</span>
       </Text>
     </Box>

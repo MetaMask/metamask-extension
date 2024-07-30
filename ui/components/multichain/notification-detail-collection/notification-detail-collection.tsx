@@ -1,4 +1,9 @@
 import React, { FC } from 'react';
+import { useSelector } from 'react-redux';
+import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
+import NftDefaultImage from '../../app/nft-default-image/nft-default-image';
+import { isIpfsURL } from '../../../helpers/utils/notification.util';
+
 import { NotificationDetail } from '../notification-detail';
 import {
   AvatarToken,
@@ -35,6 +40,12 @@ export const NotificationDetailCollection: FC<
 > = ({ icon, label, collection }) => {
   const { badgeSrc, src } = icon;
 
+  const isIpfsEnabled = useSelector(getIpfsGateway);
+  const openSeaEnabled = useSelector(getOpenSeaEnabled);
+
+  const ipfsImageIsRenderable = isIpfsEnabled && isIpfsURL(src) && src;
+  const openseaImageIsRenderable = openSeaEnabled && src && !isIpfsURL(src);
+
   const badgeIcon = (
     <AvatarToken
       src={badgeSrc}
@@ -47,15 +58,23 @@ export const NotificationDetailCollection: FC<
 
   const badgeWrapper = (
     <BadgeWrapper position={BadgeWrapperPosition.topRight} badge={badgeIcon}>
-      <Box
-        as="img"
-        src={src}
-        display={Display.Block}
-        justifyContent={JustifyContent.center}
-        backgroundColor={BackgroundColor.primaryMuted}
-        borderRadius={BorderRadius.LG}
-        className="notification-detail-collection__image"
-      />
+      {ipfsImageIsRenderable || openseaImageIsRenderable ? (
+        <Box
+          as="img"
+          src={src}
+          display={Display.Block}
+          justifyContent={JustifyContent.center}
+          backgroundColor={BackgroundColor.primaryMuted}
+          borderRadius={BorderRadius.LG}
+          className="notification-detail-collection__image"
+        />
+      ) : (
+        <NftDefaultImage
+          className="nft-item__default-image notification-detail-collection__image"
+          data-testid="nft-default-image"
+          clickable={false}
+        />
+      )}
     </BadgeWrapper>
   );
 

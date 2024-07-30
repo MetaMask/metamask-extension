@@ -64,6 +64,9 @@ export const SENTRY_BACKGROUND_STATE = {
   AnnouncementController: {
     announcements: false,
   },
+  AuthenticationController: {
+    isSignedIn: false,
+  },
   NetworkOrderController: {
     orderedNetworkList: [],
   },
@@ -76,6 +79,7 @@ export const SENTRY_BACKGROUND_STATE = {
     currentMigrationVersion: true,
     previousAppVersion: true,
     previousMigrationVersion: true,
+    showTokenAutodetectModalOnUpgrade: false,
   },
   ApprovalController: {
     approvalFlows: false,
@@ -145,6 +149,18 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   LoggingController: {
     logs: false,
+  },
+  MetamaskNotificationsController: {
+    subscriptionAccountsSeen: false,
+    isMetamaskNotificationsFeatureSeen: false,
+    isMetamaskNotificationsEnabled: false,
+    isFeatureAnnouncementsEnabled: false,
+    metamaskNotificationsList: false,
+    metamaskNotificationsReadList: false,
+    isCheckingAccountsPresence: false,
+    isFetchingMetamaskNotifications: false,
+    isUpdatingMetamaskNotifications: false,
+    isUpdatingMetamaskNotificationsAccount: false,
   },
   MetaMetricsController: {
     eventsBeforeMetricsOptIn: false,
@@ -227,6 +243,7 @@ export const SENTRY_BACKGROUND_STATE = {
       smartTransactionsOptInStatus: true,
       useNativeCurrencyAsPrimaryCurrency: true,
       petnamesEnabled: true,
+      showTokenAutodetectModal: false,
     },
     useExternalServices: false,
     selectedAddress: false,
@@ -246,6 +263,12 @@ export const SENTRY_BACKGROUND_STATE = {
     useTransactionSimulations: true,
     enableMV3TimestampSave: true,
     hasDismissedOpenSeaToBlockaidBanner: true,
+  },
+  PushPlatformNotificationsController: {
+    fcmToken: false,
+  },
+  QueuedRequestController: {
+    queuedRequestCount: true,
   },
   SelectedNetworkController: { domains: false },
   SignatureController: {
@@ -324,8 +347,7 @@ export const SENTRY_BACKGROUND_STATE = {
     },
   },
   TokenRatesController: {
-    contractExchangeRates: false,
-    contractExchangeRatesByChainId: false,
+    marketData: false,
   },
   TokensController: {
     allDetectedTokens: {
@@ -351,6 +373,10 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   UserOperationController: {
     userOperations: false,
+  },
+  UserStorageController: {
+    isProfileSyncingEnabled: true,
+    isProfileSyncingUpdateLoading: false,
   },
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   ...MMI_SENTRY_BACKGROUND_STATE,

@@ -61,11 +61,12 @@ export const ReceiveModal = ({ address, onClose }) => {
         >
           {name}
         </Text>
-
         <Box
           display={Display.Flex}
           alignItems={AlignItems.center}
           flexDirection={FlexDirection.Column}
+          paddingInlineEnd={4}
+          paddingInlineStart={4}
         >
           <QrCodeView Qr={{ data: address }} />
         </Box>

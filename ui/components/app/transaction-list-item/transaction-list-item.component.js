@@ -167,7 +167,10 @@ function TransactionListItemInner({
   const isSignatureReq = category === TransactionGroupCategory.signatureRequest;
   const isApproval = category === TransactionGroupCategory.approval;
   const isUnapproved = status === TransactionStatus.unapproved;
-  const isSwap = category === TransactionGroupCategory.swap;
+  const isSwap = [
+    TransactionGroupCategory.swap,
+    TransactionGroupCategory.swapAndSend,
+  ].includes(category);
   const isSigning = status === TransactionStatus.approved;
   const isSubmitting = status === TransactionStatus.signed;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

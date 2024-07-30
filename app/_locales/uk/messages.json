@@ -75,9 +75,6 @@
   "asset": {
     "message": "Актив"
   },
-  "attemptingConnect": {
-    "message": "Спроба підключення до розподіленої бази даних."
-  },
   "attributions": {
     "message": "Авторство"
   },
@@ -629,9 +626,6 @@
   },
   "send": {
     "message": "Надіслати"
-  },
-  "sendTokens": {
-    "message": "Надіслати токени"
   },
   "settings": {
     "message": "Налаштування"

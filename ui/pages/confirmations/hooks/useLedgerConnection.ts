@@ -18,10 +18,13 @@ import {
 } from '../../../ducks/metamask/metamask';
 import { attemptLedgerTransportCreation } from '../../../store/actions';
 import { currentConfirmationSelector } from '../selectors';
+import { SignatureRequestType } from '../types/confirm';
 
 const useLedgerConnection = () => {
   const dispatch = useDispatch();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
+  ) as SignatureRequestType;
   const ledgerTransportType = useSelector(getLedgerTransportType);
   const transportStatus = useSelector(getLedgerTransportStatus);
   const webHidConnectedStatus = useSelector(getLedgerWebHidConnectedStatus);

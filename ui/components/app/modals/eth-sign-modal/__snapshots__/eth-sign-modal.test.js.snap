@@ -66,7 +66,7 @@ exports[`Eth Sign Modal should match snapshot 1`] = `
           class="mm-checkbox__input-wrapper"
         >
           <input
-            class="mm-box mm-checkbox__input mm-box--margin-0 mm-box--margin-right-2 mm-box--display-flex mm-box--background-color-transparent mm-box--rounded-sm mm-box--border-color-border-default mm-box--border-width-2 box--border-style-solid"
+            class="mm-box mm-checkbox__input mm-box--margin-0 mm-box--margin-right-2 mm-box--display-flex mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-color-border-default mm-box--border-width-2 box--border-style-solid"
             id="eth-sign-checkbox"
             title="I understand that I can lose all of my funds and NFTs if I enable eth_sign requests. "
             type="checkbox"

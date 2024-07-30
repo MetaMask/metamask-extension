@@ -37,15 +37,16 @@ export function useSwappedTokenValue(transactionGroup, currentAsset) {
   const chainId = useSelector(getCurrentChainId);
 
   const isViewingReceivedTokenFromSwap =
-    currentAsset?.symbol === primaryTransaction.destinationTokenSymbol ||
-    (isSwapsDefaultTokenAddress(currentAsset.address, chainId) &&
-      isSwapsDefaultTokenSymbol(
-        primaryTransaction.destinationTokenSymbol,
-        chainId,
-      ));
+    type === TransactionType.swap &&
+    (currentAsset?.symbol === primaryTransaction.destinationTokenSymbol ||
+      (isSwapsDefaultTokenAddress(currentAsset.address, chainId) &&
+        isSwapsDefaultTokenSymbol(
+          primaryTransaction.destinationTokenSymbol,
+          chainId,
+        )));
 
   const swapTokenValue =
-    type === TransactionType.swap && isViewingReceivedTokenFromSwap
+    [TransactionType.swap].includes(type) && isViewingReceivedTokenFromSwap
       ? getSwapsTokensReceivedFromTxMeta(
           primaryTransaction.destinationTokenSymbol,
           initialTransaction,
@@ -55,7 +56,8 @@ export function useSwappedTokenValue(transactionGroup, currentAsset) {
           null,
           chainId,
         )
-      : type === TransactionType.swap && primaryTransaction.swapTokenValue;
+      : [TransactionType.swap, TransactionType.swapAndSend].includes(type) &&
+        primaryTransaction.swapTokenValue;
 
   const isNegative =
     typeof swapTokenValue === 'string'
@@ -67,8 +69,21 @@ export function useSwappedTokenValue(transactionGroup, currentAsset) {
     swapTokenValue || '',
     symbol,
   );
-  const swapTokenFiatAmount =
-    swapTokenValue && isViewingReceivedTokenFromSwap && _swapTokenFiatAmount;
+  const _swapAndSendTokenFiatAmount = useTokenFiatAmount(
+    primaryTransaction.sourceTokenAddress,
+    swapTokenValue,
+    primaryTransaction.sourceTokenSymbol,
+  );
+
+  let swapTokenFiatAmount;
+  if (swapTokenValue) {
+    if (isViewingReceivedTokenFromSwap) {
+      swapTokenFiatAmount = _swapTokenFiatAmount;
+    } else if (type === TransactionType.swapAndSend) {
+      swapTokenFiatAmount = _swapAndSendTokenFiatAmount;
+    }
+  }
+
   return {
     swapTokenValue,
     swapTokenFiatAmount,

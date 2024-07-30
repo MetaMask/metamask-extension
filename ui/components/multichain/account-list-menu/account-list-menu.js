@@ -15,11 +15,11 @@ import {
   Text,
 } from '../../component-library';
 import { ModalContent } from '../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../component-library/modal-header/deprecated';
+import { ModalHeader } from '../../component-library/modal-header';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
 import {
   AccountListItem,
-  CreateAccount,
+  CreateEthAccount,
   ImportAccount,
   AccountListItemMenuTypes,
 } from '..';
@@ -169,7 +169,7 @@ export const AccountListMenu = ({
         </ModalHeader>
         {actionMode === ACTION_MODES.ADD ? (
           <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-            <CreateAccount
+            <CreateEthAccount
               onActionComplete={(confirmed) => {
                 if (confirmed) {
                   onClose();

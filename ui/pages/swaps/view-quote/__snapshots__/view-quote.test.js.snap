@@ -38,7 +38,7 @@ exports[`ViewQuote renders the component with EIP-1559 enabled 2`] = `
     class="exchange-rate-display main-quote-summary__exchange-rate-display"
   >
     <div
-      class="box exchange-rate-display__quote-rate--no-link box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default"
+      class="box exchange-rate-display__quote-rate--no-link box--display-flex box--gap-1 box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default"
       data-testid="exchange-rate-display-quote-rate"
     >
       <span>
@@ -110,7 +110,7 @@ exports[`ViewQuote renders the component with initial props 2`] = `
     class="exchange-rate-display main-quote-summary__exchange-rate-display"
   >
     <div
-      class="box exchange-rate-display__quote-rate--no-link box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default"
+      class="box exchange-rate-display__quote-rate--no-link box--display-flex box--gap-1 box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default"
       data-testid="exchange-rate-display-quote-rate"
     >
       <span>

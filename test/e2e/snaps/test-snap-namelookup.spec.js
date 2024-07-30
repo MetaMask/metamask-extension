@@ -2,6 +2,7 @@ const {
   withFixtures,
   defaultGanacheOptions,
   unlockWallet,
+  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -34,15 +35,7 @@ describe('Test Snap Name Lookup', function () {
         await driver.clickElement('#connectname-lookup');
 
         // switch to metamask extension and click connect
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await switchToNotificationWindow(driver);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -65,7 +58,6 @@ describe('Test Snap Name Lookup', function () {
         // switch to fullscreen metamask tab
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
-          windowHandles,
         );
 
         // switch network to ethereum-mainnet for name lookup to work
@@ -88,8 +80,8 @@ describe('Test Snap Name Lookup', function () {
 
         // verify name output from snap
         await driver.waitForSelector({
-          text: '0xc0ff...4979',
-          tag: 'p',
+          text: '0xc0ffe...54979',
+          tag: 'div',
         });
       },
     );

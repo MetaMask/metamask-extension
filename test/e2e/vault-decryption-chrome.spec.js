@@ -57,6 +57,13 @@ async function closePopoverIfPresent(driver) {
   };
   await driver.clickElementSafe(popoverButtonSelector);
   await driver.clickElementSafe(enableButtonSelector);
+
+  // Token Autodetection Independent Announcement
+  const tokenAutodetection = {
+    text: 'Not right now',
+    tag: 'button',
+  };
+  await driver.clickElementSafe(tokenAutodetection);
 }
 
 /**
@@ -75,12 +82,11 @@ async function getSRP(driver) {
 }
 
 describe('Vault Decryptor Page', function () {
-  // eslint-disable-next-line mocha/no-skipped-tests
   it('is able to decrypt the vault using the vault-decryptor webapp', async function () {
     await withFixtures({}, async ({ driver }) => {
-      await driver.navigate();
-      // the first app launch opens a new tab, we need to switch the focus
-      // to the first one.
+      // we don't need to use navigate
+      // since MM will automatically open a new window in prod build
+      await driver.waitUntilXWindowHandles(2);
       await driver.switchToWindowWithTitle('MetaMask');
       // create a new vault through onboarding flow
       await completeCreateNewWalletOnboardingFlowWithOptOut(

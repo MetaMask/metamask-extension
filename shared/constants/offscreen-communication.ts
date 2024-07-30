@@ -7,6 +7,7 @@ export enum OffscreenCommunicationTarget {
   ledgerOffscreen = 'ledger-offscreen',
   latticeOffscreen = 'lattice-offscreen',
   extension = 'extension-offscreen',
+  extensionMain = 'extension',
 }
 
 /**

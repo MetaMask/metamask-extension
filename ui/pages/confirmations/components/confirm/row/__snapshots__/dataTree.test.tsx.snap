@@ -23,6 +23,7 @@ exports[`DataTree correctly renders reverse strings 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
         >
           Sign into \\u202E EVIL
         </p>
@@ -46,6 +47,7 @@ exports[`DataTree correctly renders reverse strings 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
         >
           1337
         </p>
@@ -78,6 +80,7 @@ exports[`DataTree should match snapshot 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
         >
           Hello, Bob!
         </p>
@@ -117,6 +120,7 @@ exports[`DataTree should match snapshot 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+              style="white-space: pre-wrap;"
             >
               Cow
             </p>
@@ -334,6 +338,7 @@ exports[`DataTree should match snapshot 1`] = `
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
                 >
                   Bob
                 </p>
@@ -592,6 +597,7 @@ exports[`DataTree should match snapshot 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
         >
           0x
         </p>

@@ -38,20 +38,12 @@ const mockState = {
       },
     },
     preferences: {
-      redesignedConfirmations: true,
+      redesignedConfirmationsEnabled: true,
     },
   },
 };
 
 describe('useCurrentConfirmation', () => {
-  beforeAll(() => {
-    process.env.ENABLE_CONFIRMATION_REDESIGN = 'true';
-  });
-
-  afterAll(() => {
-    process.env.ENABLE_CONFIRMATION_REDESIGN = 'false';
-  });
-
   it('should return current confirmation', () => {
     const { result } = renderHookWithProvider(
       () => useCurrentConfirmation(),
@@ -81,7 +73,7 @@ describe('useCurrentConfirmation', () => {
       metamask: {
         ...mockState.metamask,
         preferences: {
-          redesignedConfirmations: false,
+          redesignedConfirmationsEnabled: false,
         },
       },
     });

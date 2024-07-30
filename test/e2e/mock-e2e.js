@@ -24,6 +24,7 @@ const blacklistedHosts = [
 const {
   mockEmptyStalelistAndHotlist,
 } = require('./tests/phishing-controller/mocks');
+const { mockNotificationServices } = require('./tests/notifications/mocks');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
 <html lang="en">
@@ -64,9 +65,14 @@ const browserAPIRequestDomains =
  * @param {(server: Mockttp) => MockedEndpoint} testSpecificMock - A function for setting up test-specific network mocks
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
+ * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH.
  * @returns {SetupMockReturn}
  */
-async function setupMocking(server, testSpecificMock, { chainId }) {
+async function setupMocking(
+  server,
+  testSpecificMock,
+  { chainId, ethConversionInUsd = '1700' },
+) {
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
     beforeRequest: (req) => {
@@ -177,21 +183,63 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
       };
     });
 
-  await server
-    .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/gasPrices`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          SafeGasPrice: '1',
-          ProposeGasPrice: '2',
-          FastGasPrice: '3',
-        },
-      };
-    });
+  const gasPricesCallbackMock = () => ({
+    statusCode: 200,
+    json: {
+      SafeGasPrice: '1',
+      ProposeGasPrice: '2',
+      FastGasPrice: '3',
+    },
+  });
+  const suggestedGasFeesCallbackMock = () => ({
+    statusCode: 200,
+    json: {
+      low: {
+        suggestedMaxPriorityFeePerGas: '1',
+        suggestedMaxFeePerGas: '20.44436136',
+        minWaitTimeEstimate: 15000,
+        maxWaitTimeEstimate: 30000,
+      },
+      medium: {
+        suggestedMaxPriorityFeePerGas: '1.5',
+        suggestedMaxFeePerGas: '25.80554517',
+        minWaitTimeEstimate: 15000,
+        maxWaitTimeEstimate: 45000,
+      },
+      high: {
+        suggestedMaxPriorityFeePerGas: '2',
+        suggestedMaxFeePerGas: '27.277766977',
+        minWaitTimeEstimate: 15000,
+        maxWaitTimeEstimate: 60000,
+      },
+      estimatedBaseFee: '19.444436136',
+      networkCongestion: 0.14685,
+      latestPriorityFeeRange: ['0.378818859', '6.555563864'],
+      historicalPriorityFeeRange: ['0.1', '248.262969261'],
+      historicalBaseFeeRange: ['14.146999781', '28.825256275'],
+      priorityFeeTrend: 'down',
+      baseFeeTrend: 'up',
+    },
+  });
 
   await server
-    .forGet('https://swap.metaswap.codefi.network/networks/1/token')
+    .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/gasPrices`)
+    .thenCallback(gasPricesCallbackMock);
+
+  await server
+    .forGet(`${GAS_API_BASE_URL}/networks/1/gasPrices`)
+    .thenCallback(gasPricesCallbackMock);
+
+  await server
+    .forGet(`${GAS_API_BASE_URL}/networks/1/suggestedGasFees`)
+    .thenCallback(suggestedGasFeesCallbackMock);
+
+  await server
+    .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/suggestedGasFees`)
+    .thenCallback(suggestedGasFeesCallbackMock);
+
+  await server
+    .forGet('https://swap.api.cx.metamask.io/networks/1/token')
     .withQuery({ address: '0x72c9Fb7ED19D3ce51cea5C56B3e023cd918baaDf' })
     .thenCallback(() => {
       return {
@@ -208,42 +256,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
     });
 
   await server
-    .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/suggestedGasFees`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          low: {
-            suggestedMaxPriorityFeePerGas: '1',
-            suggestedMaxFeePerGas: '20.44436136',
-            minWaitTimeEstimate: 15000,
-            maxWaitTimeEstimate: 30000,
-          },
-          medium: {
-            suggestedMaxPriorityFeePerGas: '1.5',
-            suggestedMaxFeePerGas: '25.80554517',
-            minWaitTimeEstimate: 15000,
-            maxWaitTimeEstimate: 45000,
-          },
-          high: {
-            suggestedMaxPriorityFeePerGas: '2',
-            suggestedMaxFeePerGas: '27.277766977',
-            minWaitTimeEstimate: 15000,
-            maxWaitTimeEstimate: 60000,
-          },
-          estimatedBaseFee: '19.444436136',
-          networkCongestion: 0.14685,
-          latestPriorityFeeRange: ['0.378818859', '6.555563864'],
-          historicalPriorityFeeRange: ['0.1', '248.262969261'],
-          historicalBaseFeeRange: ['14.146999781', '28.825256275'],
-          priorityFeeTrend: 'down',
-          baseFeeTrend: 'up',
-        },
-      };
-    });
-
-  await server
-    .forGet('https://swap.metaswap.codefi.network/featureFlags')
+    .forGet('https://swap.api.cx.metamask.io/featureFlags')
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -280,7 +293,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
     });
 
   await server
-    .forGet(`https://token-api.metaswap.codefi.network/tokens/${chainId}`)
+    .forGet(`https://token.api.cx.metamask.io/tokens/${chainId}`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -342,7 +355,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
     });
 
   await server
-    .forGet('https://swap.metaswap.codefi.network/networks/1/tokens')
+    .forGet('https://swap.api.cx.metamask.io/networks/1/tokens')
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -353,7 +366,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
             decimals: 18,
             type: 'native',
             iconUrl:
-              'https://token.metaswap.codefi.network/assets/nativeCurrencyLogos/ethereum.svg',
+              'https://token.api.cx.metamask.io/assets/nativeCurrencyLogos/ethereum.svg',
             coingeckoId: 'ethereum',
             address: '0x0000000000000000000000000000000000000000',
             occurrences: 100,
@@ -426,7 +439,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
     });
 
   await server
-    .forGet('https://swap.metaswap.codefi.network/networks/1/topAssets')
+    .forGet('https://swap.api.cx.metamask.io/networks/1/topAssets')
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -452,7 +465,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
     });
 
   await server
-    .forGet(`https://token-api.metaswap.codefi.network/token/${chainId}`)
+    .forGet(`https://token.api.cx.metamask.io/token/${chainId}`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -460,9 +473,9 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
       };
     });
 
-  // It disables loading of token icons, e.g. this URL: https://static.metafi.codefi.network/api/v1/tokenIcons/1337/0x0000000000000000000000000000000000000000.png
+  // It disables loading of token icons, e.g. this URL: https://static.cx.metamask.io/api/v1/tokenIcons/1337/0x0000000000000000000000000000000000000000.png
   const tokenIconRegex = new RegExp(
-    `^https:\\/\\/static\\.metafi\\.codefi\\.network\\/api\\/vi\\/tokenIcons\\/${chainId}\\/.*\\.png`,
+    `^https:\\/\\/static\\.cx\\.metamask\\.io\\/api\\/vi\\/tokenIcons\\/${chainId}\\/.*\\.png`,
     'u',
   );
   await server.forGet(tokenIconRegex).thenCallback(() => {
@@ -478,7 +491,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
       return {
         statusCode: 200,
         json: {
-          USD: '1700',
+          USD: ethConversionInUsd,
         },
       };
     });
@@ -555,7 +568,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
   await mockEmptyStalelistAndHotlist(server);
 
   await server
-    .forPost('https://customnetwork.com/api/customRPC')
+    .forPost('https://customnetwork.test/api/customRPC')
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -580,6 +593,9 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
         statusCode: 200,
       };
     });
+
+  // Notification APIs
+  mockNotificationServices(server);
 
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested
@@ -648,7 +664,7 @@ async function mockTokenNameProvider(server) {
     const name = namesByAddress[address];
 
     await server
-      .forGet(/https:\/\/token-api\.metaswap\.codefi\.network\/token\/.*/gu)
+      .forGet(/https:\/\/token\.api\.cx\.metamask\.io\/token\/.*/gu)
       .withQuery({ address })
       .thenCallback(() => {
         return {

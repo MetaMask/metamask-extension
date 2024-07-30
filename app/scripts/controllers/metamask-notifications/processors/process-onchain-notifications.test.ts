@@ -41,9 +41,10 @@ const rawNotificationTestSuite = rawNotifications.map(
 );
 
 describe('process-onchain-notifications - processOnChainNotification()', () => {
+  // @ts-expect-error This is missing from the Mocha type definitions
   test.each(rawNotificationTestSuite)(
     'Converts Raw On-Chain Notification (%s) to a shared Notification Type',
-    (_, rawNotification) => {
+    (_: string, rawNotification: OnChainRawNotification) => {
       const result = processOnChainNotification(rawNotification);
       expect(result.id).toBe(rawNotification.id);
       expect(result.type).toBe(rawNotification.type);

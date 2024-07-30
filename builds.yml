@@ -27,7 +27,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.0.2/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.4.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Main build uses the default browser manifest
     manifestOverrides: false
@@ -38,11 +38,18 @@ buildTypes:
   beta:
     features:
       - build-beta
+      - snaps
+      - keyring-snaps
+      - blockaid
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
       - INFURA_ENV_KEY_REF: INFURA_BETA_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_BETA_WRITE_KEY
+      - ALLOW_LOCAL_SNAPS: false
+      - REQUIRE_SNAPS_ALLOWLIST: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.4.0/index.html
+      - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
     isPrerelease: true
@@ -64,7 +71,7 @@ buildTypes:
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.0.2/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.4.0/index.html
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
@@ -86,7 +93,7 @@ buildTypes:
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.0.2/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.3.0/index.html
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
@@ -104,12 +111,12 @@ buildTypes:
     env:
       - INFURA_MMI_PROJECT_ID
       - SEGMENT_MMI_WRITE_KEY
-      - SENTRY_MMI_DSN: ''
+      - SENTRY_MMI_DSN
       - INFURA_ENV_KEY_REF: INFURA_MMI_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.0.2/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.4.0/index.html
       - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
       - SUPPORT_LINK: https://mmi-support.metamask.io/hc/en-us
       - SUPPORT_REQUEST_LINK: https://mmi-support.metamask.io/hc/en-us/requests/new
@@ -183,6 +190,8 @@ env:
   - TRANSACTION_SECURITY_PROVIDER: false
   # The unlock password
   - PASSWORD: null
+  - TEST_SRP: null
+  - SKIP_ONBOARDING: null
   # Also see METAMASK_DEBUG and NODE_DEBUG
   - DEBUG: null
   - SUPPORT_LINK: https://support.metamask.io
@@ -191,6 +200,7 @@ env:
 
   - ENABLE_MV3: true
   # These are exclusively used for MV3
+  - USE_SNOW
   - APPLY_LAVAMOAT
   - FILE_NAMES
 
@@ -211,10 +221,20 @@ env:
   - OIDC_CLIENT_ID: 1132f10a-b4e5-4390-a5f2-d9c6022db564
   - OIDC_GRANT_TYPE: urn:ietf:params:oauth:grant-type:jwt-bearer
   - USER_STORAGE_API: https://user-storage.api.cx.metamask.io
-  - CONTENTFUL_ACCESS_SPACE_ID: null
-  - CONTENTFUL_ACCESS_TOKEN: null
+  - CONTENTFUL_ACCESS_SPACE_ID:
+  - CONTENTFUL_ACCESS_TOKEN:
   - NOTIFICATIONS_SERVICE_URL: https://notification.api.cx.metamask.io
   - TRIGGERS_SERVICE_URL: https://trigger.api.cx.metamask.io
+  - PUSH_NOTIFICATIONS_SERVICE_URL: https://push.api.cx.metamask.io
+  - VAPID_KEY:
+  - FIREBASE_API_KEY:
+  - FIREBASE_AUTH_DOMAIN:
+  - FIREBASE_STORAGE_BUCKET:
+  - FIREBASE_PROJECT_ID:
+  - FIREBASE_MESSAGING_SENDER_ID:
+  - FIREBASE_APP_ID:
+  - FIREBASE_MEASUREMENT_ID:
+  - __FIREBASE_DEFAULTS__: null
 
   ###
   # API keys to 3rd party services
@@ -285,6 +305,10 @@ env:
   - MULTICHAIN: ''
   # Determines if feature flagged Multichain Transactions should be used
   - TRANSACTION_MULTICHAIN: ''
+  # Determines if feature flagged Chain permissions
+  - CHAIN_PERMISSIONS: ''
+  # Enables use of test gas fee flow to debug gas fee estimation
+  - TEST_GAS_FEE_FLOWS: false
 
     # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''

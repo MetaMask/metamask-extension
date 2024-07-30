@@ -111,7 +111,7 @@ if (!window.crypto) {
 }
 if (!window.crypto.getRandomValues) {
   // eslint-disable-next-line node/global-require
-  window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues');
+  window.crypto.getRandomValues = require('crypto').webcrypto.getRandomValues;
 }
 
 // TextEncoder/TextDecoder

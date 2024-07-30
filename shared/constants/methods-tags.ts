@@ -12,9 +12,11 @@ export const methodsRequiringNetworkSwitch = [
   'wallet_switchEthereumChain',
   'wallet_addEthereumChain',
   'wallet_watchAsset',
+  'eth_signTypedData',
+  'eth_signTypedData_v3',
   'eth_signTypedData_v4',
   'personal_sign',
-];
+] as const;
 
 /**
  * This is a list of methods that can cause a confirmation to be
@@ -25,8 +27,6 @@ export const methodsWithConfirmation = [
   ...methodsRequiringNetworkSwitch,
   'wallet_requestPermissions',
   'wallet_requestSnaps',
-  'wallet_snap',
-  'wallet_invokeSnap',
   'eth_decrypt',
   'eth_sign',
   'eth_requestAccounts',

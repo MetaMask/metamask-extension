@@ -71,7 +71,10 @@ async function showThirdPartyDetails(driver) {
 }
 
 async function closeThirdPartyDetails(driver) {
-  await driver.clickElement({ text: 'Got it', tag: 'button' });
+  await driver.clickElementAndWaitToDisappear({
+    text: 'Got it',
+    tag: 'button',
+  });
 }
 
 async function expectProposedNames(driver, value, options) {

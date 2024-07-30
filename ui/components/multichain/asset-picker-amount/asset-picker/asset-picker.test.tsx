@@ -11,9 +11,6 @@ const store = (
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tokenList = {} as any,
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  contractExchangeRates = {} as any,
 ) =>
   configureStore({
     ...mockSendState,
@@ -24,7 +21,6 @@ const store = (
           conversionRate: 11.1,
         },
       },
-      contractExchangeRates,
       providerConfig: {
         chainId: '0x1',
         ticker: nativeTicker,
@@ -159,5 +155,74 @@ describe('AssetPicker', () => {
     );
     expect(getByText('symbol')).toBeInTheDocument();
     expect(getByText('?')).toBeInTheDocument();
+  });
+
+  it('nft: does not truncates if token ID is under length 13', () => {
+    const asset = {
+      type: AssetType.NFT,
+      details: {
+        address: 'token address',
+        decimals: 2,
+        tokenId: 1234567890,
+      },
+      balance: '100',
+    };
+    const mockAssetChange = jest.fn();
+
+    const { getByText } = render(
+      <Provider store={store()}>
+        <AssetPicker asset={asset} onAssetChange={() => mockAssetChange()} />
+      </Provider>,
+    );
+    expect(getByText('#1234567890')).toBeInTheDocument();
+  });
+
+  it('nft: truncates if token ID is too long', () => {
+    const asset = {
+      type: AssetType.NFT,
+      details: {
+        address: 'token address',
+        decimals: 2,
+        tokenId: 1234567890123456,
+      },
+      balance: '100',
+    };
+    const mockAssetChange = jest.fn();
+
+    const { getByText } = render(
+      <Provider store={store()}>
+        <AssetPicker asset={asset} onAssetChange={() => mockAssetChange()} />
+      </Provider>,
+    );
+    expect(getByText('#123456...3456')).toBeInTheDocument();
+  });
+
+  it('render if disabled', () => {
+    const asset = {
+      type: AssetType.token,
+      details: {
+        address: 'token address',
+        decimals: 2,
+        symbol: 'symbol',
+      },
+      balance: '100',
+    };
+    const mockAssetChange = jest.fn();
+
+    const { container } = render(
+      <Provider
+        store={store("SHOULDN'T MATTER", [
+          { address: 'token address', iconUrl: 'token icon url' },
+        ])}
+      >
+        <AssetPicker
+          asset={asset}
+          onAssetChange={() => mockAssetChange()}
+          isDisabled
+        />
+      </Provider>,
+    );
+
+    expect(container).toMatchSnapshot();
   });
 });

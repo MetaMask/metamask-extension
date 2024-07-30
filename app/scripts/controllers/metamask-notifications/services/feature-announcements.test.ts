@@ -1,8 +1,6 @@
 import { TRIGGER_TYPES } from '../constants/notification-schema';
-import {
-  createMockFeatureAnnouncementAPIResult,
-  mockFetchFeatureAnnouncementNotifications,
-} from '../mocks/mock-feature-announcements';
+import { createMockFeatureAnnouncementAPIResult } from '../mocks/mock-feature-announcements';
+import { mockFetchFeatureAnnouncementNotifications } from '../mocks/mockServices';
 import { getFeatureAnnouncementNotifications } from './feature-announcements';
 
 jest.mock('@contentful/rich-text-html-renderer', () => ({

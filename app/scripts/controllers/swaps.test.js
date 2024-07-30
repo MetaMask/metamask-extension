@@ -81,9 +81,11 @@ const MOCK_FETCH_METADATA = {
 };
 
 const MOCK_TOKEN_RATES_STORE = () => ({
-  contractExchangeRates: {
-    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
-    '0x1111111111111111111111111111111111111111': 0.1,
+  marketData: {
+    '0x1': {
+      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 2 },
+      '0x1111111111111111111111111111111111111111': { price: 0.1 },
+    },
   },
 });
 
@@ -794,7 +796,9 @@ describe('SwapsController', function () {
           .resolves(BigNumber.from(1));
 
         swapsController.getTokenRatesState = () => ({
-          contractExchangeRates: {},
+          marketData: {
+            '0x1': {},
+          },
         });
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(

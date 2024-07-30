@@ -214,9 +214,6 @@
   "assetOptions": {
     "message": "Opciones de activos"
   },
-  "attemptingConnect": {
-    "message": "Intentando una conexión a la cadena de bloques."
-  },
   "attributions": {
     "message": "Atribuciones"
   },
@@ -301,9 +298,6 @@
   },
   "cancel": {
     "message": "Cancelar"
-  },
-  "cancelEdit": {
-    "message": "Cancelar Editar"
   },
   "cancelPopoverTitle": {
     "message": "Cancelar transacción"
@@ -1384,22 +1378,6 @@
   "notEnoughGas": {
     "message": "No hay gas suficiente"
   },
-  "notifications8ActionText": {
-    "message": "Ir a Configuración Avanzada",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
-  },
-  "notifications8DescriptionOne": {
-    "message": "A partir de MetaMask v10.4.0, ya no necesita Ledger Live para conectar su dispositivo Ledger a MetaMask.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for how Ledger Live is no longer needed to connect the device."
-  },
-  "notifications8DescriptionTwo": {
-    "message": "Para una experiencia más fácil y estable, vaya a la pestaña de Configuración Avanzada y cambie el 'Tipo de Conexión de Ledger Preferida' a 'WebHID'.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes how the user can turn off the Ledger Live setting."
-  },
-  "notifications8Title": {
-    "message": "Mejora de la conexión de Ledger",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
   "ofTextNofM": {
     "message": "de"
   },
@@ -1795,12 +1773,6 @@
   "sendSpecifiedTokens": {
     "message": "Enviar $1",
     "description": "Symbol of the specified token"
-  },
-  "sendTo": {
-    "message": "Enviar a"
-  },
-  "sendTokens": {
-    "message": "Enviar tokens"
   },
   "sendingDisabled": {
     "message": "Todavía no se admite el envío de activos ERC-1155 NFT."

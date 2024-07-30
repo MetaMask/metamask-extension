@@ -10,7 +10,6 @@ import {
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
-  getSubjectMetadata,
   getTargetSubjectMetadata,
 } from '.';
 
@@ -94,6 +93,10 @@ export function getPermittedAccountsByOrigin(state) {
   }, {});
 }
 
+export function getSubjectMetadata(state) {
+  return state.metamask.subjectMetadata;
+}
+
 /**
  * Returns an array of connected subject objects, with the following properties:
  * - extensionId
@@ -130,26 +133,28 @@ export function getConnectedSubjectsForSelectedAddress(state) {
   return connectedSubjects;
 }
 
-export function getConnectedSubjectsForAllAddresses(state) {
-  const subjects = getPermissionSubjects(state);
-  const subjectMetadata = getSubjectMetadata(state);
-
-  const accountsToConnections = {};
-  Object.entries(subjects).forEach(([subjectKey, subjectValue]) => {
-    const exposedAccounts = getAccountsFromSubject(subjectValue);
-    exposedAccounts.forEach((address) => {
-      if (!accountsToConnections[address]) {
-        accountsToConnections[address] = [];
-      }
-      const metadata = subjectMetadata[subjectKey];
-      if (metadata) {
-        accountsToConnections[address].push(metadata);
-      }
+export const getConnectedSubjectsForAllAddresses = createDeepEqualSelector(
+  getPermissionSubjects,
+  getSubjectMetadata,
+  (subjects, subjectMetadata) => {
+    const accountsToConnections = {};
+    Object.entries(subjects).forEach(([subjectKey, subjectValue]) => {
+      const exposedAccounts = getAccountsFromSubject(subjectValue);
+      exposedAccounts.forEach((address) => {
+        if (!accountsToConnections[address]) {
+          accountsToConnections[address] = [];
+        }
+        const metadata = subjectMetadata[subjectKey];
+        accountsToConnections[address].push({
+          origin: subjectKey,
+          ...metadata,
+        });
+      });
     });
-  });
 
-  return accountsToConnections;
-}
+    return accountsToConnections;
+  },
+);
 
 export function getSubjectsWithPermission(state, permissionName) {
   const subjects = getPermissionSubjects(state);

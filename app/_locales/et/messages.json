@@ -75,9 +75,6 @@
   "asset": {
     "message": "Vara"
   },
-  "attemptingConnect": {
-    "message": "Plokiahelaga ühenduse loomise katse."
-  },
   "attributions": {
     "message": "Omistamised"
   },
@@ -619,9 +616,6 @@
   },
   "send": {
     "message": "Saada"
-  },
-  "sendTokens": {
-    "message": "Saada lube"
   },
   "settings": {
     "message": "Seaded"

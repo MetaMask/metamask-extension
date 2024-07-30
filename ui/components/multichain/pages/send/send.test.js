@@ -2,9 +2,8 @@ import React from 'react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { NetworkType } from '@metamask/controller-utils';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { act } from '@testing-library/react';
-import mockState from '../../../../../test/data/mock-state.json';
 import {
   renderWithProvider,
   waitFor,
@@ -23,6 +22,7 @@ import {
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { KeyringType } from '../../../../../shared/constants/keyring';
+import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import { SendPage } from '.';
 
 jest.mock('@ethersproject/providers', () => {
@@ -138,7 +138,7 @@ const baseStore = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
         permissionHistory: {
@@ -297,7 +297,7 @@ describe('SendPage', () => {
       it('should call reset send state and route to recent page without cancelling tx', async () => {
         const {
           result: { queryByText },
-        } = await render(mockState);
+        } = await render(mockSendState);
 
         const cancelText = queryByText('Cancel');
         await act(async () => {
@@ -310,7 +310,7 @@ describe('SendPage', () => {
 
       it('should reject/cancel tx when coming from tx editing and route to index', async () => {
         const sendDataState = {
-          ...mockState,
+          ...mockSendState,
           send: {
             currentTransactionUUID: '01',
             draftTransactions: {
@@ -319,11 +319,17 @@ describe('SendPage', () => {
                 amount: {
                   value: '0x1',
                 },
-                asset: {
+                sendAsset: {
                   type: AssetType.token,
                   balance: '0xaf',
                   details: {},
                 },
+                receiveAsset: {
+                  type: AssetType.token,
+                  balance: '0xaf',
+                  details: {},
+                },
+                gas: {},
               },
             },
             stage: SEND_STAGES.EDIT,

@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../../shared/constants/security-provider';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -14,6 +14,7 @@ import {
   completedTx,
 } from '../../../../store/actions';
 import { shortenAddress } from '../../../../helpers/utils/util';
+import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import SignatureRequestOriginal from '.';
 
 jest.mock('../../../../store/actions', () => ({
@@ -77,7 +78,7 @@ const props = {
       },
     },
     options: {},
-    methods: [...Object.values(EthMethod)],
+    methods: ETH_EOA_METHODS,
     type: EthAccountType.Eoa,
   },
 };
@@ -235,7 +236,7 @@ describe('SignatureRequestOriginal', () => {
         },
       },
       options: {},
-      methods: [...Object.values(EthMethod)],
+      methods: ETH_EOA_METHODS,
       type: EthAccountType.Eoa,
     };
     const mismatchAccountText = `Your selected account (${shortenAddress(

@@ -2,8 +2,10 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { useCounter } from '../../../hooks/metamask-notifications/useCounter';
+import { NotificationsTagCounter } from '../notifications-tag-counter';
+import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 import {
-  CONNECTED_ROUTE,
   SETTINGS_ROUTE,
   DEFAULT_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -12,14 +14,19 @@ import {
   PERMISSIONS,
   ///: END:ONLY_INCLUDE_IF(snaps)
 } from '../../../helpers/constants/routes';
-import { lockMetamask } from '../../../store/actions';
+import {
+  lockMetamask,
+  showConfirmTurnOnMetamaskNotifications,
+} from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  selectIsMetamaskNotificationsEnabled,
+  selectIsMetamaskNotificationsFeatureSeen,
+} from '../../../selectors/metamask-notifications/metamask-notifications';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
 import {
   Box,
   IconName,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  Text,
-  ///: END:ONLY_INCLUDE_IF(snaps)
   Popover,
   PopoverPosition,
 } from '../../component-library';
@@ -51,23 +58,20 @@ import {
   getSelectedInternalAccount,
   getUnapprovedTransactions,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  getNotifySnaps,
-  getUnreadNotificationsCount,
   getAnySnapUpdateAvailable,
+  getNotifySnaps,
+  getUseExternalServices,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
   BorderColor,
   BorderStyle,
   Display,
+  FlexDirection,
   JustifyContent,
-  TextAlign,
-  TextColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 ///: END:ONLY_INCLUDE_IF
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
@@ -78,16 +82,27 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const history = useHistory();
-  const account = useSelector(getSelectedInternalAccount);
-  const unapprovedTransactons = useSelector(getUnapprovedTransactions);
+  const basicFunctionality = useSelector(getUseExternalServices);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  const notifySnaps = useSelector(getNotifySnaps);
-  ///: END:ONLY_INCLUDE_IF
+  const history = useHistory();
+
+  const { notificationsCount } = useCounter();
+
+  const account = useSelector(getSelectedInternalAccount);
+
+  const unapprovedTransactions = useSelector(getUnapprovedTransactions);
+
+  const isMetamaskNotificationFeatureSeen = useSelector(
+    selectIsMetamaskNotificationsFeatureSeen,
+  );
+
+  const isMetamaskNotificationsEnabled = useSelector(
+    selectIsMetamaskNotificationsEnabled,
+  );
+  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
 
   const hasUnapprovedTransactions =
-    Object.keys(unapprovedTransactons).length > 0;
+    Object.keys(unapprovedTransactions).length > 0;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const metaMetricsId = useSelector(getMetaMetricsId);
@@ -95,9 +110,10 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
   ///: END:ONLY_INCLUDE_IF
 
+  let hasNotifySnaps = false;
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  const unreadNotificationsCount = useSelector(getUnreadNotificationsCount);
   const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
+  hasNotifySnaps = useSelector(getNotifySnaps).length > 0;
   ///: END:ONLY_INCLUDE_IF
 
   let supportText = t('support');
@@ -130,6 +146,37 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
     };
   }, [closeMenu]);
 
+  const handleNotificationsClick = () => {
+    const shouldShowEnableModal =
+      !hasNotifySnaps && !isMetamaskNotificationsEnabled;
+
+    if (shouldShowEnableModal) {
+      trackEvent({
+        category: MetaMetricsEventCategory.EnableNotifications,
+        event: MetaMetricsEventName.StartEnablingNotificationsFlow,
+        properties: {
+          isProfileSyncingEnabled,
+          isMetamaskNotificationsEnabled,
+        },
+      });
+      dispatch(showConfirmTurnOnMetamaskNotifications());
+      closeMenu();
+      return;
+    }
+
+    // Otherwise we can navigate to the notifications page
+    trackEvent({
+      category: MetaMetricsEventCategory.NotificationInteraction,
+      event: MetaMetricsEventName.NotificationPageOpened,
+      properties: {
+        isProfileSyncingEnabled,
+        isMetamaskNotificationsEnabled,
+      },
+    });
+    history.push(NOTIFICATIONS_ROUTE);
+    closeMenu();
+  };
+
   return (
     <Popover
       referenceElement={anchorElement}
@@ -144,6 +191,31 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
       borderStyle={BorderStyle.none}
       position={PopoverPosition.BottomEnd}
     >
+      {basicFunctionality && (
+        <>
+          <MenuItem
+            iconName={IconName.Notification}
+            onClick={() => handleNotificationsClick()}
+          >
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.spaceBetween}
+            >
+              {t('notifications')}
+              {notificationsCount === 0 &&
+                !isMetamaskNotificationFeatureSeen && <NewFeatureTag />}
+              <NotificationsTagCounter />
+            </Box>
+          </MenuItem>
+          <Box
+            borderColor={BorderColor.borderMuted}
+            width={BlockSize.Full}
+            style={{ height: '1px', borderBottomWidth: 0 }}
+          ></Box>
+        </>
+      )}
       {account && (
         <>
           <AccountDetailsMenuItem
@@ -164,12 +236,11 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         style={{ height: '1px', borderBottomWidth: 0 }}
       ></Box>
       <MenuItem
-        iconName={IconName.Connect}
-        disabled={hasUnapprovedTransactions}
+        iconName={IconName.SecurityTick}
         onClick={() => {
-          history.push(CONNECTED_ROUTE);
+          history.push(PERMISSIONS);
           trackEvent({
-            event: MetaMetricsEventName.NavConnectedSitesOpened,
+            event: MetaMetricsEventName.NavPermissionsOpened,
             category: MetaMetricsEventCategory.Navigation,
             properties: {
               location: METRICS_LOCATION,
@@ -178,28 +249,10 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
           closeMenu();
         }}
         data-testid="global-menu-connected-sites"
+        disabled={hasUnapprovedTransactions}
       >
-        {t('connectedSites')}
+        {t('allPermissions')}
       </MenuItem>
-      {process.env.MULTICHAIN ? (
-        <MenuItem
-          iconName={IconName.SecurityTick}
-          onClick={() => {
-            history.push(PERMISSIONS);
-            trackEvent({
-              event: MetaMetricsEventName.NavPermissionsOpened,
-              category: MetaMetricsEventCategory.Navigation,
-              properties: {
-                location: METRICS_LOCATION,
-              },
-            });
-            closeMenu();
-          }}
-          data-testid="global-menu-connected-sites"
-        >
-          {t('allPermissions')}
-        </MenuItem>
-      ) : null}
 
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -243,46 +296,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
           {t('expandView')}
         </MenuItem>
       )}
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-        notifySnaps.length ? (
-          <>
-            <MenuItem
-              iconName={IconName.Notification}
-              onClick={() => {
-                closeMenu();
-                history.push(NOTIFICATIONS_ROUTE);
-              }}
-            >
-              {t('notifications')}
-              {unreadNotificationsCount > 0 && (
-                <Text
-                  as="span"
-                  display={Display.InlineBlock}
-                  justifyContent={JustifyContent.center}
-                  alignItems={AlignItems.center}
-                  backgroundColor={BackgroundColor.primaryDefault}
-                  color={TextColor.primaryInverse}
-                  padding={[0, 1, 0, 1]}
-                  variant={TextVariant.bodyXs}
-                  textAlign={TextAlign.Center}
-                  data-testid="global-menu-notification-count"
-                  style={{
-                    borderRadius: '16px',
-                    minWidth: '24px',
-                  }}
-                  marginInlineStart={2}
-                >
-                  {unreadNotificationsCount > 99
-                    ? '99+'
-                    : unreadNotificationsCount}
-                </Text>
-              )}
-            </MenuItem>
-          </>
-        ) : null
-        ///: END:ONLY_INCLUDE_IF(snaps)
-      }
       {
         ///: BEGIN:ONLY_INCLUDE_IF(snaps)
         <MenuItem

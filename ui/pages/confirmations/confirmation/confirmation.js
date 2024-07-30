@@ -17,10 +17,13 @@ import { ApprovalType } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IF
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import Box from '../../../components/ui/box';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import MetaMaskTemplateRenderer from '../../../components/app/metamask-template-renderer';
 import ConfirmationWarningModal from '../components/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { Size, TextColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -456,6 +459,27 @@ export default function ConfirmationPage({
   };
   const handleSubmit = async () => {
     setLoading(true);
+
+    if (
+      pendingConfirmation?.requestData?.fromNetworkConfiguration?.chainId &&
+      pendingConfirmation?.requestData?.toNetworkConfiguration?.chainId
+    ) {
+      trackEvent({
+        category: MetaMetricsEventCategory.Network,
+        event: MetaMetricsEventName.NavNetworkSwitched,
+        properties: {
+          location: 'Switch Modal',
+          from_network:
+            pendingConfirmation.requestData.fromNetworkConfiguration.chainId,
+          to_network:
+            pendingConfirmation.requestData.toNetworkConfiguration.chainId,
+          referrer: {
+            url: window.location.origin,
+          },
+        },
+      });
+    }
+
     if (templateState[pendingConfirmation.id]?.useWarningModal) {
       setShowWarningModal(true);
     } else {
@@ -504,10 +528,7 @@ export default function ConfirmationPage({
       <div className="confirmation-page__content">
         {templatedValues.networkDisplay ? (
           <Box justifyContent="center" marginTop={2}>
-            <NetworkDisplay
-              indicatorSize={Size.XS}
-              labelProps={{ color: TextColor.textDefault }}
-            />
+            <NetworkDisplay />
           </Box>
         ) : null}
         {

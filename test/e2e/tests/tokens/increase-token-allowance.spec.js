@@ -9,6 +9,7 @@ const {
   ACCOUNT_1,
   ACCOUNT_2,
   WINDOW_TITLES,
+  clickNestedButton,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 
@@ -91,7 +92,7 @@ describe('Increase Token Allowance', function () {
     await driver.switchToWindowWithTitle(
       WINDOW_TITLES.ExtensionInFullScreenView,
     );
-    await driver.clickElement({ tag: 'button', text: 'Activity' });
+    await clickNestedButton(driver, 'Activity');
 
     const pendingTransactions = await driver.findElements(
       '.transaction-list__pending-transactions .activity-list-item',
@@ -292,7 +293,7 @@ describe('Increase Token Allowance', function () {
     await driver.switchToWindowWithTitle(
       WINDOW_TITLES.ExtensionInFullScreenView,
     );
-    await driver.clickElement({ tag: 'button', text: 'Activity' });
+    await clickNestedButton(driver, 'Activity');
     await driver.waitForSelector({
       css: '.transaction-list__completed-transactions .activity-list-item [data-testid="activity-list-item-action"]',
       text: 'Increase TST spending cap',
@@ -307,7 +308,7 @@ describe('Increase Token Allowance', function () {
     await driver.switchToWindowWithTitle(
       WINDOW_TITLES.ExtensionInFullScreenView,
     );
-    await driver.clickElement({ tag: 'button', text: 'Activity' });
+    await clickNestedButton(driver, 'Activity');
 
     await driver.waitForSelector({
       css: '.transaction-list__completed-transactions .activity-list-item [data-testid="activity-list-item-action"]',

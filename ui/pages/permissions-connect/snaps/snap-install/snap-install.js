@@ -186,6 +186,7 @@ export default function SnapInstall({
                 snapId={targetSubjectMetadata.origin}
                 snapName={snapName}
                 permissions={requestState.permissions || {}}
+                connections={requestState.connections || {}}
               />
             </Box>
             {isScrollable && !isScrolledToBottom ? (

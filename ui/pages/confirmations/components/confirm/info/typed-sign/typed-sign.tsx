@@ -14,17 +14,21 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../../helpers/constants/design-system';
+import { SignatureRequestType } from '../../../../types/confirm';
+import { parseTypedDataMessage } from '../../../../utils';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 
 const TypedSignInfo: React.FC = () => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
+  ) as SignatureRequestType;
 
   if (!currentConfirmation?.msgParams) {
     return null;
   }
 
-  const { domain = {} } = JSON.parse(
+  const { domain } = parseTypedDataMessage(
     currentConfirmation.msgParams.data as string,
   );
 
@@ -33,16 +37,23 @@ const TypedSignInfo: React.FC = () => {
       <Box
         backgroundColor={BackgroundColor.backgroundDefault}
         borderRadius={BorderRadius.MD}
-        padding={2}
         marginBottom={4}
+        padding={0}
       >
-        <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
-          <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
-        </ConfirmInfoRow>
-        {isValidAddress(domain.verifyingContract) && (
-          <ConfirmInfoRow label={t('interactingWith')}>
-            <ConfirmInfoRowAddress address={domain.verifyingContract} />
+        <Box padding={2}>
+          <ConfirmInfoRow
+            label={t('requestFrom')}
+            tooltip={t('requestFromInfo')}
+          >
+            <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
           </ConfirmInfoRow>
+        </Box>
+        {isValidAddress(domain.verifyingContract) && (
+          <Box padding={2}>
+            <ConfirmInfoRow label={t('interactingWith')}>
+              <ConfirmInfoRowAddress address={domain.verifyingContract} />
+            </ConfirmInfoRow>
+          </Box>
         )}
       </Box>
       <Box

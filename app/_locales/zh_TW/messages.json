@@ -130,9 +130,6 @@
   "assetOptions": {
     "message": "資產選項"
   },
-  "attemptingConnect": {
-    "message": "正在嘗試連結區塊鏈。"
-  },
   "attributions": {
     "message": "來源"
   },
@@ -190,9 +187,6 @@
   },
   "cancel": {
     "message": "取消"
-  },
-  "cancelEdit": {
-    "message": "Cancel Edit"
   },
   "cancelSpeedUp": {
     "message": "cancel or speed up a tranaction."
@@ -1159,9 +1153,6 @@
   "sendSpecifiedTokens": {
     "message": "發送 $1",
     "description": "Symbol of the specified token"
-  },
-  "sendTokens": {
-    "message": "發送代幣"
   },
   "settings": {
     "message": "設定"

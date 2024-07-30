@@ -36,6 +36,7 @@ import {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -71,6 +72,7 @@ import {
   // that does not have an explicit export statement. lets see if it breaks the
   // compiler
   DraftTransaction,
+  SEND_STAGES,
 } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import {
@@ -114,6 +116,7 @@ import {
 } from '../../shared/modules/error';
 import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import type { MarkAsReadNotificationsParam } from '../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -457,7 +460,10 @@ export function addNewAccount(): ThunkAction<
 > {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
-    const oldAccounts = getInternalAccounts(getState());
+    const oldAccounts = getInternalAccounts(getState()).filter(
+      (internalAccount) =>
+        internalAccount.metadata.keyring.type === KeyringTypes.hd,
+    );
     dispatch(showLoadingIndication());
 
     let addedAccountAddress;
@@ -792,7 +798,7 @@ const updateMetamaskStateFromBackground = (): Promise<
 
 /**
  * TODO: update previousGasParams to use typed gas params object
- * TODO: codeword: NOT_A_THUNK @brad-decker
+ * TODO: Not a thunk, but rather a wrapper around a background call
  *
  * @param txId - MetaMask internal transaction id
  * @param previousGasParams - Object of gas params to set as previous
@@ -851,7 +857,7 @@ export function updateEditableParams(
 
 /**
  * Appends new send flow history to a transaction
- * TODO: codeword: NOT_A_THUNK @brad-decker
+ * TODO: Not a thunk, but rather a wrapper around a background call
  *
  * @param txId - the id of the transaction to update
  * @param currentSendFlowHistoryLength - sendFlowHistory entries currently
@@ -914,7 +920,7 @@ export async function restoreUserData(jsonString: Json): Promise<true> {
   return true;
 }
 
-// TODO: codeword: NOT_A_THUNK @brad-decker
+// TODO: Not a thunk, but rather a wrapper around a background call
 export function updateTransactionGasFees(
   txId: string,
   txGasFees: Partial<TxGasFees>,
@@ -1070,9 +1076,13 @@ export function updateAndApproveTx(
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch: MetaMaskReduxDispatch, getState) => {
     !dontShowLoadingIndicator &&
       dispatch(showLoadingIndication(loadingIndicatorMessage));
+
+    const getIsSendActive = () =>
+      Boolean(getState().send.stage !== SEND_STAGES.INACTIVE);
+
     return new Promise((resolve, reject) => {
       const actionId = generateActionId();
       callBackgroundMethod(
@@ -1080,7 +1090,10 @@ export function updateAndApproveTx(
         [String(txMeta.id), { txMeta, actionId }, { waitForResult: true }],
         (err) => {
           dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
-          dispatch(resetSendState());
+
+          if (!getIsSendActive()) {
+            dispatch(resetSendState());
+          }
 
           if (err) {
             dispatch(goHome());
@@ -1096,7 +1109,9 @@ export function updateAndApproveTx(
       .then(() => updateMetamaskStateFromBackground())
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => {
-        dispatch(resetSendState());
+        if (!getIsSendActive()) {
+          dispatch(resetSendState());
+        }
         dispatch(completedTx(txMeta.id));
         dispatch(hideLoadingIndication());
         dispatch(updateCustomNonce(''));
@@ -1986,12 +2001,20 @@ export function ignoreTokens({
 /**
  * To fetch the ERC20 tokens with non-zero balance in a single call
  *
- * @param tokens
+ * @param selectedAddress - the targeted account
+ * @param tokensToDetect - the targeted list of tokens
+ * @param networkClientId - unique identifier for the network client
  */
 export async function getBalancesInSingleCall(
-  tokens: string[],
+  selectedAddress: string,
+  tokensToDetect: string[],
+  networkClientId: string,
 ): Promise<BalanceMap> {
-  return await submitRequestToBackground('getBalancesInSingleCall', [tokens]);
+  return await submitRequestToBackground('getBalancesInSingleCall', [
+    selectedAddress,
+    tokensToDetect,
+    networkClientId,
+  ]);
 }
 
 export function addNft(
@@ -2179,7 +2202,7 @@ export function automaticallySwitchNetwork(
   selectedTabOrigin: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await dispatch(setActiveNetwork(networkClientIdForThisDomain));
+    await setActiveNetworkConfigurationId(networkClientIdForThisDomain);
     await dispatch(
       setSwitchedNetworkDetails({
         networkClientId: networkClientIdForThisDomain,
@@ -2513,6 +2536,17 @@ export function setActiveNetwork(
       dispatch(displayWarning('Had a problem changing networks!'));
     }
   };
+}
+
+export async function setActiveNetworkConfigurationId(
+  networkConfigurationId: string,
+): Promise<undefined> {
+  log.debug(
+    `background.setActiveNetworkConfigurationId: ${networkConfigurationId}`,
+  );
+  await submitRequestToBackground('setActiveNetworkConfigurationId', [
+    networkConfigurationId,
+  ]);
 }
 
 export function rollbackToPreviousProvider(): ThunkAction<
@@ -3071,7 +3105,7 @@ export function setPetnamesEnabled(value: boolean) {
 }
 
 export function setRedesignedConfirmationsEnabled(value: boolean) {
-  return setPreference('redesignedConfirmations', value);
+  return setPreference('redesignedConfirmationsEnabled', value);
 }
 
 export function setFeatureNotificationsEnabled(value: boolean) {
@@ -3100,6 +3134,10 @@ export function setSmartTransactionsOptInStatus(
     await dispatch(setPreference('smartTransactionsOptInStatus', value));
     await forceUpdateMetamaskState(dispatch);
   };
+}
+
+export function setShowTokenAutodetectModal(value: boolean) {
+  return setPreference('showTokenAutodetectModal', value);
 }
 
 export function setAutoLockTimeLimit(value: number | null) {
@@ -3632,9 +3670,14 @@ export function setPendingTokens(pendingTokens: {
       : selectedTokens;
 
   Object.keys(tokens).forEach((tokenAddress) => {
-    tokens[tokenAddress].unlisted = !tokenAddressList.find((addr) =>
+    const found = tokenAddressList.find((addr) =>
       isEqualCaseInsensitive(addr, tokenAddress),
     );
+
+    tokens[tokenAddress] = {
+      ...tokens[tokenAddress],
+      unlisted: !found,
+    };
   });
 
   return {
@@ -4078,6 +4121,27 @@ export function setFirstTimeFlowType(
     dispatch({
       type: actionConstants.SET_FIRST_TIME_FLOW_TYPE,
       value: type,
+    });
+  };
+}
+
+export function setShowTokenAutodetectModalOnUpgrade(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setShowTokenAutodetectModalOnUpgrade`);
+    callBackgroundMethod(
+      'setShowTokenAutodetectModalOnUpgrade',
+      [val],
+      (err) => {
+        if (err) {
+          dispatch(displayWarning(err));
+        }
+      },
+    );
+    dispatch({
+      type: actionConstants.SET_SHOW_TOKEN_AUTO_DETECT_MODAL_UPGRADE,
+      value: val,
     });
   };
 }
@@ -4849,7 +4913,7 @@ export function cancelSmartTransaction(
   };
 }
 
-// TODO: codeword NOT_A_THUNK @brad-decker
+// TODO: Not a thunk but rather a wrapper around a background call
 export function fetchSmartTransactionsLiveness() {
   return async () => {
     try {
@@ -5169,9 +5233,7 @@ export function deleteInterface(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
 }
-///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 export function trackInsightSnapUsage(snapId: string) {
   return async () => {
     await submitRequestToBackground('trackInsightSnapView', [snapId]);
@@ -5186,3 +5248,399 @@ export async function setSnapsAddSnapAccountModalDismissed() {
   ]);
 }
 ///: END:ONLY_INCLUDE_IF
+
+/**
+ * Initiates the sign-in process.
+ *
+ * This function dispatches a request to the background script to perform the sign-in operation.
+ * Upon success, it dispatches an action with type `PERFORM_SIGN_IN` to update the Redux state.
+ * If the operation fails, it logs the error message and rethrows the error.
+ *
+ * @returns A thunk action that performs the sign-in operation.
+ */
+export function performSignIn(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground('performSignIn');
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Unknown error occurred during sign-in.';
+      logErrorWithMessage(errorMessage);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Initiates the sign-out process.
+ *
+ * This function dispatches a request to the background script to perform the sign-out operation.
+ * Upon success, it dispatches an action with type `PERFORM_SIGN_OUT` to update the Redux state.
+ * If the operation fails, it logs the error message and rethrows the error.
+ *
+ * @returns A thunk action that performs the sign-out operation.
+ */
+export function performSignOut(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground('performSignOut');
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Enables profile syncing.
+ *
+ * This function sends a request to the background script to enable profile syncing across devices.
+ * Upon success, it dispatches an action with type `SET_PROFILE_SYNCING_ENABLED` to update the Redux state.
+ * If the operation encounters an error, it logs the error message and rethrows the error to be handled by the caller.
+ *
+ * @returns A thunk action that, when dispatched, attempts to enable profile syncing.
+ */
+export function enableProfileSyncing(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground('enableProfileSyncing');
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Disables profile syncing.
+ *
+ * This function sends a request to the background script to disable profile syncing across devices.
+ * Upon success, it dispatches an action with type `SET_PROFILE_SYNCING_DISABLED` to update the Redux state.
+ * If the operation fails, it logs the error message and rethrows the error to ensure it is handled appropriately.
+ *
+ * @returns A thunk action that, when dispatched, attempts to disable profile syncing.
+ */
+export function disableProfileSyncing(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground('disableProfileSyncing');
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Initiates the creation of on-chain triggers.
+ *
+ * This function dispatches a request to the background script to create on-chain triggers.
+ * Upon success, it dispatches an action with type `CREATE_ON_CHAIN_TRIGGERS` to update the Redux state.
+ * If the operation fails, it logs the error message and rethrows the error to ensure it is handled appropriately.
+ *
+ * @returns A thunk action that, when dispatched, attempts to create on-chain triggers.
+ */
+export function createOnChainTriggers(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground('createOnChainTriggers');
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Deletes on-chain triggers associated with specified accounts.
+ *
+ * This function sends a request to the background script to delete on-chain triggers for the provided accounts.
+ * Upon success, it dispatches an action with type `DELETE_ON_CHAIN_TRIGGERS_BY_ACCOUNT` to update the Redux state.
+ * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
+ *
+ * @param accounts - An array of account identifiers for which on-chain triggers should be deleted.
+ * @returns A thunk action that, when dispatched, attempts to delete on-chain triggers for the specified accounts.
+ */
+export function deleteOnChainTriggersByAccount(
+  accounts: string[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      await submitRequestToBackground('deleteOnChainTriggersByAccount', [
+        accounts,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Updates on-chain triggers for specified accounts.
+ *
+ * This function dispatches a request to the background script to update on-chain triggers associated with the given accounts.
+ * Upon success, it dispatches an action with type `UPDATE_ON_CHAIN_TRIGGERS_BY_ACCOUNT` to update the Redux state.
+ * If the operation fails, it logs the error message and rethrows the error to ensure proper error handling.
+ *
+ * @param accounts - An array of account identifiers for which on-chain triggers should be updated.
+ * @returns A thunk action that, when dispatched, attempts to update on-chain triggers for the specified accounts.
+ */
+export function updateOnChainTriggersByAccount(
+  accounts: string[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      await submitRequestToBackground('updateOnChainTriggersByAccount', [
+        accounts,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Fetches and updates MetaMask notifications.
+ *
+ * This function sends a request to the background script to fetch the latest notifications and update the state accordingly.
+ * Upon success, it dispatches an action with type `FETCH_AND_UPDATE_METAMASK_NOTIFICATIONS` to update the Redux state.
+ * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
+ *
+ * @returns A thunk action that, when dispatched, attempts to fetch and update MetaMask notifications.
+ */
+export function fetchAndUpdateMetamaskNotifications(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      const response = await submitRequestToBackground(
+        'fetchAndUpdateMetamaskNotifications',
+      );
+      return response;
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Marks MetaMask notifications as read.
+ *
+ * This function sends a request to the background script to mark the specified notifications as read.
+ * Upon success, it dispatches an action with type `MARK_METAMASK_NOTIFICATIONS_AS_READ` to update the Redux state.
+ * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
+ *
+ * @param notifications - An array of notification identifiers to be marked as read.
+ * @returns A thunk action that, when dispatched, attempts to mark MetaMask notifications as read.
+ */
+export function markMetamaskNotificationsAsRead(
+  notifications: MarkAsReadNotificationsParam,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      await submitRequestToBackground('markMetamaskNotificationsAsRead', [
+        notifications,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Enables or disables feature announcements.
+ *
+ * This function sends a request to the background script to toggle the enabled state of feature announcements.
+ * Upon success, it dispatches an action with type `SET_FEATURE_ANNOUNCEMENTS_ENABLED` to update the Redux state.
+ * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
+ *
+ * @param state - A boolean indicating whether to enable (true) or disable (false) feature announcements.
+ * @returns A thunk action that, when dispatched, attempts to set the enabled state of feature announcements.
+ */
+export function setFeatureAnnouncementsEnabled(
+  state: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      await submitRequestToBackground('setFeatureAnnouncementsEnabled', [
+        state,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Checks the presence of accounts in user storage.
+ *
+ * This function sends a request to the background script to check the presence of specified accounts in user storage.
+ * Upon success, it dispatches an action with type `CHECK_ACCOUNTS_PRESENCE` to update the Redux state.
+ * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
+ *
+ * @param accounts - An array of account addresses to be checked.
+ * @returns A thunk action that, when dispatched, attempts to check the presence of accounts in user storage.
+ */
+export function checkAccountsPresence(
+  accounts: string[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      const response = await submitRequestToBackground(
+        'checkAccountsPresence',
+        [accounts],
+      );
+      return response;
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Triggers a modal to confirm the action of turning off profile syncing.
+ * This function dispatches an action to show a modal dialog asking the user to confirm if they want to turn off profile syncing.
+ *
+ * @returns A thunk action that, when dispatched, shows the confirmation modal.
+ */
+export function showConfirmTurnOffProfileSyncing(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(
+      showModal({
+        name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
+      }),
+    );
+  };
+}
+
+/**
+ * Triggers a modal to confirm the action of turning on MetaMask notifications.
+ * This function dispatches an action to show a modal dialog asking the user to confirm if they want to turn on MetaMask notifications.
+ *
+ * @returns A thunk action that, when dispatched, shows the confirmation modal.
+ */
+export function showConfirmTurnOnMetamaskNotifications(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(
+      showModal({
+        name: 'TURN_ON_METAMASK_NOTIFICATIONS',
+      }),
+    );
+  };
+}
+
+/**
+ * Enables MetaMask notifications.
+ * This function dispatches a request to the background script to enable MetaMask notifications.
+ * If the operation fails, it logs the error message and rethrows the error to ensure it is handled appropriately.
+ *
+ * @returns A thunk action that, when dispatched, attempts to enable MetaMask notifications.
+ */
+export function enableMetamaskNotifications(): ThunkAction<
+  void,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground('enableMetamaskNotifications');
+    } catch (error) {
+      log.error(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Disables MetaMask notifications.
+ * This function dispatches a request to the background script to disable MetaMask notifications.
+ * If the operation fails, it logs the error message and rethrows the error to ensure it is handled appropriately.
+ *
+ * @returns A thunk action that, when dispatched, attempts to disable MetaMask notifications.
+ */
+export function disableMetamaskNotifications(): ThunkAction<
+  void,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground('disableMetamaskNotifications');
+    } catch (error) {
+      log.error(error);
+      throw error;
+    }
+  };
+}
+
+export function setIsProfileSyncingEnabled(
+  isProfileSyncingEnabled: boolean,
+): ThunkAction<void, unknown, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      dispatch(showLoadingIndication());
+      await submitRequestToBackground('setIsProfileSyncingEnabled', [
+        isProfileSyncingEnabled,
+      ]);
+      dispatch(hideLoadingIndication());
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+export async function getNextAvailableAccountName(): Promise<string> {
+  return await submitRequestToBackground<string>(
+    'getNextAvailableAccountName',
+    [],
+  );
+}

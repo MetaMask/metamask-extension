@@ -27,12 +27,11 @@ export function AssetBalance({ asset, error }: AssetBalanceProps) {
         {t('balance')}:
       </Text>
 
-      <AssetBalanceText asset={asset} balanceColor={balanceColor} />
-      {error ? (
-        <Text variant={TextVariant.bodySm} color={TextColor.errorDefault}>
-          . {t(error)}
-        </Text>
-      ) : null}
+      <AssetBalanceText
+        asset={asset}
+        balanceColor={balanceColor}
+        error={error}
+      />
     </Box>
   );
 }

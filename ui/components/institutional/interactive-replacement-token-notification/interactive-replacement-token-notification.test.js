@@ -2,11 +2,12 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { screen, fireEvent } from '@testing-library/react';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { act } from 'react-dom/test-utils';
 import { sha256 } from '../../../../shared/modules/hash.utils';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import InteractiveReplacementTokenNotification from './interactive-replacement-token-notification';
 
 jest.mock('../../../../shared/modules/hash.utils');
@@ -58,7 +59,7 @@ describe('Interactive Replacement Token Notification', () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },

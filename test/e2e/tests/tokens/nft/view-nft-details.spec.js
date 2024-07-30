@@ -23,7 +23,7 @@ describe('View NFT details', function () {
         await unlockWallet(driver);
 
         // Click to open the NFT details page and check title
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
         await driver.clickElement('.nft-item__container');
 
         const detailsPageTitle = await driver.findElement('.asset-breadcrumb');

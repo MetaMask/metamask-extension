@@ -6,6 +6,7 @@
   &__balance > div > * {
     font-size: design-system.$font-size-h7;
     padding: 0;
+    align-self: baseline;
   }
 
   // input for NFTs
@@ -35,23 +36,30 @@
     .unit-input__inputs {
       // primary (i.e., input) and secondary (i.e., subtext) input sections
       & > div {
-        max-width: 125px;
+        max-width: 138px;
         white-space: nowrap;
-        overflow: scroll;
         text-overflow: ellipsis;
-      }
-
-      // primary field elements (e.g., input field, symbols)
-      & > .currency-input__conversion-component > span {
-        color: var(--color-text-alternative);
-        font-size: design-system.$font-size-h6;
       }
 
       // converted (secondary) value
       & > div.currency-input__conversion-component {
+        & > span {
+          color: var(--color-text-alternative);
+        }
+
+        @include design-system.H7;
+
         text-overflow: ellipsis;
         overflow: hidden;
-        display: inline;
+        flex-wrap: nowrap;
+
+        & > span.currency-display-component__text {
+          width: max-content;
+        }
+
+        & > span.currency-display-component__suffix {
+          width: max-content;
+        }
       }
 
       // secondary field elements (e.g., value, symbols)
@@ -76,6 +84,7 @@
       margin-left: 4px;
     }
 
+    padding: 8px;
     float: right;
     flex-grow: 1;
     border: none;
@@ -83,6 +92,10 @@
 }
 
 // max button
-button.asset-picker-amount__max-clear:hover:not(.--disabled) {
-  text-decoration: none;
+button.asset-picker-amount__max-clear {
+  font-size: design-system.$font-size-h7;
+
+  &:hover:not(.--disabled) {
+    text-decoration: none;
+  }
 }

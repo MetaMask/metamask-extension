@@ -2,6 +2,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
+  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -33,17 +34,7 @@ describe('Test Snap Client Status', function () {
         await driver.clickElement('#connectclient-status');
 
         // switch to metamask extension and click connect
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-
-        await driver.delay(1000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await switchToNotificationWindow(driver);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -64,7 +55,7 @@ describe('Test Snap Client Status', function () {
         });
 
         // click send inputs on test snap page
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
         await driver.waitForSelector({
@@ -82,8 +73,9 @@ describe('Test Snap Client Status', function () {
         });
 
         // switch to the original MM tab
-        const extensionPage = windowHandles[0];
-        await driver.switchToWindow(extensionPage);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // click on the global action menu
         await driver.waitForSelector(
@@ -100,7 +92,7 @@ describe('Test Snap Client Status', function () {
         });
 
         // click send inputs on test snap page
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // find and click on submit
         await driver.clickElement('#sendClientStatusTest');

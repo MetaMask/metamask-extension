@@ -3,13 +3,23 @@ import {
   RestrictedControllerMessenger,
   StateMetadata,
 } from '@metamask/base-controller';
+import type {
+  KeyringControllerGetStateAction,
+  KeyringControllerLockEvent,
+  KeyringControllerUnlockEvent,
+} from '@metamask/keyring-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import {
   AuthenticationControllerGetBearerToken,
   AuthenticationControllerGetSessionProfile,
   AuthenticationControllerIsSignedIn,
   AuthenticationControllerPerformSignIn,
+  AuthenticationControllerPerformSignOut,
 } from '../authentication/authentication-controller';
+import {
+  MetamaskNotificationsControllerDisableMetamaskNotifications,
+  MetamaskNotificationsControllerSelectIsMetamaskNotificationsEnabled,
+} from '../metamask-notifications/metamask-notifications';
 import { createSnapSignMessageRequest } from '../authentication/auth-snap-requests';
 import { getUserStorage, upsertUserStorage } from './services';
 import { UserStorageEntryKeys } from './schema';
@@ -22,15 +32,26 @@ export type UserStorageControllerState = {
   /**
    * Condition used by UI and to determine if we can use some of the User Storage methods.
    */
-  isProfileSyncingEnabled: boolean;
+  isProfileSyncingEnabled: boolean | null;
+  /**
+   * Loading state for the profile syncing update
+   */
+  isProfileSyncingUpdateLoading: boolean;
 };
+
 const defaultState: UserStorageControllerState = {
   isProfileSyncingEnabled: true,
+  isProfileSyncingUpdateLoading: false,
 };
+
 const metadata: StateMetadata<UserStorageControllerState> = {
   isProfileSyncingEnabled: {
     persist: true,
     anonymous: true,
+  },
+  isProfileSyncingUpdateLoading: {
+    persist: false,
+    anonymous: false,
   },
 };
 
@@ -59,23 +80,32 @@ export type UserStorageControllerEnableProfileSyncing =
 export type UserStorageControllerDisableProfileSyncing =
   ActionsObj['disableProfileSyncing'];
 
-// Allowed Actions
 export type AllowedActions =
+  // Keyring Requests
+  | KeyringControllerGetStateAction
   // Snap Requests
   | HandleSnapRequest
   // Auth Requests
   | AuthenticationControllerGetBearerToken
   | AuthenticationControllerGetSessionProfile
   | AuthenticationControllerPerformSignIn
-  | AuthenticationControllerIsSignedIn;
+  | AuthenticationControllerIsSignedIn
+  | AuthenticationControllerPerformSignOut
+  // Metamask Notifications
+  | MetamaskNotificationsControllerDisableMetamaskNotifications
+  | MetamaskNotificationsControllerSelectIsMetamaskNotificationsEnabled;
+
+export type AllowedEvents =
+  | KeyringControllerLockEvent
+  | KeyringControllerUnlockEvent;
 
 // Messenger
 export type UserStorageControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
   Actions | AllowedActions,
-  never,
+  AllowedEvents,
   AllowedActions['type'],
-  never
+  AllowedEvents['type']
 >;
 
 /**
@@ -111,11 +141,51 @@ export default class UserStorageController extends BaseController<
         'AuthenticationController:performSignIn',
       );
     },
+    signOut: async () => {
+      return await this.messagingSystem.call(
+        'AuthenticationController:performSignOut',
+      );
+    },
   };
+
+  #metamaskNotifications = {
+    disableMetamaskNotifications: async () => {
+      return await this.messagingSystem.call(
+        'MetamaskNotificationsController:disableMetamaskNotifications',
+      );
+    },
+    selectIsMetamaskNotificationsEnabled: async () => {
+      return await this.messagingSystem.call(
+        'MetamaskNotificationsController:selectIsMetamaskNotificationsEnabled',
+      );
+    },
+  };
+
+  #isUnlocked = false;
+
+  #keyringController = {
+    setupLockedStateSubscriptions: () => {
+      const { isUnlocked } = this.messagingSystem.call(
+        'KeyringController:getState',
+      );
+      this.#isUnlocked = isUnlocked;
+
+      this.messagingSystem.subscribe('KeyringController:unlock', () => {
+        this.#isUnlocked = true;
+      });
+
+      this.messagingSystem.subscribe('KeyringController:lock', () => {
+        this.#isUnlocked = false;
+      });
+    },
+  };
+
+  getMetaMetricsState: () => boolean;
 
   constructor(params: {
     messenger: UserStorageControllerMessenger;
     state?: UserStorageControllerState;
+    getMetaMetricsState: () => boolean;
   }) {
     super({
       messenger: params.messenger,
@@ -124,6 +194,8 @@ export default class UserStorageController extends BaseController<
       state: { ...defaultState, ...params.state },
     });
 
+    this.getMetaMetricsState = params.getMetaMetricsState;
+    this.#keyringController.setupLockedStateSubscriptions();
     this.#registerMessageHandlers();
   }
 
@@ -159,12 +231,9 @@ export default class UserStorageController extends BaseController<
   }
 
   public async enableProfileSyncing(): Promise<void> {
-    const isAlreadyEnabled = this.state.isProfileSyncingEnabled;
-    if (isAlreadyEnabled) {
-      return;
-    }
-
     try {
+      this.#setIsProfileSyncingUpdateLoading(true);
+
       const authEnabled = this.#auth.isAuthEnabled();
       if (!authEnabled) {
         await this.#auth.signIn();
@@ -173,12 +242,23 @@ export default class UserStorageController extends BaseController<
       this.update((state) => {
         state.isProfileSyncingEnabled = true;
       });
+
+      this.#setIsProfileSyncingUpdateLoading(false);
     } catch (e) {
+      this.#setIsProfileSyncingUpdateLoading(false);
       const errorMessage = e instanceof Error ? e.message : e;
       throw new Error(
         `${controllerName} - failed to enable profile syncing - ${errorMessage}`,
       );
     }
+  }
+
+  public async setIsProfileSyncingEnabled(
+    isProfileSyncingEnabled: boolean,
+  ): Promise<void> {
+    this.update((state) => {
+      state.isProfileSyncingEnabled = isProfileSyncingEnabled;
+    });
   }
 
   public async disableProfileSyncing(): Promise<void> {
@@ -187,9 +267,36 @@ export default class UserStorageController extends BaseController<
       return;
     }
 
-    this.update((state) => {
-      state.isProfileSyncingEnabled = false;
-    });
+    try {
+      this.#setIsProfileSyncingUpdateLoading(true);
+
+      const isMetamaskNotificationsEnabled =
+        await this.#metamaskNotifications.selectIsMetamaskNotificationsEnabled();
+
+      if (isMetamaskNotificationsEnabled) {
+        await this.#metamaskNotifications.disableMetamaskNotifications();
+      }
+
+      const isMetaMetricsParticipation = this.getMetaMetricsState();
+
+      if (!isMetaMetricsParticipation) {
+        await this.messagingSystem.call(
+          'AuthenticationController:performSignOut',
+        );
+      }
+
+      this.#setIsProfileSyncingUpdateLoading(false);
+
+      this.update((state) => {
+        state.isProfileSyncingEnabled = false;
+      });
+    } catch (e) {
+      this.#setIsProfileSyncingUpdateLoading(false);
+      const errorMessage = e instanceof Error ? e.message : e;
+      throw new Error(
+        `${controllerName} - failed to disable profile syncing - ${errorMessage}`,
+      );
+    }
   }
 
   /**
@@ -288,16 +395,40 @@ export default class UserStorageController extends BaseController<
     return storageKey;
   }
 
+  #_snapSignMessageCache: Record<`metamask:${string}`, string> = {};
+
   /**
    * Signs a specific message using an underlying auth snap.
    *
    * @param message - A specific tagged message to sign.
    * @returns A Signature created by the snap.
    */
-  #snapSignMessage(message: `metamask:${string}`): Promise<string> {
-    return this.messagingSystem.call(
+  async #snapSignMessage(message: `metamask:${string}`): Promise<string> {
+    if (this.#_snapSignMessageCache[message]) {
+      return this.#_snapSignMessageCache[message];
+    }
+
+    if (!this.#isUnlocked) {
+      throw new Error(
+        '#snapSignMessage - unable to call snap, wallet is locked',
+      );
+    }
+
+    const result = (await this.messagingSystem.call(
       'SnapController:handleRequest',
       createSnapSignMessageRequest(message),
-    ) as Promise<string>;
+    )) as string;
+
+    this.#_snapSignMessageCache[message] = result;
+
+    return result;
+  }
+
+  async #setIsProfileSyncingUpdateLoading(
+    isProfileSyncingUpdateLoading: boolean,
+  ): Promise<void> {
+    this.update((state) => {
+      state.isProfileSyncingUpdateLoading = isProfileSyncingUpdateLoading;
+    });
   }
 }

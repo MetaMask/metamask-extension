@@ -884,6 +884,7 @@ async function buildEventFragmentProperties({
       TransactionType.tokenMethodTransfer,
       TransactionType.tokenMethodTransferFrom,
       TransactionType.swap,
+      TransactionType.swapAndSend,
       TransactionType.swapApproval,
     ].includes(type);
 

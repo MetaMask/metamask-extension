@@ -116,9 +116,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
         >
           <h6
             class="mm-box mm-text mm-text--body-sm mm-text--overflow-wrap-break-word mm-box--margin-bottom-4 mm-box--color-text-alternative"
-          >
-            1/18/2023
-          </h6>
+          />
         </div>
       </div>
       <div
@@ -135,7 +133,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           <h6
             class="mm-box mm-text mm-text--body-sm mm-text--overflow-wrap-break-word mm-box--margin-bottom-4 mm-box--color-text-alternative"
           >
-            0.0049 ETH
+             
           </h6>
         </div>
       </div>

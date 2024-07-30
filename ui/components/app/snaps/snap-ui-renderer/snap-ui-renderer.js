@@ -1,19 +1,12 @@
 import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { isComponent } from '@metamask/snaps-sdk';
 import { useSelector } from 'react-redux';
 
 import { isEqual } from 'lodash';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
-import { TextVariant } from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  getSnapMetadata,
-  getMemoizedInterfaceContent,
-} from '../../../../selectors';
-import { Box, FormTextField, Text } from '../../../component-library';
-import { Copyable } from '../copyable';
+import { getSnapMetadata, getMemoizedInterface } from '../../../../selectors';
+import { Box, FormTextField } from '../../../component-library';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
@@ -35,26 +28,28 @@ const SnapUIRendererComponent = ({
   boxProps,
   interfaceId,
 }) => {
-  const t = useI18nContext();
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),
   );
 
-  const content = useSelector((state) =>
-    getMemoizedInterfaceContent(state, interfaceId),
+  const interfaceState = useSelector(
+    (state) => getMemoizedInterface(state, interfaceId),
+    // We only want to update the state if the content has changed.
+    // We do this to avoid useless re-renders.
+    (oldState, newState) => isEqual(oldState.content, newState.content),
   );
 
-  const isValidComponent = content && isComponent(content);
+  const content = interfaceState?.content;
 
   // sections are memoized to avoid useless re-renders if one of the parents element re-renders.
   const sections = useMemo(
     () =>
-      isValidComponent &&
+      content &&
       mapToTemplate({
         map: {},
         element: content,
       }),
-    [content, isValidComponent],
+    [content],
   );
 
   if (isLoading || !content) {
@@ -71,23 +66,7 @@ const SnapUIRendererComponent = ({
     );
   }
 
-  if (!isValidComponent) {
-    return (
-      <SnapDelineator
-        isCollapsable={isCollapsable}
-        isCollapsed={isCollapsed}
-        snapName={snapName}
-        type={DelineatorType.Error}
-        onClick={onClick}
-        boxProps={boxProps}
-      >
-        <Text variant={TextVariant.bodySm} marginBottom={4}>
-          {t('snapsUIError', [<b key="0">{snapName}</b>])}
-        </Text>
-        <Copyable text={t('snapsInvalidUIError')} />
-      </SnapDelineator>
-    );
-  }
+  const { state: initialState, context } = interfaceState;
 
   return (
     <SnapDelineator
@@ -99,7 +78,12 @@ const SnapUIRendererComponent = ({
       boxProps={boxProps}
     >
       <Box className="snap-ui-renderer__content">
-        <SnapInterfaceContextProvider snapId={snapId} interfaceId={interfaceId}>
+        <SnapInterfaceContextProvider
+          snapId={snapId}
+          interfaceId={interfaceId}
+          initialState={initialState}
+          context={context}
+        >
           <MetaMaskTemplateRenderer sections={sections} />
         </SnapInterfaceContextProvider>
         {isPrompt && (

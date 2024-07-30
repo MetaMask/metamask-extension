@@ -7,10 +7,12 @@ export function useIsOriginalTokenSymbol(tokenAddress, tokenSymbol) {
   useEffect(() => {
     async function getTokenSymbolForToken(address) {
       const symbol = await getTokenSymbol(address);
-      setIsOriginalNativeSymbol(symbol === tokenSymbol);
+      setIsOriginalNativeSymbol(
+        symbol?.toLowerCase() === tokenSymbol?.toLowerCase(),
+      );
     }
     getTokenSymbolForToken(tokenAddress);
-  }, [isOriginalNativeSymbol, tokenAddress, tokenSymbol]);
+  }, [tokenAddress, tokenSymbol]);
 
   return isOriginalNativeSymbol;
 }

@@ -11,3 +11,6 @@ process.env.CONTENTFUL_ACCESS_TOKEN = 'MOCK_ACCESS_TOKEN';
 process.env.TRIGGERS_SERVICE_URL = 'https://mock-test-triggers-api.metamask.io';
 process.env.NOTIFICATIONS_SERVICE_URL =
   'https://mock-test-notifications-api.metamask.io';
+process.env.PUSH_NOTIFICATIONS_SERVICE_URL =
+  'https://mock-test-push-notifications-api.metamask.io';
+process.env.METAMASK_VERSION = 'MOCK_VERSION';

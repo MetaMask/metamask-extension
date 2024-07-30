@@ -1,0 +1,16 @@
+.inline-alert {
+  padding: 2px;
+  cursor: pointer;
+
+  &__danger {
+    color: var(--color-error-default);
+  }
+
+  &__info {
+    color: var(--color-info-default);
+  }
+
+  &__warning {
+    color: var(--color-warning-default);
+  }
+}

@@ -1,5 +1,7 @@
 import NodeStream from 'node:stream';
 import OurReadableStream from 'readable-stream';
+import ReadableStream2 from 'readable-stream-2';
+import ReadableStream3 from 'readable-stream-3';
 
 import type { JsonRpcRequest } from '@metamask/utils';
 import createDupeReqFilterStream, {
@@ -325,6 +327,8 @@ describe('createDupeReqFilterStream', () => {
       string,
       typeof OurReadableStream,
     ],
+    ['readable-stream v2', ReadableStream2] as [string, typeof ReadableStream2],
+    ['readable-stream v3', ReadableStream3] as [string, typeof ReadableStream3],
   ].forEach(([name, streamsImpl]) => {
     describe(`Using Streams implementation: ${name}`, () => {
       [
