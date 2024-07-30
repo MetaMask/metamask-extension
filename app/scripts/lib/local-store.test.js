@@ -28,8 +28,12 @@ describe('LocalStore', () => {
 
     it('should initialize mostRecentRetrievedState to null', () => {
       const localStore = setup({ localMock: false });
-
       expect(localStore.mostRecentRetrievedState).toBeNull();
+    });
+
+    it('should initialize isExtensionInitialized to false', () => {
+      const localStore = setup({ localMock: false });
+      expect(localStore.isExtensionInitialized).toBeFalsy();
     });
   });
 
@@ -74,6 +78,13 @@ describe('LocalStore', () => {
         localStore.set({ appState: { test: true } });
       }).not.toThrow();
     });
+
+    it('should set isExtensionInitialized if data is set with no error', async () => {
+      const localStore = setup();
+      localStore.setMetadata({ version: 74 });
+      await localStore.set({ appState: { test: true } });
+      expect(localStore.isExtensionInitialized).toBeTruthy();
+    });
   });
 
   describe('get', () => {
@@ -110,6 +121,18 @@ describe('LocalStore', () => {
 
       await localStore.get();
 
+      expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
+    });
+
+    it('should set mostRecentRetrievedState to current state if isExtensionInitialized is true', async () => {
+      const localStore = setup({
+        localMock: {
+          get: jest.fn().mockImplementation(() => Promise.resolve({})),
+        },
+      });
+      localStore.setMetadata({ version: 74 });
+      await localStore.set({ appState: { test: true } });
+      await localStore.get();
       expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
     });
   });
