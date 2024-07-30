@@ -36,6 +36,7 @@
       "petnamesEnabled": true,
       "showTokenAutodetectModal": "boolean",
       "redesignedConfirmationsEnabled": true,
+      "redesignedTransactionsEnabled": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean"
     },
     "firstTimeFlowType": "import",
