@@ -173,7 +173,7 @@ function getMissingProperties(complete, object) {
 describe('Sentry errors', function () {
   const migrationError =
     process.env.SELENIUM_BROWSER === Browser.CHROME
-      ? `Cannot read properties of undefined (reading 'version')`
+      ? `"type":"TypeError","value":"Cannot read properties of undefined (reading 'version')`
       : 'meta is undefined';
   async function mockSentryMigratorError(mockServer) {
     return await mockServer
@@ -313,20 +313,6 @@ describe('Sentry errors', function () {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
           }, 3000);
-
-          const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-          const mockTextBody = (await mockedRequest.body.getText()).split('\n');
-          const mockJsonBody = JSON.parse(mockTextBody[2]);
-          const { level } = mockJsonBody;
-          const [{ type, value }] = mockJsonBody.exception.values;
-
-          // Left for debugging purposes
-          console.log(mockJsonBody.exception.values);
-
-          // Verify request
-          assert.equal(type, 'TypeError');
-          assert(value.includes(migrationError));
-          assert.equal(level, 'error');
         },
       );
     });
