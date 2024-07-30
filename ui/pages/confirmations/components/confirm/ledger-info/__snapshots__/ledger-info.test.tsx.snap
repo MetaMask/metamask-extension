@@ -28,13 +28,6 @@ exports[`LedgerInfo renders correctly if account is ledger account 1`] = `
             Be sure your Ledger is plugged in and to select the Ethereum app.
           </p>
         </li>
-        <li>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-          >
-            Enable "smart contract data" or "blind signing" on your Ledger device.
-          </p>
-        </li>
       </ul>
     </div>
   </div>
