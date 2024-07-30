@@ -2977,10 +2977,6 @@
     "message": "Choose a nickname...",
     "description": "Placeholder text for name input field in name component modal."
   },
-  "nativeNetworkPermissionRequestDescription": {
-    "message": "$1 is asking for your approval to:",
-    "description": "$1 represents dapp name"
-  },
   "nativePermissionRequestDescription": {
     "message": "Do you want this site to do the following?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3997,7 +3993,7 @@
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
   },
   "permission_walletSwitchEthereumChain": {
-    "message": "Use your enabled networks",
+    "message": "Switch to and use the following network",
     "description": "The label for the `wallet_switchEthereumChain` permission"
   },
   "permission_webAssembly": {
@@ -4289,12 +4285,6 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "Turn this on to see signature requests in an enhanced format."
   },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Improved transaction requests"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Turn this on to see transactions requests in an enhanced format."
-  },
   "refreshList": {
     "message": "Refresh list"
   },
@@ -4504,9 +4494,6 @@
   "reviewAlerts": {
     "message": "Review alerts"
   },
-  "reviewPermissions": {
-    "message": "Review permissions"
-  },
   "revokeAllTokensTitle": {
     "message": "Revoke permission to access and transfer all of your $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -4604,10 +4591,13 @@
   "seedPhraseIntroRecommendedButtonCopy": {
     "message": "Secure my wallet (recommended)"
   },
-  "seedPhraseIntroSidebarBulletOne": {
+  "seedPhraseIntroSidebarBulletFour": {
     "message": "Write down and store in multiple secret places"
   },
-  "seedPhraseIntroSidebarBulletTwo": {
+  "seedPhraseIntroSidebarBulletOne": {
+    "message": "Save in a password manager"
+  },
+  "seedPhraseIntroSidebarBulletThree": {
     "message": "Store in a safe deposit box"
   },
   "seedPhraseIntroSidebarCopyOne": {
