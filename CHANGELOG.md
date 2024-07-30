@@ -59,6 +59,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed a bug that caused empty nonce fields for new transactions on different networks when a Smart Transaction was pending ([#25629](https://github.com/MetaMask/metamask-extension/pull/25629))
 - Fixed an issue ensuring MetaMask UI remains responsive when switching to a dApp tab on a down network ([#25425](https://github.com/MetaMask/metamask-extension/pull/25425))
 
+## [11.16.16]
+### Changed
+- Update Blockaid feature for latest security enhancements ([#26167](https://github.com/MetaMask/metamask-extension/pull/26167))
+
 ## [11.16.15]
 ### Changed
 - Updates MMI packages, support for a custodian has been removed ([#25502](https://github.com/MetaMask/metamask-extension/pull/25502))
@@ -4885,7 +4889,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.0.0...HEAD
-[12.0.0]: https://github.com/MetaMask/metamask-extension/compare/v11.16.15...v12.0.0
+[12.0.0]: https://github.com/MetaMask/metamask-extension/compare/v11.16.16...v12.0.0
+[11.16.16]: https://github.com/MetaMask/metamask-extension/compare/v11.16.15...v11.16.16
 [11.16.15]: https://github.com/MetaMask/metamask-extension/compare/v11.16.14...v11.16.15
 [11.16.14]: https://github.com/MetaMask/metamask-extension/compare/v11.16.13...v11.16.14
 [11.16.13]: https://github.com/MetaMask/metamask-extension/compare/v11.16.12...v11.16.13
