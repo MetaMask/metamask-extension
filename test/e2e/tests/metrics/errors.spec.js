@@ -320,7 +320,7 @@ describe('Sentry errors', function () {
           // Verify request
           assert.match(
             JSON.stringify(mockJsonBody.exception),
-            RegExp(migrationError).
+            /"type":"TypeError","value":"Cannot read properties of undefined \(reading 'version'\)"/u,
           );
         },
       );
