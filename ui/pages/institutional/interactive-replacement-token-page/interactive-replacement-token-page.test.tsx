@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, act, fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
+import { useHistory } from 'react-router-dom';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
@@ -9,6 +10,15 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
 import InteractiveReplacementTokenPage from '.';
+
+const mockHistoryPush = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: () => ({
+    push: mockHistoryPush,
+  }),
+}));
 
 const custodianAccounts = [
   {
@@ -73,17 +83,13 @@ const connectRequests = [
     labels,
     origin: 'origin',
     environment: 'environment',
+    token: 'token1',
   },
 ];
 
-const props = {
-  history: {
-    push: jest.fn(),
-  },
-};
-
-const render = ({ newState } = {}) => {
+const render = ({ newState = {} } = {}) => {
   const mockSelectedInternalAccount = {
+    // @ts-expect-error: todo: fix mockState ts(2345) missing properties expected by the function
     ...getSelectedInternalAccountFromMockState(mockState),
     address,
   };
@@ -129,10 +135,7 @@ const render = ({ newState } = {}) => {
   const mockStore = configureMockStore(middlewares);
   const store = mockStore(state);
 
-  return renderWithProvider(
-    <InteractiveReplacementTokenPage {...props} />,
-    store,
-  );
+  return renderWithProvider(<InteractiveReplacementTokenPage />, store);
 };
 
 describe('Interactive Replacement Token Page', function () {
@@ -145,7 +148,9 @@ describe('Interactive Replacement Token Page', function () {
       SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[CHAIN_IDS.MAINNET]
     }address/${custodianAddress}`;
 
-    await act(async () => await render());
+    await act(async () => {
+      await render();
+    });
 
     expect(screen.getByText(accountName)).toBeInTheDocument();
     const link = screen.getByRole('link', {
@@ -189,14 +194,13 @@ describe('Interactive Replacement Token Page', function () {
   });
 
   it('should call onRemoveAddTokenConnectRequest, setCustodianNewRefreshToken, and dispatch showInteractiveReplacementTokenBanner when handleApprove is called', async () => {
-    const mostRecentOverviewPage = {
-      pathname: '/institutional-features/done',
-      state: {
-        description:
-          'You can now use your custodian accounts in MetaMask Institutional.',
-        imgSrc: 'iconUrl',
-        title: 'Your custodian token has been refreshed',
-      },
+    const history = useHistory();
+    const mostRecentOverviewPage = '/institutional-features/done';
+    const mostRecentOverviewPageState = {
+      description:
+        'You can now use your custodian accounts in MetaMask Institutional.',
+      imgSrc: 'iconUrl',
+      title: 'Your custodian token has been refreshed',
     };
 
     await act(async () => {
@@ -211,8 +215,11 @@ describe('Interactive Replacement Token Page', function () {
       environment: connectRequests[0].environment,
       token: connectRequests[0].token,
     });
-    expect(props.history.push).toHaveBeenCalled();
-    expect(props.history.push).toHaveBeenCalledWith(mostRecentOverviewPage);
+    expect(history.push).toHaveBeenCalled();
+    expect(history.push).toHaveBeenCalledWith(
+      mostRecentOverviewPage,
+      mostRecentOverviewPageState,
+    );
   });
 
   it('should reject if there are errors', async () => {
