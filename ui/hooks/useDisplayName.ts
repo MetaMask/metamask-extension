@@ -1,6 +1,6 @@
 import { NameType } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
-import { getMemoizedMetadataContracts, getRemoteTokens } from '../selectors';
+import { getRemoteTokens } from '../selectors';
 import { getNftContractsByAddressOnCurrentChain } from '../selectors/nft';
 import { useNames } from './useName';
 import { useFirstPartyContractNames } from './useFirstPartyContractName';

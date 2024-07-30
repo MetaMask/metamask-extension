@@ -50,7 +50,7 @@ function formatValue(value: string, type: NameType): string {
   }
 }
 
-export const Name = memo(
+const Name = memo(
   ({
     value,
     type,

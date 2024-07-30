@@ -1364,14 +1364,15 @@ export const getRemoteTokenList = createDeepEqualSelector(
  * To retrieve the token list for use throughout the UI. Will return the remotely fetched list
  * from the tokens controller if token detection is enabled, or the static list if not.
  *
- * @param {*} state
- * @returns {object}
+ * @type {() => object}
  */
 export const getTokenList = createSelector(
   getRemoteTokenList,
   getIsTokenDetectionInactiveOnMainnet,
   (remoteTokenList, isTokenDetectionInactiveOnMainnet) =>
-    isTokenDetectionInactiveOnMainnet ? STATIC_MAINNET_TOKEN_LIST : remoteTokenList
+    isTokenDetectionInactiveOnMainnet
+      ? STATIC_MAINNET_TOKEN_LIST
+      : remoteTokenList,
 );
 
 /**
@@ -1384,15 +1385,19 @@ export const getTokenList = createSelector(
 export const getRemoteTokens = createSelector(
   getRemoteTokenList,
   (_state, addresses) => addresses,
-  (remoteTokenList, addresses) => addresses.map((address) => remoteTokenList[address?.toLowerCase()])
+  (remoteTokenList, addresses) =>
+    addresses.map((address) => remoteTokenList[address?.toLowerCase()]),
 );
 
 export const getMemoizedMetadataContract = createSelector(
   (state, _address) => getTokenList(state),
   (_state, address) => address,
-  (tokenList, address) => tokenList[address?.toLowerCase()]
+  (tokenList, address) => tokenList[address?.toLowerCase()],
 );
 
+/**
+ * @type (state: any, address: string) => string
+ */
 export const getMetadataContractName = createSelector(
   getMemoizedMetadataContract,
   (entry) => entry?.name ?? '',
