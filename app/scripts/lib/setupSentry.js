@@ -539,15 +539,12 @@ function getMetaMetricsEnabledFromPersistedState(persistedState) {
  * Returns whether onboarding has completed, given the application state.
  *
  * @param {Record<string, unknown>} appState - Application state
- * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
- * is enabled, `false` otherwise.
+ * @returns `true` if onboarding has completed, `false` otherwise.
  */
 function getOnboardingCompleteFromAppState(appState) {
   // during initialization after loading persisted state
   if (appState.persistedState) {
-    return Boolean(
-      appState.persistedState.data?.OnboardingController?.completedOnboarding,
-    );
+    return getOnboardingCompleteFromPersistedState(appState.persistedState);
     // After initialization
   } else if (appState.state) {
     // UI
@@ -559,6 +556,18 @@ function getOnboardingCompleteFromAppState(appState) {
   }
   // during initialization, before first persisted state is read
   return false;
+}
+
+/**
+ * Returns whether onboarding has completed, given the persisted state.
+ *
+ * @param {Record<string, unknown>} persistedState - Persisted state
+ * @returns `true` if onboarding has completed, `false` otherwise.
+ */
+function getOnboardingCompleteFromPersistedState(persistedState) {
+  return Boolean(
+    persistedState.data?.OnboardingController?.completedOnboarding,
+  );
 }
 
 function getSentryEnvironment() {
@@ -599,14 +608,22 @@ async function getMetaMetricsEnabled() {
   }
 
   const appState = getState();
+
   if (appState.state || appState.persistedState) {
-    return getMetaMetricsEnabledFromAppState(appState);
+    return (
+      getMetaMetricsEnabledFromAppState(appState) &&
+      getOnboardingCompleteFromAppState(appState)
+    );
   }
+
   // If we reach here, it means the error was thrown before initialization
   // completed, and before we loaded the persisted state for the first time.
   try {
     const persistedState = await globalThis.stateHooks.getPersistedState();
-    return getMetaMetricsEnabledFromPersistedState(persistedState);
+    return (
+      getMetaMetricsEnabledFromPersistedState(persistedState) &&
+      getOnboardingCompleteFromPersistedState(persistedState)
+    );
   } catch (error) {
     log('Error retrieving persisted state', error);
     return false;
