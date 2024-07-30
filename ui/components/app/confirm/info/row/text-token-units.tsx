@@ -3,6 +3,7 @@ import { BigNumber } from 'bignumber.js';
 
 import { calcTokenAmount } from '../../../../../../shared/lib/transactions-controller-utils';
 import {
+  ellipsisAmountText,
   formatAmount,
   formatAmountMaxPrecision,
 } from '../../../../../pages/confirmations/components/simulation-details/formatAmount';
@@ -26,7 +27,7 @@ export const ConfirmInfoRowTextTokenUnits: React.FC<
   return (
     <ConfirmInfoRowText
       isEllipsis={true}
-      text={tokenText}
+      text={ellipsisAmountText(tokenText)}
       tooltip={tokenTextMaxPrecision}
     />
   );
