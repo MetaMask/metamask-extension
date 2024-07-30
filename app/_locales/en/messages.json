@@ -872,6 +872,9 @@
   "bridgeDontSend": {
     "message": "Bridge, don't send"
   },
+  "bridgeSelectNetwork": {
+    "message": "Select network"
+  },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
   },

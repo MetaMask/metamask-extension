@@ -41,6 +41,7 @@ import {
   NFT,
 } from '../asset-picker-modal/types';
 import { TabName } from '../asset-picker-modal/asset-picker-modal-tabs';
+import { AssetPickerModalNetwork } from '../asset-picker-modal/asset-picker-modal-network';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
@@ -60,6 +61,10 @@ export type AssetPickerProps = {
   ) => void;
   onClick?: () => void;
   isDisabled?: boolean;
+  networkProps?: Pick<
+    React.ComponentProps<typeof AssetPickerModalNetwork>,
+    'network' | 'networks' | 'onNetworkChange'
+  >;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModal>,
   'visibleTabs' | 'header' | 'sendingAsset'
@@ -70,6 +75,7 @@ export function AssetPicker({
   header,
   asset,
   onAssetChange,
+  networkProps,
   sendingAsset,
   onClick,
   isDisabled = false,
@@ -107,8 +113,23 @@ export function AssetPicker({
     return undefined;
   };
 
+  const [isSelectingNetwork, setIsSelectingNetwork] = useState(false);
+
   return (
     <>
+      {networkProps && (
+        <AssetPickerModalNetwork
+          isOpen={isSelectingNetwork}
+          onClose={() => {
+            setIsSelectingNetwork(false);
+          }}
+          onBack={() => {
+            setIsSelectingNetwork(false);
+            setShowAssetPickerModal(true);
+          }}
+          {...networkProps}
+        />
+      )}
       {/* This is the Modal that ask to choose token to send */}
       <AssetPickerModal
         visibleTabs={visibleTabs}
@@ -125,6 +146,11 @@ export function AssetPicker({
           setShowAssetPickerModal(false);
         }}
         sendingAsset={sendingAsset}
+        network={networkProps?.network ? networkProps.network : undefined}
+        onNetworkPickerClick={() => {
+          setShowAssetPickerModal(false);
+          setIsSelectingNetwork(true);
+        }}
         defaultActiveTabKey={
           asset?.type === AssetType.NFT ? TabName.NFTS : TabName.TOKENS
         }
