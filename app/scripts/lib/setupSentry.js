@@ -516,7 +516,7 @@ export default function setupSentry({ release, getState }) {
      * The IN_TEST condition allows the e2e tests to run with both
      * yarn start:test and yarn build:test
      */
-    return undefined;
+    // return undefined;
   }
 
   const environment =
@@ -674,11 +674,17 @@ export default function setupSentry({ release, getState }) {
    * a new sentry session.
    */
   const startSession = async () => {
+    console.log("startSession triggered")
     const client = Sentry.getClient();
     const options = client?.getOptions?.() ?? {};
     if (client && (await getSentryEnabled()) === true) {
       options.autoSessionTracking = true;
-      Sentry.startSession();
+      try {
+        Sentry.startSession();
+      } finally {
+        Sentry.captureSession();
+      }
+
     }
   };
 

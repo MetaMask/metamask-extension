@@ -94,6 +94,7 @@ global.stateHooks.getMostRecentPersistedState = () =>
   localStore.mostRecentRetrievedState;
 
 const { sentry } = global;
+console.log("backgroud", sentry)
 let firstTimeState = { ...rawFirstTimeState };
 
 const metamaskInternalProcessHash = {

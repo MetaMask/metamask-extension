@@ -2361,7 +2361,7 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  postOnboardingInitialization() {
+  async postOnboardingInitialization() {
     const { usePhishDetect } = this.preferencesController.store.getState();
 
     this.networkController.lookupNetwork();
@@ -2391,7 +2391,9 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // set up sentry after onboarding if opt in metrics(this preference will be validated in `startSession`
-    globalThis.sentry?.startSession();
+    console.log("here", globalThis.sentry);
+    await globalThis.sentry?.startSession();
+    console.log("here finished");
   }
 
   triggerNetworkrequests() {
