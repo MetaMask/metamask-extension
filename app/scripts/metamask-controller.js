@@ -2753,15 +2753,26 @@ export default class MetamaskController extends EventEmitter {
         );
 
         // remove any existing notification subscriptions for removed authorizations
-        for (const [origin] of removedAuthorizations.entries()) {
-          this.multichainMiddlewareManager.removeAllMiddlewareForDomain(origin);
-          this.multichainSubscriptionManager.unsubscribeDomain(origin);
+        for (const [origin, authorization] of removedAuthorizations.entries()) {
+          const mergedScopes = mergeScopes(
+            authorization.requiredScopes,
+            authorization.optionalScopes,
+          );
+          // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
+          // then remove middleware and unsubscribe
+          Object.entries(mergedScopes).forEach(([scope, scopeObject]) => {
+            if (
+              scopeObject.notifications.includes('eth_subscription') &&
+              scopeObject.methods.includes('eth_subscribe')
+            ) {
+              this.multichainMiddlewareManager.removeMiddleware(scope, origin);
+              this.multichainSubscriptionManager.unsubscribe(scope, origin);
+            }
+          });
         }
 
         // add new notification subscriptions for changed authorizations
         for (const [origin, authorization] of changedAuthorizations.entries()) {
-          this.multichainMiddlewareManager.removeAllMiddlewareForDomain(origin);
-          this.multichainSubscriptionManager.unsubscribeDomain(origin);
           const mergedScopes = mergeScopes(
             authorization.requiredScopes,
             authorization.optionalScopes,
@@ -2774,6 +2785,8 @@ export default class MetamaskController extends EventEmitter {
               scopeObject.notifications.includes('eth_subscription') &&
               scopeObject.methods.includes('eth_subscribe')
             ) {
+              this.multichainMiddlewareManager.removeMiddleware(scope, origin);
+              this.multichainSubscriptionManager.unsubscribe(scope, origin);
               const subscriptionManager =
                 this.multichainSubscriptionManager.subscribe(scope, origin);
               this.multichainMiddlewareManager.addMiddleware(
