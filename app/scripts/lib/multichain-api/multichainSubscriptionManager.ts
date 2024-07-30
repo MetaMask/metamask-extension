@@ -16,7 +16,7 @@ export type SubscriptionManager = {
 const createSubscriptionManager = require('@metamask/eth-json-rpc-filters/subscriptionManager');
 
 type MultichainSubscriptionManagerOptions = {
-  findNetworkClientIdByChainId: NetworkController['findNetworkClientIdByChainId']
+  findNetworkClientIdByChainId: NetworkController['findNetworkClientIdByChainId'];
   getNetworkClientById: NetworkController['getNetworkClientById'];
 };
 
