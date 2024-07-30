@@ -241,7 +241,7 @@
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
-        "@ethersproject/providers>@ethersproject/rlp": true
+        "@ledgerhq/hw-app-eth>@ethersproject/rlp": true
       }
     },
     "@ethersproject/abi>@ethersproject/constants": {
@@ -379,7 +379,7 @@
         "@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "@ethersproject/hdnode>@ethersproject/signing-key": true,
-        "@ethersproject/providers>@ethersproject/rlp": true
+        "@ledgerhq/hw-app-eth>@ethersproject/rlp": true
       }
     },
     "@ethersproject/hdnode>@ethersproject/wordlists": {
@@ -425,12 +425,6 @@
     "@ethersproject/providers>@ethersproject/random": {
       "globals": {
         "crypto.getRandomValues": true
-      }
-    },
-    "@ethersproject/providers>@ethersproject/rlp": {
-      "packages": {
-        "@ethersproject/abi>@ethersproject/logger": true,
-        "@ethersproject/bytes": true
       }
     },
     "@ethersproject/providers>@ethersproject/web": {
@@ -607,6 +601,58 @@
       },
       "packages": {
         "react": true
+      }
+    },
+    "@ledgerhq/hw-app-eth": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@ethersproject/abi": true,
+        "@ledgerhq/hw-app-eth>@ethersproject/rlp": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/errors": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
+        "@ledgerhq/hw-app-eth>axios": true,
+        "@ledgerhq/hw-app-eth>bignumber.js": true,
+        "browserify>buffer": true
+      }
+    },
+    "@ledgerhq/hw-app-eth>@ethersproject/rlp": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/bytes": true
+      }
+    },
+    "@ledgerhq/hw-app-eth>@ledgerhq/errors": {
+      "globals": {
+        "console.warn": true
+      }
+    },
+    "@ledgerhq/hw-app-eth>@ledgerhq/logs": {
+      "globals": {
+        "__ledgerLogsListen": "write",
+        "console.error": true
+      }
+    },
+    "@ledgerhq/hw-app-eth>axios": {
+      "globals": {
+        "XMLHttpRequest": true,
+        "btoa": true,
+        "console.warn": true,
+        "document": true,
+        "location.href": true,
+        "navigator": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>process": true
+      }
+    },
+    "@ledgerhq/hw-app-eth>bignumber.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
       }
     },
     "@material-ui/core": {
