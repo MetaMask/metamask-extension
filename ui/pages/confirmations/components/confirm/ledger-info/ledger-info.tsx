@@ -59,11 +59,6 @@ const LedgerInfo: React.FC = () => {
             {t('ledgerConnectionInstructionStepThree')}
           </Text>
         </li>
-        <li>
-          <Text variant={TextVariant.bodyMd}>
-            {t('ledgerConnectionInstructionStepFour')}
-          </Text>
-        </li>
       </ul>
       {transportStatus === HardwareTransportStates.deviceOpenFailure && (
         <Button
