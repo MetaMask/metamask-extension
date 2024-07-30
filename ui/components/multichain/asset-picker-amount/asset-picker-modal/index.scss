@@ -56,6 +56,18 @@
     max-height: 100%;
   }
 
+  .network-picker {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 4px;
+    padding-bottom: 16px;
+
+    button: {
+      background: var(--color-background-alternative);
+    }
+  }
+
   .modal-tab {
     &__main-view {
       max-height: 100%;
