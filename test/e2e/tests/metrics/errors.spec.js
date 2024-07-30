@@ -318,9 +318,14 @@ describe('Sentry errors', function () {
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           // Verify request
+          const escapedMigrationError = migrationError.replace(
+            /[.*+?^${}()|[\]\\]/gu,
+            '\\$&',
+          );
+          const migrationErrorRegex = new RegExp(escapedMigrationError, 'u');
           assert.match(
             JSON.stringify(mockJsonBody.exception),
-            /"type":"TypeError","value":"Cannot read properties of undefined \(reading 'version'\)"/u,
+            migrationErrorRegex,
           );
         },
       );
