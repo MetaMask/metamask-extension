@@ -315,7 +315,6 @@ describe('Sentry errors', function () {
           }, 3000);
 
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
 
