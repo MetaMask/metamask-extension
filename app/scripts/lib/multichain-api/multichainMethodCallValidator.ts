@@ -14,7 +14,7 @@ import {
 import dereferenceDocument from '@open-rpc/schema-utils-js/build/dereference-document';
 import { makeCustomResolver } from '@open-rpc/schema-utils-js/build/parse-open-rpc-document';
 import { Json, JsonRpcMiddleware } from 'json-rpc-engine';
-import { ValidationError, Validator } from 'jsonschema';
+import { Schema, ValidationError, Validator } from 'jsonschema';
 
 const transformError = (
   error: ValidationError,
@@ -62,7 +62,9 @@ export const multichainMethodCallValidator = async (
     } else {
       paramToCheck = params[i];
     }
-    const result = v.validate(paramToCheck, p.schema, { required: true });
+    const result = v.validate(paramToCheck, p.schema as unknown as Schema, {
+      required: true,
+    });
     if (result.errors) {
       errors.push(
         ...result.errors.map((e) => {
