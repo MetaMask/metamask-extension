@@ -970,7 +970,7 @@ const NetworksForm = ({
             token_symbol: ticker,
           },
           sensitiveProperties: {
-            rpcUrl: sha256(rpcUrl),
+            rpcUrl: await sha256(rpcUrl),
           },
         });
         if (networkMenuRedesign) {
