@@ -275,7 +275,7 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "Magdagdag ng bagong account"
+    "message": "Magdagdag ng bagong account sa Ethereum"
   },
   "addNewToken": {
     "message": "Magdagdag ng bagong token"
@@ -1654,6 +1654,9 @@
     "message": "paganahin ang $1",
     "description": "$1 is a token symbol, e.g. ETH"
   },
+  "enableTokenAutoDetection": {
+    "message": "Paganahin ang autodetection ng token"
+  },
   "enabled": {
     "message": "Pinagana"
   },
@@ -2306,7 +2309,7 @@
     "message": "Nakikipag-ugnayan sa"
   },
   "interactingWithTransactionDescription": {
-    "message": "Sa kontrata na ito ka nakikipag-ugnayan ka. Protektahan ang iyong sarili mula sa mga scammer sa pamamagitan ng pagberipika ng mga detalye."
+    "message": "Nakikipag-ugnayan ka sa kontrato na ito. Protektahan ang iyong sarili mula sa mga scammer sa pamamagitan ng pagberipika ng mga detalye."
   },
   "invalidAddress": {
     "message": "Di-wastong address"
@@ -3037,7 +3040,7 @@
     "message": "Wala kang naka-install na snaps."
   },
   "noThanks": {
-    "message": "Salamat nalang"
+    "message": "Salamat na lang"
   },
   "noTransactions": {
     "message": "Wala kang transaksyon"
@@ -6023,7 +6026,7 @@
     "message": "Awtomatikong tuklasin ang mga NFT"
   },
   "useNftDetectionDescriptionText": {
-    "message": "Hayaan ang MetaMask na magdagdag ng mga NFT na iyong pag-aari gamit ang mga third-party na serbisyo (tulad ng OpenSea). Ang awtomatikong pagtuklas ng mga NFT ay naglalantad sa iyong IP at address ng account sa mga serbisyong ito. Ang pag-enable sa tampok na ito ay maaaring mag-ugnay sa iyong IP sa iyong Ethereum address at magpakita ng pekeng NFT na in-airdrop ng mga manloloko. Maaari kang magdagdag ng token sa manwal na paraan para iwasan ang panganib na ito."
+    "message": "Hayaan ang MetaMask na magdagdag ng mga NFT na iyong pag-aari gamit ang mga third-party na serbisyo. Ang awtomatikong pagtuklas ng mga NFT ay naglalantad sa iyong IP at address ng account sa mga serbisyong ito. Ang pag-enable sa tampok na ito ay maaaring mag-ugnay sa iyong IP sa iyong Ethereum address at magpakita ng pekeng NFT na in-airdrop ng mga scammer. Maaari kang magdagdag ng token sa manu-manong paraan para iwasan ang panganib na ito."
   },
   "usePhishingDetection": {
     "message": "Gumamit ng phishing detection"

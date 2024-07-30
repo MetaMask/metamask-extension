@@ -275,7 +275,7 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "Yeni bir hesap ekleyin"
+    "message": "Yeni bir Ethereum hesabı ekle"
   },
   "addNewToken": {
     "message": "Yeni token ekleyin"
@@ -1656,6 +1656,9 @@
   "enableToken": {
     "message": "şunu etkinleştir: $1",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "enableTokenAutoDetection": {
+    "message": "Otomatik token algılamayı etkinleştir"
   },
   "enabled": {
     "message": "Etkinleştirildi"
@@ -6026,7 +6029,7 @@
     "message": "NFT'leri otomatik algıla"
   },
   "useNftDetectionDescriptionText": {
-    "message": "MetaMask'in üçüncü taraf hizmetleri (OpenSea gibi) kullanarak size ait olan NFT'leri eklemesine izin verin. NFT'leri otomatik algılama, IP adresinizi ve hesap adresinizi bu hizmetlerle paylaşır. Bu özelliğin etkinleştirilmesi IP adresinizi Ethereum adresinizle ilişkilendirebilir ve dolandırıcılar tarafından airdrop'u gerçekleştirilen sahte NFT'leri gösterebilir. Bu riski önlemek için tokenleri elle ekleyebilirsiniz."
+    "message": "MetaMask'in üçüncü taraf hizmetleri kullanarak size ait olan NFT'leri eklemesine izin verin. NFT'leri otomatik algılama, IP adresinizi ve hesap adresinizi bu hizmetlerle paylaşır. Bu özelliğin etkinleştirilmesi IP adresinizi Ethereum adresinizle ilişkilendirebilir ve dolandırıcılar tarafından airdrop'u gerçekleştirilen sahte NFT'leri gösterebilir. Bu riski önlemek için tokenleri elle ekleyebilirsiniz."
   },
   "usePhishingDetection": {
     "message": "Kimlik avı algılama kullan"
