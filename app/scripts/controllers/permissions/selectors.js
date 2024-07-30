@@ -164,3 +164,35 @@ export const getChangedAuthorizations = (
   }
   return changedAuthorizations;
 };
+
+/**
+ *
+ * @param {Map<string, Caip25Authorization>} newAuthorizationsMap - The new origin:authorization map.
+ * @param {Map<string, Caip25Authorization>} [previousAuthorizationsMap] - The previous origin:authorization map.
+ * @returns {Map<string, Caip25Authorization>} The origin:authorization map of changed authorizations.
+ */
+export const getRemovedAuthorizations = (
+  newAuthorizationsMap,
+  previousAuthorizationsMap,
+) => {
+  // If there are no previous authorizations, there are no removed authorizations.
+  if (previousAuthorizationsMap === undefined) {
+    return new Map();
+  }
+
+  const removedAuthorizations = new Map();
+  if (newAuthorizationsMap === previousAuthorizationsMap) {
+    return removedAuthorizations;
+  }
+
+  const previousOrigins = new Set([...previousAuthorizationsMap.keys()]);
+  for (const origin of newAuthorizationsMap.keys()) {
+    previousOrigins.delete(origin);
+  }
+
+  for (const origin of previousOrigins.keys()) {
+    removedAuthorizations.set(origin, previousAuthorizationsMap.get(origin));
+  }
+
+  return removedAuthorizations;
+};

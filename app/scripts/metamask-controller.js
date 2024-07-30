@@ -305,6 +305,7 @@ import {
   getPermissionBackgroundApiMethods,
   getPermissionSpecifications,
   getPermittedAccountsByOrigin,
+  getRemovedAuthorizations,
   NOTIFICATION_NAMES,
   PermissionNames,
   unrestrictedMethods,
@@ -2720,7 +2721,43 @@ export default class MetamaskController extends EventEmitter {
           previousValue,
         );
 
+        const removedAuthorizations = getRemovedAuthorizations(
+          currentValue,
+          previousValue,
+        );
+
+        // remove any existing notification subscriptions for removed authorizations
+        for (const [origin] of removedAuthorizations.entries()) {
+          this.multichainMiddlewareManager.removeAllMiddlewareForDomain(origin);
+          this.multichainSubscriptionManager.unsubscribeDomain(origin);
+        }
+
+        // add new notification subscriptions for changed authorizations
         for (const [origin, authorization] of changedAuthorizations.entries()) {
+          this.multichainMiddlewareManager.removeAllMiddlewareForDomain(origin);
+          this.multichainSubscriptionManager.unsubscribeDomain(origin);
+          const mergedScopes = mergeScopes(
+            authorization.requiredScopes,
+            authorization.optionalScopes,
+          );
+
+          // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
+          // then get the subscriptionManager going for that scope
+          Object.entries(mergedScopes).forEach(([scope, scopeObject]) => {
+            if (
+              scopeObject.notifications.includes('eth_subscription') &&
+              scopeObject.methods.includes('eth_subscribe')
+            ) {
+              const subscriptionManager =
+                this.multichainSubscriptionManager.subscribe(scope, origin);
+              this.multichainMiddlewareManager.addMiddleware(
+                scope,
+                origin,
+                subscriptionManager.middleware,
+              );
+            }
+          });
+
           this._notifyAuthorizationChange(origin, authorization);
         }
       },
