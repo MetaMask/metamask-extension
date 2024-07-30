@@ -284,4 +284,35 @@ describe('AssetPicker', () => {
 
     expect(container).toMatchSnapshot();
   });
+
+  it('should render network picker when networks prop is defined', () => {
+    const asset = {
+      type: AssetType.native,
+      image: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP['0x1'],
+      symbol: NATIVE_TICKER,
+    } as NativeAsset;
+
+    const mockAssetChange = jest.fn();
+
+    const { asFragment } = render(
+      <Provider store={store(NATIVE_TICKER)}>
+        <AssetPicker
+          header={'testHeader'}
+          asset={asset}
+          onAssetChange={() => mockAssetChange()}
+          isDisabled
+          networkProps={{
+            network: { chainId: '0x1', type: 'rpc', ticker: 'ETH' },
+            networks: [
+              { chainId: '0x1', type: 'rpc', ticker: 'ETH' },
+              { chainId: '0xa', type: 'rpc', ticker: 'ETH' },
+            ],
+            onNetworkChange: jest.fn(),
+          }}
+        />
+      </Provider>,
+    );
+
+    expect(asFragment()).toMatchSnapshot();
+  });
 });

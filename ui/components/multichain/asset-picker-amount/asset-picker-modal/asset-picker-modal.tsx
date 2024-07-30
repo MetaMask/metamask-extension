@@ -17,6 +17,7 @@ import {
   AvatarTokenSize,
   AvatarToken,
   Text,
+  PickerNetwork,
 } from '../../../component-library';
 import {
   BorderRadius,
@@ -61,6 +62,7 @@ import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 import AssetList from './AssetList';
 import { Search } from './asset-picker-modal-search';
+import { AssetPickerModalNetwork } from './asset-picker-modal-network';
 
 type AssetPickerModalProps = {
   header: JSX.Element | string | null;
@@ -74,10 +76,12 @@ type AssetPickerModalProps = {
    * Sending asset for UI treatments; only for dest component
    */
   sendingAsset?: { image: string; symbol: string } | undefined;
+  onNetworkPickerClick?: () => void;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModalTabs>,
   'visibleTabs' | 'defaultActiveTabKey'
->;
+> &
+  Pick<React.ComponentProps<typeof AssetPickerModalNetwork>, 'network'>;
 
 const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
@@ -88,6 +92,8 @@ export function AssetPickerModal({
   asset,
   onAssetChange,
   sendingAsset,
+  network,
+  onNetworkPickerClick,
   ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
@@ -240,9 +246,6 @@ export function AssetPickerModal({
 
     return filteredTokens;
   }, [
-    memoizedUsersTokens,
-    topTokens,
-    searchQuery,
     nativeCurrency,
     nativeCurrencyImage,
     balanceValue,
@@ -255,7 +258,6 @@ export function AssetPickerModal({
     conversionRate,
     currentCurrency,
     chainId,
-    tokenList,
   ]);
 
   return (
@@ -287,6 +289,20 @@ export function AssetPickerModal({
             <Text variant={TextVariant.bodySm}>
               {t('sendingAsset', [sendingAsset.symbol])}
             </Text>
+          </Box>
+        )}
+        {onNetworkPickerClick && (
+          <Box className="network-picker">
+            <PickerNetwork
+              label={network?.nickname ?? 'Select network'}
+              src={
+                network?.rpcPrefs && 'imageUrl' in network.rpcPrefs
+                  ? (network.rpcPrefs.imageUrl as string)
+                  : undefined
+              }
+              onClick={onNetworkPickerClick}
+              data-testid="multichain-asset-picker__network"
+            />
           </Box>
         )}
         <Box className="modal-tab__wrapper">

@@ -69,6 +69,7 @@ describe('AssetPickerModal', () => {
 
   const defaultProps = {
     header: 'sendSelectReceiveAsset',
+    onNetworkPickerClick: jest.fn(),
     isOpen: true,
     onClose: onCloseMock,
     asset: {
@@ -290,5 +291,27 @@ describe('AssetPickerModal', () => {
         address: '0xtoken1',
       }),
     ).toBe(true);
+  });
+
+  it('should render network picker when networks prop is defined', () => {
+    const { getByText, getAllByRole } = renderWithProvider(
+      <AssetPickerModal
+        {...defaultProps}
+        header="selectNetworkHeader"
+        network={{
+          type: 'rpc',
+          ticker: 'ETH',
+          chainId: '0x1',
+        }}
+      />,
+      store,
+    );
+
+    const modalTitle = getByText('selectNetworkHeader');
+    expect(modalTitle).toBeInTheDocument();
+
+    expect(getAllByRole('img')).toHaveLength(2);
+    const modalContent = getByText('Select network');
+    expect(modalContent).toBeInTheDocument();
   });
 });
