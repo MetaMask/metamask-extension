@@ -94,7 +94,6 @@ const PermitSimulation: React.FC<{
                   borderRadius={BorderRadius.XL}
                   paddingInline={2}
                   textAlign={TextAlign.Center}
-                  ellipsis
                 >
                   {ellipsisAmountText(tokenValue || '')}
                 </Text>

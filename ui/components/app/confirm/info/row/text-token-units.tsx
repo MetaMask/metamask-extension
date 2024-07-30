@@ -26,7 +26,6 @@ export const ConfirmInfoRowTextTokenUnits: React.FC<
 
   return (
     <ConfirmInfoRowText
-      isEllipsis={true}
       text={ellipsisAmountText(tokenText)}
       tooltip={tokenTextMaxPrecision}
     />
