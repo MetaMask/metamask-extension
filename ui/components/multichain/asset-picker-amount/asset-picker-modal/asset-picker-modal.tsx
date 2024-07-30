@@ -177,6 +177,18 @@ export function AssetPickerModal({
 
   const memoizedUsersTokens = useEqualityCheck(usersTokens);
 
+  const getIsDisabled = useCallback(
+    ({ address, symbol }: Token) => {
+      const isDisabled = sendingAssetSymbol
+        ? !isEqualCaseInsensitive(sendingAssetSymbol, symbol) &&
+          memoizedSwapsBlockedTokens.has(address || '')
+        : false;
+
+      return isDisabled;
+    },
+    [sendingAssetSymbol, memoizedSwapsBlockedTokens],
+  );
+
   const filteredTokenList = useMemo(() => {
     const nativeToken = {
       address: null,
@@ -190,15 +202,6 @@ export function AssetPickerModal({
     const filteredTokens: Token[] = [];
     // undefined would be the native token address
     const filteredTokensAddresses = new Set<string | undefined>();
-
-    const getIsDisabled = ({ address, symbol }: Token) => {
-      const isDisabled = sendingAssetSymbol
-        ? !isEqualCaseInsensitive(sendingAssetSymbol, symbol) &&
-          memoizedSwapsBlockedTokens.has(address || '')
-        : false;
-
-      return isDisabled;
-    };
 
     function* tokenGenerator() {
       yield nativeToken;
@@ -299,7 +302,7 @@ export function AssetPickerModal({
           clearButtonProps={{
             size: ButtonIconSize.Sm,
           }}
-          showClearButton={true}
+          showClearButton
           className="asset-picker-modal__search-list"
           inputProps={{
             'data-testid': 'asset-picker-modal-search-input',
@@ -352,8 +355,7 @@ export function AssetPickerModal({
                 handleAssetChange={handleAssetChange}
                 asset={asset}
                 tokenList={filteredTokenList}
-                sendingAssetSymbol={sendingAssetSymbol}
-                memoizedSwapsBlockedTokens={memoizedSwapsBlockedTokens}
+                isTokenDisabled={getIsDisabled}
               />
             </>
           ) : (
@@ -361,38 +363,34 @@ export function AssetPickerModal({
               defaultActiveTabKey={defaultActiveTabKey}
               tabsClassName="modal-tab__tabs"
             >
-              {
-                <Tab
-                  activeClassName="modal-tab__tab--active"
-                  className="modal-tab__tab"
-                  name={t('tokens')}
-                  tabKey="tokens"
-                >
-                  <Search />
-                  <AssetList
-                    handleAssetChange={handleAssetChange}
-                    asset={asset}
-                    tokenList={filteredTokenList}
-                    memoizedSwapsBlockedTokens={memoizedSwapsBlockedTokens}
-                  />
-                </Tab>
-              }
+              <Tab
+                activeClassName="modal-tab__tab--active"
+                className="modal-tab__tab"
+                name={t('tokens')}
+                tabKey="tokens"
+              >
+                <Search />
+                <AssetList
+                  handleAssetChange={handleAssetChange}
+                  asset={asset}
+                  tokenList={filteredTokenList}
+                  isTokenDisabled={getIsDisabled}
+                />
+              </Tab>
 
-              {
-                <Tab
-                  activeClassName="modal-tab__tab--active"
-                  className="modal-tab__tab"
-                  name={t('nfts')}
-                  tabKey="nfts"
-                >
-                  <AssetPickerModalNftTab
-                    collectionDataFiltered={collectionDataFiltered}
-                    previouslyOwnedCollection={previouslyOwnedCollection}
-                    onClose={onClose}
-                    renderSearch={() => Search({ isNFTSearch: true })}
-                  />
-                </Tab>
-              }
+              <Tab
+                activeClassName="modal-tab__tab--active"
+                className="modal-tab__tab"
+                name={t('nfts')}
+                tabKey="nfts"
+              >
+                <AssetPickerModalNftTab
+                  collectionDataFiltered={collectionDataFiltered}
+                  previouslyOwnedCollection={previouslyOwnedCollection}
+                  onClose={onClose}
+                  renderSearch={() => Search({ isNFTSearch: true })}
+                />
+              </Tab>
             </Tabs>
           )}
         </Box>
