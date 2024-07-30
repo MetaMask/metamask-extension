@@ -51,7 +51,6 @@ import SnapLegacyAuthorshipHeader from '../../../../components/app/snaps/snap-le
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
 import { QueuedRequestsBannerAlert } from '../../confirmation/components/queued-requests-banner-alert';
-import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {
@@ -87,7 +86,6 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   state = {
-    showSignatureRequestWarning: false,
     showSignatureInsights: false,
   };
 
@@ -350,13 +348,7 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   render = () => {
-    const {
-      messagesCount,
-      fromAccount: { address, name },
-      txData,
-      warnings,
-    } = this.props;
-    const { showSignatureRequestWarning } = this.state;
+    const { messagesCount, txData, warnings } = this.props;
     const { t } = this.context;
 
     const rejectNText = t('rejectRequestsN', [messagesCount]);
@@ -375,23 +367,7 @@ export default class SignatureRequestOriginal extends Component {
             <LedgerInstructionField showDataInstruction />
           </div>
         ) : null}
-        {showSignatureRequestWarning && (
-          <SignatureRequestOriginalWarning
-            senderAddress={address}
-            name={name}
-            onSubmit={async () => {
-              if (warnings?.length >= 1) {
-                return this.setState({
-                  showSignatureInsights: true,
-                  showSignatureRequestWarning: false,
-                });
-              }
 
-              return await this.onSubmit();
-            }}
-            onCancel={async (event) => await this.onCancel(event)}
-          />
-        )}
         {this.state.showSignatureInsights && (
           <InsightWarnings
             warnings={warnings}
