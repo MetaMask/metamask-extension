@@ -1417,9 +1417,11 @@ export default class MetamaskController extends EventEmitter {
       messenger: this.controllerMessenger.getRestricted({
         name: 'AuthenticationController',
         allowedActions: [
+          'KeyringController:getState',
           'SnapController:handleRequest',
           'UserStorageController:disableProfileSyncing',
         ],
+        allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
       }),
       metametrics: {
         getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
@@ -1433,6 +1435,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
         allowedActions: [
+          'KeyringController:getState',
           'SnapController:handleRequest',
           'AuthenticationController:getBearerToken',
           'AuthenticationController:getSessionProfile',
@@ -1442,6 +1445,7 @@ export default class MetamaskController extends EventEmitter {
           'MetamaskNotificationsController:disableMetamaskNotifications',
           'MetamaskNotificationsController:selectIsMetamaskNotificationsEnabled',
         ],
+        allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
       }),
     });
 
@@ -1491,6 +1495,7 @@ export default class MetamaskController extends EventEmitter {
         name: 'MetamaskNotificationsController',
         allowedActions: [
           'KeyringController:getAccounts',
+          'KeyringController:getState',
           'AuthenticationController:getBearerToken',
           'AuthenticationController:isSignedIn',
           'UserStorageController:enableProfileSyncing',
@@ -1503,6 +1508,8 @@ export default class MetamaskController extends EventEmitter {
         ],
         allowedEvents: [
           'KeyringController:stateChange',
+          'KeyringController:lock',
+          'KeyringController:unlock',
           'PushPlatformNotificationsController:onNewNotifications',
         ],
       }),
@@ -5470,7 +5477,7 @@ export default class MetamaskController extends EventEmitter {
             { eth_accounts: {} },
           ),
         requestPermittedChainsPermission: (chainIds) =>
-          this.permissionController.requestPermissions(
+          this.permissionController.requestPermissionsIncremental(
             { origin },
             {
               [PermissionNames.permittedChains]: {
@@ -6130,6 +6137,9 @@ export default class MetamaskController extends EventEmitter {
       },
       getRedesignedConfirmationsEnabled: () => {
         return this.preferencesController.getRedesignedConfirmationsEnabled;
+      },
+      getRedesignedTransactionsEnabled: () => {
+        return this.preferencesController.getRedesignedTransactionsEnabled;
       },
       getMethodData: (data) => {
         if (!data) {

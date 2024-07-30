@@ -278,7 +278,13 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "新しいアカウントを追加"
+    "message": "新しいイーサリアムアカウントを追加"
+  },
+  "addNewBitcoinAccount": {
+    "message": "新しいビットコインアカウントの追加 (ベータ)"
+  },
+  "addNewBitcoinTestnetAccount": {
+    "message": "新しいビットコインアカウントの追加 (テストネット)"
   },
   "addNewToken": {
     "message": "新しいトークンを追加"
@@ -632,6 +638,9 @@
   "attemptToCancelSwapForFree": {
     "message": "無料でスワップのキャンセルを試行"
   },
+  "attributes": {
+    "message": "属性"
+  },
   "attributions": {
     "message": "属性"
   },
@@ -756,6 +765,22 @@
   "bitcoinActivityNotSupported": {
     "message": "ビットコインアクティビティはサポートされていません"
   },
+  "bitcoinSupportSectionTitle": {
+    "message": "ビットコイン"
+  },
+  "bitcoinSupportToggleDescription": {
+    "message": "この機能をオンにすると、既存のシークレットリカバリーフレーズで取得したビットコインアカウントをMetaMask拡張機能に追加できるようになります。これは試験運用中のベータ機能であるため、自己責任でご使用ください。新しいビットコインエクスペリエンスのフィードバックをご提供いただくには、こちらの$1に入力してください。",
+    "description": "$1 is the link to a product feedback form"
+  },
+  "bitcoinSupportToggleTitle": {
+    "message": "「新しいビットコインアカウントの追加 (ベータ)」を有効にする"
+  },
+  "bitcoinTestnetSupportToggleDescription": {
+    "message": "この機能をオンにすると、テストネットワーク用にビットコインアカウントを追加できるようになります。"
+  },
+  "bitcoinTestnetSupportToggleTitle": {
+    "message": "「新しいビットコインアカウントの追加 (テストネット)」を有効にする"
+  },
   "blockExplorerAccountAction": {
     "message": "アカウント",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -822,6 +847,9 @@
   },
   "blockies": {
     "message": "Blockie"
+  },
+  "boughtFor": {
+    "message": "購入価格"
   },
   "bridge": {
     "message": "ブリッジ"
@@ -943,6 +971,9 @@
   },
   "coingecko": {
     "message": "CoinGecko"
+  },
+  "collectionName": {
+    "message": "コレクション名"
   },
   "comboNoOptions": {
     "message": "オプションが見つかりません",
@@ -1249,6 +1280,9 @@
   "createSnapAccountTitle": {
     "message": "アカウントの作成"
   },
+  "creatorAddress": {
+    "message": "クリエイターのアドレス"
+  },
   "crossChainSwapsLink": {
     "message": "MetaMask Portfolioでネットワーク間でスワップ"
   },
@@ -1436,6 +1470,12 @@
   "dataHex": {
     "message": "16進法"
   },
+  "dataUnavailable": {
+    "message": "データが利用できません"
+  },
+  "dateCreated": {
+    "message": "作成日"
+  },
   "dcent": {
     "message": "D'Cent"
   },
@@ -1514,6 +1554,12 @@
   },
   "developerOptions": {
     "message": "開発者用オプション"
+  },
+  "developerOptionsEnableConfirmationsRedesignDescription": {
+    "message": "現在開発中の承認のデザイン変更機能の有効・無効を切り替えます"
+  },
+  "developerOptionsEnableConfirmationsRedesignTitle": {
+    "message": "承認のデザイン変更"
   },
   "developerOptionsNetworkMenuRedesignDescription": {
     "message": "ネットワークメニューを新しいデザインに切り替えます"
@@ -1712,6 +1758,9 @@
   "editGasTooLow": {
     "message": "不明な処理時間"
   },
+  "editNetworkLink": {
+    "message": "元のネットワークを編集"
+  },
   "editNonceField": {
     "message": "ナンスを編集"
   },
@@ -1748,6 +1797,9 @@
   },
   "enableTokenAutoDetection": {
     "message": "トークンの自動検出を有効にする"
+  },
+  "enable_auto_detection_toggle_automatically": {
+    "message": "基本機能トグルがオンになっているユーザーは、MetaMask拡張機能 v12.3.0で、この機能が自動的にオンになります。"
   },
   "enabled": {
     "message": "有効"
@@ -1881,6 +1933,12 @@
   "etherscanViewOn": {
     "message": "Etherscanで表示"
   },
+  "existingChainId": {
+    "message": "入力された情報は、既存のチェーンIDと関連付けられています。"
+  },
+  "existingRpcUrl": {
+    "message": "このURLは別のチェーンIDに関連付けられています。"
+  },
   "expandView": {
     "message": "ビューを展開"
   },
@@ -1935,6 +1993,9 @@
     "message": "ファイルのインポートが機能していない場合、ここをクリックしてください！",
     "description": "Helps user import their account from a JSON file"
   },
+  "findTheRightChainId": {
+    "message": "正しいIDを検索:"
+  },
   "flaskWelcomeUninstall": {
     "message": "この拡張機能はアンインストールしてください",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -1973,6 +2034,9 @@
   },
   "forgotPassword": {
     "message": "パスワードを忘れた場合"
+  },
+  "form": {
+    "message": "フォーム"
   },
   "from": {
     "message": "移動元"
@@ -2181,6 +2245,12 @@
   },
   "highLowercase": {
     "message": "高"
+  },
+  "highestCurrentBid": {
+    "message": "現在の最高入札額"
+  },
+  "highestFloorPrice": {
+    "message": "フロア価格の最高額"
   },
   "history": {
     "message": "履歴"
@@ -3195,6 +3265,9 @@
   "nonceField": {
     "message": "トランザクション ナンスのカスタマイズ"
   },
+  "nonceFieldDesc": {
+    "message": "資産を送る際にナンス (トランザクション番号) を変更するには、この機能をオンにします。これは高度な機能であり、慎重に使用してください。"
+  },
   "nonceFieldHeading": {
     "message": "カスタムナンス"
   },
@@ -3397,6 +3470,9 @@
   },
   "numberOfNewTokensDetectedSingular": {
     "message": "1つの新しいトークンがこのアカウントで見つかりました"
+  },
+  "numberOfTokens": {
+    "message": "トークンの数"
   },
   "ofTextNofM": {
     "message": "中の"
@@ -3982,6 +4058,12 @@
   "prev": {
     "message": "前へ"
   },
+  "price": {
+    "message": "価格"
+  },
+  "priceUnavailable": {
+    "message": "価格が利用できません"
+  },
   "primaryCurrencySetting": {
     "message": "プライマリ通貨"
   },
@@ -4133,6 +4215,9 @@
   },
   "quoteRate": {
     "message": "クォートレート"
+  },
+  "rank": {
+    "message": "ランク"
   },
   "reAddAccounts": {
     "message": "他のアカウントを再度追加"
@@ -4494,13 +4579,10 @@
   "seedPhraseIntroRecommendedButtonCopy": {
     "message": "ウォレットの安全を確保 (推奨)"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "書き留めて、複数の秘密の場所に保管してください。"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "パスワードマネージャーに保存"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "セーフティボックスに保管する。"
   },
   "seedPhraseIntroSidebarCopyOne": {
@@ -4692,6 +4774,9 @@
   },
   "showIncomingTransactionsExplainer": {
     "message": "これは、ネットワークごとに異なるサードパーティAPIに依存します。これにより、イーサリアムアドレスとIPアドレスが公開されます。"
+  },
+  "showLess": {
+    "message": "表示量を減らす"
   },
   "showMore": {
     "message": "他を表示"
@@ -4914,6 +4999,9 @@
   },
   "snapDetailWebsite": {
     "message": "Webサイト"
+  },
+  "snapHomeMenu": {
+    "message": "Snapホームメニュー"
   },
   "snapInstallRequest": {
     "message": "$1をインストールすると、次のアクセス許可が付与されます。",
@@ -5931,6 +6019,9 @@
   "tokenShowUp": {
     "message": "トークンはウォレットに自動的に表示されない可能性があります。"
   },
+  "tokenStandard": {
+    "message": "トークン規格"
+  },
   "tokenSymbol": {
     "message": "トークンシンボル"
   },
@@ -5940,6 +6031,9 @@
   "tokensFoundTitle": {
     "message": "$1種類の新しいトークンが見つかりました",
     "description": "$1 is the number of new tokens detected"
+  },
+  "tokensInCollection": {
+    "message": "コレクションにあるトークン"
   },
   "tooltipApproveButton": {
     "message": "理解しました"
@@ -5973,6 +6067,9 @@
   },
   "transactionCreated": {
     "message": "トランザクションは$1の値が$2で作成されました。"
+  },
+  "transactionDataFunction": {
+    "message": "関数"
   },
   "transactionDetailDappGasMoreInfo": {
     "message": "サイトが提案されました"
@@ -6146,6 +6243,9 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
+  "unMatchedChain": {
+    "message": "当社の記録によると、このURLは、このチェーンIDの既知のプロバイダーと一致しません。"
+  },
   "unapproved": {
     "message": "未承認"
   },
@@ -6197,6 +6297,9 @@
   "update": {
     "message": "更新"
   },
+  "updateOrEditNetworkInformations": {
+    "message": "情報を更新するか"
+  },
   "updateRequest": {
     "message": "更新リクエスト"
   },
@@ -6229,6 +6332,9 @@
   },
   "useNftDetection": {
     "message": "NFTを自動検出"
+  },
+  "useNftDetectionDescriptionText": {
+    "message": "MetaMaskが、サードパーティサービス (例: OpenSea) を使って、ユーザーが所有するNFTを追加することを許可します。NFTの自動検出機能を利用すると、ユーザーのIPとアカウントアドレスがこれらのサービスに公開されます。この機能を有効にした場合、ユーザーのIPアドレスとイーサリアムアドレスが紐付けられ、詐欺師によりエアドロップされた偽のNFTが表示される可能性があります。このリスクを回避するため、手動でトークンを追加することもできます。"
   },
   "usePhishingDetection": {
     "message": "フィッシング検出を使用"
@@ -6420,6 +6526,9 @@
   },
   "whatsThis": {
     "message": "これは何ですか？"
+  },
+  "wrongChainId": {
+    "message": "このチェーンIDはネットワーク名と一致しません。"
   },
   "wrongNetworkName": {
     "message": "弊社の記録によると、ネットワーク名がこのチェーンIDと正しく一致していない可能性があります。"
