@@ -4579,13 +4579,10 @@
   "seedPhraseIntroRecommendedButtonCopy": {
     "message": "ウォレットの安全を確保 (推奨)"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "書き留めて、複数の秘密の場所に保管してください。"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "パスワードマネージャーに保存"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "セーフティボックスに保管する。"
   },
   "seedPhraseIntroSidebarCopyOne": {

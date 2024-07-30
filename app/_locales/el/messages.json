@@ -4579,13 +4579,10 @@
   "seedPhraseIntroRecommendedButtonCopy": {
     "message": "Προστατέψτε το πορτοφόλι μου (συνιστάται)"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "Γράψτε και αποθηκεύστε σε πολλά μυστικά μέρη"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Αποθήκευση σε ένα διαχειριστή κωδικών πρόσβασης"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "Αποθήκευση σε θυρίδα ασφαλείας"
   },
   "seedPhraseIntroSidebarCopyOne": {
