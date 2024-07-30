@@ -53,6 +53,34 @@ OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 aes-js
+3.0.0 <https://github.com/ricmoo/aes-js>
+The MIT License (MIT)
+
+Copyright (c) 2015 Richard Moore
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+
+******************************
+
+aes-js
 3.1.2 <https://github.com/ricmoo/aes-js>
 The MIT License (MIT)
 
@@ -2410,7 +2438,7 @@ SOFTWARE.
 ******************************
 
 @blockaid/ppom_release
-1.4.8 <>
+1.5.1 <>
 Blockaid BSL License, Version 1.0 (EPL-1.0)
 
 Licensor:  Blockaid, Inc.
@@ -10353,6 +10381,33 @@ SOFTWARE.
 
 ******************************
 
+@ethersproject/json-wallets
+5.7.0 <https://github.com/ethers-io/ethers.js>
+MIT License
+
+Copyright (c) 2019 Richard Moore
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+******************************
+
 @ethersproject/keccak256
 5.7.0 <https://github.com/ethers-io/ethers.js>
 MIT License
@@ -10631,6 +10686,33 @@ SOFTWARE.
 ******************************
 
 @ethersproject/transactions
+5.7.0 <https://github.com/ethers-io/ethers.js>
+MIT License
+
+Copyright (c) 2019 Richard Moore
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+******************************
+
+@ethersproject/wallet
 5.7.0 <https://github.com/ethers-io/ethers.js>
 MIT License
 
@@ -11535,7 +11617,7 @@ SOFTWARE.
 ******************************
 
 fast-xml-parser
-4.3.4 <https://github.com/NaturalIntelligence/fast-xml-parser>
+4.4.1 <https://github.com/NaturalIntelligence/fast-xml-parser>
 MIT License
 
 Copyright (c) 2017 Amit Kumar Gupta
