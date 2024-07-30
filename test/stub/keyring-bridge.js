@@ -1,4 +1,4 @@
-import LedgerHWAppEth from '@ledgerHQ/hw-app-eth';
+import LedgerHWAppEth from '@ledgerhq/hw-app-eth';
 
 export const KNOWN_PUBLIC_KEY =
   '02065bc80d3d12b3688e4ad5ab1e9eda6adf24aec2518bfc21b87c99d4c5077ab0';
@@ -30,6 +30,20 @@ export const KNOWN_PUBLIC_KEY_ADDRESSES = [
     index: 4,
   },
 ];
+
+const mockTransport = {
+  deviceModel: {
+    id: 'DEVICE_ID',
+  },
+  send: () =>
+    Promise.resolve(
+      Buffer.from('0x0e122670701207DB7c6d7ba9aE07868a4572dB3f'),
+      'hex',
+    ),
+  close: () => Promise.resolve(),
+  decorateAppAPIMethods: () => Promise.resolve(),
+};
+const ethApp = new LedgerHWAppEth(mockTransport);
 
 export class FakeKeyringBridge {
   #publicKeyPayload;
@@ -86,7 +100,10 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
   }
 
   async deviceSignTransaction(params) {
-    console.log('============> params', params);
-    return Promise.resolve({ v: '', r: '', s: '' });
+    const { hdPath, tx } = params;
+    console.log('============> params', hdPath, tx, mockTransport);
+    const payload = await ethApp.signTransaction(hdPath, tx);
+    // const payload = { r: '', s: '', v: '' };
+    return Promise.resolve(payload);
   }
 }
