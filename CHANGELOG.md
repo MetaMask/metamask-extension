@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.0.0]
-
 ### Added
 - Launched the initial release of the signature redesign ([#24466](https://github.com/MetaMask/metamask-extension/pull/24466))
 - Enhanced support for transaction-specific gas fee estimates ([#24222](https://github.com/MetaMask/metamask-extension/pull/24222))
@@ -113,6 +112,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Resolved a crash issue on the transaction screen due to an incorrect setting of the swap and smart transaction feature flag ([#25717](https://github.com/MetaMask/metamask-extension/pull/25717))
 - Corrected the Blockaid report URL on redesigned pages ([#25743](https://github.com/MetaMask/metamask-extension/pull/25743))
 - Fixed an issue ensuring MetaMask UI remains responsive when switching to a dApp tab on a down network ([#25425](https://github.com/MetaMask/metamask-extension/pull/25425))
+
 ## [11.16.15]
 ### Changed
 - Updates MMI packages, support for a custodian has been removed ([#25502](https://github.com/MetaMask/metamask-extension/pull/25502))
