@@ -15,6 +15,8 @@ import {
 } from '../../../shared/constants/app';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 
+/** @typedef {import('../../../shared/types/confirm').LastInteractedConfirmationInfo} LastInteractedConfirmationInfo */
+
 export default class AppStateController extends EventEmitter {
   /**
    * @param {object} opts
@@ -562,7 +564,7 @@ export default class AppStateController extends EventEmitter {
   /**
    * The function returns information about the last confirmation user interacted with
    *
-   * @returns {lastInteractedConfirmationInfo}: Information about the last confirmation user interacted with.
+   * @type {LastInteractedConfirmationInfo}: Information about the last confirmation user interacted with.
    */
   getLastInteractedConfirmationInfo() {
     return this.store.getState().lastInteractedConfirmationInfo;
@@ -571,10 +573,7 @@ export default class AppStateController extends EventEmitter {
   /**
    * Update the information about the last confirmation user interacted with
    *
-   * @param lastInteractedConfirmationInfo - information about transaction user last interacted with.
-   * @param lastInteractedConfirmationInfo.id - id of the confirmstion user last interacted with.
-   * @param lastInteractedConfirmationInfo.chainId - chainId for last interacted with confirmation.
-   * @param lastInteractedConfirmationInfo.timestamp - timestamp of when user interacted with last confirmation.
+   * @type {LastInteractedConfirmationInfo} - information about transaction user last interacted with.
    */
   setLastInteractedConfirmationInfo(lastInteractedConfirmationInfo) {
     this.store.updateState({

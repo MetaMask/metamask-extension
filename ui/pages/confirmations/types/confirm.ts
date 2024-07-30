@@ -52,9 +52,3 @@ export type ConfirmMetamaskState = {
     signatureSecurityAlertResponses?: Record<string, SecurityAlertResponse>;
   };
 };
-
-export type LastInteractedConfirmationInfo = {
-  id: string;
-  timestamp: number;
-  chainId: string;
-};
