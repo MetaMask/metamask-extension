@@ -5488,8 +5488,6 @@ export default class MetamaskController extends EventEmitter {
     // They must nevertheless be placed _behind_ the permission middleware.
     engine.push(
       createEip1193MethodMiddleware({
-        origin,
-
         subjectType,
 
         // Miscellaneous
@@ -5982,10 +5980,6 @@ export default class MetamaskController extends EventEmitter {
         setWeb3ShimUsageRecorded:
           this.alertController.setWeb3ShimUsageRecorded.bind(
             this.alertController,
-          ),
-        getNetworkConfigurationByNetworkClientId:
-          this.networkController.getNetworkConfigurationByNetworkClientId.bind(
-            this.networkController,
           ),
       }),
     );
