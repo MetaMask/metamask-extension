@@ -236,7 +236,7 @@ describe('ManifestPlugin', () => {
 
         if (args.test && hasTabsPermission) {
           it("throws in test mode when manifest already contains 'tabs' permission", () => {
-            assert(transform);
+            assert(transform, 'transform should be truthy');
             const p = () => {
               transform(manifest, 'chrome');
             };
@@ -250,7 +250,7 @@ describe('ManifestPlugin', () => {
           it(`works for args.test of ${args.test} and args.lockdown of ${
             args.lockdown
           }. Manifest: ${JSON.stringify(manifest)}`, () => {
-            assert(transform);
+            assert(transform, 'transform should be truthy');
             const transformed = transform(manifest, 'chrome');
             if (args.lockdown) {
               assert.deepStrictEqual(
@@ -262,9 +262,8 @@ describe('ManifestPlugin', () => {
               const stripped = manifest.content_scripts?.[0]?.js?.filter(
                 (js) => js !== 'lockdown.js',
               );
-              assert(transformed.content_scripts);
               assert.deepStrictEqual(
-                transformed.content_scripts[0]?.js,
+                transformed.content_scripts?.[0]?.js,
                 stripped,
                 'lockdown.js should be removed when not in lockdown mode.',
               );
