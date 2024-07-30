@@ -3,6 +3,7 @@ import { createModuleLogger, createProjectLogger } from '@metamask/utils';
 import { logger } from '@sentry/utils';
 import { AllProperties } from '../../../shared/modules/object.utils';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
+import { filterEvents } from './sentry-filter-events';
 
 const projectLogger = createProjectLogger('sentry');
 
@@ -472,18 +473,17 @@ function getClientOptions() {
   const sentryTarget = getSentryTarget();
 
   return {
-    beforeBreadcrumb: beforeBreadcrumb(getState),
-    beforeSend: (report) => rewriteReport(report, getState),
+    beforeBreadcrumb: beforeBreadcrumb(),
+    beforeSend: (report) => rewriteReport(report),
     debug: METAMASK_DEBUG,
     dsn: sentryTarget,
     environment,
     integrations: [
       Sentry.dedupeIntegration(),
       Sentry.extraErrorDataIntegration(),
+      filterEvents({ getMetaMetricsEnabled, log }),
     ],
     release: RELEASE,
-    // beforeSend: (report) => rewriteReport(report, getState),
-    // beforeBreadcrumb: beforeBreadcrumb(getState),
     // Client reports are automatically sent when a page's visibility changes to
     // "hidden", but cancelled (with an Error) that gets logged to the console.
     // Our test infra sometimes reports these errors as unexpected failures,
@@ -719,14 +719,15 @@ export function rewriteReport(report) {
     sanitizeAddressesFromErrorMessages(report);
     // modify report urls
     rewriteReportUrls(report);
+
     // append app state
-    if (getState) {
-      const appState = getState();
-      if (!report.extra) {
-        report.extra = {};
-      }
-      report.extra.appState = appState;
+    const appState = getState();
+
+    if (!report.extra) {
+      report.extra = {};
     }
+
+    report.extra.appState = appState;
   } catch (err) {
     log('Error rewriting report', err);
   }
