@@ -24,4 +24,13 @@ type Story = StoryObj<typeof PageContainerHeader>;
 
 export const Default: Story = {
   // Add any additional properties if required
+  args: {
+    title: 'Sample Title',
+    subtitle: 'Sample Subtitle',
+    showBackButton: true,
+    backButtonString: 'Back',
+    tabs: <div>Sample Tabs</div>,
+    headerCloseText: 'Close',
+    hideClose: false,
+  },
 };
