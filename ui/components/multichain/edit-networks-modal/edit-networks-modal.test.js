@@ -30,9 +30,6 @@ const render = ({
       },
       useRequestQueue: true,
     },
-    activeTab: {
-      origin,
-    },
   };
 
   const store = configureStore(state);

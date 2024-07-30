@@ -3,7 +3,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getNonTestNetworks, getTestNetworks } from '../../../selectors/index';
+import { getNonTestNetworks, getTestNetworks } from '../../../selectors';
 import {
   Modal,
   ModalOverlay,
@@ -13,7 +13,7 @@ import {
   Text,
   Box,
 } from '../../component-library';
-import { NetworkListItem } from '../index';
+import { NetworkListItem } from '..';
 
 export const EditNetworksModal = ({ onClose }) => {
   const t = useI18nContext();
@@ -39,7 +39,7 @@ export const EditNetworksModal = ({ onClose }) => {
         <Box padding={4}>
           <Checkbox
             label={t('selectAll')}
-            isChecked={true}
+            isChecked
             // onClick={() => (allAreSelected() ? deselectAll() : selectAll())}
             // isIndeterminate={isIndeterminate}
           />
@@ -52,7 +52,7 @@ export const EditNetworksModal = ({ onClose }) => {
             onClick={() => {
               console.log(network.id);
             }}
-            startAccessory={<Checkbox isChecked={true} />}
+            startAccessory={<Checkbox isChecked />}
           />
         ))}
         <Box padding={4}>
@@ -66,7 +66,7 @@ export const EditNetworksModal = ({ onClose }) => {
             onClick={() => {
               console.log(network.id);
             }}
-            startAccessory={<Checkbox isChecked={true} />}
+            startAccessory={<Checkbox isChecked />}
             showEndAccessory={false}
           />
         ))}
