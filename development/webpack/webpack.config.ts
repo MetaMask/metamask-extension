@@ -26,6 +26,7 @@ import {
   NODE_MODULES_RE,
   __HMR_READY__,
 } from './utils/helpers';
+import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
@@ -121,17 +122,7 @@ const plugins: WebpackPluginInstance[] = [
     version: version.version,
     versionName: version.versionName,
     browsers: args.browser,
-    transform: args.lockdown
-      ? undefined
-      : (browserManifest) => {
-          // remove lockdown scripts from content_scripts
-          const mainScripts = browserManifest.content_scripts?.[0];
-          if (mainScripts) {
-            const keep = ['scripts/contentscript.js', 'scripts/inpage.js'];
-            mainScripts.js = mainScripts.js?.filter((js) => keep.includes(js));
-          }
-          return browserManifest;
-        },
+    transform: transformManifest(args),
     zip: args.zip,
     ...(args.zip
       ? {

@@ -1,4 +1,4 @@
-import { extname, join } from 'node:path';
+import { extname, join } from 'node:path/posix';
 import { readFileSync } from 'node:fs';
 import {
   sources,

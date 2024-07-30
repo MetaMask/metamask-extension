@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import { describe, it, afterEach, beforeEach, mock } from 'node:test';
 import assert from 'node:assert';
+import { join } from 'node:path';
 import {
   version,
   type Chunk,
@@ -62,33 +63,33 @@ describe('./utils/helpers.ts', () => {
       'background.js': {
         chunkLoading: false,
         filename: 'background.js',
-        import: `${appRoot}/background.js`,
+        import: join(appRoot, `background.js`),
       },
       'scripts/contentscript.js': {
         chunkLoading: false,
         filename: 'scripts/contentscript.js',
-        import: `${appRoot}/scripts/contentscript.js`,
+        import: join(appRoot, `scripts/contentscript.js`),
       },
       'scripts/inpage.js': {
         chunkLoading: false,
         filename: 'scripts/inpage.js',
-        import: `${appRoot}/scripts/inpage.js`,
+        import: join(appRoot, `/scripts/inpage.js`),
       },
       'vendor/trezor/content-script.js': {
         chunkLoading: false,
         filename: 'vendor/trezor/content-script.js',
-        import: `${appRoot}/vendor/trezor/content-script.js`,
+        import: join(appRoot, `vendor/trezor/content-script.js`),
       },
       'testing.js': {
         chunkLoading: false,
         filename: 'testing.js',
-        import: '<app-root>/testing.js',
+        import: join(appRoot, `testing.js`),
       },
     };
     const expectedHtml = {
-      background: `${appRoot}/background.html`,
-      one: `${appRoot}/one.html`,
-      two: `${appRoot}/two.html`,
+      background: join(appRoot, `background.html`),
+      one: join(appRoot, `one.html`),
+      two: join(appRoot, `two.html`),
       // notice: three.not-html is NOT included, since it doesn't have an `.html` extension
     };
     const expectedEntries = { ...expectedScripts, ...expectedHtml };
@@ -152,27 +153,27 @@ describe('./utils/helpers.ts', () => {
       'scripts/contentscript.js': {
         chunkLoading: false,
         filename: 'scripts/contentscript.js',
-        import: `${appRoot}/scripts/contentscript.js`,
+        import: join(appRoot, `scripts/contentscript.js`),
       },
       'vendor/trezor/content-script.js': {
         chunkLoading: false,
         filename: 'vendor/trezor/content-script.js',
-        import: `${appRoot}/vendor/trezor/content-script.js`,
+        import: join(appRoot, `vendor/trezor/content-script.js`),
       },
       'background.js': {
         chunkLoading: false,
         filename: 'background.js',
-        import: `${appRoot}/background.js`,
+        import: join(appRoot, `background.js`),
       },
       'testing.js': {
         chunkLoading: false,
         filename: 'testing.js',
-        import: '<app-root>/testing.js',
+        import: join(appRoot, `testing.js`),
       },
     };
     const expectedHtml = {
-      one: `${appRoot}/one.html`,
-      two: `${appRoot}/two.html`,
+      one: join(appRoot, `one.html`),
+      two: join(appRoot, `two.html`),
       // notice: three.not-html is NOT included, since it doesn't have an `.html` extension
     };
     const expectedEntries = {
