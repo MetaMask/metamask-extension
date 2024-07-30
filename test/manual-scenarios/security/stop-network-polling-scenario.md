@@ -16,7 +16,7 @@ This test scenario ensures that after closing the MetaMask UI, the extension sto
 1. **Given** the user opens the MetaMask extension
 2. **And** the user navigates to the service worker dev console's network tab
 3. **When** the user observes "etherscan", "eth_call", "th_blockNumber" and "eth_getBlockByNumber" network requests
-4. **And** then closes the MetaMask UI
+4. **And** then closes the MetaMask UI while leaves dev console open
 5. **Then** no new network requests should occur after the UI is closed
 
 ## Expected Outcome
