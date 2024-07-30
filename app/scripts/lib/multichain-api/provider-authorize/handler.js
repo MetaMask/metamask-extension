@@ -196,26 +196,6 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       },
     });
 
-    // hooks.multichainMiddlewareManager.removeAllMiddlewareForDomain(origin);
-    // hooks.multichainSubscriptionManager.unsubscribeDomain(origin);
-
-    // // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
-    // // then get the subscriptionManager going for that scope
-    // Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
-    //   if (
-    //     scopeObject.notifications.includes('eth_subscription') &&
-    //     scopeObject.methods.includes('eth_subscribe')
-    //   ) {
-    //     const subscriptionManager =
-    //       hooks.multichainSubscriptionManager.subscribe(scope, origin);
-    //     hooks.multichainMiddlewareManager.addMiddleware(
-    //       scope,
-    //       origin,
-    //       subscriptionManager.middleware,
-    //     );
-    //   }
-    // });
-
     // TODO: metrics/tracking after approval
 
     res.result = {
