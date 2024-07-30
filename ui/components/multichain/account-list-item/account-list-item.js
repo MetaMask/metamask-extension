@@ -52,12 +52,12 @@ import {
   getSelectedInternalAccount,
 } from '../../../selectors';
 import {
+  getMultichainIsMainnet,
   getMultichainNativeCurrency,
   getMultichainNativeCurrencyImage,
   getMultichainNetwork,
 } from '../../../selectors/multichain';
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
-import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { ConnectedStatus } from '../connected-status/connected-status';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
@@ -91,17 +91,14 @@ export const AccountListItem = ({
     useState();
 
   const useBlockie = useSelector(getUseBlockie);
-  const { network: currentNetwork, isEvmNetwork } = useMultichainSelector(
-    getMultichainNetwork,
-    account,
-  );
+  const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
+  const isMainnet = useMultichainSelector(getMultichainIsMainnet, account);
+  const isTestnet = !isMainnet;
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
-  const showFiat =
-    !isEvmNetwork ||
-    (TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets);
+  const showFiat = isMainnet || (isTestnet && showFiatInTestnets);
   const accountTotalFiatBalances =
     useMultichainAccountTotalFiatBalance(account);
   const mappedOrderedTokenList = accountTotalFiatBalances.orderedTokenList.map(
@@ -309,9 +306,7 @@ export const AccountListItem = ({
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                 value={balanceToTranslate}
                 type={PRIMARY}
-                showFiat={
-                  !showFiat || !TEST_NETWORKS.includes(currentNetwork?.nickname)
-                }
+                showFiat={showFiat}
                 data-testid="first-currency-display"
               />
             </Text>
