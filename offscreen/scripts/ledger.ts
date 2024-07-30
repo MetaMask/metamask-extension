@@ -103,6 +103,5 @@ export default async function init() {
       resolve();
     }
     document.body.appendChild(iframe);
-    console.log('Ledger iframe added to document');
   });
 }
