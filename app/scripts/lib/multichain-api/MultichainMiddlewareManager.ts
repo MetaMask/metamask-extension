@@ -1,9 +1,19 @@
 import { JsonRpcMiddleware } from 'json-rpc-engine';
 import { Scope } from './scope';
 
+// Extend JsonRpcMiddleware to include the destroy method
+type ExtendedJsonRpcMiddleware = {
+  destroy: () => void;
+} & JsonRpcMiddleware<unknown, unknown>;
+
+type MiddlewareByScope = Record<
+  Scope,
+  ExtendedJsonRpcMiddleware | { destroy: () => void }
+>;
+
 // per scope middleware to handle legacy middleware
 export default class MultichainMiddlewareManager {
-  private middlewaresByScope: Record<Scope, { destroy: () => void }> = {};
+  private middlewaresByScope: MiddlewareByScope = {};
 
   private middlewareCountByDomainAndScope: Record<
     Scope,
@@ -53,7 +63,7 @@ export default class MultichainMiddlewareManager {
   addMiddleware(
     scope: Scope,
     domain: string,
-    middleware: JsonRpcMiddleware<unknown, unknown>,
+    middleware: ExtendedJsonRpcMiddleware,
   ) {
     this.middlewareCountByDomainAndScope[scope] =
       this.middlewareCountByDomainAndScope[scope] || {};
@@ -67,9 +77,13 @@ export default class MultichainMiddlewareManager {
 
   middleware: JsonRpcMiddleware<unknown, unknown> = (req, res, next, end) => {
     const r = req as unknown as { scope: string };
+    const middlewareFn = this.middlewaresByScope[r.scope] as JsonRpcMiddleware<
+      unknown,
+      unknown
+    >;
     if (!this.middlewaresByScope[r.scope]) {
       return next();
     }
-    return this.middlewaresByScope[r.scope](req, res, next, end);
+    return middlewareFn(req, res, next, end);
   };
 }

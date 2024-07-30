@@ -1,8 +1,4 @@
-import {
-  NetworkController,
-  NetworkControllerFindNetworkClientIdByChainIdAction,
-  NetworkControllerGetNetworkClientByIdAction,
-} from '@metamask/network-controller';
+import { NetworkController } from '@metamask/network-controller';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
 import { parseCaipChainId } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
@@ -10,14 +6,8 @@ import { Scope } from './scope';
 
 export type SubscriptionManager = {
   events: {
-    on: (
-      event: string,
-      listener: MultichainSubscriptionManager['onNotification'],
-    ) => void;
-    off: (
-      event: string,
-      listener: MultichainSubscriptionManager['onNotification'],
-    ) => void;
+    on: (event: string, listener: (message: unknown) => void) => void;
+    off: (event: string, listener: (message: unknown) => void) => void;
   };
   destroy?: () => void;
 };
@@ -33,7 +23,7 @@ type MultichainSubscriptionManagerOptions = {
 export default class MultichainSubscriptionManager extends SafeEventEmitter {
   private subscriptionsByChain: {
     [scope: string]: {
-      [domain: string]: MultichainSubscriptionManager['onNotification'];
+      [domain: string]: (message: unknown) => void;
     };
   };
 
@@ -80,11 +70,9 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
       this.subscriptionManagerByChain[scope] = subscriptionManager;
     }
     this.subscriptionsByChain[scope] = this.subscriptionsByChain[scope] || {};
-    this.subscriptionsByChain[scope][domain] = this.onNotification.bind(
-      this,
-      scope,
-      domain,
-    );
+    this.subscriptionsByChain[scope][domain] = (message) => {
+      this.onNotification(scope, domain, message);
+    };
     subscriptionManager.events.on(
       'notification',
       this.subscriptionsByChain[scope][domain],
@@ -95,7 +83,8 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
   }
 
   unsubscribe(scope: Scope, domain: string) {
-    const subscriptionManager: SubscriptionManager = this.subscriptionManagerByChain[scope];
+    const subscriptionManager: SubscriptionManager =
+      this.subscriptionManagerByChain[scope];
     if (subscriptionManager && this.subscriptionsByChain[scope][domain]) {
       subscriptionManager.events.off(
         'notification',
