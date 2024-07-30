@@ -318,8 +318,9 @@ describe('Sentry errors', function () {
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           // Verify request
-          assert(
-            JSON.stringify(mockJsonBody.exception).includes(migrationError),
+          assert.match(
+            JSON.stringify(mockJsonBody.exception),
+            RegExp(migrationError).
           );
         },
       );
