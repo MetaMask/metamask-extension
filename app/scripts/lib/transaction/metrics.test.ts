@@ -19,12 +19,10 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-///: END:ONLY_INCLUDE_IF(blockaid)
 import {
   handleTransactionAdded,
   handleTransactionApproved,
@@ -72,6 +70,12 @@ const mockTransactionMetricsRequest = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   snapAndHardwareMessenger: jest.fn() as any,
   trackEvent: jest.fn(),
+  getIsSmartTransaction: jest.fn(),
+  getSmartTransactionByMinedTxHash: jest.fn(),
+  getRedesignedConfirmationsEnabled: jest.fn(),
+  getMethodData: jest.fn(),
+  getIsRedesignedConfirmationsDeveloperEnabled: jest.fn(),
+  getIsConfirmationAdvancedDetailsOpen: jest.fn(),
 } as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {
@@ -152,6 +156,7 @@ describe('Transaction metrics', () => {
       transaction_speed_up: false,
       transaction_type: TransactionType.simpleSend,
       ui_customizations: null,
+      transaction_advanced_view: null,
     };
 
     expectedSensitiveProperties = {
@@ -605,7 +610,7 @@ describe('Transaction metrics', () => {
       mockTransactionMeta.submittedTime = 123;
 
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
-        transactionMeta: mockTransactionMeta,
+        ...mockTransactionMeta,
         actionId: mockActionId,
         // TODO: Replace `any` with type
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -663,7 +668,7 @@ describe('Transaction metrics', () => {
       mockTransactionMetaWithBlockaid.submittedTime = 123;
 
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
-        transactionMeta: mockTransactionMetaWithBlockaid,
+        ...mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
         // TODO: Replace `any` with type
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -39,8 +39,6 @@ ignores:
   - 'wait-on'
   - 'tsx' # used in .devcontainer
   - 'prettier-eslint' # used by the Prettier ESLint VSCode extension
-  # development tool
-  - 'nyc'
   # storybook
   - '@storybook/cli'
   - '@storybook/core'
@@ -62,6 +60,8 @@ ignores:
   - 'jest-environment-jsdom'
   # babel
   - '@babel/plugin-transform-logical-assignment-operators'
+  # trezor
+  - 'ts-mixer'
 
 # files depcheck should not parse
 ignorePatterns:

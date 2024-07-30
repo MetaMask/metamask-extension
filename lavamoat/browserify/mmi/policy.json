@@ -5,6 +5,11 @@
         "regeneratorRuntime": "write"
       }
     },
+    "@contentful/rich-text-html-renderer": {
+      "globals": {
+        "SuppressedError": true
+      }
+    },
     "@ensdomains/content-hash": {
       "globals": {
         "console.warn": true
@@ -108,28 +113,28 @@
         "browserify>util": true
       }
     },
-    "@ethereumjs/common": {
-      "packages": {
-        "@ethereumjs/common>crc-32": true,
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "browserify>buffer": true,
-        "webpack>events": true
-      }
-    },
-    "@ethereumjs/common>crc-32": {
-      "globals": {
-        "DO_NOT_EXPORT_CRC": true,
-        "define": true
-      }
-    },
     "@ethereumjs/tx": {
       "packages": {
-        "@ethereumjs/common": true,
+        "@ethereumjs/tx>@ethereumjs/common": true,
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true
+      }
+    },
+    "@ethereumjs/tx>@ethereumjs/common": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/common>crc-32": true,
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "browserify>buffer": true,
+        "webpack>events": true
+      }
+    },
+    "@ethereumjs/tx>@ethereumjs/common>crc-32": {
+      "globals": {
+        "DO_NOT_EXPORT_CRC": true,
+        "define": true
       }
     },
     "@ethereumjs/tx>@ethereumjs/rlp": {
@@ -220,28 +225,23 @@
       },
       "packages": {
         "@ethersproject/abi>@ethersproject/address": true,
-        "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/constants": true,
-        "@ethersproject/abi>@ethersproject/hash": true,
         "@ethersproject/abi>@ethersproject/keccak256": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
         "@ethersproject/abi>@ethersproject/strings": true,
-        "@ethersproject/bignumber": true
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bytes": true,
+        "@ethersproject/hash": true
       }
     },
     "@ethersproject/abi>@ethersproject/address": {
       "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/keccak256": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/bignumber": true,
+        "@ethersproject/bytes": true,
         "@ethersproject/providers>@ethersproject/rlp": true
-      }
-    },
-    "@ethersproject/abi>@ethersproject/bytes": {
-      "packages": {
-        "@ethersproject/abi>@ethersproject/logger": true
       }
     },
     "@ethersproject/abi>@ethersproject/constants": {
@@ -249,21 +249,9 @@
         "@ethersproject/bignumber": true
       }
     },
-    "@ethersproject/abi>@ethersproject/hash": {
-      "packages": {
-        "@ethersproject/abi>@ethersproject/address": true,
-        "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/abi>@ethersproject/keccak256": true,
-        "@ethersproject/abi>@ethersproject/logger": true,
-        "@ethersproject/abi>@ethersproject/properties": true,
-        "@ethersproject/abi>@ethersproject/strings": true,
-        "@ethersproject/bignumber": true,
-        "@ethersproject/providers>@ethersproject/base64": true
-      }
-    },
     "@ethersproject/abi>@ethersproject/keccak256": {
       "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
+        "@ethersproject/bytes": true,
         "@metamask/ethjs>js-sha3": true
       }
     },
@@ -279,16 +267,21 @@
     },
     "@ethersproject/abi>@ethersproject/strings": {
       "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/constants": true,
-        "@ethersproject/abi>@ethersproject/logger": true
+        "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/bytes": true
       }
     },
     "@ethersproject/bignumber": {
       "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/bytes": true,
         "bn.js": true
+      }
+    },
+    "@ethersproject/bytes": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/logger": true
       }
     },
     "@ethersproject/contracts": {
@@ -298,22 +291,49 @@
       "packages": {
         "@ethersproject/abi": true,
         "@ethersproject/abi>@ethersproject/address": true,
-        "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
         "@ethersproject/bignumber": true,
-        "@ethersproject/hdnode>@ethersproject/abstract-signer": true,
+        "@ethersproject/bytes": true,
+        "@ethersproject/hash>@ethersproject/abstract-signer": true,
         "@ethersproject/hdnode>@ethersproject/transactions": true,
-        "@metamask/test-bundler>@ethersproject/abstract-provider": true
+        "@ethersproject/wallet>@ethersproject/abstract-provider": true
       }
     },
-    "@ethersproject/hdnode": {
+    "@ethersproject/hash": {
       "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
+        "@ethersproject/abi>@ethersproject/address": true,
+        "@ethersproject/abi>@ethersproject/keccak256": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
         "@ethersproject/abi>@ethersproject/strings": true,
         "@ethersproject/bignumber": true,
+        "@ethersproject/bytes": true,
+        "@ethersproject/hash>@ethersproject/base64": true
+      }
+    },
+    "@ethersproject/hash>@ethersproject/abstract-signer": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/abi>@ethersproject/properties": true
+      }
+    },
+    "@ethersproject/hash>@ethersproject/base64": {
+      "globals": {
+        "atob": true,
+        "btoa": true
+      },
+      "packages": {
+        "@ethersproject/bytes": true
+      }
+    },
+    "@ethersproject/hdnode": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/abi>@ethersproject/properties": true,
+        "@ethersproject/abi>@ethersproject/strings": true,
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bytes": true,
         "@ethersproject/hdnode>@ethersproject/basex": true,
         "@ethersproject/hdnode>@ethersproject/pbkdf2": true,
         "@ethersproject/hdnode>@ethersproject/sha2": true,
@@ -322,59 +342,53 @@
         "@ethersproject/hdnode>@ethersproject/wordlists": true
       }
     },
-    "@ethersproject/hdnode>@ethersproject/abstract-signer": {
-      "packages": {
-        "@ethersproject/abi>@ethersproject/logger": true,
-        "@ethersproject/abi>@ethersproject/properties": true
-      }
-    },
     "@ethersproject/hdnode>@ethersproject/basex": {
       "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/abi>@ethersproject/properties": true
+        "@ethersproject/abi>@ethersproject/properties": true,
+        "@ethersproject/bytes": true
       }
     },
     "@ethersproject/hdnode>@ethersproject/pbkdf2": {
       "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
+        "@ethersproject/bytes": true,
         "@ethersproject/hdnode>@ethersproject/sha2": true
       }
     },
     "@ethersproject/hdnode>@ethersproject/sha2": {
       "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/bytes": true,
         "ethereumjs-util>ethereum-cryptography>hash.js": true
       }
     },
     "@ethersproject/hdnode>@ethersproject/signing-key": {
       "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
+        "@ethersproject/bytes": true,
         "@metamask/ppom-validator>elliptic": true
       }
     },
     "@ethersproject/hdnode>@ethersproject/transactions": {
       "packages": {
         "@ethersproject/abi>@ethersproject/address": true,
-        "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/constants": true,
         "@ethersproject/abi>@ethersproject/keccak256": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
         "@ethersproject/bignumber": true,
+        "@ethersproject/bytes": true,
         "@ethersproject/hdnode>@ethersproject/signing-key": true,
         "@ethersproject/providers>@ethersproject/rlp": true
       }
     },
     "@ethersproject/hdnode>@ethersproject/wordlists": {
       "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/abi>@ethersproject/hash": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
-        "@ethersproject/abi>@ethersproject/strings": true
+        "@ethersproject/abi>@ethersproject/strings": true,
+        "@ethersproject/bytes": true,
+        "@ethersproject/hash": true
       }
     },
     "@ethersproject/providers": {
@@ -389,47 +403,34 @@
       },
       "packages": {
         "@ethersproject/abi>@ethersproject/address": true,
-        "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/constants": true,
-        "@ethersproject/abi>@ethersproject/hash": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
         "@ethersproject/abi>@ethersproject/strings": true,
         "@ethersproject/bignumber": true,
-        "@ethersproject/hdnode>@ethersproject/abstract-signer": true,
+        "@ethersproject/bytes": true,
+        "@ethersproject/hash": true,
+        "@ethersproject/hash>@ethersproject/abstract-signer": true,
+        "@ethersproject/hash>@ethersproject/base64": true,
         "@ethersproject/hdnode>@ethersproject/basex": true,
         "@ethersproject/hdnode>@ethersproject/sha2": true,
         "@ethersproject/hdnode>@ethersproject/transactions": true,
-        "@ethersproject/providers>@ethersproject/base64": true,
-        "@ethersproject/providers>@ethersproject/random": true,
         "@ethersproject/providers>@ethersproject/web": true,
         "@ethersproject/providers>bech32": true,
-        "@metamask/test-bundler>@ethersproject/abstract-provider": true,
+        "@ethersproject/wallet>@ethersproject/abstract-provider": true,
+        "@ethersproject/wallet>@ethersproject/random": true,
         "@metamask/test-bundler>@ethersproject/networks": true
-      }
-    },
-    "@ethersproject/providers>@ethersproject/base64": {
-      "globals": {
-        "atob": true,
-        "btoa": true
-      },
-      "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true
       }
     },
     "@ethersproject/providers>@ethersproject/random": {
       "globals": {
         "crypto.getRandomValues": true
-      },
-      "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/abi>@ethersproject/logger": true
       }
     },
     "@ethersproject/providers>@ethersproject/rlp": {
       "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/abi>@ethersproject/logger": true
+        "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/bytes": true
       }
     },
     "@ethersproject/providers>@ethersproject/web": {
@@ -439,11 +440,63 @@
         "setTimeout": true
       },
       "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
         "@ethersproject/abi>@ethersproject/strings": true,
-        "@ethersproject/providers>@ethersproject/base64": true
+        "@ethersproject/bytes": true,
+        "@ethersproject/hash>@ethersproject/base64": true
+      }
+    },
+    "@ethersproject/wallet": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/address": true,
+        "@ethersproject/abi>@ethersproject/keccak256": true,
+        "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/abi>@ethersproject/properties": true,
+        "@ethersproject/bytes": true,
+        "@ethersproject/hash": true,
+        "@ethersproject/hash>@ethersproject/abstract-signer": true,
+        "@ethersproject/hdnode": true,
+        "@ethersproject/hdnode>@ethersproject/signing-key": true,
+        "@ethersproject/hdnode>@ethersproject/transactions": true,
+        "@ethersproject/wallet>@ethersproject/abstract-provider": true,
+        "@ethersproject/wallet>@ethersproject/json-wallets": true,
+        "@ethersproject/wallet>@ethersproject/random": true
+      }
+    },
+    "@ethersproject/wallet>@ethersproject/abstract-provider": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/abi>@ethersproject/properties": true,
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bytes": true
+      }
+    },
+    "@ethersproject/wallet>@ethersproject/json-wallets": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/address": true,
+        "@ethersproject/abi>@ethersproject/keccak256": true,
+        "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/abi>@ethersproject/properties": true,
+        "@ethersproject/abi>@ethersproject/strings": true,
+        "@ethersproject/bytes": true,
+        "@ethersproject/hdnode": true,
+        "@ethersproject/hdnode>@ethersproject/pbkdf2": true,
+        "@ethersproject/hdnode>@ethersproject/transactions": true,
+        "@ethersproject/wallet>@ethersproject/json-wallets>aes-js": true,
+        "@ethersproject/wallet>@ethersproject/random": true,
+        "ethereumjs-util>ethereum-cryptography>scrypt-js": true
+      }
+    },
+    "@ethersproject/wallet>@ethersproject/json-wallets>aes-js": {
+      "globals": {
+        "define": true
+      }
+    },
+    "@ethersproject/wallet>@ethersproject/random": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/bytes": true
       }
     },
     "@keystonehq/bc-ur-registry-eth": {
@@ -473,8 +526,8 @@
         "@keystonehq/bc-ur-registry-eth": true,
         "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring": true,
         "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store": true,
-        "@keystonehq/metamask-airgapped-keyring>rlp": true,
         "browserify>buffer": true,
+        "ethereumjs-util>rlp": true,
         "uuid": true,
         "webpack>events": true
       }
@@ -484,10 +537,15 @@
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@keystonehq/bc-ur-registry-eth": true,
+        "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>rlp": true,
         "@metamask/eth-trezor-keyring>hdkey": true,
         "browserify>buffer": true,
-        "eth-lattice-keyring>rlp": true,
         "uuid": true
+      }
+    },
+    "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>rlp": {
+      "globals": {
+        "TextEncoder": true
       }
     },
     "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store": {
@@ -507,16 +565,35 @@
     },
     "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store>through2": {
       "packages": {
+        "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store>through2>readable-stream": true,
         "browserify>process": true,
         "browserify>util": true,
-        "readable-stream": true,
         "watchify>xtend": true
       }
     },
-    "@keystonehq/metamask-airgapped-keyring>rlp": {
+    "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store>through2>readable-stream": {
       "packages": {
-        "bn.js": true,
+        "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store>through2>readable-stream>isarray": true,
+        "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store>through2>readable-stream>safe-buffer": true,
+        "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store>through2>readable-stream>string_decoder": true,
+        "browserify>browser-resolve": true,
+        "browserify>process": true,
+        "browserify>timers-browserify": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
+      }
+    },
+    "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store>through2>readable-stream>safe-buffer": {
+      "packages": {
         "browserify>buffer": true
+      }
+    },
+    "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store>through2>readable-stream>string_decoder": {
+      "packages": {
+        "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store>through2>readable-stream>safe-buffer": true
       }
     },
     "@lavamoat/lavadome-react": {
@@ -718,6 +795,7 @@
     },
     "@metamask-institutional/custody-keyring": {
       "globals": {
+        "console.error": true,
         "console.log": true,
         "console.warn": true
       },
@@ -725,7 +803,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask-institutional/custody-keyring>@metamask-institutional/configuration-client": true,
         "@metamask-institutional/sdk": true,
-        "@metamask-institutional/sdk>@metamask-institutional/types": true,
+        "@metamask-institutional/types": true,
         "@metamask/obs-store": true,
         "browserify>crypto-browserify": true,
         "gulp-sass>lodash.clonedeep": true,
@@ -745,7 +823,7 @@
       "packages": {
         "@metamask-institutional/custody-controller": true,
         "@metamask-institutional/sdk": true,
-        "@metamask-institutional/sdk>@metamask-institutional/types": true,
+        "@metamask-institutional/types": true,
         "gulp-sass>lodash.clonedeep": true
       }
     },
@@ -755,65 +833,23 @@
         "@metamask/obs-store": true
       }
     },
-    "@metamask-institutional/portfolio-dashboard": {
+    "@metamask-institutional/rpc-allowlist": {
       "globals": {
-        "console.log": true,
-        "fetch": true
+        "URL": true
       }
     },
     "@metamask-institutional/sdk": {
       "globals": {
         "URLSearchParams": true,
         "console.debug": true,
+        "console.error": true,
         "console.log": true,
-        "console.warn": true,
         "fetch": true
       },
       "packages": {
         "@metamask-institutional/sdk>@metamask-institutional/simplecache": true,
-        "@metamask-institutional/sdk>jsonwebtoken": true,
         "browserify>crypto-browserify": true,
         "webpack>events": true
-      }
-    },
-    "@metamask-institutional/sdk>jsonwebtoken": {
-      "packages": {
-        "@metamask-institutional/sdk>jsonwebtoken>jws": true,
-        "browserify>buffer": true,
-        "browserify>crypto-browserify": true,
-        "browserify>process": true,
-        "lodash": true,
-        "mocha>ms": true,
-        "semver": true
-      }
-    },
-    "@metamask-institutional/sdk>jsonwebtoken>jws": {
-      "packages": {
-        "@metamask-institutional/sdk>jsonwebtoken>jws>jwa": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>util": true,
-        "koa>content-disposition>safe-buffer": true,
-        "stream-browserify": true
-      }
-    },
-    "@metamask-institutional/sdk>jsonwebtoken>jws>jwa": {
-      "packages": {
-        "@metamask-institutional/sdk>jsonwebtoken>jws>jwa>buffer-equal-constant-time": true,
-        "@metamask-institutional/sdk>jsonwebtoken>jws>jwa>ecdsa-sig-formatter": true,
-        "browserify>crypto-browserify": true,
-        "browserify>util": true,
-        "koa>content-disposition>safe-buffer": true
-      }
-    },
-    "@metamask-institutional/sdk>jsonwebtoken>jws>jwa>buffer-equal-constant-time": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "@metamask-institutional/sdk>jsonwebtoken>jws>jwa>ecdsa-sig-formatter": {
-      "packages": {
-        "koa>content-disposition>safe-buffer": true
       }
     },
     "@metamask-institutional/transaction-update": {
@@ -824,10 +860,10 @@
         "setInterval": true
       },
       "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask-institutional/sdk": true,
         "@metamask-institutional/transaction-update>@metamask-institutional/websocket-client": true,
         "@metamask/obs-store": true,
-        "ethereumjs-util": true,
         "webpack>events": true
       }
     },
@@ -852,11 +888,20 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/base-controller": true,
+        "@metamask/accounts-controller>@metamask/base-controller": true,
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
+        "@metamask/utils": true,
         "uuid": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/address-book-controller": {
@@ -889,6 +934,9 @@
       }
     },
     "@metamask/announcement-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
       "packages": {
         "immer": true
       }
@@ -900,7 +948,7 @@
       "packages": {
         "@metamask/approval-controller>@metamask/base-controller": true,
         "@metamask/approval-controller>nanoid": true,
-        "@metamask/providers>@metamask/rpc-errors": true
+        "@metamask/rpc-errors": true
       }
     },
     "@metamask/approval-controller>@metamask/base-controller": {
@@ -921,6 +969,7 @@
         "AbortController": true,
         "Headers": true,
         "URL": true,
+        "URLSearchParams": true,
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
@@ -934,22 +983,29 @@
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/abi-utils": true,
+        "@metamask/assets-controllers>@metamask/base-controller": true,
         "@metamask/assets-controllers>@metamask/controller-utils": true,
-        "@metamask/assets-controllers>@metamask/metamask-eth-abis": true,
         "@metamask/assets-controllers>@metamask/polling-controller": true,
+        "@metamask/assets-controllers>@metamask/utils": true,
         "@metamask/assets-controllers>cockatiel": true,
         "@metamask/assets-controllers>multiformats": true,
-        "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/eth-query": true,
+        "@metamask/metamask-eth-abis": true,
         "@metamask/name-controller>async-mutex": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/utils": true,
+        "@metamask/rpc-errors": true,
         "bn.js": true,
         "lodash": true,
         "single-call-balance-checker-abi": true,
-        "uuid": true,
-        "webpack>events": true
+        "uuid": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/assets-controllers>@metamask/controller-utils": {
@@ -961,9 +1017,9 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/assets-controllers>@metamask/utils": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
@@ -977,9 +1033,24 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/base-controller": true,
+        "@metamask/assets-controllers>@metamask/base-controller": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "uuid": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/assets-controllers>cockatiel": {
@@ -1051,7 +1122,8 @@
         "console.log": true
       },
       "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": true
+        "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": true,
+        "@noble/hashes": true
       }
     },
     "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": {
@@ -1081,11 +1153,18 @@
     "@metamask/ens-controller": {
       "packages": {
         "@ethersproject/providers": true,
-        "@metamask/base-controller": true,
+        "@metamask/ens-controller>@metamask/base-controller": true,
         "@metamask/ens-controller>@metamask/controller-utils": true,
         "@metamask/utils": true,
-        "ethereum-ens-network-map": true,
         "punycode": true
+      }
+    },
+    "@metamask/ens-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/ens-controller>@metamask/controller-utils": {
@@ -1098,12 +1177,27 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/ens-controller>@metamask/controller-utils>@metamask/utils": true,
         "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true
+      }
+    },
+    "@metamask/ens-controller>@metamask/controller-utils>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/eth-json-rpc-filters": {
@@ -1112,8 +1206,8 @@
       },
       "packages": {
         "@metamask/eth-json-rpc-filters>@metamask/eth-query": true,
-        "@metamask/name-controller>async-mutex": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
+        "@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine": true,
+        "@metamask/eth-json-rpc-filters>async-mutex": true,
         "@metamask/safe-event-emitter": true,
         "pify": true
       }
@@ -1124,6 +1218,21 @@
         "watchify>xtend": true
       }
     },
+    "@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/eth-json-rpc-filters>async-mutex": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "@trezor/connect-web>tslib": true
+      }
+    },
     "@metamask/eth-json-rpc-middleware": {
       "globals": {
         "URL": true,
@@ -1131,10 +1240,10 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/eth-json-rpc-middleware>@metamask/json-rpc-engine": true,
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "pify": true,
         "sass-loader>klona": true
@@ -1142,39 +1251,22 @@
     },
     "@metamask/eth-json-rpc-middleware>@metamask/eth-json-rpc-provider": {
       "packages": {
-        "@metamask/providers>@metamask/json-rpc-engine": true,
+        "@metamask/eth-json-rpc-middleware>@metamask/eth-json-rpc-provider>@metamask/json-rpc-engine": true,
         "@metamask/safe-event-emitter": true
       }
     },
-    "@metamask/eth-keyring-controller": {
-      "globals": {
-        "console.error": true
-      },
+    "@metamask/eth-json-rpc-middleware>@metamask/eth-json-rpc-provider>@metamask/json-rpc-engine": {
       "packages": {
-        "@metamask/browser-passworder": true,
-        "@metamask/eth-keyring-controller>@metamask/obs-store": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-hd-keyring": true,
-        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
-        "webpack>events": true
+        "@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true
       }
     },
-    "@metamask/eth-keyring-controller>@metamask/obs-store": {
+    "@metamask/eth-json-rpc-middleware>@metamask/json-rpc-engine": {
       "packages": {
-        "@metamask/eth-keyring-controller>@metamask/obs-store>readable-stream": true,
-        "@metamask/safe-event-emitter": true
-      }
-    },
-    "@metamask/eth-keyring-controller>@metamask/obs-store>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
+        "@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring": {
@@ -1234,23 +1326,17 @@
     },
     "@metamask/eth-snap-keyring": {
       "globals": {
+        "URL": true,
         "console.error": true
       },
       "packages": {
         "@ethereumjs/tx": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/eth-snap-keyring>@metamask/keyring-api": true,
         "@metamask/eth-snap-keyring>uuid": true,
+        "@metamask/keyring-api": true,
         "@metamask/utils": true,
         "superstruct": true,
         "webpack>events": true
-      }
-    },
-    "@metamask/eth-snap-keyring>@metamask/keyring-api": {
-      "packages": {
-        "@metamask/eth-snap-keyring>uuid": true,
-        "@metamask/utils": true,
-        "superstruct": true
       }
     },
     "@metamask/eth-snap-keyring>uuid": {
@@ -1264,13 +1350,26 @@
       },
       "packages": {
         "@babel/runtime": true,
+        "@metamask/eth-token-tracker>@metamask/eth-block-tracker": true,
         "@metamask/eth-token-tracker>deep-equal": true,
-        "@metamask/eth-token-tracker>eth-block-tracker": true,
         "@metamask/ethjs-contract": true,
         "@metamask/ethjs-query": true,
         "@metamask/safe-event-emitter": true,
         "bn.js": true,
         "human-standard-token-abi": true
+      }
+    },
+    "@metamask/eth-token-tracker>@metamask/eth-block-tracker": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/eth-query>json-rpc-random-id": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true,
+        "pify": true
       }
     },
     "@metamask/eth-token-tracker>deep-equal": {
@@ -1361,19 +1460,6 @@
         "string.prototype.matchall>get-intrinsic": true
       }
     },
-    "@metamask/eth-token-tracker>eth-block-tracker": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/eth-query>json-rpc-random-id": true,
-        "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true,
-        "pify": true
-      }
-    },
     "@metamask/eth-trezor-keyring": {
       "globals": {
         "setTimeout": true
@@ -1382,8 +1468,8 @@
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web": true,
         "@metamask/eth-trezor-keyring>hdkey": true,
-        "@trezor/connect-web": true,
         "browserify>buffer": true,
         "webpack>events": true
       }
@@ -1392,6 +1478,37 @@
       "packages": {
         "@metamask/eth-sig-util": true,
         "@trezor/connect-web>tslib": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web": {
+      "globals": {
+        "URLSearchParams": true,
+        "__TREZOR_CONNECT_SRC": true,
+        "addEventListener": true,
+        "btoa": true,
+        "chrome": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.warn": true,
+        "document.body": true,
+        "document.createElement": true,
+        "document.createTextNode": true,
+        "document.getElementById": true,
+        "document.querySelectorAll": true,
+        "location": true,
+        "navigator": true,
+        "open": true,
+        "origin": true,
+        "removeEventListener": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@trezor/connect-web>@trezor/connect": true,
+        "@trezor/connect-web>@trezor/connect-common": true,
+        "@trezor/connect-web>@trezor/utils": true,
+        "@trezor/connect-web>tslib": true,
+        "webpack>events": true
       }
     },
     "@metamask/eth-trezor-keyring>hdkey": {
@@ -1530,12 +1647,44 @@
         "setInterval": true
       },
       "packages": {
-        "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
-        "@metamask/ethjs>@metamask/ethjs-unit": true,
+        "@metamask/gas-fee-controller>@metamask/controller-utils": true,
         "@metamask/gas-fee-controller>@metamask/polling-controller": true,
         "bn.js": true,
         "uuid": true
+      }
+    },
+    "@metamask/gas-fee-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/ethjs>@metamask/ethjs-unit": true,
+        "@metamask/gas-fee-controller>@metamask/controller-utils>@metamask/utils": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true
+      }
+    },
+    "@metamask/gas-fee-controller>@metamask/controller-utils>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/gas-fee-controller>@metamask/polling-controller": {
@@ -1591,7 +1740,11 @@
       }
     },
     "@metamask/keyring-api": {
+      "globals": {
+        "URL": true
+      },
       "packages": {
+        "@metamask/keyring-api>bech32": true,
         "@metamask/keyring-api>uuid": true,
         "@metamask/utils": true,
         "superstruct": true
@@ -1605,14 +1758,22 @@
     "@metamask/keyring-controller": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/base-controller": true,
         "@metamask/browser-passworder": true,
         "@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller>@metamask/base-controller": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
+        "@metamask/keyring-controller>@metamask/utils": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "@metamask/name-controller>async-mutex": true,
-        "@metamask/utils": true
+        "@metamask/name-controller>async-mutex": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-hd-keyring": {
@@ -1636,6 +1797,21 @@
         "@metamask/utils": true,
         "browserify>buffer": true,
         "mocha>serialize-javascript>randombytes": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/keyring-controller>ethereumjs-wallet": {
@@ -1668,18 +1844,12 @@
     "@metamask/keyring-controller>ethereumjs-wallet>ethereumjs-util": {
       "packages": {
         "@metamask/keyring-controller>ethereumjs-wallet>ethereum-cryptography": true,
-        "@metamask/keyring-controller>ethereumjs-wallet>ethereumjs-util>rlp": true,
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true,
-        "ethereumjs-util>create-hash": true
-      }
-    },
-    "@metamask/keyring-controller>ethereumjs-wallet>ethereumjs-util>rlp": {
-      "packages": {
-        "bn.js": true,
-        "browserify>buffer": true
+        "ethereumjs-util>create-hash": true,
+        "ethereumjs-util>rlp": true
       }
     },
     "@metamask/logging-controller": {
@@ -1704,14 +1874,22 @@
     },
     "@metamask/message-manager": {
       "packages": {
-        "@metamask/base-controller": true,
         "@metamask/eth-sig-util": true,
+        "@metamask/message-manager>@metamask/base-controller": true,
         "@metamask/message-manager>@metamask/controller-utils": true,
         "@metamask/message-manager>jsonschema": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
         "uuid": true,
         "webpack>events": true
+      }
+    },
+    "@metamask/message-manager>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/message-manager>@metamask/controller-utils": {
@@ -1750,13 +1928,56 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/base-controller": true,
+        "@metamask/name-controller>@metamask/base-controller": true,
+        "@metamask/name-controller>@metamask/controller-utils": true,
         "@metamask/name-controller>async-mutex": true,
         "@metamask/utils": true
       }
     },
+    "@metamask/name-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
+      }
+    },
+    "@metamask/name-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/ethjs>@metamask/ethjs-unit": true,
+        "@metamask/name-controller>@metamask/controller-utils>@metamask/utils": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true
+      }
+    },
+    "@metamask/name-controller>@metamask/controller-utils>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
+      }
+    },
     "@metamask/name-controller>async-mutex": {
       "globals": {
+        "clearTimeout": true,
         "setTimeout": true
       },
       "packages": {
@@ -1771,16 +1992,16 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/controller-utils": true,
         "@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-query": true,
-        "@metamask/eth-token-tracker>eth-block-tracker": true,
+        "@metamask/eth-token-tracker>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/base-controller": true,
+        "@metamask/network-controller>@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
-        "@metamask/network-controller>@metamask/json-rpc-engine": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/utils": true,
         "browserify>assert": true,
         "uuid": true
@@ -1794,56 +2015,71 @@
         "immer": true
       }
     },
+    "@metamask/network-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/ethjs>@metamask/ethjs-unit": true,
+        "@metamask/network-controller>@metamask/controller-utils>@metamask/utils": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true
+      }
+    },
+    "@metamask/network-controller>@metamask/controller-utils>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
+      }
+    },
     "@metamask/network-controller>@metamask/eth-json-rpc-infura": {
       "globals": {
         "setTimeout": true
       },
       "packages": {
         "@metamask/eth-json-rpc-middleware>@metamask/eth-json-rpc-provider": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/json-rpc-engine": true,
+        "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "node-fetch": true
       }
     },
-    "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
+    "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/json-rpc-engine": {
       "packages": {
-        "@metamask/network-controller>@metamask/json-rpc-engine": true,
-        "@metamask/safe-event-emitter": true
-      }
-    },
-    "@metamask/network-controller>@metamask/json-rpc-engine": {
-      "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true
       }
     },
+    "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
+      "packages": {
+        "@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
+        "uuid": true
+      }
+    },
     "@metamask/notification-controller": {
       "packages": {
-        "@metamask/notification-controller>@metamask/base-controller": true,
-        "@metamask/notification-controller>@metamask/utils": true,
-        "@metamask/notification-controller>nanoid": true
-      }
-    },
-    "@metamask/notification-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/notification-controller>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
+        "@metamask/base-controller": true,
+        "@metamask/notification-controller>nanoid": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/notification-controller>nanoid": {
@@ -1851,27 +2087,24 @@
         "crypto.getRandomValues": true
       }
     },
-    "@metamask/obs-store": {
-      "packages": {
-        "@metamask/obs-store>@metamask/safe-event-emitter": true,
-        "@metamask/obs-store>through2": true,
-        "stream-browserify": true
-      }
-    },
-    "@metamask/obs-store>@metamask/safe-event-emitter": {
+    "@metamask/object-multiplex": {
       "globals": {
-        "setTimeout": true
+        "console.warn": true
       },
       "packages": {
-        "webpack>events": true
+        "@metamask/object-multiplex>once": true,
+        "readable-stream": true
       }
     },
-    "@metamask/obs-store>through2": {
+    "@metamask/object-multiplex>once": {
       "packages": {
-        "browserify>process": true,
-        "browserify>util": true,
-        "readable-stream": true,
-        "watchify>xtend": true
+        "@metamask/object-multiplex>once>wrappy": true
+      }
+    },
+    "@metamask/obs-store": {
+      "packages": {
+        "@metamask/safe-event-emitter": true,
+        "readable-stream": true
       }
     },
     "@metamask/permission-controller": {
@@ -1879,11 +2112,11 @@
         "console.error": true
       },
       "packages": {
-        "@metamask/controller-utils": true,
         "@metamask/permission-controller>@metamask/base-controller": true,
-        "@metamask/permission-controller>@metamask/json-rpc-engine": true,
+        "@metamask/permission-controller>@metamask/controller-utils": true,
         "@metamask/permission-controller>nanoid": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/utils": true,
         "deep-freeze-strict": true,
         "immer": true
@@ -1897,11 +2130,37 @@
         "immer": true
       }
     },
-    "@metamask/permission-controller>@metamask/json-rpc-engine": {
+    "@metamask/permission-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
       "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/ethjs>@metamask/ethjs-unit": true,
+        "@metamask/permission-controller>@metamask/controller-utils>@metamask/utils": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true
+      }
+    },
+    "@metamask/permission-controller>@metamask/controller-utils>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/permission-controller>nanoid": {
@@ -1921,27 +2180,9 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/phishing-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/phishing-warning>eth-phishing-detect": true,
         "punycode": true
-      }
-    },
-    "@metamask/phishing-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true
       }
     },
     "@metamask/phishing-warning>eth-phishing-detect": {
@@ -1961,19 +2202,8 @@
         "removeEventListener": true
       },
       "packages": {
-        "@metamask/post-message-stream>readable-stream": true,
-        "@metamask/utils": true
-      }
-    },
-    "@metamask/post-message-stream>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
+        "@metamask/utils": true,
+        "readable-stream": true
       }
     },
     "@metamask/ppom-validator": {
@@ -2055,44 +2285,12 @@
         "ethereumjs-util>ethereum-cryptography>hash.js": true
       }
     },
-    "@metamask/providers>@metamask/json-rpc-engine": {
-      "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true
-      }
-    },
-    "@metamask/providers>@metamask/object-multiplex": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@metamask/providers>@metamask/object-multiplex>readable-stream": true,
-        "pump>once": true
-      }
-    },
-    "@metamask/providers>@metamask/object-multiplex>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
-      }
-    },
-    "@metamask/providers>@metamask/rpc-errors": {
-      "packages": {
-        "@metamask/utils": true,
-        "eth-rpc-errors>fast-safe-stringify": true
-      }
-    },
     "@metamask/queued-request-controller": {
       "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/queued-request-controller>@metamask/base-controller": true,
-        "@metamask/queued-request-controller>@metamask/json-rpc-engine": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/selected-network-controller": true,
+        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/utils": true
       }
     },
@@ -2104,28 +2302,35 @@
         "immer": true
       }
     },
-    "@metamask/queued-request-controller>@metamask/json-rpc-engine": {
-      "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true
-      }
-    },
     "@metamask/rate-limit-controller": {
       "globals": {
         "setTimeout": true
       },
       "packages": {
-        "@metamask/rate-limit-controller>@metamask/base-controller": true,
-        "eth-rpc-errors": true
+        "@metamask/base-controller": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true
       }
     },
-    "@metamask/rate-limit-controller>@metamask/base-controller": {
+    "@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>@metamask/utils": true,
+        "eth-rpc-errors>fast-safe-stringify": true
+      }
+    },
+    "@metamask/rpc-errors>@metamask/utils": {
       "globals": {
-        "setTimeout": true
+        "TextDecoder": true,
+        "TextEncoder": true
       },
       "packages": {
-        "immer": true
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/rpc-methods-flask>nanoid": {
@@ -2163,8 +2368,16 @@
     },
     "@metamask/selected-network-controller": {
       "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/network-controller>@metamask/swappable-obj-proxy": true
+        "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
+        "@metamask/selected-network-controller>@metamask/base-controller": true
+      }
+    },
+    "@metamask/selected-network-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/signature-controller": {
@@ -2174,11 +2387,11 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/logging-controller": true,
-        "@metamask/message-manager": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/signature-controller>@metamask/controller-utils": true,
+        "@metamask/signature-controller>@metamask/message-manager": true,
+        "@metamask/utils": true,
         "browserify>buffer": true,
-        "ethereumjs-util": true,
         "lodash": true,
         "webpack>events": true
       }
@@ -2201,6 +2414,18 @@
         "eth-ens-namehash": true
       }
     },
+    "@metamask/signature-controller>@metamask/message-manager": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/message-manager>jsonschema": true,
+        "@metamask/signature-controller>@metamask/controller-utils": true,
+        "@metamask/utils": true,
+        "browserify>buffer": true,
+        "uuid": true,
+        "webpack>events": true
+      }
+    },
     "@metamask/smart-transactions-controller": {
       "globals": {
         "URLSearchParams": true,
@@ -2211,14 +2436,58 @@
         "setInterval": true
       },
       "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/bignumber": true,
-        "@ethersproject/providers": true,
-        "@metamask/smart-transactions-controller>@metamask/base-controller": true,
+        "@ethersproject/bytes": true,
+        "@metamask/eth-query": true,
+        "@metamask/gas-fee-controller>@metamask/polling-controller": true,
+        "@metamask/smart-transactions-controller>@ethereumjs/tx": true,
+        "@metamask/smart-transactions-controller>@ethereumjs/util": true,
         "@metamask/smart-transactions-controller>@metamask/controller-utils": true,
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
+        "browserify>buffer": true,
         "fast-json-patch": true,
-        "lodash": true
+        "lodash": true,
+        "webpack>events": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@babel/runtime": {
+      "globals": {
+        "regeneratorRuntime": "write"
+      }
+    },
+    "@metamask/smart-transactions-controller>@ethereumjs/tx": {
+      "packages": {
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/common": true,
+        "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/rlp": true,
+        "@metamask/smart-transactions-controller>@ethereumjs/util": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/common": {
+      "packages": {
+        "@metamask/smart-transactions-controller>@ethereumjs/util": true,
+        "webpack>events": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/rlp": {
+      "globals": {
+        "TextEncoder": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@ethereumjs/util": {
+      "globals": {
+        "console.warn": true,
+        "fetch": true
+      },
+      "packages": {
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/smart-transactions-controller>@ethereumjs/util>@ethereumjs/rlp": true,
+        "webpack>events": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@ethereumjs/util>@ethereumjs/rlp": {
+      "globals": {
+        "TextEncoder": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/base-controller": {
@@ -2238,23 +2507,154 @@
       },
       "packages": {
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/smart-transactions-controller>@metamask/controller-utils>ethjs-unit": true,
-        "@metamask/utils": true,
+        "@metamask/ethjs>@metamask/ethjs-unit": true,
+        "@metamask/smart-transactions-controller>@metamask/controller-utils>@ethereumjs/util": true,
+        "@metamask/smart-transactions-controller>@metamask/controller-utils>@metamask/utils": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true
+        "eth-ens-namehash": true
       }
     },
-    "@metamask/smart-transactions-controller>@metamask/controller-utils>ethjs-unit": {
+    "@metamask/smart-transactions-controller>@metamask/controller-utils>@ethereumjs/util": {
+      "globals": {
+        "console.warn": true
+      },
       "packages": {
-        "@metamask/ethjs>ethjs-abi>number-to-bn": true,
-        "bn.js": true
+        "@ethereumjs/tx>@ethereumjs/rlp": true,
+        "@ethereumjs/tx>@ethereumjs/util>micro-ftch": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "browserify>buffer": true,
+        "browserify>insert-module-globals>is-buffer": true,
+        "webpack>events": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/controller-utils>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/transaction-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/common": true,
+        "@ethersproject/abi": true,
+        "@ethersproject/contracts": true,
+        "@ethersproject/providers": true,
+        "@metamask/eth-query": true,
+        "@metamask/gas-fee-controller": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/name-controller>async-mutex": true,
+        "@metamask/network-controller": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/smart-transactions-controller>@metamask/base-controller": true,
+        "@metamask/smart-transactions-controller>@metamask/controller-utils": true,
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/tx": true,
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/util": true,
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry": true,
+        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
+        "@metamask/utils": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "fast-json-patch": true,
+        "lodash": true,
+        "uuid": true,
+        "webpack>events": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/tx": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/common": true,
+        "@ethereumjs/tx>@ethereumjs/rlp": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/util": true,
+        "browserify>buffer": true,
+        "browserify>insert-module-globals>is-buffer": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/util": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/rlp": true,
+        "@ethereumjs/tx>@ethereumjs/util>micro-ftch": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "browserify>buffer": true,
+        "browserify>insert-module-globals>is-buffer": true,
+        "webpack>events": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry": {
+      "packages": {
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry>@metamask/ethjs-contract": true,
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry>@metamask/ethjs-query": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry>@metamask/ethjs-contract": {
+      "packages": {
+        "@metamask/ethjs>ethjs-abi": true,
+        "@metamask/ethjs>js-sha3": true,
+        "@metamask/smart-transactions-controller>@babel/runtime": true,
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry>@metamask/ethjs-contract>@metamask/ethjs-filter": true,
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry>@metamask/ethjs-contract>@metamask/ethjs-util": true,
+        "promise-to-callback": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry>@metamask/ethjs-contract>@metamask/ethjs-filter": {
+      "globals": {
+        "clearInterval": true,
+        "setInterval": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry>@metamask/ethjs-contract>@metamask/ethjs-util": {
+      "packages": {
+        "@metamask/ethjs>@metamask/ethjs-util>is-hex-prefixed": true,
+        "@metamask/ethjs>@metamask/ethjs-util>strip-hex-prefix": true,
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry>@metamask/ethjs-query": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format": true,
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-rpc": true,
+        "promise-to-callback": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format": {
+      "packages": {
+        "@metamask/ethjs-query>@metamask/ethjs-format>ethjs-schema": true,
+        "@metamask/ethjs>@metamask/ethjs-util>strip-hex-prefix": true,
+        "@metamask/ethjs>@metamask/number-to-bn": true,
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry>@metamask/ethjs-contract>@metamask/ethjs-util": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-rpc": {
+      "packages": {
+        "promise-to-callback": true
       }
     },
     "@metamask/smart-transactions-controller>bignumber.js": {
@@ -2267,18 +2667,16 @@
       "globals": {
         "DecompressionStream": true,
         "URL": true,
-        "chrome.offscreen.createDocument": true,
-        "chrome.offscreen.hasDocument": true,
         "clearTimeout": true,
         "document.getElementById": true,
         "fetch.bind": true,
         "setTimeout": true
       },
       "packages": {
+        "@metamask/object-multiplex": true,
         "@metamask/permission-controller": true,
         "@metamask/post-message-stream": true,
-        "@metamask/providers>@metamask/object-multiplex": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/base-controller": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream": true,
@@ -2286,7 +2684,6 @@
         "@metamask/snaps-controllers>concat-stream": true,
         "@metamask/snaps-controllers>get-npm-tarball-url": true,
         "@metamask/snaps-controllers>nanoid": true,
-        "@metamask/snaps-controllers>readable-stream": true,
         "@metamask/snaps-controllers>readable-web-to-node-stream": true,
         "@metamask/snaps-controllers>tar-stream": true,
         "@metamask/snaps-rpc-methods": true,
@@ -2294,7 +2691,9 @@
         "@metamask/snaps-utils": true,
         "@metamask/snaps-utils>@metamask/snaps-registry": true,
         "@metamask/utils": true,
-        "browserify>browserify-zlib": true
+        "browserify>browserify-zlib": true,
+        "eslint>fast-deep-equal": true,
+        "readable-stream": true
       }
     },
     "@metamask/snaps-controllers-flask>nanoid": {
@@ -2312,9 +2711,24 @@
     },
     "@metamask/snaps-controllers>@metamask/json-rpc-engine": {
       "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true
+        "@metamask/snaps-controllers>@metamask/json-rpc-engine>@metamask/utils": true
+      }
+    },
+    "@metamask/snaps-controllers>@metamask/json-rpc-engine>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream": {
@@ -2324,15 +2738,15 @@
       },
       "packages": {
         "@metamask/safe-event-emitter": true,
-        "@metamask/snaps-controllers>readable-stream": true
+        "readable-stream": true
       }
     },
     "@metamask/snaps-controllers>concat-stream": {
       "packages": {
-        "@metamask/snaps-controllers>readable-stream": true,
         "browserify>buffer": true,
         "browserify>concat-stream>typedarray": true,
         "pumpify>inherits": true,
+        "readable-stream": true,
         "terser>source-map-support>buffer-from": true
       }
     },
@@ -2341,31 +2755,9 @@
         "crypto.getRandomValues": true
       }
     },
-    "@metamask/snaps-controllers>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
-      }
-    },
     "@metamask/snaps-controllers>readable-web-to-node-stream": {
       "packages": {
-        "@metamask/snaps-controllers>readable-web-to-node-stream>readable-stream": true
-      }
-    },
-    "@metamask/snaps-controllers>readable-web-to-node-stream>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
+        "readable-stream": true
       }
     },
     "@metamask/snaps-controllers>tar-stream": {
@@ -2394,10 +2786,20 @@
         "queueMicrotask": true
       }
     },
+    "@metamask/snaps-execution-environments": {
+      "globals": {
+        "document.getElementById": true
+      },
+      "packages": {
+        "@metamask/post-message-stream": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/snaps-rpc-methods": {
       "packages": {
         "@metamask/permission-controller": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/snaps-utils": true,
@@ -2411,50 +2813,18 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/snaps-sdk>fast-xml-parser": true,
+        "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "superstruct": true
       }
     },
     "@metamask/snaps-sdk>@metamask/key-tree": {
       "packages": {
+        "@metamask/message-signing-snap>@noble/curves": true,
         "@metamask/scure-bip39": true,
-        "@metamask/snaps-sdk>@metamask/key-tree>@metamask/utils": true,
-        "@metamask/snaps-sdk>@metamask/key-tree>@noble/ed25519": true,
+        "@metamask/utils": true,
         "@metamask/utils>@scure/base": true,
-        "@noble/hashes": true,
-        "eth-lattice-keyring>@noble/secp256k1": true
-      }
-    },
-    "@metamask/snaps-sdk>@metamask/key-tree>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/snaps-sdk>@metamask/key-tree>@noble/ed25519": {
-      "globals": {
-        "crypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "@metamask/snaps-sdk>fast-xml-parser": {
-      "globals": {
-        "entityName": true,
-        "val": true
-      },
-      "packages": {
-        "@metamask/snaps-sdk>fast-xml-parser>strnum": true
+        "@noble/hashes": true
       }
     },
     "@metamask/snaps-utils": {
@@ -2462,6 +2832,7 @@
         "File": true,
         "FileReader": true,
         "TextDecoder": true,
+        "TextEncoder": true,
         "URL": true,
         "console.error": true,
         "console.log": true,
@@ -2473,12 +2844,13 @@
       },
       "packages": {
         "@metamask/permission-controller": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>fast-xml-parser": true,
         "@metamask/snaps-utils>marked": true,
         "@metamask/snaps-utils>rfdc": true,
         "@metamask/snaps-utils>validate-npm-package-name": true,
@@ -2504,26 +2876,20 @@
         "luxon": true
       }
     },
+    "@metamask/snaps-utils>fast-xml-parser": {
+      "globals": {
+        "entityName": true,
+        "val": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>fast-xml-parser>strnum": true
+      }
+    },
     "@metamask/snaps-utils>marked": {
       "globals": {
-        "Hooks": true,
-        "Lexer": true,
-        "Parser": true,
-        "Renderer": true,
-        "TextRenderer": true,
-        "Tokenizer": true,
         "console.error": true,
         "console.warn": true,
-        "defaults": true,
-        "define": true,
-        "inlineQueue": true,
-        "passThroughHooks": true,
-        "renderer": true,
-        "rules": true,
-        "state": true,
-        "textRenderer": true,
-        "tokenizer": true,
-        "tokens": true
+        "define": true
       }
     },
     "@metamask/snaps-utils>rfdc": {
@@ -2542,14 +2908,6 @@
         "semver": true
       }
     },
-    "@metamask/test-bundler>@ethersproject/abstract-provider": {
-      "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/abi>@ethersproject/logger": true,
-        "@ethersproject/abi>@ethersproject/properties": true,
-        "@ethersproject/bignumber": true
-      }
-    },
     "@metamask/test-bundler>@ethersproject/networks": {
       "packages": {
         "@ethersproject/abi>@ethersproject/logger": true
@@ -2563,23 +2921,24 @@
         "setTimeout": true
       },
       "packages": {
-        "@ethereumjs/common": true,
         "@ethereumjs/tx": true,
+        "@ethereumjs/tx>@ethereumjs/common": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/abi": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
-        "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/name-controller>async-mutex": true,
         "@metamask/network-controller": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/transaction-controller>@metamask/base-controller": true,
-        "@metamask/transaction-controller>nonce-tracker": true,
+        "@metamask/transaction-controller>@metamask/controller-utils": true,
+        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/utils": true,
         "bn.js": true,
+        "browserify>buffer": true,
         "eth-method-registry": true,
         "fast-json-patch": true,
         "lodash": true,
@@ -2595,15 +2954,47 @@
         "immer": true
       }
     },
-    "@metamask/transaction-controller>nonce-tracker": {
+    "@metamask/transaction-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/ethjs>@metamask/ethjs-unit": true,
+        "@metamask/transaction-controller>@metamask/controller-utils>@metamask/utils": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true
+      }
+    },
+    "@metamask/transaction-controller>@metamask/controller-utils>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
+      }
+    },
+    "@metamask/transaction-controller>@metamask/nonce-tracker": {
       "packages": {
         "@ethersproject/providers": true,
-        "@metamask/eth-token-tracker>eth-block-tracker": true,
-        "@metamask/transaction-controller>nonce-tracker>async-mutex": true,
+        "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": true,
         "browserify>assert": true
       }
     },
-    "@metamask/transaction-controller>nonce-tracker>async-mutex": {
+    "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": {
       "globals": {
         "clearTimeout": true,
         "setTimeout": true
@@ -2617,13 +3008,13 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/gas-fee-controller>@metamask/polling-controller": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/transaction-controller": true,
         "@metamask/user-operation-controller>@metamask/base-controller": true,
+        "@metamask/user-operation-controller>@metamask/controller-utils": true,
         "@metamask/utils": true,
         "bn.js": true,
         "lodash": true,
@@ -2638,6 +3029,39 @@
       },
       "packages": {
         "immer": true
+      }
+    },
+    "@metamask/user-operation-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/ethjs>@metamask/ethjs-unit": true,
+        "@metamask/user-operation-controller>@metamask/controller-utils>@metamask/utils": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true
+      }
+    },
+    "@metamask/user-operation-controller>@metamask/controller-utils>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/utils": {
@@ -2703,6 +3127,13 @@
         "define": true
       }
     },
+    "@noble/ciphers": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
     "@noble/hashes": {
       "globals": {
         "TextEncoder": true,
@@ -2725,12 +3156,14 @@
         "AbortController": true,
         "__REDUX_DEVTOOLS_EXTENSION_COMPOSE__": true,
         "__REDUX_DEVTOOLS_EXTENSION__": true,
-        "console.error": true,
-        "console.info": true,
-        "console.warn": true
+        "console": true,
+        "queueMicrotask": true,
+        "requestAnimationFrame": true,
+        "setTimeout": true
       },
       "packages": {
         "@reduxjs/toolkit>reselect": true,
+        "browserify>process": true,
         "immer": true,
         "redux": true,
         "redux-thunk": true
@@ -2746,30 +3179,124 @@
     },
     "@sentry/browser": {
       "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "XMLHttpRequest": true,
+        "PerformanceObserver.supportedEntryTypes.includes": true,
+        "Request": true,
+        "URL": true,
+        "XMLHttpRequest.prototype": true,
         "__SENTRY_DEBUG__": true,
         "__SENTRY_RELEASE__": true,
+        "addEventListener": true,
+        "console.error": true,
         "indexedDB.open": true,
+        "performance.timeOrigin": true,
         "setTimeout": true
       },
       "packages": {
-        "@sentry/browser>@sentry-internal/tracing": true,
+        "@sentry/browser>@sentry-internal/browser-utils": true,
+        "@sentry/browser>@sentry-internal/feedback": true,
+        "@sentry/browser>@sentry-internal/replay": true,
+        "@sentry/browser>@sentry-internal/replay-canvas": true,
         "@sentry/browser>@sentry/core": true,
-        "@sentry/browser>@sentry/replay": true,
         "@sentry/utils": true
       }
     },
-    "@sentry/browser>@sentry-internal/tracing": {
+    "@sentry/browser>@sentry-internal/browser-utils": {
       "globals": {
-        "Headers": true,
+        "PerformanceEventTiming.prototype": true,
         "PerformanceObserver": true,
-        "Request": true,
+        "XMLHttpRequest.prototype": true,
         "__SENTRY_DEBUG__": true,
         "addEventListener": true,
-        "performance.getEntriesByType": true,
-        "removeEventListener": true
+        "clearTimeout": true,
+        "performance": true,
+        "removeEventListener": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@sentry/browser>@sentry/core": true,
+        "@sentry/utils": true
+      }
+    },
+    "@sentry/browser>@sentry-internal/feedback": {
+      "globals": {
+        "FormData": true,
+        "HTMLFormElement": true,
+        "__SENTRY_DEBUG__": true,
+        "cancelAnimationFrame": true,
+        "clearTimeout": true,
+        "document.createElement": true,
+        "document.createElementNS": true,
+        "document.createTextNode": true,
+        "isSecureContext": true,
+        "requestAnimationFrame": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@sentry/browser>@sentry/core": true,
+        "@sentry/utils": true
+      }
+    },
+    "@sentry/browser>@sentry-internal/replay": {
+      "globals": {
+        "Blob": true,
+        "CSSConditionRule": true,
+        "CSSGroupingRule": true,
+        "CSSMediaRule": true,
+        "CSSRule": true,
+        "CSSSupportsRule": true,
+        "Document": true,
+        "DragEvent": true,
+        "Element": true,
+        "FormData": true,
+        "HTMLElement": true,
+        "HTMLFormElement": true,
+        "Headers": true,
+        "MouseEvent": true,
+        "MutationObserver": true,
+        "Node.DOCUMENT_FRAGMENT_NODE": true,
+        "Node.prototype.contains": true,
+        "PointerEvent": true,
+        "TextEncoder": true,
+        "URL": true,
+        "URLSearchParams": true,
+        "Worker": true,
+        "__RRWEB_EXCLUDE_IFRAME__": true,
+        "__RRWEB_EXCLUDE_SHADOW_DOM__": true,
+        "__SENTRY_DEBUG__": true,
+        "__SENTRY_EXCLUDE_REPLAY_WORKER__": true,
+        "__rrMutationObserver": true,
+        "addEventListener": true,
+        "clearTimeout": true,
+        "console.debug": true,
+        "console.error": true,
+        "console.warn": true,
+        "customElements.get": true,
+        "document": true,
+        "innerHeight": true,
+        "innerWidth": true,
+        "location.href": true,
+        "location.origin": true,
+        "parent": true
+      },
+      "packages": {
+        "@sentry/browser>@sentry-internal/browser-utils": true,
+        "@sentry/browser>@sentry/core": true,
+        "@sentry/utils": true
+      }
+    },
+    "@sentry/browser>@sentry-internal/replay-canvas": {
+      "globals": {
+        "Blob": true,
+        "HTMLCanvasElement": true,
+        "HTMLImageElement": true,
+        "ImageData": true,
+        "URL.createObjectURL": true,
+        "WeakRef": true,
+        "Worker": true,
+        "cancelAnimationFrame": true,
+        "console.error": true,
+        "createImageBitmap": true,
+        "document": true
       },
       "packages": {
         "@sentry/browser>@sentry/core": true,
@@ -2778,10 +3305,14 @@
     },
     "@sentry/browser>@sentry/core": {
       "globals": {
+        "Headers": true,
+        "Request": true,
+        "URL": true,
         "__SENTRY_DEBUG__": true,
         "__SENTRY_TRACING__": true,
         "clearInterval": true,
         "clearTimeout": true,
+        "console.log": true,
         "console.warn": true,
         "setInterval": true,
         "setTimeout": true
@@ -2790,85 +3321,28 @@
         "@sentry/utils": true
       }
     },
-    "@sentry/browser>@sentry/replay": {
-      "globals": {
-        "Blob": true,
-        "CSSConditionRule": true,
-        "CSSGroupingRule": true,
-        "CSSMediaRule": true,
-        "CSSSupportsRule": true,
-        "DragEvent": true,
-        "Element": true,
-        "FormData": true,
-        "HTMLCanvasElement": true,
-        "HTMLElement.prototype": true,
-        "HTMLFormElement": true,
-        "HTMLImageElement": true,
-        "HTMLInputElement.prototype": true,
-        "HTMLOptionElement.prototype": true,
-        "HTMLSelectElement.prototype": true,
-        "HTMLTextAreaElement.prototype": true,
-        "Headers": true,
-        "ImageData": true,
-        "MouseEvent": true,
-        "MutationObserver": true,
-        "Node.prototype.contains": true,
-        "PerformanceObserver": true,
-        "TextEncoder": true,
-        "URL": true,
-        "URLSearchParams": true,
-        "Worker": true,
-        "Zone": true,
-        "__SENTRY_DEBUG__": true,
-        "__rrMutationObserver": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.warn": true,
-        "document": true,
-        "innerHeight": true,
-        "innerWidth": true,
-        "location.href": true,
-        "pageXOffset": true,
-        "pageYOffset": true,
-        "requestAnimationFrame": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@sentry/browser>@sentry/core": true,
-        "@sentry/utils": true,
-        "browserify>process": true
-      }
-    },
-    "@sentry/integrations": {
-      "globals": {
-        "Request": true,
-        "__SENTRY_DEBUG__": true,
-        "console.log": true
-      },
-      "packages": {
-        "@sentry/utils": true,
-        "localforage": true
-      }
-    },
     "@sentry/utils": {
       "globals": {
         "CustomEvent": true,
         "DOMError": true,
         "DOMException": true,
+        "EdgeRuntime": true,
         "Element": true,
         "ErrorEvent": true,
         "Event": true,
+        "HTMLElement": true,
         "Headers": true,
         "Request": true,
         "Response": true,
+        "TextDecoder": true,
         "TextEncoder": true,
         "URL": true,
-        "XMLHttpRequest.prototype": true,
         "__SENTRY_BROWSER_BUNDLE__": true,
         "__SENTRY_DEBUG__": true,
         "clearTimeout": true,
         "console.error": true,
         "document": true,
+        "setInterval": true,
         "setTimeout": true
       },
       "packages": {
@@ -2903,23 +3377,20 @@
         "location": true,
         "navigator": true,
         "open": true,
+        "origin": true,
         "removeEventListener": true,
         "setInterval": true,
         "setTimeout": true
       },
       "packages": {
         "@trezor/connect-web>@trezor/connect": true,
+        "@trezor/connect-web>@trezor/connect-common": true,
         "@trezor/connect-web>@trezor/utils": true,
         "@trezor/connect-web>tslib": true,
         "webpack>events": true
       }
     },
     "@trezor/connect-web>@trezor/connect": {
-      "globals": {
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true
-      },
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf": true,
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
@@ -2928,9 +3399,50 @@
         "@trezor/connect-web>tslib": true
       }
     },
+    "@trezor/connect-web>@trezor/connect-common": {
+      "globals": {
+        "console.warn": true,
+        "localStorage.getItem": true,
+        "localStorage.setItem": true,
+        "navigator": true,
+        "setTimeout": true,
+        "window": true
+      },
+      "packages": {
+        "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils": true,
+        "@trezor/connect-web>@trezor/utils": true,
+        "@trezor/connect-web>tslib": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils": {
+      "globals": {
+        "innerHeight": true,
+        "innerWidth": true,
+        "location.hostname": true,
+        "location.origin": true,
+        "navigator.languages": true,
+        "navigator.platform": true,
+        "navigator.userAgent": true,
+        "screen.height": true,
+        "screen.width": true
+      },
+      "packages": {
+        "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": true,
+        "@trezor/connect-web>tslib": true,
+        "browserify>process": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": {
+      "globals": {
+        "define": true
+      }
+    },
     "@trezor/connect-web>@trezor/connect>@trezor/protobuf": {
       "packages": {
-        "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true
+        "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
+        "@trezor/connect-web>tslib": true,
+        "browserify>buffer": true,
+        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": true
       }
     },
     "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": {
@@ -2939,14 +3451,25 @@
       },
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils>@sinclair/typebox": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/schema-utils>ts-mixer": true,
-        "browserify>buffer": true
+        "browserify>buffer": true,
+        "ts-mixer": true
       }
     },
     "@trezor/connect-web>@trezor/utils": {
       "globals": {
+        "AbortController": true,
+        "Intl.NumberFormat": true,
         "clearTimeout": true,
+        "console.error": true,
+        "console.info": true,
+        "console.log": true,
+        "console.warn": true,
         "setTimeout": true
+      },
+      "packages": {
+        "@trezor/connect-web>tslib": true,
+        "browserify>buffer": true,
+        "webpack>events": true
       }
     },
     "@trezor/connect-web>tslib": {
@@ -3028,15 +3551,6 @@
     "bowser": {
       "globals": {
         "define": true
-      }
-    },
-    "brfs>static-module>object-inspect": {
-      "globals": {
-        "HTMLElement": true,
-        "WeakRef": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "browserify>assert": {
@@ -3266,21 +3780,10 @@
         "browserify>buffer": true,
         "browserify>process": true,
         "browserify>stream-http>builtin-status-codes": true,
-        "browserify>stream-http>readable-stream": true,
         "browserify>url": true,
         "pumpify>inherits": true,
+        "readable-stream": true,
         "watchify>xtend": true
-      }
-    },
-    "browserify>stream-http>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
       }
     },
     "browserify>string_decoder": {
@@ -3373,6 +3876,32 @@
         "jest-canvas-mock>moo-color>color-name": true
       }
     },
+    "chart.js": {
+      "globals": {
+        "Intl.NumberFormat": true,
+        "MutationObserver": true,
+        "OffscreenCanvas": true,
+        "Path2D": true,
+        "ResizeObserver": true,
+        "addEventListener": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.warn": true,
+        "devicePixelRatio": true,
+        "document": true,
+        "removeEventListener": true,
+        "requestAnimationFrame": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "chart.js>@kurkle/color": true
+      }
+    },
+    "chart.js>@kurkle/color": {
+      "globals": {
+        "define": true
+      }
+    },
     "classnames": {
       "globals": {
         "classNames": "write",
@@ -3459,12 +3988,6 @@
         "crypto.getRandomValues": true
       }
     },
-    "end-of-stream": {
-      "packages": {
-        "browserify>process": true,
-        "pump>once": true
-      }
-    },
     "eslint-plugin-react>array-includes>is-string": {
       "packages": {
         "koa>is-generator-function>has-tostringtag": true
@@ -3525,7 +4048,7 @@
     },
     "eth-lattice-keyring>@ethereumjs/tx": {
       "packages": {
-        "@ethereumjs/common": true,
+        "@ethereumjs/tx>@ethereumjs/common": true,
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/providers": true,
@@ -3566,14 +4089,6 @@
         "crypto": true
       }
     },
-    "eth-lattice-keyring>@noble/secp256k1": {
-      "globals": {
-        "crypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
     "eth-lattice-keyring>gridplus-sdk": {
       "globals": {
         "AbortController": true,
@@ -3589,23 +4104,23 @@
         "setTimeout": true
       },
       "packages": {
-        "@ethereumjs/common>crc-32": true,
+        "@ethereumjs/tx>@ethereumjs/common>crc-32": true,
         "@ethersproject/abi": true,
         "@metamask/ethjs>js-sha3": true,
+        "@metamask/keyring-api>bech32": true,
         "@metamask/ppom-validator>elliptic": true,
         "bn.js": true,
         "browserify>buffer": true,
         "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common": true,
         "eth-lattice-keyring>gridplus-sdk>@ethereumjs/tx": true,
         "eth-lattice-keyring>gridplus-sdk>aes-js": true,
-        "eth-lattice-keyring>gridplus-sdk>bech32": true,
         "eth-lattice-keyring>gridplus-sdk>bignumber.js": true,
         "eth-lattice-keyring>gridplus-sdk>bitwise": true,
         "eth-lattice-keyring>gridplus-sdk>borc": true,
         "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser": true,
+        "eth-lattice-keyring>gridplus-sdk>rlp": true,
         "eth-lattice-keyring>gridplus-sdk>secp256k1": true,
         "eth-lattice-keyring>gridplus-sdk>uuid": true,
-        "eth-lattice-keyring>rlp": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
         "ethereumjs-util>ethereum-cryptography>hash.js": true,
         "lodash": true
@@ -3613,7 +4128,7 @@
     },
     "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common": {
       "packages": {
-        "@ethereumjs/common>crc-32": true,
+        "@ethereumjs/tx>@ethereumjs/common>crc-32": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "browserify>buffer": true,
         "webpack>events": true
@@ -3633,7 +4148,7 @@
     },
     "eth-lattice-keyring>gridplus-sdk>@ethereumjs/tx>@ethereumjs/common": {
       "packages": {
-        "@ethereumjs/common>crc-32": true,
+        "@ethereumjs/tx>@ethereumjs/common>crc-32": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "browserify>buffer": true,
         "webpack>events": true
@@ -3704,6 +4219,11 @@
         "ganache>abstract-level>buffer": true
       }
     },
+    "eth-lattice-keyring>gridplus-sdk>rlp": {
+      "globals": {
+        "TextEncoder": true
+      }
+    },
     "eth-lattice-keyring>gridplus-sdk>secp256k1": {
       "packages": {
         "@metamask/ppom-validator>elliptic": true
@@ -3767,20 +4287,9 @@
     },
     "ethereumjs-util>create-hash>md5.js>hash-base": {
       "packages": {
-        "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream": true,
         "koa>content-disposition>safe-buffer": true,
-        "pumpify>inherits": true
-      }
-    },
-    "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
         "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
+        "readable-stream": true
       }
     },
     "ethereumjs-util>create-hash>ripemd160": {
@@ -3884,6 +4393,153 @@
         "setTimeout": true
       }
     },
+    "firebase": {
+      "packages": {
+        "firebase>@firebase/app": true,
+        "firebase>@firebase/messaging": true
+      }
+    },
+    "firebase>@firebase/app": {
+      "globals": {
+        "FinalizationRegistry": true,
+        "console.warn": true
+      },
+      "packages": {
+        "firebase>@firebase/app>@firebase/component": true,
+        "firebase>@firebase/app>@firebase/logger": true,
+        "firebase>@firebase/app>idb": true,
+        "firebase>@firebase/util": true
+      }
+    },
+    "firebase>@firebase/app>@firebase/component": {
+      "packages": {
+        "firebase>@firebase/util": true
+      }
+    },
+    "firebase>@firebase/app>@firebase/logger": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "@trezor/connect-web>tslib": true
+      }
+    },
+    "firebase>@firebase/app>idb": {
+      "globals": {
+        "DOMException": true,
+        "IDBCursor": true,
+        "IDBDatabase": true,
+        "IDBIndex": true,
+        "IDBObjectStore": true,
+        "IDBRequest": true,
+        "IDBTransaction": true,
+        "indexedDB.deleteDatabase": true,
+        "indexedDB.open": true
+      }
+    },
+    "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": {
+      "globals": {
+        "process": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/aspromise": true,
+        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/base64": true,
+        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/codegen": true,
+        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/eventemitter": true,
+        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/fetch": true,
+        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/float": true,
+        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/inquire": true,
+        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/path": true,
+        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/pool": true,
+        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/utf8": true
+      }
+    },
+    "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/codegen": {
+      "globals": {
+        "console.log": true
+      }
+    },
+    "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/fetch": {
+      "globals": {
+        "XMLHttpRequest": true
+      },
+      "packages": {
+        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/aspromise": true,
+        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/inquire": true
+      }
+    },
+    "firebase>@firebase/installations": {
+      "globals": {
+        "BroadcastChannel": true,
+        "Headers": true,
+        "btoa": true,
+        "console.error": true,
+        "crypto": true,
+        "fetch": true,
+        "msCrypto": true,
+        "navigator.onLine": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "firebase>@firebase/app": true,
+        "firebase>@firebase/app>@firebase/component": true,
+        "firebase>@firebase/app>idb": true,
+        "firebase>@firebase/util": true
+      }
+    },
+    "firebase>@firebase/messaging": {
+      "globals": {
+        "Headers": true,
+        "Notification.maxActions": true,
+        "Notification.permission": true,
+        "Notification.requestPermission": true,
+        "PushSubscription.prototype.hasOwnProperty": true,
+        "ServiceWorkerRegistration": true,
+        "URL": true,
+        "addEventListener": true,
+        "atob": true,
+        "btoa": true,
+        "clients.matchAll": true,
+        "clients.openWindow": true,
+        "console.warn": true,
+        "document": true,
+        "fetch": true,
+        "indexedDB": true,
+        "location.href": true,
+        "location.origin": true,
+        "navigator": true,
+        "origin.replace": true,
+        "registration.showNotification": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@trezor/connect-web>tslib": true,
+        "firebase>@firebase/app": true,
+        "firebase>@firebase/app>@firebase/component": true,
+        "firebase>@firebase/app>idb": true,
+        "firebase>@firebase/installations": true,
+        "firebase>@firebase/util": true
+      }
+    },
+    "firebase>@firebase/util": {
+      "globals": {
+        "atob": true,
+        "browser": true,
+        "btoa": true,
+        "chrome": true,
+        "console": true,
+        "document": true,
+        "indexedDB": true,
+        "navigator": true,
+        "process": true,
+        "self": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>process": true
+      }
+    },
     "fuse.js": {
       "globals": {
         "console": true,
@@ -3902,18 +4558,7 @@
     "ganache>keccak": {
       "packages": {
         "browserify>buffer": true,
-        "ganache>keccak>readable-stream": true
-      }
-    },
-    "ganache>keccak>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
+        "readable-stream": true
       }
     },
     "ganache>secp256k1": {
@@ -3927,6 +4572,11 @@
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>has-symbols": true
+      }
+    },
+    "he": {
+      "globals": {
+        "define": true
       }
     },
     "json-rpc-engine": {
@@ -3950,18 +4600,7 @@
       },
       "packages": {
         "@metamask/safe-event-emitter": true,
-        "json-rpc-middleware-stream>readable-stream": true
-      }
-    },
-    "json-rpc-middleware-stream>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
+        "readable-stream": true
       }
     },
     "koa>content-disposition>safe-buffer": {
@@ -4067,16 +4706,6 @@
         "fetch": true
       }
     },
-    "obj-multiplex": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "end-of-stream": true,
-        "pump>once": true,
-        "readable-stream": true
-      }
-    },
     "promise-to-callback": {
       "packages": {
         "promise-to-callback>is-fn": true,
@@ -4105,19 +4734,6 @@
         "console": true
       }
     },
-    "pump": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>process": true,
-        "end-of-stream": true,
-        "pump>once": true
-      }
-    },
-    "pump>once": {
-      "packages": {
-        "pump>once>wrappy": true
-      }
-    },
     "qrcode-generator": {
       "globals": {
         "define": true
@@ -4129,8 +4745,6 @@
         "devicePixelRatio": true
       },
       "packages": {
-        "prop-types": true,
-        "qrcode.react>qr.js": true,
         "react": true
       }
     },
@@ -4190,6 +4804,15 @@
     },
     "react-beautiful-dnd>use-memo-one": {
       "packages": {
+        "react": true
+      }
+    },
+    "react-chartjs-2": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "chart.js": true,
         "react": true
       }
     },
@@ -4463,18 +5086,22 @@
         "document": true
       },
       "packages": {
-        "@babel/runtime": true,
         "prop-types": true,
-        "prop-types>react-is": true,
         "react": true,
         "react-dom": true,
+        "react-redux>@babel/runtime": true,
         "react-redux>hoist-non-react-statics": true,
-        "redux": true
+        "react-redux>react-is": true
       }
     },
     "react-redux>hoist-non-react-statics": {
       "packages": {
         "prop-types>react-is": true
+      }
+    },
+    "react-redux>react-is": {
+      "globals": {
+        "console": true
       }
     },
     "react-responsive-carousel": {
@@ -4629,36 +5256,22 @@
     "readable-stream": {
       "packages": {
         "browserify>browser-resolve": true,
+        "browserify>buffer": true,
         "browserify>process": true,
-        "browserify>timers-browserify": true,
+        "browserify>string_decoder": true,
         "pumpify>inherits": true,
-        "readable-stream>core-util-is": true,
-        "readable-stream>isarray": true,
-        "readable-stream>process-nextick-args": true,
-        "readable-stream>safe-buffer": true,
-        "readable-stream>string_decoder": true,
         "readable-stream>util-deprecate": true,
         "webpack>events": true
       }
     },
-    "readable-stream>core-util-is": {
+    "readable-stream-2>core-util-is": {
       "packages": {
         "browserify>insert-module-globals>is-buffer": true
       }
     },
-    "readable-stream>process-nextick-args": {
+    "readable-stream-2>process-nextick-args": {
       "packages": {
         "browserify>process": true
-      }
-    },
-    "readable-stream>safe-buffer": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "readable-stream>string_decoder": {
-      "packages": {
-        "readable-stream>safe-buffer": true
       }
     },
     "readable-stream>util-deprecate": {
@@ -4681,13 +5294,7 @@
         "console.error": true
       },
       "packages": {
-        "browserify>process": true,
-        "semver>lru-cache": true
-      }
-    },
-    "semver>lru-cache": {
-      "packages": {
-        "semver>lru-cache>yallist": true
+        "browserify>process": true
       }
     },
     "sinon>nise>path-to-regexp": {
@@ -4698,18 +5305,7 @@
     "stream-browserify": {
       "packages": {
         "pumpify>inherits": true,
-        "stream-browserify>readable-stream": true,
-        "webpack>events": true
-      }
-    },
-    "stream-browserify>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true,
+        "readable-stream": true,
         "webpack>events": true
       }
     },
@@ -4789,6 +5385,15 @@
         "string.prototype.matchall>call-bind": true
       }
     },
+    "string.prototype.matchall>es-abstract>object-inspect": {
+      "globals": {
+        "HTMLElement": true,
+        "WeakRef": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
     "string.prototype.matchall>get-intrinsic": {
       "globals": {
         "AggregateError": true,
@@ -4826,8 +5431,8 @@
     },
     "string.prototype.matchall>side-channel": {
       "packages": {
-        "brfs>static-module>object-inspect": true,
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>es-abstract>object-inspect": true,
         "string.prototype.matchall>get-intrinsic": true
       }
     },
@@ -4870,8 +5475,7 @@
     },
     "web3-stream-provider>uuid": {
       "globals": {
-        "crypto": true,
-        "msCrypto": true
+        "crypto": true
       }
     },
     "webextension-polyfill": {

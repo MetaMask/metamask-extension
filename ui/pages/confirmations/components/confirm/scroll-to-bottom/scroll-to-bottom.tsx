@@ -1,24 +1,26 @@
 import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { I18nContext } from '../../../../../contexts/i18n';
 import {
   Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
 } from '../../../../../components/component-library';
+import { I18nContext } from '../../../../../contexts/i18n';
 
+import { updateConfirm } from '../../../../../ducks/confirm/confirm';
 import {
   BackgroundColor,
   BlockSize,
+  BorderRadius,
   Display,
   FlexDirection,
   IconColor,
-  BorderRadius,
 } from '../../../../../helpers/constants/design-system';
+import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useScrollRequired } from '../../../../../hooks/useScrollRequired';
-import { updateConfirm } from '../../../../../ducks/confirm/confirm';
 import { currentConfirmationSelector } from '../../../selectors';
+import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
 
 type ContentProps = {
   /**
@@ -31,6 +33,10 @@ const ScrollToBottom = ({ children }: ContentProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const currentConfirmation = useSelector(currentConfirmationSelector);
+  const previousId = usePrevious(currentConfirmation?.id);
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
+  );
 
   const {
     hasScrolledToBottom,
@@ -38,8 +44,32 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     isScrolledToBottom,
     onScroll,
     scrollToBottom,
+    setHasScrolledToBottom,
     ref,
-  } = useScrollRequired([currentConfirmation?.id]);
+  } = useScrollRequired([currentConfirmation?.id, showAdvancedDetails], {
+    offsetPxFromBottom: 0,
+  });
+
+  /**
+   * Scroll to the top of the page when the confirmation changes. This happens
+   * when we navigate through different confirmations. Also, resets hasScrolledToBottom
+   */
+  useEffect(() => {
+    if (previousId === currentConfirmation?.id) {
+      return;
+    }
+
+    const currentRef = ref?.current as null | HTMLDivElement;
+    if (!currentRef) {
+      return;
+    }
+
+    if (typeof currentRef.scrollTo === 'function') {
+      currentRef.scrollTo(0, 0);
+    }
+
+    setHasScrolledToBottom(false);
+  }, [currentConfirmation?.id, previousId, ref?.current]);
 
   useEffect(() => {
     dispatch(

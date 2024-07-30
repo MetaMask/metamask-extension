@@ -2,6 +2,7 @@ import React from 'react';
 import configureStore from 'redux-mock-store';
 import { NetworkStatus } from '@metamask/network-controller';
 import { NetworkType } from '@metamask/controller-utils';
+import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 import ConfirmPageContainerHeader from '.';
@@ -38,6 +39,7 @@ describe('Confirm Detail Row Component', () => {
       onEdit: jest.fn(),
       showAccountInHeader: false,
       accountAddress: '0xmockAccountAddress',
+      origin: ORIGIN_METAMASK,
     };
 
     const { container } = renderWithProvider(
@@ -56,6 +58,7 @@ describe('Confirm Detail Row Component', () => {
       onEdit: jest.fn(),
       showAccountInHeader: false,
       accountAddress: '0xmockAccountAddress',
+      origin: ORIGIN_METAMASK,
     };
 
     const { container } = renderWithProvider(

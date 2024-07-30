@@ -6,6 +6,8 @@ describe('isBlockedUrl', () => {
   const messenger = new ControllerMessenger();
   const phishingControllerMessenger = messenger.getRestricted({
     name: 'PhishingController',
+    allowedActions: [],
+    allowedEvents: [],
   });
   const phishingController = new PhishingController({
     messenger: phishingControllerMessenger,
@@ -24,6 +26,7 @@ describe('isBlockedUrl', () => {
     },
   });
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     ['http://metamask.io', false],
     ['https://metamask.io', false],

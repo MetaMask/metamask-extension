@@ -1,9 +1,10 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 
 import configureStore from '../../../store/store';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { useBalance } from './useBalance';
 
 const renderUseBalance = (fromAddress, stateVariables = {}) => {
@@ -33,7 +34,7 @@ const renderUseBalance = (fromAddress, stateVariables = {}) => {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
             address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },

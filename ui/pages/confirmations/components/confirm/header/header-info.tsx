@@ -1,5 +1,13 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import { TransactionType } from '@metamask/transaction-controller';
+import React, { useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventLocation,
+  MetaMetricsEventName,
+} from '../../../../../../shared/constants/metametrics';
+import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRowCurrency } from '../../../../../components/app/confirm/info/row/currency';
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -15,31 +23,86 @@ import {
   ModalOverlay,
   Text,
 } from '../../../../../components/component-library';
+import { AddressCopyButton } from '../../../../../components/multichain';
+import Tooltip from '../../../../../components/ui/tooltip/tooltip';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   AlignItems,
+  BackgroundColor,
+  BorderRadius,
   Display,
   FlexDirection,
   FontWeight,
+  IconColor,
   JustifyContent,
+  TextColor,
+  TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row';
-import { AddressCopyButton } from '../../../../../components/multichain';
-import Tooltip from '../../../../../components/ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
-import { getUseBlockie } from '../../../../../selectors';
-import { ConfirmInfoRowCurrency } from '../../../../../components/app/confirm/info/row/currency';
+import {
+  currentConfirmationSelector,
+  getUseBlockie,
+} from '../../../../../selectors';
+import { setConfirmationAdvancedDetailsOpen } from '../../../../../store/actions';
 import { useBalance } from '../../../hooks/useBalance';
+import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
+import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
+import { SignatureRequestType } from '../../../types/confirm';
+import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
+import { isSignatureTransactionType } from '../../../utils/confirm';
 
 const HeaderInfo = () => {
+  const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
+
   const useBlockie = useSelector(getUseBlockie);
   const [showAccountInfo, setShowAccountInfo] = React.useState(false);
-  const { recipientAddress: fromAddress, recipientName: fromName } =
+
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
+  );
+
+  const setShowAdvancedDetails = (value: boolean): void => {
+    dispatch(setConfirmationAdvancedDetailsOpen(value));
+  };
+
+  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { senderAddress: fromAddress, senderName: fromName } =
     useConfirmationRecipientInfo();
 
   const t = useI18nContext();
 
   const { balance: balanceToUse } = useBalance(fromAddress);
+
+  const isSignature = isSignatureTransactionType(currentConfirmation);
+
+  const eventProps = isSignature
+    ? {
+        location: MetaMetricsEventLocation.SignatureConfirmation,
+        signature_type: (currentConfirmation as SignatureRequestType)?.msgParams
+          ?.signatureMethod,
+      }
+    : {
+        location: MetaMetricsEventLocation.Transaction,
+        transaction_type: currentConfirmation?.type,
+      };
+
+  function trackAccountModalOpened() {
+    const event = {
+      category: MetaMetricsEventCategory.Confirmations,
+      event: MetaMetricsEventName.AccountDetailsOpened,
+      properties: {
+        action: 'Confirm Screen',
+        ...eventProps,
+      },
+    };
+
+    trackEvent(event);
+  }
+
+  const isShowAdvancedDetailsToggle = REDESIGN_TRANSACTION_TYPES.includes(
+    currentConfirmation?.type as TransactionType,
+  );
 
   return (
     <>
@@ -53,11 +116,37 @@ const HeaderInfo = () => {
         <Tooltip position="bottom" title={t('accountDetails')} interactive>
           <ButtonIcon
             ariaLabel={t('accountDetails')}
+            color={IconColor.iconDefault}
             iconName={IconName.Info}
             size={ButtonIconSize.Md}
-            onClick={() => setShowAccountInfo(true)}
+            onClick={() => {
+              trackAccountModalOpened();
+              setShowAccountInfo(true);
+            }}
+            data-testid="header-info__account-details-button"
           />
         </Tooltip>
+        {isShowAdvancedDetailsToggle && (
+          <Box
+            backgroundColor={
+              showAdvancedDetails
+                ? BackgroundColor.infoMuted
+                : BackgroundColor.transparent
+            }
+            borderRadius={BorderRadius.MD}
+          >
+            <ButtonIcon
+              ariaLabel={'Advanced tx details'}
+              color={IconColor.iconDefault}
+              iconName={IconName.Customize}
+              data-testid="header-advanced-details-button"
+              size={ButtonIconSize.Md}
+              onClick={() => {
+                setShowAdvancedDetails(!showAdvancedDetails);
+              }}
+            />
+          </Box>
+        )}
       </Box>
       <Modal
         isOpen={showAccountInfo}
@@ -69,7 +158,11 @@ const HeaderInfo = () => {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
-            <Box display={Display.Flex} justifyContent={JustifyContent.center}>
+            <Box
+              display={Display.Flex}
+              justifyContent={JustifyContent.center}
+              style={{ position: 'relative' }}
+            >
               <Box
                 style={{ margin: '0 auto' }}
                 display={Display.Flex}
@@ -86,20 +179,26 @@ const HeaderInfo = () => {
                   address={fromAddress}
                   size={AvatarAccountSize.Lg}
                 />
-                <Text fontWeight={FontWeight.Bold} marginTop={2}>
+                <Text
+                  fontWeight={FontWeight.Bold}
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textDefault}
+                  marginTop={2}
+                  data-testid={
+                    'confirmation-account-details-modal__account-name'
+                  }
+                >
                   {fromName}
                 </Text>
               </Box>
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.flexEnd}
-              >
+              <Box style={{ position: 'absolute', right: 0 }}>
                 <ButtonIcon
                   ariaLabel={t('close')}
                   iconName={IconName.Close}
                   size={ButtonIconSize.Sm}
                   className="confirm_header__close-button"
                   onClick={() => setShowAccountInfo(false)}
+                  data-testid="confirmation-account-details-modal__close-button"
                 />
               </Box>
             </Box>
@@ -109,7 +208,10 @@ const HeaderInfo = () => {
               <AddressCopyButton address={fromAddress} shorten={true} />
             </ConfirmInfoRow>
             <ConfirmInfoRow label="Balance">
-              <ConfirmInfoRowCurrency value={balanceToUse ?? 0} />
+              <ConfirmInfoRowCurrency
+                value={balanceToUse ?? 0}
+                data-testid="confirmation-account-details-modal__account-balance"
+              />
             </ConfirmInfoRow>
           </ModalBody>
         </ModalContent>

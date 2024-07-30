@@ -16,6 +16,7 @@ import {
   BackgroundColor,
   IconColor,
   TextAlign,
+  Display,
 } from '../../../../helpers/constants/design-system';
 import {
   AvatarIcon,
@@ -68,6 +69,7 @@ export default function SnapResult({
         height={BlockSize.Full}
         paddingTop={2}
         paddingBottom={2}
+        backgroundColor={BackgroundColor.backgroundAlternative}
       >
         <AvatarIcon
           className="snap-result__header__icon"
@@ -137,8 +139,12 @@ export default function SnapResult({
       height={BlockSize.Full}
       borderStyle={BorderStyle.none}
       flexDirection={FlexDirection.Column}
+      backgroundColor={BackgroundColor.backgroundAlternative}
     >
-      <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
+      <SnapAuthorshipHeader
+        snapId={targetSubjectMetadata.origin}
+        onCancel={onSubmit}
+      />
       <Box
         className="snap-result__content"
         paddingLeft={4}
@@ -148,13 +154,17 @@ export default function SnapResult({
         style={{
           overflowY: 'auto',
         }}
+        backgroundColor={BackgroundColor.backgroundAlternative}
+        height={BlockSize.Full}
       >
         {isLoading && (
           <Box
             className="snap-result__content__loader-container"
+            display={Display.Flex}
             flexDirection={FlexDirection.Column}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
+            height={BlockSize.Full}
           >
             <PulseLoader />
           </Box>
@@ -168,9 +178,7 @@ export default function SnapResult({
         className="snap-result__footer"
         alignItems={AlignItems.center}
         flexDirection={FlexDirection.Column}
-        style={{
-          boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
-        }}
+        backgroundColor={BackgroundColor.backgroundAlternative}
       >
         <PageContainerFooter
           hideCancel

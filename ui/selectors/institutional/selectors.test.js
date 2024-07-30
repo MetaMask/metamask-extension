@@ -1,6 +1,8 @@
 import { toChecksumAddress } from 'ethereumjs-util';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
+import { createMockInternalAccount } from '../../../test/jest/mocks';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import {
   getConfiguredCustodians,
   getCustodianIconForAddress,
@@ -37,7 +39,8 @@ function buildState(overrides = {}) {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
+
             type: EthAccountType.Eoa,
             code: '0x',
             balance: '0x47c9d71831c76efe',
@@ -188,7 +191,7 @@ describe('Institutional selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
                 code: '0x',
                 balance: '0x47c9d71831c76efe',
@@ -229,7 +232,7 @@ describe('Institutional selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
                 code: '0x',
                 balance: '0x47c9d71831c76efe',
@@ -281,7 +284,7 @@ describe('Institutional selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             },
@@ -311,7 +314,7 @@ describe('Institutional selectors', () => {
                   name: 'Custody Account A',
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
                 code: '0x',
                 balance: '0x47c9d71831c76efe',
@@ -322,7 +325,6 @@ describe('Institutional selectors', () => {
           },
           keyrings: [],
           custodianSupportedChains: {},
-          selectedAddress: accountAddress,
           providerConfig: {},
         },
       });
@@ -348,7 +350,7 @@ describe('Institutional selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
                 code: '0x',
                 balance: '0x47c9d71831c76efe',
@@ -364,7 +366,6 @@ describe('Institutional selectors', () => {
             },
           ],
           custodianSupportedChains: {},
-          selectedAddress: accountAddress,
           providerConfig: null,
         },
       });
@@ -390,7 +391,7 @@ describe('Institutional selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
                 code: '0x',
                 balance: '0x47c9d71831c76efe',
@@ -408,7 +409,6 @@ describe('Institutional selectors', () => {
           custodianSupportedChains: {
             [accountAddress]: null,
           },
-          selectedAddress: accountAddress,
           providerConfig: {
             chainId: toHex(1),
           },
@@ -436,7 +436,7 @@ describe('Institutional selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
                 code: '0x',
                 balance: '0x47c9d71831c76efe',
@@ -456,7 +456,6 @@ describe('Institutional selectors', () => {
               supportedChains: [],
             },
           },
-          selectedAddress: accountAddress,
           providerConfig: {
             chainId: toHex(1),
           },
@@ -484,7 +483,7 @@ describe('Institutional selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
                 code: '0x',
                 balance: '0x47c9d71831c76efe',
@@ -504,7 +503,6 @@ describe('Institutional selectors', () => {
               supportedChains: ['1'],
             },
           },
-          selectedAddress: accountAddress,
           providerConfig: {
             chainId: 1,
           },
@@ -532,7 +530,7 @@ describe('Institutional selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
                 code: '0x',
                 balance: '0x47c9d71831c76efe',
@@ -552,7 +550,6 @@ describe('Institutional selectors', () => {
               supportedChains: ['1'],
             },
           },
-          selectedAddress: accountAddress,
           providerConfig: {
             chainId: 'not a hex number',
           },
@@ -566,6 +563,12 @@ describe('Institutional selectors', () => {
   });
 
   describe('getMMIAddressFromModalOrAddress', () => {
+    const mockInternalAccount = createMockInternalAccount({
+      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      name: 'Custody Account A',
+      keyringType: 'Custody',
+    });
+
     it('returns modalAddress if it exists', () => {
       const state = {
         appState: {
@@ -578,7 +581,10 @@ describe('Institutional selectors', () => {
           },
         },
         metamask: {
-          selectedAddress: 'selectedAddress',
+          internalAccounts: {
+            accounts: {},
+            selectedAccount: '',
+          },
         },
       };
 
@@ -587,7 +593,7 @@ describe('Institutional selectors', () => {
       expect(address).toBe('modalAddress');
     });
 
-    it('returns selectedAddress if modalAddress does not exist', () => {
+    it('returns selectedAccount if modalAddress does not exist', () => {
       const state = {
         appState: {
           modal: {
@@ -597,16 +603,21 @@ describe('Institutional selectors', () => {
           },
         },
         metamask: {
-          selectedAddress: 'selectedAddress',
+          internalAccounts: {
+            accounts: {
+              [mockInternalAccount.id]: mockInternalAccount,
+            },
+            selectedAccount: mockInternalAccount.id,
+          },
         },
       };
 
       const address = getMMIAddressFromModalOrAddress(state);
 
-      expect(address).toBe('selectedAddress');
+      expect(address).toBe(mockInternalAccount.address);
     });
 
-    it('returns undefined if neither modalAddress nor selectedAddress exist', () => {
+    it('returns undefined if neither modalAddress nor selectedAccount exist', () => {
       const state = {
         appState: {
           modal: {
@@ -615,7 +626,12 @@ describe('Institutional selectors', () => {
             },
           },
         },
-        metamask: {},
+        metamask: {
+          internalAccounts: {
+            accounts: {},
+            selectedAccount: '',
+          },
+        },
       };
 
       const address = getMMIAddressFromModalOrAddress(state);

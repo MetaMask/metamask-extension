@@ -1,5 +1,3 @@
-import { strict as assert } from 'assert';
-import sinon from 'sinon';
 import { toHex } from '@metamask/controller-utils';
 import { NameType } from '@metamask/name-controller';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
@@ -9,7 +7,6 @@ import {
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
   MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
-import waitUntilCalled from '../../../test/lib/wait-until-called';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
 import * as Utils from '../lib/util';
 import MetaMetricsController from './metametrics';
@@ -78,13 +75,13 @@ function getMockPreferencesStore({ currentLocale = LOCALE } = {}) {
   let preferencesStore = {
     currentLocale,
   };
-  const subscribe = sinon.stub();
+  const subscribe = jest.fn();
   const updateState = (newState) => {
     preferencesStore = { ...preferencesStore, ...newState };
-    subscribe.getCall(0).args[0](preferencesStore);
+    subscribe.mock.calls[0][0](preferencesStore);
   };
   return {
-    getState: sinon.stub().returns(preferencesStore),
+    getState: jest.fn().mockReturnValue(preferencesStore),
     updateState,
     subscribe,
   };
@@ -145,27 +142,36 @@ function getMetaMetricsController({
 
 describe('MetaMetricsController', function () {
   const now = new Date();
-  let clock;
   beforeEach(function () {
     globalThis.sentry = {
-      startSession: sinon.fake(() => {
-        /** NOOP */
-      }),
-      endSession: sinon.fake(() => {
-        /** NOOP */
-      }),
+      startSession: jest.fn(),
+      endSession: jest.fn(),
     };
-    clock = sinon.useFakeTimers(now.getTime());
-    sinon.stub(Utils, 'generateRandomId').returns('DUMMY_RANDOM_ID');
+    jest.useFakeTimers().setSystemTime(now.getTime());
+    jest.spyOn(Utils, 'generateRandomId').mockReturnValue('DUMMY_RANDOM_ID');
   });
 
   describe('constructor', function () {
     it('should properly initialize', function () {
-      const mock = sinon.mock(segment);
-      mock
-        .expects('track')
-        .once()
-        .withArgs({
+      const spy = jest.spyOn(segment, 'track');
+      const metaMetricsController = getMetaMetricsController();
+      expect(metaMetricsController.version).toStrictEqual(VERSION);
+      expect(metaMetricsController.chainId).toStrictEqual(FAKE_CHAIN_ID);
+      expect(
+        metaMetricsController.state.participateInMetaMetrics,
+      ).toStrictEqual(true);
+      expect(metaMetricsController.state.metaMetricsId).toStrictEqual(
+        TEST_META_METRICS_ID,
+      );
+      expect(metaMetricsController.locale).toStrictEqual(
+        LOCALE.replace('_', '-'),
+      );
+      expect(metaMetricsController.state.fragments).toStrictEqual({
+        testid: SAMPLE_PERSISTED_EVENT,
+      });
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(
+        {
           event: 'sample non-persisted event failure',
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
@@ -175,26 +181,9 @@ describe('MetaMetricsController', function () {
           },
           messageId: 'sample-non-persisted-event-failure',
           timestamp: new Date(),
-        });
-      const metaMetricsController = getMetaMetricsController();
-      assert.strictEqual(metaMetricsController.version, VERSION);
-      assert.strictEqual(metaMetricsController.chainId, FAKE_CHAIN_ID);
-      assert.strictEqual(
-        metaMetricsController.state.participateInMetaMetrics,
-        true,
+        },
+        spy.mock.calls[0][1],
       );
-      assert.strictEqual(
-        metaMetricsController.state.metaMetricsId,
-        TEST_META_METRICS_ID,
-      );
-      assert.strictEqual(
-        metaMetricsController.locale,
-        LOCALE.replace('_', '-'),
-      );
-      assert.deepStrictEqual(metaMetricsController.state.fragments, {
-        testid: SAMPLE_PERSISTED_EVENT,
-      });
-      mock.verify();
     });
 
     it('should update when network changes', function () {
@@ -211,7 +200,7 @@ describe('MetaMetricsController', function () {
       chainId = '0x222';
       networkDidChangeListener();
 
-      assert.strictEqual(metaMetricsController.chainId, '0x222');
+      expect(metaMetricsController.chainId).toStrictEqual('0x222');
     });
 
     it('should update when preferences changes', function () {
@@ -219,97 +208,101 @@ describe('MetaMetricsController', function () {
       const metaMetricsController = getMetaMetricsController({
         preferencesStore,
       });
-      preferencesStore.updateState({
-        currentLocale: 'en_UK',
-      });
-      assert.strictEqual(metaMetricsController.locale, 'en-UK');
+      preferencesStore.updateState({ currentLocale: 'en_UK' });
+      expect(metaMetricsController.locale).toStrictEqual('en-UK');
     });
   });
 
   describe('generateMetaMetricsId', function () {
     it('should generate an 0x prefixed hex string', function () {
       const metaMetricsController = getMetaMetricsController();
-      assert.equal(
+      expect(
         metaMetricsController.generateMetaMetricsId().startsWith('0x'),
-        true,
-      );
+      ).toStrictEqual(true);
+    });
+  });
+
+  describe('getMetaMetricsId', function () {
+    it('should generate or return the metametrics id', function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+        metaMetricsId: null,
+      });
+
+      // Starts off being empty.
+      expect(metaMetricsController.state.metaMetricsId).toStrictEqual(null);
+
+      // Create a new metametrics id.
+      const clientMetaMetricsId = metaMetricsController.getMetaMetricsId();
+      expect(clientMetaMetricsId.startsWith('0x')).toStrictEqual(true);
+
+      // Return same metametrics id.
+      const sameMetaMetricsId = metaMetricsController.getMetaMetricsId();
+      expect(clientMetaMetricsId).toStrictEqual(sameMetaMetricsId);
     });
   });
 
   describe('identify', function () {
-    it('should call segment.identify for valid traits if user is participating in metametrics', async function () {
+    it('should call segment.identify for valid traits if user is participating in metametrics', function () {
+      const spy = jest.spyOn(segment, 'identify');
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: true,
         metaMetricsId: TEST_META_METRICS_ID,
       });
-      const mock = sinon.mock(segment);
-
-      mock.expects('identify').once().withArgs({
-        userId: TEST_META_METRICS_ID,
-        traits: MOCK_TRAITS,
-        messageId: Utils.generateRandomId(),
-        timestamp: new Date(),
-      });
-
       metaMetricsController.identify({
         ...MOCK_TRAITS,
         ...MOCK_INVALID_TRAITS,
       });
-
-      mock.verify();
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(
+        {
+          userId: TEST_META_METRICS_ID,
+          traits: MOCK_TRAITS,
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
+        },
+        spy.mock.calls[0][1],
+      );
     });
 
-    it('should transform date type traits into ISO-8601 timestamp strings', async function () {
+    it('should transform date type traits into ISO-8601 timestamp strings', function () {
+      const spy = jest.spyOn(segment, 'identify');
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: true,
         metaMetricsId: TEST_META_METRICS_ID,
       });
-      const mock = sinon.mock(segment);
-
-      const mockDate = new Date();
-      const mockDateISOString = mockDate.toISOString();
-
-      mock
-        .expects('identify')
-        .once()
-        .withArgs({
+      metaMetricsController.identify({ test_date: new Date().toISOString() });
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(
+        {
           userId: TEST_META_METRICS_ID,
           traits: {
-            test_date: mockDateISOString,
+            test_date: new Date().toISOString(),
           },
           messageId: Utils.generateRandomId(),
           timestamp: new Date(),
-        });
-
-      metaMetricsController.identify({
-        test_date: mockDate,
-      });
-      mock.verify();
+        },
+        spy.mock.calls[0][1],
+      );
     });
 
     it('should not call segment.identify if user is not participating in metametrics', function () {
+      const spy = jest.spyOn(segment, 'identify');
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: false,
       });
-      const mock = sinon.mock(segment);
-
-      mock.expects('identify').never();
-
       metaMetricsController.identify(MOCK_TRAITS);
-      mock.verify();
+      expect(spy).toHaveBeenCalledTimes(0);
     });
 
-    it('should not call segment.identify if there are no valid traits to identify', async function () {
+    it('should not call segment.identify if there are no valid traits to identify', function () {
+      const spy = jest.spyOn(segment, 'identify');
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: true,
         metaMetricsId: TEST_META_METRICS_ID,
       });
-      const mock = sinon.mock(segment);
-
-      mock.expects('identify').never();
-
       metaMetricsController.identify(MOCK_INVALID_TRAITS);
-      mock.verify();
+      expect(spy).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -319,28 +312,35 @@ describe('MetaMetricsController', function () {
         participateInMetaMetrics: null,
         metaMetricsId: null,
       });
-      assert.equal(metaMetricsController.state.participateInMetaMetrics, null);
+      expect(
+        metaMetricsController.state.participateInMetaMetrics,
+      ).toStrictEqual(null);
       await metaMetricsController.setParticipateInMetaMetrics(true);
-      assert.ok(globalThis.sentry.startSession.calledOnce);
-      assert.equal(metaMetricsController.state.participateInMetaMetrics, true);
+      expect(globalThis.sentry.startSession).toHaveBeenCalledTimes(1);
+      expect(
+        metaMetricsController.state.participateInMetaMetrics,
+      ).toStrictEqual(true);
       await metaMetricsController.setParticipateInMetaMetrics(false);
-      assert.equal(metaMetricsController.state.participateInMetaMetrics, false);
+      expect(
+        metaMetricsController.state.participateInMetaMetrics,
+      ).toStrictEqual(false);
     });
     it('should generate and update the metaMetricsId when set to true', async function () {
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: null,
         metaMetricsId: null,
       });
-      assert.equal(metaMetricsController.state.metaMetricsId, null);
+      expect(metaMetricsController.state.metaMetricsId).toStrictEqual(null);
       await metaMetricsController.setParticipateInMetaMetrics(true);
-      assert.equal(typeof metaMetricsController.state.metaMetricsId, 'string');
+      expect(typeof metaMetricsController.state.metaMetricsId).toStrictEqual(
+        'string',
+      );
     });
     it('should not nullify the metaMetricsId when set to false', async function () {
       const metaMetricsController = getMetaMetricsController();
       await metaMetricsController.setParticipateInMetaMetrics(false);
-      assert.ok(globalThis.sentry.endSession.calledOnce);
-      assert.equal(
-        metaMetricsController.state.metaMetricsId,
+      expect(globalThis.sentry.endSession).toHaveBeenCalledTimes(1);
+      expect(metaMetricsController.state.metaMetricsId).toStrictEqual(
         TEST_META_METRICS_ID,
       );
     });
@@ -348,11 +348,10 @@ describe('MetaMetricsController', function () {
 
   describe('submitEvent', function () {
     it('should not track an event if user is not participating in metametrics', function () {
-      const mock = sinon.mock(segment);
+      const spy = jest.spyOn(segment, 'track');
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: false,
       });
-      mock.expects('track').never();
       metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
@@ -360,28 +359,14 @@ describe('MetaMetricsController', function () {
           test: 1,
         },
       });
-      mock.verify();
+      expect(spy).toHaveBeenCalledTimes(0);
     });
 
     it('should track an event if user has not opted in, but isOptIn is true', function () {
-      const mock = sinon.mock(segment);
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: true,
       });
-      mock
-        .expects('track')
-        .once()
-        .withArgs({
-          event: 'Fake Event',
-          anonymousId: METAMETRICS_ANONYMOUS_ID,
-          context: DEFAULT_TEST_CONTEXT,
-          properties: {
-            test: 1,
-            ...DEFAULT_EVENT_PROPERTIES,
-          },
-          messageId: Utils.generateRandomId(),
-          timestamp: new Date(),
-        });
+      const spy = jest.spyOn(segment, 'track');
       metaMetricsController.submitEvent(
         {
           event: 'Fake Event',
@@ -392,20 +377,11 @@ describe('MetaMetricsController', function () {
         },
         { isOptIn: true },
       );
-      mock.verify();
-    });
-
-    it('should track an event during optin and allow for metaMetricsId override', function () {
-      const mock = sinon.mock(segment);
-      const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: true,
-      });
-      mock
-        .expects('track')
-        .once()
-        .withArgs({
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(
+        {
           event: 'Fake Event',
-          userId: 'TESTID',
+          anonymousId: METAMETRICS_ANONYMOUS_ID,
           context: DEFAULT_TEST_CONTEXT,
           properties: {
             test: 1,
@@ -413,7 +389,16 @@ describe('MetaMetricsController', function () {
           },
           messageId: Utils.generateRandomId(),
           timestamp: new Date(),
-        });
+        },
+        spy.mock.calls[0][1],
+      );
+    });
+
+    it('should track an event during optin and allow for metaMetricsId override', function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+      });
+      const spy = jest.spyOn(segment, 'track');
       metaMetricsController.submitEvent(
         {
           event: 'Fake Event',
@@ -424,27 +409,26 @@ describe('MetaMetricsController', function () {
         },
         { isOptIn: true, metaMetricsId: 'TESTID' },
       );
-      mock.verify();
-    });
-
-    it('should track a legacy event', function () {
-      const mock = sinon.mock(segment);
-      const metaMetricsController = getMetaMetricsController();
-      mock
-        .expects('track')
-        .once()
-        .withArgs({
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(
+        {
           event: 'Fake Event',
-          userId: TEST_META_METRICS_ID,
+          userId: 'TESTID',
           context: DEFAULT_TEST_CONTEXT,
           properties: {
             test: 1,
-            legacy_event: true,
             ...DEFAULT_EVENT_PROPERTIES,
           },
           messageId: Utils.generateRandomId(),
           timestamp: new Date(),
-        });
+        },
+        spy.mock.calls[0][1],
+      );
+    });
+
+    it('should track a legacy event', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = jest.spyOn(segment, 'track');
       metaMetricsController.submitEvent(
         {
           event: 'Fake Event',
@@ -455,16 +439,37 @@ describe('MetaMetricsController', function () {
         },
         { matomoEvent: true },
       );
-      mock.verify();
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(
+        {
+          event: 'Fake Event',
+          userId: TEST_META_METRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            test: 1,
+            legacy_event: true,
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
+        },
+        spy.mock.calls[0][1],
+      );
     });
 
     it('should track a non legacy event', function () {
-      const mock = sinon.mock(segment);
       const metaMetricsController = getMetaMetricsController();
-      mock
-        .expects('track')
-        .once()
-        .withArgs({
+      const spy = jest.spyOn(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Fake Event',
+        category: 'Unit Test',
+        properties: {
+          test: 1,
+        },
+      });
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(
+        {
           event: 'Fake Event',
           properties: {
             test: 1,
@@ -474,21 +479,14 @@ describe('MetaMetricsController', function () {
           userId: TEST_META_METRICS_ID,
           messageId: Utils.generateRandomId(),
           timestamp: new Date(),
-        });
-      metaMetricsController.submitEvent({
-        event: 'Fake Event',
-        category: 'Unit Test',
-        properties: {
-          test: 1,
         },
-      });
-      mock.verify();
+        spy.mock.calls[0][1],
+      );
     });
 
-    it('should immediately flush queue if flushImmediately set to true', async function () {
+    it('should immediately flush queue if flushImmediately set to true', function () {
       const metaMetricsController = getMetaMetricsController();
-      const flushStub = sinon.stub(segment, 'flush');
-      const flushCalled = waitUntilCalled(flushStub, segment);
+      const spy = jest.spyOn(segment, 'flush');
       metaMetricsController.submitEvent(
         {
           event: 'Fake Event',
@@ -496,51 +494,48 @@ describe('MetaMetricsController', function () {
         },
         { flushImmediately: true },
       );
-      assert.doesNotReject(flushCalled());
+      expect(spy).not.toThrow();
     });
 
-    it('should throw if event or category not provided', function () {
+    it('should throw if event or category not provided', async function () {
       const metaMetricsController = getMetaMetricsController();
-      assert.rejects(
-        () => metaMetricsController.submitEvent({ event: 'test' }),
-        /Must specify event and category\./u,
-        'must specify category',
-      );
 
-      assert.rejects(
-        () => metaMetricsController.submitEvent({ category: 'test' }),
-        /Must specify event and category\./u,
-        'must specify event',
-      );
+      await expect(
+        metaMetricsController.submitEvent({ event: 'test' }),
+      ).rejects.toThrow(/Must specify event and category\./u);
+
+      await expect(
+        metaMetricsController.submitEvent({ category: 'test' }),
+      ).rejects.toThrow(/Must specify event and category\./u);
     });
 
-    it('should throw if provided sensitiveProperties, when excludeMetaMetricsId is true', function () {
+    it('should throw if provided sensitiveProperties, when excludeMetaMetricsId is true', async function () {
       const metaMetricsController = getMetaMetricsController();
-      assert.rejects(
-        () =>
-          metaMetricsController.submitEvent(
-            {
-              event: 'Fake Event',
-              category: 'Unit Test',
-              sensitiveProperties: { foo: 'bar' },
-            },
-            { excludeMetaMetricsId: true },
-          ),
+      await expect(
+        metaMetricsController.submitEvent(
+          {
+            event: 'Fake Event',
+            category: 'Unit Test',
+            sensitiveProperties: { foo: 'bar' },
+          },
+          { excludeMetaMetricsId: true },
+        ),
+      ).rejects.toThrow(
         /sensitiveProperties was specified in an event payload that also set the excludeMetaMetricsId flag/u,
       );
     });
 
     it('should track sensitiveProperties in a separate, anonymous event', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = sinon.spy(segment, 'track');
+      const spy = jest.spyOn(segment, 'track');
       metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
         sensitiveProperties: { foo: 'bar' },
       });
-      assert.ok(spy.calledTwice);
-      assert.ok(
-        spy.calledWith({
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(spy).toHaveBeenCalledWith(
+        {
           event: 'Fake Event',
           anonymousId: METAMETRICS_ANONYMOUS_ID,
           context: DEFAULT_TEST_CONTEXT,
@@ -550,17 +545,19 @@ describe('MetaMetricsController', function () {
           },
           messageId: Utils.generateRandomId(),
           timestamp: new Date(),
-        }),
+        },
+        spy.mock.calls[0][1],
       );
-      assert.ok(
-        spy.calledWith({
+      expect(spy).toHaveBeenCalledWith(
+        {
           event: 'Fake Event',
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
           properties: DEFAULT_EVENT_PROPERTIES,
           messageId: Utils.generateRandomId(),
           timestamp: new Date(),
-        }),
+        },
+        spy.mock.calls[1][1],
       );
     });
   });
@@ -568,15 +565,15 @@ describe('MetaMetricsController', function () {
   describe('Change Transaction XXX anonymous event namnes', function () {
     it('should change "Transaction Added" anonymous event names to "Transaction Added Anon"', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = sinon.spy(segment, 'track');
+      const spy = jest.spyOn(segment, 'track');
       metaMetricsController.submitEvent({
         event: 'Transaction Added',
         category: 'Unit Test',
         sensitiveProperties: { foo: 'bar' },
       });
-      assert.ok(spy.calledTwice);
-      assert.ok(
-        spy.calledWith({
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(spy).toHaveBeenCalledWith(
+        {
           event: `Transaction Added Anon`,
           anonymousId: METAMETRICS_ANONYMOUS_ID,
           context: DEFAULT_TEST_CONTEXT,
@@ -586,21 +583,22 @@ describe('MetaMetricsController', function () {
           },
           messageId: Utils.generateRandomId(),
           timestamp: new Date(),
-        }),
+        },
+        spy.mock.calls[0][1],
       );
     });
 
     it('should change "Transaction Submitted" anonymous event names to "Transaction Added Anon"', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = sinon.spy(segment, 'track');
+      const spy = jest.spyOn(segment, 'track');
       metaMetricsController.submitEvent({
         event: 'Transaction Submitted',
         category: 'Unit Test',
         sensitiveProperties: { foo: 'bar' },
       });
-      assert.ok(spy.calledTwice);
-      assert.ok(
-        spy.calledWith({
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(spy).toHaveBeenCalledWith(
+        {
           event: `Transaction Submitted Anon`,
           anonymousId: METAMETRICS_ANONYMOUS_ID,
           context: DEFAULT_TEST_CONTEXT,
@@ -610,21 +608,22 @@ describe('MetaMetricsController', function () {
           },
           messageId: Utils.generateRandomId(),
           timestamp: new Date(),
-        }),
+        },
+        spy.mock.calls[0][1],
       );
     });
 
     it('should change "Transaction Finalized" anonymous event names to "Transaction Added Anon"', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = sinon.spy(segment, 'track');
+      const spy = jest.spyOn(segment, 'track');
       metaMetricsController.submitEvent({
         event: 'Transaction Finalized',
         category: 'Unit Test',
         sensitiveProperties: { foo: 'bar' },
       });
-      assert.ok(spy.calledTwice);
-      assert.ok(
-        spy.calledWith({
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(spy).toHaveBeenCalledWith(
+        {
           event: `Transaction Finalized Anon`,
           anonymousId: METAMETRICS_ANONYMOUS_ID,
           context: DEFAULT_TEST_CONTEXT,
@@ -634,19 +633,25 @@ describe('MetaMetricsController', function () {
           },
           messageId: Utils.generateRandomId(),
           timestamp: new Date(),
-        }),
+        },
+        spy.mock.calls[0][1],
       );
     });
   });
 
   describe('trackPage', function () {
     it('should track a page view', function () {
-      const mock = sinon.mock(segment);
       const metaMetricsController = getMetaMetricsController();
-      mock
-        .expects('page')
-        .once()
-        .withArgs({
+      const spy = jest.spyOn(segment, 'page');
+      metaMetricsController.trackPage({
+        name: 'home',
+        params: null,
+        environmentType: ENVIRONMENT_TYPE_BACKGROUND,
+        page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
+      });
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(
+        {
           name: 'home',
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
@@ -656,52 +661,32 @@ describe('MetaMetricsController', function () {
           },
           messageId: Utils.generateRandomId(),
           timestamp: new Date(),
-        });
-      metaMetricsController.trackPage({
-        name: 'home',
-        params: null,
-        environmentType: ENVIRONMENT_TYPE_BACKGROUND,
-        page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
-      });
-      mock.verify();
+        },
+        spy.mock.calls[0][1],
+      );
     });
 
     it('should not track a page view if user is not participating in metametrics', function () {
-      const mock = sinon.mock(segment);
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: false,
       });
-      mock.expects('page').never();
+      const spy = jest.spyOn(segment, 'page');
       metaMetricsController.trackPage({
         name: 'home',
         params: null,
         environmentType: ENVIRONMENT_TYPE_BACKGROUND,
         page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
       });
-      mock.verify();
+      expect(spy).toHaveBeenCalledTimes(0);
     });
 
     it('should track a page view if isOptInPath is true and user not yet opted in', function () {
-      const mock = sinon.mock(segment);
       const metaMetricsController = getMetaMetricsController({
         preferencesStore: getMockPreferencesStore({
           participateInMetaMetrics: null,
         }),
       });
-      mock
-        .expects('page')
-        .once()
-        .withArgs({
-          name: 'home',
-          userId: TEST_META_METRICS_ID,
-          context: DEFAULT_TEST_CONTEXT,
-          properties: {
-            params: null,
-            ...DEFAULT_PAGE_PROPERTIES,
-          },
-          messageId: Utils.generateRandomId(),
-          timestamp: new Date(),
-        });
+      const spy = jest.spyOn(segment, 'page');
       metaMetricsController.trackPage(
         {
           name: 'home',
@@ -711,20 +696,53 @@ describe('MetaMetricsController', function () {
         },
         { isOptInPath: true },
       );
-      mock.verify();
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(
+        {
+          name: 'home',
+          userId: TEST_META_METRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            params: null,
+            ...DEFAULT_PAGE_PROPERTIES,
+          },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
+        },
+        spy.mock.calls[0][1],
+      );
     });
 
     it('multiple trackPage call with same actionId should result in same messageId being sent to segment', function () {
-      const mock = sinon.mock(segment);
       const metaMetricsController = getMetaMetricsController({
         preferencesStore: getMockPreferencesStore({
           participateInMetaMetrics: null,
         }),
       });
-      mock
-        .expects('page')
-        .twice()
-        .withArgs({
+      const spy = jest.spyOn(segment, 'page');
+      metaMetricsController.trackPage(
+        {
+          name: 'home',
+          params: null,
+          actionId: DUMMY_ACTION_ID,
+          environmentType: ENVIRONMENT_TYPE_BACKGROUND,
+          page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
+        },
+        { isOptInPath: true },
+      );
+      metaMetricsController.trackPage(
+        {
+          name: 'home',
+          params: null,
+          actionId: DUMMY_ACTION_ID,
+          environmentType: ENVIRONMENT_TYPE_BACKGROUND,
+          page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
+        },
+        { isOptInPath: true },
+      );
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(spy).toHaveBeenCalledWith(
+        {
           name: 'home',
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
@@ -734,44 +752,25 @@ describe('MetaMetricsController', function () {
           },
           messageId: DUMMY_ACTION_ID,
           timestamp: new Date(),
-        });
-      metaMetricsController.trackPage(
-        {
-          name: 'home',
-          params: null,
-          actionId: DUMMY_ACTION_ID,
-          environmentType: ENVIRONMENT_TYPE_BACKGROUND,
-          page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
         },
-        { isOptInPath: true },
+        spy.mock.calls[0][1],
       );
-      metaMetricsController.trackPage(
-        {
-          name: 'home',
-          params: null,
-          actionId: DUMMY_ACTION_ID,
-          environmentType: ENVIRONMENT_TYPE_BACKGROUND,
-          page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
-        },
-        { isOptInPath: true },
-      );
-      mock.verify();
     });
   });
 
   describe('deterministic messageId', function () {
     it('should use the actionId as messageId when provided', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = sinon.spy(segment, 'track');
+      const spy = jest.spyOn(segment, 'track');
       metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
         properties: { foo: 'bar' },
         actionId: '0x001',
       });
-      assert.ok(spy.calledOnce);
-      assert.ok(
-        spy.calledWith({
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(
+        {
           event: 'Fake Event',
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
@@ -781,23 +780,23 @@ describe('MetaMetricsController', function () {
           },
           messageId: '0x001',
           timestamp: new Date(),
-        }),
+        },
+        spy.mock.calls[0][1],
       );
     });
 
     it('should append 0x000 to the actionId of anonymized event when tracking sensitiveProperties', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = sinon.spy(segment, 'track');
+      const spy = jest.spyOn(segment, 'track');
       metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
         sensitiveProperties: { foo: 'bar' },
         actionId: '0x001',
       });
-      assert.ok(spy.calledTwice);
-
-      assert.ok(
-        spy.calledWith({
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(spy).toHaveBeenCalledWith(
+        {
           event: 'Fake Event',
           anonymousId: METAMETRICS_ANONYMOUS_ID,
           context: DEFAULT_TEST_CONTEXT,
@@ -807,10 +806,11 @@ describe('MetaMetricsController', function () {
           },
           messageId: '0x001-0x000',
           timestamp: new Date(),
-        }),
+        },
+        spy.mock.calls[0][1],
       );
-      assert.ok(
-        spy.calledWith({
+      expect(spy).toHaveBeenCalledWith(
+        {
           event: 'Fake Event',
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
@@ -819,22 +819,23 @@ describe('MetaMetricsController', function () {
           },
           messageId: '0x001',
           timestamp: new Date(),
-        }),
+        },
+        spy.mock.calls[1][1],
       );
     });
 
     it('should use the uniqueIdentifier as messageId when provided', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = sinon.spy(segment, 'track');
+      const spy = jest.spyOn(segment, 'track');
       metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
         properties: { foo: 'bar' },
         uniqueIdentifier: 'transaction-submitted-0000',
       });
-      assert.ok(spy.calledOnce);
-      assert.ok(
-        spy.calledWith({
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(
+        {
           event: 'Fake Event',
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
@@ -844,22 +845,23 @@ describe('MetaMetricsController', function () {
           },
           messageId: 'transaction-submitted-0000',
           timestamp: new Date(),
-        }),
+        },
+        spy.mock.calls[0][1],
       );
     });
 
     it('should append 0x000 to the uniqueIdentifier of anonymized event when tracking sensitiveProperties', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = sinon.spy(segment, 'track');
+      const spy = jest.spyOn(segment, 'track');
       metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
         sensitiveProperties: { foo: 'bar' },
         uniqueIdentifier: 'transaction-submitted-0000',
       });
-      assert.ok(spy.calledTwice);
-      assert.ok(
-        spy.calledWith({
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(spy).toHaveBeenCalledWith(
+        {
           event: 'Fake Event',
           anonymousId: METAMETRICS_ANONYMOUS_ID,
           context: DEFAULT_TEST_CONTEXT,
@@ -869,10 +871,11 @@ describe('MetaMetricsController', function () {
           },
           messageId: 'transaction-submitted-0000-0x000',
           timestamp: new Date(),
-        }),
+        },
+        spy.mock.calls[0][1],
       );
-      assert.ok(
-        spy.calledWith({
+      expect(spy).toHaveBeenCalledWith(
+        {
           event: 'Fake Event',
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
@@ -881,13 +884,14 @@ describe('MetaMetricsController', function () {
           },
           messageId: 'transaction-submitted-0000',
           timestamp: new Date(),
-        }),
+        },
+        spy.mock.calls[1][1],
       );
     });
 
     it('should combine the uniqueIdentifier and actionId as messageId when both provided', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = sinon.spy(segment, 'track');
+      const spy = jest.spyOn(segment, 'track');
       metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
@@ -895,9 +899,9 @@ describe('MetaMetricsController', function () {
         actionId: '0x001',
         uniqueIdentifier: 'transaction-submitted-0000',
       });
-      assert.ok(spy.calledOnce);
-      assert.ok(
-        spy.calledWith({
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(
+        {
           event: 'Fake Event',
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
@@ -907,13 +911,14 @@ describe('MetaMetricsController', function () {
           },
           messageId: 'transaction-submitted-0000-0x001',
           timestamp: new Date(),
-        }),
+        },
+        spy.mock.calls[0][1],
       );
     });
 
     it('should append 0x000 to the combined uniqueIdentifier and actionId of anonymized event when tracking sensitiveProperties', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = sinon.spy(segment, 'track');
+      const spy = jest.spyOn(segment, 'track');
       metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
@@ -921,9 +926,9 @@ describe('MetaMetricsController', function () {
         actionId: '0x001',
         uniqueIdentifier: 'transaction-submitted-0000',
       });
-      assert.ok(spy.calledTwice);
-      assert.ok(
-        spy.calledWith({
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(spy).toHaveBeenCalledWith(
+        {
           event: 'Fake Event',
           anonymousId: METAMETRICS_ANONYMOUS_ID,
           context: DEFAULT_TEST_CONTEXT,
@@ -933,10 +938,11 @@ describe('MetaMetricsController', function () {
           },
           messageId: 'transaction-submitted-0000-0x001-0x000',
           timestamp: new Date(),
-        }),
+        },
+        spy.mock.calls[0][1],
       );
-      assert.ok(
-        spy.calledWith({
+      expect(spy).toHaveBeenCalledWith(
+        {
           event: 'Fake Event',
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
@@ -945,7 +951,8 @@ describe('MetaMetricsController', function () {
           },
           messageId: 'transaction-submitted-0000-0x001',
           timestamp: new Date(),
-        }),
+        },
+        spy.mock.calls[1][1],
       );
     });
   });
@@ -1038,7 +1045,6 @@ describe('MetaMetricsController', function () {
         theme: 'default',
         useTokenDetection: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        desktopEnabled: false,
         security_providers: [],
         names: {
           [NameType.ETHEREUM_ADDRESS]: {
@@ -1074,7 +1080,7 @@ describe('MetaMetricsController', function () {
         },
       });
 
-      assert.deepEqual(traits, {
+      expect(traits).toStrictEqual({
         [MetaMetricsUserTrait.AddressBookEntries]: 3,
         [MetaMetricsUserTrait.InstallDateExt]: '',
         [MetaMetricsUserTrait.LedgerConnectionType]: 'web-hid',
@@ -1094,7 +1100,6 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.Theme]: 'default',
         [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
         [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]: true,
-        [MetaMetricsUserTrait.DesktopEnabled]: false,
         [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
@@ -1132,7 +1137,6 @@ describe('MetaMetricsController', function () {
         theme: 'default',
         useTokenDetection: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        desktopEnabled: false,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -1163,10 +1167,9 @@ describe('MetaMetricsController', function () {
         theme: 'default',
         useTokenDetection: true,
         useNativeCurrencyAsPrimaryCurrency: false,
-        desktopEnabled: false,
       });
 
-      assert.deepEqual(updatedTraits, {
+      expect(updatedTraits).toStrictEqual({
         [MetaMetricsUserTrait.AddressBookEntries]: 4,
         [MetaMetricsUserTrait.NumberOfAccounts]: 3,
         [MetaMetricsUserTrait.NumberOfTokens]: 1,
@@ -1200,7 +1203,6 @@ describe('MetaMetricsController', function () {
         theme: 'default',
         useTokenDetection: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        desktopEnabled: false,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -1226,10 +1228,8 @@ describe('MetaMetricsController', function () {
         theme: 'default',
         useTokenDetection: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        desktopEnabled: false,
       });
-
-      assert.equal(updatedTraits, null);
+      expect(updatedTraits).toStrictEqual(null);
     });
   });
 
@@ -1238,7 +1238,7 @@ describe('MetaMetricsController', function () {
       const metaMetricsController = getMetaMetricsController({});
       metaMetricsController.trackPage({}, { isOptIn: true });
       const { segmentApiCalls } = metaMetricsController.store.getState();
-      assert(Object.keys(segmentApiCalls).length > 0);
+      expect(Object.keys(segmentApiCalls).length > 0).toStrictEqual(true);
     });
 
     it('should remove event from store when callback is invoked', function () {
@@ -1246,22 +1246,22 @@ describe('MetaMetricsController', function () {
       const stubFn = (_, cb) => {
         cb();
       };
-      sinon.stub(segmentInstance, 'track').callsFake(stubFn);
-      sinon.stub(segmentInstance, 'page').callsFake(stubFn);
+      jest.spyOn(segmentInstance, 'track').mockImplementation(stubFn);
+      jest.spyOn(segmentInstance, 'page').mockImplementation(stubFn);
 
       const metaMetricsController = getMetaMetricsController({
         segmentInstance,
       });
       metaMetricsController.trackPage({}, { isOptIn: true });
       const { segmentApiCalls } = metaMetricsController.store.getState();
-      assert(Object.keys(segmentApiCalls).length === 0);
+      expect(Object.keys(segmentApiCalls).length === 0).toStrictEqual(true);
     });
   });
 
   afterEach(function () {
     // flush the queues manually after each test
     segment.flush();
-    clock.restore();
-    sinon.restore();
+    jest.useRealTimers();
+    jest.restoreAllMocks();
   });
 });

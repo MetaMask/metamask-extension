@@ -17,7 +17,7 @@ export default {
     isRemovable: {
       control: 'boolean',
     },
-    identity: {
+    account: {
       control: 'object',
     },
     isOpen: {
@@ -26,7 +26,7 @@ export default {
   },
   args: {
     anchorElement: null,
-    identity: {
+    account: {
       address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
       id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       metadata: {

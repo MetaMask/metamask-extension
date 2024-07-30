@@ -57,15 +57,23 @@ const NativeAssetPill: React.FC = () => {
  * @param props
  * @param props.asset
  */
-export const AssetPill: React.FC<{ asset: AssetIdentifier }> = ({ asset }) => {
-  if (asset.standard === TokenStandard.none) {
-    return <NativeAssetPill />;
-  }
-  return (
-    <Name
-      type={NameType.ETHEREUM_ADDRESS}
-      value={asset.address}
-      preferContractSymbol
-    />
-  );
-};
+export const AssetPill: React.FC<{ asset: AssetIdentifier }> = ({ asset }) => (
+  <Box
+    data-testid="simulation-details-asset-pill"
+    style={{
+      flexShrink: 1,
+      flexBasis: 'auto',
+      minWidth: 0,
+    }}
+  >
+    {asset.standard === TokenStandard.none ? (
+      <NativeAssetPill />
+    ) : (
+      <Name
+        type={NameType.ETHEREUM_ADDRESS}
+        value={asset.address}
+        preferContractSymbol
+      />
+    )}
+  </Box>
+);

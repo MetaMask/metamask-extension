@@ -1,4 +1,5 @@
 import { privateToAddress } from 'ethereumjs-util';
+import messages from '../../../app/_locales/en/messages.json';
 import FixtureBuilder from '../fixture-builder';
 import {
   PRIVATE_KEY,
@@ -52,6 +53,7 @@ export async function installSnapSimpleKeyring(
 
   // navigate to test Snaps page and connect
   await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
+
   await driver.clickElement('#connectButton');
 
   await driver.delay(500);
@@ -65,14 +67,14 @@ export async function installSnapSimpleKeyring(
     tag: 'button',
   });
 
-  await driver.findElement({ text: 'Installation request', tag: 'h2' });
+  await driver.findElement({ text: 'Add to MetaMask', tag: 'h3' });
 
   await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 200);
 
-  await driver.waitForSelector({ text: 'Install' });
+  await driver.waitForSelector({ text: 'Confirm' });
 
   await driver.clickElement({
-    text: 'Install',
+    text: 'Confirm',
     tag: 'button',
   });
 
@@ -82,6 +84,9 @@ export async function installSnapSimpleKeyring(
     text: 'OK',
     tag: 'button',
   });
+
+  // Wait until popup is closed before proceeding
+  await driver.waitUntilXWindowHandles(2);
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
 
@@ -120,6 +125,12 @@ export async function importKeyAndSwitch(driver: Driver) {
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Create',
   });
+  // Click the add account button on the naming modal
+  await driver.clickElement({
+    css: '[data-testid="submit-add-account-with-name"]',
+    text: 'Add account',
+  });
+  // Click the ok button on the success modal
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Ok',
@@ -146,6 +157,12 @@ export async function makeNewAccountAndSwitch(driver: Driver) {
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Create',
   });
+  // Click the add account button on the naming modal
+  await driver.clickElement({
+    css: '[data-testid="submit-add-account-with-name"]',
+    text: 'Add account',
+  });
+  // Click the ok button on the success modal
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Ok',
@@ -183,6 +200,7 @@ async function switchToAccount2(driver: Driver) {
 
 export async function connectAccountToTestDapp(driver: Driver) {
   await switchToOrOpenDapp(driver);
+
   await driver.clickElement('#connectButton');
 
   await driver.delay(regularDelayMs);
@@ -193,7 +211,7 @@ export async function connectAccountToTestDapp(driver: Driver) {
     css: '[data-testid="page-container-footer-next"]',
   });
   await driver.clickElement({
-    text: 'Connect',
+    text: 'Confirm',
     tag: 'button',
     css: '[data-testid="page-container-footer-next"]',
   });
@@ -202,9 +220,18 @@ export async function connectAccountToTestDapp(driver: Driver) {
 export async function disconnectFromTestDapp(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await driver.clickElement('[data-testid="account-options-menu-button"]');
-  await driver.clickElement('[data-testid="global-menu-connected-sites"]');
-  await driver.clickElement({ text: 'Disconnect', tag: 'a' });
+  await driver.clickElement({ text: 'All Permissions', tag: 'div' });
+  await driver.clickElementAndWaitToDisappear({
+    text: 'Got it',
+    tag: 'button',
+  });
+  await driver.clickElement({
+    text: '127.0.0.1:8080',
+    tag: 'p',
+  });
+  await driver.clickElement('[data-testid="account-list-item-menu-button"]');
   await driver.clickElement({ text: 'Disconnect', tag: 'button' });
+  await driver.clickElement('[data-testid ="disconnect-all"]');
 }
 
 export async function approveOrRejectRequest(driver: Driver, flowType: string) {
@@ -223,7 +250,7 @@ export async function approveOrRejectRequest(driver: Driver, flowType: string) {
   // get the JSON from the screen
   const requestJSON = await (
     await driver.findElement({
-      text: '"scope": "",',
+      text: '"scope":',
       tag: 'div',
     })
   ).getText();
@@ -293,7 +320,7 @@ export async function signData(
     await validateContractDetails(driver);
   }
 
-  await clickSignOnSignatureConfirmation(driver, 3, locatorID);
+  await clickSignOnSignatureConfirmation({ driver, locatorID });
 
   if (isAsyncFlow) {
     await driver.delay(2000);
@@ -347,4 +374,25 @@ export async function signData(
       text: 'Error: Request rejected by user or snap.',
     });
   }
+}
+
+export async function createBtcAccount(driver: Driver) {
+  await driver.clickElement('[data-testid="account-menu-icon"]');
+  await driver.clickElement(
+    '[data-testid="multichain-account-menu-popover-action-button"]',
+  );
+  await driver.clickElement({
+    text: messages.addNewBitcoinAccount.message,
+    tag: 'button',
+  });
+  await driver.clickElementAndWaitToDisappear(
+    {
+      text: 'Add account',
+      tag: 'button',
+    },
+    // Longer timeout than usual, this reduces the flakiness
+    // around Bitcoin account creation (mainly required for
+    // Firefox)
+    5000,
+  );
 }

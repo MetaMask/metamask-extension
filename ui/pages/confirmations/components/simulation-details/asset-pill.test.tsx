@@ -21,7 +21,7 @@ jest.mock('../../../../components/app/name', () => ({
 }));
 
 describe('AssetPill', () => {
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
   });
 
@@ -43,23 +43,36 @@ describe('AssetPill', () => {
       },
     ];
 
-    it.each(cases)('renders chain $chainId', ({ chainId, expected }) => {
-      const store = configureStore({
-        metamask: { providerConfig: { chainId, ticker: expected.ticker } },
-      });
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each(cases)(
+      'renders chain $chainId',
+      ({
+        chainId,
+        expected,
+      }: {
+        chainId: (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
+        expected: { ticker: string; imgSrc: string };
+      }) => {
+        const store = configureStore({
+          metamask: { providerConfig: { chainId, ticker: expected.ticker } },
+        });
 
-      renderWithProvider(<AssetPill asset={NATIVE_ASSET_IDENTIFIER} />, store);
+        renderWithProvider(
+          <AssetPill asset={NATIVE_ASSET_IDENTIFIER} />,
+          store,
+        );
 
-      expect(screen.getByText(expected.ticker)).toBeInTheDocument();
+        expect(screen.getByText(expected.ticker)).toBeInTheDocument();
 
-      expect(AvatarNetwork).toHaveBeenCalledWith(
-        expect.objectContaining({
-          name: expected.ticker,
-          src: expected.imgSrc,
-        }),
-        {},
-      );
-    });
+        expect(AvatarNetwork).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: expected.ticker,
+            src: expected.imgSrc,
+          }),
+          {},
+        );
+      },
+    );
   });
 
   it('renders Name component with correct props when asset standard is not none', () => {

@@ -1,9 +1,9 @@
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { isStreamWritable } from './stream-utils';
 
-const createMetaRPCHandler = (api, outStream, store, localStoreApiWrapper) => {
+const createMetaRPCHandler = (api, outStream) => {
   return async (data) => {
-    if (outStream._writableState.ended) {
+    if (!isStreamWritable(outStream)) {
       return;
     }
     if (!api[data.method]) {
@@ -23,13 +23,9 @@ const createMetaRPCHandler = (api, outStream, store, localStoreApiWrapper) => {
       result = await api[data.method](...data.params);
     } catch (err) {
       error = err;
-    } finally {
-      if (isManifestV3 && store && data.method !== 'getState') {
-        localStoreApiWrapper.set(store.getState());
-      }
     }
 
-    if (outStream._writableState.ended) {
+    if (!isStreamWritable(outStream)) {
       if (error) {
         console.error(error);
       }

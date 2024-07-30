@@ -12,24 +12,10 @@ import {
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import { defaultBuyableChains } from '../../../ducks/ramps/constants';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 import EthOverview from './eth-overview';
-
-// Mock BUYABLE_CHAINS_MAP
-jest.mock('../../../../shared/constants/network', () => ({
-  ...jest.requireActual('../../../../shared/constants/network'),
-  BUYABLE_CHAINS_MAP: {
-    // MAINNET
-    '0x1': {
-      nativeCurrency: 'ETH',
-      network: 'ethereum',
-    },
-    // POLYGON
-    '0x89': {
-      nativeCurrency: 'MATIC',
-      network: 'polygon',
-    },
-  },
-}));
 
 jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
   return {
@@ -37,10 +23,17 @@ jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
   };
 });
 
+jest.mock('../../../ducks/locale/locale', () => ({
+  getIntlLocale: jest.fn(),
+}));
+
+const mockGetIntlLocale = getIntlLocale;
+
 let openTabSpy;
 
 describe('EthOverview', () => {
   useIsOriginalNativeTokenSymbol.mockReturnValue(true);
+  mockGetIntlLocale.mockReturnValue('en-US');
 
   const mockStore = {
     metamask: {
@@ -73,16 +66,12 @@ describe('EthOverview', () => {
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
+      useExternalServices: true,
       useCurrencyRateCheck: true,
       currentCurrency: 'usd',
       currencyRates: {
         ETH: {
           conversionRate: 2,
-        },
-      },
-      identities: {
-        '0x1': {
-          address: '0x1',
         },
       },
       accounts: {
@@ -91,7 +80,6 @@ describe('EthOverview', () => {
           balance: '0x1F4',
         },
       },
-      selectedAddress: '0x1',
       internalAccounts: {
         accounts: {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -104,7 +92,7 @@ describe('EthOverview', () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
           'e9b992f9-e151-4317-b8b7-c771bb73dd02': {
@@ -117,7 +105,7 @@ describe('EthOverview', () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },
@@ -133,7 +121,10 @@ describe('EthOverview', () => {
           accounts: [],
         },
       ],
-      contractExchangeRates: {},
+      balances: {},
+    },
+    ramps: {
+      buyableChains: defaultBuyableChains,
     },
   };
 
@@ -178,6 +169,7 @@ describe('EthOverview', () => {
 
     it('should show the cached primary balance', async () => {
       const mockedStoreWithCachedBalance = {
+        ...mockStore,
         metamask: {
           ...mockStore.metamask,
           accounts: {
@@ -264,6 +256,7 @@ describe('EthOverview', () => {
 
     it('should open the MMI PD Swaps URI when clicking on Swap button with a Custody account', async () => {
       const mockedStoreWithCustodyKeyring = {
+        ...mockStore,
         metamask: {
           ...mockStore.metamask,
           mmiConfiguration: {
@@ -372,6 +365,7 @@ describe('EthOverview', () => {
 
     it('should have the Buy native token button disabled if chain id is not part of supported buyable chains', () => {
       const mockedStoreWithUnbuyableChainId = {
+        ...mockStore,
         metamask: {
           ...mockStore.metamask,
           providerConfig: {
@@ -396,6 +390,7 @@ describe('EthOverview', () => {
 
     it('should have the Buy native token enabled if chain id is part of supported buyable chains', () => {
       const mockedStoreWithUnbuyableChainId = {
+        ...mockStore,
         metamask: {
           ...mockStore.metamask,
           providerConfig: {
@@ -429,6 +424,7 @@ describe('EthOverview', () => {
 
     it('should open the Buy native token URI when clicking on Buy button for a buyable chain ID', async () => {
       const mockedStoreWithBuyableChainId = {
+        ...mockStore,
         metamask: {
           ...mockStore.metamask,
           providerConfig: {
@@ -475,7 +471,6 @@ describe('EthOverview', () => {
 
   describe('Disabled buttons when an account cannot sign transactions', () => {
     const buttonTestCases = [
-      { testId: ETH_OVERVIEW_BUY, buttonText: 'Buy & Sell' },
       { testId: ETH_OVERVIEW_SEND, buttonText: 'Send' },
       { testId: ETH_OVERVIEW_SWAP, buttonText: 'Swap' },
       { testId: ETH_OVERVIEW_BRIDGE, buttonText: 'Bridge' },

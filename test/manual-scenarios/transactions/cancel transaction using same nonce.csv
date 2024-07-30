@@ -1,0 +1,19 @@
+Step,Test steps,Test data,Expected result,Notes
+1,Open the extension.,,The 'Welcome Back' screen is shown.,
+2,Proceed to Unlock the wallet.,password (8 characters min).,The Ether balance is shown on the overview. The wallet address is shown on the overview. The selected network is Ethereum Mainnet.        ,
+3,Switch networks to a test network.,e.g. Sepolia,The Sepolia balance is shown on the overview. The wallet address is shown on the overview. The selected network is Sepolia.,
+4,Click on three-dot menu located in the upper right corner.,,,
+5,Go to 'Settings'.,,,
+6,Choose 'Advanced'.,,"The ""Customize transaction nonce"" feature is set to be off by default.",
+7,Turn on 'Customize transaction'.,,,
+8,Navigate back to the main wallet screen to continue.,,,Click on the MetaMask logo or return to the MetaMask tab if the extension is in the expanded view mode.
+9,"Create the transaction by clicking ""Send"" button.",,"MetaMask popup with the recipient's address, amount to be sent, gas fee estimates is displayed.",You can use this address as a recipient's address : 0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb
+10,Click 'Next'.,,"Metamask popup with the recipient's address, amount, gas and total fees is displayed. The ""Custom nonce"" field with the next suggested nonce value is shown on the confirmation screen.",
+11,Set very low gas fee using 'Advanced' gas setting,,Click the pen icon in the 'Estimated fee' field to access 'Advanced' gas settings. Set very low 'Max base fee' and 'Priority fee' (i.e. 0.0001 GWEI).,Opting for a lower gas fee provides the flexibility to send a subsequent transaction to cancel the current one.
+12,Proceed to confirm transaction.,,,
+13,Switch to the Activity tab.,,"In the activity tab, the transaction is currently displayed as being in a pending state.",Make a note of the transaction nonce value.
+14,"Create another transaction by clicking ""Send"" button.",,"MetaMask popup with the recipient's address, amount to be sent, gas fee estimates is displayed.",Select your testing account address as the recipient's address and set the transaction amount to 0.
+15,Click 'Next'.,,"Metamask popup with the recipient's address, amount, gas and total fees is displayed. The ""Custom nonce"" field with the next suggested nonce value is shown on the confirmation screen.",Use the same nonce value that was assigned to the previous transaction.
+16,Proceed to confirm the transaction.,,,
+17,Switch to the Activity tab.,,One 'Send' transaction with the same nonce and 0 value in 'Pending' state is displayed.,
+18,Allow some time for the transaction to get confirmed.,, 'Send' and 'Receive' transactions with 0 value and the same nonce are shown on the Activity tab.,The previous transaction was cancelled by the newly created transaction with the same nonce and 0 value.

@@ -12,7 +12,7 @@ jobs:
     outputs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Determine whether this PR is from a fork
         id: is-fork
         run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
@@ -28,7 +28,7 @@ jobs:
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: React to the comment
         run: |
           gh api \
@@ -52,19 +52,14 @@ jobs:
       COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
-      - name: Install Yarn dependencies
-        run: yarn --immutable
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
       - name: Get commit SHA
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
@@ -76,19 +71,14 @@ jobs:
       - prepare
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
-      - name: Install dependencies from cache
-        run: yarn --immutable --immutable-cache
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
       - name: Update LavaMoat build policy
         run: yarn lavamoat:build:auto
       - name: Cache build policy
@@ -102,7 +92,7 @@ jobs:
       matrix:
         # Ensure this is synchronized with the list below in the "commit-updated-policies" job
         # and with the build type list in `builds.yml`
-        build-type: [main, beta, flask, mmi, desktop]
+        build-type: [main, beta, flask, mmi]
     name: Update LavaMoat ${{ matrix.build-type }} application policy
     runs-on: ubuntu-latest
     needs:
@@ -110,19 +100,14 @@ jobs:
       - update-lavamoat-build-policy
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
-      - name: Install dependencies from cache
-        run: yarn --immutable --immutable-cache
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
       - name: Restore build policy
         uses: actions/cache/restore@v3
         with:
@@ -151,7 +136,7 @@ jobs:
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Use PAT to ensure that the commit later can trigger status check workflows
           token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
@@ -169,7 +154,7 @@ jobs:
           path: lavamoat/build-system
           key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
-      # One restore step per build type: [main, beta, flask, mmi, desktop]
+      # One restore step per build type: [main, beta, flask, mmi]
       # Ensure this is synchronized with the list above in the "update-lavamoat-webapp-policy" job
       # and with the build type list in `builds.yml`
       - name: Restore main application policy
@@ -195,12 +180,6 @@ jobs:
         with:
           path: lavamoat/browserify/mmi
           key: cache-mmi-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
-      - name: Restore desktop application policy
-        uses: actions/cache/restore@v3
-        with:
-          path: lavamoat/browserify/desktop
-          key: cache-desktop-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
       - name: Check whether there are policy changes
         id: policy-changes
@@ -251,7 +230,7 @@ jobs:
       - is-fork-pull-request
       - check-status
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
       - name: Post comment if the update failed

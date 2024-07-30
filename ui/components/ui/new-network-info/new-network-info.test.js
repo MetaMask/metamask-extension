@@ -30,52 +30,7 @@ const localStorageMock = (function () {
 })();
 Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
-const responseOfTokenList = [
-  {
-    address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
-    symbol: 'SNX',
-    decimals: 18,
-    name: 'Synthetix Network Token',
-    iconUrl: 'https://assets.coingecko.com/coins/images/3406/large/SNX.png',
-    aggregators: [
-      'aave',
-      'bancor',
-      'cmc',
-      'cryptocom',
-      'coinGecko',
-      'oneInch',
-      'paraswap',
-      'pmm',
-      'synthetix',
-      'zapper',
-      'zerion',
-      'zeroEx',
-    ],
-    occurrences: 12,
-  },
-  {
-    address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-    symbol: 'UNI',
-    decimals: 18,
-    name: 'Uniswap',
-    iconUrl:
-      'https://images.prismic.io/token-price-prod/d0352dd9-5de8-4633-839d-bc3422c44d9c_UNI%404x.png',
-    aggregators: [
-      'aave',
-      'bancor',
-      'cmc',
-      'cryptocom',
-      'coinGecko',
-      'oneInch',
-      'paraswap',
-      'pmm',
-      'zapper',
-      'zerion',
-      'zeroEx',
-    ],
-    occurrences: 11,
-  },
-];
+const responseOfTokenList = [];
 describe('NewNetworkInfo', () => {
   afterEach(() => {
     nock.cleanAll();
@@ -90,14 +45,15 @@ describe('NewNetworkInfo', () => {
           chainId: '0x1',
           type: 'mainnet',
         },
+        useExternalServices: true,
         useTokenDetection: false,
         currencyRates: {},
       },
     };
 
     it('should match snapshot and render component', async () => {
-      nock('https://token-api.metaswap.codefi.network')
-        .get('/tokens/0x1')
+      nock('https://token.api.cx.metamask.io')
+        .get('/tokens/0x1?occurrenceFloor=100&includeNativeAssets=false')
         .reply(200, responseOfTokenList);
 
       const store = configureMockStore()(state);
@@ -121,12 +77,12 @@ describe('NewNetworkInfo', () => {
     });
 
     it('should render a question mark icon image for non-main network', async () => {
-      nock('https://token-api.metaswap.codefi.network')
-        .get('/tokens/0x1')
+      nock('https://token.api.cx.metamask.io')
+        .get('/tokens/0x1?occurrenceFloor=100&includeNativeAssets=false')
         .reply(200, responseOfTokenList);
 
       const updateTokenDetectionSupportStatus = await fetchWithCache({
-        url: 'https://token-api.metaswap.codefi.network/tokens/0x1',
+        url: 'https://token.api.cx.metamask.io/tokens/0x1?occurrenceFloor=100&includeNativeAssets=false',
         functionName: 'getTokenDetectionSupportStatus',
       });
 
@@ -151,8 +107,8 @@ describe('NewNetworkInfo', () => {
     });
 
     it('should not render first bullet when provider ticker is null', async () => {
-      nock('https://token-api.metaswap.codefi.network')
-        .get('/tokens/0x3')
+      nock('https://token.api.cx.metamask.io')
+        .get('/tokens/0x3?occurrenceFloor=100&includeNativeAssets=false')
         .reply(200, '{"error":"ChainId 0x3 is not supported"}');
 
       state.metamask.providerConfig.ticker = null;
@@ -183,14 +139,15 @@ describe('NewNetworkInfo', () => {
             chainId: '0x1',
             type: 'mainnet',
           },
+          useExternalServices: true,
           useTokenDetection: true,
           currencyRates: {},
         },
       };
 
       it('should not render link when auto token detection is set true and token detection is supported', async () => {
-        nock('https://token-api.metaswap.codefi.network')
-          .get('/tokens/0x1')
+        nock('https://token.api.cx.metamask.io')
+          .get('/tokens/0x1?occurrenceFloor=100&includeNativeAssets=false')
           .reply(200, responseOfTokenList);
 
         const store = configureMockStore()(newState);
@@ -208,8 +165,8 @@ describe('NewNetworkInfo', () => {
       });
 
       it('should render link when auto token detection is set true and token detection is not supported', async () => {
-        nock('https://token-api.metaswap.codefi.network')
-          .get('/tokens/0x1')
+        nock('https://token.api.cx.metamask.io')
+          .get('/tokens/0x1?occurrenceFloor=100&includeNativeAssets=false')
           .replyWithError('something awful happened');
 
         const store = configureMockStore()(newState);
@@ -221,8 +178,8 @@ describe('NewNetworkInfo', () => {
       });
 
       it('should render link when auto token detection is set false but token detection is not supported', async () => {
-        nock('https://token-api.metaswap.codefi.network')
-          .get('/tokens/0x1')
+        nock('https://token.api.cx.metamask.io')
+          .get('/tokens/0x1?occurrenceFloor=100&includeNativeAssets=false')
           .reply(403);
 
         const store = configureMockStore()(state);
@@ -237,12 +194,12 @@ describe('NewNetworkInfo', () => {
       });
 
       it('should render link when auto token detection is set false and token detection is supported', async () => {
-        nock('https://token-api.metaswap.codefi.network')
-          .get('/tokens/0x1')
+        nock('https://token.api.cx.metamask.io')
+          .get('/tokens/0x1?occurrenceFloor=100&includeNativeAssets=false')
           .reply(200, responseOfTokenList);
 
         const updateTokenDetectionSupportStatus = await fetchWithCache({
-          url: 'https://token-api.metaswap.codefi.network/tokens/0x1',
+          url: 'https://token.api.cx.metamask.io/tokens/0x1?occurrenceFloor=100&includeNativeAssets=false',
           functionName: 'getTokenDetectionSupportStatus',
         });
 

@@ -1,15 +1,17 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import testData from '../../../../.storybook/test-data';
+import { InternalAccount } from '@metamask/keyring-api';
 import { AvatarAccount, AvatarAccountSize } from '../../component-library';
 import { BorderColor } from '../../../helpers/constants/design-system';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { Toast } from '.';
 
-// TODO: Replace `any` with type
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CHAOS_IDENTITY: any = {
-  ...testData.metamask.identities['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4'],
+const mockInternalAccount = createMockInternalAccount();
+
+const CHAOS_ACCOUNT: InternalAccount = {
+  ...mockInternalAccount,
+  address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
   balance: '0x152387ad22c3f0',
   keyring: {
     type: 'HD Key Tree',
@@ -22,7 +24,7 @@ const onClose = jest.fn();
 const ToastArgs = {
   startAdornment: (
     <AvatarAccount
-      address={CHAOS_IDENTITY.address}
+      address={CHAOS_ACCOUNT.address}
       size={AvatarAccountSize.Md}
       borderColor={BorderColor.transparent}
     />

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -8,26 +8,23 @@ import {
   IconColor,
   JustifyContent,
   Size,
+  TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
-  BUTTON_VARIANT,
   Box,
   Button,
+  ButtonVariant,
   IconName,
   Text,
 } from '../../../../components/component-library';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
-import {
-  getIsMultiLayerFeeNetwork,
-  getPreferences,
-} from '../../../../selectors';
+import { getPreferences } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import LoadingHeartBeat from '../../../../components/ui/loading-heartbeat';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { addHexes } from '../../../../../shared/modules/conversion.utils';
-import fetchEstimatedL1Fee from '../../../../helpers/utils/optimism/fetchEstimatedL1Fee';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 
 export default function FeeDetailsComponent({
@@ -35,34 +32,18 @@ export default function FeeDetailsComponent({
   useCurrencyRateCheck,
   hideGasDetails = false,
 }) {
+  const layer1GasFee = txData?.layer1GasFee ?? null;
   const [expandFeeDetails, setExpandFeeDetails] = useState(false);
-  const [estimatedL1Fees, setEstimatedL1Fees] = useState(null);
 
-  const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
   const t = useI18nContext();
 
   const { minimumCostInHexWei: hexMinimumTransactionFee } = useGasFeeContext();
-  useEffect(() => {
-    if (isMultiLayerFeeNetwork) {
-      fetchEstimatedL1Fee(txData?.chainId, txData)
-        .then((result) => {
-          setEstimatedL1Fees(result);
-        })
-        .catch((_err) => {
-          setEstimatedL1Fees(null);
-        });
-    }
-  }, [isMultiLayerFeeNetwork, txData]);
 
   const getTransactionFeeTotal = useMemo(() => {
-    if (isMultiLayerFeeNetwork) {
-      return addHexes(hexMinimumTransactionFee, estimatedL1Fees || 0);
-    }
-
-    return hexMinimumTransactionFee;
-  }, [isMultiLayerFeeNetwork, hexMinimumTransactionFee, estimatedL1Fees]);
+    return addHexes(hexMinimumTransactionFee, layer1GasFee ?? 0);
+  }, [hexMinimumTransactionFee, layer1GasFee]);
 
   const renderTotalDetailText = useCallback(
     (value) => {
@@ -73,6 +54,14 @@ export default function FeeDetailsComponent({
             type={SECONDARY}
             key="total-detail-text"
             value={value}
+            suffixProps={{
+              color: TextColor.textAlternative,
+              variant: TextVariant.bodySmBold,
+            }}
+            textProps={{
+              color: TextColor.textAlternative,
+              variant: TextVariant.bodySmBold,
+            }}
             hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
           />
         </div>
@@ -84,19 +73,29 @@ export default function FeeDetailsComponent({
   const renderTotalDetailValue = useCallback(
     (value) => {
       return (
-        <div className="confirm-page-container-content__total-value">
+        <Box className="confirm-page-container-content__total-value">
           <LoadingHeartBeat estimateUsed={txData?.userFeeLevel} />
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
             key="total-detail-value"
             value={value}
+            suffixProps={{
+              color: TextColor.textAlternative,
+              variant: TextVariant.bodySm,
+            }}
+            textProps={{
+              color: TextColor.textAlternative,
+              variant: TextVariant.bodySm,
+            }}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
           />
-        </div>
+        </Box>
       );
     },
     [txData, useNativeCurrencyAsPrimaryCurrency],
   );
+
+  const hasLayer1GasFee = layer1GasFee !== null;
 
   return (
     <>
@@ -106,9 +105,9 @@ export default function FeeDetailsComponent({
         justifyContent={JustifyContent.center}
         flexDirection={FlexDirection.Column}
       >
-        {!hideGasDetails && isMultiLayerFeeNetwork && (
+        {!hideGasDetails && hasLayer1GasFee && (
           <Box
-            padding={4}
+            paddingTop={4}
             display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
@@ -116,17 +115,18 @@ export default function FeeDetailsComponent({
             <Button
               style={{ textDecoration: 'none' }}
               size={Size.Xs}
-              variant={BUTTON_VARIANT.LINK}
+              variant={ButtonVariant.Link}
               endIconName={
                 expandFeeDetails ? IconName.ArrowUp : IconName.ArrowDown
               }
-              color={IconColor.primaryDefault}
+              color={IconColor.iconAlternative}
               data-testid="expand-fee-details-button"
               onClick={() => setExpandFeeDetails(!expandFeeDetails)}
             >
               <Text
-                variant={TextVariant.bodySm}
-                color={IconColor.primaryDefault}
+                variant={TextVariant.bodyMdMedium}
+                color={TextColor.textAlternative}
+                paddingInlineEnd={1}
               >
                 {t('feeDetails')}
               </Text>
@@ -136,36 +136,54 @@ export default function FeeDetailsComponent({
       </Box>
 
       {!hideGasDetails && expandFeeDetails && (
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-          {isMultiLayerFeeNetwork && (
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          paddingTop={4}
+        >
+          {hasLayer1GasFee && (
             <TransactionDetailItem
-              detailTitle={t('optimismFees')}
+              detailTitle={
+                <Text
+                  color={TextColor.textAlternative}
+                  variant={TextVariant.bodySmMedium}
+                >
+                  {t('layer2Fees')}
+                </Text>
+              }
               detailText={
                 useCurrencyRateCheck &&
                 renderTotalDetailText(hexMinimumTransactionFee)
               }
               detailTotal={renderTotalDetailValue(hexMinimumTransactionFee)}
-              boldHeadings={false}
             />
           )}
-          {isMultiLayerFeeNetwork && estimatedL1Fees && (
+          {layer1GasFee && (
             <TransactionDetailItem
-              detailTitle={t('layer1Fees')}
-              detailText={
-                useCurrencyRateCheck && renderTotalDetailText(estimatedL1Fees)
+              detailTitle={
+                <Text
+                  color={TextColor.textAlternative}
+                  variant={TextVariant.bodySmMedium}
+                >
+                  {t('layer1Fees')}
+                </Text>
               }
-              detailTotal={renderTotalDetailValue(estimatedL1Fees)}
-              boldHeadings={false}
+              detailText={
+                useCurrencyRateCheck && renderTotalDetailText(layer1GasFee)
+              }
+              detailTotal={renderTotalDetailValue(layer1GasFee)}
             />
           )}
-          <TransactionDetailItem
-            detailTitle={t('total')}
-            detailText={
-              useCurrencyRateCheck &&
-              renderTotalDetailText(getTransactionFeeTotal)
-            }
-            detailTotal={renderTotalDetailValue(getTransactionFeeTotal)}
-          />
+          {!hasLayer1GasFee && (
+            <TransactionDetailItem
+              detailTitle={t('total')}
+              detailText={
+                useCurrencyRateCheck &&
+                renderTotalDetailText(getTransactionFeeTotal)
+              }
+              detailTotal={renderTotalDetailValue(getTransactionFeeTotal)}
+            />
+          )}
         </Box>
       )}
     </>

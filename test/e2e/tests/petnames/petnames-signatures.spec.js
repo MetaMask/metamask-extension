@@ -2,6 +2,7 @@ const {
   openDapp,
   switchToNotificationWindow,
   withFixtures,
+  tempToggleSettingRedesignedConfirmations,
   unlockWallet,
   defaultGanacheOptions,
 } = require('../../helpers');
@@ -71,7 +72,10 @@ async function showThirdPartyDetails(driver) {
 }
 
 async function closeThirdPartyDetails(driver) {
-  await driver.clickElement({ text: 'Got it', tag: 'button' });
+  await driver.clickElementAndWaitToDisappear({
+    text: 'Got it',
+    tag: 'button',
+  });
 }
 
 async function expectProposedNames(driver, value, options) {
@@ -105,6 +109,7 @@ describe('Petnames - Signatures', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await tempToggleSettingRedesignedConfirmations(driver);
         await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V3);
         await switchToNotificationWindow(driver, 3);
@@ -141,6 +146,7 @@ describe('Petnames - Signatures', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await tempToggleSettingRedesignedConfirmations(driver);
         await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
         await switchToNotificationWindow(driver, 3);
@@ -182,6 +188,7 @@ describe('Petnames - Signatures', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await tempToggleSettingRedesignedConfirmations(driver);
         await openDapp(driver);
         await openTestSnaps(driver);
         await installNameLookupSnap(driver);

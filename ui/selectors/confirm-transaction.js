@@ -26,14 +26,20 @@ import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils'
 import {
   decGWEIToHexWEI,
   getValueFromWeiHex,
+  subtractHexes,
   sumHexes,
 } from '../../shared/modules/conversion.utils';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
-import { getCurrentChainId } from './selectors';
 import {
   checkNetworkAndAccountSupports1559,
+  getCurrentChainId,
+  getMetaMaskAccounts,
+} from './selectors';
+import {
   getUnapprovedTransactions,
-} from '.';
+  selectTransactionMetadata,
+  selectTransactionSender,
+} from './transactions';
 
 const unapprovedTxsSelector = (state) => getUnapprovedTransactions(state);
 const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
@@ -147,8 +153,18 @@ export const txDataSelector = (state) => state.confirmTransaction.txData;
 const tokenDataSelector = (state) => state.confirmTransaction.tokenData;
 const tokenPropsSelector = (state) => state.confirmTransaction.tokenProps;
 
-const contractExchangeRatesSelector = (state) =>
-  state.metamask.contractExchangeRates;
+const contractExchangeRatesSelector = (state) => {
+  const chainId = getCurrentChainId(state);
+  const contractMarketData = state.metamask.marketData?.[chainId];
+
+  return Object.entries(contractMarketData).reduce(
+    (acc, [address, marketData]) => {
+      acc[address] = marketData?.price ?? null;
+      return acc;
+    },
+    {},
+  );
+};
 
 const tokenDecimalsSelector = createSelector(
   tokenPropsSelector,
@@ -204,12 +220,13 @@ export const sendTokenTokenAmountAndToAddressSelector = createSelector(
 export const contractExchangeRateSelector = createSelector(
   contractExchangeRatesSelector,
   tokenAddressSelector,
-  (contractExchangeRates, tokenAddress) =>
-    contractExchangeRates[
-      Object.keys(contractExchangeRates).find((address) =>
-        isEqualCaseInsensitive(address, tokenAddress),
-      )
-    ],
+  (contractExchangeRates, tokenAddress) => {
+    return contractExchangeRates[
+      Object.keys(contractExchangeRates).find((address) => {
+        return isEqualCaseInsensitive(address, tokenAddress);
+      })
+    ];
+  },
 );
 
 export const transactionFeeSelector = function (state, txData) {
@@ -253,6 +270,7 @@ export const transactionFeeSelector = function (state, txData) {
     }
   } else {
     switch (gasEstimateType) {
+      case GasEstimateTypes.feeMarket:
       case GasEstimateTypes.none:
         gasEstimationObject.gasPrice = txData.txParams?.gasPrice ?? '0x0';
         break;
@@ -264,8 +282,6 @@ export const transactionFeeSelector = function (state, txData) {
       case GasEstimateTypes.legacy:
         gasEstimationObject.gasPrice =
           txData.txParams?.gasPrice ?? getAveragePriceEstimateInHexWEI(state);
-        break;
-      case GasEstimateTypes.feeMarket:
         break;
       default:
         break;
@@ -340,3 +356,38 @@ export const transactionFeeSelector = function (state, txData) {
     gasEstimationObject,
   };
 };
+
+export function selectTransactionFeeById(state, transactionId) {
+  const transactionMetadata = selectTransactionMetadata(state, transactionId);
+  return transactionFeeSelector(state, transactionMetadata ?? {});
+}
+
+// Cannot use createSelector due to circular dependency caused by getMetaMaskAccounts.
+export function selectTransactionAvailableBalance(state, transactionId) {
+  const accounts = getMetaMaskAccounts(state);
+  const sender = selectTransactionSender(state, transactionId);
+
+  return accounts[sender]?.balance;
+}
+
+export function selectIsMaxValueEnabled(state, transactionId) {
+  return state.confirmTransaction.maxValueMode?.[transactionId] ?? false;
+}
+
+export const selectMaxValue = createSelector(
+  selectTransactionFeeById,
+  selectTransactionAvailableBalance,
+  (transactionFee, balance) =>
+    balance && transactionFee.hexMaximumTransactionFee
+      ? subtractHexes(balance, transactionFee.hexMaximumTransactionFee)
+      : undefined,
+);
+
+/** @type {state: any, transactionId: string => string} */
+export const selectTransactionValue = createSelector(
+  selectIsMaxValueEnabled,
+  selectMaxValue,
+  selectTransactionMetadata,
+  (isMaxValueEnabled, maxValue, transactionMetadata) =>
+    isMaxValueEnabled ? maxValue : transactionMetadata?.txParams?.value,
+);

@@ -32,6 +32,16 @@
               "description": "Defines which dependencies' scripts are allowed to run upon install. If this setting is true, the scripts are allowed. If false, the scripts are not allowed. Run `yarn allow-scripts auto` to add a dependency to this list (defaults to false)."
             }
           }
+        },
+        "resolutions": {
+          "type": "object",
+          "required": ["ts-mixer@npm:^6.0.3"],
+          "properties": {
+            "ts-mixer@npm:^6.0.3": {
+              "type": "string",
+              "description": "ts-mixer exports a `browser` field that points to the ESM version, but our build system can't process it. This resolution and patch file forces the CommonJS version to be used instead."
+            }
+          }
         }
       }
     }

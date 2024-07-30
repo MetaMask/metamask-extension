@@ -1,9 +1,10 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 
 import configureStore from '../store/store';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import useAddressDetails from './useAddressDetails';
 
 const renderUseAddressDetails = (toAddress, stateVariables = {}) => {
@@ -26,7 +27,7 @@ const renderUseAddressDetails = (toAddress, stateVariables = {}) => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },
@@ -89,7 +90,7 @@ describe('useAddressDetails', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
           },

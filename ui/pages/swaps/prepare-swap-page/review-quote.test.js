@@ -40,7 +40,6 @@ setBackgroundConnection({
   resetPostFetchState: jest.fn(),
   safeRefetchQuotes: jest.fn(),
   setSwapsErrorKey: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest.fn(),
   updateTransaction: jest.fn(),
   getGasFeeTimeEstimate: jest.fn(),
   setSwapsQuotesPollingLimitEnabled: jest.fn(),

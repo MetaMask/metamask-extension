@@ -69,6 +69,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                 </div>
                 <div
                   class="network-account-balance-header__network-account__ident-icon-ethereum"
+                  style="height: 16px; width: 16px;"
                 >
                   <img
                     alt="Ethereum Mainnet"
@@ -82,6 +83,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
               >
                 <h6
                   class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                  data-testid="signature-request-network-display"
                 >
                   Ethereum Mainnet
                 </h6>
@@ -124,6 +126,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                 >
                   <div
                     class=""
+                    style="height: 24px; width: 24px;"
                   >
                     <span
                       class="icon-with-fallback__fallback"
@@ -133,7 +136,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                   </div>
                 </div>
                 <span
-                  class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+                  class="mm-box mm-text chip__label mm-text--body-sm mm-box--color-text-alternative"
                 >
                   https://www.opensea.io
                 </span>
@@ -279,6 +282,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
               </div>
               <div
                 class="network-account-balance-header__network-account__ident-icon-ethereum"
+                style="height: 16px; width: 16px;"
               >
                 <img
                   alt="Ethereum Mainnet"
@@ -292,6 +296,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
             >
               <h6
                 class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                data-testid="signature-request-network-display"
               >
                 Ethereum Mainnet
               </h6>
@@ -334,6 +339,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
               >
                 <div
                   class=""
+                  style="height: 24px; width: 24px;"
                 >
                   <span
                     class="icon-with-fallback__fallback"
@@ -343,7 +349,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                 </div>
               </div>
               <span
-                class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+                class="mm-box mm-text chip__label mm-text--body-sm mm-box--color-text-alternative"
               >
                 https://www.opensea.io
               </span>

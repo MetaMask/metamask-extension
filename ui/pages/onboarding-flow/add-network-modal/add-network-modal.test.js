@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -11,31 +11,46 @@ jest.mock('../../../store/actions', () => ({
   hideModal: () => mockHideModal,
 }));
 
+const mockNetworkMenuRedesignToggle = jest.fn();
+
+jest.mock('../../../helpers/utils/feature-flags', () => ({
+  ...jest.requireActual('../../../helpers/utils/feature-flags'),
+  getLocalNetworkMenuRedesignFeatureFlag: () => mockNetworkMenuRedesignToggle,
+}));
+
 describe('Add Network Modal', () => {
   it('should render', async () => {
+    mockNetworkMenuRedesignToggle.mockImplementation(() => false);
+
     const mockStore = configureMockStore([])({
-      metamask: { useSafeChainsListValidation: true },
+      metamask: { useSafeChainsListValidation: true, orderedNetworkList: {} },
     });
 
-    const { container } = renderWithProvider(<AddNetworkModal />, mockStore);
+    const { container } = renderWithProvider(
+      <AddNetworkModal showHeader />,
+      mockStore,
+    );
 
     await waitFor(() => {
       expect(container).toMatchSnapshot();
     });
   });
 
-  it('should handle callback', async () => {
+  it('should not render the new network flow modal', async () => {
+    mockNetworkMenuRedesignToggle.mockReturnValue(true);
+
     const mockStore = configureMockStore([thunk])({
-      metamask: { useSafeChainsListValidation: true },
+      metamask: { useSafeChainsListValidation: true, orderedNetworkList: {} },
     });
 
-    const { queryByText } = renderWithProvider(<AddNetworkModal />, mockStore);
-
-    const cancelButton = queryByText('Cancel');
-    fireEvent.click(cancelButton);
+    const { queryByText } = renderWithProvider(
+      <AddNetworkModal showHeader />,
+      mockStore,
+    );
 
     await waitFor(() => {
-      expect(mockHideModal).toHaveBeenCalledTimes(1);
+      expect(queryByText('Cancel')).not.toBeInTheDocument();
+      expect(queryByText('Next')).toBeInTheDocument();
     });
   });
 });

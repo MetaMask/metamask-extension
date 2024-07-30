@@ -1,9 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { sanitizeMessage } from '../../../../../helpers/utils/util';
 import Identicon from '../../../../../components/ui/identicon';
+import { ETH_EOA_METHODS } from '../../../../../../shared/constants/eth-methods';
 import SignatureRequestData from './signature-request-data';
 
 describe('Signature Request Data', () => {
@@ -39,16 +40,6 @@ describe('Signature Request Data', () => {
           type: 'test',
           chainId: '0x5',
         },
-        identities: {
-          '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826': {
-            name: 'Account 1',
-            address: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
-          },
-          '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF': {
-            name: 'Account 2',
-            address: '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
-          },
-        },
         internalAccounts: {
           accounts: {
             'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -61,7 +52,7 @@ describe('Signature Request Data', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
             '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
@@ -74,7 +65,7 @@ describe('Signature Request Data', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
           },

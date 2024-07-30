@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Box, Label } from '../../component-library';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { Box, Text } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -8,13 +9,23 @@ import {
   BorderRadius,
   BorderStyle,
   Display,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getSelectedInternalAccount } from '../../../selectors';
 
-import { TokenStandard } from '../../../../shared/constants/transaction';
-import type { Amount, Asset } from '../../../ducks/send';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../../shared/constants/transaction';
+import {
+  getCurrentDraftTransaction,
+  getIsNativeSendPossible,
+  getSendMaxModeState,
+  type Amount,
+  type Asset,
+} from '../../../ducks/send';
+import { NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR } from '../../../pages/confirmations/send/send.constants';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -22,7 +33,6 @@ import {
 } from './asset-picker/asset-picker';
 import { SwappableCurrencyInput } from './swappable-currency-input/swappable-currency-input';
 import { AssetBalance } from './asset-balance/asset-balance';
-import { getIsFiatPrimary } from './utils';
 
 type AssetPickerAmountProps = OverridingUnion<
   AssetPickerProps,
@@ -30,7 +40,14 @@ type AssetPickerAmountProps = OverridingUnion<
     // all of these props should be explicitly received
     asset: Asset;
     amount: Amount;
-    onAmountChange: (newAmount: string) => void;
+    isAmountLoading?: boolean;
+    /**
+     * Callback for when the amount changes; disables the input when undefined
+     */
+    onAmountChange?: (
+      newAmountRaw: string,
+      newAmountFormatted?: string,
+    ) => void;
   }
 >;
 
@@ -39,17 +56,67 @@ export const AssetPickerAmount = ({
   asset,
   amount,
   onAmountChange,
+  isAmountLoading,
   ...assetPickerProps
 }: AssetPickerAmountProps) => {
+  const selectedAccount = useSelector(getSelectedInternalAccount);
   const t = useI18nContext();
 
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const { swapQuotesError, sendAsset, receiveAsset } = useSelector(
+    getCurrentDraftTransaction,
+  );
+  const isDisabled = !onAmountChange;
+  const isSwapsErrorShown = isDisabled && swapQuotesError;
 
-  const isFiatPrimary = useSelector(getIsFiatPrimary);
+  const isMaxMode = useSelector(getSendMaxModeState);
+  const isNativeSendPossible = useSelector(getIsNativeSendPossible);
+
+  useEffect(() => {
+    // if this input is immutable – avoids double fire
+    if (isDisabled) {
+      return;
+    }
+
+    // if native send is not possible
+    if (isNativeSendPossible) {
+      return;
+    }
+
+    // if max mode already enabled
+    if (!isMaxMode) {
+      return;
+    }
+
+    // disable max mode and replace with "0"
+    onAmountChange('0x0');
+  }, [isNativeSendPossible]);
 
   const [isFocused, setIsFocused] = useState(false);
+  const [isNFTInputChanged, setIsTokenInputChanged] = useState(false);
 
-  const { error } = amount;
+  const handleChange = useCallback(
+    (newAmountRaw, newAmountFormatted) => {
+      if (!isNFTInputChanged && asset.type === AssetType.NFT) {
+        setIsTokenInputChanged(true);
+      }
+      onAmountChange?.(newAmountRaw, newAmountFormatted);
+    },
+    [onAmountChange, isNFTInputChanged, asset.type],
+  );
+
+  useEffect(() => {
+    setIsTokenInputChanged(false);
+  }, [asset]);
+
+  const { error: rawError } = amount;
+
+  // if input hasn't been touched, don't show the zero amount error
+  const isLowBalanceErrorInvalid =
+    rawError === NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR &&
+    asset.type === AssetType.NFT &&
+    !isNFTInputChanged;
+
+  const error = rawError && !isLowBalanceErrorInvalid ? rawError : undefined;
 
   useEffect(() => {
     if (!asset) {
@@ -57,21 +124,25 @@ export const AssetPickerAmount = ({
     }
   }, [selectedAccount]);
 
-  let borderColor = BorderColor.borderDefault;
+  let borderColor = BorderColor.borderMuted;
 
-  if (amount.error) {
+  if (isDisabled) {
+    // if disabled, do not show source-side border colors
+    if (isSwapsErrorShown) {
+      borderColor = BorderColor.errorDefault;
+    }
+  } else if (error) {
     borderColor = BorderColor.errorDefault;
   } else if (isFocused) {
     borderColor = BorderColor.primaryDefault;
   }
 
+  const isSwapAndSendFromNative =
+    sendAsset.type === AssetType.native &&
+    receiveAsset.type !== AssetType.native;
+
   return (
     <Box className="asset-picker-amount">
-      <Box display={Display.Flex}>
-        <Label variant={TextVariant.bodyMdMedium}>{t('amount')}</Label>
-        {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        {!isFiatPrimary && <MaxClearButton asset={asset} />}
-      </Box>
       <Box
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
@@ -82,7 +153,6 @@ export const AssetPickerAmount = ({
         borderColor={borderColor}
         borderStyle={BorderStyle.solid}
         borderWidth={1}
-        marginTop={1}
         marginBottom={1}
         padding={1}
         // apply extra padding if there isn't an input component to apply it
@@ -91,13 +161,26 @@ export const AssetPickerAmount = ({
       >
         <AssetPicker asset={asset} {...assetPickerProps} />
         <SwappableCurrencyInput
-          onAmountChange={onAmountChange}
+          onAmountChange={onAmountChange ? handleChange : undefined}
           assetType={asset.type}
           asset={asset}
           amount={amount}
+          isAmountLoading={isAmountLoading}
         />
       </Box>
-      <AssetBalance asset={asset} error={error} />
+      <Box display={Display.Flex}>
+        {/* Only show balance if mutable */}
+        {onAmountChange && <AssetBalance asset={asset} error={error} />}
+        {isSwapsErrorShown && (
+          <Text variant={TextVariant.bodySm} color={TextColor.errorDefault}>
+            {t(swapQuotesError)}
+          </Text>
+        )}
+        {/* The fiat value will always leave dust and is often inaccurate anyways */}
+        {onAmountChange && isNativeSendPossible && !isSwapAndSendFromNative && (
+          <MaxClearButton asset={asset} />
+        )}
+      </Box>
     </Box>
   );
 };

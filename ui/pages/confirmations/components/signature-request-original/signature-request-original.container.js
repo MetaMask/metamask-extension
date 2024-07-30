@@ -8,7 +8,6 @@ import {
   rejectPendingApproval,
   rejectAllMessages,
   completedTx,
-  dismissOpenSeaToBlockaidBanner,
 } from '../../../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 // eslint-disable-next-line import/order
@@ -16,6 +15,7 @@ import {
   mmiActionsFactory,
   setPersonalMessageInProgress,
 } from '../../../../store/institutional/institution-background';
+import { AccountType } from '../../../../../shared/constants/custody';
 ///: END:ONLY_INCLUDE_IF
 import {
   accountsWithSendEtherInfoSelector,
@@ -23,9 +23,6 @@ import {
   doesAddressRequireLedgerHidConnection,
   unconfirmedMessagesHashSelector,
   getTotalUnapprovedMessagesCount,
-  getIsNetworkSupportedByBlockaid,
-  getHasDismissedOpenSeaToBlockaidBanner,
-  getHasMigratedFromOpenSeaToBlockaid,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
   getSelectedInternalAccount,
@@ -48,12 +45,6 @@ function mapStateToProps(state, ownProps) {
   const messagesList = unconfirmedMessagesHashSelector(state);
   const messagesCount = getTotalUnapprovedMessagesCount(state);
 
-  const hasMigratedFromOpenSeaToBlockaid =
-    getHasMigratedFromOpenSeaToBlockaid(state);
-  const hasDismissedOpenSeaToBlockaidBanner =
-    getHasDismissedOpenSeaToBlockaidBanner(state);
-  const isNetworkSupportedByBlockaid = getIsNetworkSupportedByBlockaid(state);
-
   return {
     requester: null,
     requesterAddress: null,
@@ -65,9 +56,6 @@ function mapStateToProps(state, ownProps) {
     subjectMetadata: getSubjectMetadata(state),
     messagesList,
     messagesCount,
-    hasMigratedFromOpenSeaToBlockaid,
-    hasDismissedOpenSeaToBlockaidBanner,
-    isNetworkSupportedByBlockaid,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType: getAccountType(state),
     selectedAccount: getSelectedInternalAccount(state),
@@ -103,8 +91,6 @@ mapDispatchToProps = function (dispatch) {
     cancelAllApprovals: (messagesList) => {
       dispatch(rejectAllMessages(messagesList));
     },
-    dismissOpenSeaToBlockaidBanner: () =>
-      dispatch(dismissOpenSeaToBlockaidBanner()),
   };
 };
 
@@ -179,7 +165,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiOnSignCallback = async (_msgData) => {
-    if (accountType === 'custody') {
+    if (accountType === AccountType.CUSTODY) {
       try {
         await dispatchProps.resolvePendingApproval(_msgData.id);
         dispatchProps.completedTx(_msgData.id);

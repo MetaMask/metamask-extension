@@ -61,7 +61,6 @@ describe('PPOM Settings @no-mmi', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await openDapp(driver);

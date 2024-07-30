@@ -75,9 +75,6 @@
   "asset": {
     "message": "Sredstva"
   },
-  "attemptingConnect": {
-    "message": "Pokušava da se poveže na lanac blokova"
-  },
   "attributions": {
     "message": "Atribucije"
   },
@@ -620,9 +617,6 @@
   },
   "send": {
     "message": "Пошаљи"
-  },
-  "sendTokens": {
-    "message": "Pošalji tokene"
   },
   "settings": {
     "message": "Podešavanja"

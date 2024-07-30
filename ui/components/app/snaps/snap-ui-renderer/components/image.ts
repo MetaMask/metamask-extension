@@ -1,9 +1,9 @@
-import { Image } from '@metamask/snaps-sdk';
+import { ImageElement } from '@metamask/snaps-sdk/jsx';
 import { UIComponentFactory } from './types';
 
-export const image: UIComponentFactory<Image> = ({ element }) => ({
+export const image: UIComponentFactory<ImageElement> = ({ element }) => ({
   element: 'SnapUIImage',
   props: {
-    value: element.value,
+    value: element.props.src,
   },
 });

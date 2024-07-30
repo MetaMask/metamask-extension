@@ -1,6 +1,6 @@
 const AUTH_ENDPOINT = process.env.AUTH_API || '';
 export const AUTH_NONCE_ENDPOINT = `${AUTH_ENDPOINT}/api/v2/nonce`;
-export const AUTH_LOGIN_ENDPOINT = `${AUTH_ENDPOINT}/api/v2/snaps/login`;
+export const AUTH_LOGIN_ENDPOINT = `${AUTH_ENDPOINT}/api/v2/srp/login`;
 
 const OIDC_ENDPOINT = process.env.OIDC_API || '';
 export const OIDC_TOKENS_ENDPOINT = `${OIDC_ENDPOINT}/oauth2/token`;
@@ -41,12 +41,12 @@ export type LoginResponse = {
   profile: {
     identifier_id: string;
     profile_id: string;
-    metametrics_id: string;
   };
 };
 export async function login(
   rawMessage: string,
   signature: string,
+  clientMetaMetricsId: string,
 ): Promise<LoginResponse | null> {
   try {
     const response = await fetch(AUTH_LOGIN_ENDPOINT, {
@@ -57,6 +57,10 @@ export async function login(
       body: JSON.stringify({
         signature,
         raw_message: rawMessage,
+        metametrics: {
+          metametrics_id: clientMetaMetricsId,
+          agent: 'extension',
+        },
       }),
     });
 

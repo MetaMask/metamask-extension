@@ -11,9 +11,6 @@ describe('Send ERC20 token to contract address', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
   it('should display the token contract warning to the user', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         dapp: true,
@@ -29,11 +26,13 @@ describe('Send ERC20 token to contract address', function () {
         await unlockWallet(driver);
 
         // Send TST
-        await driver.clickElement('[data-testid="home__asset-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__asset-tab"]',
+        );
         await driver.clickElement(
           '[data-testid="multichain-token-list-button"]',
         );
-        await driver.clickElement('[data-testid="eth-overview-send"]');
+        await driver.clickElement('[data-testid="coin-overview-send"]');
 
         // Type contract address
         await driver.fill(
@@ -43,8 +42,10 @@ describe('Send ERC20 token to contract address', function () {
 
         // Verify warning
         const warningText =
-          'Warning: you are about to send to a token contract which could result in a loss of funds. Learn more\nI understand';
-        const warning = await driver.findElement('.send__warning-container');
+          'Warning: you are about to send to a token contract which could result in a loss of funds. Learn more';
+        const warning = await driver.findElement(
+          '[data-testid="send-warning"] .mm-box--min-width-0 span',
+        );
         assert.equal(await warning.getText(), warningText);
       },
     );

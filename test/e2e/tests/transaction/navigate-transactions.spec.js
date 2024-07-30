@@ -13,6 +13,7 @@ describe('Navigate transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withPreferencesControllerTxSimulationsDisabled()
           .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
@@ -20,6 +21,12 @@ describe('Navigate transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        // Wait until total amount is loaded to mitigate flakiness on reject
+        await driver.findElement({
+          tag: 'span',
+          text: '3.0000315',
+        });
 
         // navigate transactions
         await driver.clickElement('[data-testid="next-page"]');
@@ -102,6 +109,7 @@ describe('Navigate transactions', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
+          .withPreferencesControllerTxSimulationsDisabled()
           .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
@@ -109,6 +117,12 @@ describe('Navigate transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        // Wait until total amount is loaded to mitigate flakiness on reject
+        await driver.findElement({
+          tag: 'span',
+          text: '3.0000315',
+        });
 
         await driver.clickElement('[data-testid="next-page"]');
         let navigationElement = await driver.findElement(
@@ -146,6 +160,7 @@ describe('Navigate transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withPreferencesControllerTxSimulationsDisabled()
           .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
@@ -153,6 +168,12 @@ describe('Navigate transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        // Wait until total amount is loaded to mitigate flakiness on reject
+        await driver.findElement({
+          tag: 'span',
+          text: '3.0000315',
+        });
 
         // reject transaction
         await driver.clickElement({ text: 'Reject', tag: 'button' });
@@ -174,6 +195,7 @@ describe('Navigate transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withPreferencesControllerTxSimulationsDisabled()
           .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
@@ -181,6 +203,12 @@ describe('Navigate transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        // Wait until total amount is loaded to mitigate flakiness on reject
+        await driver.findElement({
+          tag: 'span',
+          text: '3.0000315',
+        });
 
         // confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -202,6 +230,7 @@ describe('Navigate transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withPreferencesControllerTxSimulationsDisabled()
           .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
@@ -209,6 +238,12 @@ describe('Navigate transactions', function () {
       },
       async ({ driver, ganacheServer }) => {
         await unlockWallet(driver);
+
+        // Wait until total amount is loaded to mitigate flakiness on reject
+        await driver.findElement({
+          tag: 'span',
+          text: '3.0000315',
+        });
 
         // reject transactions
         await driver.clickElement({ text: 'Reject 4', tag: 'a' });

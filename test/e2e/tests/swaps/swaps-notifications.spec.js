@@ -9,7 +9,7 @@ const {
 describe('Swaps - notifications @no-mmi', function () {
   async function mockTradesApiPriceSlippageError(mockServer) {
     await mockServer
-      .forGet('https://swap.metaswap.codefi.network/networks/1/trades')
+      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
       .thenCallback(() => {
         return {
           statusCode: 200,

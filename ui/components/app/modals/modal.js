@@ -35,6 +35,11 @@ import NewAccountModal from './new-account-modal';
 import RejectTransactions from './reject-transactions';
 import TransactionAlreadyConfirmed from './transaction-already-confirmed';
 
+// Metamask Notifications
+import ConfirmTurnOffProfileSyncing from './confirm-turn-off-profile-syncing';
+import TurnOnMetamaskNotifications from './turn-on-metamask-notifications/turn-on-metamask-notifications';
+import ConfirmDeleteRpcUrlModal from './confirm-delete-rpc-url-modal/confirm-delete-rpc-url-modal';
+
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
   border: '1px solid var(--color-border-default)',
@@ -226,6 +231,19 @@ const MODALS = {
     },
   },
 
+  CONFIRM_DELETE_RPC_URL: {
+    contents: <ConfirmDeleteRpcUrlModal />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
   EDIT_APPROVAL_PERMISSION: {
     contents: <EditApprovalPermission />,
     mobileModalStyle: {
@@ -362,6 +380,32 @@ const MODALS = {
     },
   },
   ///: END:ONLY_INCLUDE_IF
+
+  CONFIRM_TURN_OFF_PROFILE_SYNCING: {
+    contents: <ConfirmTurnOffProfileSyncing />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  TURN_ON_METAMASK_NOTIFICATIONS: {
+    contents: <TurnOnMetamaskNotifications />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
 
   DEFAULT: {
     contents: [],

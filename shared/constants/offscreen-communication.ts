@@ -7,6 +7,7 @@ export enum OffscreenCommunicationTarget {
   ledgerOffscreen = 'ledger-offscreen',
   latticeOffscreen = 'lattice-offscreen',
   extension = 'extension-offscreen',
+  extensionMain = 'extension',
 }
 
 /**
@@ -16,6 +17,7 @@ export enum OffscreenCommunicationTarget {
 export enum OffscreenCommunicationEvents {
   trezorDeviceConnect = 'trezor-device-connect',
   ledgerDeviceConnect = 'ledger-device-connect',
+  metamaskBackgroundReady = 'metamask-background-ready',
 }
 
 /**
@@ -39,7 +41,7 @@ export enum LedgerAction {
   unlock = 'ledger-unlock',
   getPublicKey = 'ledger-unlock',
   signTransaction = 'ledger-sign-transaction',
-  signMessage = 'ledger-sign-message',
+  signPersonalMessage = 'ledger-sign-personal-message',
   signTypedData = 'ledger-sign-typed-data',
 }
 

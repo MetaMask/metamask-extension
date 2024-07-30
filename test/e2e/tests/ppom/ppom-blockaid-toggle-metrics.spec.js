@@ -70,7 +70,6 @@ describe('PPOM Blockaid Alert - Metrics @no-mmi', function () {
         testSpecificMock: mockServerCalls,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // toggle on

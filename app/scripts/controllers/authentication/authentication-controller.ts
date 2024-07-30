@@ -3,6 +3,11 @@ import {
   RestrictedControllerMessenger,
   StateMetadata,
 } from '@metamask/base-controller';
+import type {
+  KeyringControllerGetStateAction,
+  KeyringControllerLockEvent,
+  KeyringControllerUnlockEvent,
+} from '@metamask/keyring-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import {
   createSnapPublicKeyRequest,
@@ -23,28 +28,28 @@ const controllerName = 'AuthenticationController';
 type SessionProfile = {
   identifierId: string;
   profileId: string;
-  metametricsId: string;
+};
+
+type SessionData = {
+  /** profile - anonymous profile data for the given logged in user */
+  profile: SessionProfile;
+  /** accessToken - used to make requests authorized endpoints */
+  accessToken: string;
+  /** expiresIn - string date to determine if new access token is required  */
+  expiresIn: string;
+};
+
+type MetaMetricsAuth = {
+  getMetaMetricsId: () => string;
 };
 
 export type AuthenticationControllerState = {
   /**
    * Global isSignedIn state.
-   * Can be used to determine if "Profile Syncing" is enabled or not.
+   * Can be used to determine if "Profile Syncing" is enabled.
    */
   isSignedIn: boolean;
-
-  /**
-   * These tokens & session data will expire every 30 mins.
-   *
-   * @property profile - anonymous profile data for the given logged in user
-   * @property accessToken - used to make requests authorized endpoints
-   * @property expiresIn - string date to determine if new access token is required
-   */
-  sessionData?: {
-    profile: SessionProfile;
-    accessToken: string;
-    expiresIn: string;
-  };
+  sessionData?: SessionData;
 };
 const defaultState: AuthenticationControllerState = { isSignedIn: false };
 const metadata: StateMetadata<AuthenticationControllerState> = {
@@ -66,7 +71,11 @@ type CreateActionsObj<T extends keyof AuthenticationController> = {
   };
 };
 type ActionsObj = CreateActionsObj<
-  'performSignIn' | 'performSignOut' | 'getBearerToken' | 'getSessionProfile'
+  | 'performSignIn'
+  | 'performSignOut'
+  | 'getBearerToken'
+  | 'getSessionProfile'
+  | 'isSignedIn'
 >;
 export type Actions = ActionsObj[keyof ActionsObj];
 export type AuthenticationControllerPerformSignIn = ActionsObj['performSignIn'];
@@ -76,17 +85,24 @@ export type AuthenticationControllerGetBearerToken =
   ActionsObj['getBearerToken'];
 export type AuthenticationControllerGetSessionProfile =
   ActionsObj['getSessionProfile'];
+export type AuthenticationControllerIsSignedIn = ActionsObj['isSignedIn'];
 
 // Allowed Actions
-type AllowedActions = HandleSnapRequest;
+export type AllowedActions =
+  | HandleSnapRequest
+  | KeyringControllerGetStateAction;
+
+export type AllowedEvents =
+  | KeyringControllerLockEvent
+  | KeyringControllerUnlockEvent;
 
 // Messenger
 export type AuthenticationControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
   Actions | AllowedActions,
-  never,
+  AllowedEvents,
   AllowedActions['type'],
-  never
+  AllowedEvents['type']
 >;
 
 /**
@@ -98,12 +114,39 @@ export default class AuthenticationController extends BaseController<
   AuthenticationControllerState,
   AuthenticationControllerMessenger
 > {
+  #metametrics: MetaMetricsAuth;
+
+  #isUnlocked = false;
+
+  #keyringController = {
+    setupLockedStateSubscriptions: () => {
+      const { isUnlocked } = this.messagingSystem.call(
+        'KeyringController:getState',
+      );
+      this.#isUnlocked = isUnlocked;
+
+      this.messagingSystem.subscribe('KeyringController:unlock', () => {
+        this.#isUnlocked = true;
+      });
+
+      this.messagingSystem.subscribe('KeyringController:lock', () => {
+        this.#isUnlocked = false;
+      });
+    },
+  };
+
   constructor({
     messenger,
     state,
+    metametrics,
   }: {
     messenger: AuthenticationControllerMessenger;
     state?: AuthenticationControllerState;
+    /**
+     * Not using the Messaging System as we
+     * do not want to tie this strictly to extension
+     */
+    metametrics: MetaMetricsAuth;
   }) {
     super({
       messenger,
@@ -111,6 +154,42 @@ export default class AuthenticationController extends BaseController<
       name: controllerName,
       state: { ...defaultState, ...state },
     });
+
+    this.#metametrics = metametrics;
+
+    this.#keyringController.setupLockedStateSubscriptions();
+    this.#registerMessageHandlers();
+  }
+
+  /**
+   * Constructor helper for registering this controller's messaging system
+   * actions.
+   */
+  #registerMessageHandlers(): void {
+    this.messagingSystem.registerActionHandler(
+      'AuthenticationController:getBearerToken',
+      this.getBearerToken.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'AuthenticationController:getSessionProfile',
+      this.getSessionProfile.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'AuthenticationController:isSignedIn',
+      this.isSignedIn.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'AuthenticationController:performSignIn',
+      this.performSignIn.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'AuthenticationController:performSignOut',
+      this.performSignOut.bind(this),
+    );
   }
 
   public async performSignIn(): Promise<string> {
@@ -130,7 +209,7 @@ export default class AuthenticationController extends BaseController<
   public async getBearerToken(): Promise<string> {
     this.#assertLoggedIn();
 
-    if (this.#hasValidAuthTokens(this.state.sessionData)) {
+    if (this.#hasValidSession(this.state.sessionData)) {
       return this.state.sessionData.accessToken;
     }
 
@@ -139,19 +218,24 @@ export default class AuthenticationController extends BaseController<
   }
 
   /**
-   * NOTE this will be changed to use profileId in future task.
+   * Will return a session profile.
+   * Throws if a user is not logged in.
    *
-   * @returns the identifier id
+   * @returns profile for the session.
    */
   public async getSessionProfile(): Promise<SessionProfile> {
     this.#assertLoggedIn();
 
-    if (this.#hasValidAuthTokens(this.state.sessionData)) {
+    if (this.#hasValidSession(this.state.sessionData)) {
       return this.state.sessionData.profile;
     }
 
     const { profile } = await this.#performAuthenticationFlow();
     return profile;
+  }
+
+  public isSignedIn(): boolean {
+    return this.state.isSignedIn;
   }
 
   #assertLoggedIn(): void {
@@ -177,7 +261,11 @@ export default class AuthenticationController extends BaseController<
       // 2. Login
       const rawMessage = createLoginRawMessage(nonce, publicKey);
       const signature = await this.#snapSignMessage(rawMessage);
-      const loginResponse = await login(rawMessage, signature);
+      const loginResponse = await login(
+        rawMessage,
+        signature,
+        this.#metametrics.getMetaMetricsId(),
+      );
       if (!loginResponse?.token) {
         throw new Error(`Unable to login`);
       }
@@ -185,7 +273,6 @@ export default class AuthenticationController extends BaseController<
       const profile: SessionProfile = {
         identifierId: loginResponse.profile.identifier_id,
         profileId: loginResponse.profile.profile_id,
-        metametricsId: loginResponse.profile.metametrics_id,
       };
 
       // 3. Trade for Access Token
@@ -211,6 +298,7 @@ export default class AuthenticationController extends BaseController<
         accessToken,
       };
     } catch (e) {
+      console.error('Failed to authenticate', e);
       const errorMessage =
         e instanceof Error ? e.message : JSON.stringify(e ?? '');
       throw new Error(
@@ -219,16 +307,14 @@ export default class AuthenticationController extends BaseController<
     }
   }
 
-  #hasValidAuthTokens(
-    ephemeralTokens: AuthenticationControllerState['sessionData'],
-  ): ephemeralTokens is NonNullable<
-    AuthenticationControllerState['sessionData']
-  > {
-    if (!ephemeralTokens) {
+  #hasValidSession(
+    sessionData: SessionData | undefined,
+  ): sessionData is SessionData {
+    if (!sessionData) {
       return false;
     }
 
-    const prevDate = Date.parse(ephemeralTokens.expiresIn);
+    const prevDate = Date.parse(sessionData.expiresIn);
     if (isNaN(prevDate)) {
       return false;
     }
@@ -239,17 +325,35 @@ export default class AuthenticationController extends BaseController<
     return THIRTY_MIN_MS > diffMs;
   }
 
+  #_snapPublicKeyCache: string | undefined;
+
   /**
    * Returns the auth snap public key.
    *
    * @returns The snap public key.
    */
-  #snapGetPublicKey(): Promise<string> {
-    return this.messagingSystem.call(
+  async #snapGetPublicKey(): Promise<string> {
+    if (this.#_snapPublicKeyCache) {
+      return this.#_snapPublicKeyCache;
+    }
+
+    if (!this.#isUnlocked) {
+      throw new Error(
+        '#snapGetPublicKey - unable to call snap, wallet is locked',
+      );
+    }
+
+    const result = (await this.messagingSystem.call(
       'SnapController:handleRequest',
       createSnapPublicKeyRequest(),
-    ) as Promise<string>;
+    )) as string;
+
+    this.#_snapPublicKeyCache = result;
+
+    return result;
   }
+
+  #_snapSignMessageCache: Record<`metamask:${string}`, string> = {};
 
   /**
    * Signs a specific message using an underlying auth snap.
@@ -257,10 +361,24 @@ export default class AuthenticationController extends BaseController<
    * @param message - A specific tagged message to sign.
    * @returns A Signature created by the snap.
    */
-  #snapSignMessage(message: `metamask:${string}`): Promise<string> {
-    return this.messagingSystem.call(
+  async #snapSignMessage(message: `metamask:${string}`): Promise<string> {
+    if (this.#_snapSignMessageCache[message]) {
+      return this.#_snapSignMessageCache[message];
+    }
+
+    if (!this.#isUnlocked) {
+      throw new Error(
+        '#snapSignMessage - unable to call snap, wallet is locked',
+      );
+    }
+
+    const result = (await this.messagingSystem.call(
       'SnapController:handleRequest',
       createSnapSignMessageRequest(message),
-    ) as Promise<string>;
+    )) as string;
+
+    this.#_snapSignMessageCache[message] = result;
+
+    return result;
   }
 }

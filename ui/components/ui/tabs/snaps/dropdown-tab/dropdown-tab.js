@@ -90,6 +90,11 @@ export const DropdownTab = ({
         title="Transaction Insights"
         style={{
           pointerEvents: isActive ? 'auto' : 'none',
+          fontFamily: 'var(--typography-s-body-md-font-family)',
+          fontWeight: 'var(--typography-s-body-md-font-weight)',
+          fontSize: 'var(--typography-s-body-md-font-size)',
+          lineHeight: 'var(--typography-s-body-md-line-height)',
+          letterSpacing: 'var(--typography-s-body-md-letter-spacing)',
         }}
       />
     </Box>

@@ -4,14 +4,9 @@ import * as actionConstants from './actionConstants';
 
 describe('Redux actionConstants', () => {
   describe('SET_ACCOUNT_LABEL', () => {
-    it('updates the state.metamask.identities[:i].name property of the state to the action.value.label', () => {
+    it('updates the metadata.name value of an internal account property of the state to the action.value.label', () => {
       const initialState = {
         metamask: {
-          identities: {
-            foo: {
-              name: 'bar',
-            },
-          },
           internalAccounts: {
             accounts: {
               mockId: {
@@ -51,9 +46,6 @@ describe('Redux actionConstants', () => {
       freeze(action);
 
       const resultingState = reducers(initialState, action);
-      expect(resultingState.metamask.identities.foo.name).toStrictEqual(
-        action.value.label,
-      );
       expect(
         resultingState.metamask.internalAccounts.accounts.mockid.metadata.name,
       ).toStrictEqual(action.value.label);
