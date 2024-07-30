@@ -25,17 +25,23 @@ import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
   Button,
   BUTTON_SIZES,
+  Icon,
+  IconSize,
+  IconName,
   Box,
   Text,
 } from '../../../components/component-library';
 import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
+import Popover from '../../../components/ui/popover';
 import {
   Display,
+  BlockSize,
   FlexDirection,
   JustifyContent,
   TextColor,
   TextVariant,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import {
@@ -45,7 +51,6 @@ import {
 
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import ProfileSyncToggle from './profile-sync-toggle';
-import MetametricsToggle from './metametrics-toggle';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -60,6 +65,10 @@ export default class SecurityTab extends PureComponent {
     setOpenSeaEnabled: PropTypes.func,
     useNftDetection: PropTypes.bool,
     setUseNftDetection: PropTypes.func,
+    dataCollectionForMarketing: PropTypes.bool,
+    setDataCollectionForMarketing: PropTypes.func.isRequired,
+    participateInMetaMetrics: PropTypes.bool.isRequired,
+    setParticipateInMetaMetrics: PropTypes.func.isRequired,
     incomingTransactionsPreferences: PropTypes.object.isRequired,
     allNetworks: PropTypes.array.isRequired,
     setIncomingTransactionsPreferences: PropTypes.func.isRequired,
@@ -98,6 +107,7 @@ export default class SecurityTab extends PureComponent {
     ipfsGateway: this.props.ipfsGateway || IPFS_DEFAULT_GATEWAY_URL,
     ipfsGatewayError: '',
     srpQuizModalVisible: false,
+    showDataCollectionDisclaimer: false,
     ipfsToggle: this.props.ipfsGateway.length > 0,
   };
 
@@ -114,9 +124,17 @@ export default class SecurityTab extends PureComponent {
       return React.createRef();
     });
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const { t } = this.context;
     handleSettingsRefs(t, t('securityAndPrivacy'), this.settingsRefs);
+
+    if (
+      prevProps.dataCollectionForMarketing === true &&
+      this.props.participateInMetaMetrics === true &&
+      this.props.dataCollectionForMarketing === false
+    ) {
+      this.setState({ showDataCollectionDisclaimer: true });
+    }
   }
 
   componentDidMount() {
@@ -317,6 +335,120 @@ export default class SecurityTab extends PureComponent {
           <ToggleButton
             value={use4ByteResolution}
             onToggle={(value) => setUse4ByteResolution(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
+  renderMetaMetricsOptIn() {
+    const { t } = this.context;
+    const {
+      participateInMetaMetrics,
+      setParticipateInMetaMetrics,
+      dataCollectionForMarketing,
+      setDataCollectionForMarketing,
+    } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[4]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('participateInMetaMetrics')}</span>
+          <div className="settings-page__content-description">
+            <span>{t('participateInMetaMetricsDescription')}</span>
+          </div>
+        </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="participateInMetaMetrics"
+        >
+          <ToggleButton
+            value={participateInMetaMetrics}
+            onToggle={(value) => {
+              const newValue = !value;
+              setParticipateInMetaMetrics(newValue);
+
+              if (newValue) {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Settings,
+                  event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+                  properties: {
+                    is_metrics_opted_in: false,
+                    has_marketing_consent: false,
+                    location: 'Settings',
+                  },
+                });
+              }
+
+              if (dataCollectionForMarketing) {
+                setDataCollectionForMarketing(false);
+              }
+            }}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
+  renderDataCollectionForMarketing() {
+    const { t } = this.context;
+    const {
+      dataCollectionForMarketing,
+      participateInMetaMetrics,
+      setDataCollectionForMarketing,
+      setParticipateInMetaMetrics,
+    } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[4]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('dataCollectionForMarketing')}</span>
+          <div className="settings-page__content-description">
+            <span>{t('dataCollectionForMarketingDescription')}</span>
+          </div>
+        </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="dataCollectionForMarketing"
+        >
+          <ToggleButton
+            value={dataCollectionForMarketing}
+            onToggle={(value) => {
+              setDataCollectionForMarketing(!value);
+              if (participateInMetaMetrics) {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Settings,
+                  event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+                  properties: {
+                    is_metrics_opted_in: true,
+                    has_marketing_consent: false,
+                    location: 'Settings',
+                  },
+                });
+              } else {
+                setParticipateInMetaMetrics(true);
+              }
+            }}
             offLabel={t('off')}
             onLabel={t('on')}
           />
@@ -998,12 +1130,55 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
+  renderDataCollectionWarning = () => {
+    const { t } = this.context;
+
+    return (
+      <Popover
+        wrapTitle
+        centerTitle
+        onClose={() => this.setState({ showDataCollectionDisclaimer: false })}
+        title={
+          <Icon
+            size={IconSize.Xl}
+            name={IconName.Danger}
+            color={IconColor.warningDefault}
+          />
+        }
+        footer={
+          <Button
+            width={BlockSize.Full}
+            type="primary"
+            onClick={() =>
+              this.setState({ showDataCollectionDisclaimer: false })
+            }
+          >
+            {t('dataCollectionWarningPopoverButton')}
+          </Button>
+        }
+      >
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={2}
+          margin={4}
+        >
+          <Text>{t('dataCollectionWarningPopoverDescription')}</Text>
+        </Box>
+      </Popover>
+    );
+  };
+
   render() {
     const { warning, petnamesEnabled } = this.props;
+    const { showDataCollectionDisclaimer } = this.state;
 
     return (
       <div className="settings-page__body">
         {this.renderUseExternalServices()}
+        {showDataCollectionDisclaimer
+          ? this.renderDataCollectionWarning()
+          : null}
 
         {warning && <div className="settings-tab__error">{warning}</div>}
         <span className="settings-page__security-tab-sub-header__bold">
@@ -1085,7 +1260,8 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('metrics')}
         </span>
         <div className="settings-page__content-padded">
-          <MetametricsToggle />
+          {this.renderMetaMetricsOptIn()}
+          {this.renderDataCollectionForMarketing()}
         </div>
       </div>
     );

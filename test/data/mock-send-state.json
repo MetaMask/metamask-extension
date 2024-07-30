@@ -1245,6 +1245,7 @@
   "send": {
     "amountMode": "INPUT",
     "currentTransactionUUID": "1-tx",
+    "disabledSwapAndSendNetworks": [],
     "draftTransactions": {
       "1-tx": {
         "amount": {

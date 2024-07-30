@@ -6,13 +6,21 @@ import {
   TypographyVariant,
   FONT_WEIGHT,
   TEXT_ALIGN,
+  Display,
+  FlexDirection,
   TextColor,
   IconColor,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setParticipateInMetaMetrics } from '../../../store/actions';
 import {
+  setParticipateInMetaMetrics,
+  setDataCollectionForMarketing,
+} from '../../../store/actions';
+import {
+  getParticipateInMetaMetrics,
+  getDataCollectionForMarketing,
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
 } from '../../../selectors';
@@ -25,9 +33,12 @@ import {
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  Box as BoxComponent,
+  Checkbox,
   Icon,
   IconName,
   IconSize,
+  Text,
 } from '../../../components/component-library';
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 
@@ -45,9 +56,16 @@ export default function OnboardingMetametrics() {
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
+  const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
+  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+
   const trackEvent = useContext(MetaMetricsContext);
 
   const onConfirm = async () => {
+    if (dataCollectionForMarketing === null) {
+      await dispatch(setDataCollectionForMarketing(false));
+    }
+
     const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
     try {
       trackEvent(
@@ -67,6 +85,23 @@ export default function OnboardingMetametrics() {
           flushImmediately: true,
         },
       );
+
+      if (participateInMetaMetrics) {
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.AppInstalled,
+        });
+
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+          properties: {
+            is_metrics_opted_in: true,
+            has_marketing_consent: Boolean(dataCollectionForMarketing),
+            location: 'onboarding_metametrics',
+          },
+        });
+      }
     } finally {
       history.push(nextRoute);
     }
@@ -74,6 +109,7 @@ export default function OnboardingMetametrics() {
 
   const onCancel = async () => {
     await dispatch(setParticipateInMetaMetrics(false));
+    await dispatch(setDataCollectionForMarketing(false));
     history.push(nextRoute);
   };
 
@@ -96,6 +132,17 @@ export default function OnboardingMetametrics() {
         >
           {t('onboardingMetametricsDescriptionLegacy')}
         </Typography>
+        <BoxComponent paddingTop={2} paddingBottom={2}>
+          <Text
+            color={TextColor.primaryDefault}
+            as="a"
+            href="https://support.metamask.io/privacy-and-security/profile-privacy#how-is-the-profile-created"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('onboardingMetametricsPrivacyDescription')}
+          </Text>
+        </BoxComponent>
         <Typography
           className="onboarding-metametrics__desc"
           align={TEXT_ALIGN.CENTER}
@@ -227,7 +274,7 @@ export default function OnboardingMetametrics() {
             large
             onClick={onCancel}
           >
-            {t('onboardingMetametricsDisagree')}
+            {t('noThanks')}
           </Button>
         </div>
       </div>
@@ -253,6 +300,17 @@ export default function OnboardingMetametrics() {
         >
           {t('onboardingMetametricsDescription')}
         </Typography>
+        <BoxComponent paddingTop={2} paddingBottom={2}>
+          <Text
+            color={TextColor.primaryDefault}
+            as="a"
+            href="https://support.metamask.io/privacy-and-security/profile-privacy#how-is-the-profile-created"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('onboardingMetametricsPrivacyDescription')}
+          </Text>
+        </BoxComponent>
         <Typography
           className="onboarding-metametrics__desc"
           align={TEXT_ALIGN.LEFT}
@@ -319,6 +377,15 @@ export default function OnboardingMetametrics() {
             </Box>{' '}
           </li>
         </ul>
+        <Checkbox
+          id="metametrics-opt-in"
+          isChecked={dataCollectionForMarketing}
+          onClick={() =>
+            dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))
+          }
+          label={t('onboardingMetametricsUseDataCheckbox')}
+          paddingBottom={3}
+        />
         <Typography
           color={TextColor.textAlternative}
           align={TEXT_ALIGN.LEFT}
@@ -337,7 +404,21 @@ export default function OnboardingMetametrics() {
           ])}
         </Typography>
 
-        <div className="onboarding-metametrics__buttons">
+        <BoxComponent
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          width={BlockSize.Full}
+          className="onboarding-metametrics__buttons"
+          gap={4}
+        >
+          <Button
+            data-testid="metametrics-no-thanks"
+            type="secondary"
+            large
+            onClick={onCancel}
+          >
+            {t('noThanks')}
+          </Button>
           <Button
             data-testid="metametrics-i-agree"
             type="primary"
@@ -346,15 +427,7 @@ export default function OnboardingMetametrics() {
           >
             {t('onboardingMetametricsAgree')}
           </Button>
-          <Button
-            data-testid="metametrics-no-thanks"
-            type="secondary"
-            large
-            onClick={onCancel}
-          >
-            {t('onboardingMetametricsDisagree')}
-          </Button>
-        </div>
+        </BoxComponent>
       </div>
     );
   };

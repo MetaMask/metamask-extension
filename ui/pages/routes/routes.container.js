@@ -124,7 +124,7 @@ function mapStateToProps(state) {
     isIpfsModalOpen: state.appState.showIpfsModalOpen,
     switchedNetworkDetails,
     networkToAutomaticallySwitchTo,
-    unapprovedTransactions:
+    totalUnapprovedConfirmationCount:
       getNumberOfAllUnapprovedTransactionsAndMessages(state),
     neverShowSwitchedNetworkMessage: getNeverShowSwitchedNetworkMessage(state),
     currentExtensionPopupId: state.metamask.currentExtensionPopupId,

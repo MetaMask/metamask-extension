@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { AlertActionHandlerProvider } from '../../../components/app/alert-system/contexts/alertActionHandler';
+import { BlockaidLoadingIndicator } from '../components/confirm/blockaid-loading-indicator';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { Footer } from '../components/confirm/footer';
 import { Header } from '../components/confirm/header';
@@ -34,6 +35,7 @@ const Confirm = () => {
           ///: END:ONLY_INCLUDE_IF
         }
         <ScrollToBottom>
+          <BlockaidLoadingIndicator />
           <LedgerInfo />
           <Title />
           <Info />

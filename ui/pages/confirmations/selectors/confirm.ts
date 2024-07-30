@@ -1,7 +1,12 @@
 import { ApprovalType } from '@metamask/controller-utils';
 
 import { getPendingApprovals } from '../../../selectors/approvals';
-import { ConfirmMetamaskState } from '../types/confirm';
+import {
+  ConfirmMetamaskState,
+  Confirmation,
+  SecurityAlertResponse,
+} from '../types/confirm';
+import { isSignatureTransactionType } from '../utils';
 
 const ConfirmationApprovalTypes = [
   ApprovalType.EthSign,
@@ -35,3 +40,23 @@ export const confirmSelector = (state: ConfirmMetamaskState) => state.confirm;
 
 export const currentConfirmationSelector = (state: ConfirmMetamaskState) =>
   state.confirm.currentConfirmation;
+
+export const currentSignatureRequestSecurityResponseSelector = (
+  state: ConfirmMetamaskState,
+) => {
+  const currentConfirmation: Confirmation | undefined =
+    currentConfirmationSelector(state);
+
+  if (
+    !currentConfirmation ||
+    !isSignatureTransactionType(currentConfirmation)
+  ) {
+    return undefined;
+  }
+
+  const securityAlertId = (
+    currentConfirmation?.securityAlertResponse as SecurityAlertResponse
+  )?.securityAlertId as string;
+
+  return state.metamask.signatureSecurityAlertResponses?.[securityAlertId];
+};

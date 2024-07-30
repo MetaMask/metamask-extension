@@ -227,6 +227,51 @@ describe('Selectors', () => {
       ).toStrictEqual(0);
     });
 
+    it('returns correct number of unapproved transactions and queued requests', () => {
+      expect(
+        selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
+          metamask: {
+            queuedRequestCount: 5,
+            transactions: [
+              {
+                id: 0,
+                chainId: CHAIN_IDS.MAINNET,
+                time: 0,
+                txParams: {
+                  from: '0xAddress',
+                  to: '0xRecipient',
+                },
+                status: TransactionStatus.unapproved,
+              },
+              {
+                id: 1,
+                chainId: CHAIN_IDS.MAINNET,
+                time: 0,
+                txParams: {
+                  from: '0xAddress',
+                  to: '0xRecipient',
+                },
+                status: TransactionStatus.unapproved,
+              },
+            ],
+            unapprovedMsgs: {
+              2: {
+                id: 2,
+                msgParams: {
+                  from: '0xAddress',
+                  data: '0xData',
+                  origin: 'origin',
+                },
+                time: 1,
+                status: TransactionStatus.unapproved,
+                type: 'eth_sign',
+              },
+            },
+          },
+        }),
+      ).toStrictEqual(8);
+    });
+
     it('returns correct number of unapproved transactions and messages', () => {
       expect(
         selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
@@ -270,7 +315,7 @@ describe('Selectors', () => {
 
   describe('#getNetworkToAutomaticallySwitchTo', () => {
     const SELECTED_ORIGIN = 'https://portfolio.metamask.io';
-    const SELECTED_ORIGIN_NETWORK_ID = 'linea-goerli';
+    const SELECTED_ORIGIN_NETWORK_ID = NETWORK_TYPES.LINEA_SEPOLIA;
     const state = {
       activeTab: {
         origin: SELECTED_ORIGIN,
@@ -287,6 +332,8 @@ describe('Selectors', () => {
         domains: {
           [SELECTED_ORIGIN]: SELECTED_ORIGIN_NETWORK_ID,
         },
+        queuedRequestCount: 0,
+        transactions: [],
         providerConfig: {
           ...mockState.metamask.networkConfigurations
             .testNetworkConfigurationId,
@@ -310,8 +357,44 @@ describe('Selectors', () => {
           ...state.metamask,
           providerConfig: {
             ...state.metamask.providerConfig,
-            id: 'linea-goerli',
+            id: NETWORK_TYPES.LINEA_SEPOLIA,
           },
+        },
+      });
+      expect(networkToSwitchTo).toBe(null);
+    });
+
+    it('should return no network to switch to because there are pending transactions', () => {
+      const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          providerConfig: {
+            ...state.metamask.providerConfig,
+            id: NETWORK_TYPES.LINEA_SEPOLIA,
+          },
+          transactions: [
+            {
+              id: 0,
+              chainId: CHAIN_IDS.MAINNET,
+              status: TransactionStatus.approved,
+            },
+          ],
+        },
+      });
+      expect(networkToSwitchTo).toBe(null);
+    });
+
+    it('should return no network to switch to because there are queued requests', () => {
+      const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          providerConfig: {
+            ...state.metamask.providerConfig,
+            id: NETWORK_TYPES.LINEA_SEPOLIA,
+          },
+          queuedRequestCount: 1,
         },
       });
       expect(networkToSwitchTo).toBe(null);
@@ -1295,29 +1378,45 @@ describe('Selectors', () => {
 
         dateNowSpy = jest
           .spyOn(Date, 'now')
-          .mockReturnValue(dayAfterPolicyDate);
+          .mockReturnValue(dayAfterPolicyDate.getTime());
       });
 
       afterEach(() => {
         dateNowSpy.mockRestore();
       });
 
-      it('shows the privacy policy toast when not yet seen and on or after the policy date', () => {
+      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is before the policy date', () => {
         const result = selectors.getShowPrivacyPolicyToast({
           metamask: {
             newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
           },
         });
         expect(result).toBe(true);
       });
 
-      it('does not show the privacy policy toast when seen and on or after the policy date', () => {
+      it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
         const result = selectors.getShowPrivacyPolicyToast({
           metamask: {
             newPrivacyPolicyToastClickedOrClosed: true,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
           },
         });
         expect(result).toBe(false);
+      });
+
+      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: null,
+          },
+        });
+        expect(result).toBe(true);
       });
     });
 
@@ -1332,22 +1431,38 @@ describe('Selectors', () => {
         dateNowSpy.mockRestore();
       });
 
-      it('shows the privacy policy toast when not yet seen and on or after the policy date', () => {
+      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is before the policy date', () => {
         const result = selectors.getShowPrivacyPolicyToast({
           metamask: {
             newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
           },
         });
         expect(result).toBe(true);
       });
 
-      it('does not show the privacy policy toast when seen and on or after the policy date', () => {
+      it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
         const result = selectors.getShowPrivacyPolicyToast({
           metamask: {
             newPrivacyPolicyToastClickedOrClosed: true,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
           },
         });
         expect(result).toBe(false);
+      });
+
+      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: null,
+          },
+        });
+        expect(result).toBe(true);
       });
     });
 
@@ -1369,6 +1484,19 @@ describe('Selectors', () => {
         const result = selectors.getShowPrivacyPolicyToast({
           metamask: {
             newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
+          },
+        });
+        expect(result).toBe(false);
+      });
+
+      it('does not show the privacy policy toast before the policy date even if onboardingDate is not set', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: null,
           },
         });
         expect(result).toBe(false);

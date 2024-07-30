@@ -164,7 +164,11 @@ import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
 
 import { AssetType, TokenStandard } from '../../shared/constants/transaction';
-import { SWAPS_CLIENT_ID } from '../../shared/constants/swaps';
+import {
+  GAS_API_BASE_URL,
+  GAS_DEV_API_BASE_URL,
+  SWAPS_CLIENT_ID,
+} from '../../shared/constants/swaps';
 import {
   CHAIN_IDS,
   NETWORK_TYPES,
@@ -219,6 +223,7 @@ import {
   getSmartTransactionsOptInStatus,
   getCurrentChainSupportsSmartTransactions,
 } from '../../shared/modules/selectors';
+import { BaseUrl } from '../../shared/constants/urls';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -329,6 +334,7 @@ import AuthenticationController from './controllers/authentication/authenticatio
 import UserStorageController from './controllers/user-storage/user-storage-controller';
 import { PushPlatformNotificationsController } from './controllers/push-platform-notifications/push-platform-notifications';
 import { MetamaskNotificationsController } from './controllers/metamask-notifications/metamask-notifications';
+import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -370,6 +376,8 @@ export default class MetamaskController extends EventEmitter {
     // this keeps track of how many "controllerStream" connections are open
     // the only thing that uses controller connections are open metamask UI instances
     this.activeControllerConnections = 0;
+
+    this.offscreenPromise = opts.offscreenPromise ?? Promise.resolve();
 
     this.getRequestAccountTabIds = opts.getRequestAccountTabIds;
     this.getOpenMetamaskTabsIds = opts.getOpenMetamaskTabsIds;
@@ -443,8 +451,10 @@ export default class MetamaskController extends EventEmitter {
         ],
         allowedEvents: ['SelectedNetworkController:stateChange'],
       }),
-      methodsRequiringNetworkSwitch,
+      shouldRequestSwitchNetwork: ({ method }) =>
+        methodsRequiringNetworkSwitch.includes(method),
       clearPendingConfirmations,
+      showApprovalRequest: opts.showUserConfirmation,
     });
 
     this.approvalController = new ApprovalController({
@@ -781,6 +791,10 @@ export default class MetamaskController extends EventEmitter {
       allowedEvents: ['NetworkController:stateChange'],
     });
 
+    const gasApiBaseUrl = process.env.SWAPS_USE_DEV_APIS
+      ? GAS_DEV_API_BASE_URL
+      : GAS_API_BASE_URL;
+
     this.gasFeeController = new GasFeeController({
       state: initState.GasFeeController,
       interval: 10000,
@@ -800,12 +814,13 @@ export default class MetamaskController extends EventEmitter {
         ),
       getCurrentAccountEIP1559Compatibility:
         this.getCurrentAccountEIP1559Compatibility.bind(this),
+      legacyAPIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/gasPrices`,
+      EIP1559APIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/suggestedGasFees`,
       getCurrentNetworkLegacyGasAPICompatibility: () => {
         const { chainId } = this.networkController.state.providerConfig;
         return chainId === CHAIN_IDS.BSC;
       },
       getChainId: () => this.networkController.state.providerConfig.chainId,
-      infuraAPIKey: opts.infuraProjectId,
     });
 
     this.appStateController = new AppStateController({
@@ -858,8 +873,6 @@ export default class MetamaskController extends EventEmitter {
       hotlistRefreshInterval: process.env.IN_TEST ? 5 * SECOND : undefined,
       stalelistRefreshInterval: process.env.IN_TEST ? 30 * SECOND : undefined,
     });
-
-    this.phishingController.maybeUpdateState();
 
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     this.ppomController = new PPOMController({
@@ -1246,9 +1259,8 @@ export default class MetamaskController extends EventEmitter {
             iframeUrl: new URL(process.env.IFRAME_EXECUTION_ENVIRONMENT_URL),
           })
         : new OffscreenExecutionService({
-            // eslint-disable-next-line no-undef
-            documentUrl: chrome.runtime.getURL('./offscreen.html'),
             ...snapExecutionServiceArgs,
+            offscreenPromise: this.offscreenPromise,
           });
 
     const snapControllerMessenger = this.controllerMessenger.getRestricted({
@@ -1396,7 +1408,6 @@ export default class MetamaskController extends EventEmitter {
       state: initState.SnapsRegistry,
       messenger: snapsRegistryMessenger,
       refetchOnAllowlistMiss: requireAllowlist,
-      failOnUnavailableRegistry: requireAllowlist,
       url: {
         registry: 'https://acl.execution.metamask.io/latest/registry.json',
         signature: 'https://acl.execution.metamask.io/latest/signature.json',
@@ -1427,9 +1438,11 @@ export default class MetamaskController extends EventEmitter {
       messenger: this.controllerMessenger.getRestricted({
         name: 'AuthenticationController',
         allowedActions: [
+          'KeyringController:getState',
           'SnapController:handleRequest',
           'UserStorageController:disableProfileSyncing',
         ],
+        allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
       }),
       metametrics: {
         getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
@@ -1443,6 +1456,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
         allowedActions: [
+          'KeyringController:getState',
           'SnapController:handleRequest',
           'AuthenticationController:getBearerToken',
           'AuthenticationController:getSessionProfile',
@@ -1452,6 +1466,7 @@ export default class MetamaskController extends EventEmitter {
           'MetamaskNotificationsController:disableMetamaskNotifications',
           'MetamaskNotificationsController:selectIsMetamaskNotificationsEnabled',
         ],
+        allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
       }),
     });
 
@@ -1497,6 +1512,7 @@ export default class MetamaskController extends EventEmitter {
         name: 'MetamaskNotificationsController',
         allowedActions: [
           'KeyringController:getAccounts',
+          'KeyringController:getState',
           'AuthenticationController:getBearerToken',
           'AuthenticationController:isSignedIn',
           'UserStorageController:enableProfileSyncing',
@@ -1509,6 +1525,8 @@ export default class MetamaskController extends EventEmitter {
         ],
         allowedEvents: [
           'KeyringController:stateChange',
+          'KeyringController:lock',
+          'KeyringController:unlock',
           'PushPlatformNotificationsController:onNewNotifications',
         ],
       }),
@@ -2268,6 +2286,7 @@ export default class MetamaskController extends EventEmitter {
         AuthenticationController: this.authenticationController,
         UserStorageController: this.userStorageController,
         MetamaskNotificationsController: this.metamaskNotificationsController,
+        QueuedRequestController: this.queuedRequestController,
         PushPlatformNotificationsController:
           this.pushPlatformNotificationsController,
         ...resetOnRestartStore,
@@ -2345,7 +2364,13 @@ export default class MetamaskController extends EventEmitter {
   }
 
   postOnboardingInitialization() {
+    const { usePhishDetect } = this.preferencesController.store.getState();
+
     this.networkController.lookupNetwork();
+
+    if (usePhishDetect) {
+      this.phishingController.maybeUpdateState();
+    }
   }
 
   triggerNetworkrequests() {
@@ -3067,6 +3092,10 @@ export default class MetamaskController extends EventEmitter {
         metaMetricsController.setParticipateInMetaMetrics.bind(
           metaMetricsController,
         ),
+      setDataCollectionForMarketing:
+        metaMetricsController.setDataCollectionForMarketing.bind(
+          metaMetricsController,
+        ),
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),
@@ -3131,6 +3160,11 @@ export default class MetamaskController extends EventEmitter {
       },
       setActiveNetwork: (networkConfigurationId) => {
         return this.networkController.setActiveNetwork(networkConfigurationId);
+      },
+      // Avoids returning the promise so that initial call to switch network
+      // doesn't block on the network lookup step
+      setActiveNetworkConfigurationId: (networkConfigurationId) => {
+        this.networkController.setActiveNetwork(networkConfigurationId);
       },
       setNetworkClientIdForDomain: (origin, networkClientId) => {
         return this.selectedNetworkController.setNetworkClientIdForDomain(
@@ -3273,6 +3307,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setSurveyLinkLastClickedOrClosed.bind(
           appStateController,
         ),
+      setOnboardingDate:
+        appStateController.setOnboardingDate.bind(appStateController),
       setNewPrivacyPolicyToastClickedOrClosed:
         appStateController.setNewPrivacyPolicyToastClickedOrClosed.bind(
           appStateController,
@@ -4081,6 +4117,10 @@ export default class MetamaskController extends EventEmitter {
    */
   async submitPassword(password) {
     const { completedOnboarding } = this.onboardingController.store.getState();
+
+    // Before attempting to unlock the keyrings, we need the offscreen to have loaded.
+    await this.offscreenPromise;
+
     await this.keyringController.submitPassword(password);
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -5090,7 +5130,18 @@ export default class MetamaskController extends EventEmitter {
       useRequestQueue: this.preferencesController.getUseRequestQueue.bind(
         this.preferencesController,
       ),
-      methodsWithConfirmation,
+      shouldEnqueueRequest: (request) => {
+        if (
+          request.method === 'eth_requestAccounts' &&
+          this.permissionController.hasPermission(
+            request.origin,
+            PermissionNames.eth_accounts,
+          )
+        ) {
+          return false;
+        }
+        return methodsWithConfirmation.includes(request.method);
+      },
     });
     engine.push(requestQueueMiddleware);
 
@@ -5117,6 +5168,10 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(createLoggerMiddleware({ origin }));
     engine.push(this.permissionLogController.createMiddleware());
+
+    if (origin === BaseUrl.Portfolio) {
+      engine.push(createTxVerificationMiddleware(this.networkController));
+    }
 
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     engine.push(

@@ -36,9 +36,10 @@ class FirefoxDriver {
    * @param {object} options - the options for the build
    * @param options.responsive
    * @param options.port
+   * @param options.constrainWindowSize
    * @returns {Promise<{driver: !ThenableWebDriver, extensionUrl: string, extensionId: string}>}
    */
-  static async build({ responsive, port }) {
+  static async build({ responsive, port, constrainWindowSize }) {
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX);
     const options = new firefox.Options().setProfile(templateProfile);
 
@@ -87,7 +88,7 @@ class FirefoxDriver {
     const extensionId = await fxDriver.installExtension('dist/firefox');
     const internalExtensionId = await fxDriver.getInternalId();
 
-    if (responsive) {
+    if (responsive || constrainWindowSize) {
       await driver.manage().window().setRect({ width: 320, height: 600 });
     }
 

@@ -179,9 +179,10 @@
 
   &__add-contact {
     display: flex;
-    flex-flow: column nowrap;
+    flex-flow: column nowrap !important;
     padding-bottom: 0 !important;
     height: 100%;
+    width: 100%;
     padding-top: 0;
 
     &__content {

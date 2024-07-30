@@ -94,6 +94,7 @@ import {
 } from '../../../shared/lib/transactions-controller-utils';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { Numeric } from '../../../shared/modules/Numeric';
+import { calculateMaxGasLimit } from '../../../shared/lib/swaps-utils';
 
 export const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
@@ -101,8 +102,6 @@ export const GAS_PRICES_LOADING_STATES = {
   FAILED: 'FAILED',
   COMPLETED: 'COMPLETED',
 };
-
-export const FALLBACK_GAS_MULTIPLIER = 1.5;
 
 const initialState = {
   aggregatorMetadata: null,
@@ -1106,20 +1105,16 @@ export const signAndSendTransactions = (
     const usedQuote = getUsedQuote(state);
     const usedTradeTxParams = usedQuote.trade;
 
-    const estimatedGasLimit = new BigNumber(
-      usedQuote?.gasEstimate || 0,
-      16,
-    ).toString(16);
+    const estimatedGasLimit = new BigNumber(usedQuote?.gasEstimate || 0, 16)
+      .round(0)
+      .toString(16);
 
-    const maxGasLimit =
-      customSwapsGas ||
-      (usedQuote?.gasEstimate
-        ? `0x${estimatedGasLimit}`
-        : `0x${decimalToHex(
-            new BigNumber(usedQuote?.maxGas)
-              .mul(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER)
-              .toString() || 0,
-          )}`);
+    const maxGasLimit = calculateMaxGasLimit(
+      usedQuote?.gasEstimate,
+      usedQuote?.gasMultiplier,
+      usedQuote?.maxGas,
+      customSwapsGas,
+    );
 
     const usedGasPrice = getUsedSwapsGasPrice(state);
     usedTradeTxParams.gas = maxGasLimit;

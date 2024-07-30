@@ -30,6 +30,7 @@ jest.mock('../../store/actions', () => ({
   createNewVaultAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   unlockAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   createNewVaultAndRestore: jest.fn(),
+  setOnboardingDate: jest.fn(() => ({ type: 'TEST_DISPATCH' })),
 }));
 
 describe('Onboarding Flow', () => {
@@ -243,9 +244,7 @@ describe('Onboarding Flow', () => {
       ONBOARDING_METAMETRICS,
     );
 
-    const onboardingMetametrics = queryByTestId(
-      'onboarding-legacy-metametrics',
-    );
+    const onboardingMetametrics = queryByTestId('onboarding-metametrics');
     expect(onboardingMetametrics).toBeInTheDocument();
   });
 

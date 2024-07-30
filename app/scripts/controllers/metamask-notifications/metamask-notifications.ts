@@ -2,7 +2,6 @@ import {
   BaseController,
   RestrictedControllerMessenger,
   ControllerGetStateAction,
-  ControllerStateChangeEvent,
   StateMetadata,
 } from '@metamask/base-controller';
 import log from 'loglevel';
@@ -10,6 +9,9 @@ import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
   KeyringControllerGetAccountsAction,
   KeyringControllerStateChangeEvent,
+  KeyringControllerGetStateAction,
+  KeyringControllerLockEvent,
+  KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
 import {
   AuthenticationControllerGetBearerToken,
@@ -186,6 +188,7 @@ export type Actions =
 export type AllowedActions =
   // Keyring Controller Requests
   | KeyringControllerGetAccountsAction
+  | KeyringControllerGetStateAction
   // Auth Controller Requests
   | AuthenticationControllerGetBearerToken
   | AuthenticationControllerIsSignedIn
@@ -199,16 +202,13 @@ export type AllowedActions =
   | PushPlatformNotificationsControllerDisablePushNotifications
   | PushPlatformNotificationsControllerUpdateTriggerPushNotifications;
 
-// Events
-export type MetamaskNotificationsControllerMessengerEvents =
-  ControllerStateChangeEvent<
-    typeof controllerName,
-    MetamaskNotificationsControllerState
-  >;
-
 // Allowed Events
 export type AllowedEvents =
+  // Keyring Events
   | KeyringControllerStateChangeEvent
+  | KeyringControllerLockEvent
+  | KeyringControllerUnlockEvent
+  // Push Notification Events
   | PushPlatformNotificationsControllerOnNewNotificationEvent;
 
 // Type for the messenger of MetamaskNotificationsController
@@ -229,6 +229,34 @@ export class MetamaskNotificationsController extends BaseController<
   MetamaskNotificationsControllerState,
   MetamaskNotificationsControllerMessenger
 > {
+  // Flag to check is notifications have been setup when the browser/extension is initialized.
+  // We want to re-initialize push notifications when the browser/extension is refreshed
+  // To ensure we subscribe to the most up-to-date notifications
+  #isPushNotificationsSetup = false;
+
+  #isUnlocked = false;
+
+  #keyringController = {
+    setupLockedStateSubscriptions: (onUnlock: () => Promise<void>) => {
+      const { isUnlocked } = this.messagingSystem.call(
+        'KeyringController:getState',
+      );
+      this.#isUnlocked = isUnlocked;
+
+      this.messagingSystem.subscribe('KeyringController:unlock', () => {
+        this.#isUnlocked = true;
+        // messaging system cannot await promises
+        // we don't need to wait for a result on this.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        onUnlock();
+      });
+
+      this.messagingSystem.subscribe('KeyringController:lock', () => {
+        this.#isUnlocked = false;
+      });
+    },
+  };
+
   #auth = {
     getBearerToken: async () => {
       return await this.messagingSystem.call(
@@ -266,22 +294,34 @@ export class MetamaskNotificationsController extends BaseController<
 
   #pushNotifications = {
     enablePushNotifications: async (UUIDs: string[]) => {
-      return await this.messagingSystem.call(
-        'PushPlatformNotificationsController:enablePushNotifications',
-        UUIDs,
-      );
+      try {
+        await this.messagingSystem.call(
+          'PushPlatformNotificationsController:enablePushNotifications',
+          UUIDs,
+        );
+      } catch (e) {
+        log.error('Silently failed to enable push notifications', e);
+      }
     },
     disablePushNotifications: async (UUIDs: string[]) => {
-      return await this.messagingSystem.call(
-        'PushPlatformNotificationsController:disablePushNotifications',
-        UUIDs,
-      );
+      try {
+        await this.messagingSystem.call(
+          'PushPlatformNotificationsController:disablePushNotifications',
+          UUIDs,
+        );
+      } catch (e) {
+        log.error('Silently failed to disable push notifications', e);
+      }
     },
     updatePushNotifications: async (UUIDs: string[]) => {
-      return await this.messagingSystem.call(
-        'PushPlatformNotificationsController:updateTriggerPushNotifications',
-        UUIDs,
-      );
+      try {
+        await this.messagingSystem.call(
+          'PushPlatformNotificationsController:updateTriggerPushNotifications',
+          UUIDs,
+        );
+      } catch (e) {
+        log.error('Silently failed to update push notifications', e);
+      }
     },
     subscribe: () => {
       this.messagingSystem.subscribe(
@@ -295,6 +335,12 @@ export class MetamaskNotificationsController extends BaseController<
       if (!this.state.isMetamaskNotificationsEnabled) {
         return;
       }
+      if (this.#isPushNotificationsSetup) {
+        return;
+      }
+      if (!this.#isUnlocked) {
+        return;
+      }
 
       const storage = await this.#getUserStorage();
       if (!storage) {
@@ -303,6 +349,7 @@ export class MetamaskNotificationsController extends BaseController<
 
       const uuids = MetamaskNotificationsUtils.getAllUUIDs(storage);
       await this.#pushNotifications.enablePushNotifications(uuids);
+      this.#isPushNotificationsSetup = true;
     },
   };
 
@@ -410,6 +457,9 @@ export class MetamaskNotificationsController extends BaseController<
 
     this.#registerMessageHandlers();
     this.#clearLoadingStates();
+    this.#keyringController.setupLockedStateSubscriptions(
+      this.#pushNotifications.initializePushNotifications,
+    );
     this.#accounts.initialize();
     this.#pushNotifications.initializePushNotifications();
     this.#accounts.subscribe();

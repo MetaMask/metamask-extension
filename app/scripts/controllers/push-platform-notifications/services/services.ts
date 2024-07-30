@@ -195,17 +195,20 @@ export async function listenToPushNotifications(
   const unsubscribePushNotifications = onBackgroundMessage(
     messaging,
     async (payload: MessagePayload): Promise<void> => {
-      const typedPayload = payload;
-
-      // if the payload does not contain data, do nothing
       try {
-        const notificationData: NotificationUnion = typedPayload?.data?.data
-          ? JSON.parse(typedPayload?.data?.data)
+        const data = payload?.data?.data
+          ? JSON.parse(payload?.data?.data)
           : undefined;
 
-        if (!notificationData) {
+        // if the payload does not contain data, do nothing
+        if (!data) {
           return;
         }
+
+        const notificationData = {
+          ...data,
+          type: data?.type ?? data?.data?.kind,
+        } as NotificationUnion;
 
         const notification = processNotification(notificationData);
         onNewNotification(notification);

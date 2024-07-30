@@ -10,6 +10,9 @@ export const MMI_WEB_SITE = _mmiWebSite;
 ///: END:ONLY_INCLUDE_IF
 
 // eslint-disable-next-line prefer-destructuring
+export const METAMETRICS_SETTINGS_LINK =
+  'https://support.metamask.io/privacy-and-security/how-to-manage-your-metametrics-settings';
+// eslint-disable-next-line prefer-destructuring
 export const SUPPORT_REQUEST_LINK = process.env.SUPPORT_REQUEST_LINK;
 export const CONTRACT_ADDRESS_LINK = _contractAddressLink;
 export const PASSWORD_MIN_LENGTH = 8;

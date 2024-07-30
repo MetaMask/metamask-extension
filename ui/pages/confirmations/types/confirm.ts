@@ -11,6 +11,7 @@ export type TypedSignDataV1Type = {
 }[];
 
 export type SecurityAlertResponse = {
+  block?: number;
   reason: string;
   features?: string[];
   result_type: string;
@@ -45,5 +46,6 @@ export type ConfirmMetamaskState = {
   metamask: {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
     approvalFlows: ApprovalControllerState['approvalFlows'];
+    signatureSecurityAlertResponses?: Record<string, SecurityAlertResponse>;
   };
 };

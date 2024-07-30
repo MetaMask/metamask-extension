@@ -6,6 +6,7 @@ import {
   setIpfsGateway,
   setIsIpfsGatewayEnabled,
   setParticipateInMetaMetrics,
+  setDataCollectionForMarketing,
   setUseCurrencyRateCheck,
   setUseMultiAccountBalanceChecker,
   setUsePhishDetect,
@@ -43,6 +44,7 @@ const mapStateToProps = (state) => {
   const {
     incomingTransactionsPreferences,
     participateInMetaMetrics,
+    dataCollectionForMarketing,
     usePhishDetect,
     useTokenDetection,
     ipfsGateway,
@@ -64,6 +66,7 @@ const mapStateToProps = (state) => {
     incomingTransactionsPreferences,
     allNetworks,
     participateInMetaMetrics,
+    dataCollectionForMarketing,
     usePhishDetect,
     useTokenDetection,
     ipfsGateway,
@@ -90,6 +93,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setIncomingTransactionsPreferences(chainId, value)),
     setParticipateInMetaMetrics: (val) =>
       dispatch(setParticipateInMetaMetrics(val)),
+    setDataCollectionForMarketing: (val) =>
+      dispatch(setDataCollectionForMarketing(val)),
     setUsePhishDetect: (val) => dispatch(setUsePhishDetect(val)),
     setUseCurrencyRateCheck: (val) => dispatch(setUseCurrencyRateCheck(val)),
     setUseTokenDetection: (val) => dispatch(setUseTokenDetection(val)),
