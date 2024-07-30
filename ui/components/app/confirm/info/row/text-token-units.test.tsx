@@ -10,7 +10,6 @@ describe('ConfirmInfoRowTextTokenUnits', () => {
       <ConfirmInfoRowTextTokenUnits value={value} decimals={decimals} />,
     );
 
-    // Note: using formatAmount loses precision
     expect(getByText('0.0123')).toBeInTheDocument();
   });
 
@@ -21,7 +20,6 @@ describe('ConfirmInfoRowTextTokenUnits', () => {
       <ConfirmInfoRowTextTokenUnits value={value} decimals={decimals} />,
     );
 
-    // Note: using formatAmount loses precision
     expect(getByText('0.3')).toBeInTheDocument();
   });
 
@@ -32,7 +30,6 @@ describe('ConfirmInfoRowTextTokenUnits', () => {
       <ConfirmInfoRowTextTokenUnits value={value} decimals={decimals} />,
     );
 
-    // Note: using formatAmount loses precision
     expect(getByText('12,346')).toBeInTheDocument();
   });
 
