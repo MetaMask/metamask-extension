@@ -115,7 +115,7 @@ export const NetworkListItem = ({
       onClick={onClick}
     >
       {startAccessory ? (
-        <Box marginInlineEnd={2} marginTop={1}>
+        <Box marginTop={1}>
           {startAccessory}
         </Box>
       ) : null}

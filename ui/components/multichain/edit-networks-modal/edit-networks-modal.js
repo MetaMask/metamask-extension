@@ -40,6 +40,7 @@ export const EditNetworksModal = ({ onClose }) => {
           <Checkbox
             label={t('selectAll')}
             isChecked
+            gap={4}
             // onClick={() => (allAreSelected() ? deselectAll() : selectAll())}
             // isIndeterminate={isIndeterminate}
           />
