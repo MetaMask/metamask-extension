@@ -1,29 +1,29 @@
-import MetaMaskOpenRPCDocument from '@metamask/api-specs';
-import { NetworkClientId } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
 import { EthereumRpcError } from 'eth-rpc-errors';
-import { isSupportedNotification, isSupportedScopeString } from './supported';
+import {
+  isSupportedMethod,
+  isSupportedNotification,
+  isSupportedScopeString,
+} from './supported';
 import { ScopeObject, ScopesObject } from './scope';
-
-const validRpcMethods = MetaMaskOpenRPCDocument.methods.map(({ name }) => name);
 
 export const assertScopeSupported = (
   scopeString: string,
   scopeObject: ScopeObject,
   {
-    findNetworkClientIdByChainId,
+    isChainIdSupported,
   }: {
-    findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId;
+    isChainIdSupported: (chainId: Hex) => boolean;
   },
 ) => {
   const { methods, notifications } = scopeObject;
-  if (!isSupportedScopeString(scopeString, findNetworkClientIdByChainId)) {
+  if (!isSupportedScopeString(scopeString, isChainIdSupported)) {
     throw new EthereumRpcError(5100, 'Requested chains are not supported');
   }
 
   // Needs to be split by namespace?
   const allMethodsSupported = methods.every((method) =>
-    validRpcMethods.includes(method),
+    isSupportedMethod(method),
   );
   if (!allMethodsSupported) {
     // not sure which one of these to use
@@ -60,14 +60,14 @@ export const assertScopeSupported = (
 export const assertScopesSupported = (
   scopes: ScopesObject,
   {
-    findNetworkClientIdByChainId,
+    isChainIdSupported,
   }: {
-    findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId;
+    isChainIdSupported: (chainId: Hex) => boolean;
   },
 ) => {
   for (const [scopeString, scopeObject] of Object.entries(scopes)) {
     assertScopeSupported(scopeString, scopeObject, {
-      findNetworkClientIdByChainId,
+      isChainIdSupported,
     });
   }
 };

@@ -44,3 +44,5 @@ export const parseScopeString = (
 
   return {};
 };
+
+export type ScopedProperties = Record<Scope, Record<string, unknown>>;

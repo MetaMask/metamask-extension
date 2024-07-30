@@ -30,7 +30,7 @@ describe('MultichainSubscriptionManager', () => {
   it('should subscribe to a chain', (done) => {
     const domain = 'example.com';
     const scope = 'eip155:1';
-    const mockFindNetworkClientIdByChainId = jest.fn()
+    const mockFindNetworkClientIdByChainId = jest.fn();
     const mockGetNetworkClientById = jest.fn().mockImplementation(() => ({
       blockTracker: {},
       provider: {},
@@ -40,16 +40,19 @@ describe('MultichainSubscriptionManager', () => {
       getNetworkClientById: mockGetNetworkClientById,
     });
     subscriptionManager.subscribe(scope, domain);
-    subscriptionManager.on('notification', (domain: string, notification: any) => {
-      expect(notification).toMatchObject({
-        method: "wallet_invokeMethod",
-        params: {
-          scope,
-          request: newHeadsNotificationMock,
-        }
-      });
-      done();
-    });
+    subscriptionManager.on(
+      'notification',
+      (domain: string, notification: any) => {
+        expect(notification).toMatchObject({
+          method: 'wallet_invokeMethod',
+          params: {
+            scope,
+            request: newHeadsNotificationMock,
+          },
+        });
+        done();
+      },
+    );
     subscriptionManager.onNotification(scope, domain, newHeadsNotificationMock);
   });
 });

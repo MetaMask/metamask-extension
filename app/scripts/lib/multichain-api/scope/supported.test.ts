@@ -1,11 +1,26 @@
-import { isSupportedNotification, isSupportedScopeString } from './supported';
+import {
+  isSupportedMethod,
+  isSupportedNotification,
+  isSupportedScopeString,
+  validNotifications,
+  validRpcMethods,
+} from './supported';
 
 describe('Scope Support', () => {
   it('isSupportedNotification', () => {
-    expect(isSupportedNotification('accountsChanged')).toStrictEqual(true);
-    expect(isSupportedNotification('chainChanged')).toStrictEqual(true);
+    validNotifications.forEach((notification) => {
+      expect(isSupportedNotification(notification)).toStrictEqual(true);
+    });
     expect(isSupportedNotification('anything else')).toStrictEqual(false);
     expect(isSupportedNotification('')).toStrictEqual(false);
+  });
+
+  it('isSupportedMethod', () => {
+    validRpcMethods.forEach((method) => {
+      expect(isSupportedMethod(method)).toStrictEqual(true);
+    });
+    expect(isSupportedMethod('anything else')).toStrictEqual(false);
+    expect(isSupportedMethod('')).toStrictEqual(false);
   });
 
   describe('isSupportedScopeString', () => {
@@ -24,22 +39,16 @@ describe('Scope Support', () => {
     });
 
     it('returns true for the ethereum namespace when a network client exists for the reference', () => {
-      const findNetworkClientIdByChainIdMock = jest
-        .fn()
-        .mockReturnValue('networkClientId');
+      const isChainIdSupportedMock = jest.fn().mockReturnValue(true);
       expect(
-        isSupportedScopeString('eip155:1', findNetworkClientIdByChainIdMock),
+        isSupportedScopeString('eip155:1', isChainIdSupportedMock),
       ).toStrictEqual(true);
     });
 
     it('returns false for the ethereum namespace when a network client does not exist for the reference', () => {
-      const findNetworkClientIdByChainIdMock = jest
-        .fn()
-        .mockImplementation(() => {
-          throw new Error('failed to find network client for chainId');
-        });
+      const isChainIdSupportedMock = jest.fn().mockReturnValue(false);
       expect(
-        isSupportedScopeString('eip155:1', findNetworkClientIdByChainIdMock),
+        isSupportedScopeString('eip155:1', isChainIdSupportedMock),
       ).toStrictEqual(false);
     });
   });

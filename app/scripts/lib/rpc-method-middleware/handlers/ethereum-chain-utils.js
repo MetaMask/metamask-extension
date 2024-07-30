@@ -35,7 +35,7 @@ export function findExistingNetwork(chainId, findNetworkConfigurationBy) {
 }
 
 export function validateChainId(chainId) {
-  const _chainId = typeof chainId === 'string' && chainId.toLowerCase();
+  const _chainId = typeof chainId === 'string' ? chainId.toLowerCase() : '';
   if (!isPrefixedFormattedHexString(_chainId)) {
     throw ethErrors.rpc.invalidParams({
       message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
@@ -51,7 +51,7 @@ export function validateChainId(chainId) {
   return _chainId;
 }
 
-export function validateSwitchEthereumChainParams(req, end) {
+export function validateSwitchEthereumChainParams(req) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
     throw ethErrors.rpc.invalidParams({
       message: `Expected single, object parameter. Received:\n${JSON.stringify(
@@ -69,10 +69,10 @@ export function validateSwitchEthereumChainParams(req, end) {
     });
   }
 
-  return validateChainId(chainId, end);
+  return validateChainId(chainId);
 }
 
-export function validateAddEthereumChainParams(params, end) {
+export function validateAddEthereumChainParams(params) {
   if (!params || typeof params !== 'object') {
     throw ethErrors.rpc.invalidParams({
       message: `Expected single, object parameter. Received:\n${JSON.stringify(
@@ -101,7 +101,7 @@ export function validateAddEthereumChainParams(params, end) {
     });
   }
 
-  const _chainId = validateChainId(chainId, end);
+  const _chainId = validateChainId(chainId);
   if (!rpcUrls || !Array.isArray(rpcUrls) || rpcUrls.length === 0) {
     throw ethErrors.rpc.invalidParams({
       message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
@@ -214,10 +214,7 @@ export async function switchChain(
         permissionedChainIds === undefined ||
         !permissionedChainIds.includes(chainId)
       ) {
-        await requestPermittedChainsPermission([
-          ...(permissionedChainIds ?? []),
-          chainId,
-        ]);
+        await requestPermittedChainsPermission([chainId]);
       }
     } else {
       await requestUserApproval({

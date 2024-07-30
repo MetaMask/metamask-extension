@@ -20,18 +20,18 @@ export const flattenScope = (
   scopeString: string,
   scopeObject: ScopeObject,
 ): ScopesObject => {
+  const { scopes, ...restScopeObject } = scopeObject;
   const isChainScoped = isCaipChainId(scopeString);
 
-  if (isChainScoped) {
+  if (isChainScoped || !scopes) {
     return { [scopeString]: scopeObject };
   }
 
   // TODO: Either change `scopes` to `references` or do a namespace check here?
   // Do we need to handle the case where chain scoped is passed in with `scopes` defined too?
 
-  const { scopes, ...restScopeObject } = scopeObject;
   const scopeMap: Record<CaipChainId, ScopeObject> = {};
-  scopes?.forEach((scope) => {
+  scopes.forEach((scope) => {
     scopeMap[scope] = restScopeObject;
   });
   return scopeMap;

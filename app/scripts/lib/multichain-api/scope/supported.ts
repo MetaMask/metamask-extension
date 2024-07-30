@@ -1,4 +1,3 @@
-import { NetworkClientId } from '@metamask/network-controller';
 import {
   CaipAccountId,
   Hex,
@@ -9,12 +8,24 @@ import {
 } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { InternalAccount } from '@metamask/keyring-api';
+import MetaMaskOpenRPCDocument from '@metamask/api-specs';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { KnownCaipNamespace } from './scope';
 
+export const validRpcMethods = MetaMaskOpenRPCDocument.methods.map(
+  ({ name }) => name,
+);
+
+// TODO: remove invalid notifications
+export const validNotifications = [
+  'accountsChanged',
+  'chainChanged',
+  'eth_subscription',
+];
+
 export const isSupportedScopeString = (
   scopeString: string,
-  findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId,
+  isChainIdSupported: (chainId: Hex) => boolean,
 ) => {
   const isNamespaceScoped = isCaipNamespace(scopeString);
   const isChainScoped = isCaipChainId(scopeString);
@@ -34,16 +45,7 @@ export const isSupportedScopeString = (
     const { namespace, reference } = parseCaipChainId(scopeString);
     switch (namespace) {
       case KnownCaipNamespace.Eip155:
-        try {
-          findNetworkClientIdByChainId(toHex(reference));
-          return true;
-        } catch (err) {
-          console.log(
-            'failed to find network client that can serve chainId',
-            err,
-          );
-        }
-        return false;
+        return isChainIdSupported(toHex(reference));
       default:
         return false;
     }
@@ -77,10 +79,10 @@ export const isSupportedAccount = (
   }
 };
 
+export const isSupportedMethod = (method: string): boolean =>
+  validRpcMethods.includes(method);
+
 // TODO: Needs to go into a capabilties/routing controller
 // TODO: These make no sense in a multichain world. accountsChange becomes authorization/permissionChanged?
-export const isSupportedNotification = (notification: string): boolean => {
-  return ['accountsChanged', 'chainChanged', 'eth_subscription'].includes(
-    notification,
-  );
-};
+export const isSupportedNotification = (notification: string): boolean =>
+  validNotifications.includes(notification);

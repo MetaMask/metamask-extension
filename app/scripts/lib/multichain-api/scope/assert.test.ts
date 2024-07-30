@@ -6,7 +6,7 @@ import * as Supported from './supported';
 jest.mock('./supported', () => ({
   isSupportedScopeString: jest.fn(),
   isSupportedNotification: jest.fn(),
-  isSupportedAccount: jest.fn(),
+  isSupportedMethod: jest.fn(),
 }));
 const MockSupported = jest.mocked(Supported);
 
@@ -21,20 +21,20 @@ describe('Scope Assert', () => {
   });
 
   describe('assertScopeSupported', () => {
-    const findNetworkClientIdByChainId = jest.fn();
+    const isChainIdSupported = jest.fn();
 
     describe('scopeString', () => {
       it('checks if the scopeString is supported', () => {
         try {
           assertScopeSupported('scopeString', validScopeObject, {
-            findNetworkClientIdByChainId,
+            isChainIdSupported,
           });
         } catch (err) {
           // noop
         }
         expect(MockSupported.isSupportedScopeString).toHaveBeenCalledWith(
           'scopeString',
-          findNetworkClientIdByChainId,
+          isChainIdSupported,
         );
       });
 
@@ -42,7 +42,7 @@ describe('Scope Assert', () => {
         MockSupported.isSupportedScopeString.mockReturnValue(false);
         expect(() => {
           assertScopeSupported('scopeString', validScopeObject, {
-            findNetworkClientIdByChainId,
+            isChainIdSupported,
           });
         }).toThrow(
           new EthereumRpcError(5100, 'Requested chains are not supported'),
@@ -55,16 +55,38 @@ describe('Scope Assert', () => {
         MockSupported.isSupportedScopeString.mockReturnValue(true);
       });
 
-      it('throws an error if there are methods missing from the OpenRPC Document', () => {
+      it('checks if the methods are supported', () => {
+        try {
+          assertScopeSupported(
+            'scopeString',
+            {
+              ...validScopeObject,
+              methods: ['eth_chainId'],
+            },
+            {
+              isChainIdSupported,
+            },
+          );
+        } catch (err) {
+          // noop
+        }
+
+        expect(MockSupported.isSupportedMethod).toHaveBeenCalledWith(
+          'eth_chainId',
+        );
+      });
+
+      it('throws an error if there are unsupported methods', () => {
+        MockSupported.isSupportedMethod.mockReturnValue(false);
         expect(() => {
           assertScopeSupported(
             'scopeString',
             {
               ...validScopeObject,
-              methods: ['missing method'],
+              methods: ['eth_chainId'],
             },
             {
-              findNetworkClientIdByChainId,
+              isChainIdSupported,
             },
           );
         }).toThrow(
@@ -73,6 +95,7 @@ describe('Scope Assert', () => {
       });
 
       it('checks if the notifications are supported', () => {
+        MockSupported.isSupportedMethod.mockReturnValue(true);
         try {
           assertScopeSupported(
             'scopeString',
@@ -81,7 +104,7 @@ describe('Scope Assert', () => {
               notifications: ['chainChanged'],
             },
             {
-              findNetworkClientIdByChainId,
+              isChainIdSupported,
             },
           );
         } catch (err) {
@@ -94,6 +117,7 @@ describe('Scope Assert', () => {
       });
 
       it('throws an error if there are unsupported notifications', () => {
+        MockSupported.isSupportedMethod.mockReturnValue(true);
         MockSupported.isSupportedNotification.mockReturnValue(false);
         expect(() => {
           assertScopeSupported(
@@ -103,7 +127,7 @@ describe('Scope Assert', () => {
               notifications: ['chainChanged'],
             },
             {
-              findNetworkClientIdByChainId,
+              isChainIdSupported,
             },
           );
         }).toThrow(
@@ -115,8 +139,8 @@ describe('Scope Assert', () => {
       });
 
       it('does not throw if the scopeObject is valid', () => {
+        MockSupported.isSupportedMethod.mockReturnValue(true);
         MockSupported.isSupportedNotification.mockReturnValue(true);
-        MockSupported.isSupportedAccount.mockReturnValue(true);
         expect(
           assertScopeSupported(
             'scopeString',
@@ -127,7 +151,7 @@ describe('Scope Assert', () => {
               accounts: ['eip155:1:0xdeadbeef'],
             },
             {
-              findNetworkClientIdByChainId,
+              isChainIdSupported,
             },
           ),
         ).toBeUndefined();
@@ -136,13 +160,13 @@ describe('Scope Assert', () => {
   });
 
   describe('assertScopesSupported', () => {
-    const findNetworkClientIdByChainId = jest.fn();
+    const isChainIdSupported = jest.fn();
 
     it('does not throw an error if no scopes are defined', () => {
       assertScopesSupported(
         {},
         {
-          findNetworkClientIdByChainId,
+          isChainIdSupported,
         },
       );
     });
@@ -156,7 +180,7 @@ describe('Scope Assert', () => {
             scopeString: validScopeObject,
           },
           {
-            findNetworkClientIdByChainId,
+            isChainIdSupported,
           },
         );
       }).toThrow(
@@ -174,7 +198,7 @@ describe('Scope Assert', () => {
             scopeStringB: validScopeObject,
           },
           {
-            findNetworkClientIdByChainId,
+            isChainIdSupported,
           },
         ),
       ).toBeUndefined();

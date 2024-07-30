@@ -22,10 +22,11 @@ import { cloneDeep, isEqual } from 'lodash';
 import {
   Scope,
   Caip25Authorization,
-  processScopes,
+  validateAndFlattenScopes,
   ScopesObject,
   ScopeObject,
 } from './scope';
+import { assertScopesSupported } from './scope/assert';
 
 export type Caip25CaveatValue = {
   requiredScopes: ScopesObject;
@@ -94,12 +95,27 @@ const specificationBuilder: PermissionSpecificationBuilder<
         throw new Error('missing expected caveat values'); // TODO: throw better error here
       }
 
-      const processedScopes = processScopes(requiredScopes, optionalScopes, {
-        findNetworkClientIdByChainId,
+      const { flattenedRequiredScopes, flattenedOptionalScopes } =
+        validateAndFlattenScopes(requiredScopes, optionalScopes);
+
+      const isChainIdSupported = (chainId: Hex) => {
+        try {
+          findNetworkClientIdByChainId(chainId);
+          return true;
+        } catch (err) {
+          return false;
+        }
+      };
+
+      assertScopesSupported(flattenedRequiredScopes, {
+        isChainIdSupported,
+      });
+      assertScopesSupported(flattenedOptionalScopes, {
+        isChainIdSupported,
       });
 
-      assert.deepEqual(requiredScopes, processedScopes.flattenedRequiredScopes);
-      assert.deepEqual(optionalScopes, processedScopes.flattenedOptionalScopes);
+      assert.deepEqual(requiredScopes, flattenedRequiredScopes);
+      assert.deepEqual(optionalScopes, flattenedOptionalScopes);
     },
   };
 };
