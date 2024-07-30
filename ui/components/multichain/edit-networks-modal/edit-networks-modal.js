@@ -25,7 +25,7 @@ export const EditNetworksModal = ({ onClose }) => {
       onClose={() => {
         onClose();
       }}
-      className="import-nfts-modal"
+      className="edit-networks-modal"
     >
       <ModalOverlay />
       <ModalContent>
