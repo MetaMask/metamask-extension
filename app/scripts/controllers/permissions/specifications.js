@@ -99,8 +99,6 @@ export const getCaveatSpecifications = ({
   };
 };
 
-const caip25Spec = caip25EndowmentBuilder;
-
 /**
  * Gets the specifications for all permissions that will be recognized by the
  * PermissionController.
@@ -125,7 +123,7 @@ export const getPermissionSpecifications = ({
   findNetworkClientIdByChainId,
 }) => {
   return {
-    [caip25Spec.targetName]: caip25Spec.specificationBuilder({
+    [caip25EndowmentBuilder.targetName]: caip25EndowmentBuilder.specificationBuilder({
       findNetworkClientIdByChainId,
       getInternalAccounts,
     }),
