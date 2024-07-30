@@ -12,6 +12,7 @@ import {
   AvatarTokenSize,
   AvatarToken,
   Text,
+  PickerNetwork,
 } from '../../../component-library';
 import {
   BorderRadius,
@@ -54,29 +55,38 @@ import {
   getSwapsBlockedTokens,
 } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { Asset, Collection, Token } from './types';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 import AssetList from './AssetList';
 import { Search } from './asset-picker-modal-search';
+import { AssetPickerModalNetwork } from './asset-picker-modal-network';
 
 type AssetPickerModalProps = {
+  header: JSX.Element | string | null;
   isOpen: boolean;
   onClose: () => void;
   asset: Asset;
   onAssetChange: (asset: Asset) => void;
   sendingAssetImage?: string;
   sendingAssetSymbol?: string;
-};
+  visibleTabs?: ('tokens' | 'nfts')[];
+  onNetworkPickerClick?: () => void;
+} & Pick<React.ComponentProps<typeof AssetPickerModalNetwork>, 'network'>;
 
 const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
 export function AssetPickerModal({
+  header,
   isOpen,
   onClose,
   asset,
   onAssetChange,
   sendingAssetImage,
   sendingAssetSymbol,
+  network,
+  onNetworkPickerClick,
+  visibleTabs = ['tokens', 'nfts'],
 }: AssetPickerModalProps) {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -132,7 +142,7 @@ export function AssetPickerModal({
       });
       onClose();
     },
-    [onAssetChange],
+    [isDest, onAssetChange, onClose, sendAnalytics, trackEvent],
   );
 
   const defaultActiveTabKey = asset?.type === AssetType.NFT ? 'nfts' : 'tokens';
@@ -258,18 +268,19 @@ export function AssetPickerModal({
 
     return filteredTokens;
   }, [
-    memoizedUsersTokens,
-    topTokens,
-    searchQuery,
     nativeCurrency,
     nativeCurrencyImage,
     balanceValue,
+    memoizedUsersTokens,
+    topTokens,
+    tokenList,
+    isDest,
+    getIsDisabled,
+    searchQuery,
     tokenConversionRates,
     conversionRate,
     currentCurrency,
     chainId,
-    tokenList,
-    sendingAssetSymbol,
   ]);
 
   return (
@@ -283,7 +294,7 @@ export function AssetPickerModal({
       <ModalContent modalDialogProps={{ padding: 0 }}>
         <ModalHeader paddingBottom={2} onClose={onClose}>
           <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
-            {t(isDest ? 'sendSelectReceiveAsset' : 'sendSelectSendAsset')}
+            {header}
           </Text>
         </ModalHeader>
         {isDest && (
@@ -304,8 +315,23 @@ export function AssetPickerModal({
             </Text>
           </Box>
         )}
+        {network && onNetworkPickerClick && (
+          <Box className="network-picker">
+            <PickerNetwork
+              label={network.nickname ?? 'Select network'}
+              src={
+                CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                  network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                ]
+              }
+              onClick={onNetworkPickerClick}
+              data-testid="multichain-asset-picker__network"
+            />
+          </Box>
+        )}
         <Box className="modal-tab__wrapper">
-          {isDest ? (
+          {isDest ||
+          (visibleTabs.length === 1 && visibleTabs[0] === 'tokens') ? (
             <>
               <Search
                 props={{ paddingTop: 1 }}

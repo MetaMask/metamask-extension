@@ -45,6 +45,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { ellipsify } from '../../../../pages/confirmations/send/send.utils';
+import { AssetPickerModalNetwork } from '../asset-picker-modal/asset-picker-modal-network';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
@@ -59,14 +60,24 @@ export type AssetPickerProps = {
    */
   sendingAsset?: Asset;
   isDisabled?: boolean;
-};
+  networkProps?: Pick<
+    React.ComponentProps<typeof AssetPickerModalNetwork>,
+    'network' | 'networks' | 'onNetworkChange'
+  >;
+} & Pick<
+  React.ComponentProps<typeof AssetPickerModal>,
+  'visibleTabs' | 'header'
+>;
 
 // A component that lets the user pick from a list of assets.
 export function AssetPicker({
+  header,
   asset,
   onAssetChange,
+  networkProps,
   sendingAsset,
   isDisabled = false,
+  visibleTabs,
 }: AssetPickerProps) {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const t = useI18nContext();
@@ -133,14 +144,36 @@ export function AssetPicker({
     return undefined;
   };
 
+  const [isSelectingNetwork, setIsSelectingNetwork] = useState(false);
+
   return (
     <>
+      {networkProps && (
+        <AssetPickerModalNetwork
+          isOpen={isSelectingNetwork}
+          onClose={() => {
+            setIsSelectingNetwork(false);
+          }}
+          onBack={() => {
+            setIsSelectingNetwork(false);
+            setShowAssetPickerModal(true);
+          }}
+          {...networkProps}
+        />
+      )}
       {/* This is the Modal that ask to choose token to send */}
       <AssetPickerModal
+        visibleTabs={visibleTabs}
+        header={header}
         isOpen={showAssetPickerModal}
         onClose={() => setShowAssetPickerModal(false)}
         asset={asset}
         onAssetChange={onAssetChange}
+        network={networkProps ? networkProps.network : undefined}
+        onNetworkPickerClick={() => {
+          setShowAssetPickerModal(false);
+          setIsSelectingNetwork(true);
+        }}
         sendingAssetImage={sendingTokenImage}
         sendingAssetSymbol={
           sendingAsset?.details?.symbol || nativeCurrencySymbol
