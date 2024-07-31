@@ -34,18 +34,25 @@ export class Ganache {
     });
   }
 
-  async getBalance(): Promise<number> {
+  async getBalance(address = null): Promise<number> {
     const accounts = await this.getAccounts();
     const provider = await this.getProvider();
 
-    if (!accounts?.[0] || !provider) {
+    if (!provider) {
+      console.log('No provider found');
+      return 0;
+    }
+
+    const accountToUse = address || accounts?.[0];
+
+    if (!accountToUse) {
       console.log('No accounts found');
       return 0;
     }
 
     const balanceHex = await provider.request({
       method: 'eth_getBalance',
-      params: [accounts[0], 'latest'],
+      params: [accountToUse, 'latest'],
     });
     const balanceInt = parseInt(balanceHex, 16) / 10 ** 18;
 
