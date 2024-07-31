@@ -38,6 +38,7 @@ import {
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
   getShouldShowFiat,
+  getShowFiatInTestnets,
 } from '.';
 
 export type RatesState = {
@@ -311,10 +312,13 @@ export function getMultichainShouldShowFiat(
   state: MultichainState,
   account?: InternalAccount,
 ) {
-  return getMultichainIsEvm(state, account)
+  const selectedAccount = account ?? getSelectedInternalAccount(state);
+  const isTestnet = getMultichainIsTestnet(state, selectedAccount);
+  const isMainnet = !isTestnet;
+
+  return getMultichainIsEvm(state, selectedAccount)
     ? getShouldShowFiat(state)
-    : // For now we force this for non-EVM
-      true;
+    : isMainnet || (isTestnet && getShowFiatInTestnets(state));
 }
 
 export function getMultichainDefaultToken(
