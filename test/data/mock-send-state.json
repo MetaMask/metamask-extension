@@ -132,7 +132,7 @@
     "snaps": [{}],
     "preferences": {
       "hideZeroBalanceTokens": false,
-      "showFiatInTestnets": false,
+      "showFiatInTestnets": true,
       "showTestNetworks": true,
       "useNativeCurrencyAsPrimaryCurrency": true
     },
