@@ -5645,10 +5645,12 @@ export function setConfirmationAdvancedDetailsOpen(value: boolean) {
   return setPreference('showConfirmationAdvancedDetails', value);
 }
 
-export async function getNextAvailableAccountName(): Promise<string> {
+export async function getNextAvailableAccountName(
+  keyring?: KeyringTypes,
+): Promise<string> {
   return await submitRequestToBackground<string>(
     'getNextAvailableAccountName',
-    [],
+    [keyring],
   );
 }
 
