@@ -15,7 +15,7 @@ type Custodian = {
 
 export function findCustodianByEnvName(
   envName: string,
-  custodians: Custodian[],
+  custodians: Custodian[] | undefined,
 ): Custodian | null {
   const formatedEnvName = envName.toLowerCase();
 

@@ -200,8 +200,8 @@ export function getMMIAddressFromModalOrAddress(state: State) {
 
 export function getMMIConfiguration(
   state: State,
-): MmiConfiguration | undefined {
-  return state.metamask.mmiConfiguration;
+): MmiConfiguration {
+  return state.metamask.mmiConfiguration || {};
 }
 
 export function getInteractiveReplacementToken(state: State) {

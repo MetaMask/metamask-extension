@@ -10,6 +10,12 @@ type InstitutionalFeaturesState = {
   };
 };
 
+// todo: refactor https://consensyssoftware.atlassian.net/browse/MMI-5328
+type Label = {
+  key: string;
+  value: string;
+};
+
 type ConnectRequest = {
   channelId: string;
   traceId: string;
@@ -17,6 +23,10 @@ type ConnectRequest = {
   environment: string;
   feature: string;
   service: string;
+  origin: string;
+  custodian: string;
+  chainId: string;
+  labels: Label[];
 };
 
 type MetaMaskState = {
