@@ -205,7 +205,6 @@ export function getMultichainNetwork(
     // TODO: Adapt this for other non-EVM networks
     nickname: nonEvmNetwork.nickname,
     isEvmNetwork: false,
-    // FIXME: We should use CAIP-2 chain ID here, and not only the reference part
     chainId: nonEvmNetwork?.chainId,
     network: nonEvmNetwork,
   };
