@@ -32,10 +32,8 @@ function transformState(state: Record<string, unknown>) {
   }
 
   if (!isObject(state.SelectedNetworkController)) {
-    global.sentry?.captureException?.(
-      new Error(
-        `state.SelectedNetworkController is type: ${typeof state.SelectedNetworkController}`,
-      ),
+    console.error(
+      `Unexpected state encountered during migration version ${version}: state.SelectedNetworkController is type: ${typeof state.SelectedNetworkController}`,
     );
     state.SelectedNetworkController = { domains: {} };
   } else if (hasProperty(state.SelectedNetworkController, 'perDomainNetwork')) {
