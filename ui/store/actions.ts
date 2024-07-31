@@ -4623,21 +4623,6 @@ export async function closeNotificationPopup() {
   global.platform.closeCurrentWindow();
 }
 
-/**
- * @param payload - details of the event to track
- * @param options - options for routing/handling of event
- * @returns
- */
-export function trackMetaMetricsEvent(
-  payload: MetaMetricsEventPayload,
-  options?: MetaMetricsEventOptions,
-) {
-  return submitRequestToBackground('trackMetaMetricsEvent', [
-    { ...payload, actionId: generateActionId() },
-    options,
-  ]);
-}
-
 export function createEventFragment(
   options: MetaMetricsEventFragment,
 ): Promise<string> {
@@ -4675,20 +4660,6 @@ export function finalizeEventFragment(
   },
 ) {
   return submitRequestToBackground('finalizeEventFragment', [id, options]);
-}
-
-/**
- * @param payload - details of the page viewed
- * @param options - options for handling the page view
- */
-export function trackMetaMetricsPage(
-  payload: MetaMetricsPagePayload,
-  options: MetaMetricsPageOptions,
-) {
-  return submitRequestToBackground('trackMetaMetricsPage', [
-    { ...payload, actionId: generateActionId() },
-    options,
-  ]);
 }
 
 export function resetViewedNotifications() {

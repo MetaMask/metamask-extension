@@ -1225,7 +1225,7 @@ function isInIgnoreList(errorMessage, ignoreList) {
   return ignoreList.some((ignore) => errorMessage.includes(ignore));
 }
 
-function collectMetrics() {
+async function collectMetrics() {
   const results = {
     paint: {},
     navigation: [],
@@ -1238,6 +1238,8 @@ function collectMetrics() {
   window.performance
     .getEntriesByType('navigation')
     .forEach((navigationEntry) => {
+      console.log('navigationEntry', navigationEntry);
+
       results.navigation.push({
         domContentLoaded: navigationEntry.domContentLoadedEventEnd,
         load: navigationEntry.loadEventEnd,
@@ -1246,6 +1248,9 @@ function collectMetrics() {
         type: navigationEntry.type,
       });
     });
+
+  //delay 20 seconds
+  await new Promise((resolve) => setTimeout(resolve, 20000));
 
   return results;
 }

@@ -3,24 +3,19 @@
  * MetaMetrics is our own brand, and should remain aptly named regardless of the underlying
  * metrics system. This file implements Segment analytics tracking.
  */
-import React, {
-  Component,
-  createContext,
-  useEffect,
-  useRef,
-  useCallback,
-} from 'react';
-import PropTypes from 'prop-types';
-import { matchPath, useLocation } from 'react-router-dom';
 import { captureException, captureMessage } from '@sentry/browser';
-
-import { omit } from 'lodash';
+import PropTypes from 'prop-types';
+import React, { createContext, useCallback, useEffect, useRef } from 'react';
+import { matchPath, useLocation } from 'react-router-dom';
 import { getEnvironmentType } from '../../app/scripts/lib/util';
-import { PATH_NAME_MAP } from '../helpers/constants/routes';
 import { MetaMetricsContextProp } from '../../shared/constants/metametrics';
-import { useSegmentContext } from '../hooks/useSegmentContext';
-
-import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
+import { PATH_NAME_MAP } from '../helpers/constants/routes';
+import {
+  trackMetaMetricsEvent,
+  trackMetaMetricsPage,
+} from '../store/actions-moved-to-background';
+import { omit } from 'lodash';
+// import { abortTransactionSigning } from '../store/actions';
 
 // type imports
 /**
@@ -55,8 +50,20 @@ export const MetaMetricsContext = createContext(() => {
 const PATHS_TO_CHECK = Object.keys(PATH_NAME_MAP);
 
 export function MetaMetricsProvider({ children }) {
+  const { useSegmentContext } = React.lazy(() =>
+    import('../hooks/useSegmentContext'),
+  );
+
+  // const { omit } = React.lazy(() => import('lodash'));
+  // const { getEnvironmentType } = React.lazy(() =>
+  //   import('../../app/scripts/lib/util'),
+  // );
+  console.log('foo');
+
   const location = useLocation();
-  const context = useSegmentContext();
+  console.log('bar', location);
+  // const context = useSegmentContext();
+  const context = { page: '', referrer: '' };
 
   // Sometimes we want to track context properties inside the event's "properties" object.
   const addContextPropsIntoEventProperties = useCallback(
@@ -161,31 +168,31 @@ export function MetaMetricsProvider({ children }) {
 
 MetaMetricsProvider.propTypes = { children: PropTypes.node };
 
-export class LegacyMetaMetricsProvider extends Component {
-  static propTypes = {
-    children: PropTypes.node,
-  };
+// export class LegacyMetaMetricsProvider extends Component {
+//   static propTypes = {
+//     children: PropTypes.node,
+//   };
 
-  static defaultProps = {
-    children: undefined,
-  };
+//   static defaultProps = {
+//     children: undefined,
+//   };
 
-  static contextType = MetaMetricsContext;
+//   static contextType = MetaMetricsContext;
 
-  static childContextTypes = {
-    // This has to be different than the type name for the old metametrics file
-    // using the same name would result in whichever was lower in the tree to be
-    // used.
-    trackEvent: PropTypes.func,
-  };
+//   static childContextTypes = {
+//     // This has to be different than the type name for the old metametrics file
+//     // using the same name would result in whichever was lower in the tree to be
+//     // used.
+//     trackEvent: PropTypes.func,
+//   };
 
-  getChildContext() {
-    return {
-      trackEvent: this.context,
-    };
-  }
+//   getChildContext() {
+//     return {
+//       trackEvent: this.context,
+//     };
+//   }
 
-  render() {
-    return this.props.children;
-  }
-}
+//   render() {
+//     return this.props.children;
+//   }
+// }

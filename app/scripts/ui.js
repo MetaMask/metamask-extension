@@ -1,8 +1,10 @@
+// let a = performance.now();
+
 // Disabled to allow setting up initial state hooks first
 
 // This import sets up global functions required for Sentry to function.
 // It must be run first in case an error is thrown later during initialization.
-import './lib/setup-initial-state-hooks';
+/*import './lib/setup-initial-state-hooks';
 
 // dev only, "react-devtools" import is skipped in prod builds
 import 'react-devtools';
@@ -13,21 +15,25 @@ import browser from 'webextension-polyfill';
 import Eth from '@metamask/ethjs';
 import EthQuery from '@metamask/eth-query';
 import StreamProvider from 'web3-stream-provider';
-import log from 'loglevel';
-import launchMetaMaskUi, { updateBackgroundConnection } from '../../ui';
+// import launchMetaMaskUi, { updateBackgroundConnection } from '../../ui';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
   PLATFORM_FIREFOX,
-} from '../../shared/constants/app';
-import { isManifestV3 } from '../../shared/modules/mv3.utils';
-import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
-import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
-import { getErrorHtml } from '../../shared/lib/error-utils';
-import ExtensionPlatform from './platforms/extension';
-import { setupMultiplex } from './lib/stream-utils';
-import { getEnvironmentType, getPlatform } from './lib/util';
-import metaRPCClientFactory from './lib/metaRPCClientFactory';
+  } from '../../shared/constants/app';
+  import { isManifestV3 } from '../../shared/modules/mv3.utils';
+  import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
+  import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
+  import { getErrorHtml } from '../../shared/lib/error-utils';
+  import ExtensionPlatform from './platforms/extension';
+  import { setupMultiplex } from './lib/stream-utils';
+  import { getEnvironmentType, getPlatform } from './lib/util';
+  import metaRPCClientFactory from './lib/metaRPCClientFactory';*/
+
+import log from 'loglevel';
+import React from 'react';
+import { render } from 'react-dom';
+import Root from '../../ui/pages';
 
 const container = document.getElementById('app-content');
 
@@ -42,7 +48,19 @@ let extensionPort;
 
 start().catch(log.error);
 
+function Dink() {
+  return <div>Hello World Dink</div>;
+}
+
 async function start() {
+  if (typeof Root !== 'undefined') {
+    render(<Root />, container);
+  } else {
+    render(<Dink />, container);
+  }
+
+  return;
+
   // create platform global
   global.platform = new ExtensionPlatform();
 

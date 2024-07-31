@@ -1,19 +1,15 @@
-import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Provider } from 'react-redux';
+import React, { PureComponent, Suspense } from 'react';
+// import { Provider } from 'react-redux';
 import { HashRouter } from 'react-router-dom';
-import * as Sentry from '@sentry/browser';
-import { I18nProvider, LegacyI18nProvider } from '../contexts/i18n';
-import {
-  MetaMetricsProvider,
-  LegacyMetaMetricsProvider,
-} from '../contexts/metametrics';
-import { MetamaskNotificationsProvider } from '../contexts/metamask-notifications';
-import { CurrencyRateProvider } from '../contexts/currencyRate';
-import ErrorPage from './error';
-import Routes from './routes';
+// import * as Sentry from '@sentry/browser';
+// import { I18nProvider, LegacyI18nProvider } from '../contexts/i18n';
+import { MetaMetricsProvider } from '../contexts/metametrics';
+// import { MetamaskNotificationsProvider } from '../contexts/metamask-notifications';
+// import { CurrencyRateProvider } from '../contexts/currencyRate';
+const Routes = React.lazy(() => import('./routes'));
 
-class Index extends PureComponent {
+class Root extends PureComponent {
   state = {};
 
   static getDerivedStateFromError(error) {
@@ -21,7 +17,7 @@ class Index extends PureComponent {
   }
 
   componentDidCatch(error) {
-    Sentry.captureException(error);
+    // Sentry.captureException(error);
   }
 
   render() {
@@ -30,40 +26,44 @@ class Index extends PureComponent {
 
     if (error) {
       return (
-        <Provider store={store}>
-          <I18nProvider>
-            <LegacyI18nProvider>
-              <ErrorPage error={error} errorId={errorId} />
-            </LegacyI18nProvider>
-          </I18nProvider>
-        </Provider>
+        <div>Error! {error.message}</div>
+        // <Provider store={store}>
+        //   <I18nProvider>
+        //     <LegacyI18nProvider>
+        // <ErrorPage error={error} errorId={errorId} />
+        //     </LegacyI18nProvider>
+        //   </I18nProvider>
+        // </Provider>
       );
     }
 
     return (
-      <Provider store={store}>
-        <HashRouter hashType="noslash">
-          <MetaMetricsProvider>
-            <LegacyMetaMetricsProvider>
+      // <Provider store={store}>
+      <HashRouter hashType="noslash">
+        <MetaMetricsProvider>
+          {/* <LegacyMetaMetricsProvider>
               <I18nProvider>
                 <LegacyI18nProvider>
                   <CurrencyRateProvider>
-                    <MetamaskNotificationsProvider>
-                      <Routes />
-                    </MetamaskNotificationsProvider>
+                    <MetamaskNotificationsProvider> */}
+          <Suspense fallback={<div />}>
+            <Routes />
+          </Suspense>
+          <div>Hello World Root</div>
+          {/* </MetamaskNotificationsProvider>
                   </CurrencyRateProvider>
                 </LegacyI18nProvider>
               </I18nProvider>
-            </LegacyMetaMetricsProvider>
-          </MetaMetricsProvider>
-        </HashRouter>
-      </Provider>
+            </LegacyMetaMetricsProvider> */}
+        </MetaMetricsProvider>
+      </HashRouter>
+      // </Provider>
     );
   }
 }
 
-Index.propTypes = {
+Root.propTypes = {
   store: PropTypes.object,
 };
 
-export default Index;
+export default Root;
