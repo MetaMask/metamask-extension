@@ -6363,7 +6363,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-controllers@npm:^9.3.1":
+"@metamask/snaps-controllers@npm:^9.4.0":
   version: 9.4.0
   resolution: "@metamask/snaps-controllers@npm:9.4.0"
   dependencies:
@@ -6468,22 +6468,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-rpc-methods@npm:^10.0.1":
-  version: 10.0.1
-  resolution: "@metamask/snaps-rpc-methods@npm:10.0.1"
-  dependencies:
-    "@metamask/key-tree": "npm:^9.1.2"
-    "@metamask/permission-controller": "npm:^11.0.0"
-    "@metamask/rpc-errors": "npm:^6.3.1"
-    "@metamask/snaps-sdk": "npm:^6.1.0"
-    "@metamask/snaps-utils": "npm:^7.8.1"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^9.1.0"
-    "@noble/hashes": "npm:^1.3.1"
-  checksum: 10/f2895cdbdf248c25f3b5f8ed42dc15f2e5420a1659cb06c71ac8bc35fc6ee550fce519b74ea4cf34e7edf19f0f6b9a4ccd6d8ffd63b9be8b732fb4820d323644
-  languageName: node
-  linkType: hard
-
 "@metamask/snaps-rpc-methods@npm:^11.0.0":
   version: 11.0.0
   resolution: "@metamask/snaps-rpc-methods@npm:11.0.0"
@@ -6516,7 +6500,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-sdk@npm:^6.1.1":
+"@metamask/snaps-sdk@npm:^6.2.0":
   version: 6.2.1
   resolution: "@metamask/snaps-sdk@npm:6.2.1"
   dependencies:
@@ -26093,11 +26077,11 @@ __metadata:
     "@metamask/selected-network-controller": "npm:^15.0.2"
     "@metamask/signature-controller": "npm:^17.0.0"
     "@metamask/smart-transactions-controller": "npm:^11.0.0"
-    "@metamask/snaps-controllers": "npm:^9.3.1"
+    "@metamask/snaps-controllers": "npm:^9.4.0"
     "@metamask/snaps-execution-environments": "npm:^6.6.2"
-    "@metamask/snaps-rpc-methods": "npm:^10.0.1"
-    "@metamask/snaps-sdk": "npm:^6.1.1"
-    "@metamask/snaps-utils": "npm:^7.8.1"
+    "@metamask/snaps-rpc-methods": "npm:^11.0.0"
+    "@metamask/snaps-sdk": "npm:^6.2.0"
+    "@metamask/snaps-utils": "npm:^8.0.0"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:^8.4.0"
     "@metamask/transaction-controller": "npm:^34.0.0"
