@@ -54,6 +54,11 @@ const render = (props = defaultProps) => {
       balances: {
         [mockBtcAccount.id]: {},
       },
+      providerConfig: {
+        type: 'mainnet',
+        chainId: '0x1',
+        ticker: 'ETH',
+      },
     },
     activeTab: {
       id: 113,

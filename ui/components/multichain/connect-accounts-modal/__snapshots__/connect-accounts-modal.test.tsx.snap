@@ -389,7 +389,11 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
                     <div
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
                     >
-                      E
+                      <img
+                        alt="ETH logo"
+                        class="mm-avatar-token__token-image"
+                        src="./images/eth_logo.svg"
+                      />
                     </div>
                     <div
                       class="mm-box mm-text mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"

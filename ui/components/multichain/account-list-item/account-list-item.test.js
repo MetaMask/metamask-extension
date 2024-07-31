@@ -48,11 +48,6 @@ const render = (props = {}, state = {}) => {
         },
         selectedAccount: mockAccount.id,
       },
-      providerConfig: {
-        type: 'mainnet',
-        chainId: '0x1',
-        ticker: 'ETH',
-      },
       balances: {
         [mockNonEvmAccount.id]: {
           'bip122:000000000019d6689c085ae165831e93/slip44:0': {
@@ -66,6 +61,11 @@ const render = (props = {}, state = {}) => {
           conversionDate: 0,
           conversionRate: '100000',
         },
+      },
+      providerConfig: {
+        type: 'mainnet',
+        chainId: '0x1',
+        ticker: 'ETH',
       },
     },
     activeTab: {
