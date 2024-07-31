@@ -895,9 +895,7 @@ const locateAccountBalanceDOM = async (
 ) => {
   const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
   if (ganacheServer) {
-    const balance = address
-      ? await ganacheServer.getBalance(address)
-      : await ganacheServer.getBalance();
+    const balance = await ganacheServer.getBalance(address)
     await driver.waitForSelector({
       css: balanceSelector,
       text: `${balance} ETH`,
