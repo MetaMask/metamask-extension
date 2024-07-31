@@ -45,6 +45,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { ellipsify } from '../../../../pages/confirmations/send/send.utils';
+import { Token } from '../asset-picker-modal/types';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
@@ -140,7 +141,10 @@ export function AssetPicker({
         isOpen={showAssetPickerModal}
         onClose={() => setShowAssetPickerModal(false)}
         asset={asset}
-        onAssetChange={onAssetChange}
+        onAssetChange={(token: Token) => {
+          onAssetChange(token);
+          setShowAssetPickerModal(false);
+        }}
         sendingAssetImage={sendingTokenImage}
         sendingAssetSymbol={
           sendingAsset?.details?.symbol || nativeCurrencySymbol

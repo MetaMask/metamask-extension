@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useContext } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 
 import { useSelector } from 'react-redux';
 import { isEqual, uniqBy } from 'lodash';
@@ -44,15 +44,7 @@ import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { useEqualityCheck } from '../../../../hooks/useEqualityCheck';
-import {
-  MetaMetricsEventName,
-  MetaMetricsEventCategory,
-} from '../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import {
-  getSendAnalyticProperties,
-  getSwapsBlockedTokens,
-} from '../../../../ducks/send';
+import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { Asset, Collection, Token } from './types';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
@@ -63,7 +55,7 @@ type AssetPickerModalProps = {
   isOpen: boolean;
   onClose: () => void;
   asset: Asset;
-  onAssetChange: (asset: Asset) => void;
+  onAssetChange: (asset: Token) => void;
   sendingAssetImage?: string;
   sendingAssetSymbol?: string;
 };
@@ -79,8 +71,6 @@ export function AssetPickerModal({
   sendingAssetSymbol,
 }: AssetPickerModalProps) {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
-  const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -116,29 +106,7 @@ export function AssetPickerModal({
 
   const isDest = sendingAssetImage && sendingAssetSymbol;
 
-  const handleAssetChange = useCallback(
-    (token: Token) => {
-      onAssetChange(token);
-      trackEvent(
-        {
-          event: MetaMetricsEventName.sendAssetSelected,
-          category: MetaMetricsEventCategory.Send,
-          properties: {
-            is_destination_asset_picker_modal: Boolean(isDest),
-            is_nft: false,
-          },
-          sensitiveProperties: {
-            ...sendAnalytics,
-            new_asset_symbol: token.symbol,
-            new_asset_address: token.address,
-          },
-        },
-        { excludeMetaMetricsId: false },
-      );
-      onClose();
-    },
-    [onAssetChange],
-  );
+  const handleAssetChange = useCallback(onAssetChange, [onAssetChange]);
 
   const defaultActiveTabKey = asset?.type === AssetType.NFT ? 'nfts' : 'tokens';
 

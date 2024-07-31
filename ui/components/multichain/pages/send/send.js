@@ -146,9 +146,26 @@ export const SendPage = () => {
           }),
         );
       }
+
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendAssetSelected,
+          category: MetaMetricsEventCategory.Send,
+          properties: {
+            is_destination_asset_picker_modal: Boolean(isReceived),
+            is_nft: false,
+          },
+          sensitiveProperties: {
+            ...sendAnalytics,
+            new_asset_symbol: token.symbol,
+            new_asset_address: token.address,
+          },
+        },
+        { excludeMetaMetricsId: false },
+      );
       history.push(SEND_ROUTE);
     },
-    [dispatch, history],
+    [dispatch, history, sendAnalytics, trackEvent],
   );
 
   const cleanup = useCallback(() => {
