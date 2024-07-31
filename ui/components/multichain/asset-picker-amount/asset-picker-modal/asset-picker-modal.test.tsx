@@ -80,8 +80,10 @@ describe('AssetPickerModal', () => {
       type: 'TOKEN',
     } as unknown as Asset,
     onAssetChange: onAssetChangeMock,
-    sendingAssetImage: 'image.png',
-    sendingAssetSymbol: 'SYMB',
+    sendingAsset: {
+      image: 'image.png',
+      symbol: 'SYMB',
+    },
   };
 
   beforeEach(() => {
@@ -181,8 +183,7 @@ describe('AssetPickerModal', () => {
           balance: '0x0',
           type: AssetType.NFT,
         }}
-        sendingAssetImage={undefined}
-        sendingAssetSymbol={undefined}
+        sendingAsset={undefined}
       />,
       store,
     );
@@ -253,7 +254,10 @@ describe('AssetPickerModal', () => {
 
   it('should disable the token if it is in the blocked tokens list', () => {
     renderWithProvider(
-      <AssetPickerModal {...defaultProps} sendingAssetSymbol="IRRELEVANT" />,
+      <AssetPickerModal
+        {...defaultProps}
+        sendingAsset={{ image: '', symbol: 'IRRELEVANT' }}
+      />,
       store,
     );
 

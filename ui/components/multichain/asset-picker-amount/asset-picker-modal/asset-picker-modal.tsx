@@ -60,8 +60,10 @@ type AssetPickerModalProps = {
   onClose: () => void;
   asset: Asset;
   onAssetChange: (asset: Token) => void;
-  sendingAssetImage?: string;
-  sendingAssetSymbol?: string;
+  /**
+   * Sending asset for UI treatments; only for dest component
+   */
+  sendingAsset?: { image: string; symbol: string } | undefined;
   onNetworkPickerClick?: () => void;
 } & Pick<React.ComponentProps<typeof AssetPickerModalNetwork>, 'network'> &
   Pick<
@@ -77,8 +79,7 @@ export function AssetPickerModal({
   onClose,
   asset,
   onAssetChange,
-  sendingAssetImage,
-  sendingAssetSymbol,
+  sendingAsset,
   network,
   onNetworkPickerClick,
   ...tabProps
@@ -117,8 +118,6 @@ export function AssetPickerModal({
     return new Set<string>(swapsBlockedTokens);
   }, [swapsBlockedTokens]);
 
-  const isDest = sendingAssetImage && sendingAssetSymbol;
-
   const handleAssetChange = useCallback(onAssetChange, [onAssetChange]);
 
   const chainId = useSelector(getCurrentChainId);
@@ -155,14 +154,14 @@ export function AssetPickerModal({
 
   const getIsDisabled = useCallback(
     ({ address, symbol }: Token) => {
-      const isDisabled = sendingAssetSymbol
-        ? !isEqualCaseInsensitive(sendingAssetSymbol, symbol) &&
+      const isDisabled = sendingAsset?.symbol
+        ? !isEqualCaseInsensitive(sendingAsset.symbol, symbol) &&
           memoizedSwapsBlockedTokens.has(address || '')
         : false;
 
       return isDisabled;
     },
-    [sendingAssetSymbol, memoizedSwapsBlockedTokens],
+    [sendingAsset?.symbol, memoizedSwapsBlockedTokens],
   );
 
   const filteredTokenList = useMemo(() => {
@@ -192,7 +191,7 @@ export function AssetPickerModal({
       for (const address of Object.keys(topTokens)) {
         const token = tokenList?.[address];
         if (token) {
-          if (isDest && getIsDisabled(token)) {
+          if (getIsDisabled(token)) {
             blockedTokens.push(token);
             continue;
           } else {
@@ -248,7 +247,6 @@ export function AssetPickerModal({
     memoizedUsersTokens,
     topTokens,
     tokenList,
-    isDest,
     getIsDisabled,
     searchQuery,
     tokenConversionRates,
@@ -271,7 +269,7 @@ export function AssetPickerModal({
             {header}
           </Text>
         </ModalHeader>
-        {isDest && (
+        {sendingAsset?.image && sendingAsset?.symbol && (
           <Box
             display={Display.Flex}
             gap={1}
@@ -280,11 +278,11 @@ export function AssetPickerModal({
           >
             <AvatarToken
               borderRadius={BorderRadius.full}
-              src={sendingAssetImage}
+              src={sendingAsset.image}
               size={AvatarTokenSize.Xs}
             />
             <Text variant={TextVariant.bodySm}>
-              {t('sendingAsset', [sendingAssetSymbol])}
+              {t('sendingAsset', [sendingAsset.symbol])}
             </Text>
           </Box>
         )}
