@@ -51,15 +51,11 @@ export type AssetPickerProps = {
    * Needs to be wrapped in a callback
    */
   onAssetChange: (newAsset: Asset) => void;
-  /**
-   * Sending asset for UI treatments; only for dest component
-   */
-  sendingAsset?: Asset;
   onClick?: () => void;
   isDisabled?: boolean;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModal>,
-  'visibleTabs' | 'header'
+  'visibleTabs' | 'header' | 'sendingAsset'
 >;
 
 // A component that lets the user pick from a list of assets.
@@ -94,18 +90,6 @@ export function AssetPicker({
     primaryTokenImage =
       getAssetImageURL(asset.details?.image, ipfsGateway) ||
       tokenList[asset.details.address?.toLowerCase()]?.iconUrl;
-  }
-
-  let sendingTokenImage: string | undefined;
-
-  if (sendingAsset) {
-    if (sendingAsset.type === AssetType.native) {
-      sendingTokenImage = nativeCurrencyImageUrl;
-    } else if (tokenList && sendingAsset.details) {
-      sendingTokenImage =
-        getAssetImageURL(sendingAsset.details?.image, ipfsGateway) ||
-        tokenList[sendingAsset.details.address?.toLowerCase()]?.iconUrl;
-    }
   }
 
   const symbol =
@@ -148,10 +132,7 @@ export function AssetPicker({
           onAssetChange(token);
           setShowAssetPickerModal(false);
         }}
-        sendingAssetImage={sendingTokenImage}
-        sendingAssetSymbol={
-          sendingAsset?.details?.symbol || nativeCurrencySymbol
-        }
+        sendingAsset={sendingAsset}
         defaultActiveTabKey={
           asset?.type === AssetType.NFT ? TabName.NFTS : TabName.TOKENS
         }
