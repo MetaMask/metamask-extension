@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { Box, Text } from '../../../../component-library';
 import {
+  Box,
+  Popover,
+  PopoverPosition,
+  Text,
+} from '../../../../component-library';
+import {
+  BackgroundColor,
   Display,
   JustifyContent,
   TextColor,
@@ -14,6 +20,8 @@ type NftDetailInformationRowProps = {
   value?: string | null;
   icon?: React.ReactNode;
   buttonAddressValue?: React.ButtonHTMLAttributes<HTMLButtonElement> | null;
+  withPopover?: boolean;
+  fullValue?: string;
 };
 
 const NftDetailInformationRow: React.FC<NftDetailInformationRowProps> = ({
@@ -22,7 +30,26 @@ const NftDetailInformationRow: React.FC<NftDetailInformationRowProps> = ({
   value,
   icon,
   buttonAddressValue,
+  withPopover,
+  fullValue,
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsOpen(false);
+  };
+
+  const [referenceElement, setReferenceElement] = useState();
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const setBoxRef = (ref: any) => {
+    setReferenceElement(ref);
+  };
+
   if (!value && !buttonAddressValue) {
     return null;
   }
@@ -57,7 +84,37 @@ const NftDetailInformationRow: React.FC<NftDetailInformationRowProps> = ({
           color={valueColor || TextColor.textAlternative}
           variant={TextVariant.bodyMdMedium}
         >
-          {value}
+          {withPopover && fullValue ? (
+            <>
+              <Box
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                ref={setBoxRef}
+              >
+                {value}
+              </Box>
+              <Popover
+                referenceElement={referenceElement}
+                isOpen={isOpen}
+                position={PopoverPosition.BottomStart}
+                hasArrow
+                flip
+                backgroundColor={BackgroundColor.overlayAlternative}
+                className="tokenId-popover"
+                paddingLeft={4}
+                paddingRight={4}
+              >
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.overlayInverse}
+                >
+                  {fullValue}
+                </Text>
+              </Popover>
+            </>
+          ) : (
+            value
+          )}
         </Text>
       )}
     </Box>

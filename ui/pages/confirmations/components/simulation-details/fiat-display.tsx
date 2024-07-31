@@ -32,12 +32,14 @@ export function calculateTotalFiat(fiatAmounts: FiatAmount[]): number {
 /**
  * Displays the fiat value of a single balance change.
  *
- * @param props
- * @param props.fiatAmount
+ * @param props - The props object.
+ * @param props.fiatAmount - The fiat amount to display.
+ * @param props.shorten - Whether to shorten the fiat amount.
  */
-export const IndividualFiatDisplay: React.FC<{ fiatAmount: FiatAmount }> = ({
-  fiatAmount,
-}) => {
+export const IndividualFiatDisplay: React.FC<{
+  fiatAmount: FiatAmount;
+  shorten?: boolean;
+}> = ({ fiatAmount, shorten = false }) => {
   const hideFiatForTestnet = useHideFiatForTestnet();
   const fiatFormatter = useFiatFormatter();
 
@@ -50,7 +52,7 @@ export const IndividualFiatDisplay: React.FC<{ fiatAmount: FiatAmount }> = ({
   }
   const absFiat = Math.abs(fiatAmount);
 
-  return <Text {...textStyle}>{fiatFormatter(absFiat)}</Text>;
+  return <Text {...textStyle}>{fiatFormatter(absFiat, { shorten })}</Text>;
 };
 
 /**
