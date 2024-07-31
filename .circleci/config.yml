@@ -300,6 +300,7 @@ workflows:
             - test-e2e-chrome-mmi
             - test-e2e-chrome-rpc-mmi
             - test-e2e-chrome-vault-decryption
+            - test-e2e-chrome-webpack
             - test-storybook
       - benchmark:
           requires:
