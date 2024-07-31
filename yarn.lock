@@ -8008,10 +8008,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/types@npm:8.19.0, @sentry/types@npm:^8.19.0":
+"@sentry/types@npm:8.19.0":
   version: 8.19.0
   resolution: "@sentry/types@npm:8.19.0"
   checksum: 10/8812f7394c6c031197abc04d80e5b5b3693742dc065b877c535a9ceb538aabd60ee27fc2b13824e2b8fc264819868109bbd4de3642fd1c7bf30d304fb0c21aa9
+  languageName: node
+  linkType: hard
+
+"@sentry/types@npm:^8.19.0":
+  version: 8.20.0
+  resolution: "@sentry/types@npm:8.20.0"
+  checksum: 10/c7d7ed17975f0fc0b4bf5aece58084953c2a76e8f417923a476fe1fd42a2c9339c548d701edbc4b938c9252cf680d3eff4c6c2a986bc7ac62649aebf656c5b64
   languageName: node
   linkType: hard
 
