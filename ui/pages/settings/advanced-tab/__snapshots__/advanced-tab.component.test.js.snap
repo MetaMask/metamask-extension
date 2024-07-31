@@ -231,7 +231,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         class="settings-page__content-item-col"
       >
         <label
-          class="toggle-button toggle-button--on"
+          class="toggle-button toggle-button--off show-fiat-on-testnets-toggle"
           tabindex="0"
         >
           <div
