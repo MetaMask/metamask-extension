@@ -108,12 +108,9 @@ export const AccountListItem = ({
       avatarValue: item.iconUrl,
     }),
   );
-  let balanceToTranslate = isEvmNetwork
-    ? accountTotalFiatBalances.totalWeiBalance
+  const balanceToTranslate = isEvmNetwork
+    ? account.balance
     : accountTotalFiatBalances.totalBalance;
-  if (showFiat && isEvmNetwork) {
-    balanceToTranslate = account.balance;
-  }
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const custodianIcon = useSelector((state) =>
