@@ -52,7 +52,7 @@ import {
   getSelectedInternalAccount,
 } from '../../../selectors';
 import {
-  getMultichainIsMainnet,
+  getMultichainIsTestnet,
   getMultichainNativeCurrency,
   getMultichainNativeCurrencyImage,
   getMultichainNetwork,
@@ -95,8 +95,8 @@ export const AccountListItem = ({
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
-  const isMainnet = useMultichainSelector(getMultichainIsMainnet, account);
-  const isTestnet = !isMainnet;
+  const isTestnet = useMultichainSelector(getMultichainIsTestnet, account);
+  const isMainnet = !isTestnet;
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
   const showFiat = isMainnet || (isTestnet && showFiatInTestnets);
   const accountTotalFiatBalances =

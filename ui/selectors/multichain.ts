@@ -25,6 +25,7 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
   NETWORK_TYPES,
+  TEST_NETWORK_IDS,
 } from '../../shared/constants/network';
 import { AccountsState } from './accounts';
 import {
@@ -345,6 +346,29 @@ export function getMultichainIsMainnet(
     : // TODO: For now we only check for bitcoin, but we will need to
       // update this for other non-EVM networks later!
       providerConfig.chainId === MultichainNetworks.BITCOIN;
+}
+
+export function getMultichainIsTestnet(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  // NOTE: Since there are 2 differents implementations for `IsTestnet` and `IsMainnet` we follow
+  // the same pattern here too!
+  const selectedAccount = account ?? getSelectedInternalAccount(state);
+  const providerConfig = getMultichainProviderConfig(state, selectedAccount);
+  console.log('@@ Provider', account?.address, providerConfig);
+  return getMultichainIsEvm(state, account)
+    ? // FIXME: There are multiple ways of checking for an EVM test network, but
+      // current implementation differ between each other. So we do not use
+      // `getIsTestnet` here and uses the actual `TEST_NETWORK_IDS` which seems
+      // more up-to-date
+      (TEST_NETWORK_IDS as string[]).includes(
+        (providerConfig as ProviderConfig).chainId,
+      )
+    : // TODO: For now we only check for bitcoin, but we will need to
+      // update this for other non-EVM networks later!
+      (providerConfig as MultichainProviderConfig).chainId ===
+        MultichainNetworks.BITCOIN_TESTNET;
 }
 
 export function getMultichainBalances(
