@@ -1,11 +1,4 @@
-import { rpcIdentifierUtility } from './use-safe-chains';
-
-type SafeChain = {
-  chainId: string;
-  name: string;
-  nativeCurrency: { symbol: string };
-  rpc: string[];
-};
+import { rpcIdentifierUtility, SafeChain } from './use-safe-chains';
 
 describe('rpcIdentifierUtility', () => {
   let safeChains: SafeChain[];

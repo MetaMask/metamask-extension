@@ -19,7 +19,7 @@ export const useSafeChains = () => {
 
   const [safeChains, setSafeChains] = useState<{
     safeChains?: SafeChain[];
-    error?: any;
+    error?: Error;
   }>({ safeChains: [] });
 
   if (useSafeChainsListValidation) {
