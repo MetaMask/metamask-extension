@@ -62,11 +62,6 @@ const render = (props = {}, state = {}) => {
           conversionRate: '100000',
         },
       },
-      providerConfig: {
-        type: 'mainnet',
-        chainId: '0x1',
-        ticker: 'ETH',
-      },
     },
     activeTab: {
       id: 113,
@@ -214,6 +209,9 @@ describe('AccountListItem', () => {
               providerConfig: {
                 chainId: CHAIN_IDS.SEPOLIA,
                 nickname: SEPOLIA_DISPLAY_NAME,
+              },
+              preferences: {
+                showFiatInTestnets: false,
               },
             },
           },
