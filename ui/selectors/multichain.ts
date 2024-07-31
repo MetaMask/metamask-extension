@@ -341,7 +341,7 @@ export function getMultichainIsMainnet(
 ) {
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const providerConfig = getMultichainProviderConfig(state, selectedAccount);
-  return getMultichainIsEvm(state)
+  return getMultichainIsEvm(state, account)
     ? getIsMainnet(state)
     : // TODO: For now we only check for bitcoin, but we will need to
       // update this for other non-EVM networks later!
