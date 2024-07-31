@@ -278,7 +278,13 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "एक नया अकाउंट जोड़ें"
+    "message": "एक नया Ethereum अकाउंट जोड़ें"
+  },
+  "addNewBitcoinAccount": {
+    "message": "एक नया Bitcoin अकाउंट जोड़ें (बीटा)"
+  },
+  "addNewBitcoinTestnetAccount": {
+    "message": "एक नया Bitcoin अकाउंट जोड़ें (टैस्टनेट (testnet))"
   },
   "addNewToken": {
     "message": "नया टोकन जोड़ें"
@@ -632,6 +638,9 @@
   "attemptToCancelSwapForFree": {
     "message": "स्वैप को मुफ्त में कैंसिल करने की कोशिश करें"
   },
+  "attributes": {
+    "message": "विशेषताएं"
+  },
   "attributions": {
     "message": "एट्रीब्यूशन्स"
   },
@@ -756,6 +765,22 @@
   "bitcoinActivityNotSupported": {
     "message": "Bitcoin गतिविधि सपोर्ट नहीं करती है"
   },
+  "bitcoinSupportSectionTitle": {
+    "message": "Bitcoin"
+  },
+  "bitcoinSupportToggleDescription": {
+    "message": "इस सुविधा को चालू करने से आपको अपने मौजूदा सीक्रेट रिकवरी फ्रेज़ से प्राप्त MetaMask एक्सटेंशन में एक Bitcoin अकाउंट जोड़ने का विकल्प मिलेगा। यह एक एक्सपेरिमेंटल बीटा सुविधा है, इसलिए आपको इसका उपयोग अपने जोखिम पर करना होगा। इस नए Bitcoin अनुभव पर हमें प्रतिक्रिया देने के लिए, कृपया यह $1 भरें।",
+    "description": "$1 is the link to a product feedback form"
+  },
+  "bitcoinSupportToggleTitle": {
+    "message": "\"एक नया Bitcoin अकाउंट जोड़ें (बीटा)\" को चालू करें"
+  },
+  "bitcoinTestnetSupportToggleDescription": {
+    "message": "इस सुविधा को चालू करने से आपको परीक्षण नेटवर्क के लिए एक Bitcoin अकाउंट जोड़ने का विकल्प मिलेगा।"
+  },
+  "bitcoinTestnetSupportToggleTitle": {
+    "message": "\"एक नया Bitcoin अकाउंट जोड़ें (टैस्टनेट (testnet))\" को चालू करें"
+  },
   "blockExplorerAccountAction": {
     "message": "अकाउंट",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -822,6 +847,9 @@
   },
   "blockies": {
     "message": "ब्लॉकीज़"
+  },
+  "boughtFor": {
+    "message": "के लिए खरीदा गया"
   },
   "bridge": {
     "message": "ब्रिज"
@@ -943,6 +971,9 @@
   },
   "coingecko": {
     "message": "CoinGecko"
+  },
+  "collectionName": {
+    "message": "संग्रह का नाम"
   },
   "comboNoOptions": {
     "message": "कोई विकल्प नहीं मिला",
@@ -1249,6 +1280,9 @@
   "createSnapAccountTitle": {
     "message": "अकाउंट बनाएं"
   },
+  "creatorAddress": {
+    "message": "निर्माता का एड्रेस"
+  },
   "crossChainSwapsLink": {
     "message": "MetaMask पोर्टफोलियो के साथ पूरे नेटवर्क में कहीं भी स्वैप करें"
   },
@@ -1436,6 +1470,12 @@
   "dataHex": {
     "message": "हेक्स"
   },
+  "dataUnavailable": {
+    "message": "डेटा अनुपलब्ध है"
+  },
+  "dateCreated": {
+    "message": "बनाने की तारीख"
+  },
   "dcent": {
     "message": "D'Cent"
   },
@@ -1514,6 +1554,12 @@
   },
   "developerOptions": {
     "message": "डेवलपर विकल्प"
+  },
+  "developerOptionsEnableConfirmationsRedesignDescription": {
+    "message": "वर्तमान में विकास में कन्फर्मेशन रीडिज़ाइन सुविधा को चालू या बंद करता है"
+  },
+  "developerOptionsEnableConfirmationsRedesignTitle": {
+    "message": "कन्फर्मेशन रीडिज़ाइन"
   },
   "developerOptionsNetworkMenuRedesignDescription": {
     "message": "नेटवर्क मेनू के नए डिज़ाइन को टॉगल करता है"
@@ -1712,6 +1758,9 @@
   "editGasTooLow": {
     "message": "अनजाना प्रोसेसिंग टाइम"
   },
+  "editNetworkLink": {
+    "message": "मूल नेटवर्क को संपादित करें"
+  },
   "editNonceField": {
     "message": "Nonce बदलें"
   },
@@ -1748,6 +1797,9 @@
   },
   "enableTokenAutoDetection": {
     "message": "टोकन ऑटोडिटेक्शन चालू करें"
+  },
+  "enable_auto_detection_toggle_automatically": {
+    "message": "बेसिक फ़ंक्शनैलिटी टॉगल को चालू रखने वाले उपयोगकर्ताओं के लिए MetaMask एक्सटेंशन v12.3.0 में यह स्वचालित रूप से चालू हो जाएगा"
   },
   "enabled": {
     "message": "इनेबल किया गया"
@@ -1881,6 +1933,12 @@
   "etherscanViewOn": {
     "message": "Etherscan पर देखें"
   },
+  "existingChainId": {
+    "message": "आपके द्वारा दर्ज की गई जानकारी मौजूदा चेन ID से जुड़ी है।"
+  },
+  "existingRpcUrl": {
+    "message": "यह URL किसी अन्य चेन ID से जुड़ा है।"
+  },
   "expandView": {
     "message": "व्यू को बड़ा करें"
   },
@@ -1935,6 +1993,9 @@
     "message": "फाइल इम्पोर्ट काम नहीं कर रहा है? यहां क्लिक करें!",
     "description": "Helps user import their account from a JSON file"
   },
+  "findTheRightChainId": {
+    "message": "यहां पर सही खोजें:"
+  },
   "flaskWelcomeUninstall": {
     "message": "आपको इस एक्सटेन्शन को अनइंस्टाल करना चाहिए",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -1973,6 +2034,9 @@
   },
   "forgotPassword": {
     "message": "पासवर्ड भूल गए?"
+  },
+  "form": {
+    "message": "फॉर्म"
   },
   "from": {
     "message": "भेजने वाले"
@@ -2181,6 +2245,12 @@
   },
   "highLowercase": {
     "message": "हाई"
+  },
+  "highestCurrentBid": {
+    "message": "सबसे बड़ी वर्तमान बिड"
+  },
+  "highestFloorPrice": {
+    "message": "सबसे बड़ी फ्लोर प्राइस"
   },
   "history": {
     "message": "इतिहास"
@@ -3195,6 +3265,9 @@
   "nonceField": {
     "message": "ट्रांसेक्शन Nonce कस्टमाइज़ करें"
   },
+  "nonceFieldDesc": {
+    "message": "एसेट भेजते समय Nonce (ट्रांसेक्शन संख्या) बदलने के लिए इसे चालू करें। यह एक एडवांस्ड सुविधा है, सावधानी से उपयोग करें।"
+  },
   "nonceFieldHeading": {
     "message": "कस्टम Nonce"
   },
@@ -3397,6 +3470,9 @@
   },
   "numberOfNewTokensDetectedSingular": {
     "message": "इस अकाउंट में 1 नया टोकन पाया गया"
+  },
+  "numberOfTokens": {
+    "message": "टोकन की संख्या"
   },
   "ofTextNofM": {
     "message": "का"
@@ -3982,6 +4058,12 @@
   "prev": {
     "message": "पिछला"
   },
+  "price": {
+    "message": "प्राइस"
+  },
+  "priceUnavailable": {
+    "message": "प्राइस अनुपलब्ध है"
+  },
   "primaryCurrencySetting": {
     "message": "प्राथमिक मुद्रा"
   },
@@ -4133,6 +4215,9 @@
   },
   "quoteRate": {
     "message": "उद्धरण का दर"
+  },
+  "rank": {
+    "message": "रैंक"
   },
   "reAddAccounts": {
     "message": "किसी अन्य अकाउंट को फिर से जोड़ें"
@@ -4494,13 +4579,10 @@
   "seedPhraseIntroRecommendedButtonCopy": {
     "message": "मेरा वॉलेट सुरक्षित करें (अनुशंसित)"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "लिखें और कई गुप्त स्थानों में स्टोर करें।"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "पासवर्ड मैनेजर में सेव करें"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "सेफ डिपॉजिट बॉक्स में स्टोर करें।"
   },
   "seedPhraseIntroSidebarCopyOne": {
@@ -4692,6 +4774,9 @@
   },
   "showIncomingTransactionsExplainer": {
     "message": "यह हरेक नेटवर्क के लिए अलग-अलग थर्ड-पार्टी API पर निर्भर करता है, जो आपके Ethereum एड्रेस और आपके आईपी ​​एड्रेस को एक्स्पोज़ करता है।"
+  },
+  "showLess": {
+    "message": "कम दिखाएं"
   },
   "showMore": {
     "message": "अधिक दिखाएं"
@@ -4914,6 +4999,9 @@
   },
   "snapDetailWebsite": {
     "message": "वेबसाइट"
+  },
+  "snapHomeMenu": {
+    "message": "Snap होम मेन्यू"
   },
   "snapInstallRequest": {
     "message": "$1 इंस्टॉल करने से इसे निम्नलिखित अनुमतियां मिलती हैं।",
@@ -5931,6 +6019,9 @@
   "tokenShowUp": {
     "message": "हो सकता है आपके वॉलेट में आपके टोकन ऑटोमेटिकली दिखाई नहीं दें। "
   },
+  "tokenStandard": {
+    "message": "टोकन स्टैंडर्ड"
+  },
   "tokenSymbol": {
     "message": "टोकन का प्रतीक"
   },
@@ -5940,6 +6031,9 @@
   "tokensFoundTitle": {
     "message": "$1 नए टोकन मिले",
     "description": "$1 is the number of new tokens detected"
+  },
+  "tokensInCollection": {
+    "message": "संग्रह में टोकन"
   },
   "tooltipApproveButton": {
     "message": "मैं समझता हूं"
@@ -5973,6 +6067,9 @@
   },
   "transactionCreated": {
     "message": "$2 पर $1 के मूल्य के साथ ट्रांसेक्शन बनाया गया।"
+  },
+  "transactionDataFunction": {
+    "message": "फंक्शन"
   },
   "transactionDetailDappGasMoreInfo": {
     "message": "साइट का सुझाव दिया गया"
@@ -6146,6 +6243,9 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
+  "unMatchedChain": {
+    "message": "हमारे रिकॉर्ड के अनुसार, यह URL इस चेन ID के लिए ज्ञात प्रदाता से मेल नहीं खाता है।"
+  },
   "unapproved": {
     "message": "रिजेक्ट"
   },
@@ -6197,6 +6297,9 @@
   "update": {
     "message": "अपडेट करें"
   },
+  "updateOrEditNetworkInformations": {
+    "message": "अपनी जानकारी अपडेट करें या"
+  },
   "updateRequest": {
     "message": "अपडेट का अनुरोध"
   },
@@ -6229,6 +6332,9 @@
   },
   "useNftDetection": {
     "message": "NFT को ऑटो-डिटेक्ट करें"
+  },
+  "useNftDetectionDescriptionText": {
+    "message": "MetaMask को थर्ड पार्टी सर्विसेज़ का उपयोग करके आपके NFTs जोड़ने दें। NFTs को ऑटोडिटेक्ट करने से आपका आईपी और अकाउंट एड्रेस इन सेवाओं के सामने आ जाता है। इस फ़ीचर को चालू करने से आपका आईपी ​​एड्रेस आपके Ethereum एड्रेस के साथ जुड़ सकता है और धोखाधड़ी करने वाले लोगों द्वारा एयरड्रॉप किए गए नकली NFTs दिख सकते हैं। आप मैन्युअल तरीके से टोकन जोड़कर इस ख़तरे से बच सकते हैं।"
   },
   "usePhishingDetection": {
     "message": "फिशिंग डिटेक्शन का इस्तेमाल करें"
@@ -6420,6 +6526,9 @@
   },
   "whatsThis": {
     "message": "यह क्या है?"
+  },
+  "wrongChainId": {
+    "message": "यह चेन ID नेटवर्क के नाम से मेल नहीं खाती।"
   },
   "wrongNetworkName": {
     "message": "हमारे रिकॉर्ड के अनुसार, नेटवर्क का नाम इस चेन ID से ठीक से मेल नहीं खा सकता है।"

@@ -280,6 +280,12 @@
   "addNewAccount": {
     "message": "添加新账户"
   },
+  "addNewBitcoinAccount": {
+    "message": "添加新的比特币账户（测试版）"
+  },
+  "addNewBitcoinTestnetAccount": {
+    "message": "添加新的比特币账户（测试网）"
+  },
   "addNewToken": {
     "message": "添加新代币"
   },
@@ -632,6 +638,9 @@
   "attemptToCancelSwapForFree": {
     "message": "尝试免费取消兑换"
   },
+  "attributes": {
+    "message": "属性"
+  },
   "attributions": {
     "message": "参与者"
   },
@@ -756,6 +765,22 @@
   "bitcoinActivityNotSupported": {
     "message": "比特币活动不受支持"
   },
+  "bitcoinSupportSectionTitle": {
+    "message": "比特币"
+  },
+  "bitcoinSupportToggleDescription": {
+    "message": "启用此功能后，您可以选择将比特币账户添加到衍生自现有私钥助记词的 MetaMask Extension 中。这是一个实验性的测试版功能，因此您应自行承担使用风险。为了向我们提供有关此新比特币体验的反馈，请填写此 $1。",
+    "description": "$1 is the link to a product feedback form"
+  },
+  "bitcoinSupportToggleTitle": {
+    "message": "启用“添加新的比特币账户（测试版）”"
+  },
+  "bitcoinTestnetSupportToggleDescription": {
+    "message": "启用此功能后，您可以选择为测试网络添加比特币账户。"
+  },
+  "bitcoinTestnetSupportToggleTitle": {
+    "message": "启用“添加新的比特币账户（测试网）”"
+  },
   "blockExplorerAccountAction": {
     "message": "账户",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -822,6 +847,9 @@
   },
   "blockies": {
     "message": "Blockies"
+  },
+  "boughtFor": {
+    "message": "购买用于"
   },
   "bridge": {
     "message": "跨链桥"
@@ -943,6 +971,9 @@
   },
   "coingecko": {
     "message": "CoinGecko"
+  },
+  "collectionName": {
+    "message": "收藏品名称"
   },
   "comboNoOptions": {
     "message": "找不到任何选项",
@@ -1249,6 +1280,9 @@
   "createSnapAccountTitle": {
     "message": "创建账户"
   },
+  "creatorAddress": {
+    "message": "创建者地址"
+  },
   "crossChainSwapsLink": {
     "message": "使用 MetaMask Portfolio 跨网络兑换"
   },
@@ -1436,6 +1470,12 @@
   "dataHex": {
     "message": "十六进制"
   },
+  "dataUnavailable": {
+    "message": "数据不可用"
+  },
+  "dateCreated": {
+    "message": "创建日期"
+  },
   "dcent": {
     "message": "D'Cent"
   },
@@ -1514,6 +1554,12 @@
   },
   "developerOptions": {
     "message": "开发者选项"
+  },
+  "developerOptionsEnableConfirmationsRedesignDescription": {
+    "message": "启用或禁用当前正在开发的确认重新设计功能"
+  },
+  "developerOptionsEnableConfirmationsRedesignTitle": {
+    "message": "确认重新设计"
   },
   "developerOptionsNetworkMenuRedesignDescription": {
     "message": "切换网络菜单的新设计"
@@ -1712,6 +1758,9 @@
   "editGasTooLow": {
     "message": "处理时间未知"
   },
+  "editNetworkLink": {
+    "message": "编辑原始网络"
+  },
   "editNonceField": {
     "message": "编辑 nonce"
   },
@@ -1748,6 +1797,9 @@
   },
   "enableTokenAutoDetection": {
     "message": "启用代币自动检测"
+  },
+  "enable_auto_detection_toggle_automatically": {
+    "message": "启用基本功能的用户将在 MetaMask Extension v12.3.0 中自动启用此功能"
   },
   "enabled": {
     "message": "已启用"
@@ -1881,6 +1933,12 @@
   "etherscanViewOn": {
     "message": "在 Etherscan 上查看"
   },
+  "existingChainId": {
+    "message": "您输入的信息与现有的链 ID 相关联。"
+  },
+  "existingRpcUrl": {
+    "message": "此 URL 与另一个链 ID 相关联。"
+  },
   "expandView": {
     "message": "展开视图"
   },
@@ -1935,6 +1993,9 @@
     "message": "文件导入失败？点击这里！",
     "description": "Helps user import their account from a JSON file"
   },
+  "findTheRightChainId": {
+    "message": "在下方找到合适的："
+  },
   "flaskWelcomeUninstall": {
     "message": "您应该卸载此扩展程序",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -1973,6 +2034,9 @@
   },
   "forgotPassword": {
     "message": "忘记密码了？"
+  },
+  "form": {
+    "message": "表格"
   },
   "from": {
     "message": "自"
@@ -2181,6 +2245,12 @@
   },
   "highLowercase": {
     "message": "高"
+  },
+  "highestCurrentBid": {
+    "message": "当前最高出价"
+  },
+  "highestFloorPrice": {
+    "message": "最高底价"
   },
   "history": {
     "message": "历史记录"
@@ -3195,6 +3265,9 @@
   "nonceField": {
     "message": "自定义交易 nonce"
   },
+  "nonceFieldDesc": {
+    "message": "启用此功能可更改发送资产时的唯一交易标识号（交易编号）。这是一个高级功能，请谨慎使用。"
+  },
   "nonceFieldHeading": {
     "message": "自定义 nonce"
   },
@@ -3397,6 +3470,9 @@
   },
   "numberOfNewTokensDetectedSingular": {
     "message": "在此账户中找到1枚新代币"
+  },
+  "numberOfTokens": {
+    "message": "代币数量"
   },
   "ofTextNofM": {
     "message": "/"
@@ -3982,6 +4058,12 @@
   "prev": {
     "message": "上一个"
   },
+  "price": {
+    "message": "价格"
+  },
+  "priceUnavailable": {
+    "message": "价格不可用"
+  },
   "primaryCurrencySetting": {
     "message": "主要货币"
   },
@@ -4133,6 +4215,9 @@
   },
   "quoteRate": {
     "message": "报价"
+  },
+  "rank": {
+    "message": "排名"
   },
   "reAddAccounts": {
     "message": "重新添加任何其他账户"
@@ -4494,13 +4579,10 @@
   "seedPhraseIntroRecommendedButtonCopy": {
     "message": "保护我的钱包（推荐）"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "写下并存储在多个秘密位置。"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "保存到密码管理工具"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "安全存放在保险箱内。"
   },
   "seedPhraseIntroSidebarCopyOne": {
@@ -4692,6 +4774,9 @@
   },
   "showIncomingTransactionsExplainer": {
     "message": "这依赖于每个网络的不同第三方 API，这些 API 会导致您的以太坊地址和 IP 地址被获悉。"
+  },
+  "showLess": {
+    "message": "收起"
   },
   "showMore": {
     "message": "展开"
@@ -4914,6 +4999,9 @@
   },
   "snapDetailWebsite": {
     "message": "网站"
+  },
+  "snapHomeMenu": {
+    "message": "Snap 主菜单"
   },
   "snapInstallRequest": {
     "message": "安装 $1 即赋予其以下许可。",
@@ -5931,6 +6019,9 @@
   "tokenShowUp": {
     "message": "您的代币可能不会自动显示在您的钱包中。"
   },
+  "tokenStandard": {
+    "message": "代币标准"
+  },
   "tokenSymbol": {
     "message": "代币符号"
   },
@@ -5940,6 +6031,9 @@
   "tokensFoundTitle": {
     "message": "发现$1新代币",
     "description": "$1 is the number of new tokens detected"
+  },
+  "tokensInCollection": {
+    "message": "收藏品中的代币"
   },
   "tooltipApproveButton": {
     "message": "我理解"
@@ -5973,6 +6067,9 @@
   },
   "transactionCreated": {
     "message": "在 $2 创建了值为 $1 的交易。"
+  },
+  "transactionDataFunction": {
+    "message": "功能"
   },
   "transactionDetailDappGasMoreInfo": {
     "message": "建议的网站"
@@ -6146,6 +6243,9 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
+  "unMatchedChain": {
+    "message": "根据我们的记录，此 URL 与此链 ID 的已知提供者不匹配。"
+  },
   "unapproved": {
     "message": "未批准"
   },
@@ -6197,6 +6297,9 @@
   "update": {
     "message": "更新"
   },
+  "updateOrEditNetworkInformations": {
+    "message": "更新您的信息或者"
+  },
   "updateRequest": {
     "message": "更新请求"
   },
@@ -6229,6 +6332,9 @@
   },
   "useNftDetection": {
     "message": "自动检测NFT"
+  },
+  "useNftDetectionDescriptionText": {
+    "message": "让 MetaMask 使用第三方服务来添加您所拥有的 NFT。打开自动检测 NFT 功能后，这些服务就可以看到您的 IP 地址和账户地址。启用此功能可能会将您的 IP 地址与以太坊地址关联起来，并显示骗子空投的虚假 NFT。您可以手动添加代币以避免此风险。"
   },
   "usePhishingDetection": {
     "message": "使用网络钓鱼检测"
@@ -6420,6 +6526,9 @@
   },
   "whatsThis": {
     "message": "这是什么？"
+  },
+  "wrongChainId": {
+    "message": "此链 ID 与网络名称不匹配。"
   },
   "wrongNetworkName": {
     "message": "根据我们的记录，该网络名称可能与此链 ID 不匹配。"
