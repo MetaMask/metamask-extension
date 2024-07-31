@@ -53,12 +53,12 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getMetaMetricsId,
   ///: END:ONLY_INCLUDE_IF(build-mmi)
-  getSelectedInternalAccount,
   getUnapprovedTransactions,
   getAnySnapUpdateAvailable,
   getNotifySnaps,
   getUseExternalServices,
 } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   AlignItems,
   BlockSize,

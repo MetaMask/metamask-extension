@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
-import { getSelectedInternalAccount } from '../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../selectors/accounts';
 import EditApprovalPermission from './edit-approval-permission.component';
 
 const mapStateToProps = (state) => {

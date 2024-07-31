@@ -4,11 +4,10 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { CaveatTypes } from '../../shared/constants/permissions';
 import { getApprovalRequestsByType } from './approvals';
 import { createDeepEqualSelector } from './util';
+import { getInternalAccount, getSelectedInternalAccount } from './accounts';
 import {
-  getInternalAccount,
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
-  getSelectedInternalAccount,
   getTargetSubjectMetadata,
 } from '.';
 

@@ -14,7 +14,8 @@ import {
 } from '../../component-library';
 import QrCodeView from '../../ui/qr-code-view';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getInternalAccountByAddress, getUseBlockie } from '../../../selectors';
+import { getUseBlockie } from '../../../selectors';
+import { getInternalAccountByAddress } from '../../../selectors/accounts';
 import {
   AlignItems,
   BlockSize,

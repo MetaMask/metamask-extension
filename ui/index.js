@@ -18,12 +18,12 @@ import configureStore from './store/store';
 import {
   getOriginOfCurrentTab,
   getPermittedAccountsForCurrentTab,
-  getSelectedInternalAccount,
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
   getSwitchedNetworkDetails,
   getUseRequestQueue,
 } from './selectors';
+import { getSelectedInternalAccount } from './selectors/accounts';
 import { ALERT_STATE } from './ducks/alerts';
 import {
   getUnconnectedAccountAlertEnabledness,

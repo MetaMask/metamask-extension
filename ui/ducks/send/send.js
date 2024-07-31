@@ -50,13 +50,13 @@ import {
   getAddressBookEntryOrAccountName,
   getEnsResolutionByAddress,
   getSelectedAccount,
-  getSelectedInternalAccount,
   getSelectedInternalAccountWithBalance,
   getUnapprovedTransactions,
   getSelectedNetworkClientId,
   getIsSwapsChain,
   getUseExternalServices,
 } from '../../selectors';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
 import {
   displayWarning,
   hideLoadingIndication,

@@ -1,10 +1,8 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import {
-  getAddressBookEntry,
-  getInternalAccountByAddress,
-} from '../../../../selectors';
+import { getAddressBookEntry } from '../../../../selectors';
+import { getInternalAccountByAddress } from '../../../../selectors/accounts';
 import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 import {
   CONTACT_VIEW_ROUTE,

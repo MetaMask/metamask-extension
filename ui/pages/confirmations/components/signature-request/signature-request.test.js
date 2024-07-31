@@ -18,13 +18,15 @@ import {
   getPreferences,
   getSelectedAccount,
   getTotalUnapprovedMessagesCount,
-  getInternalAccounts,
   unconfirmedTransactionsHashSelector,
   getAccountType,
-  getMemoizedMetaMaskInternalAccounts,
-  getSelectedInternalAccount,
   pendingApprovalsSortedSelector,
 } from '../../../../selectors';
+import {
+  getInternalAccounts,
+  getMemoizedMetaMaskInternalAccounts,
+  getSelectedInternalAccount,
+} from '../../../../selectors/accounts';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import SignatureRequest from './signature-request';
 

@@ -1,3 +1,5 @@
+import { EthAccountType } from '@metamask/keyring-api';
+import { cloneDeep } from 'lodash';
 import {
   MOCK_ACCOUNTS,
   MOCK_ACCOUNT_EOA,
@@ -5,12 +7,19 @@ import {
   MOCK_ACCOUNT_BIP122_P2WPKH,
   MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
 } from '../../test/data/mock-accounts';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { createMockInternalAccount } from '../../test/jest/mocks';
+import mockState from '../../test/data/mock-state.json';
 import {
   AccountsState,
   isSelectedInternalAccountEth,
   isSelectedInternalAccountBtc,
   hasCreatedBtcMainnetAccount,
   hasCreatedBtcTestnetAccount,
+  getSelectedAddress,
+  getSelectedInternalAccount,
+  getInternalAccounts,
+  getInternalAccount,
 } from './accounts';
 
 const MOCK_STATE: AccountsState = {
@@ -40,7 +49,7 @@ describe('Accounts Selectors', () => {
     ])(
       'returns $isEth if the account is: $type',
       ({ id, isEth }: { id: string; isEth: boolean }) => {
-        const state = MOCK_STATE;
+        const state = cloneDeep(MOCK_STATE); // Needed since selectors are memoized
 
         state.metamask.internalAccounts.selectedAccount = id;
         expect(isSelectedInternalAccountEth(state)).toBe(isEth);
@@ -48,10 +57,10 @@ describe('Accounts Selectors', () => {
     );
 
     it('returns false if no account is selected', () => {
-      const state = MOCK_STATE;
+      const state = cloneDeep(MOCK_STATE); // Needed since selectors are memoized
 
       state.metamask.internalAccounts.selectedAccount = '';
-      expect(isSelectedInternalAccountEth(MOCK_STATE)).toBe(false);
+      expect(isSelectedInternalAccountEth(state)).toBe(false);
     });
   });
 
@@ -72,7 +81,7 @@ describe('Accounts Selectors', () => {
     ])(
       'returns $isBtc if the account is: $type',
       ({ id, isBtc }: { id: string; isBtc: boolean }) => {
-        const state = MOCK_STATE;
+        const state = cloneDeep(MOCK_STATE);
 
         state.metamask.internalAccounts.selectedAccount = id;
         expect(isSelectedInternalAccountBtc(state)).toBe(isBtc);
@@ -80,10 +89,10 @@ describe('Accounts Selectors', () => {
     );
 
     it('returns false if none account is selected', () => {
-      const state = MOCK_STATE;
+      const state = cloneDeep(MOCK_STATE);
 
       state.metamask.internalAccounts.selectedAccount = '';
-      expect(isSelectedInternalAccountBtc(MOCK_STATE)).toBe(false);
+      expect(isSelectedInternalAccountBtc(state)).toBe(false);
     });
   });
 
@@ -142,6 +151,93 @@ describe('Accounts Selectors', () => {
       };
 
       expect(isSelectedInternalAccountBtc(state)).toBe(false);
+    });
+  });
+  describe('getSelectedAddress', () => {
+    it('returns undefined if selectedAddress is undefined', () => {
+      expect(
+        getSelectedAddress({
+          metamask: { internalAccounts: { accounts: {}, selectedAccount: '' } },
+        }),
+      ).toBeUndefined();
+    });
+
+    it('returns selectedAddress', () => {
+      const mockInternalAccount = createMockInternalAccount();
+      const internalAccounts = {
+        accounts: {
+          [mockInternalAccount.id]: mockInternalAccount,
+        },
+        selectedAccount: mockInternalAccount.id,
+      };
+
+      expect(
+        getSelectedAddress({ metamask: { internalAccounts } }),
+      ).toStrictEqual(mockInternalAccount.address);
+    });
+  });
+  describe('getSelectedInternalAccount', () => {
+    it('returns undefined if selectedAccount is undefined', () => {
+      expect(
+        getSelectedInternalAccount({
+          metamask: {
+            internalAccounts: {
+              accounts: {},
+              selectedAccount: '',
+            },
+          },
+        }),
+      ).toBeUndefined();
+    });
+
+    it('returns selectedAccount', () => {
+      const mockInternalAccount = {
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        metadata: {
+          name: 'Test Account',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {},
+        methods: ETH_EOA_METHODS,
+        type: EthAccountType.Eoa,
+      };
+      expect(
+        getSelectedInternalAccount({
+          metamask: {
+            internalAccounts: {
+              accounts: {
+                [mockInternalAccount.id]: mockInternalAccount,
+              },
+              selectedAccount: mockInternalAccount.id,
+            },
+          },
+        }),
+      ).toStrictEqual(mockInternalAccount);
+    });
+  });
+  describe('getInternalAccounts', () => {
+    it('returns a list of internal accounts', () => {
+      expect(getInternalAccounts(mockState)).toStrictEqual(
+        Object.values(mockState.metamask.internalAccounts.accounts),
+      );
+    });
+  });
+  describe('getInternalAccount', () => {
+    it("returns undefined if the account doesn't exist", () => {
+      expect(getInternalAccount(mockState, 'unknown')).toBeUndefined();
+    });
+
+    it('returns the account', () => {
+      expect(
+        getInternalAccount(mockState, 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'),
+      ).toStrictEqual(
+        mockState.metamask.internalAccounts.accounts[
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+        ],
+      );
     });
   });
 });

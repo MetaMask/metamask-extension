@@ -12,9 +12,11 @@ import {
 import {
   getOriginOfCurrentTab,
   getOrderedConnectedAccountsForActiveTab,
+} from '../../../../selectors';
+import {
   getSelectedInternalAccount,
   getInternalAccounts,
-} from '../../../../selectors';
+} from '../../../../selectors/accounts';
 import { isExtensionUrl, getURLHost } from '../../../../helpers/utils/util';
 import Popover from '../../../ui/popover';
 import Button from '../../../ui/button';

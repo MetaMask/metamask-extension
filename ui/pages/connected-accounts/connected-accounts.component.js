@@ -10,7 +10,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import ConnectedSnaps from '../../components/app/connected-sites-list/connected-snaps';
 import { TextColor, TextVariant } from '../../helpers/constants/design-system';
 import { Box, Text } from '../../components/component-library';
-import { getInternalAccounts } from '../../selectors';
+import { getInternalAccounts } from '../../selectors/accounts';
 
 export default function ConnectedAccounts({
   accountToConnect = null,

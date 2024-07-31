@@ -56,11 +56,13 @@ import {
   getPermissionSubjects,
   getFirstSnapInstallOrUpdateRequest,
   ///: END:ONLY_INCLUDE_IF
+  getSelectedNetworkClientId,
+} from '../selectors';
+import {
   getInternalAccountByAddress,
   getSelectedInternalAccount,
   getInternalAccounts,
-  getSelectedNetworkClientId,
-} from '../selectors';
+} from '../selectors/accounts';
 import {
   computeEstimatedGasLimit,
   initializeSendState,

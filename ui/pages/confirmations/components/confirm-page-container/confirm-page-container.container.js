@@ -4,9 +4,11 @@ import {
   getNetworkIdentifier,
   getSwapsDefaultToken,
   getMetadataContractName,
+} from '../../../../selectors';
+import {
   getAccountName,
   getInternalAccounts,
-} from '../../../../selectors';
+} from '../../../../selectors/accounts';
 import ConfirmPageContainer from './confirm-page-container.component';
 
 function mapStateToProps(state, ownProps) {

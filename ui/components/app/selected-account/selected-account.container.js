@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
-  getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
   ///: END:ONLY_INCLUDE_IF

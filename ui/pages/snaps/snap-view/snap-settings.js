@@ -34,10 +34,10 @@ import {
   getPermissions,
   getSnapLatestVersion,
   getSnapMetadata,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  getMemoizedMetaMaskInternalAccounts,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+import { getMemoizedMetaMaskInternalAccounts } from '../../../selectors/accounts';
+///: END:ONLY_INCLUDE_IF
 import {
   Box,
   Button,

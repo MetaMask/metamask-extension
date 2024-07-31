@@ -15,9 +15,9 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getPermissionsForActiveTab,
-  getSelectedInternalAccount,
   getPermittedAccountsForCurrentTab,
 } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import { ConnectedSiteMenu } from '../../multichain';
 
 export default function ConnectedStatusIndicator({ onClick, disabled }) {

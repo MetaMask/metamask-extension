@@ -11,7 +11,7 @@ import withModalProps from '../../../helpers/higher-order-components/with-modal-
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { setSelectedInternalAccount } from '../../../store/actions';
-import { getInternalAccounts } from '../../../selectors';
+import { getInternalAccounts } from '../../../selectors/accounts';
 import {
   getMMIAddressFromModalOrAddress,
   getCustodyAccountDetails,

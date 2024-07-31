@@ -6,9 +6,9 @@ import { useHistory } from 'react-router-dom';
 import {
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
-  getSelectedInternalAccount,
   getTokenList,
 } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { AssetType } from '../../../../shared/constants/transaction';

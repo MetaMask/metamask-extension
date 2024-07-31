@@ -1,11 +1,10 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { InternalAccountTypes } from '@metamask/keyring-api';
+import { getUpdatedAndSortedAccounts } from '../../../../../selectors';
 import {
-  getUpdatedAndSortedAccounts,
   getInternalAccounts,
   getSelectedInternalAccount,
-} from '../../../../../selectors';
+} from '../../../../../selectors/accounts';
 import { AccountListItem } from '../../..';
 import {
   addHistoryEntry,
@@ -26,8 +25,7 @@ export const SendPageYourAccounts = () => {
 
   // Your Accounts
   const accounts = useSelector(getUpdatedAndSortedAccounts);
-  const internalAccounts: InternalAccountTypes[] =
-    useSelector(getInternalAccounts);
+  const internalAccounts = useSelector(getInternalAccounts);
   const mergedAccounts = mergeAccounts(accounts, internalAccounts);
   const selectedAccount = useSelector(getSelectedInternalAccount);
 

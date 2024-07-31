@@ -11,14 +11,18 @@ import {
   getIsCustomNetwork,
   getRpcPrefsForCurrentProvider,
   getEnsResolutionByAddress,
-  getAccountName,
   getMetadataContractName,
-  getInternalAccounts,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getKnownMethodData,
-  getSelectedInternalAccount,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
+import {
+  getAccountName,
+  getInternalAccounts,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  getSelectedInternalAccount,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../selectors/accounts';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import TransactionListItemDetails from './transaction-list-item-details.component';
 

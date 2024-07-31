@@ -25,9 +25,11 @@ import {
   getTotalUnapprovedMessagesCount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
-  getSelectedInternalAccount,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import { getSelectedInternalAccount } from '../../../../selectors/accounts';
+///: END:ONLY_INCLUDE_IF
 import { getAccountByAddress, valuesFor } from '../../../../helpers/utils/util';
 import { clearConfirmTransaction } from '../../../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';

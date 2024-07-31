@@ -3,12 +3,14 @@ import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import {
-  getAccountName,
   getAddressBookEntry,
   getEnsResolutionByAddress,
-  getInternalAccounts,
   getMetadataContractName,
 } from '../../../../../selectors';
+import {
+  getInternalAccounts,
+  getAccountName,
+} from '../../../../../selectors/accounts';
 import { ConfirmInfoRowContext } from './row';
 
 export const useRowContext = () => useContext(ConfirmInfoRowContext);

@@ -63,8 +63,8 @@ import {
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
   getSelectedNetworkClientId,
-  getSelectedInternalAccount,
 } from '../../selectors';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
 import {
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,

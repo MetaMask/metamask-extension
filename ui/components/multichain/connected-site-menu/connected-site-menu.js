@@ -25,11 +25,8 @@ import {
   IconName,
   IconSize,
 } from '../../component-library';
-import {
-  getOriginOfCurrentTab,
-  getSelectedInternalAccount,
-  getSubjectMetadata,
-} from '../../../selectors';
+import { getOriginOfCurrentTab, getSubjectMetadata } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 

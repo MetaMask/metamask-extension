@@ -7,13 +7,13 @@ import {
   isBalanceCached,
   getIsSwapsChain,
   getCurrentChainId,
-  getSelectedInternalAccount,
   getSelectedAccountCachedBalance,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   getIsBridgeChain,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF

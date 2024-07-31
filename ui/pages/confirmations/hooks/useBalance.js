@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux';
 import {
   getCurrentNetwork,
-  getInternalAccountByAddress,
   getSelectedAccountCachedBalance,
   getShouldHideZeroBalanceTokens,
   getShowFiatInTestnets,
 } from '../../../selectors';
+import { getInternalAccountByAddress } from '../../../selectors/accounts';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 

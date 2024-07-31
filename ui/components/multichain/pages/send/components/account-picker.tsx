@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getSelectedInternalAccount } from '../../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../../selectors/accounts';
 import { Label } from '../../../../component-library';
 import { AccountPicker } from '../../../account-picker';
 import {

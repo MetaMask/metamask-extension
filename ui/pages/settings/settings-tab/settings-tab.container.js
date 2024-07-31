@@ -8,12 +8,8 @@ import {
   setParticipateInMetaMetrics,
   setTheme,
 } from '../../../store/actions';
-import {
-  getTokenList,
-  getPreferences,
-  getTheme,
-  getSelectedInternalAccount,
-} from '../../../selectors';
+import { getTokenList, getPreferences, getTheme } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import SettingsTab from './settings-tab.component';
 
 const mapStateToProps = (state, ownProps) => {

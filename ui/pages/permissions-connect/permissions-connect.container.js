@@ -7,13 +7,13 @@ import {
   getAccountsWithLabels,
   getLastConnectedInfo,
   getPermissionsRequests,
-  getSelectedInternalAccount,
   getSnapInstallOrUpdateRequests,
   getRequestState,
   getSnapsInstallPrivacyWarningShown,
   getRequestType,
   getTargetSubjectMetadata,
 } from '../../selectors';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
 
 import { formatDate, getURLHostName } from '../../helpers/utils/util';

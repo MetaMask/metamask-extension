@@ -1,5 +1,6 @@
 import { shallowEqual, useSelector } from 'react-redux';
-import { getPreferences, getSelectedInternalAccount } from '../selectors';
+import { getPreferences } from '../selectors';
+import { getSelectedInternalAccount } from '../selectors/accounts';
 import {
   getMultichainNativeCurrency,
   getMultichainCurrentCurrency,

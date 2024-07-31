@@ -53,7 +53,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
-  getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
@@ -71,11 +70,14 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   hasCreatedBtcMainnetAccount,
   hasCreatedBtcTestnetAccount,
+  ///: END:ONLY_INCLUDE_IF
+  getSelectedInternalAccount,
 } from '../../../selectors/accounts';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';

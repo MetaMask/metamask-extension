@@ -6,7 +6,7 @@ import { NameType } from '@metamask/name-controller';
 import {
   getMemoizedMetaMaskInternalAccounts,
   getAccountName,
-} from '../../../../../selectors';
+} from '../../../../../selectors/accounts';
 import Address from '../../transaction-decoding/components/decoding/address';
 import {
   isValidHexAddress,

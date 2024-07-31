@@ -1,6 +1,6 @@
 import mockState from '../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
-import { getInternalAccountByAddress } from '../../../selectors';
+import { getInternalAccountByAddress } from '../../../selectors/accounts';
 import useConfirmationRecipientInfo from './useConfirmationRecipientInfo';
 
 const SenderAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';

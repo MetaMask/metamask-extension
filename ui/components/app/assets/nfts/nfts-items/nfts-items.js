@@ -20,10 +20,10 @@ import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 import {
   getCurrentChainId,
   getIpfsGateway,
-  getSelectedInternalAccount,
   getCurrentNetwork,
   getOpenSeaEnabled,
 } from '../../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../../selectors/accounts';
 import {
   ASSET_ROUTE,
   SEND_ROUTE,
