@@ -172,3 +172,5 @@ exports[`Add Network Modal should render 1`] = `
   </div>
 </div>
 `;
+
+exports[`Add Network Modal should render 2`] = `<div />`;
