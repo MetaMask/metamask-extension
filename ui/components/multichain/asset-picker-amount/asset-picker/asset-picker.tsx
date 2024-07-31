@@ -46,6 +46,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { ellipsify } from '../../../../pages/confirmations/send/send.utils';
 import { AssetPickerModalNetwork } from '../asset-picker-modal/asset-picker-modal-network';
+import { Token } from '../asset-picker-modal/types';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
@@ -168,7 +169,10 @@ export function AssetPicker({
         isOpen={showAssetPickerModal}
         onClose={() => setShowAssetPickerModal(false)}
         asset={asset}
-        onAssetChange={onAssetChange}
+        onAssetChange={(token: Token) => {
+          onAssetChange(token);
+          setShowAssetPickerModal(false);
+        }}
         network={networkProps ? networkProps.network : undefined}
         onNetworkPickerClick={() => {
           setShowAssetPickerModal(false);
