@@ -34,7 +34,7 @@ export function SentryTest() {
 
 function GenerateUIError() {
   const handleClick = useCallback(async () => {
-    window.stateHooks.throwTestError?.('Developer Options');
+    await window.stateHooks.throwTestError?.('Developer Options');
   }, []);
 
   return (
@@ -53,7 +53,7 @@ function GenerateUIError() {
 
 function GenerateBackgroundError() {
   const handleClick = useCallback(async () => {
-    window.stateHooks.throwTestBackgroundError?.('Developer Options');
+    await window.stateHooks.throwTestBackgroundError?.('Developer Options');
   }, []);
 
   return (
