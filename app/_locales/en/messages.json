@@ -805,6 +805,10 @@
   "blockExplorerUrlDefinition": {
     "message": "The URL used as the block explorer for this network."
   },
+  "networkUrlErrorWarning": {
+    "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue. Punycode version: $1",
+    "description": "$1 replaced by RPC URL for network"
+  },
   "blockExplorerView": {
     "message": "View account at $1",
     "description": "$1 replaced by URL for custom block explorer"
