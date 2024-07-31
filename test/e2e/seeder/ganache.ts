@@ -35,7 +35,6 @@ export class Ganache {
   }
 
   async getBalance(address = null): Promise<number> {
-    const accounts = await this.getAccounts();
     const provider = await this.getProvider();
 
     if (!provider) {
@@ -43,7 +42,7 @@ export class Ganache {
       return 0;
     }
 
-    const accountToUse = address || accounts?.[0];
+    const accountToUse = address || (await this.getAccounts())?.[0];
 
     if (!accountToUse) {
       console.log('No accounts found');
