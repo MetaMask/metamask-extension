@@ -174,6 +174,14 @@ export function getIsSigningQRHardwareTransaction(state) {
   return state.metamask.qrHardware?.sign?.request !== undefined;
 }
 
+export const getSelectedInternalAccount = createDeepEqualSelector(
+  (state) => state.metamask.internalAccounts,
+  (internalAccounts) => {
+    const accountId = internalAccounts.selectedAccount;
+    return internalAccounts.accounts[accountId];
+  },
+);
+
 export function getCurrentKeyring(state) {
   const internalAccount = getSelectedInternalAccount(state);
 
@@ -275,6 +283,11 @@ export function getAccountTypeForKeyring(keyring) {
   }
 }
 
+export const getInternalAccounts = createDeepEqualSelector(
+  (state) => state.metamask.internalAccounts.accounts,
+  (accounts) => accounts,
+);
+
 /**
  * Get MetaMask accounts, including account name and balance.
  */
@@ -330,6 +343,23 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
       };
     }, {}),
 );
+
+export function getInternalAccountByAddress(state, address) {
+  return Object.values(state.metamask.internalAccounts.accounts).find(
+    (account) => isEqualCaseInsensitive(account.address, address),
+  );
+}
+
+export const getMaybeSelectedInternalAccount = createDeepEqualSelector(
+  (state) => state.metamask.internalAccounts,
+  (internalAccounts) => {
+    // Same as `getSelectedInternalAccount`, but might potentially be `undefined`:
+    // - This might happen during the onboarding
+    const accountId = internalAccounts?.selectedAccount;
+    return accountId ? internalAccounts?.accounts[accountId] : undefined;
+  },
+);
+
 /**
  * Returns the address of the selected InternalAccount from the Metamask state.
  *
@@ -338,26 +368,6 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
  */
 export function getSelectedAddress(state) {
   return getSelectedInternalAccount(state)?.address;
-}
-
-export function getInternalAccountByAddress(state, address) {
-  return Object.values(state.metamask.internalAccounts.accounts).find(
-    (account) => isEqualCaseInsensitive(account.address, address),
-  );
-}
-
-export function getMaybeSelectedInternalAccount(state) {
-  // Same as `getSelectedInternalAccount`, but might potentially be `undefined`:
-  // - This might happen during the onboarding
-  const accountId = state.metamask.internalAccounts?.selectedAccount;
-  return accountId
-    ? state.metamask.internalAccounts?.accounts[accountId]
-    : undefined;
-}
-
-export function getSelectedInternalAccount(state) {
-  const accountId = state.metamask.internalAccounts.selectedAccount;
-  return state.metamask.internalAccounts.accounts[accountId];
 }
 
 export function checkIfMethodIsEnabled(state, methodName) {
@@ -375,10 +385,6 @@ export function getSelectedInternalAccountWithBalance(state) {
   };
 
   return selectedAccountWithBalance;
-}
-
-export function getInternalAccounts(state) {
-  return Object.values(state.metamask.internalAccounts.accounts);
 }
 
 export function getInternalAccount(state, accountId) {
