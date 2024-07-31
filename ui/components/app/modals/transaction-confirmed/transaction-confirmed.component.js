@@ -47,9 +47,7 @@ export default class TransactionConfirmed extends PureComponent {
           >
             {`${t('confirmed')}!`}
           </Text>
-          <Text
-            textAlign={TextAlign.Center}
-          >
+          <Text textAlign={TextAlign.Center}>
             {t('initialTransactionConfirmed')}
           </Text>
         </div>

@@ -17,13 +17,11 @@ exports[`Transaction Confirmed should match snapshot 1`] = `
         />
         <h3
           class="mm-box mm-text mm-text--heading-md mm-text--font-weight-medium mm-text--text-align-center mm-box--color-text-default"
-          data-testid="transaction-confirmed-title"
         >
           [confirmed]!
         </h3>
         <p
-          class="mm-box mm-text mm-text--body-sm mm-text--text-align-center mm-box--color-text-default"
-          data-testid="transaction-confirmed-description"
+          class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-default"
         >
           [initialTransactionConfirmed]
         </p>
