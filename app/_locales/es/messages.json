@@ -275,7 +275,7 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "Añadir una cuenta nueva"
+    "message": "Añadir una cuenta nueva de Ethereum"
   },
   "addNewToken": {
     "message": "Agregar nuevo token"
@@ -1653,6 +1653,9 @@
   "enableToken": {
     "message": "activar $1",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "enableTokenAutoDetection": {
+    "message": "Activar la autodetección de tokens"
   },
   "enabled": {
     "message": "Activado"
@@ -6023,7 +6026,7 @@
     "message": "Detección automática de NFT"
   },
   "useNftDetectionDescriptionText": {
-    "message": "Permita que MetaMask agregue NFT de su propiedad mediante servicios de terceros (como OpenSea). La detección automática de NFT expone su IP y dirección de cuenta a estos servicios. Habilitar esta función podría asociar su dirección IP con su dirección de Ethereum y mostrar NFT enviados mediante airdrop por estafadores. Puede agregar tokens manualmente para evitar este riesgo."
+    "message": "Deje que MetaMask agregue los NFT de su propiedad mediante servicios de terceros. La detección automática de los NFT expone su IP y dirección de cuenta a estos servicios. Habilitar esta función podría asociar su dirección IP con su dirección de Ethereum y mostrar NFT falsos enviados mediante airdrop por estafadores. Puede agregar tókenes manualmente para evitar este riesgo."
   },
   "usePhishingDetection": {
     "message": "Usar detección de phishing"
