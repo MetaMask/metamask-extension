@@ -6819,7 +6819,7 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  _publishSmartTransactionHook(transactionMeta) {
+  _publishSmartTransactionHook(transactionMeta, signedTransactionInHex) {
     const state = this._getMetaMaskState();
     const isSmartTransaction = getIsSmartTransaction(state);
     if (!isSmartTransaction) {
@@ -6829,6 +6829,7 @@ export default class MetamaskController extends EventEmitter {
     const featureFlags = getFeatureFlagsByChainId(state);
     return submitSmartTransactionHook({
       transactionMeta,
+      signedTransactionInHex,
       transactionController: this.txController,
       smartTransactionsController: this.smartTransactionsController,
       controllerMessenger: this.controllerMessenger,
