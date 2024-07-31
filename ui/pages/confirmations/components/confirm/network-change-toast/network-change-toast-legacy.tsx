@@ -17,7 +17,7 @@ const TOAST_TIMEOUT_MILLISECONDS = 5 * 1000; // 5 Seconds
 const NetworkChangeToastLegacy = ({
   confirmation,
 }: {
-  confirmation: { id: string, chainId: string };
+  confirmation: { id: string; chainId: string };
 }) => {
   const chainId = useSelector(getCurrentChainId);
   const [toastVisible, setToastVisible] = useState(false);
@@ -41,7 +41,7 @@ const NetworkChangeToastLegacy = ({
         lastInteractedConfirmationInfo &&
         lastInteractedConfirmationInfo.chainId !== newChainId &&
         currentTimestamp - lastInteractedConfirmationInfo.timestamp <=
-        CHAIN_CHANGE_THRESHOLD_MILLISECONDS &&
+          CHAIN_CHANGE_THRESHOLD_MILLISECONDS &&
         isMounted
       ) {
         setToastVisible(true);
