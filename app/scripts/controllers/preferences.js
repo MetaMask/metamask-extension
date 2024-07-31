@@ -51,7 +51,6 @@ export default class PreferencesController {
         eth_sign: false,
       },
       useMultiAccountBalanceChecker: true,
-      hasDismissedOpenSeaToBlockaidBanner: false,
       useSafeChainsListValidation: true,
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
@@ -61,9 +60,9 @@ export default class PreferencesController {
       useCurrencyRateCheck: true,
       useRequestQueue: true,
       openSeaEnabled: true, // todo set this to true
-      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       securityAlertsEnabled: true,
-      ///: END:ONLY_INCLUDE_IF
+      bitcoinSupportEnabled: false,
+      bitcoinTestnetSupportEnabled: false,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       addSnapAccountEnabled: false,
       ///: END:ONLY_INCLUDE_IF
@@ -94,9 +93,12 @@ export default class PreferencesController {
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         redesignedConfirmationsEnabled: true,
+        redesignedTransactionsEnabled: true,
         featureNotificationsEnabled: false,
         showTokenAutodetectModal: null,
         showNftAutodetectModal: null, // null because we want to show the modal only the first time
+        isRedesignedConfirmationsDeveloperEnabled: false,
+        showConfirmationAdvancedDetails: false,
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -194,14 +196,6 @@ export default class PreferencesController {
   }
 
   /**
-   * Setter for the `dismissOpenSeaToBlockaidBanner` property
-   *
-   */
-  dismissOpenSeaToBlockaidBanner() {
-    this.store.updateState({ hasDismissedOpenSeaToBlockaidBanner: true });
-  }
-
-  /**
    * Setter for the `useSafeChainsListValidation` property
    *
    * @param {boolean} val - Whether or not the user prefers to turn off/on validation for manually adding networks
@@ -276,7 +270,6 @@ export default class PreferencesController {
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   /**
    * Setter for the `securityAlertsEnabled` property
    *
@@ -287,7 +280,6 @@ export default class PreferencesController {
       securityAlertsEnabled,
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   /**
@@ -302,6 +294,30 @@ export default class PreferencesController {
     });
   }
   ///: END:ONLY_INCLUDE_IF
+
+  /**
+   * Setter for the `bitcoinSupportEnabled` property.
+   *
+   * @param {boolean} bitcoinSupportEnabled - Whether or not the user wants to
+   * enable the "Add a new Bitcoin account (Beta)" button.
+   */
+  setBitcoinSupportEnabled(bitcoinSupportEnabled) {
+    this.store.updateState({
+      bitcoinSupportEnabled,
+    });
+  }
+
+  /**
+   * Setter for the `bitcoinTestnetSupportEnabled` property.
+   *
+   * @param {boolean} bitcoinTestnetSupportEnabled - Whether or not the user wants to
+   * enable the "Add a new Bitcoin account (Testnet)" button.
+   */
+  setBitcoinTestnetSupportEnabled(bitcoinTestnetSupportEnabled) {
+    this.store.updateState({
+      bitcoinTestnetSupportEnabled,
+    });
+  }
 
   /**
    * Setter for the `useExternalNameSources` property

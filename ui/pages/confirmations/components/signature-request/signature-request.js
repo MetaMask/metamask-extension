@@ -75,13 +75,11 @@ import {
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useMMICustodySignMessage } from '../../../../hooks/useMMICustodySignMessage';
+import { AccountType } from '../../../../../shared/constants/custody';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-///: END:ONLY_INCLUDE_IF
-
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
-import { BlockaidUnavailableBannerAlert } from '../blockaid-unavailable-banner-alert/blockaid-unavailable-banner-alert';
+import { QueuedRequestsBannerAlert } from '../../confirmation/components/queued-requests-banner-alert';
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
 
@@ -153,7 +151,7 @@ const SignatureRequest = ({ txData, warnings }) => {
 
   const onSign = async () => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    if (accountType === 'custody') {
+    if (accountType === AccountType.CUSTODY) {
       await custodySignFn(txData);
     }
     ///: END:ONLY_INCLUDE_IF
@@ -209,17 +207,13 @@ const SignatureRequest = ({ txData, warnings }) => {
           <SignatureRequestHeader txData={txData} />
         </div>
         <div className="signature-request-content">
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-            <BlockaidBannerAlert
-              txData={txData}
-              marginLeft={4}
-              marginRight={4}
-              marginBottom={4}
-            />
-            ///: END:ONLY_INCLUDE_IF
-          }
-          <BlockaidUnavailableBannerAlert />
+          <BlockaidBannerAlert
+            txData={txData}
+            marginLeft={4}
+            marginRight={4}
+            marginBottom={4}
+          />
+          <QueuedRequestsBannerAlert />
           {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
             txData?.securityProviderResponse?.flagAsDangerous !==
               SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS) ||

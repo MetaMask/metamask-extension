@@ -224,17 +224,11 @@ declare class Chrome {
   runtime: Runtime;
 }
 
-type SentryObject = Sentry & {
-  // Verifies that the user has opted into metrics and then updates the sentry
-  // instance to track sessions and begins the session.
-  startSession: () => void;
+type SentryObject = Sentry;
 
-  // Verifies that the user has opted out of metrics and then updates the
-  // sentry instance to NOT track sessions and ends the current session.
-  endSession: () => void;
-
-  // Calls either startSession or endSession based on optin status
-  toggleSession: () => void;
+type HttpProvider = {
+  host: string;
+  timeout: number;
 };
 
 export declare global {
@@ -243,6 +237,8 @@ export declare global {
   var sentry: SentryObject | undefined;
 
   var chrome: Chrome;
+
+  var ethereumProvider: HttpProvider;
 
   namespace jest {
     // The interface is being used for declaration merging, which is an acceptable exception to this rule.

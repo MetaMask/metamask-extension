@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { unapprovedTypedSignMsgV4 } from '../../../../../../test/data/confirmations/typed_sign';
+import existingMockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import * as ConfirmDucks from '../../../../../ducks/confirm/confirm';
 import * as usePreviousHooks from '../../../../../hooks/usePrevious';
@@ -9,6 +10,7 @@ import ScrollToBottom from './scroll-to-bottom';
 const buttonSelector = '.confirm-scroll-to-bottom__button';
 
 const mockState = {
+  ...existingMockState,
   confirm: {
     currentConfirmation: unapprovedTypedSignMsgV4,
   },

@@ -1,0 +1,12 @@
+.expandable {
+  transition: height 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+.expandIcon {
+  transition: 0.3s ease-in-out;
+}
+
+.expandIcon.expanded {
+  rotate: -90deg;
+}

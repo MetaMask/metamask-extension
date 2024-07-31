@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isValidAddress } from 'ethereumjs-util';
 
@@ -11,8 +11,12 @@ import {
 } from '../../../../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../selectors';
+import { getTokenStandardAndDetails } from '../../../../../../store/actions';
 import { SignatureRequestType } from '../../../../types/confirm';
-import { isPermitSignatureRequest } from '../../../../utils';
+import {
+  isOrderSignatureRequest,
+  isPermitSignatureRequest,
+} from '../../../../utils';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
@@ -26,6 +30,7 @@ const TypedSignInfo: React.FC = () => {
   const useTransactionSimulations = useSelector(
     selectUseTransactionSimulations,
   );
+  const [decimals, setDecimals] = useState<number>(0);
 
   if (!currentConfirmation?.msgParams) {
     return null;
@@ -37,10 +42,25 @@ const TypedSignInfo: React.FC = () => {
   } = parseTypedDataMessage(currentConfirmation.msgParams.data as string);
 
   const isPermit = isPermitSignatureRequest(currentConfirmation);
+  const isOrder = isOrderSignatureRequest(currentConfirmation);
+
+  useEffect(() => {
+    (async () => {
+      if (!isPermit || !isOrder) {
+        return;
+      }
+      const { decimals: tokenDecimals } = await getTokenStandardAndDetails(
+        verifyingContract,
+      );
+      setDecimals(parseInt(tokenDecimals ?? '0', 10));
+    })();
+  }, [verifyingContract]);
 
   return (
     <>
-      {isPermit && useTransactionSimulations && <PermitSimulation />}
+      {isPermit && useTransactionSimulations && (
+        <PermitSimulation tokenDecimals={decimals} />
+      )}
       <ConfirmInfoSection>
         {isPermit && (
           <>
@@ -63,7 +83,7 @@ const TypedSignInfo: React.FC = () => {
         <ConfirmInfoRow label={t('message')}>
           <ConfirmInfoRowTypedSignData
             data={currentConfirmation.msgParams?.data as string}
-            isPermit={isPermit}
+            tokenDecimals={decimals}
           />
         </ConfirmInfoRow>
       </ConfirmInfoSection>

@@ -363,6 +363,12 @@ exports[`SmartTransactionStatusPage renders the "pending" STX status for a dapp 
       >
         You may close this window anytime.
       </p>
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-secondary mm-text--body-md-medium mm-box--margin-top-3 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+        data-testid="smart-transaction-status-page-footer-close-button"
+      >
+        Close extension
+      </button>
     </div>
   </div>
 </div>

@@ -1395,6 +1395,8 @@ describe('Actions', () => {
 
       const newNetworkAddedDetails = {
         nickname: 'test-chain',
+        networkConfigurationId: 'testNetworkConfigurationId',
+        editCompleted: true,
       };
 
       store.dispatch(actions.setEditedNetwork(newNetworkAddedDetails));
@@ -1724,12 +1726,6 @@ describe('Actions', () => {
   });
 
   describe('#setParticipateInMetaMetrics', () => {
-    beforeAll(() => {
-      window.sentry = {
-        toggleSession: jest.fn(),
-        endSession: jest.fn(),
-      };
-    });
     it('sets participateInMetaMetrics to true', async () => {
       const store = mockStore();
       const setParticipateInMetaMetricsStub = jest.fn((_, cb) => cb());
@@ -1745,7 +1741,6 @@ describe('Actions', () => {
         true,
         expect.anything(),
       );
-      expect(window.sentry.toggleSession).toHaveBeenCalled();
     });
   });
 
@@ -2686,6 +2681,27 @@ describe('Actions', () => {
       ];
 
       expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#setBridgeFeatureFlags', () => {
+    it('calls setBridgeFeatureFlags in the background', async () => {
+      const store = mockStore();
+      background.setBridgeFeatureFlags = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.setBridgeFeatureFlags({ extensionSupport: true }),
+      );
+
+      expect(background.setBridgeFeatureFlags.callCount).toStrictEqual(1);
+      expect(background.setBridgeFeatureFlags.getCall(0).args[0]).toStrictEqual(
+        {
+          extensionSupport: true,
+        },
+      );
     });
   });
 });

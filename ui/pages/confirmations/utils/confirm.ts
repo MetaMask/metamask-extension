@@ -2,8 +2,10 @@ import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
-
-import { EIP712_PRIMARY_TYPE_PERMIT } from '../../../../shared/constants/transaction';
+import {
+  PRIMARY_TYPES_ORDER,
+  PRIMARY_TYPES_PERMIT,
+} from '../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { sanitizeMessage } from '../../../helpers/utils/util';
 import { SignatureRequestType } from '../types/confirm';
@@ -14,11 +16,7 @@ export const REDESIGN_APPROVAL_TYPES = [
   ApprovalType.PersonalSign,
 ];
 
-export const REDESIGN_TRANSACTION_TYPES = [
-  ...(process.env.ENABLE_CONFIRMATION_REDESIGN
-    ? [TransactionType.contractInteraction]
-    : []),
-] as const;
+export const REDESIGN_TRANSACTION_TYPES = [TransactionType.contractInteraction];
 
 const SIGNATURE_APPROVAL_TYPES = [
   ApprovalType.EthSign,
@@ -46,7 +44,23 @@ export const parseSanitizeTypedDataMessage = (dataToParse: string) => {
 };
 
 export const isSIWESignatureRequest = (request: SignatureRequestType) =>
-  request.msgParams?.siwe?.isSIWEMessage;
+  Boolean(request?.msgParams?.siwe?.isSIWEMessage);
+
+export const isOrderSignatureRequest = (request: SignatureRequestType) => {
+  if (
+    !request ||
+    !isSignatureTransactionType(request) ||
+    request.type !== 'eth_signTypedData' ||
+    request.msgParams?.version?.toUpperCase() === TYPED_SIGNATURE_VERSIONS.V1
+  ) {
+    return false;
+  }
+  const { primaryType } = parseTypedDataMessage(
+    request.msgParams?.data as string,
+  );
+
+  return PRIMARY_TYPES_ORDER.includes(primaryType);
+};
 
 export const isPermitSignatureRequest = (request: SignatureRequestType) => {
   if (
@@ -60,5 +74,6 @@ export const isPermitSignatureRequest = (request: SignatureRequestType) => {
   const { primaryType } = parseTypedDataMessage(
     request.msgParams?.data as string,
   );
-  return primaryType === EIP712_PRIMARY_TYPE_PERMIT;
+
+  return PRIMARY_TYPES_PERMIT.includes(primaryType);
 };
