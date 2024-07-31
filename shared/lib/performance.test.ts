@@ -21,9 +21,9 @@ const DATA_MOCK = {
   data3: 123,
 };
 
-function mockGetSentryEnabled(enabled: boolean) {
+function mockGetMetaMetricsEnabled(enabled: boolean) {
   global.sentry = {
-    getSentryEnabled: () => Promise.resolve(enabled),
+    getMetaMetricsEnabled: () => Promise.resolve(enabled),
   };
 }
 
@@ -53,7 +53,7 @@ describe('Performance', () => {
       async (_: string, sentryEnabled: boolean) => {
         let callbackExecuted = false;
 
-        mockGetSentryEnabled(sentryEnabled);
+        mockGetMetaMetricsEnabled(sentryEnabled);
 
         await trace({ name: NAME_MOCK }, async () => {
           callbackExecuted = true;
@@ -70,7 +70,7 @@ describe('Performance', () => {
     ])(
       'returns value from callback if Sentry is %s',
       async (_: string, sentryEnabled: boolean) => {
-        mockGetSentryEnabled(sentryEnabled);
+        mockGetMetaMetricsEnabled(sentryEnabled);
 
         const result = await trace({ name: NAME_MOCK }, async () => {
           return true;
@@ -81,7 +81,7 @@ describe('Performance', () => {
     );
 
     it('invokes Sentry if enabled', async () => {
-      mockGetSentryEnabled(true);
+      mockGetMetaMetricsEnabled(true);
 
       await trace(
         {
