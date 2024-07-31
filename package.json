@@ -277,6 +277,7 @@
     "@lavamoat/lavadome-react": "0.0.17",
     "@lavamoat/snow": "^2.0.1",
     "@ledgerhq/hw-app-eth": "6.26.1",
+    "@ledgerhq/hw-transport-webhid": "patch:@ledgerhq/hw-transport-webhid@npm%3A6.29.2#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.29.2-5beb5040e7.patch",
     "@material-ui/core": "^4.11.0",
     "@metamask-institutional/custody-controller": "^0.2.31",
     "@metamask-institutional/custody-keyring": "^2.0.3",
