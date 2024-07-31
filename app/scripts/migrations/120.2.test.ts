@@ -70,7 +70,7 @@ describe('migration #120.2', () => {
     expect(transformedState.data).toEqual(expectedState);
   });
 
-  it('leavs "domains" state unchanged in SelectedNetworkController if "perDomainNetwork" property is not present in SelectedNetworkController state', async () => {
+  it('leaves "domains" state unchanged in SelectedNetworkController if "perDomainNetwork" property is not present in SelectedNetworkController state', async () => {
     const oldState = {
       SelectedNetworkController: {
         domains: {
