@@ -173,7 +173,7 @@ function getMissingProperties(complete, object) {
 describe('Sentry errors', function () {
   const migrationError =
     process.env.SELENIUM_BROWSER === Browser.CHROME
-      ? `Cannot read properties of undefined (reading 'version')`
+      ? `"type":"TypeError","value":"Cannot read properties of undefined (reading 'version')`
       : 'meta is undefined';
   async function mockSentryMigratorError(mockServer) {
     return await mockServer
@@ -220,7 +220,7 @@ describe('Sentry errors', function () {
     ],
   };
 
-  describe('before initialization, after opting out of metrics', function () {
+  describe('before initialization, after opting out of metrics @no-mmi', function () {
     it('should NOT send error events in the background', async function () {
       await withFixtures(
         {
@@ -317,12 +317,16 @@ describe('Sentry errors', function () {
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
-          const { level } = mockJsonBody;
-          const [{ type, value }] = mockJsonBody.exception.values;
           // Verify request
-          assert.equal(type, 'TypeError');
-          assert(value.includes(migrationError));
-          assert.equal(level, 'error');
+          const escapedMigrationError = migrationError.replace(
+            /[.*+?^${}()|[\]\\]/gu,
+            '\\$&',
+          );
+          const migrationErrorRegex = new RegExp(escapedMigrationError, 'u');
+          assert.match(
+            JSON.stringify(mockJsonBody.exception),
+            migrationErrorRegex,
+          );
         },
       );
     });
@@ -536,7 +540,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('after initialization, after opting out of metrics', function () {
+  describe('after initialization, after opting out of metrics @no-mmi', function () {
     it('should NOT send error events in the background', async function () {
       await withFixtures(
         {

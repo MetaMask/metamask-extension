@@ -320,7 +320,8 @@ describe('Import flow @no-mmi', function () {
           '[data-testid="import-account-confirm-button"]',
         );
 
-        await locateAccountBalanceDOM(driver, ganacheServer);
+        const importedAccount = '0x0961Ca10D49B9B8e371aA0Bcf77fE5730b18f2E4';
+        await locateAccountBalanceDOM(driver, ganacheServer, importedAccount);
         // New imported account has correct name and label
         await driver.findClickableElement({
           css: '[data-testid="account-menu-icon"]',

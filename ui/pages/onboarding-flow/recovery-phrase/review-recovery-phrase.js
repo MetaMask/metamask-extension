@@ -87,15 +87,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
               variant={TextVariant.headingSm}
               fontWeight={FontWeight.Normal}
             >
-              {t('seedPhraseIntroSidebarBulletThree')}
-            </Text>
-          </li>
-          <li>
-            <Text
-              variant={TextVariant.headingSm}
-              fontWeight={FontWeight.Normal}
-            >
-              {t('seedPhraseIntroSidebarBulletFour')}
+              {t('seedPhraseIntroSidebarBulletTwo')}
             </Text>
           </li>
         </ul>
