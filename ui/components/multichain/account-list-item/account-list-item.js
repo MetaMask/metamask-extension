@@ -56,6 +56,7 @@ import {
   getMultichainNativeCurrency,
   getMultichainNativeCurrencyImage,
   getMultichainNetwork,
+  getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
 import { ConnectedStatus } from '../connected-status/connected-status';
@@ -97,8 +98,9 @@ export const AccountListItem = ({
   };
   const isTestnet = useMultichainSelector(getMultichainIsTestnet, account);
   const isMainnet = !isTestnet;
+  const shouldShowFiat = useMultichainSelector(getMultichainShouldShowFiat, account);
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
-  const showFiat = isMainnet || (isTestnet && showFiatInTestnets);
+  const showFiat = shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
   const accountTotalFiatBalances =
     useMultichainAccountTotalFiatBalance(account);
   const mappedOrderedTokenList = accountTotalFiatBalances.orderedTokenList.map(
