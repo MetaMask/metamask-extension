@@ -20,9 +20,9 @@ export const sendTransaction = async (
   totalfee: string,
 ): Promise<void> => {
   console.log(
-    `Start process to send amount ${amount} to recipient ${recipientAddress} on home screen`,
+    `Start flow to send amount ${amount} to recipient ${recipientAddress} on home screen`,
   );
-  // click send button on homepage to start process
+  // click send button on homepage to start flow
   const homePage = new HomePage(driver);
   await homePage.startSendFlow();
 

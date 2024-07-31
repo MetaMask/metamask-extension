@@ -93,6 +93,7 @@ export default class PreferencesController {
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         redesignedConfirmationsEnabled: true,
+        redesignedTransactionsEnabled: true,
         featureNotificationsEnabled: false,
         showTokenAutodetectModal: null,
         showNftAutodetectModal: null, // null because we want to show the modal only the first time

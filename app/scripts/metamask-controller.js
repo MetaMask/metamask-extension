@@ -5480,7 +5480,7 @@ export default class MetamaskController extends EventEmitter {
             { eth_accounts: {} },
           ),
         requestPermittedChainsPermission: (chainIds) =>
-          this.permissionController.requestPermissions(
+          this.permissionController.requestPermissionsIncremental(
             { origin },
             {
               [PermissionNames.permittedChains]: {
@@ -6140,6 +6140,9 @@ export default class MetamaskController extends EventEmitter {
       },
       getRedesignedConfirmationsEnabled: () => {
         return this.preferencesController.getRedesignedConfirmationsEnabled;
+      },
+      getRedesignedTransactionsEnabled: () => {
+        return this.preferencesController.getRedesignedTransactionsEnabled;
       },
       getMethodData: (data) => {
         if (!data) {
