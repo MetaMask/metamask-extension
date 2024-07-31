@@ -29,6 +29,7 @@ describe('endowment:caip25', () => {
 
     expect(specification.endowmentGetter()).toBeNull();
   });
+
   describe('caveat mutator removeScope', () => {
     it('can remove a caveat', () => {
       const ethereumGoerliCaveat = {
@@ -60,6 +61,7 @@ describe('endowment:caip25', () => {
         },
       });
     });
+
     it('can revoke the entire permission when a requiredScope is removed', () => {
       const ethereumGoerliCaveat = {
         requiredScopes: {
@@ -81,6 +83,7 @@ describe('endowment:caip25', () => {
         operation: CaveatMutatorOperation.revokePermission,
       });
     });
+
     it('can noop when nothing is removed', () => {
       const ethereumGoerliCaveat = {
         requiredScopes: {
@@ -103,6 +106,7 @@ describe('endowment:caip25', () => {
       });
     });
   });
+
   describe('caveat mutator removeAccount', () => {
     it('can remove an account', () => {
       const ethereumGoerliCaveat: Caip25CaveatValue = {
@@ -130,6 +134,7 @@ describe('endowment:caip25', () => {
         },
       });
     });
+
     it('can remove an account in multiple scopes in optional and required', () => {
       const ethereumGoerliCaveat: Caip25CaveatValue = {
         requiredScopes: {
@@ -178,6 +183,7 @@ describe('endowment:caip25', () => {
         },
       });
     });
+
     it('can noop when nothing is removed', () => {
       const ethereumGoerliCaveat: Caip25CaveatValue = {
         requiredScopes: {
@@ -200,4 +206,6 @@ describe('endowment:caip25', () => {
       });
     });
   });
+
+  it.todo('permission validator');
 });

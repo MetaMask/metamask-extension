@@ -278,6 +278,7 @@ describe('requestPermissionsHandler', () => {
                         accounts: ['eip155:1:0xdead', 'eip155:1:0xbeef'],
                       },
                     },
+                    isMultichainOrigin: false,
                   },
                 },
               ],

@@ -189,6 +189,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
               value: {
                 requiredScopes: grantedRequiredScopes,
                 optionalScopes: grantedOptionalScopes,
+                isMultichainOrigin: true,
               },
             },
           ],
