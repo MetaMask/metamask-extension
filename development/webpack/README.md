@@ -24,6 +24,53 @@ To watch for changes and rebuild the extension automatically, run the following 
 yarn webpack --watch
 ```
 
+### Set options using a `config.json` file
+
+You can skip using command line options and specify options using a JSON file
+instead. You can use the same options as the command line, but in JSON form. For
+example, to build a zip of the extension for Chrome and Firefox, create a
+`config.json` file as follows (notice the use of an array for the `browser`
+option):
+
+```json
+{
+  "browser": ["chrome", "firefox"],
+  "zip": true
+}
+```
+
+Then you can use it as follows:
+
+```bash
+yarn webpack --config config.json
+```
+
+And you can combine it with CLI options, too:
+
+```bash
+yarn webpack --config config.json --dry-run
+```
+
+Run `yarn webpack --help` for the list of options.
+
+### Set options using environment variables
+
+You can use environment variables instead of command line options:
+
+```bash
+BUNDLE_MINIFY=true yarn webpack
+```
+
+Run `yarn webpack --help` for the list of options.
+
+Note: multiple array options cannot be set this way, due to this bug in yargs: https://github.com/yargs/yargs/issues/821
+
+You can also combine environment variables with `--config` and CLI options:
+
+```bash
+BUNDLE_MINIFY=true yarn webpack --config config.json --dry-run
+```
+
 ## Cache Invalidation
 
 The cache is invalidated when the build tool's code itself changes, or when the `package.json` file changes. The cache
