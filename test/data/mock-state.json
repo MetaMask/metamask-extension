@@ -368,7 +368,7 @@
       "hideZeroBalanceTokens": false,
       "isRedesignedConfirmationsDeveloperEnabled": false,
       "showExtensionInFullSizeView": false,
-      "showFiatInTestnets": false,
+      "showFiatInTestnets": true,
       "showTestNetworks": true,
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
