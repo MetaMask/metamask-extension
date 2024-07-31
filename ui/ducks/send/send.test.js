@@ -105,14 +105,6 @@ jest.mock('lodash', () => ({
   debounce: (fn) => fn,
 }));
 
-setBackgroundConnection({
-  addPollingTokenToAppState: jest.fn(),
-  addTransaction: jest.fn((_u, _v, cb) => {
-    cb(null, { transactionMeta: null });
-  }),
-  updateTransactionSendFlowHistory: jest.fn((_x, _y, _z, cb) => cb(null)),
-});
-
 const getTestUUIDTx = (state) => state.draftTransactions['test-uuid'];
 
 describe('Send Slice', () => {
@@ -124,6 +116,14 @@ describe('Send Slice', () => {
   let setDefaultHomeActiveTabNameStub;
 
   beforeEach(() => {
+    setBackgroundConnection({
+      addPollingTokenToAppState: jest.fn(),
+      addTransaction: jest.fn((_u, _v, cb) => {
+        cb(null, { transactionMeta: null });
+      }),
+      updateTransactionSendFlowHistory: jest.fn((_x, _y, _z, cb) => cb(null)),
+    });
+
     jest.useFakeTimers();
     getTokenStandardAndDetailsStub = jest
       .spyOn(Actions, 'getTokenStandardAndDetails')
@@ -3019,6 +3019,74 @@ describe('Send Slice', () => {
           expect(
             addTransactionAndRouteToConfirmationPageStub.mock.calls[0][0].to,
           ).toStrictEqual('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
+        });
+        it('should rethrow addTransactionAndRouteToConfirmationPage errors', async () => {
+          const tokenTransferTxState = {
+            metamask: {
+              providerConfig: {
+                chainId: CHAIN_IDS.GOERLI,
+              },
+              transactions: [
+                {
+                  id: 1,
+                  chainId: CHAIN_IDS.GOERLI,
+                  status: 'unapproved',
+                  txParams: {
+                    value: 'oldTxValue',
+                  },
+                },
+              ],
+            },
+            send: {
+              ...getInitialSendStateWithExistingTxState({
+                id: 1,
+                sendAsset: {
+                  details: {
+                    address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+                  },
+                  type: 'TOKEN',
+                },
+                receiveAsset: {
+                  details: {
+                    address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+                  },
+                  type: 'TOKEN',
+                },
+                recipient: {
+                  address: '4F90e18605Fd46F9F9Fab0e225D88e1ACf5F5324',
+                },
+                amount: {
+                  value: '0x1',
+                },
+              }),
+              stage: SEND_STAGES.DRAFT,
+              selectedAccount: {
+                address: '0x6784e8507A1A46443f7bDc8f8cA39bdA92A675A6',
+              },
+            },
+          };
+
+          jest.mock('../../store/actions.ts');
+
+          const store = mockStore(tokenTransferTxState);
+
+          const ERROR = new Error('rejected');
+
+          const history = { push: jest.fn() };
+
+          setBackgroundConnection({
+            addPollingTokenToAppState: jest.fn(),
+            addTransaction: jest.fn((_u, _v) => {
+              throw new Error(ERROR);
+            }),
+            updateTransactionSendFlowHistory: jest.fn((_x, _y, _z, cb) =>
+              cb(null),
+            ),
+          });
+
+          await expect(
+            store.dispatch(signTransaction(history)),
+          ).rejects.toThrow('rejected');
         });
       });
 

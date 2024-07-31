@@ -1011,6 +1011,7 @@ export function addTransactionAndRouteToConfirmationPage(
     } catch (error) {
       dispatch(hideLoadingIndication());
       dispatch(displayWarning(error));
+      throw error;
     }
     return null;
   };
