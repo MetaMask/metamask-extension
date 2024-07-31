@@ -24,6 +24,15 @@ describe('<ContractInteractionInfo />', () => {
       confirm: {
         currentConfirmation: genUnapprovedContractInteractionConfirmation(),
       },
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          ...mockState.metamask.preferences,
+          // This is now enabled by default in `mock-state.json`, so disable it to match
+          // the original behavior
+          showFiatInTestnets: false,
+        },
+      },
     };
     const mockStore = configureMockStore(middleware)(state);
 
