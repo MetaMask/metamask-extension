@@ -607,6 +607,19 @@
         "console.warn": true
       }
     },
+    "@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": {
+      "globals": {
+        "clearTimeout": true,
+        "console.warn": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ledgerhq/hw-app-eth>@ledgerhq/errors": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
+        "browserify>buffer": true,
+        "webpack>events": true
+      }
+    },
     "@ledgerhq/hw-app-eth>@ledgerhq/logs": {
       "globals": {
         "__ledgerLogsListen": "write",
@@ -631,6 +644,25 @@
       "globals": {
         "crypto": true,
         "define": true
+      }
+    },
+    "@ledgerhq/hw-transport-webhid": {
+      "globals": {
+        "navigator": true
+      },
+      "packages": {
+        "@ledgerhq/hw-app-eth>@ledgerhq/errors": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
+        "@ledgerhq/hw-transport-webhid>@ledgerhq/devices": true,
+        "browserify>buffer": true
+      }
+    },
+    "@ledgerhq/hw-transport-webhid>@ledgerhq/devices": {
+      "packages": {
+        "@ledgerhq/hw-app-eth>@ledgerhq/errors": true,
+        "browserify>buffer": true,
+        "semver": true
       }
     },
     "@material-ui/core": {

@@ -1,0 +1,434 @@
+diff --git a/lib/TransportWebHID.js b/lib/TransportWebHID.js
+index 0d1228c0857a4be9f5023d85cf768b12996930a6..04862ea3f4120780f2fa3a144dc9a77f4be92409 100644
+--- a/lib/TransportWebHID.js
++++ b/lib/TransportWebHID.js
+@@ -1,59 +1,89 @@
+ "use strict";
+-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
++var __awaiter =
++  (this && this.__awaiter) ||
++  function (thisArg, _arguments, P, generator) {
++    function adopt(value) {
++      return value instanceof P
++        ? value
++        : new P(function (resolve) {
++            resolve(value);
++          });
++    }
+     return new (P || (P = Promise))(function (resolve, reject) {
+-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+-        step((generator = generator.apply(thisArg, _arguments || [])).next());
++      function fulfilled(value) {
++        try {
++          step(generator.next(value));
++        } catch (e) {
++          reject(e);
++        }
++      }
++      function rejected(value) {
++        try {
++          step(generator["throw"](value));
++        } catch (e) {
++          reject(e);
++        }
++      }
++      function step(result) {
++        result.done
++          ? resolve(result.value)
++          : adopt(result.value).then(fulfilled, rejected);
++      }
++      step((generator = generator.apply(thisArg, _arguments || [])).next());
+     });
+-};
+-var __importDefault = (this && this.__importDefault) || function (mod) {
+-    return (mod && mod.__esModule) ? mod : { "default": mod };
+-};
++  };
++var __importDefault =
++  (this && this.__importDefault) ||
++  function (mod) {
++    return mod && mod.__esModule ? mod : { default: mod };
++  };
+ Object.defineProperty(exports, "__esModule", { value: true });
+ const hw_transport_1 = __importDefault(require("@ledgerhq/hw-transport"));
+-const hid_framing_1 = __importDefault(require("@ledgerhq/devices/hid-framing"));
++const hid_framing_1 = __importDefault(
++  require("@ledgerhq/devices/lib/hid-framing")
++);
+ const devices_1 = require("@ledgerhq/devices");
+ const logs_1 = require("@ledgerhq/logs");
+ const errors_1 = require("@ledgerhq/errors");
+ const ledgerDevices = [
+-    {
+-        vendorId: devices_1.ledgerUSBVendorId,
+-    },
++  {
++    vendorId: devices_1.ledgerUSBVendorId
++  }
+ ];
+-const isSupported = () => Promise.resolve(!!(window.navigator && window.navigator.hid));
++const isSupported = () =>
++  Promise.resolve(!!(window.navigator && window.navigator.hid));
+ const getHID = () => {
+-    // $FlowFixMe
+-    const { hid } = navigator;
+-    if (!hid)
+-        throw new errors_1.TransportError("navigator.hid is not supported", "HIDNotSupported");
+-    return hid;
++  // $FlowFixMe
++  const { hid } = navigator;
++  debugger;
++  if (!hid)
++    throw new errors_1.TransportError(
++      "navigator.hid is not supported",
++      "HIDNotSupported"
++    );
++  return hid;
+ };
+ function requestLedgerDevices() {
+-    return __awaiter(this, void 0, void 0, function* () {
+-        const device = yield getHID().requestDevice({
+-            filters: ledgerDevices,
+-        });
+-        if (Array.isArray(device))
+-            return device;
+-        return [device];
++  return __awaiter(this, void 0, void 0, function* () {
++    const device = yield getHID().requestDevice({
++      filters: ledgerDevices
+     });
++    if (Array.isArray(device)) return device;
++    return [device];
++  });
+ }
+ function getLedgerDevices() {
+-    return __awaiter(this, void 0, void 0, function* () {
+-        const devices = yield getHID().getDevices();
+-        return devices.filter(d => d.vendorId === devices_1.ledgerUSBVendorId);
+-    });
++  return __awaiter(this, void 0, void 0, function* () {
++    const devices = yield getHID().getDevices();
++    return devices.filter((d) => d.vendorId === devices_1.ledgerUSBVendorId);
++  });
+ }
+ function getFirstLedgerDevice() {
+-    return __awaiter(this, void 0, void 0, function* () {
+-        const existingDevices = yield getLedgerDevices();
+-        if (existingDevices.length > 0)
+-            return existingDevices[0];
+-        const devices = yield requestLedgerDevices();
+-        return devices[0];
+-    });
++  return __awaiter(this, void 0, void 0, function* () {
++    const existingDevices = yield getLedgerDevices();
++    if (existingDevices.length > 0) return existingDevices[0];
++    const devices = yield requestLedgerDevices();
++    return devices[0];
++  });
+ }
+ /**
+  * WebHID Transport implementation
+@@ -63,122 +93,124 @@ function getFirstLedgerDevice() {
+  * TransportWebHID.create().then(transport => ...)
+  */
+ class TransportWebHID extends hw_transport_1.default {
+-    constructor(device) {
+-        super();
+-        this.channel = Math.floor(Math.random() * 0xffff);
+-        this.packetSize = 64;
+-        this.inputs = [];
+-        this.read = () => {
+-            if (this.inputs.length) {
+-                return Promise.resolve(this.inputs.shift());
+-            }
+-            return new Promise(success => {
+-                this.inputCallback = success;
+-            });
+-        };
+-        this.onInputReport = (e) => {
+-            const buffer = Buffer.from(e.data.buffer);
+-            if (this.inputCallback) {
+-                this.inputCallback(buffer);
+-                this.inputCallback = null;
+-            }
+-            else {
+-                this.inputs.push(buffer);
+-            }
+-        };
+-        this._disconnectEmitted = false;
+-        this._emitDisconnect = (e) => {
+-            if (this._disconnectEmitted)
+-                return;
+-            this._disconnectEmitted = true;
+-            this.emit("disconnect", e);
+-        };
+-        /**
+-         * Exchange with the device using APDU protocol.
+-         * @param apdu
+-         * @returns a promise of apdu response
+-         */
+-        this.exchange = (apdu) => __awaiter(this, void 0, void 0, function* () {
+-            const b = yield this.exchangeAtomicImpl(() => __awaiter(this, void 0, void 0, function* () {
+-                const { channel, packetSize } = this;
+-                (0, logs_1.log)("apdu", "=> " + apdu.toString("hex"));
+-                const framing = (0, hid_framing_1.default)(channel, packetSize);
+-                // Write...
+-                const blocks = framing.makeBlocks(apdu);
+-                for (let i = 0; i < blocks.length; i++) {
+-                    yield this.device.sendReport(0, blocks[i]);
+-                }
+-                // Read...
+-                let result;
+-                let acc;
+-                while (!(result = framing.getReducedResult(acc))) {
+-                    const buffer = yield this.read();
+-                    acc = framing.reduceResponse(acc, buffer);
+-                }
+-                (0, logs_1.log)("apdu", "<= " + result.toString("hex"));
+-                return result;
+-            })).catch(e => {
+-                if (e && e.message && e.message.includes("write")) {
+-                    this._emitDisconnect(e);
+-                    throw new errors_1.DisconnectedDeviceDuringOperation(e.message);
+-                }
+-                throw e;
+-            });
+-            return b;
+-        });
+-        this.device = device;
+-        this.deviceModel =
+-            typeof device.productId === "number" ? (0, devices_1.identifyUSBProductId)(device.productId) : undefined;
+-        device.addEventListener("inputreport", this.onInputReport);
+-    }
+-    /**
+-     * Similar to create() except it will always display the device permission (even if some devices are already accepted).
+-     */
+-    static request() {
+-        return __awaiter(this, void 0, void 0, function* () {
+-            const [device] = yield requestLedgerDevices();
+-            return TransportWebHID.open(device);
+-        });
+-    }
+-    /**
+-     * Similar to create() except it will never display the device permission (it returns a Promise<?Transport>, null if it fails to find a device).
+-     */
+-    static openConnected() {
+-        return __awaiter(this, void 0, void 0, function* () {
+-            const devices = yield getLedgerDevices();
+-            if (devices.length === 0)
+-                return null;
+-            return TransportWebHID.open(devices[0]);
+-        });
+-    }
+-    /**
+-     * Create a Ledger transport with a HIDDevice
+-     */
+-    static open(device) {
+-        return __awaiter(this, void 0, void 0, function* () {
+-            yield device.open();
+-            const transport = new TransportWebHID(device);
+-            const onDisconnect = e => {
+-                if (device === e.device) {
+-                    getHID().removeEventListener("disconnect", onDisconnect);
+-                    transport._emitDisconnect(new errors_1.DisconnectedDevice());
+-                }
+-            };
+-            getHID().addEventListener("disconnect", onDisconnect);
+-            return transport;
+-        });
+-    }
++  constructor(device) {
++    super();
++    this.channel = Math.floor(Math.random() * 0xffff);
++    this.packetSize = 64;
++    this.inputs = [];
++    this.read = () => {
++      if (this.inputs.length) {
++        return Promise.resolve(this.inputs.shift());
++      }
++      return new Promise((success) => {
++        this.inputCallback = success;
++      });
++    };
++    this.onInputReport = (e) => {
++      const buffer = Buffer.from(e.data.buffer);
++      if (this.inputCallback) {
++        this.inputCallback(buffer);
++        this.inputCallback = null;
++      } else {
++        this.inputs.push(buffer);
++      }
++    };
++    this._disconnectEmitted = false;
++    this._emitDisconnect = (e) => {
++      if (this._disconnectEmitted) return;
++      this._disconnectEmitted = true;
++      this.emit("disconnect", e);
++    };
+     /**
+-     * Release the transport device
++     * Exchange with the device using APDU protocol.
++     * @param apdu
++     * @returns a promise of apdu response
+      */
+-    close() {
+-        return __awaiter(this, void 0, void 0, function* () {
+-            yield this.exchangeBusyPromise;
+-            this.device.removeEventListener("inputreport", this.onInputReport);
+-            yield this.device.close();
++    this.exchange = (apdu) =>
++      __awaiter(this, void 0, void 0, function* () {
++        const b = yield this.exchangeAtomicImpl(() =>
++          __awaiter(this, void 0, void 0, function* () {
++            const { channel, packetSize } = this;
++            (0, logs_1.log)("apdu", "=> " + apdu.toString("hex"));
++            const framing = (0, hid_framing_1.default)(channel, packetSize);
++            // Write...
++            const blocks = framing.makeBlocks(apdu);
++            for (let i = 0; i < blocks.length; i++) {
++              yield this.device.sendReport(0, blocks[i]);
++            }
++            // Read...
++            let result;
++            let acc;
++            while (!(result = framing.getReducedResult(acc))) {
++              const buffer = yield this.read();
++              acc = framing.reduceResponse(acc, buffer);
++            }
++            (0, logs_1.log)("apdu", "<= " + result.toString("hex"));
++            return result;
++          })
++        ).catch((e) => {
++          if (e && e.message && e.message.includes("write")) {
++            this._emitDisconnect(e);
++            throw new errors_1.DisconnectedDeviceDuringOperation(e.message);
++          }
++          throw e;
+         });
+-    }
+-    setScrambleKey() { }
++        return b;
++      });
++    this.device = device;
++    this.deviceModel =
++      typeof device.productId === "number"
++        ? (0, devices_1.identifyUSBProductId)(device.productId)
++        : undefined;
++    device.addEventListener("inputreport", this.onInputReport);
++  }
++  /**
++   * Similar to create() except it will always display the device permission (even if some devices are already accepted).
++   */
++  static request() {
++    return __awaiter(this, void 0, void 0, function* () {
++      const [device] = yield requestLedgerDevices();
++      return TransportWebHID.open(device);
++    });
++  }
++  /**
++   * Similar to create() except it will never display the device permission (it returns a Promise<?Transport>, null if it fails to find a device).
++   */
++  static openConnected() {
++    return __awaiter(this, void 0, void 0, function* () {
++      const devices = yield getLedgerDevices();
++      if (devices.length === 0) return null;
++      return TransportWebHID.open(devices[0]);
++    });
++  }
++  /**
++   * Create a Ledger transport with a HIDDevice
++   */
++  static open(device) {
++    return __awaiter(this, void 0, void 0, function* () {
++      yield device.open();
++      const transport = new TransportWebHID(device);
++      const onDisconnect = (e) => {
++        if (device === e.device) {
++          getHID().removeEventListener("disconnect", onDisconnect);
++          transport._emitDisconnect(new errors_1.DisconnectedDevice());
++        }
++      };
++      getHID().addEventListener("disconnect", onDisconnect);
++      return transport;
++    });
++  }
++  /**
++   * Release the transport device
++   */
++  close() {
++    return __awaiter(this, void 0, void 0, function* () {
++      yield this.exchangeBusyPromise;
++      this.device.removeEventListener("inputreport", this.onInputReport);
++      yield this.device.close();
++    });
++  }
++  setScrambleKey() {}
+ }
+ /**
+  * Check if WebUSB transport is supported.
+@@ -195,31 +227,38 @@ TransportWebHID.list = getLedgerDevices;
+  * Important: it must be called in the context of a UI click!
+  */
+ TransportWebHID.listen = (observer) => {
+-    let unsubscribed = false;
+-    getFirstLedgerDevice().then(device => {
+-        if (!device) {
+-            observer.error(new errors_1.TransportOpenUserCancelled("Access denied to use Ledger device"));
+-        }
+-        else if (!unsubscribed) {
+-            const deviceModel = typeof device.productId === "number"
+-                ? (0, devices_1.identifyUSBProductId)(device.productId)
+-                : undefined;
+-            observer.next({
+-                type: "add",
+-                descriptor: device,
+-                deviceModel,
+-            });
+-            observer.complete();
+-        }
+-    }, error => {
+-        observer.error(new errors_1.TransportOpenUserCancelled(error.message));
+-    });
+-    function unsubscribe() {
+-        unsubscribed = true;
++  let unsubscribed = false;
++  getFirstLedgerDevice().then(
++    (device) => {
++      if (!device) {
++        observer.error(
++          new errors_1.TransportOpenUserCancelled(
++            "Access denied to use Ledger device"
++          )
++        );
++      } else if (!unsubscribed) {
++        const deviceModel =
++          typeof device.productId === "number"
++            ? (0, devices_1.identifyUSBProductId)(device.productId)
++            : undefined;
++        observer.next({
++          type: "add",
++          descriptor: device,
++          deviceModel
++        });
++        observer.complete();
++      }
++    },
++    (error) => {
++      observer.error(new errors_1.TransportOpenUserCancelled(error.message));
+     }
+-    return {
+-        unsubscribe,
+-    };
++  );
++  function unsubscribe() {
++    unsubscribed = true;
++  }
++  return {
++    unsubscribe
++  };
+ };
+ exports.default = TransportWebHID;
+ //# sourceMappingURL=TransportWebHID.js.map

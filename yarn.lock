@@ -4356,7 +4356,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/hw-transport@npm:^6.24.1":
+"@ledgerhq/hw-transport-webhid@npm:6.29.2":
+  version: 6.29.2
+  resolution: "@ledgerhq/hw-transport-webhid@npm:6.29.2"
+  dependencies:
+    "@ledgerhq/devices": "npm:^8.4.2"
+    "@ledgerhq/errors": "npm:^6.18.0"
+    "@ledgerhq/hw-transport": "npm:^6.31.2"
+    "@ledgerhq/logs": "npm:^6.12.0"
+  checksum: 10/c84cc22244e27bcfed665116d75735a5f93720a35c47c698856bd846c8c9cad228e1921dc7907c73115d3fe01cd4e46b6a0894fad5bec6ed8b0d89227531bae1
+  languageName: node
+  linkType: hard
+
+"@ledgerhq/hw-transport-webhid@patch:@ledgerhq/hw-transport-webhid@npm%3A6.29.2#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.29.2-5beb5040e7.patch":
+  version: 6.29.2
+  resolution: "@ledgerhq/hw-transport-webhid@patch:@ledgerhq/hw-transport-webhid@npm%3A6.29.2#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.29.2-5beb5040e7.patch::version=6.29.2&hash=058db6"
+  dependencies:
+    "@ledgerhq/devices": "npm:^8.4.2"
+    "@ledgerhq/errors": "npm:^6.18.0"
+    "@ledgerhq/hw-transport": "npm:^6.31.2"
+    "@ledgerhq/logs": "npm:^6.12.0"
+  checksum: 10/67e7ea996f20e8f637f84b2582c8c9eb3218ee85e78a32e6e8e783e5160f45e5f83697f31834bc06bc6963bf7ecfac35dc7df2a897af9b74fd6c2832d49718ef
+  languageName: node
+  linkType: hard
+
+"@ledgerhq/hw-transport@npm:^6.24.1, @ledgerhq/hw-transport@npm:^6.31.2":
   version: 6.31.2
   resolution: "@ledgerhq/hw-transport@npm:6.31.2"
   dependencies:
@@ -26596,6 +26620,7 @@ __metadata:
     "@lavamoat/lavapack": "npm:^6.1.0"
     "@lavamoat/snow": "npm:^2.0.1"
     "@ledgerhq/hw-app-eth": "npm:6.26.1"
+    "@ledgerhq/hw-transport-webhid": "patch:@ledgerhq/hw-transport-webhid@npm%3A6.29.2#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.29.2-5beb5040e7.patch"
     "@lgbot/madge": "npm:^6.2.0"
     "@lydell/node-pty": "npm:^1.0.1"
     "@material-ui/core": "npm:^4.11.0"
