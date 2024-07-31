@@ -47,6 +47,7 @@ import {
 import { ellipsify } from '../../../../pages/confirmations/send/send.utils';
 import { AssetPickerModalNetwork } from '../asset-picker-modal/asset-picker-modal-network';
 import { Token } from '../asset-picker-modal/types';
+import { TabName } from '../asset-picker-modal/asset-picker-modal-tabs';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
@@ -181,6 +182,9 @@ export function AssetPicker({
         sendingAssetImage={sendingTokenImage}
         sendingAssetSymbol={
           sendingAsset?.details?.symbol || nativeCurrencySymbol
+        }
+        defaultActiveTabKey={
+          asset?.type === AssetType.NFT ? TabName.NFTS : TabName.TOKENS
         }
       />
 

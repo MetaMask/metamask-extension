@@ -38,6 +38,7 @@ import {
 
 import type { Quote } from '../../../../../ducks/send/swap-and-send-utils';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
+import { TabName } from '../../../asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import { SendHexData, SendPageRow, QuoteCard } from '.';
 
 export const SendPageRecipientContent = ({
@@ -148,6 +149,7 @@ export const SendPageRecipientContent = ({
           isAmountLoading={isLoadingInitialQuotes}
           amount={amount}
           isDisabled={!isSwapAllowed}
+          visibleTabs={[TabName.TOKENS]}
         />
       </SendPageRow>
       <QuoteCard scrollRef={scrollRef} />
