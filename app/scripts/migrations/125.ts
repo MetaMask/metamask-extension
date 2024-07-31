@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 124;
+export const version = 125;
 
 /**
  * This migration removes `providerConfig` from the network controller state.
