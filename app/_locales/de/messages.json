@@ -4808,9 +4808,6 @@
   "signatureRequestGuidance": {
     "message": "Unterzeichnen Sie diese Nachricht nur, wenn Sie den Inhalt vollständig verstehen und der anfragenden Seite vertrauen."
   },
-  "signatureRequestWarning": {
-    "message": "Das Unterzeichnen dieser Nachricht könnte gefährlich sein. Sie könnten der Gegenseite dieser Nachricht vollständige Kontrolle über Ihr Konto und Ihre Assets gewähren. Das bedeutet, dass sie Ihr Konto jederzeit leeren könnten. Seien Sie vorsichtig. $1."
-  },
   "signed": {
     "message": "Unterzeichnet"
   },
@@ -6522,9 +6519,6 @@
   },
   "yourBalance": {
     "message": "Ihr Kontostand"
-  },
-  "yourFundsMayBeAtRisk": {
-    "message": "Ihre Gelder könnte gefährdet sein"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Ihr NFT könnte gefährdet sein"

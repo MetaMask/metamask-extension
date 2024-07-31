@@ -4808,9 +4808,6 @@
   "signatureRequestGuidance": {
     "message": "このメッセージの内容を完全に理解し、リクエスト元のサイトを信頼する場合にのみ署名してください。"
   },
-  "signatureRequestWarning": {
-    "message": "このメッセージに署名するのは危険な可能性があります。このメッセージの相手に、アカウントと資産の完全なコントロールを許可しようとしている可能性があります。つまり、相手がいつでもアカウントからすべてを引き出せるようになります。慎重に進めてください。$1。"
-  },
   "signed": {
     "message": "署名が完了しました"
   },
@@ -6522,9 +6519,6 @@
   },
   "yourBalance": {
     "message": "残高"
-  },
-  "yourFundsMayBeAtRisk": {
-    "message": "資金が危険にさらされている可能性があります"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFTが危険にさらされている可能性があります"

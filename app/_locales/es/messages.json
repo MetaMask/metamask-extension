@@ -4808,9 +4808,6 @@
   "signatureRequestGuidance": {
     "message": "Solo firme este mensaje si comprende completamente el contenido y confía en el sitio solicitante."
   },
-  "signatureRequestWarning": {
-    "message": "Firmar este mensaje podría ser peligroso. Es posible que le esté otorgando el control total de su cuenta y activos a la contraparte de este mensaje. Eso significa que podrían vaciar su cuenta en cualquier momento. Proceda con precaución. $1."
-  },
   "signed": {
     "message": "Firmado"
   },
@@ -6522,9 +6519,6 @@
   },
   "yourBalance": {
     "message": "Su saldo"
-  },
-  "yourFundsMayBeAtRisk": {
-    "message": "Sus fondos podrían estar en riesgo"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Sus NFT podrían estar en riesgo"
