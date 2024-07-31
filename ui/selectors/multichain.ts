@@ -355,7 +355,6 @@ export function getMultichainIsTestnet(
   // the same pattern here too!
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const providerConfig = getMultichainProviderConfig(state, selectedAccount);
-  console.log('@@ Provider', account?.address, providerConfig);
   return getMultichainIsEvm(state, account)
     ? // FIXME: There are multiple ways of checking for an EVM test network, but
       // current implementation differ between each other. So we do not use
