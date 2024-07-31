@@ -2547,7 +2547,11 @@ export default class MetamaskController extends EventEmitter {
       ...buildSnapRestrictedMethodSpecifications(
         Object.keys(ExcludedSnapPermissions),
         {
-          getLocale: this.getLocale.bind(this),
+          getPreferences: () => {
+            const locale = this.getLocale();
+            const currency = this.currencyRateController.state.currentCurrency;
+            return { locale, currency };
+          },
           clearSnapState: this.controllerMessenger.call.bind(
             this.controllerMessenger,
             'SnapController:clearSnapState',
