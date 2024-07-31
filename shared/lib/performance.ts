@@ -5,7 +5,7 @@ import { log as sentryLogger } from '../../app/scripts/lib/setupSentry';
 
 const log = createModuleLogger(sentryLogger, 'performance');
 
-export type PerformanceTraceRequest = {
+export type TraceRequest = {
   data?: Record<string, number | string | boolean>;
   name: string;
   parentContext?: unknown;
@@ -13,7 +13,7 @@ export type PerformanceTraceRequest = {
 };
 
 export async function trace<T>(
-  request: PerformanceTraceRequest,
+  request: TraceRequest,
   fn: (context?: unknown) => Promise<T>,
 ): Promise<T> {
   const { data: attributes, name, parentContext, tags } = request;
@@ -37,7 +37,7 @@ export async function trace<T>(
       const end = Date.now();
       const duration = end - start;
 
-      log('Finished trace', name, { duration, error, request });
+      log('Finished trace', name, duration, { error, request });
     }
   };
 

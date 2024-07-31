@@ -927,7 +927,7 @@ function isCompletedSessionEnvelope(envelope) {
 
 function getEventType(event) {
   if (event.type === 'transaction') {
-    return 'Transaction';
+    return 'Trace';
   }
 
   if (event.level === 'error') {
