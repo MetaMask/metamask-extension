@@ -11,7 +11,6 @@ import {
   IconColor,
   BlockSize,
 } from '../../../helpers/constants/design-system';
-import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   setParticipateInMetaMetrics,
@@ -32,15 +31,17 @@ import {
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  Box as BoxComponent,
+  Box,
   Checkbox,
   Icon,
   IconName,
   IconSize,
   Text,
+  Button,
+  ButtonVariant,
+  ButtonSize,
 } from '../../../components/component-library';
 
-import Box from '../../../components/ui/box/box';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
 export default function OnboardingMetametrics() {
@@ -123,7 +124,7 @@ export default function OnboardingMetametrics() {
       <Text className="onboarding-metametrics__desc" textAlign={TextAlign.Left}>
         {t('onboardingMetametricsDescription')}
       </Text>
-      <BoxComponent paddingTop={2} paddingBottom={2}>
+      <Box paddingTop={2} paddingBottom={2}>
         <Text
           color={TextColor.primaryDefault}
           as="a"
@@ -133,7 +134,7 @@ export default function OnboardingMetametrics() {
         >
           {t('onboardingMetametricsPrivacyDescription')}
         </Text>
-      </BoxComponent>
+      </Box>
       <Text className="onboarding-metametrics__desc" textAlign={TextAlign.Left}>
         {t('onboardingMetametricsDescription2')}
       </Text>
@@ -224,7 +225,7 @@ export default function OnboardingMetametrics() {
         ])}
       </Text>
 
-      <BoxComponent
+      <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         width={BlockSize.Full}
@@ -233,21 +234,20 @@ export default function OnboardingMetametrics() {
       >
         <Button
           data-testid="metametrics-no-thanks"
-          type="secondary"
-          large
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
           onClick={onCancel}
         >
           {t('noThanks')}
         </Button>
         <Button
           data-testid="metametrics-i-agree"
-          type="primary"
-          large
+          size={ButtonSize.Lg}
           onClick={onConfirm}
         >
           {t('onboardingMetametricsAgree')}
         </Button>
-      </BoxComponent>
+      </Box>
     </div>
   );
 }
