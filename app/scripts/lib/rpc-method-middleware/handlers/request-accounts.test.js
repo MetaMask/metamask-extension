@@ -4,6 +4,10 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '../../multichain-api/caip25permissions';
+import {
+  validNotifications,
+  validRpcMethods,
+} from '../../multichain-api/scope';
 import requestEthereumAccounts from './request-accounts';
 
 jest.mock('../../util', () => ({
@@ -194,8 +198,8 @@ describe('requestEthereumAccountsHandler', () => {
                   requiredScopes: {},
                   optionalScopes: {
                     'eip155:1': {
-                      methods: [],
-                      notifications: [],
+                      methods: validRpcMethods,
+                      notifications: validNotifications,
                       accounts: ['eip155:1:0xdead', 'eip155:1:0xbeef'],
                     },
                   },
