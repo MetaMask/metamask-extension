@@ -209,7 +209,7 @@ describe('Ledger Hardware', function () {
         );
         await sendTransaction(
           driver,
-          '0x985c30949c92df7a0bd42e0f3e3d539ece98db24',
+          KNOWN_PUBLIC_KEY_ADDRESSES[1].address,
           '1',
           '0.000042',
           '1.000042',
