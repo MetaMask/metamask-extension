@@ -399,7 +399,7 @@ jobs:
                   - builds-beta
 
   create_release_pull_request:
-    executor: node-browsers-small
+    executor: node-browsers-medium
     steps:
       - checkout
       - run: sudo corepack enable
