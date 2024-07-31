@@ -66,6 +66,10 @@ mockState.confirmTransaction = {
   txData: sendEther,
 };
 
+// This is now enabled by default in `mock-state.json`, so disable it to match
+// the original behavior
+mockState.metamask.preferences.showFiatInTestnets = false;
+
 const store = configureStore(mockState);
 
 describe('ConfirmSendEther', () => {
