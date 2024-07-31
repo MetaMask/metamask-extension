@@ -48,6 +48,11 @@ const render = (props = {}, state = {}) => {
         },
         selectedAccount: mockAccount.id,
       },
+      providerConfig: {
+        type: 'mainnet',
+        chainId: '0x1',
+        ticker: 'ETH',
+      },
       balances: {
         [mockNonEvmAccount.id]: {
           'bip122:000000000019d6689c085ae165831e93/slip44:0': {
@@ -263,7 +268,7 @@ describe('AccountListItem', () => {
           '[data-testid="avatar-group"]',
         );
 
-        const expectedBalance = '$0.00';
+        const expectedBalance = '$3.31';
 
         expect(firstCurrencyDisplay).toBeInTheDocument();
         expect(firstCurrencyDisplay.firstChild.textContent).toContain(
@@ -275,9 +280,18 @@ describe('AccountListItem', () => {
       });
 
       it('renders fiat for non-EVM account', () => {
-        const { container } = render({
-          account: mockNonEvmAccount,
-        });
+        const { container } = render(
+          {
+            account: mockNonEvmAccount,
+          },
+          {
+            metamask: {
+              preferences: {
+                showFiatInTestnets: true,
+              },
+            },
+          },
+        );
 
         const firstCurrencyDisplay = container.querySelector(
           '[data-testid="first-currency-display"]',
