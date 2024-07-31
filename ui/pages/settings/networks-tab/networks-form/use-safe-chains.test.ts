@@ -33,7 +33,7 @@ describe('rpcIdentifierUtility', () => {
   });
 
   it('should sanitize rpcUrls by removing placeholders and compare by host', () => {
-    const rpcUrlWithEnvVar = 'https://example.com/rpc/${API_KEY}';
+    const rpcUrlWithEnvVar = 'https://example.com/rpc/{API_KEY}';
     const result = rpcIdentifierUtility(rpcUrlWithEnvVar, safeChains);
     expect(result).toBe('example.com');
   });
