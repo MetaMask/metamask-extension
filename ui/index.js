@@ -248,7 +248,7 @@ function setupStateHooks(store) {
      *
      * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
      */
-    window.stateHooks.throwTestError = async function (msg = 'Test Error') {
+    window.stateHooks.throwTestError = function (msg = 'Test Error') {
       const error = new Error(msg);
       error.name = 'TestError';
       throw error;
@@ -263,7 +263,7 @@ function setupStateHooks(store) {
     window.stateHooks.throwTestBackgroundError = async function (
       msg = 'Test Error',
     ) {
-      store.dispatch(actions.throwTestBackgroundError(msg));
+      await actions.throwTestBackgroundError(msg);
     };
   }
 

@@ -927,12 +927,12 @@ function isCompletedSessionEnvelope(envelope) {
 
 function getEventType(event) {
   if (event.type === 'transaction') {
-    return 'transaction';
+    return 'Transaction';
   }
 
   if (event.level === 'error') {
-    return 'error';
+    return 'Error';
   }
 
-  return 'event';
+  return 'Event';
 }

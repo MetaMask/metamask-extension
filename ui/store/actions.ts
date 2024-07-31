@@ -5174,7 +5174,7 @@ export function setName(
  * Throw an error in the background for testing purposes.
  *
  * @param message - The error message.
- * @deprecated This is only mean to facilitiate E2E testing. We should not use
+ * @deprecated This is only meant to facilitiate E2E testing. We should not use
  * this for handling errors.
  */
 export async function throwTestBackgroundError(message: string): Promise<void> {

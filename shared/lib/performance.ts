@@ -20,7 +20,7 @@ export async function trace<T>(
   const parentSpan = (parentContext ?? null) as Sentry.Span | null;
 
   const isSentryEnabled =
-    (await globalThis.sentry.getSentryEnabled()) as boolean;
+    (await globalThis.sentry.getMetaMetricsEnabled()) as boolean;
 
   const callback = async (span: Sentry.Span | null) => {
     log('Starting trace', name, request);

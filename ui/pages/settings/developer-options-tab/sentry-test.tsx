@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, useCallback } from 'react';
+import React, { useState, useCallback, ReactElement } from 'react';
 import { ButtonVariant } from '@metamask/snaps-sdk';
 import {
   Box,
@@ -24,34 +24,54 @@ export function SentryTest() {
         Sentry
       </Text>
       <div className="settings-page__content-padded">
-        <GenerateError />
-        <CreateTransaction />
+        <GenerateUIError />
+        <GenerateBackgroundError />
+        <GenerateTrace />
       </div>
     </>
   );
 }
 
-function GenerateError() {
-  const handleGenerateErrorClick = useCallback(async () => {
-    throw new Error('Developer Test');
+function GenerateUIError() {
+  const handleClick = useCallback(async () => {
+    window.stateHooks.throwTestError?.('Developer Options');
   }, []);
 
   return (
     <TestButton
-      name="Generate Error"
+      name="Generate UI Error"
       description={
         <>
-          Generate a <b>Developer Test</b> error.
+          Generate an unhandled <b>TestError</b> in this window.
         </>
       }
-      onClick={handleGenerateErrorClick}
+      onClick={handleClick}
       expectError
     />
   );
 }
 
-function CreateTransaction() {
-  const handleGenerateTransactionClick = useCallback(async () => {
+function GenerateBackgroundError() {
+  const handleClick = useCallback(async () => {
+    window.stateHooks.throwTestBackgroundError?.('Developer Options');
+  }, []);
+
+  return (
+    <TestButton
+      name="Generate Background Error"
+      description={
+        <>
+          Generate an unhandled <b>TestError</b> in the service worker.
+        </>
+      }
+      onClick={handleClick}
+      expectError
+    />
+  );
+}
+
+function GenerateTrace() {
+  const handleClick = useCallback(async () => {
     await trace(
       {
         name: 'Developer Test',
@@ -84,13 +104,13 @@ function CreateTransaction() {
 
   return (
     <TestButton
-      name="Create Transaction"
+      name="Generate Trace"
       description={
         <>
-          Generate a <b>Developer Test</b> Sentry transaction.
+          Generate a <b>Developer Test</b> Sentry trace.
         </>
       }
-      onClick={handleGenerateTransactionClick}
+      onClick={handleClick}
     />
   );
 }
