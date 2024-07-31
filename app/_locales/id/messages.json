@@ -4579,13 +4579,10 @@
   "seedPhraseIntroRecommendedButtonCopy": {
     "message": "Amankan dompet saya (direkomendasikan)"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "Tuliskan dan simpan di beberapa tempat rahasia."
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Simpan di pengelola kata sandi"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "Simpan di deposit box yang aman."
   },
   "seedPhraseIntroSidebarCopyOne": {

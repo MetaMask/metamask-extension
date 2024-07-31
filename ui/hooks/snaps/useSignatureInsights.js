@@ -108,7 +108,7 @@ export function useSignatureInsights({ txData }) {
         }
       }
     }
-    if (Object.keys(txData).length > 0) {
+    if (Object.keys(txData).length > 0 && txData.msgParams !== undefined) {
       fetchInsight();
     }
     return () => {

@@ -3,7 +3,11 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { unapprovedPersonalSignMsg } from '../../../../test/data/confirmations/personal_sign';
-import { unapprovedTypedSignMsgV4 } from '../../../../test/data/confirmations/typed_sign';
+import {
+  orderSignatureMsg,
+  permitSignatureMsg,
+  unapprovedTypedSignMsgV4,
+} from '../../../../test/data/confirmations/typed_sign';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
@@ -25,7 +29,20 @@ describe('Confirm', () => {
     expect(container).toBeDefined();
   });
 
-  it('matches snapshot for personal signature type', () => {
+  it('should match snapshot for signature - typed sign - permit', () => {
+    const mockStateTypedSign = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+      },
+      confirm: { currentConfirmation: permitSignatureMsg },
+    };
+    const mockStore = configureMockStore(middleware)(mockStateTypedSign);
+    const { container } = renderWithProvider(<Confirm />, mockStore);
+    expect(container).toMatchSnapshot();
+  });
+
+  it('matches snapshot for signature - personal sign type', () => {
     const mockStatePersonalSign = {
       ...mockState,
       metamask: {
@@ -38,7 +55,20 @@ describe('Confirm', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should match snapshot for typed sign signature', async () => {
+  it('should match snapshot signature - typed sign - order', () => {
+    const mockStateTypedSign = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+      },
+      confirm: { currentConfirmation: orderSignatureMsg },
+    };
+    const mockStore = configureMockStore(middleware)(mockStateTypedSign);
+    const { container } = renderWithProvider(<Confirm />, mockStore);
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match snapshot for signature - typed sign - V4', async () => {
     const mockStateTypedSign = {
       ...mockState,
       metamask: {
