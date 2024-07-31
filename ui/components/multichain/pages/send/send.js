@@ -59,6 +59,7 @@ import useUpdateSwapsState from '../../../../pages/swaps/hooks/useUpdateSwapsSta
 import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
 import { smartTransactionsListSelector } from '../../../../selectors';
 import { TextVariant } from '../../../../helpers/constants/design-system';
+import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -92,6 +93,7 @@ export const SendPage = () => {
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(undefined);
 
   const handleSelectToken = useCallback(
     (token, isReceived) => {
@@ -152,6 +154,7 @@ export const SendPage = () => {
   const cleanup = useCallback(() => {
     dispatch(resetSendState());
     setIsSubmitting(false);
+    setError(undefined);
   }, [dispatch]);
 
   /**
@@ -230,20 +233,30 @@ export const SendPage = () => {
     event.preventDefault();
 
     setIsSubmitting(true);
-    await dispatch(signTransaction(history));
-    // prevents state update on unmounted component error
-    if (isSubmitting) {
+    setError(undefined);
+
+    try {
+      await dispatch(signTransaction(history));
+
+      // prevents state update on unmounted component error
+      if (isSubmitting) {
+        setIsSubmitting(false);
+      }
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Transactions,
+        event: 'Complete',
+        properties: {
+          ...sendAnalytics,
+          action: isSwapAndSend ? 'Submit Immediately' : 'Edit Screen',
+          legacy_event: true,
+        },
+      });
+    } catch {
       setIsSubmitting(false);
+      setError(TRANSACTION_ERRORED_EVENT);
+      // throw error;
     }
-    trackEvent({
-      category: MetaMetricsEventCategory.Transactions,
-      event: 'Complete',
-      properties: {
-        ...sendAnalytics,
-        action: isSwapAndSend ? 'Submit Immediately' : 'Edit Screen',
-        legacy_event: true,
-      },
-    });
   };
 
   // Submit button
@@ -286,8 +299,10 @@ export const SendPage = () => {
   useUpdateSwapsState();
 
   const onAmountChange = useCallback(
-    (newAmountRaw, newAmountFormatted) =>
-      dispatch(updateSendAmount(newAmountRaw, newAmountFormatted)),
+    (newAmountRaw, newAmountFormatted) => {
+      dispatch(updateSendAmount(newAmountRaw, newAmountFormatted));
+      setError(undefined);
+    },
     [dispatch],
   );
 
@@ -320,6 +335,7 @@ export const SendPage = () => {
         <SendPageAccountPicker />
         {isSendFormShown && (
           <AssetPickerAmount
+            error={error}
             asset={transactionAsset}
             amount={amount}
             onAssetChange={handleSelectSendToken}
