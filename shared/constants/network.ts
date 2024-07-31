@@ -198,6 +198,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   ZORA_MAINNET: '0x76adf1',
   FILECOIN: '0x13a',
   NUMBERS: '0x290b',
+  KONET: '0x4341',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -247,6 +248,7 @@ export const SCROLL_SEPOLIA_DISPLAY_NAME = 'Scroll Sepolia';
 export const OP_BNB_DISPLAY_NAME = 'opBNB';
 export const BERACHAIN_DISPLAY_NAME = 'Berachain Artio';
 export const METACHAIN_ONE_DISPLAY_NAME = 'Metachain One Mainnet';
+export const KONET_DISPLAY_NAME = 'KONET';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -360,6 +362,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   OASYS_MAINNET: 'OAS',
   HUOBI_ECO_CHAIN_MAINNET: 'HT',
   ACALA_NETWORK: 'ACA',
+  KONET: 'KONET',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -433,6 +436,7 @@ export const SCROLL_IMAGE_URL = './images/scroll.svg';
 export const NUMBERS_MAINNET_IMAGE_URL = './images/numbers-mainnet.svg';
 export const NUMBERS_TOKEN_IMAGE_URL = './images/numbers-token.png';
 export const SEI_IMAGE_URL = './images/sei.svg';
+export const KONET_MAINNET_IMAGE_URL = './images/konet.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -655,6 +659,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.HUOBI_ECO_CHAIN_MAINNET,
   [CHAINLIST_CHAIN_IDS_MAP.ACALA_NETWORK]:
     CHAINLIST_CURRENCY_SYMBOLS_MAP.ACALA_NETWORK,
+  [CHAINLIST_CHAIN_IDS_MAP.KONET]: CHAINLIST_CURRENCY_SYMBOLS_MAP.KONET,
 } as const;
 
 /**
@@ -760,6 +765,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.BASE]: BASE_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.NUMBERS]: NUMBERS_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SEI]: SEI_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.KONET]: KONET_MAINNET_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
