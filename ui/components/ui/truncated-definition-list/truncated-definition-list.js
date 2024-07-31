@@ -18,7 +18,39 @@ export default function TruncatedDefinitionList({
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const t = useI18nContext();
 
-  return (
+  return process.env.CHAIN_PERMISSIONS ? (
+    <Box
+      margin={6}
+      padding={4}
+      paddingBottom={3}
+      borderRadius={Size.LG}
+      borderColor={BorderColor.borderMuted}
+    >
+      {isPopoverOpen ? (
+        <DefinitionList
+          gap={Size.MD}
+          tooltips={tooltips}
+          warnings={warnings}
+          dictionary={dictionary}
+        />
+      ) : (
+        <>
+          <DefinitionList
+            dictionary={pick(dictionary, prefaceKeys)}
+            warnings={warnings}
+            tooltips={tooltips}
+          />
+          <Button
+            className="truncated-definition-list__view-more"
+            type="link"
+            onClick={() => setIsPopoverOpen(true)}
+          >
+            {t('seeDetails')}
+          </Button>
+        </>
+      )}
+    </Box>
+  ) : (
     <>
       <Box
         margin={6}

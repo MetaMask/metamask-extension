@@ -17,6 +17,7 @@ import {
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
+import { BannerAlertSeverity } from '../../../../components/component-library/index';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',
@@ -245,25 +246,46 @@ function getValues(pendingApproval, t, actions, history, data) {
         ],
       },
 
-      {
-        element: 'Typography',
-        key: 'title',
-        children: originIsMetaMask
-          ? t('wantToAddThisNetwork')
-          : t('addEthereumChainConfirmationTitle'),
-        props: {
-          variant: TypographyVariant.H3,
-          align: 'center',
-          fontWeight: 'bold',
-          boxProps: {
-            margin: [0, 0, 4],
+      process.env.CHAIN_PERMISSIONS
+        ? {
+            element: 'Typography',
+            key: 'title',
+            children: originIsMetaMask
+              ? t('wantToAddThisNetwork')
+              : t('addNetworkConfirmationTitle', [
+                  pendingApproval.requestData.chainName,
+                ]),
+            props: {
+              variant: TypographyVariant.H3,
+              align: 'center',
+              fontWeight: 'bold',
+              boxProps: {
+                margin: [0, 0, 4],
+              },
+            },
+          }
+        : {
+            element: 'Typography',
+            key: 'title',
+            children: originIsMetaMask
+              ? t('wantToAddThisNetwork')
+              : t('addEthereumChainConfirmationTitle'),
+            props: {
+              variant: TypographyVariant.H3,
+              align: 'center',
+              fontWeight: 'bold',
+              boxProps: {
+                margin: [0, 0, 4],
+              },
+            },
           },
-        },
-      },
+
       {
         element: 'Typography',
         key: 'description',
-        children: t('addEthereumChainConfirmationDescription'),
+        children: process.env.CHAIN_PERMISSIONS
+          ? t('multichainAddEthereumChainConfirmationDescription')
+          : t('addEthereumChainConfirmationDescription'),
         props: {
           variant: TypographyVariant.H7,
           align: 'center',
@@ -273,12 +295,12 @@ function getValues(pendingApproval, t, actions, history, data) {
         },
       },
       {
-        element: 'Typography',
+        element: 'BannerAlert',
         key: 'only-add-networks-you-trust',
         children: [
           {
-            element: 'b',
-            key: 'bolded-text',
+            element: 'Typography',
+            key: 'description',
             props: {
               style: { display: originIsMetaMask && '-webkit-box' },
             },
@@ -313,19 +335,6 @@ function getValues(pendingApproval, t, actions, history, data) {
                     </div>
                   ),
                 },
-                children: [
-                  {
-                    element: 'i',
-                    key: 'info-circle',
-                    props: {
-                      className: 'fas fa-info-circle',
-                      style: {
-                        marginLeft: '4px',
-                        color: 'var(--color-icon-default)',
-                      },
-                    },
-                  },
-                ],
               },
             ],
           },
@@ -349,7 +358,7 @@ function getValues(pendingApproval, t, actions, history, data) {
           },
         ],
         props: {
-          variant: TypographyVariant.H7,
+          severity: BannerAlertSeverity.Warning,
           boxProps: {
             margin: originIsMetaMask ? [0, 8] : 0,
             display: Display.Flex,
@@ -359,42 +368,173 @@ function getValues(pendingApproval, t, actions, history, data) {
         },
       },
       {
-        element: 'TruncatedDefinitionList',
-        key: 'network-details',
+        element: 'Typography',
+        key: 'only-add-networks-you-trust',
+        children: process.env.CHAIN_PERMISSIONS
+          ? []
+          : [
+              {
+                element: 'b',
+                key: 'bolded-text',
+                props: {
+                  style: { display: originIsMetaMask && '-webkit-box' },
+                },
+                children: [
+                  `${t('addEthereumChainConfirmationRisks')} `,
+                  {
+                    hide: !originIsMetaMask,
+                    element: 'Tooltip',
+                    key: 'tooltip-info',
+                    props: {
+                      position: 'bottom',
+                      interactive: true,
+                      trigger: 'mouseenter',
+                      html: (
+                        <div
+                          style={{
+                            width: '180px',
+                            margin: '16px',
+                            textAlign: 'left',
+                          }}
+                        >
+                          {t('someNetworksMayPoseSecurity')}{' '}
+                          <a
+                            key="zendesk_page_link"
+                            href={ZENDESK_URLS.UNKNOWN_NETWORK}
+                            rel="noreferrer"
+                            target="_blank"
+                            style={{ color: 'var(--color-primary-default)' }}
+                          >
+                            {t('learnMoreUpperCase')}
+                          </a>
+                        </div>
+                      ),
+                    },
+                    children: [
+                      {
+                        element: 'i',
+                        key: 'info-circle',
+                        props: {
+                          className: 'fas fa-info-circle',
+                          style: {
+                            marginLeft: '4px',
+                            color: 'var(--color-icon-default)',
+                          },
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                element: 'MetaMaskTranslation',
+                key: 'learn-about-risks',
+                props: {
+                  translationKey: 'addEthereumChainConfirmationRisksLearnMore',
+                  variables: [
+                    {
+                      element: 'a',
+                      children: t(
+                        'addEthereumChainConfirmationRisksLearnMoreLink',
+                      ),
+                      key: 'addEthereumChainConfirmationRisksLearnMoreLink',
+                      props: {
+                        href: ZENDESK_URLS.USER_GUIDE_CUSTOM_NETWORKS,
+                        target: '__blank',
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
         props: {
-          title: t('networkDetails'),
-          tooltips: {
-            [t('networkName')]: t('networkNameDefinition'),
-            [t('networkURL')]: t('networkURLDefinition'),
-            [t('chainId')]: t('chainIdDefinition'),
-            [t('currencySymbol')]: t('currencySymbolDefinition'),
-            [t('blockExplorerUrl')]: t('blockExplorerUrlDefinition'),
+          variant: TypographyVariant.H7,
+          boxProps: {
+            margin: originIsMetaMask ? [0, 8] : 0,
+            display: Display.Flex,
+            flexDirection: FlexDirection.Column,
+            alignItems: AlignItems.center,
           },
-          warnings: {
-            [t('currencySymbol')]: data.currencySymbolWarning,
-          },
-          dictionary: {
-            [t('networkName')]: pendingApproval.requestData.chainName,
-            [t('networkURL')]: pendingApproval.requestData.rpcUrl
-              .toLowerCase()
-              ?.includes(`/v3/${infuraProjectId}`)
-              ? pendingApproval.requestData.rpcUrl
-                  .replace(`/v3/${infuraProjectId}`, '')
-                  .toLowerCase()
-              : pendingApproval.requestData.rpcUrl.toLowerCase(),
-            [t('chainId')]: parseInt(pendingApproval.requestData.chainId, 16),
-            [t('currencySymbol')]: pendingApproval.requestData.ticker,
-            [t('blockExplorerUrl')]:
-              pendingApproval.requestData.rpcPrefs.blockExplorerUrl,
-          },
-          prefaceKeys: [
-            t('networkName'),
-            t('networkURL'),
-            t('chainId'),
-            t('currencySymbol'),
-          ],
         },
       },
+
+      process.env.CHAIN_PERMISSIONS
+        ? {
+            element: 'TruncatedDefinitionList',
+            key: 'network-details',
+            props: {
+              title: t('networkDetails'),
+              tooltips: {
+                [t('currencySymbol')]: t('currencySymbolDefinition'),
+                [t('networkURL')]: t('networkURLDefinition'),
+                [t('chainId')]: t('chainIdDefinition'),
+                [t('networkName')]: t('networkNameDefinition'),
+                [t('blockExplorerUrl')]: t('blockExplorerUrlDefinition'),
+              },
+              warnings: {
+                [t('currencySymbol')]: data.currencySymbolWarning,
+              },
+              dictionary: {
+                [t('currencySymbol')]: pendingApproval.requestData.ticker,
+                [t('networkURL')]: pendingApproval.requestData.rpcUrl
+                  .toLowerCase()
+                  ?.includes(`/v3/${infuraProjectId}`)
+                  ? pendingApproval.requestData.rpcUrl
+                      .replace(`/v3/${infuraProjectId}`, '')
+                      .toLowerCase()
+                  : pendingApproval.requestData.rpcUrl.toLowerCase(),
+                [t('chainId')]: parseInt(
+                  pendingApproval.requestData.chainId,
+                  16,
+                ),
+
+                [t('networkName')]: pendingApproval.requestData.chainName,
+                [t('blockExplorerUrl')]:
+                  pendingApproval.requestData.rpcPrefs.blockExplorerUrl,
+              },
+              prefaceKeys: [t('currencySymbol'), t('networkURL')],
+            },
+          }
+        : {
+            element: 'TruncatedDefinitionList',
+            key: 'network-details',
+            props: {
+              title: t('networkDetails'),
+              tooltips: {
+                [t('networkName')]: t('networkNameDefinition'),
+                [t('networkURL')]: t('networkURLDefinition'),
+                [t('chainId')]: t('chainIdDefinition'),
+                [t('currencySymbol')]: t('currencySymbolDefinition'),
+                [t('blockExplorerUrl')]: t('blockExplorerUrlDefinition'),
+              },
+              warnings: {
+                [t('currencySymbol')]: data.currencySymbolWarning,
+              },
+              dictionary: {
+                [t('networkName')]: pendingApproval.requestData.chainName,
+                [t('networkURL')]: pendingApproval.requestData.rpcUrl
+                  .toLowerCase()
+                  ?.includes(`/v3/${infuraProjectId}`)
+                  ? pendingApproval.requestData.rpcUrl
+                      .replace(`/v3/${infuraProjectId}`, '')
+                      .toLowerCase()
+                  : pendingApproval.requestData.rpcUrl.toLowerCase(),
+                [t('chainId')]: parseInt(
+                  pendingApproval.requestData.chainId,
+                  16,
+                ),
+                [t('currencySymbol')]: pendingApproval.requestData.ticker,
+                [t('blockExplorerUrl')]:
+                  pendingApproval.requestData.rpcPrefs.blockExplorerUrl,
+              },
+              prefaceKeys: [
+                t('networkName'),
+                t('networkURL'),
+                t('chainId'),
+                t('currencySymbol'),
+              ],
+            },
+          },
     ],
     cancelText: t('cancel'),
     submitText: t('approveButtonText'),
