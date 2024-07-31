@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 125;
+export const version = 120.2;
 
 /**
  * This migration removes any dangling instances of SelectedNetworkController.perDomainNetwork
@@ -26,9 +26,7 @@ export async function migrate(
   return versionedData;
 }
 
-// TODO: Replace `any` with specific type
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function transformState(state: Record<string, any>) {
+function transformState(state: Record<string, unknown>) {
   if (!hasProperty(state, 'SelectedNetworkController')) {
     return state;
   }
