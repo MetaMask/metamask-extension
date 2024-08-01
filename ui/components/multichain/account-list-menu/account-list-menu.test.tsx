@@ -517,69 +517,45 @@ describe('AccountListMenu', () => {
       type: BtcAccountType.P2wpkh,
       address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
     });
+    const defaultMockState = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        internalAccounts: {
+          accounts: {
+            [mockAccount.id]: mockAccount,
+            [mockBtcAccount.id]: mockBtcAccount,
+          },
+          selectedAccount: mockAccount.id,
+        },
+        keyrings: [
+          {
+            type: 'HD Key Tree',
+            accounts: [mockAccount.address],
+          },
+          {
+            type: 'Snap Keyring',
+            accounts: [mockBtcAccount.address],
+          },
+        ],
+      },
+    };
 
     it('allows only EthAccountTypes', () => {
-      const { queryByText } = render(
-        {
-          ...mockState,
-          metamask: {
-            ...mockState.metamask,
-            internalAccounts: {
-              accounts: {
-                [mockAccount.id]: mockAccount,
-                [mockBtcAccount.id]: mockBtcAccount,
-              },
-              selectedAccount: mockAccount.id,
-            },
-            keyrings: [
-              {
-                type: 'HD Key Tree',
-                accounts: [mockAccount.address],
-              },
-              {
-                type: 'Snap Keyring',
-                accounts: [mockBtcAccount.address],
-              },
-            ],
-          },
-        },
-        {
-          onClose: jest.fn(),
-          allowedAccountTypes: [EthAccountType.Eoa, EthAccountType.Erc4337],
-        },
-      );
+      const { queryByText } = render(defaultMockState, {
+        onClose: jest.fn(),
+        allowedAccountTypes: [EthAccountType.Eoa, EthAccountType.Erc4337],
+      });
 
       expect(queryByText(mockAccount.metadata.name)).toBeInTheDocument();
       expect(queryByText(mockBtcAccount.metadata.name)).not.toBeInTheDocument();
     });
 
     it('allows only BtcAccountType', () => {
-      const { queryByText } = render(
-        {
-          ...mockState,
-          metamask: {
-            ...mockState.metamask,
-            internalAccounts: {
-              accounts: {
-                [mockAccount.id]: mockAccount,
-                [mockBtcAccount.id]: mockBtcAccount,
-              },
-              selectedAccount: mockAccount.id,
-            },
-            keyrings: [
-              {
-                type: 'HD Key Tree',
-                accounts: [mockAccount.address],
-              },
-              {
-                type: 'Snap Keyring',
-                accounts: [mockBtcAccount.address],
-              },
-            ],
-          },
-        },
-        { onClose: jest.fn(), allowedAccountTypes: [BtcAccountType.P2wpkh] },
-      );
+      const { queryByText } = render(defaultMockState, {
+        onClose: jest.fn(),
+        allowedAccountTypes: [BtcAccountType.P2wpkh],
+      });
 
       expect(queryByText(mockAccount.metadata.name)).not.toBeInTheDocument();
       expect(queryByText(mockBtcAccount.metadata.name)).toBeInTheDocument();
