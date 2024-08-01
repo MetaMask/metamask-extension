@@ -14,6 +14,7 @@ import { I18nContext } from '../../../../../contexts/i18n';
 import { AccountListMenu } from '../../..';
 import { SEND_STAGES, getSendStage } from '../../../../../ducks/send';
 import { SendPageRow } from '.';
+import { EthAccountType } from '@metamask/keyring-api';
 
 export const SendPageAccountPicker = () => {
   const t = useContext(I18nContext);
@@ -62,6 +63,7 @@ export const SendPageAccountPicker = () => {
           accountListItemProps={{ showOptions: false }}
           showAccountCreation={false}
           onClose={() => setShowAccountPicker(false)}
+          allowedAccountTypes={[EthAccountType.Eoa, EthAccountType.Erc4337]}
         />
       ) : null}
     </SendPageRow>
