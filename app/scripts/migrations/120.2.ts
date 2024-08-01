@@ -26,21 +26,30 @@ export async function migrate(
   return versionedData;
 }
 
-function removeObsoleteSnapControllerState(state: Record<string, unknown>): void {
+function removeObsoleteSnapControllerState(
+  state: Record<string, unknown>,
+): void {
   if (!hasProperty(state, 'SnapController')) {
     return;
   } else if (!isObject(state.SnapController)) {
-    global.sentry.captureException(new Error(`Migration ${version}: Invalid SnapController state of type '${typeof state.SnapController}'`))
+    global.sentry.captureException(
+      new Error(
+        `Migration ${version}: Invalid SnapController state of type '${typeof state.SnapController}'`,
+      ),
+    );
     return;
   }
 
   delete state.SnapController.snapErrors;
 }
 
-function removeObsoleteSelectedNetworkControllerState(state: Record<string, unknown>): void {
+function removeObsoleteSelectedNetworkControllerState(
+  state: Record<string, unknown>,
+): void {
   if (!hasProperty(state, 'SelectedNetworkController')) {
     return;
-  } else if (!isObject(state.SelectedNetworkController)) {
+  }
+  if (!isObject(state.SelectedNetworkController)) {
     console.error(
       `Migration ${version}: Invalid SelectedNetworkController state of type '${typeof state.SelectedNetworkController}'`,
     );
