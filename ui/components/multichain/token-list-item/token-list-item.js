@@ -229,7 +229,7 @@ export const TokenListItem = ({
               }
             />
           }
-          marginRight={3}
+          marginRight={4}
           className="multichain-token-list-item__badge"
         >
           <AvatarToken
