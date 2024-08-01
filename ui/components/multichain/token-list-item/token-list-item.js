@@ -189,7 +189,10 @@ export const TokenListItem = ({
         })}
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
-        padding={4}
+        paddingTop={2}
+        paddingBottom={2}
+        paddingLeft={4}
+        paddingRight={4}
         data-testid="multichain-token-list-button"
         {...(onClick && {
           as: 'a',
