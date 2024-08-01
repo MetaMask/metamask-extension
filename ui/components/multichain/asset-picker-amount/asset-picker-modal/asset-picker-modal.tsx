@@ -44,17 +44,17 @@ import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { useEqualityCheck } from '../../../../hooks/useEqualityCheck';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { Asset, Token } from './types';
+import { Token } from './types';
+import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 import AssetList from './AssetList';
 import { Search } from './asset-picker-modal-search';
-import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
 
 type AssetPickerModalProps = {
   header: JSX.Element | string | null;
   isOpen: boolean;
   onClose: () => void;
-  asset: Asset;
+  asset: Token;
   onAssetChange: (asset: Token) => void;
   /**
    * Sending asset for UI treatments; only for dest component

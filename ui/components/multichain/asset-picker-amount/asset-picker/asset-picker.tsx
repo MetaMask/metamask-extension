@@ -25,28 +25,24 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
-import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import {
   getCurrentNetwork,
-  getIpfsGateway,
-  getNativeCurrencyImage,
   getTestNetworkBackgroundColor,
-  getTokenList,
 } from '../../../../selectors';
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
-import { getAssetImageURL } from '../../../../helpers/utils/util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: END:ONLY_INCLUDE_IF
 import { ellipsify } from '../../../../pages/confirmations/send/send.utils';
 import { Token } from '../asset-picker-modal/types';
 import { TabName } from '../asset-picker-modal/asset-picker-modal-tabs';
+import AssetList from '../asset-picker-modal/AssetList';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
 export type AssetPickerProps = {
-  asset: Asset;
+  asset: Token;
   /**
    * Needs to be wrapped in a callback
    */
@@ -56,7 +52,8 @@ export type AssetPickerProps = {
 } & Pick<
   React.ComponentProps<typeof AssetPickerModal>,
   'visibleTabs' | 'header' | 'sendingAsset'
->;
+> &
+  Pick<React.ComponentProps<typeof AssetList>, 'asset'>;
 
 // A component that lets the user pick from a list of assets.
 export function AssetPicker({
@@ -72,33 +69,14 @@ export function AssetPicker({
   const t = useI18nContext();
   ///: END:ONLY_INCLUDE_IF
 
-  const nativeCurrencySymbol = useSelector(getNativeCurrency);
-  const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const tokenList: Record<string, any> = useSelector(getTokenList);
-
-  const ipfsGateway = useSelector(getIpfsGateway);
-
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
 
-  let primaryTokenImage: string | undefined;
+  // selected asset details
+  const primaryTokenImage = asset?.image;
+  const symbol = asset?.symbol;
 
-  if (asset.type === AssetType.native) {
-    primaryTokenImage = nativeCurrencyImageUrl;
-  } else if (tokenList && asset.details) {
-    primaryTokenImage =
-      getAssetImageURL(asset.details?.image, ipfsGateway) ||
-      tokenList[asset.details.address?.toLowerCase()]?.iconUrl;
-  }
-
-  const symbol =
-    asset.type === AssetType.native
-      ? nativeCurrencySymbol
-      : asset.details?.symbol;
-
-  const isSymbolLong = symbol?.length > LARGE_SYMBOL_LENGTH;
-  const isNFT = asset.type === AssetType.NFT;
+  const isSymbolLong = symbol && symbol.length > LARGE_SYMBOL_LENGTH;
+  const isNFT = asset?.type === AssetType.NFT;
 
   const formattedSymbol =
     isSymbolLong && !isNFT
@@ -193,15 +171,15 @@ export function AssetPicker({
             <Text className="asset-picker__symbol" variant={TextVariant.bodyMd}>
               {formattedSymbol}
             </Text>
-            {asset.details?.tokenId && (
+            {asset?.tokenId && (
               <Text
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
                 #
-                {String(asset.details.tokenId).length < ELLIPSIFY_LENGTH
-                  ? asset.details.tokenId
-                  : ellipsify(String(asset.details.tokenId), 6, 4)}
+                {String(asset.tokenId).length < ELLIPSIFY_LENGTH
+                  ? asset.tokenId
+                  : ellipsify(String(asset.tokenId), 6, 4)}
               </Text>
             )}
           </Tooltip>

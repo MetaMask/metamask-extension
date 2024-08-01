@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import configureStore from '../../../../store/store';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { AssetPicker } from './asset-picker';
 
 jest.mock('react-router-dom', () => ({
@@ -13,8 +14,9 @@ jest.mock('react-router-dom', () => ({
   })),
 }));
 
+const NATIVE_TICKER = 'NATIVE TICKER';
 const store = (
-  nativeTicker = 'NATIVE TICKER',
+  nativeTicker = NATIVE_TICKER,
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tokenList = {} as any,
@@ -41,7 +43,8 @@ describe('AssetPicker', () => {
   it('matches snapshot', () => {
     const asset = {
       type: AssetType.native,
-      balance: '1000000',
+      image: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP['0x1'],
+      symbol: NATIVE_TICKER,
     };
     const mockAssetChange = jest.fn();
 
@@ -60,7 +63,7 @@ describe('AssetPicker', () => {
   it('calls onClick handler', () => {
     const asset = {
       type: AssetType.native,
-      balance: '1000000',
+      symbol: NATIVE_TICKER,
     };
     const mockAssetChange = jest.fn();
     const mockOnClick = jest.fn();
@@ -81,7 +84,8 @@ describe('AssetPicker', () => {
   it('native: renders symbol and image', () => {
     const asset = {
       type: AssetType.native,
-      balance: '1000000',
+      image: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP['0x1'],
+      symbol: 'NATIVE',
     };
     const mockAssetChange = jest.fn();
 
@@ -102,12 +106,13 @@ describe('AssetPicker', () => {
   it('native: renders overflowing symbol and image', () => {
     const asset = {
       type: AssetType.native,
-      balance: '1000000',
+      image: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP['0x1'],
+      symbol: NATIVE_TICKER,
     };
     const mockAssetChange = jest.fn();
 
     const { getByText, getByRole } = render(
-      <Provider store={store('NATIVE TOKEN')}>
+      <Provider store={store(NATIVE_TICKER)}>
         <AssetPicker
           header={'testHeader'}
           asset={asset}
@@ -123,21 +128,14 @@ describe('AssetPicker', () => {
   it('token: renders symbol and image', () => {
     const asset = {
       type: AssetType.token,
-      details: {
-        address: 'token address',
-        decimals: 2,
-        symbol: 'symbol',
-      },
-      balance: '100',
+      address: 'token address',
+      image: 'token icon url',
+      symbol: 'symbol',
     };
     const mockAssetChange = jest.fn();
 
     const { getByText, getByRole } = render(
-      <Provider
-        store={store("SHOULDN'T MATTER", {
-          'token address': { iconUrl: 'token icon url' },
-        })}
-      >
+      <Provider store={store("SHOULDN'T MATTER")}>
         <AssetPicker
           header={'testHeader'}
           asset={asset}
@@ -153,21 +151,14 @@ describe('AssetPicker', () => {
   it('token: renders symbol and image overflowing', () => {
     const asset = {
       type: AssetType.token,
-      details: {
-        address: 'token address',
-        decimals: 2,
-        symbol: 'symbol overflow',
-      },
-      balance: '100',
+      address: 'token address',
+      image: 'token icon url',
+      symbol: 'symbol overflow',
     };
     const mockAssetChange = jest.fn();
 
     const { getByText, getByRole } = render(
-      <Provider
-        store={store("SHOULDN'T MATTER", {
-          'token address': { iconUrl: 'token icon url' },
-        })}
-      >
+      <Provider store={store("SHOULDN'T MATTER")}>
         <AssetPicker
           header={'testHeader'}
           asset={asset}
@@ -183,12 +174,8 @@ describe('AssetPicker', () => {
   it('token: renders symbol and image falls back', () => {
     const asset = {
       type: AssetType.token,
-      details: {
-        address: 'token address',
-        decimals: 2,
-        symbol: 'symbol',
-      },
-      balance: '100',
+      address: 'token address',
+      symbol: 'symbol',
     };
     const mockAssetChange = jest.fn();
 
@@ -212,12 +199,8 @@ describe('AssetPicker', () => {
   it('nft: does not truncates if token ID is under length 13', () => {
     const asset = {
       type: AssetType.NFT,
-      details: {
-        address: 'token address',
-        decimals: 2,
-        tokenId: 1234567890,
-      },
-      balance: '100',
+      address: 'token address',
+      tokenId: 1234567890,
     };
     const mockAssetChange = jest.fn();
 
@@ -236,12 +219,8 @@ describe('AssetPicker', () => {
   it('nft: truncates if token ID is too long', () => {
     const asset = {
       type: AssetType.NFT,
-      details: {
-        address: 'token address',
-        decimals: 2,
-        tokenId: 1234567890123456,
-      },
-      balance: '100',
+      address: 'token address',
+      tokenId: 1234567890123456,
     };
     const mockAssetChange = jest.fn();
 
@@ -260,12 +239,8 @@ describe('AssetPicker', () => {
   it('render if disabled', () => {
     const asset = {
       type: AssetType.token,
-      details: {
-        address: 'token address',
-        decimals: 2,
-        symbol: 'symbol',
-      },
-      balance: '100',
+      address: 'token address',
+      symbol: 'symbol',
     };
     const mockAssetChange = jest.fn();
 
