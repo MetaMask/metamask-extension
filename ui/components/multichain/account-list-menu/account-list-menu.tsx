@@ -3,14 +3,13 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
-// eslint-disable-next-line import/no-duplicates
-import { BtcAccountType, EthAccountType } from '@metamask/keyring-api';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
+  BtcAccountType,
+  EthAccountType,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   InternalAccount,
   KeyringAccountType,
   KeyringClient,
-  // eslint-disable-next-line import/no-duplicates
 } from '@metamask/keyring-api';
 import { CaipChainId } from '@metamask/utils';
 import {
