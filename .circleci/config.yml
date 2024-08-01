@@ -1086,11 +1086,7 @@ jobs:
           command: mv ./dist-test-webpack ./dist
       - run:
           name: test:e2e:chrome:webpack
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              timeout 20m yarn test:e2e:chrome:webpack --retries 1
-            fi
+          command: timeout 20m yarn test:e2e:chrome:webpack --retries 1
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
