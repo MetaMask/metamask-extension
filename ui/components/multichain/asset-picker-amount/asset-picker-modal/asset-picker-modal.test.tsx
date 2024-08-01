@@ -179,7 +179,6 @@ describe('AssetPickerModal', () => {
       <AssetPickerModal
         {...defaultProps}
         asset={{
-          balance: '0x0',
           type: AssetType.NFT,
         }}
         sendingAsset={undefined}
