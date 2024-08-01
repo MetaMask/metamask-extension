@@ -33,7 +33,6 @@ const METAMASK_ALLOWED_METHODS: string[] = [
 
 /**
  * List of keyring methods a dapp can call.
- * !NOTE: DO NOT INCLUDE `KeyringRpcMethod.SubmitRequest` IN THIS LIST.
  */
 const WEBSITE_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ListAccounts,
@@ -47,6 +46,7 @@ const WEBSITE_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.GetRequest,
   KeyringRpcMethod.ApproveRequest,
   KeyringRpcMethod.RejectRequest,
+  KeyringRpcMethod.SubmitRequest,
 ];
 
 /**
