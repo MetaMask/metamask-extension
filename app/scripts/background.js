@@ -1134,8 +1134,6 @@ export function setupController(
   ) {
     controller.snapController.updateBlockedSnaps();
   }
-  ///: END:ONLY_INCLUDE_IF
-
   return controller;
 }
 
