@@ -128,11 +128,10 @@ export const TokenListItem = ({
       as="button"
       backgroundColor={BackgroundColor.transparent}
       data-testid={`staking-entrypoint-${chainId}`}
-      display={Display.InlineFlex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
       gap={1}
       paddingInline={0}
+      paddingInlineStart={1}
+      paddingInlineEnd={1}
       tabIndex="0"
       onClick={(e) => {
         e.preventDefault();
@@ -159,7 +158,12 @@ export const TokenListItem = ({
       }}
     >
       <Text as="span">•</Text>
-      <Text as="span" color={TextColor.primaryDefault}>
+      <Text
+        as="span"
+        color={TextColor.primaryDefault}
+        paddingInlineStart={1}
+        paddingInlineEnd={1}
+      >
         {t('stake')}
       </Text>
       <Icon
