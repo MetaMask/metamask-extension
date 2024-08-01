@@ -31,15 +31,15 @@ export async function migrate(
   return versionedData;
 }
 
-function transformState(state: Record<string, unknown>) {
+function transformState(state: Record<string, unknown>): void {
   if (!hasProperty(state, 'TransactionController')) {
     log.warn(`Migration ${version}: Missing TransactionController state`);
-    return state;
+    return;
   } else if (!isObject(state.TransactionController)) {
     global.sentry?.captureException(
       `Migration ${version}: Invalid TransactionController state of type '${typeof state.TransactionController}'`,
     );
-    return state;
+    return;
   }
 
   const transactionControllerState = state.TransactionController;
@@ -48,12 +48,12 @@ function transformState(state: Record<string, unknown>) {
     log.warn(
       `Migration ${version}: Missing TransactionController transactions`,
     );
-    return state;
+    return;
   } else if (!Array.isArray(transactionControllerState.transactions)) {
     global.sentry?.captureException(
       `Migration ${version}: Invalid TransactionController transactions state of type '${typeof transactionControllerState.transactions}'`,
     );
-    return state;
+    return;
   }
 
   const validTransactions =
@@ -67,7 +67,7 @@ function transformState(state: Record<string, unknown>) {
     global.sentry?.captureException(
       `Migration ${version}: Invalid transaction of type '${typeof invalidTransaction}'`,
     );
-    return state;
+    return;
   }
 
   const validHistoryTransactions = validTransactions.filter(
@@ -80,7 +80,7 @@ function transformState(state: Record<string, unknown>) {
     global.sentry?.captureException(
       `Migration ${version}: Invalid transaction history of type '${typeof invalidTransaction?.history}'`,
     );
-    return state;
+    return;
   }
 
   for (const transaction of validHistoryTransactions) {
@@ -88,8 +88,6 @@ function transformState(state: Record<string, unknown>) {
       transaction.history = transaction.history.slice(0, 100);
     }
   }
-
-  return state;
 }
 
 /**
