@@ -72,6 +72,7 @@ const config: PlaywrightTestConfig = {
         headless: true,
       },
     },
+    // Global: universal, common, shared, and non feature related tests
     {
       name: 'global',
       testMatch: '/global/specs/**.spec.ts',
