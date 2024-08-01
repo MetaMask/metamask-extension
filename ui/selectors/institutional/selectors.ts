@@ -13,10 +13,10 @@ export type Custodian = {
   envName: string;
   apiUrl: string;
   apiVersion: string;
-  iconUrl?: string;
-  displayName?: string;
-  isNoteToTraderSupported?: boolean;
-  custodianPublishesTransaction?: boolean;
+  iconUrl: string;
+  displayName: string;
+  isNoteToTraderSupported: boolean;
+  custodianPublishesTransaction: boolean;
   refreshTokenUrl: string;
   websocketApiUrl: string;
   isQRCodeSupported: boolean;

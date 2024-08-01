@@ -61,6 +61,7 @@ const custodianMock = {
   apiVersion: 'v1',
   websocketApiUrl: 'wss://saturn-custody.dev.metamask-institutional.io',
   isQRCodeSupported: true,
+  custodianPublishesTransaction: true,
 };
 
 function buildState(overrides = {}) {
