@@ -179,6 +179,7 @@ export default class ConfirmTransactionBase extends Component {
     isSmartTransactionsEnabled: PropTypes.bool,
     hasPriorityApprovalRequest: PropTypes.bool,
     chainId: PropTypes.string,
+    hideFiatConversion: PropTypes.bool,
   };
 
   state = {

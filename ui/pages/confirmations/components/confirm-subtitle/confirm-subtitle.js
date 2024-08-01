@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 
 import { SECONDARY } from '../../../../helpers/constants/common';
 import {
@@ -8,7 +7,6 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { isNFTAssetStandard } from '../../../../helpers/utils/transactions.util';
-import { getShouldShowFiat } from '../../../../selectors';
 import { useTransactionInfo } from '../../hooks/useTransactionInfo';
 import { Text } from '../../../../components/component-library';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
