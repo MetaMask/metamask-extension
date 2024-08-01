@@ -34,17 +34,6 @@ export const getSelectedInternalAccount = createDeepEqualSelector(
   },
 );
 
-/**
- * Returns a memoized selector that gets the internal accounts from the Redux store.
- *
- * @param state - The Redux store state.
- * @returns {Array} An array of internal accounts.
- */
-export const getMemoizedMetaMaskInternalAccounts = createDeepEqualSelector(
-  getInternalAccounts,
-  (internalAccounts) => internalAccounts,
-);
-
 export const getMaybeSelectedInternalAccount = createDeepEqualSelector(
   (state: AccountsState) => state.metamask.internalAccounts,
   (internalAccounts) => {

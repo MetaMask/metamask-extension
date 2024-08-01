@@ -24,7 +24,6 @@ import {
 } from '../../../../selectors';
 import {
   getInternalAccounts,
-  getMemoizedMetaMaskInternalAccounts,
   getSelectedInternalAccount,
 } from '../../../../selectors/accounts';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
@@ -138,8 +137,6 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     case getSelectedAccount:
       return mockSelectedInternalAccount;
     case getInternalAccounts:
-      return Object.values(opts.metamask.internalAccounts.accounts);
-    case getMemoizedMetaMaskInternalAccounts:
       return Object.values(opts.metamask.internalAccounts.accounts);
     case getMemoizedAddressBook:
       return [];

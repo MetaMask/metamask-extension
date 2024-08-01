@@ -36,7 +36,7 @@ import {
   getSnapMetadata,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import { getMemoizedMetaMaskInternalAccounts } from '../../../selectors/accounts';
+import { getInternalAccounts } from '../../../selectors/accounts';
 ///: END:ONLY_INCLUDE_IF
 import {
   Box,
@@ -72,7 +72,7 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
   // eslint-disable-next-line no-unused-vars -- Main build does not use setKeyringAccounts
   const [keyringAccounts, setKeyringAccounts] = useState([]);
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  const internalAccounts = useSelector(getMemoizedMetaMaskInternalAccounts);
+  const internalAccounts = useSelector(getInternalAccounts);
   ///: END:ONLY_INCLUDE_IF
 
   const connectedSubjects = useSelector((state) =>
