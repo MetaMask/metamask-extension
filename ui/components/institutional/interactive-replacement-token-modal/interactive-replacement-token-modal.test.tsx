@@ -43,9 +43,6 @@ describe('Interactive Replacement Token Modal', function () {
           custodianName: 'saturn-dev',
         },
       },
-      providerConfig: {
-        type: 'test',
-      },
       isUnlocked: true,
       interactiveReplacementToken: {
         oldRefreshToken: 'abc',

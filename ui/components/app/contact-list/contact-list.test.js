@@ -5,7 +5,7 @@ import ContactList from '.';
 
 describe('Contact List', () => {
   const store = configureMockStore([])({
-    metamask: { providerConfig: { chainId: '0x0' } },
+    metamask: {},
   });
 
   describe('given searchForContacts', () => {

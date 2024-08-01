@@ -1,7 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { NetworkStatus } from '@metamask/network-controller';
-import { NetworkType } from '@metamask/controller-utils';
 import configureStore from '../../../../store/store';
 import testData from '../../../../../.storybook/test-data';
 import { Box } from '../../../../components/component-library';
@@ -28,10 +27,6 @@ const STORE_MOCK = {
         id: 'testId',
         origin: 'npm:@test/test-snap',
       },
-    },
-    providerConfig: {
-      type: NetworkType.rpc,
-      nickname: 'Test Network',
     },
     selectedNetworkClientId: 'testNetworkClientId',
     subjectMetadata: {

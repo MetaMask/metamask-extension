@@ -1,9 +1,13 @@
-import { ProviderConfig } from '@metamask/network-controller';
 import { CaipChainId } from '@metamask/utils';
 import { isBtcMainnetAddress, isBtcTestnetAddress } from '../../lib/multichain';
 
-export type ProviderConfigWithImageUrl = Omit<ProviderConfig, 'chainId'> & {
-  rpcPrefs?: { imageUrl?: string };
+export type ProviderConfigWithImageUrl = {
+  rpcUrl?: string;
+  type: string;
+  ticker: string;
+  nickname?: string;
+  rpcPrefs?: { blockExplorerUrl?: string; imageUrl?: string };
+  id?: string;
 };
 
 export type MultichainProviderConfig = ProviderConfigWithImageUrl & {

@@ -19,7 +19,7 @@ import {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../helpers/constants/routes';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
@@ -40,10 +40,8 @@ describe('Onboarding Flow', () => {
         accounts: {},
         selectedAccount: '',
       },
-      providerConfig: {
-        type: NETWORK_TYPES.GOERLI,
-        chainId: '0x0',
-      },
+      selectedNetworkClientId: 'mainnet',
+
       incomingTransactionsPreferences: {
         [CHAIN_IDS.MAINNET]: true,
       },

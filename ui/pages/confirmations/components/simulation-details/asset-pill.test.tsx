@@ -54,7 +54,12 @@ describe('AssetPill', () => {
         expected: { ticker: string; imgSrc: string };
       }) => {
         const store = configureStore({
-          metamask: { providerConfig: { chainId, ticker: expected.ticker } },
+          metamask: {
+            selectedNetworkClientId: 'networkClientId',
+            networkConfigurations: {
+              networkClientId: { chainId, ticker: expected.ticker },
+            },
+          },
         });
 
         renderWithProvider(

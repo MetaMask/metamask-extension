@@ -1,5 +1,4 @@
 import { EthAccountType } from '@metamask/keyring-api';
-import { CHAIN_IDS } from '../../shared/constants/network';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import {
@@ -203,9 +202,6 @@ describe('selectors', () => {
         url: 'https://remix.ethereum.org/',
       },
       metamask: {
-        providerConfig: {
-          chainId: CHAIN_IDS.GOERLI,
-        },
         accounts: {
           '0x7250739de134d33ec7ab1ee592711e15098c9d2d': {
             address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',

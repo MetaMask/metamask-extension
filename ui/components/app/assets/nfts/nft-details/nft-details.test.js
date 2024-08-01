@@ -17,12 +17,7 @@ import {
   removeAndIgnoreNft,
   setRemoveNftMessage,
 } from '../../../../../store/actions';
-import {
-  CHAIN_IDS,
-  CURRENCY_SYMBOLS,
-  MAINNET_DISPLAY_NAME,
-  NETWORK_TYPES,
-} from '../../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import NftDetails from './nft-details';
 
 jest.mock('copy-to-clipboard');
@@ -225,12 +220,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          providerConfig: {
-            chainId: CHAIN_IDS.MAINNET,
-            type: NETWORK_TYPES.MAINNET,
-            ticker: CURRENCY_SYMBOLS.ETH,
-            nickname: MAINNET_DISPLAY_NAME,
-          },
+          selectedNetworkClientId: 'mainnet',
         },
       };
       const mainnetMockStore = configureMockStore([thunk])(mainnetState);
@@ -258,18 +248,12 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          providerConfig: {
-            chainId: '0x89',
-            type: 'rpc',
-            id: 'custom-mainnet',
-          },
+
+          selectedNetworkClientId: 'networkClientId',
           networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x89',
-              nickname: 'Custom Mainnet RPC',
-              type: 'rpc',
-              id: 'custom-mainnet',
+            networkClientId: {
+              id: 'networkClientId',
+              chainId: CHAIN_IDS.POLYGON,
             },
           },
         },
@@ -299,10 +283,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          providerConfig: {
-            chainId: CHAIN_IDS.SEPOLIA,
-            type: NETWORK_TYPES.SEPOLIA,
-          },
+          selectedNetworkClientId: 'sepolia',
         },
       };
       const sepoliaMockStore = configureMockStore([thunk])(sepoliaState);
@@ -330,15 +311,9 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          providerConfig: {
-            chainId: '0x99',
-          },
+          selectedNetworkClientId: 'networkClientId',
           networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x99',
-              nickname: 'Custom Mainnet RPC',
-            },
+            networkClientId: { id: 'networkClientId', chainId: '0x99' },
           },
         },
       };

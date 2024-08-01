@@ -6,20 +6,7 @@ import { defaultNetworksData } from '../networks-tab.constants';
 import NetworksTabContent from '.';
 
 const mockState = {
-  metamask: {
-    providerConfig: {
-      chainId: '0x539',
-      nickname: '',
-      rpcPrefs: {},
-      rpcUrl: 'http://localhost:8545',
-      ticker: 'ETH',
-      type: 'localhost',
-    },
-    orderedNetworkList: {
-      chainId: '0x539',
-      rpcUrl: 'http://localhost:8545',
-    },
-  },
+  metamask: { selectedNetworkClientId: 'mainnet', orderedNetworkList: {} },
 };
 
 jest.mock('../../../../helpers/utils/feature-flags', () => ({

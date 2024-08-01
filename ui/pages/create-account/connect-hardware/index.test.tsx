@@ -53,9 +53,7 @@ const mockProps = {
 
 const mockState = {
   metamask: {
-    providerConfig: {
-      chainId: '0x1',
-    },
+    selectedNetworkClientId: 'mainnet',
   },
   appState: {
     networkDropdownOpen: false,

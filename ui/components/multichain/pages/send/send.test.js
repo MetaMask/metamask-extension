@@ -17,7 +17,6 @@ import { AssetType } from '../../../../../shared/constants/transaction';
 import {
   CHAIN_IDS,
   GOERLI_DISPLAY_NAME,
-  NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
@@ -178,10 +177,12 @@ const baseStore = {
       showFiatInTestnets: true,
     },
     currentCurrency: 'USD',
-    providerConfig: {
-      chainId: CHAIN_IDS.GOERLI,
-      nickname: GOERLI_DISPLAY_NAME,
-      ticker: 'ETH',
+    networkConfigurations: {
+      goerli: {
+        chainId: CHAIN_IDS.GOERLI,
+        ticker: 'ETH',
+        nickname: GOERLI_DISPLAY_NAME,
+      },
     },
     nativeCurrency: 'ETH',
     featureFlags: {
@@ -378,11 +379,13 @@ describe('SendPage', () => {
         metamask: {
           ...mockSendState.metamask,
           gasEstimateType: 'none',
-          providerConfig: {
-            chainId: CHAIN_IDS.GOERLI,
-            nickname: GOERLI_DISPLAY_NAME,
-            type: NETWORK_TYPES.GOERLI,
-            ticker: 'ETH',
+          selectedNetworkClientId: 'goerli',
+          networkConfigurations: {
+            goerli: {
+              chainId: CHAIN_IDS.GOERLI,
+              nickname: GOERLI_DISPLAY_NAME,
+              ticker: 'ETH',
+            },
           },
         },
       };

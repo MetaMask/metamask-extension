@@ -30,8 +30,7 @@ const MOCK_ORIGIN = 'https://portfolio.metamask.io';
 
 const render = ({
   showTestNetworks = false,
-  currentChainId = '0x5',
-  providerConfigId = 'chain5',
+  providerConfigId = 'goerli',
   isUnlocked = true,
   origin = MOCK_ORIGIN,
 } = {}) => {
@@ -39,11 +38,7 @@ const render = ({
     metamask: {
       ...mockState.metamask,
       isUnlocked,
-      providerConfig: {
-        ...mockState.metamask.providerConfig,
-        chainId: currentChainId,
-        id: providerConfigId,
-      },
+      selectedNetworkClientId: providerConfigId,
       preferences: {
         showTestNetworks,
       },

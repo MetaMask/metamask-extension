@@ -7,6 +7,7 @@ import Confirmation from '../confirmation';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../../shared/constants/app';
 import mockState from '../../../../../test/data/mock-state.json';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 
 const middleware = [thunk];
 
@@ -14,11 +15,6 @@ const mockApprovalId = 1;
 const mockSnapOrigin = 'npm:@metamask/snap-test';
 const mockSnapName = 'Test Snap Account Name';
 const mockPublicAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
-const providerConfig = {
-  chainId: '0x5',
-  nickname: '',
-  ticker: 'ETH',
-};
 const mockApproval = {
   id: mockApprovalId,
   origin: mockSnapOrigin,
@@ -30,6 +26,12 @@ const mockApproval = {
 const mockBaseStore = {
   metamask: {
     ...mockState.metamask,
+
+    selectedNetworkClientId: 'goerli',
+    networkConfigurations: {
+      goerli: { chainId: CHAIN_IDS.GOERLI, ticker: 'ETH' },
+    },
+
     snaps: {
       [mockSnapOrigin]: {
         id: mockSnapOrigin,
@@ -44,7 +46,6 @@ const mockBaseStore = {
     },
     approvalFlows: [],
     subjectMetadata: {},
-    providerConfig,
   },
 };
 

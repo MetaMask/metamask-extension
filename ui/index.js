@@ -23,6 +23,7 @@ import {
   getNetworkToAutomaticallySwitchTo,
   getSwitchedNetworkDetails,
   getUseRequestQueue,
+  getCurrentChainId,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -161,7 +162,7 @@ export async function setupInitialStore(
     metamaskState.unapprovedEncryptionPublicKeyMsgs,
     metamaskState.unapprovedTypedMessages,
     metamaskState.networkId,
-    metamaskState.providerConfig.chainId,
+    getCurrentChainId({ metamask: metamaskState }),
   );
   const numberOfUnapprovedTx = unapprovedTxsAll.length;
   if (numberOfUnapprovedTx > 0) {

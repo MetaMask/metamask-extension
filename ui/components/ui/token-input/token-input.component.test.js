@@ -4,7 +4,6 @@ import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import {
-  NETWORK_TYPES,
   CHAIN_IDS,
   CURRENCY_SYMBOLS,
 } from '../../../../shared/constants/network';
@@ -74,10 +73,12 @@ describe('TokenInput Component', () => {
             ...mockState.metamask.preferences,
             showFiatInTestnets: true,
           },
-          providerConfig: {
-            chainId: CHAIN_IDS.POLYGON,
-            type: NETWORK_TYPES.MAINNET,
-            ticker: CURRENCY_SYMBOLS.MATIC,
+          selectedNetworkClientId: 'networkClientId',
+          networkConfigurations: {
+            networkClientId: {
+              chainId: CHAIN_IDS.POLYGON,
+              ticker: CURRENCY_SYMBOLS.MATIC,
+            },
           },
         },
       };

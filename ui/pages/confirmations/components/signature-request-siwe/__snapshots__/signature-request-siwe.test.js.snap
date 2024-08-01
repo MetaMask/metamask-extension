@@ -135,7 +135,7 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
             <span
               class="icon-with-fallback__fallback"
             >
-              G
+              C
             </span>
           </div>
         </div>
@@ -146,7 +146,7 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
             class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
             data-testid="signature-request-network-display"
           >
-            goerli
+            Chain 5
           </h6>
           <h6
             class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"

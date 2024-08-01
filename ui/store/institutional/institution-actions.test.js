@@ -14,7 +14,8 @@ const middleware = [thunk];
 const defaultState = {
   metamask: {
     currentLocale: 'test',
-    providerConfig: { chainId: '0x1' },
+    selectedNetworkClientId: 'mainnet',
+
     accounts: {
       '0xFirstAddress': {
         balance: '0x0',
@@ -195,10 +196,8 @@ describe('#updateCustodyState', () => {
     setBackgroundConnection(background.getApi());
 
     const newState = {
-      providerConfig: {
-        nickname: 'mainnet',
-        chainId: '0x1',
-      },
+      selectedNetworkClientId: 'mainnet',
+
       featureFlags: {},
     };
 
@@ -218,10 +217,8 @@ describe('#updateCustodyState', () => {
     setBackgroundConnection(background.getApi());
 
     const newState = {
-      providerConfig: {
-        nickname: 'mainnet',
-        chainId: '0x1',
-      },
+      selectedNetworkClientId: 'mainnet',
+
       featureFlags: {},
       transactions: [
         {
@@ -272,10 +269,8 @@ describe('#updateCustodyState', () => {
     setBackgroundConnection(background.getApi());
 
     const newState = {
-      providerConfig: {
-        nickname: 'mainnet',
-        chainId: '0x1',
-      },
+      selectedNetworkClientId: 'mainnet',
+
       featureFlags: {},
       transactions: [
         {

@@ -8,10 +8,9 @@ const mockedMetametricsId = '0xtestMetaMetricsId';
 
 let mockStoreState = {
   metamask: {
-    providerConfig: {
-      chainId: '0x1',
-    },
+    selectedNetworkClientId: 'mainnet',
     metaMetricsId: mockedMetametricsId,
+    networkConfigurations: {},
   },
 };
 
@@ -37,9 +36,6 @@ describe('useRamps', () => {
       ...mockStoreState,
       metamask: {
         ...mockStoreState.metamask,
-        providerConfig: {
-          chainId: mockChainId,
-        },
       },
     };
 
@@ -62,9 +58,6 @@ describe('useRamps', () => {
       ...mockStoreState,
       metamask: {
         ...mockStoreState.metamask,
-        providerConfig: {
-          chainId: mockChainId,
-        },
       },
     };
 
@@ -91,8 +84,9 @@ describe('useRamps', () => {
         ...mockStoreState,
         metamask: {
           ...mockStoreState.metamask,
-          providerConfig: {
-            chainId: mockChainId,
+          selectedNetworkClientId: 'networkClientId',
+          networkConfigurations: {
+            networkClientId: { chainId: mockChainId },
           },
         },
       };

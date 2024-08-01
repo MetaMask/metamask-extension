@@ -71,10 +71,6 @@ const state = {
         name: 'Address Book Account 1',
       },
     ],
-    providerConfig: {
-      type: 'mainnet',
-      nickname: '',
-    },
     selectedNetworkClientId: NetworkType.mainnet,
     networksMetadata: {
       [NetworkType.mainnet]: {

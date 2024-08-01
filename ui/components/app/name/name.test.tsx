@@ -19,14 +19,11 @@ jest.mock('react-redux', () => ({
 
 const ADDRESS_NO_SAVED_NAME_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54977';
 const ADDRESS_SAVED_NAME_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54979';
-const CHAIN_ID_MOCK = '0x1';
 const SAVED_NAME_MOCK = 'TestName';
 
 const STATE_MOCK = {
   metamask: {
-    providerConfig: {
-      chainId: CHAIN_ID_MOCK,
-    },
+    selectedNetworkClientId: 'mainnet',
   },
 };
 

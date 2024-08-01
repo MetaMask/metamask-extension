@@ -3,9 +3,16 @@ import { Provider } from 'react-redux';
 
 import testData from '../../../../../.storybook/test-data';
 import configureStore from '../../../../store/store';
+import { NETWORK_TYPES } from '../../../../../shared/constants/network';
 import DetectedTokenSelectionPopover from './detected-token-selection-popover';
 
-const store = configureStore(testData);
+const store = configureStore({
+  ...testData,
+  metamask: {
+    ...testData.metamask,
+    selectedNetworkClientId: NETWORK_TYPES.SEPOLIA,
+  },
+});
 
 export default {
   title: 'Components/App/DetectedToken/DetectedTokenSelectionPopover',

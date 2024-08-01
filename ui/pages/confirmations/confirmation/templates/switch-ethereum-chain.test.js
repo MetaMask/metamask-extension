@@ -48,6 +48,11 @@ const mockBaseStore = {
     subjectMetadata: {},
     providerConfig,
     selectedNetworkClientId: 'test-network-client-id',
+    networkConfigurations: {
+      'test-network-client-id': {
+        chainId: '0x9999',
+      },
+    },
     networksMetadata: {
       'test-network-client-id': {
         EIPS: {},

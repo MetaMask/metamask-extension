@@ -129,7 +129,6 @@ const renderUseCurrencyDisplay = (value, restProps) => {
       ...mockState.metamask,
       completedOnboarding: true,
       currentCurrency: 'usd',
-      providerConfig: { chainId: '0x1', ticker: 'ETH' },
       currencyRates: { ETH: { conversionRate: 280.45 } },
     },
   };

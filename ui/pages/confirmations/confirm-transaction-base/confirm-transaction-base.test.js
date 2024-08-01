@@ -16,11 +16,7 @@ import { setBackgroundConnection } from '../../../store/background-connection';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../test/jest/mocks';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { KeyringType } from '../../../../shared/constants/keyring';
-import {
-  CHAIN_IDS,
-  GOERLI_DISPLAY_NAME,
-  NETWORK_TYPES,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { domainInitialState } from '../../../ducks/domains';
 
 import {
@@ -108,8 +104,14 @@ const baseStore = {
         accounts: ['0x0'],
       },
     ],
-    selectedNetworkClientId: NetworkType.mainnet,
+    selectedNetworkClientId: NetworkType.goerli,
+    networkConfigurations: {
+      goerli: { id: 'goerli', chainId: CHAIN_IDS.GOERLI },
+    },
     networksMetadata: {
+      goerli: { EIPS: {} },
+      optimism: { EIPS: {} },
+      sepolia: { EIPS: {} },
       [NetworkType.mainnet]: {
         EIPS: {},
         status: NetworkStatus.Available,
@@ -121,11 +123,6 @@ const baseStore = {
     },
     currentCurrency: 'USD',
     currencyRates: {},
-    providerConfig: {
-      chainId: CHAIN_IDS.GOERLI,
-      nickname: GOERLI_DISPLAY_NAME,
-      type: NETWORK_TYPES.GOERLI,
-    },
     featureFlags: {
       sendHexData: false,
     },
@@ -354,11 +351,12 @@ describe('Confirm Transaction Base', () => {
     const state = {
       metamask: {
         ...baseStore.metamask,
-        providerConfig: {
-          ...baseStore.metamask.providerConfig,
-          chainId: CHAIN_IDS.OPTIMISM,
+        selectedNetworkClientId: 'optimism',
+        networkConfigurations: {
+          optimism: { chainId: CHAIN_IDS.OPTIMISM },
         },
       },
+
       confirmTransaction: {
         ...baseStore.confirmTransaction,
         txData: {
@@ -425,10 +423,10 @@ describe('Confirm Transaction Base', () => {
           },
         },
         gasEstimateType: GasEstimateTypes.feeMarket,
-        selectedNetworkClientId: NetworkType.mainnet,
+        selectedNetworkClientId: NetworkType.goerli,
         networksMetadata: {
           ...baseStore.metamask.networksMetadata,
-          [NetworkType.mainnet]: {
+          [NetworkType.goerli]: {
             EIPS: {
               1559: true,
             },
@@ -535,10 +533,9 @@ describe('Confirm Transaction Base', () => {
           },
         },
         gasEstimateType: GasEstimateTypes.feeMarket,
-        selectedNetworkClientId: NetworkType.mainnet,
         networksMetadata: {
           ...baseStore.metamask.networksMetadata,
-          [NetworkType.mainnet]: {
+          [NetworkType.goerli]: {
             EIPS: {
               1559: true,
             },
@@ -674,10 +671,9 @@ describe('Confirm Transaction Base', () => {
           },
         },
         gasEstimateType: GasEstimateTypes.feeMarket,
-        selectedNetworkClientId: NetworkType.mainnet,
         networksMetadata: {
           ...baseStore.metamask.networksMetadata,
-          [NetworkType.mainnet]: {
+          [NetworkType.goerli]: {
             EIPS: {
               1559: true,
             },
@@ -1015,13 +1011,7 @@ describe('Confirm Transaction Base', () => {
               txParams,
             },
           ],
-          providerConfig: {
-            type: NETWORK_TYPES.SEPOLIA,
-            ticker: 'ETH',
-            nickname: 'Sepolia',
-            rpcUrl: '',
-            chainId: CHAIN_IDS.SEPOLIA,
-          },
+          selectedNetworkClientId: 'sepolia',
         },
         confirmTransaction: {
           ...baseStore.confirmTransaction,

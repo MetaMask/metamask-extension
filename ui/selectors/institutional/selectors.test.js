@@ -1,6 +1,5 @@
 import { toChecksumAddress } from 'ethereumjs-util';
 import { EthAccountType } from '@metamask/keyring-api';
-import { toHex } from '@metamask/controller-utils';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import {
@@ -23,10 +22,6 @@ import {
 function buildState(overrides = {}) {
   const defaultState = {
     metamask: {
-      providerConfig: {
-        type: 'test',
-        chainId: toHex(1),
-      },
       internalAccounts: {
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         accounts: {
@@ -205,9 +200,7 @@ describe('Institutional selectors', () => {
               supportedChains: ['1', '2', '3'],
             },
           },
-          providerConfig: {
-            chainId: toHex(1),
-          },
+          selectedNetworkClientId: 'mainnet',
         },
       });
 
@@ -246,9 +239,7 @@ describe('Institutional selectors', () => {
               supportedChains: ['4'],
             },
           },
-          providerConfig: {
-            chainId: toHex(1),
-          },
+          selectedNetworkClientId: 'mainnet',
         },
       });
 
@@ -290,9 +281,7 @@ describe('Institutional selectors', () => {
             },
             selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           },
-          providerConfig: {
-            chainId: toHex(1),
-          },
+          selectedNetworkClientId: 'mainnet',
         },
       });
 
@@ -325,48 +314,6 @@ describe('Institutional selectors', () => {
           },
           keyrings: [],
           custodianSupportedChains: {},
-          providerConfig: {},
-        },
-      });
-
-      expect(() => getIsCustodianSupportedChain(state)).toThrow(
-        'Invalid state',
-      );
-    });
-
-    it('throws an error if providerConfig is null', () => {
-      const accountAddress = '0x1';
-      const state = buildState({
-        metamask: {
-          internalAccounts: {
-            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-            accounts: {
-              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-                metadata: {
-                  name: 'Custody Account A',
-                  keyring: {
-                    type: 'Custody',
-                  },
-                },
-                options: {},
-                methods: ETH_EOA_METHODS,
-                type: EthAccountType.Eoa,
-                code: '0x',
-                balance: '0x47c9d71831c76efe',
-                nonce: '0x1b',
-                address: accountAddress,
-              },
-            },
-          },
-          keyrings: [
-            {
-              type: 'Custody',
-              accounts: [accountAddress],
-            },
-          ],
-          custodianSupportedChains: {},
-          providerConfig: null,
         },
       });
 
@@ -409,9 +356,7 @@ describe('Institutional selectors', () => {
           custodianSupportedChains: {
             [accountAddress]: null,
           },
-          providerConfig: {
-            chainId: toHex(1),
-          },
+          selectedNetworkClientId: 'mainnet',
         },
       });
 
@@ -456,9 +401,7 @@ describe('Institutional selectors', () => {
               supportedChains: [],
             },
           },
-          providerConfig: {
-            chainId: toHex(1),
-          },
+          selectedNetworkClientId: 'mainnet',
         },
       });
 
@@ -503,8 +446,9 @@ describe('Institutional selectors', () => {
               supportedChains: ['1'],
             },
           },
-          providerConfig: {
-            chainId: 1,
+          selectedNetworkClientId: 'networkClientId',
+          networkConfigurations: {
+            networkClientId: { chainId: 1 },
           },
         },
       });
@@ -550,8 +494,9 @@ describe('Institutional selectors', () => {
               supportedChains: ['1'],
             },
           },
-          providerConfig: {
-            chainId: 'not a hex number',
+          selectedNetworkClientId: 'networkClientId',
+          networkConfigurations: {
+            networkClientId: { chainId: 'not a hex number' },
           },
         },
       });

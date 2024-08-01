@@ -28,11 +28,7 @@ describe('Secure Your Wallet Onboarding View', () => {
   });
 
   const mockStore = {
-    metamask: {
-      providerConfig: {
-        type: 'test',
-      },
-    },
+    metamask: {},
     localeMessages: {
       currentLocale: 'en',
     },

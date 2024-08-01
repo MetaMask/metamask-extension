@@ -8,7 +8,6 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import { renderWithProvider } from '../../../test/jest';
 import mockSendState from '../../../test/data/mock-send-state.json';
 import mockState from '../../../test/data/mock-state.json';
@@ -113,11 +112,8 @@ describe('Routes Component', () => {
           pendingApprovals: {},
           approvalFlows: [],
           announcements: {},
-          providerConfig: {
-            chainId: CHAIN_IDS.MAINNET,
-            ticker: 'ETH',
-            type: NETWORK_TYPES.MAINNET,
-          },
+          selectedNetworkClientId: 'mainnet',
+          networksMetadata: { mainnet: {} },
           newPrivacyPolicyToastShownDate: new Date('0'),
         },
         send: {

@@ -1,7 +1,6 @@
 import React from 'react';
 import { act, screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import FeeDetailsComponent from './fee-details-component';
@@ -38,9 +37,6 @@ describe('FeeDetailsComponent', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        providerConfig: {
-          chainId: CHAIN_IDS.OPTIMISM,
-        },
       },
     });
     expect(screen.queryByText('Fee details')).toBeInTheDocument();
@@ -51,9 +47,6 @@ describe('FeeDetailsComponent', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        providerConfig: {
-          chainId: CHAIN_IDS.OPTIMISM,
-        },
       },
     });
     expect(screen.queryByTitle('0 ETH')).not.toBeInTheDocument();
@@ -82,9 +75,6 @@ describe('FeeDetailsComponent', () => {
             status: 'available',
           },
         },
-        providerConfig: {
-          chainId: CHAIN_IDS.OPTIMISM,
-        },
       },
     });
     expect(screen.queryByText('Fee details')).toBeInTheDocument();
@@ -107,9 +97,6 @@ describe('FeeDetailsComponent', () => {
             },
             status: 'available',
           },
-        },
-        providerConfig: {
-          chainId: CHAIN_IDS.OPTIMISM,
         },
       },
     });

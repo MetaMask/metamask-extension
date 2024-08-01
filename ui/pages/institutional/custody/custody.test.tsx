@@ -55,7 +55,7 @@ const MockedFuse = Fuse as unknown as MockedFuseType;
 describe('CustodyPage', function () {
   const mockStore = {
     metamask: {
-      providerConfig: { chainId: 0x1, type: 'test' },
+      selectedNetworkClientId: 'mainnet',
       institutionalFeatures: {
         connectRequests: [],
       },

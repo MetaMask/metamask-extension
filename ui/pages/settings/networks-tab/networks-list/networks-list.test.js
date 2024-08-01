@@ -6,14 +6,7 @@ import NetworksList from '.';
 
 const mockState = {
   metamask: {
-    providerConfig: {
-      chainId: '0x5',
-      nickname: '',
-      rpcPrefs: {},
-      rpcUrl: 'https://goerli.infura.io/v3/undefined',
-      ticker: 'ETH',
-      type: 'goerli',
-    },
+    selectedNetworkClientId: 'mainnet',
   },
 };
 

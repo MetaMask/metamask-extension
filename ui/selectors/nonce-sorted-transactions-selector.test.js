@@ -82,10 +82,7 @@ const getStateTree = ({
   unapprovedTypedMessages = [],
 } = {}) => ({
   metamask: {
-    providerConfig: {
-      nickname: 'mainnet',
-      chainId: CHAIN_IDS.MAINNET,
-    },
+    selectedNetworkClientId: 'mainnet',
     unapprovedTypedMessages,
     internalAccounts: {
       accounts: {

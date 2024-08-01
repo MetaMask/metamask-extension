@@ -1,4 +1,5 @@
 import { TransactionType } from '@metamask/transaction-controller';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import {
   sendTokenTokenAmountAndToAddressSelector,
   contractExchangeRateSelector,
@@ -48,8 +49,9 @@ describe('Confirm Transaction Selector', () => {
             '0xTokenAddress': { price: '10' },
           },
         },
-        providerConfig: {
-          chainId: '0x5',
+        selectedNetworkClientId: 'goerli',
+        networkConfigurations: {
+          goerli: { chainId: CHAIN_IDS.GOERLI },
         },
       },
       confirmTransaction: {
@@ -75,7 +77,7 @@ describe('Confirm Transaction Selector', () => {
               conversionRate: 556.12,
             },
           },
-          providerConfig: { ticker: 'ETH' },
+          selectedNetworkClientId: 'mainnet',
         },
       };
       expect(conversionRateSelector(state)).toStrictEqual(556.12);

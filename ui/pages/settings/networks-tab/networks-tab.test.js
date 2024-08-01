@@ -5,14 +5,7 @@ import NetworksTab from '.';
 
 const mockState = {
   metamask: {
-    providerConfig: {
-      chainId: '0x539',
-      nickname: '',
-      rpcPrefs: {},
-      rpcUrl: 'http://localhost:8545',
-      ticker: 'ETH',
-      type: 'localhost',
-    },
+    selectedNetworkClientId: 'mainnet',
     networkConfigurations: {},
     orderedNetworkList: {
       chainId: '0x539',

@@ -1,3 +1,5 @@
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+
 /* eslint-disable import/unambiguous */
 let mapStateToProps;
 
@@ -20,9 +22,9 @@ describe('TransactionActivityLog container', () => {
               conversionRate: 280.45,
             },
           },
-          networkConfigurations: {},
-          providerConfig: {
-            ticker: 'ETH',
+          selectedNetworkClientId: 'networkClientId',
+          networkConfigurations: {
+            networkClientId: { chainId: CHAIN_IDS.MAINNET, ticker: 'ETH' },
           },
         },
       };
@@ -42,16 +44,16 @@ describe('TransactionActivityLog container', () => {
               conversionRate: 280.45,
             },
           },
+
+          selectedNetworkClientId: 'networkClientId',
           networkConfigurations: {
-            networkConfigurationId: {
+            networkClientId: {
+              chainId: CHAIN_IDS.MAINNET,
+              ticker: 'ETH',
               rpcUrl: 'https://customnetwork.com/',
-            },
-          },
-          providerConfig: {
-            rpcUrl: 'https://customnetwork.com/',
-            ticker: 'ETH',
-            rpcPrefs: {
-              blockExplorerUrl: 'https://customblockexplorer.com/',
+              rpcPrefs: {
+                blockExplorerUrl: 'https://customblockexplorer.com/',
+              },
             },
           },
         },

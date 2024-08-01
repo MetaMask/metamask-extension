@@ -5,6 +5,7 @@ import { NetworkStatus } from '@metamask/network-controller';
 import { NetworkType } from '@metamask/controller-utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
 
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import ConfirmTransactionReducer, * as actions from './confirm-transaction.duck';
 
 const initialState = {
@@ -328,9 +329,7 @@ describe('Confirm Transaction Duck', () => {
               conversionRate: 468.58,
             },
           },
-          providerConfig: {
-            ticker: 'ETH',
-          },
+          selectedNetworkClientId: 'mainnet',
         },
         confirmTransaction: {
           ethTransactionAmount: '1',
@@ -385,17 +384,17 @@ describe('Confirm Transaction Duck', () => {
               conversionRate: 468.58,
             },
           },
-          selectedNetworkClientId: NetworkType.goerli,
+          selectedNetworkClientId: 'goerli',
+          networkConfigurations: {
+            goerli: { chainId: CHAIN_IDS.GOERLI },
+          },
           networksMetadata: {
             [NetworkType.goerli]: {
               EIPS: {},
               status: NetworkStatus.Available,
             },
           },
-          providerConfig: {
-            chainId: '0x5',
-            ticker: 'ETH',
-          },
+
           transactions: [
             {
               history: [],

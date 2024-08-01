@@ -6,7 +6,7 @@ const { merge } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
 const { NetworkStatus } = require('@metamask/network-controller');
 
-const { CHAIN_IDS, NETWORK_TYPES } = require('../../shared/constants/network');
+const { CHAIN_IDS } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { DAPP_URL, DAPP_ONE_URL, ACCOUNT_1 } = require('./helpers');
 const { DEFAULT_FIXTURE_ACCOUNT, ERC_4337_ACCOUNT } = require('./constants');
@@ -229,15 +229,9 @@ class FixtureBuilder {
   }
 
   withNetworkControllerOnMainnet() {
-    merge(this.fixture.data.NetworkController, {
-      providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
-        nickname: '',
-        rpcUrl: '',
-        type: NETWORK_TYPES.MAINNET,
-      },
+    return this.withNetworkController({
+      providerConfig: { id: 'mainnet' },
     });
-    return this;
   }
 
   withNetworkControllerDoubleGanache() {

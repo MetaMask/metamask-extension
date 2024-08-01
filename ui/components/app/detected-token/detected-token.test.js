@@ -7,7 +7,10 @@ import DetectedToken from './detected-token';
 
 describe('DetectedToken', () => {
   it('should render the detected token found page', async () => {
-    const store = configureStore(testData);
+    const store = configureStore({
+      ...testData,
+      metamask: { ...testData.metamask, selectedNetworkClientId: 'sepolia' },
+    });
     const props = {
       setShowDetectedTokens: jest.fn(),
     };

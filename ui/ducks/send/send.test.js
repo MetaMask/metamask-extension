@@ -1592,10 +1592,10 @@ describe('Send Slice', () => {
                 [mockAddress1]: { balance: '0x0' },
               },
             },
-            providerConfig: {
-              chainId: '0x5',
-              ticker: 'ETH',
+            networkConfigurations: {
+              goerli: { chainId: CHAIN_IDS.GOERLI },
             },
+
             useTokenDetection: true,
             tokenList: {
               '0x514910771af9ca656af840dff83e8264ecf986ca': {
@@ -1763,9 +1763,7 @@ describe('Send Slice', () => {
               selectedAccount: 'mock-id',
             },
             accounts: {},
-            providerConfig: {
-              chainId: '0x1',
-            },
+            selectedNetworkClientId: 'mainnet',
           },
           send: getInitialSendStateWithExistingTxState({
             sendAsset: {
@@ -1836,9 +1834,7 @@ describe('Send Slice', () => {
               selectedAccount: 'mock-id',
             },
             accounts: {},
-            providerConfig: {
-              chainId: '0x1',
-            },
+            selectedNetworkClientId: 'mainnet',
           },
           send: getInitialSendStateWithExistingTxState({
             sendAsset: {
@@ -1903,9 +1899,7 @@ describe('Send Slice', () => {
               selectedAccount: 'mock-id',
             },
             accounts: {},
-            providerConfig: {
-              chainId: '0x1',
-            },
+            selectedNetworkClientId: 'mainnet',
           },
           send: getInitialSendStateWithExistingTxState({
             sendAsset: {
@@ -1981,9 +1975,7 @@ describe('Send Slice', () => {
               selectedAccount: 'mock-id',
             },
             accounts: {},
-            providerConfig: {
-              chainId: '0x1',
-            },
+            selectedNetworkClientId: 'mainnet',
           },
           send: getInitialSendStateWithExistingTxState({
             sendAsset: {
@@ -2053,9 +2045,7 @@ describe('Send Slice', () => {
               selectedAccount: 'mock-id',
             },
             accounts: {},
-            providerConfig: {
-              chainId: '0x1',
-            },
+            selectedNetworkClientId: 'mainnet',
           },
           send: getInitialSendStateWithExistingTxState({
             sendAsset: {
@@ -2116,9 +2106,11 @@ describe('Send Slice', () => {
             },
             selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           },
-          providerConfig: {
-            chainId: CHAIN_IDS.GOERLI,
+          selectedNetworkClientId: 'goerli',
+          networkConfigurations: {
+            goerli: { chainId: CHAIN_IDS.GOERLI },
           },
+
           accountsByChainId: {
             [CHAIN_IDS.GOERLI]: {
               [mockAddress1]: { balance: '0x0' },
@@ -2363,9 +2355,7 @@ describe('Send Slice', () => {
     describe('updateRecipientUserInput', () => {
       const updateRecipientUserInputState = {
         metamask: {
-          providerConfig: {
-            chainId: '',
-          },
+          selectedNetworkClientId: 'mainnet',
           tokens: [],
           useTokenDetection: true,
           tokenList: {
@@ -2447,7 +2437,7 @@ describe('Send Slice', () => {
           'send/validateRecipientUserInput',
         );
         expect(actionResult[4].payload).toStrictEqual({
-          chainId: '',
+          chainId: '0x1',
           tokens: [],
           useTokenDetection: true,
           isProbablyAnAssetContract: false,
@@ -2521,9 +2511,7 @@ describe('Send Slice', () => {
               accounts: {},
               selectedAccount: '',
             },
-            providerConfig: {
-              chainId: '0x1',
-            },
+            selectedNetworkClientId: 'mainnet',
           },
           send: {
             account: {
@@ -2580,9 +2568,7 @@ describe('Send Slice', () => {
                 },
               ],
             },
-            providerConfig: {
-              chainId: '0x1',
-            },
+            selectedNetworkClientId: 'mainnet',
           },
           send: {
             account: {
@@ -2633,9 +2619,7 @@ describe('Send Slice', () => {
               selectedAccount: '',
             },
             blockGasLimit: '',
-            providerConfig: {
-              chainId: '0x1',
-            },
+            selectedNetworkClientId: 'mainnet',
           },
           send: {
             account: {
@@ -2680,9 +2664,8 @@ describe('Send Slice', () => {
         const updateRecipientState = {
           metamask: {
             addressBook: {},
-            providerConfig: {
-              chainId: '',
-            },
+            selectedNetworkClientId: 'mainnet',
+
             tokens: [],
             useTokenDetection: true,
             tokenList: {
@@ -2824,8 +2807,9 @@ describe('Send Slice', () => {
             userInputHexData: '',
           },
           metamask: {
-            providerConfig: {
-              chainId: CHAIN_IDS.GOERLI,
+            selectedNetworkClientId: 'goerli',
+            networkConfigurations: {
+              goerli: { chainId: CHAIN_IDS.GOERLI },
             },
           },
         };
@@ -2935,9 +2919,11 @@ describe('Send Slice', () => {
             amountMode: AMOUNT_MODES.MAX,
           },
           metamask: {
-            providerConfig: {
-              chainId: CHAIN_IDS.GOERLI,
+            selectedNetworkClientId: 'goerli',
+            networkConfigurations: {
+              goerli: { chainId: CHAIN_IDS.GOERLI },
             },
+
             internalAccounts: {
               accounts: {
                 'mock-id': {
@@ -3023,9 +3009,11 @@ describe('Send Slice', () => {
         it('should pass the correct transaction parameters to addTransactionAndRouteToConfirmationPage', async () => {
           const tokenTransferTxState = {
             metamask: {
-              providerConfig: {
-                chainId: CHAIN_IDS.GOERLI,
+              selectedNetworkClientId: 'goerli',
+              networkConfigurations: {
+                goerli: { chainId: CHAIN_IDS.GOERLI },
               },
+
               transactions: [
                 {
                   id: 1,
@@ -3156,9 +3144,11 @@ describe('Send Slice', () => {
         it('should pass the correct transaction parameters to addTransactionAndWaitForPublish', async () => {
           const swapAndSendState = {
             metamask: {
-              providerConfig: {
-                chainId: CHAIN_IDS.GOERLI,
+              selectedNetworkClientId: 'goerli',
+              networkConfigurations: {
+                goerli: { chainId: CHAIN_IDS.GOERLI },
               },
+
               transactions: [
                 {
                   id: 1,
@@ -3251,9 +3241,8 @@ describe('Send Slice', () => {
       it('should create actions for updateTransaction rejecting', async () => {
         const editStageSignTxState = {
           metamask: {
-            providerConfig: {
-              chainId: '0x1',
-            },
+            selectedNetworkClientId: 'mainnet',
+
             transactions: [
               {
                 id: 1,
@@ -3301,9 +3290,11 @@ describe('Send Slice', () => {
           metamask: {
             gasEstimateType: GasEstimateTypes.none,
             gasFeeEstimates: {},
-            providerConfig: {
-              chainId: CHAIN_IDS.GOERLI,
+            selectedNetworkClientId: 'goerli',
+            networkConfigurations: {
+              goerli: { chainId: CHAIN_IDS.GOERLI },
             },
+
             tokens: [],
             addressBook: {
               [CHAIN_IDS.GOERLI]: {},
@@ -3475,9 +3466,11 @@ describe('Send Slice', () => {
         const editTransactionState = {
           metamask: {
             blockGasLimit: '0x3a98',
-            providerConfig: {
-              chainId: CHAIN_IDS.GOERLI,
+            selectedNetworkClientId: 'goerli',
+            networkConfigurations: {
+              goerli: { chainId: CHAIN_IDS.GOERLI },
             },
+
             tokens: [],
             addressBook: {
               [CHAIN_IDS.GOERLI]: {},
@@ -3705,9 +3698,11 @@ describe('Send Slice', () => {
             },
             selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           },
-          providerConfig: {
-            chainId: CHAIN_IDS.GOERLI,
+          selectedNetworkClientId: 'goerli',
+          networkConfigurations: {
+            goerli: { chainId: CHAIN_IDS.GOERLI },
           },
+
           tokens: [
             {
               address: '0xTokenAddress',
@@ -3932,9 +3927,11 @@ describe('Send Slice', () => {
             },
             selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           },
-          providerConfig: {
-            chainId: CHAIN_IDS.GOERLI,
+          selectedNetworkClientId: 'goerli',
+          networkConfigurations: {
+            goerli: { chainId: CHAIN_IDS.GOERLI },
           },
+
           tokens: [
             {
               address: '0xTokenAddress',
@@ -4169,7 +4166,8 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                providerConfig: { chainId: CHAIN_IDS.MAINNET },
+                selectedNetworkClientId: 'mainnet',
+
                 featureFlags: { advancedInlineGas: false },
               },
               send: initialState,
@@ -4182,7 +4180,11 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                providerConfig: { chainId: '0x539' },
+                selectedNetworkClientId: 'networkClientId',
+                networkConfigurations: {
+                  networkClientId: { chainId: '0x539' },
+                },
+
                 featureFlags: { advancedInlineGas: false },
               },
               send: initialState,
@@ -4195,7 +4197,8 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                providerConfig: { chainId: CHAIN_IDS.MAINNET },
+                selectedNetworkClientId: 'mainnet',
+
                 featureFlags: { advancedInlineGas: true },
               },
               send: initialState,
@@ -4207,7 +4210,8 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                providerConfig: { chainId: CHAIN_IDS.MAINNET },
+                selectedNetworkClientId: 'mainnet',
+
                 featureFlags: { advancedInlineGas: false },
                 gasEstimateType: GasEstimateTypes.ethGasPrice,
               },
@@ -4221,7 +4225,8 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                providerConfig: { chainId: CHAIN_IDS.MAINNET },
+                selectedNetworkClientId: 'mainnet',
+
                 featureFlags: { advancedInlineGas: false },
                 gasEstimateType: GasEstimateTypes.ethGasPrice,
               },
@@ -4235,7 +4240,8 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                providerConfig: { chainId: CHAIN_IDS.MAINNET },
+                selectedNetworkClientId: 'mainnet',
+
                 featureFlags: { advancedInlineGas: true },
               },
               send: {
@@ -4378,8 +4384,9 @@ describe('Send Slice', () => {
                 selectedAccount: '',
               },
               addressBook: {},
-              providerConfig: {
-                chainId: '0x5',
+              selectedNetworkClientId: 'goerli',
+              networkConfigurations: {
+                goerli: { chainId: CHAIN_IDS.GOERLI },
               },
             },
           }),
@@ -4396,8 +4403,9 @@ describe('Send Slice', () => {
                 accounts: {},
                 selectedAccount: '',
               },
-              providerConfig: {
-                chainId: '0x5',
+              selectedNetworkClientId: 'goerli',
+              networkConfigurations: {
+                goerli: { chainId: CHAIN_IDS.GOERLI },
               },
             },
           }),
@@ -4415,8 +4423,9 @@ describe('Send Slice', () => {
                 selectedAccount: '',
               },
               addressBook: {},
-              providerConfig: {
-                chainId: '0x5',
+              selectedNetworkClientId: 'goerli',
+              networkConfigurations: {
+                goerli: { chainId: CHAIN_IDS.GOERLI },
               },
             },
           }),
@@ -4433,8 +4442,9 @@ describe('Send Slice', () => {
                 accounts: {},
                 selectedAccount: '',
               },
-              providerConfig: {
-                chainId: '0x5',
+              selectedNetworkClientId: 'goerli',
+              networkConfigurations: {
+                goerli: { chainId: CHAIN_IDS.GOERLI },
               },
             },
           }),
@@ -4484,8 +4494,9 @@ describe('Send Slice', () => {
                 selectedAccount: '',
               },
               addressBook: {},
-              providerConfig: {
-                chainId: '0x5',
+              selectedNetworkClientId: 'goerli',
+              networkConfigurations: {
+                goerli: { chainId: CHAIN_IDS.GOERLI },
               },
             },
           }),
@@ -4618,13 +4629,14 @@ describe('Send Slice', () => {
         expect(
           getIsSwapAndSendDisabledForNetwork({
             metamask: {
-              providerConfig: {
-                chainId: 'disabled network',
+              selectedNetworkClientId: 'networkClientId',
+              networkConfigurations: {
+                networkClientId: { chainId: '0x123' },
               },
             },
             send: {
               ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-              disabledSwapAndSendNetworks: ['disabled network'],
+              disabledSwapAndSendNetworks: ['0x123'],
             },
           }),
         ).toStrictEqual(true);
@@ -4632,13 +4644,14 @@ describe('Send Slice', () => {
         expect(
           getIsSwapAndSendDisabledForNetwork({
             metamask: {
-              providerConfig: {
-                chainId: 'enabled network',
+              selectedNetworkClientId: 'networkClientId',
+              networkConfigurations: {
+                networkClientId: { chainId: '0x123' },
               },
             },
             send: {
               ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-              disabledSwapAndSendNetworks: ['disabled network'],
+              disabledSwapAndSendNetworks: ['0x456'],
             },
           }),
         ).toStrictEqual(false);

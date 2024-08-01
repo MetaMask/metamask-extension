@@ -228,10 +228,7 @@ const state = {
         symbol: 'UMA',
       },
     },
-    providerConfig: {
-      type: 'mainnet',
-      nickname: '',
-    },
+    selectedNetworkClientId: 'mainnet',
     currencyRates: {},
     preferences: {
       showFiatInTestnets: true,

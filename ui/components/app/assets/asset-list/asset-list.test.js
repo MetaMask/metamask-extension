@@ -3,10 +3,7 @@ import { screen, act, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import {
-  CHAIN_IDS,
-  NETWORK_TYPES,
-} from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getTokenSymbol } from '../../../../store/actions';
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
@@ -77,7 +74,10 @@ const render = (balance = ETH_BALANCE, chainId = CHAIN_IDS.MAINNET) => {
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      providerConfig: { chainId, ticker: 'ETH', type: NETWORK_TYPES.MAINNET },
+      selectedNetworkClientId: 'networkClientId',
+      networkConfigurations: {
+        networkClientId: { id: 'networkClientId', chainId },
+      },
       currencyRates: {
         ETH: {
           conversionRate: CONVERSION_RATE,

@@ -50,6 +50,7 @@ const render = (
         },
         selectedAccount: mockAccount.id,
       },
+      selectedNetworkClientId: 'chain5',
       networkConfigurations: {
         chain5: {
           type: 'rpc',

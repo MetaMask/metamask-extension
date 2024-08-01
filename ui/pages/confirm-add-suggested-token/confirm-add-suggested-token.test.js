@@ -69,7 +69,8 @@ const renderComponent = (tokens = []) => {
     metamask: {
       pendingApprovals: PENDING_APPROVALS,
       tokens,
-      providerConfig: { chainId: '0x1' },
+      selectedNetworkClientId: 'mainnet',
+
       internalAccounts: {
         accounts: {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
