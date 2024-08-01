@@ -3,7 +3,7 @@ import { Primitive } from '@sentry/types';
 import { createModuleLogger } from '@metamask/utils';
 import { log as sentryLogger } from '../../app/scripts/lib/setupSentry';
 
-const log = createModuleLogger(sentryLogger, 'performance');
+const log = createModuleLogger(sentryLogger, 'trace');
 
 export type TraceRequest = {
   data?: Record<string, number | string | boolean>;

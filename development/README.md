@@ -57,7 +57,7 @@ or `https://api.segment.io/v1/batch` respectively.
 
 ## Debugging Sentry
 
-1. Set `SENTRY_DSN_DEV` in `.metamaskrc` to a suitable Sentry URL.
+1. Set `SENTRY_DSN_DEV`, or `SENTRY_DSN` if using a production build, in `.metamaskrc` to a suitable Sentry URL.
   - The example value specified in `.metamaskrc.dist` uses the `test-metamask` project in the MetaMask account.
   - Alternatively, create a free Sentry account with a new organization and project.
   - The DSN is specified in: `Settings > Projects > [Project Name] > Client Keys (DSN)`.
@@ -66,7 +66,11 @@ or `https://api.segment.io/v1/batch` respectively.
 
 3. To display more verbose logs if not in a developer build, include `METAMASK_DEBUG=true` in `.metamaskrc`.
 
-4. To test Sentry via the developer options in the UI, include `ENABLE_SETTINGS_PAGE_DEV_OPTIONS=true` in `.metamaskrc`.
+4. Ensure metrics are enabled during onboarding or via `Settings > Security & privacy > Participate in MetaMetrics`.
+
+5. To test Sentry via the developer options in the UI, include `ENABLE_SETTINGS_PAGE_DEV_OPTIONS=true` in `.metamaskrc`.
+
+6. Alternatively, call `window.stateHooks.throwTestError()` or `window.stateHooks.throwTestBackgroundError()` via the UI console.
 
 ## Source Maps
 

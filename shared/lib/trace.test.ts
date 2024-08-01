@@ -1,5 +1,5 @@
 import { Span, startSpan, withIsolationScope } from '@sentry/browser';
-import { trace } from './performance';
+import { trace } from './trace';
 
 jest.mock('@sentry/browser', () => ({
   withIsolationScope: jest.fn(),
@@ -27,7 +27,7 @@ function mockGetMetaMetricsEnabled(enabled: boolean) {
   };
 }
 
-describe('Performance', () => {
+describe('Trace', () => {
   const startSpanMock = jest.mocked(startSpan);
   const withIsolationScopeMock = jest.mocked(withIsolationScope);
   const setTagsMock = jest.fn();

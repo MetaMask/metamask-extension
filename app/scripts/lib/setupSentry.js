@@ -496,7 +496,7 @@ function getClientOptions() {
     // we can safely turn them off by setting the `sendClientReports` option to
     // `false`.
     sendClientReports: false,
-    tracesSampleRate: 1.0,
+    tracesSampleRate: 0.01,
     transport: makeTransport,
   };
 }

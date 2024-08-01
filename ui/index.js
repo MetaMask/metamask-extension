@@ -241,7 +241,11 @@ async function startApp(metamaskState, backgroundConnection, opts) {
  * @param {object} store - The Redux store.
  */
 function setupStateHooks(store) {
-  if (process.env.METAMASK_DEBUG || process.env.IN_TEST) {
+  if (
+    process.env.METAMASK_DEBUG ||
+    process.env.IN_TEST ||
+    process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS
+  ) {
     /**
      * The following stateHook is a method intended to throw an error, used in
      * our E2E test to ensure that errors are attempted to be sent to sentry.

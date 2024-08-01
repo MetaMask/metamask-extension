@@ -1579,6 +1579,24 @@
   "developerOptionsResetStatesOnboarding": {
     "message": "Resets various states related to onboarding and redirects to the \"Secure Your Wallet\" onboarding page."
   },
+  "developerOptionsSentryButtonGenerateBackgroundError": {
+    "message": "Generate Background Error"
+  },
+  "developerOptionsSentryButtonGenerateTrace": {
+    "message": "Generate Trace"
+  },
+  "developerOptionsSentryButtonGenerateUIError": {
+    "message": "Generate UI Error"
+  },
+  "developerOptionsSentryDescriptionGenerateBackgroundError": {
+    "message": "Generate an unhandled $1 in the service worker."
+  },
+  "developerOptionsSentryDescriptionGenerateTrace": {
+    "message": " Generate a $1 Sentry trace."
+  },
+  "developerOptionsSentryDescriptionGenerateUIError": {
+    "message": "Generate an unhandled $1 in this window."
+  },
   "developerOptionsServiceWorkerKeepAlive": {
     "message": "Results in a timestamp being continuously saved to session.storage"
   },
