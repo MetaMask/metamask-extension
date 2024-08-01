@@ -1,11 +1,12 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Asset } from '../../../../ducks/send';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPicker } from './asset-picker';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { TabName } from '../asset-picker-modal/asset-picker-modal-tabs';
+import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
 
 const storybook = {
   title: 'Components/Multichain/AssetPicker',
@@ -14,11 +15,10 @@ const storybook = {
 
 const props = {
   asset: {
-    balance: null,
-    details: null,
-    error: null,
+    symbol: 'ETH',
+    image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
     type: AssetType.token,
-  } as unknown as Asset,
+  },
 };
 export const DefaultStory = () => {
   const t = useI18nContext();
@@ -55,16 +55,14 @@ export const SendDestStory = () => {
       onAssetChange={() => ({})}
       {...props}
       asset={{
-        balance: '200',
-        details: { address: '0x1', symbol: 'ETH' },
-        error: '',
+        address: '0x1',
+        symbol: 'ETH',
+        image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
         type: AssetType.native,
       }}
       sendingAsset={{
-        balance: '200',
-        details: { address: '0x1', symbol: 'ETH' },
-        error: '',
-        type: AssetType.native,
+        image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
+        symbol: 'ETH',
       }}
     />
   );
@@ -98,9 +96,9 @@ export const NetworksStory = ({ isOpen }: { isOpen: boolean }) => {
       onAssetChange={() => ({})}
       {...props}
       asset={{
-        balance: '200',
-        details: { address: '0x1', symbol: 'ETH' },
-        error: '',
+        address: '0x1',
+        symbol: 'ETH',
+        image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
         type: AssetType.native,
       }}
       networkProps={{
@@ -129,7 +127,7 @@ export const NetworksStory = ({ isOpen }: { isOpen: boolean }) => {
         ],
         onNetworkChange: () => ({}),
       }}
-      visibleTabs={['tokens']}
+      visibleTabs={[TabName.TOKENS]}
     />
   );
 };

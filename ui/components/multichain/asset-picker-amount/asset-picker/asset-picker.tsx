@@ -25,10 +25,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
-import {
-  getCurrentNetwork,
-  getTestNetworkBackgroundColor,
-} from '../../../../selectors';
+import { getCurrentNetwork } from '../../../../selectors';
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -39,6 +36,11 @@ import { AssetPickerModalNetwork } from '../asset-picker-modal/asset-picker-moda
 import { Token } from '../asset-picker-modal/types';
 import { TabName } from '../asset-picker-modal/asset-picker-modal-tabs';
 import AssetList from '../asset-picker-modal/AssetList';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  GOERLI_DISPLAY_NAME,
+  SEPOLIA_DISPLAY_NAME,
+} from '../../../../../shared/constants/network';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
@@ -90,7 +92,7 @@ export function AssetPicker({
 
   // Badge details
   const currentNetwork = useSelector(getCurrentNetwork);
-  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+  const selectedNetwork = networkProps?.network ?? currentNetwork;
 
   const handleAssetPickerTitle = (): string | undefined => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -171,9 +173,24 @@ export function AssetPicker({
               badge={
                 <AvatarNetwork
                   size={AvatarNetworkSize.Xs}
-                  name={currentNetwork?.nickname ?? ''}
-                  src={currentNetwork?.rpcPrefs?.imageUrl}
-                  backgroundColor={testNetworkBackgroundColor}
+                  name={selectedNetwork?.nickname ?? ''}
+                  src={
+                    selectedNetwork?.rpcPrefs &&
+                    'imageUrl' in selectedNetwork.rpcPrefs
+                      ? selectedNetwork.rpcPrefs.imageUrl
+                      : selectedNetwork?.chainId &&
+                        CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                          selectedNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                        ]
+                  }
+                  backgroundColor={
+                    Object.entries({
+                      [GOERLI_DISPLAY_NAME]: BackgroundColor.goerli,
+                      [SEPOLIA_DISPLAY_NAME]: BackgroundColor.sepolia,
+                    }).find(([tickerSubstring]) =>
+                      selectedNetwork?.ticker?.includes(tickerSubstring),
+                    )?.[1]
+                  }
                   borderColor={
                     primaryTokenImage
                       ? BorderColor.borderMuted
