@@ -433,9 +433,7 @@ export const AccountListMenu = ({
                     },
                   });
                   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore - this will be defined
-                    global.platform.openExtensionInBrowser(
+                    global.platform.openExtensionInBrowser?.(
                       CONNECT_HARDWARE_ROUTE,
                     );
                   } else {
@@ -488,9 +486,7 @@ export const AccountListMenu = ({
                         MetaMetricsEventName.ConnectCustodialAccountClicked,
                     });
                     if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-                      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                      // @ts-ignore - this will be defined
-                      global.platform.openExtensionInBrowser(
+                      global.platform.openExtensionInBrowser?.(
                         CUSTODY_ACCOUNT_ROUTE,
                       );
                     } else {
