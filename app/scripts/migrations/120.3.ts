@@ -9,6 +9,8 @@ type VersionedData = {
 
 export const version = 120.3;
 
+const MAX_TRANSACTION_HISTORY_LENGTH = 100;
+
 /**
  * This migration trims the size of any large transaction histories. This will
  * result in some loss of information, but the impact is minor. The lost data
@@ -82,8 +84,14 @@ function transformState(state: Record<string, unknown>): void {
   }
 
   for (const transaction of validHistoryTransactions) {
-    if (transaction.history && transaction.history.length > 100) {
-      transaction.history = transaction.history.slice(0, 100);
+    if (
+      transaction.history &&
+      transaction.history.length > MAX_TRANSACTION_HISTORY_LENGTH
+    ) {
+      transaction.history = transaction.history.slice(
+        0,
+        MAX_TRANSACTION_HISTORY_LENGTH,
+      );
     }
   }
 }
