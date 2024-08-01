@@ -1,4 +1,4 @@
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, waitFor, within } from '@testing-library/react';
 import { ApprovalType } from '@metamask/controller-utils';
 import nock from 'nock';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -11,7 +11,7 @@ import {
   MetaMetricsEventLocation,
 } from '../../../../shared/constants/metametrics';
 import { createMockImplementation, mock4byte } from '../../helpers';
-import { getUnapprovedTransaction } from './transactionDataHelpers';
+import { getUnapprovedTransaction } from '../../data/transaction-helpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
@@ -27,31 +27,34 @@ const backgroundConnectionMocked = {
 export const pendingTransactionId = '48a75190-45ca-11ef-9001-f3886ec2397c';
 export const pendingTransactionTime = new Date().getTime();
 
-const getMetaMaskStateWithUnapprovedContractInteraction = (
-  accountAddress: string,
-  showConfirmationAdvancedDetails: boolean = false,
-) => {
+const getMetaMaskStateWithUnapprovedContractInteraction = ({
+  accountAddress,
+  showConfirmationAdvancedDetails = false,
+}: {
+  accountAddress: string;
+  showConfirmationAdvancedDetails?: boolean;
+}) => {
   return {
     ...mockMetaMaskState,
     preferences: {
       ...mockMetaMaskState.preferences,
       redesignedConfirmationsEnabled: true,
-      showConfirmationAdvancedDetails: showConfirmationAdvancedDetails,
+      showConfirmationAdvancedDetails,
     },
     nextNonce: '8',
     currencyRates: {
       ETH: {
         conversionDate: 1721392020.645,
         conversionRate: 3404.13,
-        usdConversionRate: 3404.13
+        usdConversionRate: 3404.13,
       },
       SepoliaETH: {
         conversionDate: 1721393858.083,
         conversionRate: 3414.67,
-        usdConversionRate: 3414.67
-      }
+        usdConversionRate: 3414.67,
+      },
     },
-    currentCurrency: "usd",
+    currentCurrency: 'usd',
     pendingApprovals: {
       [pendingTransactionId]: {
         id: pendingTransactionId,
@@ -86,34 +89,44 @@ const getMetaMaskStateWithUnapprovedContractInteraction = (
   };
 };
 
-const mockedRequests = {
-  'getGasFeeTimeEstimate': {
+const advancedDetailsMockedRequests = {
+  getGasFeeTimeEstimate: {
     lowerTimeBound: new Date().getTime(),
     upperTimeBound: new Date().getTime(),
   },
-  'getNextNonce': '9',
-  'decodeTransactionData': {
+  getNextNonce: '9',
+  decodeTransactionData: {
     data: [
       {
-        name: "mintNFTs",
-        params:[
+        name: 'mintNFTs',
+        params: [
           {
-            name: "numberOfTokens",
-            type: "uint256",
-            value: 1
-          }
-        ]
-      }
+            name: 'numberOfTokens',
+            type: 'uint256',
+            value: 1,
+          },
+        ],
+      },
     ],
-    source: "Sourcify"
+    source: 'Sourcify',
   },
+};
+
+const setupSubmitRequestToBackgroundMocks = (
+  mockRequests?: Record<string, unknown>,
+) => {
+  mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
+    createMockImplementation({
+      ...advancedDetailsMockedRequests,
+      ...(mockRequests ?? {}),
+    }),
+  );
 };
 
 describe('Contract Interaction Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     mock4byte();
-    mockedBackgroundConnection.submitRequestToBackground.mockImplementation(createMockImplementation(mockedRequests));
   });
 
   afterEach(() => {
@@ -129,12 +142,17 @@ describe('Contract Interaction Confirmation', () => {
 
     const accountName = account.metadata.name;
     const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedContractInteraction(account.address);
+      getMetaMaskStateWithUnapprovedContractInteraction({
+        accountAddress: account.address,
+      });
 
-    const { getByTestId, queryByTestId } = await integrationTestRender({
-      preloadedState: mockedMetaMaskState,
-      backgroundConnection: backgroundConnectionMocked,
-    });
+    setupSubmitRequestToBackgroundMocks();
+
+    const { getByTestId, queryByTestId, findByTestId } =
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
 
     expect(getByTestId('header-account-name')).toHaveTextContent(accountName);
     expect(getByTestId('header-network-display-name')).toHaveTextContent(
@@ -143,14 +161,8 @@ describe('Contract Interaction Confirmation', () => {
 
     fireEvent.click(getByTestId('header-info__account-details-button'));
 
-    await waitFor(() => {
-      expect(
-        getByTestId('confirmation-account-details-modal__account-name'),
-      ).toBeInTheDocument();
-    });
-
     expect(
-      getByTestId('confirmation-account-details-modal__account-name'),
+      await findByTestId('confirmation-account-details-modal__account-name'),
     ).toHaveTextContent(accountName);
     expect(getByTestId('address-copy-button-text')).toHaveTextContent(
       '0x0DCD5...3E7bc',
@@ -196,39 +208,50 @@ describe('Contract Interaction Confirmation', () => {
     });
   });
 
-  it.only('displays the transaction details section', async () => {
+  it('displays the transaction details section', async () => {
     const account =
       mockMetaMaskState.internalAccounts.accounts[
-      mockMetaMaskState.internalAccounts
-        .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
       ];
 
     const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedContractInteraction(account.address);
+      getMetaMaskStateWithUnapprovedContractInteraction({
+        accountAddress: account.address,
+      });
 
-    const { getByTestId, getByText } = await integrationTestRender({
-      preloadedState: mockedMetaMaskState,
-      backgroundConnection: backgroundConnectionMocked,
-    });
+    setupSubmitRequestToBackgroundMocks();
+
+    const { getByTestId, getByText, findByTestId } =
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
 
     expect(getByText('Transaction request')).toBeInTheDocument();
     expect(
-      getByText('Only confirm this transaction if you fully understand the content and trust the requesting site.'),
+      getByText(
+        'Only confirm this transaction if you fully understand the content and trust the requesting site.',
+      ),
     ).toBeInTheDocument();
 
     const simulationSection = getByTestId('simulation-details-layout');
     expect(simulationSection).toBeInTheDocument();
     expect(simulationSection).toHaveTextContent('Estimated changes');
     // ToDo: Fix this test : simulation details are not displayed
-    const simulationDetailsRow = getByTestId('simulation-rows-incoming')
+    const simulationDetailsRow = await findByTestId('simulation-rows-incoming');
     expect(simulationSection).toContainElement(simulationDetailsRow);
     expect(simulationDetailsRow).toHaveTextContent('You receive');
-    const amountPill = getByTestId('simulation-details-amount-pill');
-    const assetPill = getByTestId('simulation-details-asset-pill');
-    expect(simulationDetailsRow).toContainElement(assetPill);
-    expect(simulationDetailsRow).toContainElement(amountPill);
+    expect(simulationDetailsRow).toContainElement(
+      getByTestId('simulation-details-asset-pill'),
+    );
+    expect(simulationDetailsRow).toContainElement(
+      getByTestId('simulation-details-amount-pill'),
+    );
 
-    const transactionDetailsSection = getByTestId('transaction-details-section');
+    const transactionDetailsSection = getByTestId(
+      'transaction-details-section',
+    );
     expect(transactionDetailsSection).toBeInTheDocument();
     expect(transactionDetailsSection).toHaveTextContent('Request from');
     expect(transactionDetailsSection).toHaveTextContent('Interacting with');
@@ -238,60 +261,79 @@ describe('Contract Interaction Confirmation', () => {
     const gasFeesSection = getByTestId('gas-fee-section');
     expect(gasFeesSection).toBeInTheDocument();
 
-    const editGasFeesRow = getByTestId('edit-gas-fees-row');
-    expect(gasFeesSection).toContainElement(editGasFeesRow)
+    const editGasFeesRow =
+      within(gasFeesSection).getByTestId('edit-gas-fees-row');
     expect(editGasFeesRow).toHaveTextContent('Estimated fee');
-    expect(editGasFeesRow).toContainElement(getByTestId('first-gas-field'));
-    expect(getByTestId('first-gas-field')).toHaveTextContent('0.0084 ETH');
-    expect(editGasFeesRow).toContainElement(getByTestId('native-currency'));
-    expect(getByTestId('native-currency')).toHaveTextContent('$28.50');
+
+    const firstGasField = within(editGasFeesRow).getByTestId('first-gas-field');
+    expect(firstGasField).toHaveTextContent('0.0084 ETH');
+    const editGasFeeNativeCurrency =
+      within(editGasFeesRow).getByTestId('native-currency');
+    expect(editGasFeeNativeCurrency).toHaveTextContent('$28.50');
     expect(editGasFeesRow).toContainElement(getByTestId('edit-gas-fee-icon'));
 
-    const gasFeeSpeed = getByTestId('gas-fee-details-speed')
-    expect(gasFeesSection).toContainElement(gasFeeSpeed);
+    const gasFeeSpeed = within(gasFeesSection).getByTestId(
+      'gas-fee-details-speed',
+    );
     expect(gasFeeSpeed).toHaveTextContent('Speed');
-    expect(gasFeeSpeed).toContainElement(getByTestId('gas-timing-time'));
-    expect(getByTestId('gas-timing-time')).toHaveTextContent('~0 sec');
 
+    const gasTimingTime = within(gasFeeSpeed).getByTestId('gas-timing-time');
+    expect(gasTimingTime).toHaveTextContent('~0 sec');
   });
 
   it('sets the preference showConfirmationAdvancedDetails to true when advanced details button is clicked', async () => {
-    mockedBackgroundConnection.callBackgroundMethod.mockImplementation(createMockImplementation({ 'setPreference': {} }));
+    mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
+      createMockImplementation({ setPreference: {} }),
+    );
+    setupSubmitRequestToBackgroundMocks();
 
     const account =
       mockMetaMaskState.internalAccounts.accounts[
-      mockMetaMaskState.internalAccounts
-        .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
       ];
 
     const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedContractInteraction(account.address, false);
+      getMetaMaskStateWithUnapprovedContractInteraction({
+        accountAddress: account.address,
+        showConfirmationAdvancedDetails: false,
+      });
 
     const { getByTestId } = await integrationTestRender({
       preloadedState: mockedMetaMaskState,
       backgroundConnection: backgroundConnectionMocked,
     });
 
-    fireEvent.click(
-      getByTestId('header-advanced-details-button'),
-    );
+    fireEvent.click(getByTestId('header-advanced-details-button'));
 
     await waitFor(() => {
-      expect(mockedBackgroundConnection.callBackgroundMethod).toHaveBeenCalledWith("setPreference", ["showConfirmationAdvancedDetails", true], expect.anything());
+      expect(
+        mockedBackgroundConnection.callBackgroundMethod,
+      ).toHaveBeenCalledWith(
+        'setPreference',
+        ['showConfirmationAdvancedDetails', true],
+        expect.anything(),
+      );
     });
   });
 
   it('displays the advanced transaction details section', async () => {
-    mockedBackgroundConnection.callBackgroundMethod.mockImplementation(createMockImplementation({ 'setPreference' : {}}));
+    mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
+      createMockImplementation({ setPreference: {} }),
+    );
+    setupSubmitRequestToBackgroundMocks();
 
     const account =
       mockMetaMaskState.internalAccounts.accounts[
-      mockMetaMaskState.internalAccounts
-        .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
       ];
 
     const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedContractInteraction(account.address, true);
+      getMetaMaskStateWithUnapprovedContractInteraction({
+        accountAddress: account.address,
+        showConfirmationAdvancedDetails: true,
+      });
 
     const { getByTestId } = await integrationTestRender({
       preloadedState: mockedMetaMaskState,
@@ -299,15 +341,22 @@ describe('Contract Interaction Confirmation', () => {
     });
 
     await waitFor(() => {
-      expect(mockedBackgroundConnection.submitRequestToBackground).toHaveBeenCalledWith("getNextNonce", expect.anything());
+      expect(
+        mockedBackgroundConnection.submitRequestToBackground,
+      ).toHaveBeenCalledWith('getNextNonce', expect.anything());
     });
 
     await waitFor(() => {
-      expect(mockedBackgroundConnection.submitRequestToBackground).toHaveBeenCalledWith("decodeTransactionData", [{
-        transactionData: "0x3b4b13810000000000000000000000000000000000000000000000000000000000000001",
-        contractAddress: "0x076146c765189d51be3160a2140cf80bfc73ad68",
-        chainId: "0x5"
-      }]);
+      expect(
+        mockedBackgroundConnection.submitRequestToBackground,
+      ).toHaveBeenCalledWith('decodeTransactionData', [
+        {
+          transactionData:
+            '0x3b4b13810000000000000000000000000000000000000000000000000000000000000001',
+          contractAddress: '0x076146c765189d51be3160a2140cf80bfc73ad68',
+          chainId: '0x5',
+        },
+      ]);
     });
 
     const gasFeesSection = getByTestId('gas-fee-section');
@@ -320,8 +369,12 @@ describe('Contract Interaction Confirmation', () => {
     const nonceSection = getByTestId('advanced-details-nonce-section');
     expect(nonceSection).toBeInTheDocument();
     expect(nonceSection).toHaveTextContent('Nonce');
-    expect(nonceSection).toContainElement(getByTestId('advanced-details-displayed-nonce'));
-    expect(getByTestId('advanced-details-displayed-nonce')).toHaveTextContent('9');
+    expect(nonceSection).toContainElement(
+      getByTestId('advanced-details-displayed-nonce'),
+    );
+    expect(getByTestId('advanced-details-displayed-nonce')).toHaveTextContent(
+      '9',
+    );
 
     const dataSection = getByTestId('advanced-details-data-section');
     expect(dataSection).toBeInTheDocument();
