@@ -73,79 +73,103 @@ const createMockedHandler = () => {
   };
 };
 
-describe('provider_request', () => {
-  it('gets the authorized scopes from the CAIP-25 endowement permission', async () => {
-    const { handler, getCaveat } = createMockedHandler();
-    await handler(baseRequest);
-    expect(getCaveat).toHaveBeenCalledWith(
-      'http://test.com',
-      Caip25EndowmentPermissionName,
-      Caip25CaveatType,
-    );
-  });
-
-  it('allows the request when there is no CAIP-25 endowement permission', async () => {
-    const { handler, getCaveat, next } = createMockedHandler();
-    getCaveat.mockReturnValue(null);
-    await handler(baseRequest);
-    expect(next).toHaveBeenCalled();
-  });
-
-  it('allows the request when the CAIP-25 endowement permission was not granted from the multichain flow', async () => {
-    const { handler, getCaveat, next } = createMockedHandler();
-    getCaveat.mockReturnValue({
-      value: {
-        isMultichainOrigin: false,
-      },
+describe('CaipPermissionAdapterMiddleware', () => {
+  describe('BARAD_DUR feature flag is not set', () => {
+    beforeAll(() => {
+      delete process.env.BARAD_DUR;
     });
-    await handler(baseRequest);
-    expect(next).toHaveBeenCalled();
-  });
 
-  it('gets the chainId for the request networkClientId', async () => {
-    const { handler, getNetworkConfigurationByNetworkClientId } =
-      createMockedHandler();
-    await handler(baseRequest);
-    expect(getNetworkConfigurationByNetworkClientId).toHaveBeenCalledWith(
-      'mainnet',
-    );
-  });
-
-  it('throws an error if the requested scope method is not authorized in either the current scope or the wallet scope', async () => {
-    const { handler, end } = createMockedHandler();
-
-    await handler({
-      ...baseRequest,
-      method: 'unauthorized_method',
+    it('allows the request when BARAD_DUR feature flag is not set', async () => {
+      const { handler, next } = createMockedHandler();
+      await handler(baseRequest);
+      expect(next).toHaveBeenCalled();
     });
-    expect(end).toHaveBeenCalledWith(providerErrors.unauthorized());
-  });
 
-  it('allows the request if the requested scope method is authorized in the current scope', async () => {
-    const { handler, next } = createMockedHandler();
-
-    await handler(baseRequest);
-    expect(next).toHaveBeenCalled();
-  });
-
-  it('allows the request if the requested scope method is authorized in the wallet scope and the current scope does exist in the authorization', async () => {
-    const { handler, next } = createMockedHandler();
-
-    await handler({
-      ...baseRequest,
-      method: 'wallet_watchAsset',
+    it('does not read the permission state', async () => {
+      const { handler, getCaveat } = createMockedHandler();
+      await handler(baseRequest);
+      expect(getCaveat).not.toHaveBeenCalled();
     });
-    expect(next).toHaveBeenCalled();
   });
 
-  it('allows the request if the requested scope method is authorized in the wallet scope and the current scope does not exist in the authorization', async () => {
-    const { handler, next } = createMockedHandler();
-
-    await handler({
-      ...baseRequest,
-      method: 'wallet_watchAsset',
-      networkClientId: 'someOtherNetworkClientId',
+  describe('BARAD_DUR feature flag is set', () => {
+    beforeAll(() => {
+      process.env.BARAD_DUR = 1;
     });
-    expect(next).toHaveBeenCalled();
+
+    it('gets the authorized scopes from the CAIP-25 endowement permission', async () => {
+      const { handler, getCaveat } = createMockedHandler();
+      await handler(baseRequest);
+      expect(getCaveat).toHaveBeenCalledWith(
+        'http://test.com',
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+      );
+    });
+
+    it('allows the request when there is no CAIP-25 endowement permission', async () => {
+      const { handler, getCaveat, next } = createMockedHandler();
+      getCaveat.mockReturnValue(null);
+      await handler(baseRequest);
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('allows the request when the CAIP-25 endowement permission was not granted from the multichain flow', async () => {
+      const { handler, getCaveat, next } = createMockedHandler();
+      getCaveat.mockReturnValue({
+        value: {
+          isMultichainOrigin: false,
+        },
+      });
+      await handler(baseRequest);
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('gets the chainId for the request networkClientId', async () => {
+      const { handler, getNetworkConfigurationByNetworkClientId } =
+        createMockedHandler();
+      await handler(baseRequest);
+      expect(getNetworkConfigurationByNetworkClientId).toHaveBeenCalledWith(
+        'mainnet',
+      );
+    });
+
+    it('throws an error if the requested scope method is not authorized in either the current scope or the wallet scope', async () => {
+      const { handler, end } = createMockedHandler();
+
+      await handler({
+        ...baseRequest,
+        method: 'unauthorized_method',
+      });
+      expect(end).toHaveBeenCalledWith(providerErrors.unauthorized());
+    });
+
+    it('allows the request if the requested scope method is authorized in the current scope', async () => {
+      const { handler, next } = createMockedHandler();
+
+      await handler(baseRequest);
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('allows the request if the requested scope method is authorized in the wallet scope and the current scope does exist in the authorization', async () => {
+      const { handler, next } = createMockedHandler();
+
+      await handler({
+        ...baseRequest,
+        method: 'wallet_watchAsset',
+      });
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('allows the request if the requested scope method is authorized in the wallet scope and the current scope does not exist in the authorization', async () => {
+      const { handler, next } = createMockedHandler();
+
+      await handler({
+        ...baseRequest,
+        method: 'wallet_watchAsset',
+        networkClientId: 'someOtherNetworkClientId',
+      });
+      expect(next).toHaveBeenCalled();
+    });
   });
 });
