@@ -47,14 +47,17 @@ import type { Quote } from '../../../../../ducks/send/swap-and-send-utils';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { TabName } from '../../../asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import { getAssetImageURL } from '../../../../../helpers/utils/util';
+import { AssetPicker } from '../../../asset-picker-amount/asset-picker';
 import { SendHexData, SendPageRow, QuoteCard } from '.';
 
 export const SendPageRecipientContent = ({
   requireContractAddressAcknowledgement,
   onAssetChange,
+  onClick,
 }: {
   requireContractAddressAcknowledgement: boolean;
   onAssetChange: (newAsset: Asset, isReceived: boolean) => void;
+  onClick: () => React.ComponentProps<typeof AssetPicker>['onClick'];
 }) => {
   const t = useI18nContext();
 
@@ -176,6 +179,7 @@ export const SendPageRecipientContent = ({
           amount={amount}
           isDisabled={!isSwapAllowed}
           visibleTabs={[TabName.TOKENS]}
+          onClick={onClick}
         />
       </SendPageRow>
       <QuoteCard scrollRef={scrollRef} />
