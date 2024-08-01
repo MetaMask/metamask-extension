@@ -70,7 +70,7 @@ import { AccountListItemMenuTypes } from './account-list-item.types';
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
 
-export const AccountListItem = ({
+const AccountListItem = ({
   account,
   selected,
   onClick,
@@ -511,3 +511,5 @@ AccountListItem.propTypes = {
 };
 
 AccountListItem.displayName = 'AccountListItem';
+
+export default React.memo(AccountListItem);

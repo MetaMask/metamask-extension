@@ -25,6 +25,7 @@ type AccountListItemProps = {
    * Pass icon component to be displayed. Currently not used
    */
   icon?: React.ReactNode;
+
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   /**
    * MMI Prop, will hide the default AccountMismatchWarning when needed
@@ -38,11 +39,11 @@ const AccountListItem = ({
   className,
   displayAddress = false,
   handleClick,
-  icon = null,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   hideDefaultMismatchWarning = false,
-}: ///: END:ONLY_INCLUDE_IF
-AccountListItemProps) => {
+  ///: END:ONLY_INCLUDE_IF
+  icon = null,
+}: AccountListItemProps) => {
   const {
     metadata: { name },
     address,
