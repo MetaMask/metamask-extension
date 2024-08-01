@@ -163,6 +163,20 @@ export const SendPage = () => {
     [dispatch, history, sendAnalytics, trackEvent],
   );
 
+  const handleAssetPickerClick = useCallback(
+    (isDest) => {
+      trackEvent({
+        event: MetaMetricsEventName.sendTokenModalOpened,
+        category: MetaMetricsEventCategory.Send,
+        properties: {
+          ...sendAnalytics,
+          is_destination_asset_picker_modal: isDest,
+        },
+      });
+    },
+    [sendAnalytics, trackEvent],
+  );
+
   const cleanup = useCallback(() => {
     dispatch(resetSendState());
     setIsSubmitting(false);
@@ -350,6 +364,7 @@ export const SendPage = () => {
             amount={amount}
             onAssetChange={handleSelectSendToken}
             onAmountChange={onAmountChange}
+            onClick={() => handleAssetPickerClick(false)}
           />
         )}
         <Box marginTop={6}>
@@ -360,6 +375,7 @@ export const SendPage = () => {
                 requireContractAddressAcknowledgement
               }
               onAssetChange={handleSelectToken}
+              onClick={() => handleAssetPickerClick(true)}
             />
           ) : (
             <SendPageRecipient />
