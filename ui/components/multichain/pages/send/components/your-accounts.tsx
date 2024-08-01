@@ -1,7 +1,10 @@
 import React, { useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { KeyringTypes } from '@metamask/keyring-controller';
-import { BtcAccountType, InternalAccount } from '@metamask/keyring-api';
+import {
+  EthAccountType,
+  InternalAccount,
+  KeyringAccountType,
+} from '@metamask/keyring-api';
 import {
   getUpdatedAndSortedAccounts,
   getInternalAccounts,
@@ -18,9 +21,18 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
+import { MergedInternalAccount } from '../../../../../selectors/selectors.types';
 import { SendPageRow } from '.';
 
-export const SendPageYourAccounts = () => {
+type SendPageYourAccountsProps = {
+  allowedAccountTypes?: KeyringAccountType[];
+};
+
+const defaultAllowedAccountTypes = [EthAccountType.Eoa, EthAccountType.Erc4337];
+
+export const SendPageYourAccounts = ({
+  allowedAccountTypes = defaultAllowedAccountTypes,
+}: SendPageYourAccountsProps) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -29,7 +41,7 @@ export const SendPageYourAccounts = () => {
   const internalAccounts = useSelector(getInternalAccounts);
   const mergedAccounts: MergedInternalAccount[] = useMemo(() => {
     return mergeAccounts(accounts, internalAccounts).filter(
-      (account: InternalAccount) => account.type !== BtcAccountType.P2wpkh,
+      (account: InternalAccount) => allowedAccountTypes.includes(account.type),
     );
   }, [accounts, internalAccounts]);
 

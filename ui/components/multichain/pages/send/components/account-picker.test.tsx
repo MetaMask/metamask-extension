@@ -130,7 +130,7 @@ describe('SendPageAccountPicker', () => {
 
       const accountListAddresses = queryAllByTestId('account-list-address');
       expect(accountListAddresses).toHaveLength(1);
-      
+
       const accountListAddressesContent = accountListAddresses[0].textContent;
       expect(accountListAddressesContent).toContain(
         shortenAddress(normalizeSafeAddress(mockAccount.address)),
