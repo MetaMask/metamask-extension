@@ -402,6 +402,7 @@ export default class ConfirmTransactionBase extends Component {
       tokenSymbol,
       isUsingPaymaster,
       isSigningOrSubmitting,
+      hideFiatConversion,
     } = this.props;
 
     const { t } = this.context;
@@ -469,20 +470,22 @@ export default class ConfirmTransactionBase extends Component {
         return (
           <div className="confirm-page-container-content__total-value">
             <LoadingHeartBeat estimateUsed={this.props.txData?.userFeeLevel} />
-            <UserPreferencedCurrencyDisplay
-              type={SECONDARY}
-              key="total-detail-text"
-              value={value}
-              suffixProps={{
-                color: TextColor.textDefault,
-                variant: TextVariant.bodyMdBold,
-              }}
-              textProps={{
-                color: TextColor.textDefault,
-                variant: TextVariant.bodyMdBold,
-              }}
-              hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-            />
+            {!hideFiatConversion && (
+              <UserPreferencedCurrencyDisplay
+                type={SECONDARY}
+                key="total-detail-text"
+                value={value}
+                suffixProps={{
+                  color: TextColor.textDefault,
+                  variant: TextVariant.bodyMdBold,
+                }}
+                textProps={{
+                  color: TextColor.textDefault,
+                  variant: TextVariant.bodyMdBold,
+                }}
+                hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+              />
+            )}
           </div>
         );
       }

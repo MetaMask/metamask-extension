@@ -12,6 +12,7 @@ import { getShouldShowFiat } from '../../../../selectors';
 import { useTransactionInfo } from '../../hooks/useTransactionInfo';
 import { Text } from '../../../../components/component-library';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
+import { useHideFiatForTestnet } from '../../../../hooks/useHideFiatForTestnet';
 
 const ConfirmSubTitle = ({
   txData,
@@ -19,10 +20,14 @@ const ConfirmSubTitle = ({
   subtitleComponent,
   assetStandard,
 }) => {
-  const shouldShowFiat = useSelector(getShouldShowFiat);
   const { isNftTransfer } = useTransactionInfo(txData);
+  const hideFiatForTestNet = useHideFiatForTestnet();
 
-  if (!shouldShowFiat && !isNftTransfer && !isNFTAssetStandard(assetStandard)) {
+  if (
+    hideFiatForTestNet &&
+    !isNftTransfer &&
+    !isNFTAssetStandard(assetStandard)
+  ) {
     return null;
   }
 
