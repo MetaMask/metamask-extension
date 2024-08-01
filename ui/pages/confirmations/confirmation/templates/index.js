@@ -27,13 +27,6 @@ import snapAlert from './snaps/snap-alert/snap-alert';
 import snapConfirmation from './snaps/snap-confirmation/snap-confirmation';
 import snapPrompt from './snaps/snap-prompt/snap-prompt';
 
-/**
- * Approval templates that will be prioritized ahead of transaction and signature confirmations.
- */
-export const PRIORITY_APPROVAL_TEMPLATE_TYPES = [
-  SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
-];
-
 const APPROVAL_TEMPLATES = {
   [ApprovalType.AddEthereumChain]: addEthereumChain,
   [ApprovalType.SwitchEthereumChain]: switchEthereumChain,
