@@ -7,20 +7,19 @@ import { AccountType } from '../../../shared/constants/custody';
 
 export type Custodian = {
   type: string;
-  iconUrl: string;
   name: string;
   onboardingUrl: string;
   website: string;
   envName: string;
   apiUrl: string;
   apiVersion: string;
-  displayName: string;
+  iconUrl?: string;
+  displayName?: string;
+  isNoteToTraderSupported?: boolean;
+  custodianPublishesTransaction?: boolean;
   refreshTokenUrl: string;
   websocketApiUrl: string;
-  isNoteToTraderSupported: boolean;
   isQRCodeSupported: boolean;
-  isManualTokenInputSupported?: boolean;
-  custodianPublishesTransaction: boolean;
   production: boolean;
   version: number;
 };
@@ -215,7 +214,7 @@ export function getMMIConfiguration(state: State): MmiConfiguration {
 }
 
 export function getInteractiveReplacementToken(state: State) {
-  return state.metamask.interactiveReplacementToken;
+  return state.metamask.interactiveReplacementToken || {};
 }
 
 export function getCustodianDeepLink(state: State) {

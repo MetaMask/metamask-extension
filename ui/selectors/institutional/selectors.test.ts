@@ -44,6 +44,25 @@ export type InternalAccount = {
   nonce: string;
 };
 
+const custodianMock = {
+  type: 'saturn',
+  envName: 'custodian1',
+  apiUrl: 'https://saturn-custody.dev.metamask-institutional.io',
+  iconUrl: 'images/saturn.svg',
+  displayName: 'Saturn Custody',
+  production: true,
+  refreshTokenUrl: 'test',
+  isNoteToTraderSupported: true,
+  version: 1,
+  name: 'Saturn',
+  onboardingUrl:
+    'https://onboarding.saturn-custody.dev.metamask-institutional.io',
+  website: 'https://saturn-custody.dev.metamask-institutional.io',
+  apiVersion: 'v1',
+  websocketApiUrl: 'wss://saturn-custody.dev.metamask-institutional.io',
+  isQRCodeSupported: true,
+};
+
 function buildState(overrides = {}) {
   const defaultState = {
     metamask: {
@@ -97,19 +116,7 @@ function buildState(overrides = {}) {
           enabled: true,
           url: 'https://dashboard.metamask-institutional.io',
         },
-        custodians: [
-          {
-            type: 'saturn',
-            envName: 'saturn',
-            apiUrl: 'https://saturn-custody.dev.metamask-institutional.io',
-            iconUrl: 'images/saturn.svg',
-            displayName: 'Saturn Custody',
-            production: true,
-            refreshTokenUrl: null,
-            isNoteToTraderSupported: false,
-            version: 1,
-          },
-        ],
+        custodians: [custodianMock],
       },
     },
   };
@@ -189,10 +196,23 @@ describe('Institutional selectors', () => {
 
   describe('getCustodianIconForAddress', () => {
     it('extracts a state property', () => {
-      const state = buildState();
+      const newState = {
+        metamask: {
+          custodyAccountDetails: {
+            '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
+              custodianName: 'custodian1',
+            },
+          },
+          mmiConfiguration: {
+            custodians: [custodianMock],
+          },
+        },
+      };
+
+      const state = buildState(newState);
       const result = getCustodianIconForAddress(
         state,
-        '0x5ab19e7091dd208f352f8e727b6dcc6f8abb6275',
+        '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
       );
 
       expect(result).toStrictEqual(
@@ -687,14 +707,7 @@ describe('Institutional selectors', () => {
           enabled: true,
           url: 'https://example.com',
         },
-        custodians: [
-          {
-            envName: 'test',
-            iconUrl: 'https://example.com/icon.png',
-            isNoteToTraderSupported: true,
-            custodianPublishesTransaction: false,
-          },
-        ],
+        custodians: [custodianMock],
       };
 
       const state = {
@@ -708,14 +721,14 @@ describe('Institutional selectors', () => {
       expect(config).toStrictEqual(mmiConfiguration);
     });
 
-    it('returns an empty array if mmiConfiguration does not exist', () => {
+    it('returns an empty object if mmiConfiguration does not exist', () => {
       const state = {
         metamask: {},
       };
 
       const config = getMMIConfiguration(state);
 
-      expect(config).toStrictEqual([]);
+      expect(config).toStrictEqual({});
     });
   });
 
@@ -785,12 +798,7 @@ describe('Institutional selectors', () => {
             },
           },
           mmiConfiguration: {
-            custodians: [
-              {
-                envName: 'custodian1',
-                isNoteToTraderSupported: true,
-              },
-            ],
+            custodians: [custodianMock],
           },
         },
       };
@@ -809,12 +817,7 @@ describe('Institutional selectors', () => {
             },
           },
           mmiConfiguration: {
-            custodians: [
-              {
-                envName: 'custodian1',
-                isNoteToTraderSupported: false,
-              },
-            ],
+            custodians: [{ ...custodianMock, isNoteToTraderSupported: false }],
           },
         },
       };
@@ -829,12 +832,7 @@ describe('Institutional selectors', () => {
         metamask: {
           custodyAccountDetails: {},
           mmiConfiguration: {
-            custodians: [
-              {
-                envName: 'custodian1',
-                isNoteToTraderSupported: true,
-              },
-            ],
+            custodians: [custodianMock],
           },
         },
       };
@@ -853,12 +851,7 @@ describe('Institutional selectors', () => {
             },
           },
           mmiConfiguration: {
-            custodians: [
-              {
-                envName: 'custodian1',
-                isNoteToTraderSupported: true,
-              },
-            ],
+            custodians: [custodianMock],
           },
         },
       };
@@ -877,12 +870,7 @@ describe('Institutional selectors', () => {
             },
           },
           mmiConfiguration: {
-            custodians: [
-              {
-                envName: 'custodian1',
-                isNoteToTraderSupported: true,
-              },
-            ],
+            custodians: [custodianMock],
           },
         },
       };
