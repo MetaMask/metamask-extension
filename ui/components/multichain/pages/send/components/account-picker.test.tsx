@@ -128,12 +128,14 @@ describe('SendPageAccountPicker', () => {
       const accountPicker = getByTestId('send-page-account-picker');
       fireEvent.click(accountPicker);
 
-      const addressesInAccountList = queryAllByTestId('account-list-address');
-      expect(addressesInAccountList).toHaveLength(1);
-      expect(addressesInAccountList[0].textContent).toContain(
+      const accountListAddresses = queryAllByTestId('account-list-address');
+      expect(accountListAddresses).toHaveLength(1);
+      
+      const accountListAddressesContent = accountListAddresses[0].textContent;
+      expect(accountListAddressesContent).toContain(
         shortenAddress(normalizeSafeAddress(mockAccount.address)),
       );
-      expect(addressesInAccountList[0].textContent).not.toContain(
+      expect(accountListAddressesContent).not.toContain(
         shortenAddress(normalizeSafeAddress(mockBtcAccount.address)),
       );
     });

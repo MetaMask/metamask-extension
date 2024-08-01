@@ -27,8 +27,7 @@ export const SendPageYourAccounts = () => {
   // Your Accounts
   const accounts = useSelector(getUpdatedAndSortedAccounts);
   const internalAccounts = useSelector(getInternalAccounts);
-  const mergedAccounts: InternalAccount &
-    { keyring: KeyringTypes; label: string }[] = useMemo(() => {
+  const mergedAccounts: MergedInternalAccount[] = useMemo(() => {
     return mergeAccounts(accounts, internalAccounts).filter(
       (account: InternalAccount) => account.type !== BtcAccountType.P2wpkh,
     );

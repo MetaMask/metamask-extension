@@ -103,7 +103,7 @@ describe('AccountListMenu', () => {
     jest
       .spyOn(reactRouterDom, 'useHistory')
       .mockImplementation()
-      // @ts-expect-error mocking histroy return
+      // @ts-expect-error mocking history return
       .mockReturnValue({ push: historyPushMock });
   });
 
