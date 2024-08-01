@@ -58,7 +58,7 @@ function transformState(state: Record<string, unknown>): void {
     return;
   }
 
-  const transactions = transactionControllerState.transactions;
+  const { transactions } = transactionControllerState;
   const validTransactions = transactions.filter(isObject);
   if (transactions.length !== validTransactions.length) {
     const invalidTransaction = transactions.find(
