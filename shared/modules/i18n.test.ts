@@ -281,7 +281,7 @@ describe('I18N Module', () => {
     it('returns json from locale file', async () => {
       const result = await fetchLocale(localeCodeMock);
       expect(result).toStrictEqual({
-        url: `./_locales/${localeCodeMock}/messages.json`,
+        url: `../_locales/${localeCodeMock}/messages.json`,
       });
     });
 

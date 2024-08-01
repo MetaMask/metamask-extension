@@ -103,28 +103,16 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
     },
     footer: {
       type: 'footer_feature_announcement',
-      Link: ({ notification }) =>
-        notification.data.link ? (
+      ExtensionLink: ({ notification }) =>
+        notification.data.extensionLink ? (
           <NotificationDetailButton
             notification={notification}
             variant={ButtonVariant.Primary}
-            text={notification.data.link.linkText}
-            href={notification.data.link.linkUrl}
+            text={notification.data.extensionLink.extensionLinkText}
+            href={`/${notification.data.extensionLink.extensionLinkRoute}`}
             id={notification.id}
-            isExternal={notification.data.link.isExternal}
             endIconName={false}
-          />
-        ) : null,
-      Action: ({ notification }) =>
-        notification.data.action ? (
-          <NotificationDetailButton
-            notification={notification}
-            variant={ButtonVariant.Secondary}
-            text={notification.data.action.actionText}
-            href={notification.data.action.actionUrl}
-            id={notification.id}
-            isExternal={notification.data.action.isExternal}
-            endIconName={false}
+            isExternal={true}
           />
         ) : null,
     },

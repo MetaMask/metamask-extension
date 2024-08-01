@@ -1,10 +1,34 @@
 import { useCallback } from 'react';
+import { AlertActionKey } from '../../../components/app/confirm/info/row/constants';
+import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 
-// This hook is responsible for processing confirmation actions.
-// We will delegate to alternate confirmation type hooks which will process the action if the type matches.
 const useConfirmationAlertActions = () => {
-  // eslint-disable-next-line no-empty-function
-  const processAction = useCallback((_actionKey: string) => {}, []);
+  const { openBuyCryptoInPdapp } = useRamps();
+  const { openModal } = useTransactionModalContext();
+
+  const processAction = useCallback(
+    (actionKey: string) => {
+      switch (actionKey) {
+        case AlertActionKey.Buy:
+          openBuyCryptoInPdapp();
+          break;
+
+        case AlertActionKey.ShowAdvancedGasFeeModal:
+          openModal('advancedGasFee');
+          break;
+
+        case AlertActionKey.ShowGasFeeModal:
+          openModal('editGasFee');
+          break;
+
+        default:
+          console.error('Unknown alert action key:', actionKey);
+          break;
+      }
+    },
+    [openBuyCryptoInPdapp],
+  );
 
   return processAction;
 };

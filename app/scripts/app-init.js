@@ -169,6 +169,7 @@ const registerInPageContentScript = async () => {
         js: ['scripts/inpage.js'],
         runAt: 'document_start',
         world: 'MAIN',
+        allFrames: true,
       },
     ]);
   } catch (err) {
@@ -184,27 +185,3 @@ const registerInPageContentScript = async () => {
 };
 
 registerInPageContentScript();
-
-/**
- * Creates an offscreen document that can be used to load additional scripts
- * and iframes that can communicate with the extension through the chrome
- * runtime API. Only one offscreen document may exist, so any iframes required
- * by extension can be embedded in the offscreen.html file. See the offscreen
- * folder for more details.
- */
-async function createOffscreen() {
-  if (await chrome.offscreen.hasDocument()) {
-    return;
-  }
-
-  await chrome.offscreen.createDocument({
-    url: './offscreen.html',
-    reasons: ['IFRAME_SCRIPTING'],
-    justification:
-      'Used for Hardware Wallet and Snaps scripts to communicate with the extension.',
-  });
-
-  console.debug('Offscreen iframe loaded');
-}
-
-createOffscreen();

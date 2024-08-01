@@ -10,6 +10,7 @@ import {
   TransactionController,
   TransactionMeta,
   TransactionParams,
+  TransactionType,
 } from '@metamask/transaction-controller';
 import log from 'loglevel';
 import {
@@ -62,6 +63,7 @@ export type SubmitSmartTransactionRequest = {
   smartTransactionsController: SmartTransactionsController;
   transactionController: TransactionController;
   isSmartTransaction: boolean;
+  isHardwareWallet: boolean;
   controllerMessenger: SmartTransactionsControllerMessenger;
   featureFlags: FeatureFlags;
 };
@@ -89,6 +91,8 @@ class SmartTransactionHook {
 
   #isSmartTransaction: boolean;
 
+  #isHardwareWallet: boolean;
+
   #smartTransactionsController: SmartTransactionsController;
 
   #transactionController: TransactionController;
@@ -103,6 +107,7 @@ class SmartTransactionHook {
       smartTransactionsController,
       transactionController,
       isSmartTransaction,
+      isHardwareWallet,
       controllerMessenger,
       featureFlags,
     } = request;
@@ -112,6 +117,7 @@ class SmartTransactionHook {
     this.#smartTransactionsController = smartTransactionsController;
     this.#transactionController = transactionController;
     this.#isSmartTransaction = isSmartTransaction;
+    this.#isHardwareWallet = isHardwareWallet;
     this.#controllerMessenger = controllerMessenger;
     this.#featureFlags = featureFlags;
     this.#isDapp = transactionMeta.origin !== ORIGIN_METAMASK;
@@ -120,9 +126,20 @@ class SmartTransactionHook {
   }
 
   async submit() {
+    const isUnsupportedTransactionTypeForSmartTransaction = this
+      .#transactionMeta?.type
+      ? [TransactionType.swapAndSend, TransactionType.swapApproval].includes(
+          this.#transactionMeta.type,
+        )
+      : false;
+
     // Will cause TransactionController to publish to the RPC provider as normal.
     const useRegularTransactionSubmit = { transactionHash: undefined };
-    if (!this.#isSmartTransaction) {
+    if (
+      !this.#isSmartTransaction ||
+      this.#isHardwareWallet ||
+      isUnsupportedTransactionTypeForSmartTransaction
+    ) {
       return useRegularTransactionSubmit;
     }
     const { id: approvalFlowId } = await this.#controllerMessenger.call(

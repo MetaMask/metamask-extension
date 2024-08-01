@@ -1,8 +1,6 @@
 @use "design-system";
 @use "itcss/settings/variables" as *;
 
-@import './send-content/send-gas-row/send-gas-row';
-
 .send {
   &__header {
     position: relative;

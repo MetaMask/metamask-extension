@@ -33,6 +33,7 @@ async function loadNewAccount() {
     {
       fixtures: new FixtureBuilder().build(),
       ganacheOptions,
+      disableServerMochaToBackground: true,
     },
     async ({ driver }) => {
       await unlockWallet(driver);
@@ -46,7 +47,7 @@ async function loadNewAccount() {
         '[data-testid="multichain-account-menu-popover-add-account"]',
       );
       await driver.fill('[placeholder="Account 2"]', '2nd account');
-      await driver.clickElement({ text: 'Create', tag: 'button' });
+      await driver.clickElement({ text: 'Add account', tag: 'button' });
       await driver.waitForSelector({
         css: '.currency-display-component__text',
         text: '0',
@@ -64,6 +65,7 @@ async function confirmTx() {
     {
       fixtures: new FixtureBuilder().build(),
       ganacheOptions,
+      disableServerMochaToBackground: true,
     },
     async ({ driver, ganacheServer }) => {
       await logInWithBalanceValidation(driver, ganacheServer);
@@ -86,7 +88,9 @@ async function confirmTx() {
       await driver.waitForSelector({ text: 'Confirm', tag: 'button' });
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-      await driver.clickElement('[data-testid="home__activity-tab"]');
+      await driver.clickElement(
+        '[data-testid="account-overview__activity-tab"]',
+      );
       await driver.wait(async () => {
         const confirmedTxes = await driver.findElements(
           '.transaction-list__completed-transactions .transaction-list-item',

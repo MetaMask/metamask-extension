@@ -1,9 +1,8 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useContext } from 'react';
 
 import { useSelector } from 'react-redux';
 import { isEqual, uniqBy } from 'lodash';
 import { Tab, Tabs } from '../../../ui/tabs';
-import NftsItems from '../../../app/nfts-items/nfts-items';
 import {
   Modal,
   ModalContent,
@@ -11,32 +10,27 @@ import {
   ModalHeader,
   TextFieldSearch,
   Box,
-  Text,
-  ButtonLink,
-  ButtonLinkSize,
   ButtonIconSize,
   TextFieldSearchSize,
   AvatarTokenSize,
   AvatarToken,
+  Text,
 } from '../../../component-library';
 import {
   BlockSize,
   BorderRadius,
-  TextColor,
   TextVariant,
   TextAlign,
   Display,
-  JustifyContent,
   AlignItems,
-  FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { AssetType } from '../../../../../shared/constants/transaction';
 
 import { useNftsCollections } from '../../../../hooks/useNftsCollections';
-import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import {
+  getAllTokens,
   getCurrentChainId,
   getCurrentCurrency,
   getNativeCurrencyImage,
@@ -49,14 +43,24 @@ import {
 import {
   getConversionRate,
   getNativeCurrency,
-  getTokens,
 } from '../../../../ducks/metamask/metamask';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { useEqualityCheck } from '../../../../hooks/useEqualityCheck';
-import AssetList from './AssetList';
+import {
+  MetaMetricsEventName,
+  MetaMetricsEventCategory,
+} from '../../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  getSendAnalyticProperties,
+  getSwapsBlockedTokens,
+} from '../../../../ducks/send';
+import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { Asset, Collection, Token } from './types';
+import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
+import AssetList from './AssetList';
 
 type AssetPickerModalProps = {
   isOpen: boolean;
@@ -78,12 +82,12 @@ export function AssetPickerModal({
   sendingAssetSymbol,
 }: AssetPickerModalProps) {
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
+  const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   const [searchQuery, setSearchQuery] = useState('');
 
   const { collections, previouslyOwnedCollection } = useNftsCollections();
-
-  const hasAnyNfts = Object.keys(collections).length > 0;
 
   const collectionsKeys = Object.keys(collections);
 
@@ -108,9 +112,27 @@ export function AssetPickerModal({
     (collection) => collection.nfts.length > 0,
   );
 
+  const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
+  const memoizedSwapsBlockedTokens = useMemo(() => {
+    return new Set<string>(swapsBlockedTokens);
+  }, [swapsBlockedTokens]);
+
+  const isDest = sendingAssetImage && sendingAssetSymbol;
+
   const handleAssetChange = useCallback(
     (token: Token) => {
       onAssetChange(token);
+      trackEvent({
+        event: MetaMetricsEventName.sendAssetSelected,
+        category: MetaMetricsEventCategory.Send,
+        properties: {
+          ...sendAnalytics,
+          is_destination_asset_picker_modal: Boolean(isDest),
+          new_asset_symbol: token.symbol,
+          new_asset_address: token.address,
+          is_nft: false,
+        },
+      });
       onClose();
     },
     [onAssetChange],
@@ -118,7 +140,6 @@ export function AssetPickerModal({
 
   const defaultActiveTabKey = asset?.type === AssetType.NFT ? 'nfts' : 'tokens';
 
-  const isDest = sendingAssetImage && sendingAssetSymbol;
   const chainId = useSelector(getCurrentChainId);
 
   const nativeCurrencyImage = useSelector(getNativeCurrencyImage);
@@ -133,7 +154,10 @@ export function AssetPickerModal({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-  const tokens = useSelector(getTokens, isEqual);
+
+  const detectedTokens = useSelector(getAllTokens);
+  const tokens = detectedTokens?.[chainId]?.[selectedAddress] ?? [];
+
   const { tokensWithBalances } = useTokenTracker({
     tokens,
     address: selectedAddress,
@@ -162,8 +186,19 @@ export function AssetPickerModal({
     // undefined would be the native token address
     const filteredTokensAddresses = new Set<string | undefined>();
 
+    const getIsDisabled = ({ address, symbol }: Token) => {
+      const isDisabled = sendingAssetSymbol
+        ? !isEqualCaseInsensitive(sendingAssetSymbol, symbol) &&
+          memoizedSwapsBlockedTokens.has(address || '')
+        : false;
+
+      return isDisabled;
+    };
+
     function* tokenGenerator() {
       yield nativeToken;
+
+      const blockedTokens = [];
 
       for (const token of memoizedUsersTokens) {
         yield token;
@@ -173,11 +208,20 @@ export function AssetPickerModal({
       for (const address of Object.keys(topTokens)) {
         const token = tokenList?.[address];
         if (token) {
-          yield token;
+          if (isDest && getIsDisabled(token)) {
+            blockedTokens.push(token);
+            continue;
+          } else {
+            yield token;
+          }
         }
       }
 
       for (const token of Object.values(tokenList)) {
+        yield token;
+      }
+
+      for (const token of blockedTokens) {
         yield token;
       }
     }
@@ -225,14 +269,21 @@ export function AssetPickerModal({
     currentCurrency,
     chainId,
     tokenList,
+    sendingAssetSymbol,
   ]);
 
   const Search = useCallback(
-    () => (
-      <Box padding={1} paddingLeft={4} paddingRight={4}>
+    ({
+      isNFTSearch = false,
+      props,
+    }: {
+      isNFTSearch?: boolean;
+      props?: React.ComponentProps<typeof Box>;
+    }) => (
+      <Box padding={4} {...props}>
         <TextFieldSearch
           borderRadius={BorderRadius.LG}
-          placeholder={t('searchTokenOrNFT')}
+          placeholder={t(isNFTSearch ? 'searchNfts' : 'searchTokens')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           error={false}
@@ -250,7 +301,6 @@ export function AssetPickerModal({
           }}
           endAccessory={null}
           size={TextFieldSearchSize.Lg}
-          marginBottom={1}
         />
       </Box>
     ),
@@ -266,7 +316,7 @@ export function AssetPickerModal({
     >
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
-        <ModalHeader onClose={onClose}>
+        <ModalHeader paddingBottom={2} onClose={onClose}>
           <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
             {t(isDest ? 'sendSelectReceiveAsset' : 'sendSelectSendAsset')}
           </Text>
@@ -277,7 +327,7 @@ export function AssetPickerModal({
             gap={1}
             alignItems={AlignItems.center}
             marginInline="auto"
-            marginBottom={4}
+            marginBottom={3}
           >
             <AvatarToken
               borderRadius={BorderRadius.full}
@@ -292,12 +342,13 @@ export function AssetPickerModal({
         <Box className="modal-tab__wrapper">
           {isDest ? (
             <>
-              <Search />
+              <Search props={{ paddingTop: 1 }} />
               <AssetList
                 handleAssetChange={handleAssetChange}
                 asset={asset}
                 tokenList={filteredTokenList}
                 sendingAssetSymbol={sendingAssetSymbol}
+                memoizedSwapsBlockedTokens={memoizedSwapsBlockedTokens}
               />
             </>
           ) : (
@@ -306,8 +357,6 @@ export function AssetPickerModal({
               tabsClassName="modal-tab__tabs"
             >
               {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
                 <Tab
                   activeClassName="modal-tab__tab--active"
                   className="modal-tab__tab"
@@ -319,67 +368,24 @@ export function AssetPickerModal({
                     handleAssetChange={handleAssetChange}
                     asset={asset}
                     tokenList={filteredTokenList}
+                    memoizedSwapsBlockedTokens={memoizedSwapsBlockedTokens}
                   />
                 </Tab>
               }
 
               {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
                 <Tab
                   activeClassName="modal-tab__tab--active"
                   className="modal-tab__tab"
                   name={t('nfts')}
                   tabKey="nfts"
                 >
-                  {hasAnyNfts ? (
-                    <Box className="modal-tab__main-view">
-                      <Search />
-                      <NftsItems
-                        collections={collectionDataFiltered}
-                        previouslyOwnedCollection={previouslyOwnedCollection}
-                        isModal={true}
-                        onCloseModal={() => onClose()}
-                        showTokenId={true}
-                        displayPreviouslyOwnedCollection={false}
-                      />
-                    </Box>
-                  ) : (
-                    <Box
-                      padding={12}
-                      display={Display.Flex}
-                      flexDirection={FlexDirection.Column}
-                      alignItems={AlignItems.center}
-                      justifyContent={JustifyContent.center}
-                    >
-                      <Box justifyContent={JustifyContent.center}>
-                        <img src="./images/no-nfts.svg" />
-                      </Box>
-                      <Box
-                        display={Display.Flex}
-                        justifyContent={JustifyContent.center}
-                        alignItems={AlignItems.center}
-                        flexDirection={FlexDirection.Column}
-                        className="nfts-tab__link"
-                      >
-                        <Text
-                          color={TextColor.textMuted}
-                          variant={TextVariant.headingSm}
-                          textAlign={TextAlign.Center}
-                          as="h4"
-                        >
-                          {t('noNFTs')}
-                        </Text>
-                        <ButtonLink
-                          size={ButtonLinkSize.Sm}
-                          href={ZENDESK_URLS.NFT_TOKENS}
-                          externalLink
-                        >
-                          {t('learnMoreUpperCase')}
-                        </ButtonLink>
-                      </Box>
-                    </Box>
-                  )}
+                  <AssetPickerModalNftTab
+                    collectionDataFiltered={collectionDataFiltered}
+                    previouslyOwnedCollection={previouslyOwnedCollection}
+                    onClose={onClose}
+                    renderSearch={() => Search({ isNFTSearch: true })}
+                  />
                 </Tab>
               }
             </Tabs>

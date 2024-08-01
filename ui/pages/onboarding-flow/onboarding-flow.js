@@ -28,6 +28,7 @@ import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
   createNewVaultAndRestore,
+  setOnboardingDate,
 } from '../../store/actions';
 import { getFirstTimeFlowTypeRouteAfterUnlock } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -69,6 +70,10 @@ export default function OnboardingFlow() {
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   const trackEvent = useContext(MetaMetricsContext);
+
+  useEffect(() => {
+    dispatch(setOnboardingDate());
+  }, [dispatch]);
 
   useEffect(() => {
     if (completedOnboarding && !isFromReminder) {

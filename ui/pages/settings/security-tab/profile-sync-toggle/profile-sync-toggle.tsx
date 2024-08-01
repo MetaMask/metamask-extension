@@ -1,21 +1,16 @@
-import React, { useContext } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   useEnableProfileSyncing,
   useDisableProfileSyncing,
+  useSetIsProfileSyncingEnabled,
 } from '../../../../hooks/metamask-notifications/useProfileSyncing';
 import {
   selectIsProfileSyncingEnabled,
   selectIsProfileSyncingUpdateLoading,
 } from '../../../../selectors/metamask-notifications/profile-syncing';
-import { selectParticipateInMetaMetrics } from '../../../../selectors/metamask-notifications/authentication';
 import { showModal } from '../../../../store/actions';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
 import { Box, Text } from '../../../../components/component-library';
 import ToggleButton from '../../../../components/ui/toggle-button';
 import {
@@ -26,20 +21,37 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
+import { getUseExternalServices } from '../../../../selectors';
+
+function ProfileSyncBasicFunctionalitySetting() {
+  const basicFunctionality: boolean = useSelector(getUseExternalServices);
+  const { setIsProfileSyncingEnabled } = useSetIsProfileSyncingEnabled();
+
+  // Effect - toggle profile syncing off when basic functionality is off
+  useEffect(() => {
+    if (basicFunctionality === false) {
+      setIsProfileSyncingEnabled(false);
+    }
+  }, [basicFunctionality, setIsProfileSyncingEnabled]);
+
+  return {
+    isProfileSyncDisabled: !basicFunctionality,
+  };
+}
 
 const ProfileSyncToggle = () => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const { enableProfileSyncing, error: enableProfileSyncingError } =
     useEnableProfileSyncing();
   const { disableProfileSyncing, error: disableProfileSyncingError } =
     useDisableProfileSyncing();
 
+  const { isProfileSyncDisabled } = ProfileSyncBasicFunctionalitySetting();
+
   const error = enableProfileSyncingError || disableProfileSyncingError;
 
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
-  const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
   const isProfileSyncingUpdateLoading = useSelector(
     selectIsProfileSyncingUpdateLoading,
   );
@@ -51,26 +63,11 @@ const ProfileSyncToggle = () => {
           name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
           turnOffProfileSyncing: () => {
             disableProfileSyncing();
-            trackEvent({
-              category: MetaMetricsEventCategory.Settings,
-              event: MetaMetricsEventName.TurnOffProfileSyncing,
-              properties: {
-                participateInMetaMetrics,
-              },
-            });
           },
         }),
       );
     } else {
       await enableProfileSyncing();
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.TurnOnProfileSyncing,
-        properties: {
-          isProfileSyncingEnabled,
-          participateInMetaMetrics,
-        },
-      });
     }
   };
 
@@ -92,7 +89,7 @@ const ProfileSyncToggle = () => {
           >
             {t('profileSyncDescription', [
               <a
-                href="https://consensys.io/privacy-policy/"
+                href="https://support.metamask.io/privacy-and-security/profile-privacy"
                 key="link"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -113,6 +110,7 @@ const ProfileSyncToggle = () => {
         {!isProfileSyncingUpdateLoading && (
           <div className="settings-page__content-item-col">
             <ToggleButton
+              disabled={isProfileSyncDisabled}
               value={isProfileSyncingEnabled}
               onToggle={handleUseProfileSync}
               offLabel={t('off')}

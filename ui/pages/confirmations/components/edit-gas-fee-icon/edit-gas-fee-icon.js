@@ -5,11 +5,15 @@ import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
 import {
-  BUTTON_VARIANT,
+  ButtonVariant,
   Button,
   IconName,
 } from '../../../../components/component-library';
-import { IconColor, Size } from '../../../../helpers/constants/design-system';
+import {
+  AlignItems,
+  IconColor,
+  Size,
+} from '../../../../helpers/constants/design-system';
 
 export default function EditGasFeeIcon({ userAcknowledgedGasMissing = false }) {
   const { hasSimulationError, estimateUsed, supportsEIP1559 } =
@@ -31,11 +35,16 @@ export default function EditGasFeeIcon({ userAcknowledgedGasMissing = false }) {
 
   return (
     <Button
-      style={{ textDecoration: 'none' }}
+      style={{
+        textDecoration: 'none',
+        height: 'var(--typography-l-body-md-medium-line-height)',
+      }}
       size={Size.SM}
-      variant={BUTTON_VARIANT.LINK}
+      variant={ButtonVariant.Link}
       startIconName={IconName.Edit}
       color={IconColor.primaryDefault}
+      alignItems={AlignItems.baseline}
+      paddingTop={1}
       data-testid="edit-gas-fee-icon"
       onClick={openEditGasFeeModal}
     />

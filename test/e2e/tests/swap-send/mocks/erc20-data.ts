@@ -1,4 +1,4 @@
-export const swapSendQuotesResponse_TST_ETH = [
+export const SWAP_SEND_QUOTES_RESPONSE_TST_ETH = [
   {
     aggregator: 'ZeroX',
     aggregatorType: 'AGG',

@@ -154,6 +154,7 @@ export default class MetaMetricsController {
     this.store = new ObservableStore({
       participateInMetaMetrics: null,
       metaMetricsId: null,
+      dataCollectionForMarketing: null,
       eventsBeforeMetricsOptIn: [],
       traits: {},
       previousUserTraits: {},
@@ -188,7 +189,11 @@ export default class MetaMetricsController {
     // Code below submits any pending segmentApiCalls to Segment if/when the controller is re-instantiated
     if (isManifestV3) {
       Object.values(segmentApiCalls).forEach(({ eventType, payload }) => {
-        this._submitSegmentAPICall(eventType, payload);
+        try {
+          this._submitSegmentAPICall(eventType, payload);
+        } catch (error) {
+          this._captureException(error);
+        }
       });
     }
 
@@ -449,16 +454,15 @@ export default class MetaMetricsController {
    *  if not set
    */
   async setParticipateInMetaMetrics(participateInMetaMetrics) {
-    let { metaMetricsId } = this.state;
-    if (participateInMetaMetrics && !metaMetricsId) {
-      // We also need to start sentry automatic session tracking at this point
-      await globalThis.sentry?.startSession();
-      metaMetricsId = this.generateMetaMetricsId();
-    } else if (participateInMetaMetrics === false) {
-      // We also need to stop sentry automatic session tracking at this point
-      await globalThis.sentry?.endSession();
-    }
+    const { metaMetricsId: existingMetaMetricsId } = this.state;
+
+    const metaMetricsId =
+      participateInMetaMetrics && !existingMetaMetricsId
+        ? this.generateMetaMetricsId()
+        : existingMetaMetricsId;
+
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });
+
     if (participateInMetaMetrics) {
       this.trackEventsAfterMetricsOptIn();
       this.clearEventsAfterMetricsOptIn();
@@ -468,6 +472,12 @@ export default class MetaMetricsController {
     this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
     ///: END:ONLY_INCLUDE_IF
 
+    return metaMetricsId;
+  }
+
+  setDataCollectionForMarketing(dataCollectionForMarketing) {
+    const { metaMetricsId } = this.state;
+    this.store.updateState({ dataCollectionForMarketing });
     return metaMetricsId;
   }
 
@@ -811,10 +821,6 @@ export default class MetaMetricsController {
         metamaskState.useTokenDetection,
       [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]:
         metamaskState.useNativeCurrencyAsPrimaryCurrency,
-      ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-      [MetaMetricsUserTrait.DesktopEnabled]:
-        metamaskState.desktopEnabled || false,
-      ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       [MetaMetricsUserTrait.MmiExtensionId]: this.extension?.runtime?.id,
       [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress,
@@ -824,6 +830,10 @@ export default class MetaMetricsController {
         metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
       [MetaMetricsUserTrait.PetnameAddressCount]:
         this._getPetnameAddressCount(metamaskState),
+      [MetaMetricsUserTrait.IsMetricsOptedIn]:
+        metamaskState.participateInMetaMetrics,
+      [MetaMetricsUserTrait.HasMarketingConsent]:
+        metamaskState.dataCollectionForMarketing,
     };
 
     if (!previousUserTraits) {

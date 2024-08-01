@@ -22,6 +22,10 @@ const Tab = (props) => {
     onClick,
     tabIndex,
     tabKey,
+    // Declared, but we are not rendering it explictly (it's mainly to make JSX
+    // happy when being used in .tsx)
+    // eslint-disable-next-line no-unused-vars
+    children,
   } = props;
 
   return (
@@ -64,6 +68,7 @@ Tab.propTypes = {
   tabKey: PropTypes.string.isRequired, // for Tabs selection purpose
   onClick: PropTypes.func,
   tabIndex: PropTypes.number, // required, but added using React.cloneElement
+  children: PropTypes.node, // required, but we are not rendering it explictly
 };
 
 Tab.defaultProps = {

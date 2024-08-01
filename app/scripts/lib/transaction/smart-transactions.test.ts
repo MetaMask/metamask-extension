@@ -110,6 +110,7 @@ describe('submitSmartTransactionHook', () => {
       smartTransactionsController: createSmartTransactionsControllerMock(),
       transactionController: createTransactionControllerMock(),
       isSmartTransaction: true,
+      isHardwareWallet: false,
       controllerMessenger: createSmartTransactionsControllerMessengerMock(),
       featureFlags: {
         extensionActive: true,
@@ -130,6 +131,27 @@ describe('submitSmartTransactionHook', () => {
   it('does not submit a transaction that is not a smart transaction', async () => {
     const request: SubmitSmartTransactionRequestMocked = createRequest();
     request.isSmartTransaction = false;
+    const result = await submitSmartTransactionHook(request);
+    expect(result).toEqual({ transactionHash: undefined });
+  });
+
+  it('falls back to regular transaction submit if the transaction type is "swapAndSend"', async () => {
+    const request: SubmitSmartTransactionRequestMocked = createRequest();
+    request.transactionMeta.type = TransactionType.swapAndSend;
+    const result = await submitSmartTransactionHook(request);
+    expect(result).toEqual({ transactionHash: undefined });
+  });
+
+  it('falls back to regular transaction submit if the transaction type is "swapApproval"', async () => {
+    const request: SubmitSmartTransactionRequestMocked = createRequest();
+    request.transactionMeta.type = TransactionType.swapApproval;
+    const result = await submitSmartTransactionHook(request);
+    expect(result).toEqual({ transactionHash: undefined });
+  });
+
+  it('falls back to regular transaction submit if a hardware wallet is used', async () => {
+    const request: SubmitSmartTransactionRequestMocked = createRequest();
+    request.isHardwareWallet = true;
     const result = await submitSmartTransactionHook(request);
     expect(result).toEqual({ transactionHash: undefined });
   });

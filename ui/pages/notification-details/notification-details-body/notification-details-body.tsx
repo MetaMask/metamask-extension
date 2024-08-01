@@ -33,6 +33,7 @@ export const NotificationDetailsBody = ({
           {body.Image && <body.Image notification={notification} />}
           {body.From && <body.From notification={notification} />}
           {body.To && <body.To notification={notification} />}
+          {body.Account && <body.Account notification={notification} />}
           {body.Asset && <body.Asset notification={notification} />}
           {body.AssetReceived && (
             <body.AssetReceived notification={notification} />

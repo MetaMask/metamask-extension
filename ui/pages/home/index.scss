@@ -1,6 +1,14 @@
 @use "design-system";
 
 .home {
+  &__onboarding_list {
+    list-style: initial;
+    margin-inline-start: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
   &__container {
     display: flex;
     min-height: 100%;
@@ -12,36 +20,6 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-  }
-
-  &__balance-wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    flex: 0 0 auto;
-  }
-
-  // TODO: fix style import order so this isn't required to override specificity of `tab` class
-  &__main-view &__tabs {
-    border: none;
-    padding: 0 16px;
-  }
-
-  &__main-view &__tab {
-    @include design-system.H6;
-
-    flex-grow: 1;
-    color: var(--color-icon-default);
-    font-weight: 500;
-  }
-
-  &__main-view &__tab--active {
-    color: var(--color-primary-default);
-  }
-
-  &__main-view &__tab button {
-    padding: 8px;
   }
 
   &__connect-status-text {

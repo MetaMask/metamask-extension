@@ -8,13 +8,13 @@ import {
   NotificationDetailInfo,
   NotificationDetailTitle,
   NotificationDetailAsset,
-  NotificationDetailButton,
+  NotificationDetailBlockExplorerButton,
+  NotificationDetailAddress,
 } from '../../../../components/multichain';
 import { t } from '../../../../../app/scripts/translate';
 import {
   createTextItems,
-  getAmount,
-  getUsdAmount,
+  formatAmount,
   formatIsoDateString,
   getNetworkDetailsByChainId,
 } from '../../../../helpers/utils/notification.util';
@@ -25,7 +25,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 import {
-  ButtonVariant,
   BadgeWrapperPosition,
   IconName,
 } from '../../../../components/component-library';
@@ -38,13 +37,9 @@ const isLidoReadyWithDrawnNotification = isOfTypeNodeGuard([
 ]);
 
 const getDescription = (n: LidoReadyWithDrawnNotification) => {
-  const amount = getAmount(
-    n.data.staked_eth.amount,
-    n.data.staked_eth.decimals,
-    {
-      shouldEllipse: true,
-    },
-  );
+  const amount = formatAmount(parseFloat(n.data.staked_eth.amount), {
+    shouldEllipse: true,
+  });
   const description =
     // @ts-expect-error: Expected 0-1 arguments, but got an array
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -95,6 +90,17 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
       ),
       body: {
         type: 'body_onchain_notification',
+        Account: ({ notification }) => {
+          if (!notification.address) {
+            return null;
+          }
+          return (
+            <NotificationDetailAddress
+              side={t('account') || ''}
+              address={notification.address}
+            />
+          );
+        },
         Status: () => (
           <NotificationDetailInfo
             icon={{
@@ -122,14 +128,12 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
               }}
               label={t('notificationItemLidoStakeReadyToBeWithdrawn') || ''}
               detail={notification.data.staked_eth.symbol}
-              fiatValue={`$${getUsdAmount(
-                notification.data.staked_eth.usd,
-                notification.data.staked_eth.decimals,
-                notification.data.staked_eth.usd,
+              fiatValue={`$${formatAmount(
+                parseFloat(notification.data.staked_eth.usd),
+                { shouldEllipse: true },
               )}`}
-              value={`${getAmount(
-                notification.data.staked_eth.amount,
-                notification.data.staked_eth.decimals,
+              value={`${formatAmount(
+                parseFloat(notification.data.staked_eth.amount),
                 { shouldEllipse: true },
               )} ${notification.data.staked_eth.symbol}`}
             />
@@ -159,20 +163,11 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
     footer: {
       type: 'footer_onchain_notification',
       ScanLink: ({ notification }) => {
-        const chainId = decimalToHex(notification.chain_id);
-        const { nativeBlockExplorerUrl } = getNetworkDetailsByChainId(
-          `0x${chainId}` as keyof typeof CHAIN_IDS,
-        );
         return (
-          <NotificationDetailButton
+          <NotificationDetailBlockExplorerButton
             notification={notification}
-            variant={ButtonVariant.Secondary}
-            text={t('notificationItemCheckBlockExplorer') || ''}
-            href={
-              nativeBlockExplorerUrl
-                ? `${nativeBlockExplorerUrl}//tx/${notification.tx_hash}`
-                : '#'
-            }
+            chainId={notification.chain_id}
+            txHash={notification.tx_hash}
             id={notification.id}
           />
         );

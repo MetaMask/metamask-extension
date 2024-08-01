@@ -1,5 +1,6 @@
-import { ItalicElement } from '@metamask/snaps-sdk/jsx';
+import { ItalicElement, JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
+import { NonEmptyArray } from '@metamask/utils';
 import { mapTextToTemplate } from '../utils';
 import {
   TextVariant,
@@ -13,7 +14,10 @@ export const italic: UIComponentFactory<ItalicElement> = ({
   ...params
 }) => ({
   element: 'Text',
-  children: mapTextToTemplate(getJsxChildren(element), params),
+  children: mapTextToTemplate(
+    getJsxChildren(element) as NonEmptyArray<string | JSXElement>,
+    params,
+  ),
   props: {
     variant: TextVariant.bodyMd,
     overflowWrap: OverflowWrap.Anywhere,

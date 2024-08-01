@@ -62,9 +62,11 @@ export default function TurnOnMetamaskNotifications() {
     await createNotifications();
     trackEvent({
       category: MetaMetricsEventCategory.EnableNotifications,
-      event: MetaMetricsEventName.EnablingNotifications,
+      event: MetaMetricsEventName.NotificationsEnablingFlowHandled,
       properties: {
-        isProfileSyncingEnabled,
+        is_profile_syncing_enabled: isProfileSyncingEnabled,
+        is_notifications_enabled: isNotificationEnabled,
+        action_type: 'enabled',
       },
     });
   };
@@ -73,9 +75,11 @@ export default function TurnOnMetamaskNotifications() {
     hideModal();
     trackEvent({
       category: MetaMetricsEventCategory.EnableNotifications,
-      event: MetaMetricsEventName.DismissEnablingNotificationsFlow,
+      event: MetaMetricsEventName.NotificationsEnablingFlowHandled,
       properties: {
-        isProfileSyncingEnabled,
+        is_profile_syncing_enabled: isProfileSyncingEnabled,
+        is_notifications_enabled: isNotificationEnabled,
+        action_type: 'dismissed',
       },
     });
   };
@@ -91,7 +95,7 @@ export default function TurnOnMetamaskNotifications() {
   const privacyLink = (
     <Text
       as="a"
-      href="https://metamask.io/privacy.html"
+      href="https://support.metamask.io/privacy-and-security/profile-privacy"
       target="_blank"
       rel="noopener noreferrer"
       key="privacy-link"

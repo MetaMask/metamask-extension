@@ -10,7 +10,7 @@ import { capitalize, isEqual } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import { Hex, Json } from '@metamask/utils';
+import { Hex, Json, JsonRpcRequest } from '@metamask/utils';
 import {
   AssetsContractController,
   BalanceMap,
@@ -37,7 +37,6 @@ import {
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -52,9 +51,7 @@ import {
   getApprovalFlows,
   getCurrentNetworkTransactions,
   getIsSigningQRHardwareTransaction,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getNotifications,
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getPermissionSubjects,
   getFirstSnapInstallOrUpdateRequest,
@@ -72,6 +69,7 @@ import {
   // that does not have an explicit export statement. lets see if it breaks the
   // compiler
   DraftTransaction,
+  SEND_STAGES,
 } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import {
@@ -98,9 +96,7 @@ import {
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getSmartTransactionsOptInStatus } from '../../shared/modules/selectors';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
-///: END:ONLY_INCLUDE_IF
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
@@ -115,7 +111,10 @@ import {
 } from '../../shared/modules/error';
 import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import type { MarkAsReadNotificationsParam } from '../../app/scripts/controllers/metamask-notifications/types/notification/notification';
+import { BridgeFeatureFlags } from '../../app/scripts/controllers/bridge';
+import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -200,20 +199,15 @@ export function createNewVaultAndRestore(
       Buffer.from(seedPhrase, 'utf8').values(),
     );
 
-    // TODO: Add types for vault
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let vault: any;
     return new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
         'createNewVaultAndRestore',
         [password, encodedSeedPhrase],
-        (err, _vault) => {
+        (err) => {
           if (err) {
             reject(err);
             return;
           }
-          vault = _vault;
           resolve();
         },
       );
@@ -222,7 +216,6 @@ export function createNewVaultAndRestore(
       .then(() => {
         dispatch(showAccountsPage());
         dispatch(hideLoadingIndication());
-        return vault;
       })
       .catch((err) => {
         dispatch(displayWarning(err.message));
@@ -1018,6 +1011,7 @@ export function addTransactionAndRouteToConfirmationPage(
     } catch (error) {
       dispatch(hideLoadingIndication());
       dispatch(displayWarning(error));
+      throw error;
     }
     return null;
   };
@@ -1075,17 +1069,25 @@ export function updateAndApproveTx(
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch: MetaMaskReduxDispatch, getState) => {
     !dontShowLoadingIndicator &&
       dispatch(showLoadingIndication(loadingIndicatorMessage));
+
+    const getIsSendActive = () =>
+      Boolean(getState().send.stage !== SEND_STAGES.INACTIVE);
+
     return new Promise((resolve, reject) => {
       const actionId = generateActionId();
+
       callBackgroundMethod(
         'resolvePendingApproval',
         [String(txMeta.id), { txMeta, actionId }, { waitForResult: true }],
         (err) => {
           dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
-          dispatch(resetSendState());
+
+          if (!getIsSendActive()) {
+            dispatch(resetSendState());
+          }
 
           if (err) {
             dispatch(goHome());
@@ -1101,7 +1103,9 @@ export function updateAndApproveTx(
       .then(() => updateMetamaskStateFromBackground())
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => {
-        dispatch(resetSendState());
+        if (!getIsSendActive()) {
+          dispatch(resetSendState());
+        }
         dispatch(completedTx(txMeta.id));
         dispatch(hideLoadingIndication());
         dispatch(updateCustomNonce(''));
@@ -1152,7 +1156,6 @@ export function updateTransactionParams(
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export function disableSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -1190,23 +1193,18 @@ export function updateSnap(
 export async function getPhishingResult(website: string) {
   return await submitRequestToBackground('getPhishingResult', [website]);
 }
-///: END:ONLY_INCLUDE_IF
 
 // TODO: Clean this up.
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export function removeSnap(
   snapId: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (
     dispatch: MetaMaskReduxDispatch,
-    ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     getState,
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   ) => {
     dispatch(showLoadingIndication());
-    ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     const subjects = getPermissionSubjects(getState()) as {
       // TODO: Replace `any` with type
@@ -1218,9 +1216,7 @@ export function removeSnap(
       subjects[snapId]?.permissions?.snap_manageAccounts !== undefined;
     ///: END:ONLY_INCLUDE_IF
 
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     try {
-      ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       if (isAccountsSnap) {
         const addresses: string[] = await submitRequestToBackground(
@@ -1232,7 +1228,6 @@ export function removeSnap(
         }
       }
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 
       await submitRequestToBackground('removeSnap', [snapId]);
       await forceUpdateMetamaskState(dispatch);
@@ -1249,15 +1244,8 @@ export async function handleSnapRequest(args: {
   snapId: string;
   origin: string;
   handler: string;
-  request: {
-    id?: string;
-    jsonrpc: '2.0';
-    method: string;
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    params?: Record<string, any>;
-  };
-}): Promise<void> {
+  request: JsonRpcRequest;
+}): Promise<unknown> {
   return submitRequestToBackground('handleSnapRequest', [args]);
 }
 
@@ -1344,32 +1332,6 @@ export function disconnectOriginFromSnap(
     await forceUpdateMetamaskState(dispatch);
   };
 }
-
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-
-export function setDesktopEnabled(desktopEnabled: boolean) {
-  return async () => {
-    try {
-      await submitRequestToBackground('setDesktopEnabled', [desktopEnabled]);
-    } catch (error) {
-      log.error(error);
-    }
-  };
-}
-
-export async function generateDesktopOtp() {
-  return await submitRequestToBackground('generateDesktopOtp');
-}
-
-export async function testDesktopConnection() {
-  return await submitRequestToBackground('testDesktopConnection');
-}
-
-export async function disableDesktop() {
-  return await submitRequestToBackground('disableDesktop');
-}
-///: END:ONLY_INCLUDE_IF
 
 export function cancelDecryptMsg(
   msgData: TemporaryMessageDataType,
@@ -2192,7 +2154,7 @@ export function automaticallySwitchNetwork(
   selectedTabOrigin: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await dispatch(setActiveNetwork(networkClientIdForThisDomain));
+    await setActiveNetworkConfigurationId(networkClientIdForThisDomain);
     await dispatch(
       setSwitchedNetworkDetails({
         networkClientId: networkClientIdForThisDomain,
@@ -2528,6 +2490,17 @@ export function setActiveNetwork(
   };
 }
 
+export async function setActiveNetworkConfigurationId(
+  networkConfigurationId: string,
+): Promise<undefined> {
+  log.debug(
+    `background.setActiveNetworkConfigurationId: ${networkConfigurationId}`,
+  );
+  await submitRequestToBackground('setActiveNetworkConfigurationId', [
+    networkConfigurationId,
+  ]);
+}
+
 export function rollbackToPreviousProvider(): ThunkAction<
   void,
   MetaMaskReduxState,
@@ -2588,6 +2561,7 @@ export function addToAddressBook(
         chainId,
         memo,
       ]);
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Address book failed to update'));
@@ -2610,11 +2584,12 @@ export function removeFromAddressBook(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.removeFromAddressBook`);
 
-  return async () => {
+  return async (dispatch) => {
     await submitRequestToBackground('removeFromAddressBook', [
       chainId,
       toChecksumHexAddress(addressToRemove),
     ]);
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 
@@ -2801,6 +2776,21 @@ export function showLoadingIndication(
   };
 }
 
+export function showNftStillFetchingIndication(): Action {
+  return {
+    type: actionConstants.SHOW_NFT_STILL_FETCHING_INDICATION,
+  };
+}
+
+export function setShowNftDetectionEnablementToast(
+  value: boolean,
+): PayloadAction<string | ReactFragment | undefined> {
+  return {
+    type: actionConstants.SHOW_NFT_DETECTION_ENABLEMENT_TOAST,
+    payload: value,
+  };
+}
+
 export function setHardwareWalletDefaultHdPath({
   device,
   path,
@@ -2817,6 +2807,12 @@ export function setHardwareWalletDefaultHdPath({
 export function hideLoadingIndication(): Action {
   return {
     type: actionConstants.HIDE_LOADING,
+  };
+}
+
+export function hideNftStillFetchingIndication(): Action {
+  return {
+    type: actionConstants.HIDE_NFT_STILL_FETCHING_INDICATION,
   };
 }
 
@@ -3087,12 +3083,20 @@ export function setRedesignedConfirmationsEnabled(value: boolean) {
   return setPreference('redesignedConfirmationsEnabled', value);
 }
 
+export function setRedesignedTransactionsEnabled(value: boolean) {
+  return setPreference('redesignedTransactionsEnabled', value);
+}
+
 export function setFeatureNotificationsEnabled(value: boolean) {
   return setPreference('featureNotificationsEnabled', value);
 }
 
 export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
+}
+
+export function setRedesignedConfirmationsDeveloperEnabled(value: boolean) {
+  return setPreference('isRedesignedConfirmationsDeveloperEnabled', value);
 }
 
 export function setSmartTransactionsOptInStatus(
@@ -3115,7 +3119,11 @@ export function setSmartTransactionsOptInStatus(
   };
 }
 
-export function setAutoLockTimeLimit(value: boolean) {
+export function setShowTokenAutodetectModal(value: boolean) {
+  return setPreference('showTokenAutodetectModal', value);
+}
+
+export function setAutoLockTimeLimit(value: number | null) {
   return setPreference('autoLockTimeLimit', value);
 }
 
@@ -3260,20 +3268,35 @@ export function setParticipateInMetaMetrics(
             reject(err);
             return;
           }
-          /**
-           * We need to inform sentry that the user's optin preference may have
-           * changed. The logic to determine which way to toggle is in the
-           * toggleSession handler in setupSentry.js.
-           */
-          window.sentry?.toggleSession();
 
           dispatch({
             type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
             value: participationPreference,
           });
+
           resolve([participationPreference, metaMetricsId as string]);
         },
       );
+    });
+  };
+}
+
+export function setDataCollectionForMarketing(
+  dataCollectionPreference: boolean,
+): ThunkAction<
+  Promise<[boolean, string]>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setDataCollectionForMarketing`);
+    await submitRequestToBackground('setDataCollectionForMarketing', [
+      dataCollectionPreference,
+    ]);
+    dispatch({
+      type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
+      value: dataCollectionPreference,
     });
   };
 }
@@ -3331,23 +3354,6 @@ export function setUseMultiAccountBalanceChecker(
     log.debug(`background.setUseMultiAccountBalanceChecker`);
     callBackgroundMethod('setUseMultiAccountBalanceChecker', [val], (err) => {
       dispatch(hideLoadingIndication());
-      if (err) {
-        dispatch(displayWarning(err));
-      }
-    });
-  };
-}
-
-export function dismissOpenSeaToBlockaidBanner(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    // skipping loading indication as it blips in the UI and looks weird
-    log.debug(`background.dismissOpenSeaToBlockaidBanner`);
-    callBackgroundMethod('dismissOpenSeaToBlockaidBanner', [], (err) => {
       if (err) {
         dispatch(displayWarning(err));
       }
@@ -3467,10 +3473,13 @@ export function detectNfts(): ThunkAction<
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
+    dispatch(showNftStillFetchingIndication());
     log.debug(`background.detectNfts`);
-    await submitRequestToBackground('detectNfts');
-    dispatch(hideLoadingIndication());
+    try {
+      await submitRequestToBackground('detectNfts');
+    } finally {
+      dispatch(hideNftStillFetchingIndication());
+    }
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -3873,6 +3882,16 @@ export function setInitialGasEstimate(
   };
 }
 
+// Bridge
+export function setBridgeFeatureFlags(
+  featureFlags: BridgeFeatureFlags,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('setBridgeFeatureFlags', [featureFlags]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 // Permissions
 
 export function requestAccountsPermissionWithId(
@@ -4065,17 +4084,38 @@ export function rejectAllMessages(
 
 export function setFirstTimeFlowType(
   type: FirstTimeFlowType,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      log.debug(`background.setFirstTimeFlowType`);
+      await submitRequestToBackground('setFirstTimeFlowType', [type]);
+      dispatch({
+        type: actionConstants.SET_FIRST_TIME_FLOW_TYPE,
+        value: type,
+      });
+    } catch (err) {
+      dispatch(displayWarning(err));
+    }
+  };
+}
+
+export function setShowTokenAutodetectModalOnUpgrade(
+  val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.setFirstTimeFlowType`);
-    callBackgroundMethod('setFirstTimeFlowType', [type], (err) => {
-      if (err) {
-        dispatch(displayWarning(err));
-      }
-    });
+    log.debug(`background.setShowTokenAutodetectModalOnUpgrade`);
+    callBackgroundMethod(
+      'setShowTokenAutodetectModalOnUpgrade',
+      [val],
+      (err) => {
+        if (err) {
+          dispatch(displayWarning(err));
+        }
+      },
+    );
     dispatch({
-      type: actionConstants.SET_FIRST_TIME_FLOW_TYPE,
-      value: type,
+      type: actionConstants.SET_SHOW_TOKEN_AUTO_DETECT_MODAL_UPGRADE,
+      value: val,
     });
   };
 }
@@ -4100,6 +4140,18 @@ export function setNewNetworkAdded({
     type: actionConstants.SET_NEW_NETWORK_ADDED,
     payload: { networkConfigurationId, nickname },
   };
+}
+
+export function setEditedNetwork(
+  payload:
+    | {
+        networkConfigurationId: string;
+        nickname: string;
+        editCompleted: boolean;
+      }
+    | undefined = undefined,
+): PayloadAction<object> {
+  return { type: actionConstants.SET_EDIT_NETWORK, payload };
 }
 
 export function setNewNftAddedMessage(
@@ -4159,20 +4211,6 @@ export function setDismissSeedBackUpReminder(
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     await submitRequestToBackground('setDismissSeedBackUpReminder', [value]);
-    dispatch(hideLoadingIndication());
-  };
-}
-
-export function setDisabledRpcMethodPreference(
-  methodName: string,
-  value: number,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    await submitRequestToBackground('setDisabledRpcMethodPreference', [
-      methodName,
-      value,
-    ]);
     dispatch(hideLoadingIndication());
   };
 }
@@ -4246,6 +4284,12 @@ export function setSurveyLinkLastClickedOrClosed(time: number) {
 export function setNewPrivacyPolicyToastClickedOrClosed() {
   return async () => {
     await submitRequestToBackground('setNewPrivacyPolicyToastClickedOrClosed');
+  };
+}
+
+export function setOnboardingDate() {
+  return async () => {
+    await submitRequestToBackground('setOnboardingDate');
   };
 }
 
@@ -4901,7 +4945,6 @@ export function setNetworkClientIdForDomain(
   ]);
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 export function setSecurityAlertsEnabled(val: boolean): void {
   try {
     submitRequestToBackground('setSecurityAlertsEnabled', [val]);
@@ -4909,7 +4952,22 @@ export function setSecurityAlertsEnabled(val: boolean): void {
     logErrorWithMessage(error);
   }
 }
-///: END:ONLY_INCLUDE_IF
+
+export async function setBitcoinSupportEnabled(value: boolean) {
+  try {
+    await submitRequestToBackground('setBitcoinSupportEnabled', [value]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+
+export async function setBitcoinTestnetSupportEnabled(value: boolean) {
+  try {
+    await submitRequestToBackground('setBitcoinTestnetSupportEnabled', [value]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
@@ -5110,7 +5168,6 @@ export async function throwTestBackgroundError(message: string): Promise<void> {
   await submitRequestToBackground('throwTestError', [message]);
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * Set status of popover warning for the first snap installation.
  *
@@ -5161,15 +5218,12 @@ export function deleteInterface(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
 }
-///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 export function trackInsightSnapUsage(snapId: string) {
   return async () => {
     await submitRequestToBackground('trackInsightSnapView', [snapId]);
   };
 }
-///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export async function setSnapsAddSnapAccountModalDismissed() {
@@ -5566,4 +5620,51 @@ export function setIsProfileSyncingEnabled(
       dispatch(hideLoadingIndication());
     }
   };
+}
+
+export function setShowNftAutodetectModal(value: boolean) {
+  return setPreference('showNftAutodetectModal', value);
+}
+
+export function setConfirmationAdvancedDetailsOpen(value: boolean) {
+  return setPreference('showConfirmationAdvancedDetails', value);
+}
+
+export async function getNextAvailableAccountName(
+  keyring?: KeyringTypes,
+): Promise<string> {
+  return await submitRequestToBackground<string>(
+    'getNextAvailableAccountName',
+    [keyring],
+  );
+}
+
+export async function decodeTransactionData({
+  transactionData,
+  contractAddress,
+  chainId,
+}: {
+  transactionData: Hex;
+  contractAddress: Hex;
+  chainId: Hex;
+}): Promise<DecodedTransactionDataResponse | undefined> {
+  return await submitRequestToBackground<string>('decodeTransactionData', [
+    {
+      transactionData,
+      contractAddress,
+      chainId,
+    },
+  ]);
+}
+
+export async function multichainUpdateBalance(
+  accountId: string,
+): Promise<void> {
+  return await submitRequestToBackground<void>('multichainUpdateBalance', [
+    accountId,
+  ]);
+}
+
+export async function multichainUpdateBalances(): Promise<void> {
+  return await submitRequestToBackground<void>('multichainUpdateBalances', []);
 }

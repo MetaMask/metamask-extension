@@ -8,6 +8,7 @@ import {
   Display,
   TextColor,
   TextVariant,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 
 type NotificationsTagCounterProps = {
@@ -37,7 +38,7 @@ export const NotificationsTagCounter = ({
         }}
         backgroundColor={BackgroundColor.errorDefault}
         borderStyle={BorderStyle.none}
-        borderRadius={BorderRadius.MD}
+        borderRadius={BorderRadius.LG}
         paddingTop={0}
         paddingBottom={0}
         paddingLeft={0}
@@ -47,6 +48,7 @@ export const NotificationsTagCounter = ({
           color={TextColor.errorInverse}
           variant={TextVariant.bodyXs}
           className="notifications-tag-counter__unread-dot"
+          textAlign={TextAlign.Center}
         >
           {notificationsCount > 10 ? '9+' : notificationsCount}
         </Text>
@@ -58,7 +60,7 @@ export const NotificationsTagCounter = ({
     <Box
       backgroundColor={BackgroundColor.errorDefault}
       borderStyle={BorderStyle.none}
-      borderRadius={BorderRadius.MD}
+      borderRadius={BorderRadius.LG}
       paddingTop={0}
       paddingBottom={0}
       className="notifications-tag-counter"
@@ -67,6 +69,8 @@ export const NotificationsTagCounter = ({
         color={TextColor.errorInverse}
         variant={TextVariant.bodySm}
         data-testid="global-menu-notification-count"
+        className="notifications-tag-counter__text"
+        textAlign={TextAlign.Center}
       >
         {notificationsCount > 10 ? '9+' : notificationsCount}
       </Text>

@@ -5,7 +5,7 @@ import { Text } from '../../../../../component-library';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
 import { Severity } from '../../../../../../helpers/constants/design-system';
 import mockState from '../../../../../../../test/data/mock-state.json';
-import { AlertRow, AlertRowProps } from './alert-row';
+import { ConfirmInfoAlertRow, ConfirmInfoAlertRowProps } from './alert-row';
 
 const onProcessActionMock = jest.fn();
 
@@ -36,7 +36,7 @@ describe('AlertRow', () => {
     },
   ];
   const renderAlertRow = (
-    props?: Partial<AlertRowProps>,
+    props?: Partial<ConfirmInfoAlertRowProps>,
     state?: Record<string, unknown>,
   ) => {
     const STATE_MOCK = {
@@ -60,7 +60,7 @@ describe('AlertRow', () => {
 
     const mockStore = configureMockStore([])(STATE_MOCK);
     return renderWithProvider(
-      <AlertRow
+      <ConfirmInfoAlertRow
         label={KEY_ALERT_KEY_MOCK}
         children={<Text>value</Text>}
         ownerId={OWNER_ID_NO_ALERT_MOCK}

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -16,6 +16,7 @@ import { markNotificationsAsRead } from '../../store/actions';
 import { Box, Button, ButtonVariant } from '../../components/component-library';
 import { BlockSize } from '../../helpers/constants/design-system';
 import type { NotificationType } from './notifications';
+import { SNAP } from './snap/types/types';
 
 export type NotificationsListReadAllButtonProps = {
   notifications: NotificationType[];
@@ -28,20 +29,17 @@ export const NotificationsListReadAllButton = ({
   const t = useI18nContext();
   const { markNotificationAsRead } = useMarkNotificationAsRead();
   const trackEvent = useContext(MetaMetricsContext);
-
   const unreadNotifications = useSelector(getUnreadNotifications);
 
-  const [notificationReadArray, setNotificationReadArray] =
-    useState<MarkAsReadNotificationsParam>([]);
-
-  useEffect(() => {
+  const handleOnClick = () => {
     let notificationsRead: MarkAsReadNotificationsParam = [];
 
     if (notifications && notifications.length > 0) {
       notificationsRead = notifications
         .filter(
           (notification): notification is Notification =>
-            (notification as Notification).id !== undefined,
+            (notification as Notification).id !== undefined &&
+            notification.type !== SNAP,
         )
         .map((notification: Notification) => ({
           id: notification.id,
@@ -49,17 +47,14 @@ export const NotificationsListReadAllButton = ({
           isRead: notification.isRead,
         }));
     }
-    setNotificationReadArray(notificationsRead);
-  }, [notifications]);
 
-  const handleOnClick = () => {
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.MarkAllNotificationsRead,
     });
 
     // Mark all metamask notifications as read
-    markNotificationAsRead(notificationReadArray);
+    markNotificationAsRead(notificationsRead);
 
     // Mark all snap notifications as read
     const unreadNotificationIds = unreadNotifications.map(({ id }) => id);

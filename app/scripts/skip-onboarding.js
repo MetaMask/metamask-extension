@@ -100,13 +100,13 @@ async function generateVaultAndAccount(encodedSeedPhrase, password) {
     return new Uint8Array(new Uint16Array(indices).buffer);
   };
 
-  const res = await krCtrl.createNewVaultAndRestore(
+  await krCtrl.createNewVaultAndRestore(
     password,
     _convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
   );
 
   const { vault } = krCtrl.state;
-  const account = res.keyrings[0].accounts[0];
+  const account = krCtrl.state.keyrings[0].accounts[0];
 
   return { vault, account };
 }
@@ -137,7 +137,6 @@ function generateAccountsControllerState(account) {
           options: {},
           methods: [
             'personal_sign',
-            'eth_sign',
             'eth_signTransaction',
             'eth_signTypedData_v1',
             'eth_signTypedData_v3',

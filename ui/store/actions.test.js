@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import enLocale from '../../app/_locales/en/messages.json';
 import MetaMaskController from '../../app/scripts/metamask-controller';
@@ -10,6 +10,7 @@ import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
 import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametrics';
 import { TRIGGER_TYPES } from '../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -36,7 +37,7 @@ const defaultState = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
       },
@@ -264,7 +265,7 @@ describe('Actions', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             },
@@ -818,7 +819,6 @@ describe('Actions', () => {
                 options: {},
                 methods: [
                   'personal_sign',
-                  'eth_sign',
                   'eth_signTransaction',
                   'eth_signTypedData_v1',
                   'eth_signTypedData_v3',
@@ -866,7 +866,6 @@ describe('Actions', () => {
                 options: {},
                 methods: [
                   'personal_sign',
-                  'eth_sign',
                   'eth_signTransaction',
                   'eth_signTypedData_v1',
                   'eth_signTypedData_v3',
@@ -1388,6 +1387,27 @@ describe('Actions', () => {
     });
   });
 
+  describe('#setEditedNetwork', () => {
+    it('sets appState.setEditedNetwork to provided value', async () => {
+      const store = mockStore();
+
+      const newNetworkAddedDetails = {
+        nickname: 'test-chain',
+        networkConfigurationId: 'testNetworkConfigurationId',
+        editCompleted: true,
+      };
+
+      store.dispatch(actions.setEditedNetwork(newNetworkAddedDetails));
+
+      const resultantActions = store.getActions();
+
+      expect(resultantActions[0]).toStrictEqual({
+        type: 'SET_EDIT_NETWORK',
+        payload: newNetworkAddedDetails,
+      });
+    });
+  });
+
   describe('#addToAddressBook', () => {
     it('calls setAddressBook', async () => {
       const store = mockStore();
@@ -1398,6 +1418,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         setAddressBook: setAddressBookStub,
+        getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1703,12 +1724,6 @@ describe('Actions', () => {
   });
 
   describe('#setParticipateInMetaMetrics', () => {
-    beforeAll(() => {
-      window.sentry = {
-        toggleSession: jest.fn(),
-        endSession: jest.fn(),
-      };
-    });
     it('sets participateInMetaMetrics to true', async () => {
       const store = mockStore();
       const setParticipateInMetaMetricsStub = jest.fn((_, cb) => cb());
@@ -1724,7 +1739,6 @@ describe('Actions', () => {
         true,
         expect.anything(),
       );
-      expect(window.sentry.toggleSession).toHaveBeenCalled();
     });
   });
 
@@ -2074,7 +2088,7 @@ describe('Actions', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)],
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -2117,30 +2131,6 @@ describe('Actions', () => {
         transactionIdMock,
         expect.any(Function),
       ]);
-    });
-  });
-
-  describe('Desktop', () => {
-    describe('#setDesktopEnabled', () => {
-      it('calls background setDesktopEnabled method', async () => {
-        const store = mockStore();
-        const setDesktopEnabled = sinon.stub().callsFake((_, cb) => cb());
-
-        background.getApi.returns({
-          setDesktopEnabled,
-          getState: sinon.stub().callsFake((cb) =>
-            cb(null, {
-              desktopEnabled: true,
-            }),
-          ),
-        });
-
-        setBackgroundConnection(background.getApi());
-
-        await store.dispatch(actions.setDesktopEnabled(true));
-
-        expect(setDesktopEnabled.calledOnceWith(true)).toBeTruthy();
-      });
     });
   });
 
@@ -2689,6 +2679,27 @@ describe('Actions', () => {
       ];
 
       expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#setBridgeFeatureFlags', () => {
+    it('calls setBridgeFeatureFlags in the background', async () => {
+      const store = mockStore();
+      background.setBridgeFeatureFlags = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.setBridgeFeatureFlags({ extensionSupport: true }),
+      );
+
+      expect(background.setBridgeFeatureFlags.callCount).toStrictEqual(1);
+      expect(background.setBridgeFeatureFlags.getCall(0).args[0]).toStrictEqual(
+        {
+          extensionSupport: true,
+        },
+      );
     });
   });
 });

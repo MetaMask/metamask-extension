@@ -5,7 +5,7 @@ import { CustodyController } from '@metamask-institutional/custody-controller';
 import { SignatureController } from '@metamask/signature-controller';
 import { NetworkController } from '@metamask/network-controller';
 import { PreferencesController } from '../../app/scripts/controllers/preferences';
-import AppStateController from '../../app/scripts/controllers/app-state';
+import { AppStateController } from '../../app/scripts/controllers/app-state';
 import AccountTracker from '../../app/scripts/lib/account-tracker';
 import MetaMetricsController from '../../app/scripts/controllers/metametrics';
 

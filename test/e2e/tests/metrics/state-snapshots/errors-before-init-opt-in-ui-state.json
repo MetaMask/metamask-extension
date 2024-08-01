@@ -19,7 +19,9 @@
       "web3ShimUsageOrigins": "object"
     },
     "AnnouncementController": { "announcements": "object" },
-    "NetworkOrderController": { "orderedNetworkList": {} },
+    "NetworkOrderController": {
+      "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
+    },
     "AccountOrderController": {
       "pinnedAccountList": {},
       "hiddenAccountList": {}
@@ -38,6 +40,8 @@
       "recoveryPhraseReminderLastShown": "number",
       "showTestnetMessageInDropdown": true,
       "trezorModel": null,
+      "newPrivacyPolicyToastClickedOrClosed": "boolean",
+      "newPrivacyPolicyToastShownDate": "number",
       "usedNetworks": {
         "0x1": true,
         "0xe708": true,
@@ -67,6 +71,7 @@
       "fragments": "object",
       "metaMetricsId": "fake-metrics-id",
       "participateInMetaMetrics": true,
+      "dataCollectionForMarketing": "boolean",
       "traits": "object"
     },
     "NetworkController": {
@@ -112,7 +117,10 @@
         "showTestNetworks": false,
         "smartTransactionsOptInStatus": false,
         "useNativeCurrencyAsPrimaryCurrency": true,
-        "petnamesEnabled": true
+        "petnamesEnabled": true,
+        "showTokenAutodetectModal": "boolean",
+        "showConfirmationAdvancedDetails": false,
+        "isRedesignedConfirmationsDeveloperEnabled": "boolean"
       },
       "selectedAddress": "string",
       "theme": "light",
@@ -125,6 +133,7 @@
       "useMultiAccountBalanceChecker": true,
       "useRequestQueue": true
     },
+    "QueuedRequestController": { "queuedRequestCount": 0 },
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {
       "smartTransactionsState": {

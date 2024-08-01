@@ -57,7 +57,6 @@ type TemporaryBackgroundState = {
   transactions: TransactionMeta[];
   ledgerTransportType: LedgerTransportTypes;
   unapprovedDecryptMsgs: MessagesIndexedById;
-  unapprovedMsgs: MessagesIndexedById;
   unapprovedPersonalMsgs: MessagesIndexedById;
   unapprovedTypedMessages: MessagesIndexedById;
   networksMetadata: {
@@ -94,6 +93,16 @@ export type CombinedBackgroundAndReduxState = RootReducerReturnType & {
     origin: string;
   };
   metamask: RootReducerReturnType['metamask'] & TemporaryBackgroundState;
+  appState: RootReducerReturnType['appState'];
+  send: RootReducerReturnType['send'];
+  DNS: RootReducerReturnType['DNS'];
+  history: RootReducerReturnType['history'];
+  confirm: RootReducerReturnType['confirm'];
+  confirmAlerts: RootReducerReturnType['confirmAlerts'];
+  confirmTransaction: RootReducerReturnType['confirmTransaction'];
+  swaps: RootReducerReturnType['swaps'];
+  gas: RootReducerReturnType['gas'];
+  localeMessages: RootReducerReturnType['localeMessages'];
 };
 
 // TODO: Replace `any` with type

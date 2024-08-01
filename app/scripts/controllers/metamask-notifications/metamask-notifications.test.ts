@@ -10,7 +10,7 @@ import {
   AuthenticationControllerGetBearerToken,
   AuthenticationControllerIsSignedIn,
 } from '../authentication/authentication-controller';
-import { MOCK_ACCESS_TOKEN } from '../authentication/mocks/mockServices';
+import { MOCK_ACCESS_TOKEN } from '../authentication/mocks/mockResponses';
 import {
   UserStorageControllerGetStorageKey,
   UserStorageControllerPerformGetStorage,
@@ -31,7 +31,6 @@ import {
 import {
   createMockFeatureAnnouncementAPIResult,
   createMockFeatureAnnouncementRaw,
-  mockFetchFeatureAnnouncementNotifications,
 } from './mocks/mock-feature-announcements';
 import {
   MOCK_USER_STORAGE_ACCOUNT,
@@ -39,16 +38,21 @@ import {
   createMockUserStorageWithTriggers,
 } from './mocks/mock-notification-user-storage';
 import {
+  mockFetchFeatureAnnouncementNotifications,
   mockBatchCreateTriggers,
   mockBatchDeleteTriggers,
   mockListNotifications,
   mockMarkNotificationsAsRead,
-} from './mocks/mock-onchain-notifications';
+} from './mocks/mockServices';
 import { createMockNotificationEthSent } from './mocks/mock-raw-notifications';
 import { processNotification } from './processors/process-notifications';
 import * as OnChainNotifications from './services/onchain-notifications';
 import { UserStorage } from './types/user-storage/user-storage';
 import * as MetamaskNotificationsUtils from './utils/utils';
+
+// Mock type used for testing purposes
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type MockVar = any;
 
 describe('metamask-notifications - constructor()', () => {
   test('initializes state & override state', () => {
@@ -627,6 +631,7 @@ function mockNotificationMessenger() {
     name: 'MetamaskNotificationsController',
     allowedActions: [
       'KeyringController:getAccounts',
+      'KeyringController:getState',
       'AuthenticationController:getBearerToken',
       'AuthenticationController:isSignedIn',
       'PushPlatformNotificationsController:disablePushNotifications',
@@ -639,6 +644,8 @@ function mockNotificationMessenger() {
     ],
     allowedEvents: [
       'KeyringController:stateChange',
+      'KeyringController:lock',
+      'KeyringController:unlock',
       'PushPlatformNotificationsController:onNewNotifications',
     ],
   });
@@ -733,6 +740,10 @@ function mockNotificationMessenger() {
 
     if (actionType === 'UserStorageController:performSetStorage') {
       return mockPerformSetStorage(params[0], params[1]);
+    }
+
+    if (actionType === 'KeyringController:getState') {
+      return { isUnlocked: true } as MockVar;
     }
 
     function exhaustedMessengerMocks(action: never) {

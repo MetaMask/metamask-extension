@@ -91,7 +91,7 @@ export async function fetchLocale(
 ): Promise<I18NMessageDict> {
   try {
     const response = await fetchWithTimeout(
-      `./_locales/${localeCode}/messages.json`,
+      `../_locales/${localeCode}/messages.json`,
     );
     return await response.json();
   } catch (error) {

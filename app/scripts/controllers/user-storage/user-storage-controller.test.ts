@@ -17,6 +17,7 @@ import {
 } from './mocks/mockStorage';
 import UserStorageController, {
   AllowedActions,
+  AllowedEvents,
 } from './user-storage-controller';
 import {
   mockEndpointGetUserStorage,
@@ -73,6 +74,25 @@ describe('user-storage/user-storage-controller - performGetStorage() tests', () 
     ).rejects.toThrow();
   });
 
+  test('rejects if wallet is locked', async () => {
+    const { messengerMocks } = arrangeMocks();
+
+    // Mock wallet is locked
+    messengerMocks.mockKeyringControllerGetState.mockReturnValue({
+      isUnlocked: false,
+    });
+
+    const controller = new UserStorageController({
+      messenger: messengerMocks.messenger,
+      getMetaMetricsState: () => true,
+    });
+
+    await expect(
+      controller.performGetStorage('notification_settings'),
+    ).rejects.toThrow();
+  });
+
+  // @ts-expect-error This is missing from the Mocha type definitions
   test.each([
     [
       'fails when no bearer token is found (auth errors)',
@@ -88,18 +108,26 @@ describe('user-storage/user-storage-controller - performGetStorage() tests', () 
           new Error('MOCK FAILURE'),
         ),
     ],
-  ])('rejects on auth failure - %s', async (_, arrangeFailureCase) => {
-    const { messengerMocks } = arrangeMocks();
-    arrangeFailureCase(messengerMocks);
-    const controller = new UserStorageController({
-      messenger: messengerMocks.messenger,
-      getMetaMetricsState: () => true,
-    });
+  ])(
+    'rejects on auth failure - %s',
+    async (
+      _: string,
+      arrangeFailureCase: (
+        messengerMocks: ReturnType<typeof mockUserStorageMessenger>,
+      ) => void,
+    ) => {
+      const { messengerMocks } = arrangeMocks();
+      arrangeFailureCase(messengerMocks);
+      const controller = new UserStorageController({
+        messenger: messengerMocks.messenger,
+        getMetaMetricsState: () => true,
+      });
 
-    await expect(
-      controller.performGetStorage('notification_settings'),
-    ).rejects.toThrow();
-  });
+      await expect(
+        controller.performGetStorage('notification_settings'),
+      ).rejects.toThrow();
+    },
+  );
 
   function arrangeMocks() {
     return {
@@ -137,6 +165,25 @@ describe('user-storage/user-storage-controller - performSetStorage() tests', () 
     ).rejects.toThrow();
   });
 
+  test('rejects if wallet is locked', async () => {
+    const { messengerMocks } = arrangeMocks();
+
+    // Mock wallet is locked
+    messengerMocks.mockKeyringControllerGetState.mockReturnValue({
+      isUnlocked: false,
+    });
+
+    const controller = new UserStorageController({
+      messenger: messengerMocks.messenger,
+      getMetaMetricsState: () => true,
+    });
+
+    await expect(
+      controller.performSetStorage('notification_settings', 'new data'),
+    ).rejects.toThrow();
+  });
+
+  // @ts-expect-error This is missing from the Mocha type definitions
   test.each([
     [
       'fails when no bearer token is found (auth errors)',
@@ -152,18 +199,26 @@ describe('user-storage/user-storage-controller - performSetStorage() tests', () 
           new Error('MOCK FAILURE'),
         ),
     ],
-  ])('rejects on auth failure - %s', async (_, arrangeFailureCase) => {
-    const { messengerMocks } = arrangeMocks();
-    arrangeFailureCase(messengerMocks);
-    const controller = new UserStorageController({
-      messenger: messengerMocks.messenger,
-      getMetaMetricsState: () => true,
-    });
+  ])(
+    'rejects on auth failure - %s',
+    async (
+      _: string,
+      arrangeFailureCase: (
+        messengerMocks: ReturnType<typeof mockUserStorageMessenger>,
+      ) => void,
+    ) => {
+      const { messengerMocks } = arrangeMocks();
+      arrangeFailureCase(messengerMocks);
+      const controller = new UserStorageController({
+        messenger: messengerMocks.messenger,
+        getMetaMetricsState: () => true,
+      });
 
-    await expect(
-      controller.performSetStorage('notification_settings', 'new data'),
-    ).rejects.toThrow();
-  });
+      await expect(
+        controller.performSetStorage('notification_settings', 'new data'),
+      ).rejects.toThrow();
+    },
+  );
 
   test('rejects if api call fails', async () => {
     const { messengerMocks } = arrangeMocks({
@@ -270,10 +325,11 @@ describe('user-storage/user-storage-controller - enableProfileSyncing() tests', 
 function mockUserStorageMessenger() {
   const messenger = new ControllerMessenger<
     AllowedActions,
-    never
+    AllowedEvents
   >().getRestricted({
     name: 'UserStorageController',
     allowedActions: [
+      'KeyringController:getState',
       'SnapController:handleRequest',
       'AuthenticationController:getBearerToken',
       'AuthenticationController:getSessionProfile',
@@ -283,6 +339,7 @@ function mockUserStorageMessenger() {
       'MetamaskNotificationsController:disableMetamaskNotifications',
       'MetamaskNotificationsController:selectIsMetamaskNotificationsEnabled',
     ],
+    allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
   });
 
   const mockSnapGetPublicKey = jest.fn().mockResolvedValue('MOCK_PUBLIC_KEY');
@@ -326,6 +383,10 @@ function mockUserStorageMessenger() {
     typedMockFn<
       MetamaskNotificationsControllerDisableMetamaskNotifications['handler']
     >().mockResolvedValue();
+
+  const mockKeyringControllerGetState = typedMockFn<
+    () => { isUnlocked: boolean }
+  >().mockReturnValue({ isUnlocked: true });
 
   jest.spyOn(messenger, 'call').mockImplementation((...args) => {
     const [actionType, params] = args;
@@ -377,6 +438,10 @@ function mockUserStorageMessenger() {
       return mockAuthPerformSignOut();
     }
 
+    if (actionType === 'KeyringController:getState') {
+      return mockKeyringControllerGetState();
+    }
+
     function exhaustedMessengerMocks(action: never) {
       throw new Error(`MOCK_FAIL - unsupported messenger call: ${action}`);
     }
@@ -395,5 +460,6 @@ function mockUserStorageMessenger() {
     mockMetamaskNotificationsIsMetamaskNotificationsEnabled,
     mockMetamaskNotificationsDisableNotifications,
     mockAuthPerformSignOut,
+    mockKeyringControllerGetState,
   };
 }

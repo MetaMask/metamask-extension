@@ -60,6 +60,7 @@ export enum IconName {
   Connect = 'connect',
   CopySuccess = 'copy-success',
   Copy = 'copy',
+  Customize = 'customize',
   Danger = 'danger',
   Dark = 'dark',
   Data = 'data',

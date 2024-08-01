@@ -7,7 +7,9 @@ import type { TRIGGER_TYPES } from '../../metamask-notifications/constants/notif
 import type { OnChainRawNotification } from '../../metamask-notifications/types/on-chain-notification/on-chain-notification';
 import { t } from '../../../translate';
 import type { Notification } from '../../metamask-notifications/types/types';
+import ExtensionPlatform from '../../../platforms/extension';
 import { getAmount, formatAmount } from './get-notification-data';
+import { getNotificationImage } from './get-notification-image';
 
 type PushNotificationMessage = {
   title: string;
@@ -27,6 +29,7 @@ type NotificationMessageDict = {
 };
 
 const sw = self as unknown as ServiceWorkerGlobalScope;
+const extensionPlatform = new ExtensionPlatform();
 
 function getChainSymbol(chainId: number) {
   return CHAIN_SYMBOLS[chainId] ?? null;
@@ -45,9 +48,11 @@ export async function onPushNotification(
     return;
   }
 
+  const iconUrl = await getNotificationImage();
+
   await registration.showNotification(notificationMessage.title, {
     body: notificationMessage.description,
-    icon: './images/icon-64.png',
+    icon: iconUrl,
     tag: notification?.id,
     data: notification,
   });
@@ -65,7 +70,10 @@ export async function onNotificationClick(
   emitEvent?.(data);
 
   // Navigate
-  const destination = `chrome-extension://${sw.location.host}/home.html#notifications/${data.id}`;
+  const destination = `${extensionPlatform.getExtensionURL(
+    null,
+    null,
+  )}#notifications/${data.id}`;
   event.waitUntil(sw.clients.openWindow(destination));
 }
 

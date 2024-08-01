@@ -24,7 +24,6 @@ const mockSelectedAccount = {
   options: {},
   methods: [
     'personal_sign',
-    'eth_sign',
     'eth_signTransaction',
     'eth_signTypedData_v1',
     'eth_signTypedData_v3',
@@ -52,6 +51,7 @@ jest.mock('../../../selectors', () => {
   return {
     getAccountType: mockGetAccountType,
     getSelectedInternalAccount: mockGetSelectedAccount,
+    getCurrentChainId: jest.fn(() => '0x1'),
   };
 });
 

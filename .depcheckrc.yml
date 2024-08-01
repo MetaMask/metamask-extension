@@ -39,8 +39,6 @@ ignores:
   - 'wait-on'
   - 'tsx' # used in .devcontainer
   - 'prettier-eslint' # used by the Prettier ESLint VSCode extension
-  # development tool
-  - 'nyc'
   # storybook
   - '@storybook/cli'
   - '@storybook/core'

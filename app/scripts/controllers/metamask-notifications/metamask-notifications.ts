@@ -2,7 +2,6 @@ import {
   BaseController,
   RestrictedControllerMessenger,
   ControllerGetStateAction,
-  ControllerStateChangeEvent,
   StateMetadata,
 } from '@metamask/base-controller';
 import log from 'loglevel';
@@ -10,6 +9,9 @@ import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
   KeyringControllerGetAccountsAction,
   KeyringControllerStateChangeEvent,
+  KeyringControllerGetStateAction,
+  KeyringControllerLockEvent,
+  KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
 import {
   AuthenticationControllerGetBearerToken,
@@ -175,6 +177,16 @@ export declare type MetamaskNotificationsControllerSelectIsMetamaskNotifications
     handler: MetamaskNotificationsController['selectIsMetamaskNotificationsEnabled'];
   };
 
+export type MetamaskNotificationsControllerNotificationsListUpdatedEvent = {
+  type: `${typeof controllerName}:notificationsListUpdated`;
+  payload: [Notification[]];
+};
+
+export type MetamaskNotificationsControllerMarkNotificationsAsRead = {
+  type: `${typeof controllerName}:markNotificationsAsRead`;
+  payload: [Notification[]];
+};
+
 // Messenger Actions
 export type Actions =
   | MetamaskNotificationsControllerUpdateMetamaskNotificationsList
@@ -186,6 +198,7 @@ export type Actions =
 export type AllowedActions =
   // Keyring Controller Requests
   | KeyringControllerGetAccountsAction
+  | KeyringControllerGetStateAction
   // Auth Controller Requests
   | AuthenticationControllerGetBearerToken
   | AuthenticationControllerIsSignedIn
@@ -200,15 +213,17 @@ export type AllowedActions =
   | PushPlatformNotificationsControllerUpdateTriggerPushNotifications;
 
 // Events
-export type MetamaskNotificationsControllerMessengerEvents =
-  ControllerStateChangeEvent<
-    typeof controllerName,
-    MetamaskNotificationsControllerState
-  >;
+export type Events =
+  | MetamaskNotificationsControllerNotificationsListUpdatedEvent
+  | MetamaskNotificationsControllerMarkNotificationsAsRead;
 
 // Allowed Events
 export type AllowedEvents =
+  // Keyring Events
   | KeyringControllerStateChangeEvent
+  | KeyringControllerLockEvent
+  | KeyringControllerUnlockEvent
+  // Push Notification Events
   | PushPlatformNotificationsControllerOnNewNotificationEvent;
 
 // Type for the messenger of MetamaskNotificationsController
@@ -216,7 +231,7 @@ export type MetamaskNotificationsControllerMessenger =
   RestrictedControllerMessenger<
     typeof controllerName,
     Actions | AllowedActions,
-    AllowedEvents,
+    Events | AllowedEvents,
     AllowedActions['type'],
     AllowedEvents['type']
   >;
@@ -229,6 +244,34 @@ export class MetamaskNotificationsController extends BaseController<
   MetamaskNotificationsControllerState,
   MetamaskNotificationsControllerMessenger
 > {
+  // Flag to check is notifications have been setup when the browser/extension is initialized.
+  // We want to re-initialize push notifications when the browser/extension is refreshed
+  // To ensure we subscribe to the most up-to-date notifications
+  #isPushNotificationsSetup = false;
+
+  #isUnlocked = false;
+
+  #keyringController = {
+    setupLockedStateSubscriptions: (onUnlock: () => Promise<void>) => {
+      const { isUnlocked } = this.messagingSystem.call(
+        'KeyringController:getState',
+      );
+      this.#isUnlocked = isUnlocked;
+
+      this.messagingSystem.subscribe('KeyringController:unlock', () => {
+        this.#isUnlocked = true;
+        // messaging system cannot await promises
+        // we don't need to wait for a result on this.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        onUnlock();
+      });
+
+      this.messagingSystem.subscribe('KeyringController:lock', () => {
+        this.#isUnlocked = false;
+      });
+    },
+  };
+
   #auth = {
     getBearerToken: async () => {
       return await this.messagingSystem.call(
@@ -266,22 +309,34 @@ export class MetamaskNotificationsController extends BaseController<
 
   #pushNotifications = {
     enablePushNotifications: async (UUIDs: string[]) => {
-      return await this.messagingSystem.call(
-        'PushPlatformNotificationsController:enablePushNotifications',
-        UUIDs,
-      );
+      try {
+        await this.messagingSystem.call(
+          'PushPlatformNotificationsController:enablePushNotifications',
+          UUIDs,
+        );
+      } catch (e) {
+        log.error('Silently failed to enable push notifications', e);
+      }
     },
     disablePushNotifications: async (UUIDs: string[]) => {
-      return await this.messagingSystem.call(
-        'PushPlatformNotificationsController:disablePushNotifications',
-        UUIDs,
-      );
+      try {
+        await this.messagingSystem.call(
+          'PushPlatformNotificationsController:disablePushNotifications',
+          UUIDs,
+        );
+      } catch (e) {
+        log.error('Silently failed to disable push notifications', e);
+      }
     },
     updatePushNotifications: async (UUIDs: string[]) => {
-      return await this.messagingSystem.call(
-        'PushPlatformNotificationsController:updateTriggerPushNotifications',
-        UUIDs,
-      );
+      try {
+        await this.messagingSystem.call(
+          'PushPlatformNotificationsController:updateTriggerPushNotifications',
+          UUIDs,
+        );
+      } catch (e) {
+        log.error('Silently failed to update push notifications', e);
+      }
     },
     subscribe: () => {
       this.messagingSystem.subscribe(
@@ -295,6 +350,12 @@ export class MetamaskNotificationsController extends BaseController<
       if (!this.state.isMetamaskNotificationsEnabled) {
         return;
       }
+      if (this.#isPushNotificationsSetup) {
+        return;
+      }
+      if (!this.#isUnlocked) {
+        return;
+      }
 
       const storage = await this.#getUserStorage();
       if (!storage) {
@@ -303,6 +364,7 @@ export class MetamaskNotificationsController extends BaseController<
 
       const uuids = MetamaskNotificationsUtils.getAllUUIDs(storage);
       await this.#pushNotifications.enablePushNotifications(uuids);
+      this.#isPushNotificationsSetup = true;
     },
   };
 
@@ -410,6 +472,9 @@ export class MetamaskNotificationsController extends BaseController<
 
     this.#registerMessageHandlers();
     this.#clearLoadingStates();
+    this.#keyringController.setupLockedStateSubscriptions(
+      this.#pushNotifications.initializePushNotifications,
+    );
     this.#accounts.initialize();
     this.#pushNotifications.initializePushNotifications();
     this.#accounts.subscribe();
@@ -1004,6 +1069,11 @@ export class MetamaskNotificationsController extends BaseController<
         state.metamaskNotificationsList = metamaskNotifications;
       });
 
+      this.messagingSystem.publish(
+        `${controllerName}:notificationsListUpdated`,
+        this.state.metamaskNotificationsList,
+      );
+
       this.#setIsFetchingMetamaskNotifications(false);
       return metamaskNotifications;
     } catch (err) {
@@ -1068,7 +1138,7 @@ export class MetamaskNotificationsController extends BaseController<
       log.warn('Something failed when marking notifications as read', err);
     }
 
-    // Update the state (state is also used on counter & badge)
+    // Update the state
     this.update((state) => {
       const currentReadList = state.metamaskNotificationsReadList;
       const newReadIds = [...featureAnnouncementNotificationIds];
@@ -1078,13 +1148,22 @@ export class MetamaskNotificationsController extends BaseController<
 
       state.metamaskNotificationsList = state.metamaskNotificationsList.map(
         (notification: Notification) => {
-          if (newReadIds.includes(notification.id)) {
+          if (
+            newReadIds.includes(notification.id) ||
+            onchainNotificationIds.includes(notification.id)
+          ) {
             return { ...notification, isRead: true };
           }
           return notification;
         },
       );
     });
+
+    // Publish the event
+    this.messagingSystem.publish(
+      `${controllerName}:markNotificationsAsRead`,
+      this.state.metamaskNotificationsList,
+    );
   }
 
   /**
@@ -1117,6 +1196,10 @@ export class MetamaskNotificationsController extends BaseController<
             notification,
             ...state.metamaskNotificationsList,
           ];
+          this.messagingSystem.publish(
+            `${controllerName}:notificationsListUpdated`,
+            state.metamaskNotificationsList,
+          );
         }
       });
     }

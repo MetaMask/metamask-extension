@@ -68,8 +68,8 @@ describe('useSwitchNotifications', () => {
       ),
     });
 
-    act(() => {
-      result.current.onChange(true);
+    await act(async () => {
+      await result.current.onChange(true);
     });
 
     expect(actions.setFeatureAnnouncementsEnabled).toHaveBeenCalledWith(true);
@@ -86,8 +86,8 @@ describe('useSwitchNotifications', () => {
       ),
     });
 
-    act(() => {
-      result.current.switchAccountNotifications(['0x123']);
+    await act(async () => {
+      await result.current.switchAccountNotifications(['0x123']);
     });
 
     expect(actions.checkAccountsPresence).toHaveBeenCalledWith(['0x123']);
@@ -105,8 +105,8 @@ describe('useSwitchNotifications', () => {
     });
 
     // Test enabling notifications
-    act(() => {
-      result.current.onChange(['0x123'], true);
+    await act(async () => {
+      await result.current.onChange(['0x123'], true);
     });
 
     expect(actions.updateOnChainTriggersByAccount).toHaveBeenCalledWith([
@@ -114,8 +114,8 @@ describe('useSwitchNotifications', () => {
     ]);
 
     // Test disabling notifications
-    act(() => {
-      result.current.onChange(['0x123'], false);
+    await act(async () => {
+      await result.current.onChange(['0x123'], false);
     });
 
     expect(actions.deleteOnChainTriggersByAccount).toHaveBeenCalledWith([

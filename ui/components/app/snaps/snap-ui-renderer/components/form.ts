@@ -1,7 +1,8 @@
 import { FormElement, JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
+import { NonEmptyArray } from '@metamask/utils';
 import { mapToTemplate } from '../utils';
-import { UIComponentFactory } from './types';
+import { UIComponent, UIComponentFactory } from './types';
 
 export const form: UIComponentFactory<FormElement> = ({
   element,
@@ -14,7 +15,7 @@ export const form: UIComponentFactory<FormElement> = ({
       form: element.props.name,
       ...params,
     }),
-  ),
+  ) as NonEmptyArray<UIComponent>,
   props: {
     name: element.props.name,
   },

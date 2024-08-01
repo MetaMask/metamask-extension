@@ -1,7 +1,10 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { getSelectedAccountCachedBalance } from '../../../../selectors';
+import {
+  getPreferences,
+  getSelectedAccountCachedBalance,
+} from '../../../../selectors';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
@@ -16,7 +19,6 @@ import {
   FlexWrap,
 } from '../../../../helpers/constants/design-system';
 import { TokenListItem } from '../..';
-import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { Asset, Token } from './types';
 import AssetComponent from './Asset';
@@ -26,6 +28,7 @@ type AssetListProps = {
   asset: Asset;
   tokenList: Token[];
   sendingAssetSymbol?: string;
+  memoizedSwapsBlockedTokens: Set<string>;
 };
 
 export default function AssetList({
@@ -33,11 +36,13 @@ export default function AssetList({
   asset,
   tokenList,
   sendingAssetSymbol,
+  memoizedSwapsBlockedTokens,
 }: AssetListProps) {
   const selectedToken = asset.details?.address;
 
   const nativeCurrency = useSelector(getNativeCurrency);
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
   const {
     currency: primaryCurrency,
@@ -61,11 +66,6 @@ export default function AssetList({
       hideLabel: true,
     });
 
-  const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
-  const memoizedSwapsBlockedTokens = useMemo(() => {
-    return new Set(swapsBlockedTokens);
-  }, [swapsBlockedTokens]);
-
   return (
     <Box className="tokens-main-view-modal">
       {tokenList.map((token) => {
@@ -73,7 +73,7 @@ export default function AssetList({
         const isSelected = tokenAddress === selectedToken?.toLowerCase();
         const isDisabled = sendingAssetSymbol
           ? !isEqualCaseInsensitive(sendingAssetSymbol, token.symbol) &&
-            memoizedSwapsBlockedTokens.has(tokenAddress)
+            memoizedSwapsBlockedTokens.has(tokenAddress as string)
           : false;
         return (
           <Box
@@ -111,7 +111,6 @@ export default function AssetList({
               display={Display.Block}
               flexWrap={FlexWrap.NoWrap}
               alignItems={AlignItems.center}
-              style={{ cursor: 'pointer' }}
             >
               <Box marginInlineStart={2}>
                 {token.type === AssetType.native ? (
@@ -121,9 +120,14 @@ export default function AssetList({
                       primaryCurrencyProperties.value ??
                       secondaryCurrencyProperties.value
                     }
-                    tokenSymbol={primaryCurrencyProperties.suffix}
+                    tokenSymbol={
+                      useNativeCurrencyAsPrimaryCurrency
+                        ? primaryCurrency
+                        : secondaryCurrency
+                    }
                     secondary={secondaryCurrencyDisplay}
                     tokenImage={token.image}
+                    isOriginalTokenSymbol
                   />
                 ) : (
                   <AssetComponent

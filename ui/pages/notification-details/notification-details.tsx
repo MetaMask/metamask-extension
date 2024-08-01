@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Box } from '../../components/component-library';
@@ -23,35 +23,32 @@ import { NotificationDetailsHeader } from './notification-details-header/notific
 import { NotificationDetailsBody } from './notification-details-body/notification-details-body';
 import { NotificationDetailsFooter } from './notification-details-footer/notification-details-footer';
 
-export default function NotificationDetails() {
+function useModalNavigation() {
   const history = useHistory();
 
+  const redirectToNotifications = useCallback(() => {
+    history.push(NOTIFICATIONS_ROUTE);
+  }, [history]);
+
+  return {
+    redirectToNotifications,
+  };
+}
+
+function useNotificationByPath() {
   const { pathname } = useLocation();
   const id = getExtractIdentifier(pathname);
+  const notification = useSelector(getMetamaskNotificationById(id));
 
-  const redirectToNotifications = () => {
-    history.push(NOTIFICATIONS_ROUTE);
+  return {
+    notification,
   };
+}
 
-  const notificationSelector = useMemo(
-    () => getMetamaskNotificationById(id),
-    [id],
-  );
-  const notificationData = useSelector(notificationSelector);
-
-  const [notification, setNotification] = useState<Notification | undefined>(
-    notificationData,
-  );
-
+function useEffectOnNotificationView(notificationData?: Notification) {
   const { markNotificationAsRead } = useMarkNotificationAsRead();
-
   useEffect(() => {
-    if (!id || !notificationData) {
-      redirectToNotifications();
-    }
     if (notificationData) {
-      setNotification(notificationData);
-      // Mark the notification as read when the page is viewed
       markNotificationAsRead([
         {
           id: notificationData.id,
@@ -60,16 +57,26 @@ export default function NotificationDetails() {
         },
       ]);
     }
-  }, [id, notificationData, markNotificationAsRead]);
+  }, [markNotificationAsRead, notificationData]);
+}
 
+export default function NotificationDetails() {
+  const { redirectToNotifications } = useModalNavigation();
+  const { notification } = useNotificationByPath();
+  useEffectOnNotificationView(notification);
+
+  // No Notification
   if (!notification) {
     redirectToNotifications();
     return null;
   }
 
+  // Invalid Notification
   if (!hasNotificationComponents(notification.type)) {
+    redirectToNotifications();
     return null;
   }
+
   const ncs = NotificationComponents[notification.type];
 
   return (

@@ -1,13 +1,13 @@
 const { strict: assert } = require('assert');
 
 const {
-  defaultGanacheOptions,
-  withFixtures,
-  openDapp,
-  unlockWallet,
-  editGasFeeForm,
-  WINDOW_TITLES,
   clickNestedButton,
+  defaultGanacheOptions,
+  editGasFeeForm,
+  logInWithBalanceValidation,
+  openDapp,
+  WINDOW_TITLES,
+  withFixtures,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
@@ -18,29 +18,21 @@ describe('Create token, approve token and approve token without gas', function (
   it('imports and renders the balance for the new token', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, contractRegistry }) => {
+      async ({ driver, contractRegistry, ganacheServer }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await unlockWallet(driver);
-
-        // create token
-        await openDapp(driver, contractAddress);
-
-        const windowHandles = await driver.getAllWindowHandles();
-        const extension = windowHandles[0];
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         // imports custom token from extension
-        await driver.switchToWindow(extension);
-        await driver.clickElement(`[data-testid="home__asset-tab"]`);
+        await driver.clickElement(
+          `[data-testid="account-overview__asset-tab"]`,
+        );
         await clickNestedButton(driver, 'Tokens');
 
         await driver.clickElement({ text: 'Import tokens', tag: 'button' });
@@ -52,14 +44,12 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.waitForSelector(
           '[data-testid="import-tokens-modal-custom-decimals"]',
         );
-        await driver.delay(2000);
 
         await driver.clickElement({
           text: 'Next',
           tag: 'button',
         });
 
-        await driver.delay(2000);
         await driver.clickElement(
           '[data-testid="import-tokens-modal-import-button"]',
         );
@@ -87,11 +77,11 @@ describe('Create token, approve token and approve token without gas', function (
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, contractRegistry }) => {
+      async ({ driver, contractRegistry, ganacheServer }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         // create token
         await openDapp(driver, contractAddress);
@@ -101,7 +91,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         await driver.findClickableElement('#deployButton');
         // approve token from dapp
-        await driver.clickElement({ text: 'Approve Tokens', tag: 'button' });
+        await driver.clickElement('#approveTokens');
 
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
@@ -115,29 +105,27 @@ describe('Create token, approve token and approve token without gas', function (
           css: '.token-allowance-container__verify-link',
         });
 
-        const modalTitle = await driver.waitForSelector({
+        // Verification modal is opened
+        await driver.waitForSelector({
           text: 'Third-party details',
           tag: 'h5',
         });
-
-        assert.equal(await modalTitle.getText(), 'Third-party details');
 
         await driver.clickElementAndWaitToDisappear({
           text: 'Got it',
           tag: 'button',
         });
+        // back to approval modal
         await driver.clickElement({
           text: 'View details',
           css: '.token-allowance-container__view-details',
         });
 
-        // checks elements on approve token popup
-        const functionType = await driver.findElement({
+        // Validate elements on approve token popup
+        await driver.waitForSelector({
           text: 'Function: Approve',
           tag: 'h6',
         });
-        assert.equal(await functionType.getText(), 'Function: Approve');
-
         const confirmDataDiv = await driver.findElement(
           '.approve-content-card-container__data__data-block',
         );
@@ -147,47 +135,31 @@ describe('Create token, approve token and approve token without gas', function (
             /0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef4/u,
           ),
         );
+
         await driver.clickElement({ text: 'Next', tag: 'button' });
-
-        await driver.findElement({
-          text: 'Spending cap request for your ',
-          css: '.box--flex-direction-row',
-        });
-
-        const defaultSpendingCap = await driver.findElement({
+        // Spending cap modal is opened
+        await driver.waitForSelector({
           text: '7 TST',
           css: '.mm-box > h6',
         });
-
-        assert.equal(
-          await defaultSpendingCap.getText(),
-          '7 TST',
-          'Default value is not correctly set',
-        );
 
         await driver.clickElement({
           text: 'Approve',
           tag: 'button',
         });
 
+        // We want to wait until txn is finished, and the dialog is closed
+        // before checking it in the expanded view of extension
+        await driver.waitUntilXWindowHandles(2);
+
+        // Moved to expanded window to validate the txn
         await driver.switchToWindow(extension);
         await clickNestedButton(driver, 'Activity');
-
-        // check list of pending transactions in extension
-        await driver.wait(async () => {
-          const pendingTxes = await driver.findElements('.activity-list-item');
-          return pendingTxes.length === 1;
-        }, 10000);
-
-        const approveTokenTask = await driver.waitForSelector({
-          // Selects only the very first transaction list item immediately following the 'Pending' header
-          css: '.transaction-list__completed-transactions .activity-list-item [data-testid="activity-list-item-action"]',
-          text: 'Approve TST spending cap',
-        });
-        assert.equal(
-          await approveTokenTask.getText(),
-          'Approve TST spending cap',
+        // wait for txn in activity section
+        await driver.waitForSelector(
+          '[data-testid="activity-list-item-action"]',
         );
+        await driver.waitForSelector('.transaction-status-label--confirmed');
       },
     );
   });
@@ -203,11 +175,11 @@ describe('Create token, approve token and approve token without gas', function (
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, contractRegistry }) => {
+      async ({ driver, contractRegistry, ganacheServer }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         // create token
         await openDapp(driver, contractAddress);
@@ -338,11 +310,11 @@ describe('Create token, approve token and approve token without gas', function (
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, contractRegistry }) => {
+      async ({ driver, contractRegistry, ganacheServer }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         // create token
         await openDapp(driver, contractAddress);
@@ -390,7 +362,6 @@ describe('Create token, approve token and approve token without gas', function (
           'Max spending cap is not set corectly',
         );
 
-        await driver.delay(500);
         await driver.clickElement({
           tag: 'button',
           text: 'Approve',
@@ -420,11 +391,11 @@ describe('Create token, approve token and approve token without gas', function (
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, contractRegistry }) => {
+      async ({ driver, contractRegistry, ganacheServer }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         await openDapp(driver, contractAddress);
         const windowHandles = await driver.getAllWindowHandles();

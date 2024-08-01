@@ -5,14 +5,18 @@ import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import { SnapDelineator } from '../snap-delineator';
-import {
-  getSnapMetadata,
-  getMemoizedInterfaceContent,
-} from '../../../../selectors';
+import { getSnapMetadata, getMemoizedInterface } from '../../../../selectors';
 import { Box, FormTextField } from '../../../component-library';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
+import PulseLoader from '../../../ui/pulse-loader';
+import {
+  AlignItems,
+  BlockSize,
+  Display,
+  JustifyContent,
+} from '../../../../helpers/constants/design-system';
 import { mapToTemplate } from './utils';
 
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
@@ -30,14 +34,20 @@ const SnapUIRendererComponent = ({
   onClick,
   boxProps,
   interfaceId,
+  useDelineator = true,
 }) => {
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),
   );
 
-  const content = useSelector((state) =>
-    getMemoizedInterfaceContent(state, interfaceId),
+  const interfaceState = useSelector(
+    (state) => getMemoizedInterface(state, interfaceId),
+    // We only want to update the state if the content has changed.
+    // We do this to avoid useless re-renders.
+    (oldState, newState) => isEqual(oldState.content, newState.content),
   );
+
+  const content = interfaceState?.content;
 
   // sections are memoized to avoid useless re-renders if one of the parents element re-renders.
   const sections = useMemo(
@@ -52,19 +62,21 @@ const SnapUIRendererComponent = ({
 
   if (isLoading || !content) {
     return (
-      <SnapDelineator
-        snapName={snapName}
-        type={delineatorType}
-        isCollapsable={isCollapsable}
-        isCollapsed={isCollapsed}
-        onClick={onClick}
-        boxProps={boxProps}
-        isLoading
-      />
+      <Box
+        display={Display.Flex}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        height={BlockSize.Full}
+        width={BlockSize.Full}
+      >
+        <PulseLoader />
+      </Box>
     );
   }
 
-  return (
+  const { state: initialState, context } = interfaceState;
+
+  return useDelineator ? (
     <SnapDelineator
       snapName={snapName}
       type={delineatorType}
@@ -74,7 +86,12 @@ const SnapUIRendererComponent = ({
       boxProps={boxProps}
     >
       <Box className="snap-ui-renderer__content">
-        <SnapInterfaceContextProvider snapId={snapId} interfaceId={interfaceId}>
+        <SnapInterfaceContextProvider
+          snapId={snapId}
+          interfaceId={interfaceId}
+          initialState={initialState}
+          context={context}
+        >
           <MetaMaskTemplateRenderer sections={sections} />
         </SnapInterfaceContextProvider>
         {isPrompt && (
@@ -89,6 +106,27 @@ const SnapUIRendererComponent = ({
         )}
       </Box>
     </SnapDelineator>
+  ) : (
+    <Box className="snap-ui-renderer__content">
+      <SnapInterfaceContextProvider
+        snapId={snapId}
+        interfaceId={interfaceId}
+        initialState={initialState}
+        context={context}
+      >
+        <MetaMaskTemplateRenderer sections={sections} />
+      </SnapInterfaceContextProvider>
+      {isPrompt && (
+        <FormTextField
+          marginTop={4}
+          className="snap-prompt-input"
+          maxLength={300}
+          value={inputValue}
+          onChange={onInputChange}
+          placeholder={placeholder}
+        />
+      )}
+    </Box>
   );
 };
 
@@ -111,4 +149,5 @@ SnapUIRendererComponent.propTypes = {
   onClick: PropTypes.func,
   boxProps: PropTypes.object,
   interfaceId: PropTypes.string,
+  useDelineator: PropTypes.bool,
 };

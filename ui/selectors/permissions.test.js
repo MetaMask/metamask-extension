@@ -1,6 +1,7 @@
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { createMockInternalAccount } from '../../test/jest/mocks';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import {
   getConnectedSubjectsForSelectedAddress,
   getLastConnectedInfo,
@@ -25,7 +26,7 @@ describe('selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             },
@@ -234,7 +235,7 @@ describe('selectors', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
             '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
@@ -249,7 +250,7 @@ describe('selectors', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
             '15e69915-2a1a-4019-93b3-916e11fd432f': {
@@ -264,7 +265,7 @@ describe('selectors', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
             '784225f4-d30b-4e77-a900-c8bbce735b88': {
@@ -279,7 +280,7 @@ describe('selectors', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
             'f9305241-c50f-4725-ad0f-cbd3f24ac7ab': {
@@ -292,7 +293,7 @@ describe('selectors', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
           },
@@ -382,7 +383,7 @@ describe('selectors', () => {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
         {
@@ -397,7 +398,7 @@ describe('selectors', () => {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
         {
@@ -413,7 +414,7 @@ describe('selectors', () => {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
         {
@@ -428,7 +429,7 @@ describe('selectors', () => {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
         {
@@ -444,7 +445,7 @@ describe('selectors', () => {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
       ]);
@@ -499,7 +500,7 @@ describe('selectors', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
             '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
@@ -514,7 +515,7 @@ describe('selectors', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
             '15e69915-2a1a-4019-93b3-916e11fd432f': {
@@ -529,7 +530,7 @@ describe('selectors', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
             '784225f4-d30b-4e77-a900-c8bbce735b88': {
@@ -544,7 +545,7 @@ describe('selectors', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
           },

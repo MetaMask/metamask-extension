@@ -1,12 +1,14 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import { getSelectedAccountCachedBalance } from '../../../../selectors';
+import {
+  getPreferences,
+  getSelectedAccountCachedBalance,
+} from '../../../../selectors';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
-import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import AssetList from './AssetList';
 
 jest.mock('react-redux', () => ({
@@ -19,10 +21,6 @@ jest.mock('../../../../selectors', () => ({
 
 jest.mock('../../../../ducks/metamask/metamask', () => ({
   getNativeCurrency: jest.fn(),
-}));
-
-jest.mock('../../../../ducks/send', () => ({
-  getSwapsBlockedTokens: jest.fn(),
 }));
 
 jest.mock('../../../../hooks/useUserPreferencedCurrency', () => ({
@@ -83,8 +81,8 @@ describe('AssetList', () => {
       if (selector === getSelectedAccountCachedBalance) {
         return balanceValue;
       }
-      if (selector === getSwapsBlockedTokens) {
-        return [];
+      if (selector === getPreferences) {
+        return true;
       }
       return undefined;
     });
@@ -112,6 +110,7 @@ describe('AssetList', () => {
         handleAssetChange={handleAssetChangeMock}
         asset={{ balance: '1', type: AssetType.native }}
         tokenList={tokenList}
+        memoizedSwapsBlockedTokens={new Set([])}
       />,
     );
 
@@ -125,6 +124,7 @@ describe('AssetList', () => {
         handleAssetChange={handleAssetChangeMock}
         asset={{ balance: '1', type: AssetType.native }}
         tokenList={tokenList}
+        memoizedSwapsBlockedTokens={new Set([])}
       />,
     );
 
@@ -142,8 +142,8 @@ describe('AssetList', () => {
         if (selector === getSelectedAccountCachedBalance) {
           return balanceValue;
         }
-        if (selector === getSwapsBlockedTokens) {
-          return ['0xtoken1'];
+        if (selector === getPreferences) {
+          return true;
         }
         return undefined;
       });
@@ -154,6 +154,7 @@ describe('AssetList', () => {
         asset={{ balance: '1', type: AssetType.native }}
         tokenList={tokenList}
         sendingAssetSymbol="IRRELEVANT"
+        memoizedSwapsBlockedTokens={new Set(['0xtoken1'])}
       />,
     );
 

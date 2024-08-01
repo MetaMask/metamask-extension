@@ -15,13 +15,17 @@ import {
   getCurrentDraftTransaction,
   getBestQuote,
   updateSendQuote,
+  getSendAnalyticProperties,
 } from '../../../../../../ducks/send';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { SECOND } from '../../../../../../../shared/constants/time';
 import { Quote } from '../../../../../../ducks/send/swap-and-send-utils';
 import Tooltip from '../../../../../ui/tooltip';
 import InfoTooltipIcon from '../../../../../ui/info-tooltip/info-tooltip-icon';
-import { MetaMetricsEventCategory } from '../../../../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../../../shared/constants/metametrics';
 import {
   CONSENSYS_TERMS_OF_USE,
   GAS_FEES_LEARN_MORE_URL,
@@ -48,6 +52,7 @@ const REFRESH_INTERVAL = 30;
 export function QuoteCard({ scrollRef }: QuoteCardProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   const translatedNetworkName = useTranslatedNetworkName();
   const trackEvent = useContext(MetaMetricsContext);
@@ -80,6 +85,14 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
     }
 
     if (bestQuote) {
+      trackEvent({
+        event: MetaMetricsEventName.sendSwapQuoteFetched,
+        category: MetaMetricsEventCategory.Send,
+        properties: {
+          ...sendAnalytics,
+          is_first_fetch: isQuoteJustLoaded,
+        },
+      });
       setTimeLeft(REFRESH_INTERVAL);
     } else {
       setTimeLeft(undefined);

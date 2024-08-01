@@ -10,15 +10,15 @@ import {
   NotificationDetailInfo,
   NotificationDetailAsset,
   NotificationDetailNetworkFee,
-  NotificationDetailButton,
+  NotificationDetailBlockExplorerButton,
   NotificationDetailTitle,
   NotificationDetailCopyButton,
+  NotificationDetailAddress,
 } from '../../../../components/multichain';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 import {
   BadgeWrapperPosition,
   IconName,
-  ButtonVariant,
 } from '../../../../components/component-library';
 
 import {
@@ -98,6 +98,17 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
     ),
     body: {
       type: 'body_onchain_notification',
+      Account: ({ notification }) => {
+        if (!notification.address) {
+          return null;
+        }
+        return (
+          <NotificationDetailAddress
+            side={t('account') || ''}
+            address={notification.address}
+          />
+        );
+      },
       Asset: ({ notification }) => {
         const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
@@ -141,7 +152,7 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
                 position: BadgeWrapperPosition.topRight,
               },
             }}
-            label={t('notificationItemSwapped') || ''}
+            label={t('notificationItemTo') || ''}
             detail={notification.data.token_out.symbol}
             fiatValue={`$${getUsdAmount(
               notification.data.token_out.amount,
@@ -210,20 +221,11 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
   footer: {
     type: 'footer_onchain_notification',
     ScanLink: ({ notification }) => {
-      const chainId = decimalToHex(notification.chain_id);
-      const { nativeBlockExplorerUrl } = getNetworkDetailsByChainId(
-        `0x${chainId}` as keyof typeof CHAIN_IDS,
-      );
       return (
-        <NotificationDetailButton
+        <NotificationDetailBlockExplorerButton
           notification={notification}
-          variant={ButtonVariant.Secondary}
-          text={t('notificationItemCheckBlockExplorer') || ''}
-          href={
-            nativeBlockExplorerUrl
-              ? `${nativeBlockExplorerUrl}//tx/${notification.tx_hash}`
-              : '#'
-          }
+          chainId={notification.chain_id}
+          txHash={notification.tx_hash}
           id={notification.id}
         />
       );

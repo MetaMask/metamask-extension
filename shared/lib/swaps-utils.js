@@ -3,11 +3,13 @@ import log from 'loglevel';
 import { CHAIN_IDS } from '../constants/network';
 import {
   GAS_API_BASE_URL,
+  GAS_DEV_API_BASE_URL,
   SWAPS_API_V2_BASE_URL,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SWAPS_CLIENT_ID,
   SWAPS_DEV_API_V2_BASE_URL,
   SWAPS_WRAPPED_TOKENS_ADDRESSES,
+  TOKEN_API_BASE_URL,
 } from '../constants/swaps';
 import { SECOND } from '../constants/time';
 import { isValidHexAddress } from '../modules/hexstring-utils';
@@ -15,6 +17,8 @@ import { isEqualCaseInsensitive } from '../modules/string-utils';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import { decimalToHex } from '../modules/conversion.utils';
 import fetchWithCache from './fetch-with-cache';
+
+const FALLBACK_GAS_MULTIPLIER = 1.5;
 
 const TEST_CHAIN_IDS = [CHAIN_IDS.GOERLI, CHAIN_IDS.LOCALHOST];
 
@@ -129,7 +133,8 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
   const v2ApiBaseUrl = useDevApis
     ? SWAPS_DEV_API_V2_BASE_URL
     : SWAPS_API_V2_BASE_URL;
-  const gasApiBaseUrl = GAS_API_BASE_URL;
+  const gasApiBaseUrl = useDevApis ? GAS_DEV_API_BASE_URL : GAS_API_BASE_URL;
+  const tokenApiBaseUrl = TOKEN_API_BASE_URL;
   const noNetworkSpecificTypes = ['refreshTime']; // These types don't need network info in the URL.
   if (noNetworkSpecificTypes.includes(type)) {
     return v2ApiBaseUrl;
@@ -138,6 +143,10 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
   const gasApiTypes = ['gasPrices'];
   if (gasApiTypes.includes(type)) {
     return `${gasApiBaseUrl}/networks/${chainIdDecimal}`; // Gas calculations are in its own repo.
+  }
+  const tokenApiTypes = ['blockedTokens'];
+  if (tokenApiTypes.includes(type)) {
+    return `${tokenApiBaseUrl}/blocklist?chainId=${chainIdDecimal}`; // Token blocklist is in its own api
   }
   return `${v2ApiBaseUrl}/networks/${chainIdDecimal}`;
 };
@@ -164,7 +173,7 @@ export const getBaseApi = function (type, chainId) {
     case 'gasPrices':
       return `${baseUrl}/gasPrices`;
     case 'blockedTokens':
-      return `${baseUrl}/blockedTokens`;
+      return `${baseUrl}&region=global`;
     case 'network':
       return baseUrl;
     default:
@@ -317,4 +326,38 @@ export async function fetchTradesInfo(
   }, {});
 
   return newQuotes;
+}
+
+/**
+ * Given a gas estimate, gas multiplier, max gas, and custom max gas, returns the max gas limit
+ * to use for a transaction.
+ *
+ * @param {string} gasEstimate - The gas estimate for the transaction.
+ * @param {number} gasMultiplier - The gas multiplier to use.
+ * @param {number} maxGas - The max gas limit to use.
+ * @param {string} customMaxGas - The custom max gas limit to use.
+ * @returns {string} The max gas limit to use for the transaction.
+ */
+
+export function calculateMaxGasLimit(
+  gasEstimate,
+  gasMultiplier = FALLBACK_GAS_MULTIPLIER,
+  maxGas,
+  customMaxGas,
+) {
+  const gasLimitForMax = new BigNumber(gasEstimate || 0, 16)
+    .round(0)
+    .toString(16);
+
+  const usedGasLimitWithMultiplier = new BigNumber(gasLimitForMax, 16)
+    .times(gasMultiplier, 10)
+    .round(0)
+    .toString(16);
+
+  const nonCustomMaxGasLimit = gasEstimate
+    ? usedGasLimitWithMultiplier
+    : `0x${decimalToHex(maxGas || 0)}`;
+  const maxGasLimit = customMaxGas || nonCustomMaxGasLimit;
+
+  return maxGasLimit;
 }

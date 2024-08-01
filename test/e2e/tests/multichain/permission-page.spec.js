@@ -1,10 +1,10 @@
 const { strict: assert } = require('assert');
 const {
   withFixtures,
-  unlockWallet,
   WINDOW_TITLES,
-  waitForAccountRendered,
   connectToDapp,
+  logInWithBalanceValidation,
+  defaultGanacheOptions,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -15,10 +15,10 @@ describe('Permissions Page', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
+        ganacheOptions: defaultGanacheOptions,
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         await connectToDapp(driver);
 
         // close test dapp window to avoid future confusion
@@ -51,10 +51,10 @@ describe('Permissions Page', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
+        ganacheOptions: defaultGanacheOptions,
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         await connectToDapp(driver);
 
         // close test dapp window to avoid future confusion

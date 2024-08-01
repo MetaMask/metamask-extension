@@ -55,6 +55,18 @@
     }
   }
 
+  &__total-amount {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  &__total-value {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
   .page-container__footer {
     margin-top: auto;
   }

@@ -130,9 +130,6 @@
   "assetOptions": {
     "message": "資產選項"
   },
-  "attemptingConnect": {
-    "message": "正在嘗試連結區塊鏈。"
-  },
   "attributions": {
     "message": "來源"
   },
@@ -190,9 +187,6 @@
   },
   "cancel": {
     "message": "取消"
-  },
-  "cancelEdit": {
-    "message": "Cancel Edit"
   },
   "cancelSpeedUp": {
     "message": "cancel or speed up a tranaction."
@@ -899,9 +893,6 @@
   "nonceField": {
     "message": "自訂交易 nonce"
   },
-  "nonceFieldDescription": {
-    "message": "打開此選項來在交易確認視窗中更改 nonce (交易編號)。這是一個進階功能，請小心使用。"
-  },
   "nonceFieldHeading": {
     "message": "自訂 nonce"
   },
@@ -1093,13 +1084,10 @@
   "securityAndPrivacy": {
     "message": "安全＆隱私"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "寫下來並且存放在不同的秘密地點。"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "儲存在密碼管理器裡"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "存在安全保管箱裡。"
   },
   "seedPhraseIntroSidebarCopyOne": {
@@ -1159,9 +1147,6 @@
   "sendSpecifiedTokens": {
     "message": "發送 $1",
     "description": "Symbol of the specified token"
-  },
-  "sendTokens": {
-    "message": "發送代幣"
   },
   "settings": {
     "message": "設定"

@@ -4,10 +4,7 @@ const {
   openDapp,
   unlockWallet,
   DAPP_URL,
-  regularDelayMs,
-  WINDOW_TITLES,
   defaultGanacheOptions,
-  switchToNotificationWindow,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
@@ -17,6 +14,7 @@ describe('Request Queuing', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
           .withPreferencesControllerUseRequestQueueEnabled()
           .withSelectedNetworkControllerPerDomain()
           .build(),
@@ -33,36 +31,6 @@ describe('Request Queuing', function () {
 
         // Open Dapp One
         await openDapp(driver, undefined, DAPP_URL);
-
-        // Connect to dapp
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
-
-        await driver.delay(regularDelayMs);
-
-        await switchToNotificationWindow(driver);
-
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
-        await driver.waitUntilXWindowHandles(2);
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-
-        await driver.clickElement('#sendButton');
-
-        await driver.waitUntilXWindowHandles(3);
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // wallet_revokePermissions request
         const revokePermissionsRequest = JSON.stringify({

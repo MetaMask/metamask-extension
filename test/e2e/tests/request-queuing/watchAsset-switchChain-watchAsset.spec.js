@@ -22,6 +22,7 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
+          .withPermissionControllerConnectedToTestDapp()
           .withPreferencesControllerUseRequestQueueEnabled()
           .build(),
         ganacheOptions: {
@@ -41,32 +42,6 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
         await unlockWallet(driver);
 
         await openDapp(driver, undefined, DAPP_URL);
-
-        // Connect to dapp
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
-
-        await driver.delay(regularDelayMs);
-
-        await switchToNotificationWindow(driver);
-
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
-        await driver.clickElement({
-          text: 'Connect',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
-        // Wait for Connecting notification to close.
-        await driver.waitUntilXWindowHandles(2);
-
-        // Navigate to test dapp
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // Create Token
         await driver.clickElement({ text: 'Create Token', tag: 'button' });

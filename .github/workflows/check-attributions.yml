@@ -1,0 +1,25 @@
+name: Check Attributions
+
+on:
+  push:
+    branches: Version-v*
+  pull_request:
+    branches: Version-v*
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+
+jobs:
+  check-attributions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: Check attributions changes
+        run: yarn attributions:check
