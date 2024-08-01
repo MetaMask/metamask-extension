@@ -46,6 +46,7 @@ const createMockedHandler = () => {
           notifications: [],
         },
       },
+      isMultichainOrigin: true,
     },
   });
   const findNetworkClientIdByChainId = jest.fn().mockReturnValue('mainnet');
@@ -85,6 +86,18 @@ describe('provider_request', () => {
     const request = createMockedRequest();
     const { handler, getCaveat, end } = createMockedHandler();
     getCaveat.mockReturnValue(null);
+    await handler(request);
+    expect(end).toHaveBeenCalledWith(new Error('missing CAIP-25 endowment'));
+  });
+
+  it('throws an error when the CAIP-25 endowement permission was not granted from the multichain flow', async () => {
+    const request = createMockedRequest();
+    const { handler, getCaveat, end } = createMockedHandler();
+    getCaveat.mockReturnValue({
+      value: {
+        isMultichainOrigin: false
+      }
+    });
     await handler(request);
     expect(end).toHaveBeenCalledWith(new Error('missing CAIP-25 endowment'));
   });
