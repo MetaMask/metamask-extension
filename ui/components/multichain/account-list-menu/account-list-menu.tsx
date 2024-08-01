@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
+// eslint-disable-next-line import/no-duplicates
+import { EthAccountType } from '@metamask/keyring-api';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
-  EthAccountType,
   InternalAccount,
   KeyringAccountType,
   KeyringClient,
+  // eslint-disable-next-line import/no-duplicates
 } from '@metamask/keyring-api';
 import { Caip2ChainId } from '@metamask/snaps-utils';
 import {
