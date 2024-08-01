@@ -1,4 +1,11 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
@@ -219,7 +226,7 @@ export const AccountListMenu = ({
   }
   searchResults = mergeAccounts(searchResults, accounts);
 
-  const title = getActionTitle(t, actionMode);
+  const title = useMemo(() => getActionTitle(t, actionMode), [actionMode, t]);
 
   let onBack = null;
   if (actionMode !== ACTION_MODES.LIST) {
@@ -229,6 +236,21 @@ export const AccountListMenu = ({
       onBack = () => setActionMode(ACTION_MODES.MENU);
     }
   }
+
+  const onAccountListItemItemClicked = useCallback(
+    (account) => {
+      onClose();
+      trackEvent({
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.NavAccountSwitched,
+        properties: {
+          location: 'Main Menu',
+        },
+      });
+      dispatch(setSelectedAccount(account.address));
+    },
+    [dispatch, onClose, trackEvent],
+  );
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -518,17 +540,7 @@ export const AccountListMenu = ({
                     key={account.address}
                   >
                     <AccountListItem
-                      onClick={() => {
-                        onClose();
-                        trackEvent({
-                          category: MetaMetricsEventCategory.Navigation,
-                          event: MetaMetricsEventName.NavAccountSwitched,
-                          properties: {
-                            location: 'Main Menu',
-                          },
-                        });
-                        dispatch(setSelectedAccount(account.address));
-                      }}
+                      onClick={() => onAccountListItemItemClicked(account)}
                       account={account}
                       key={account.address}
                       selected={selectedAccount.address === account.address}
