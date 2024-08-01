@@ -18,11 +18,16 @@ export async function CaipPermissionAdapterMiddleware(
 
   const { networkClientId, method } = request;
 
-  const caveat = hooks.getCaveat(
-    request.origin,
-    Caip25EndowmentPermissionName,
-    Caip25CaveatType,
-  );
+  let caveat;
+  try {
+    caveat = hooks.getCaveat(
+      request.origin,
+      Caip25EndowmentPermissionName,
+      Caip25CaveatType,
+    );
+  } catch (err) {
+    // noop
+  }
   if (!caveat?.value.isMultichainOrigin) {
     return next();
   }
