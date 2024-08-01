@@ -6,6 +6,13 @@ import mockSendState from '../../../../../test/data/mock-send-state.json';
 import configureStore from '../../../../store/store';
 import { AssetPicker } from './asset-picker';
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: jest.fn(() => ({
+    push: jest.fn(),
+  })),
+}));
+
 const store = (
   nativeTicker = 'NATIVE TICKER',
   // TODO: Replace `any` with type
@@ -44,6 +51,27 @@ describe('AssetPicker', () => {
       </Provider>,
     );
     expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('calls onClick handler', () => {
+    const asset = {
+      type: AssetType.native,
+      balance: '1000000',
+    };
+    const mockAssetChange = jest.fn();
+    const mockOnClick = jest.fn();
+    const { getByTestId } = render(
+      <Provider store={store('NATIVE')}>
+        <AssetPicker
+          header={'testHeader'}
+          asset={asset}
+          onAssetChange={() => mockAssetChange()}
+          onClick={mockOnClick}
+        />
+      </Provider>,
+    );
+    getByTestId('asset-picker-button').click();
+    expect(mockOnClick).toHaveBeenCalled();
   });
 
   it('native: renders symbol and image', () => {

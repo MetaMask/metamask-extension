@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   AvatarTokenSize,
@@ -11,7 +11,7 @@ import {
   BadgeWrapper,
   AvatarNetwork,
 } from '../../../component-library';
-import { Asset, getSendAnalyticProperties } from '../../../../ducks/send';
+import { Asset } from '../../../../ducks/send';
 import {
   AlignItems,
   BackgroundColor,
@@ -39,11 +39,6 @@ import { getAssetImageURL } from '../../../../helpers/utils/util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: END:ONLY_INCLUDE_IF
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
 import { ellipsify } from '../../../../pages/confirmations/send/send.utils';
 import { Token } from '../asset-picker-modal/types';
 
@@ -59,6 +54,7 @@ export type AssetPickerProps = {
    * Sending asset for UI treatments; only for dest component
    */
   sendingAsset?: Asset;
+  onClick?: () => void;
   isDisabled?: boolean;
 };
 
@@ -67,13 +63,12 @@ export function AssetPicker({
   asset,
   onAssetChange,
   sendingAsset,
+  onClick,
   isDisabled = false,
 }: AssetPickerProps) {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const t = useI18nContext();
   ///: END:ONLY_INCLUDE_IF
-  const trackEvent = useContext(MetaMetricsContext);
-  const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
@@ -165,14 +160,7 @@ export function AssetPicker({
         backgroundColor={BackgroundColor.transparent}
         onClick={() => {
           setShowAssetPickerModal(true);
-          trackEvent({
-            event: MetaMetricsEventName.sendTokenModalOpened,
-            category: MetaMetricsEventCategory.Send,
-            properties: {
-              ...sendAnalytics,
-              is_destination_asset_picker_modal: Boolean(sendingAsset),
-            },
-          });
+          onClick?.();
         }}
         endIconName={IconName.ArrowDown}
         endIconProps={{

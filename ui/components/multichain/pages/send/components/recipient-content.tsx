@@ -38,14 +38,17 @@ import {
 
 import type { Quote } from '../../../../../ducks/send/swap-and-send-utils';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
+import { AssetPicker } from '../../../asset-picker-amount/asset-picker';
 import { SendHexData, SendPageRow, QuoteCard } from '.';
 
 export const SendPageRecipientContent = ({
   requireContractAddressAcknowledgement,
   onAssetChange,
+  onClick,
 }: {
   requireContractAddressAcknowledgement: boolean;
   onAssetChange: (newAsset: Asset, isReceived: boolean) => void;
+  onClick: () => React.ComponentProps<typeof AssetPicker>['onClick'];
 }) => {
   const t = useI18nContext();
 
@@ -147,6 +150,7 @@ export const SendPageRecipientContent = ({
           isAmountLoading={isLoadingInitialQuotes}
           amount={amount}
           isDisabled={!isSwapAllowed}
+          onClick={onClick}
         />
       </SendPageRow>
       <QuoteCard scrollRef={scrollRef} />
