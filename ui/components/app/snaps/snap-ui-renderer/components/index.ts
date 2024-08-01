@@ -41,7 +41,7 @@ export const COMPONENT_MAPPING = {
   Link: link,
   Field: field,
   Dropdown: dropdown,
-  Radio: radioGroup,
+  RadioGroup: radioGroup,
   Value: value,
   Checkbox: checkbox,
   Tooltip: tooltip,

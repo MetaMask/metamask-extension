@@ -16,7 +16,7 @@ import {
 
 export type SnapUIRadioOption = { value: string; name: string };
 
-export type SnapUIRadioProps = {
+export type SnapUIRadioGroupProps = {
   name: string;
   label?: string;
   error?: string;
@@ -24,7 +24,7 @@ export type SnapUIRadioProps = {
   form?: string;
 };
 
-export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioProps> = ({
+export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioGroupProps> = ({
   name,
   label,
   error,
@@ -33,7 +33,7 @@ export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioProps> = ({
 }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
-  const initialValue = getValue<string>(name, form);
+  const initialValue = getValue(name, form) as string;
 
   const [value, setValue] = useState(initialValue ?? '');
 
