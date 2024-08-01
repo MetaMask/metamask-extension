@@ -1089,7 +1089,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome:webpack --retries 2
+              timeout 20m yarn test:e2e:chrome:webpack --retries 1
             fi
           no_output_timeout: 5m
       - store_artifacts:
