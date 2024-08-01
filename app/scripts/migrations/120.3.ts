@@ -56,12 +56,10 @@ function transformState(state: Record<string, unknown>): void {
     return;
   }
 
-  const validTransactions =
-    transactionControllerState.transactions.filter(isObject);
-  if (
-    transactionControllerState.transactions.length !== validTransactions.length
-  ) {
-    const invalidTransaction = transactionControllerState.transactions.find(
+  const transactions = transactionControllerState.transactions;
+  const validTransactions = transactions.filter(isObject);
+  if (transactions.length !== validTransactions.length) {
+    const invalidTransaction = transactions.find(
       (transaction) => !isObject(transaction),
     );
     global.sentry?.captureException(
