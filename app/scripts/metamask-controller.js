@@ -6054,6 +6054,7 @@ export default class MetamaskController extends EventEmitter {
       'notification',
       (_origin, message) => {
         if (origin === _origin) {
+          console.log('notification', message, _origin);
           engine.emit('notification', message);
         }
       },

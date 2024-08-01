@@ -27,7 +27,7 @@ const newHeadsNotificationMock = {
 };
 
 describe('MultichainSubscriptionManager', () => {
-  it('should subscribe to a chain', (done) => {
+  it('should subscribe to a domain and scope', () => {
     const domain = 'example.com';
     const scope = 'eip155:1';
     const mockFindNetworkClientIdByChainId = jest.fn();
@@ -39,20 +39,103 @@ describe('MultichainSubscriptionManager', () => {
       findNetworkClientIdByChainId: mockFindNetworkClientIdByChainId,
       getNetworkClientById: mockGetNetworkClientById,
     });
+    const spy = jest.fn();
+
+    subscriptionManager.on('notification', spy);
     subscriptionManager.subscribe(scope, domain);
-    subscriptionManager.on(
+    subscriptionManager.subscriptionManagerByChain[scope].events.emit(
       'notification',
-      (domain: string, notification: any) => {
-        expect(notification).toMatchObject({
-          method: 'wallet_invokeMethod',
-          params: {
-            scope,
-            request: newHeadsNotificationMock,
-          },
-        });
-        done();
-      },
+      newHeadsNotificationMock,
     );
-    subscriptionManager.onNotification(scope, domain, newHeadsNotificationMock);
+    expect(spy).toHaveBeenCalledWith(domain, {
+      method: 'wallet_invokeMethod',
+      params: {
+        scope,
+        request: newHeadsNotificationMock,
+      },
+    });
+  });
+  it('should unsubscribe from a domain and scope', () => {
+    const domain = 'example.com';
+    const scope = 'eip155:1';
+    const mockFindNetworkClientIdByChainId = jest.fn();
+    const mockGetNetworkClientById = jest.fn().mockImplementation(() => ({
+      blockTracker: {},
+      provider: {},
+    }));
+    const subscriptionManager = new MultichainSubscriptionManager({
+      findNetworkClientIdByChainId: mockFindNetworkClientIdByChainId,
+      getNetworkClientById: mockGetNetworkClientById,
+    });
+    const spy = jest.fn();
+    subscriptionManager.on('notification', spy);
+    subscriptionManager.subscribe(scope, domain);
+    const scopeSubscriptionManager =
+      subscriptionManager.subscriptionManagerByChain[scope];
+    subscriptionManager.unsubscribe(scope, domain);
+    scopeSubscriptionManager.events.emit(
+      'notification',
+      newHeadsNotificationMock,
+    );
+
+    expect(spy).not.toHaveBeenCalled();
+  });
+  it('should unsubscribe from a scope', () => {
+    const domain = 'example.com';
+    const scope = 'eip155:1';
+    const mockFindNetworkClientIdByChainId = jest.fn();
+    const mockGetNetworkClientById = jest.fn().mockImplementation(() => ({
+      blockTracker: {},
+      provider: {},
+    }));
+    const subscriptionManager = new MultichainSubscriptionManager({
+      findNetworkClientIdByChainId: mockFindNetworkClientIdByChainId,
+      getNetworkClientById: mockGetNetworkClientById,
+    });
+    const spy = jest.fn();
+    subscriptionManager.on('notification', spy);
+    subscriptionManager.subscribe(scope, domain);
+    const scopeSubscriptionManager =
+      subscriptionManager.subscriptionManagerByChain[scope];
+    subscriptionManager.unsubscribeScope(scope);
+    scopeSubscriptionManager.events.emit(
+      'notification',
+      newHeadsNotificationMock,
+    );
+
+    expect(spy).not.toHaveBeenCalled();
+  });
+  it('should unsubscribe all', () => {
+    const domain = 'example.com';
+    const scope = 'eip155:1';
+    const mockFindNetworkClientIdByChainId = jest.fn();
+    const mockGetNetworkClientById = jest.fn().mockImplementation(() => ({
+      blockTracker: {},
+      provider: {},
+    }));
+    const subscriptionManager = new MultichainSubscriptionManager({
+      findNetworkClientIdByChainId: mockFindNetworkClientIdByChainId,
+      getNetworkClientById: mockGetNetworkClientById,
+    });
+    const spy = jest.fn();
+    subscriptionManager.on('notification', spy);
+    subscriptionManager.subscribe(scope, domain);
+    const scope2 = 'eip155:2';
+    subscriptionManager.subscribe(scope2, domain);
+    const scopeSubscriptionManager =
+      subscriptionManager.subscriptionManagerByChain[scope];
+    const scopeSubscriptionManager2 =
+      subscriptionManager.subscriptionManagerByChain[scope2];
+    subscriptionManager.unsubscribeAll();
+    scopeSubscriptionManager.events.emit(
+      'notification',
+      newHeadsNotificationMock,
+    );
+    scopeSubscriptionManager2.events.emit(
+      'notification',
+      newHeadsNotificationMock,
+    );
+
+    expect(spy).not.toHaveBeenCalled();
   });
 });

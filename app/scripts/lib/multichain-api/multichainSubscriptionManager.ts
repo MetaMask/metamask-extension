@@ -1,3 +1,4 @@
+import EventEmitter from 'events';
 import { NetworkController } from '@metamask/network-controller';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
 import { parseCaipChainId } from '@metamask/utils';
@@ -5,10 +6,7 @@ import { toHex } from '@metamask/controller-utils';
 import { Scope } from './scope';
 
 export type SubscriptionManager = {
-  events: {
-    on: (event: string, listener: (message: unknown) => void) => void;
-    off: (event: string, listener: (message: unknown) => void) => void;
-  };
+  events: EventEmitter;
   destroy?: () => void;
 };
 
@@ -31,7 +29,7 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
 
   private getNetworkClientById: NetworkController['getNetworkClientById'];
 
-  private subscriptionManagerByChain: { [scope: string]: SubscriptionManager };
+  public subscriptionManagerByChain: { [scope: string]: SubscriptionManager };
 
   private subscriptionsCountByScope: { [scope: string]: number };
 
