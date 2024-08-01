@@ -7,9 +7,6 @@ export default function txHelper(
   unapprovedTxs: Record<string, any> | null,
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  unapprovedMsgs: Record<string, any> | null,
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   personalMsgs: Record<string, any> | null,
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,7 +24,6 @@ export default function txHelper(
   log.debug('tx-helper called with params:');
   log.debug({
     unapprovedTxs,
-    unapprovedMsgs,
     personalMsgs,
     decryptMsgs,
     encryptionPublicKeyMsgs,
@@ -39,14 +35,12 @@ export default function txHelper(
     ? valuesFor(unapprovedTxs).filter((txMeta) => txMeta.chainId === chainId)
     : valuesFor(unapprovedTxs);
 
-  const msgValues = valuesFor(unapprovedMsgs);
   const personalValues = valuesFor(personalMsgs);
   const decryptValues = valuesFor(decryptMsgs);
   const encryptionPublicKeyValues = valuesFor(encryptionPublicKeyMsgs);
   const typedValues = valuesFor(typedMessages);
 
   const allValues = txValues
-    .concat(msgValues)
     .concat(personalValues)
     .concat(decryptValues)
     .concat(encryptionPublicKeyValues)
@@ -56,7 +50,6 @@ export default function txHelper(
     });
 
   log.debug(`tx helper found ${txValues.length} unapproved txs`);
-  log.debug(`tx helper found ${msgValues.length} unsigned messages`);
   log.debug(
     `tx helper found ${personalValues.length} unsigned personal messages`,
   );
