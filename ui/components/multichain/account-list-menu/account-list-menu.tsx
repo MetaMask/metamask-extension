@@ -12,7 +12,7 @@ import {
   KeyringClient,
   // eslint-disable-next-line import/no-duplicates
 } from '@metamask/keyring-api';
-import { Caip2ChainId } from '@metamask/snaps-utils';
+import { CaipChainId } from '@metamask/utils';
 import {
   BITCOIN_WALLET_NAME,
   BITCOIN_WALLET_SNAP_ID,
@@ -227,7 +227,7 @@ export const AccountListMenu = ({
     hasCreatedBtcTestnetAccount,
   );
 
-  const createBitcoinAccount = async (scope: Caip2ChainId) => {
+  const createBitcoinAccount = async (scope: CaipChainId) => {
     // Client to create the account using the Bitcoin Snap
     const client = new KeyringClient(new BitcoinWalletSnapSender());
 
