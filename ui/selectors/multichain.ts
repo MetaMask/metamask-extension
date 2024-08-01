@@ -355,7 +355,7 @@ export function getMultichainIsTestnet(
   state: MultichainState,
   account?: InternalAccount,
 ) {
-  // NOTE: Since there are 2 differents implementations for `IsTestnet` and `IsMainnet` we follow
+  // NOTE: Since there are 2 different implementations for `IsTestnet` and `IsMainnet` we follow
   // the same pattern here too!
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const providerConfig = getMultichainProviderConfig(state, selectedAccount);
