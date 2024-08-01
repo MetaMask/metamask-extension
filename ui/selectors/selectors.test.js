@@ -221,7 +221,6 @@ describe('Selectors', () => {
         selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
           metamask: {
             transactions: [],
-            unapprovedMsgs: {},
           },
         }),
       ).toStrictEqual(0);
@@ -254,7 +253,7 @@ describe('Selectors', () => {
                 status: TransactionStatus.unapproved,
               },
             ],
-            unapprovedMsgs: {
+            unapprovedPersonalMsgs: {
               2: {
                 id: 2,
                 msgParams: {
@@ -264,7 +263,7 @@ describe('Selectors', () => {
                 },
                 time: 1,
                 status: TransactionStatus.unapproved,
-                type: 'eth_sign',
+                type: 'personal_sign',
               },
             },
           },
@@ -288,7 +287,7 @@ describe('Selectors', () => {
                 status: TransactionStatus.unapproved,
               },
             ],
-            unapprovedMsgs: {
+            unapprovedTypedMessages: {
               1: {
                 id: 1,
                 msgParams: {
@@ -298,7 +297,7 @@ describe('Selectors', () => {
                 },
                 time: 1,
                 status: TransactionStatus.unapproved,
-                type: 'eth_sign',
+                type: 'eth_signTypedData',
               },
             },
           },
@@ -318,7 +317,6 @@ describe('Selectors', () => {
         isUnlocked: true,
         useRequestQueue: true,
         selectedTabOrigin: SELECTED_ORIGIN,
-        unapprovedMsgs: [],
         unapprovedDecryptMsgs: [],
         unapprovedPersonalMsgs: [],
         unapprovedEncryptionPublicKeyMsgs: [],
@@ -922,7 +920,6 @@ describe('Selectors', () => {
       options: {},
       methods: [
         'personal_sign',
-        'eth_sign',
         'eth_signTransaction',
         'eth_signTypedData_v1',
         'eth_signTypedData_v3',
@@ -1619,7 +1616,6 @@ describe('Selectors', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1644,7 +1640,6 @@ describe('Selectors', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1668,7 +1663,6 @@ describe('Selectors', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1694,7 +1688,6 @@ describe('Selectors', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1722,7 +1715,6 @@ describe('Selectors', () => {
         },
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1745,7 +1737,6 @@ describe('Selectors', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',

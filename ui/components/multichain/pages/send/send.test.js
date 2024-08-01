@@ -14,7 +14,10 @@ import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../../test/jest/
 import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import { SEND_STAGES, startNewDraftTransaction } from '../../../../ducks/send';
 import { AssetType } from '../../../../../shared/constants/transaction';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  GOERLI_DISPLAY_NAME,
+} from '../../../../../shared/constants/network';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { KeyringType } from '../../../../../shared/constants/keyring';
@@ -175,7 +178,11 @@ const baseStore = {
     },
     currentCurrency: 'USD',
     networkConfigurations: {
-      goerli: { chainId: CHAIN_IDS.GOERLI },
+      goerli: {
+        chainId: CHAIN_IDS.GOERLI,
+        ticker: 'ETH',
+        nickname: GOERLI_DISPLAY_NAME,
+      },
     },
     nativeCurrency: 'ETH',
     featureFlags: {
@@ -210,6 +217,8 @@ const baseStore = {
       },
     },
     completedOnboarding: true,
+    useCurrencyRateCheck: true,
+    ticker: 'ETH',
   },
   activeTab: {
     origin: 'https://uniswap.org/',
@@ -372,7 +381,11 @@ describe('SendPage', () => {
           gasEstimateType: 'none',
           selectedNetworkClientId: 'goerli',
           networkConfigurations: {
-            goerli: { chainId: CHAIN_IDS.GOERLI },
+            goerli: {
+              chainId: CHAIN_IDS.GOERLI,
+              nickname: GOERLI_DISPLAY_NAME,
+              ticker: 'ETH',
+            },
           },
         },
       };

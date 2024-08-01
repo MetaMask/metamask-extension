@@ -29,7 +29,7 @@ const mockBaseStore = {
 
     selectedNetworkClientId: 'goerli',
     networkConfigurations: {
-      goerli: { chainId: CHAIN_IDS.GOERLI },
+      goerli: { chainId: CHAIN_IDS.GOERLI, ticker: 'ETH' },
     },
 
     snaps: {

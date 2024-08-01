@@ -1011,6 +1011,7 @@ export function addTransactionAndRouteToConfirmationPage(
     } catch (error) {
       dispatch(hideLoadingIndication());
       dispatch(displayWarning(error));
+      throw error;
     }
     return null;
   };
@@ -4210,20 +4211,6 @@ export function setDismissSeedBackUpReminder(
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     await submitRequestToBackground('setDismissSeedBackUpReminder', [value]);
-    dispatch(hideLoadingIndication());
-  };
-}
-
-export function setDisabledRpcMethodPreference(
-  methodName: string,
-  value: number,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    await submitRequestToBackground('setDisabledRpcMethodPreference', [
-      methodName,
-      value,
-    ]);
     dispatch(hideLoadingIndication());
   };
 }

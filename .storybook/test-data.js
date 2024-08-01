@@ -1197,8 +1197,6 @@ const state = {
         v: '0x93',
       },
     ],
-    unapprovedMsgs: {},
-    unapprovedMsgCount: 0,
     unapprovedPersonalMsgs: {},
     unapprovedPersonalMsgCount: 0,
     unapprovedDecryptMsgs: {},
