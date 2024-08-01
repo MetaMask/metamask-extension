@@ -2,6 +2,7 @@
 import React from 'react';
 import reactRouterDom from 'react-router-dom';
 import { BtcAccountType, EthAccountType } from '@metamask/keyring-api';
+import { merge } from 'lodash';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -12,7 +13,6 @@ import { CONNECT_HARDWARE_ROUTE } from '../../../helpers/constants/routes';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { AccountListMenu } from '.';
-import { merge } from 'lodash';
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 const mockOnClose = jest.fn();
