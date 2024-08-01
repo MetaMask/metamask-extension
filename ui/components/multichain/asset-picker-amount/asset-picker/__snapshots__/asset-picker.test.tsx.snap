@@ -148,7 +148,7 @@ exports[`AssetPicker should render network picker when networks prop is defined 
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
             >
               <img
-                alt="SHOULDN'T MATTER logo"
+                alt="NATIVE TICKER logo"
                 class="mm-avatar-token__token-image"
                 src="./images/eth_logo.svg"
               />
@@ -166,9 +166,9 @@ exports[`AssetPicker should render network picker when networks prop is defined 
         </div>
         <div>
           <div
-            aria-describedby="tippy-tooltip-4"
+            aria-describedby="tippy-tooltip-5"
             class=""
-            data-original-title="SHOULDN'T MATTER"
+            data-original-title="NATIVE TICKER"
             data-tooltipped=""
             style="display: inline;"
             tabindex="0"
@@ -176,7 +176,7 @@ exports[`AssetPicker should render network picker when networks prop is defined 
             <p
               class="mm-box mm-text asset-picker__symbol mm-text--body-md mm-box--color-text-default"
             >
-              SHOULD...
+              NATIVE...
             </p>
           </div>
         </div>

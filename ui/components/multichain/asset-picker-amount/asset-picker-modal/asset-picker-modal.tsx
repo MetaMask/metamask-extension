@@ -47,7 +47,7 @@ import { useEqualityCheck } from '../../../../hooks/useEqualityCheck';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
-import { Asset, Collection, Token } from './types';
+import { Collection, Token } from './types';
 import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 import AssetList from './AssetList';
@@ -58,7 +58,6 @@ type AssetPickerModalProps = {
   header: JSX.Element | string | null;
   isOpen: boolean;
   onClose: () => void;
-  asset: Asset;
   onAssetChange: (asset: Token) => void;
   /**
    * Sending asset for UI treatments; only for dest component
@@ -69,7 +68,8 @@ type AssetPickerModalProps = {
   Pick<
     React.ComponentProps<typeof AssetPickerModalTabs>,
     'visibleTabs' | 'defaultActiveTabKey'
-  >;
+  > &
+  Pick<React.ComponentProps<typeof AssetList>, 'asset'>;
 
 const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
