@@ -42,7 +42,7 @@
     "message": "QR donanım cüzdanınızı bağlayın"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave (çok yakında)"
+    "message": "Ngrave Zero"
   },
   "SIWEAddressInvalid": {
     "message": "Giriş talebindeki adres, giriş yapmak için kullandığınız hesapla uyumlu değil."
