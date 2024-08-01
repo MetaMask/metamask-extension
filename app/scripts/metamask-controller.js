@@ -496,7 +496,7 @@ export default class MetamaskController extends EventEmitter {
         id: 'networkConfigurationId',
       };
       initialNetworkControllerState = {
-        selectedNetworkConfiguration: networkConfig.id,
+        selectedNetworkClientId: networkConfig.id,
         networkConfigurations: {
           [networkConfig.id]: networkConfig,
         },
