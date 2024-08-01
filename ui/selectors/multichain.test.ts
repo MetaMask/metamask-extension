@@ -12,7 +12,7 @@ import {
   MOCK_ACCOUNT_BIP122_P2WPKH,
   MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
 } from '../../test/data/mock-accounts';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { CHAIN_IDS, TEST_NETWORK_IDS } from '../../shared/constants/network';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import { AccountsState } from './accounts';
 import {
@@ -28,6 +28,7 @@ import {
   getMultichainProviderConfig,
   getMultichainSelectedAccountCachedBalance,
   getMultichainShouldShowFiat,
+  getMultichainIsTestnet,
 } from './multichain';
 import {
   getCurrentCurrency,
@@ -326,6 +327,44 @@ describe('Multichain Selectors', () => {
         const state = getNonEvmState(account);
 
         expect(getMultichainIsMainnet(state)).toBe(isMainnet);
+      },
+    );
+  });
+
+  describe('getMultichainIsTestnet', () => {
+    it('returns false if account is EVM (mainnet)', () => {
+      const state = getEvmState();
+
+      expect(getMultichainIsTestnet(state)).toBe(false);
+    });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each(TEST_NETWORK_IDS)(
+      'returns true if account is EVM (testnet): %s',
+      (chainId: string) => {
+        const state = getEvmState();
+
+        state.metamask.providerConfig.chainId = chainId;
+        expect(getMultichainIsTestnet(state)).toBe(true);
+      },
+    );
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      { isTestnet: false, account: MOCK_ACCOUNT_BIP122_P2WPKH },
+      { isTestnet: true, account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET },
+    ])(
+      'returns $isTestnet if non-EVM account address "$account.address" is compatible with mainnet',
+      ({
+        isTestnet,
+        account,
+      }: {
+        isTestnet: boolean;
+        account: InternalAccount;
+      }) => {
+        const state = getNonEvmState(account);
+
+        expect(getMultichainIsTestnet(state)).toBe(isTestnet);
       },
     );
   });
