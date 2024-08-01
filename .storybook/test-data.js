@@ -1204,8 +1204,6 @@ const state = {
         v: '0x93',
       },
     ],
-    unapprovedMsgs: {},
-    unapprovedMsgCount: 0,
     unapprovedPersonalMsgs: {},
     unapprovedPersonalMsgCount: 0,
     unapprovedDecryptMsgs: {},
@@ -1484,7 +1482,19 @@ const state = {
       },
     },
     ensResolutionsByAddress: {},
-    pendingApprovals: {},
+    pendingApprovals: {
+      '741bad30-45b6-11ef-b6ec-870d18dd6c01': {
+        id: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+        origin: 'http://127.0.0.1:8080',
+        type: 'transaction',
+        time: 1721383540624,
+        requestData: {
+          txId: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+        },
+        requestState: null,
+        expectsResult: true,
+      },
+    },
     pendingApprovalCount: 0,
     subjectMetadata: {
       'http://localhost:8080': {

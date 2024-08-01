@@ -42,7 +42,7 @@
     "message": "Carteira de hardware baseada em QR code"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "AirGap Vault e Ngrave (em breve)"
+    "message": "Ngrave Zero"
   },
   "about": {
     "message": "Sobre"
@@ -1363,9 +1363,6 @@
   "nonceField": {
     "message": "Personalizar nonce da transação"
   },
-  "nonceFieldDescription": {
-    "message": "Ative isso para alterar o nonce (número da transação) nas telas de confirmação. Esse é um recurso avançado; use com cautela."
-  },
   "nonceFieldHeading": {
     "message": "Nonce personalizado"
   },
@@ -1702,13 +1699,10 @@
   "seedPhraseIntroRecommendedButtonCopy": {
     "message": "Proteger minha carteira (recomendado)"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "Anote e guarde em vários locais secretos."
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Salve em um gerenciador de senhas"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "Guarde em um cofre de banco."
   },
   "seedPhraseIntroSidebarCopyOne": {

@@ -7,8 +7,11 @@ import {
   getCurrentChainId,
   getCurrentNetwork,
   accountSupportsSmartTx,
+  getSelectedAccount,
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
 import { isProduction } from '../environment';
+
+import { MultichainState } from '../../../ui/selectors/multichain';
 
 type SmartTransactionsMetaMaskState = {
   metamask: {
@@ -89,13 +92,27 @@ const getIsAllowedRpcUrlForSmartTransactions = (
   return rpcUrl?.hostname?.endsWith('.infura.io');
 };
 
+/**
+ * Checks if the selected account has a non-zero balance.
+ *
+ * @param state - The state object containing account information.
+ * @returns true if the selected account has a non-zero balance, otherwise false.
+ */
+const hasNonZeroBalance = (state: SmartTransactionsMetaMaskState) => {
+  const selectedAccount = getSelectedAccount(
+    state as unknown as MultichainState,
+  );
+  return BigInt(selectedAccount?.balance || '0x0') > 0n;
+};
+
 export const getIsSmartTransactionsOptInModalAvailable = (
   state: SmartTransactionsMetaMaskState,
 ) => {
   return (
     getCurrentChainSupportsSmartTransactions(state) &&
     getIsAllowedRpcUrlForSmartTransactions(state) &&
-    getSmartTransactionsOptInStatus(state) === null
+    getSmartTransactionsOptInStatus(state) === null &&
+    hasNonZeroBalance(state)
   );
 };
 

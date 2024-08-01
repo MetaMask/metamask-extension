@@ -78,6 +78,8 @@ describe('useBlockaidAlerts', () => {
     });
 
     expect(result.current).toHaveLength(1);
+    expect(result.current[0].reportUrl).toBeDefined();
+    delete result.current[0].reportUrl;
     expect(result.current[0]).toStrictEqual(EXPECTED_ALERT);
   });
 
@@ -95,6 +97,8 @@ describe('useBlockaidAlerts', () => {
     });
 
     expect(result.current).toHaveLength(1);
+    expect(result.current[0].reportUrl).toBeDefined();
+    delete result.current[0].reportUrl;
     expect(result.current[0]).toStrictEqual(EXPECTED_ALERT);
   });
 });

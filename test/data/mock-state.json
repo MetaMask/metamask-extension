@@ -366,6 +366,7 @@
     },
     "preferences": {
       "hideZeroBalanceTokens": false,
+      "isRedesignedConfirmationsDeveloperEnabled": false,
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": true,
@@ -417,7 +418,6 @@
           "options": {},
           "methods": [
             "personal_sign",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v3",
@@ -437,7 +437,6 @@
           "options": {},
           "methods": [
             "personal_sign",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v3",
@@ -457,7 +456,6 @@
           "options": {},
           "methods": [
             "personal_sign",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v3",
@@ -477,7 +475,6 @@
           "options": {},
           "methods": [
             "personal_sign",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v3",
@@ -497,7 +494,6 @@
           "options": {},
           "methods": [
             "personal_sign",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v3",
@@ -521,7 +517,6 @@
           "options": {},
           "methods": [
             "personal_sign",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v3",
@@ -532,6 +527,7 @@
       },
       "selectedAccount": "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3"
     },
+    "balances": {},
     "keyrings": [
       {
         "type": "HD Key Tree",
@@ -780,8 +776,6 @@
         }
       }
     },
-    "unapprovedMsgs": {},
-    "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgs": {},
     "unapprovedPersonalMsgCount": 0,
     "unapprovedDecryptMsgs": {},
@@ -1879,6 +1873,8 @@
       }
     ],
     "addSnapAccountEnabled": false,
+    "bitcoinSupportEnabled": false,
+    "bitcoinTestnetSupportEnabled": false,
     "pendingApprovals": {
       "testApprovalId": {
         "id": "testApprovalId",

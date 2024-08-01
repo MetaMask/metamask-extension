@@ -15,12 +15,25 @@ import { AccountListMenu } from '.';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 const mockOnClose = jest.fn();
 const mockGetEnvironmentType = jest.fn();
+const mockNextAccountName = jest.fn().mockReturnValue('Test Account 2');
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: () => mockGetEnvironmentType,
 }));
 ///: END:ONLY_INCLUDE_IF
+
+jest.mock('../../../store/actions', () => {
+  return {
+    ...jest.requireActual('../../../store/actions'),
+    getNextAvailableAccountName: () => mockNextAccountName,
+  };
+});
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: jest.fn(() => []),
+}));
 
 const render = (props = { onClose: () => jest.fn() }) => {
   const store = configureStore({
@@ -70,12 +83,15 @@ const render = (props = { onClose: () => jest.fn() }) => {
 describe('AccountListMenu', () => {
   const historyPushMock = jest.fn();
 
-  jest
-    .spyOn(reactRouterDom, 'useHistory')
-    .mockImplementation()
-    .mockReturnValue({ push: historyPushMock });
+  beforeEach(() => {
+    jest
+      .spyOn(reactRouterDom, 'useHistory')
+      .mockImplementation()
+      .mockReturnValue({ push: historyPushMock });
+  });
 
   afterEach(() => {
+    jest.resetAllMocks();
     jest.clearAllMocks();
   });
 
@@ -211,7 +227,7 @@ describe('AccountListMenu', () => {
 
     // Click the button to ensure the options and close button display
     button[0].click();
-    expect(getByText('Add a new account')).toBeInTheDocument();
+    expect(getByText('Add a new Ethereum account')).toBeInTheDocument();
     expect(getByText('Import account')).toBeInTheDocument();
     expect(getByText('Add hardware wallet')).toBeInTheDocument();
     const header = document.querySelector('header');
@@ -235,8 +251,11 @@ describe('AccountListMenu', () => {
     );
     button.click();
 
-    fireEvent.click(getByText('Add a new account'));
-    expect(getByText('Create')).toBeInTheDocument();
+    fireEvent.click(getByText('Add a new Ethereum account'));
+    const addAccountButton = document.querySelector(
+      '[data-testid="submit-add-account-with-name"]',
+    );
+    expect(addAccountButton).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
 
     fireEvent.click(getByText('Cancel'));

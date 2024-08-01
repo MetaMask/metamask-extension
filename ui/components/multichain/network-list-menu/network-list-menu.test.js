@@ -14,7 +14,6 @@ import { NetworkListMenu } from '.';
 const mockSetShowTestNetworks = jest.fn();
 const mockSetProviderType = jest.fn();
 const mockToggleNetworkMenu = jest.fn();
-const mockNetworkMenuRedesignToggle = jest.fn();
 const mockSetNetworkClientIdForDomain = jest.fn();
 const mockSetActiveNetwork = jest.fn();
 
@@ -25,11 +24,6 @@ jest.mock('../../../store/actions.ts', () => ({
   toggleNetworkMenu: () => mockToggleNetworkMenu,
   setNetworkClientIdForDomain: (network, id) =>
     mockSetNetworkClientIdForDomain(network, id),
-}));
-
-jest.mock('../../../helpers/utils/feature-flags', () => ({
-  ...jest.requireActual('../../../helpers/utils/feature-flags'),
-  getLocalNetworkMenuRedesignFeatureFlag: () => mockNetworkMenuRedesignToggle,
 }));
 
 const MOCK_ORIGIN = 'https://portfolio.metamask.io';
@@ -66,7 +60,7 @@ const render = ({
 
 describe('NetworkListMenu', () => {
   beforeEach(() => {
-    mockNetworkMenuRedesignToggle.mockReturnValue(false);
+    process.env.ENABLE_NETWORK_UI_REDESIGN = 'false';
   });
 
   it('renders properly', () => {
@@ -185,12 +179,16 @@ describe('NetworkListMenu', () => {
   describe('NetworkListMenu with ENABLE_NETWORK_UI_REDESIGN', () => {
     // Set the environment variable before tests run
     beforeEach(() => {
-      process.env.ENABLE_NETWORK_UI_REDESIGN = 'true';
+      window.metamaskFeatureFlags = {
+        networkMenuRedesign: true,
+      };
     });
 
     // Reset the environment variable after tests complete
     afterEach(() => {
-      delete process.env.ENABLE_NETWORK_UI_REDESIGN;
+      window.metamaskFeatureFlags = {
+        networkMenuRedesign: false,
+      };
     });
 
     it('should display "Arbitrum" when ENABLE_NETWORK_UI_REDESIGN is true', async () => {

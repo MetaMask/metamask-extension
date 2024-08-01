@@ -1,9 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import {
-  scrollAndConfirmAndAssertConfirm,
-  withRedesignConfirmationFixtures,
-} from '../helpers';
+import { MockedEndpoint } from 'mockttp';
 import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
@@ -14,19 +11,20 @@ import {
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
+  scrollAndConfirmAndAssertConfirm,
+  withRedesignConfirmationFixtures,
+} from '../helpers';
+import { TestSuiteArguments } from '../transactions/shared';
+import {
+  assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
+  assertSignatureMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
-  assertSignatureMetrics,
-  assertAccountDetailsMetrics,
 } from './signature-helpers';
 
-describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-    return;
-  }
-
+describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: Suite) {
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
@@ -34,12 +32,8 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
         driver,
         ganacheServer,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-        mockedEndpoint: unknown;
-      }) => {
-        const addresses = await ganacheServer.getAccounts();
+      }: TestSuiteArguments) => {
+        const addresses = await (ganacheServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
 
         await unlockWallet(driver);
@@ -54,7 +48,7 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
         await assertPastedAddress(driver);
         await assertAccountDetailsMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData_v4',
         );
 
@@ -64,7 +58,7 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
 
         await assertSignatureMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData_v4',
           'Mail',
         );
@@ -79,10 +73,7 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        mockedEndpoint: unknown;
-      }) => {
+      }: TestSuiteArguments) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signTypedDataV4');
@@ -95,7 +86,7 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
 
         await assertSignatureMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData_v4',
           'Mail',
         );

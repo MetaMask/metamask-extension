@@ -55,6 +55,7 @@ import {
   IconName,
   ModalContent,
   ModalHeader,
+  AvatarNetworkSize,
 } from '../../component-library';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -74,7 +75,7 @@ import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
 
-const ACTION_MODES = {
+export const ACTION_MODES = {
   // Displays the search box and network list
   LIST: 'list',
   // Displays the Add form
@@ -121,6 +122,13 @@ export const NetworkListMenu = ({ onClose }) => {
   const [actionMode, setActionMode] = useState(
     editedNetwork ? ACTION_MODES.EDIT : ACTION_MODES.LIST,
   );
+  const [networkFormInformation, setNetworkFormInformation] = useState({
+    networkNameForm: '',
+    networkChainIdForm: '',
+    networkTickerForm: '',
+  });
+
+  const [prevActionMode, setPrevActionMode] = useState(null);
 
   const networkToEdit = useMemo(() => {
     const network = [...nonTestNetworks, ...testNetworks].find(
@@ -167,6 +175,7 @@ export const NetworkListMenu = ({ onClose }) => {
 
   useEffect(() => {
     setActionMode(ACTION_MODES.LIST);
+    setPrevActionMode(null);
     if (currentlyOnTestNetwork) {
       dispatch(setShowTestNetworks(currentlyOnTestNetwork));
     }
@@ -268,6 +277,7 @@ export const NetworkListMenu = ({ onClose }) => {
       }),
     );
     setActionMode(ACTION_MODES.EDIT);
+    setPrevActionMode(ACTION_MODES.LIST);
   };
 
   const getOnEdit = (network) => {
@@ -283,6 +293,9 @@ export const NetworkListMenu = ({ onClose }) => {
       <NetworkListItem
         name={network.nickname}
         iconSrc={network?.rpcPrefs?.imageUrl}
+        iconSize={
+          networkMenuRedesign ? AvatarNetworkSize.Sm : AvatarNetworkSize.Md
+        }
         key={network.id}
         selected={isCurrentNetwork && !focusSearch}
         focus={isCurrentNetwork && !focusSearch}
@@ -359,6 +372,15 @@ export const NetworkListMenu = ({ onClose }) => {
     }
   };
 
+  const goToRpcFormEdit = () => {
+    setActionMode(ACTION_MODES.ADD_RPC);
+    setPrevActionMode(ACTION_MODES.EDIT);
+  };
+  const goToRpcFormAdd = () => {
+    setActionMode(ACTION_MODES.ADD_RPC);
+    setPrevActionMode(ACTION_MODES.ADD);
+  };
+
   const renderListNetworks = () => {
     if (actionMode === ACTION_MODES.LIST) {
       return (
@@ -376,6 +398,7 @@ export const NetworkListMenu = ({ onClose }) => {
                 marginLeft={4}
                 marginRight={4}
                 marginBottom={4}
+                marginTop={2}
                 backgroundColor={BackgroundColor.backgroundAlternative}
                 startAccessory={
                   <Box
@@ -394,16 +417,22 @@ export const NetworkListMenu = ({ onClose }) => {
               />
             ) : null}
             <Box className="multichain-network-list-menu">
-              <Box
-                paddingRight={4}
-                paddingLeft={4}
-                paddingBottom={4}
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text> {t('enabledNetworks')}</Text>
-              </Box>
-              {searchResults.length === 0 && focusSearch ? (
+              {searchResults.length > 0 ? (
+                <Box
+                  padding={4}
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.spaceBetween}
+                >
+                  <Text color={TextColor.textAlternative}>
+                    {t('enabledNetworks')}
+                  </Text>
+                </Box>
+              ) : null}
+
+              {searchResults.length === 0 &&
+              searchAddNetworkResults.length === 0 &&
+              searchTestNetworkResults.length === 0 &&
+              focusSearch ? (
                 <Text
                   paddingLeft={4}
                   paddingRight={4}
@@ -466,18 +495,26 @@ export const NetworkListMenu = ({ onClose }) => {
                   data-testid="add-popular-network-view"
                 />
               ) : null}
-              <Box
-                padding={4}
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text>{t('showTestnetNetworks')}</Text>
-                <ToggleButton
-                  value={showTestNetworks}
-                  disabled={currentlyOnTestNetwork}
-                  onToggle={handleToggle}
-                />
-              </Box>
+
+              {searchTestNetworkResults.length > 0 ? (
+                <Box
+                  paddingBottom={4}
+                  paddingTop={4}
+                  paddingLeft={4}
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.spaceBetween}
+                >
+                  <Text color={TextColor.textAlternative}>
+                    {t('showTestnetNetworks')}
+                  </Text>
+                  <ToggleButton
+                    value={showTestNetworks}
+                    disabled={currentlyOnTestNetwork}
+                    onToggle={handleToggle}
+                  />
+                </Box>
+              ) : null}
+
               {showTestNetworks || currentlyOnTestNetwork ? (
                 <Box className="multichain-network-list-menu">
                   {generateMenuItems(searchTestNetworkResults)}
@@ -512,9 +549,10 @@ export const NetworkListMenu = ({ onClose }) => {
                   category: MetaMetricsEventCategory.Network,
                 });
                 setActionMode(ACTION_MODES.ADD);
+                setPrevActionMode(ACTION_MODES.LIST);
               }}
             >
-              {t('addNetwork')}
+              {networkMenuRedesign ? t('addCustomNetwork') : t('addNetwork')}
             </ButtonSecondary>
           </Box>
         </>
@@ -525,6 +563,10 @@ export const NetworkListMenu = ({ onClose }) => {
           isNewNetworkFlow
           addNewNetwork
           getOnEditCallback={getOnEdit}
+          onRpcUrlAdd={goToRpcFormAdd}
+          prevActionMode={prevActionMode}
+          networkFormInformation={networkFormInformation}
+          setNetworkFormInformation={setNetworkFormInformation}
         />
       );
     } else if (actionMode === ACTION_MODES.EDIT) {
@@ -533,7 +575,7 @@ export const NetworkListMenu = ({ onClose }) => {
           isNewNetworkFlow
           addNewNetwork={false}
           networkToEdit={networkToEdit}
-          onRpcUrlAdd={() => setActionMode(ACTION_MODES.ADD_RPC)}
+          onRpcUrlAdd={goToRpcFormEdit}
         />
       );
     } else if (actionMode === ACTION_MODES.ADD_RPC) {
@@ -546,8 +588,16 @@ export const NetworkListMenu = ({ onClose }) => {
   let onBack;
   if (actionMode === ACTION_MODES.EDIT || actionMode === ACTION_MODES.ADD) {
     onBack = () => setActionMode(ACTION_MODES.LIST);
-  } else if (actionMode === ACTION_MODES.ADD_RPC) {
+  } else if (
+    actionMode === ACTION_MODES.ADD_RPC &&
+    prevActionMode === ACTION_MODES.EDIT
+  ) {
     onBack = () => setActionMode(ACTION_MODES.EDIT);
+  } else if (
+    actionMode === ACTION_MODES.ADD_RPC &&
+    prevActionMode === ACTION_MODES.ADD
+  ) {
+    onBack = () => setActionMode(ACTION_MODES.ADD);
   }
 
   // Modal title
@@ -556,8 +606,10 @@ export const NetworkListMenu = ({ onClose }) => {
     title = t('networkMenuHeading');
   } else if (actionMode === ACTION_MODES.ADD) {
     title = t('addCustomNetwork');
+  } else if (actionMode === ACTION_MODES.ADD_RPC) {
+    title = t('addRpcUrl');
   } else {
-    title = editedNetwork.nickname;
+    title = editedNetwork?.nickname ?? '';
   }
 
   return (
@@ -575,7 +627,6 @@ export const NetworkListMenu = ({ onClose }) => {
         <ModalHeader
           paddingTop={4}
           paddingRight={4}
-          paddingBottom={6}
           onClose={onClose}
           onBack={onBack}
         >

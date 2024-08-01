@@ -34,6 +34,10 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import NoteToTrader from '../../../components/institutional/note-to-trader';
 ///: END:ONLY_INCLUDE_IF
+import {
+  AccountType,
+  CustodyStatus,
+} from '../../../../shared/constants/custody';
 
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
 import TransactionDetail from '../components/transaction-detail/transaction-detail.component';
@@ -841,8 +845,8 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
     const { noteText } = this.state;
 
-    if (accountType === 'custody') {
-      txData.custodyStatus = 'created';
+    if (accountType === AccountType.CUSTODY) {
+      txData.custodyStatus = CustodyStatus.CREATED;
       txData.metadata = txData.metadata || {};
 
       if (isNoteToTraderSupported) {
@@ -1047,10 +1051,10 @@ export default class ConfirmTransactionBase extends Component {
     if (smartTransactionsOptInStatus && currentChainSupportsSmartTransactions) {
       // TODO: Fetching swaps feature flags, which include feature flags for smart transactions, is only a short-term solution.
       // Long-term, we want to have a new proxy service specifically for feature flags.
-      const [swapsFeatureFlags] = Promise.all([
+      Promise.all([
         fetchSwapsFeatureFlags(),
         fetchSmartTransactionsLiveness(),
-      ]).then(() => setSwapsFeatureFlags(swapsFeatureFlags));
+      ]).then(([swapsFeatureFlags]) => setSwapsFeatureFlags(swapsFeatureFlags));
     }
   }
 
@@ -1165,7 +1169,7 @@ export default class ConfirmTransactionBase extends Component {
           noteComponent={
             isNoteToTraderSupported && (
               <NoteToTrader
-                maxLength="280"
+                maxLength={280}
                 placeholder={t('notePlaceholder')}
                 onChange={(value) => this.setState({ noteText: value })}
                 noteText={this.state.noteText}

@@ -8,7 +8,9 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { useMemo } from 'react';
 import {
   ApprovalsMetaMaskState,
+  getIsRedesignedConfirmationsDeveloperEnabled,
   getRedesignedConfirmationsEnabled,
+  getRedesignedTransactionsEnabled,
   getUnapprovedTransaction,
   latestPendingConfirmationSelector,
   selectPendingApproval,
@@ -29,9 +31,21 @@ const useCurrentConfirmation = () => {
   const latestPendingApproval = useSelector(latestPendingConfirmationSelector);
   const confirmationId = paramsConfirmationId ?? latestPendingApproval?.id;
 
-  const redesignedConfirmationsEnabled = useSelector(
+  const isRedesignedSignaturesUserSettingEnabled = useSelector(
     getRedesignedConfirmationsEnabled,
   );
+
+  const isRedesignedTransactionsUserSettingEnabled = useSelector(
+    getRedesignedTransactionsEnabled,
+  );
+
+  const isRedesignedConfirmationsDeveloperEnabled = useSelector(
+    getIsRedesignedConfirmationsDeveloperEnabled,
+  );
+
+  const isRedesignedConfirmationsDeveloperSettingEnabled =
+    process.env.ENABLE_CONFIRMATION_REDESIGN === 'true' ||
+    isRedesignedConfirmationsDeveloperEnabled;
 
   const pendingApproval = useSelector((state) =>
     selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),
@@ -54,21 +68,25 @@ const useCurrentConfirmation = () => {
     pendingApproval?.type as ApprovalType,
   );
 
-  const isSIWE =
-    pendingApproval?.type === TransactionType.personalSign &&
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (signatureMessage?.msgParams as any)?.siwe?.isSIWEMessage;
+  const shouldUseRedesignForSignatures =
+    (isRedesignedSignaturesUserSettingEnabled && isCorrectApprovalType) ||
+    (isRedesignedConfirmationsDeveloperSettingEnabled && isCorrectApprovalType);
+
+  const shouldUseRedesignForTransactions =
+    (isRedesignedTransactionsUserSettingEnabled && isCorrectTransactionType) ||
+    (isRedesignedConfirmationsDeveloperSettingEnabled &&
+      isCorrectTransactionType);
+
+  // If the developer toggle or the build time environment variable are enabled,
+  // all the signatures and transactions in development are shown. If the user
+  // facing feature toggles for signature or transactions are enabled, we show
+  // only confirmations that shipped (contained in `REDESIGN_APPROVAL_TYPES` and
+  // `REDESIGN_TRANSACTION_TYPES` respectively).
+  const shouldUseRedesign =
+    shouldUseRedesignForSignatures || shouldUseRedesignForTransactions;
 
   return useMemo(() => {
-    if (
-      !redesignedConfirmationsEnabled ||
-      (!isCorrectTransactionType && !isCorrectApprovalType) ||
-      /**
-       * @todo remove isSIWE check when we want to enable SIWE in redesigned confirmations
-       * @see {@link https://github.com/MetaMask/metamask-extension/issues/24617}
-       */
-      isSIWE
-    ) {
+    if (!shouldUseRedesign) {
       return { currentConfirmation: undefined };
     }
 
@@ -76,14 +94,7 @@ const useCurrentConfirmation = () => {
       transactionMetadata ?? signatureMessage ?? undefined;
 
     return { currentConfirmation };
-  }, [
-    redesignedConfirmationsEnabled,
-    isCorrectTransactionType,
-    isCorrectApprovalType,
-    isSIWE,
-    transactionMetadata,
-    signatureMessage,
-  ]);
+  }, [transactionMetadata, signatureMessage, shouldUseRedesign]);
 };
 
 export default useCurrentConfirmation;
