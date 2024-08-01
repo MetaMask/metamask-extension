@@ -2,14 +2,18 @@ const {
   WALLET_SNAP_PERMISSION_KEY,
   SnapCaveatType,
 } = require('@metamask/snaps-utils');
-const { merge } = require('lodash');
+const { merge, mergeWith } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
 const { NetworkStatus } = require('@metamask/network-controller');
 
 const { CHAIN_IDS, NETWORK_TYPES } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
-const { DAPP_URL, DAPP_ONE_URL, ACCOUNT_1 } = require('./helpers');
-const { DEFAULT_FIXTURE_ACCOUNT, ERC_4337_ACCOUNT } = require('./constants');
+const {
+  DAPP_URL,
+  DAPP_ONE_URL,
+  DEFAULT_FIXTURE_ACCOUNT,
+  ERC_4337_ACCOUNT,
+} = require('./constants');
 const {
   defaultFixture,
   FIXTURE_STATE_METADATA_VERSION,
@@ -216,6 +220,20 @@ class FixtureBuilder {
       vault:
         '{"data":"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT","iv":"FbeHDAW5afeWNORfNJBR0Q==","salt":"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8="}',
     });
+  }
+
+  withMetamaskNotificationsController(data) {
+    mergeWith(
+      this.fixture.data.MetamaskNotificationsController,
+      data,
+      (objValue, srcValue) => {
+        if (Array.isArray(objValue)) {
+          objValue.concat(srcValue);
+        }
+        return undefined; // Explicitly return undefined for non-array values
+      },
+    );
+    return this;
   }
 
   withMetaMetricsController(data) {
@@ -1235,7 +1253,7 @@ class FixtureBuilder {
   }
 
   withTransactionControllerOPLayer2Transaction() {
-    const FROM_ADDRESS = ACCOUNT_1;
+    const FROM_ADDRESS = DEFAULT_FIXTURE_ACCOUNT;
     const TRANSACTION_ID = 'f0fc75d0-181d-11ef-9546-8b2366f13afd';
     const TRANSACTION_TYPE = 'contractInteraction';
     const TEST_NETWORK_CLIENT_ID = 'networkConfigurationId';
