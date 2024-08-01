@@ -1,5 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { BtcAccountType, InternalAccount } from '@metamask/keyring-api';
 import {
   getUpdatedAndSortedAccounts,
   getInternalAccounts,
@@ -25,7 +27,12 @@ export const SendPageYourAccounts = () => {
   // Your Accounts
   const accounts = useSelector(getUpdatedAndSortedAccounts);
   const internalAccounts = useSelector(getInternalAccounts);
-  const mergedAccounts = mergeAccounts(accounts, internalAccounts);
+  const mergedAccounts: InternalAccount &
+    { keyring: KeyringTypes; label: string }[] = useMemo(() => {
+    return mergeAccounts(accounts, internalAccounts).filter(
+      (account: InternalAccount) => account.type !== BtcAccountType.P2wpkh,
+    );
+  }, [accounts, internalAccounts]);
 
   return (
     <SendPageRow>
