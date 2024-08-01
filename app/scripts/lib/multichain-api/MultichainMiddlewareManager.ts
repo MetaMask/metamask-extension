@@ -22,7 +22,6 @@ type MiddlewareManager = {
     middleware: ExtendedJsonRpcMiddleware,
   ) => void;
   middleware: ExtendedJsonRpcMiddleware | { destroy: () => void };
-  destroy: () => void;
 };
 
 export default function createMultichainMiddlewareManager(): MiddlewareManager {
@@ -85,15 +84,14 @@ export default function createMultichainMiddlewareManager(): MiddlewareManager {
     }
   };
 
-  function destroy() {
+  (middleware as any).destroy = () => {
     removeAllMiddleware();
-  }
+  };
 
   return {
     removeAllMiddleware,
     addMiddleware,
     removeMiddleware,
     middleware,
-    destroy,
   };
 }
