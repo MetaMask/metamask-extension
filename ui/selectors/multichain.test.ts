@@ -19,7 +19,7 @@ import {
   CHAIN_IDS,
   ETH_TOKEN_IMAGE_URL,
   MAINNET_DISPLAY_NAME,
-  TEST_NETWORK_IDS,
+  NETWORK_TYPES,
 } from '../../shared/constants/network';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import { AccountsState } from './accounts';
@@ -387,12 +387,11 @@ describe('Multichain Selectors', () => {
     });
 
     // @ts-expect-error This is missing from the Mocha type definitions
-    it.each(TEST_NETWORK_IDS)(
+    it.each([NETWORK_TYPES.SEPOLIA, NETWORK_TYPES.LINEA_SEPOLIA])(
       'returns true if account is EVM (testnet): %s',
-      (chainId: string) => {
+      (network: string) => {
         const state = getEvmState();
-
-        state.metamask.providerConfig.chainId = chainId;
+        state.metamask.selectedNetworkClientId = network;
         expect(getMultichainIsTestnet(state)).toBe(true);
       },
     );
