@@ -26,18 +26,23 @@ export async function migrate(
   return versionedData;
 }
 
-function transformState(state: Record<string, unknown>) {
-  if (hasProperty(state, 'SnapController') && isObject(state.SnapController)) {
-    delete state.SnapController.snapErrors;
+function removeObsoleteSnapControllerState(state: Record<string, unknown>): void {
+  if (!hasProperty(state, 'SnapController')) {
+    return;
+  } else if (!isObject(state.SnapController)) {
+    global.sentry.captureException(new Error(`Migration ${version}: Invalid SnapController state of type '${typeof state.SnapController}'`))
+    return;
   }
 
+  delete state.SnapController.snapErrors;
+}
+
+function removeObsoleteSelectedNetworkControllerState(state: Record<string, unknown>): void {
   if (!hasProperty(state, 'SelectedNetworkController')) {
-    return state;
-  }
-
-  if (!isObject(state.SelectedNetworkController)) {
+    return;
+  } else if (!isObject(state.SelectedNetworkController)) {
     console.error(
-      `Unexpected state encountered during migration version ${version}: state.SelectedNetworkController is type: ${typeof state.SelectedNetworkController}`,
+      `Migration ${version}: Invalid SelectedNetworkController state of type '${typeof state.SelectedNetworkController}'`,
     );
     state.SelectedNetworkController = { domains: {} };
   } else if (hasProperty(state.SelectedNetworkController, 'perDomainNetwork')) {
@@ -45,6 +50,9 @@ function transformState(state: Record<string, unknown>) {
       domains: {},
     };
   }
+}
 
-  return state;
+function transformState(state: Record<string, unknown>): void {
+  removeObsoleteSnapControllerState(state);
+  removeObsoleteSelectedNetworkControllerState(state);
 }
