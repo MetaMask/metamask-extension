@@ -108,7 +108,7 @@ describe('AssetList', () => {
     render(
       <AssetList
         handleAssetChange={handleAssetChangeMock}
-        asset={{ balance: '1', type: AssetType.native }}
+        asset={{ type: AssetType.native }}
         tokenList={tokenList}
       />,
     );
@@ -121,7 +121,7 @@ describe('AssetList', () => {
     render(
       <AssetList
         handleAssetChange={handleAssetChangeMock}
-        asset={{ balance: '1', type: AssetType.native }}
+        asset={{ type: AssetType.native }}
         tokenList={tokenList}
       />,
     );
@@ -149,7 +149,7 @@ describe('AssetList', () => {
     render(
       <AssetList
         handleAssetChange={handleAssetChangeMock}
-        asset={{ balance: '1', type: AssetType.native }}
+        asset={{ type: AssetType.native }}
         tokenList={tokenList}
         isTokenDisabled={(token) => token.address === '0xToken1'}
       />,
