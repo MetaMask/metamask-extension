@@ -33,11 +33,6 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
     },
     {
       accountType: BtcAccountType.P2wpkh,
-      method: 'eth_sign',
-      calledNext: false,
-    },
-    {
-      accountType: BtcAccountType.P2wpkh,
       method: 'eth_signTypedData',
       calledNext: false,
     },
@@ -69,11 +64,6 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
     {
       accountType: EthAccountType.Eoa,
       method: 'eth_sendTransaction',
-      calledNext: true,
-    },
-    {
-      accountType: EthAccountType.Eoa,
-      method: 'eth_sign',
       calledNext: true,
     },
     {
