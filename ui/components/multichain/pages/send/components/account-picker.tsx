@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { BtcAccountType } from '@metamask/keyring-api';
 import { getSelectedInternalAccount } from '../../../../../selectors';
 import { Label } from '../../../../component-library';
 import { AccountPicker } from '../../../account-picker';
@@ -61,7 +60,6 @@ export const SendPageAccountPicker = () => {
       {showAccountPicker ? (
         <AccountListMenu
           accountListItemProps={{ showOptions: false }}
-          excludeAccountTypes={[BtcAccountType.P2wpkh]}
           showAccountCreation={false}
           onClose={() => setShowAccountPicker(false)}
         />

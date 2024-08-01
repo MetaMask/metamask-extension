@@ -1,7 +1,11 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import reactRouterDom from 'react-router-dom';
-import { BtcAccountType, EthAccountType } from '@metamask/keyring-api';
+import {
+  BtcAccountType,
+  EthAccountType,
+  KeyringAccountType,
+} from '@metamask/keyring-api';
 import { merge } from 'lodash';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
@@ -41,10 +45,10 @@ const render = (
   state = {},
   props: {
     onClose: () => void;
-    excludeAccountTypes: string[];
+    allowedAccountTypes: KeyringAccountType[];
   } = {
     onClose: () => jest.fn(),
-    excludeAccountTypes: [],
+    allowedAccountTypes: [EthAccountType.Eoa, EthAccountType.Erc4337],
   },
 ) => {
   const defaultState = {
@@ -506,41 +510,79 @@ describe('AccountListMenu', () => {
   });
   ///: END:ONLY_INCLUDE_IF
 
-  it('prop `excludeAccountTypes` filters accounts', () => {
+  describe('prop `allowedAccountTypes`', () => {
     const mockAccount = createMockInternalAccount();
     const mockBtcAccount = createMockInternalAccount({
       name: 'Bitcoin Account',
       type: BtcAccountType.P2wpkh,
       address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
     });
-    const { queryByText } = render(
-      {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          internalAccounts: {
-            accounts: {
-              [mockAccount.id]: mockAccount,
-              [mockBtcAccount.id]: mockBtcAccount,
-            },
-            selectedAccount: mockAccount.id,
-          },
-          keyrings: [
-            {
-              type: 'HD Key Tree',
-              accounts: [mockAccount.address],
-            },
-            {
-              type: 'Snap Keyring',
-              accounts: [mockBtcAccount.address],
-            },
-          ],
-        },
-      },
-      { onClose: jest.fn(), excludeAccountTypes: [BtcAccountType.P2wpkh] },
-    );
 
-    expect(queryByText(mockAccount.metadata.name)).toBeInTheDocument();
-    expect(queryByText(mockBtcAccount.metadata.name)).not.toBeInTheDocument();
+    it('allows only EthAccountTypes', () => {
+      const { queryByText } = render(
+        {
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            internalAccounts: {
+              accounts: {
+                [mockAccount.id]: mockAccount,
+                [mockBtcAccount.id]: mockBtcAccount,
+              },
+              selectedAccount: mockAccount.id,
+            },
+            keyrings: [
+              {
+                type: 'HD Key Tree',
+                accounts: [mockAccount.address],
+              },
+              {
+                type: 'Snap Keyring',
+                accounts: [mockBtcAccount.address],
+              },
+            ],
+          },
+        },
+        {
+          onClose: jest.fn(),
+          allowedAccountTypes: [EthAccountType.Eoa, EthAccountType.Erc4337],
+        },
+      );
+
+      expect(queryByText(mockAccount.metadata.name)).toBeInTheDocument();
+      expect(queryByText(mockBtcAccount.metadata.name)).not.toBeInTheDocument();
+    });
+
+    it('allows only BtcAccountType', () => {
+      const { queryByText } = render(
+        {
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            internalAccounts: {
+              accounts: {
+                [mockAccount.id]: mockAccount,
+                [mockBtcAccount.id]: mockBtcAccount,
+              },
+              selectedAccount: mockAccount.id,
+            },
+            keyrings: [
+              {
+                type: 'HD Key Tree',
+                accounts: [mockAccount.address],
+              },
+              {
+                type: 'Snap Keyring',
+                accounts: [mockBtcAccount.address],
+              },
+            ],
+          },
+        },
+        { onClose: jest.fn(), allowedAccountTypes: [BtcAccountType.P2wpkh] },
+      );
+
+      expect(queryByText(mockAccount.metadata.name)).not.toBeInTheDocument();
+      expect(queryByText(mockBtcAccount.metadata.name)).toBeInTheDocument();
+    });
   });
 });

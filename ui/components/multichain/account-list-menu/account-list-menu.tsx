@@ -4,7 +4,13 @@ import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { KeyringClient } from '@metamask/keyring-api';
+import {
+  EthAccountType,
+  InternalAccount,
+  KeyringAccountType,
+  KeyringClient,
+} from '@metamask/keyring-api';
+import { Caip2ChainId } from '@metamask/snaps-utils';
 import {
   BITCOIN_WALLET_NAME,
   BITCOIN_WALLET_SNAP_ID,
@@ -14,9 +20,9 @@ import {
 import {
   Box,
   ButtonLink,
+  ButtonLinkSize,
   ButtonSecondary,
   ButtonSecondarySize,
-  ButtonVariant,
   IconName,
   Modal,
   ModalOverlay,
@@ -78,6 +84,11 @@ import {
 } from '../../../selectors/accounts';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
+import {
+  InternalAccountWithBalance,
+  AccountConnections,
+  MergedInternalAccount,
+} from '../../../selectors/selectors.type';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -104,7 +115,10 @@ const ACTION_MODES = {
  * @param actionMode - An action mode.
  * @returns The title for this action mode.
  */
-export const getActionTitle = (t, actionMode) => {
+export const getActionTitle = (
+  t: (text: string) => string,
+  actionMode: string,
+) => {
   switch (actionMode) {
     case ACTION_MODES.ADD:
       return t('addAccount');
@@ -130,7 +144,10 @@ export const getActionTitle = (t, actionMode) => {
  * @param internalAccounts - internal accounts
  * @returns merged accounts list with balances and internal account data
  */
-export const mergeAccounts = (accountsWithBalances, internalAccounts) => {
+export const mergeAccounts = (
+  accountsWithBalances: MergedInternalAccount[],
+  internalAccounts: InternalAccount[],
+) => {
   return accountsWithBalances.map((account) => {
     const internalAccount = internalAccounts.find(
       (intAccount) => intAccount.address === account.address,
@@ -150,19 +167,30 @@ export const mergeAccounts = (accountsWithBalances, internalAccounts) => {
   });
 };
 
+type AccountListMenuProps = {
+  onClose: () => void;
+  showAccountCreation?: boolean;
+  accountListItemProps?: object;
+  allowedAccountTypes?: KeyringAccountType[];
+};
+
 export const AccountListMenu = ({
   onClose,
   showAccountCreation = true,
   accountListItemProps = {},
-  excludeAccountTypes = [],
-}) => {
+  allowedAccountTypes = [EthAccountType.Eoa, EthAccountType.Erc4337],
+}: AccountListMenuProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const accounts: InternalAccountWithBalance[] = useSelector(
+    getMetaMaskAccountsOrdered,
+  );
   const filteredAccounts = useMemo(
     () =>
-      accounts.filter((account) => !excludeAccountTypes.includes(account.type)),
-    [accounts, excludeAccountTypes],
+      accounts.filter((account: InternalAccountWithBalance) =>
+        allowedAccountTypes.includes(account.type),
+      ),
+    [accounts, allowedAccountTypes],
   );
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
@@ -173,10 +201,10 @@ export const AccountListMenu = ({
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
   const filteredUpdatedAccountList = useMemo(
     () =>
-      updatedAccountsList.filter(
-        (account) => !excludeAccountTypes.includes(account.type),
+      updatedAccountsList.filter((account) =>
+        allowedAccountTypes.includes(account.type),
       ),
-    [updatedAccountsList, excludeAccountTypes],
+    [updatedAccountsList, allowedAccountTypes],
   );
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
@@ -193,7 +221,7 @@ export const AccountListMenu = ({
     hasCreatedBtcTestnetAccount,
   );
 
-  const createBitcoinAccount = async (scope) => {
+  const createBitcoinAccount = async (scope: Caip2ChainId) => {
     // Client to create the account using the Bitcoin Snap
     const client = new KeyringClient(new BitcoinWalletSnapSender());
 
@@ -207,7 +235,7 @@ export const AccountListMenu = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
 
-  let searchResults = filteredUpdatedAccountList;
+  let searchResults: MergedInternalAccount[] = filteredUpdatedAccountList;
   if (searchQuery) {
     const fuse = new Fuse(filteredAccounts, {
       threshold: 0.2,
@@ -222,9 +250,10 @@ export const AccountListMenu = ({
   }
   searchResults = mergeAccounts(searchResults, filteredAccounts);
 
-  const title = getActionTitle(t, actionMode);
+  const title = getActionTitle(t as (text: string) => string, actionMode);
 
-  let onBack = null;
+  // eslint-disable-next-line no-empty-function
+  let onBack = () => {};
   if (actionMode !== ACTION_MODES.LIST) {
     if (actionMode === ACTION_MODES.MENU) {
       onBack = () => setActionMode(ACTION_MODES.LIST);
@@ -284,7 +313,7 @@ export const AccountListMenu = ({
           <Box padding={4}>
             <Box>
               <ButtonLink
-                size={Size.SM}
+                size={ButtonLinkSize.Sm}
                 startIconName={IconName.Add}
                 onClick={() => {
                   trackEvent({
@@ -308,7 +337,7 @@ export const AccountListMenu = ({
                 <Box marginTop={4}>
                   <ButtonLink
                     disabled={isBtcMainnetAccountAlreadyCreated}
-                    size={Size.SM}
+                    size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
                     onClick={async () => {
                       trackEvent({
@@ -343,7 +372,7 @@ export const AccountListMenu = ({
                 <Box marginTop={4}>
                   <ButtonLink
                     disabled={isBtcTestnetAccountAlreadyCreated}
-                    size={Size.SM}
+                    size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
                     onClick={async () => {
                       // The account creation + renaming is handled by the Snap account bridge, so
@@ -364,7 +393,7 @@ export const AccountListMenu = ({
             }
             <Box marginTop={4}>
               <ButtonLink
-                size={Size.SM}
+                size={ButtonLinkSize.Sm}
                 startIconName={IconName.Import}
                 onClick={() => {
                   trackEvent({
@@ -383,7 +412,7 @@ export const AccountListMenu = ({
             </Box>
             <Box marginTop={4}>
               <ButtonLink
-                size={Size.SM}
+                size={ButtonLinkSize.Sm}
                 startIconName={IconName.Hardware}
                 onClick={() => {
                   onClose();
@@ -396,6 +425,8 @@ export const AccountListMenu = ({
                     },
                   });
                   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore - this will be defined
                     global.platform.openExtensionInBrowser(
                       CONNECT_HARDWARE_ROUTE,
                     );
@@ -412,7 +443,7 @@ export const AccountListMenu = ({
               addSnapAccountEnabled ? (
                 <Box marginTop={4}>
                   <ButtonLink
-                    size={Size.SM}
+                    size={ButtonLinkSize.Sm}
                     startIconName={IconName.Snaps}
                     onClick={() => {
                       onClose();
@@ -425,7 +456,7 @@ export const AccountListMenu = ({
                         },
                       });
                       global.platform.openTab({
-                        url: process.env.ACCOUNT_SNAPS_DIRECTORY_URL,
+                        url: process.env.ACCOUNT_SNAPS_DIRECTORY_URL as string,
                       });
                     }}
                   >
@@ -439,7 +470,7 @@ export const AccountListMenu = ({
               ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
               <Box marginTop={4}>
                 <ButtonLink
-                  size={Size.SM}
+                  size={ButtonLinkSize.Sm}
                   startIconName={IconName.Custody}
                   onClick={() => {
                     onClose();
@@ -449,6 +480,8 @@ export const AccountListMenu = ({
                         MetaMetricsEventName.ConnectCustodialAccountClicked,
                     });
                     if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+                      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                      // @ts-ignore - this will be defined
                       global.platform.openExtensionInBrowser(
                         CUSTODY_ACCOUNT_ROUTE,
                       );
@@ -479,12 +512,17 @@ export const AccountListMenu = ({
                   width={BlockSize.Full}
                   placeholder={t('searchAccounts')}
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setSearchQuery(e.target.value)
+                  }
                   clearButtonOnClick={() => setSearchQuery('')}
                   clearButtonProps={{
                     size: Size.SM,
                   }}
                   inputProps={{ autoFocus: true }}
+                  // TODO: These props are required
+                  endAccessory
+                  className
                 />
               </Box>
             ) : null}
@@ -501,9 +539,9 @@ export const AccountListMenu = ({
                 </Text>
               ) : null}
               {searchResults.map((account) => {
-                const connectedSite = connectedSites[account.address]?.find(
-                  ({ origin }) => origin === currentTabOrigin,
-                );
+                const connectedSite = (connectedSites as AccountConnections)[
+                  account.address
+                ]?.find(({ origin }) => origin === currentTabOrigin);
 
                 const hideAccountListItem =
                   searchQuery.length === 0 && account.hidden;
@@ -564,7 +602,6 @@ export const AccountListMenu = ({
               >
                 <ButtonSecondary
                   startIconName={IconName.Add}
-                  variant={ButtonVariant.Secondary}
                   size={ButtonSecondarySize.Lg}
                   block
                   onClick={() => setActionMode(ACTION_MODES.MENU)}
@@ -595,7 +632,7 @@ AccountListMenu.propTypes = {
    */
   accountListItemProps: PropTypes.object,
   /**
-   * Filters the account types to be excluded in the account list
+   * Filters the account types to be included in the account list
    */
-  excludeAccountTypes: PropTypes.array,
+  allowedAccountTypes: PropTypes.array,
 };
