@@ -62,7 +62,7 @@ export const SendDestStory = () => {
         type: AssetType.native,
       }}
       sendingAsset={{
-        image: 'token image',
+        image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
         symbol: 'ETH',
       }}
     />
