@@ -283,7 +283,28 @@ describe('Send Slice', () => {
         expect(draft.amount.value).toStrictEqual('0xadf7');
         expect(draft.status).toStrictEqual(SEND_STATUSES.VALID);
       });
+
+      it('should not error when draft transaction is not defined', () => {
+        const state = getInitialSendStateWithExistingTxState({
+          gas: {
+            gasPrice: '0x1',
+            maxFeePerGas: '0x2',
+            gasLimit: GAS_LIMITS.SIMPLE,
+          },
+        });
+
+        delete state.draftTransactions['test-uuid'];
+
+        const action = {
+          type: 'send/calculateGasTotal',
+        };
+
+        const runAction = () => sendReducer(state, action);
+
+        expect(runAction).not.toThrow();
+      });
     });
+
     describe('resetSendState', () => {
       it('should set the state back to a blank slate matching the initialState object', () => {
         const action = {

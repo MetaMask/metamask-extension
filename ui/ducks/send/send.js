@@ -989,6 +989,10 @@ const slice = createSlice({
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
 
+      if (!draftTransaction) {
+        return;
+      }
+
       // use maxFeePerGas as the multiplier if working with a FEE_MARKET transaction
       // otherwise use gasPrice
       if (
