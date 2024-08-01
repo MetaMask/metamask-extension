@@ -26,9 +26,8 @@ export async function migrate(
   return versionedData;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function transformState(state: Record<string, any>) {
-  if (hasProperty(state, 'SnapController')) {
+function transformState(state: Record<string, unknown>) {
+  if (hasProperty(state, 'SnapController') && isObject(state.SnapController)) {
     delete state.SnapController.snapErrors;
   }
 
