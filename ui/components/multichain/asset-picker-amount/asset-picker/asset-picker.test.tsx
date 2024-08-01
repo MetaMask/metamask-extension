@@ -10,6 +10,12 @@ import { mockNetworkState } from '../../../../../test/stub/networks';
 import { AssetPicker } from './asset-picker';
 
 const unknownChainId = '0x2489078';
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: jest.fn(() => ({
+    push: jest.fn(),
+  })),
+}));
 
 const store = (
   nativeTicker = 'NATIVE TICKER',
@@ -50,6 +56,27 @@ describe('AssetPicker', () => {
       </Provider>,
     );
     expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('calls onClick handler', () => {
+    const asset = {
+      type: AssetType.native,
+      balance: '1000000',
+    };
+    const mockAssetChange = jest.fn();
+    const mockOnClick = jest.fn();
+    const { getByTestId } = render(
+      <Provider store={store('NATIVE')}>
+        <AssetPicker
+          header={'testHeader'}
+          asset={asset}
+          onAssetChange={() => mockAssetChange()}
+          onClick={mockOnClick}
+        />
+      </Provider>,
+    );
+    getByTestId('asset-picker-button').click();
+    expect(mockOnClick).toHaveBeenCalled();
   });
 
   it('native: renders symbol and image', () => {
