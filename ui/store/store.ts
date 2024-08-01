@@ -57,7 +57,6 @@ type TemporaryBackgroundState = {
   transactions: TransactionMeta[];
   ledgerTransportType: LedgerTransportTypes;
   unapprovedDecryptMsgs: MessagesIndexedById;
-  unapprovedMsgs: MessagesIndexedById;
   unapprovedPersonalMsgs: MessagesIndexedById;
   unapprovedTypedMessages: MessagesIndexedById;
   networksMetadata: {
