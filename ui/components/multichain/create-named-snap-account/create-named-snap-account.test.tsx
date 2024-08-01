@@ -4,18 +4,12 @@ import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import messages from '../../../../app/_locales/en/messages.json';
-import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import {
   CreateNamedSnapAccount,
   CreateNamedSnapAccountProps,
 } from './create-named-snap-account';
 
-const mockAddress = '0x3f9658179a5c053bb2faaf7badbb95f6c9be0fa7';
-const mockAccount = createMockInternalAccount({
-  address: mockAddress,
-  name: 'New account',
-});
 const mockSnapSuggestedAccountName = 'Suggested Account Name';
 
 jest.mock('../../../store/actions', () => ({
@@ -61,7 +55,6 @@ const mockSnapAccount2 = {
 const render = (
   props: CreateNamedSnapAccountProps = {
     onActionComplete: jest.fn().mockResolvedValue({ success: true }),
-    address: mockAccount.address,
     snapSuggestedAccountName: mockSnapSuggestedAccountName,
   },
 ) => {
@@ -105,7 +98,6 @@ describe('CreateNamedSnapAccount', () => {
     const onActionComplete = jest.fn();
     const { getByText, getByPlaceholderText } = render({
       onActionComplete,
-      address: mockAccount.address,
       snapSuggestedAccountName: mockSnapSuggestedAccountName,
     });
 
@@ -150,7 +142,6 @@ describe('CreateNamedSnapAccount', () => {
     const onActionComplete = jest.fn();
     const { getByText, getByPlaceholderText } = render({
       onActionComplete,
-      address: mockAccount.address,
     });
 
     fireEvent.click(getByText(messages.addAccount.message));
@@ -170,7 +161,6 @@ describe('CreateNamedSnapAccount', () => {
     const onActionComplete = jest.fn();
     const { getByText } = render({
       onActionComplete,
-      address: mockAccount.address,
       snapSuggestedAccountName: mockSnapSuggestedAccountName,
     });
 
