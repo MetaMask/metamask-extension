@@ -906,7 +906,7 @@ export default class Routes extends Component {
           ///: END:ONLY_INCLUDE_IF
         }
         {isAccountMenuOpen ? (
-          <AccountListMenu onClose={() => toggleAccountMenu()} />
+          <AccountListMenu onClose={toggleAccountMenu} />
         ) : null}
         {isNetworkMenuOpen ? (
           <NetworkListMenu
