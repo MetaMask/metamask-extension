@@ -94,4 +94,41 @@ describe('migration #120.2', () => {
 
     expect(transformedState.data).toEqual(oldState);
   });
+
+  it('strips SnapController.snapErrors if it exists', async () => {
+    const oldState = {
+      SnapController: {
+        snapErrors: {},
+        snapStates: {},
+        unencryptedSnapStates: {},
+        snaps: {},
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toEqual({
+      SnapController: { snapStates: {}, unencryptedSnapStates: {}, snaps: {} },
+    });
+  });
+
+  it('does nothing if SnapController.snapErrors doesnt exist', async () => {
+    const oldState = {
+      SnapController: {
+        snapStates: {},
+        unencryptedSnapStates: {},
+        snaps: {},
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toEqual(oldState);
+  });
 });
