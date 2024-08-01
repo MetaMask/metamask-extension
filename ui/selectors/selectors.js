@@ -443,7 +443,7 @@ export function getMetaMaskCachedBalances(state) {
 }
 
 /**
- *  @typedef {import('./selectors.type.ts').InternalAccountWithBalance} InternalAccountWithBalance
+ *  @typedef {import('./selectors.types').InternalAccountWithBalance} InternalAccountWithBalance
  */
 
 /**

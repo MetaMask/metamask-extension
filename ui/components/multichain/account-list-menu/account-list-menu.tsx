@@ -90,7 +90,7 @@ import {
   InternalAccountWithBalance,
   AccountConnections,
   MergedInternalAccount,
-} from '../../../selectors/selectors.type';
+} from '../../../selectors/selectors.types';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -199,7 +199,9 @@ export const AccountListMenu = ({
     [accounts, allowedAccountTypes],
   );
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
+  const connectedSites = useSelector(
+    getConnectedSubjectsForAllAddresses,
+  ) as AccountConnections;
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -526,7 +528,7 @@ export const AccountListMenu = ({
                     size: Size.SM,
                   }}
                   inputProps={{ autoFocus: true }}
-                  // TODO: These props are required
+                  // TODO: These props are required in the TextFieldSearch component. These should be optional
                   endAccessory
                   className
                 />
@@ -545,9 +547,9 @@ export const AccountListMenu = ({
                 </Text>
               ) : null}
               {searchResults.map((account) => {
-                const connectedSite = (connectedSites as AccountConnections)[
-                  account.address
-                ]?.find(({ origin }) => origin === currentTabOrigin);
+                const connectedSite = connectedSites[account.address]?.find(
+                  ({ origin }) => origin === currentTabOrigin,
+                );
 
                 const hideAccountListItem =
                   searchQuery.length === 0 && account.hidden;

@@ -133,7 +133,7 @@ export function getConnectedSubjectsForSelectedAddress(state) {
 }
 
 /**
- *  @typedef {import('./selectors.type.ts').AccountConnections} AccountConnections
+ *  @typedef {import('./selectors.types').AccountConnections} AccountConnections
  */
 
 /**

@@ -6,7 +6,7 @@ export type InternalAccountWithBalance = InternalAccount & {
   balance: string;
 };
 
-export type InternalAccountWithPinnedHiddenActive =
+export type InternalAccountWithPinnedHiddenActiveLastSelected =
   InternalAccountWithBalance & {
     pinned: boolean;
     hidden: boolean;
@@ -14,10 +14,11 @@ export type InternalAccountWithPinnedHiddenActive =
     active: number;
   };
 
-export type MergedInternalAccount = InternalAccountWithPinnedHiddenActive & {
-  keyring: KeyringType;
-  label: string | null;
-};
+export type MergedInternalAccount =
+  InternalAccountWithPinnedHiddenActiveLastSelected & {
+    keyring: KeyringType;
+    label: string | null;
+  };
 
 export type AccountConnections = {
   [address: string]: {
