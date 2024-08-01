@@ -96,9 +96,6 @@
   "backupApprovalNotice": {
     "message": "Varundage oma salajane taastamisvõti, et oma rahakott ja vahendid turvalisena hoida."
   },
-  "backupNow": {
-    "message": "Varunda kohe"
-  },
   "balance": {
     "message": "Saldo"
   },

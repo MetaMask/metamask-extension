@@ -96,9 +96,6 @@
   "backupApprovalNotice": {
     "message": "Sigurnosno kopirajte svoj sigurnosni kôd za obnavljanje kako biste zaštitili svoj novčanik i sredstva."
   },
-  "backupNow": {
-    "message": "Sigurnosno kopiraj sada"
-  },
   "balance": {
     "message": "Stanje"
   },

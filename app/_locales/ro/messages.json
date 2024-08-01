@@ -96,9 +96,6 @@
   "backupApprovalNotice": {
     "message": "Creați o copie de rezervă a codului de recuperare secret pentru a vă menține portofelul și fondurile în siguranță."
   },
-  "backupNow": {
-    "message": "Creați o copie de rezervă acum"
-  },
   "balance": {
     "message": "Sold"
   },

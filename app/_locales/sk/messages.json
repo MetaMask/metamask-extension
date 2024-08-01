@@ -93,9 +93,6 @@
   "backupApprovalNotice": {
     "message": "Zálohujte si svoj tajný kód na obnovenie, aby bola vaša peňaženka a prostriedky bezpečné."
   },
-  "backupNow": {
-    "message": "Zálohovať teraz"
-  },
   "balance": {
     "message": "Zůstatek:"
   },
