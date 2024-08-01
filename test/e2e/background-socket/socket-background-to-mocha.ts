@@ -1,6 +1,6 @@
 import log from 'loglevel';
-import { MessageType, WindowProperties } from './types';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { MessageType, WindowProperties } from './types';
 
 /**
  * This singleton class runs on the Extension background script (service worker in MV3).
