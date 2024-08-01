@@ -6,11 +6,23 @@ import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/addres
 import { AccountType } from '../../../shared/constants/custody';
 
 export type Custodian = {
+  type: string;
+  iconUrl: string;
+  name: string;
+  onboardingUrl: string;
+  website: string;
   envName: string;
-  iconUrl?: string;
-  displayName?: string;
-  isNoteToTraderSupported?: boolean;
-  custodianPublishesTransaction?: boolean;
+  apiUrl: string;
+  apiVersion: string;
+  displayName: string;
+  refreshTokenUrl: string;
+  websocketApiUrl: string;
+  isNoteToTraderSupported: boolean;
+  isQRCodeSupported: boolean;
+  isManualTokenInputSupported?: boolean;
+  custodianPublishesTransaction: boolean;
+  production: boolean;
+  version: number;
 };
 
 export type MmiConfiguration = {
@@ -198,9 +210,7 @@ export function getMMIAddressFromModalOrAddress(state: State) {
   return modalAddress || selectedAddress;
 }
 
-export function getMMIConfiguration(
-  state: State,
-): MmiConfiguration {
+export function getMMIConfiguration(state: State): MmiConfiguration {
   return state.metamask.mmiConfiguration || {};
 }
 

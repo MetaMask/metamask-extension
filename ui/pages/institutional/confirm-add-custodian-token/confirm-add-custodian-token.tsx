@@ -54,6 +54,7 @@ type Custodian = {
   websocketApiUrl: string;
   isNoteToTraderSupported: boolean;
   version: number;
+  isQRCodeSupported: boolean;
 };
 
 const ConfirmAddCustodianToken: React.FC = () => {

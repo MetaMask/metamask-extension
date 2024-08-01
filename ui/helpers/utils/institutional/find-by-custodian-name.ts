@@ -11,6 +11,8 @@ type Custodian = {
   websocketApiUrl: string;
   isNoteToTraderSupported: boolean;
   version: number;
+  isManualTokenInputSupported?: boolean;
+  isQRCodeSupported: boolean;
 };
 
 export function findCustodianByEnvName(
