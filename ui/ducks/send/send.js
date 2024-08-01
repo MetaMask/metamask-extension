@@ -1080,7 +1080,7 @@ const slice = createSlice({
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
       let amount = '0x0';
-      if (draftTransaction.sendAsset.type === AssetType.token) {
+      if (draftTransaction?.sendAsset.type === AssetType.token) {
         const decimals = draftTransaction.sendAsset.details?.decimals ?? 0;
 
         const multiplier = Math.pow(10, Number(decimals));
@@ -1292,7 +1292,7 @@ const slice = createSlice({
       state.gasTotalForLayer1 = action.payload;
       if (
         state.amountMode === AMOUNT_MODES.MAX &&
-        draftTransaction.sendAsset.type === AssetType.native
+        draftTransaction?.sendAsset.type === AssetType.native
       ) {
         slice.caseReducers.updateAmountToMax(state);
       }
