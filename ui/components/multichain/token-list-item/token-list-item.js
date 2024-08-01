@@ -163,6 +163,7 @@ export const TokenListItem = ({
         color={TextColor.primaryDefault}
         paddingInlineStart={1}
         paddingInlineEnd={1}
+        fontWeight={FontWeight.Medium}
       >
         {t('stake')}
       </Text>
