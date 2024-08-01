@@ -369,9 +369,7 @@ export function getMultichainIsTestnet(
       // current implementation differ between each other. So we do not use
       // `getIsTestnet` here and uses the actual `TEST_NETWORK_IDS` which seems
       // more up-to-date
-      (TEST_NETWORK_IDS as string[]).includes(
-        (providerConfig as ProviderConfig).chainId,
-      )
+      (TEST_NETWORK_IDS as string[]).includes(providerConfig.chainId)
     : // TODO: For now we only check for bitcoin, but we will need to
       // update this for other non-EVM networks later!
       (providerConfig as MultichainProviderConfig).chainId ===
