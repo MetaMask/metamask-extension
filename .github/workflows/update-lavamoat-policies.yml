@@ -102,7 +102,7 @@ jobs:
       - name: Update LavaMoat build policy
         run: yarn lavamoat:build:auto
       - name: Cache build policy
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: lavamoat/build-system
           key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -139,7 +139,7 @@ jobs:
       - name: Install dependencies from cache
         run: yarn --immutable --immutable-cache
       - name: Restore build policy
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: lavamoat/build-system
           key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -149,7 +149,7 @@ jobs:
         env:
           INFURA_PROJECT_ID: 00000000000
       - name: Cache ${{ matrix.build-type }} application policy
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: lavamoat/browserify/${{ matrix.build-type }}
           key: cache-${{ matrix.build-type }}-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -179,7 +179,7 @@ jobs:
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
       - name: Restore build policy
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: lavamoat/build-system
           key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -188,25 +188,25 @@ jobs:
       # Ensure this is synchronized with the list above in the "update-lavamoat-webapp-policy" job
       # and with the build type list in `builds.yml`
       - name: Restore main application policy
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: lavamoat/browserify/main
           key: cache-main-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
       - name: Restore beta application policy
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: lavamoat/browserify/beta
           key: cache-beta-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
       - name: Restore flask application policy
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: lavamoat/browserify/flask
           key: cache-flask-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
       - name: Restore mmi application policy
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: lavamoat/browserify/mmi
           key: cache-mmi-${{ needs.prepare.outputs.COMMIT_SHA }}
