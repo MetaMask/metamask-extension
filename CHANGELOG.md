@@ -7,9 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.0.1]
-### Uncategorized
-- fix: Fix `create_release_pull_request` OOM error ([#26249](https://github.com/MetaMask/metamask-extension/pull/26249))
-- fix: Fix CircleCI `create_release_pull_request` job ([#26246](https://github.com/MetaMask/metamask-extension/pull/26246))
 
 ## [12.0.0]
 ### Added
