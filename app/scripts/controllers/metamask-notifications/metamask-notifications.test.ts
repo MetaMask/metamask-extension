@@ -50,6 +50,10 @@ import * as OnChainNotifications from './services/onchain-notifications';
 import { UserStorage } from './types/user-storage/user-storage';
 import * as MetamaskNotificationsUtils from './utils/utils';
 
+// Mock type used for testing purposes
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type MockVar = any;
+
 describe('metamask-notifications - constructor()', () => {
   test('initializes state & override state', () => {
     const controller1 = new MetamaskNotificationsController({
@@ -627,6 +631,7 @@ function mockNotificationMessenger() {
     name: 'MetamaskNotificationsController',
     allowedActions: [
       'KeyringController:getAccounts',
+      'KeyringController:getState',
       'AuthenticationController:getBearerToken',
       'AuthenticationController:isSignedIn',
       'PushPlatformNotificationsController:disablePushNotifications',
@@ -639,6 +644,8 @@ function mockNotificationMessenger() {
     ],
     allowedEvents: [
       'KeyringController:stateChange',
+      'KeyringController:lock',
+      'KeyringController:unlock',
       'PushPlatformNotificationsController:onNewNotifications',
     ],
   });
@@ -733,6 +740,10 @@ function mockNotificationMessenger() {
 
     if (actionType === 'UserStorageController:performSetStorage') {
       return mockPerformSetStorage(params[0], params[1]);
+    }
+
+    if (actionType === 'KeyringController:getState') {
+      return { isUnlocked: true } as MockVar;
     }
 
     function exhaustedMessengerMocks(action: never) {

@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, {
+  useCallback,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  useMemo,
+  ///: END:ONLY_INCLUDE_IF
+  useRef,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   BannerAlert,
@@ -11,9 +17,11 @@ import {
   acknowledgeRecipientWarning,
   getBestQuote,
   getCurrentDraftTransaction,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getIsSwapAndSendDisabledForNetwork,
-  getSendAsset,
   getSwapsBlockedTokens,
+  ///: END:ONLY_INCLUDE_IF
+  getSendAsset,
 } from '../../../../../ducks/send';
 import { AssetType } from '../../../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../../../helpers/constants/common';
@@ -21,10 +29,13 @@ import { Display } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetPickerAmount } from '../../..';
 import { decimalToHex } from '../../../../../../shared/modules/conversion.utils';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
   getIsSwapsChain,
   getUseExternalServices,
 } from '../../../../../selectors';
+///: END:ONLY_INCLUDE_IF
+
 import type { Quote } from '../../../../../ducks/send/swap-and-send-utils';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { SendHexData, SendPageRow, QuoteCard } from '.';
@@ -45,6 +56,13 @@ export const SendPageRecipientContent = ({
     isSwapQuoteLoading,
   } = useSelector(getCurrentDraftTransaction);
 
+  let isSwapAllowed;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  isSwapAllowed = false;
+  ///: END:ONLY_INCLUDE_IF
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBasicFunctionality = useSelector(getUseExternalServices);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isSwapAndSendDisabledForNetwork = useSelector(
@@ -54,12 +72,14 @@ export const SendPageRecipientContent = ({
   const memoizedSwapsBlockedTokens = useMemo(() => {
     return new Set(swapsBlockedTokens);
   }, [swapsBlockedTokens]);
-  const isSwapAllowed =
+
+  isSwapAllowed =
     isSwapsChain &&
     !isSwapAndSendDisabledForNetwork &&
     [AssetType.token, AssetType.native].includes(sendAsset.type) &&
     isBasicFunctionality &&
     !memoizedSwapsBlockedTokens.has(sendAsset.details?.address?.toLowerCase());
+  ///: END:ONLY_INCLUDE_IF
 
   const bestQuote: Quote = useSelector(getBestQuote);
 

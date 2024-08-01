@@ -134,7 +134,7 @@ function mapStateToProps(state) {
     useNftDetection,
     showNftEnablementToast,
     networkToAutomaticallySwitchTo,
-    unapprovedTransactions:
+    totalUnapprovedConfirmationCount:
       getNumberOfAllUnapprovedTransactionsAndMessages(state),
     neverShowSwitchedNetworkMessage: getNeverShowSwitchedNetworkMessage(state),
     currentExtensionPopupId: state.metamask.currentExtensionPopupId,

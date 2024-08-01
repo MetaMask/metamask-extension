@@ -12,6 +12,8 @@ export const methodsRequiringNetworkSwitch = [
   'wallet_switchEthereumChain',
   'wallet_addEthereumChain',
   'wallet_watchAsset',
+  'eth_signTypedData',
+  'eth_signTypedData_v3',
   'eth_signTypedData_v4',
   'personal_sign',
 ] as const;

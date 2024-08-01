@@ -275,7 +275,7 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "新しいアカウントを追加"
+    "message": "新しいイーサリアムアカウントを追加"
   },
   "addNewToken": {
     "message": "新しいトークンを追加"
@@ -1552,6 +1552,9 @@
     "message": "$1を有効にする",
     "description": "$1 is a token symbol, e.g. ETH"
   },
+  "enableTokenAutoDetection": {
+    "message": "トークンの自動検出を有効にする"
+  },
   "enabled": {
     "message": "有効"
   },
@@ -2495,9 +2498,6 @@
     "message": "誰にも見られていないことを確認してください",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "設定で管理"
-  },
   "max": {
     "message": "最大"
   },
@@ -2931,6 +2931,9 @@
   "noSnaps": {
     "message": "snapがインストールされていません"
   },
+  "noThanks": {
+    "message": "結構です"
+  },
   "noTransactions": {
     "message": "トランザクションがありません"
   },
@@ -3100,7 +3103,7 @@
   },
   "notificationTransactionSuccessView": {
     "message": "$1で表示",
-    "description": "Additional content in browser notification that appears when a transaction is confirmed and has a block explorer URL"
+    "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
   "notifications": {
     "message": "通知"
@@ -5878,7 +5881,7 @@
     "message": "NFTを自動検出"
   },
   "useNftDetectionDescriptionText": {
-    "message": "MetaMaskが、サードパーティサービス (例: OpenSea) を使って、ユーザーが所有するNFTを追加することを許可します。NFTの自動検出機能を利用すると、ユーザーのIPとアカウントアドレスがこれらのサービスに公開されます。この機能を有効にした場合、ユーザーのIPアドレスとイーサリアムアドレスが紐付けられ、詐欺師によりエアドロップされた偽のNFTが表示される可能性があります。このリスクを回避するため、手動でトークンを追加することもできます。"
+    "message": "MetaMaskが、サードパーティサービス を使って、ユーザーが所有するNFTを追加することを許可します。NFTの自動検出機能を利用すると、ユーザーのIPとアカウントアドレスがこれらのサービスに公開されます。この機能を有効にした場合、ユーザーのIPアドレスとイーサリアムアドレスが紐付けられ、詐欺師によりエアドロップされた偽のNFTが表示される可能性があります。このリスクを回避するため、手動でトークンを追加することもできます。"
   },
   "usePhishingDetection": {
     "message": "フィッシング検出を使用"

@@ -603,7 +603,7 @@ export async function makeApiCall<T>(
   endpoint: string,
   method: 'POST' | 'DELETE',
   body: T,
-  retries = 3,
+  retries = 1,
   retryDelay = 1000,
 ): Promise<Response> {
   const options: RequestInit = {

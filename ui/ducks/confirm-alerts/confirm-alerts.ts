@@ -52,6 +52,11 @@ export type Alert = {
    * The severity of the alert.
    */
   severity: AlertSeverity;
+
+  /**
+   * URL to report issue.
+   */
+  reportUrl?: string;
 };
 
 /**
