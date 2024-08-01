@@ -396,9 +396,9 @@ jobs:
                   - builds-beta
 
   create_release_pull_request:
-    executor: node-browsers-small
+    executor: node-browsers-medium
     steps:
-      - run: *shallow-git-clone
+      - checkout
       - run: sudo corepack enable
       - attach_workspace:
           at: .
