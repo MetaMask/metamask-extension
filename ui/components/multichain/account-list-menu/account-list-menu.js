@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
@@ -154,10 +154,16 @@ export const AccountListMenu = ({
   onClose,
   showAccountCreation = true,
   accountListItemProps = {},
+  excludeAccountTypes = [],
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const filteredAccounts = useMemo(
+    () =>
+      accounts.filter((account) => !excludeAccountTypes.includes(account.type)),
+    [accounts, excludeAccountTypes],
+  );
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
@@ -165,6 +171,13 @@ export const AccountListMenu = ({
   const dispatch = useDispatch();
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
+  const filteredUpdatedAccountList = useMemo(
+    () =>
+      updatedAccountsList.filter(
+        (account) => !excludeAccountTypes.includes(account.type),
+      ),
+    [updatedAccountsList, excludeAccountTypes],
+  );
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
@@ -194,9 +207,9 @@ export const AccountListMenu = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
 
-  let searchResults = updatedAccountsList;
+  let searchResults = filteredUpdatedAccountList;
   if (searchQuery) {
-    const fuse = new Fuse(accounts, {
+    const fuse = new Fuse(filteredAccounts, {
       threshold: 0.2,
       location: 0,
       distance: 100,
@@ -204,10 +217,10 @@ export const AccountListMenu = ({
       minMatchCharLength: 1,
       keys: ['metadata.name', 'address'],
     });
-    fuse.setCollection(accounts);
+    fuse.setCollection(filteredAccounts);
     searchResults = fuse.search(searchQuery);
   }
-  searchResults = mergeAccounts(searchResults, accounts);
+  searchResults = mergeAccounts(searchResults, filteredAccounts);
 
   const title = getActionTitle(t, actionMode);
 
@@ -454,7 +467,7 @@ export const AccountListMenu = ({
         {actionMode === ACTION_MODES.LIST ? (
           <>
             {/* Search box */}
-            {accounts.length > 1 ? (
+            {filteredAccounts.length > 1 ? (
               <Box
                 paddingLeft={4}
                 paddingRight={4}
@@ -581,4 +594,8 @@ AccountListMenu.propTypes = {
    * Props to pass to the AccountListItem,
    */
   accountListItemProps: PropTypes.object,
+  /**
+   * Filters the account types to be excluded in the account list
+   */
+  excludeAccountTypes: PropTypes.array,
 };
