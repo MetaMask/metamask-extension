@@ -19,12 +19,18 @@ import {
   FlexWrap,
 } from '../../../../helpers/constants/design-system';
 import { TokenListItem } from '../..';
-import { Asset, Token } from './types';
+import { Token } from './types';
 import AssetComponent from './Asset';
 
 type AssetListProps = {
   handleAssetChange: (token: Token) => void;
-  asset: Asset;
+  asset?: {
+    type: AssetType;
+    image?: string;
+    address?: string; // native token if undefined or null
+    symbol?: string;
+    tokenId?: number;
+  };
   tokenList: Token[];
   isTokenDisabled?: (token: Token) => boolean;
 };
@@ -35,7 +41,7 @@ export default function AssetList({
   tokenList,
   isTokenDisabled,
 }: AssetListProps) {
-  const selectedToken = asset.details?.address;
+  const selectedToken = asset?.address;
 
   const nativeCurrency = useSelector(getNativeCurrency);
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
