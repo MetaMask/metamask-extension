@@ -109,7 +109,7 @@ describe('Import flow @no-mmi', function () {
         // set account name
         await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.delay(regularDelayMs);
-        await driver.clickElement({ text: 'Create', tag: 'button' });
+        await driver.clickElement({ text: 'Add account', tag: 'button' });
 
         // should show the correct account name
         const accountName = await driver.isElementPresent({
@@ -319,7 +319,8 @@ describe('Import flow @no-mmi', function () {
           '[data-testid="import-account-confirm-button"]',
         );
 
-        await locateAccountBalanceDOM(driver, ganacheServer);
+        const importedAccount = '0x0961Ca10D49B9B8e371aA0Bcf77fE5730b18f2E4';
+        await locateAccountBalanceDOM(driver, ganacheServer, importedAccount);
         // New imported account has correct name and label
         await driver.findClickableElement({
           css: '[data-testid="account-menu-icon"]',
