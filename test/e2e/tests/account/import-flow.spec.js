@@ -46,7 +46,7 @@ describe('Import flow @no-mmi', function () {
         ganacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
         await driver.navigate();
 
         await completeImportSRPOnboardingFlow(
@@ -128,6 +128,7 @@ describe('Import flow @no-mmi', function () {
 
         // Send ETH from inside MetaMask
         // starts a send transaction
+        await locateAccountBalanceDOM(driver, ganacheServer);
         await openActionMenuAndStartSendFlow(driver);
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
