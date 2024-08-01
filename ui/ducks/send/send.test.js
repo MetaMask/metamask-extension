@@ -1076,6 +1076,29 @@ describe('Send Slice', () => {
         );
         expect(draftTransaction.status).toBe(SEND_STATUSES.INVALID);
       });
+
+      it('should not throw error when draft transaction does not exist', () => {
+        const tokenAssetState = getInitialSendStateWithExistingTxState({
+          amount: {
+            value: '0x77359400', // 2000000000
+          },
+          sendAsset: {
+            type: AssetType.token,
+            balance: '0x6fc23ac0', // 1875000000
+            details: {
+              decimals: 0,
+            },
+          },
+        });
+
+        const action = {
+          type: 'send/validateAmountField',
+        };
+
+        delete tokenAssetState.draftTransactions['test-uuid'];
+
+        expect(() => sendReducer(tokenAssetState, action)).not.toThrow();
+      });
     });
 
     describe('validateGasField', () => {
@@ -1100,6 +1123,24 @@ describe('Send Slice', () => {
         expect(draftTransaction.gas.error).toStrictEqual(
           INSUFFICIENT_FUNDS_ERROR,
         );
+      });
+      it('should not throw error when draft transaction does not exist', () => {
+        const gasFieldState = getInitialSendStateWithExistingTxState({
+          account: {
+            balance: '0x0',
+          },
+          gas: {
+            gasTotal: '0x1319718a5000', // 21000000000000
+          },
+        });
+
+        delete gasFieldState.draftTransactions['test-uuid'];
+
+        const action = {
+          type: 'send/validateGasField',
+        };
+
+        expect(() => sendReducer(gasFieldState, action)).not.toThrow();
       });
     });
 

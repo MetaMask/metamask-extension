@@ -1456,6 +1456,10 @@ const slice = createSlice({
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
 
+      if (!draftTransaction) {
+        return;
+      }
+
       const amountValue = new Numeric(draftTransaction.amount.value, 16);
 
       switch (true) {
@@ -1557,6 +1561,11 @@ const slice = createSlice({
     validateGasField: (state) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
+
+      if (!draftTransaction) {
+        return;
+      }
+
       const insufficientFunds = !isBalanceSufficient({
         amount:
           draftTransaction.sendAsset.type === AssetType.native
