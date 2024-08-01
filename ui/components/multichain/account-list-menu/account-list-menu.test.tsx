@@ -10,8 +10,9 @@ import messages from '../../../../app/_locales/en/messages.json';
 import { CONNECT_HARDWARE_ROUTE } from '../../../helpers/constants/routes';
 ///: END:ONLY_INCLUDE_IF
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
-import { AccountListMenu } from '.';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { AccountListMenu } from '.';
+import { merge } from 'lodash';
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 const mockOnClose = jest.fn();
@@ -87,7 +88,7 @@ const render = (
       state: 'OPEN',
     },
   };
-  const store = configureStore(state ?? defaultState);
+  const store = configureStore(merge(defaultState, state));
   return renderWithProvider(<AccountListMenu {...props} />, store);
 };
 
@@ -98,7 +99,7 @@ describe('AccountListMenu', () => {
     jest
       .spyOn(reactRouterDom, 'useHistory')
       .mockImplementation()
-      // @ts-ignore mocking histroy return
+      // @ts-expect-error mocking histroy return
       .mockReturnValue({ push: historyPushMock });
   });
 
@@ -115,7 +116,7 @@ describe('AccountListMenu', () => {
   });
 
   it('displays accounts for list and filters by search', () => {
-    const { container } = render();
+    render();
     const listItems = document.querySelectorAll(
       '.multichain-account-list-item',
     );
@@ -229,7 +230,7 @@ describe('AccountListMenu', () => {
   });
 
   it('add / Import / Hardware button functions as it should', () => {
-    const { getByText, getAllByTestId, getByRole, getByLabelText } = render();
+    const { getByText, getAllByTestId, getByLabelText } = render();
 
     // Ensure the button is displaying
     const button = getAllByTestId(
@@ -299,7 +300,7 @@ describe('AccountListMenu', () => {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   describe('addSnapAccountButton', () => {
     const renderWithState = (
-      state: Record<string, any>,
+      state: { addSnapAccountEnabled: boolean },
       props = { onClose: mockOnClose },
     ) => {
       const store = configureStore({
@@ -360,7 +361,7 @@ describe('AccountListMenu', () => {
     });
 
     it('renders the "Add account Snap" button if it\'s enabled', async () => {
-      // @ts-ignore mocking platform
+      // @ts-expect-error mocking platform
       global.platform = { openTab: jest.fn() };
       const { getByText, getByTestId } = renderWithState({
         addSnapAccountEnabled: true,
@@ -382,7 +383,7 @@ describe('AccountListMenu', () => {
 
     it('opens the Snaps registry in a new tab', async () => {
       // Set up mock state
-      // @ts-ignore mocking platform
+      // @ts-expect-error mocking platform
       global.platform = { openTab: jest.fn() };
       const { getByText, getByTestId } = renderWithState({
         addSnapAccountEnabled: true,
