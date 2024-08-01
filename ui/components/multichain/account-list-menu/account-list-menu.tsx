@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 // eslint-disable-next-line import/no-duplicates
-import { EthAccountType } from '@metamask/keyring-api';
+import { BtcAccountType, EthAccountType } from '@metamask/keyring-api';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
   InternalAccount,
@@ -180,7 +180,11 @@ export const AccountListMenu = ({
   onClose,
   showAccountCreation = true,
   accountListItemProps = {},
-  allowedAccountTypes = [EthAccountType.Eoa, EthAccountType.Erc4337],
+  allowedAccountTypes = [
+    EthAccountType.Eoa,
+    EthAccountType.Erc4337,
+    BtcAccountType.P2wpkh,
+  ],
 }: AccountListMenuProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
