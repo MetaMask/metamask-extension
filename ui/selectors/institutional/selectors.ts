@@ -51,8 +51,8 @@ type MetaMaskState = {
   custodianSupportedChains?: CustodianSupportedChains;
   mmiConfiguration?: MmiConfiguration;
   interactiveReplacementToken?: {
-    oldRefreshToken: string;
-    url: string;
+    oldRefreshToken?: string;
+    url?: string;
   };
   custodianDeepLink?: {
     fromAddress: string;
