@@ -10,7 +10,9 @@ import {
   InternalAccount,
   KeyringAccountType,
   KeyringClient,
+  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { CaipChainId } from '@metamask/utils';
 import {
   BITCOIN_WALLET_NAME,
