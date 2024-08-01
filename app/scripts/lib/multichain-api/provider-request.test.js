@@ -95,8 +95,8 @@ describe('provider_request', () => {
     const { handler, getCaveat, end } = createMockedHandler();
     getCaveat.mockReturnValue({
       value: {
-        isMultichainOrigin: false
-      }
+        isMultichainOrigin: false,
+      },
     });
     await handler(request);
     expect(end).toHaveBeenCalledWith(new Error('missing CAIP-25 endowment'));
