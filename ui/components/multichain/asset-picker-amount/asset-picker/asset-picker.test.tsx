@@ -94,7 +94,7 @@ describe('AssetPicker', () => {
     } as NativeAsset;
     const mockAssetChange = jest.fn();
 
-    const { getByText, getByRole } = render(
+    const { getByText, getByAltText } = render(
       <Provider store={store('NATIVE')}>
         <AssetPicker
           header={'testHeader'}
@@ -104,8 +104,14 @@ describe('AssetPicker', () => {
       </Provider>,
     );
     expect(getByText('NATIVE')).toBeInTheDocument();
-    expect(getByRole('img')).toBeInTheDocument();
-    expect(getByRole('img')).toHaveAttribute('src', './images/eth_logo.svg');
+    expect(getByAltText('network logo')).toHaveAttribute(
+      'src',
+      './images/eth_logo.svg',
+    );
+    expect(getByAltText('NATIVE logo')).toHaveAttribute(
+      'src',
+      CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
+    );
   });
 
   it('native: renders overflowing symbol and image', () => {
@@ -116,7 +122,7 @@ describe('AssetPicker', () => {
     } as NativeAsset;
     const mockAssetChange = jest.fn();
 
-    const { getByText, getByRole } = render(
+    const { getByText, getByAltText } = render(
       <Provider store={store(NATIVE_TICKER)}>
         <AssetPicker
           header={'testHeader'}
@@ -126,8 +132,14 @@ describe('AssetPicker', () => {
       </Provider>,
     );
     expect(getByText('NATIVE...')).toBeInTheDocument();
-    expect(getByRole('img')).toBeInTheDocument();
-    expect(getByRole('img')).toHaveAttribute('src', './images/eth_logo.svg');
+    expect(getByAltText('network logo')).toHaveAttribute(
+      'src',
+      './images/eth_logo.svg',
+    );
+    expect(getByAltText('NATIVE TICKER logo')).toHaveAttribute(
+      'src',
+      CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
+    );
   });
 
   it('token: renders symbol and image', () => {
@@ -139,7 +151,7 @@ describe('AssetPicker', () => {
     } as ERC20Asset;
     const mockAssetChange = jest.fn();
 
-    const { getByText, getByRole } = render(
+    const { getByText, getByAltText } = render(
       <Provider store={store("SHOULDN'T MATTER")}>
         <AssetPicker
           header={'testHeader'}
@@ -149,8 +161,14 @@ describe('AssetPicker', () => {
       </Provider>,
     );
     expect(getByText('symbol')).toBeInTheDocument();
-    expect(getByRole('img')).toBeInTheDocument();
-    expect(getByRole('img')).toHaveAttribute('src', 'token icon url');
+    expect(getByAltText('network logo')).toHaveAttribute(
+      'src',
+      './images/eth_logo.svg',
+    );
+    expect(getByAltText('symbol logo')).toHaveAttribute(
+      'src',
+      'token icon url',
+    );
   });
 
   it('token: renders symbol and image overflowing', () => {
@@ -162,7 +180,7 @@ describe('AssetPicker', () => {
     } as ERC20Asset;
     const mockAssetChange = jest.fn();
 
-    const { getByText, getByRole } = render(
+    const { getByText, getByAltText } = render(
       <Provider store={store("SHOULDN'T MATTER")}>
         <AssetPicker
           header={'testHeader'}
@@ -172,8 +190,14 @@ describe('AssetPicker', () => {
       </Provider>,
     );
     expect(getByText('symbol...')).toBeInTheDocument();
-    expect(getByRole('img')).toBeInTheDocument();
-    expect(getByRole('img')).toHaveAttribute('src', 'token icon url');
+    expect(getByAltText('network logo')).toHaveAttribute(
+      'src',
+      './images/eth_logo.svg',
+    );
+    expect(getByAltText('symbol overflow logo')).toHaveAttribute(
+      'src',
+      'token icon url',
+    );
   });
 
   it('token: renders symbol and image falls back', () => {
@@ -184,7 +208,7 @@ describe('AssetPicker', () => {
     } as ERC20Asset;
     const mockAssetChange = jest.fn();
 
-    const { getByText } = render(
+    const { getByText, getByAltText } = render(
       <Provider
         store={store("SHOULDN'T MATTER", [
           { address: 'token address', iconUrl: 'token icon url' },
@@ -198,7 +222,7 @@ describe('AssetPicker', () => {
       </Provider>,
     );
     expect(getByText('symbol')).toBeInTheDocument();
-    expect(getByText('?')).toBeInTheDocument();
+    expect(getByAltText('network logo')).toBeInTheDocument();
   });
 
   it('nft: does not truncates if token ID is under length 13', () => {
