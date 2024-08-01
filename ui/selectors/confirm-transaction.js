@@ -42,7 +42,6 @@ import {
 } from './transactions';
 
 const unapprovedTxsSelector = (state) => getUnapprovedTransactions(state);
-const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
 const unapprovedPersonalMsgsSelector = (state) =>
   state.metamask.unapprovedPersonalMsgs;
 const unapprovedDecryptMsgsSelector = (state) =>
@@ -54,7 +53,6 @@ const unapprovedTypedMessagesSelector = (state) =>
 
 export const unconfirmedTransactionsListSelector = createSelector(
   unapprovedTxsSelector,
-  unapprovedMsgsSelector,
   unapprovedPersonalMsgsSelector,
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
@@ -62,7 +60,6 @@ export const unconfirmedTransactionsListSelector = createSelector(
   getCurrentChainId,
   (
     unapprovedTxs = {},
-    unapprovedMsgs = {},
     unapprovedPersonalMsgs = {},
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
@@ -71,7 +68,6 @@ export const unconfirmedTransactionsListSelector = createSelector(
   ) =>
     txHelper(
       unapprovedTxs,
-      unapprovedMsgs,
       unapprovedPersonalMsgs,
       unapprovedDecryptMsgs,
       unapprovedEncryptionPublicKeyMsgs,
@@ -82,7 +78,6 @@ export const unconfirmedTransactionsListSelector = createSelector(
 
 export const unconfirmedTransactionsHashSelector = createSelector(
   unapprovedTxsSelector,
-  unapprovedMsgsSelector,
   unapprovedPersonalMsgsSelector,
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
@@ -90,7 +85,6 @@ export const unconfirmedTransactionsHashSelector = createSelector(
   getCurrentChainId,
   (
     unapprovedTxs = {},
-    unapprovedMsgs = {},
     unapprovedPersonalMsgs = {},
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
@@ -112,7 +106,6 @@ export const unconfirmedTransactionsHashSelector = createSelector(
 
     return {
       ...filteredUnapprovedTxs,
-      ...unapprovedMsgs,
       ...unapprovedPersonalMsgs,
       ...unapprovedDecryptMsgs,
       ...unapprovedEncryptionPublicKeyMsgs,
@@ -122,20 +115,17 @@ export const unconfirmedTransactionsHashSelector = createSelector(
 );
 
 export const unconfirmedMessagesHashSelector = createSelector(
-  unapprovedMsgsSelector,
   unapprovedPersonalMsgsSelector,
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
   (
-    unapprovedMsgs = {},
     unapprovedPersonalMsgs = {},
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
   ) => {
     return {
-      ...unapprovedMsgs,
       ...unapprovedPersonalMsgs,
       ...unapprovedDecryptMsgs,
       ...unapprovedEncryptionPublicKeyMsgs,

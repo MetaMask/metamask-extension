@@ -12,6 +12,7 @@ const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
 const { debounce } = require('lodash');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
+const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 const { WindowHandles } = require('../background-socket/window-handles');
 
 const PAGES = {
@@ -873,10 +874,7 @@ class Driver {
   async waitUntilXWindowHandles(_x, delayStep = 1000, timeout = this.timeout) {
     // In the MV3 build, there is an extra windowHandle with a title of "MetaMask Offscreen Page"
     // So we add 1 to the expected number of window handles
-    const x =
-      process.env.ENABLE_MV3 === 'true' || process.env.ENABLE_MV3 === undefined
-        ? _x + 1
-        : _x;
+    const x = isManifestV3 ? _x + 1 : _x;
 
     let timeElapsed = 0;
     let windowHandles = [];
