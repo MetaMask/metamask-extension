@@ -9,7 +9,7 @@ type VersionedData = {
 export const version = 120.2;
 
 /**
- * This migration removes any dangling instances of SelectedNetworkController.perDomainNetwork
+ * This migration removes any dangling instances of SelectedNetworkController.perDomainNetwork and SnapController.snapErrors
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
@@ -26,7 +26,12 @@ export async function migrate(
   return versionedData;
 }
 
-function transformState(state: Record<string, unknown>) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function transformState(state: Record<string, any>) {
+  if (hasProperty(state, 'SnapController')) {
+    delete state.SnapController.snapErrors;
+  }
+
   if (!hasProperty(state, 'SelectedNetworkController')) {
     return state;
   }
