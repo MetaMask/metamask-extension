@@ -53,11 +53,9 @@ function removeObsoleteSelectedNetworkControllerState(
     console.error(
       `Migration ${version}: Invalid SelectedNetworkController state of type '${typeof state.SelectedNetworkController}'`,
     );
-    state.SelectedNetworkController = { domains: {} };
+    delete state.SelectedNetworkController;
   } else if (hasProperty(state.SelectedNetworkController, 'perDomainNetwork')) {
-    state.SelectedNetworkController = {
-      domains: {},
-    };
+    delete state.SelectedNetworkController;
   }
 }
 

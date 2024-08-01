@@ -39,12 +39,9 @@ describe('migration #120.2', () => {
       expect(transformedState.data).toEqual(oldState);
     });
 
-    it('sets SelectedNetworkController state to an object containing an empty object "domains" if SelectedNetworkController state is not itself an object', async () => {
+    it('removes SelectedNetworkController state if SelectedNetworkController state is not itself an object', async () => {
       const oldState = {
         SelectedNetworkController: 'foo',
-      };
-      const expectedState = {
-        SelectedNetworkController: { domains: {} },
       };
 
       const transformedState = await migrate({
@@ -52,10 +49,10 @@ describe('migration #120.2', () => {
         data: cloneDeep(oldState),
       });
 
-      expect(transformedState.data).toEqual(expectedState);
+      expect(transformedState.data).toEqual({});
     });
 
-    it('removes "perDomainNetwork" property and resets "domains" object in SelectedNetworkController state if "perDomainNetwork" property is present', async () => {
+    it('removes SelectedNetworkController state if "perDomainNetwork" property is present', async () => {
       const oldState = {
         SelectedNetworkController: {
           domains: {
@@ -66,18 +63,13 @@ describe('migration #120.2', () => {
           perDomainNetwork: true,
         },
       };
-      const expectedState = {
-        SelectedNetworkController: {
-          domains: {},
-        },
-      };
 
       const transformedState = await migrate({
         meta: { version: oldVersion },
         data: cloneDeep(oldState),
       });
 
-      expect(transformedState.data).toEqual(expectedState);
+      expect(transformedState.data).toEqual({});
     });
 
     it('leaves "domains" state unchanged in SelectedNetworkController if "perDomainNetwork" property is not present in SelectedNetworkController state', async () => {
@@ -117,20 +109,13 @@ describe('migration #120.2', () => {
         },
         SnapController: 'invalid',
       };
-      const expectedState = {
-        SelectedNetworkController: {
-          domains: {},
-        },
-      };
 
       const transformedState = await migrate({
         meta: { version: oldVersion },
         data: cloneDeep(oldState),
       });
 
-      expect(transformedState.data.SelectedNetworkController).toEqual(
-        expectedState.SelectedNetworkController,
-      );
+      expect(transformedState.data.SelectedNetworkController).toBeUndefined();
     });
   });
 
