@@ -147,14 +147,6 @@ const AccountListItem = ({
     currentTabOrigin && currentTabIsConnectedToSelectedAddress;
   const isSingleAccount = accountsCount === 1;
 
-  const renderCount = useRef(0);
-  useEffect(() => {
-    renderCount.current += 1;
-    console.log(
-      `AccountListItem Component has re-rendered ${renderCount.current} times`,
-    );
-  });
-
   return (
     <Box
       display={Display.Flex}
