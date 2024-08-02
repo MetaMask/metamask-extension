@@ -80,6 +80,37 @@ function removeObsoleteSelectedNetworkControllerState(
 }
 
 /**
+ * Remove obsolete NetworkController state.
+ *
+ * We don't know exactly why yet, but we see from Sentry that some users have these properties
+ * in state. They should have been removed by migrations long ago. They are no longer used.
+ *
+ * @param state - The persisted MetaMask state, keyed by controller.
+ */
+function removeObsoleteNetworkControllerState(
+  state: Record<string, unknown>,
+): void {
+  if (!hasProperty(state, 'NetworkController')) {
+    return;
+  } else if (!isObject(state.NetworkController)) {
+    global.sentry.captureException(
+      new Error(
+        `Migration ${version}: Invalid NetworkController state of type '${typeof state.NetworkController}'`,
+      ),
+    );
+    return;
+  }
+
+  const networkControllerState = state.NetworkController;
+
+  delete networkControllerState.networkDetails;
+  delete networkControllerState.networkId;
+  delete networkControllerState.networkStatus;
+  delete networkControllerState.previousProviderStore;
+  delete networkControllerState.provider;
+}
+
+/**
  * Remove obsolete controller state.
  *
  * @param state - The persisted MetaMask state, keyed by controller.
@@ -87,4 +118,5 @@ function removeObsoleteSelectedNetworkControllerState(
 function transformState(state: Record<string, unknown>): void {
   removeObsoleteSnapControllerState(state);
   removeObsoleteSelectedNetworkControllerState(state);
+  removeObsoleteNetworkControllerState(state);
 }
