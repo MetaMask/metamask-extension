@@ -253,12 +253,11 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     weight: 4,
   }),
   [RestrictedMethods.snap_getPreferences]: ({ t, subjectName }) => ({
-    // TODO
-    label: t('permission_getLocale'),
-    description: t('permission_getLocaleDescription', [
+    label: t('permission_getPreferences'),
+    description: t('permission_getPreferencesDescription', [
       getSnapNameComponent(subjectName),
     ]),
-    leftIcon: IconName.Global,
+    leftIcon: IconName.Customize,
     weight: 4,
   }),
   [RestrictedMethods.wallet_snap]: ({ t, permissionValue, getSubjectName }) => {
