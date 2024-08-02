@@ -45,7 +45,6 @@ import {
   getMultichainCurrentChainId,
   getMultichainCurrentNetwork,
   getMultichainIsEvm,
-  getMultichainNativeCurrencyImage,
 } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
