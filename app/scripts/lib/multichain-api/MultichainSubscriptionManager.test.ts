@@ -55,6 +55,7 @@ describe('MultichainSubscriptionManager', () => {
       },
     });
   });
+
   it('should unsubscribe from a domain and scope', () => {
     const domain = 'example.com';
     const scope = 'eip155:1';
@@ -80,6 +81,7 @@ describe('MultichainSubscriptionManager', () => {
 
     expect(spy).not.toHaveBeenCalled();
   });
+
   it('should unsubscribe from a scope', () => {
     const domain = 'example.com';
     const scope = 'eip155:1';
@@ -105,6 +107,7 @@ describe('MultichainSubscriptionManager', () => {
 
     expect(spy).not.toHaveBeenCalled();
   });
+
   it('should unsubscribe all', () => {
     const domain = 'example.com';
     const scope = 'eip155:1';
