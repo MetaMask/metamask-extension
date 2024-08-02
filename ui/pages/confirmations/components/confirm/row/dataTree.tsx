@@ -94,11 +94,14 @@ export const DataTree = ({
   >(undefined);
 
   useEffect(() => {
-    getTokenDecimalsOfDataTree(data).then((decimals) => {
+    const getDecimals = async () => {
+      const decimals = await getTokenDecimalsOfDataTree(data);
       if (typeof decimals === 'number') {
         setTokenContractDecimals(decimals);
       }
-    });
+    };
+
+    getDecimals();
   }, [data]);
 
   return (
