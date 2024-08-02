@@ -132,6 +132,15 @@ export function getConnectedSubjectsForSelectedAddress(state) {
   return connectedSubjects;
 }
 
+/**
+ *  @typedef {import('./selectors.types').AccountConnections} AccountConnections
+ */
+
+/**
+ * Retrieves the connected subjects for all addresses.
+ *
+ * @returns {AccountConnections}  The connected subjects for all addresses.
+ */
 export const getConnectedSubjectsForAllAddresses = createDeepEqualSelector(
   getPermissionSubjects,
   getSubjectMetadata,
