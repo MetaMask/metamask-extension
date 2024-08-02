@@ -480,7 +480,7 @@ export default class SwapsController extends BaseController<
   ): Promise<[string | null, Record<string, Quote>] | Record<string, never>> {
     const { marketData } = this._getTokenRatesState();
     const chainId = this._getCurrentChainId();
-    const tokenConversionRates = marketData[chainId];
+    const tokenConversionRates = marketData?.[chainId] ?? {};
 
     const { customGasPrice, customMaxPriorityFeePerGas } =
       this.state.swapsState;
