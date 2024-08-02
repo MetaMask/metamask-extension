@@ -114,7 +114,7 @@ describe('CaipPermissionAdapterMiddleware', () => {
       expect(next).toHaveBeenCalled();
     });
 
-    it('allows the request when the CAIP-25 endowment permission was not granted from the multichain flow', async () => {
+    it('allows the request when the CAIP-25 endowment permission was not granted from the multichain API', async () => {
       const { handler, getCaveat, next } = createMockedHandler();
       getCaveat.mockReturnValue({
         value: {
@@ -134,42 +134,44 @@ describe('CaipPermissionAdapterMiddleware', () => {
       );
     });
 
-    it('throws an error if the requested scope method is not authorized in either the current scope or the wallet scope', async () => {
-      const { handler, end } = createMockedHandler();
+    describe('when the CAIP-25 endowment permission was granted over the multichain API', () => {
+      it('throws an error if the requested method is not authorized for the scope specified in the request or the wallet scope', async () => {
+        const { handler, end } = createMockedHandler();
 
-      await handler({
-        ...baseRequest,
-        method: 'unauthorized_method',
+        await handler({
+          ...baseRequest,
+          method: 'unauthorized_method',
+        });
+        expect(end).toHaveBeenCalledWith(providerErrors.unauthorized());
       });
-      expect(end).toHaveBeenCalledWith(providerErrors.unauthorized());
-    });
 
-    it('allows the request if the requested scope method is authorized in the current scope', async () => {
-      const { handler, next } = createMockedHandler();
+      it('allows the request if the requested scope method is authorized in the current scope', async () => {
+        const { handler, next } = createMockedHandler();
 
-      await handler(baseRequest);
-      expect(next).toHaveBeenCalled();
-    });
-
-    it('allows the request if the requested scope method is authorized in the wallet scope and the current scope does exist in the authorization', async () => {
-      const { handler, next } = createMockedHandler();
-
-      await handler({
-        ...baseRequest,
-        method: 'wallet_watchAsset',
+        await handler(baseRequest);
+        expect(next).toHaveBeenCalled();
       });
-      expect(next).toHaveBeenCalled();
-    });
 
-    it('allows the request if the requested scope method is authorized in the wallet scope and the current scope does not exist in the authorization', async () => {
-      const { handler, next } = createMockedHandler();
+      it('allows the request if the requested scope method is authorized in the wallet scope and the current scope does exist in the authorization', async () => {
+        const { handler, next } = createMockedHandler();
 
-      await handler({
-        ...baseRequest,
-        method: 'wallet_watchAsset',
-        networkClientId: 'someOtherNetworkClientId',
+        await handler({
+          ...baseRequest,
+          method: 'wallet_watchAsset',
+        });
+        expect(next).toHaveBeenCalled();
       });
-      expect(next).toHaveBeenCalled();
+
+      it('allows the request if the requested scope method is authorized in the wallet scope and the current scope does not exist in the authorization', async () => {
+        const { handler, next } = createMockedHandler();
+
+        await handler({
+          ...baseRequest,
+          method: 'wallet_watchAsset',
+          networkClientId: 'someOtherNetworkClientId',
+        });
+        expect(next).toHaveBeenCalled();
+      });
     });
   });
 });
