@@ -1833,7 +1833,7 @@ export const getCurrentNetwork = createDeepEqualSelector(
    *   id?: string;
    *   nickname?: string;
    *   providerType?: string;
-   *   rpcPrefs?: Record<string, unknown>;
+   *   rpcPrefs?: { blockExplorerUrl?: string; imageUrl?: string; };
    *   rpcUrl: string;
    *   ticker: string;
    * }} networkConfiguration - Configuration for the current network.
