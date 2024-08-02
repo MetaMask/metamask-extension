@@ -152,7 +152,7 @@ describe('CaipPermissionAdapterMiddleware', () => {
         expect(next).toHaveBeenCalled();
       });
 
-      it('allows the request if the requested scope method is authorized in the wallet scope and the current scope does exist in the authorization', async () => {
+      it('allows the request if the requested method is authorized in the wallet scope and the scope specified by the request is authorized with at least one method or notification', async () => {
         const { handler, next } = createMockedHandler();
 
         await handler({
