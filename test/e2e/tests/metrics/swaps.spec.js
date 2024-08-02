@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-const { toHex } = require('@metamask/controller-utils');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -198,7 +197,7 @@ async function assertPrepareSwapPageLoadedEvents(reqs) {
     (req) => Object.keys(req.properties).length === 8,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.chain_id === '1337',
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
 
@@ -212,7 +211,7 @@ async function assertPrepareSwapPageLoadedEvents(reqs) {
     (req) => Object.keys(req.properties).length === 4,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.chain_id === '1337',
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
   ];
@@ -229,7 +228,7 @@ async function assertQuotesRequestedEvents(reqs) {
     (req) => Object.keys(req.properties).length === 15,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.chain_id === '1337',
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
 
@@ -250,7 +249,7 @@ async function assertQuotesRequestedEvents(reqs) {
     (req) => Object.keys(req.properties).length === 4,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.chain_id === '1337',
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
   ];
@@ -267,7 +266,7 @@ async function assertQuotesReceivedAndBestQuoteReviewedEvents(reqs) {
     (req) => Object.keys(req.properties).length === 19,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.chain_id === '1337',
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
 
@@ -292,7 +291,7 @@ async function assertQuotesReceivedAndBestQuoteReviewedEvents(reqs) {
     (req) => Object.keys(req.properties).length === 4,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.chain_id === '1337',
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
   ];
@@ -302,7 +301,7 @@ async function assertQuotesReceivedAndBestQuoteReviewedEvents(reqs) {
     (req) => Object.keys(req.properties).length === 18,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.chain_id === '1337',
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
 
@@ -325,7 +324,7 @@ async function assertQuotesReceivedAndBestQuoteReviewedEvents(reqs) {
     (req) => Object.keys(req.properties).length === 4,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.chain_id === '1337',
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
   ];
@@ -349,7 +348,7 @@ async function assertAllAvailableQuotesOpenedEvents(reqs) {
     (req) => Object.keys(req.properties).length === 19,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.chain_id === '1337',
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
 
@@ -375,7 +374,7 @@ async function assertAllAvailableQuotesOpenedEvents(reqs) {
     (req) => Object.keys(req.properties).length === 4,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.chain_id === '1337',
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
   ];
@@ -392,7 +391,7 @@ async function assertSwapStartedEvents(reqs) {
     (req) => Object.keys(req.properties).length === 25,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.chain_id === '1337',
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
 
@@ -422,7 +421,7 @@ async function assertSwapStartedEvents(reqs) {
     (req) => Object.keys(req.properties).length === 4,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.chain_id === '1337',
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
   ];
@@ -438,7 +437,7 @@ async function assertSwapCompletedEvents(reqs) {
     (req) => req.event === MetaMetricsEventName.SwapCompleted,
     (req) => Object.keys(req.properties).length === 31,
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.chain_id === '1337',
     (req) => req.properties?.environment_type === 'background',
     (req) => req.properties?.locale === 'en',
     (req) => req.properties?.token_from === 'TESTETH',
@@ -474,7 +473,7 @@ async function assertSwapCompletedEvents(reqs) {
     (req) => req.event === MetaMetricsEventName.SwapCompleted,
     (req) => Object.keys(req.properties).length === 4,
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.chain_id === '1337',
     (req) => req.properties?.environment_type === 'background',
     (req) => req.properties?.locale === 'en',
   ];
@@ -491,7 +490,7 @@ async function assertExitedSwapsEvents(reqs) {
     (req) => Object.keys(req.properties).length === 13,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.chain_id === '1337',
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
 
@@ -510,7 +509,7 @@ async function assertExitedSwapsEvents(reqs) {
     (req) => Object.keys(req.properties).length === 4,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.chain_id === '1337',
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
   ];
@@ -525,7 +524,7 @@ async function assertExitedSwapsEvents(reqs) {
     (req) => Object.keys(req.properties).length === 10,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.chain_id === '1337',
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
 
@@ -541,7 +540,7 @@ async function assertExitedSwapsEvents(reqs) {
     (req) => Object.keys(req.properties).length === 4,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.chain_id === '1337',
     (req) => req.properties?.environment_type === 'fullscreen',
     (req) => req.properties?.locale === 'en',
   ];
