@@ -230,21 +230,12 @@ export const TokenListItem = ({
               name={currentNetwork?.nickname}
               src={currentNetwork?.rpcPrefs?.imageUrl}
               backgroundColor={testNetworkBackgroundColor}
-              borderColor={
-                primaryTokenImage
-                  ? BorderColor.borderMuted
-                  : BorderColor.borderDefault
-              }
             />
           }
           marginRight={4}
           className="multichain-token-list-item__badge"
         >
-          <AvatarToken
-            name={tokenSymbol}
-            src={tokenImage}
-            borderColor={tokenImage ? undefined : BorderColor.borderDefault}
-          />
+          <AvatarToken name={tokenSymbol} src={tokenImage} />
         </BadgeWrapper>
         <Box
           className="multichain-token-list-item__container-cell--text-container"
