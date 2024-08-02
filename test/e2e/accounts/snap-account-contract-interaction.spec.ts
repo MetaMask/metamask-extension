@@ -45,10 +45,10 @@ describe('Snap Account - Contract interaction', function () {
           contractRegistry as GanacheContractAddressRegistry
         ).getContractAddress(smartContract);
         await openDapp(driver, contractAddress);
+        // Create and confirm deposit transaction
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        // Create and confirm deposit transaction
         await createDepositTransaction(driver);
         await driver.waitUntilXWindowHandles(4);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
