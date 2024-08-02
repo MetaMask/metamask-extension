@@ -30,6 +30,26 @@ jobs:
           name: coverage-${{matrix.shard}}
           path: coverage/coverage-${{matrix.shard}}.json
 
+  test-webpack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: test:unit:webpack:coverage
+        run: yarn test:unit:webpack:coverage
+
+      - name: Rename coverage
+        run: mv coverage/coverage-final.json coverage/coverage-webpack.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-webpack
+          path: coverage/coverage-webpack.json
+
   report-coverage:
     runs-on: ubuntu-latest
     needs:
