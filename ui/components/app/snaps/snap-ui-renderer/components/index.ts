@@ -16,9 +16,11 @@ import { italic } from './italic';
 import { link } from './link';
 import { field } from './field';
 import { dropdown } from './dropdown';
+import { radioGroup } from './radioGroup';
 import { value } from './value';
 import { checkbox } from './checkbox';
 import { tooltip } from './tooltip';
+import { card } from './card';
 
 export const COMPONENT_MAPPING = {
   Box: box,
@@ -39,7 +41,9 @@ export const COMPONENT_MAPPING = {
   Link: link,
   Field: field,
   Dropdown: dropdown,
+  RadioGroup: radioGroup,
   Value: value,
   Checkbox: checkbox,
   Tooltip: tooltip,
+  Card: card,
 };
