@@ -20,10 +20,10 @@ const {
 const FixtureBuilder = require('../fixture-builder');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 
-describe('//name me', function () {
+describe('Snap Account - Contract interaction', function () {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
 
-  it(`Opens the contract`, async function () {
+  it(`deposit and then withdraw from piggybank contract`, async function () {
     await withFixtures(
       {
         dapp: true,
