@@ -1452,9 +1452,6 @@
   "data": {
     "message": "Datos"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Hindi maibalik ang iyong data. Mukhang sira ang file."
-  },
   "dataCollectionForMarketing": {
     "message": "Koleksyon ng data para sa marketing"
   },
@@ -4408,12 +4405,6 @@
   },
   "restore": {
     "message": "Ibalik"
-  },
-  "restoreFailed": {
-    "message": "Hindi maibalik ang iyong data mula sa file na ibinigay"
-  },
-  "restoreSuccessful": {
-    "message": "Ang iyong data ay matagumpay na naibalik"
   },
   "restoreUserData": {
     "message": "Ibalik ang data ng user"
