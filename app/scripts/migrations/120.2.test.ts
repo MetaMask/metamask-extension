@@ -291,6 +291,39 @@ describe('migration #120.2', () => {
       );
     });
 
+    it('does nothing if obsolete properties and providerConfig are not set', async () => {
+      const oldState = {
+        NetworkController: {
+          selectedNetworkClientId: 'example',
+        },
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: cloneDeep(oldState),
+      });
+
+      expect(transformedState.data).toEqual(oldState);
+    });
+
+    it('does nothing if obsolete properties are not set and providerConfig is set to undefined', async () => {
+      const oldState = {
+        NetworkController: {
+          // This should be impossible because `undefined` cannot be returned from persisted state,
+          // it's not valid JSON. But a bug in migration 14 ends up setting this to `undefined`.
+          providerConfig: undefined,
+          selectedNetworkClientId: 'example',
+        },
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: cloneDeep(oldState),
+      });
+
+      expect(transformedState.data).toEqual(oldState);
+    });
+
     it('does nothing if obsolete properties and providerConfig id are not set', async () => {
       const oldState = {
         NetworkController: {

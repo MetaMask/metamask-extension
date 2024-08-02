@@ -105,7 +105,12 @@ function removeObsoleteNetworkControllerState(
   const networkControllerState = state.NetworkController;
 
   // Check for invalid `providerConfig.id`, and remove if found
-  if (hasProperty(networkControllerState, 'providerConfig')) {
+  if (
+    hasProperty(networkControllerState, 'providerConfig') &&
+    // This should be impossible because `undefined` cannot be returned from persisted state,
+    // it's not valid JSON. But a bug in migration 14 ends up setting this to `undefined`.
+    networkControllerState.providerConfig !== undefined
+  ) {
     if (!isObject(networkControllerState.providerConfig)) {
       global.sentry?.captureException?.(
         new Error(
