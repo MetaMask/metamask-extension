@@ -73,7 +73,7 @@ const getTokenDecimalsOfDataTree = async (
   }
 
   const decimals = parseInt(
-    (await getTokenStandardAndDetails(tokenContract)).decimals ?? '0',
+    (await getTokenStandardAndDetails(tokenContract))?.decimals ?? '0',
     10,
   );
 
