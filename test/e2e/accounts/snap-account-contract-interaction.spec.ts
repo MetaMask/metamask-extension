@@ -12,9 +12,6 @@ const {
   openDapp,
   WINDOW_TITLES,
 } = require('../helpers');
-const {
-  scrollAndConfirmAndAssertConfirm,
-} = require('../tests/confirmations/helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 
@@ -58,7 +55,8 @@ describe('Snap Account - Contract interaction', function () {
           css: 'h2',
           text: 'Transaction request',
         });
-        await scrollAndConfirmAndAssertConfirm(driver);
+        await driver.clickElement('.confirm-scroll-to-bottom__button');
+        await driver.clickElement('[data-testid="confirm-footer-button"]');
       },
     );
   });

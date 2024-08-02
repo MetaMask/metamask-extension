@@ -218,13 +218,6 @@ class FixtureBuilder {
     });
   }
 
-  withKeyringControllerSnapAccountVault() {
-    return this.withKeyringController({
-      vault:
-        '{"data":"pzqZyFB6hseaC8iXRf+YnKxnbhB/oooNYJsZNuLW4cXUFt4uNVuY1pLUgMKA+3V2TL1Q9+1HFNaWz8JXHg4Y337XQfM3dbirfSt0kbWUEyyK07BrIAt4U7zqru7FiO1YBTaz0EeyAitSTwQ6lMUkb0hsv3SI3fphQrnSd/krOj7C3OJcRkOylY7RRAFQpuvkEzrqDAGn9nqzNKFKmFQdcJPi+ed7UvLeATxeAmMXCP7pwGpxksL52G4BjiZl+ePcaDA6yZMxYcx0SncJKdBbYcAt+DqfjepXFyiitwOCfzM/yLwlHo/Kq4JaCOM6cFxuBigIV+fP+8rNUm4OX5IF6q/+gm7A8dh15wwbb6Yjpo2njOOMDbLHZwrK4t0QXt3emhMH/OFxJvJqhfVRsfzlBtJFAIy4ciNWLI5IDx2HyKZPnyXPfxAdv7W09ozyttwah2KMzHChxOAkcbRqE2RyoJyJXMuXXnFZz5xX7QwucjkGnnjy23M8FqxTFwlUzMZClRPZfDw4WDwytLWSPGVkrSmv+uGQUMSZ8MsF10LgI0HnA8VFOCaLcyHRAnY+oD3S6KWAOKyiwHXYjkzJEqvJAMqFguRshX8HEqJWx1GayVueVBqaXnO3DGXxDOBlsqg2+wVM5ck6TlRHHRT3/CtJB3tsfWdH2fvkWL+IYTL+SsG9bxY0fzw8YSIfBkQeK6+s4hkZ3/PH1MUjhf2WkSIVFg70qkmNAtPuRqNw1RP7HGmaTaNE6VxG8vrGzN/q2/qxsSjEvfYD0WHFdjt8mr+uSRLdNb9Do1vEiQv4EcH+PI+/hdKQouCK/c5tKyFYZHpoIniytx51cjyROe7jizm1G0+4OMFWl4bFBZSOfbxiRofIhp5PMab+3TvfDlIWJXBFCKYaQqhrXqOrQTz8/Rqds/yv/TU3dTSex8Vdb22+eZO5iDqOrAjoMJHXPxowpp2EX7LIXPURkFwhwaDyImUfNkK/hPoIZUrRj6BfUtm1rTK7hZNrj4X0iNZVtiXuDrH5Z06XwFYE9YCUk5wvm/2iMBuPeMNk7xPbmmSgWy7k+O7qtqa7e1ONQXzV5myPyMXCsv1EhzutWkNL5ulAYMv4MziUM2sxZlPMyRKhMnhsSWVsKwVfeDTJ+vv4fjd5EQIc29z9KUmhaF3nkK9Az95RpHJyGEKmEN8xUrtrwLOipUxgaGqEq+kUuYaW3H7nyKyorBL31Mb252AG9o4tjUVKZQT8/63twFlExiYJHZNmlvPLLDAKhuJ3GBOrXn38Y0KsV6WGbrmGIfN6TF2k9kqFrdEEr3jAO9ClAPD55cvhCu5BUgrl/kTnSd8G","iv":"9BW4xQvTzyCN1PskNoRhNw==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"nk4xdpmMR+1s5BYe4Vnk++XAQwrISI2bCtbMg7V1wUA="}',
-    });
-  }
-
   withMetaMetricsController(data) {
     merge(this.fixture.data.MetaMetricsController, data);
     return this;
@@ -560,24 +553,6 @@ class FixtureBuilder {
     });
   }
 
-  withPreferencesControllerSnapAccountIdentities() {
-    return this.withPreferencesController({
-      identities: {
-        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          name: 'Account 1',
-          address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-          lastSelected: 1665507600000,
-        },
-        '0x09781764c08de8ca82e156bbf156a3ca217c7950': {
-          name: 'Account 2',
-          address: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-          lastSelected: 1722542777540,
-        },
-      },
-      selectedAddress: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-    });
-  }
-
   withPreferencesControllerPetnamesDisabled() {
     return this.withPreferencesController({
       preferences: {
@@ -717,65 +692,6 @@ class FixtureBuilder {
         },
       },
       selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-    });
-  }
-
-  withAccountsControllerAdditionalSnapAccount() {
-    return this.withAccountsController({
-      internalAccounts: {
-        accounts: {
-          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-            id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-            options: {},
-            methods: [
-              'personal_sign',
-              'eth_sign',
-              'eth_signTransaction',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            type: 'eip155:eoa',
-            metadata: {
-              name: 'Account 1',
-              importTime: 1722542758367,
-              lastSelected: 1665507600000,
-              keyring: {
-                type: 'HD Key Tree',
-              },
-            },
-          },
-          'c5cb612a-bf08-407b-b50d-dfd8d825e242': {
-            id: 'c5cb612a-bf08-407b-b50d-dfd8d825e242',
-            options: {},
-            address: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-            methods: [
-              'personal_sign',
-              'eth_sign',
-              'eth_signTransaction',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            type: 'eip155:eoa',
-            metadata: {
-              name: 'Snap Account 1',
-              importTime: 1722542758989,
-              keyring: {
-                type: 'Snap Keyring',
-              },
-              snap: {
-                id: 'npm:@metamask/snap-simple-keyring-snap',
-                name: 'MetaMask Simple Snap Keyring',
-                enabled: true,
-              },
-              lastSelected: 1722542777540,
-            },
-          },
-        },
-        selectedAccount: 'c5cb612a-bf08-407b-b50d-dfd8d825e242',
-      },
     });
   }
 
