@@ -70,27 +70,15 @@ const CustodyConfirmLink: React.FC<CustodyConfirmLinkProps> = ({
   const trackEvent = useContext(MetaMetricsContext);
   const mmiAccounts = useSelector(getInternalAccounts);
   const address = useSelector(getMMIAddressFromModalOrAddress);
-  const custodyAccountDetails = useSelector(getCustodyAccountDetails);
-  const mmiConfiguration = useSelector(getMMIConfiguration);
-  const custodians = mmiConfiguration?.custodians;
-  const custodianName = custodyAccountDetails
-    ? [toChecksumHexAddress(address)]
-    : '';
-
-  let displayName;
-  let iconUrl;
-
-  if (custodians) {
-    const custodian = custodians.find(
-      (item) => item.envName === custodianName,
-    ) || { displayName, iconUrl };
-    displayName = custodian.displayName;
-    iconUrl = custodian.iconUrl;
-  }
-
+  const custodyAccountDetails = useSelector(getCustodyAccountDetails) || {};
   const { url, ethereum, text, action } = useSelector(
     (state: State) => state.appState.modal.modalState.props.link || {},
   );
+  const { custodians } = useSelector(getMMIConfiguration) || {};
+  const { custodianName } =
+    custodyAccountDetails[toChecksumHexAddress(address)] || {};
+  const { displayName, iconUrl } =
+    custodians?.find((item) => item.envName === custodianName) || {};
 
   const onClick = () => {
     if (url) {
