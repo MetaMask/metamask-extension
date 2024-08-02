@@ -25,11 +25,11 @@ To ensure MetaMask extension's upgrade process is seamless and retains user data
 
 ### Post-Upgrade Validation on Release Branch
 
-6. **Then** the user should verify that both accounts created pre-upgrade are present and correctly displayed.
-7. **And** the previously sent transaction is visible in the transaction history.
-8. **And** the ERC20 token created and imported pre-upgrade is still available.
-9. **And** the user can successfully send another transaction.
-10. **And** any popup modals related to the new version are appropriately displayed and functional.
+7. **Then** the user should verify that both accounts created pre-upgrade are present and correctly displayed.
+8. **And** the previously sent transaction is visible in the transaction history.
+9. **And** the ERC20 token created and imported pre-upgrade is still available.
+10. **And** the user can successfully send another transaction.
+11. **And** any popup modals related to the new version are appropriately displayed and functional.
 
 ### Expected Outcome
 
