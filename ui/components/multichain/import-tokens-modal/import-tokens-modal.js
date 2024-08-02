@@ -13,14 +13,12 @@ import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
-  getInternalAccounts,
   getIsDynamicTokenListAvailable,
   getIsMainnet,
   getIsTokenDetectionInactiveOnMainnet,
   getIsTokenDetectionSupported,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getRpcPrefsForCurrentProvider,
-  getSelectedInternalAccount,
   getSelectedNetworkClientId,
   getTokenDetectionSupportNetworkByChainId,
   getTokenList,
@@ -28,6 +26,10 @@ import {
   getTestNetworkBackgroundColor,
   contractExchangeRateSelector,
 } from '../../../selectors';
+import {
+  getInternalAccounts,
+  getSelectedInternalAccount,
+} from '../../../selectors/accounts';
 import {
   addImportedTokens,
   clearPendingTokens,

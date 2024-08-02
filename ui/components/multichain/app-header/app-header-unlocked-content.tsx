@@ -39,10 +39,10 @@ import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { AccountPicker } from '../account-picker';
 import { GlobalMenu } from '../global-menu';
 import {
-  getSelectedInternalAccount,
   getTestNetworkBackgroundColor,
   getOriginOfCurrentTab,
 } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { shortenAddress } from '../../../helpers/utils/util';

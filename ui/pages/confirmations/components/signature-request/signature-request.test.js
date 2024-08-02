@@ -18,13 +18,14 @@ import {
   getPreferences,
   getSelectedAccount,
   getTotalUnapprovedMessagesCount,
-  getInternalAccounts,
   unconfirmedTransactionsHashSelector,
   getAccountType,
-  getMemoizedMetaMaskInternalAccounts,
-  getSelectedInternalAccount,
   pendingApprovalsSortedSelector,
 } from '../../../../selectors';
+import {
+  getInternalAccounts,
+  getSelectedInternalAccount,
+} from '../../../../selectors/accounts';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import SignatureRequest from './signature-request';
 
@@ -136,8 +137,6 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     case getSelectedAccount:
       return mockSelectedInternalAccount;
     case getInternalAccounts:
-      return Object.values(opts.metamask.internalAccounts.accounts);
-    case getMemoizedMetaMaskInternalAccounts:
       return Object.values(opts.metamask.internalAccounts.accounts);
     case getMemoizedAddressBook:
       return [];

@@ -49,7 +49,6 @@ import {
   isAccountConnectedToCurrentTab,
   getShowFiatInTestnets,
   getUseBlockie,
-  getSelectedInternalAccount,
 } from '../../../selectors';
 import {
   getMultichainIsTestnet,
@@ -71,9 +70,9 @@ import { AccountListItemMenuTypes } from './account-list-item.types';
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
 
-export const AccountListItem = ({
+const AccountListItem = ({
   account,
-  selected = false,
+  selected,
   onClick,
   closeMenu,
   accountsCount,
@@ -147,7 +146,6 @@ export const AccountListItem = ({
   const isConnected =
     currentTabOrigin && currentTabIsConnectedToSelectedAddress;
   const isSingleAccount = accountsCount === 1;
-  const selectedAccount = useSelector(getSelectedInternalAccount);
 
   return (
     <Box
@@ -420,9 +418,7 @@ export const AccountListItem = ({
           account={account}
           onClose={() => setAccountOptionsMenuOpen(false)}
           closeMenu={closeMenu}
-          disableAccountSwitcher={
-            isSingleAccount && selectedAccount.address === account.address
-          }
+          disableAccountSwitcher={isSingleAccount && selected}
           isOpen={accountOptionsMenuOpen}
           onActionClick={onActionClick}
           activeTabOrigin={currentTabOrigin}
@@ -459,7 +455,7 @@ AccountListItem.propTypes = {
   /**
    * Represents if this account is currently selected
    */
-  selected: PropTypes.bool,
+  selected: PropTypes.bool.isRequired,
   /**
    * Function to execute when the item is clicked
    */
@@ -507,3 +503,5 @@ AccountListItem.propTypes = {
 };
 
 AccountListItem.displayName = 'AccountListItem';
+
+export default React.memo(AccountListItem);

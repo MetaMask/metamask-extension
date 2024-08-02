@@ -1,6 +1,6 @@
 import { deepClone } from '@metamask/snaps-utils';
 import { ApprovalType, NetworkType } from '@metamask/controller-utils';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthMethod } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
@@ -13,7 +13,6 @@ import {
 import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { createMockInternalAccount } from '../../test/jest/mocks';
-import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import * as selectors from './selectors';
 
 jest.mock('../../app/scripts/lib/util', () => ({
@@ -39,73 +38,6 @@ const modifyStateWithHWKeyring = (keyring) => {
 };
 
 describe('Selectors', () => {
-  describe('#getSelectedAddress', () => {
-    it('returns undefined if selectedAddress is undefined', () => {
-      expect(
-        selectors.getSelectedAddress({
-          metamask: { internalAccounts: { accounts: {}, selectedAccount: '' } },
-        }),
-      ).toBeUndefined();
-    });
-
-    it('returns selectedAddress', () => {
-      const mockInternalAccount = createMockInternalAccount();
-      const internalAccounts = {
-        accounts: {
-          [mockInternalAccount.id]: mockInternalAccount,
-        },
-        selectedAccount: mockInternalAccount.id,
-      };
-
-      expect(
-        selectors.getSelectedAddress({ metamask: { internalAccounts } }),
-      ).toStrictEqual(mockInternalAccount.address);
-    });
-  });
-
-  describe('#getSelectedInternalAccount', () => {
-    it('returns undefined if selectedAccount is undefined', () => {
-      expect(
-        selectors.getSelectedInternalAccount({
-          metamask: {
-            internalAccounts: {
-              accounts: {},
-              selectedAccount: '',
-            },
-          },
-        }),
-      ).toBeUndefined();
-    });
-
-    it('returns selectedAccount', () => {
-      const mockInternalAccount = {
-        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-        metadata: {
-          name: 'Test Account',
-          keyring: {
-            type: 'HD Key Tree',
-          },
-        },
-        options: {},
-        methods: ETH_EOA_METHODS,
-        type: EthAccountType.Eoa,
-      };
-      expect(
-        selectors.getSelectedInternalAccount({
-          metamask: {
-            internalAccounts: {
-              accounts: {
-                [mockInternalAccount.id]: mockInternalAccount,
-              },
-              selectedAccount: mockInternalAccount.id,
-            },
-          },
-        }),
-      ).toStrictEqual(mockInternalAccount);
-    });
-  });
-
   describe('#checkIfMethodIsEnabled', () => {
     it('returns true if the method is enabled', () => {
       expect(
@@ -138,35 +70,6 @@ describe('Selectors', () => {
           EthMethod.SignTransaction,
         ),
       ).toBe(false);
-    });
-  });
-
-  describe('#getInternalAccounts', () => {
-    it('returns a list of internal accounts', () => {
-      expect(selectors.getInternalAccounts(mockState)).toStrictEqual(
-        Object.values(mockState.metamask.internalAccounts.accounts),
-      );
-    });
-  });
-
-  describe('#getInternalAccount', () => {
-    it("returns undefined if the account doesn't exist", () => {
-      expect(
-        selectors.getInternalAccount(mockState, 'unknown'),
-      ).toBeUndefined();
-    });
-
-    it('returns the account', () => {
-      expect(
-        selectors.getInternalAccount(
-          mockState,
-          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-        ),
-      ).toStrictEqual(
-        mockState.metamask.internalAccounts.accounts[
-          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
-        ],
-      );
     });
   });
 
@@ -926,28 +829,6 @@ describe('Selectors', () => {
       expect(selectors.getHardwareWalletType(mockStateWithTrezor)).toBe(
         KeyringType.trezor,
       );
-    });
-  });
-
-  it('returns selected internalAccount', () => {
-    expect(selectors.getSelectedInternalAccount(mockState)).toStrictEqual({
-      address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-      metadata: {
-        name: 'Test Account',
-        keyring: {
-          type: 'HD Key Tree',
-        },
-      },
-      options: {},
-      methods: [
-        'personal_sign',
-        'eth_signTransaction',
-        'eth_signTypedData_v1',
-        'eth_signTypedData_v3',
-        'eth_signTypedData_v4',
-      ],
-      type: 'eip155:eoa',
     });
   });
 

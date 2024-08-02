@@ -32,6 +32,7 @@ const mockNonEvmAccount = {
 
 const DEFAULT_PROPS = {
   account: mockAccount,
+  selected: false,
   onClick: jest.fn(),
 };
 

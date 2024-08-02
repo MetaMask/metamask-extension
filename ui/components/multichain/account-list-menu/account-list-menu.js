@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
@@ -53,7 +53,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
-  getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
@@ -71,11 +70,14 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   hasCreatedBtcMainnetAccount,
   hasCreatedBtcTestnetAccount,
+  ///: END:ONLY_INCLUDE_IF
+  getSelectedInternalAccount,
 } from '../../../selectors/accounts';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
@@ -209,7 +211,7 @@ export const AccountListMenu = ({
   }
   searchResults = mergeAccounts(searchResults, accounts);
 
-  const title = getActionTitle(t, actionMode);
+  const title = useMemo(() => getActionTitle(t, actionMode), [actionMode, t]);
 
   let onBack = null;
   if (actionMode !== ACTION_MODES.LIST) {
@@ -219,6 +221,21 @@ export const AccountListMenu = ({
       onBack = () => setActionMode(ACTION_MODES.MENU);
     }
   }
+
+  const onAccountListItemItemClicked = useCallback(
+    (account) => {
+      onClose();
+      trackEvent({
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.NavAccountSwitched,
+        properties: {
+          location: 'Main Menu',
+        },
+      });
+      dispatch(setSelectedAccount(account.address));
+    },
+    [dispatch, onClose, trackEvent],
+  );
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -508,17 +525,7 @@ export const AccountListMenu = ({
                     key={account.address}
                   >
                     <AccountListItem
-                      onClick={() => {
-                        onClose();
-                        trackEvent({
-                          category: MetaMetricsEventCategory.Navigation,
-                          event: MetaMetricsEventName.NavAccountSwitched,
-                          properties: {
-                            location: 'Main Menu',
-                          },
-                        });
-                        dispatch(setSelectedAccount(account.address));
-                      }}
+                      onClick={() => onAccountListItemItemClicked(account)}
                       account={account}
                       key={account.address}
                       selected={selectedAccount.address === account.address}

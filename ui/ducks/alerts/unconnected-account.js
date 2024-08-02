@@ -9,11 +9,11 @@ import {
   setSelectedAccount,
   setSelectedInternalAccount,
 } from '../../store/actions';
+import { getOriginOfCurrentTab } from '../../selectors';
 import {
   getInternalAccount,
-  getOriginOfCurrentTab,
   getSelectedInternalAccount,
-} from '../../selectors';
+} from '../../selectors/accounts';
 import { ALERT_STATE } from './enums';
 
 // Constants

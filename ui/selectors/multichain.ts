@@ -27,16 +27,18 @@ import {
   NETWORK_TYPES,
   TEST_NETWORK_IDS,
 } from '../../shared/constants/network';
-import { AccountsState } from './accounts';
+import {
+  getSelectedInternalAccount,
+  getMaybeSelectedInternalAccount,
+  AccountsState,
+} from './accounts';
 import {
   getCurrentChainId,
   getCurrentCurrency,
   getIsMainnet,
-  getMaybeSelectedInternalAccount,
   getNativeCurrencyImage,
   getNetworkConfigurations,
   getSelectedAccountCachedBalance,
-  getSelectedInternalAccount,
   getShouldShowFiat,
   getShowFiatInTestnets,
 } from '.';

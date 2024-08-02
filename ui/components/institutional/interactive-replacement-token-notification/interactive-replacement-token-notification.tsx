@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  getCurrentKeyring,
-  getSelectedInternalAccount,
-} from '../../../selectors';
+import { getCurrentKeyring } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import { getInteractiveReplacementToken } from '../../../selectors/institutional/selectors';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';

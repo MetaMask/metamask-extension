@@ -12,7 +12,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { getSelectedInternalAccount } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 
 import {
   AssetType,

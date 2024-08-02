@@ -6,9 +6,9 @@ import {
   getNativeCurrencyImage,
   getRpcPrefsForCurrentProvider,
   getSelectedAccountCachedBalance,
-  getSelectedInternalAccount,
   getShouldShowFiat,
 } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import {
   getNativeCurrency,

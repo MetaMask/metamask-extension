@@ -5,8 +5,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   accountsWithSendEtherInfoSelector,
   currentConfirmationSelector,
-  getSelectedInternalAccount,
 } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   getAccountByAddress,
   shortenAddress,

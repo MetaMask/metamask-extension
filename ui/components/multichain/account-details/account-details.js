@@ -14,11 +14,8 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getInternalAccountByAddress,
-  getMetaMaskAccountsOrdered,
-  getUseBlockie,
-} from '../../../selectors';
+import { getMetaMaskAccountsOrdered, getUseBlockie } from '../../../selectors';
+import { getInternalAccountByAddress } from '../../../selectors/accounts';
 import {
   clearAccountDetails,
   hideWarning,

@@ -21,12 +21,12 @@ import {
   getTargetSubjectMetadata,
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
-  getInternalAccounts,
   getMemoizedUnapprovedPersonalMessages,
   getMemoizedUnapprovedTypedMessages,
   getMemoizedCurrentChainId,
   getMemoizedTxId,
 } from '../../../selectors';
+import { getInternalAccounts } from '../../../selectors/accounts';
 import { useSignatureInsights } from '../../../hooks/snaps/useSignatureInsights';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { getSendTo } from '../../../ducks/send';

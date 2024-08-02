@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { getUpdatedAndSortedAccounts } from '../../../../../selectors';
 import {
-  getUpdatedAndSortedAccounts,
   getInternalAccounts,
-} from '../../../../../selectors';
+  getSelectedInternalAccount,
+} from '../../../../../selectors/accounts';
 import { AccountListItem } from '../../..';
 import {
   addHistoryEntry,
@@ -26,6 +27,7 @@ export const SendPageYourAccounts = () => {
   const accounts = useSelector(getUpdatedAndSortedAccounts);
   const internalAccounts = useSelector(getInternalAccounts);
   const mergedAccounts = mergeAccounts(accounts, internalAccounts);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
 
   return (
     <SendPageRow>
@@ -34,6 +36,7 @@ export const SendPageYourAccounts = () => {
       {mergedAccounts.map((account: any) => (
         <AccountListItem
           account={account}
+          selected={selectedAccount.address === account.address}
           key={account.address}
           isPinned={Boolean(account.pinned)}
           onClick={() => {

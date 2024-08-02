@@ -24,9 +24,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
   getIsMainnet,
-  getSelectedInternalAccount,
   getOpenSeaEnabled,
 } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   addNftVerifyOwnership,
   getTokenStandardAndDetails,

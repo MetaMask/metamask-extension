@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { getSelectedInternalAccount } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 
 export const useTransactionInfo = (txData = {}) => {
   const { allNftContracts } = useSelector((state) => state.metamask);

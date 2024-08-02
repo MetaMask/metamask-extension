@@ -4,10 +4,8 @@ import PropTypes from 'prop-types';
 
 import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
 import { addToAddressBook } from '../../../../store/actions';
-import {
-  getAddressBook,
-  getInternalAccountByAddress,
-} from '../../../../selectors';
+import { getAddressBook } from '../../../../selectors';
+import { getInternalAccountByAddress } from '../../../../selectors/accounts';
 import NicknamePopover from '../../../ui/nickname-popover';
 import UpdateNicknamePopover from '../../../ui/update-nickname-popover/update-nickname-popover';
 import { getMultichainNetwork } from '../../../../selectors/multichain';

@@ -18,8 +18,8 @@ import {
   getCurrentChainId,
   getCurrentCurrency,
   getRpcPrefsForCurrentProvider,
-  getSelectedInternalAccount,
 } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   getConversionRate,
   getNativeCurrency,

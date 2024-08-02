@@ -16,11 +16,11 @@ import {
   getNativeCurrencyImage,
   getPreferences,
   getSelectedAccountCachedBalance,
-  getSelectedInternalAccount,
   getShouldHideZeroBalanceTokens,
   getTokenExchangeRates,
   getTokenList,
 } from '../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../selectors/accounts';
 import {
   getConversionRate,
   getNativeCurrency,

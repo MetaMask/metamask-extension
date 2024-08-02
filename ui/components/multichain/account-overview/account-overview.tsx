@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { BtcAccountType, EthAccountType } from '@metamask/keyring-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BannerAlert, BannerAlertSeverity } from '../../component-library';
-import { getSelectedInternalAccount } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import { AccountOverviewEth } from './account-overview-eth';
 import { AccountOverviewBtc } from './account-overview-btc';
 import { AccountOverviewUnknown } from './account-overview-unknown';

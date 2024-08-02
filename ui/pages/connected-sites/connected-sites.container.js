@@ -10,8 +10,8 @@ import {
   getOriginOfCurrentTab,
   getPermissionSubjects,
   getPermittedAccountsByOrigin,
-  getSelectedInternalAccount,
 } from '../../selectors';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { CONNECT_ROUTE } from '../../helpers/constants/routes';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import ConnectedSites from './connected-sites.component';

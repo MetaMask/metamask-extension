@@ -27,23 +27,11 @@ import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import { getInternalAccounts } from '../../selectors';
+import { getInternalAccounts } from '../../selectors/accounts';
 import { useAccountSettingsProps } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { NotificationsSettingsAllowNotifications } from './notifications-settings-allow-notifications';
 import { NotificationsSettingsTypes } from './notifications-settings-types';
 import { NotificationsSettingsPerAccount } from './notifications-settings-per-account';
-
-// Define KeyringType interface
-type KeyringType = {
-  type: string;
-};
-
-// Define AccountType interface
-type AccountType = InternalAccount & {
-  balance: string;
-  keyring: KeyringType;
-  label: string;
-};
 
 export default function NotificationsSettings() {
   const history = useHistory();
@@ -56,14 +44,14 @@ export default function NotificationsSettings() {
   const isUpdatingMetamaskNotifications = useSelector(
     getIsUpdatingMetamaskNotifications,
   );
-  const accounts: AccountType[] = useSelector(getInternalAccounts);
+  const accounts = useSelector(getInternalAccounts);
 
   // States
   const [loadingAllowNotifications, setLoadingAllowNotifications] =
     useState<boolean>(isUpdatingMetamaskNotifications);
 
   const accountAddresses = useMemo(
-    () => accounts.map((a) => a.address),
+    () => accounts.map((a: InternalAccount) => a.address),
     [accounts],
   );
 
@@ -142,7 +130,7 @@ export default function NotificationsSettings() {
                 paddingRight={8}
                 paddingBottom={4}
               >
-                {accounts.map((account) => (
+                {accounts.map((account: InternalAccount) => (
                   <NotificationsSettingsPerAccount
                     key={account.id}
                     address={account.address}

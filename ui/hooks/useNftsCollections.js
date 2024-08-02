@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import { getNfts, getNftContracts } from '../ducks/metamask/metamask';
-import { getCurrentChainId, getSelectedInternalAccount } from '../selectors';
+import { getCurrentChainId } from '../selectors';
+import { getSelectedInternalAccount } from '../selectors/accounts';
 import { usePrevious } from './usePrevious';
 import { useI18nContext } from './useI18nContext';
 

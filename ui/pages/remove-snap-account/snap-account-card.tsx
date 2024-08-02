@@ -1,9 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import {
-  getInternalAccounts,
-  getMetaMaskAccountsOrdered,
-} from '../../selectors';
+import { getMetaMaskAccountsOrdered } from '../../selectors';
+import { getInternalAccounts } from '../../selectors/accounts';
 import { BlockSize, BorderRadius } from '../../helpers/constants/design-system';
 import { Box } from '../../components/component-library';
 import { AccountListItem } from '../../components/multichain';
@@ -37,7 +35,7 @@ export const SnapAccountCard = ({
         boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
       }}
     >
-      <AccountListItem account={account} selected={remove} />
+      <AccountListItem account={account} selected={remove || false} />
     </Box>
   );
 };

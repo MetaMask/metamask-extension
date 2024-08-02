@@ -119,6 +119,11 @@ import {
   getOrderedConnectedAccountsForConnectedDapp,
   getSubjectMetadata,
 } from './permissions';
+import {
+  getSelectedInternalAccount,
+  getInternalAccounts,
+  getInternalAccountByAddress,
+} from './accounts';
 import { createDeepEqualSelector } from './util';
 import { getMultichainBalances, getMultichainNetwork } from './multichain';
 
@@ -278,7 +283,7 @@ export function getAccountTypeForKeyring(keyring) {
 /**
  * Get MetaMask accounts, including account name and balance.
  */
-export const getMetaMaskAccounts = createSelector(
+export const getMetaMaskAccounts = createDeepEqualSelector(
   getInternalAccounts,
   getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
@@ -330,35 +335,6 @@ export const getMetaMaskAccounts = createSelector(
       };
     }, {}),
 );
-/**
- * Returns the address of the selected InternalAccount from the Metamask state.
- *
- * @param state - The Metamask state object.
- * @returns {string} The selected address.
- */
-export function getSelectedAddress(state) {
-  return getSelectedInternalAccount(state)?.address;
-}
-
-export function getInternalAccountByAddress(state, address) {
-  return Object.values(state.metamask.internalAccounts.accounts).find(
-    (account) => isEqualCaseInsensitive(account.address, address),
-  );
-}
-
-export function getMaybeSelectedInternalAccount(state) {
-  // Same as `getSelectedInternalAccount`, but might potentially be `undefined`:
-  // - This might happen during the onboarding
-  const accountId = state.metamask.internalAccounts?.selectedAccount;
-  return accountId
-    ? state.metamask.internalAccounts?.accounts[accountId]
-    : undefined;
-}
-
-export function getSelectedInternalAccount(state) {
-  const accountId = state.metamask.internalAccounts.selectedAccount;
-  return state.metamask.internalAccounts.accounts[accountId];
-}
 
 export function checkIfMethodIsEnabled(state, methodName) {
   const internalAccount = getSelectedInternalAccount(state);
@@ -377,14 +353,6 @@ export function getSelectedInternalAccountWithBalance(state) {
   return selectedAccountWithBalance;
 }
 
-export function getInternalAccounts(state) {
-  return Object.values(state.metamask.internalAccounts.accounts);
-}
-
-export function getInternalAccount(state, accountId) {
-  return state.metamask.internalAccounts.accounts[accountId];
-}
-
 /**
  * Returns an array of internal accounts sorted by keyring.
  *
@@ -392,7 +360,7 @@ export function getInternalAccount(state, accountId) {
  * @param accounts - The object containing the accounts.
  * @returns The array of internal accounts sorted by keyring.
  */
-export const getInternalAccountsSortedByKeyring = createSelector(
+export const getInternalAccountsSortedByKeyring = createDeepEqualSelector(
   getMetaMaskKeyrings,
   getMetaMaskAccounts,
   (keyrings, accounts) => {
@@ -445,7 +413,7 @@ export function getMetaMaskCachedBalances(state) {
 /**
  * Get ordered (by keyrings) accounts with InternalAccount and balance
  */
-export const getMetaMaskAccountsOrdered = createSelector(
+export const getMetaMaskAccountsOrdered = createDeepEqualSelector(
   getInternalAccountsSortedByKeyring,
   getMetaMaskAccounts,
   (internalAccounts, accounts) => {
@@ -573,13 +541,6 @@ export function getAddressBookEntryOrAccountName(state, address) {
   );
 
   return internalAccount?.metadata.name || address;
-}
-
-export function getAccountName(accounts, accountAddress) {
-  const account = accounts.find((internalAccount) =>
-    isEqualCaseInsensitive(internalAccount.address, accountAddress),
-  );
-  return account && account.metadata.name !== '' ? account.metadata.name : '';
 }
 
 export function accountsWithSendEtherInfoSelector(state) {
@@ -1351,17 +1312,6 @@ export function getNextSuggestedNonce(state) {
 export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
-
-/**
- * Returns a memoized selector that gets the internal accounts from the Redux store.
- *
- * @param state - The Redux store state.
- * @returns {Array} An array of internal accounts.
- */
-export const getMemoizedMetaMaskInternalAccounts = createDeepEqualSelector(
-  getInternalAccounts,
-  (internalAccounts) => internalAccounts,
-);
 
 export const getMemoizedAddressBook = createDeepEqualSelector(
   getAddressBook,

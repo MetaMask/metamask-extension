@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useSelector } from 'react-redux';
-import { getSelectedInternalAccount } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   getIsCustodianSupportedChain,
   getCustodianIconForAddress,

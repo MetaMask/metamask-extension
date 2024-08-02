@@ -4,9 +4,9 @@ import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import { NameType } from '@metamask/name-controller';
 import {
-  getMemoizedMetaMaskInternalAccounts,
+  getInternalAccounts,
   getAccountName,
-} from '../../../../../selectors';
+} from '../../../../../selectors/accounts';
 import Address from '../../transaction-decoding/components/decoding/address';
 import {
   isValidHexAddress,
@@ -24,7 +24,7 @@ import { usePetnamesEnabled } from '../../../../../hooks/usePetnamesEnabled';
 import Name from '../../../../../components/app/name/name';
 
 function SignatureRequestData({ data }) {
-  const internalAccounts = useSelector(getMemoizedMetaMaskInternalAccounts);
+  const internalAccounts = useSelector(getInternalAccounts);
   const petnamesEnabled = usePetnamesEnabled();
 
   return (

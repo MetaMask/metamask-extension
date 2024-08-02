@@ -19,11 +19,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getConnectedSubjectsForAllAddresses,
   getHiddenAccountsList,
-  getInternalAccounts,
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
   getSelectedAccount,
 } from '../../../selectors';
+import { getInternalAccounts } from '../../../selectors/accounts';
 import { setSelectedAccount } from '../../../store/actions';
 import {
   AvatarIcon,

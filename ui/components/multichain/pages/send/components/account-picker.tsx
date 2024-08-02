@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { getSelectedInternalAccount } from '../../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../../selectors/accounts';
 import { Label } from '../../../../component-library';
 import { AccountPicker } from '../../../account-picker';
 import {
@@ -23,6 +23,10 @@ export const SendPageAccountPicker = () => {
 
   const sendStage = useSelector(getSendStage);
   const disabled = SEND_STAGES.EDIT === sendStage;
+  const accountListItemProps = { showOptions: false };
+  const onAccountListMenuClose = useCallback(() => {
+    setShowAccountPicker(false);
+  }, []);
 
   return (
     <SendPageRow>
@@ -59,9 +63,9 @@ export const SendPageAccountPicker = () => {
       />
       {showAccountPicker ? (
         <AccountListMenu
-          accountListItemProps={{ showOptions: false }}
+          accountListItemProps={accountListItemProps}
           showAccountCreation={false}
-          onClose={() => setShowAccountPicker(false)}
+          onClose={onAccountListMenuClose}
         />
       ) : null}
     </SendPageRow>

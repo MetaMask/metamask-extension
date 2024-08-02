@@ -40,10 +40,8 @@ import {
   CUSTODY_ACCOUNT_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
-  getCurrentChainId,
-  getSelectedInternalAccount,
-} from '../../../selectors';
+import { getCurrentChainId } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
 import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
 import CustodyAccountList from '../account-list';

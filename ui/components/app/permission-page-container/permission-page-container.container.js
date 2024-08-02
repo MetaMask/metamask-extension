@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
-import { getInternalAccounts, getPermissions } from '../../../selectors';
+import { getInternalAccounts } from '../../../selectors/accounts';
+import { getPermissions } from '../../../selectors';
 import PermissionPageContainer from './permission-page-container.component';
 
 const mapStateToProps = (state, ownProps) => {

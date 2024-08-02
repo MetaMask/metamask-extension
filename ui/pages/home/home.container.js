@@ -43,7 +43,6 @@ import {
   getApprovalFlows,
   getNewTokensImportedError,
   hasPendingApprovals,
-  getSelectedInternalAccount,
   getQueuedRequestCount,
   getEditedNetwork,
   getPrioritizedUnapprovedTemplatedConfirmations,
@@ -51,6 +50,7 @@ import {
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
 import {
   getIsShowTokenAutodetectModal,
   getIsSmartTransactionsOptInModalAvailable,

@@ -40,13 +40,15 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import useTransactionInsights from '../../../../hooks/useTransactionInsights';
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 import {
-  getAccountName,
   getAddressBookEntry,
-  getInternalAccounts,
   getMetadataContractName,
   getNetworkIdentifier,
   getSwapsDefaultToken,
 } from '../../../../selectors';
+import {
+  getAccountName,
+  getInternalAccounts,
+} from '../../../../selectors/accounts';
 import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { MetaMetricsContext } from '../../../../contexts/metametrics';

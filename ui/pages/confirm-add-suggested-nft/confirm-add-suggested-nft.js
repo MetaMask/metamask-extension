@@ -33,10 +33,10 @@ import {
   getSuggestedNfts,
   getIpfsGateway,
   getNetworkIdentifier,
-  getSelectedInternalAccount,
   getSelectedAccountCachedBalance,
   getAddressBookEntryOrAccountName,
 } from '../../selectors';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
 import NftDefaultImage from '../../components/app/assets/nfts/nft-default-image/nft-default-image';
 import { getAssetImageURL, shortenAddress } from '../../helpers/utils/util';
 import {

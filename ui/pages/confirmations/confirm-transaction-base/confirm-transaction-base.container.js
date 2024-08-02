@@ -52,11 +52,11 @@ import {
   getFullTxData,
   getUseCurrencyRateCheck,
   getUnapprovedTransactions,
-  getInternalAccountByAddress,
   getApprovedAndSignedTransactions,
   getSelectedNetworkClientId,
   getPrioritizedUnapprovedTemplatedConfirmations,
 } from '../../../selectors';
+import { getInternalAccountByAddress } from '../../../selectors/accounts';
 import {
   getCurrentChainSupportsSmartTransactions,
   getSmartTransactionsOptInStatus,

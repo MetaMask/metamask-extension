@@ -6,11 +6,8 @@ import QrCodeView from '../../ui/qr-code-view';
 import EditableLabel from '../../ui/editable-label/editable-label';
 
 import { setAccountLabel } from '../../../store/actions';
-import {
-  getCurrentChainId,
-  getHardwareWalletType,
-  getInternalAccountByAddress,
-} from '../../../selectors';
+import { getCurrentChainId, getHardwareWalletType } from '../../../selectors';
+import { getInternalAccountByAddress } from '../../../selectors/accounts';
 import { isAbleToExportAccount } from '../../../helpers/utils/util';
 import {
   Box,

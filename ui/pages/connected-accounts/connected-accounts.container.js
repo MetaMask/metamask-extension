@@ -4,11 +4,13 @@ import {
   getOrderedConnectedAccountsForActiveTab,
   getOriginOfCurrentTab,
   getPermissionsForActiveTab,
-  getSelectedInternalAccount,
   getPermissionSubjects,
   getSubjectMetadata,
-  getInternalAccounts,
 } from '../../selectors';
+import {
+  getSelectedInternalAccount,
+  getInternalAccounts,
+} from '../../selectors/accounts';
 import { isExtensionUrl } from '../../helpers/utils/util';
 import {
   addPermittedAccount,

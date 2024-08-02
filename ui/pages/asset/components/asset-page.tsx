@@ -8,10 +8,10 @@ import {
   getCurrentCurrency,
   getIsBridgeChain,
   getIsSwapsChain,
-  getSelectedInternalAccount,
   getSwapsDefaultToken,
   getTokensMarketData,
 } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   Display,
   FlexDirection,
