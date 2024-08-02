@@ -8,7 +8,6 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderColor,
   Display,
   FlexDirection,
   FontWeight,
@@ -82,7 +81,6 @@ export const TokenListItem = ({
 }) => {
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
-  const primaryTokenImage = useSelector(getMultichainNativeCurrencyImage);
   const trackEvent = useContext(MetaMetricsContext);
   const chainId = useSelector(getMultichainCurrentChainId);
   const metaMetricsId = useSelector(getMetaMetricsId);

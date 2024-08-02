@@ -6,7 +6,6 @@ import {
   JustifyContent,
   TextColor,
   BackgroundColor,
-  BorderColor,
 } from '../../../helpers/constants/design-system';
 import type { PolymorphicRef } from '../box';
 import { AvatarBase, AvatarBaseProps } from '../avatar-base';
