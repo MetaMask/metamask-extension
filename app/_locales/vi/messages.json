@@ -1452,9 +1452,6 @@
   "data": {
     "message": "Dữ liệu"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Không thể khôi phục dữ liệu của bạn. Tập tin có vẻ đã bị hỏng."
-  },
   "dataCollectionForMarketing": {
     "message": "Thu thập dữ liệu cho mục đích tiếp thị"
   },
@@ -4408,12 +4405,6 @@
   },
   "restore": {
     "message": "Khôi phục"
-  },
-  "restoreFailed": {
-    "message": "Không thể khôi phục dữ liệu của bạn từ tập tin được cung cấp"
-  },
-  "restoreSuccessful": {
-    "message": "Dữ liệu của bạn đã được khôi phục thành công"
   },
   "restoreUserData": {
     "message": "Khôi phục dữ liệu người dùng"
