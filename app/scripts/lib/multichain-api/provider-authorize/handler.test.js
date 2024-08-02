@@ -72,6 +72,19 @@ const createMockedHandler = () => {
   const findNetworkClientIdByChainId = jest.fn().mockReturnValue('mainnet');
   const upsertNetworkConfiguration = jest.fn().mockResolvedValue();
   const removeNetworkConfiguration = jest.fn();
+  const multichainMiddlewareManager = {
+    addMiddleware: jest.fn(),
+    removeMiddleware: jest.fn(),
+    removeAllMiddleware: jest.fn(),
+    removeAllMiddlewareForDomain: jest.fn(),
+  };
+  const multichainSubscriptionManager = {
+    subscribe: jest.fn(),
+    unsubscribe: jest.fn(),
+    unsubscribeAll: jest.fn(),
+    unsubscribeDomain: jest.fn(),
+    unsubscribeScope: jest.fn(),
+  };
   const response = {};
   const handler = (request) =>
     providerAuthorizeHandler(request, response, next, end, {
@@ -80,6 +93,8 @@ const createMockedHandler = () => {
       grantPermissions,
       upsertNetworkConfiguration,
       removeNetworkConfiguration,
+      multichainMiddlewareManager,
+      multichainSubscriptionManager,
     });
 
   return {
@@ -91,6 +106,8 @@ const createMockedHandler = () => {
     grantPermissions,
     upsertNetworkConfiguration,
     removeNetworkConfiguration,
+    multichainMiddlewareManager,
+    multichainSubscriptionManager,
     handler,
   };
 };

@@ -79,6 +79,7 @@ export async function providerRequestHandler(
   }
 
   Object.assign(request, {
+    scope,
     networkClientId,
     method: wrappedRequest.method,
     params: wrappedRequest.params,
