@@ -224,9 +224,10 @@ export class BalancesController extends BaseController<
    * @param accountId - The account ID.
    */
   #getAccount(accountId: string): InternalAccount {
-    const account: InternalAccount = this.#listMultichainAccounts().find(
-      (multichainAccount) => multichainAccount.id === accountId,
-    );
+    const account: InternalAccount | undefined =
+      this.#listMultichainAccounts().find(
+        (multichainAccount) => multichainAccount.id === accountId,
+      );
 
     if (!account) {
       throw new Error(`Unknown account: ${accountId}`);
@@ -247,13 +248,15 @@ export class BalancesController extends BaseController<
     const account = this.#getAccount(accountId);
     const partialState: BalancesControllerState = { balances: {} };
 
-    partialState.balances[account.id] = await this.#getBalances(
-      account.id,
-      account.metadata.snap.id,
-      isBtcMainnetAddress(account.address)
-        ? BTC_MAINNET_ASSETS
-        : BTC_TESTNET_ASSETS,
-    );
+    if (account.metadata.snap) {
+      partialState.balances[account.id] = await this.#getBalances(
+        account.id,
+        account.metadata.snap.id,
+        isBtcMainnetAddress(account.address)
+          ? BTC_MAINNET_ASSETS
+          : BTC_TESTNET_ASSETS,
+      );
+    }
 
     this.update((state: Draft<BalancesControllerState>) => ({
       ...state,
@@ -292,7 +295,7 @@ export class BalancesController extends BaseController<
     return (
       !isEvmAccountType(account.type) &&
       // Non-EVM accounts are backed by a Snap for now
-      account.metadata.snap
+      account.metadata.snap !== undefined
     );
   }
 

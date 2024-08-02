@@ -61,7 +61,9 @@ export function createPPOMMiddleware<
   ) => void,
 ) {
   return async (
-    req: JsonRpcRequest<Params>,
+    req: JsonRpcRequest<Params> & {
+      securityAlertResponse: SecurityAlertResponse;
+    },
     _res: JsonRpcResponse<Result>,
     next: () => void,
   ) => {
@@ -80,13 +82,15 @@ export function createPPOMMiddleware<
         return;
       }
 
-      const { isSIWEMessage } = detectSIWE({ data: req?.params?.[0] });
+      const data =
+        (Array.isArray(req.params) ? req.params[0] : req.params) ?? {};
+      const { isSIWEMessage } = detectSIWE({ data });
       if (isSIWEMessage) {
         return;
       }
 
       if (req.method === MESSAGE_TYPE.ETH_SEND_TRANSACTION) {
-        const { to: toAddress } = req?.params?.[0] ?? {};
+        const { to: toAddress } = data;
         const internalAccounts = accountsController.listAccounts();
         const isToInternalAccount = internalAccounts.some(
           ({ address }) => address?.toLowerCase() === toAddress?.toLowerCase(),

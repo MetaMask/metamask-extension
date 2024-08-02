@@ -110,9 +110,8 @@ export const SnapInterfaceContextProvider: FunctionComponent<
         params: {
           event: {
             type: event,
-            // TODO: Allow null in the types and simplify this
-            ...(name !== undefined && name !== null ? { name } : {}),
-            ...(value !== undefined && value !== null ? { value } : {}),
+            name,
+            value,
           },
           id: interfaceId,
           context,

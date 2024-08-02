@@ -60,6 +60,7 @@ describe('useMultichainSelector', () => {
   });
 
   it('uses selectedAccount if account is not provided', () => {
+    // @ts-expect-error Intentionally passing in invalid input for testing purposes
     const { result } = renderUseMultichainHook(getMultichainIsEvm, null);
 
     expect(result.current).toBe(true);
