@@ -343,7 +343,7 @@
     "@metamask/snaps-rpc-methods": "^9.1.4",
     "@metamask/snaps-sdk": "^6.0.0",
     "@metamask/snaps-utils": "patch:@metamask/snaps-utils@npm%3A7.7.0#~/.yarn/patches/@metamask-snaps-utils-npm-7.7.0-2cc1f044af.patch",
-    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@35.1.0-preview-a90bc717",
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@35.1.0-preview-401e7319",
     "@metamask/user-operation-controller": "^13.0.0",
     "@metamask/utils": "^8.2.1",
     "@ngraveio/bc-ur": "^1.1.12",
