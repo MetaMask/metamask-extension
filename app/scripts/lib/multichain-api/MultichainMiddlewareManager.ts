@@ -6,10 +6,7 @@ export type ExtendedJsonRpcMiddleware = JsonRpcMiddleware<unknown, unknown> & {
   destroy?: () => void;
 };
 
-type MiddlewareByScope = Record<
-  Scope,
-  ExtendedJsonRpcMiddleware | { destroy: () => void }
->;
+type MiddlewareByScope = Record<Scope, ExtendedJsonRpcMiddleware>;
 
 type MiddlewareManager = {
   removeMiddleware: (scope: Scope, domain: string) => void;
