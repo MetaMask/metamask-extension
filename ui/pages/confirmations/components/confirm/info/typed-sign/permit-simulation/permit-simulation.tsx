@@ -25,6 +25,7 @@ import { SignatureRequestType } from '../../../../../types/confirm';
 import useTokenExchangeRate from '../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { IndividualFiatDisplay } from '../../../../simulation-details/fiat-display';
 import {
+  ellipsisAmountText,
   formatAmount,
   formatAmountMaxPrecision,
 } from '../../../../simulation-details/formatAmount';
@@ -93,9 +94,8 @@ const PermitSimulation: React.FC<{
                   borderRadius={BorderRadius.XL}
                   paddingInline={2}
                   textAlign={TextAlign.Center}
-                  ellipsis
                 >
-                  {tokenValue}
+                  {ellipsisAmountText(tokenValue || '')}
                 </Text>
               </Tooltip>
             </Box>
