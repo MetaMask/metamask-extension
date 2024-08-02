@@ -183,7 +183,7 @@ async function assertNavSwapButtonClickedEvent(reqs) {
   assert.equal(reqs[0].event, MetaMetricsEventName.NavSwapButtonClicked);
   assert.deepStrictEqual(reqs[0].properties, {
     category: MetaMetricsEventCategory.Swaps,
-    chain_id: toHex(1337),
+    chain_id: '1337',
     environment_type: 'fullscreen',
     locale: 'en',
     location: 'Main View',
