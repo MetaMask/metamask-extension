@@ -5171,6 +5171,7 @@ export default class MetamaskController extends EventEmitter {
           }
         });
         connectionId && this.removeConnection(origin, connectionId);
+        // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
         if (err && !err.message?.match('Premature close')) {
           log.error(err);
         }
@@ -5695,6 +5696,7 @@ export default class MetamaskController extends EventEmitter {
 
     pipeline(configStream, outStream, (err) => {
       configStream.destroy();
+      // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
       if (err && !err.message?.match('Premature close')) {
         log.error(err);
       }
