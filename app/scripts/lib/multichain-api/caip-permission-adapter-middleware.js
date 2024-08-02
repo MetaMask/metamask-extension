@@ -3,7 +3,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
-import { KnownCaipNamespace, mergeScopeObject, mergeScopes } from './scope';
+import { mergeScopes } from './scope';
 
 export async function CaipPermissionAdapterMiddleware(
   request,
@@ -37,20 +37,12 @@ export async function CaipPermissionAdapterMiddleware(
 
   const scope = `eip155:${parseInt(chainId, 16)}`;
 
-  const mergedScopes = mergeScopes(
+  const scopeObject = mergeScopes(
     caveat.value.requiredScopes,
     caveat.value.optionalScopes,
-  );
+  )[scope];
 
-  const scopeObject = mergeScopeObject(
-    mergedScopes[scope] || {
-      methods: [],
-      notifications: [],
-    },
-    mergedScopes[KnownCaipNamespace.Wallet],
-  );
-
-  if (!scopeObject.methods.includes(method)) {
+  if (!scopeObject?.methods?.includes(method)) {
     return end(providerErrors.unauthorized());
   }
 

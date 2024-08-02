@@ -135,7 +135,7 @@ describe('CaipPermissionAdapterMiddleware', () => {
     });
 
     describe('when the CAIP-25 endowment permission was granted over the multichain API', () => {
-      it('throws an error if the requested method is not authorized for the scope specified in the request or the wallet scope', async () => {
+      it('throws an error if the requested method is not authorized for the scope specified in the request', async () => {
         const { handler, end } = createMockedHandler();
 
         await handler({
@@ -149,27 +149,6 @@ describe('CaipPermissionAdapterMiddleware', () => {
         const { handler, next } = createMockedHandler();
 
         await handler(baseRequest);
-        expect(next).toHaveBeenCalled();
-      });
-
-      it('allows the request if the requested method is authorized in the wallet scope and the scope specified by the request is authorized with at least one method or notification', async () => {
-        const { handler, next } = createMockedHandler();
-
-        await handler({
-          ...baseRequest,
-          method: 'wallet_watchAsset',
-        });
-        expect(next).toHaveBeenCalled();
-      });
-
-      it('allows the request if the requested scope method is authorized in the wallet scope and the current scope does not exist in the authorization', async () => {
-        const { handler, next } = createMockedHandler();
-
-        await handler({
-          ...baseRequest,
-          method: 'wallet_watchAsset',
-          networkClientId: 'someOtherNetworkClientId',
-        });
         expect(next).toHaveBeenCalled();
       });
     });
