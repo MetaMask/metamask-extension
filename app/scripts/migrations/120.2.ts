@@ -41,7 +41,7 @@ function removeObsoleteSnapControllerState(
   if (!hasProperty(state, 'SnapController')) {
     return;
   } else if (!isObject(state.SnapController)) {
-    global.sentry.captureException(
+    global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: Invalid SnapController state of type '${typeof state.SnapController}'`,
       ),
@@ -94,7 +94,7 @@ function removeObsoleteNetworkControllerState(
   if (!hasProperty(state, 'NetworkController')) {
     return;
   } else if (!isObject(state.NetworkController)) {
-    global.sentry.captureException(
+    global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: Invalid NetworkController state of type '${typeof state.NetworkController}'`,
       ),
@@ -107,7 +107,7 @@ function removeObsoleteNetworkControllerState(
   // Check for invalid `providerConfig.id`, and remove if found
   if (hasProperty(networkControllerState, 'providerConfig')) {
     if (!isObject(networkControllerState.providerConfig)) {
-      global.sentry.captureException(
+      global.sentry?.captureException?.(
         new Error(
           `Migration ${version}: Invalid NetworkController providerConfig state of type '${typeof state
             .NetworkController.providerConfig}'`,
@@ -120,7 +120,7 @@ function removeObsoleteNetworkControllerState(
     const validNetworkConfigurationIds = [];
     if (hasProperty(networkControllerState, 'networkConfigurations')) {
       if (!isObject(networkControllerState.networkConfigurations)) {
-        global.sentry.captureException(
+        global.sentry?.captureException?.(
           new Error(
             `Migration ${version}: Invalid NetworkController networkConfigurations state of type '${typeof networkControllerState.networkConfigurations}'`,
           ),
