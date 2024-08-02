@@ -745,7 +745,7 @@ const PRIVATE_KEY =
   '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
 
 const PRIVATE_KEY_TWO =
-  '0xa444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
+  '0xf444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
 
 const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
@@ -776,6 +776,12 @@ const multipleGanacheOptions = {
       balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
     },
   ],
+};
+
+const multipleGanacheOptionsForType2Transactions = {
+  ...multipleGanacheOptions,
+  // EVM version that supports type 2 transactions (EIP1559)
+  hardfork: 'london',
 };
 
 const generateGanacheOptions = ({
@@ -1230,6 +1236,8 @@ module.exports = {
   connectToDapp,
   multipleGanacheOptions,
   defaultGanacheOptions,
+  multipleGanacheOptionsForType2Transactions,
+  defaultGanacheOptionsForType2Transactions,
   sendTransaction,
   sendScreenToConfirmScreen,
   findAnotherAccountFromAccountList,
@@ -1258,7 +1266,6 @@ module.exports = {
   getCleanAppState,
   editGasFeeForm,
   clickNestedButton,
-  defaultGanacheOptionsForType2Transactions,
   removeSelectedAccount,
   getSelectedAccountAddress,
   tempToggleSettingRedesignedConfirmations,
