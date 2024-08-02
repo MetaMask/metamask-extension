@@ -185,7 +185,7 @@ async function getAlerts(pendingApproval, data) {
       alerts.push(MISMATCHED_NETWORK_SYMBOL);
     }
 
-    const { origin } = new URL(pendingApproval.requestData.rpcUrl);
+    const { origin } = new URL(customRpcUrl);
     if (
       !data.matchedChain.rpc?.map((rpc) => new URL(rpc).origin).includes(origin)
     ) {
@@ -374,23 +374,18 @@ function getValues(pendingApproval, t, actions, history, data) {
           },
           warnings: {
             [t('networkURL')]:
-              pendingApproval.requestData.rpcUrl ===
-              punycode.toASCII(pendingApproval.requestData.rpcUrl)
+              customRpcUrl === punycode.toASCII(customRpcUrl)
                 ? undefined
-                : t('networkUrlErrorWarning', [
-                    pendingApproval.requestData.rpcUrl,
-                  ]),
+                : t('networkUrlErrorWarning', [punycode.toASCII(customRpcUrl)]),
             [t('currencySymbol')]: data.currencySymbolWarning,
           },
           dictionary: {
             [t('networkName')]: pendingApproval.requestData.chainName,
-            [t('networkURL')]: pendingApproval.requestData.rpcUrl
+            [t('networkURL')]: customRpcUrl
               .toLowerCase()
               ?.includes(`/v3/${infuraProjectId}`)
-              ? pendingApproval.requestData.rpcUrl
-                  .replace(`/v3/${infuraProjectId}`, '')
-                  .toLowerCase()
-              : pendingApproval.requestData.rpcUrl.toLowerCase(),
+              ? customRpcUrl.replace(`/v3/${infuraProjectId}`, '').toLowerCase()
+              : customRpcUrl.toLowerCase(),
             [t('chainId')]: parseInt(pendingApproval.requestData.chainId, 16),
             [t('currencySymbol')]: pendingApproval.requestData.ticker,
             [t('blockExplorerUrl')]:

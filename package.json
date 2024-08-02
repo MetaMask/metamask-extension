@@ -505,6 +505,7 @@
     "@types/mocha": "^10.0.3",
     "@types/node": "^20",
     "@types/pify": "^5.0.1",
+    "@types/punycode": "^2.1.4",
     "@types/react": "^16.9.53",
     "@types/react-beautiful-dnd": "^13",
     "@types/react-dom": "^17.0.11",
@@ -716,5 +717,5 @@
       "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false
     }
   },
-  "packageManager": "yarn@4.2.2"
+  "packageManager": "yarn@4.2.2+sha512.c44e283c54e02de9d1da8687025b030078c1b9648d2895a65aab8e64225bfb7becba87e1809fc0b4b6778bbd47a1e2ab6ac647de4c5e383a53a7c17db6c3ff4b"
 }
