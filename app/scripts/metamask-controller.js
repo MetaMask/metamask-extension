@@ -840,7 +840,10 @@ export default class MetamaskController extends EventEmitter {
       }),
       storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
       provider: this.provider,
-      ppomProvider: { PPOM: PPOMModule.PPOM, ppomInit: PPOMModule.default },
+      ppomProvider: {
+        PPOM: PPOMModule.PPOM,
+        ppomInit: () => PPOMModule.default(process.env.PPOM_URI),
+      },
       state: initState.PPOMController,
       chainId: this.networkController.state.providerConfig.chainId,
       securityAlertsEnabled:
