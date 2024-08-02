@@ -5,7 +5,7 @@ import { log as sentryLogger } from '../../app/scripts/lib/setupSentry';
 
 const log = createModuleLogger(sentryLogger, 'trace');
 
-const tracesById: Map<string, PendingTrace> = new Map();
+const tracesByKey: Map<string, PendingTrace> = new Map();
 
 type PendingTrace = {
   end: (timestamp?: number) => void;
@@ -27,6 +27,7 @@ export type TraceRequest = {
 
 export type EndTraceRequest = {
   id: string;
+  name: string;
   timestamp?: number;
 };
 
@@ -52,24 +53,24 @@ export async function trace<T>(
 }
 
 export function endTrace(request: EndTraceRequest) {
-  const { id, timestamp } = request;
-  const pendingTrace = tracesById.get(id);
+  const { id, name, timestamp } = request;
+  const key = getTraceKey(request);
+  const pendingTrace = tracesByKey.get(key);
 
   if (!pendingTrace) {
-    log('No pending trace found', id);
+    log('No pending trace found', name, id);
     return;
   }
 
   pendingTrace.end(timestamp);
 
-  tracesById.delete(id);
+  tracesByKey.delete(key);
 
   const { request: pendingRequest, startTime } = pendingTrace;
-  const { name } = pendingRequest;
   const endTime = timestamp ?? Date.now();
   const duration = endTime - startTime;
 
-  log('Finished trace', name, duration, { request: pendingRequest });
+  log('Finished trace', name, id, duration, { request: pendingRequest });
 }
 
 async function traceCallback<T>(
@@ -125,7 +126,8 @@ async function startTrace(
     };
 
     const pendingTrace = { end, request, startTime };
-    tracesById.set(id, pendingTrace);
+    const key = getTraceKey(request);
+    tracesByKey.set(key, pendingTrace);
 
     log('Started trace', name, id, request);
 
@@ -137,7 +139,7 @@ async function startTrace(
   }
 
   return await startSpan(request, (spanOptions) =>
-    Sentry.startSpanManual({ ...spanOptions, startTime }, callback),
+    Sentry.startSpanManual(spanOptions, callback),
   );
 }
 
@@ -154,4 +156,9 @@ async function startSpan<T>(
 
     return await callback(spanOptions);
   });
+}
+
+function getTraceKey(request: TraceRequest) {
+  const { id, name } = request;
+  return [name, id].join(':');
 }

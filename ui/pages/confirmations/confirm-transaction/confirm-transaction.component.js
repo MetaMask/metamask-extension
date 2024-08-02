@@ -102,7 +102,7 @@ const ConfirmTransaction = () => {
       return undefined;
     }
 
-    return await endBackgroundTrace({ id });
+    return await endBackgroundTrace({ name: 'Notification Display', id });
   }, [id, isNotification]);
 
   const transactionId = id;
