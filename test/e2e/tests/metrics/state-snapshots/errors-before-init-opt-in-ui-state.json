@@ -48,6 +48,7 @@
         "0x5": true,
         "0x539": true
       },
+      "lastInteractedConfirmationInfo": false,
       "snapsInstallPrivacyWarningShown": true
     },
     "CurrencyController": {
