@@ -46,6 +46,7 @@ describe('endowment:caip25', () => {
           },
         },
         sessionProperties: {},
+        isMultichainOrigin: true,
       };
       const result = removeScope('eip155:5', ethereumGoerliCaveat);
       expect(result).toStrictEqual({
@@ -77,6 +78,7 @@ describe('endowment:caip25', () => {
           },
         },
         sessionProperties: {},
+        isMultichainOrigin: true,
       };
       const result = removeScope('eip155:1', ethereumGoerliCaveat);
       expect(result).toStrictEqual({
@@ -99,6 +101,7 @@ describe('endowment:caip25', () => {
           },
         },
         sessionProperties: {},
+        isMultichainOrigin: true,
       };
       const result = removeScope('eip155:2', ethereumGoerliCaveat);
       expect(result).toStrictEqual({
@@ -118,6 +121,7 @@ describe('endowment:caip25', () => {
           },
         },
         optionalScopes: {},
+        isMultichainOrigin: true,
       };
       const result = removeAccount('0x1', ethereumGoerliCaveat);
       expect(result).toStrictEqual({
@@ -131,6 +135,7 @@ describe('endowment:caip25', () => {
             },
           },
           optionalScopes: {},
+          isMultichainOrigin: true,
         },
       });
     });
@@ -156,6 +161,7 @@ describe('endowment:caip25', () => {
             accounts: ['eip155:3:0x1', 'eip155:3:0x2'],
           },
         },
+        isMultichainOrigin: true,
       };
       const result = removeAccount('0x1', ethereumGoerliCaveat);
       expect(result).toStrictEqual({
@@ -180,6 +186,7 @@ describe('endowment:caip25', () => {
               accounts: ['eip155:3:0x2'],
             },
           },
+          isMultichainOrigin: true,
         },
       });
     });
@@ -199,6 +206,7 @@ describe('endowment:caip25', () => {
             notifications: ['accountsChanged'],
           },
         },
+        isMultichainOrigin: true,
       };
       const result = removeAccount('0x3', ethereumGoerliCaveat);
       expect(result).toStrictEqual({
@@ -207,5 +215,5 @@ describe('endowment:caip25', () => {
     });
   });
 
-  it.todo('permission validator');
+  // it.todo('permission validator');
 });
