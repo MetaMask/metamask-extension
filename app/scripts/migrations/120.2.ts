@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash';
 import { hasProperty, isObject } from '@metamask/utils';
+import log from 'loglevel';
 
 type VersionedData = {
   meta: { version: number };
@@ -102,6 +103,48 @@ function removeObsoleteNetworkControllerState(
   }
 
   const networkControllerState = state.NetworkController;
+
+  // Check for invalid `providerConfig.id`, and remove if found
+  if (hasProperty(networkControllerState, 'providerConfig')) {
+    if (!isObject(networkControllerState.providerConfig)) {
+      global.sentry.captureException(
+        new Error(
+          `Migration ${version}: Invalid NetworkController providerConfig state of type '${typeof state
+            .NetworkController.providerConfig}'`,
+        ),
+      );
+      return;
+    }
+    const { providerConfig } = networkControllerState;
+
+    const validNetworkConfigurationIds = [];
+    if (hasProperty(networkControllerState, 'networkConfigurations')) {
+      if (!isObject(networkControllerState.networkConfigurations)) {
+        global.sentry.captureException(
+          new Error(
+            `Migration ${version}: Invalid NetworkController networkConfigurations state of type '${typeof networkControllerState.networkConfigurations}'`,
+          ),
+        );
+        return;
+      }
+
+      validNetworkConfigurationIds.push(
+        ...Object.keys(networkControllerState.networkConfigurations),
+      );
+    }
+
+    if (hasProperty(providerConfig, 'id')) {
+      if (
+        typeof providerConfig.id !== 'string' ||
+        !validNetworkConfigurationIds.includes(providerConfig.id)
+      ) {
+        log.warn(
+          `Migration ${version}: Removing invalid provider id ${providerConfig.id}`,
+        );
+        delete providerConfig.id;
+      }
+    }
+  }
 
   delete networkControllerState.networkDetails;
   delete networkControllerState.networkId;

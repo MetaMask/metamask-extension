@@ -250,9 +250,72 @@ describe('migration #120.2', () => {
       );
     });
 
-    it('does nothing if obsolete properties are not set', async () => {
+    it('captures an error and leaves state unchanged if providerConfig state is corrupted', async () => {
       const oldState = {
         NetworkController: {
+          providerConfig: 'invalid',
+        },
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: cloneDeep(oldState),
+      });
+
+      expect(transformedState.data).toEqual(oldState);
+      expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+        new Error(
+          `Migration ${version}: Invalid NetworkController providerConfig state of type 'string'`,
+        ),
+      );
+    });
+
+    it('captures an error and leaves state unchanged if networkConfigurations state is corrupted', async () => {
+      const oldState = {
+        NetworkController: {
+          networkConfigurations: 'invalid',
+          providerConfig: {},
+        },
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: cloneDeep(oldState),
+      });
+
+      expect(transformedState.data).toEqual(oldState);
+      expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+        new Error(
+          `Migration ${version}: Invalid NetworkController networkConfigurations state of type 'string'`,
+        ),
+      );
+    });
+
+    it('does nothing if obsolete properties and providerConfig id are not set', async () => {
+      const oldState = {
+        NetworkController: {
+          providerConfig: {},
+          selectedNetworkClientId: 'example',
+        },
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: cloneDeep(oldState),
+      });
+
+      expect(transformedState.data).toEqual(oldState);
+    });
+
+    it('does not remove a valid providerConfig id', async () => {
+      const oldState = {
+        NetworkController: {
+          networkConfigurations: {
+            'valid-id': {},
+          },
+          providerConfig: {
+            id: 'valid-id',
+          },
           selectedNetworkClientId: 'example',
         },
       };
@@ -286,6 +349,81 @@ describe('migration #120.2', () => {
         NetworkController: {
           selectedNetworkClientId: 'example',
         },
+      });
+    });
+
+    it('removes providerConfig id if network configuration is missing', async () => {
+      const oldState = {
+        NetworkController: {
+          providerConfig: {
+            id: 'invalid-id',
+          },
+          selectedNetworkClientId: 'example',
+        },
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: cloneDeep(oldState),
+      });
+
+      expect(transformedState.data.NetworkController).toEqual({
+        providerConfig: {},
+        selectedNetworkClientId: 'example',
+      });
+    });
+
+    it('removes providerConfig id that does not match any network configuration', async () => {
+      const oldState = {
+        NetworkController: {
+          networkConfigurations: {
+            'valid-id': {},
+          },
+          providerConfig: {
+            id: 'invalid-id',
+          },
+          selectedNetworkClientId: 'example',
+        },
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: cloneDeep(oldState),
+      });
+
+      expect(transformedState.data.NetworkController).toEqual({
+        networkConfigurations: {
+          'valid-id': {},
+        },
+        providerConfig: {},
+        selectedNetworkClientId: 'example',
+      });
+    });
+
+    it('removes providerConfig id with an invalid type', async () => {
+      const oldState = {
+        NetworkController: {
+          networkConfigurations: {
+            '123': {},
+          },
+          providerConfig: {
+            id: 123,
+          },
+          selectedNetworkClientId: 'example',
+        },
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: cloneDeep(oldState),
+      });
+
+      expect(transformedState.data.NetworkController).toEqual({
+        networkConfigurations: {
+          '123': {},
+        },
+        providerConfig: {},
+        selectedNetworkClientId: 'example',
       });
     });
 
