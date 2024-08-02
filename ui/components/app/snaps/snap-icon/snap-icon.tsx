@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 
 import { useSelector } from 'react-redux';
 import {
@@ -21,7 +21,6 @@ import {
   JustifyContent,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import { FunctionComponent } from 'react';
 
 type SnapIconProps = {
   snapId: string;

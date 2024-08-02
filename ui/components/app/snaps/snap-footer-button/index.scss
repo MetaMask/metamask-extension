@@ -1,5 +1,4 @@
 .snap-footer-button {
-
   &.mm-button-primary {
     color: var(--color-text-alternative);
     background-color: var(--color-icon-default);
@@ -7,9 +6,10 @@
 
   &.mm-button-secondary {
     color: var(--color-icon-default);
-  &:hover:not(&--disabled) {
-    color: var(--color-background-default);
-    background-color: var(--color-icon-default);
+
+    &:hover:not(&--disabled) {
+      color: var(--color-background-default);
+      background-color: var(--color-icon-default);
+    }
   }
-}
 }
