@@ -752,6 +752,9 @@ describe('Selectors', () => {
       };
       const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
 
+      // Replace rpcUrl by type for consistency between environments because it's determined
+      // by environment variable.
+      currentNetwork.rpcUrl = typeof currentNetwork.rpcUrl;
       expect(currentNetwork).toMatchInlineSnapshot(`
         {
           "chainId": "0xaa36a7",
@@ -759,7 +762,7 @@ describe('Selectors', () => {
           "nickname": "Sepolia",
           "providerType": "sepolia",
           "removable": false,
-          "rpcUrl": "https://sepolia.infura.io/v3/undefined",
+          "rpcUrl": "string",
           "ticker": "SepoliaETH",
         }
       `);
@@ -794,7 +797,6 @@ describe('Selectors', () => {
 
       expect(currentNetwork).toMatchInlineSnapshot(`
         {
-          "blockExplorerUrl": undefined,
           "chainId": "0x9999",
           "id": "mock-network-config-id",
           "removable": true,
