@@ -111,6 +111,32 @@ function removeObsoleteNetworkControllerState(
 }
 
 /**
+ * Remove obsolete `listState` property from PhishingController state.
+ *
+ * We don't know exactly why yet, but we see from Sentry that some users have this property still
+ * in state. It is no longer used.
+ *
+ * @param state - The persisted MetaMask state, keyed by controller.
+ */
+function removeObsoletePhishingControllerState(
+  state: Record<string, unknown>,
+): void {
+  if (!hasProperty(state, 'PhishingController')) {
+    return;
+  } else if (!isObject(state.PhishingController)) {
+    global.sentry.captureException(
+      new Error(
+        `Migration ${version}: Invalid PhishingController state of type '${typeof state.PhishingController}'`,
+      ),
+    );
+    return;
+  }
+  if (hasProperty(state.PhishingController, 'listState')) {
+    delete state.PhishingController.listState;
+  }
+}
+
+/**
  * Remove obsolete controller state.
  *
  * @param state - The persisted MetaMask state, keyed by controller.
@@ -119,4 +145,5 @@ function transformState(state: Record<string, unknown>): void {
   removeObsoleteSnapControllerState(state);
   removeObsoleteSelectedNetworkControllerState(state);
   removeObsoleteNetworkControllerState(state);
+  removeObsoletePhishingControllerState(state);
 }
