@@ -2,7 +2,9 @@ import { JsonRpcMiddleware } from 'json-rpc-engine';
 import { Scope } from './scope';
 
 // Extend JsonRpcMiddleware to include the destroy method
-export type ExtendedJsonRpcMiddleware = JsonRpcMiddleware<unknown, unknown> & { destroy?: () => void };
+export type ExtendedJsonRpcMiddleware = JsonRpcMiddleware<unknown, unknown> & {
+  destroy?: () => void;
+};
 
 type MiddlewareByScope = Record<
   Scope,
@@ -65,12 +67,7 @@ export default function createMultichainMiddlewareManager(): MiddlewareManager {
     }
   }
 
-  const middleware: ExtendedJsonRpcMiddleware = (
-    req,
-    res,
-    next,
-    end,
-  ) => {
+  const middleware: ExtendedJsonRpcMiddleware = (req, res, next, end) => {
     const r = req as unknown as { scope: string };
     const { scope } = r;
     if (typeof middlewaresByScope[scope] === 'function') {
@@ -80,7 +77,7 @@ export default function createMultichainMiddlewareManager(): MiddlewareManager {
     }
   };
 
-  (middleware as any).destroy = () => {
+  middleware.destroy = () => {
     removeAllMiddleware();
   };
 
