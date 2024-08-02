@@ -1260,8 +1260,22 @@
   "data": {
     "message": "Datos"
   },
+<<<<<<< HEAD
   "dataBackupSeemsCorrupt": {
     "message": "Hindi maibalik ang iyong data. Mukhang sira ang file."
+=======
+  "dataCollectionForMarketing": {
+    "message": "Koleksyon ng data para sa marketing"
+  },
+  "dataCollectionForMarketingDescription": {
+    "message": "Gagamit kami ng MetaMetrics upang matutunan kung paano ka nakikipag-ugnayan sa aming komunikasyon sa marketing. Maaari naming ibahagi ang mga may kaugnayang balita (tulad ng mga tampok ng produkto at iba pang materyal)."
+  },
+  "dataCollectionWarningPopoverButton": {
+    "message": "Okay"
+  },
+  "dataCollectionWarningPopoverDescription": {
+    "message": "In-off mo ang koleksyon ng data para sa layunin sa marketing. Ito ay inilalapat lamang sa device na ito. Kung gumagamit ka ng MetaMask sa ibang mga device, siguraduhing mag-opt out din doon."
+>>>>>>> d47f1c3562 (fix(2946): disable the 'restore backup' in advanced settings (#26325))
   },
   "dataHex": {
     "message": "Hex"
@@ -4180,12 +4194,6 @@
   },
   "restore": {
     "message": "Ibalik"
-  },
-  "restoreFailed": {
-    "message": "Hindi maibalik ang iyong data mula sa file na ibinigay"
-  },
-  "restoreSuccessful": {
-    "message": "Ang iyong data ay matagumpay na naibalik"
   },
   "restoreUserData": {
     "message": "Ibalik ang data ng user"

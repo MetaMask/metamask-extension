@@ -1263,8 +1263,22 @@
   "data": {
     "message": "Данные"
   },
+<<<<<<< HEAD
   "dataBackupSeemsCorrupt": {
     "message": "Не удается восстановить ваши данные. Файл, по-видимому, поврежден."
+=======
+  "dataCollectionForMarketing": {
+    "message": "Сбор данных для маркетинга"
+  },
+  "dataCollectionForMarketingDescription": {
+    "message": "Мы будем использовать MetaMetrics, чтобы узнать, как вы взаимодействуете с нашими маркетинговыми сообщениями. Мы можем делиться соответствующими новостями (например, новостями о функциях продукта и другими материалами)."
+  },
+  "dataCollectionWarningPopoverButton": {
+    "message": "Хорошо"
+  },
+  "dataCollectionWarningPopoverDescription": {
+    "message": "Вы отключили сбор данных для наших маркетинговых целей. Это касается только этого устройства. Если вы используете MetaMask на других устройствах, обязательно отключите его и там."
+>>>>>>> d47f1c3562 (fix(2946): disable the 'restore backup' in advanced settings (#26325))
   },
   "dataHex": {
     "message": "Шестнадцатиричные"
@@ -4183,12 +4197,6 @@
   },
   "restore": {
     "message": "Восстановить"
-  },
-  "restoreFailed": {
-    "message": "Не удается восстановить ваши данные из предоставленного файла"
-  },
-  "restoreSuccessful": {
-    "message": "Ваши данные успешно восстановлены"
   },
   "restoreUserData": {
     "message": "Восстановить пользовательские данные"

@@ -1263,8 +1263,22 @@
   "data": {
     "message": "Données"
   },
+<<<<<<< HEAD
   "dataBackupSeemsCorrupt": {
     "message": "Impossible de restaurer vos données. Le fichier semble corrompu."
+=======
+  "dataCollectionForMarketing": {
+    "message": "Collecte de données à des fins de marketing"
+  },
+  "dataCollectionForMarketingDescription": {
+    "message": "Nous utiliserons MetaMetrics pour savoir comment vous interagissez avec nos communications commerciales et pour partager avec vous des informations pertinentes (comme les caractéristiques des produits et d’autres contenus)."
+  },
+  "dataCollectionWarningPopoverButton": {
+    "message": "OK"
+  },
+  "dataCollectionWarningPopoverDescription": {
+    "message": "Vous avez désactivé la collecte de données à des fins de marketing. Cela ne s’applique qu’à cet appareil. Si vous utilisez MetaMask sur d’autres appareils, n’oubliez pas de désactiver cette fonctionnalité sur ces appareils aussi."
+>>>>>>> d47f1c3562 (fix(2946): disable the 'restore backup' in advanced settings (#26325))
   },
   "dataHex": {
     "message": "Hex"
@@ -4183,12 +4197,6 @@
   },
   "restore": {
     "message": "Restaurer"
-  },
-  "restoreFailed": {
-    "message": "Impossible de restaurer vos données à partir du fichier fourni"
-  },
-  "restoreSuccessful": {
-    "message": "Vos données ont été restaurées avec succès"
   },
   "restoreUserData": {
     "message": "Restaurer les données de l’utilisateur"

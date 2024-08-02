@@ -1263,8 +1263,22 @@
   "data": {
     "message": "Data"
   },
+<<<<<<< HEAD
   "dataBackupSeemsCorrupt": {
     "message": "Tidak dapat memulihkan data Anda. File tampaknya rusak."
+=======
+  "dataCollectionForMarketing": {
+    "message": "Pengumpulan data untuk pemasaran"
+  },
+  "dataCollectionForMarketingDescription": {
+    "message": "Kami akan menggunakan MetaMetrics untuk mempelajari cara Anda berinteraksi dengan komunikasi pemasaran. Kami mungkin akan membagikan berita yang relevan (seperti fitur produk dan materi lainnya)."
+  },
+  "dataCollectionWarningPopoverButton": {
+    "message": "Oke"
+  },
+  "dataCollectionWarningPopoverDescription": {
+    "message": "Anda menonaktifkan pengumpulan data untuk tujuan pemasaran kami. Ini hanya berlaku untuk perangkat ini. Jika Anda menggunakan MetaMask di perangkat lain, pastikan untuk keluar terlebih dahulu."
+>>>>>>> d47f1c3562 (fix(2946): disable the 'restore backup' in advanced settings (#26325))
   },
   "dataHex": {
     "message": "Hex"
@@ -4183,12 +4197,6 @@
   },
   "restore": {
     "message": "Pulihkan"
-  },
-  "restoreFailed": {
-    "message": "Tidak dapat memulihkan data Anda dari berkas yang disediakan"
-  },
-  "restoreSuccessful": {
-    "message": "Data Anda telah berhasil dipulihkan"
   },
   "restoreUserData": {
     "message": "Pulihkan data pengguna"

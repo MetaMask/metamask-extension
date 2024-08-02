@@ -1263,8 +1263,22 @@
   "data": {
     "message": "Veri"
   },
+<<<<<<< HEAD
   "dataBackupSeemsCorrupt": {
     "message": "Verileriniz geri yüklenemiyor. Dosya bozuk gibi görünüyor."
+=======
+  "dataCollectionForMarketing": {
+    "message": "Pazarlama amacıyla veri toplama"
+  },
+  "dataCollectionForMarketingDescription": {
+    "message": "MetaMetrics'i, pazarlama iletişimlerimizle nasıl etkileşimde bulunduğunuzu öğrenmek için kullanacağız. İlgili haberleri (ürün özellikleri ve diğer materyaller gibi) paylaşabiliriz."
+  },
+  "dataCollectionWarningPopoverButton": {
+    "message": "Tamam"
+  },
+  "dataCollectionWarningPopoverDescription": {
+    "message": "Pazarlama amacıyla veri toplama seçeneğini kapattınız. Bu, sadece bu cihaz için geçerlidir. MetaMask'i başka cihazlarda kullanırsanız bu cihazlarda da vazgeçtiğinizden emin olun."
+>>>>>>> d47f1c3562 (fix(2946): disable the 'restore backup' in advanced settings (#26325))
   },
   "dataHex": {
     "message": "On Altılı"
@@ -4183,12 +4197,6 @@
   },
   "restore": {
     "message": "Geri Yükle"
-  },
-  "restoreFailed": {
-    "message": "Sunulan dosyadan verileriniz geri yüklenemiyor"
-  },
-  "restoreSuccessful": {
-    "message": "Verileriniz başarılı bir şekilde geri yüklendi"
   },
   "restoreUserData": {
     "message": "Kullanıcı verilerini geri yükle"

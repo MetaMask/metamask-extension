@@ -1260,8 +1260,22 @@
   "data": {
     "message": "데이터"
   },
+<<<<<<< HEAD
   "dataBackupSeemsCorrupt": {
     "message": "사용자 데이터를 복구할 수 없습니다. 파일이 손상된 것 같습니다."
+=======
+  "dataCollectionForMarketing": {
+    "message": "마케팅을 위한 데이터 수집"
+  },
+  "dataCollectionForMarketingDescription": {
+    "message": "MetaMetrics를 사용하여 사용자가 마케팅 커뮤니케이션과 어떻게 상호 작용하는지 파악할 것입니다. 관련 뉴스(예: 제품 기능 및 기타 자료)를 공유할 수 있습니다."
+  },
+  "dataCollectionWarningPopoverButton": {
+    "message": "확인"
+  },
+  "dataCollectionWarningPopoverDescription": {
+    "message": "마케팅 목적의 데이터 수집을 비활성화했습니다. 이는 이 장치에만 적용됩니다. 다른 장치에서 MetaMask를 사용하면 해당 장치에서도 데이터 수집을 비활성화해야 합니다."
+>>>>>>> d47f1c3562 (fix(2946): disable the 'restore backup' in advanced settings (#26325))
   },
   "dataHex": {
     "message": "헥스"
@@ -4180,12 +4194,6 @@
   },
   "restore": {
     "message": "복구"
-  },
-  "restoreFailed": {
-    "message": "제공된 파일에서 데이터를 복구할 수 없습니다."
-  },
-  "restoreSuccessful": {
-    "message": "데이터가 성공적으로 복구되었습니다."
   },
   "restoreUserData": {
     "message": "사용자 데이터 복구"

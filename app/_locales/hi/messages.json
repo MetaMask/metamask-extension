@@ -1260,8 +1260,22 @@
   "data": {
     "message": "डेटा"
   },
+<<<<<<< HEAD
   "dataBackupSeemsCorrupt": {
     "message": "आपका डेटा रीस्टोर नहीं किया जा सकता। लगता है फाइल करप्ट हुई है।"
+=======
+  "dataCollectionForMarketing": {
+    "message": "विपणन के लिए डेटा संग्रह"
+  },
+  "dataCollectionForMarketingDescription": {
+    "message": "आप हमारे मार्केटिंग कम्यूनिकेशन्स के साथ कैसे इंटरैक्ट करते हैं, यह जानने के लिए हम MetaMetrics का उपयोग करेंगे। हम प्रासंगिक समाचार (जैसे प्रॉडक्ट फीचर्स और अन्य सामग्री) साझा कर सकते हैं।"
+  },
+  "dataCollectionWarningPopoverButton": {
+    "message": "ठीक है"
+  },
+  "dataCollectionWarningPopoverDescription": {
+    "message": "आपने हमारे मार्केटिंग उद्देश्यों के लिए डेटा संग्रहण बंद कर दिया है।  यह केवल इस डिवाइस पर लागू होता है। यदि आप अन्य डिवाइसों पर MetaMask का उपयोग करते हैं, तो वहां भी ऑप्ट आउट करना सुनिश्चित करें।"
+>>>>>>> d47f1c3562 (fix(2946): disable the 'restore backup' in advanced settings (#26325))
   },
   "dataHex": {
     "message": "हेक्स"
@@ -4180,12 +4194,6 @@
   },
   "restore": {
     "message": "रीस्टोर करें"
-  },
-  "restoreFailed": {
-    "message": "प्रदान की गई फाइल से आपके डेटा को रीस्टोर नहीं किया जा सकता"
-  },
-  "restoreSuccessful": {
-    "message": "आपके डेटा को सफलतापूर्वक रीस्टोर किया गया है"
   },
   "restoreUserData": {
     "message": "यूज़र डेटा रीस्टोर करें"

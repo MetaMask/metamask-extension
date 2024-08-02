@@ -1260,8 +1260,22 @@
   "data": {
     "message": "数据"
   },
+<<<<<<< HEAD
   "dataBackupSeemsCorrupt": {
     "message": "无法还原数据。文件似乎已损坏。"
+=======
+  "dataCollectionForMarketing": {
+    "message": "用于营销目的的数据收集"
+  },
+  "dataCollectionForMarketingDescription": {
+    "message": "我们将使用 MetaMetrics 来了解您如何与我们的营销通信交互。我们可能会分享相关资讯（例如产品特点和其他内容）。"
+  },
+  "dataCollectionWarningPopoverButton": {
+    "message": "好的"
+  },
+  "dataCollectionWarningPopoverDescription": {
+    "message": "您关闭了我们用于营销目的的数据收集。此操作仅适用于此设备。如果您在其他设备上使用 MetaMask，请务必也在其他设备上选择关闭。"
+>>>>>>> d47f1c3562 (fix(2946): disable the 'restore backup' in advanced settings (#26325))
   },
   "dataHex": {
     "message": "十六进制"
@@ -4180,12 +4194,6 @@
   },
   "restore": {
     "message": "恢复"
-  },
-  "restoreFailed": {
-    "message": "无法使用所提供的文件恢复数据"
-  },
-  "restoreSuccessful": {
-    "message": "您的数据已成功恢复"
   },
   "restoreUserData": {
     "message": "恢复用户数据"

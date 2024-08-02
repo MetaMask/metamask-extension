@@ -1263,8 +1263,22 @@
   "data": {
     "message": "Δεδομένα"
   },
+<<<<<<< HEAD
   "dataBackupSeemsCorrupt": {
     "message": "Δεν μπορείτε να επαναφέρετε τα δεδομένα σας. Το αρχείο φαίνεται να είναι κατεστραμμένο."
+=======
+  "dataCollectionForMarketing": {
+    "message": "Συγκέντρωση δεδομένων για μάρκετινγκ"
+  },
+  "dataCollectionForMarketingDescription": {
+    "message": "Θα χρησιμοποιήσουμε το MetaMetrics για να μάθουμε πώς αλληλεπιδράτε με τις επικοινωνίες μάρκετινγκ. Ενδέχεται να κοινοποιησούμε σχετικές πληροφορίες (όπως χαρακτηριστικά προϊόντων και άλλο υλικό)."
+  },
+  "dataCollectionWarningPopoverButton": {
+    "message": "Εντάξει"
+  },
+  "dataCollectionWarningPopoverDescription": {
+    "message": "Απενεργοποιήσατε τη συλλογή δεδομένων για σκοπούς μάρκετινγκ. Αυτό ισχύει μόνο για αυτή τη συσκευή. Εάν χρησιμοποιείτε το MetaMask και σε άλλες συσκευές, βεβαιωθείτε ότι έχετε επιλέξει την απενεργοποίηση και εκεί."
+>>>>>>> d47f1c3562 (fix(2946): disable the 'restore backup' in advanced settings (#26325))
   },
   "dataHex": {
     "message": "Δεκαεξαδικός"
@@ -4183,12 +4197,6 @@
   },
   "restore": {
     "message": "Επαναφορά"
-  },
-  "restoreFailed": {
-    "message": "Δεν είναι δυνατή η επαναφορά των δεδομένων σας από το αρχείο που δόθηκε"
-  },
-  "restoreSuccessful": {
-    "message": "Επιτυχής επαναφορά των δεδομένων σας"
   },
   "restoreUserData": {
     "message": "Επαναφορά δεδομένων χρήστη"

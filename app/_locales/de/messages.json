@@ -1263,8 +1263,22 @@
   "data": {
     "message": "Daten"
   },
+<<<<<<< HEAD
   "dataBackupSeemsCorrupt": {
     "message": "Ihre Daten konnten nicht wiederhergestellt werden. Die Datei scheint beschädigt zu sein."
+=======
+  "dataCollectionForMarketing": {
+    "message": "Datenerhebung für das Marketing"
+  },
+  "dataCollectionForMarketingDescription": {
+    "message": "Wir verwenden MetaMetrics, um zu erfahren, wie Sie mit unserer Marketingkommunikation umgehen. Wir können relevante Neuigkeiten (wie Produktmerkmale und andere Materialien) teilen."
+  },
+  "dataCollectionWarningPopoverButton": {
+    "message": "Okay"
+  },
+  "dataCollectionWarningPopoverDescription": {
+    "message": "Sie haben die Datenerhebung für unsere Marketingzwecke deaktiviert. Dies gilt nur für dieses Gerät. Wenn Sie MetaMask auf anderen Geräten verwenden, stellen Sie sicher, dass Sie sich auch dort abmelden."
+>>>>>>> d47f1c3562 (fix(2946): disable the 'restore backup' in advanced settings (#26325))
   },
   "dataHex": {
     "message": "Hexadezimal"
@@ -4183,12 +4197,6 @@
   },
   "restore": {
     "message": "Wiederherstellen"
-  },
-  "restoreFailed": {
-    "message": "Wiederherstellung Ihrer Daten aus der bereitgestellten Datei nicht möglich"
-  },
-  "restoreSuccessful": {
-    "message": "Ihre Daten wurden erfolgreich wiederhergestellt."
   },
   "restoreUserData": {
     "message": "Benutzerdaten wiederherstellen"

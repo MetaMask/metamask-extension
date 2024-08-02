@@ -1260,8 +1260,22 @@
   "data": {
     "message": "データ"
   },
+<<<<<<< HEAD
   "dataBackupSeemsCorrupt": {
     "message": "データを復元できません。ファイルが破損しているようです。"
+=======
+  "dataCollectionForMarketing": {
+    "message": "マーケティング目的のデータ収集"
+  },
+  "dataCollectionForMarketingDescription": {
+    "message": "当社はMetaMetricsを使用して、ユーザーによる当社のマーケティングコミュニケーションとのインタラクションを把握します。また、関連ニュースをお伝えする場合もあります (製品の機能、その他資料など)。"
+  },
+  "dataCollectionWarningPopoverButton": {
+    "message": "OK"
+  },
+  "dataCollectionWarningPopoverDescription": {
+    "message": "マーケティング目的のデータ収集をオフにしました。これはこのデバイスにのみ適用されます。MetaMaskを他のデバイスで使用する場合は、そのデバイスでもオプトアウトしてください。"
+>>>>>>> d47f1c3562 (fix(2946): disable the 'restore backup' in advanced settings (#26325))
   },
   "dataHex": {
     "message": "16進法"
@@ -4180,12 +4194,6 @@
   },
   "restore": {
     "message": "復元"
-  },
-  "restoreFailed": {
-    "message": "提供されたファイルからデータを復元できません"
-  },
-  "restoreSuccessful": {
-    "message": "データが復元されました"
   },
   "restoreUserData": {
     "message": "ユーザーデータの復元"
