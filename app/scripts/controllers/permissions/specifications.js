@@ -123,10 +123,11 @@ export const getPermissionSpecifications = ({
   findNetworkClientIdByChainId,
 }) => {
   return {
-    [caip25EndowmentBuilder.targetName]: caip25EndowmentBuilder.specificationBuilder({
-      findNetworkClientIdByChainId,
-      getInternalAccounts,
-    }),
+    [caip25EndowmentBuilder.targetName]:
+      caip25EndowmentBuilder.specificationBuilder({
+        findNetworkClientIdByChainId,
+        getInternalAccounts,
+      }),
     [PermissionNames.eth_accounts]: {
       permissionType: PermissionType.RestrictedMethod,
       targetName: PermissionNames.eth_accounts,

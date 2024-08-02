@@ -94,7 +94,7 @@ const createMockedHandler = () => {
       upsertNetworkConfiguration,
       removeNetworkConfiguration,
       multichainMiddlewareManager,
-      multichainSubscriptionManager
+      multichainSubscriptionManager,
     });
 
   return {
