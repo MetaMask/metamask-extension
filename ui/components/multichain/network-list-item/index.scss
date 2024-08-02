@@ -6,6 +6,11 @@
     &:hover,
     &:focus-within {
       background: var(--color-background-default-hover);
+
+      .mm-avatar-network {
+        outline: solid 2px;
+        outline-color: var(--color-background-default-hover);
+      }
     }
   }
 
@@ -19,6 +24,10 @@
   &:focus-within {
     .multichain-network-list-item__delete {
       visibility: visible;
+    }
+    .mm-avatar-network {
+      outline: solid 2px;
+      outline-color: transparent;
     }
   }
 

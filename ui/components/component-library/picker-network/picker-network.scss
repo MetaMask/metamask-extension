@@ -6,4 +6,8 @@
   &:not([disabled]):active {
     background-color: var(--color-background-default-hover);
   }
+
+  .mm-avatar-network {
+    outline: none;
+  }
 }
