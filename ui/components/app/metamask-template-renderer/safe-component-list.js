@@ -46,6 +46,7 @@ import {
 } from '../../../pages/remove-snap-account';
 import { SnapAccountRedirect } from '../../../pages/snap-account-redirect';
 import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
+import { SnapFooterButton } from '../snaps/snap-footer-button';
 ///: END:ONLY_INCLUDE_IF
 
 export const safeComponentList = {
@@ -91,6 +92,7 @@ export const safeComponentList = {
   SnapUIRadioGroup,
   SnapUICheckbox,
   SnapUITooltip,
+  SnapFooterButton,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   CreateSnapAccount,
   RemoveSnapAccount,

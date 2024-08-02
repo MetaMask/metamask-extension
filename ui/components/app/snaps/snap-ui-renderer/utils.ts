@@ -11,6 +11,7 @@ export type MapToTemplateParams = {
   map: Record<string, number>;
   element: JSXElement;
   form?: string;
+  footer?: boolean;
 };
 
 /**

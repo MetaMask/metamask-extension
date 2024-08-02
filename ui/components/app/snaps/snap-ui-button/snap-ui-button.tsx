@@ -1,15 +1,18 @@
 import React, { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
 import classnames from 'classnames';
 import { ButtonType, UserInputEventType } from '@metamask/snaps-sdk';
-import { ButtonLinkProps, Text } from '../../../component-library';
-import { useSnapInterfaceContext } from '../../../../contexts/snaps';
+import { ButtonLinkProps, IconSize, Text } from '../../../component-library';
 import {
   FontWeight,
   TextColor,
 } from '../../../../helpers/constants/design-system';
+import { useSnapInterfaceContext } from '../../../../contexts/snaps';
+import { SnapIcon } from '../snap-icon';
+import { SnapFooterButton } from '../snap-footer-button';
 
 export type SnapUIButtonProps = {
   name?: string;
+  footer?: boolean;
 };
 
 const COLORS = {
@@ -23,13 +26,14 @@ export const SnapUIButton: FunctionComponent<
 > = ({
   name,
   children,
+  footer,
   type,
   variant = 'primary',
   disabled = false,
   className = '',
   ...props
 }) => {
-  const { handleEvent } = useSnapInterfaceContext();
+  const { handleEvent, snapId } = useSnapInterfaceContext();
 
   const handleClick = (event: ReactMouseEvent<HTMLElement>) => {
     if (type === ButtonType.Button) {
@@ -46,7 +50,12 @@ export const SnapUIButton: FunctionComponent<
 
   const color = COLORS[overriddenVariant as keyof typeof COLORS];
 
-  return (
+  return footer ? (
+    <SnapFooterButton id={name} onClick={handleClick} disabled={disabled}>
+      <SnapIcon snapId={snapId} avatarSize={IconSize.Xs} marginRight={1} />
+      {children}
+    </SnapFooterButton>
+  ) : (
     <Text
       className={classnames(className, 'snap-ui-button', {
         'snap-ui-button--disabled': disabled,

@@ -21,6 +21,7 @@ import { value } from './value';
 import { checkbox } from './checkbox';
 import { tooltip } from './tooltip';
 import { card } from './card';
+import { footer } from './footer';
 
 export const COMPONENT_MAPPING = {
   Box: box,
@@ -46,4 +47,5 @@ export const COMPONENT_MAPPING = {
   Checkbox: checkbox,
   Tooltip: tooltip,
   Card: card,
+  Footer: footer,
 };
