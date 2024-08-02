@@ -888,10 +888,14 @@ const TEST_SEED_PHRASE_TWO =
   'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
 // Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
-const locateAccountBalanceDOM = async (driver, ganacheServer) => {
+const locateAccountBalanceDOM = async (
+  driver,
+  ganacheServer,
+  address = null,
+) => {
   const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
   if (ganacheServer) {
-    const balance = await ganacheServer.getBalance();
+    const balance = await ganacheServer.getBalance(address);
     await driver.waitForSelector({
       css: balanceSelector,
       text: `${balance} ETH`,
