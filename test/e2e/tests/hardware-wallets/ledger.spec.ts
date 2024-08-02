@@ -1,14 +1,16 @@
-import { sendTransaction } from '../../page-objects/processes/send-transaction.process';
 import { strict as assert } from 'assert';
+import { sendTransaction } from '../../page-objects/processes/send-transaction.process';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/homepage';
 import {
-  defaultGanacheOptions,
-  unlockWallet,
-  withFixtures,
-  regularDelayMs,
   convertETHToHexGwei,
+  defaultGanacheOptions,
+  openDapp,
+  regularDelayMs,
+  unlockWallet,
+  WINDOW_TITLES,
+  withFixtures,
 } from '../../helpers';
 import {
   withFixturesOptions,
@@ -171,7 +173,7 @@ describe('Ledger Hardware', function () {
         // Select Ledger
         await driver.clickElement('[data-testid="connect-ledger-btn"]');
         await driver.clickElement({ text: 'Continue' });
-        //Forget device
+        // Forget device
         await driver.clickElement('[class="hw-forget-device-container"]');
         // Check that the correct account has been forgotten
         await driver.clickElement('[data-testid="account-menu-icon"]');
@@ -185,7 +187,7 @@ describe('Ledger Hardware', function () {
     );
   });
 
-  it.only('can send a simple transaction from a ledger account to another', async function () {
+  it('can send a simple transaction from a ledger account to another', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -207,6 +209,11 @@ describe('Ledger Hardware', function () {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           convertETHToHexGwei(2),
         );
+        await driver.delay(2000);
+        const balance = await ganacheServer.getAddressBalance(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+        );
+        console.log('==============> balance', balance);
         await sendTransaction(
           driver,
           KNOWN_PUBLIC_KEY_ADDRESSES[1].address,
@@ -264,5 +271,74 @@ describe('Ledger Hardware', function () {
         });
       },
     );
+  });
+
+  describe.only('from test dapp', () => {
+    it.only('send tx', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp(false)
+            .build(),
+          ganacheOptions: {
+            ...defaultGanacheOptions,
+            hardfork: 'london',
+          },
+          title: this.test?.fullTitle(),
+        },
+        async ({
+          driver,
+          ganacheServer,
+        }: {
+          driver: Driver;
+          ganacheServer: Ganache;
+        }) => {
+          await unlockWallet(driver);
+          await connectLedger(driver);
+          await addLedgerAccount(driver);
+          const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+          await ganacheSeeder.transfer(
+            KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+            convertETHToHexGwei(2),
+          );
+          // initiates a transaction from the dapp
+          await openDapp(driver);
+          // await driver.clickElement('#signTypedDataV4');
+          await driver.clickElement('#sendEIP1559Button');
+          const windowHandles = await driver.waitUntilXWindowHandles(3);
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.Dialog,
+            windowHandles,
+          );
+
+          const extension = windowHandles[0];
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.Dialog,
+            windowHandles,
+          );
+
+          await driver.clickElement({ text: 'Confirm', tag: 'button' });
+          await driver.waitUntilXWindowHandles(2);
+          await driver.switchToWindow(extension);
+
+          // Identify the transaction in the transactions list
+          await driver.waitForSelector(
+            '[data-testid="eth-overview__primary-currency"]',
+          );
+
+          await driver.clickElement(
+            '[data-testid="account-overview__activity-tab"]',
+          );
+          await driver.waitForSelector(
+            '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+          );
+          await driver.waitForSelector({
+            css: '[data-testid="transaction-list-item-primary-currency"]',
+            text: '-0 ETH',
+          });
+        },
+      );
+    });
   });
 });
