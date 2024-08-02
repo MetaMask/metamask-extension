@@ -18,7 +18,7 @@ export function setupMultiplex(connectionStream) {
    */
   mux.ignoreStream(EXTENSION_MESSAGES.CONNECTION_READY);
   pipeline(connectionStream, mux, connectionStream, (err) => {
-    if (err) {
+    if (err && !err.message?.match('Premature close')) {
       console.error(err);
     }
   });
