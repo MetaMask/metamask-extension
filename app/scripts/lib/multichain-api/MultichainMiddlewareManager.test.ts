@@ -15,7 +15,7 @@ describe('MultichainMiddlewareManager', () => {
       domain,
       middlewareSpy,
     );
-    (multichainMiddlewareManager as unknown as any).middleware(
+    multichainMiddlewareManager.middleware(
       { scope: 'eip155:1' } as unknown as JsonRpcRequest,
       { jsonrpc: '2.0', id: 0 },
       () => {
