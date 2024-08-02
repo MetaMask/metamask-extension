@@ -446,6 +446,7 @@ export const SENTRY_UI_STATE = {
     switchedNetworkNeverShowMessage: false,
     newPrivacyPolicyToastClickedOrClosed: false,
     newPrivacyPolicyToastShownDate: false,
+    lastInteractedConfirmationInfo: false,
   },
   unconnectedAccount: true,
 };
