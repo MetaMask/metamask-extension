@@ -182,7 +182,7 @@ describe('getPermissionsHandler', () => {
       ]);
     });
 
-    it('returns the permissions without eth_accounts and the CAIP-25 endowement if there are no accounts authorized for eip155 namespaces', () => {
+    it('returns the permissions without eth_accounts and the CAIP-25 endowment if there are no accounts authorized for eip155 namespaces', () => {
       const { handler, getPermissionsForOrigin, response } =
         createMockedHandler();
 

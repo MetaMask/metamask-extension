@@ -97,7 +97,7 @@ describe('CaipPermissionAdapterMiddleware', () => {
       process.env.BARAD_DUR = 1;
     });
 
-    it('gets the authorized scopes from the CAIP-25 endowement permission', async () => {
+    it('gets the authorized scopes from the CAIP-25 endowment permission', async () => {
       const { handler, getCaveat } = createMockedHandler();
       await handler(baseRequest);
       expect(getCaveat).toHaveBeenCalledWith(
@@ -107,14 +107,14 @@ describe('CaipPermissionAdapterMiddleware', () => {
       );
     });
 
-    it('allows the request when there is no CAIP-25 endowement permission', async () => {
+    it('allows the request when there is no CAIP-25 endowment permission', async () => {
       const { handler, getCaveat, next } = createMockedHandler();
       getCaveat.mockReturnValue(null);
       await handler(baseRequest);
       expect(next).toHaveBeenCalled();
     });
 
-    it('allows the request when the CAIP-25 endowement permission was not granted from the multichain flow', async () => {
+    it('allows the request when the CAIP-25 endowment permission was not granted from the multichain flow', async () => {
       const { handler, getCaveat, next } = createMockedHandler();
       getCaveat.mockReturnValue({
         value: {
