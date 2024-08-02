@@ -634,6 +634,7 @@ describe('provider_authorize', () => {
                     notifications: ['chainChanged'],
                   },
                 },
+                isMultichainOrigin: true,
               },
             },
           ],

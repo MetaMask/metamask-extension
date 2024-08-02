@@ -21,7 +21,6 @@ import { NetworkClientId } from '@metamask/network-controller';
 import { cloneDeep, isEqual } from 'lodash';
 import {
   Scope,
-  Caip25Authorization,
   validateAndFlattenScopes,
   ScopesObject,
   ScopeObject,
@@ -32,6 +31,7 @@ export type Caip25CaveatValue = {
   requiredScopes: ScopesObject;
   optionalScopes: ScopesObject;
   sessionProperties?: Record<string, unknown>;
+  isMultichainOrigin: boolean;
 };
 
 export const Caip25CaveatType = 'authorizedScopes';
@@ -87,11 +87,15 @@ const specificationBuilder: PermissionSpecificationBuilder<
       }
 
       // TODO: FIX THIS TYPE
-      const { requiredScopes, optionalScopes } = (
-        caip25Caveat as unknown as { value: Caip25Authorization }
+      const { requiredScopes, optionalScopes, isMultichainOrigin } = (
+        caip25Caveat as unknown as { value: Caip25CaveatValue }
       ).value;
 
-      if (!requiredScopes || !optionalScopes) {
+      if (
+        !requiredScopes ||
+        !optionalScopes ||
+        typeof isMultichainOrigin !== 'boolean'
+      ) {
         throw new Error('missing expected caveat values'); // TODO: throw better error here
       }
 

@@ -346,6 +346,7 @@ import { decodeTransactionData } from './lib/transaction/decode/util';
 import { walletRevokeSessionHandler } from './lib/multichain-api/wallet-revokeSession';
 import { walletGetSessionHandler } from './lib/multichain-api/wallet-getSession';
 import { mergeScopes } from './lib/multichain-api/scope';
+import { CaipPermissionAdapterMiddleware } from './lib/multichain-api/caip-permission-adapter-middleware';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -5426,6 +5427,18 @@ export default class MetamaskController extends EventEmitter {
     );
 
     engine.push(createUnsupportedMethodMiddleware(UNSUPPORTED_RPC_METHODS));
+
+    engine.push((req, res, next, end) =>
+      CaipPermissionAdapterMiddleware(req, res, next, end, {
+        getCaveat: this.permissionController.getCaveat.bind(
+          this.permissionController,
+        ),
+        getNetworkConfigurationByNetworkClientId:
+          this.networkController.getNetworkConfigurationByNetworkClientId.bind(
+            this.networkController,
+          ),
+      }),
+    );
 
     // Legacy RPC method that needs to be implemented _ahead of_ the permission
     // middleware.

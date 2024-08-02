@@ -164,6 +164,7 @@ async function requestPermissionsImplementation(
                       accounts: caipAccounts,
                     },
                   },
+                  isMultichainOrigin: false,
                 },
               },
             ],
