@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { EthAccountType } from '@metamask/keyring-api';
 import { getSelectedInternalAccount } from '../../../../../selectors';
 import { Label } from '../../../../component-library';
 import { AccountPicker } from '../../../account-picker';
@@ -62,6 +63,7 @@ export const SendPageAccountPicker = () => {
           accountListItemProps={{ showOptions: false }}
           showAccountCreation={false}
           onClose={() => setShowAccountPicker(false)}
+          allowedAccountTypes={[EthAccountType.Eoa, EthAccountType.Erc4337]}
         />
       ) : null}
     </SendPageRow>
