@@ -283,7 +283,28 @@ describe('Send Slice', () => {
         expect(draft.amount.value).toStrictEqual('0xadf7');
         expect(draft.status).toStrictEqual(SEND_STATUSES.VALID);
       });
+
+      it('should not error when draft transaction is not defined', () => {
+        const state = getInitialSendStateWithExistingTxState({
+          gas: {
+            gasPrice: '0x1',
+            maxFeePerGas: '0x2',
+            gasLimit: GAS_LIMITS.SIMPLE,
+          },
+        });
+
+        delete state.draftTransactions['test-uuid'];
+
+        const action = {
+          type: 'send/calculateGasTotal',
+        };
+
+        const runAction = () => sendReducer(state, action);
+
+        expect(runAction).not.toThrow();
+      });
     });
+
     describe('resetSendState', () => {
       it('should set the state back to a blank slate matching the initialState object', () => {
         const action = {
@@ -1076,6 +1097,29 @@ describe('Send Slice', () => {
         );
         expect(draftTransaction.status).toBe(SEND_STATUSES.INVALID);
       });
+
+      it('should not throw error when draft transaction does not exist', () => {
+        const tokenAssetState = getInitialSendStateWithExistingTxState({
+          amount: {
+            value: '0x77359400', // 2000000000
+          },
+          sendAsset: {
+            type: AssetType.token,
+            balance: '0x6fc23ac0', // 1875000000
+            details: {
+              decimals: 0,
+            },
+          },
+        });
+
+        const action = {
+          type: 'send/validateAmountField',
+        };
+
+        delete tokenAssetState.draftTransactions['test-uuid'];
+
+        expect(() => sendReducer(tokenAssetState, action)).not.toThrow();
+      });
     });
 
     describe('validateGasField', () => {
@@ -1100,6 +1144,24 @@ describe('Send Slice', () => {
         expect(draftTransaction.gas.error).toStrictEqual(
           INSUFFICIENT_FUNDS_ERROR,
         );
+      });
+      it('should not throw error when draft transaction does not exist', () => {
+        const gasFieldState = getInitialSendStateWithExistingTxState({
+          account: {
+            balance: '0x0',
+          },
+          gas: {
+            gasTotal: '0x1319718a5000', // 21000000000000
+          },
+        });
+
+        delete gasFieldState.draftTransactions['test-uuid'];
+
+        const action = {
+          type: 'send/validateGasField',
+        };
+
+        expect(() => sendReducer(gasFieldState, action)).not.toThrow();
       });
     });
 
@@ -4000,7 +4062,6 @@ describe('Send Slice', () => {
                 },
                 methods: [
                   'personal_sign',
-                  'eth_sign',
                   'eth_signTransaction',
                   'eth_signTypedData_v1',
                   'eth_signTypedData_v3',
