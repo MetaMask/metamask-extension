@@ -15,7 +15,7 @@ import {
 } from '@metamask/assets-controllers';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
-import { JsonRpcEngine } from 'json-rpc-engine';
+import { JsonRpcEngine, createScaffoldMiddleware } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce, throttle, memoize, wrap } from 'lodash';
@@ -142,6 +142,7 @@ import {
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
+import { toCaipChainId } from '@metamask/utils';
 import {
   methodsRequiringNetworkSwitch,
   methodsWithConfirmation,
@@ -162,6 +163,7 @@ import {
   NETWORK_TYPES,
   TEST_NETWORK_TICKER_MAP,
   NetworkStatus,
+  UNSUPPORTED_RPC_METHODS,
 } from '../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
 
@@ -183,6 +185,7 @@ import {
   ORIGIN_METAMASK,
   SNAP_DIALOG_TYPES,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
+  MESSAGE_TYPE,
 } from '../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -263,8 +266,9 @@ import AccountTracker from './lib/account-tracker';
 import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
-  createLegacyMethodMiddleware,
-  createMethodMiddleware,
+  createEthAccountsMethodMiddleware,
+  createEip1193MethodMiddleware,
+  createMultichainMethodMiddleware,
   createUnsupportedMethodMiddleware,
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
@@ -296,8 +300,10 @@ import AppMetadataController from './controllers/app-metadata';
 import {
   CaveatFactories,
   CaveatMutatorFactories,
+  getAuthorizedScopesByOrigin,
   getCaveatSpecifications,
   getChangedAccounts,
+  getChangedAuthorizations,
   getPermissionBackgroundApiMethods,
   getPermissionSpecifications,
   getPermittedAccountsByOrigin,
@@ -328,8 +334,19 @@ import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verific
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
+import { providerAuthorizeHandler } from './lib/multichain-api/provider-authorize';
+import { providerRequestHandler } from './lib/multichain-api/provider-request';
 import BridgeController from './controllers/bridge';
+import {
+  Caip25CaveatMutatorFactories,
+  Caip25CaveatType,
+} from './lib/multichain-api/caip25permissions';
+// import { multichainMethodCallValidatorMiddleware } from './lib/multichain-api/multichainMethodCallValidator';
 import { decodeTransactionData } from './lib/transaction/decode/util';
+import { walletRevokeSessionHandler } from './lib/multichain-api/wallet-revokeSession';
+import { walletGetSessionHandler } from './lib/multichain-api/wallet-getSession';
+import { mergeScopes } from './lib/multichain-api/scope';
+import { CaipPermissionAdapterMiddleware } from './lib/multichain-api/caip-permission-adapter-middleware';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1173,6 +1190,10 @@ export default class MetamaskController extends EventEmitter {
               ),
             );
           },
+          findNetworkClientIdByChainId:
+            this.networkController.findNetworkClientIdByChainId.bind(
+              this.networkController,
+            ),
         }),
         ...this.getSnapPermissionSpecifications(),
       },
@@ -2690,6 +2711,23 @@ export default class MetamaskController extends EventEmitter {
         }
       },
       getPermittedAccountsByOrigin,
+    );
+
+    // This handles CAIP-25 authorization changes every time relevant permission state
+    // changes, for any reason.
+    this.controllerMessenger.subscribe(
+      `${this.permissionController.name}:stateChange`,
+      async (currentValue, previousValue) => {
+        const changedAuthorizations = getChangedAuthorizations(
+          currentValue,
+          previousValue,
+        );
+
+        for (const [origin, authorization] of changedAuthorizations.entries()) {
+          this._notifyAuthorizationChange(origin, authorization);
+        }
+      },
+      getAuthorizedScopesByOrigin,
     );
 
     this.controllerMessenger.subscribe(
@@ -4620,6 +4658,14 @@ export default class MetamaskController extends EventEmitter {
           CaveatTypes.restrictNetworkSwitching
         ].removeChainId(targetChainId, existingChainIds),
     );
+    this.permissionController.updatePermissionsByCaveat(
+      Caip25CaveatType,
+      (existingScopes) =>
+        Caip25CaveatMutatorFactories[Caip25CaveatType].removeScope(
+          toCaipChainId('eip155', parseInt(targetChainId, 16)),
+          existingScopes,
+        ),
+    );
   }
 
   removeNetworkConfiguration(networkConfigurationId) {
@@ -4661,6 +4707,14 @@ export default class MetamaskController extends EventEmitter {
         CaveatMutatorFactories[
           CaveatTypes.restrictReturnedAccounts
         ].removeAccount(targetAccount, existingAccounts),
+    );
+    this.permissionController.updatePermissionsByCaveat(
+      Caip25CaveatType,
+      (existingScopes) =>
+        Caip25CaveatMutatorFactories[Caip25CaveatType].removeAccount(
+          targetAccount,
+          existingScopes,
+        ),
     );
   }
 
@@ -5372,13 +5426,28 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
-    engine.push(createUnsupportedMethodMiddleware());
+    engine.push(createUnsupportedMethodMiddleware(UNSUPPORTED_RPC_METHODS));
 
-    // Legacy RPC methods that need to be implemented _ahead of_ the permission
+    engine.push((req, res, next, end) =>
+      CaipPermissionAdapterMiddleware(req, res, next, end, {
+        getCaveat: this.permissionController.getCaveat.bind(
+          this.permissionController,
+        ),
+        getNetworkConfigurationByNetworkClientId:
+          this.networkController.getNetworkConfigurationByNetworkClientId.bind(
+            this.networkController,
+          ),
+      }),
+    );
+
+    // Legacy RPC method that needs to be implemented _ahead of_ the permission
     // middleware.
     engine.push(
-      createLegacyMethodMiddleware({
+      createEthAccountsMethodMiddleware({
         getAccounts: this.getPermittedAccounts.bind(this, origin),
+        getCaveat: this.permissionController.getCaveat.bind(
+          this.permissionController,
+        ),
       }),
     );
 
@@ -5413,9 +5482,7 @@ export default class MetamaskController extends EventEmitter {
     // Unrestricted/permissionless RPC method implementations.
     // They must nevertheless be placed _behind_ the permission middleware.
     engine.push(
-      createMethodMiddleware({
-        origin,
-
+      createEip1193MethodMiddleware({
         subjectType,
 
         // Miscellaneous
@@ -5553,6 +5620,17 @@ export default class MetamaskController extends EventEmitter {
             this.alertController,
           ),
 
+        grantPermissions: this.permissionController.grantPermissions.bind(
+          this.permissionController,
+        ),
+        getNetworkConfigurationByNetworkClientId:
+          this.networkController.getNetworkConfigurationByNetworkClientId.bind(
+            this.networkController,
+          ),
+        updateCaveat: this.permissionController.updateCaveat.bind(
+          this.permissionController,
+        ),
+
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         handleMmiAuthenticate:
           this.institutionalFeaturesController.handleMmiAuthenticate.bind(
@@ -5662,7 +5740,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * A method for creating a CAIP provider that is safely restricted for the requesting subject.
+   * A method for creating a provider that is safely restricted for the requesting subject.
    *
    * @param {object} options - Provider engine options
    * @param {string} options.origin - The origin of the sender
@@ -5671,9 +5749,253 @@ export default class MetamaskController extends EventEmitter {
   setupProviderEngineCaip({ origin, tabId }) {
     const engine = new JsonRpcEngine();
 
-    engine.push((request, _res, _next, end) => {
-      console.log('CAIP request received', { origin, tabId, request });
-      return end(new Error('CAIP RPC Pipeline not yet implemented.'));
+    // Append origin to each request
+    engine.push(createOriginMiddleware({ origin }));
+
+    // Append tabId to each request if it exists
+    if (tabId) {
+      engine.push(createTabIdMiddleware({ tabId }));
+    }
+
+    engine.push(createLoggerMiddleware({ origin }));
+
+    engine.push((req, _res, next, end) => {
+      if (
+        ![
+          MESSAGE_TYPE.PROVIDER_AUTHORIZE,
+          MESSAGE_TYPE.PROVIDER_REQUEST,
+          MESSAGE_TYPE.WALLET_GET_SESSION,
+          MESSAGE_TYPE.WALLET_REVOKE_SESSION,
+        ].includes(req.method)
+      ) {
+        return end(new Error('Invalid method')); // TODO: Use a proper error
+      }
+      return next();
+    });
+
+    // TODO: Uncomment this when wallet lifecycle methods are added to api-specs
+    // engine.push(multichainMethodCallValidatorMiddleware);
+
+    engine.push(
+      createScaffoldMiddleware({
+        [MESSAGE_TYPE.PROVIDER_AUTHORIZE]: (request, response, next, end) => {
+          return providerAuthorizeHandler(request, response, next, end, {
+            grantPermissions: this.permissionController.grantPermissions.bind(
+              this.permissionController,
+            ),
+            requestPermissions:
+              this.permissionController.requestPermissions.bind(
+                this.permissionController,
+              ),
+            findNetworkClientIdByChainId:
+              this.networkController.findNetworkClientIdByChainId.bind(
+                this.networkController,
+              ),
+            upsertNetworkConfiguration:
+              this.networkController.upsertNetworkConfiguration.bind(
+                this.networkController,
+              ),
+            removeNetworkConfiguration:
+              this.networkController.removeNetworkConfiguration.bind(
+                this.networkController,
+              ),
+          });
+        },
+        [MESSAGE_TYPE.PROVIDER_REQUEST]: (request, response, next, end) => {
+          return providerRequestHandler(request, response, next, end, {
+            findNetworkClientIdByChainId:
+              this.networkController.findNetworkClientIdByChainId.bind(
+                this.networkController,
+              ),
+            getCaveat: this.permissionController.getCaveat.bind(
+              this.permissionController,
+            ),
+            getSelectedNetworkClientId: () =>
+              this.networkController.state.selectedNetworkClientId,
+          });
+        },
+        [MESSAGE_TYPE.WALLET_REVOKE_SESSION]: (
+          request,
+          response,
+          next,
+          end,
+        ) => {
+          return walletRevokeSessionHandler(request, response, next, end, {
+            revokePermission: this.permissionController.revokePermission.bind(
+              this.permissionController,
+            ),
+          });
+        },
+        [MESSAGE_TYPE.WALLET_GET_SESSION]: (request, response, next, end) => {
+          return walletGetSessionHandler(request, response, next, end, {
+            getCaveat: this.permissionController.getCaveat.bind(
+              this.permissionController,
+            ),
+          });
+        },
+      }),
+    );
+
+    // TODO: Does this need to go before the provider_authorize middleware?
+    // Add a middleware that will switch chain on each request (as needed)
+    const requestQueueMiddleware = createQueuedRequestMiddleware({
+      enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
+        this.queuedRequestController,
+      ),
+      useRequestQueue: this.preferencesController.getUseRequestQueue.bind(
+        this.preferencesController,
+      ),
+      shouldEnqueueRequest: (request) => {
+        // TODO: figure out what to do with this
+        if (
+          request.method === 'eth_requestAccounts' &&
+          this.permissionController.hasPermission(
+            request.origin,
+            PermissionNames.eth_accounts,
+          )
+        ) {
+          return false;
+        }
+        return methodsWithConfirmation.includes(request.method);
+      },
+    });
+    engine.push(requestQueueMiddleware);
+
+    engine.push(
+      createUnsupportedMethodMiddleware([
+        ...UNSUPPORTED_RPC_METHODS,
+        'eth_requestAccounts',
+        'eth_accounts',
+      ]),
+    );
+
+    engine.push(
+      createMultichainMethodMiddleware({
+        subjectType: SubjectType.Website, // TODO: this should probably be passed in
+
+        // Miscellaneous
+        addSubjectMetadata:
+          this.subjectMetadataController.addSubjectMetadata.bind(
+            this.subjectMetadataController,
+          ),
+        getProviderState: this.getProviderState.bind(this),
+        handleWatchAssetRequest: this.handleWatchAssetRequest.bind(this),
+        requestUserApproval:
+          this.approvalController.addAndShowApprovalRequest.bind(
+            this.approvalController,
+          ),
+        startApprovalFlow: this.approvalController.startFlow.bind(
+          this.approvalController,
+        ),
+        endApprovalFlow: this.approvalController.endFlow.bind(
+          this.approvalController,
+        ),
+        // Permission-related
+        // TODO remove this hook
+        requestPermittedChainsPermission: (chainIds) =>
+          this.permissionController.requestPermissions(
+            { origin },
+            {
+              [PermissionNames.permittedChains]: {
+                caveats: [
+                  CaveatFactories[CaveatTypes.restrictNetworkSwitching](
+                    chainIds,
+                  ),
+                ],
+              },
+            },
+          ),
+        // TODO remove this hook
+        // requestPermissionsForOrigin:
+        //   this.permissionController.requestPermissions.bind(
+        //     this.permissionController,
+        //     { origin },
+        //   ),
+        getCaveat: ({ target, caveatType }) => {
+          try {
+            return this.permissionController.getCaveat(
+              origin,
+              target,
+              caveatType,
+            );
+          } catch (e) {
+            if (e instanceof PermissionDoesNotExistError) {
+              // suppress expected error in case that the origin
+              // does not have the target permission yet
+            } else {
+              throw e;
+            }
+          }
+
+          return undefined;
+        },
+        // TODO refactor `add-ethereum-chain` handler so that this hook can be removed from multichain middleware
+        getChainPermissionsFeatureFlag: () =>
+          Boolean(process.env.CHAIN_PERMISSIONS),
+        // TODO refactor `add-ethereum-chain` handler so that this hook can be removed from multichain middleware
+        getCurrentRpcUrl: () =>
+          this.networkController.state.providerConfig.rpcUrl,
+        // network configuration-related
+        upsertNetworkConfiguration:
+          this.networkController.upsertNetworkConfiguration.bind(
+            this.networkController,
+          ),
+        setActiveNetwork: async (networkClientId) => {
+          await this.networkController.setActiveNetwork(networkClientId);
+          // if the origin has the eth_accounts permission
+          // we set per dapp network selection state
+          if (
+            this.permissionController.hasPermission(
+              origin,
+              PermissionNames.eth_accounts,
+            )
+          ) {
+            this.selectedNetworkController.setNetworkClientIdForDomain(
+              origin,
+              networkClientId,
+            );
+          }
+        },
+        findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
+        // TODO refactor `add-ethereum-chain` handler so that this hook can be removed from multichain middleware
+        getCurrentChainIdForDomain: (domain) => {
+          const networkClientId =
+            this.selectedNetworkController.getNetworkClientIdForDomain(domain);
+          const { chainId } =
+            this.networkController.getNetworkConfigurationByNetworkClientId(
+              networkClientId,
+            );
+          return chainId;
+        },
+
+        // Web3 shim-related
+        getWeb3ShimUsageState: this.alertController.getWeb3ShimUsageState.bind(
+          this.alertController,
+        ),
+        setWeb3ShimUsageRecorded:
+          this.alertController.setWeb3ShimUsageRecorded.bind(
+            this.alertController,
+          ),
+      }),
+    );
+
+    engine.push(this.metamaskMiddleware);
+
+    engine.push((req, res, _next, end) => {
+      const { provider } = this.networkController.getNetworkClientById(
+        req.networkClientId,
+      );
+
+      // send request to provider
+      provider.sendAsync(req, (err, providerRes) => {
+        // forward any error
+        if (err instanceof Error) {
+          return end(err);
+        }
+        // copy provider response onto original response
+        Object.assign(res, providerRes);
+        return end();
+      });
     });
 
     return engine;
@@ -6433,6 +6755,20 @@ export default class MetamaskController extends EventEmitter {
     }
 
     this.permissionLogController.updateAccountsHistory(origin, newAccounts);
+  }
+
+  async _notifyAuthorizationChange(origin, newAuthorization) {
+    if (this.isUnlocked()) {
+      this.notifyConnections(origin, {
+        method: NOTIFICATION_NAMES.sessionChanged,
+        params: {
+          sessionScopes: mergeScopes(
+            newAuthorization.requiredScopes ?? {},
+            newAuthorization.optionalScopes ?? {},
+          ),
+        },
+      });
+    }
   }
 
   async _notifyChainChange() {

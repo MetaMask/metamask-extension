@@ -12,6 +12,11 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
+import {
+  Caip25CaveatFactoryFn,
+  Caip25CaveatType,
+  caip25EndowmentBuilder,
+} from '../../lib/multichain-api/caip25permissions';
 
 /**
  * This file contains the specifications of the permissions and caveats
@@ -40,6 +45,8 @@ export const CaveatFactories = Object.freeze({
   [CaveatTypes.restrictNetworkSwitching]: (chainIds) => {
     return { type: CaveatTypes.restrictNetworkSwitching, value: chainIds };
   },
+
+  [Caip25CaveatType]: Caip25CaveatFactoryFn,
 });
 
 /**
@@ -84,7 +91,9 @@ export const getCaveatSpecifications = ({
         return [newValue, diff];
       },
     },
-
+    [Caip25CaveatType]: {
+      type: Caip25CaveatType,
+    },
     ...snapsCaveatsSpecifications,
     ...snapsEndowmentCaveatSpecifications,
   };
@@ -111,8 +120,14 @@ export const getPermissionSpecifications = ({
   getAllAccounts,
   getInternalAccounts,
   captureKeyringTypesWithMissingIdentities,
+  findNetworkClientIdByChainId,
 }) => {
   return {
+    [caip25EndowmentBuilder.targetName]:
+      caip25EndowmentBuilder.specificationBuilder({
+        findNetworkClientIdByChainId,
+        getInternalAccounts,
+      }),
     [PermissionNames.eth_accounts]: {
       permissionType: PermissionType.RestrictedMethod,
       targetName: PermissionNames.eth_accounts,
