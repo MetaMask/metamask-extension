@@ -6500,7 +6500,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-sdk@npm:^6.2.0":
+"@metamask/snaps-sdk@npm:^6.2.1":
   version: 6.2.1
   resolution: "@metamask/snaps-sdk@npm:6.2.1"
   dependencies:
@@ -6544,7 +6544,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^8.0.0":
+"@metamask/snaps-utils@npm:^8.0.0, @metamask/snaps-utils@npm:^8.0.1":
   version: 8.0.1
   resolution: "@metamask/snaps-utils@npm:8.0.1"
   dependencies:
@@ -26080,8 +26080,8 @@ __metadata:
     "@metamask/snaps-controllers": "npm:^9.4.0"
     "@metamask/snaps-execution-environments": "npm:^6.6.2"
     "@metamask/snaps-rpc-methods": "npm:^11.0.0"
-    "@metamask/snaps-sdk": "npm:^6.2.0"
-    "@metamask/snaps-utils": "npm:^8.0.0"
+    "@metamask/snaps-sdk": "npm:^6.2.1"
+    "@metamask/snaps-utils": "npm:^8.0.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:^8.4.0"
     "@metamask/transaction-controller": "npm:^34.0.0"
