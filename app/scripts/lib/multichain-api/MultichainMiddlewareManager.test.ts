@@ -1,12 +1,11 @@
 import { JsonRpcRequest } from '@metamask/utils';
-// eslint-disable-next-line import/no-named-as-default
-import createMultichainMiddlewareManager, {
+import MultichainMiddlewareManager, {
   ExtendedJsonRpcMiddleware,
 } from './MultichainMiddlewareManager';
 
 describe('MultichainMiddlewareManager', () => {
   it('should add middleware and get called for the scope', () => {
-    const multichainMiddlewareManager = createMultichainMiddlewareManager();
+    const multichainMiddlewareManager = new MultichainMiddlewareManager();
     const middlewareSpy = jest.fn() as unknown as ExtendedJsonRpcMiddleware;
     (middlewareSpy as { destroy: () => void }).destroy = jest.fn();
     const domain = 'example.com';
@@ -28,7 +27,7 @@ describe('MultichainMiddlewareManager', () => {
     expect(middlewareSpy).toHaveBeenCalled();
   });
   it('should remove middleware', () => {
-    const multichainMiddlewareManager = createMultichainMiddlewareManager();
+    const multichainMiddlewareManager = new MultichainMiddlewareManager();
     const middlewareMock = jest.fn() as unknown as ExtendedJsonRpcMiddleware;
     middlewareMock.destroy = jest.fn();
     const scope = 'eip155:1';
@@ -47,7 +46,7 @@ describe('MultichainMiddlewareManager', () => {
     expect(endSpy).not.toHaveBeenCalled();
   });
   it('should remove all middleware', () => {
-    const multichainMiddlewareManager = createMultichainMiddlewareManager();
+    const multichainMiddlewareManager = new MultichainMiddlewareManager();
     const middlewareMock = jest.fn() as unknown as ExtendedJsonRpcMiddleware;
     middlewareMock.destroy = jest.fn();
     const scope = 'eip155:1';
