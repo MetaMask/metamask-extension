@@ -4,7 +4,10 @@ import { Mockttp } from '../../mock-e2e';
 import { Driver } from '../../webdriver/driver';
 
 export async function scrollAndConfirmAndAssertConfirm(driver: Driver) {
-  await driver.clickElement('.confirm-scroll-to-bottom__button');
+  if (await driver.findVisibleElement('.confirm-scroll-to-bottom__button')) {
+    await driver.clickElement('.confirm-scroll-to-bottom__button');
+  }
+
   await driver.clickElement('[data-testid="confirm-footer-button"]');
 }
 

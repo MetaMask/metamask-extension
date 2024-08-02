@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import GanacheContractAddressRegistry from '../seeder/ganache-contract-address-registry';
+import { scrollAndConfirmAndAssertConfirm } from '../tests/confirmations/helpers';
 import {
   createDepositTransaction,
   TestSuiteArguments,
@@ -56,15 +57,7 @@ describe('Snap Account - Contract interaction', function () {
           text: 'Transaction request',
         });
 
-        // Firefox on CI is not showing the scroll to bottom here, but does present it on an mv2 build on my local machine
-        if (
-          await driver.findVisibleElement('.confirm-scroll-to-bottom__button')
-        ) {
-          await driver.clickElement('.confirm-scroll-to-bottom__button');
-          await driver.clickElement('[data-testid="confirm-footer-button"]');
-        } else {
-          await driver.clickElement('[data-testid="confirm-footer-button"]');
-        }
+        await scrollAndConfirmAndAssertConfirm(driver);
       },
     );
   });
