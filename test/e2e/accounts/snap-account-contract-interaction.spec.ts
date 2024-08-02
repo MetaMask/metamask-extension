@@ -55,8 +55,16 @@ describe('Snap Account - Contract interaction', function () {
           css: 'h2',
           text: 'Transaction request',
         });
-        await driver.clickElement('.confirm-scroll-to-bottom__button');
-        await driver.clickElement('[data-testid="confirm-footer-button"]');
+
+        // Firefox on CI is not showing the scroll to bottom here, but does present it on an mv2 build on my local machine
+        if (
+          await driver.findVisibleElement('.confirm-scroll-to-bottom__button')
+        ) {
+          await driver.clickElement('.confirm-scroll-to-bottom__button');
+          await driver.clickElement('[data-testid="confirm-footer-button"]');
+        } else {
+          await driver.clickElement('[data-testid="confirm-footer-button"]');
+        }
       },
     );
   });
