@@ -1260,9 +1260,6 @@
   "data": {
     "message": "Datos"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Hindi maibalik ang iyong data. Mukhang sira ang file."
-  },
   "dataHex": {
     "message": "Hex"
   },
@@ -4180,12 +4177,6 @@
   },
   "restore": {
     "message": "Ibalik"
-  },
-  "restoreFailed": {
-    "message": "Hindi maibalik ang iyong data mula sa file na ibinigay"
-  },
-  "restoreSuccessful": {
-    "message": "Ang iyong data ay matagumpay na naibalik"
   },
   "restoreUserData": {
     "message": "Ibalik ang data ng user"
