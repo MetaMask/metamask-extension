@@ -27,14 +27,15 @@ const useConfirmationOriginAlerts = (): Alert[] => {
       ? currentConfirmation.msgParams.origin
       : currentConfirmation.txParams.origin;
 
-    if (origin === punycode.toASCII(origin)) {
-      return [];
-    }
+    // if (origin === punycode.toASCII(origin)) {
+    //   return [];
+    // }
 
     return [
       {
         key: 'originSpecialCharacterWarning',
         reason: 'title',
+        field: 'originSpecialCharacterWarning',
         severity: Severity.Warning,
         message: t('networkUrlErrorWarning', [punycode.toASCII(origin)]),
       },

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowUrl,
@@ -27,9 +28,14 @@ const TypedSignV1Info: React.FC = () => {
   return (
     <>
       <ConfirmInfoSection>
-        <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
+        <ConfirmInfoAlertRow
+          alertKey="originSpecialCharacterWarning"
+          ownerId={currentConfirmation.id}
+          label={t('requestFrom')}
+          tooltip={t('requestFromInfo')}
+        >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
-        </ConfirmInfoRow>
+        </ConfirmInfoAlertRow>
       </ConfirmInfoSection>
       <ConfirmInfoSection>
         <ConfirmInfoRow label={t('message')}>
