@@ -8,6 +8,7 @@ import type {
   PendingJsonRpcResponse,
   JsonRpcParams,
   Hex,
+  Json,
 } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
@@ -15,10 +16,7 @@ import {
   StartFlowOptions,
 } from '@metamask/approval-controller';
 import { Domain } from '@metamask/selected-network-controller';
-import {
-  NetworkConfiguration,
-  ProviderConfig,
-} from '@metamask/network-controller';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   findExistingNetwork,
@@ -66,16 +64,18 @@ type AddEthereumChainOptions = {
   getChainPermissionsFeatureFlag: GetChainPermissionsFeatureFlag;
 };
 
-type AddEthereumChainConstraint<Params extends JsonRpcParams = JsonRpcParams> =
-  {
-    implementation: (
-      req: JsonRpcRequest<Params>,
-      res: PendingJsonRpcResponse<null>,
-      _next: JsonRpcEngineNextCallback,
-      end: JsonRpcEngineEndCallback,
-      options: AddEthereumChainOptions,
-    ) => void;
-  } & HandlerWrapper;
+type AddEthereumChainConstraint<
+  Params extends JsonRpcParams = JsonRpcParams,
+  Result extends Json = never,
+> = {
+  implementation: (
+    req: JsonRpcRequest<Params>,
+    res: PendingJsonRpcResponse<Result | null>,
+    _next: JsonRpcEngineNextCallback,
+    end: JsonRpcEngineEndCallback,
+    options: AddEthereumChainOptions,
+  ) => void;
+} & HandlerWrapper;
 
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
@@ -98,9 +98,10 @@ export default addEthereumChain;
 
 async function addEthereumChainHandler<
   Params extends JsonRpcParams = JsonRpcParams,
+  Result extends Json = never,
 >(
   req: JsonRpcRequest<Params>,
-  res: PendingJsonRpcResponse<null>,
+  res: PendingJsonRpcResponse<Result | null>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   {
@@ -119,7 +120,13 @@ async function addEthereumChainHandler<
 ): Promise<void> {
   let validParams;
   try {
-    validParams = validateAddEthereumChainParams(req.params[0]);
+    validParams = ((params) => validateAddEthereumChainParams(params))(
+      req.params[0],
+    ) as Omit<
+      ReturnType<typeof validateAddEthereumChainParams>,
+      'firstValidBlockExplorerUrl' | 'firstValidRPCUrl'
+    > &
+      Record<'firstValidBlockExplorerUrl' | 'firstValidRPCUrl', string>;
   } catch (error: unknown) {
     // TODO: Remove at `@metamask/json-rpc-engine@8.0.2`: `JsonRpcEngineEndCallback` (type of `end`), is redefined from `(error?: JsonRpcEngineCallbackError) => void` to `(error?: unknown) => void`.
     // @ts-expect-error intentionally passing unhandled error of any type into `end`
@@ -144,7 +151,7 @@ async function addEthereumChainHandler<
   const existingNetwork = findExistingNetwork(
     chainId,
     findNetworkConfigurationBy,
-  ) as ProviderConfig;
+  );
 
   if (
     existingNetwork &&
@@ -160,18 +167,16 @@ async function addEthereumChainHandler<
 
   let networkClientId;
   let requestData;
-  let approvalFlowId;
+  const approvalFlowId = startApprovalFlow().id;
 
   if (!existingNetwork || existingNetwork.rpcUrl !== firstValidRPCUrl) {
-    ({ id: approvalFlowId } = await startApprovalFlow());
-
     try {
       await requestUserApproval({
         origin,
         type: ApprovalType.AddEthereumChain,
         requestData: {
           chainId,
-          rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl as string },
+          rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
           chainName,
           rpcUrl: firstValidRPCUrl,
           ticker,
@@ -181,9 +186,9 @@ async function addEthereumChainHandler<
       networkClientId = await upsertNetworkConfiguration(
         {
           chainId,
-          rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl as string },
+          rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
           nickname: chainName,
-          rpcUrl: firstValidRPCUrl as string,
+          rpcUrl: firstValidRPCUrl,
           ticker,
         },
         { source: 'dapp', referrer: origin },
@@ -206,7 +211,10 @@ async function addEthereumChainHandler<
       fromNetworkConfiguration: currentNetworkConfiguration,
     };
   } else {
-    networkClientId = existingNetwork.id ?? existingNetwork.type;
+    networkClientId =
+      'id' in existingNetwork && existingNetwork.id
+        ? existingNetwork.id
+        : existingNetwork.type;
     const currentRpcUrl = getCurrentRpcUrl();
 
     if (
@@ -229,7 +237,7 @@ async function addEthereumChainHandler<
     chainId,
     requestData,
     networkClientId,
-    approvalFlowId as string,
+    approvalFlowId,
     {
       getChainPermissionsFeatureFlag,
       setActiveNetwork,
