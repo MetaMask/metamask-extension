@@ -74,6 +74,10 @@
       "dataCollectionForMarketing": "boolean",
       "traits": "object"
     },
+    "MetaMetricsDataDeletionController": {
+      "metaMetricsDataDeletionId": null,
+      "metaMetricsDataDeletionTimestamp": 0
+    },
     "NetworkController": {
       "selectedNetworkClientId": "string",
       "networksMetadata": {

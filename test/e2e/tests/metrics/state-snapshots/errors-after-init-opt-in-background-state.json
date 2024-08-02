@@ -110,6 +110,10 @@
     "fragments": "object",
     "segmentApiCalls": "object"
   },
+  "MetaMetricsDataDeletionController": {
+    "metaMetricsDataDeletionId": null,
+    "metaMetricsDataDeletionTimestamp": 0
+  },
   "MetamaskNotificationsController": {
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
