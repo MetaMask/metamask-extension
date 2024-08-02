@@ -29,7 +29,7 @@ import {
   sumHexes,
 } from '../../shared/modules/conversion.utils';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
-import { getCurrentChainId } from './selectors';
+import { getCurrentChainId, getTokenExchangeRates } from './selectors';
 import {
   checkNetworkAndAccountSupports1559,
   getUnapprovedTransactions,
@@ -147,19 +147,6 @@ export const txDataSelector = (state) => state.confirmTransaction.txData;
 const tokenDataSelector = (state) => state.confirmTransaction.tokenData;
 const tokenPropsSelector = (state) => state.confirmTransaction.tokenProps;
 
-const contractExchangeRatesSelector = (state) => {
-  const chainId = getCurrentChainId(state);
-  const contractMarketData = state.metamask.marketData?.[chainId];
-
-  return Object.entries(contractMarketData).reduce(
-    (acc, [address, marketData]) => {
-      acc[address] = marketData?.price ?? null;
-      return acc;
-    },
-    {},
-  );
-};
-
 const tokenDecimalsSelector = createSelector(
   tokenPropsSelector,
   (tokenProps) => tokenProps && tokenProps.decimals,
@@ -212,7 +199,7 @@ export const sendTokenTokenAmountAndToAddressSelector = createSelector(
 );
 
 export const contractExchangeRateSelector = createSelector(
-  contractExchangeRatesSelector,
+  (state) => getTokenExchangeRates(state),
   tokenAddressSelector,
   (contractExchangeRates, tokenAddress) => {
     return contractExchangeRates[
