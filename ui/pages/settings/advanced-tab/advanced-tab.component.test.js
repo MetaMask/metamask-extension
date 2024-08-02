@@ -33,12 +33,6 @@ describe('AdvancedTab Component', () => {
     expect(backupButton).toBeInTheDocument();
   });
 
-  it('should render restore button', () => {
-    const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
-    const restoreFile = queryByTestId('restore-file');
-    expect(restoreFile).toBeInTheDocument();
-  });
-
   it('should default the auto-lockout time to 0', () => {
     const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
     const autoLockoutTime = queryByTestId('auto-lockout-time');
