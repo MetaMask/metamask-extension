@@ -49,6 +49,7 @@ export type SnapInterfaceContextType = {
   getValue: GetValue;
   handleInputChange: HandleInputChange;
   handleFileChange: HandleFileChange;
+  snapId: string;
 };
 
 export const SnapInterfaceContext =
@@ -281,7 +282,13 @@ export const SnapInterfaceContextProvider: FunctionComponent<
 
   return (
     <SnapInterfaceContext.Provider
-      value={{ handleEvent, getValue, handleInputChange, handleFileChange }}
+      value={{
+        handleEvent,
+        getValue,
+        handleInputChange,
+        handleFileChange,
+        snapId,
+      }}
     >
       {children}
     </SnapInterfaceContext.Provider>

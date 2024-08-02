@@ -1404,6 +1404,8 @@ export default class MetamaskController extends EventEmitter {
         allowedActions: [
           `${this.phishingController.name}:maybeUpdateState`,
           `${this.phishingController.name}:testOrigin`,
+          `${this.approvalController.name}:hasRequest`,
+          `${this.approvalController.name}:acceptRequest`,
         ],
       });
 
@@ -5634,6 +5636,7 @@ export default class MetamaskController extends EventEmitter {
           origin,
         ),
         resolveInterface: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
           'SnapInterfaceController:resolveInterface',
           origin,
         ),

@@ -13,7 +13,6 @@
   }
 
   &__panel {
-    height: 100%;
     gap: 8px;
   }
 
@@ -29,6 +28,26 @@
     span {
       font-style: inherit;
       font-weight: inherit;
+    }
+  }
+
+  &__footer {
+    grid-area: footer;
+
+    &-centered {
+      & button {
+        &:first-child {
+          margin-right: 0;
+        }
+
+      }
+    }
+
+    & button {
+      &:first-child {
+        margin-right: 16px;
+      }
+
     }
   }
 }

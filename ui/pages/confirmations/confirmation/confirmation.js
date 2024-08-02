@@ -13,6 +13,7 @@ import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import log from 'loglevel';
 import { ApprovalType } from '@metamask/controller-utils';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import Box from '../../../components/ui/box';
 import {
@@ -248,27 +249,15 @@ export default function ConfirmationPage({
 
   const name = snapsMetadata[pendingConfirmation?.origin]?.name;
 
-  const SNAP_DIALOG_TYPE = [
-    ApprovalType.SnapDialogAlert,
-    ApprovalType.SnapDialogConfirmation,
-    ApprovalType.SnapDialogPrompt,
-    ApprovalType.SnapDialogDefault,
-  ];
+  const SNAP_DIALOG_TYPE = Object.values(DIALOG_APPROVAL_TYPES);
 
-  const SNAP_CUSTOM_UI_DIALOG = [
-    ApprovalType.SnapDialogAlert,
-    ApprovalType.SnapDialogConfirmation,
-    ApprovalType.SnapDialogPrompt,
-    ApprovalType.SnapDialogDefault,
-  ];
+  const SNAP_CUSTOM_UI_DIALOG = Object.values(DIALOG_APPROVAL_TYPES);
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_DIALOG_TYPE.push(
     ...Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES),
   );
   ///: END:ONLY_INCLUDE_IF
-
-  console.log('pendingConfirmation', pendingConfirmation);
 
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
   const isSnapCustomUIDialog = SNAP_CUSTOM_UI_DIALOG.includes(
@@ -278,7 +267,7 @@ export default function ConfirmationPage({
     pendingConfirmation?.type === ApprovalType.SnapDialogPrompt;
 
   const isSnapDefaultDialog =
-    pendingConfirmation?.type === ApprovalType.SnapDialogDefault;
+    pendingConfirmation?.type === DIALOG_APPROVAL_TYPES.default;
 
   // When pendingConfirmation is undefined, this will also be undefined
   const snapName = isSnapDialog && name;
@@ -523,6 +512,8 @@ export default function ConfirmationPage({
             isSnapPrompt && pendingConfirmation?.requestData.placeholder
           }
           useDelineator={false}
+          onCancel={handleSnapDialogCancel}
+          useFooter={isSnapDefaultDialog}
         />
       ) : (
         <div className="confirmation-page__content">

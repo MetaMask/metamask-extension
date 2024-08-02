@@ -1,4 +1,4 @@
-function getValues(pendingApproval, actions) {
+function getValues(pendingApproval, _t, actions) {
   const {
     requestData: { id },
   } = pendingApproval;
