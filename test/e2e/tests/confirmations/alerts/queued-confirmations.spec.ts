@@ -11,6 +11,7 @@ import {
   TestSuiteArguments,
 } from '../transactions/shared';
 import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
+import { nonHexChainId } from '../../../../../shared/modules/network.utils';
 
 const FixtureBuilder = require('../../../fixture-builder');
 const {
@@ -246,7 +247,7 @@ describe('Queued Confirmations', function () {
             MetaMetricsEventName.ConfirmationQueued,
           );
           assert.equal(events[0].properties.category, 'Confirmations');
-          assert.equal(events[0].properties.chain_id, '0x3e8');
+          assert.equal(events[0].properties.chain_id, nonHexChainId('0x3e8'));
           assert.equal(events[0].properties.environment_type, 'notification');
           assert.equal(events[0].properties.locale, 'en');
           assert.equal(events[0].properties.queue_size, 1);
@@ -259,7 +260,7 @@ describe('Queued Confirmations', function () {
             MetaMetricsEventName.ConfirmationQueued,
           );
           assert.equal(events[1].properties.category, 'Confirmations');
-          assert.equal(events[1].properties.chain_id, '0x3e8');
+          assert.equal(events[1].properties.chain_id, nonHexChainId('0x3e8'));
           assert.equal(events[1].properties.environment_type, 'notification');
           assert.equal(events[1].properties.locale, 'en');
           assert.equal(events[1].properties.queue_size, 1);
@@ -341,7 +342,7 @@ describe('Queued Confirmations', function () {
             MetaMetricsEventName.ConfirmationQueued,
           );
           assert.equal(events[0].properties.category, 'Confirmations');
-          assert.equal(events[0].properties.chain_id, '0x539');
+          assert.equal(events[0].properties.chain_id, nonHexChainId('0x539'));
           assert.equal(events[0].properties.environment_type, 'notification');
           assert.equal(events[0].properties.locale, 'en');
           assert.equal(events[0].properties.queue_size, 1);
@@ -354,7 +355,7 @@ describe('Queued Confirmations', function () {
             MetaMetricsEventName.ConfirmationQueued,
           );
           assert.equal(events[1].properties.category, 'Confirmations');
-          assert.equal(events[1].properties.chain_id, '0x539');
+          assert.equal(events[1].properties.chain_id, nonHexChainId('0x539'));
           assert.equal(events[1].properties.environment_type, 'notification');
           assert.equal(events[1].properties.locale, 'en');
           assert.equal(events[1].properties.queue_size, 1);
