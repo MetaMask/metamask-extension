@@ -137,13 +137,6 @@ const SETTINGS_CONSTANTS = [
     icon: 'fas fa-sliders-h',
   },
   {
-    tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('toggleEthSignField'),
-    descriptionMessage: (t) => t('toggleEthSignDescriptionField'),
-    route: `${ADVANCED_ROUTE}#toggle-ethsign`,
-    icon: 'fas fa-sliders-h',
-  },
-  {
     tabMessage: (t) => t('contacts'),
     sectionMessage: (t) => t('contacts'),
     descriptionMessage: (t) => t('contacts'),
@@ -448,6 +441,7 @@ const SETTINGS_CONSTANTS = [
     route: `${EXPERIMENTAL_ROUTE}#nicknames`,
     icon: 'fas fa-flask',
   },
+  // experimental settingsRefs[1]
   {
     tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('notificationsFeatureToggle'),
@@ -455,10 +449,25 @@ const SETTINGS_CONSTANTS = [
     route: `${EXPERIMENTAL_ROUTE}#notifications`,
     icon: 'fas fa-flask',
   },
-
+  // experimental settingsRefs[2]
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('redesignedConfirmationsEnabledToggle'),
+    descriptionMessage: (t) => t('redesignedConfirmationsToggleDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#redesigned-confirmations`,
+    icon: 'fas fa-flask',
+  },
+  // experimental settingsRefs[3]
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('redesignedTransactionsEnabledToggle'),
+    descriptionMessage: (t) => t('redesignedTransactionsToggleDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#redesigned-transactions`,
+    icon: 'fas fa-flask',
+  },
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   // since this route is only included with keyring-snaps feature flag, this needs to be the last settingsRef for the experimental tab
-  // experimental settingsRefs[1]
+  // experimental settingsRefs[4]
   {
     tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('snaps'),
@@ -467,7 +476,6 @@ const SETTINGS_CONSTANTS = [
     icon: 'fas fa-flask',
   },
   ///: END:ONLY_INCLUDE_IF
-
   // developerOptions settingsRefs[0]
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
@@ -504,13 +512,6 @@ const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('developerOptionsServiceWorkerKeepAlive'),
     route: `${DEVELOPER_OPTIONS_ROUTE}#service-worker-keep-alive`,
     icon: IconName.CodeCircle,
-  },
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('redesignedConfirmationsEnabledToggle'),
-    descriptionMessage: (t) => t('redesignedConfirmationsToggleDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#redesigned-confirmations`,
-    icon: 'fas fa-flask',
   },
 ];
 

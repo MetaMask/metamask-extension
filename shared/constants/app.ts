@@ -34,7 +34,6 @@ export const MESSAGE_TYPE = {
   ETH_REQUEST_ACCOUNTS: 'eth_requestAccounts',
   ETH_SEND_TRANSACTION: 'eth_sendTransaction',
   ETH_SEND_RAW_TRANSACTION: 'eth_sendRawTransaction',
-  ETH_SIGN: 'eth_sign',
   ETH_SIGN_TRANSACTION: 'eth_signTransaction',
   ETH_SIGN_TYPED_DATA: 'eth_signTypedData',
   ETH_SIGN_TYPED_DATA_V1: 'eth_signTypedData_v1',
@@ -75,7 +74,8 @@ export const SNAP_DIALOG_TYPES = {
 export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
   confirmAccountCreation: 'snap_manageAccounts:confirmAccountCreation',
   confirmAccountRemoval: 'snap_manageAccounts:confirmAccountRemoval',
-  showSnapAccountRedirect: 'showSnapAccountRedirect',
+  showSnapAccountRedirect: 'snap_manageAccounts:showSnapAccountRedirect',
+  showNameSnapAccount: 'snap_manageAccounts:showNameSnapAccount',
 };
 ///: END:ONLY_INCLUDE_IF
 

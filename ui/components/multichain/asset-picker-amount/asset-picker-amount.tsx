@@ -41,6 +41,7 @@ type AssetPickerAmountProps = OverridingUnion<
     asset: Asset;
     amount: Amount;
     isAmountLoading?: boolean;
+    error?: string;
     /**
      * Callback for when the amount changes; disables the input when undefined
      */
@@ -57,6 +58,7 @@ export const AssetPickerAmount = ({
   amount,
   onAmountChange,
   isAmountLoading,
+  error: passedError,
   ...assetPickerProps
 }: AssetPickerAmountProps) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -170,7 +172,9 @@ export const AssetPickerAmount = ({
       </Box>
       <Box display={Display.Flex}>
         {/* Only show balance if mutable */}
-        {onAmountChange && <AssetBalance asset={asset} error={error} />}
+        {onAmountChange && (
+          <AssetBalance asset={asset} error={passedError || error} />
+        )}
         {isSwapsErrorShown && (
           <Text variant={TextVariant.bodySm} color={TextColor.errorDefault}>
             {t(swapQuotesError)}

@@ -14,9 +14,10 @@ import {
   BlockaidReason,
 } from '../../../shared/constants/security-provider';
 import {
-  EIP712_PRIMARY_TYPE_PERMIT,
-  SIGNING_METHODS,
-} from '../../../shared/constants/transaction';
+  PRIMARY_TYPES_ORDER,
+  PRIMARY_TYPES_PERMIT,
+} from '../../../shared/constants/signatures';
+import { SIGNING_METHODS } from '../../../shared/constants/transaction';
 import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
 import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
@@ -37,7 +38,6 @@ const RATE_LIMIT_TYPES = {
  * default is RANDOM_SAMPLE
  */
 const RATE_LIMIT_MAP = {
-  [MESSAGE_TYPE.ETH_SIGN]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
@@ -56,7 +56,6 @@ const RATE_LIMIT_MAP = {
 
 const MESSAGE_TYPE_TO_APPROVAL_TYPE = {
   [MESSAGE_TYPE.PERSONAL_SIGN]: ApprovalType.PersonalSign,
-  [MESSAGE_TYPE.ETH_SIGN]: ApprovalType.Sign,
   [MESSAGE_TYPE.SIGN]: ApprovalType.SignTransaction,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA]: ApprovalType.EthSignTypedData,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1]: ApprovalType.EthSignTypedData,
@@ -70,12 +69,6 @@ const MESSAGE_TYPE_TO_APPROVAL_TYPE = {
  * appropriate event names.
  */
 const EVENT_NAME_MAP = {
-  [MESSAGE_TYPE.ETH_SIGN]: {
-    APPROVED: MetaMetricsEventName.SignatureApproved,
-    FAILED: MetaMetricsEventName.SignatureFailed,
-    REJECTED: MetaMetricsEventName.SignatureRejected,
-    REQUESTED: MetaMetricsEventName.SignatureRequested,
-  },
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA]: {
     APPROVED: MetaMetricsEventName.SignatureApproved,
     REJECTED: MetaMetricsEventName.SignatureRejected,
@@ -148,7 +141,6 @@ let globalRateLimitCount = 0;
  * @param {Function} opts.getDeviceModel
  * @param {Function} opts.isConfirmationRedesignEnabled
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
- * @param {AppStateController} opts.appStateController
  * @param {number} [opts.globalRateLimitTimeout] - time, in milliseconds, of the sliding
  * time window that should limit the number of method calls tracked to globalRateLimitMaxAmount.
  * @param {number} [opts.globalRateLimitMaxAmount] - max number of method calls that should
@@ -300,10 +292,15 @@ export default function createRPCMethodTrackingMiddleware({
           } else if (method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4) {
             const { primaryType } = parseTypedDataMessage(data);
             eventProperties.eip712_primary_type = primaryType;
-            if (primaryType === EIP712_PRIMARY_TYPE_PERMIT) {
+            if (PRIMARY_TYPES_PERMIT.includes(primaryType)) {
               eventProperties.ui_customizations = [
                 ...(eventProperties.ui_customizations || []),
                 MetaMetricsEventUiCustomization.Permit,
+              ];
+            } else if (PRIMARY_TYPES_ORDER.includes(primaryType)) {
+              eventProperties.ui_customizations = [
+                ...(eventProperties.ui_customizations || []),
+                MetaMetricsEventUiCustomization.Order,
               ];
             }
           }
@@ -345,18 +342,8 @@ export default function createRPCMethodTrackingMiddleware({
         return callback();
       }
 
-      // The rpc error methodNotFound implies that 'eth_sign' is disabled in Advanced Settings
-      const isDisabledEthSignAdvancedSetting =
-        method === MESSAGE_TYPE.ETH_SIGN &&
-        res.error?.code === errorCodes.rpc.methodNotFound;
-
-      const isDisabledRPCMethod = isDisabledEthSignAdvancedSetting;
-
       let event;
-      if (isDisabledRPCMethod) {
-        event = eventType.FAILED;
-        eventProperties.error = res.error;
-      } else if (res.error?.code === errorCodes.provider.userRejectedRequest) {
+      if (res.error?.code === errorCodes.provider.userRejectedRequest) {
         event = eventType.REJECTED;
       } else if (
         res.error?.code === errorCodes.rpc.internal &&
@@ -370,17 +357,15 @@ export default function createRPCMethodTrackingMiddleware({
       }
 
       let blockaidMetricProps = {};
-      if (!isDisabledRPCMethod) {
-        if (SIGNING_METHODS.includes(method)) {
-          const securityAlertResponse =
-            appStateController.getSignatureSecurityAlertResponse(
-              req.securityAlertResponse?.securityAlertId,
-            );
+      if (SIGNING_METHODS.includes(method)) {
+        const securityAlertResponse =
+          appStateController.getSignatureSecurityAlertResponse(
+            req.securityAlertResponse?.securityAlertId,
+          );
 
-          blockaidMetricProps = getBlockaidMetricsProps({
-            securityAlertResponse,
-          });
-        }
+        blockaidMetricProps = getBlockaidMetricsProps({
+          securityAlertResponse,
+        });
       }
 
       const properties = {

@@ -1,4 +1,4 @@
-name: Add team label to PR when it is opened
+name: Add team label
 
 on:
   pull_request:
@@ -7,31 +7,6 @@ on:
 
 jobs:
   add-team-label:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-
-      - run: corepack enable
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-            fetch-depth: 0 # This is needed to checkout all branches
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-
-      - name: Install dependencies
-        run: yarn --immutable
-
-      - name: Add team label to PR
-        id: add-team-label-to-pr
-        env:
-          RELEASE_LABEL_TOKEN: ${{ secrets.RELEASE_LABEL_TOKEN }}
-        run: yarn run add-team-label-to-pr
+    uses: metamask/github-tools/.github/workflows/add-team-label.yml@main
+    secrets:
+      PERSONAL_ACCESS_TOKEN: ${{ secrets.RELEASE_LABEL_TOKEN }}

@@ -42,7 +42,7 @@
     "message": "Conecte sua carteira de hardware QR"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave (em breve)"
+    "message": "Ngrave Zero"
   },
   "SIWEAddressInvalid": {
     "message": "O endereço na solicitação de entrada não coincide com o endereço da conta que você está usando para entrar."
@@ -278,7 +278,13 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "Adicionar uma nova conta"
+    "message": "Adicionar uma nova conta Ethereum"
+  },
+  "addNewBitcoinAccount": {
+    "message": "Adicionar uma nova conta Bitcoin (Beta)"
+  },
+  "addNewBitcoinTestnetAccount": {
+    "message": "Adicionar uma nova conta Bitcoin (Testnet)"
   },
   "addNewToken": {
     "message": "Adicionar novo token"
@@ -632,6 +638,9 @@
   "attemptToCancelSwapForFree": {
     "message": "Tentar cancelar a troca sem custo"
   },
+  "attributes": {
+    "message": "Atributos"
+  },
   "attributions": {
     "message": "Atribuições"
   },
@@ -756,6 +765,22 @@
   "bitcoinActivityNotSupported": {
     "message": "Atividades com Bitcoin não são suportadas"
   },
+  "bitcoinSupportSectionTitle": {
+    "message": "Bitcoin"
+  },
+  "bitcoinSupportToggleDescription": {
+    "message": "Ativar esse recurso lhe dará a opção de adicionar uma conta Bitcoin à sua extensão da MetaMask derivada de sua Frase de Recuperação Secreta existente. Este é um recurso beta experimental, portanto seu uso será por sua conta e risco. Para nos dar seu feedback sobre esta nova experiência Bitcoin, preencha este $1.",
+    "description": "$1 is the link to a product feedback form"
+  },
+  "bitcoinSupportToggleTitle": {
+    "message": "Ative \"Adicionar uma nova conta Bitcoin (Beta)\""
+  },
+  "bitcoinTestnetSupportToggleDescription": {
+    "message": "Ao ativar esse recurso, você terá a opção de adicionar uma conta Bitcoin para a rede de teste."
+  },
+  "bitcoinTestnetSupportToggleTitle": {
+    "message": "Ative \"Adicionar uma nova conta Bitcoin (Testnet)\""
+  },
   "blockExplorerAccountAction": {
     "message": "Conta",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -822,6 +847,9 @@
   },
   "blockies": {
     "message": "Blockies"
+  },
+  "boughtFor": {
+    "message": "Comprado para"
   },
   "bridge": {
     "message": "Ponte"
@@ -943,6 +971,9 @@
   },
   "coingecko": {
     "message": "CoinGecko"
+  },
+  "collectionName": {
+    "message": "Nome da coleção"
   },
   "comboNoOptions": {
     "message": "Nenhuma opção encontrada",
@@ -1249,6 +1280,9 @@
   "createSnapAccountTitle": {
     "message": "Criar conta"
   },
+  "creatorAddress": {
+    "message": "Endereço do criador"
+  },
   "crossChainSwapsLink": {
     "message": "Faça trocas entre redes com o MetaMask Portfolio"
   },
@@ -1436,6 +1470,12 @@
   "dataHex": {
     "message": "Hex"
   },
+  "dataUnavailable": {
+    "message": "dados não disponíveis"
+  },
+  "dateCreated": {
+    "message": "Data de criação"
+  },
   "dcent": {
     "message": "D'Cent"
   },
@@ -1514,6 +1554,12 @@
   },
   "developerOptions": {
     "message": "Opções para desenvolvedores"
+  },
+  "developerOptionsEnableConfirmationsRedesignDescription": {
+    "message": "Ativa ou desativa o recurso de redesenho de confirmações atualmente em desenvolvimento"
+  },
+  "developerOptionsEnableConfirmationsRedesignTitle": {
+    "message": "Redesenho de confirmações"
   },
   "developerOptionsNetworkMenuRedesignDescription": {
     "message": "Alterna o novo design do menu de Redes"
@@ -1712,6 +1758,9 @@
   "editGasTooLow": {
     "message": "Tempo de processamento desconhecido"
   },
+  "editNetworkLink": {
+    "message": "editar a rede original"
+  },
   "editNonceField": {
     "message": "Editar nonce"
   },
@@ -1748,6 +1797,9 @@
   },
   "enableTokenAutoDetection": {
     "message": "Ativar detecção automática de tokens"
+  },
+  "enable_auto_detection_toggle_automatically": {
+    "message": "Essa opção estará automaticamente ativada na extensão da Metamask v12.3.0 para usuários que tenham a funcionalidade básica ativada"
   },
   "enabled": {
     "message": "Ativado"
@@ -1881,6 +1933,12 @@
   "etherscanViewOn": {
     "message": "Ver no Etherscan"
   },
+  "existingChainId": {
+    "message": "As informações que você inseriu estão associadas a um ID de cadeia existente."
+  },
+  "existingRpcUrl": {
+    "message": "Este URL está associado a outro ID de cadeia."
+  },
   "expandView": {
     "message": "Expandir exibição"
   },
@@ -1935,6 +1993,9 @@
     "message": "A importação de arquivo não está funcionando? Clique aqui!",
     "description": "Helps user import their account from a JSON file"
   },
+  "findTheRightChainId": {
+    "message": "Encontre a opção correta em:"
+  },
   "flaskWelcomeUninstall": {
     "message": "você deve desinstalar essa extensão",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -1973,6 +2034,9 @@
   },
   "forgotPassword": {
     "message": "Esqueceu a senha?"
+  },
+  "form": {
+    "message": "formulário"
   },
   "from": {
     "message": "De"
@@ -2181,6 +2245,12 @@
   },
   "highLowercase": {
     "message": "alta"
+  },
+  "highestCurrentBid": {
+    "message": "Maior lance atual"
+  },
+  "highestFloorPrice": {
+    "message": "Maior preço mínimo"
   },
   "history": {
     "message": "Histórico"
@@ -3195,6 +3265,9 @@
   "nonceField": {
     "message": "Personalizar o nonce da transação"
   },
+  "nonceFieldDesc": {
+    "message": "Ative esta opção para alterar o nonce (número da transação) ao enviar ativos. Use com cautela, pois este é um recurso avançado."
+  },
   "nonceFieldHeading": {
     "message": "Nonce personalizado"
   },
@@ -3346,7 +3419,7 @@
   },
   "notificationTransactionSuccessView": {
     "message": "Ver em $1",
-    "description": "Additional content in browser notification that appears when a transaction is confirmed and has a block explorer URL"
+    "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
   "notifications": {
     "message": "Notificações"
@@ -3397,6 +3470,9 @@
   },
   "numberOfNewTokensDetectedSingular": {
     "message": "1 novo token encontrado nesta conta"
+  },
+  "numberOfTokens": {
+    "message": "Número de tokens"
   },
   "ofTextNofM": {
     "message": "de"
@@ -3982,6 +4058,12 @@
   "prev": {
     "message": "Anterior"
   },
+  "price": {
+    "message": "Preço"
+  },
+  "priceUnavailable": {
+    "message": "preço não disponível"
+  },
   "primaryCurrencySetting": {
     "message": "Moeda principal"
   },
@@ -4133,6 +4215,9 @@
   },
   "quoteRate": {
     "message": "Taxa de cotação"
+  },
+  "rank": {
+    "message": "Classificação"
   },
   "reAddAccounts": {
     "message": "readicione outras contas"
@@ -4494,13 +4579,10 @@
   "seedPhraseIntroRecommendedButtonCopy": {
     "message": "Proteger minha carteira (recomendado)"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "Anote e guarde em vários locais secretos."
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Salve em um gerenciador de senhas"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "Guarde em um cofre de banco."
   },
   "seedPhraseIntroSidebarCopyOne": {
@@ -4583,9 +4665,6 @@
   },
   "send": {
     "message": "Enviar"
-  },
-  "sendAToken": {
-    "message": "Enviar um token"
   },
   "sendBugReport": {
     "message": "Envie-nos um relatório de bugs."
@@ -4696,6 +4775,9 @@
   "showIncomingTransactionsExplainer": {
     "message": "Isso depende de diferentes APIs de terceiros para cada rede, o que expõe seu endereço Ethereum e seu endereço IP."
   },
+  "showLess": {
+    "message": "Mostrar menos"
+  },
   "showMore": {
     "message": "Exibir mais"
   },
@@ -4725,9 +4807,6 @@
   },
   "signatureRequestGuidance": {
     "message": "Assine essa mensagem apenas se entende integralmente o conteúdo e confia no site solicitante."
-  },
-  "signatureRequestWarning": {
-    "message": "Assinar essa mensagem pode ser perigoso. Você pode estar dando controle total da sua conta e ativos à pessoa na outra ponta dessa mensagem. Isso significa que ela pode zerar sua conta a qualquer momento. Prossiga com cautela. $1."
   },
   "signed": {
     "message": "Assinado"
@@ -4917,6 +4996,9 @@
   },
   "snapDetailWebsite": {
     "message": "Site"
+  },
+  "snapHomeMenu": {
+    "message": "Menu inicial do Snap"
   },
   "snapInstallRequest": {
     "message": "Ao instalar $1, serão dadas as permissões a seguir.",
@@ -5841,45 +5923,6 @@
     "message": "Para: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "Você está vulnerável a ataques de phishing. Proteja-se desativando eth_sign."
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "Se você ativar essa configuração, poderá receber solicitações de assinatura ilegíveis. Ao assinar uma mensagem que não entende, você poderá estar concordando em ceder seus fundos e NFTs."
-  },
-  "toggleEthSignField": {
-    "message": "Solicitações eth_sign"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " você pode estar sendo vítima de um golpe"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "Se pediram para você ativar essa configuração,"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "Entendo que poderei perder todos os meus fundos e NFTs se eu ativar solicitações eth_sign. "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "Permitir solicitações eth_sign pode deixar você vulnerável a ataques de phishing. Sempre revise o URL e tenha cuidado ao assinar mensagens que contenham código."
-  },
-  "toggleEthSignModalFormError": {
-    "message": "O texto está incorreto"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "Insira \"Eu só assino o que eu entendo\" para continuar"
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "Eu só assino o que eu entendo"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "Use por sua conta e risco"
-  },
-  "toggleEthSignOff": {
-    "message": "DESLIGADO (recomendado)"
-  },
-  "toggleEthSignOn": {
-    "message": "LIGADO (não recomendado)"
-  },
   "toggleRequestQueueDescription": {
     "message": "Isso permite que você selecione uma rede para cada site em vez de uma única rede selecionada para todos eles. O recurso evitará que você alterne manualmente entre redes, o que pode atrapalhar sua experiência de usuário em determinados sites."
   },
@@ -5934,6 +5977,9 @@
   "tokenShowUp": {
     "message": "Seus tokens podem não aparecer automaticamente em sua carteira."
   },
+  "tokenStandard": {
+    "message": "Padrão de token"
+  },
   "tokenSymbol": {
     "message": "Símbolo do token"
   },
@@ -5943,6 +5989,9 @@
   "tokensFoundTitle": {
     "message": "$1 novos tokens encontrados",
     "description": "$1 is the number of new tokens detected"
+  },
+  "tokensInCollection": {
+    "message": "Tokens em coleção"
   },
   "tooltipApproveButton": {
     "message": "Estou ciente"
@@ -5976,6 +6025,9 @@
   },
   "transactionCreated": {
     "message": "Transação criada com valor de $1 às $2."
+  },
+  "transactionDataFunction": {
+    "message": "Função"
   },
   "transactionDetailDappGasMoreInfo": {
     "message": "Site sugerido"
@@ -6149,6 +6201,9 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
+  "unMatchedChain": {
+    "message": "De acordo com nossos registros, este URL não corresponde a um provedor conhecido para este ID de cadeia."
+  },
   "unapproved": {
     "message": "Não aprovado"
   },
@@ -6200,6 +6255,9 @@
   "update": {
     "message": "Atualizar"
   },
+  "updateOrEditNetworkInformations": {
+    "message": "Atualize suas informações ou"
+  },
   "updateRequest": {
     "message": "Solicitação de atualização"
   },
@@ -6232,6 +6290,9 @@
   },
   "useNftDetection": {
     "message": "Detectar NFTs automaticamente"
+  },
+  "useNftDetectionDescriptionText": {
+    "message": "Permita que a MetaMask use serviços de terceiros para adicionar os NFTs que você possui. A detecção automática de NFTs expõe seu endereço IP e o endereço da sua conta a esses serviços. Ativar esse recurso pode associar seu endereço IP ao seu endereço Ethereum e exibir NFTs falsos enviados por golpistas. Você pode adicionar tokens manualmente para evitar esse risco."
   },
   "usePhishingDetection": {
     "message": "Usar detecção de phishing"
@@ -6424,6 +6485,9 @@
   "whatsThis": {
     "message": "O que é isso?"
   },
+  "wrongChainId": {
+    "message": "Este ID de cadeia não corresponde ao nome da rede."
+  },
   "wrongNetworkName": {
     "message": "De acordo com os nossos registros, o nome da rede pode não corresponder a esta ID de cadeia."
   },
@@ -6455,9 +6519,6 @@
   },
   "yourBalance": {
     "message": "Seu saldo"
-  },
-  "yourFundsMayBeAtRisk": {
-    "message": "Seus fundos podem estar em risco"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Seu NFT pode estar em risco"
