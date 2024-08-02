@@ -84,6 +84,7 @@ type TemporaryBackgroundState = {
     };
     selectedAccount: string;
   };
+  keyrings: { type: string; accounts: string[] }[];
 };
 
 type RootReducerReturnType = ReturnType<typeof rootReducer>;
