@@ -57,6 +57,11 @@ export const domainInitialState = initialState;
 
 const name = 'DNS';
 
+let useSnapForENS = false;
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+useSnapForENS = true;
+///: END:ONLY_INCLUDE_IF
+
 let web3Provider = null;
 
 const slice = createSlice({
@@ -167,18 +172,20 @@ export function initializeDomainSlice() {
   return (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
-    const networkName = CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP[chainId];
-    const chainIdInt = parseInt(chainId, 16);
-    const ensAddress = ensNetworkMap[chainIdInt.toString()];
-    const networkIsSupported = Boolean(ensAddress);
-    if (networkIsSupported) {
-      web3Provider = new Web3Provider(global.ethereumProvider, {
-        chainId: chainIdInt,
-        name: networkName,
-        ensAddress,
-      });
-    } else {
-      web3Provider = null;
+    if (!useSnapForENS) {
+      const networkName = CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP[chainId];
+      const chainIdInt = parseInt(chainId, 16);
+      const ensAddress = ensNetworkMap[chainIdInt.toString()];
+      const networkIsSupported = Boolean(ensAddress);
+      if (networkIsSupported) {
+        web3Provider = new Web3Provider(global.ethereumProvider, {
+          chainId: chainIdInt,
+          name: networkName,
+          ensAddress,
+        });
+      } else {
+        web3Provider = null;
+      }
     }
     dispatch(enableDomainLookup(chainId));
   };
@@ -287,14 +294,16 @@ export function lookupDomainName(domainName) {
       let hasSnapResolution = false;
       let error;
       let address;
-      try {
-        address = await web3Provider?.resolveName(trimmedDomainName);
-      } catch (err) {
-        error = err;
+      if (!useSnapForENS) {
+        try {
+          address = await web3Provider?.resolveName(trimmedDomainName);
+        } catch (err) {
+          error = err;
+        }
       }
       const chainId = getCurrentChainId(state);
       const chainIdInt = parseInt(chainId, 16);
-      if (address) {
+      if (address && !useSnapForENS) {
         resolutions = [
           {
             resolvedAddress: address,
