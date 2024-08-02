@@ -238,9 +238,6 @@
   "backupApprovalNotice": {
     "message": "Faça backup da Frase de Recuperação Secreta para manter sua carteira e seus fundos em segurança."
   },
-  "backupNow": {
-    "message": "Fazer backup agora"
-  },
   "balance": {
     "message": "Saldo"
   },

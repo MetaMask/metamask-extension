@@ -96,9 +96,6 @@
   "backupApprovalNotice": {
     "message": "Pasidarykite atsarginę savo slapto atkūrimo kodo kopiją, kad jūsų slaptažodinė ir fondai būtų saugūs."
   },
-  "backupNow": {
-    "message": "Daryti atsarginę kopiją dabar"
-  },
   "balance": {
     "message": "Likutis"
   },

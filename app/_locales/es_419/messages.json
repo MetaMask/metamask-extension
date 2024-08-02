@@ -238,9 +238,6 @@
   "backupApprovalNotice": {
     "message": "Cree una copia de seguridad del código de recuperación secreto para mantener protegidos sus fondos y su cartera."
   },
-  "backupNow": {
-    "message": "Crear copia de seguridad ahora"
-  },
   "balance": {
     "message": "Saldo"
   },

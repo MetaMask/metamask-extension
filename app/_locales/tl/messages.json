@@ -684,15 +684,6 @@
   "backupKeyringSnapReminder": {
     "message": "Siguraduhin na maaari mong maakses ang anumang account na nilikha ng Snap na ito sa sarili mo bago ito alisin"
   },
-  "backupNow": {
-    "message": "I-back up na"
-  },
-  "backupUserData": {
-    "message": "I-back up ang iyong datos"
-  },
-  "backupUserDataDescription": {
-    "message": "Maaari mong i-backup ang mga setting ng user na naglalaman ng mga kagustuhan at mga address ng account mula sa isang file na JSON."
-  },
   "balance": {
     "message": "Balanse"
   },

@@ -96,9 +96,6 @@
   "backupApprovalNotice": {
     "message": "Раправете резервно копие на вашия Secret Recovery код, за да запазите портфейла и средствата си."
   },
-  "backupNow": {
-    "message": "Архивиране сега"
-  },
   "balance": {
     "message": "Баланс"
   },

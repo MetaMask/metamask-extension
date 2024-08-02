@@ -96,9 +96,6 @@
   "backupApprovalNotice": {
     "message": "גבה/י את קוד השחזור הסודי שלך כדי לשמור את בטיחות הארנק והכספים שלך."
   },
-  "backupNow": {
-    "message": "צור גיבוי כעת"
-  },
   "balance": {
     "message": "יתרה"
   },

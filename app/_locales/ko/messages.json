@@ -684,15 +684,6 @@
   "backupKeyringSnapReminder": {
     "message": "제거하기 전에 이 Snap에서 생성한 계정에 직접 액세스할 수 있는지 확인하세요"
   },
-  "backupNow": {
-    "message": "지금 백업"
-  },
-  "backupUserData": {
-    "message": "데이터를 백업하세요"
-  },
-  "backupUserDataDescription": {
-    "message": "기본 설정과 계약이 포함된 사용자 설정을 JSON 파일로 백업할 수 있습니다."
-  },
   "balance": {
     "message": "잔액"
   },

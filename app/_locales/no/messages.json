@@ -96,9 +96,6 @@
   "backupApprovalNotice": {
     "message": "Sikkerhetskopier den hemmelige gjenopprettingskoden for å sikre lommeboken og midlene."
   },
-  "backupNow": {
-    "message": "Sikkerhetskopier nå"
-  },
   "balance": {
     "message": "Saldo "
   },

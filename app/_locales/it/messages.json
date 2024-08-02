@@ -321,9 +321,6 @@
   "backupApprovalNotice": {
     "message": "Mantieni al sicuro il portafoglio e i fondi eseguendo il backup della frase di recupero."
   },
-  "backupNow": {
-    "message": "Esegui il backup ora"
-  },
   "balance": {
     "message": "Bilancio"
   },

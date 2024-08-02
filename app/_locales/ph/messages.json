@@ -158,9 +158,6 @@
   "backupApprovalNotice": {
     "message": "I-back up ang iyong Lihim na Code sa Pag-recover para mapanatiling secure ang iyong wallet at mga pondo."
   },
-  "backupNow": {
-    "message": "I-back up ngayon"
-  },
   "balance": {
     "message": "Balanse"
   },

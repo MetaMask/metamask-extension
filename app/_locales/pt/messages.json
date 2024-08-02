@@ -684,15 +684,6 @@
   "backupKeyringSnapReminder": {
     "message": "Confirme se você consegue acessar por conta própria as contas criadas por esse Snap antes de removê-las"
   },
-  "backupNow": {
-    "message": "Fazer backup agora"
-  },
-  "backupUserData": {
-    "message": "Faça backup dos seus dados"
-  },
-  "backupUserDataDescription": {
-    "message": "Você pode fazer backup de dados como seus contatos e preferências."
-  },
   "balance": {
     "message": "Saldo"
   },

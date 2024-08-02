@@ -96,9 +96,6 @@
   "backupApprovalNotice": {
     "message": "Készíts biztonsági másolatot titkos helyreállítási kódodról, hogy pénztárcád és pénzalapod biztosítva legyen."
   },
-  "backupNow": {
-    "message": "Készíts biztonsági mentést most"
-  },
   "balance": {
     "message": "Egyenleg"
   },
