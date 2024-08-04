@@ -58,9 +58,13 @@ export function findExistingNetwork(
 }
 
 export function validateChainId(chainId: Hex): Hex {
-  const _chainId = chainId.toLowerCase() as Hex;
+  const _chainId = chainId.toLowerCase();
 
-  if (!isPrefixedFormattedHexString(_chainId)) {
+  if (
+    !((value: string): value is Hex => isPrefixedFormattedHexString(value))(
+      _chainId,
+    )
+  ) {
     throw ethErrors.rpc.invalidParams({
       message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
     });
@@ -219,8 +223,8 @@ export function validateAddEthereumChainParams(
   };
 }
 
-export async function switchChain<Result extends Json = Json>(
-  res: JsonRpcResponse<Result>,
+export async function switchChain<Result extends Json = never>(
+  res: JsonRpcResponse<Result | null>,
   end: JsonRpcEngineEndCallback,
   origin: OriginString,
   chainId: Hex,
