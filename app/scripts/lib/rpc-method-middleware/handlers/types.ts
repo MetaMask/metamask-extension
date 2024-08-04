@@ -4,6 +4,10 @@ import {
 } from '@metamask/approval-controller';
 import { ProviderConfig } from '@metamask/network-controller';
 
+export type HandlerWrapper = {
+  methodNames: [string] | string[];
+  hookNames: Record<string, boolean>;
+};
 export type EndApprovalFlow = ({ id }: EndFlowOptions) => void;
 export type FindNetworkConfigurationBy = (
   rpcInfo: Record<string, string>,
