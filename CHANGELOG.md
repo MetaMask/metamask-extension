@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prevent crashes / error screens when taking some token actions if the "Show balance and token price checker" setting is off ([#26264](https://github.com/MetaMask/metamask-extension/pull/26264))
 - Ensure error messages are correctly shown to the user inline on the send screen, if an error occurs when attempting to create the transaction ([#26253](https://github.com/MetaMask/metamask-extension/pull/26253))
 - Fix error that could prevent the send screen from loading ([#26295](https://github.com/MetaMask/metamask-extension/pull/26295))
-- Fix crash that could occur some network data is correct or outdated ([#26327](https://github.com/MetaMask/metamask-extension/pull/26327))
+- Fix crash that could occur when selected network is missing from network configuration ([#26327](https://github.com/MetaMask/metamask-extension/pull/26327))
 - Migrate transaction history data so that they are limited to 100 entries ([#26291](https://github.com/MetaMask/metamask-extension/pull/26291))
 
 ## [12.0.0]
