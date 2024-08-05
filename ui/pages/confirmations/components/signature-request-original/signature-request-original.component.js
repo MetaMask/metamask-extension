@@ -39,6 +39,8 @@ import {
   Icon,
   IconName,
   Text,
+  TagUrl
+
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../components/component-library';
 
@@ -185,15 +187,15 @@ export default class SignatureRequestOriginal extends Component {
                 marginRight={4}
               />
             ) : (
-              <SiteOrigin
-                title={txData.msgParams.origin}
-                siteOrigin={txData.msgParams.origin}
-                iconSrc={targetSubjectMetadata?.iconUrl}
-                iconName={
-                  getURLHostName(targetSubjectMetadata?.origin) ||
-                  targetSubjectMetadata?.origin
-                }
-                chip
+              <TagUrl
+                label={txData.msgParams.origin}
+                src={targetSubjectMetadata?.iconUrl}
+                actionButtonLabel="Click"
+                actionButtonProps={{
+                  externalLink: true,
+                  href:txData.msgParams.origin ,
+                }}
+                
               />
             )
           }
