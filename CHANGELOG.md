@@ -19,7 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix error that could prevent the send screen from loading ([#26295](https://github.com/MetaMask/metamask-extension/pull/26295))
 - Fix crash that could occur when selected network is missing from network configuration ([#26327](https://github.com/MetaMask/metamask-extension/pull/26327))
 - Migrate transaction history data so that they are limited to 100 entries ([#26291](https://github.com/MetaMask/metamask-extension/pull/26291))
-- Fix crash that could occur some network data is correct or outdated ([#26327](https://github.com/MetaMask/metamask-extension/pull/26327))
 - Prevent pending transactions from causing excessive disk space usage ([#26236](https://github.com/MetaMask/metamask-extension/pull/26236))
 - Fix excessive disk space usage for some users that have had stuck pending transactions in the past ([#26291](https://github.com/MetaMask/metamask-extension/pull/26291))
 
