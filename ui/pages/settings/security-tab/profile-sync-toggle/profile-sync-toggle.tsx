@@ -1,7 +1,6 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   useEnableProfileSyncing,
   useDisableProfileSyncing,
@@ -11,12 +10,7 @@ import {
   selectIsProfileSyncingEnabled,
   selectIsProfileSyncingUpdateLoading,
 } from '../../../../selectors/metamask-notifications/profile-syncing';
-import { selectParticipateInMetaMetrics } from '../../../../selectors/metamask-notifications/authentication';
 import { showModal } from '../../../../store/actions';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
 import { Box, Text } from '../../../../components/component-library';
 import ToggleButton from '../../../../components/ui/toggle-button';
 import {
@@ -47,7 +41,6 @@ function ProfileSyncBasicFunctionalitySetting() {
 
 const ProfileSyncToggle = () => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const { enableProfileSyncing, error: enableProfileSyncingError } =
     useEnableProfileSyncing();
@@ -59,7 +52,6 @@ const ProfileSyncToggle = () => {
   const error = enableProfileSyncingError || disableProfileSyncingError;
 
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
-  const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
   const isProfileSyncingUpdateLoading = useSelector(
     selectIsProfileSyncingUpdateLoading,
   );
@@ -71,26 +63,11 @@ const ProfileSyncToggle = () => {
           name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
           turnOffProfileSyncing: () => {
             disableProfileSyncing();
-            trackEvent({
-              category: MetaMetricsEventCategory.Settings,
-              event: MetaMetricsEventName.TurnOffProfileSyncing,
-              properties: {
-                participateInMetaMetrics,
-              },
-            });
           },
         }),
       );
     } else {
       await enableProfileSyncing();
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.TurnOnProfileSyncing,
-        properties: {
-          isProfileSyncingEnabled,
-          participateInMetaMetrics,
-        },
-      });
     }
   };
 

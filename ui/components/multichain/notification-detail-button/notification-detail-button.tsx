@@ -5,6 +5,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { TRIGGER_TYPES } from '../../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
 import {
   Button,
   ButtonVariant,
@@ -37,10 +38,15 @@ export const NotificationDetailButton = ({
   const onClick = () => {
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationDetailClicked,
+      event: MetaMetricsEventName.NotificationClicked,
       properties: {
-        notificationId: notification.id,
-        notificationType: notification.type,
+        notification_id: notification.id,
+        notification_type: notification.type,
+        ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT && {
+          chain_id: notification?.chain_id,
+        }),
+        notification_is_read: notification.isRead,
+        click_type: 'detail',
       },
     });
   };
