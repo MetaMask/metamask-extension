@@ -1,7 +1,12 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import reactRouterDom from 'react-router-dom';
-import { EthAccountType } from '@metamask/keyring-api';
+import {
+  BtcAccountType,
+  EthAccountType,
+  KeyringAccountType,
+} from '@metamask/keyring-api';
+import { merge } from 'lodash';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -10,6 +15,7 @@ import messages from '../../../../app/_locales/en/messages.json';
 import { CONNECT_HARDWARE_ROUTE } from '../../../helpers/constants/routes';
 ///: END:ONLY_INCLUDE_IF
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { AccountListMenu } from '.';
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -35,8 +41,17 @@ jest.mock('react-router-dom', () => ({
   useHistory: jest.fn(() => []),
 }));
 
-const render = (props = { onClose: () => jest.fn() }) => {
-  const store = configureStore({
+const render = (
+  state = {},
+  props: {
+    onClose: () => void;
+    allowedAccountTypes: KeyringAccountType[];
+  } = {
+    onClose: () => jest.fn(),
+    allowedAccountTypes: [EthAccountType.Eoa, EthAccountType.Erc4337],
+  },
+) => {
+  const defaultState = {
     ...mockState,
     metamask: {
       ...mockState.metamask,
@@ -76,7 +91,8 @@ const render = (props = { onClose: () => jest.fn() }) => {
     unconnectedAccount: {
       state: 'OPEN',
     },
-  });
+  };
+  const store = configureStore(merge(defaultState, state));
   return renderWithProvider(<AccountListMenu {...props} />, store);
 };
 
@@ -87,6 +103,7 @@ describe('AccountListMenu', () => {
     jest
       .spyOn(reactRouterDom, 'useHistory')
       .mockImplementation()
+      // @ts-expect-error mocking history return
       .mockReturnValue({ push: historyPushMock });
   });
 
@@ -109,7 +126,7 @@ describe('AccountListMenu', () => {
     );
     expect(listItems).toHaveLength(6);
 
-    const searchBox = document.querySelector('input[type=search]');
+    const searchBox = document.querySelector('input[type=search]') as Element;
     fireEvent.change(searchBox, {
       target: { value: 'Le' },
     });
@@ -123,7 +140,7 @@ describe('AccountListMenu', () => {
   it('displays the "no accounts" message when search finds nothing', () => {
     const { getByTestId } = render();
 
-    const searchBox = document.querySelector('input[type=search]');
+    const searchBox = document.querySelector('input[type=search]') as Element;
     fireEvent.change(searchBox, {
       target: { value: 'adslfkjlx' },
     });
@@ -217,11 +234,11 @@ describe('AccountListMenu', () => {
   });
 
   it('add / Import / Hardware button functions as it should', () => {
-    const { getByText } = render();
+    const { getByText, getAllByTestId, getByLabelText } = render();
 
     // Ensure the button is displaying
-    const button = document.querySelectorAll(
-      '[data-testid="multichain-account-menu-popover-action-button"]',
+    const button = getAllByTestId(
+      'multichain-account-menu-popover-action-button',
     );
     expect(button).toHaveLength(1);
 
@@ -230,13 +247,13 @@ describe('AccountListMenu', () => {
     expect(getByText('Add a new Ethereum account')).toBeInTheDocument();
     expect(getByText('Import account')).toBeInTheDocument();
     expect(getByText('Add hardware wallet')).toBeInTheDocument();
-    const header = document.querySelector('header');
+    const header = document.querySelector('header') as Element;
     expect(header.innerHTML).toContain('Add account');
     expect(
       document.querySelector('button[aria-label="Close"]'),
     ).toBeInTheDocument();
 
-    const backButton = document.querySelector('button[aria-label="Back"]');
+    const backButton = getByLabelText('Back');
     expect(backButton).toBeInTheDocument();
     backButton.click();
 
@@ -244,11 +261,9 @@ describe('AccountListMenu', () => {
   });
 
   it('shows the account creation UI when Add Account is clicked', () => {
-    const { getByText, getByPlaceholderText } = render();
+    const { getByText, getByPlaceholderText, getByTestId } = render();
 
-    const button = document.querySelector(
-      '[data-testid="multichain-account-menu-popover-action-button"]',
-    );
+    const button = getByTestId('multichain-account-menu-popover-action-button');
     button.click();
 
     fireEvent.click(getByText('Add a new Ethereum account'));
@@ -263,11 +278,9 @@ describe('AccountListMenu', () => {
   });
 
   it('shows the account import UI when Import Account is clicked', () => {
-    const { getByText, getByPlaceholderText } = render();
+    const { getByText, getByPlaceholderText, getByTestId } = render();
 
-    const button = document.querySelector(
-      '[data-testid="multichain-account-menu-popover-action-button"]',
-    );
+    const button = getByTestId('multichain-account-menu-popover-action-button');
     button.click();
 
     fireEvent.click(getByText('Import account'));
@@ -279,11 +292,9 @@ describe('AccountListMenu', () => {
   });
 
   it('navigates to hardware wallet connection screen when clicked', () => {
-    const { getByText } = render();
+    const { getByText, getByTestId } = render();
 
-    const button = document.querySelector(
-      '[data-testid="multichain-account-menu-popover-action-button"]',
-    );
+    const button = getByTestId('multichain-account-menu-popover-action-button');
     button.click();
 
     fireEvent.click(getByText('Add hardware wallet'));
@@ -292,7 +303,10 @@ describe('AccountListMenu', () => {
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   describe('addSnapAccountButton', () => {
-    const renderWithState = (state, props = { onClose: mockOnClose }) => {
+    const renderWithState = (
+      state: { addSnapAccountEnabled: boolean },
+      props = { onClose: mockOnClose },
+    ) => {
       const store = configureStore({
         ...mockState,
         ...{
@@ -338,9 +352,11 @@ describe('AccountListMenu', () => {
     };
 
     it("doesn't render the add snap account button if it's disabled", async () => {
-      const { getByText } = renderWithState({ addSnapAccountEnabled: false });
-      const button = document.querySelector(
-        '[data-testid="multichain-account-menu-popover-action-button"]',
+      const { getByText, getByTestId } = renderWithState({
+        addSnapAccountEnabled: false,
+      });
+      const button = getByTestId(
+        'multichain-account-menu-popover-action-button',
       );
       button.click();
       expect(() => getByText(messages.settingAddSnapAccount.message)).toThrow(
@@ -349,10 +365,13 @@ describe('AccountListMenu', () => {
     });
 
     it('renders the "Add account Snap" button if it\'s enabled', async () => {
+      // @ts-expect-error mocking platform
       global.platform = { openTab: jest.fn() };
-      const { getByText } = renderWithState({ addSnapAccountEnabled: true });
-      const button = document.querySelector(
-        '[data-testid="multichain-account-menu-popover-action-button"]',
+      const { getByText, getByTestId } = renderWithState({
+        addSnapAccountEnabled: true,
+      });
+      const button = getByTestId(
+        'multichain-account-menu-popover-action-button',
       );
       button.click();
       const addSnapAccountButton = getByText(
@@ -368,13 +387,16 @@ describe('AccountListMenu', () => {
 
     it('opens the Snaps registry in a new tab', async () => {
       // Set up mock state
+      // @ts-expect-error mocking platform
       global.platform = { openTab: jest.fn() };
-      const { getByText } = renderWithState({ addSnapAccountEnabled: true });
+      const { getByText, getByTestId } = renderWithState({
+        addSnapAccountEnabled: true,
+      });
       mockGetEnvironmentType.mockReturnValueOnce('fullscreen');
 
       // Open account picker
-      const button = document.querySelector(
-        '[data-testid="multichain-account-menu-popover-action-button"]',
+      const button = getByTestId(
+        'multichain-account-menu-popover-action-button',
       );
       button.click();
 
@@ -450,45 +472,13 @@ describe('AccountListMenu', () => {
     const listItems = document.querySelectorAll(
       '.multichain-account-list-item',
     );
-    const tag = listItems[0].querySelector('.mm-tag');
+    const tag = listItems[0].querySelector('.mm-tag') as Element;
     expect(tag.textContent).toBe('Snaps (Beta)');
   });
 
   it('displays the correct label for named snap accounts', () => {
-    const mockStore = configureStore({
-      activeTab: {
-        title: 'Eth Sign Tests',
-        origin: 'https://remix.ethereum.org',
-        protocol: 'https:',
-        url: 'https://remix.ethereum.org/',
-      },
+    render({
       metamask: {
-        ...mockState.metamask,
-        permissionHistory: {
-          'https://test.dapp': {
-            eth_accounts: {
-              accounts: {
-                '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1596681857076,
-              },
-            },
-          },
-        },
-        subjects: {
-          'https://test.dapp': {
-            permissions: {
-              eth_accounts: {
-                caveats: [
-                  {
-                    type: 'restrictReturnedAccounts',
-                    value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
-                  },
-                ],
-                invoker: 'https://test.dapp',
-                parentCapability: 'eth_accounts',
-              },
-            },
-          },
-        },
         internalAccounts: {
           accounts: {
             ...mockState.metamask.internalAccounts.accounts,
@@ -512,12 +502,63 @@ describe('AccountListMenu', () => {
         },
       },
     });
-    renderWithProvider(<AccountListMenu onClose={jest.fn()} />, mockStore);
     const listItems = document.querySelectorAll(
       '.multichain-account-list-item',
     );
-    const tag = listItems[0].querySelector('.mm-tag');
+    const tag = listItems[0].querySelector('.mm-tag') as Element;
     expect(tag.textContent).toBe('Test Snap Name (Beta)');
   });
   ///: END:ONLY_INCLUDE_IF
+
+  describe('prop `allowedAccountTypes`', () => {
+    const mockAccount = createMockInternalAccount();
+    const mockBtcAccount = createMockInternalAccount({
+      name: 'Bitcoin Account',
+      type: BtcAccountType.P2wpkh,
+      address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+    });
+    const defaultMockState = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        internalAccounts: {
+          accounts: {
+            [mockAccount.id]: mockAccount,
+            [mockBtcAccount.id]: mockBtcAccount,
+          },
+          selectedAccount: mockAccount.id,
+        },
+        keyrings: [
+          {
+            type: 'HD Key Tree',
+            accounts: [mockAccount.address],
+          },
+          {
+            type: 'Snap Keyring',
+            accounts: [mockBtcAccount.address],
+          },
+        ],
+      },
+    };
+
+    it('allows only EthAccountTypes', () => {
+      const { queryByText } = render(defaultMockState, {
+        onClose: jest.fn(),
+        allowedAccountTypes: [EthAccountType.Eoa, EthAccountType.Erc4337],
+      });
+
+      expect(queryByText(mockAccount.metadata.name)).toBeInTheDocument();
+      expect(queryByText(mockBtcAccount.metadata.name)).not.toBeInTheDocument();
+    });
+
+    it('allows only BtcAccountType', () => {
+      const { queryByText } = render(defaultMockState, {
+        onClose: jest.fn(),
+        allowedAccountTypes: [BtcAccountType.P2wpkh],
+      });
+
+      expect(queryByText(mockAccount.metadata.name)).not.toBeInTheDocument();
+      expect(queryByText(mockBtcAccount.metadata.name)).toBeInTheDocument();
+    });
+  });
 });
