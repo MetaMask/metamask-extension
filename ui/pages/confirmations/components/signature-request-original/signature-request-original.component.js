@@ -15,7 +15,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/utils/util';
 import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
-import SiteOrigin from '../../../../components/ui/site-origin';
 import Typography from '../../../../components/ui/typography/typography';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import {
