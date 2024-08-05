@@ -1263,9 +1263,6 @@
   "data": {
     "message": "Veri"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Verileriniz geri yüklenemiyor. Dosya bozuk gibi görünüyor."
-  },
   "dataHex": {
     "message": "On Altılı"
   },
@@ -4183,12 +4180,6 @@
   },
   "restore": {
     "message": "Geri Yükle"
-  },
-  "restoreFailed": {
-    "message": "Sunulan dosyadan verileriniz geri yüklenemiyor"
-  },
-  "restoreSuccessful": {
-    "message": "Verileriniz başarılı bir şekilde geri yüklendi"
   },
   "restoreUserData": {
     "message": "Kullanıcı verilerini geri yükle"

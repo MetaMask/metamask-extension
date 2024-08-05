@@ -1263,9 +1263,6 @@
   "data": {
     "message": "Data"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Tidak dapat memulihkan data Anda. File tampaknya rusak."
-  },
   "dataHex": {
     "message": "Hex"
   },
@@ -4183,12 +4180,6 @@
   },
   "restore": {
     "message": "Pulihkan"
-  },
-  "restoreFailed": {
-    "message": "Tidak dapat memulihkan data Anda dari berkas yang disediakan"
-  },
-  "restoreSuccessful": {
-    "message": "Data Anda telah berhasil dipulihkan"
   },
   "restoreUserData": {
     "message": "Pulihkan data pengguna"

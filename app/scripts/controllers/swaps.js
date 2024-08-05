@@ -709,7 +709,7 @@ export default class SwapsController {
     const { marketData } = this.getTokenRatesState();
     const chainId = this._getCurrentChainId();
 
-    const tokenConversionRates = marketData[chainId];
+    const tokenConversionRates = marketData?.[chainId] ?? {};
 
     const {
       swapsState: { customGasPrice, customMaxPriorityFeePerGas },
