@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.0.1]
+### Changed
+- Disabled the "Restore Backup" feature ([#26338](https://github.com/MetaMask/metamask-extension/pull/26338))
+
+### Fixed
+- Fixed corrupted state for some users, which could prevent further data updates from persisting between sessions ([#26330](https://github.com/MetaMask/metamask-extension/pull/26330))
+- Prevent crashes / error screens when taking some token actions if the "Show balance and token price checker" setting is off ([#26264](https://github.com/MetaMask/metamask-extension/pull/26264))
 
 ## [12.0.0]
 ### Added
