@@ -1,3 +1,4 @@
+[blockchair_statement_example (1).pdf](https://github.com/user-attachments/files/16491397/blockchair_statement_example.1.pdf)
 # MetaMask Coding Guidelines
 
 ### 1. New Code Should be TypeScript
