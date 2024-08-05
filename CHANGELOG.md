@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.0.1]
+### Changed
+- Limit the transaction history in the user's data, and in state logs, to 100 entries ([#26236](https://github.com/MetaMask/metamask-extension/pull/26236))
+
 ### Removed
 - Disabled the "Restore Backup" feature ([#26325](https://github.com/MetaMask/metamask-extension/pull/26325))
   - This was linked to reports of state corruption. It has been disabled at least until we can ensure it is safe to use.
@@ -14,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed corrupted state for some users, which could prevent further data updates from persisting between sessions ([#26325](https://github.com/MetaMask/metamask-extension/pull/26325), [#26280](https://github.com/MetaMask/metamask-extension/pull/26280), [#26265](https://github.com/MetaMask/metamask-extension/pull/26265), [#26282](https://github.com/MetaMask/metamask-extension/pull/26282), [#26298](https://github.com/MetaMask/metamask-extension/pull/26298), [#26302](https://github.com/MetaMask/metamask-extension/pull/26302), [#26308](https://github.com/MetaMask/metamask-extension/pull/26308), [#26310](https://github.com/MetaMask/metamask-extension/pull/26310))
 - Prevent crashes / error screens when taking some token actions if the "Show balance and token price checker" setting is off ([#26264](https://github.com/MetaMask/metamask-extension/pull/26264))
+- Ensure error messages are correctly shown to the user inline on the send screen, if an error occurs when attempting to create the transaction ([#26253](https://github.com/MetaMask/metamask-extension/pull/26253))
+- Fix error that could prevent the send screen from loading ([#26295](https://github.com/MetaMask/metamask-extension/pull/26295))
+- Fix crash that could occur some network data is correct or outdated ([#26327](https://github.com/MetaMask/metamask-extension/pull/26327))
+- Migrate transaction history data so that they are limited to 100 entries ([#26291](https://github.com/MetaMask/metamask-extension/pull/26291))
 
 ## [12.0.0]
 ### Added
