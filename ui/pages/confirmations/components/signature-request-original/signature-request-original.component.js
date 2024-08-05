@@ -37,10 +37,9 @@ import {
   Icon,
   IconName,
   Text,
-
+  TagUrl
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../components/component-library';
-import { TagUrl } from '../../ui/component-library/tag-url';
 
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
