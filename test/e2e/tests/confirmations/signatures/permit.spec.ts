@@ -1,10 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import {
-  scrollAndConfirmAndAssertConfirm,
-  withRedesignConfirmationFixtures,
-} from '../helpers';
-import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
   openDapp,
@@ -13,6 +9,10 @@ import {
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
+import {
+  scrollAndConfirmAndAssertConfirm,
+  withRedesignConfirmationFixtures,
+} from '../helpers';
 
 describe('Confirmation Signature - Permit', function (this: Suite) {
   if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
