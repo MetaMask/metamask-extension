@@ -191,7 +191,7 @@ export default class SignatureRequestOriginal extends Component {
                 actionButtonLabel="Click"
                 actionButtonProps={{
                   externalLink: true,
-                  href:txData.msgParams.origin ,
+                  href:`${txData.msgParams.origin}` ,
                 }}
                 
               />
