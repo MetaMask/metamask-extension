@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This was linked to reports of state corruption. It has been disabled at least until we can ensure it is safe to use.
 
 ### Fixed
-- Fixed corrupted state for some users, which could prevent further data updates from persisting between sessions ([#26330](https://github.com/MetaMask/metamask-extension/pull/26330))
+- Fixed corrupted state for some users, which could prevent further data updates from persisting between sessions ([#26325](https://github.com/MetaMask/metamask-extension/pull/26325), [#26280](https://github.com/MetaMask/metamask-extension/pull/26280), [#26265](https://github.com/MetaMask/metamask-extension/pull/26265), [#26282](https://github.com/MetaMask/metamask-extension/pull/26282), [#26298](https://github.com/MetaMask/metamask-extension/pull/26298), [#26302](https://github.com/MetaMask/metamask-extension/pull/26302), [#26308](https://github.com/MetaMask/metamask-extension/pull/26308), [#26310](https://github.com/MetaMask/metamask-extension/pull/26310))
 - Prevent crashes / error screens when taking some token actions if the "Show balance and token price checker" setting is off ([#26264](https://github.com/MetaMask/metamask-extension/pull/26264))
 
 ## [12.0.0]
