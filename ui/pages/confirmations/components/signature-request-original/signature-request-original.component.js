@@ -7,7 +7,7 @@ import { SubjectType } from '@metamask/permission-controller';
 import LedgerInstructionField from '../ledger-instruction-field';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
-  getURLHost
+  getURLHostName
   hexToText,
   sanitizeString,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
