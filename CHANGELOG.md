@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.0.1]
 ### Removed
-- Disabled the "Restore Backup" feature ([#26338](https://github.com/MetaMask/metamask-extension/pull/26338))
+- Disabled the "Restore Backup" feature ([#26325](https://github.com/MetaMask/metamask-extension/pull/26325))
   - This was linked to reports of state corruption. It has been disabled at least until we can ensure it is safe to use.
 
 ### Fixed
