@@ -5,8 +5,9 @@ import { MetaMaskReduxDispatch } from '../../store/store';
 import { swapsSlice } from '../swaps/swaps';
 import { bridgeSlice } from './bridge';
 
-// eslint-disable-next-line no-empty-pattern
-const {} = swapsSlice.actions;
+// Proxied swaps actions
+export const { setFromToken, setToToken, setFromTokenInputValue } =
+  swapsSlice.actions;
 
 export const { setToChain } = bridgeSlice.actions;
 
