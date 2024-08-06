@@ -42,6 +42,7 @@ describe('Token List', function () {
     await driver.clickElement(
       '[data-testid="import-tokens-modal-import-button"]',
     );
+    await driver.findElement({ text: 'Token imported', tag: 'h6' });
   };
 
   it('should not shows percentage increase for an ERC20 token without prices available', async function () {
@@ -155,7 +156,6 @@ describe('Token List', function () {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await importToken(driver);
-        await driver.delay(500);
 
         // Verify native token increase
         const testIdNative = `token-increase-decrease-percentage-${zeroAddress()}`;
@@ -163,32 +163,23 @@ describe('Token List', function () {
         // Verify native token increase
         const testId = `token-increase-decrease-percentage-${tokenAddress}`;
 
-        const percentageNative = await (
-          await driver.findElement(`[data-testid="${testIdNative}"]`)
-        ).getText();
-        assert.equal(percentageNative, '+0.02%');
-
-        const percentage = await (
-          await driver.findElement(`[data-testid="${testId}"]`)
-        ).getText();
-        assert.equal(percentage, '+0.05%');
-
-        // check increase balance for native token
-        const increaseValue = await (
-          await driver.findElement(
-            `[data-testid="token-increase-decrease-value"]`,
-          )
-        ).getText();
-        assert.equal(increaseValue, '+$50.00 ');
-
-        // check percentage increase balance for native token
-        const percentageIncreaseDecrease = await (
-          await driver.findElement(
-            `[data-testid="token-increase-decrease-percentage"]`,
-          )
-        ).getText();
-
-        assert.equal(percentageIncreaseDecrease, '(+0.02%)');
+        await driver.findElement({
+          css: `[data-testid="${testIdNative}"]`,
+          text: '+0.02%',
+        });
+        await driver.findElement({
+          css: `[data-testid="${testId}"]`,
+          text: '+0.05%',
+        });
+        // check increase balance for native token eth
+        await driver.findElement({
+          css: '[data-testid="token-increase-decrease-value"]',
+          text: '+$50.00',
+        });
+        await driver.findElement({
+          css: '[data-testid="token-increase-decrease-percentage"]',
+          text: '(+0.02%)',
+        });
       },
     );
   });
