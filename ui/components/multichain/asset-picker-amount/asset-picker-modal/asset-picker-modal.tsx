@@ -23,7 +23,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { AssetType } from '../../../../../shared/constants/transaction';
 
-import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 import {
   getAllTokens,
   getCurrentChainId,
@@ -45,7 +44,7 @@ import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { useEqualityCheck } from '../../../../hooks/useEqualityCheck';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { Asset, Collection, Token } from './types';
+import { Asset, Token } from './types';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 import AssetList from './AssetList';
 import { Search } from './asset-picker-modal-search';
@@ -79,31 +78,6 @@ export function AssetPickerModal({
   const t = useI18nContext();
 
   const [searchQuery, setSearchQuery] = useState('');
-
-  const { collections, previouslyOwnedCollection } = useNftsCollections();
-
-  const collectionsKeys = Object.keys(collections);
-
-  const collectionsData = collectionsKeys.reduce((acc: unknown[], key) => {
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const collection = (collections as any)[key];
-
-    const isMatchingQuery = collection.collectionName
-      ?.toLowerCase()
-      .includes(searchQuery.toLowerCase());
-
-    if (isMatchingQuery) {
-      acc.push(collection);
-      return acc;
-    }
-    return acc;
-  }, []);
-
-  // filter and exclude ERC1155
-  const collectionDataFiltered = (collectionsData as Collection[]).filter(
-    (collection) => collection.nfts.length > 0,
-  );
 
   const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
   const memoizedSwapsBlockedTokens = useMemo(() => {
@@ -296,8 +270,7 @@ export function AssetPickerModal({
             </React.Fragment>
             <AssetPickerModalNftTab
               key={TabName.NFTS}
-              collectionDataFiltered={collectionDataFiltered}
-              previouslyOwnedCollection={previouslyOwnedCollection}
+              searchQuery={searchQuery}
               onClose={onClose}
               renderSearch={() => (
                 <Search
