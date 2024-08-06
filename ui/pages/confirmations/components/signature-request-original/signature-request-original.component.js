@@ -32,6 +32,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/constants/design-system';
 import {
+  TagUrl,
   ButtonLink,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   Box,
@@ -41,7 +42,6 @@ import {
 
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../components/component-library';
-import { TagUrl } from '../../../../components/component-library';
 
 
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
