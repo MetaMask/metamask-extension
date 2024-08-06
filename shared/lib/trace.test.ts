@@ -166,7 +166,9 @@ describe('Trace', () => {
       const spanMock = { end: spanEndMock } as unknown as Span;
 
       startSpanManualMock.mockImplementationOnce((_, fn) =>
-        fn(spanMock, () => {}),
+        fn(spanMock, () => {
+          // Intentionally empty
+        }),
       );
 
       await trace({
@@ -187,7 +189,9 @@ describe('Trace', () => {
       const spanMock = { end: spanEndMock } as unknown as Span;
 
       startSpanManualMock.mockImplementationOnce((_, fn) =>
-        fn(spanMock, () => {}),
+        fn(spanMock, () => {
+          // Intentionally empty
+        }),
       );
 
       await trace({

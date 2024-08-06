@@ -117,7 +117,7 @@ async function startTrace(
 
   if (!id) {
     log('No trace ID provided', name, request);
-    return;
+    return undefined;
   }
 
   const callback = async (span: Sentry.Span | null) => {
