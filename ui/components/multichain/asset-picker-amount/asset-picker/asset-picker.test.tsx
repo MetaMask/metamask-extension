@@ -4,7 +4,11 @@ import { Provider } from 'react-redux';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import configureStore from '../../../../store/store';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  CHAIN_ID_TOKEN_IMAGE_MAP,
+} from '../../../../../shared/constants/network';
+import { ERC20Asset, NativeAsset, NFT } from '../asset-picker-modal/types';
 import { AssetPicker } from './asset-picker';
 
 jest.mock('react-router-dom', () => ({
@@ -45,7 +49,7 @@ describe('AssetPicker', () => {
       type: AssetType.native,
       image: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP['0x1'],
       symbol: NATIVE_TICKER,
-    };
+    } as NativeAsset;
     const mockAssetChange = jest.fn();
 
     const { asFragment } = render(
@@ -63,8 +67,9 @@ describe('AssetPicker', () => {
   it('calls onClick handler', () => {
     const asset = {
       type: AssetType.native,
-      symbol: NATIVE_TICKER,
-    };
+      image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
+      symbol: 'NATIVE',
+    } as NativeAsset;
     const mockAssetChange = jest.fn();
     const mockOnClick = jest.fn();
     const { getByTestId } = render(
@@ -84,9 +89,9 @@ describe('AssetPicker', () => {
   it('native: renders symbol and image', () => {
     const asset = {
       type: AssetType.native,
-      image: 'token icon url',
+      image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
       symbol: 'NATIVE',
-    };
+    } as NativeAsset;
     const mockAssetChange = jest.fn();
 
     const { getByText, getByAltText } = render(
@@ -105,16 +110,16 @@ describe('AssetPicker', () => {
     );
     expect(getByAltText('NATIVE logo')).toHaveAttribute(
       'src',
-      'token icon url',
+      CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
     );
   });
 
   it('native: renders overflowing symbol and image', () => {
     const asset = {
       type: AssetType.native,
-      image: 'token icon url',
+      image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
       symbol: NATIVE_TICKER,
-    };
+    } as NativeAsset;
     const mockAssetChange = jest.fn();
 
     const { getByText, getByAltText } = render(
@@ -133,7 +138,7 @@ describe('AssetPicker', () => {
     );
     expect(getByAltText('NATIVE TICKER logo')).toHaveAttribute(
       'src',
-      'token icon url',
+      CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
     );
   });
 
@@ -143,7 +148,7 @@ describe('AssetPicker', () => {
       address: 'token address',
       image: 'token icon url',
       symbol: 'symbol',
-    };
+    } as ERC20Asset;
     const mockAssetChange = jest.fn();
 
     const { getByText, getByAltText } = render(
@@ -172,7 +177,7 @@ describe('AssetPicker', () => {
       address: 'token address',
       image: 'token icon url',
       symbol: 'symbol overflow',
-    };
+    } as ERC20Asset;
     const mockAssetChange = jest.fn();
 
     const { getByText, getByAltText } = render(
@@ -200,7 +205,7 @@ describe('AssetPicker', () => {
       type: AssetType.token,
       address: 'token address',
       symbol: 'symbol',
-    };
+    } as ERC20Asset;
     const mockAssetChange = jest.fn();
 
     const { getByText, getByAltText } = render(
@@ -225,7 +230,7 @@ describe('AssetPicker', () => {
       type: AssetType.NFT,
       address: 'token address',
       tokenId: 1234567890,
-    };
+    } as NFT;
     const mockAssetChange = jest.fn();
 
     const { getByText } = render(
@@ -245,7 +250,7 @@ describe('AssetPicker', () => {
       type: AssetType.NFT,
       address: 'token address',
       tokenId: 1234567890123456,
-    };
+    } as NFT;
     const mockAssetChange = jest.fn();
 
     const { getByText } = render(
@@ -265,7 +270,7 @@ describe('AssetPicker', () => {
       type: AssetType.token,
       address: 'token address',
       symbol: 'symbol',
-    };
+    } as ERC20Asset;
     const mockAssetChange = jest.fn();
 
     const { container } = render(
@@ -291,7 +296,7 @@ describe('AssetPicker', () => {
       type: AssetType.native,
       image: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP['0x1'],
       symbol: NATIVE_TICKER,
-    };
+    } as NativeAsset;
     const mockAssetChange = jest.fn();
 
     const { asFragment } = render(

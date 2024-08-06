@@ -9,7 +9,9 @@ import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
+import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
 import AssetList from './AssetList';
+import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
@@ -40,8 +42,11 @@ jest.mock('./Asset', () => jest.fn(() => <div>AssetComponent</div>));
 describe('AssetList', () => {
   const handleAssetChangeMock = jest.fn();
   const nativeCurrency = 'ETH';
-  const balanceValue = '1000000000000000000';
-  const tokenList = [
+  const balanceValue = '0x121';
+  const tokenList: (
+    | AssetWithDisplayData<ERC20Asset>
+    | AssetWithDisplayData<NativeAsset>
+  )[] = [
     {
       address: '0xToken1',
       symbol: 'TOKEN1',
@@ -61,13 +66,13 @@ describe('AssetList', () => {
       balance: '10',
     },
     {
-      address: '0xToken3',
-      symbol: 'TOKEN3',
+      address: null,
+      symbol: 'ETH',
       type: AssetType.native,
-      image: 'image3.png',
+      image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
       string: '30',
       decimals: 18,
-      balance: '20',
+      balance: '0x121',
     },
   ];
   const primaryCurrency = 'USD';
@@ -108,7 +113,11 @@ describe('AssetList', () => {
     render(
       <AssetList
         handleAssetChange={handleAssetChangeMock}
-        asset={{ type: AssetType.native }}
+        asset={{
+          type: AssetType.native,
+          image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
+          symbol: 'ETH',
+        }}
         tokenList={tokenList}
       />,
     );
@@ -121,7 +130,11 @@ describe('AssetList', () => {
     render(
       <AssetList
         handleAssetChange={handleAssetChangeMock}
-        asset={{ type: AssetType.native }}
+        asset={{
+          type: AssetType.native,
+          image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
+          symbol: 'ETH',
+        }}
         tokenList={tokenList}
       />,
     );
@@ -149,7 +162,11 @@ describe('AssetList', () => {
     render(
       <AssetList
         handleAssetChange={handleAssetChangeMock}
-        asset={{ type: AssetType.native }}
+        asset={{
+          type: AssetType.native,
+          image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
+          symbol: 'ETH',
+        }}
         tokenList={tokenList}
         isTokenDisabled={(token) => token.address === '0xToken1'}
       />,

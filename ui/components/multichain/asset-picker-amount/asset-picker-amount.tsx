@@ -157,6 +157,36 @@ export const AssetPickerAmount = ({
     sendAsset.type === AssetType.native &&
     receiveAsset.type !== AssetType.native;
 
+  let standardizedAsset;
+  if (asset?.type === AssetType.native) {
+    standardizedAsset = {
+      type: asset.type,
+      image: nativeCurrencyImageUrl,
+      symbol: nativeCurrencySymbol as string,
+    };
+  } else if (asset?.type === AssetType.token && asset?.details?.symbol) {
+    standardizedAsset = {
+      type: asset.type,
+      image:
+        getAssetImageURL(asset.details.image, ipfsGateway) ||
+        (tokenList &&
+          asset.details?.address &&
+          tokenList[asset.details.address.toLowerCase()]?.iconUrl),
+      symbol: asset.details.symbol,
+      address: asset.details.address,
+    };
+  } else if (
+    asset?.type === AssetType.NFT &&
+    asset?.details?.tokenId !== undefined &&
+    asset?.details?.image
+  ) {
+    standardizedAsset = {
+      type: asset.type as AssetType.NFT,
+      tokenId: asset.details.tokenId,
+      image: asset.details.image,
+    };
+  }
+
   return (
     <Box className="asset-picker-amount">
       <Box
@@ -175,30 +205,7 @@ export const AssetPickerAmount = ({
         paddingTop={asset.details?.standard === TokenStandard.ERC721 ? 4 : 1}
         paddingBottom={asset.details?.standard === TokenStandard.ERC721 ? 4 : 1}
       >
-        <AssetPicker
-          asset={
-            asset
-              ? {
-                  type: asset.type,
-                  image:
-                    asset.type === AssetType.native
-                      ? nativeCurrencyImageUrl
-                      : getAssetImageURL(asset.details?.image, ipfsGateway) ||
-                        (tokenList &&
-                          asset.details?.address &&
-                          tokenList[asset.details.address.toLowerCase()]
-                            ?.iconUrl),
-                  symbol:
-                    asset.type === AssetType.native
-                      ? nativeCurrencySymbol
-                      : asset.details?.symbol,
-                  address: asset.details?.address,
-                  tokenId: asset.details?.tokenId,
-                }
-              : undefined
-          }
-          {...assetPickerProps}
-        />
+        <AssetPicker asset={standardizedAsset} {...assetPickerProps} />
         <SwappableCurrencyInput
           onAmountChange={onAmountChange ? handleChange : undefined}
           assetType={asset.type}

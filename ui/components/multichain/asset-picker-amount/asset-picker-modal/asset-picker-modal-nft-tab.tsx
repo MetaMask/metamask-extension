@@ -17,7 +17,6 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { TokenStandard } from '../../../../../shared/constants/transaction';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import Spinner from '../../../ui/spinner';
 import {
@@ -26,24 +25,7 @@ import {
   getUseNftDetection,
 } from '../../../../selectors';
 import NFTsDetectionNoticeNFTsTab from '../../../app/assets/nfts/nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
-
-type NFT = {
-  address: string;
-  description: string | null;
-  favorite: boolean;
-  image: string | null;
-  isCurrentlyOwned: boolean;
-  name: string | null;
-  standard: TokenStandard;
-  tokenId: string;
-  tokenURI?: string;
-};
-
-type Collection = {
-  collectionName: string;
-  collectionImage: string | null;
-  nfts: NFT[];
-};
+import { Collection, NFT } from './types';
 
 type PreviouslyOwnedCollections = {
   collectionName: string;

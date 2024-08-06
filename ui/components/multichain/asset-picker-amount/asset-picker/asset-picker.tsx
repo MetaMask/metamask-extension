@@ -33,9 +33,13 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: END:ONLY_INCLUDE_IF
 import { ellipsify } from '../../../../pages/confirmations/send/send.utils';
 import { AssetPickerModalNetwork } from '../asset-picker-modal/asset-picker-modal-network';
-import { Token } from '../asset-picker-modal/types';
+import {
+  AssetWithDisplayData,
+  ERC20Asset,
+  NativeAsset,
+  NFT,
+} from '../asset-picker-modal/types';
 import { TabName } from '../asset-picker-modal/asset-picker-modal-tabs';
-import AssetList from '../asset-picker-modal/AssetList';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   GOERLI_DISPLAY_NAME,
@@ -45,6 +49,11 @@ import {
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
 export type AssetPickerProps = {
+  asset?:
+    | ERC20Asset
+    | NativeAsset
+    | Pick<NFT, 'type' | 'tokenId' | 'image'>
+    | undefined;
   /**
    * Needs to be wrapped in a callback
    */
@@ -58,8 +67,7 @@ export type AssetPickerProps = {
 } & Pick<
   React.ComponentProps<typeof AssetPickerModal>,
   'visibleTabs' | 'header' | 'sendingAsset'
-> &
-  Pick<React.ComponentProps<typeof AssetList>, 'asset'>;
+>;
 
 // A component that lets the user pick from a list of assets.
 export function AssetPicker({
@@ -78,13 +86,13 @@ export function AssetPicker({
 
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
 
-  // selected asset details
-  const primaryTokenImage = asset?.image;
-  const symbol = asset?.symbol;
-
-  const isSymbolLong = symbol && symbol.length > LARGE_SYMBOL_LENGTH;
   const isNFT = asset?.type === AssetType.NFT;
 
+  // selected asset details
+  const primaryTokenImage = asset?.image;
+  const symbol = isNFT ? undefined : asset?.symbol;
+
+  const isSymbolLong = symbol && symbol.length > LARGE_SYMBOL_LENGTH;
   const formattedSymbol =
     isSymbolLong && !isNFT
       ? `${symbol.substring(0, LARGE_SYMBOL_LENGTH - 1)}...`
@@ -128,7 +136,11 @@ export function AssetPicker({
         isOpen={showAssetPickerModal}
         onClose={() => setShowAssetPickerModal(false)}
         asset={asset}
-        onAssetChange={(token: Token) => {
+        onAssetChange={(
+          token:
+            | AssetWithDisplayData<ERC20Asset>
+            | AssetWithDisplayData<NativeAsset>,
+        ) => {
           onAssetChange(token);
           setShowAssetPickerModal(false);
         }}
@@ -201,7 +213,7 @@ export function AssetPicker({
             >
               <AvatarToken
                 borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
-                src={primaryTokenImage}
+                src={primaryTokenImage ?? undefined}
                 size={AvatarTokenSize.Md}
                 name={symbol}
                 {...(isNFT && { backgroundColor: BackgroundColor.transparent })}
@@ -213,7 +225,7 @@ export function AssetPicker({
             <Text className="asset-picker__symbol" variant={TextVariant.bodyMd}>
               {formattedSymbol}
             </Text>
-            {asset?.tokenId && (
+            {isNFT && asset?.tokenId && (
               <Text
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}

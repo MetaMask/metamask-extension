@@ -178,7 +178,7 @@ exports[`AssetPicker should render network picker when networks prop is defined 
         </div>
         <div>
           <div
-            aria-describedby="tippy-tooltip-5"
+            aria-describedby="tippy-tooltip-4"
             class=""
             data-original-title="NATIVE TICKER"
             data-tooltipped=""

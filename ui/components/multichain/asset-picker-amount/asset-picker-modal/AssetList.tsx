@@ -19,20 +19,21 @@ import {
   FlexWrap,
 } from '../../../../helpers/constants/design-system';
 import { TokenListItem } from '../..';
-import { Token } from './types';
 import AssetComponent from './Asset';
+import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
 type AssetListProps = {
-  handleAssetChange: (token: Token) => void;
-  asset?: {
-    type: AssetType;
-    image?: string;
-    address?: string; // native token if undefined or null
-    symbol?: string;
-    tokenId?: number;
-  };
-  tokenList: Token[];
-  isTokenDisabled?: (token: Token) => boolean;
+  handleAssetChange: (
+    token: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
+  ) => void;
+  asset?: ERC20Asset | NativeAsset;
+  tokenList: (
+    | AssetWithDisplayData<ERC20Asset>
+    | AssetWithDisplayData<NativeAsset>
+  )[];
+  isTokenDisabled?: (
+    token: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
+  ) => boolean;
 };
 
 export default function AssetList({
@@ -133,7 +134,6 @@ export default function AssetList({
                   <AssetComponent
                     key={token.address}
                     {...token}
-                    decimalTokenAmount={token.string}
                     tooltipText={
                       isDisabled ? 'swapTokenNotAvailable' : undefined
                     }
