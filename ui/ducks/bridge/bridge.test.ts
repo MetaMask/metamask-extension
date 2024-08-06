@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { setBackgroundConnection } from '../../store/background-connection';
-import { BridgeBackgroundAction } from '../../../app/scripts/controllers/bridge';
+import { BridgeBackgroundAction } from '../../../app/scripts/controllers/bridge/types';
 import bridgeReducer from './bridge';
 import { setBridgeFeatureFlags, setToChain } from './actions';
 
