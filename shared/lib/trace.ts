@@ -67,7 +67,7 @@ export function endTrace(request: EndTraceRequest) {
   tracesByKey.delete(key);
 
   const { request: pendingRequest, startTime } = pendingTrace;
-  const endTime = timestamp ?? Date.now();
+  const endTime = timestamp ?? getPerformanceTimestamp();
   const duration = endTime - startTime;
 
   log('Finished trace', name, id, duration, { request: pendingRequest });
@@ -113,7 +113,7 @@ async function startTrace(
   isSentryEnabled: boolean,
 ): Promise<TraceContext> {
   const { id, name } = request;
-  const startTime = performance.timeOrigin + performance.now();
+  const startTime = getPerformanceTimestamp();
 
   if (!id) {
     log('No trace ID provided', name, request);
@@ -161,4 +161,8 @@ async function startSpan<T>(
 function getTraceKey(request: TraceRequest) {
   const { id, name } = request;
   return [name, id].join(':');
+}
+
+function getPerformanceTimestamp(): number {
+  return performance.timeOrigin + performance.now();
 }
