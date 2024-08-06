@@ -6,6 +6,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from './asset-picker-modal';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { ERC20Asset } from './types';
 
 const storybook = {
   title: 'Components/Multichain/AssetPickerModal',
@@ -16,11 +17,11 @@ const props = {
   isOpen: true,
   onClose: () => ({}),
   asset: {
-    balance: null,
-    details: null,
-    error: null,
+    address: '0xAddress',
+    symbol: 'TOKEN',
+    image: 'image.png',
     type: AssetType.token,
-  } as unknown as Asset,
+  } as ERC20Asset,
 };
 export const DefaultStory = () => {
   const t = useI18nContext();
