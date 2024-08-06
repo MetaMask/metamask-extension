@@ -4,7 +4,11 @@ import { Provider } from 'react-redux';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import configureStore from '../../../../store/store';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  CHAIN_ID_TOKEN_IMAGE_MAP,
+} from '../../../../../shared/constants/network';
+import { ERC20Asset, NativeAsset, NFT } from '../asset-picker-modal/types';
 import { AssetPicker } from './asset-picker';
 
 jest.mock('react-router-dom', () => ({
@@ -45,7 +49,7 @@ describe('AssetPicker', () => {
       type: AssetType.native,
       image: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP['0x1'],
       symbol: NATIVE_TICKER,
-    };
+    } as NativeAsset;
     const mockAssetChange = jest.fn();
 
     const { asFragment } = render(
@@ -63,8 +67,9 @@ describe('AssetPicker', () => {
   it('calls onClick handler', () => {
     const asset = {
       type: AssetType.native,
-      symbol: NATIVE_TICKER,
-    };
+      image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
+      symbol: 'NATIVE',
+    } as NativeAsset;
     const mockAssetChange = jest.fn();
     const mockOnClick = jest.fn();
     const { getByTestId } = render(
@@ -84,12 +89,12 @@ describe('AssetPicker', () => {
   it('native: renders symbol and image', () => {
     const asset = {
       type: AssetType.native,
-      image: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP['0x1'],
+      image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
       symbol: 'NATIVE',
-    };
+    } as NativeAsset;
     const mockAssetChange = jest.fn();
 
-    const { getByText, getByRole } = render(
+    const { getByText, getByAltText } = render(
       <Provider store={store('NATIVE')}>
         <AssetPicker
           header={'testHeader'}
@@ -99,19 +104,25 @@ describe('AssetPicker', () => {
       </Provider>,
     );
     expect(getByText('NATIVE')).toBeInTheDocument();
-    expect(getByRole('img')).toBeInTheDocument();
-    expect(getByRole('img')).toHaveAttribute('src', './images/eth_logo.svg');
+    expect(getByAltText('network logo')).toHaveAttribute(
+      'src',
+      './images/eth_logo.svg',
+    );
+    expect(getByAltText('NATIVE logo')).toHaveAttribute(
+      'src',
+      CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
+    );
   });
 
   it('native: renders overflowing symbol and image', () => {
     const asset = {
       type: AssetType.native,
-      image: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP['0x1'],
+      image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
       symbol: NATIVE_TICKER,
-    };
+    } as NativeAsset;
     const mockAssetChange = jest.fn();
 
-    const { getByText, getByRole } = render(
+    const { getByText, getByAltText } = render(
       <Provider store={store(NATIVE_TICKER)}>
         <AssetPicker
           header={'testHeader'}
@@ -121,8 +132,14 @@ describe('AssetPicker', () => {
       </Provider>,
     );
     expect(getByText('NATIVE...')).toBeInTheDocument();
-    expect(getByRole('img')).toBeInTheDocument();
-    expect(getByRole('img')).toHaveAttribute('src', './images/eth_logo.svg');
+    expect(getByAltText('network logo')).toHaveAttribute(
+      'src',
+      './images/eth_logo.svg',
+    );
+    expect(getByAltText('NATIVE TICKER logo')).toHaveAttribute(
+      'src',
+      CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
+    );
   });
 
   it('token: renders symbol and image', () => {
@@ -131,10 +148,10 @@ describe('AssetPicker', () => {
       address: 'token address',
       image: 'token icon url',
       symbol: 'symbol',
-    };
+    } as ERC20Asset;
     const mockAssetChange = jest.fn();
 
-    const { getByText, getByRole } = render(
+    const { getByText, getByAltText } = render(
       <Provider store={store("SHOULDN'T MATTER")}>
         <AssetPicker
           header={'testHeader'}
@@ -144,8 +161,14 @@ describe('AssetPicker', () => {
       </Provider>,
     );
     expect(getByText('symbol')).toBeInTheDocument();
-    expect(getByRole('img')).toBeInTheDocument();
-    expect(getByRole('img')).toHaveAttribute('src', 'token icon url');
+    expect(getByAltText('network logo')).toHaveAttribute(
+      'src',
+      './images/eth_logo.svg',
+    );
+    expect(getByAltText('symbol logo')).toHaveAttribute(
+      'src',
+      'token icon url',
+    );
   });
 
   it('token: renders symbol and image overflowing', () => {
@@ -154,10 +177,10 @@ describe('AssetPicker', () => {
       address: 'token address',
       image: 'token icon url',
       symbol: 'symbol overflow',
-    };
+    } as ERC20Asset;
     const mockAssetChange = jest.fn();
 
-    const { getByText, getByRole } = render(
+    const { getByText, getByAltText } = render(
       <Provider store={store("SHOULDN'T MATTER")}>
         <AssetPicker
           header={'testHeader'}
@@ -167,8 +190,14 @@ describe('AssetPicker', () => {
       </Provider>,
     );
     expect(getByText('symbol...')).toBeInTheDocument();
-    expect(getByRole('img')).toBeInTheDocument();
-    expect(getByRole('img')).toHaveAttribute('src', 'token icon url');
+    expect(getByAltText('network logo')).toHaveAttribute(
+      'src',
+      './images/eth_logo.svg',
+    );
+    expect(getByAltText('symbol overflow logo')).toHaveAttribute(
+      'src',
+      'token icon url',
+    );
   });
 
   it('token: renders symbol and image falls back', () => {
@@ -176,10 +205,10 @@ describe('AssetPicker', () => {
       type: AssetType.token,
       address: 'token address',
       symbol: 'symbol',
-    };
+    } as ERC20Asset;
     const mockAssetChange = jest.fn();
 
-    const { getByText } = render(
+    const { getByText, getByAltText } = render(
       <Provider
         store={store("SHOULDN'T MATTER", [
           { address: 'token address', iconUrl: 'token icon url' },
@@ -193,7 +222,7 @@ describe('AssetPicker', () => {
       </Provider>,
     );
     expect(getByText('symbol')).toBeInTheDocument();
-    expect(getByText('?')).toBeInTheDocument();
+    expect(getByAltText('network logo')).toBeInTheDocument();
   });
 
   it('nft: does not truncates if token ID is under length 13', () => {
@@ -201,7 +230,7 @@ describe('AssetPicker', () => {
       type: AssetType.NFT,
       address: 'token address',
       tokenId: 1234567890,
-    };
+    } as NFT;
     const mockAssetChange = jest.fn();
 
     const { getByText } = render(
@@ -221,7 +250,7 @@ describe('AssetPicker', () => {
       type: AssetType.NFT,
       address: 'token address',
       tokenId: 1234567890123456,
-    };
+    } as NFT;
     const mockAssetChange = jest.fn();
 
     const { getByText } = render(
@@ -241,7 +270,7 @@ describe('AssetPicker', () => {
       type: AssetType.token,
       address: 'token address',
       symbol: 'symbol',
-    };
+    } as ERC20Asset;
     const mockAssetChange = jest.fn();
 
     const { container } = render(
