@@ -31,8 +31,8 @@ import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import * as actions from '../../../../store/actions';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { AssetPickerModal } from './asset-picker-modal';
-import { Asset } from './types';
 import AssetList from './AssetList';
+import { ERC20Asset } from './types';
 
 jest.mock('./AssetList', () => jest.fn(() => <div>AssetList</div>));
 
@@ -73,11 +73,11 @@ describe('AssetPickerModal', () => {
     isOpen: true,
     onClose: onCloseMock,
     asset: {
-      balance: '0x0',
-      details: { address: '0xAddress', decimals: 18, symbol: 'TOKEN' },
-      error: null,
-      type: 'TOKEN',
-    } as unknown as Asset,
+      address: '0xAddress',
+      symbol: 'TOKEN',
+      image: 'image.png',
+      type: AssetType.token,
+    } as ERC20Asset,
     onAssetChange: onAssetChangeMock,
     sendingAsset: {
       image: 'image.png',
@@ -180,6 +180,8 @@ describe('AssetPickerModal', () => {
         {...defaultProps}
         asset={{
           type: AssetType.NFT,
+          tokenId: 5,
+          image: 'nft image',
         }}
         sendingAsset={undefined}
       />,

@@ -3,6 +3,12 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual, uniqBy } from 'lodash';
 import {
+  Token,
+  TokenListMap,
+  TokenListToken,
+} from '@metamask/assets-controllers';
+import { Hex } from '@metamask/utils';
+import {
   Modal,
   ModalContent,
   ModalOverlay,
@@ -44,7 +50,13 @@ import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { useEqualityCheck } from '../../../../hooks/useEqualityCheck';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { Token } from './types';
+import {
+  ERC20Asset,
+  NativeAsset,
+  NFT,
+  AssetWithDisplayData,
+  TokenWithBalance,
+} from './types';
 import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 import AssetList from './AssetList';
@@ -54,7 +66,10 @@ type AssetPickerModalProps = {
   header: JSX.Element | string | null;
   isOpen: boolean;
   onClose: () => void;
-  onAssetChange: (asset: Token) => void;
+  asset?: ERC20Asset | NativeAsset | Pick<NFT, 'type' | 'tokenId' | 'image'>;
+  onAssetChange: (
+    asset: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
+  ) => void;
   /**
    * Sending asset for UI treatments; only for dest component
    */
@@ -62,8 +77,7 @@ type AssetPickerModalProps = {
 } & Pick<
   React.ComponentProps<typeof AssetPickerModalTabs>,
   'visibleTabs' | 'defaultActiveTabKey'
-> &
-  Pick<React.ComponentProps<typeof AssetList>, 'asset'>;
+>;
 
 const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
@@ -102,25 +116,37 @@ export function AssetPickerModal({
     getShouldHideZeroBalanceTokens,
   );
 
-  const detectedTokens = useSelector(getAllTokens);
+  const detectedTokens: Record<Hex, Record<string, Token[]>> = useSelector(
+    getAllTokens,
+  );
   const tokens = detectedTokens?.[chainId]?.[selectedAddress] ?? [];
 
-  const { tokensWithBalances } = useTokenTracker({
-    tokens,
-    address: selectedAddress,
-    hideZeroBalanceTokens: Boolean(shouldHideZeroBalanceTokens),
-  });
+  const { tokensWithBalances }: { tokensWithBalances: TokenWithBalance[] } =
+    useTokenTracker({
+      tokens,
+      address: selectedAddress,
+      hideZeroBalanceTokens: Boolean(shouldHideZeroBalanceTokens),
+    });
 
   // Swaps token list
-  const tokenList = useSelector(getTokenList) as Record<string, Token>;
+  const tokenList = useSelector(getTokenList) as TokenListMap;
   const topTokens = useSelector(getTopAssets, isEqual);
 
-  const usersTokens = uniqBy([...tokensWithBalances, ...tokens], 'address');
+  const usersTokens = uniqBy<TokenWithBalance>(
+    [...tokensWithBalances, ...tokens],
+    'address',
+  );
 
-  const memoizedUsersTokens = useEqualityCheck(usersTokens);
+  const memoizedUsersTokens: TokenWithBalance[] = useEqualityCheck(usersTokens);
 
   const getIsDisabled = useCallback(
-    ({ address, symbol }: Token) => {
+    ({
+      address,
+      symbol,
+    }:
+      | TokenListToken
+      | AssetWithDisplayData<ERC20Asset>
+      | AssetWithDisplayData<NativeAsset>) => {
       const isDisabled = sendingAsset?.symbol
         ? !isEqualCaseInsensitive(sendingAsset.symbol, symbol) &&
           memoizedSwapsBlockedTokens.has(address || '')
@@ -132,20 +158,27 @@ export function AssetPickerModal({
   );
 
   const filteredTokenList = useMemo(() => {
-    const nativeToken = {
+    const nativeToken: AssetWithDisplayData<NativeAsset> = {
       address: null,
       symbol: nativeCurrency,
       decimals: 18,
       image: nativeCurrencyImage,
       balance: balanceValue,
+      string: undefined,
       type: AssetType.native,
     };
 
-    const filteredTokens: Token[] = [];
+    const filteredTokens: AssetWithDisplayData<ERC20Asset | NativeAsset>[] = [];
     // undefined would be the native token address
     const filteredTokensAddresses = new Set<string | undefined>();
 
-    function* tokenGenerator() {
+    function* tokenGenerator(): Generator<
+      | AssetWithDisplayData<NativeAsset>
+      | ((Token | TokenListToken) & {
+          balance?: string;
+          string?: string;
+        })
+    > {
       yield nativeToken;
 
       const blockedTokens = [];
@@ -176,8 +209,7 @@ export function AssetPickerModal({
       }
     }
 
-    let token: Token;
-    for (token of tokenGenerator()) {
+    for (const token of tokenGenerator()) {
       if (
         token.symbol?.toLowerCase().includes(searchQuery.toLowerCase()) &&
         !filteredTokensAddresses.has(token.address?.toLowerCase())
@@ -186,11 +218,11 @@ export function AssetPickerModal({
         filteredTokens.push(
           getRenderableTokenData(
             token.address
-              ? {
+              ? ({
                   ...token,
                   ...tokenList[token.address.toLowerCase()],
                   type: AssetType.token,
-                }
+                } as AssetWithDisplayData<ERC20Asset>)
               : token,
             tokenConversionRates,
             conversionRate,
@@ -266,7 +298,7 @@ export function AssetPickerModal({
               />
               <AssetList
                 handleAssetChange={handleAssetChange}
-                asset={asset}
+                asset={asset?.type === AssetType.NFT ? undefined : asset}
                 tokenList={filteredTokenList}
                 isTokenDisabled={getIsDisabled}
               />
