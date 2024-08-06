@@ -126,6 +126,7 @@ export class BridgePage {
   };
 }
 
+// TODO assert that default FF fixtures are overwritten with mockServer response
 const mockServer =
   (featureFlagOverrides: Partial<FeatureFlagResponse>) =>
   async (mockServer_: Mockttp) => {
@@ -148,7 +149,17 @@ const mockServer =
             };
           }),
     );
-    return Promise.all(featureFlagMocks);
+    const portfolioMock = async () =>
+      await mockServer_
+        .forGet('https://portfolio.metamask.io/bridge')
+        .always()
+        .thenCallback(() => {
+          return {
+            statusCode: 200,
+            json: {},
+          };
+        });
+    return Promise.all([...featureFlagMocks, portfolioMock]);
   };
 
 export const getBridgeFixtures = (
