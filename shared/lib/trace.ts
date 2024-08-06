@@ -42,8 +42,8 @@ export async function trace<T>(
   request: TraceRequest,
   fn?: TraceCallback<T>,
 ): Promise<T | TraceContext> {
-  const isSentryEnabled =
-    (await globalThis.sentry.getMetaMetricsEnabled()) as boolean;
+  const isSentryEnabled = ((await globalThis.sentry?.getMetaMetricsEnabled()) ??
+    false) as boolean;
 
   if (!fn) {
     return await startTrace(request, isSentryEnabled);
