@@ -47,7 +47,7 @@ describe('AddContact component', () => {
     fireEvent.change(input, { target: { value: 'invalid address' } });
     setTimeout(() => {
       expect(getByText('Recipient address is invalid')).toBeInTheDocument();
-    }, 100);
+    }, 600);
   });
 
   it('should get disabled submit button when username field is empty', () => {
@@ -59,5 +59,48 @@ describe('AddContact component', () => {
 
     const saveButton = getByText('Save');
     expect(saveButton).toBeDisabled();
+  });
+
+  it('should enable submit button when input is valid', () => {
+    const store = configureMockStore(middleware)(state);
+    const { getByText, getByTestId } = renderWithProvider(
+      <AddContact {...props} />,
+      store,
+    );
+
+    const nameInput = document.getElementById('nickname');
+    fireEvent.change(nameInput, { target: { value: 'friend' } });
+
+    const addressInput = getByTestId('ens-input');
+    fireEvent.change(addressInput, {
+      target: { value: '0x1234Bf0BBa69C63E2657cF94693cC4A907085678' },
+    });
+
+    const saveButton = getByText('Save');
+    expect(saveButton).not.toBeDisabled();
+  });
+
+  it('should disable submit button when input is not a valid address', () => {
+    const store = configureMockStore(middleware)(state);
+    const { getByText, getByTestId } = renderWithProvider(
+      <AddContact {...props} />,
+      store,
+    );
+
+    const nameInput = document.getElementById('nickname');
+    fireEvent.change(nameInput, { target: { value: 'friend' } });
+
+    const addressInput = getByTestId('ens-input');
+    fireEvent.change(addressInput, {
+      // invalid length
+      target: { value: '0x1234' },
+    });
+    expect(getByText('Save')).toBeDisabled();
+
+    fireEvent.change(addressInput, {
+      // wrong checksum
+      target: { value: '0x1234bf0bba69C63E2657cF94693cC4A907085678' },
+    });
+    expect(getByText('Save')).toBeDisabled();
   });
 });
