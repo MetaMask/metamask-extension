@@ -18,11 +18,6 @@ describe('Test Snap Signature Insights', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            disabledRpcMethodPreferences: {
-              eth_sign: true,
-            },
-          })
           .build(),
         ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
@@ -222,39 +217,6 @@ describe('Test Snap Signature Insights', function () {
         // check results of test
         await driver.waitForSelector({
           text: '0xcd2f9c55840f5e1bcf61812e93c1932485b524ca673b36355482a4fbdf52f692684f92b4f4ab6f6c8572dacce46bd107da154be1c06939b855ecce57a1616ba71b',
-          tag: 'span',
-        });
-
-        // TEST FIVE: eth_sign
-
-        // scroll to and click eth sign button
-        const ethSignButton1 = await driver.findElement('#ethSign');
-        await driver.scrollToElement(ethSignButton1);
-        await driver.clickElement('#ethSign');
-
-        // switch back to MetaMask window and switch to tx insights pane
-        await switchToNotificationWindow(driver, 4);
-
-        // wait for and click sign
-        await clickSignOnSignatureConfirmation({
-          driver,
-          snapSigInsights: true,
-          locatorID: '#ethSign',
-        });
-
-        // wait for and click signature warning sign button
-        // click checkbox to authorize signing
-        await driver.clickElement('.mm-checkbox__input-wrapper');
-
-        // click sign button
-        await driver.clickElement('[data-testid="snapInsightsButtonConfirm"]');
-
-        // switch back to test-dapp window
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-
-        // check results of test
-        await driver.waitForSelector({
-          text: '"0x816ab6c5d5356548cc4e004ef35a37fdfab916742a2bbeda756cd064c3d3789a6557d41d49549be1de249e1937a8d048996dfcc70d0552111605dc7cc471e8531b"',
           tag: 'span',
         });
       },

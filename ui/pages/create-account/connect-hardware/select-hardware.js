@@ -790,11 +790,41 @@ export default class SelectHardware extends Component {
         ),
       },
       {
-        message: this.context.t('QRHardwareWalletSteps2Description'),
-      },
-      {
-        asset: 'qrcode-wallet-demo',
-        dimensions: { width: '225px', height: '75px' },
+        message: (
+          <>
+            <p className="hw-connect__QR-subtitle">
+              {this.context.t('QRHardwareWalletSteps2Description')}
+            </p>
+            <Button
+              className="hw-connect__external-btn-first"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: 'Clicked Ngrave Buy Now',
+                });
+                openWindow(HardwareAffiliateLinks.ngrave);
+              }}
+              data-testid="ngrave-brand-buy-now-btn"
+            >
+              {this.context.t('buyNow')}
+            </Button>
+            <Button
+              className="hw-connect__external-btn"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: 'Clicked Ngrave Learn more',
+                });
+                openWindow(HardwareAffiliateTutorialLinks.ngrave);
+              }}
+              data-testid="ngrave-brand-learn-more-btn"
+            >
+              {this.context.t('learnMoreUpperCase')}
+            </Button>
+          </>
+        ),
       },
     );
     return (

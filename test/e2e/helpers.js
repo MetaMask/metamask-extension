@@ -888,10 +888,14 @@ const TEST_SEED_PHRASE_TWO =
   'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
 // Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
-const locateAccountBalanceDOM = async (driver, ganacheServer) => {
+const locateAccountBalanceDOM = async (
+  driver,
+  ganacheServer,
+  address = null,
+) => {
   const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
   if (ganacheServer) {
-    const balance = await ganacheServer.getBalance();
+    const balance = await ganacheServer.getBalance(address);
     await driver.waitForSelector({
       css: balanceSelector,
       text: `${balance} ETH`,
@@ -967,12 +971,10 @@ function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
  *
  * @param {object} options - Options for the function.
  * @param {WebDriver} options.driver - The WebDriver instance controlling the browser.
- * @param {string} [options.locatorID] - ID of the signature element (if any).
  * @param {boolean} [options.snapSigInsights] - Whether to wait for the insights snap to be ready before clicking the sign button.
  */
 async function clickSignOnSignatureConfirmation({
   driver,
-  locatorID = null,
   snapSigInsights = false,
 }) {
   if (snapSigInsights) {
@@ -982,15 +984,6 @@ async function clickSignOnSignatureConfirmation({
   }
 
   await driver.clickElement({ text: 'Sign', tag: 'button' });
-
-  // #ethSign has a second Sign confirmation button that says "Your funds may be at risk"
-  if (locatorID === '#ethSign') {
-    await driver.clickElement({
-      text: 'Sign',
-      tag: 'button',
-      css: '[data-testid="signature-warning-sign-button"]',
-    });
-  }
 }
 
 /**

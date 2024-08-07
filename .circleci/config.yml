@@ -163,6 +163,9 @@ workflows:
       - prep-build-test-mv2:
           requires:
             - prep-deps
+      - prep-build-test-webpack:
+          requires:
+            - prep-deps
       - prep-build-test-flask:
           requires:
             - prep-deps
@@ -193,6 +196,10 @@ workflows:
       - test-lint-changelog:
           requires:
             - prep-deps
+      - test-e2e-chrome-webpack:
+          requires:
+            - prep-build-test-webpack
+            - get-changed-files-with-git-diff
       - test-e2e-chrome:
           requires:
             - prep-build-test
@@ -293,6 +300,7 @@ workflows:
             - test-e2e-chrome-mmi
             - test-e2e-chrome-rpc-mmi
             - test-e2e-chrome-vault-decryption
+            - test-e2e-chrome-webpack
             - test-storybook
       - benchmark:
           requires:
@@ -396,9 +404,9 @@ jobs:
                   - builds-beta
 
   create_release_pull_request:
-    executor: node-browsers-small
+    executor: node-browsers-medium
     steps:
-      - run: *shallow-git-clone
+      - checkout
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -904,6 +912,26 @@ jobs:
             - dist-test-mv2
             - builds-test-mv2
 
+  prep-build-test-webpack:
+    executor: node-linux-medium
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Activate yarn
+          command: corepack enable
+      - run:
+          name: Build extension for testing
+          command: yarn build:test:webpack
+      - run:
+          name: Move test build to 'dist-test-webpack' to avoid conflict with production build
+          command: mv ./dist ./dist-test-webpack
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-webpack
+
   prep-build-storybook:
     executor: node-linux-medium
     steps:
@@ -1044,6 +1072,27 @@ jobs:
       - run:
           name: depcheck
           command: yarn depcheck
+
+  test-e2e-chrome-webpack:
+    executor: node-browsers-medium-plus
+    parallelism: 20
+    steps:
+      - run: *shallow-git-clone
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-webpack ./dist
+      - run:
+          name: test:e2e:chrome:webpack
+          command: timeout 20m yarn test:e2e:chrome:webpack --retries 1
+          no_output_timeout: 5m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
 
   test-api-specs:
     executor: node-browsers-medium-plus
