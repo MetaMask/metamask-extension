@@ -146,9 +146,35 @@ export const SendPage = () => {
           }),
         );
       }
+
+      trackEvent({
+        event: MetaMetricsEventName.sendAssetSelected,
+        category: MetaMetricsEventCategory.Send,
+        properties: {
+          ...sendAnalytics,
+          is_destination_asset_picker_modal: Boolean(isReceived),
+          new_asset_symbol: token.symbol,
+          new_asset_address: token.address,
+          is_nft: false,
+        },
+      });
       history.push(SEND_ROUTE);
     },
-    [dispatch, history],
+    [dispatch, history, sendAnalytics, trackEvent],
+  );
+
+  const handleAssetPickerClick = useCallback(
+    (isDest) => {
+      trackEvent({
+        event: MetaMetricsEventName.sendTokenModalOpened,
+        category: MetaMetricsEventCategory.Send,
+        properties: {
+          ...sendAnalytics,
+          is_destination_asset_picker_modal: isDest,
+        },
+      });
+    },
+    [sendAnalytics, trackEvent],
   );
 
   const cleanup = useCallback(() => {
@@ -290,7 +316,9 @@ export const SendPage = () => {
     [SEND_STAGES.EDIT, SEND_STAGES.DRAFT].includes(sendStage);
 
   const handleSelectSendToken = useCallback(
-    (newToken) => handleSelectToken(newToken, false),
+    (newToken) => {
+      handleSelectToken(newToken, false);
+    },
     [handleSelectToken],
   );
 
@@ -334,10 +362,12 @@ export const SendPage = () => {
         {isSendFormShown && (
           <AssetPickerAmount
             error={error}
+            header={t('sendSelectSendAsset')}
             asset={transactionAsset}
             amount={amount}
             onAssetChange={handleSelectSendToken}
             onAmountChange={onAmountChange}
+            onClick={() => handleAssetPickerClick(false)}
           />
         )}
         <Box marginTop={6}>
@@ -348,6 +378,7 @@ export const SendPage = () => {
                 requireContractAddressAcknowledgement
               }
               onAssetChange={handleSelectToken}
+              onClick={() => handleAssetPickerClick(true)}
             />
           ) : (
             <SendPageRecipient />

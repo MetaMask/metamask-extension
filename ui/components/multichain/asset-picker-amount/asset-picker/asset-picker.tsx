@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   AvatarTokenSize,
@@ -11,7 +11,7 @@ import {
   BadgeWrapper,
   AvatarNetwork,
 } from '../../../component-library';
-import { Asset, getSendAnalyticProperties } from '../../../../ducks/send';
+import { Asset } from '../../../../ducks/send';
 import {
   AlignItems,
   BackgroundColor,
@@ -25,95 +25,74 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
-import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
-import {
-  getCurrentNetwork,
-  getIpfsGateway,
-  getNativeCurrencyImage,
-  getTestNetworkBackgroundColor,
-  getTokenList,
-} from '../../../../selectors';
+import { getCurrentNetwork } from '../../../../selectors';
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
-import { getAssetImageURL } from '../../../../helpers/utils/util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: END:ONLY_INCLUDE_IF
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
 import { ellipsify } from '../../../../pages/confirmations/send/send.utils';
+import { AssetPickerModalNetwork } from '../asset-picker-modal/asset-picker-modal-network';
+import {
+  AssetWithDisplayData,
+  ERC20Asset,
+  NativeAsset,
+  NFT,
+} from '../asset-picker-modal/types';
+import { TabName } from '../asset-picker-modal/asset-picker-modal-tabs';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  GOERLI_DISPLAY_NAME,
+  SEPOLIA_DISPLAY_NAME,
+} from '../../../../../shared/constants/network';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
 export type AssetPickerProps = {
-  asset: Asset;
+  asset?:
+    | ERC20Asset
+    | NativeAsset
+    | Pick<NFT, 'type' | 'tokenId' | 'image'>
+    | undefined;
   /**
    * Needs to be wrapped in a callback
    */
   onAssetChange: (newAsset: Asset) => void;
-  /**
-   * Sending asset for UI treatments; only for dest component
-   */
-  sendingAsset?: Asset;
+  onClick?: () => void;
   isDisabled?: boolean;
-};
+  networkProps?: Pick<
+    React.ComponentProps<typeof AssetPickerModalNetwork>,
+    'network' | 'networks' | 'onNetworkChange'
+  >;
+} & Pick<
+  React.ComponentProps<typeof AssetPickerModal>,
+  'visibleTabs' | 'header' | 'sendingAsset'
+>;
 
 // A component that lets the user pick from a list of assets.
 export function AssetPicker({
+  header,
   asset,
   onAssetChange,
+  networkProps,
   sendingAsset,
+  onClick,
   isDisabled = false,
+  visibleTabs,
 }: AssetPickerProps) {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const t = useI18nContext();
   ///: END:ONLY_INCLUDE_IF
-  const trackEvent = useContext(MetaMetricsContext);
-  const sendAnalytics = useSelector(getSendAnalyticProperties);
-
-  const nativeCurrencySymbol = useSelector(getNativeCurrency);
-  const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const tokenList: Record<string, any> = useSelector(getTokenList);
-
-  const ipfsGateway = useSelector(getIpfsGateway);
 
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
 
-  let primaryTokenImage: string | undefined;
+  const isNFT = asset?.type === AssetType.NFT;
 
-  if (asset.type === AssetType.native) {
-    primaryTokenImage = nativeCurrencyImageUrl;
-  } else if (tokenList && asset.details) {
-    primaryTokenImage =
-      getAssetImageURL(asset.details?.image, ipfsGateway) ||
-      tokenList[asset.details.address?.toLowerCase()]?.iconUrl;
-  }
+  // selected asset details
+  const primaryTokenImage = asset?.image;
+  const symbol = isNFT ? undefined : asset?.symbol;
 
-  let sendingTokenImage: string | undefined;
-
-  if (sendingAsset) {
-    if (sendingAsset.type === AssetType.native) {
-      sendingTokenImage = nativeCurrencyImageUrl;
-    } else if (tokenList && sendingAsset.details) {
-      sendingTokenImage =
-        getAssetImageURL(sendingAsset.details?.image, ipfsGateway) ||
-        tokenList[sendingAsset.details.address?.toLowerCase()]?.iconUrl;
-    }
-  }
-
-  const symbol =
-    asset.type === AssetType.native
-      ? nativeCurrencySymbol
-      : asset.details?.symbol;
-
-  const isSymbolLong = symbol?.length > LARGE_SYMBOL_LENGTH;
-  const isNFT = asset.type === AssetType.NFT;
-
+  const isSymbolLong = symbol && symbol.length > LARGE_SYMBOL_LENGTH;
   const formattedSymbol =
     isSymbolLong && !isNFT
       ? `${symbol.substring(0, LARGE_SYMBOL_LENGTH - 1)}...`
@@ -121,7 +100,7 @@ export function AssetPicker({
 
   // Badge details
   const currentNetwork = useSelector(getCurrentNetwork);
-  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+  const selectedNetwork = networkProps?.network ?? currentNetwork;
 
   const handleAssetPickerTitle = (): string | undefined => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -133,17 +112,46 @@ export function AssetPicker({
     return undefined;
   };
 
+  const [isSelectingNetwork, setIsSelectingNetwork] = useState(false);
+
   return (
     <>
+      {networkProps && (
+        <AssetPickerModalNetwork
+          isOpen={isSelectingNetwork}
+          onClose={() => {
+            setIsSelectingNetwork(false);
+          }}
+          onBack={() => {
+            setIsSelectingNetwork(false);
+            setShowAssetPickerModal(true);
+          }}
+          {...networkProps}
+        />
+      )}
       {/* This is the Modal that ask to choose token to send */}
       <AssetPickerModal
+        visibleTabs={visibleTabs}
+        header={header}
         isOpen={showAssetPickerModal}
         onClose={() => setShowAssetPickerModal(false)}
         asset={asset}
-        onAssetChange={onAssetChange}
-        sendingAssetImage={sendingTokenImage}
-        sendingAssetSymbol={
-          sendingAsset?.details?.symbol || nativeCurrencySymbol
+        onAssetChange={(
+          token:
+            | AssetWithDisplayData<ERC20Asset>
+            | AssetWithDisplayData<NativeAsset>,
+        ) => {
+          onAssetChange(token);
+          setShowAssetPickerModal(false);
+        }}
+        network={networkProps ? networkProps.network : undefined}
+        onNetworkPickerClick={() => {
+          setShowAssetPickerModal(false);
+          setIsSelectingNetwork(true);
+        }}
+        sendingAsset={sendingAsset}
+        defaultActiveTabKey={
+          asset?.type === AssetType.NFT ? TabName.NFTS : TabName.TOKENS
         }
       />
 
@@ -161,14 +169,7 @@ export function AssetPicker({
         backgroundColor={BackgroundColor.transparent}
         onClick={() => {
           setShowAssetPickerModal(true);
-          trackEvent({
-            event: MetaMetricsEventName.sendTokenModalOpened,
-            category: MetaMetricsEventCategory.Send,
-            properties: {
-              ...sendAnalytics,
-              is_destination_asset_picker_modal: Boolean(sendingAsset),
-            },
-          });
+          onClick?.();
         }}
         endIconName={IconName.ArrowDown}
         endIconProps={{
@@ -184,9 +185,24 @@ export function AssetPicker({
               badge={
                 <AvatarNetwork
                   size={AvatarNetworkSize.Xs}
-                  name={currentNetwork?.nickname ?? ''}
-                  src={currentNetwork?.rpcPrefs?.imageUrl}
-                  backgroundColor={testNetworkBackgroundColor}
+                  name={selectedNetwork?.nickname ?? ''}
+                  src={
+                    selectedNetwork?.rpcPrefs &&
+                    'imageUrl' in selectedNetwork.rpcPrefs
+                      ? selectedNetwork.rpcPrefs.imageUrl
+                      : selectedNetwork?.chainId &&
+                        CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                          selectedNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                        ]
+                  }
+                  backgroundColor={
+                    Object.entries({
+                      [GOERLI_DISPLAY_NAME]: BackgroundColor.goerli,
+                      [SEPOLIA_DISPLAY_NAME]: BackgroundColor.sepolia,
+                    }).find(([tickerSubstring]) =>
+                      selectedNetwork?.ticker?.includes(tickerSubstring),
+                    )?.[1]
+                  }
                   borderColor={
                     primaryTokenImage
                       ? BorderColor.borderMuted
@@ -197,7 +213,7 @@ export function AssetPicker({
             >
               <AvatarToken
                 borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
-                src={primaryTokenImage}
+                src={primaryTokenImage ?? undefined}
                 size={AvatarTokenSize.Md}
                 name={symbol}
                 {...(isNFT && { backgroundColor: BackgroundColor.transparent })}
@@ -209,15 +225,15 @@ export function AssetPicker({
             <Text className="asset-picker__symbol" variant={TextVariant.bodyMd}>
               {formattedSymbol}
             </Text>
-            {asset.details?.tokenId && (
+            {isNFT && asset?.tokenId && (
               <Text
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
                 #
-                {String(asset.details.tokenId).length < ELLIPSIFY_LENGTH
-                  ? asset.details.tokenId
-                  : ellipsify(String(asset.details.tokenId), 6, 4)}
+                {String(asset.tokenId).length < ELLIPSIFY_LENGTH
+                  ? asset.tokenId
+                  : ellipsify(String(asset.tokenId), 6, 4)}
               </Text>
             )}
           </Tooltip>
