@@ -106,7 +106,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
+        alignItems={AlignItems.flexStart}
         color={color}
       >
         <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
