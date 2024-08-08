@@ -6,6 +6,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import ConfirmSubTitle from './confirm-subtitle';
+// import { CHAIN_IDS } from '../../../../../shared/constants/network';
 
 const mockSelectedInternalAccount =
   getSelectedInternalAccountFromMockState(mockState);
@@ -47,7 +48,7 @@ describe('ConfirmSubTitle', () => {
   });
 
   it('should not return null if it is NFT Transfer', async () => {
-    mockState.metamask.preferences.showFiatInTestnets = false;
+    mockState.metamask.preferences.showFiatInTestnets = true;
     mockState.metamask.allNftContracts = {
       [mockSelectedInternalAccount.address]: {
         [mockState.metamask.providerConfig.chainId]: [{ address: '0x9' }],
@@ -66,7 +67,7 @@ describe('ConfirmSubTitle', () => {
       />,
       store,
     );
-    expect(await findByText('0.00001')).toBeInTheDocument();
+    expect(await findByText('$0.01')).toBeInTheDocument();
   });
 
   it('should not return null if assetStandard is ERC1155', async () => {
