@@ -2,6 +2,7 @@ import React from 'react';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   AccountOverviewBtc,
   AccountOverviewBtcProps,
@@ -23,6 +24,10 @@ const render = (props: AccountOverviewBtcProps = defaultProps) => {
 };
 
 describe('AccountOverviewBtc', () => {
+  beforeEach(() => {
+    setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() } as never);
+  });
+
   it('shows only Tokens and Activity tabs', () => {
     const { queryByTestId } = render();
 

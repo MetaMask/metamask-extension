@@ -1,4 +1,10 @@
 import { ObservableStore } from '@metamask/obs-store';
+import { fetchBridgeFeatureFlags } from '../../../ui/pages/bridge/bridge.util';
+
+// Maps to BridgeController function names
+export enum BridgeBackgroundAction {
+  SET_FEATURE_FLAGS = 'setBridgeFeatureFlags',
+}
 
 export enum BridgeFeatureFlagsKey {
   EXTENSION_SUPPORT = 'extensionSupport',
@@ -27,8 +33,9 @@ export default class BridgeController {
     });
   };
 
-  setBridgeFeatureFlags = (bridgeFeatureFlags: BridgeFeatureFlags) => {
+  setBridgeFeatureFlags = async () => {
     const { bridgeState } = this.store.getState();
+    const bridgeFeatureFlags = await fetchBridgeFeatureFlags();
     this.store.updateState({
       bridgeState: { ...bridgeState, bridgeFeatureFlags },
     });
