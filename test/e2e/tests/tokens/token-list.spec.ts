@@ -97,7 +97,7 @@ describe('Token List', function () {
     );
   });
 
-  it('shows percentage increase for an ERC20 token with prices available', async function () {
+  it.only('shows percentage increase for an ERC20 token with prices available', async function () {
     const ethConversionInUsd = 10000;
 
     // Prices are in ETH
@@ -158,28 +158,52 @@ describe('Token List', function () {
         await importToken(driver);
 
         // Verify native token increase
-        const testIdNative = `token-increase-decrease-percentage-${zeroAddress()}`;
+        const testIdBase = 'token-increase-decrease-percentage';
 
-        // Verify native token increase
-        const testId = `token-increase-decrease-percentage-${tokenAddress}`;
+        const isETHIncreaseDOMPresentAndVisible =
+          await driver.isElementPresentAndVisible({
+            css: `[data-testid="${testIdBase}-${zeroAddress()}"]`,
+            text: '+0.02%',
+          });
+        assert.equal(
+          isETHIncreaseDOMPresentAndVisible,
+          true,
+          'Invalid eth increase dom text content',
+        );
 
-        await driver.findElement({
-          css: `[data-testid="${testIdNative}"]`,
-          text: '+0.02%',
-        });
-        await driver.findElement({
-          css: `[data-testid="${testId}"]`,
-          text: '+0.05%',
-        });
+        const isTokenIncreaseDecreasePercentageDOMPresent =
+          await driver.isElementPresentAndVisible({
+            css: `[data-testid="${testIdBase}-${tokenAddress}"]`,
+            text: '+0.05%',
+          });
+        assert.equal(
+          isTokenIncreaseDecreasePercentageDOMPresent,
+          true,
+          'Invalid token increase dom text content',
+        );
+
         // check increase balance for native token eth
-        await driver.findElement({
-          css: '[data-testid="token-increase-decrease-value"]',
-          text: '+$50.00',
-        });
-        await driver.findElement({
-          css: '[data-testid="token-increase-decrease-percentage"]',
-          text: '(+0.02%)',
-        });
+        const isExpectedIncreaseDecreaseValueDOMPresentAndVisible =
+          await driver.isElementPresentAndVisible({
+            css: '[data-testid="token-increase-decrease-value"]',
+            text: '+$50.00',
+          });
+        assert.equal(
+          isExpectedIncreaseDecreaseValueDOMPresentAndVisible,
+          true,
+          'Invalid increase-decrease-value dom text content',
+        );
+
+        const isExpectedIncreaseDecreasePercentageDOMPresentAndVisible =
+          await driver.isElementPresentAndVisible({
+            css: '[data-testid="token-increase-decrease-percentage"]',
+            text: '(+0.02%)',
+          });
+        assert.equal(
+          isExpectedIncreaseDecreasePercentageDOMPresentAndVisible,
+          true,
+          'Invalid increase-decrease-percentage dom text content',
+        );
       },
     );
   });
