@@ -79,7 +79,7 @@ async function openDappAndSwitchChain(
   }
 }
 
-async function selectDappClickSend(driver, dappUrl) {
+async function switchToDappAndSendTransaction(driver, dappUrl) {
   await driver.switchToWindowWithUrl(dappUrl);
   await driver.clickElement('#sendButton');
 }
@@ -194,9 +194,6 @@ describe('Request-queue UI changes', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL);
 
@@ -213,22 +210,24 @@ describe('Request-queue UI changes', function () {
         });
 
         // Go to the first dapp, ensure it uses localhost
-        await selectDappClickSend(driver, DAPP_URL);
+        await switchToDappAndSendTransaction(driver, DAPP_URL);
         await switchToNotificationPopoverValidateDetails(driver, {
           chainId: '0x539',
           networkText: 'Localhost 8545',
           originText: DAPP_URL,
         });
         await rejectTransaction(driver);
+        await driver.waitUntilXWindowHandles(3);
 
         // Go to the second dapp, ensure it uses Ethereum Mainnet
-        await selectDappClickSend(driver, DAPP_ONE_URL);
+        await switchToDappAndSendTransaction(driver, DAPP_ONE_URL);
         await switchToNotificationPopoverValidateDetails(driver, {
           chainId: '0x53a',
           networkText: 'Localhost 8546',
           originText: DAPP_ONE_URL,
         });
         await rejectTransaction(driver);
+        await driver.waitUntilXWindowHandles(3);
       },
     );
   });
@@ -282,14 +281,14 @@ describe('Request-queue UI changes', function () {
         }
 
         // Trigger a send confirmation on the first dapp, do not confirm or reject
-        await selectDappClickSend(driver, DAPP_URL);
+        await switchToDappAndSendTransaction(driver, DAPP_URL);
 
         // Trigger a send confirmation on the second dapp, do not confirm or reject
-        await selectDappClickSend(driver, DAPP_ONE_URL);
+        await switchToDappAndSendTransaction(driver, DAPP_ONE_URL);
 
         if (!IS_FIREFOX) {
           // Trigger a send confirmation on the third dapp, do not confirm or reject
-          await selectDappClickSend(driver, DAPP_TWO_URL);
+          await switchToDappAndSendTransaction(driver, DAPP_TWO_URL);
         }
 
         // Switch to the Notification window, ensure first transaction still showing
@@ -424,7 +423,7 @@ describe('Request-queue UI changes', function () {
 
         // Go back to first dapp, try an action, ensure deleted network doesn't block UI
         // The current globally selected network, Ethereum Mainnet, should be used
-        await selectDappClickSend(driver, DAPP_URL);
+        await switchToDappAndSendTransaction(driver, DAPP_URL);
         await driver.delay(veryLargeDelayMs);
         await switchToNotificationPopoverValidateDetails(driver, {
           chainId: '0x1',
@@ -731,7 +730,7 @@ describe('Request-queue UI changes', function () {
         await secondaryGanacheServer[0].quit();
 
         // Go back to first dapp, try an action, ensure network connection failure doesn't block UI
-        await selectDappClickSend(driver, DAPP_URL);
+        await switchToDappAndSendTransaction(driver, DAPP_URL);
 
         // When the network is down, there is a performance degradation that causes the
         // popup to take a few seconds to open in MV3 (issue #25690)
