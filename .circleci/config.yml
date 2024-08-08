@@ -88,6 +88,13 @@ aliases:
         git checkout -B "$CIRCLE_BRANCH" "$CIRCLE_SHA1"
       fi
 
+      # Piggyback on this alias to enable VNC connections
+      # The if statement will only be true on node-browsers executors
+      if [ "${SHELL}" != "/bin/bash" ]; then
+        export DISPLAY=:1.0
+        cat ${HOME}/project/.circleci/scripts/enable-vnc.sh >> ~/.bashrc
+      fi
+
   # Check if MMI Optional tests should run
   - &check-mmi-optional
     name: Check if MMI Optional tests should run
