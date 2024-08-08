@@ -64,14 +64,6 @@ import AssetList from './AssetList';
 import { Search } from './asset-picker-modal-search';
 import { AssetPickerModalNetwork } from './asset-picker-modal-network';
 
-type TokenListGenerator = Generator<
-  | AssetWithDisplayData<NativeAsset>
-  | ((Token | TokenListToken) & {
-      balance?: string;
-      string?: string;
-    })
->;
-
 type AssetPickerModalProps = {
   header: JSX.Element | string | null;
   isOpen: boolean;
@@ -85,12 +77,16 @@ type AssetPickerModalProps = {
    */
   sendingAsset?: { image: string; symbol: string } | undefined;
   onNetworkPickerClick?: () => void;
-  tokenListGenerator?: () => TokenListGenerator;
-} & Pick<
-  React.ComponentProps<typeof AssetPickerModalTabs>,
-  'visibleTabs' | 'defaultActiveTabKey'
-> &
-  Pick<React.ComponentProps<typeof AssetPickerModalNetwork>, 'network'>;
+  filteredTokensGenerator?: (
+    filterPredicate: (token: ERC20Asset | NativeAsset) => boolean,
+  ) => Generator<
+    AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
+  >;
+} & Pick<React.ComponentProps<typeof AssetPickerModalNetwork>, 'network'> &
+  Pick<
+    React.ComponentProps<typeof AssetPickerModalTabs>,
+    'visibleTabs' | 'defaultActiveTabKey'
+  >;
 
 const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
@@ -103,7 +99,7 @@ export function AssetPickerModal({
   sendingAsset,
   network,
   onNetworkPickerClick,
-  tokenListGenerator,
+  filteredTokensGenerator,
   ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
@@ -174,10 +170,6 @@ export function AssetPickerModal({
   }, [tokensWithBalances, tokens]);
 
   const tokenGenerator = useCallback(() => {
-    if (tokenListGenerator) {
-      return tokenListGenerator();
-    }
-
     const nativeToken: AssetWithDisplayData<NativeAsset> = {
       address: null,
       symbol: nativeCurrency,
@@ -188,7 +180,13 @@ export function AssetPickerModal({
       type: AssetType.native,
     };
 
-    return (function* (): TokenListGenerator {
+    return (function* (): Generator<
+      | AssetWithDisplayData<NativeAsset>
+      | ((Token | TokenListToken) & {
+          balance?: string;
+          string?: string;
+        })
+    > {
       yield nativeToken;
 
       const blockedTokens = [];
@@ -223,16 +221,34 @@ export function AssetPickerModal({
     nativeCurrencyImage,
     balanceValue,
     memoizedUsersTokens,
-    tokenListGenerator,
     topTokens,
     tokenList,
     getIsDisabled,
   ]);
 
   const filteredTokenList = useMemo(() => {
-    const filteredTokens: AssetWithDisplayData<ERC20Asset | NativeAsset>[] = [];
+    const filteredTokens: (
+      | AssetWithDisplayData<ERC20Asset>
+      | AssetWithDisplayData<NativeAsset>
+    )[] = [];
     // undefined would be the native token address
     const filteredTokensAddresses = new Set<string | undefined>();
+
+    if (filteredTokensGenerator) {
+      for (const token of filteredTokensGenerator(
+        ({ symbol, address }) =>
+          symbol?.toLowerCase().includes(searchQuery.toLowerCase()) &&
+          !filteredTokensAddresses.has(address?.toLowerCase()),
+      )) {
+        filteredTokensAddresses.add(token.address?.toLowerCase());
+        filteredTokens.push(token);
+
+        if (filteredTokens.length > MAX_UNOWNED_TOKENS_RENDERED) {
+          break;
+        }
+      }
+      return filteredTokens;
+    }
 
     for (const token of tokenGenerator()) {
       if (
