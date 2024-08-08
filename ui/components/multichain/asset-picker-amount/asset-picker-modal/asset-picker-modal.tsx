@@ -48,7 +48,6 @@ import {
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
-import { useEqualityCheck } from '../../../../hooks/useEqualityCheck';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
@@ -139,13 +138,6 @@ export function AssetPickerModal({
   const tokenList = useSelector(getTokenList) as TokenListMap;
   const topTokens = useSelector(getTopAssets, isEqual);
 
-  const usersTokens = uniqBy<TokenWithBalance>(
-    [...tokensWithBalances, ...tokens],
-    'address',
-  );
-
-  const memoizedUsersTokens: TokenWithBalance[] = useEqualityCheck(usersTokens);
-
   const getIsDisabled = useCallback(
     ({
       address,
@@ -164,7 +156,14 @@ export function AssetPickerModal({
     [sendingAsset?.symbol, memoizedSwapsBlockedTokens],
   );
 
-  const filteredTokenList = useMemo(() => {
+  const memoizedUsersTokens: TokenWithBalance[] = useMemo(() => {
+    return uniqBy<TokenWithBalance>(
+      [...tokensWithBalances, ...tokens],
+      'address',
+    );
+  }, [tokensWithBalances, tokens]);
+
+  const tokenGenerator = useCallback(() => {
     const nativeToken: AssetWithDisplayData<NativeAsset> = {
       address: null,
       symbol: nativeCurrency,
@@ -175,11 +174,7 @@ export function AssetPickerModal({
       type: AssetType.native,
     };
 
-    const filteredTokens: AssetWithDisplayData<ERC20Asset | NativeAsset>[] = [];
-    // undefined would be the native token address
-    const filteredTokensAddresses = new Set<string | undefined>();
-
-    function* tokenGenerator(): Generator<
+    return (function* (): Generator<
       | AssetWithDisplayData<NativeAsset>
       | ((Token | TokenListToken) & {
           balance?: string;
@@ -214,7 +209,21 @@ export function AssetPickerModal({
       for (const token of blockedTokens) {
         yield token;
       }
-    }
+    })();
+  }, [
+    nativeCurrency,
+    nativeCurrencyImage,
+    balanceValue,
+    memoizedUsersTokens,
+    topTokens,
+    tokenList,
+    getIsDisabled,
+  ]);
+
+  const filteredTokenList = useMemo(() => {
+    const filteredTokens: AssetWithDisplayData<ERC20Asset | NativeAsset>[] = [];
+    // undefined would be the native token address
+    const filteredTokensAddresses = new Set<string | undefined>();
 
     for (const token of tokenGenerator()) {
       if (
@@ -247,18 +256,12 @@ export function AssetPickerModal({
 
     return filteredTokens;
   }, [
-    nativeCurrency,
-    nativeCurrencyImage,
-    balanceValue,
-    memoizedUsersTokens,
-    topTokens,
-    tokenList,
-    getIsDisabled,
     searchQuery,
     tokenConversionRates,
     conversionRate,
     currentCurrency,
     chainId,
+    tokenGenerator,
   ]);
 
   return (
