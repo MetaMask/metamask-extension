@@ -81,7 +81,7 @@ type AssetPickerModalProps = {
    * by a custom order.
    */
   customTokenListGenerator?: (
-    filterPredicate: (token: ERC20Asset | NativeAsset) => boolean,
+    filterPredicate: (symbol: string, address?: string) => boolean,
   ) => Generator<
     AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
   >;
@@ -172,8 +172,10 @@ export function AssetPickerModal({
     );
   }, [tokensWithBalances, tokens]);
 
-  const sortedTokenListGenerator = useCallback(
-    function* (): Generator<
+  const tokenListGenerator = useCallback(
+    function* (
+      shouldAddToken: (symbol: string, address?: null | string) => boolean,
+    ): Generator<
       | AssetWithDisplayData<NativeAsset>
       | ((Token | TokenListToken) & {
           balance?: string;
@@ -190,18 +192,22 @@ export function AssetPickerModal({
         type: AssetType.native,
       };
 
-      yield nativeToken;
+      if (shouldAddToken(nativeToken.symbol, nativeToken.address)) {
+        yield nativeToken;
+      }
 
       const blockedTokens = [];
 
       for (const token of memoizedUsersTokens) {
-        yield token;
+        if (shouldAddToken(token.symbol, token.address)) {
+          yield token;
+        }
       }
 
       // topTokens should already be sorted by popularity
       for (const address of Object.keys(topTokens)) {
         const token = tokenList?.[address];
-        if (token) {
+        if (token && shouldAddToken(token.symbol, token.address)) {
           if (getIsDisabled(token)) {
             blockedTokens.push(token);
             continue;
@@ -212,7 +218,9 @@ export function AssetPickerModal({
       }
 
       for (const token of Object.values(tokenList)) {
-        yield token;
+        if (shouldAddToken(token.symbol, token.address)) {
+          yield token;
+        }
       }
 
       for (const token of blockedTokens) {
@@ -238,47 +246,38 @@ export function AssetPickerModal({
     // undefined would be the native token address
     const filteredTokensAddresses = new Set<string | undefined>();
 
+    // Default filter predicate for whether a token should be included in displayed list
+    const shouldAddToken = (symbol: string, address?: string | null) => {
+      return (
+        symbol?.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        !filteredTokensAddresses.has(address?.toLowerCase())
+      );
+    };
+
     // If filteredTokensGenerator is passed in, use it to generate the filtered tokens
-    if (customTokenListGenerator) {
-      for (const token of customTokenListGenerator(
-        ({ symbol, address }) =>
-          symbol?.toLowerCase().includes(searchQuery.toLowerCase()) &&
-          !filteredTokensAddresses.has(address?.toLowerCase()),
-      )) {
-        filteredTokensAddresses.add(token.address?.toLowerCase());
-        filteredTokens.push(token);
-
-        if (filteredTokens.length > MAX_UNOWNED_TOKENS_RENDERED) {
-          break;
-        }
-      }
-      return filteredTokens;
-    }
-
-    // Otherwise use the default token list generator
-    for (const token of sortedTokenListGenerator()) {
-      if (
-        token.symbol?.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !filteredTokensAddresses.has(token.address?.toLowerCase())
-      ) {
-        filteredTokensAddresses.add(token.address?.toLowerCase());
-        filteredTokens.push(
-          getRenderableTokenData(
-            token.address
-              ? ({
-                  ...token,
-                  ...tokenList[token.address.toLowerCase()],
-                  type: AssetType.token,
-                } as AssetWithDisplayData<ERC20Asset>)
-              : token,
-            tokenConversionRates,
-            conversionRate,
-            currentCurrency,
-            chainId,
-            tokenList,
-          ),
-        );
-      }
+    // Otherwise use the default tokenGenerator
+    for (const token of (customTokenListGenerator ?? tokenListGenerator)(
+      shouldAddToken,
+    )) {
+      filteredTokensAddresses.add(token.address?.toLowerCase());
+      filteredTokens.push(
+        customTokenListGenerator
+          ? token
+          : getRenderableTokenData(
+              token.address
+                ? ({
+                    ...token,
+                    ...tokenList[token.address.toLowerCase()],
+                    type: AssetType.token,
+                  } as AssetWithDisplayData<ERC20Asset>)
+                : token,
+              tokenConversionRates,
+              conversionRate,
+              currentCurrency,
+              chainId,
+              tokenList,
+            ),
+      );
 
       if (filteredTokens.length > MAX_UNOWNED_TOKENS_RENDERED) {
         break;
@@ -292,7 +291,8 @@ export function AssetPickerModal({
     conversionRate,
     currentCurrency,
     chainId,
-    sortedTokenListGenerator,
+    tokenListGenerator,
+    customTokenListGenerator,
   ]);
 
   return (
