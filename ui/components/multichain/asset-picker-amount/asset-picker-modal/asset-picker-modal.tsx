@@ -78,7 +78,7 @@ type AssetPickerModalProps = {
   sendingAsset?: { image: string; symbol: string } | undefined;
   onNetworkPickerClick?: () => void;
   filteredTokensGenerator?: (
-    filterPredicate: (token: ERC20Asset | NativeAsset) => boolean,
+    filterPredicate: (symbol: string, address?: string) => boolean,
   ) => Generator<
     AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
   >;
@@ -169,62 +169,71 @@ export function AssetPickerModal({
     );
   }, [tokensWithBalances, tokens]);
 
-  const tokenGenerator = useCallback(() => {
-    const nativeToken: AssetWithDisplayData<NativeAsset> = {
-      address: null,
-      symbol: nativeCurrency,
-      decimals: 18,
-      image: nativeCurrencyImage,
-      balance: balanceValue,
-      string: undefined,
-      type: AssetType.native,
-    };
+  const tokenGenerator = useCallback(
+    (shouldAddToken: (symbol: string, address?: null | string) => boolean) => {
+      const nativeToken: AssetWithDisplayData<NativeAsset> = {
+        address: null,
+        symbol: nativeCurrency,
+        decimals: 18,
+        image: nativeCurrencyImage,
+        balance: balanceValue,
+        string: undefined,
+        type: AssetType.native,
+      };
 
-    return (function* (): Generator<
-      | AssetWithDisplayData<NativeAsset>
-      | ((Token | TokenListToken) & {
-          balance?: string;
-          string?: string;
-        })
-    > {
-      yield nativeToken;
+      return (function* (): Generator<
+        | AssetWithDisplayData<NativeAsset>
+        | ((Token | TokenListToken) & {
+            balance?: string;
+            string?: string;
+          })
+      > {
+        if (shouldAddToken(nativeToken.symbol, nativeToken.address)) {
+          yield nativeToken;
+        }
 
-      const blockedTokens = [];
+        const blockedTokens = [];
 
-      for (const token of memoizedUsersTokens) {
-        yield token;
-      }
-
-      // topTokens should already be sorted by popularity
-      for (const address of Object.keys(topTokens)) {
-        const token = tokenList?.[address];
-        if (token) {
-          if (getIsDisabled(token)) {
-            blockedTokens.push(token);
-            continue;
-          } else {
+        for (const token of memoizedUsersTokens) {
+          if (shouldAddToken(token.symbol, token.address)) {
             yield token;
           }
         }
-      }
 
-      for (const token of Object.values(tokenList)) {
-        yield token;
-      }
+        // topTokens should already be sorted by popularity
+        for (const address of Object.keys(topTokens)) {
+          const token = tokenList?.[address];
+          if (token && shouldAddToken(token.symbol, token.address)) {
+            if (getIsDisabled(token)) {
+              blockedTokens.push(token);
+              continue;
+            } else {
+              yield token;
+            }
+          }
+        }
 
-      for (const token of blockedTokens) {
-        yield token;
-      }
-    })();
-  }, [
-    nativeCurrency,
-    nativeCurrencyImage,
-    balanceValue,
-    memoizedUsersTokens,
-    topTokens,
-    tokenList,
-    getIsDisabled,
-  ]);
+        for (const token of Object.values(tokenList)) {
+          if (shouldAddToken(token.symbol, token.address)) {
+            yield token;
+          }
+        }
+
+        for (const token of blockedTokens) {
+          yield token;
+        }
+      })();
+    },
+    [
+      nativeCurrency,
+      nativeCurrencyImage,
+      balanceValue,
+      memoizedUsersTokens,
+      topTokens,
+      tokenList,
+      getIsDisabled,
+    ],
+  );
 
   const filteredTokenList = useMemo(() => {
     const filteredTokens: (
@@ -234,45 +243,35 @@ export function AssetPickerModal({
     // undefined would be the native token address
     const filteredTokensAddresses = new Set<string | undefined>();
 
-    if (filteredTokensGenerator) {
-      for (const token of filteredTokensGenerator(
-        ({ symbol, address }) =>
-          symbol?.toLowerCase().includes(searchQuery.toLowerCase()) &&
-          !filteredTokensAddresses.has(address?.toLowerCase()),
-      )) {
-        filteredTokensAddresses.add(token.address?.toLowerCase());
-        filteredTokens.push(token);
+    const shouldAddToken = (symbol: string, address?: string | null) => {
+      return (
+        symbol?.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        !filteredTokensAddresses.has(address?.toLowerCase())
+      );
+    };
 
-        if (filteredTokens.length > MAX_UNOWNED_TOKENS_RENDERED) {
-          break;
-        }
-      }
-      return filteredTokens;
-    }
-
-    for (const token of tokenGenerator()) {
-      if (
-        token.symbol?.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !filteredTokensAddresses.has(token.address?.toLowerCase())
-      ) {
-        filteredTokensAddresses.add(token.address?.toLowerCase());
-        filteredTokens.push(
-          getRenderableTokenData(
-            token.address
-              ? ({
-                  ...token,
-                  ...tokenList[token.address.toLowerCase()],
-                  type: AssetType.token,
-                } as AssetWithDisplayData<ERC20Asset>)
-              : token,
-            tokenConversionRates,
-            conversionRate,
-            currentCurrency,
-            chainId,
-            tokenList,
-          ),
-        );
-      }
+    for (const token of (filteredTokensGenerator ?? tokenGenerator)(
+      shouldAddToken,
+    )) {
+      filteredTokensAddresses.add(token.address?.toLowerCase());
+      filteredTokens.push(
+        filteredTokensGenerator
+          ? token
+          : getRenderableTokenData(
+              token.address
+                ? ({
+                    ...token,
+                    ...tokenList[token.address.toLowerCase()],
+                    type: AssetType.token,
+                  } as AssetWithDisplayData<ERC20Asset>)
+                : token,
+              tokenConversionRates,
+              conversionRate,
+              currentCurrency,
+              chainId,
+              tokenList,
+            ),
+      );
 
       if (filteredTokens.length > MAX_UNOWNED_TOKENS_RENDERED) {
         break;
@@ -287,6 +286,7 @@ export function AssetPickerModal({
     currentCurrency,
     chainId,
     tokenGenerator,
+    filteredTokensGenerator,
   ]);
 
   return (
