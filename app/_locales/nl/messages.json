@@ -146,6 +146,9 @@
   "invalidRPC": {
     "message": "Ongeldige RPC-URI"
   },
+  "invalidSymbolLength": {
+    "message": "Symbool moet $1 tekens of minder zijn."
+  },
   "jsonFile": {
     "message": "JSON-bestand",
     "description": "format for importing an account"
@@ -273,9 +276,6 @@
   },
   "supportCenter": {
     "message": "Bezoek ons ​​ondersteuningscentrum"
-  },
-  "symbolBetweenZeroTwelve": {
-    "message": "Symbool moet 11 tekens of minder zijn."
   },
   "terms": {
     "message": "Gebruiksvoorwaarden"

@@ -2535,6 +2535,9 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "输入无效！私钥助记词须区分大小写。"
   },
+  "invalidSymbolLength": {
+    "message": "符号不得超过$1个字符。"
+  },
   "ipfsGateway": {
     "message": "IPFS网关"
   },
@@ -5856,9 +5859,6 @@
   },
   "symbol": {
     "message": "符号"
-  },
-  "symbolBetweenZeroTwelve": {
-    "message": "符号不得超过11个字符。"
   },
   "tenPercentIncreased": {
     "message": "增加10%"

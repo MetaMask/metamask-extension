@@ -2535,6 +2535,9 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "¡Entrada inválida! La frase secreta de recuperación distingue entre mayúsculas y minúsculas."
   },
+  "invalidSymbolLength": {
+    "message": "El símbolo debe tener $1 caracteres o menos."
+  },
   "ipfsGateway": {
     "message": "Puerta de enlace de IPFS"
   },
@@ -5856,9 +5859,6 @@
   },
   "symbol": {
     "message": "Símbolo"
-  },
-  "symbolBetweenZeroTwelve": {
-    "message": "El símbolo debe tener 11 caracteres o menos."
   },
   "tenPercentIncreased": {
     "message": "10 % de aumento"

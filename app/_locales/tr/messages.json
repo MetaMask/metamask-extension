@@ -2535,6 +2535,9 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Giriş geçersiz! Gizli Kurtarma İfadesi büyük/küçük harf duyarlıdır."
   },
+  "invalidSymbolLength": {
+    "message": "Sembol en fazla $1 karakter olmalıdır."
+  },
   "ipfsGateway": {
     "message": "IPFS ağ geçidi"
   },
@@ -5856,9 +5859,6 @@
   },
   "symbol": {
     "message": "Sembol"
-  },
-  "symbolBetweenZeroTwelve": {
-    "message": "Sembol en fazla 11 karakter olmalıdır."
   },
   "tenPercentIncreased": {
     "message": "%10 artış"
