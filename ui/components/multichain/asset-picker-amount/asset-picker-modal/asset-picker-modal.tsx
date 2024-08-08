@@ -76,6 +76,15 @@ type AssetPickerModalProps = {
    */
   sendingAsset?: { image: string; symbol: string } | undefined;
   onNetworkPickerClick?: () => void;
+  /**
+   * Generator function that returns a list of tokens filtered by a predicate and sorted
+   * by a custom order.
+   */
+  customTokenListGenerator?: (
+    filterPredicate: (token: ERC20Asset | NativeAsset) => boolean,
+  ) => Generator<
+    AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
+  >;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModalTabs>,
   'visibleTabs' | 'defaultActiveTabKey'
@@ -93,6 +102,7 @@ export function AssetPickerModal({
   sendingAsset,
   network,
   onNetworkPickerClick,
+  customTokenListGenerator,
   ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
@@ -221,10 +231,31 @@ export function AssetPickerModal({
   );
 
   const filteredTokenList = useMemo(() => {
-    const filteredTokens: AssetWithDisplayData<ERC20Asset | NativeAsset>[] = [];
+    const filteredTokens: (
+      | AssetWithDisplayData<ERC20Asset>
+      | AssetWithDisplayData<NativeAsset>
+    )[] = [];
     // undefined would be the native token address
     const filteredTokensAddresses = new Set<string | undefined>();
 
+    // If filteredTokensGenerator is passed in, use it to generate the filtered tokens
+    if (customTokenListGenerator) {
+      for (const token of customTokenListGenerator(
+        ({ symbol, address }) =>
+          symbol?.toLowerCase().includes(searchQuery.toLowerCase()) &&
+          !filteredTokensAddresses.has(address?.toLowerCase()),
+      )) {
+        filteredTokensAddresses.add(token.address?.toLowerCase());
+        filteredTokens.push(token);
+
+        if (filteredTokens.length > MAX_UNOWNED_TOKENS_RENDERED) {
+          break;
+        }
+      }
+      return filteredTokens;
+    }
+
+    // Otherwise use the default token list generator
     for (const token of sortedTokenListGenerator()) {
       if (
         token.symbol?.toLowerCase().includes(searchQuery.toLowerCase()) &&
