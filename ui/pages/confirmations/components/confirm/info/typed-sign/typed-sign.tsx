@@ -49,9 +49,9 @@ const TypedSignInfo: React.FC = () => {
       if (!isPermit && !isOrder) {
         return;
       }
-      const { decimals: tokenDecimals } = await getTokenStandardAndDetails(
-        verifyingContract,
-      );
+      const tokenDetails = await getTokenStandardAndDetails(verifyingContract);
+      const tokenDecimals = tokenDetails?.decimals;
+
       setDecimals(parseInt(tokenDecimals ?? '0', 10));
     })();
   }, [verifyingContract]);
