@@ -119,9 +119,7 @@ export const getBridgeFixtures = (
   }
 
   return {
-    driverOptions: {
-      openDevToolsForTabs: true,
-    },
+    driverOptions: { responsive: true },
     fixtures: fixtureBuilder.build(),
     testSpecificMock,
     smartContract: SMART_CONTRACTS.HST,
