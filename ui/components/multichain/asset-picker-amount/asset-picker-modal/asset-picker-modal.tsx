@@ -64,6 +64,14 @@ import AssetList from './AssetList';
 import { Search } from './asset-picker-modal-search';
 import { AssetPickerModalNetwork } from './asset-picker-modal-network';
 
+type TokenListGenerator = Generator<
+  | AssetWithDisplayData<NativeAsset>
+  | ((Token | TokenListToken) & {
+      balance?: string;
+      string?: string;
+    })
+>;
+
 type AssetPickerModalProps = {
   header: JSX.Element | string | null;
   isOpen: boolean;
@@ -77,6 +85,7 @@ type AssetPickerModalProps = {
    */
   sendingAsset?: { image: string; symbol: string } | undefined;
   onNetworkPickerClick?: () => void;
+  tokenListGenerator?: () => TokenListGenerator;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModalTabs>,
   'visibleTabs' | 'defaultActiveTabKey'
@@ -94,6 +103,7 @@ export function AssetPickerModal({
   sendingAsset,
   network,
   onNetworkPickerClick,
+  tokenListGenerator,
   ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
@@ -164,6 +174,10 @@ export function AssetPickerModal({
   }, [tokensWithBalances, tokens]);
 
   const tokenGenerator = useCallback(() => {
+    if (tokenListGenerator) {
+      return tokenListGenerator();
+    }
+
     const nativeToken: AssetWithDisplayData<NativeAsset> = {
       address: null,
       symbol: nativeCurrency,
@@ -174,13 +188,7 @@ export function AssetPickerModal({
       type: AssetType.native,
     };
 
-    return (function* (): Generator<
-      | AssetWithDisplayData<NativeAsset>
-      | ((Token | TokenListToken) & {
-          balance?: string;
-          string?: string;
-        })
-    > {
+    return (function* (): TokenListGenerator {
       yield nativeToken;
 
       const blockedTokens = [];
@@ -215,6 +223,7 @@ export function AssetPickerModal({
     nativeCurrencyImage,
     balanceValue,
     memoizedUsersTokens,
+    tokenListGenerator,
     topTokens,
     tokenList,
     getIsDisabled,
