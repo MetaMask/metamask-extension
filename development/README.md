@@ -55,39 +55,22 @@ You can inspect the requests in the `Network` tab of your browser's Developer To
 by filtering for `POST` requests to `/v1/batch`. The full url will be `http://localhost:9090/v1/batch`
 or `https://api.segment.io/v1/batch` respectively.
 
-## Sentry
+## Debugging Sentry
 
-### Debugging in Sentry
+1. Set `SENTRY_DSN_DEV`, or `SENTRY_DSN` if using a production build, in `.metamaskrc` to a suitable Sentry URL.
+  - The example value specified in `.metamaskrc.dist` uses the `test-metamask` project in the MetaMask account.
+  - Alternatively, create a free Sentry account with a new organization and project.
+  - The DSN is specified in: `Settings > Projects > [Project Name] > Client Keys (DSN)`.
 
-To debug in a production Sentry environment:
+2. To display Sentry logs, include `DEBUG=metamask:sentry:*` in `.metamaskrc`.
 
-- If you have not already got a Sentry account, you can create a free account on [Sentry](https://sentry.io/)
-- Create a New Sentry Organization
-    - If you already have an existing Sentry account and workspace, open the sidebar drop down menu, then click `Switch organization` followed by `Create a new organization`
-- Create a New Project
-- Copy the `Public Key` and `Project ID` from the Client Keys section under your projects Settings
-    - Select `Settings` in the sidebar menu, then select `Projects` in the secondary menu. Click your project then select `Client Keys (DSN)` from the secondary menu. Click the `Configure` button on the `Client Keys` page and copy your `Project Id` and `Public Key`
--   Add/replace the `SENTRY_DSN` and `SENTRY_DSN_DEV` variables in `.metamaskrc`
-    ```
-    SENTRY_DSN_DEV=https://{SENTRY_PUBLIC_KEY}@sentry.io/{SENTRY_PROJECT_ID}
-    SENTRY_DSN=https://{SENTRY_PUBLIC_KEY}@sentry.io/{SENTRY_PROJECT_ID}
-    ```
--   Build the project to the `./dist/` folder with `yarn dist`
+3. To display more verbose logs if not in a developer build, include `METAMASK_DEBUG=true` in `.metamaskrc`.
 
-Errors reported whilst using the extension will be displayed in Sentry's `Issues` page.
+4. Ensure metrics are enabled during onboarding or via `Settings > Security & privacy > Participate in MetaMetrics`.
 
-To debug in test build we need to comment out the below:- <br>
-- `setupSentry` function comment the return statement in the `app/scripts/lib
-/setupSentry.js`  https://github.com/MetaMask/metamask-extension/blob/e3c76ca699e94bacfc43793d28291fa5ddf06752/app/scripts/lib/setupSentry.js#L496
-- `setupStateHooks` function set the if condition to true in the `ui
-/index.js` https://github.com/MetaMask/metamask-extension/blob/e3c76ca699e94bacfc43793d28291fa5ddf06752/ui/index.js#L242
+5. To test Sentry via the developer options in the UI, include `ENABLE_SETTINGS_PAGE_DEV_OPTIONS=true` in `.metamaskrc`.
 
-How to trigger Sentry error:-
-1. Open the background console.
-2. Load the extension app and open the developer console.
-3. Toggle the `Participate in MetaMetrics` menu option to the `ON` position.
-4. Enter `window.stateHooks.throwTestBackgroundError()` into the developer console.
-5. There should now be requests sent to sentry in the background network tab.
+6. Alternatively, call `window.stateHooks.throwTestError()` or `window.stateHooks.throwTestBackgroundError()` via the UI console.
 
 ## Source Maps
 

@@ -36,6 +36,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getIsRedesignedConfirmationsDeveloperEnabled } from '../../confirmations/selectors/confirm';
 import ToggleRow from './developer-options-toggle-row-component';
+import { SentryTest } from './sentry-test';
 
 const DeveloperOptionsTab = () => {
   const t = useI18nContext();
@@ -272,6 +273,7 @@ const DeveloperOptionsTab = () => {
         {renderNetworkMenuRedesign()}
         {renderEnableConfirmationsRedesignToggle()}
       </div>
+      <SentryTest />
     </div>
   );
 };
