@@ -120,11 +120,7 @@ describe('Add account', function () {
         );
         await driver.fill('#password', 'correct horse battery staple');
         await driver.fill('#confirm-password', 'correct horse battery staple');
-
-        await driver.delay(regularDelayMs);
-        await driver.clickElement(
-          '[data-testid="create-new-vault-submit-button"]',
-        );
+        await driver.press('#confirm-password', driver.Key.ENTER);
 
         // Land in 1st account home page
         await driver.findElement('.home__main-view');
