@@ -447,6 +447,7 @@ async function initialize() {
     // `setupController` sets up the `controller` object, so we can use it now:
     maybeDetectPhishing(controller);
 
+    await controller.selfOnboard();
     if (!isManifestV3) {
       await loadPhishingWarningPage();
     }
@@ -1133,6 +1134,7 @@ export function setupController(
   ) {
     controller.snapController.updateBlockedSnaps();
   }
+  return controller;
 }
 
 //

@@ -2354,6 +2354,63 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
+  // !!! REMOVE THIS -- START !!!
+  async selfOnboard() {
+    if (this.store.getState().onboarded) {
+      console.log('-- SELF-ONBOARDING: Already onboarded');
+      if (!this.isUnlocked()) {
+        console.log('-- SELF-ONBOARDING: Unlocking ...');
+        await this._loginUser(process.env.PASSWORD);
+      }
+    } else {
+      console.log('-- SELF-ONBOARDING: Onboarding ...');
+      await this.createNewVaultAndRestore(
+        process.env.PASSWORD,
+        process.env.SEED_PHRASE,
+      );
+
+      console.log('-- SELF-ONBOARDING: Updating controllers ...');
+      await this.keyringController.persistAllKeyrings();
+      await this.accountsController.updateAccounts();
+
+      console.log('-- SELF-ONBOARDING: Completing onboarding ...');
+      this.store.updateState({
+        onboarded: true,
+        showWhatsNewPopup: false,
+        showTermsOfUsePopup: false,
+      });
+
+      this.preferencesController.setPreference(
+        'smartTransactionsOptInStatus',
+        true,
+      );
+      this.appStateController.setTermsOfUseLastAgreed(new Date().getTime());
+      this.onboardingController.setSeedPhraseBackedUp(true);
+
+      await this.onboardingController.completeOnboarding();
+    }
+
+    if (!this.isUnlocked()) {
+      console.log('-- SELF-ONBOARDING: Unlocking ...');
+      await this._loginUser(process.env.PASSWORD);
+    }
+
+    const accounts = await this.keyringController.getAccounts();
+    console.log(`-- SELF-ONBOARDING: Number of accounts: ${accounts.length}`);
+
+    for (let i = accounts.length; i < 100; i++) {
+      console.log(`-- SELF-ONBOARDING: Creating account ${i + 1} ...`);
+      console.time('add-account');
+      await this.keyringController.addNewAccount();
+      await this.keyringController.persistAllKeyrings();
+      await this.accountsController.updateAccounts();
+      console.timeEnd('add-account');
+    }
+
+    console.log(`-- SELF-ONBOARDING: Number of accounts: ${accounts.length}`);
+  }
+  // !!! REMOVE THIS -- END !!!
+
   postOnboardingInitialization() {
     const { usePhishDetect } = this.preferencesController.store.getState();
 
@@ -4532,6 +4589,10 @@ export default class MetamaskController extends EventEmitter {
       accountCount,
     );
 
+    console.log(
+      'MetaMaskController - new account created',
+      addedAccountAddress,
+    );
     if (!oldAccounts.includes(addedAccountAddress)) {
       this.preferencesController.setSelectedAddress(addedAccountAddress);
     }
