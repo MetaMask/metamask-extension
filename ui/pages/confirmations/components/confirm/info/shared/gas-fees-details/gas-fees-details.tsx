@@ -67,12 +67,14 @@ export const GasFeesDetails = ({
       {showAdvancedDetails && hasLayer1GasFee && (
         <>
           <GasFeesRow
+            data-testid="gas-fee-details-l1"
             label={t('l1Fee')}
             tooltipText={t('l1FeeTooltip')}
             fiatFee={l1FeeFiat}
             nativeFee={l1FeeNative}
           />
           <GasFeesRow
+            data-testid="gas-fee-details-l2"
             label={t('l2Fee')}
             tooltipText={t('l2FeeTooltip')}
             fiatFee={l2FeeFiat}
@@ -82,6 +84,7 @@ export const GasFeesDetails = ({
       )}
       {supportsEIP1559 && (
         <ConfirmInfoRow
+          data-testid="gas-fee-details-speed"
           label={t('speed')}
           variant={ConfirmInfoRowVariant.Default}
         >
@@ -95,6 +98,7 @@ export const GasFeesDetails = ({
       )}
       {showAdvancedDetails && (
         <GasFeesRow
+          data-testid="gas-fee-details-max-fee"
           label={t('maxFee')}
           tooltipText={t('maxFeeTooltip')}
           fiatFee={maxFeeFiat}

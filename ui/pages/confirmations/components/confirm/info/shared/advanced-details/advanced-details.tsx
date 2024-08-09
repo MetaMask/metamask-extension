@@ -46,12 +46,13 @@ const NonceDetails = () => {
   const displayedNonce = customNonceValue || nextNonce;
 
   return (
-    <ConfirmInfoSection>
+    <ConfirmInfoSection data-testid="advanced-details-nonce-section">
       <ConfirmInfoRow
         label={t('advancedDetailsNonceDesc')}
         tooltip={t('advancedDetailsNonceTooltip')}
       >
         <ConfirmInfoRowText
+          data-testid="advanced-details-displayed-nonce"
           text={`${displayedNonce}`}
           onEditClick={
             enableCustomNonce ? () => openEditNonceModal() : undefined

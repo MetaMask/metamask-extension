@@ -1,9 +1,9 @@
 import nock from 'nock';
 
-export const createMockImplementation = <T,>(request: string, response: T) => {
+export const createMockImplementation = <T,>(requests: Record<string, T>) => {
   return (method: string): Promise<T | undefined> => {
-    if (method === request) {
-      return Promise.resolve(response);
+    if (method in requests) {
+      return Promise.resolve(requests[method]);
     }
     return Promise.resolve(undefined);
   };

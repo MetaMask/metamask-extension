@@ -20,17 +20,20 @@ export const GasFeesRow = ({
   tooltipText,
   fiatFee,
   nativeFee,
+  'data-testid': dataTestId,
 }: {
   label: string;
   tooltipText: string;
   fiatFee: string;
   nativeFee: string;
+  'data-testid'?: string;
 }) => {
   const { useNativeCurrencyAsPrimaryCurrency: isNativeCurrencyUsed } =
     useSelector(getPreferences);
 
   return (
     <ConfirmInfoRow
+      data-testid={dataTestId}
       label={label}
       tooltip={tooltipText}
       variant={ConfirmInfoRowVariant.Default}
