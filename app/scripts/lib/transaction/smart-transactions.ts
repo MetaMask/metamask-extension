@@ -60,10 +60,10 @@ export type FeatureFlags = {
 
 export type SubmitSmartTransactionRequest = {
   transactionMeta: TransactionMeta;
+  signedTransactionInHex?: string;
   smartTransactionsController: SmartTransactionsController;
   transactionController: TransactionController;
   isSmartTransaction: boolean;
-  isHardwareWallet: boolean;
   controllerMessenger: SmartTransactionsControllerMessenger;
   featureFlags: FeatureFlags;
 };
@@ -91,33 +91,33 @@ class SmartTransactionHook {
 
   #isSmartTransaction: boolean;
 
-  #isHardwareWallet: boolean;
-
   #smartTransactionsController: SmartTransactionsController;
 
   #transactionController: TransactionController;
 
   #transactionMeta: TransactionMeta;
 
+  #signedTransactionInHex?: string;
+
   #txParams: TransactionParams;
 
   constructor(request: SubmitSmartTransactionRequest) {
     const {
       transactionMeta,
+      signedTransactionInHex,
       smartTransactionsController,
       transactionController,
       isSmartTransaction,
-      isHardwareWallet,
       controllerMessenger,
       featureFlags,
     } = request;
     this.#approvalFlowId = '';
     this.#approvalFlowEnded = false;
     this.#transactionMeta = transactionMeta;
+    this.#signedTransactionInHex = signedTransactionInHex;
     this.#smartTransactionsController = smartTransactionsController;
     this.#transactionController = transactionController;
     this.#isSmartTransaction = isSmartTransaction;
-    this.#isHardwareWallet = isHardwareWallet;
     this.#controllerMessenger = controllerMessenger;
     this.#featureFlags = featureFlags;
     this.#isDapp = transactionMeta.origin !== ORIGIN_METAMASK;
@@ -137,7 +137,6 @@ class SmartTransactionHook {
     const useRegularTransactionSubmit = { transactionHash: undefined };
     if (
       !this.#isSmartTransaction ||
-      this.#isHardwareWallet ||
       isUnsupportedTransactionTypeForSmartTransaction
     ) {
       return useRegularTransactionSubmit;
@@ -297,17 +296,18 @@ class SmartTransactionHook {
   }: {
     getFeesResponse: Fees;
   }) {
-    const signedTransactions = await this.#createSignedTransactions(
-      getFeesResponse.tradeTxFees?.fees ?? [],
-      false,
-    );
-    const signedCanceledTransactions = await this.#createSignedTransactions(
-      getFeesResponse.tradeTxFees?.cancelFees || [],
-      true,
-    );
+    let signedTransactions;
+    if (this.#signedTransactionInHex) {
+      signedTransactions = [this.#signedTransactionInHex];
+    } else {
+      signedTransactions = await this.#createSignedTransactions(
+        getFeesResponse.tradeTxFees?.fees ?? [],
+        false,
+      );
+    }
     return await this.#smartTransactionsController.submitSignedTransactions({
       signedTransactions,
-      signedCanceledTransactions,
+      signedCanceledTransactions: [],
       txParams: this.#txParams,
       transactionMeta: this.#transactionMeta,
     });
