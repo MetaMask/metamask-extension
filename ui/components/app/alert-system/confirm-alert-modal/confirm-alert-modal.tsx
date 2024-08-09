@@ -95,7 +95,7 @@ function ConfirmDetails({
           onClick={onAlertLinkClick}
           target="_blank"
           rel="noopener noreferrer"
-          data-testid={'confirm-alert-modal-review-all-alerts'}
+          data-testid="confirm-alert-modal-review-all-alerts"
         >
           <Icon
             name={IconName.SecuritySearch}
