@@ -47,6 +47,7 @@ export default function ApproveContentCard({
   const t = useContext(I18nContext);
 
   const tokenData = parseStandardTokenTransactionData(data);
+  console.log('tokenData', tokenData);
   const functionName = tokenData?.name;
   const capitalizedFnName =
     functionName?.charAt(0).toUpperCase() + functionName?.slice(1);
