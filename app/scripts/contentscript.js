@@ -371,18 +371,29 @@ const onMessageSetUpExtensionStreams = (msg) => {
 };
 
 /**
+ * Ends two-way communication streams between browser extension and
+ * the local per-page browser context.
+ */
+function destroyStreams() {
+  extensionPort.onDisconnect.removeListener(onDisconnectDestroyStreams);
+
+  destroyExtensionStreams();
+  destroyLegacyExtensionStreams();
+
+  extensionPort.disconnect();
+  extensionPort = null;
+}
+
+/**
  * This listener destroys the extension streams when the extension port is disconnected,
  * so that streams may be re-established later when the extension port is reconnected.
  *
  * @param {Error} [err] - Stream connection error
  */
-const onDisconnectDestroyStreams = (err) => {
+function onDisconnectDestroyStreams(err) {
   const lastErr = err || checkForLastError();
 
-  extensionPort.onDisconnect.removeListener(onDisconnectDestroyStreams);
-
-  destroyExtensionStreams();
-  destroyLegacyExtensionStreams();
+  destroyStreams();
 
   /**
    * If an error is found, reset the streams. When running two or more dapps, resetting the service
@@ -395,7 +406,7 @@ const onDisconnectDestroyStreams = (err) => {
     console.warn(`${lastErr} Resetting the streams.`);
     setTimeout(setupExtensionStreams, 1000);
   }
-};
+}
 
 /**
  * Initializes two-way communication streams between the browser extension and
@@ -535,6 +546,20 @@ const start = () => {
         );
       });
     }
+
+    window.addEventListener('pageshow', (event) => {
+      if (event.persisted) {
+        console.warn('BFCached page has become active. Restoring the streams.');
+        setupExtensionStreams();
+      }
+    });
+
+    window.addEventListener('pagehide', (event) => {
+      if (event.persisted) {
+        console.warn('Page may become BFCached. Destroying the streams.');
+        destroyStreams();
+      }
+    });
   }
 };
 
