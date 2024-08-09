@@ -43,6 +43,7 @@ import {
   type SnapAndHardwareMessenger,
 } from '../snap-keyring/metrics';
 import { REDESIGN_TRANSACTION_TYPES } from '../../../../ui/pages/confirmations/utils';
+import { nonHexChainId } from '../../../../shared/modules/network.utils';
 
 export type TransactionMetricsRequest = {
   createEventFragment: (
@@ -1017,7 +1018,7 @@ async function buildEventFragmentProperties({
 
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
-    chain_id: chainId,
+    chain_id: nonHexChainId(chainId),
     referrer,
     source,
     status,

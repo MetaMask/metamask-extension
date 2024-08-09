@@ -26,6 +26,7 @@ import {
   AnonymousTransactionMetaMetricsEvent,
   TransactionMetaMetricsEvent,
 } from '../../../shared/constants/transaction';
+import { nonHexChainId } from '../../../shared/modules/network.utils';
 
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 
@@ -517,7 +518,7 @@ export default class MetaMetricsController {
         properties: {
           params,
           locale: this.locale,
-          chain_id: this.chainId,
+          chain_id: nonHexChainId(this.chainId),
           environment_type: environmentType,
         },
         context: this._buildContext(referrer, page),
@@ -758,7 +759,7 @@ export default class MetaMetricsController {
         currency,
         category,
         locale: this.locale,
-        chain_id: properties?.chain_id ?? this.chainId,
+        chain_id: nonHexChainId(properties?.chain_id ?? this.chainId),
         environment_type: environmentType,
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         ...mmiProps,
