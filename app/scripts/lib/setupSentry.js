@@ -123,6 +123,7 @@ export const SENTRY_BACKGROUND_STATE = {
     timeoutMinutes: true,
     trezorModel: true,
     usedNetworks: true,
+    lastInteractedConfirmationInfo: undefined,
   },
   MultichainBalancesController: {
     balances: false,
@@ -442,6 +443,7 @@ export const SENTRY_UI_STATE = {
     switchedNetworkNeverShowMessage: false,
     newPrivacyPolicyToastClickedOrClosed: false,
     newPrivacyPolicyToastShownDate: false,
+    lastInteractedConfirmationInfo: undefined,
   },
   unconnectedAccount: true,
 };

@@ -79,6 +79,7 @@ import { AccountType } from '../../../../../shared/constants/custody';
 ///: END:ONLY_INCLUDE_IF
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
+import { NetworkChangeToastLegacy } from '../confirm/network-change-toast';
 import { QueuedRequestsBannerAlert } from '../../confirmation/components/queued-requests-banner-alert';
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
@@ -363,6 +364,7 @@ const SignatureRequest = ({ txData, warnings }) => {
           }}
         />
       )}
+      <NetworkChangeToastLegacy confirmation={txData} />
     </>
   );
 };

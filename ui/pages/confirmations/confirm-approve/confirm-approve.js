@@ -39,6 +39,7 @@ import { parseStandardTokenTransactionData } from '../../../../shared/modules/tr
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import TokenAllowance from '../token-allowance/token-allowance';
+import { NetworkChangeToastLegacy } from '../components/confirm/network-change-toast';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
 
@@ -219,6 +220,7 @@ export default function ConfirmApprove({
             </>
           )}
         </TransactionModalContextProvider>
+        <NetworkChangeToastLegacy confirmation={transaction} />
       </GasFeeContextProvider>
     );
   }

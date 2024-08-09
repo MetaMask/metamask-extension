@@ -296,6 +296,27 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setLastInteractedConfirmationInfo', () => {
+    it('sets information about last confirmation user has interacted with', () => {
+      const lastInteractedConfirmationInfo = {
+        id: '123',
+        chainId: '0x1',
+        timestamp: new Date().getTime(),
+      };
+      appStateController.setLastInteractedConfirmationInfo(
+        lastInteractedConfirmationInfo,
+      );
+      expect(appStateController.getLastInteractedConfirmationInfo()).toBe(
+        lastInteractedConfirmationInfo,
+      );
+
+      appStateController.setLastInteractedConfirmationInfo(undefined);
+      expect(appStateController.getLastInteractedConfirmationInfo()).toBe(
+        undefined,
+      );
+    });
+  });
+
   describe('setSnapsInstallPrivacyWarningShownStatus', () => {
     it('updates the status of snaps install privacy warning', () => {
       appStateController = createAppStateController();

@@ -73,6 +73,7 @@ import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 import { SimulationDetails } from '../components/simulation-details';
 import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
+import { NetworkChangeToastLegacy } from '../components/confirm/network-change-toast';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -1212,6 +1213,7 @@ export default class ConfirmTransactionBase extends Component {
           txData={txData}
           displayAccountBalanceHeader={displayAccountBalanceHeader}
         />
+        <NetworkChangeToastLegacy confirmation={txData} />
       </TransactionModalContextProvider>
     );
   }
