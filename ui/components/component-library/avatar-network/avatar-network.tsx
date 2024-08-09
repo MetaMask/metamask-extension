@@ -6,7 +6,6 @@ import {
   JustifyContent,
   TextColor,
   BackgroundColor,
-  BorderColor,
 } from '../../../helpers/constants/design-system';
 import type { PolymorphicRef } from '../box';
 import { AvatarBase, AvatarBaseProps } from '../avatar-base';
@@ -21,8 +20,7 @@ export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
       src,
       showHalo,
       color = TextColor.textDefault,
-      backgroundColor = BackgroundColor.backgroundAlternative,
-      borderColor = BorderColor.transparent,
+      backgroundColor = BackgroundColor.backgroundDefault,
       className = '',
       ...props
     }: AvatarNetworkProps<C>,
@@ -54,7 +52,6 @@ export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
         )}
         {...{
           backgroundColor,
-          borderColor,
           color,
           ...(props as AvatarBaseProps<C>),
         }}
