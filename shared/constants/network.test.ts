@@ -35,6 +35,7 @@ describe('NetworkConstants', () => {
         'Polygon Mainnet': CHAIN_IDS.POLYGON,
         'zkSync Era Mainnet': CHAIN_IDS.ZKSYNC_ERA,
         'Base Mainnet': CHAIN_IDS.BASE,
+        Lisk: CHAIN_IDS.LISK,
       };
 
       FEATURED_RPCS.forEach((rpc) => {
@@ -89,6 +90,13 @@ describe('NetworkConstants', () => {
         (rpc) => rpc.chainId === CHAIN_IDS.BASE,
       );
       expect(baseRpc?.rpcUrl).not.toContain('infura.io');
+    });
+
+    it('lisk entry should not use Infura', () => {
+      const liskRpc = FEATURED_RPCS.find(
+        (rpc) => rpc.chainId === CHAIN_IDS.LISK,
+      );
+      expect(liskRpc?.rpcUrl).not.toContain('infura.io');
     });
   });
 });
