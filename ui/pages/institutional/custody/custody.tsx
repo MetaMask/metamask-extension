@@ -10,7 +10,6 @@ import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import Fuse from 'fuse.js';
 import { Location as HistoryLocation } from 'history';
-import { ICustodianType } from '@metamask-institutional/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -101,6 +100,8 @@ type Custodian = {
   isQRCodeSupported: boolean;
   isManualTokenInputSupported?: boolean;
   custodianPublishesTransaction: boolean;
+  production: boolean;
+  version: number;
 };
 
 type AccountDetails = {
@@ -122,7 +123,8 @@ const CustodyPage = () => {
 
   const mmiActions = mmiActionsFactory();
   const currentChainId = useSelector(getCurrentChainId);
-  const { custodians } = useSelector(getMMIConfiguration);
+  const mmiConfiguration = useSelector(getMMIConfiguration);
+  const custodians: Custodian[] = mmiConfiguration?.custodians || [];
 
   const [loading, setLoading] = useState(true);
   const [
@@ -185,11 +187,11 @@ const CustodyPage = () => {
   const custodianListViewItems = useMemo(() => {
     const custodianItems: React.ReactNode[] = [];
 
-    const sortedCustodians = [...custodians].sort((a, b) =>
+    const sortedCustodians = [...(custodians || [])].sort((a, b) =>
       a.envName.toLowerCase().localeCompare(b.envName.toLowerCase()),
     );
 
-    function shouldShowInProduction(custodian: ICustodianType) {
+    function shouldShowInProduction(custodian: Custodian) {
       return (
         'production' in custodian &&
         !custodian.production &&
@@ -197,11 +199,11 @@ const CustodyPage = () => {
       );
     }
 
-    function isHidden(custodian: ICustodianType) {
+    function isHidden(custodian: Custodian) {
       return 'hidden' in custodian && custodian.hidden;
     }
 
-    function isNotSelectedCustodian(custodian: ICustodianType) {
+    function isNotSelectedCustodian(custodian: Custodian) {
       return (
         'envName' in custodian &&
         connectRequest &&
@@ -214,8 +216,8 @@ const CustodyPage = () => {
       try {
         const custodianByDisplayName = findCustodianByEnvName(
           custodian.envName,
-          custodians,
-        ) as Custodian | null;
+          custodians as Custodian[],
+        ) as Custodian;
 
         // @ts-expect-error todo - come back later
         const jwtListValue: string[] = await dispatch(
@@ -578,8 +580,8 @@ const CustodyPage = () => {
           selectedAccounts={selectedAccounts}
           onAddAccounts={async () => {
             try {
-              const selectedCustodian = custodians.find(
-                (custodian: ICustodianType) =>
+              const selectedCustodian = custodians?.find(
+                (custodian: Custodian) =>
                   custodian.envName === selectedCustodianName,
               );
               const firstAccountId: string | undefined =

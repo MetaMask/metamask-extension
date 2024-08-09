@@ -102,7 +102,7 @@ const InteractiveReplacementTokenNotification: React.FC<
     handleShowNotification();
   }, [
     address,
-    interactiveReplacementToken.oldRefreshToken,
+    interactiveReplacementToken?.oldRefreshToken,
     isUnlocked,
     dispatch,
     keyring.type,

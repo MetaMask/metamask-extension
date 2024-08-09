@@ -20,9 +20,7 @@ const WrongNetworkNotification: React.FC = () => {
   const providerConfig = useSelector<object, ProviderConfig>(getProviderConfig);
   const balance = useSelector<string | null>(getSelectedAccountCachedBalance);
 
-  const isCustodianSupportedChain = useSelector<boolean>(
-    getIsCustodianSupportedChain,
-  );
+  const isCustodianSupportedChain = useSelector(getIsCustodianSupportedChain);
 
   const network = providerConfig.nickname || providerConfig.type;
 
