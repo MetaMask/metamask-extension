@@ -28,7 +28,7 @@ import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
 import ErrorMessage from '../../../../components/ui/error-message';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
-import { Text } from '../../../../components/component-library';
+import { BannerAlert, Text } from '../../../../components/component-library';
 import {
   TextVariant,
   TextAlign,
@@ -317,7 +317,7 @@ const ConfirmPageContainer = (props) => {
         )}
         {shouldDisplayWarning && errorKey !== INSUFFICIENT_FUNDS_ERROR_KEY && (
           <div className="confirm-approve-content__warning">
-            <ErrorMessage errorKey={errorKey} />
+            <BannerAlert errorKey={errorKey} />
           </div>
         )}
         {showWarningModal && (
