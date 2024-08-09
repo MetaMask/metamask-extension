@@ -3702,6 +3702,34 @@ export function fetchAndSetQuotes(
   };
 }
 
+export function fetchAndSetQuotesV2(
+  fetchParams: {
+    slippage: string;
+    sourceToken: string;
+    destinationToken: string;
+    fromTokenInputValue: string;
+    toTokenInputValue: string;
+    fromAddress: string;
+    balanceError: string;
+    sourceDecimals: number;
+  },
+  fetchParamsMetaData: {
+    sourceTokenInfo: Token;
+    destinationTokenInfo: Token;
+    accountBalance: string;
+    chainId: string;
+  },
+): ThunkAction<Promise<Quotes>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    const [quotes, selectedAggId] = await submitRequestToBackground<Quotes>(
+      'fetchAndSetQuotesV2',
+      [fetchParams, fetchParamsMetaData],
+    );
+    await forceUpdateMetamaskState(dispatch);
+    return [quotes, selectedAggId];
+  };
+}
+
 export function setSelectedQuoteAggId(
   aggId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {

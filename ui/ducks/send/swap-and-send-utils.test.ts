@@ -1,7 +1,7 @@
 import {
-  SWAPS_API_V2_BASE_URL,
+  SWAPS_API_BASE_URL,
   SWAPS_CLIENT_ID,
-  SWAPS_DEV_API_V2_BASE_URL,
+  SWAPS_DEV_API_BASE_URL,
 } from '../../../shared/constants/swaps';
 import { SECOND } from '../../../shared/constants/time';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
@@ -18,8 +18,8 @@ jest.mock('../../../shared/lib/swaps-utils', () => ({
 }));
 
 const BASE_URL = process.env.SWAPS_USE_DEV_APIS
-  ? SWAPS_DEV_API_V2_BASE_URL
-  : SWAPS_API_V2_BASE_URL;
+  ? SWAPS_DEV_API_BASE_URL
+  : SWAPS_API_BASE_URL;
 
 describe('getSwapAndSendQuotes', () => {
   const mockRequest: APIRequest = {

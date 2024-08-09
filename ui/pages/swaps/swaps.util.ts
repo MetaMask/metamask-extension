@@ -13,10 +13,10 @@ import {
   OPTIMISM,
   POLYGON,
   ZKSYNC_ERA,
-  SWAPS_API_V2_BASE_URL,
+  SWAPS_API_BASE_URL,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SWAPS_CLIENT_ID,
-  SWAPS_DEV_API_V2_BASE_URL,
+  SWAPS_DEV_API_BASE_URL,
   SwapsTokenObject,
 } from '../../../shared/constants/swaps';
 import {
@@ -228,8 +228,8 @@ export async function fetchTopAssets(chainId: any): Promise<object> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function fetchSwapsFeatureFlags(): Promise<any> {
   const v2ApiBaseUrl = process.env.SWAPS_USE_DEV_APIS
-    ? SWAPS_DEV_API_V2_BASE_URL
-    : SWAPS_API_V2_BASE_URL;
+    ? SWAPS_DEV_API_BASE_URL
+    : SWAPS_API_BASE_URL;
   return await fetchWithCache({
     url: `${v2ApiBaseUrl}/featureFlags`,
     fetchOptions: { method: 'GET', headers: clientIdHeader },

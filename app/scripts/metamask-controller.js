@@ -3580,6 +3580,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SwapsController:fetchAndSetQuotes',
       ),
+      fetchAndSetQuotesV2: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:fetchAndSetQuotesV2',
+      ),
       setSelectedQuoteAggId: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SwapsController:setSelectedQuoteAggId',

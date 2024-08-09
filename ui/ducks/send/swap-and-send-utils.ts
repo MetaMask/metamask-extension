@@ -1,9 +1,9 @@
 import { isNumber } from 'lodash';
 import {
   ALLOWED_PROD_SWAPS_CHAIN_IDS,
-  SWAPS_API_V2_BASE_URL,
+  SWAPS_API_BASE_URL,
   SWAPS_CLIENT_ID,
-  SWAPS_DEV_API_V2_BASE_URL,
+  SWAPS_DEV_API_BASE_URL,
 } from '../../../shared/constants/swaps';
 import { SECOND } from '../../../shared/constants/time';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
@@ -153,8 +153,8 @@ const SWAP_AND_SEND_SLIPPAGE = '2';
 const SWAPS_API_VERSION = 'v2';
 
 const BASE_URL = process.env.SWAPS_USE_DEV_APIS
-  ? SWAPS_DEV_API_V2_BASE_URL
-  : SWAPS_API_V2_BASE_URL;
+  ? SWAPS_DEV_API_BASE_URL
+  : SWAPS_API_BASE_URL;
 
 export async function getSwapAndSendQuotes(request: Request): Promise<Quote[]> {
   const { chainId, ...params } = request;

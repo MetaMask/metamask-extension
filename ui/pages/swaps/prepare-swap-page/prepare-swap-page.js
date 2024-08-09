@@ -52,6 +52,11 @@ import {
   getTransactionSettingsOpened,
   setTransactionSettingsOpened,
   getLatestAddedTokenTo,
+  getToTokenInputValue,
+  getToTokenError,
+  setToTokenInputValue,
+  setToTokenError,
+  fetchQuotesAndSetQuoteStateV2,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -145,6 +150,9 @@ import ReviewQuote from './review-quote';
 
 let timeoutIdForQuotesPrefetching;
 
+// TODO use a real feature flag
+const DUMMY_SWAP_TO_DEST_FLAG = true;
+
 export default function PrepareSwapPage({
   ethBalance,
   selectedAccountAddress,
@@ -158,7 +166,6 @@ export default function PrepareSwapPage({
   const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] =
     useState(undefined);
   const [verificationClicked, setVerificationClicked] = useState(false);
-  const [receiveToAmount, setReceiveToAmount] = useState();
   const [isSwapToOpen, setIsSwapToOpen] = useState(false);
   const onSwapToOpen = () => setIsSwapToOpen(true);
   const onSwapToClose = () => setIsSwapToOpen(false);
@@ -180,11 +187,20 @@ export default function PrepareSwapPage({
     fetchParams?.metaData || {};
   const tokens = useSelector(getTokens, isEqual);
   const topAssets = useSelector(getTopAssets, isEqual);
+
+  // From token
   const fromToken = useSelector(getFromToken, isEqual);
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
   const fromTokenError = useSelector(getFromTokenError);
-  const maxSlippage = useSelector(getMaxSlippage);
+  const [sendFromAmount, setSendFromAmount] = useState();
+
+  // To token
   const toToken = useSelector(getToToken, isEqual) || destinationTokenInfo;
+  const toTokenInputValue = useSelector(getToTokenInputValue);
+  const toTokenError = useSelector(getToTokenError);
+  const [receiveToAmount, setReceiveToAmount] = useState();
+
+  const maxSlippage = useSelector(getMaxSlippage);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
@@ -284,7 +300,11 @@ export default function PrepareSwapPage({
     decimals: fromTokenDecimals,
     balance: rawFromTokenBalance,
   } = selectedFromToken || {};
-  const { address: toTokenAddress } = selectedToToken || {};
+  const {
+    address: toTokenAddress,
+    symbol: toTokenSymbol,
+    decimals: toTokenDecimals,
+  } = selectedToToken || {};
 
   const fromTokenBalance =
     rawFromTokenBalance &&
@@ -310,7 +330,7 @@ export default function PrepareSwapPage({
     ? swapFromEthFiatValue
     : swapFromTokenFiatValue;
 
-  const onInputChange = useCallback(
+  const onFromInputChange = useCallback(
     (newInputValue, balance) => {
       dispatch(setFromTokenInputValue(newInputValue));
       const newBalanceError = new BigNumber(newInputValue || 0).gt(
@@ -329,6 +349,20 @@ export default function PrepareSwapPage({
       );
     },
     [dispatch, fromToken, balanceError],
+  );
+
+  const onToInputChange = useCallback(
+    (newInputValue) => {
+      dispatch(setToTokenInputValue(newInputValue));
+      dispatch(
+        setToTokenError(
+          toToken && countDecimals(newInputValue) > toToken.decimals
+            ? 'tooManyDecimals'
+            : null,
+        ),
+      );
+    },
+    [dispatch, toToken],
   );
 
   useEffect(() => {
@@ -428,7 +462,7 @@ export default function PrepareSwapPage({
       });
     }
     dispatch(setSwapsFromToken(token));
-    onInputChange(fromTokenInputValue, token.string, token.decimals);
+    onFromInputChange(fromTokenInputValue, token.string, token.decimals);
   };
 
   const blockExplorerTokenLink = getTokenTrackerLink(
@@ -528,10 +562,10 @@ export default function PrepareSwapPage({
 
   useEffect(() => {
     if (prevFromTokenBalance !== fromTokenBalance) {
-      onInputChange(fromTokenInputValue, fromTokenBalance);
+      onFromInputChange(fromTokenInputValue, fromTokenBalance);
     }
   }, [
-    onInputChange,
+    onFromInputChange,
     prevFromTokenBalance,
     fromTokenInputValue,
     fromTokenBalance,
@@ -604,8 +638,9 @@ export default function PrepareSwapPage({
   );
   const isReviewSwapButtonDisabled =
     fromTokenError ||
+    toTokenError ||
     !isFeatureFlagLoaded ||
-    !Number(fromTokenInputValue) ||
+    (!Number(fromTokenInputValue) && !Number(toTokenInputValue)) ||
     !selectedToToken?.address ||
     !fromTokenAddress ||
     Number(maxSlippage) < 0 ||
@@ -619,15 +654,29 @@ export default function PrepareSwapPage({
     const prefetchQuotesWithoutRedirecting = async () => {
       setPrefetchingQuotes(true);
       const pageRedirectionDisabled = true;
-      await dispatch(
-        fetchQuotesAndSetQuoteState(
-          history,
-          fromTokenInputValue,
-          maxSlippage,
-          trackEvent,
-          pageRedirectionDisabled,
-        ),
-      );
+
+      if (DUMMY_SWAP_TO_DEST_FLAG) {
+        await dispatch(
+          fetchQuotesAndSetQuoteStateV2({
+            history,
+            fromTokenInputValue,
+            toTokenInputValue,
+            maxSlippage,
+            trackEvent,
+            pageRedirectionDisabled,
+          }),
+        );
+      } else {
+        await dispatch(
+          fetchQuotesAndSetQuoteState(
+            history,
+            fromTokenInputValue,
+            maxSlippage,
+            trackEvent,
+            pageRedirectionDisabled,
+          ),
+        );
+      }
     };
     // Delay fetching quotes until a user is done typing an input value. If they type a new char in less than a second,
     // we will cancel previous setTimeout call and start running a new one.
@@ -654,6 +703,7 @@ export default function PrepareSwapPage({
     isReviewSwapButtonDisabled,
     fromTokenInputValue,
     fromTokenAddress,
+    toTokenInputValue,
     toTokenAddress,
     smartTransactionsOptInStatus,
     isSmartTransaction,
@@ -671,21 +721,44 @@ export default function PrepareSwapPage({
     mainButtonText = t('swapEnterAmount');
   }
 
-  const onTextFieldChange = (event) => {
-    event.stopPropagation();
+  // Regex that validates strings with only numbers, 'x.', '.x', and 'x.x'
+  const tokenInputRegexp = /^(\.\d+|\d+(\.\d+)?|\d+\.)$/u;
+  const getInputValueToUse = (event) => {
     // Automatically prefix value with 0. if user begins typing .
-    const valueToUse = event.target.value === '.' ? '0.' : event.target.value;
+    return event.target.value === '.' ? '0.' : event.target.value;
+  };
+  // If the value is either empty or contains only numbers and '.' and only has one '.', update input to match
+  const isInputValueValid = (value) =>
+    value === '' || tokenInputRegexp.test(value);
 
-    // Regex that validates strings with only numbers, 'x.', '.x', and 'x.x'
-    const regexp = /^(\.\d+|\d+(\.\d+)?|\d+\.)$/u;
-    // If the value is either empty or contains only numbers and '.' and only has one '.', update input to match
-    if (valueToUse === '' || regexp.test(valueToUse)) {
-      onInputChange(valueToUse, fromTokenBalance);
+  const onFromTextFieldChange = (event) => {
+    event.stopPropagation();
+    const valueToUse = getInputValueToUse(event);
+    if (isInputValueValid(valueToUse)) {
+      onFromInputChange(valueToUse, fromTokenBalance);
     } else {
       // otherwise, use the previously set inputValue (effectively denying the user from inputting the last char)
       // or an empty string if we do not yet have an inputValue
-      onInputChange(fromTokenInputValue || '', fromTokenBalance);
+      onFromInputChange(fromTokenInputValue || '', fromTokenBalance);
     }
+
+    setSendFromAmount(undefined);
+    onToInputChange('');
+  };
+
+  const onToTextFieldChange = (event) => {
+    event.stopPropagation();
+    const valueToUse = getInputValueToUse(event);
+    if (isInputValueValid(valueToUse)) {
+      onToInputChange(valueToUse);
+    } else {
+      // otherwise, use the previously set inputValue (effectively denying the user from inputting the last char)
+      // or an empty string if we do not yet have an inputValue
+      onToInputChange(toTokenInputValue || '');
+    }
+
+    setReceiveToAmount(undefined);
+    onFromInputChange('', fromTokenBalance);
   };
 
   const hideSwapToTokenIf = useCallback(
@@ -721,6 +794,7 @@ export default function PrepareSwapPage({
   useEffect(() => {
     if (showQuotesLoadingAnimation) {
       setReceiveToAmount('');
+      setSendFromAmount('');
     }
   }, [showQuotesLoadingAnimation]);
 
@@ -763,11 +837,18 @@ export default function PrepareSwapPage({
     tokenForImport,
   };
 
+  let sendFromAmountFormatted;
+
   let receiveToAmountFormatted;
   let receiveToAmountClassName;
-  let fromTokenAmountClassName;
+
+  let inputtableTokenAmountClassName;
 
   // TODO: Do this only when these variables change, not on every re-render.
+  if (sendFromAmount && !isReviewSwapButtonDisabled) {
+    sendFromAmountFormatted = formatSwapsValueForDisplay(sendFromAmount);
+  }
+
   if (receiveToAmount && !isReviewSwapButtonDisabled) {
     receiveToAmountFormatted = formatSwapsValueForDisplay(receiveToAmount);
     receiveToAmountClassName = getClassNameForCharLength(
@@ -775,10 +856,10 @@ export default function PrepareSwapPage({
       'prepare-swap-page__receive-amount',
     );
   }
-  if (fromTokenInputValue) {
-    fromTokenAmountClassName = getClassNameForCharLength(
-      fromTokenInputValue,
-      'prepare-swap-page__from-token-amount',
+  if (fromTokenInputValue || toTokenInputValue) {
+    inputtableTokenAmountClassName = getClassNameForCharLength(
+      fromTokenInputValue || toTokenInputValue,
+      'prepare-swap-page__token-amount',
     );
   }
 
@@ -793,6 +874,7 @@ export default function PrepareSwapPage({
         {tokenForImport && isImportTokenModalOpen && (
           <ImportToken isOpen {...importTokenProps} />
         )}
+        {/* From token modal */}
         <Modal
           onClose={onSwapToClose}
           isOpen={isSwapToOpen}
@@ -827,6 +909,8 @@ export default function PrepareSwapPage({
             </Box>
           </ModalContent>
         </Modal>
+
+        {/* To token modal */}
         <Modal
           onClose={onSwapFromClose}
           isOpen={isSwapFromOpen}
@@ -862,6 +946,7 @@ export default function PrepareSwapPage({
           </ModalContent>
         </Modal>
 
+        {/* From token area */}
         <div className="prepare-swap-page__swap-from-content">
           <Box
             display={DISPLAY.FLEX}
@@ -875,17 +960,25 @@ export default function PrepareSwapPage({
               testId="prepare-swap-page-swap-from"
             />
             <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
-              <TextField
-                className={classnames('prepare-swap-page__from-token-amount', {
-                  [fromTokenAmountClassName]: fromTokenAmountClassName,
-                })}
-                size={TextFieldSize.Sm}
-                placeholder="0"
-                onChange={onTextFieldChange}
-                value={fromTokenInputValue}
-                truncate={false}
-                testId="prepare-swap-page-from-token-amount"
-              />
+              {showQuotesLoadingAnimation && !fromTokenInputValue ? (
+                <Box
+                  display={DISPLAY.FLEX}
+                  className="prepare-swap-page__token-amount-loading-pulse"
+                />
+              ) : (
+                <TextField
+                  className={classnames('prepare-swap-page__token-amount', {
+                    [inputtableTokenAmountClassName]:
+                      inputtableTokenAmountClassName,
+                  })}
+                  size={TextFieldSize.Sm}
+                  placeholder="0"
+                  onChange={onFromTextFieldChange}
+                  value={fromTokenInputValue || sendFromAmountFormatted || ''}
+                  truncate={false}
+                  testId="prepare-swap-page-from-token-amount"
+                />
+              )}
             </Box>
           </Box>
           <Box
@@ -900,7 +993,7 @@ export default function PrepareSwapPage({
                   className="prepare-swap-page__max-balance"
                   data-testid="prepare-swap-page-max-balance"
                   onClick={() =>
-                    onInputChange(fromTokenBalance || '0', fromTokenBalance)
+                    onFromInputChange(fromTokenBalance || '0', fromTokenBalance)
                   }
                 >
                   {t('max')}
@@ -953,6 +1046,23 @@ export default function PrepareSwapPage({
               </Text>
             </Box>
           )}
+          {toTokenError && (
+            <Box
+              display={DISPLAY.FLEX}
+              justifyContent={JustifyContent.flexStart}
+            >
+              <Text
+                variant={TextVariant.bodySmBold}
+                color={TextColor.textAlternative}
+                marginTop={0}
+              >
+                {t('swapTooManyDecimalsError', [
+                  toTokenSymbol,
+                  toTokenDecimals,
+                ])}
+              </Text>
+            </Box>
+          )}
           <Box display={DISPLAY.FLEX} justifyContent={JustifyContent.center}>
             <div
               className={classnames('prepare-swap-page__switch-tokens', {
@@ -975,6 +1085,8 @@ export default function PrepareSwapPage({
             </div>
           </Box>
         </div>
+
+        {/* To token area */}
         <div className="prepare-swap-page__swap-to-content">
           <Box
             display={DISPLAY.FLEX}
@@ -987,21 +1099,49 @@ export default function PrepareSwapPage({
               selectedToken={selectedToToken}
               testId="prepare-swap-page-swap-to"
             />
+
             <Box
               display={DISPLAY.FLEX}
               alignItems={AlignItems.center}
               marginLeft={2}
               className="prepare-swap-page__receive-amount-container"
             >
-              <Text
-                as="h6"
-                data-testid="prepare-swap-page-receive-amount"
-                className={classnames('prepare-swap-page__receive-amount', {
-                  [receiveToAmountClassName]: receiveToAmountClassName,
-                })}
-              >
-                {receiveToAmountFormatted}
-              </Text>
+              {!DUMMY_SWAP_TO_DEST_FLAG && (
+                <Text
+                  as="h6"
+                  data-testid="prepare-swap-page-receive-amount"
+                  className={classnames('prepare-swap-page__receive-amount', {
+                    [receiveToAmountClassName]: receiveToAmountClassName,
+                  })}
+                >
+                  {receiveToAmountFormatted}
+                </Text>
+              )}
+
+              {DUMMY_SWAP_TO_DEST_FLAG &&
+                showQuotesLoadingAnimation &&
+                !toTokenInputValue && (
+                  <Box
+                    display={DISPLAY.FLEX}
+                    className="prepare-swap-page__token-amount-loading-pulse"
+                  />
+                )}
+
+              {DUMMY_SWAP_TO_DEST_FLAG &&
+                !(showQuotesLoadingAnimation && !toTokenInputValue) && (
+                  <TextField
+                    className={classnames('prepare-swap-page__token-amount', {
+                      [inputtableTokenAmountClassName]:
+                        inputtableTokenAmountClassName,
+                    })}
+                    size={TextFieldSize.Sm}
+                    placeholder="0"
+                    onChange={onToTextFieldChange}
+                    value={toTokenInputValue || receiveToAmountFormatted || ''}
+                    truncate={false}
+                    testId="prepare-swap-page-to-token-amount"
+                  />
+                )}
             </Box>
           </Box>
           <Box
@@ -1014,6 +1154,7 @@ export default function PrepareSwapPage({
             </div>
           </Box>
         </div>
+
         {showCrossChainSwapsLink && (
           <ButtonLink
             endIconName={IconName.Export}
@@ -1131,7 +1272,10 @@ export default function PrepareSwapPage({
           />
         )}
         {showReviewQuote && (
-          <ReviewQuote setReceiveToAmount={setReceiveToAmount} />
+          <ReviewQuote
+            setReceiveToAmount={setReceiveToAmount}
+            setSendFromAmount={setSendFromAmount}
+          />
         )}
       </div>
       {!areQuotesPresent && (
