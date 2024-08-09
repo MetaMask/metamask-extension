@@ -18,57 +18,89 @@ export default function TruncatedDefinitionList({
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const t = useI18nContext();
 
-  return (
-    <>
-      <Box
-        margin={6}
-        padding={4}
-        paddingBottom={3}
-        borderRadius={Size.LG}
-        borderColor={BorderColor.borderMuted}
-      >
+  const renderContent = () => {
+    if (process.env.CHAIN_PERMISSIONS) {
+      return isPopoverOpen ? (
         <DefinitionList
-          dictionary={pick(dictionary, prefaceKeys)}
-          warnings={warnings}
+          gap={Size.MD}
           tooltips={tooltips}
+          warnings={warnings}
+          dictionary={dictionary}
         />
-        <Button
-          className="truncated-definition-list__view-more"
-          type="link"
-          onClick={() => setIsPopoverOpen(true)}
-        >
-          {t('viewAllDetails')}
-        </Button>
-      </Box>
-      {isPopoverOpen && (
-        <Popover
-          title={title}
-          open={isPopoverOpen}
-          onClose={() => setIsPopoverOpen(false)}
-          footer={
-            <>
-              <div />
-              <Button
-                type="primary"
-                style={{ width: '50%' }}
-                onClick={() => setIsPopoverOpen(false)}
-              >
-                Close
-              </Button>
-            </>
-          }
-        >
-          <Box padding={6} paddingTop={0}>
-            <DefinitionList
-              gap={Size.MD}
-              tooltips={tooltips}
-              warnings={warnings}
-              dictionary={dictionary}
-            />
-          </Box>
-        </Popover>
-      )}
-    </>
+      ) : (
+        <>
+          <DefinitionList
+            dictionary={pick(dictionary, prefaceKeys)}
+            warnings={warnings}
+            tooltips={tooltips}
+          />
+          <Button
+            className="truncated-definition-list__view-more"
+            type="link"
+            onClick={() => setIsPopoverOpen(true)}
+          >
+            {t('seeDetails')}
+          </Button>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <DefinitionList
+            dictionary={pick(dictionary, prefaceKeys)}
+            warnings={warnings}
+            tooltips={tooltips}
+          />
+          <Button
+            className="truncated-definition-list__view-more"
+            type="link"
+            onClick={() => setIsPopoverOpen(true)}
+          >
+            {t('viewAllDetails')}
+          </Button>
+          {isPopoverOpen && (
+            <Popover
+              title={title}
+              open={isPopoverOpen}
+              onClose={() => setIsPopoverOpen(false)}
+              footer={
+                <>
+                  <div />
+                  <Button
+                    type="primary"
+                    style={{ width: '50%' }}
+                    onClick={() => setIsPopoverOpen(false)}
+                  >
+                    Close
+                  </Button>
+                </>
+              }
+            >
+              <Box padding={6} paddingTop={0}>
+                <DefinitionList
+                  gap={Size.MD}
+                  tooltips={tooltips}
+                  warnings={warnings}
+                  dictionary={dictionary}
+                />
+              </Box>
+            </Popover>
+          )}
+        </>
+      );
+    }
+  };
+
+  return (
+    <Box
+      margin={6}
+      padding={4}
+      paddingBottom={3}
+      borderRadius={Size.LG}
+      borderColor={BorderColor.borderMuted}
+    >
+      {renderContent()}
+    </Box>
   );
 }
 
