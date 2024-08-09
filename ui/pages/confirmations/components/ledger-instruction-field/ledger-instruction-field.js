@@ -129,10 +129,6 @@ export default function LedgerInstructionField({ showDataInstruction }) {
               `• ${t('ledgerConnectionInstructionStepThree')}`,
             )}
             {renderInstructionStep(
-              `• ${t('ledgerConnectionInstructionStepFour')}`,
-              showDataInstruction,
-            )}
-            {renderInstructionStep(
               <span>
                 <ButtonLink
                   textAlign={TextAlign.Left}

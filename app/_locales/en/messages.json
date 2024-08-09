@@ -2671,9 +2671,6 @@
   "ledgerConnectionInstructionHeader": {
     "message": "Prior to clicking confirm:"
   },
-  "ledgerConnectionInstructionStepFour": {
-    "message": "Enable \"smart contract data\" or \"blind signing\" on your Ledger device."
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Be sure your Ledger is plugged in and to select the Ethereum app."
   },
