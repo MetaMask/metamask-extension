@@ -18,6 +18,11 @@ const sendMetadata = {
 export default sendMetadata;
 
 /**
+ * @typedef {import('@metamask/utils').JsonRpcParams} JsonRpcParams
+ * @typedef {import('@metamask/utils').Json} Json
+ */
+
+/**
  * @typedef {Record<string, Function>} SendMetadataOptions
  * @property {Function} addSubjectMetadata - A function that records subject
  * metadata, bound to the requesting origin.
@@ -25,8 +30,8 @@ export default sendMetadata;
  */
 
 /**
- * @param {import('json-rpc-engine').JsonRpcRequest<unknown>} req - The JSON-RPC request object.
- * @param {import('json-rpc-engine').JsonRpcResponse<true>} res - The JSON-RPC response object.
+ * @param {import('@metamask/utils').JsonRpcRequest<JsonRpcParams>} req - The JSON-RPC request object.
+ * @param {import('@metamask/utils').JsonRpcResponse<Json>} res - The JSON-RPC response object.
  * @param {Function} _next - The json-rpc-engine 'next' callback.
  * @param {Function} end - The json-rpc-engine 'end' callback.
  * @param {SendMetadataOptions} options
