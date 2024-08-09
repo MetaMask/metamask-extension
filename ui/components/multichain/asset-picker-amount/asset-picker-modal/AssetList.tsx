@@ -116,19 +116,28 @@ export default function AssetList({
               <Box marginInlineStart={2}>
                 {token.type === AssetType.native ? (
                   <TokenListItem
-                    title={nativeCurrency}
+                    title={
+                      token.symbol === nativeCurrency
+                        ? nativeCurrency
+                        : token.symbol
+                    }
                     primary={
-                      primaryCurrencyProperties.value ??
-                      secondaryCurrencyProperties.value
+                      token.symbol === nativeCurrency
+                        ? primaryCurrencyProperties.value ??
+                          secondaryCurrencyProperties.value
+                        : undefined
                     }
                     tokenSymbol={
+                      // eslint-disable-next-line no-nested-ternary
                       useNativeCurrencyAsPrimaryCurrency
-                        ? primaryCurrency
+                        ? token.symbol === primaryCurrency
+                          ? primaryCurrency
+                          : token.symbol
                         : secondaryCurrency
                     }
                     secondary={secondaryCurrencyDisplay}
                     tokenImage={token.image}
-                    isOriginalTokenSymbol
+                    isOriginalTokenSymbol={token.symbol === nativeCurrency}
                   />
                 ) : (
                   <AssetComponent
