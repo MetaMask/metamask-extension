@@ -39,6 +39,21 @@
   font-weight: 500;
 }
 
+.coin,
+.eth {
+  &__secondary-balance {
+    @include design-system.Paragraph;
+
+    font-size: 14px;
+  }
+
+  &__cached-secondary-balance {
+    @include design-system.Paragraph;
+
+    font-size: 14px;
+  }
+}
+
 .coin-overview,
 .eth-overview {
   &__balance {
