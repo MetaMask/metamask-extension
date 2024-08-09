@@ -533,6 +533,7 @@ export const NetworkListMenu = ({ onClose }) => {
             <ButtonSecondary
               size={ButtonSecondarySize.Lg}
               startIconName={IconName.Add}
+              data-testid="add-custom-network"
               block
               onClick={() => {
                 if (!networkMenuRedesign) {
