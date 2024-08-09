@@ -15,6 +15,15 @@ jest.mock('../../../../../../store/actions', () => ({
   }),
 }));
 
+jest.mock(
+  '../../../../../../components/app/alert-system/contexts/alertMetricsContext',
+  () => ({
+    useAlertMetrics: jest.fn(() => ({
+      trackAlertMetrics: jest.fn(),
+    })),
+  }),
+);
+
 describe('<ContractInteractionInfo />', () => {
   const middleware = [thunk];
 

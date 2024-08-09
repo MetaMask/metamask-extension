@@ -18,6 +18,16 @@ jest.mock('../contexts/alertActionHandler', () => ({
   useAlertActionHandler: jest.fn(() => mockAlertActionHandlerProviderValue),
 }));
 
+const mockTrackAlertActionClicked = jest.fn();
+const mockTrackAlertRender = jest.fn();
+jest.mock('../contexts/alertMetricsContext', () => ({
+  useAlertMetrics: jest.fn(() => ({
+    trackAlertActionClicked: mockTrackAlertActionClicked,
+    trackInlineAlertClicked: jest.fn(),
+    trackAlertRender: mockTrackAlertRender,
+  })),
+}));
+
 describe('AlertModal', () => {
   const OWNER_ID_MOCK = '123';
   const FROM_ALERT_KEY_MOCK = 'from';
@@ -248,6 +258,43 @@ describe('AlertModal', () => {
 
       expect(getByTestId('alert-modal-acknowledge-checkbox')).toBeDefined();
       expect(getByTestId('alert-modal-button')).toBeDefined();
+    });
+  });
+
+  describe('Track alert metrics', () => {
+    it('calls mockTrackAlertRender when alert modal is opened', () => {
+      const { getByText } = renderWithProvider(
+        <AlertModal
+          ownerId={OWNER_ID_MOCK}
+          onAcknowledgeClick={onAcknowledgeClickMock}
+          onClose={onCloseMock}
+          alertKey={FROM_ALERT_KEY_MOCK}
+        />,
+        mockStore,
+      );
+
+      expect(getByText(ALERT_MESSAGE_MOCK)).toBeInTheDocument();
+      expect(mockTrackAlertRender).toHaveBeenCalledWith(FROM_ALERT_KEY_MOCK);
+    });
+
+    it('calls trackAlertActionClicked when action button is clicked', () => {
+      const { getByText } = renderWithProvider(
+        <AlertModal
+          ownerId={OWNER_ID_MOCK}
+          onAcknowledgeClick={onAcknowledgeClickMock}
+          onClose={onCloseMock}
+          alertKey={CONTRACT_ALERT_KEY_MOCK}
+        />,
+        mockStore,
+      );
+
+      expect(getByText(ACTION_LABEL_MOCK)).toBeInTheDocument();
+
+      fireEvent.click(getByText(ACTION_LABEL_MOCK));
+
+      expect(mockTrackAlertActionClicked).toHaveBeenCalledWith(
+        CONTRACT_ALERT_KEY_MOCK,
+      );
     });
   });
 });

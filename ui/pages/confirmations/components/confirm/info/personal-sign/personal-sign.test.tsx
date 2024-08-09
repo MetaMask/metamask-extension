@@ -9,6 +9,15 @@ import {
 } from '../../../../../../../test/data/confirmations/personal_sign';
 import PersonalSignInfo from './personal-sign';
 
+jest.mock(
+  '../../../../../../components/app/alert-system/contexts/alertMetricsContext',
+  () => ({
+    useAlertMetrics: jest.fn(() => ({
+      trackAlertMetrics: jest.fn(),
+    })),
+  }),
+);
+
 describe('PersonalSignInfo', () => {
   it('renders correctly for personal sign request', () => {
     const state = {

@@ -83,7 +83,6 @@ export const TemplateStory: StoryFn<typeof ConfirmAlertModal> = (args) => {
       {isOpen && (
         <ConfirmAlertModal
           {...args}
-          alertKey={'From'}
           onClose={handleOnClose}
           onCancel={handleOnClose}
           onSubmit={handleOnClose}
