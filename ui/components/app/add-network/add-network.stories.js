@@ -7,6 +7,7 @@ const OPTIMISM_IMAGE_URL = './images/optimism.svg';
 const AVALANCHE_IMAGE_URL = './images/avax-token.svg';
 const PALM_IMAGE_URL = './images/palm.svg';
 const BSC_IMAGE_URL = './images/bsc-filled.svg';
+const ZK_SYNC_ERA_TOKEN_IMAGE_URL = './images/zk-sync.svg';
 
 export default {
   title: 'Components/App/AddNetwork',
@@ -87,6 +88,16 @@ export default {
         },
       },
       {
+        chainId: '11297108109',
+        nickname: 'Palm',
+        rpcUrl: 'https://palm-mainnet.infura.io/v3/{INFURA_API_KEY}',
+        ticker: 'PALM',
+        rpcPrefs: {
+          blockExplorerUrl: 'https://explorer.palm.io/',
+          imageUrl: PALM_IMAGE_URL,
+        },
+      },
+      {
         chainId: '137',
         nickname: 'Polygon Mainnet',
         rpcUrl: 'https://polygon-mainnet.infura.io/v3/{INFURA_API_KEY}',
@@ -97,13 +108,13 @@ export default {
         },
       },
       {
-        chainId: '11297108109',
-        nickname: 'Palm',
-        rpcUrl: 'https://palm-mainnet.infura.io/v3/{INFURA_API_KEY}',
-        ticker: 'PALM',
+        chainId: '324',
+        nickname: 'zkSync Era',
+        rpcUrl: 'https://mainnet.era.zksync.io/',
+        ticker: 'ETH',
         rpcPrefs: {
-          blockExplorerUrl: 'https://explorer.palm.io/',
-          imageUrl: PALM_IMAGE_URL,
+          blockExplorerUrl: 'https://explorer.zksync.io/',
+          imageUrl: ZK_SYNC_ERA_TOKEN_IMAGE_URL,
         },
       },
     ],
