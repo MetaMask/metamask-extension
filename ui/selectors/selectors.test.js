@@ -775,11 +775,7 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          providerConfig: {
-            ...mockState.metamask.providerConfig,
-            chainId: '0x1',
-            type: 'sepolia',
-          },
+          selectedNetworkClientId: NETWORK_TYPES.SEPOLIA,
         },
       };
       const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
@@ -803,6 +799,7 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
+          selectedNetworkClientId: mockNetworkConfigurationId,
           networkConfigurations: {
             ...mockState.networkConfigurations,
             [mockNetworkConfigurationId]: {
@@ -811,13 +808,6 @@ describe('Selectors', () => {
               ticker: 'TST',
               id: mockNetworkConfigurationId,
             },
-          },
-          providerConfig: {
-            rpcUrl: 'https://mock-rpc-endpoint.test',
-            chainId: '0x9999',
-            ticker: 'TST',
-            id: mockNetworkConfigurationId,
-            type: 'rpc',
           },
         },
       };
@@ -840,15 +830,18 @@ describe('Selectors', () => {
     });
 
     it('returns custom network configuration that is missing from networkConfigurations state', () => {
+      const mockNetworkConfigurationId = 'mock-network-config-id';
       const modifiedMockState = {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          providerConfig: {
-            rpcUrl: 'https://mock-rpc-endpoint.test',
-            chainId: '0x9999',
-            ticker: 'TST',
-            type: 'rpc',
+          selectedNetworkClientId: mockNetworkConfigurationId,
+          networkConfigurations: {
+            [mockNetworkConfigurationId]: {
+              rpcUrl: 'https://mock-rpc-endpoint.test',
+              chainId: '0x9999',
+              ticker: 'TST',
+            },
           },
         },
       };
