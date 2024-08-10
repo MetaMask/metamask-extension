@@ -838,7 +838,10 @@ export default class MetamaskController extends EventEmitter {
       }),
       storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
       provider: this.provider,
-      ppomProvider: { PPOM: PPOMModule.PPOM, ppomInit: PPOMModule.default },
+      ppomProvider: {
+        PPOM: PPOMModule.PPOM,
+        ppomInit: () => PPOMModule.default(process.env.PPOM_URI),
+      },
       state: initState.PPOMController,
       chainId: getCurrentChainId({ metamask: this.networkController.state }),
       securityAlertsEnabled:
@@ -5181,7 +5184,8 @@ export default class MetamaskController extends EventEmitter {
           }
         });
         connectionId && this.removeConnection(origin, connectionId);
-        if (err) {
+        // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
+        if (err && !err.message?.match('Premature close')) {
           log.error(err);
         }
       },
@@ -5707,7 +5711,8 @@ export default class MetamaskController extends EventEmitter {
 
     pipeline(configStream, outStream, (err) => {
       configStream.destroy();
-      if (err) {
+      // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
+      if (err && !err.message?.match('Premature close')) {
         log.error(err);
       }
     });

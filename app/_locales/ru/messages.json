@@ -1452,9 +1452,6 @@
   "data": {
     "message": "Данные"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Не удается восстановить ваши данные. Файл, по-видимому, поврежден."
-  },
   "dataCollectionForMarketing": {
     "message": "Сбор данных для маркетинга"
   },
@@ -4408,12 +4405,6 @@
   },
   "restore": {
     "message": "Восстановить"
-  },
-  "restoreFailed": {
-    "message": "Не удается восстановить ваши данные из предоставленного файла"
-  },
-  "restoreSuccessful": {
-    "message": "Ваши данные успешно восстановлены"
   },
   "restoreUserData": {
     "message": "Восстановить пользовательские данные"

@@ -1452,9 +1452,6 @@
   "data": {
     "message": "डेटा"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "आपका डेटा रीस्टोर नहीं किया जा सकता। लगता है फाइल करप्ट हुई है।"
-  },
   "dataCollectionForMarketing": {
     "message": "विपणन के लिए डेटा संग्रह"
   },
@@ -4408,12 +4405,6 @@
   },
   "restore": {
     "message": "रीस्टोर करें"
-  },
-  "restoreFailed": {
-    "message": "प्रदान की गई फाइल से आपके डेटा को रीस्टोर नहीं किया जा सकता"
-  },
-  "restoreSuccessful": {
-    "message": "आपके डेटा को सफलतापूर्वक रीस्टोर किया गया है"
   },
   "restoreUserData": {
     "message": "यूज़र डेटा रीस्टोर करें"
