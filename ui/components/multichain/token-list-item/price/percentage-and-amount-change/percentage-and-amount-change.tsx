@@ -34,8 +34,8 @@ const renderPercentageWithNumber = (
   return (
     <Box display={Display.Flex}>
       <Text
-        fontWeight={FontWeight.Normal}
-        variant={TextVariant.bodyMd}
+        fontWeight={FontWeight.Medium}
+        variant={TextVariant.bodySmMedium}
         color={color}
         data-testid="token-increase-decrease-value"
         style={{ whiteSpace: 'pre' }}
@@ -44,8 +44,8 @@ const renderPercentageWithNumber = (
         {formattedValuePrice}
       </Text>
       <Text
-        fontWeight={FontWeight.Normal}
-        variant={TextVariant.bodyMd}
+        fontWeight={FontWeight.Medium}
+        variant={TextVariant.bodySmMedium}
         color={color}
         data-testid="token-increase-decrease-percentage"
         ellipsis
@@ -103,11 +103,11 @@ export const PercentageAndAmountChange = ({
     return null;
   }, [marketData]);
 
-  let color = TextColor.textDefault;
+  let color = TextColor.textAlternative;
 
   if (isValidAmount(balanceChange)) {
     if ((balanceChange as number) === 0) {
-      color = TextColor.textDefault;
+      color = TextColor.textAlternative;
     } else if ((balanceChange as number) > 0) {
       color = TextColor.successDefault;
     } else {
