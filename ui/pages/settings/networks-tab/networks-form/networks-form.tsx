@@ -64,6 +64,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { SizeNumber } from '../../../../components/component-library/box/box.types';
+import RpcListItem from '../../../../components/multichain/network-list-menu/rpc-list-item';
 import DropdownEditor, { DropdownEditorStyle } from './dropdown-editor';
 import { useSafeChains } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
@@ -382,77 +383,21 @@ const NetworksForm = ({
           itemKey={(endpoint) => endpoint.url}
           selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
           error={Boolean(errors.rpcUrl)}
-          renderItem={(item, isList) => {
-            if (!item) {
-              return null;
-            }
-            item.name =
-              item.type == RpcEndpointType.Infura ? 'Infura' : item.name;
-
-            const displayEndpoint = (endpoint?: string) => {
-              if (!endpoint) {
-                return '\u00A0';
-              }
-
-              endpoint = endpoint.endsWith('/v3/{infuraProjectId}')
-                ? endpoint.replace('/v3/{infuraProjectId}', '')
-                : endpoint.endsWith(`/v3/${infuraProjectId}`)
-                ? endpoint.replace(`/v3/${infuraProjectId}`, '')
-                : endpoint;
-
-              const url = new URL(endpoint);
-              return `${url.host}${url.pathname === '/' ? '' : url.pathname}`;
-            };
-
-            let padding: SizeNumber = 2;
-            if (!item?.name) {
-              padding = isList ? 4 : 3;
-            }
-
-            return (
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                paddingTop={padding}
-                paddingBottom={padding}
-                {...(!item?.name &&
-                  isList && {
-                    borderWidth: 2,
-                    borderStyle: BorderStyle.solid,
-                    borderColor: BorderColor.transparent,
-                  })}
+          renderItem={(item, isList) =>
+            isList || item?.name || item?.type == RpcEndpointType.Infura ? (
+              <RpcListItem rpcEndpoint={item} />
+            ) : (
+              <Text
+                variant={TextVariant.bodyMd}
+                paddingTop={3}
+                paddingBottom={3}
               >
-                <Box>
-                  <Text
-                    as="button"
-                    padding={0}
-                    color={TextColor.textDefault}
-                    variant={TextVariant.bodyMdMedium}
-                    backgroundColor={BackgroundColor.transparent}
-                    ellipsis
-                  >
-                    {item?.name ? item.name : displayEndpoint(item?.url)}
-                  </Text>
-                </Box>
-                {item?.name && (
-                  <Box>
-                    <Text
-                      color={TextColor.textAlternative}
-                      variant={TextVariant.bodySm}
-                      ellipsis
-                    >
-                      {displayEndpoint(item.url)}
-                    </Text>
-                  </Box>
-                )}
-              </Box>
-            );
-          }}
-          addButtonText={t('addRpcUrl')}
-          // todo add a custom network - bogus rpc name - can't delete.  should always be able to delete when adding new???
-          itemIsDeletable={
-            (item, items) => item.type !== RpcEndpointType.Infura // && items.length > 1
+                {item.url}
+              </Text>
+            )
           }
+          addButtonText={t('addRpcUrl')}
+          itemIsDeletable={(item) => item.type !== RpcEndpointType.Infura}
           onItemAdd={onRpcAdd}
           onItemSelected={(index) =>
             setRpcUrls((state) => ({

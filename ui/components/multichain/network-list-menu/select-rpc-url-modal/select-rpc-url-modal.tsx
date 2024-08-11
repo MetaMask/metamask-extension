@@ -26,6 +26,7 @@ import {
   toggleNetworkMenu,
   updateNetwork,
 } from '../../../../store/actions';
+import RpcListItem from '../rpc-list-item';
 
 const SelectRpcUrlModal = ({
   networkConfiguration,
@@ -75,7 +76,8 @@ const SelectRpcUrlModal = ({
       {networkConfiguration.rpcEndpoints.map((rpcEndpoint, index) => (
         <Box
           alignItems={AlignItems.center}
-          padding={4}
+          paddingLeft={4}
+          paddingRight={4}
           display={Display.Flex}
           key={rpcEndpoint.url}
           onClick={() => {
@@ -101,30 +103,7 @@ const SelectRpcUrlModal = ({
               backgroundColor={BackgroundColor.primaryDefault}
             />
           )}
-          {/* TODO: Check if this should have tooltip to show full url on hover.
-              maybe only when its long enough to get truncated??? */}
-          <Text
-            as="button"
-            padding={0}
-            color={TextColor.textDefault}
-            variant={TextVariant.bodyMdMedium}
-            backgroundColor={BackgroundColor.transparent}
-          >
-            {rpcEndpoint.name
-              ? rpcEndpoint.name
-              : displayEndpoint(rpcEndpoint.url)}
-          </Text>
-
-          {rpcEndpoint.name && (
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMdMedium}
-              ellipsis
-            >
-              &nbsp;{'•'}&nbsp;
-              {displayEndpoint(rpcEndpoint.url)}
-            </Text>
-          )}
+          <RpcListItem rpcEndpoint={rpcEndpoint} />
         </Box>
       ))}
     </Box>
