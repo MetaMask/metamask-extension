@@ -35,6 +35,7 @@ import { SnapUIDropdown } from '../snaps/snap-ui-dropdown';
 import { SnapUIRadioGroup } from '../snaps/snap-ui-radio-group';
 import { SnapUICheckbox } from '../snaps/snap-ui-checkbox';
 import { SnapUITooltip } from '../snaps/snap-ui-tooltip';
+import { SnapFooterButton } from '../snaps/snap-footer-button';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
 import { SnapAccountErrorMessage } from '../../../pages/confirmations/components/snap-account-error-message';
@@ -46,7 +47,7 @@ import {
 } from '../../../pages/remove-snap-account';
 import { SnapAccountRedirect } from '../../../pages/snap-account-redirect';
 import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
-import { SnapFooterButton } from '../snaps/snap-footer-button';
+
 ///: END:ONLY_INCLUDE_IF
 
 export const safeComponentList = {

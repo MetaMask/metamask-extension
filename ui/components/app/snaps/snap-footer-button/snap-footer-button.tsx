@@ -1,12 +1,6 @@
 import React, { FunctionComponent, MouseEvent } from 'react';
 import { ButtonVariant, UserInputEventType } from '@metamask/snaps-sdk';
-import {
-  Button,
-  ButtonPrimaryProps,
-  ButtonSecondaryProps,
-  ButtonSize,
-  IconSize,
-} from '../../../component-library';
+import { Button, ButtonSize, IconSize } from '../../../component-library';
 import {
   AlignItems,
   BorderColor,
@@ -42,6 +36,7 @@ export const SnapFooterButton: FunctionComponent<SnapFooterButtonProps> = ({
   };
 
   const handleClick = isSnapAction ? handleSnapAction : onCancel;
+
   return (
     <Button
       className="snap-footer-button"
@@ -56,9 +51,9 @@ export const SnapFooterButton: FunctionComponent<SnapFooterButtonProps> = ({
         flexDirection: FlexDirection.Row,
       }}
       borderColor={
-        !isSnapAction
-          ? (IconColor.iconDefault as unknown as BorderColor)
-          : undefined
+        isSnapAction
+          ? undefined
+          : (IconColor.iconDefault as unknown as BorderColor)
       }
     >
       {isSnapAction && (
