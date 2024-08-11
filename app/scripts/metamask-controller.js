@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { pipeline } from 'readable-stream';
+import { finished, pipeline } from 'readable-stream';
 import {
   AssetsContractController,
   CurrencyRateController,
@@ -473,7 +473,6 @@ export default class MetamaskController extends EventEmitter {
       }),
       showApprovalRequest: opts.showUserConfirmation,
       typesExcludedFromRateLimiting: [
-        ApprovalType.EthSign,
         ApprovalType.PersonalSign,
         ApprovalType.EthSignTypedData,
         ApprovalType.Transaction,
@@ -921,7 +920,10 @@ export default class MetamaskController extends EventEmitter {
       }),
       storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
       provider: this.provider,
-      ppomProvider: { PPOM: PPOMModule.PPOM, ppomInit: PPOMModule.default },
+      ppomProvider: {
+        PPOM: PPOMModule.PPOM,
+        ppomInit: () => PPOMModule.default(process.env.PPOM_URI),
+      },
       state: initState.PPOMController,
       chainId: getCurrentChainId({ metamask: this.networkController.state }),
       securityAlertsEnabled:
@@ -1499,9 +1501,11 @@ export default class MetamaskController extends EventEmitter {
       messenger: this.controllerMessenger.getRestricted({
         name: 'AuthenticationController',
         allowedActions: [
+          'KeyringController:getState',
           'SnapController:handleRequest',
           'UserStorageController:disableProfileSyncing',
         ],
+        allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
       }),
       metametrics: {
         getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
@@ -1515,6 +1519,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
         allowedActions: [
+          'KeyringController:getState',
           'SnapController:handleRequest',
           'AuthenticationController:getBearerToken',
           'AuthenticationController:getSessionProfile',
@@ -1524,6 +1529,7 @@ export default class MetamaskController extends EventEmitter {
           'MetamaskNotificationsController:disableMetamaskNotifications',
           'MetamaskNotificationsController:selectIsMetamaskNotificationsEnabled',
         ],
+        allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
       }),
     });
 
@@ -1573,6 +1579,7 @@ export default class MetamaskController extends EventEmitter {
         name: 'MetamaskNotificationsController',
         allowedActions: [
           'KeyringController:getAccounts',
+          'KeyringController:getState',
           'AuthenticationController:getBearerToken',
           'AuthenticationController:isSignedIn',
           'UserStorageController:enableProfileSyncing',
@@ -1585,6 +1592,8 @@ export default class MetamaskController extends EventEmitter {
         ],
         allowedEvents: [
           'KeyringController:stateChange',
+          'KeyringController:lock',
+          'KeyringController:unlock',
           'PushPlatformNotificationsController:onNewNotifications',
         ],
       }),
@@ -1882,9 +1891,6 @@ export default class MetamaskController extends EventEmitter {
           `${this.loggingController.name}:add`,
         ],
       }),
-      isEthSignEnabled: () =>
-        this.preferencesController.store.getState()
-          ?.disabledRpcMethodPreferences?.eth_sign,
       getAllState: this.getState.bind(this),
       getCurrentChainId: () =>
         getCurrentChainId({ metamask: this.networkController.state }),
@@ -2175,9 +2181,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       // msg signing
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      processEthSignMessage: this.signatureController.newUnsignedMessage.bind(
-        this.signatureController,
-      ),
       processTypedMessage:
         this.signatureController.newUnsignedTypedMessage.bind(
           this.signatureController,
@@ -2198,9 +2201,6 @@ export default class MetamaskController extends EventEmitter {
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       /* eslint-disable no-dupe-keys */
-      processEthSignMessage: this.mmiController.newUnsignedMessage.bind(
-        this.mmiController,
-      ),
       processTypedMessage: this.mmiController.newUnsignedMessage.bind(
         this.mmiController,
       ),
@@ -3325,14 +3325,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       setDismissSeedBackUpReminder:
         preferencesController.setDismissSeedBackUpReminder.bind(
-          preferencesController,
-        ),
-      setDisabledRpcMethodPreference:
-        preferencesController.setDisabledRpcMethodPreference.bind(
-          preferencesController,
-        ),
-      getRpcMethodPreferences:
-        preferencesController.getRpcMethodPreferences.bind(
           preferencesController,
         ),
       setAdvancedGasFee: preferencesController.setAdvancedGasFee.bind(
@@ -5193,14 +5185,39 @@ export default class MetamaskController extends EventEmitter {
       this.once('startUISync', startUISync);
     }
 
-    outStream.on('end', () => {
-      this.activeControllerConnections -= 1;
-      this.emit(
-        'controllerConnectionChanged',
-        this.activeControllerConnections,
-      );
-      this.removeListener('update', handleUpdate);
-    });
+    const outstreamEndHandler = () => {
+      if (!outStream.mmFinished) {
+        this.activeControllerConnections -= 1;
+        this.emit(
+          'controllerConnectionChanged',
+          this.activeControllerConnections,
+        );
+        outStream.mmFinished = true;
+        this.removeListener('update', handleUpdate);
+      }
+    };
+
+    // The presence of both of the below handlers may be redundant.
+    // After upgrading metamask/object-multiples to v2.0.0, which included
+    // an upgrade of readable-streams from v2 to v3, we saw that the
+    // `outStream.on('end'` handler was almost never being called. This seems to
+    // related to how v3 handles errors vs how v2 handles errors; there
+    // are "premature close" errors in both cases, although in the case
+    // of v2 they don't prevent `outStream.on('end'` from being called.
+    // At the time that this comment was committed, it was known that we
+    // need to investigate and resolve the underlying error, however,
+    // for expediency, we are not addressing them at this time. Instead, we
+    // can observe that `readableStream.finished` preserves the same
+    // functionality as we had when we relied on readable-stream v2. Meanwhile,
+    // the `outStream.on('end')` handler was observed to have been called at least once.
+    // In an abundance of caution to prevent against unexpected future behavioral changes in
+    // streams implementations, we redundantly use multiple paths to attach the same event handler.
+    // The outstreamEndHandler therefore needs to be idempotent, which introduces the `mmFinished` property.
+
+    outStream.mmFinished = false;
+    finished(outStream, outstreamEndHandler);
+    outStream.once('close', outstreamEndHandler);
+    outStream.once('end', outstreamEndHandler);
   }
 
   /**
@@ -5260,7 +5277,8 @@ export default class MetamaskController extends EventEmitter {
           }
         });
         connectionId && this.removeConnection(origin, connectionId);
-        if (err) {
+        // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
+        if (err && !err.message?.match('Premature close')) {
           log.error(err);
         }
       },
@@ -5548,7 +5566,7 @@ export default class MetamaskController extends EventEmitter {
             { eth_accounts: {} },
           ),
         requestPermittedChainsPermission: (chainIds) =>
-          this.permissionController.requestPermissions(
+          this.permissionController.requestPermissionsIncremental(
             { origin },
             {
               [PermissionNames.permittedChains]: {
@@ -5791,7 +5809,8 @@ export default class MetamaskController extends EventEmitter {
 
     pipeline(configStream, outStream, (err) => {
       configStream.destroy();
-      if (err) {
+      // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
+      if (err && !err.message?.match('Premature close')) {
         log.error(err);
       }
     });
@@ -6215,6 +6234,9 @@ export default class MetamaskController extends EventEmitter {
       },
       getRedesignedConfirmationsEnabled: () => {
         return this.preferencesController.getRedesignedConfirmationsEnabled;
+      },
+      getRedesignedTransactionsEnabled: () => {
+        return this.preferencesController.getRedesignedTransactionsEnabled;
       },
       getMethodData: (data) => {
         if (!data) {

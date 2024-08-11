@@ -160,7 +160,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('returns "Advanced" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(13);
+      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(12);
     });
 
     it('returns "Contact" section count', () => {
@@ -183,7 +183,7 @@ describe('Settings Search Utils', () => {
 
     it('returns "Experimental" section count', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('experimental'))).toStrictEqual(
-        4,
+        5,
       );
     });
 

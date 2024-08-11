@@ -222,7 +222,6 @@ describe('Selectors', () => {
         selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
           metamask: {
             transactions: [],
-            unapprovedMsgs: {},
           },
         }),
       ).toStrictEqual(0);
@@ -255,7 +254,7 @@ describe('Selectors', () => {
                 status: TransactionStatus.unapproved,
               },
             ],
-            unapprovedMsgs: {
+            unapprovedPersonalMsgs: {
               2: {
                 id: 2,
                 msgParams: {
@@ -265,7 +264,7 @@ describe('Selectors', () => {
                 },
                 time: 1,
                 status: TransactionStatus.unapproved,
-                type: 'eth_sign',
+                type: 'personal_sign',
               },
             },
           },
@@ -295,7 +294,7 @@ describe('Selectors', () => {
                 status: TransactionStatus.unapproved,
               },
             ],
-            unapprovedMsgs: {
+            unapprovedTypedMessages: {
               1: {
                 id: 1,
                 msgParams: {
@@ -305,7 +304,7 @@ describe('Selectors', () => {
                 },
                 time: 1,
                 status: TransactionStatus.unapproved,
-                type: 'eth_sign',
+                type: 'eth_signTypedData',
               },
             },
           },
@@ -325,7 +324,6 @@ describe('Selectors', () => {
         isUnlocked: true,
         useRequestQueue: true,
         selectedTabOrigin: SELECTED_ORIGIN,
-        unapprovedMsgs: [],
         unapprovedDecryptMsgs: [],
         unapprovedPersonalMsgs: [],
         unapprovedEncryptionPublicKeyMsgs: [],
@@ -859,27 +857,125 @@ describe('Selectors', () => {
   });
 
   describe('#getCurrentNetwork', () => {
-    // not really possible anymore
+    it('returns built-in network configuration', () => {
+      const modifiedMockState = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          providerConfig: {
+            ...mockState.metamask.providerConfig,
+            chainId: '0x1',
+            type: 'sepolia',
+          },
+        },
+      };
+      const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
+
+      expect(currentNetwork).toMatchInlineSnapshot(`
+        {
+          "chainId": "0xaa36a7",
+          "id": "sepolia",
+          "nickname": "Sepolia",
+          "providerType": "sepolia",
+          "removable": false,
+          "rpcUrl": "https://sepolia.infura.io/v3/undefined",
+          "ticker": "SepoliaETH",
+        }
+      `);
+    });
+
+    it('returns custom network configuration', () => {
+      const mockNetworkConfigurationId = 'mock-network-config-id';
+      const modifiedMockState = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          networkConfigurations: {
+            ...mockState.networkConfigurations,
+            [mockNetworkConfigurationId]: {
+              rpcUrl: 'https://mock-rpc-endpoint.test',
+              chainId: '0x9999',
+              ticker: 'TST',
+              id: mockNetworkConfigurationId,
+            },
+          },
+          providerConfig: {
+            rpcUrl: 'https://mock-rpc-endpoint.test',
+            chainId: '0x9999',
+            ticker: 'TST',
+            id: mockNetworkConfigurationId,
+            type: 'rpc',
+          },
+        },
+      };
+
+      const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
+
+      expect(currentNetwork).toMatchInlineSnapshot(`
+        {
+          "blockExplorerUrl": undefined,
+          "chainId": "0x9999",
+          "id": "mock-network-config-id",
+          "removable": true,
+          "rpcPrefs": {
+            "imageUrl": undefined,
+          },
+          "rpcUrl": "https://mock-rpc-endpoint.test",
+          "ticker": "TST",
+        }
+      `);
+    });
+
+    it('returns custom network configuration that is missing from networkConfigurations state', () => {
+      const modifiedMockState = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          providerConfig: {
+            rpcUrl: 'https://mock-rpc-endpoint.test',
+            chainId: '0x9999',
+            ticker: 'TST',
+            type: 'rpc',
+          },
+        },
+      };
+
+      const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
+
+      expect(currentNetwork).toMatchInlineSnapshot(`
+        {
+          "chainId": "0x9999",
+          "nickname": undefined,
+          "rpcPrefs": undefined,
+          "rpcUrl": "https://mock-rpc-endpoint.test",
+          "ticker": "TST",
+        }
+      `);
+    });
+
+    // todo not possible anymore?
+    //
     // it('returns the correct custom network when there is a chainId collision', () => {
     //   const modifiedMockState = {
     //     ...mockState,
     //     metamask: {
     //       ...mockState.metamask,
-    //       // providerConfig: {
-    //       //   ...mockState.metamask.networkConfigurations
-    //       //     .testNetworkConfigurationId,
-    //       //   // 0x1 would collide with Ethereum Mainnet
-    //       //   chainId: '0x1',
-    //       //   // type of "rpc" signals custom network
-    //       //   type: 'rpc',
-    //       // },
+    //       providerConfig: {
+    //         ...mockState.metamask.networkConfigurations
+    //           .testNetworkConfigurationId,
+    //         // 0x1 would collide with Ethereum Mainnet
+    //         chainId: '0x1',
+    //         // type of "rpc" signals custom network
+    //         type: 'rpc',
+    //       },
     //     },
     //   };
+
     //   const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
     //   expect(currentNetwork.nickname).toBe('Custom Mainnet RPC');
     //   expect(currentNetwork.chainId).toBe('0x1');
     // });
-    // not really possible anymore
+
     // it('returns the correct mainnet network when there is a chainId collision', () => {
     //   const modifiedMockState = {
     //     ...mockState,
@@ -1038,7 +1134,6 @@ describe('Selectors', () => {
       options: {},
       methods: [
         'personal_sign',
-        'eth_sign',
         'eth_signTransaction',
         'eth_signTypedData_v1',
         'eth_signTypedData_v3',
@@ -1741,7 +1836,6 @@ describe('Selectors', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1766,7 +1860,6 @@ describe('Selectors', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1790,7 +1883,6 @@ describe('Selectors', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1816,7 +1908,6 @@ describe('Selectors', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1844,7 +1935,6 @@ describe('Selectors', () => {
         },
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1867,7 +1957,6 @@ describe('Selectors', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',

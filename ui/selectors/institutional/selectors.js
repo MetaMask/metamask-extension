@@ -24,6 +24,10 @@ export function getCustodyAccountSupportedChains(state, address) {
 }
 
 export function getMmiPortfolioEnabled(state) {
+  if (process.env.IN_TEST) {
+    return true;
+  }
+
   return state.metamask.mmiConfiguration?.portfolio?.enabled;
 }
 

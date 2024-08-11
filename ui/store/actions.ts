@@ -1015,6 +1015,7 @@ export function addTransactionAndRouteToConfirmationPage(
     } catch (error) {
       dispatch(hideLoadingIndication());
       dispatch(displayWarning(error));
+      throw error;
     }
     return null;
   };
@@ -3012,6 +3013,10 @@ export function setRedesignedConfirmationsEnabled(value: boolean) {
   return setPreference('redesignedConfirmationsEnabled', value);
 }
 
+export function setRedesignedTransactionsEnabled(value: boolean) {
+  return setPreference('redesignedTransactionsEnabled', value);
+}
+
 export function setFeatureNotificationsEnabled(value: boolean) {
   return setPreference('featureNotificationsEnabled', value);
 }
@@ -3201,17 +3206,12 @@ export function setParticipateInMetaMetrics(
             reject(err);
             return;
           }
-          /**
-           * We need to inform sentry that the user's optin preference may have
-           * changed. The logic to determine which way to toggle is in the
-           * toggleSession handler in setupSentry.js.
-           */
-          window.sentry?.toggleSession();
 
           dispatch({
             type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
             value: participationPreference,
           });
+
           resolve([participationPreference, metaMetricsId as string]);
         },
       );
@@ -4167,20 +4167,6 @@ export function setDismissSeedBackUpReminder(
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     await submitRequestToBackground('setDismissSeedBackUpReminder', [value]);
-    dispatch(hideLoadingIndication());
-  };
-}
-
-export function setDisabledRpcMethodPreference(
-  methodName: string,
-  value: number,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    await submitRequestToBackground('setDisabledRpcMethodPreference', [
-      methodName,
-      value,
-    ]);
     dispatch(hideLoadingIndication());
   };
 }

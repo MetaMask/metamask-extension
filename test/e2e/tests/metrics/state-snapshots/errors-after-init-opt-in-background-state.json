@@ -175,7 +175,6 @@
     "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
-    "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": false,
@@ -206,6 +205,7 @@
       "petnamesEnabled": true,
       "showTokenAutodetectModal": "boolean",
       "redesignedConfirmationsEnabled": true,
+      "redesignedTransactionsEnabled": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean"
     },
     "ipfsGateway": "string",
@@ -225,10 +225,8 @@
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
-    "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",
     "unapprovedTypedMessages": "object",
-    "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgCount": 0,
     "unapprovedTypedMessagesCount": 0
   },

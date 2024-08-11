@@ -184,6 +184,10 @@ const baseStore = {
         chainId: CHAIN_IDS.GOERLI,
         rpcEndpoints: [{ networkClientId: 'goerli' }],
       },
+    // providerConfig: {
+    //   chainId: CHAIN_IDS.GOERLI,
+    //   nickname: GOERLI_DISPLAY_NAME,
+    //   ticker: 'ETH',
     },
     nativeCurrency: 'ETH',
     featureFlags: {
@@ -218,6 +222,8 @@ const baseStore = {
       },
     },
     completedOnboarding: true,
+    useCurrencyRateCheck: true,
+    ticker: 'ETH',
   },
   activeTab: {
     origin: 'https://uniswap.org/',
@@ -384,6 +390,11 @@ describe('SendPage', () => {
               chainId: CHAIN_IDS.GOERLI,
               rpcEndpoints: [{ networkClientId: 'goerli' }],
             },
+          // providerConfig: {
+          //   chainId: CHAIN_IDS.GOERLI,
+          //   nickname: GOERLI_DISPLAY_NAME,
+          //   type: NETWORK_TYPES.GOERLI,
+          //   ticker: 'ETH',
           },
         },
       };

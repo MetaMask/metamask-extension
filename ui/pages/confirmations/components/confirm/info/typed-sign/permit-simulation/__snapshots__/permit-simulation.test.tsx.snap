@@ -80,7 +80,7 @@ exports[`PermitSimulation renders component correctly 1`] = `
                 tabindex="0"
               >
                 <p
-                  class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-2 mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
+                  class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
                   data-testid="simulation-token-value"
                 >
                   30

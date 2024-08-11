@@ -30,7 +30,7 @@ const INCOMING_TX = {
 };
 
 const SIGNING_REQUEST = {
-  type: TransactionType.sign,
+  type: TransactionType.personalSign,
   id: '0-signing',
   status: TransactionStatus.unapproved,
   chainId: CHAIN_IDS.MAINNET,
@@ -79,7 +79,7 @@ const CANCEL_TX = {
 const getStateTree = ({
   txList = [],
   incomingTxList = [],
-  unapprovedMsgs = [],
+  unapprovedTypedMessages = [],
 } = {}) => ({
   metamask: {
     networkConfigurationsByChainId: {
@@ -88,7 +88,7 @@ const getStateTree = ({
         rpcEndpoints: [{}],
       },
     },
-    unapprovedMsgs,
+    unapprovedTypedMessages,
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -276,7 +276,7 @@ describe('nonceSortedTransactionsSelector', () => {
   });
 
   it('should display a signing request', () => {
-    const state = getStateTree({ unapprovedMsgs: [SIGNING_REQUEST] });
+    const state = getStateTree({ unapprovedTypedMessages: [SIGNING_REQUEST] });
 
     const result = nonceSortedTransactionsSelector(state);
 

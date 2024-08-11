@@ -1,6 +1,8 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
 import { RpcEndpointType } from '@metamask/network-controller';
+import punycode from 'punycode/punycode';
+
 import {
   infuraProjectId,
   DEPRECATED_NETWORKS,
@@ -384,6 +386,13 @@ function getValues(pendingApproval, t, actions, history, data) {
             [t('blockExplorerUrl')]: t('blockExplorerUrlDefinition'),
           },
           warnings: {
+            [t('networkURL')]:
+              pendingApproval.requestData.rpcUrl ===
+              punycode.toASCII(pendingApproval.requestData.rpcUrl)
+                ? undefined
+                : t('networkUrlErrorWarning', [
+                    pendingApproval.requestData.rpcUrl,
+                  ]),
             [t('currencySymbol')]: data.currencySymbolWarning,
           },
           dictionary: {
