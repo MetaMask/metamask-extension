@@ -63,7 +63,7 @@ describe('Selectors', () => {
         smartTransactionsState: {
           liveness: true,
         },
-      }
+      },
     };
   };
 
