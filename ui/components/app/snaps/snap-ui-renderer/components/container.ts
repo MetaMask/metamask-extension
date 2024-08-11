@@ -1,12 +1,13 @@
-import { BoxElement, JSXElement, BoxProps } from '@metamask/snaps-sdk/jsx';
+import { BoxElement, JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
-import { getSnapFooter, mapToTemplate } from '../utils';
-import { UIComponentFactory } from './types';
+import { mapToTemplate } from '../utils';
 import {
   BlockSize,
   Display,
   FlexDirection,
 } from '../../../../../helpers/constants/design-system';
+import { UIComponentFactory } from './types';
+import { DEFAULT_FOOTER } from './footer';
 
 export const container: UIComponentFactory<BoxElement> = ({
   element,
@@ -21,29 +22,28 @@ export const container: UIComponentFactory<BoxElement> = ({
     children.pop();
   }
 
-  const templateChildren = children.map((children) =>
+  const templateChildren = children.map((child) =>
     mapToTemplate({
       useFooter,
       onCancel,
       ...params,
-      element: children as JSXElement,
+      element: child as JSXElement,
     }),
   );
 
   if (useFooter && !children[1]) {
-    templateChildren.push(
-      getSnapFooter([
-        {
-          element: 'SnapFooterButton',
-          key: 'default-button',
-          props: {
-            onCancel,
-            isSnapAction: false,
-          },
-          children: 'Cancel',
+    templateChildren.push({
+      ...DEFAULT_FOOTER,
+      children: {
+        element: 'SnapFooterButton',
+        key: 'default-button',
+        props: {
+          onCancel,
+          isSnapAction: false,
         },
-      ]),
-    );
+        children: 'Cancel',
+      },
+    });
   }
 
   return {

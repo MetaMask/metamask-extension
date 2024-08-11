@@ -1,9 +1,28 @@
 import { FooterElement, ButtonElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 
-import { NonEmptyArray } from '@metamask/controller-utils';
-import { getSnapFooter } from '../utils';
-import { UIComponent, UIComponentFactory } from './types';
+import {
+  BackgroundColor,
+  BlockSize,
+  Display,
+  FlexDirection,
+} from '../../../../../helpers/constants/design-system';
+import { UIComponentFactory } from './types';
+
+export const DEFAULT_FOOTER = {
+  element: 'Box',
+  props: {
+    display: Display.Flex,
+    flexDirection: FlexDirection.Row,
+    width: BlockSize.Full,
+    padding: 4,
+    className: 'snap-ui-renderer__footer',
+    backgroundColor: BackgroundColor.backgroundDefault,
+    style: {
+      boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
+    },
+  },
+};
 
 const getDefaultButtons = (footer: FooterElement, onCancel: () => void) => {
   const children = getJsxChildren(footer);
@@ -48,5 +67,8 @@ export const footer: UIComponentFactory<FooterElement> = ({
     footerChildren.unshift(defaultButtons);
   }
 
-  return getSnapFooter(footerChildren as unknown as NonEmptyArray<UIComponent>);
+  return {
+    ...DEFAULT_FOOTER,
+    children: footerChildren,
+  };
 };
