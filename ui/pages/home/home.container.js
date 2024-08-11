@@ -103,8 +103,8 @@ import {
 } from '../../../shared/constants/alerts';
 import { hasTransactionPendingApprovals } from '../../selectors/transactions';
 import { getLocalNetworkMenuRedesignFeatureFlag } from '../../helpers/utils/feature-flags';
-import Home from './home.component';
 import { getIsShowMultiRpcModal } from '../../../shared/modules/selectors/multi-rpc-edit';
+import Home from './home.component';
 
 const mapStateToProps = (state) => {
   const { metamask, appState } = state;

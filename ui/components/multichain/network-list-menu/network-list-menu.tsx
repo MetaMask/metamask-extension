@@ -524,9 +524,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   let onBack;
   if (actionMode === ACTION_MODES.ADD_EDIT) {
     onBack = () => {
-      editedNetwork
-        ? dispatch(setEditedNetwork())
-        : networkFormState.clear();
+      editedNetwork ? dispatch(setEditedNetwork()) : networkFormState.clear();
 
       setActionMode(ACTION_MODES.LIST);
     };

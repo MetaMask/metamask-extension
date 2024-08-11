@@ -143,7 +143,7 @@ const PopularNetworkList = ({
           >
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <AvatarNetwork
-              borderColor={BorderColor.backgroundDefault}
+                borderColor={BorderColor.backgroundDefault}
                 size={AvatarNetworkSize.Sm}
                 src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
                 name={network.name}

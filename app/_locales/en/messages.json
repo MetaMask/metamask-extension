@@ -183,6 +183,9 @@
   "add": {
     "message": "Add"
   },
+  "addACustomNetwork": {
+    "message": "Add a custom network"
+  },
   "addANetwork": {
     "message": "Add a network"
   },
@@ -191,6 +194,9 @@
   },
   "addANickname": {
     "message": "Add a nickname"
+  },
+  "addAUrl": {
+    "message": "Add a URL"
   },
   "addAccount": {
     "message": "Add account"
@@ -215,9 +221,6 @@
   },
   "addCustomNetwork": {
     "message": "Add custom network"
-  },
-  "addACustomNetwork": {
-    "message": "Add a custom network"
   },
   "addEthereumChainConfirmationDescription": {
     "message": "This will allow this network to be used within MetaMask."
@@ -3025,9 +3028,6 @@
   "nativeTokenScamWarningDescription": {
     "message": "This network doesn't match its associated chain ID or name. Many popular tokens use the name $1, making it a target for scams. Scammers may trick you into sending them more valuable currency in return. Verify everything before you continue.",
     "description": "$1 represents the currency name"
-  },
-  "addAUrl": {
-    "message": "Add a URL"
   },
   "nativeTokenScamWarningTitle": {
     "message": "This is a potential scam"

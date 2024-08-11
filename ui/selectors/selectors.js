@@ -1811,13 +1811,15 @@ export const getCurrentNetwork = createDeepEqualSelector(
       providerConfig.type === 'rpc'
         ? (network) => network.id === providerConfig.id
         : (network) => network.chainId === providerConfig.chainId;
-    return allNetworks.find(filter) ?? {
-      chainId: providerConfig.chainId,
-      nickname: providerConfig.nickname,
-      rpcPrefs: providerConfig.rpcPrefs,
-      rpcUrl: providerConfig.rpcUrl,
-      ticker: providerConfig.ticker,
-    }
+    return (
+      allNetworks.find(filter) ?? {
+        chainId: providerConfig.chainId,
+        nickname: providerConfig.nickname,
+        rpcPrefs: providerConfig.rpcPrefs,
+        rpcUrl: providerConfig.rpcUrl,
+        ticker: providerConfig.ticker,
+      }
+    );
   },
 );
 

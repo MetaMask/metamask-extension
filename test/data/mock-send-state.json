@@ -155,6 +155,7 @@
       "0x5": {
         "nativeCurrency": "ETH",
         "chainId": "0x5",
+        "defaultRpcEndpointIndex": 0,
         "rpcEndpoints": [
           {
             "networkClientId": "goerli"

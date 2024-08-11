@@ -182,12 +182,9 @@ const baseStore = {
       [CHAIN_IDS.GOERLI]: {
         name: GOERLI_DISPLAY_NAME,
         chainId: CHAIN_IDS.GOERLI,
+        defaultRpcEndpointIndex: 0,
         rpcEndpoints: [{ networkClientId: 'goerli' }],
       },
-    // providerConfig: {
-    //   chainId: CHAIN_IDS.GOERLI,
-    //   nickname: GOERLI_DISPLAY_NAME,
-    //   ticker: 'ETH',
     },
     nativeCurrency: 'ETH',
     featureFlags: {
@@ -384,18 +381,6 @@ describe('SendPage', () => {
         metamask: {
           ...mockSendState.metamask,
           gasEstimateType: 'none',
-          networkConfigurationsByChainId: {
-            [CHAIN_IDS.GOERLI]: {
-              name: GOERLI_DISPLAY_NAME,
-              chainId: CHAIN_IDS.GOERLI,
-              rpcEndpoints: [{ networkClientId: 'goerli' }],
-            },
-          // providerConfig: {
-          //   chainId: CHAIN_IDS.GOERLI,
-          //   nickname: GOERLI_DISPLAY_NAME,
-          //   type: NETWORK_TYPES.GOERLI,
-          //   ticker: 'ETH',
-          },
         },
       };
 

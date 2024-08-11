@@ -34,7 +34,7 @@ export enum DropdownEditorStyle {
   Box,
 }
 
-/** A dropdown for selecting, adding, and deleting items */
+// A dropdown for selecting, adding, and deleting items
 export const DropdownEditor = <Item,>({
   title,
   placeholder,
@@ -51,7 +51,7 @@ export const DropdownEditor = <Item,>({
   itemIsDeletable = () => true,
   renderItem,
 }: {
-  renderer: {foo:() => string}
+  renderer: { foo: () => string };
   title: string;
   placeholder: string;
   items?: Item[];

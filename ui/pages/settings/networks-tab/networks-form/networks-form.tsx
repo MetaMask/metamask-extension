@@ -63,10 +63,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { SizeNumber } from '../../../../components/component-library/box/box.types';
 import DropdownEditor, { DropdownEditorStyle } from './dropdown-editor';
 import { useSafeChains } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
-import { SizeNumber } from '../../../../components/component-library/box/box.types';
 
 const NetworksForm = ({
   networkFormState,
@@ -374,7 +374,7 @@ const NetworksForm = ({
           value={name}
         />
         <DropdownEditor
-          renderer={{foo: () => ''}}
+          renderer={{ foo: () => '' }}
           title={t('defaultRpcUrl')}
           placeholder={t('addAUrl')}
           style={DropdownEditorStyle.Popover}
@@ -383,8 +383,11 @@ const NetworksForm = ({
           selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
           error={Boolean(errors.rpcUrl)}
           renderItem={(item, isList) => {
-            if (!item) return null;
-            item.name = item.type == RpcEndpointType.Infura ? 'Infura' : item.name;
+            if (!item) {
+              return null;
+            }
+            item.name =
+              item.type == RpcEndpointType.Infura ? 'Infura' : item.name;
 
             const displayEndpoint = (endpoint?: string) => {
               if (!endpoint) {
@@ -412,41 +415,43 @@ const NetworksForm = ({
                 flexDirection={FlexDirection.Column}
                 paddingTop={padding}
                 paddingBottom={padding}
-                {...(!item?.name && isList && {
-                  borderWidth: 2,
-                  borderStyle: BorderStyle.solid,
-                  borderColor:BorderColor.transparent
-                })}
+                {...(!item?.name &&
+                  isList && {
+                    borderWidth: 2,
+                    borderStyle: BorderStyle.solid,
+                    borderColor: BorderColor.transparent,
+                  })}
               >
                 <Box>
-                <Text
-                  as="button"
-                  padding={0}
-                  color={TextColor.textDefault}
-                  variant={TextVariant.bodyMdMedium}
-                  backgroundColor={BackgroundColor.transparent}
-                  ellipsis
-                >
-                  {item?.name ? item.name : displayEndpoint(item?.url)}
-                </Text>
-                </Box>
-                {item?.name && (
-                   <Box>
                   <Text
-                    color={TextColor.textAlternative}
-                    variant={TextVariant.bodySm}
+                    as="button"
+                    padding={0}
+                    color={TextColor.textDefault}
+                    variant={TextVariant.bodyMdMedium}
+                    backgroundColor={BackgroundColor.transparent}
                     ellipsis
                   >
-                    {displayEndpoint(item.url)}
-                  </Text></Box>
+                    {item?.name ? item.name : displayEndpoint(item?.url)}
+                  </Text>
+                </Box>
+                {item?.name && (
+                  <Box>
+                    <Text
+                      color={TextColor.textAlternative}
+                      variant={TextVariant.bodySm}
+                      ellipsis
+                    >
+                      {displayEndpoint(item.url)}
+                    </Text>
+                  </Box>
                 )}
               </Box>
             );
           }}
           addButtonText={t('addRpcUrl')}
           // todo add a custom network - bogus rpc name - can't delete.  should always be able to delete when adding new???
-          itemIsDeletable={(item, items) =>
-            item.type !== RpcEndpointType.Infura// && items.length > 1
+          itemIsDeletable={
+            (item, items) => item.type !== RpcEndpointType.Infura // && items.length > 1
           }
           onItemAdd={onRpcAdd}
           onItemSelected={(index) =>
@@ -647,11 +652,14 @@ const NetworksForm = ({
         width={BlockSize.Full}
       >
         <ButtonPrimary
-        // not just erorrs - also if fields not populated?
+          // not just erorrs - also if fields not populated?
           disabled={
-            !name || !chainId || !ticker ||
+            !name ||
+            !chainId ||
+            !ticker ||
             !rpcUrls?.rpcEndpoints?.length ||
-            Object.values(errors).some((e) => e)}
+            Object.values(errors).some((e) => e)
+          }
           onClick={onSubmit}
           size={ButtonPrimarySize.Lg}
           width={BlockSize.Full}

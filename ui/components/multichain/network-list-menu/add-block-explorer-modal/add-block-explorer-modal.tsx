@@ -45,30 +45,25 @@ const AddBlockExplorerModal = ({
       justifyContent={JustifyContent.spaceBetween}
       height={BlockSize.Full}
     >
-      <Box  paddingLeft={4}
-      paddingRight={4}>
-      <FormTextField
-      size={FormTextFieldSize.Lg}
-      textFieldProps={{ borderRadius:BorderRadius.LG }}
-        error={Boolean(error)}
-        id="additional-rpc-url"
-        label={t('blockExplorerUrl')}
-        inputProps={{
-          variant: TextVariant.bodySm,
-        }}
-        labelProps={{
-          children: undefined,
-          variant: TextVariant.bodyMdMedium,
-        }}
-        onChange={(e) => setUrl(e.target.value)}
-      />
-      {error && (
-        <HelpText
-          severity={HelpTextSeverity.Danger}
-        >
-          {error}
-        </HelpText>
-      )}
+      <Box paddingLeft={4} paddingRight={4}>
+        <FormTextField
+          size={FormTextFieldSize.Lg}
+          textFieldProps={{ borderRadius: BorderRadius.LG }}
+          error={Boolean(error)}
+          id="additional-rpc-url"
+          label={t('blockExplorerUrl')}
+          inputProps={{
+            variant: TextVariant.bodySm,
+          }}
+          labelProps={{
+            children: undefined,
+            variant: TextVariant.bodyMdMedium,
+          }}
+          onChange={(e) => setUrl(e.target.value)}
+        />
+        {error && (
+          <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>
+        )}
       </Box>
       <Box
         className="networks-tab__network-form__footer"

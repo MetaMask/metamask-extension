@@ -61,6 +61,6 @@ export const useNetworkFormState = (existingNetwork?: UpdateNetworkFields) => {
       setTicker(undefined);
       setRpcUrls({});
       setBlockExplorers({});
-    }
+    },
   };
 };

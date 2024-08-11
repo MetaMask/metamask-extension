@@ -42,7 +42,6 @@ const AddRpcUrlModal = ({
   }, [url]);
 
   return (
-
     <Box
       className="networks-tab__scrollable"
       display={Display.Flex}
@@ -56,16 +55,18 @@ const AddRpcUrlModal = ({
           error={Boolean(error)}
           label={t('rpcUrl')}
           placeholder={t('enterRpcUrl')}
-          textFieldProps={{ borderRadius:BorderRadius.LG }}
+          textFieldProps={{ borderRadius: BorderRadius.LG }}
           labelProps={{
             children: undefined,
             variant: TextVariant.bodyMdMedium,
           }}
           onChange={(e) => setUrl(e.target.value)}
         />
-        {error && <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>}
+        {error && (
+          <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>
+        )}
         <FormTextField
-        size={FormTextFieldSize.Lg}
+          size={FormTextFieldSize.Lg}
           inputProps={{
             variant: TextVariant.bodySm,
           }}
@@ -73,7 +74,7 @@ const AddRpcUrlModal = ({
           paddingTop={4}
           inputRef={nameRef}
           label={t('rpcNameOptional')}
-          textFieldProps={{ borderRadius:BorderRadius.LG }}
+          textFieldProps={{ borderRadius: BorderRadius.LG }}
           labelProps={{
             children: undefined,
             variant: TextVariant.bodyMdMedium,
@@ -88,17 +89,17 @@ const AddRpcUrlModal = ({
         width={BlockSize.Full}
       >
         <ButtonPrimary
-        width={BlockSize.Full}
-        disabled={Boolean(error)}
-        size={ButtonPrimarySize.Lg}
-        onClick={async () => {
-          if (url && !error && nameRef.current) {
-            onAdded(url, nameRef.current.value || undefined);
-          }
-        }}
-      >
-        {t('addUrl')}
-      </ButtonPrimary>
+          width={BlockSize.Full}
+          disabled={Boolean(error)}
+          size={ButtonPrimarySize.Lg}
+          onClick={async () => {
+            if (url && !error && nameRef.current) {
+              onAdded(url, nameRef.current.value || undefined);
+            }
+          }}
+        >
+          {t('addUrl')}
+        </ButtonPrimary>
       </Box>
     </Box>
   );
