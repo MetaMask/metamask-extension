@@ -131,6 +131,7 @@
   },
   "resolutions": {
     "chokidar": "^3.6.0",
+    "@metamask/controller-utils@^11.0.2": "file:../core/packages/controller-utils",
     "@metamask/controller-utils@^11.0.1": "file:../core/packages/controller-utils",
     "@metamask/controller-utils@^11.0.0": "file:../core/packages/controller-utils",
     "@metamask/controller-utils@^10.0.0": "file:../core/packages/controller-utils",
