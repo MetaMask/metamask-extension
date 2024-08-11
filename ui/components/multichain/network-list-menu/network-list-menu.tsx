@@ -221,6 +221,12 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     searchQuery,
   );
 
+  // If any network has multiple RPC endpoints, show multi-rpc selectors for all networks
+  const showMultiRpcSelectors = [
+    ...searchedEnabledNetworks,
+    ...searchedTestNetworks,
+  ].some((network) => network.rpcEndpoints.length > 1);
+
   // Renders a network in the network list
   const generateNetworkListItem = (network: NetworkConfiguration) => {
     const isCurrentNetwork = network.chainId === currentChainId;
@@ -235,7 +241,11 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         name={network.name}
         iconSrc={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
         iconSize={AvatarNetworkSize.Sm}
-        rpcEndpoint={network.rpcEndpoints[network.defaultRpcEndpointIndex]}
+        rpcEndpoint={
+          showMultiRpcSelectors
+            ? network.rpcEndpoints[network.defaultRpcEndpointIndex]
+            : undefined
+        }
         key={network.chainId}
         selected={isCurrentNetwork && !focusSearch}
         focus={isCurrentNetwork && !focusSearch}
