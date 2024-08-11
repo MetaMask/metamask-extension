@@ -248,12 +248,11 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: {
-              id: 'networkClientId',
+          selectedNetworkClientId: 'polygon',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.POLYGON]: {
               chainId: CHAIN_IDS.POLYGON,
+              rpcEndpoints: [{ networkClientId: 'polygon' }],
             },
           },
         },
@@ -284,6 +283,12 @@ describe('NFT Details', () => {
         metamask: {
           ...mockState.metamask,
           selectedNetworkClientId: 'sepolia',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.SEPOLIA]: {
+              chainId: CHAIN_IDS.SEPOLIA,
+              rpcEndpoints: [{ networkClientId: 'sepolia' }],
+            },
+          },
         },
       };
       const sepoliaMockStore = configureMockStore([thunk])(sepoliaState);
@@ -312,8 +317,11 @@ describe('NFT Details', () => {
         metamask: {
           ...mockState.metamask,
           selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: { id: 'networkClientId', chainId: '0x99' },
+          networkConfigurationsByChainId: {
+            '0x99': {
+              chainId: '0x99',
+              rpcEndpoints: [{ networkClientId: 'networkClientId' }],
+            },
           },
         },
       };

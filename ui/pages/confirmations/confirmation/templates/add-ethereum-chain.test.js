@@ -38,13 +38,10 @@ const mockBaseStore = {
     },
     approvalFlows: [{ id: mockApprovalId, loadingText: null }],
     subjectMetadata: {},
-
-    selectedNetworkClientId: 'networkClientId',
-    networkConfigurations: {
-      networkClientId: {
-        rpcUrl: 'http://example-custom-rpc.metamask.io',
+    networkConfigurationsByChainId: {
+      '0x9999': {
         chainId: '0x9999',
-        nickname: 'Test initial state',
+        rpcEndpoints: [{ networkClientId: 'test-network-client-id' }],
       },
     },
 

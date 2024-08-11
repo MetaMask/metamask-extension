@@ -22,9 +22,12 @@ describe('TransactionActivityLog container', () => {
               conversionRate: 280.45,
             },
           },
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: { chainId: CHAIN_IDS.MAINNET, ticker: 'ETH' },
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              nativeCurrency: 'ETH',
+              rpcEndpoints: [{}],
+            },
           },
         },
       };
@@ -45,15 +48,12 @@ describe('TransactionActivityLog container', () => {
             },
           },
 
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: {
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
               chainId: CHAIN_IDS.MAINNET,
-              ticker: 'ETH',
-              rpcUrl: 'https://customnetwork.com/',
-              rpcPrefs: {
-                blockExplorerUrl: 'https://customblockexplorer.com/',
-              },
+              nativeCurrency: 'ETH',
+              blockExplorerUrl: 'https://customblockexplorer.com/',
+              rpcEndpoints: [{}],
             },
           },
         },

@@ -2,13 +2,19 @@ import React, { FC } from 'react';
 import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 import configureStore from '../../../store/store';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import useRamps, { RampsMetaMaskEntry } from './useRamps';
 
 const mockedMetametricsId = '0xtestMetaMetricsId';
 
 let mockStoreState = {
   metamask: {
-    selectedNetworkClientId: 'mainnet',
+    networkConfigurationsByChainId: {
+      [CHAIN_IDS.MAINNET]: {
+        chainId: CHAIN_IDS.MAINNET,
+        rpcEndpoints: [{}],
+      },
+    },
     metaMetricsId: mockedMetametricsId,
     networkConfigurations: {},
   },
@@ -36,6 +42,12 @@ describe('useRamps', () => {
       ...mockStoreState,
       metamask: {
         ...mockStoreState.metamask,
+        networkConfigurationsByChainId: {
+          [mockChainId]: {
+            chainId: mockChainId,
+            rpcEndpoints: [{}],
+          },
+        },
       },
     };
 
@@ -58,6 +70,12 @@ describe('useRamps', () => {
       ...mockStoreState,
       metamask: {
         ...mockStoreState.metamask,
+        networkConfigurationsByChainId: {
+          [mockChainId]: {
+            chainId: mockChainId,
+            rpcEndpoints: [{}],
+          },
+        },
       },
     };
 
@@ -84,9 +102,11 @@ describe('useRamps', () => {
         ...mockStoreState,
         metamask: {
           ...mockStoreState.metamask,
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: { chainId: mockChainId },
+          networkConfigurationsByChainId: {
+            [mockChainId]: {
+              chainId: mockChainId,
+              rpcEndpoints: [{}],
+            },
           },
         },
       };

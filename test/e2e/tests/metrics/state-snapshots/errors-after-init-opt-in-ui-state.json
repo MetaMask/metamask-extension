@@ -88,6 +88,7 @@
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
     "showTokenAutodetectModalOnUpgrade": "object",
+    "showMultiRpcModalUpgrade": "object",
     "balances": "object",
     "selectedNetworkClientId": "string",
     "networksMetadata": {

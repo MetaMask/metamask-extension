@@ -10,7 +10,7 @@ const switchEthereumChain = {
   methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],
   implementation: switchEthereumChainHandler,
   hookNames: {
-    findNetworkConfigurationBy: true,
+    getNetworkConfigurationByChainId: true,
     setActiveNetwork: true,
     getCaveat: true,
     requestPermittedChainsPermission: true,
@@ -28,7 +28,7 @@ async function switchEthereumChainHandler(
   _next,
   end,
   {
-    findNetworkConfigurationBy,
+    getNetworkConfigurationByChainId,
     setActiveNetwork,
     requestPermittedChainsPermission,
     getCaveat,
@@ -51,14 +51,12 @@ async function switchEthereumChainHandler(
     return end();
   }
 
-  const networkConfigurationForRequestedChainId = findExistingNetwork(
-    chainId,
-    findNetworkConfigurationBy,
-  );
-
+  const networkConfigurationForRequestedChainId =
+    getNetworkConfigurationByChainId(chainId);
   const networkClientIdToSwitchTo =
-    networkConfigurationForRequestedChainId?.id ??
-    networkConfigurationForRequestedChainId?.type;
+    networkConfigurationForRequestedChainId.rpcEndpoints[
+      networkConfigurationForRequestedChainId.defaultRpcEndpointIndex
+    ].networkClientId;
 
   if (!networkClientIdToSwitchTo) {
     return end(

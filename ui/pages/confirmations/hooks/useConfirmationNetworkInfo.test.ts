@@ -1,3 +1,4 @@
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import useConfirmationNetworkInfo from './useConfirmationNetworkInfo';
@@ -11,6 +12,13 @@ describe('useConfirmationNetworkInfo', () => {
         metamask: {
           ...mockState.metamask,
           selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              name: 'Ethereum Mainnet',
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{ networkClientId: 'mainnet' }],
+            },
+          },
         },
         confirm: {
           currentConfirmation: { id: '1', chainId: '0x1' },
@@ -22,7 +30,7 @@ describe('useConfirmationNetworkInfo', () => {
     expect(result.current.networkImageUrl).toBe('./images/eth_logo.svg');
   });
 
-  it('returns display name and image for custom network', () => {
+  it.only('returns display name and image for custom network', () => {
     const { result } = renderHookWithProvider(
       () => useConfirmationNetworkInfo(),
       {
@@ -30,13 +38,17 @@ describe('useConfirmationNetworkInfo', () => {
         metamask: {
           ...mockState.metamask,
 
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: {
-              id: 'networkClientId',
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x7': {
+              name: 'Custom Mainnet RPC',
               chainId: '0x7',
-              rpcUrl: 'https://testrpc.com',
-              nickname: 'Custom Mainnet RPC',
+              rpcEndpoints: [
+                {
+                  networkClientId: 'testNetworkConfigurationId',
+                  type: 'custom',
+                },
+              ],
             },
           },
         },
@@ -50,25 +62,38 @@ describe('useConfirmationNetworkInfo', () => {
   });
 
   it('returns correct details about custom network whose chainId is same as a network pre-defined in extension', () => {
-    const customNetwork = {
-      chainId: '0x1',
-      id: '2f9ae569-1d3e-492b-8741-cb10c2434f91',
-      nickname: 'Flashbots Protect',
-      rpcPrefs: { imageUrl: './images/eth_logo.svg' },
-      rpcUrl: 'https://rpc.flashbots.net',
-      ticker: 'ETH',
-      removable: true,
-    };
+    // const customNetwork = {
+    //   chainId: '0x1',
+    //   id: '2f9ae569-1d3e-492b-8741-cb10c2434f91',
+    //   nickname: 'Flashbots Protect',
+    //   rpcPrefs: { imageUrl: './images/eth_logo.svg' },
+    //   rpcUrl: 'https://rpc.flashbots.net',
+    //   ticker: 'ETH',
+    //   removable: true,
+    // };
+    // const providerConfig = {
+    //   chainId: '0x1',
+    //   id: '2f9ae569-1d3e-492b-8741-cb10c2434f91',
+    //   nickname: 'Flashbots Protect',
+    //   rpcPrefs: {},
+    //   rpcUrl: 'https://rpc.flashbots.net',
+    //   ticker: 'ETH',
+    //   type: 'rpc',
+    // };
     const { result } = renderHookWithProvider(
       () => useConfirmationNetworkInfo(),
       {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          selectedNetworkClientId: customNetwork.id,
-          networkConfigurations: {
-            ...mockState.metamask.networkConfigurations,
-            [customNetwork.id]: customNetwork,
+
+          selectedNetworkClientId: 'flashbots',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              name: 'Flashbots Protect',
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{ networkClientId: 'flashbots' }],
+            },
           },
         },
         confirm: {

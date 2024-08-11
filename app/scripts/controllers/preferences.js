@@ -36,7 +36,7 @@ export default class PreferencesController {
    */
   constructor(opts = {}) {
     const addedNonMainNetwork = Object.values(
-      opts.networkConfigurations,
+      opts.networkConfigurationsByChainId,
     ).reduce((acc, element) => {
       acc[element.chainId] = true;
       return acc;
@@ -93,6 +93,7 @@ export default class PreferencesController {
         redesignedTransactionsEnabled: true,
         featureNotificationsEnabled: false,
         showTokenAutodetectModal: null,
+        showMultiRpcModal: null,
         showNftAutodetectModal: null, // null because we want to show the modal only the first time
         isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: false,

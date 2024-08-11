@@ -78,6 +78,12 @@ describe('ConfirmInfoRowAddress', () => {
             petnamesEnabled: false,
           },
           selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{ networkClientId: 'mainnet' }],
+            },
+          },
           addressBook: {
             [CHAIN_IDS.MAINNET]: {
               [TEST_ADDRESS]: {
@@ -107,6 +113,12 @@ describe('ConfirmInfoRowAddress', () => {
           metamask: {
             ...mockState.metamask,
             selectedNetworkClientId: 'mainnet',
+            networkConfigurationsByChainId: {
+              [CHAIN_IDS.MAINNET]: {
+                chainId: CHAIN_IDS.MAINNET,
+                rpcEndpoints: [{ networkClientId: 'mainnet' }],
+              },
+            },
             tokenList: {
               [WBTC.address]: {
                 address: WBTC.address,

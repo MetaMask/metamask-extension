@@ -22,11 +22,11 @@ const store = (
           conversionRate: 11.1,
         },
       },
-      selectedNetworkClientId: 'networkClientId',
-      networkConfigurations: {
-        networkClientId: { chainId: CHAIN_IDS.MAINNET, ticker: nativeTicker },
-      },
 
+      // providerConfig: {
+      //   chainId: '0x1',
+      //   ticker: nativeTicker,
+      // },
       useTokenDetection: true,
       tokenList,
     },

@@ -49,9 +49,11 @@ describe('Confirm Transaction Selector', () => {
             '0xTokenAddress': { price: '10' },
           },
         },
-        selectedNetworkClientId: 'goerli',
-        networkConfigurations: {
-          goerli: { chainId: CHAIN_IDS.GOERLI },
+        networkConfigurationsByChainId: {
+          '0x5': {
+            chainId: '0x5',
+            rpcEndpoints: [{}],
+          },
         },
       },
       confirmTransaction: {
@@ -77,7 +79,13 @@ describe('Confirm Transaction Selector', () => {
               conversionRate: 556.12,
             },
           },
-          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              nativeCurrency: 'ETH',
+              rpcEndpoints: [{}],
+            },
+          },
         },
       };
       expect(conversionRateSelector(state)).toStrictEqual(556.12);

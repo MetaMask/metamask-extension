@@ -202,6 +202,12 @@ describe('selectors', () => {
         url: 'https://remix.ethereum.org/',
       },
       metamask: {
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.GOERLI]: {
+            chainId: CHAIN_IDS.GOERLI,
+            rpcEndpoints: [{}],
+          },
+        },
         accounts: {
           '0x7250739de134d33ec7ab1ee592711e15098c9d2d': {
             address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',

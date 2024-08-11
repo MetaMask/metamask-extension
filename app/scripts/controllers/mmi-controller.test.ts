@@ -98,6 +98,15 @@ describe('MMIController', function () {
           'NetworkController:infuraIsUnblocked',
         ],
       }),
+      state: {
+        selectedNetworkClientId: 'sepolia',
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.SEPOLIA]: {
+            chainId: CHAIN_IDS.SEPOLIA,
+            rpcEndpoints: [{networkClientId: 'sepolia'}],
+          }
+        },
+      },
       infuraProjectId: 'mock-infura-project-id',
     });
 

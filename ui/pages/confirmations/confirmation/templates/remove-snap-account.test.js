@@ -46,6 +46,13 @@ const mockBaseStore = {
     },
     approvalFlows: [],
     subjectMetadata: {},
+    selectedNetworkClientId: 'goerli',
+    networkConfigurationsByChainId: {
+      [CHAIN_IDS.GOERLI]: {
+        chainId: CHAIN_IDS.GOERLI,
+        rpcEndpoints: [{ networkClientId: 'goerli' }],
+      },
+    },
   },
 };
 

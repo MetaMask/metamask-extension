@@ -329,7 +329,12 @@ describe('Confirm Transaction Duck', () => {
               conversionRate: 468.58,
             },
           },
-          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{}],
+            },
+          },
         },
         confirmTransaction: {
           ethTransactionAmount: '1',
@@ -394,7 +399,12 @@ describe('Confirm Transaction Duck', () => {
               status: NetworkStatus.Available,
             },
           },
-
+          networkConfigurationsByChainId: {
+            '0x5': {
+              chainId: '0x5',
+              rpcEndpoints: [{ networkClientId: NetworkType.goerli }],
+            },
+          },
           transactions: [
             {
               history: [],

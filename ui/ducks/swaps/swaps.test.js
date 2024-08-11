@@ -58,7 +58,12 @@ describe('Ducks - Swaps', () => {
 
       return () => ({
         metamask: {
-          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{}],
+            },
+          },
           from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
           internalAccounts: {
             accounts: {

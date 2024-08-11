@@ -37,9 +37,11 @@ describe('Signature Request Data', () => {
             unlisted: false,
           },
         },
-        selectedNetworkClientId: 'goerli',
-        networkConfigurations: {
-          goerli: { chainId: CHAIN_IDS.GOERLI },
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.GOERLI]: {
+            chainId: CHAIN_IDS.GOERLI,
+            rpcEndpoints: [{}],
+          },
         },
         internalAccounts: {
           accounts: {

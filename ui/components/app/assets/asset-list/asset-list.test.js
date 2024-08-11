@@ -74,9 +74,12 @@ const render = (balance = ETH_BALANCE, chainId = CHAIN_IDS.MAINNET) => {
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      selectedNetworkClientId: 'networkClientId',
-      networkConfigurations: {
-        networkClientId: { id: 'networkClientId', chainId },
+      selectedNetworkClientId: 'mainnet',
+      networkConfigurationsByChainId: {
+        [chainId]: {
+          chainId,
+          rpcEndpoints: [{ networkClientId: 'mainnet' }],
+        },
       },
       currencyRates: {
         ETH: {

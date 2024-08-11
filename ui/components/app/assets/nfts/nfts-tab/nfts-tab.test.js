@@ -180,11 +180,13 @@ const render = ({
         [CHAIN_IDS.MAINNET]: {},
         [CHAIN_IDS.GOERLI]: {},
       },
-      selectedNetworkClientId: 'networkClientId',
-      networkConfigurations: {
-        networkClientId: { id: 'networkClientId', chainId },
+      networkConfigurationsByChainId: {
+        [chainId]: {
+          chainId,
+          rpcEndpoints: [{}],
+        },
       },
-
+      // providerConfig: { chainId, type: NETWORK_TYPES.MAINNET },
       accounts: {
         [selectedAddress]: {
           address: selectedAddress,

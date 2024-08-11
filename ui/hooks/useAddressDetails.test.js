@@ -11,9 +11,11 @@ import useAddressDetails from './useAddressDetails';
 const renderUseAddressDetails = (toAddress, stateVariables = {}) => {
   const mockState = {
     metamask: {
-      selectedNetworkClientId: 'goerli',
-      networkConfigurations: {
-        goerli: { chainId: CHAIN_IDS.GOERLI },
+      networkConfigurationsByChainId: {
+        [CHAIN_IDS.GOERLI]: {
+          chainId: CHAIN_IDS.GOERLI,
+          rpcEndpoints: [{}],
+        },
       },
 
       tokenList: {},

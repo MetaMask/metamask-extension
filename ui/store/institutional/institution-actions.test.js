@@ -3,6 +3,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import MetaMaskController from '../../../app/scripts/metamask-controller';
 import { setBackgroundConnection } from '../background-connection';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   showInteractiveReplacementTokenModal,
   showCustodyConfirmLink,
@@ -16,6 +17,12 @@ const defaultState = {
     currentLocale: 'test',
     selectedNetworkClientId: 'mainnet',
 
+    // networkConfigurationsByChainId: {
+    //   [CHAIN_IDS.MAINNET]: {
+    //     chainId: CHAIN_IDS.MAINNET,
+    //     rpcEndpoints: [{}],
+    //   },
+    // },
     accounts: {
       '0xFirstAddress': {
         balance: '0x0',
@@ -198,6 +205,12 @@ describe('#updateCustodyState', () => {
     const newState = {
       selectedNetworkClientId: 'mainnet',
 
+      // networkConfigurationsByChainId: {
+      //   [CHAIN_IDS.MAINNET]: {
+      //     chainId: CHAIN_IDS.MAINNET,
+      //     rpcEndpoints: [{}],
+      //   },
+      // },
       featureFlags: {},
     };
 
@@ -219,6 +232,12 @@ describe('#updateCustodyState', () => {
     const newState = {
       selectedNetworkClientId: 'mainnet',
 
+      // networkConfigurationsByChainId: {
+      //   [CHAIN_IDS.MAINNET]: {
+      //     chainId: CHAIN_IDS.MAINNET,
+      //     rpcEndpoints: [{}],
+      //   },
+      // },
       featureFlags: {},
       transactions: [
         {
@@ -271,6 +290,12 @@ describe('#updateCustodyState', () => {
     const newState = {
       selectedNetworkClientId: 'mainnet',
 
+      // networkConfigurationsByChainId: {
+      //   [CHAIN_IDS.MAINNET]: {
+      //     chainId: CHAIN_IDS.MAINNET,
+      //     rpcEndpoints: [{}],
+      //   },
+      // },
       featureFlags: {},
       transactions: [
         {

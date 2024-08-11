@@ -11,13 +11,12 @@ import { useBalance } from './useBalance';
 const renderUseBalance = (fromAddress, stateVariables = {}) => {
   const mockState = {
     metamask: {
-      selectedNetworkClientId: 'goerli',
-      networkConfigurations: {
-        goerli: {
-          id: 'goerli',
+      networkConfigurationsByChainId: {
+        [CHAIN_IDS.GOERLI]: {
+          name: 'Goerli',
+          nativeCurrency: 'ETH',
           chainId: CHAIN_IDS.GOERLI,
-          ticker: 'ETH',
-          nickname: 'Goerli',
+          rpcEndpoints: [{}],
         },
       },
       currentCurrency: 'ETH',

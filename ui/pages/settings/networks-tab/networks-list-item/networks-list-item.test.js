@@ -6,7 +6,12 @@ import NetworksListItem from '.';
 
 const mockState = {
   metamask: {
-    selectedNetworkClientId: 'mainnet',
+    networkConfigurationsByChainId: {
+      '0x5': {
+        chainId: '0x5',
+        rpcEndpoints: [{}],
+      },
+    },
   },
 };
 

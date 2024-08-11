@@ -1227,21 +1227,43 @@ const state = {
         accounts: ['0x9d0ba4ddac06032527b140912ec808ab9451b788'],
       },
     ],
-    networkConfigurations: {
-      'test-networkConfigurationId-1': {
-        rpcUrl: 'https://testrpc.com',
-        chainId: '0x1',
-        nickname: 'mainnet',
-        rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
+    networkConfigurationsByChainId: {
+      [CHAIN_IDS.MAINNET]: {
+        nativeCurrency: 'ETH',
+        chainId: CHAIN_IDS.MAINNET,
+        name: 'mainnet',
+        rpcEndpoints: [{
+          url: 'https://testrpc.com',
+          networkClientId: 'mainnet',
+        }]
       },
-      'test-networkConfigurationId-2': {
-        rpcUrl: 'http://localhost:8545',
-        chainId: '0x539',
-        ticker: 'ETH',
-        nickname: 'Localhost 8545',
-        rpcPrefs: {},
-      },
+      [CHAIN_IDS.SEPOLIA]: {
+        nativeCurrency: 'ETH',
+        chainId: CHAIN_IDS.SEPOLIA,
+        blockExplorerUrl: 'https://etherscan.io',
+        rpcEndpoints: [{
+          url: 'http://localhost:8545',
+          networkClientId: 'sepolia',
+        }],
+      }
+      // todo one for 0x539?
     },
+
+    // networkConfigurations: {
+    //   'test-networkConfigurationId-1': {
+    //     rpcUrl: 'https://testrpc.com',
+    //     chainId: '0x1',
+    //     nickname: 'mainnet',
+    //     rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
+    //   },
+    //   'test-networkConfigurationId-2': {
+    //     rpcUrl: 'http://localhost:8545',
+    //     chainId: '0x539',
+    //     ticker: 'ETH',
+    //     nickname: 'Localhost 8545',
+    //     rpcPrefs: {},
+    //   },
+    // },
     accountTokens: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
         '0x1': [

@@ -44,6 +44,12 @@ const mockBaseStore = {
     },
     approvalFlows: [],
     subjectMetadata: {},
+    networkConfigurationsByChainId: {
+      '0x9999': {
+        chainId: '0x9999',
+        rpcEndpoints: [{ networkClientId: 'test-network-client-id' }],
+      },
+    },
     selectedNetworkClientId: 'test-network-client-id',
     networkConfigurations: {
       'test-network-client-id': {

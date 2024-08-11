@@ -22,6 +22,12 @@ import {
 function buildState(overrides = {}) {
   const defaultState = {
     metamask: {
+      networkConfigurationsByChainId: {
+        [toHex(1)]: {
+          chainId: toHex(1),
+          rpcEndpoints: [{}],
+        },
+      },
       internalAccounts: {
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         accounts: {
@@ -200,7 +206,12 @@ describe('Institutional selectors', () => {
               supportedChains: ['1', '2', '3'],
             },
           },
-          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {
+            [toHex(1)]: {
+              chainId: toHex(1),
+              rpcEndpoints: [{}],
+            },
+          },
         },
       });
 
@@ -239,7 +250,12 @@ describe('Institutional selectors', () => {
               supportedChains: ['4'],
             },
           },
-          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {
+            [toHex(1)]: {
+              chainId: toHex(1),
+              rpcEndpoints: [{}],
+            },
+          },
         },
       });
 
@@ -281,7 +297,12 @@ describe('Institutional selectors', () => {
             },
             selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           },
-          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {
+            [toHex(1)]: {
+              chainId: toHex(1),
+              rpcEndpoints: [{}],
+            },
+          },
         },
       });
 
@@ -314,6 +335,12 @@ describe('Institutional selectors', () => {
           },
           keyrings: [],
           custodianSupportedChains: {},
+          networkConfigurationsByChainId: {
+            [toHex(1)]: {
+              chainId: toHex(1),
+              rpcEndpoints: [{}],
+            },
+          },
         },
       });
 
@@ -356,7 +383,12 @@ describe('Institutional selectors', () => {
           custodianSupportedChains: {
             [accountAddress]: null,
           },
-          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {
+            [toHex(1)]: {
+              chainId: toHex(1),
+              rpcEndpoints: [{}],
+            },
+          },
         },
       });
 
@@ -401,7 +433,12 @@ describe('Institutional selectors', () => {
               supportedChains: [],
             },
           },
-          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {
+            [toHex(1)]: {
+              chainId: toHex(1),
+              rpcEndpoints: [{}],
+            },
+          },
         },
       });
 
@@ -446,9 +483,11 @@ describe('Institutional selectors', () => {
               supportedChains: ['1'],
             },
           },
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: { chainId: 1 },
+          networkConfigurationsByChainId: {
+            1: {
+              chainId: 1,
+              rpcEndpoints: [{}],
+            },
           },
         },
       });
@@ -494,9 +533,11 @@ describe('Institutional selectors', () => {
               supportedChains: ['1'],
             },
           },
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: { chainId: 'not a hex number' },
+          networkConfigurationsByChainId: {
+            'not a hex number': {
+              chainId: 'not a hex number',
+              rpcEndpoints: [{}],
+            },
           },
         },
       });

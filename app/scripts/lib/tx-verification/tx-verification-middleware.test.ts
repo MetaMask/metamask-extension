@@ -12,9 +12,11 @@ import {
 const getMockNetworkController = (chainId: `0x${string}` = '0x1') =>
   ({
     state: {
-      selectedNetworkClientId: 'networkClientId',
-      networkConfigurations: {
-        networkClientId: { chainId },
+      networkConfigurationsByChainId: {
+        [chainId]: {
+          chainId,
+          rpcEndpoints: [{}],
+        },
       },
     },
   } as unknown as NetworkController);

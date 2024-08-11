@@ -40,6 +40,12 @@ const STATE_MOCK = {
   metamask: {
     selectedNetworkClientId: 'mainnet',
 
+    // networkConfigurationsByChainId: {
+    //   [CHAIN_ID_MOCK]: {
+    //     chainId: CHAIN_ID_MOCK,
+    //     rpcEndpoints: [{}],
+    //   },
+    // },
     nameSources: {
       [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },
     },

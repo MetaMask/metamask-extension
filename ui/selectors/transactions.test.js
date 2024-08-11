@@ -46,9 +46,11 @@ describe('Transaction Selectors', () => {
           unapprovedPersonalMsgs: {
             1: msg,
           },
-          selectedNetworkClientId: 'goerli',
-          networkConfigurations: {
-            goerli: { chainId: CHAIN_IDS.GOERLI },
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.GOERLI]: {
+              chainId: CHAIN_IDS.GOERLI,
+              rpcEndpoints: [{}],
+            },
           },
         },
       };
@@ -78,9 +80,11 @@ describe('Transaction Selectors', () => {
           unapprovedTypedMessages: {
             1: msg,
           },
-          selectedNetworkClientId: 'goerli',
-          networkConfigurations: {
-            goerli: { chainId: CHAIN_IDS.GOERLI },
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.GOERLI]: {
+              chainId: CHAIN_IDS.GOERLI,
+              rpcEndpoints: [{}],
+            },
           },
         },
       };
@@ -117,8 +121,13 @@ describe('Transaction Selectors', () => {
     const createState = (smartTransaction) => {
       return {
         metamask: {
-          selectedNetworkClientId: 'mainnet',
-
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              name: 'mainnet',
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{}],
+            },
+          },
           featureFlags: {},
           internalAccounts: {
             accounts: {
@@ -343,8 +352,13 @@ describe('Transaction Selectors', () => {
     it('selects the current network transactions', () => {
       const state = {
         metamask: {
-          selectedNetworkClientId: 'mainnet',
-
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              name: 'mainnet',
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{}],
+            },
+          },
           featureFlags: {},
           internalAccounts: {
             accounts: {
@@ -398,8 +412,13 @@ describe('Transaction Selectors', () => {
     it('should not duplicate incoming transactions', () => {
       const state = {
         metamask: {
-          selectedNetworkClientId: 'mainnet',
-
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              name: 'mainnet',
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{}],
+            },
+          },
           featureFlags: {},
           internalAccounts: {
             accounts: {
@@ -485,8 +504,13 @@ describe('Transaction Selectors', () => {
 
       const state = {
         metamask: {
-          selectedNetworkClientId: 'mainnet',
-
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              name: 'mainnet',
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{}],
+            },
+          },
           internalAccounts: {
             accounts: {
               'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -586,8 +610,13 @@ describe('Transaction Selectors', () => {
 
     const state = {
       metamask: {
-        selectedNetworkClientId: 'mainnet',
-
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.MAINNET]: {
+            name: 'mainnet',
+            chainId: CHAIN_IDS.MAINNET,
+            rpcEndpoints: [{}],
+          },
+        },
         internalAccounts: {
           accounts: {
             'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -673,9 +702,11 @@ describe('Transaction Selectors', () => {
     const mockChainId = 'mockChainId';
     const mockedState = {
       metamask: {
-        selectedNetworkClientId: 'networkClientId',
-        networkConfigurations: {
-          networkClientId: { chainId: mockChainId },
+        networkConfigurationsByChainId: {
+          [mockChainId]: {
+            chainId: mockChainId,
+            rpcEndpoints: [{}],
+          },
         },
 
         pendingApprovalCount: 2,
@@ -751,8 +782,12 @@ describe('Transaction Selectors', () => {
     it('returns transactions with status of approved or signed for all networks', () => {
       const state = {
         metamask: {
-          selectedNetworkClientId: 'mainnet',
-
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{}],
+            },
+          },
           transactions: [
             {
               id: 0,

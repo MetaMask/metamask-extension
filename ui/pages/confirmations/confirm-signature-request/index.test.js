@@ -26,11 +26,12 @@ const mockState = {
       },
     },
     unapprovedTypedMessagesCount: 1,
-    selectedNetworkClientId: 'goerli',
-    networkConfigurations: {
-      goerli: { chainId: CHAIN_IDS.GOERLI, nickname: 'Goerli test network' },
+    networkConfigurationsByChainId: {
+      [CHAIN_IDS.GOERLI]: {
+        chainId: CHAIN_IDS.GOERLI,
+        rpcEndpoints: [{}],
+      },
     },
-
     currencyRates: {},
     keyrings: [],
     subjectMetadata: {},

@@ -52,9 +52,10 @@ const mockProps = {
 };
 
 const mockState = {
-  metamask: {
-    selectedNetworkClientId: 'mainnet',
-  },
+  // metamask: {
+  //   selectedNetworkClientId: 'mainnet',
+  // },
+  metamask: {},
   appState: {
     networkDropdownOpen: false,
     gasIsLoading: false,

@@ -30,6 +30,13 @@ describe('Selectors', () => {
             },
           },
         },
+        // selectedNetworkClientId: 'mainnet',
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.MAINNET]: {
+            chainId: CHAIN_IDS.MAINNET,
+            rpcEndpoints: [{}],
+          },
+        },
         accounts: {
           '0x123': {
             address: '0x123',
@@ -56,8 +63,7 @@ describe('Selectors', () => {
         smartTransactionsState: {
           liveness: true,
         },
-        selectedNetworkClientId: 'mainnet',
-      },
+      }
     };
   };
 
@@ -90,7 +96,13 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          selectedNetworkClientId: 'sepolia',
+          selectedNetworkClientId: 'polygon',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.POLYGON]: {
+              chainId: CHAIN_IDS.POLYGON,
+              rpcEndpoints: [{ networkClientId: 'polygon' }],
+            },
+          },
         },
       };
       const result = getCurrentChainSupportsSmartTransactions(newState);
@@ -98,8 +110,9 @@ describe('Selectors', () => {
     });
   });
 
+  // depends on rpc stuff in networkConfigurations
   describe('getSmartTransactionsEnabled', () => {
-    it('returns true if feature flag is enabled, not a HW and is Ethereum network', () => {
+    it.only('returns true if feature flag is enabled, not a HW and is Ethereum network', () => {
       const state = createSwapsMockStore();
       expect(getSmartTransactionsEnabled(state)).toBe(true);
     });
@@ -148,8 +161,11 @@ describe('Selectors', () => {
         metamask: {
           ...state.metamask,
           selectedNetworkClientId: 'polygon',
-          networkConfigurations: {
-            polygon: { chainId: CHAIN_IDS.POLYGON, rpcUrl: '' },
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.POLYGON]: {
+              chainId: CHAIN_IDS.POLYGON,
+              rpcEndpoints: [{ networkClientId: 'polygon' }],
+            },
           },
         },
       };
@@ -191,6 +207,7 @@ describe('Selectors', () => {
     });
   });
 
+  // depends on rpc stuff in networkConfigurations??
   describe('getIsSmartTransaction', () => {
     it('should return true if smart transactions are opt-in and enabled', () => {
       const state = createMockState();

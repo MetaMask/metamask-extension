@@ -22,10 +22,15 @@ import {
   setEditedNetwork,
   toggleNetworkMenu,
 } from '../../../../store/actions';
+import { useModalProps } from '../../../../hooks/useModalProps';
 
 const ConfirmDeleteRpcUrlModal = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+
+  const { props } = useModalProps();
+  console.log('props --------', props);
+
   return (
     <Modal
       isClosedOnEscapeKey={true}
@@ -58,6 +63,13 @@ const ConfirmDeleteRpcUrlModal = () => {
               danger={true}
               onClick={() => {
                 console.log('TODO: Delete RPc URL');
+
+                props.onRpcUrlAdd((prevState) => {
+                  return prevState.filter(
+                    (item) =>
+                      !(item.url === props.url && item.isSelected === false),
+                  );
+                });
               }}
             >
               {t('deleteRpcUrl')}

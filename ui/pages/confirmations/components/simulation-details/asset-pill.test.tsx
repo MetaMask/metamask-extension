@@ -55,9 +55,12 @@ describe('AssetPill', () => {
       }) => {
         const store = configureStore({
           metamask: {
-            selectedNetworkClientId: 'networkClientId',
-            networkConfigurations: {
-              networkClientId: { chainId, ticker: expected.ticker },
+            networkConfigurationsByChainId: {
+              [chainId]: {
+                nativeCurrency: expected.ticker,
+                chainId,
+                rpcEndpoints: [{}],
+              },
             },
           },
         });

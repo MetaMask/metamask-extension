@@ -206,13 +206,10 @@ describe('AccountListItem', () => {
           },
           {
             metamask: {
-              selectedNetworkClientId: 'networkClientId',
-              networkConfigurations: {
-                networkClientId: {
-                  chainId: CHAIN_IDS.SEPOLIA,
-                  nickname: SEPOLIA_DISPLAY_NAME,
-                },
-              },
+              // providerConfig: {
+              //   chainId: CHAIN_IDS.SEPOLIA,
+              //   nickname: SEPOLIA_DISPLAY_NAME,
+              // },
               preferences: {
                 showFiatInTestnets: false,
               },
@@ -248,12 +245,13 @@ describe('AccountListItem', () => {
           },
           {
             metamask: {
-              selectedNetworkClientId: 'networkClientId',
-              networkConfigurations: {
-                networkClientId: {
+              selectedNetworkClientId: 'Sepolia',
+              networkConfigurationsByChainId: {
+                [CHAIN_IDS.SEPOLIA]: {
+                  name: 'Sepolia',
                   chainId: CHAIN_IDS.SEPOLIA,
-                  nickname: SEPOLIA_DISPLAY_NAME,
-                  ticker: 'ETH',
+                  nativeCurrency: 'ETH',
+                  rpcEndpoints: [{ networkClientId: 'Sepolia' }],
                 },
               },
 

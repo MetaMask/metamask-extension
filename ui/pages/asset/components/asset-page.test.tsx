@@ -43,7 +43,18 @@ describe('AssetPage', () => {
 
       selectedNetworkClientId: 'networkClientId',
       networkConfigurations: {
-        networkClientId: { chainId: CHAIN_IDS.MAINNET, ticker: 'ETH' },
+        test: {
+          id: 'test',
+          chainId: CHAIN_IDS.MAINNET,
+        },
+      },
+      networkConfigurationsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          nativeCurrency: 'ETH',
+          name: 'Ethereum Mainnet',
+          chainId: CHAIN_IDS.MAINNET,
+          rpcEndpoints: [{}],
+        },
       },
 
       currencyRates: {
@@ -183,13 +194,19 @@ describe('AssetPage', () => {
   });
 
   it('should disable the buy button on unsupported chains', () => {
+    const chainId = CHAIN_IDS.SEPOLIA;
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          selectedNetworkClientId: NETWORK_TYPES.SEPOLIA,
+          networkConfigurationsByChainId: {
+            [chainId]: {
+              chainId,
+              rpcEndpoints: [{}],
+            },
+          },
         },
       }),
     );
@@ -203,9 +220,11 @@ describe('AssetPage', () => {
       ...mockStore,
       metamask: {
         ...mockStore.metamask,
-        selectedNetworkClientId: 'networkClientId',
-        networkConfigurations: {
-          networkClientId: { chainId: CHAIN_IDS.POLYGON },
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.POLYGON]: {
+            chainId: CHAIN_IDS.POLYGON,
+            rpcEndpoints: [{}],
+          },
         },
       },
     };
@@ -251,13 +270,19 @@ describe('AssetPage', () => {
   });
 
   it('should not show the Bridge button if chain id is not supported', async () => {
+    const chainId = CHAIN_IDS.SEPOLIA;
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          selectedNetworkClientId: NETWORK_TYPES.SEPOLIA,
+          networkConfigurationsByChainId: {
+            [chainId]: {
+              chainId,
+              rpcEndpoints: [{}],
+            },
+          },
         },
       }),
     );

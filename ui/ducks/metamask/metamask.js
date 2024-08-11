@@ -1,6 +1,7 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
 import { createSelector } from 'reselect';
 import { mergeGasFeeEstimates } from '@metamask/transaction-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { AlertTypes } from '../../../shared/constants/alerts';
 import {
   GasEstimateTypes,
@@ -17,7 +18,7 @@ import {
   getAddressBook,
   getSelectedNetworkClientId,
   getSelectedInternalAccount,
-  getNetworkConfigurations,
+  getNetworkConfigurationsByChainId,
 } from '../../selectors';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
@@ -63,6 +64,7 @@ const initialState = {
     petnamesEnabled: true,
     featureNotificationsEnabled: false,
     showTokenAutodetectModal: false,
+    showMultiRpcModal: false,
   },
   firstTimeFlowType: null,
   completedOnboarding: false,
@@ -232,6 +234,13 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
+    case actionConstants.SET_SHOW_MULTI_RPC_MODAL_UPGRADE: {
+      return {
+        ...metamaskState,
+        showMultiRpcModalUpgrade: action.value,
+      };
+    }
+
     case actionConstants.SET_NEXT_NONCE: {
       return {
         ...metamaskState,
@@ -292,62 +301,72 @@ export function updateGasFees({
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
 
-// Note: The network controller does not store built in networks in
-// `state.networkConfigurations`, so we represent the equivalent data here.
-const builtInNetworkConfigurations = {
-  [NETWORK_TYPES.SEPOLIA]: {
-    type: NETWORK_TYPES.SEPOLIA,
-    rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
-    chainId: CHAIN_IDS.SEPOLIA,
-    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
-    nickname: SEPOLIA_DISPLAY_NAME,
-  },
-  [NETWORK_TYPES.LINEA_SEPOLIA]: {
-    type: NETWORK_TYPES.LINEA_SEPOLIA,
-    rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_SEPOLIA],
-    chainId: CHAIN_IDS.LINEA_SEPOLIA,
-    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
-    nickname: LINEA_SEPOLIA_DISPLAY_NAME,
-  },
-  [NETWORK_TYPES.MAINNET]: {
-    type: NETWORK_TYPES.MAINNET,
-    rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
-    chainId: CHAIN_IDS.MAINNET,
-    ticker: CURRENCY_SYMBOLS.ETH,
-    nickname: MAINNET_DISPLAY_NAME,
-    rpcPrefs: {
-      blockExplorerUrl:
-        BUILT_IN_NETWORKS[NETWORK_TYPES.MAINNET].blockExplorerUrl,
-    },
-  },
-  [NETWORK_TYPES.LINEA_MAINNET]: {
-    type: NETWORK_TYPES.LINEA_MAINNET,
-    rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
-    chainId: CHAIN_IDS.LINEA_MAINNET,
-    ticker: CURRENCY_SYMBOLS.ETH,
-    nickname: LINEA_MAINNET_DISPLAY_NAME,
-    rpcPrefs: {
-      blockExplorerUrl:
-        BUILT_IN_NETWORKS[NETWORK_TYPES.LINEA_MAINNET].blockExplorerUrl,
-    },
-  },
-};
-
 /**
  * Get the provider configuration for the current selected network.
  *
  * @param {object} state - Redux state object.
  */
 export function getProviderConfig(state) {
-  const networkConfigurations = {
-    ...builtInNetworkConfigurations,
-    ...getNetworkConfigurations(state),
-  };
-
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
-  const networkConfiguration = networkConfigurations[selectedNetworkClientId];
-  const { type, ...rest } = networkConfiguration ?? {};
-  return { ...rest, id: selectedNetworkClientId, type: type ?? 'rpc' };
+  const networkConfigurationsByChainId =
+    getNetworkConfigurationsByChainId(state);
+  for (const network of Object.values(networkConfigurationsByChainId)) {
+    for (const rpcEndpoint of network.rpcEndpoints) {
+      if (rpcEndpoint.networkClientId === selectedNetworkClientId) {
+        return {
+          nickname: network.name,
+          chainId: network.chainId,
+          ticker: network.nativeCurrency,
+          type:
+            rpcEndpoint.type === RpcEndpointType.Custom
+              ? 'rpc'
+              : rpcEndpoint.networkClientId,
+          ...(rpcEndpoint.type === RpcEndpointType.Custom && {
+            id: rpcEndpoint.networkClientId,
+          }),
+          rpcPrefs: {
+            ...(network.blockExplorerUrl && {
+              blockExplorerUrl: network.blockExplorerUrl,
+            }),
+          },
+        };
+      }
+    }
+  }
+
+  // "providerConfig": {
+  //   "chainId": "0x1",
+  //   "rpcPrefs": {
+  //     "blockExplorerUrl": "https://etherscan.io"
+  //   },
+  //   "ticker": "ETH",
+  //   "type": "mainnet"
+  // },
+
+  // "providerConfig": {
+  //   "chainId": "0xaa36a7",
+  //   "rpcPrefs": {
+  //     "blockExplorerUrl": "https://sepolia.etherscan.io"
+  //   },
+  //   "ticker": "SepoliaETH",
+  //   "type": "sepolia"
+  // },
+
+  // "providerConfig": {
+  //   "id": "ce5a63df-b859-4428-9ffd-9e1fc82b9a6c",
+  //   "rpcUrl": "https://mainnet.base.org",
+  //   "chainId": "0x2105",
+  //   "ticker": "ETH",
+  //   "nickname": "Base Mainnet",
+  //   "rpcPrefs": {
+  //     "blockExplorerUrl": "https://basescan.org",
+  //     "imageUrl": "./images/base.svg"
+  //   },
+  //   "type": "rpc"
+  // },
+
+  // todo
+  // return state.metamask.providerConfig;
 }
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>

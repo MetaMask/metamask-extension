@@ -16,8 +16,11 @@ jest.mock('../../../../../../app/scripts/lib/util', () => ({
 describe('Confirm Detail Row Component', () => {
   const mockState = {
     metamask: {
-      networkConfigurations: {
-        goerli: { chainId: CHAIN_IDS.GOERLI },
+      networkConfigurationsByChainId: {
+        '0x5': {
+          chainId: '0x5',
+          rpcEndpoints: [{ networkClientId: 'goerli' }],
+        },
       },
       selectedNetworkClientId: NetworkType.goerli,
       networksMetadata: {

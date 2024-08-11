@@ -47,6 +47,7 @@ import {
   getQueuedRequestCount,
   getEditedNetwork,
   getPrioritizedUnapprovedTemplatedConfirmations,
+  getNetworkConfigurations,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
@@ -78,6 +79,7 @@ import {
   setShowTokenAutodetectModalOnUpgrade,
   setShowNftAutodetectModal,
   setEditedNetwork,
+  setShowMultiRpcModalUpgrade,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -101,6 +103,7 @@ import {
 } from '../../../shared/constants/alerts';
 import { hasTransactionPendingApprovals } from '../../selectors/transactions';
 import { getLocalNetworkMenuRedesignFeatureFlag } from '../../helpers/utils/feature-flags';
+import { getIsShowMultiRpcModal } from '../../../shared/modules/selectors/multi-rpc-edit';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -203,6 +206,7 @@ const mapStateToProps = (state) => {
     pendingConfirmations,
     pendingConfirmationsPrioritized,
     networkMenuRedesign,
+    networkConfigurations: getNetworkConfigurations(state),
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
     showWhatsNewPopup,
@@ -234,6 +238,7 @@ const mapStateToProps = (state) => {
     isSmartTransactionsOptInModalAvailable:
       getIsSmartTransactionsOptInModalAvailable(state),
     isShowTokenAutodetectModal: getIsShowTokenAutodetectModal(state),
+    showMultiRpcModal: getIsShowMultiRpcModal(state),
     isShowNftAutodetectModal: getIsShowNftAutodetectModal(state),
   };
 };
@@ -293,6 +298,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     setShowTokenAutodetectModalOnUpgrade: (val) => {
       dispatch(setShowTokenAutodetectModalOnUpgrade(val));
+    },
+    setShowMultiRpcModalUpgrade: (val) => {
+      dispatch(setShowMultiRpcModalUpgrade(val));
     },
     setNftAutodetectModal: (val) => {
       dispatch(setShowNftAutodetectModal(val));

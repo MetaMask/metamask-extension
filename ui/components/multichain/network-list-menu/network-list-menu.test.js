@@ -39,7 +39,14 @@ const render = ({
     metamask: {
       ...mockState.metamask,
       isUnlocked,
+      // todo??
       selectedNetworkClientId: providerConfigId,
+      // todo
+      // providerConfig: {
+      //   ...mockState.metamask.providerConfig,
+      //   chainId: currentChainId,
+      //   id: providerConfigId,
+      // },
       preferences: {
         showTestNetworks,
       },

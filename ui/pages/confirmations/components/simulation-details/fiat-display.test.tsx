@@ -8,7 +8,9 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { IndividualFiatDisplay, TotalFiatDisplay } from './fiat-display';
 import { FIAT_UNAVAILABLE } from './types';
 
-const mockStateWithTestnet = merge({}, mockState, {});
+const mockStateWithTestnet = merge({}, mockState, {
+  metamask: {},
+});
 
 const mockStateWithShowingFiatOnTestnets = merge({}, mockStateWithTestnet, {
   metamask: {

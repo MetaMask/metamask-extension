@@ -65,9 +65,11 @@ const createMiddleware = (
 
   const networkController = {
     state: {
-      selectedNetworkClientId: 'networkClientId',
-      networkConfigurations: {
-        networkClientId: { chainId: chainId || CHAIN_IDS.MAINNET },
+      networkConfigurationsByChainId: {
+        [chainId || CHAIN_IDS.MAINNET]: {
+          chainId: chainId || CHAIN_IDS.MAINNET,
+          rpcEndpoints: [{}],
+        },
       },
     },
   };

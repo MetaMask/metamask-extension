@@ -9,11 +9,21 @@ import { TokenListItem } from '.';
 
 const state = {
   metamask: {
-    selectedNetworkClientId: 'networkClientId',
-    networkConfigurations: {
-      networkClientId: { chainId: CHAIN_IDS.MAINNET },
+    selectedNetworkClientId: 'mainnet',
+    networkConfigurationsByChainId: {
+      [CHAIN_IDS.MAINNET]: {
+        name: 'Ethereum Mainnet',
+        nativeCurrency: 'ETH',
+        chainId: CHAIN_IDS.MAINNET,
+        rpcEndpoints: [{ networkClientId: 'mainnet' }],
+      },
     },
-
+    // providerConfig: {
+    //   ticker: CURRENCY_SYMBOLS.ETH,
+    //   nickname: '',
+    //   chainId: CHAIN_IDS.MAINNET,
+    //   type: NETWORK_TYPES.MAINNET,
+    // },
     useTokenDetection: false,
     currencyRates: {},
     preferences: {

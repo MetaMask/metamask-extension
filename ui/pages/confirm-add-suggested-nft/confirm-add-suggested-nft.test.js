@@ -72,10 +72,13 @@ const renderComponent = (pendingNfts = {}) => {
     metamask: {
       ...mockState.metamask,
       pendingApprovals: pendingNfts,
-
-      selectedNetworkClientId: 'networkClientId',
-      networkConfigurations: {
-        networkClientId: { chainId: CHAIN_IDS.MAINNET },
+      selectedNetworkClientId: 'mainnet',
+      networkConfigurationsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          nativeCurrency: 'ETH',
+          chainId: CHAIN_IDS.MAINNET,
+          rpcEndpoints: [{ networkClientId: 'mainnet' }],
+        },
       },
     },
     history: {

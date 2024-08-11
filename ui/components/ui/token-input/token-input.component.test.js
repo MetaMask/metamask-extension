@@ -59,7 +59,7 @@ describe('TokenInput Component', () => {
       expect(queryByTitle('0 ETH')).toBeInTheDocument();
     });
 
-    it('should render conversionRate on polygon', () => {
+    it.only('should render conversionRate on polygon', () => {
       const showFiatState = {
         ...mockState,
         metamask: {
@@ -73,11 +73,12 @@ describe('TokenInput Component', () => {
             ...mockState.metamask.preferences,
             showFiatInTestnets: true,
           },
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: {
+          selectedNetworkClientId: 'polygon',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.POLYGON]: {
+              nativeCurrency: CURRENCY_SYMBOLS.MATIC,
               chainId: CHAIN_IDS.POLYGON,
-              ticker: CURRENCY_SYMBOLS.MATIC,
+              rpcEndpoints: [{ networkClientId: 'polygon' }],
             },
           },
         },

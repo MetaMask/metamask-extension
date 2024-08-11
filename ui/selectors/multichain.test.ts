@@ -1,5 +1,10 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-api';
+import { Hex } from '@metamask/utils';
+import {
+  NetworkConfiguration,
+  RpcEndpointType,
+} from '@metamask/network-controller';
 import {
   getNativeCurrency,
   getProviderConfig,
@@ -45,12 +50,15 @@ import {
   getSelectedAccountCachedBalance,
   getShouldShowFiat,
 } from '.';
+// import { NetworkConfiguration,  } from '@metamask/network-controller';
 
 type TestState = MultichainState &
   AccountsState & {
     metamask: {
+      selectedNetworkClientId: string;
       preferences: { showFiatInTestnets: boolean };
       accountsByChainId: Record<string, Record<string, { balance: string }>>;
+      networkConfigurationsByChainId: Record<Hex, NetworkConfiguration>;
       currentCurrency: string;
       currencyRates: Record<string, { conversionRate: string }>;
       completedOnboarding: boolean;
@@ -65,7 +73,36 @@ function getEvmState(): TestState {
         showFiatInTestnets: false,
       },
       selectedNetworkClientId: 'mainnet',
-
+      networkConfigurationsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          chainId: CHAIN_IDS.MAINNET,
+          defaultRpcEndpointUrl: 'https://infura.io/mainnet',
+          name: 'mainnet',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              type: RpcEndpointType.Infura,
+              networkClientId: 'mainnet',
+              name: 'Ethereum Mainnet',
+              url: 'https://infura.io/mainnet',
+            },
+          ],
+        },
+        [CHAIN_IDS.SEPOLIA]: {
+          chainId: CHAIN_IDS.SEPOLIA,
+          defaultRpcEndpointUrl: 'https://infura.io/sepolia',
+          name: 'sepolia',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              type: RpcEndpointType.Infura,
+              networkClientId: 'sepolia',
+              name: 'Sepolia',
+              url: 'https://infura.io/sepolia',
+            },
+          ],
+        },
+      },
       currentCurrency: 'ETH',
       currencyRates: {
         ETH: {

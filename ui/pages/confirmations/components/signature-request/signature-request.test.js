@@ -37,13 +37,12 @@ const baseProps = {
 };
 const mockStore = {
   metamask: {
-    selectedNetworkClientId: 'networkClientId',
-    networkConfigurations: {
-      networkClientId: {
+    networkConfigurationsByChainId: {
+      '0x539': {
         chainId: '0x539',
-        nickname: 'Localhost 8545',
-        rpcUrl: 'http://localhost:8545',
-        ticker: 'ETH',
+        name: 'Localhost 8545',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [{ type: 'custom' }],
       },
     },
 
