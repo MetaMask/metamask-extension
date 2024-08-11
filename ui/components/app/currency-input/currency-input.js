@@ -1,9 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { Box } from '../../component-library';
+import { BlockSize } from '../../../helpers/constants/design-system';
 import UnitInput from '../../ui/unit-input';
 import CurrencyDisplay from '../../ui/currency-display';
-import { I18nContext } from '../../../contexts/i18n';
 import {
   getNativeCurrency,
   getProviderConfig,
@@ -19,6 +20,7 @@ import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNati
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import useTokenExchangeRate from './hooks/useTokenExchangeRate';
 import useProcessNewDecimalValue from './hooks/useProcessNewDecimalValue';
+import useStateWithFirstTouch from './hooks/useStateWithFirstTouch';
 
 const NATIVE_CURRENCY_DECIMALS = 18;
 const LARGE_SYMBOL_LENGTH = 7;
@@ -36,6 +38,8 @@ const LARGE_SYMBOL_LENGTH = 7;
  * @param options0.swapIcon
  * @param options0.className
  * @param options0.asset
+ * @param options0.isSkeleton
+ * @param options0.isMatchingUpstream
  */
 export default function CurrencyInput({
   hexValue,
@@ -46,10 +50,10 @@ export default function CurrencyInput({
   className = '',
   // if null, the asset is the native currency
   asset,
+  isSkeleton,
+  isMatchingUpstream,
 }) {
-  const t = useContext(I18nContext);
-
-  const assetDecimals = asset?.decimals || NATIVE_CURRENCY_DECIMALS;
+  const assetDecimals = Number(asset?.decimals) || NATIVE_CURRENCY_DECIMALS;
 
   const preferredCurrency = useSelector(getNativeCurrency);
   const secondaryCurrency = useSelector(getCurrentCurrency);
@@ -64,7 +68,9 @@ export default function CurrencyInput({
   const shouldUseFiat = isFiatAvailable && isFiatPreferred;
   const isTokenPrimary = !shouldUseFiat;
 
-  const [tokenDecimalValue, setTokenDecimalValue] = useState('0');
+  const [tokenDecimalValue, setTokenDecimalValue, isInputUnchanged] =
+    useStateWithFirstTouch('0');
+
   const [fiatDecimalValue, setFiatDecimalValue] = useState('0');
 
   const chainId = useSelector(getCurrentChainId);
@@ -76,7 +82,13 @@ export default function CurrencyInput({
     rpcUrl,
   );
 
+  const inputRef = useRef();
+
   const tokenToFiatConversionRate = useTokenExchangeRate(asset?.address);
+
+  const isNonZeroConversionRate = Boolean(
+    tokenToFiatConversionRate?.toNumber(),
+  );
 
   const processNewDecimalValue = useProcessNewDecimalValue(
     assetDecimals,
@@ -84,6 +96,7 @@ export default function CurrencyInput({
     tokenToFiatConversionRate,
   );
 
+  const isDisabled = onChange === undefined;
   const swap = async () => {
     await onPreferenceToggle();
   };
@@ -94,10 +107,10 @@ export default function CurrencyInput({
       return;
     }
 
-    if (!tokenToFiatConversionRate) {
+    if (!isNonZeroConversionRate) {
       onPreferenceToggle();
     }
-  }, [tokenToFiatConversionRate, isTokenPrimary, onPreferenceToggle]);
+  }, [isNonZeroConversionRate, isTokenPrimary, onPreferenceToggle]);
 
   const handleChange = (newDecimalValue) => {
     const { newTokenDecimalValue, newFiatDecimalValue } =
@@ -109,9 +122,11 @@ export default function CurrencyInput({
       new Numeric(newTokenDecimalValue, 10)
         .times(Math.pow(10, assetDecimals), 10)
         .toPrefixedHexString(),
+      newTokenDecimalValue,
     );
   };
 
+  const timeoutRef = useRef(null);
   // align input to upstream value
   useEffect(() => {
     const decimalizedHexValue = new Numeric(hexValue, 16)
@@ -123,11 +138,28 @@ export default function CurrencyInput({
       return;
     }
 
+    // if input is disabled or the input hasn't changed, the value is upstream (i.e., based on the raw token value)
+    const isUpstreamValue =
+      isDisabled || isInputUnchanged || isMatchingUpstream;
+
     const { newTokenDecimalValue, newFiatDecimalValue } =
-      processNewDecimalValue(decimalizedHexValue, true);
+      processNewDecimalValue(
+        decimalizedHexValue,
+        isUpstreamValue ? true : undefined,
+      );
 
     setTokenDecimalValue(newTokenDecimalValue);
     setFiatDecimalValue(newFiatDecimalValue);
+
+    // timeout intentionally not cleared after render so this always runs
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(
+      () => inputRef.current?.updateIsOverflowing?.(),
+      500,
+    );
+
     // tokenDecimalValue does not need to be in here, since this side effect is only for upstream updates
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -136,6 +168,7 @@ export default function CurrencyInput({
     processNewDecimalValue,
     isTokenPrimary,
     assetDecimals,
+    isDisabled,
   ]);
 
   const renderSwapButton = () => {
@@ -162,11 +195,7 @@ export default function CurrencyInput({
     let suffix, displayValue;
 
     if (!isFiatAvailable || !tokenToFiatConversionRate) {
-      return (
-        <div className="currency-input__conversion-component">
-          {t('noConversionRateAvailable')}
-        </div>
-      );
+      return null;
     }
     if (!isOriginalNativeSymbol) {
       return null;
@@ -195,8 +224,16 @@ export default function CurrencyInput({
     );
   };
 
-  return (
+  return isSkeleton ? (
+    <Box paddingRight={4} className="currency-input__skeleton-container">
+      <Box width={BlockSize.Half} className="currency-input__pulsing-bar" />
+      <Box width={BlockSize.OneThird} className="currency-input__pulsing-bar" />
+    </Box>
+  ) : (
     <UnitInput
+      ref={inputRef}
+      isDisabled={isDisabled}
+      isFocusOnInput={!isDisabled}
       hideSuffix={isTokenPrimary && isLongSymbol}
       dataTestId="currency-input"
       suffix={isTokenPrimary ? primarySuffix : secondarySuffix}
@@ -224,7 +261,9 @@ CurrencyInput.propTypes = {
   asset: PropTypes.shape({
     address: PropTypes.string,
     symbol: PropTypes.string,
-    decimals: PropTypes.number,
+    decimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     isERC721: PropTypes.bool,
   }),
+  isSkeleton: PropTypes.bool,
+  isMatchingUpstream: PropTypes.bool,
 };

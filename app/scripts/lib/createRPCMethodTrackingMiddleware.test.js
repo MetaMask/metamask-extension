@@ -1,5 +1,6 @@
 import { errorCodes } from 'eth-rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
+
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -11,6 +12,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
+import { permitSignatureMsg } from '../../../test/data/confirmations/typed_sign';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 
 const trackEvent = jest.fn();
@@ -97,7 +99,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
   describe('before participateInMetaMetrics is set', () => {
     it('should not track an event for a signature request', async () => {
       const req = {
-        method: MESSAGE_TYPE.ETH_SIGN,
+        method: MESSAGE_TYPE.PERSONAL_SIGN,
         origin: 'some.dapp',
       };
 
@@ -119,7 +121,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     it('should not track an event for a signature request', async () => {
       const req = {
-        method: MESSAGE_TYPE.ETH_SIGN,
+        method: MESSAGE_TYPE.PERSONAL_SIGN,
         origin: 'some.dapp',
       };
 
@@ -141,7 +143,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     it(`should immediately track a ${MetaMetricsEventName.SignatureRequested} event`, async () => {
       const req = {
-        method: MESSAGE_TYPE.ETH_SIGN,
+        method: MESSAGE_TYPE.PERSONAL_SIGN,
         origin: 'some.dapp',
         securityAlertResponse: {
           result_type: BlockaidResultType.Malicious,
@@ -161,7 +163,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRequested,
         properties: {
-          signature_type: MESSAGE_TYPE.ETH_SIGN,
+          signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
           security_alert_response: BlockaidResultType.Malicious,
           security_alert_reason: BlockaidReason.maliciousDomain,
         },
@@ -171,7 +173,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     it(`should track an event with correct blockaid parameters when providerRequestsCount is provided`, async () => {
       const req = {
-        method: MESSAGE_TYPE.ETH_SIGN,
+        method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         origin: 'some.dapp',
         securityAlertResponse: {
           result_type: BlockaidResultType.Malicious,
@@ -202,7 +204,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRequested,
         properties: {
-          signature_type: MESSAGE_TYPE.ETH_SIGN,
+          signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           security_alert_response: BlockaidResultType.Malicious,
           security_alert_reason: BlockaidReason.maliciousDomain,
           ppom_eth_call_count: 5,
@@ -506,40 +508,39 @@ describe('createRPCMethodTrackingMiddleware', () => {
       });
     });
 
-    describe(`when '${MESSAGE_TYPE.ETH_SIGN}' is disabled in advanced settings`, () => {
-      it(`should track ${MetaMetricsEventName.SignatureFailed} and include error property`, async () => {
-        const mockError = { code: errorCodes.rpc.methodNotFound };
-        const req = {
-          method: MESSAGE_TYPE.ETH_SIGN,
-          origin: 'some.dapp',
-        };
-        const res = {
-          error: mockError,
-        };
-        const { next, executeMiddlewareStack } = getNext();
-        const handler = createHandler();
+    it('should track typed-sign permit message if detected', async () => {
+      const req = {
+        method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+        origin: 'some.dapp',
+        params: [undefined, permitSignatureMsg.msgParams.data],
+      };
+      const res = {
+        error: null,
+      };
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
 
-        await handler(req, res, next);
-        await executeMiddlewareStack();
+      await handler(req, res, next);
+      await executeMiddlewareStack();
 
-        expect(trackEvent).toHaveBeenCalledTimes(2);
+      expect(trackEvent).toHaveBeenCalledTimes(2);
 
-        expect(trackEvent.mock.calls[1][0]).toMatchObject({
-          category: MetaMetricsEventCategory.InpageProvider,
-          event: MetaMetricsEventName.SignatureFailed,
-          properties: {
-            signature_type: MESSAGE_TYPE.ETH_SIGN,
-            error: mockError,
-          },
-          referrer: { url: 'some.dapp' },
-        });
+      expect(trackEvent.mock.calls[1][0]).toMatchObject({
+        category: MetaMetricsEventCategory.InpageProvider,
+        event: MetaMetricsEventName.SignatureApproved,
+        properties: {
+          signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+          ui_customizations: [MetaMetricsEventUiCustomization.Permit],
+          eip712_primary_type: 'Permit',
+        },
+        referrer: { url: 'some.dapp' },
       });
     });
 
     describe('when request is flagged as safe by security provider', () => {
       it(`should immediately track a ${MetaMetricsEventName.SignatureRequested} event`, async () => {
         const req = {
-          method: MESSAGE_TYPE.ETH_SIGN,
+          method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           origin: 'some.dapp',
         };
         const res = {
@@ -555,11 +556,82 @@ describe('createRPCMethodTrackingMiddleware', () => {
           category: MetaMetricsEventCategory.InpageProvider,
           event: MetaMetricsEventName.SignatureRequested,
           properties: {
-            signature_type: MESSAGE_TYPE.ETH_SIGN,
+            signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           },
           referrer: { url: 'some.dapp' },
         });
       });
     });
+
+    it.each([
+      ['no params', 'method_without_transform', {}, undefined],
+      [
+        'no params',
+        'eth_call',
+        [
+          {
+            accessList: [],
+            blobVersionedHashes: [],
+            blobs: [],
+            to: null,
+          },
+          null,
+        ],
+        undefined,
+      ],
+      ['no params', 'eth_sandRawTransaction', ['0xdeadbeef'], undefined],
+      [
+        'no params',
+        'eth_sendTransaction',
+        {
+          to: '0x1',
+          from: '0x2',
+          gas: '0x3',
+          gasPrice: '0x4',
+          value: '0x5',
+          data: '0xdeadbeef',
+          maxPriorityFeePerGas: '0x6',
+          maxFeePerGas: '0x7',
+        },
+        undefined,
+      ],
+      [
+        'only the type param',
+        'wallet_watchAsset',
+        {
+          type: 'ERC20',
+          options: {
+            address: '0xb60e8dd61c5d32be8058bb8eb970870f07233155',
+            symbol: 'FOO',
+            decimals: 18,
+            image: 'https://foo.io/token-image.svg',
+          },
+        },
+        { type: 'ERC20' },
+      ],
+    ])(
+      `should include %s in the '%s' tracked events params property`,
+      async (_, method, params, expected) => {
+        const req = {
+          method,
+          origin: 'some.dapp',
+          params,
+        };
+
+        const res = {
+          error: null,
+        };
+
+        const { next } = getNext();
+        const handler = createHandler({ rateLimitSamplePercent: 1 });
+
+        await handler(req, res, next);
+
+        expect(trackEvent).toHaveBeenCalledTimes(1);
+        expect(trackEvent.mock.calls[0][0].properties.params).toStrictEqual(
+          expected,
+        );
+      },
+    );
   });
 });

@@ -27,7 +27,6 @@ const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
   address: ADDRESS_MOCK,
   name: NAME_MOCK,
   keyringType: KeyringTypes.hd,
-  is4337: false,
   snapOptions: undefined,
 });
 
@@ -205,6 +204,7 @@ describe('AccountIdentitiesPetnamesBridge', () => {
   });
 
   describe('shouldSyncPetname', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       {
         origin: NameOrigin.ACCOUNT_IDENTITY,
@@ -216,7 +216,13 @@ describe('AccountIdentitiesPetnamesBridge', () => {
       },
     ])(
       'returns $expectedReturn if origin is $origin',
-      ({ origin, expectedReturn }) => {
+      ({
+        origin,
+        expectedReturn,
+      }: {
+        origin: NameOrigin;
+        expectedReturn: boolean;
+      }) => {
         class TestBridge extends AccountIdentitiesPetnamesBridge {
           public shouldSyncPetname(entry: PetnameEntry): boolean {
             return super.shouldSyncPetname(entry);

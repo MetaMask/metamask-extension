@@ -12,6 +12,7 @@ export function createMockNotificationEthSent() {
     tx_hash: '0x881D40237659C251811CEC9c364ef91dC08D300C',
     unread: true,
     created_at: '2022-03-01T00:00:00Z',
+    address: '0x881D40237659C251811CEC9c364ef91dC08D300C',
     data: {
       kind: 'eth_sent',
       network_fee: {
@@ -41,6 +42,7 @@ export function createMockNotificationEthReceived() {
     tx_hash: '0x881D40237659C251811CEC9c364ef91dC08D300C',
     unread: true,
     created_at: '2022-03-01T00:00:00Z',
+    address: '0x881D40237659C251811CEC9c364ef91dC08D300C',
     data: {
       kind: 'eth_received',
       network_fee: {
@@ -70,6 +72,7 @@ export function createMockNotificationERC20Sent() {
     tx_hash: '0x881D40237659C251811CEC9c364ef91dC08D300C',
     unread: true,
     created_at: '2022-03-01T00:00:00Z',
+    address: '0x881D40237659C251811CEC9c364ef91dC08D300C',
     data: {
       kind: 'erc20_sent',
       network_fee: {
@@ -105,6 +108,7 @@ export function createMockNotificationERC20Received() {
     tx_hash: '0x881D40237659C251811CEC9c364ef91dC08D300C',
     unread: true,
     created_at: '2022-03-01T00:00:00Z',
+    address: '0x881D40237659C251811CEC9c364ef91dC08D300C',
     data: {
       kind: 'erc20_received',
       network_fee: {
@@ -136,9 +140,12 @@ export function createMockNotificationERC721Sent() {
     block_timestamp: '1700043467',
     chain_id: 1,
     created_at: '2023-11-15T11:08:17.895407Z',
+    address: '0x881D40237659C251811CEC9c364ef91dC08D300C',
     data: {
       to: '0xf47f628fe3bd2595e9ab384bfffc3859b448e451',
       nft: {
+        // This is not a hex color
+        // eslint-disable-next-line @metamask/design-tokens/color-no-hex
         name: 'Captainz #8680',
         image:
           'https://i.seadn.io/s/raw/files/ae0fc06714ff7fb40217340d8a242c0e.gif?w=500&auto=format',
@@ -175,9 +182,12 @@ export function createMockNotificationERC721Received() {
     block_timestamp: '1699980623',
     chain_id: 1,
     created_at: '2023-11-14T17:40:52.319281Z',
+    address: '0x881D40237659C251811CEC9c364ef91dC08D300C',
     data: {
       to: '0xba7f3daa8adfdad686574406ab9bd5d2f0a49d2e',
       nft: {
+        // This is not a hex color
+        // eslint-disable-next-line @metamask/design-tokens/color-no-hex
         name: 'The Plague #2722',
         image:
           'https://i.seadn.io/s/raw/files/a96f90ec8ebf55a2300c66a0c46d6a16.png?w=500&auto=format',
@@ -214,6 +224,7 @@ export function createMockNotificationERC1155Sent() {
     block_timestamp: '1700510003',
     chain_id: 1,
     created_at: '2023-11-20T20:44:10.110706Z',
+    address: '0x881D40237659C251811CEC9c364ef91dC08D300C',
     data: {
       to: '0x15bd77ccacf2da39b84f0c31fee2e451225bb190',
       nft: {
@@ -253,6 +264,7 @@ export function createMockNotificationERC1155Received() {
     block_timestamp: '1700510003',
     chain_id: 1,
     created_at: '2023-11-20T20:44:10.110706Z',
+    address: '0x881D40237659C251811CEC9c364ef91dC08D300C',
     data: {
       to: '0x15bd77ccacf2da39b84f0c31fee2e451225bb190',
       nft: {
@@ -292,6 +304,7 @@ export function createMockNotificationMetaMaskSwapsCompleted() {
     block_timestamp: '1697637275',
     chain_id: 1,
     created_at: '2023-10-18T13:58:49.854596Z',
+    address: '0x881D40237659C251811CEC9c364ef91dC08D300C',
     data: {
       kind: 'metamask_swap_completed',
       rate: '1558.27',
@@ -337,6 +350,7 @@ export function createMockNotificationRocketPoolStakeCompleted() {
     block_timestamp: '1700145059',
     chain_id: 1,
     created_at: '2023-11-20T12:02:48.796824Z',
+    address: '0x881D40237659C251811CEC9c364ef91dC08D300C',
     data: {
       kind: 'rocketpool_stake_completed',
       stake_in: {
@@ -381,6 +395,7 @@ export function createMockNotificationRocketPoolUnStakeCompleted() {
     block_timestamp: '1697718011',
     chain_id: 1,
     created_at: '2023-10-19T13:11:10.623042Z',
+    address: '0x881D40237659C251811CEC9c364ef91dC08D300C',
     data: {
       kind: 'rocketpool_unstake_completed',
       stake_in: {
@@ -425,6 +440,7 @@ export function createMockNotificationLidoStakeCompleted() {
     block_timestamp: '1698961091',
     chain_id: 1,
     created_at: '2023-11-02T22:28:49.970865Z',
+    address: '0x881D40237659C251811CEC9c364ef91dC08D300C',
     data: {
       kind: 'lido_stake_completed',
       stake_in: {
@@ -469,6 +485,7 @@ export function createMockNotificationLidoWithdrawalRequested() {
     block_timestamp: '1697638415',
     chain_id: 1,
     created_at: '2023-10-18T15:04:02.482526Z',
+    address: '0x881D40237659C251811CEC9c364ef91dC08D300C',
     data: {
       kind: 'lido_withdrawal_requested',
       stake_in: {
@@ -513,6 +530,7 @@ export function createMockNotificationLidoWithdrawalCompleted() {
     block_timestamp: '1697643851',
     chain_id: 1,
     created_at: '2023-10-18T16:35:03.147606Z',
+    address: '0x881D40237659C251811CEC9c364ef91dC08D300C',
     data: {
       kind: 'lido_withdrawal_completed',
       stake_in: {
@@ -557,6 +575,7 @@ export function createMockNotificationLidoReadyToBeWithdrawn() {
     block_timestamp: '1697643851',
     chain_id: 1,
     created_at: '2023-10-18T16:35:03.147606Z',
+    address: '0x881D40237659C251811CEC9c364ef91dC08D300C',
     data: {
       kind: 'lido_stake_ready_to_be_withdrawn',
       request_id: '123456789',

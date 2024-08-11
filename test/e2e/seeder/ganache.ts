@@ -14,6 +14,8 @@ const defaultOptions = {
 export class Ganache {
   #server: Server | undefined;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async start(opts: any) {
     const options = { ...defaultOptions, ...opts };
 
@@ -32,18 +34,24 @@ export class Ganache {
     });
   }
 
-  async getBalance(): Promise<number> {
-    const accounts = await this.getAccounts();
+  async getBalance(address = null): Promise<number> {
     const provider = await this.getProvider();
 
-    if (!accounts || !accounts[0] || !provider) {
+    if (!provider) {
+      console.log('No provider found');
+      return 0;
+    }
+
+    const accountToUse = address || (await this.getAccounts())?.[0];
+
+    if (!accountToUse) {
       console.log('No accounts found');
       return 0;
     }
 
     const balanceHex = await provider.request({
       method: 'eth_getBalance',
-      params: [accounts[0], 'latest'],
+      params: [accountToUse, 'latest'],
     });
     const balanceInt = parseInt(balanceHex, 16) / 10 ** 18;
 
@@ -67,6 +75,8 @@ export class Ganache {
     }
     try {
       await this.#server.close();
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       // We can safely ignore the EBUSY error
       if (e.code !== 'EBUSY') {

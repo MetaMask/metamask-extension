@@ -5,6 +5,7 @@ const {
   unlockWallet,
   WINDOW_TITLES,
   generateGanacheOptions,
+  clickNestedButton,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
@@ -60,7 +61,7 @@ describe('Failing contract interaction ', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
-        await driver.clickElement({ text: 'Activity', tag: 'button' });
+        await clickNestedButton(driver, 'Activity');
 
         await driver.findElement({
           css: '.activity-list-item .transaction-status-label',
@@ -127,7 +128,7 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
-        await driver.clickElement({ text: 'Activity', tag: 'button' });
+        await clickNestedButton(driver, 'Activity');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );

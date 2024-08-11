@@ -89,7 +89,7 @@ const NoThanksLink = ({
       width={BlockSize.Full}
       className="mm-smart-transactions-opt-in-modal__no-thanks-link"
     >
-      {t('dontEnableEnhancedProtection')}
+      {t('noThanks')}
     </Button>
   );
 };
@@ -170,6 +170,7 @@ export default function SmartTransactionsOptInModal({
   }, [dispatch]);
 
   const handleNoThanksLinkClick = useCallback(() => {
+    // Set the Smart Transactions opt-in status to false, so the opt-in modal is not shown again.
     dispatch(setSmartTransactionsOptInStatus(false));
   }, [dispatch]);
 

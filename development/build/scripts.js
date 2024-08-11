@@ -1,5 +1,4 @@
 // TODO(ritave): Remove switches on hardcoded build types
-
 const { callbackify } = require('util');
 const path = require('path');
 const { writeFileSync, readFileSync, unlinkSync } = require('fs');
@@ -19,7 +18,7 @@ const sourcemaps = require('gulp-sourcemaps');
 const applySourceMap = require('vinyl-sourcemaps-apply');
 const pify = require('pify');
 const through = require('through2');
-const endOfStream = pify(require('end-of-stream'));
+const finished = pify(require('readable-stream').finished);
 const labeledStreamSplicer = require('labeled-stream-splicer').obj;
 const wrapInStream = require('pumpify').obj;
 const { Eta } = require('eta');
@@ -30,6 +29,7 @@ const terser = require('terser');
 const bifyModuleGroups = require('bify-module-groups');
 
 const { streamFlatMap } = require('../stream-flat-map');
+const { isManifestV3 } = require('../../shared/modules/mv3.utils');
 const { setEnvironmentVariables } = require('./set-environment-variables');
 const { BUILD_TARGETS } = require('./constants');
 const { getConfig } = require('./config');
@@ -76,6 +76,8 @@ const scuttlingConfigBase = {
     encodeURIComponent: '',
     console: '',
     crypto: '',
+    Map: '',
+    isFinite: '',
     // {clear/set}Timeout are "this sensitive"
     clearTimeout: 'window',
     setTimeout: 'window',
@@ -86,6 +88,7 @@ const scuttlingConfigBase = {
     appState: '',
     extra: '',
     stateHooks: '',
+    nw: '',
   },
 };
 
@@ -189,7 +192,7 @@ function createScriptTasks({
 
     // In MV3 we will need to build our offscreen entry point bundle and any
     // entry points for iframes that we want to lockdown with LavaMoat.
-    if (process.env.ENABLE_MV3 === 'true') {
+    if (isManifestV3) {
       standardEntryPoints.push('offscreen');
     }
 
@@ -350,7 +353,7 @@ function createScriptTasks({
       () => {
         // MV3 injects inpage into the tab's main world, but in MV2 we need
         // to do it manually:
-        if (process.env.ENABLE_MV3) {
+        if (isManifestV3) {
           return;
         }
         // stringify scripts/inpage.js into itself, and then make it inject itself into the page
@@ -714,7 +717,7 @@ function createFactoredBuild({
               applyLavaMoat,
               destinationFileName: 'load-background.js',
             });
-            if (process.env.ENABLE_MV3) {
+            if (isManifestV3) {
               const jsBundles = [
                 ...commonSet.values(),
                 ...groupSet.values(),
@@ -971,7 +974,7 @@ function setupBundlerDefaults(
     // Setup source maps
     setupSourcemaps(buildConfiguration, { buildTarget });
     // Setup wrapping of code against scuttling (before sourcemaps generation)
-    setupScuttlingWrapping(buildConfiguration, applyLavaMoat, envVars);
+    setupScuttlingWrapping(buildConfiguration, applyLavaMoat);
   }
 }
 
@@ -1025,11 +1028,10 @@ function setupMinification(buildConfiguration) {
   });
 }
 
-function setupScuttlingWrapping(buildConfiguration, applyLavaMoat, envVars) {
-  const scuttlingConfig =
-    envVars.ENABLE_MV3 === 'true'
-      ? mv3ScuttlingConfig
-      : standardScuttlingConfig;
+function setupScuttlingWrapping(buildConfiguration, applyLavaMoat) {
+  const scuttlingConfig = isManifestV3
+    ? mv3ScuttlingConfig
+    : standardScuttlingConfig;
   const { events } = buildConfiguration;
   events.on('configurePipeline', ({ pipeline }) => {
     pipeline.get('scuttle').push(
@@ -1126,7 +1128,7 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
     // nothing will consume pipeline, so let it flow
     pipeline.resume();
 
-    await endOfStream(pipeline);
+    await finished(pipeline);
 
     // call the completion event to handle any post-processing
     events.emit('bundleDone');
@@ -1210,11 +1212,18 @@ function renderHtmlFile({
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
 
   const eta = new Eta();
-  const htmlOutput = eta.renderString(htmlTemplate, {
-    isMMI,
-    isTest,
-    shouldIncludeSnow,
-  });
+  const htmlOutput = eta
+    .renderString(htmlTemplate, { isMMI, isTest, shouldIncludeSnow })
+    // these replacements are added to support the webpack build's automatic
+    // compilation of html files, which the gulp-based process doesn't support.
+    .replace('./scripts/load/background.ts', './load-background.js')
+    .replace(
+      '<script src="./load-background.js" defer></script>',
+      '<script src="./load-background.js" defer></script>\n    <script src="./chromereload.js" defer></script>',
+    )
+    .replace('./scripts/load/ui.ts', './load-app.js')
+    .replace('../ui/css/index.scss', './index.css')
+    .replace('@lavamoat/snow/snow.prod.js', './scripts/snow.js');
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

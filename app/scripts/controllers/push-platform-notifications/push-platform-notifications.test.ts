@@ -1,18 +1,26 @@
 import { ControllerMessenger } from '@metamask/base-controller';
+import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 import type { AuthenticationControllerGetBearerToken } from '../authentication/authentication-controller';
-import { PushPlatformNotificationsController } from './push-platform-notifications';
-
-import * as services from './services/services';
 import type {
   PushPlatformNotificationsControllerMessenger,
   PushPlatformNotificationsControllerState,
 } from './push-platform-notifications';
+import { PushPlatformNotificationsController } from './push-platform-notifications';
+import * as services from './services/services';
 
 const MOCK_JWT = 'mockJwt';
 const MOCK_FCM_TOKEN = 'mockFcmToken';
 const MOCK_TRIGGERS = ['uuid1', 'uuid2'];
 
-describe('PushPlatformNotificationsController', () => {
+const describeOnlyMV3 = isManifestV3
+  ? describe
+  : (title: string, fn: (this: Mocha.Suite) => void) =>
+      describe.skip(
+        `${title} skipped: No MV2 tests, this functionality is not enabled`,
+        fn,
+      );
+
+describeOnlyMV3('PushPlatformNotificationsController', () => {
   describe('enablePushNotifications', () => {
     afterEach(() => {
       jest.clearAllMocks();
@@ -25,8 +33,15 @@ describe('PushPlatformNotificationsController', () => {
           .spyOn(services, 'activatePushNotifications')
           .mockResolvedValue(MOCK_FCM_TOKEN);
 
+        const unsubscribeMock = jest.fn();
+        jest
+          .spyOn(services, 'listenToPushNotifications')
+          .mockResolvedValue(unsubscribeMock);
+
         await controller.enablePushNotifications(MOCK_TRIGGERS);
         expect(controller.state.fcmToken).toBe(MOCK_FCM_TOKEN);
+
+        expect(services.listenToPushNotifications).toHaveBeenCalled();
       });
     });
 
@@ -73,7 +88,9 @@ describe('PushPlatformNotificationsController', () => {
         mockAuthBearerTokenCall(messenger);
         const spy = jest
           .spyOn(services, 'updateTriggerPushNotifications')
-          .mockResolvedValue(true);
+          .mockResolvedValue({
+            isTriggersLinkedToPushNotifications: true,
+          });
 
         await controller.updateTriggerPushNotifications(MOCK_TRIGGERS);
 
@@ -112,6 +129,7 @@ function buildPushPlatformNotificationsControllerMessenger(
   return messenger.getRestricted({
     name: 'PushPlatformNotificationsController',
     allowedActions: ['AuthenticationController:getBearerToken'],
+    allowedEvents: [],
   }) as PushPlatformNotificationsControllerMessenger;
 }
 

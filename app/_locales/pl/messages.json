@@ -75,9 +75,6 @@
   "asset": {
     "message": "Składnik aktywów"
   },
-  "attemptingConnect": {
-    "message": "Próba połączenia z blockchainem."
-  },
   "attributions": {
     "message": "Atrybuty"
   },
@@ -626,9 +623,6 @@
   },
   "send": {
     "message": "Wyślij"
-  },
-  "sendTokens": {
-    "message": "Wyślij tokeny"
   },
   "settings": {
     "message": "Ustawienia"

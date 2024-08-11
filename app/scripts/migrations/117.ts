@@ -1,36 +1,22 @@
 import { cloneDeep } from 'lodash';
-import {
-  TransactionMeta,
-  TransactionStatus,
-  TransactionError,
-} from '@metamask/transaction-controller';
+import log from 'loglevel';
+import { hasProperty, isObject } from '@metamask/utils';
+
+export const version = 117;
 
 type VersionedData = {
   meta: { version: number };
   data: Record<string, unknown>;
 };
 
-export const version = 117;
-
-// Target date is December 8, 2023 - 00:00:00 UTC
-export const TARGET_DATE = new Date('2023-12-08T00:00:00Z').getTime();
-
-const STUCK_STATES = [TransactionStatus.approved, TransactionStatus.signed];
-
-type FailedTransactionMeta = TransactionMeta & {
-  status: TransactionStatus.failed;
-  error: TransactionError;
-};
-
-export const StuckTransactionError = {
-  name: 'StuckTransactionDueToStatus',
-  message: 'Transaction is stuck due to status - migration 116',
-};
-
 /**
- * This migration sets the `status` to `failed` for all transactions created before December 8, 2023 that are still `approved` or `signed`.
+ * Removes all Snaps domains (identified as starting with 'npm:' or 'local:') from the SelectedNetworkController's domains state.
  *
- * @param originalVersionedData
+ * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
+ * @param originalVersionedData.meta - State metadata.
+ * @param originalVersionedData.meta.version - The current state version.
+ * @param originalVersionedData.data - The persisted MetaMask state, keyed by controller.
+ * @returns Updated versioned MetaMask extension state.
  */
 export async function migrate(
   originalVersionedData: VersionedData,
@@ -41,22 +27,49 @@ export async function migrate(
   return versionedData;
 }
 
-// TODO: Replace `any` with type
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function transformState(state: Record<string, any>) {
-  const transactions: TransactionMeta[] =
-    state?.TransactionController?.transactions ?? [];
-
-  for (const transaction of transactions) {
-    if (
-      transaction.time < TARGET_DATE &&
-      STUCK_STATES.includes(transaction.status)
-    ) {
-      transaction.status = TransactionStatus.failed;
-
-      const failedTransaction = transaction as FailedTransactionMeta;
-
-      failedTransaction.error = StuckTransactionError;
-    }
+/**
+ * Removes all domains starting with 'npm:' or 'local:' from the SelectedNetworkController's domains state.
+ *
+ * @param state - The entire state object of the MetaMask extension.
+ */
+function transformState(state: Record<string, unknown>) {
+  const selectedNetworkControllerState = state.SelectedNetworkController;
+  if (!selectedNetworkControllerState) {
+    log.warn('Skipping migration. SelectedNetworkController state not found.');
+    return;
   }
+
+  if (!isObject(selectedNetworkControllerState)) {
+    global.sentry?.captureException?.(
+      new Error('SelectedNetworkController is not an object.'),
+    );
+    return;
+  }
+
+  if (!hasProperty(selectedNetworkControllerState, 'domains')) {
+    global.sentry?.captureException?.(
+      new Error('Domains key is missing in SelectedNetworkController state.'),
+    );
+    return;
+  }
+
+  if (!isObject(selectedNetworkControllerState.domains)) {
+    global.sentry?.captureException?.(
+      new Error('Domains state is not an object.'),
+    );
+    return;
+  }
+
+  const { domains } = selectedNetworkControllerState;
+  const filteredDomains = Object.keys(domains).reduce<Record<string, unknown>>(
+    (acc, domain) => {
+      if (!domain.startsWith('npm:') && !domain.startsWith('local:')) {
+        acc[domain] = domains[domain];
+      }
+      return acc;
+    },
+    {},
+  );
+
+  selectedNetworkControllerState.domains = filteredDomains;
 }

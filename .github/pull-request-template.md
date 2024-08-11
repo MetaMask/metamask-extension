@@ -38,7 +38,7 @@ Fixes:
 
 ## **Pre-merge author checklist**
 
-- [ ] I’ve followed [MetaMask Coding Standards](https://github.com/MetaMask/metamask-extension/blob/develop/.github/guidelines/CODING_GUIDELINES.md).
+- [ ] I've followed [MetaMask Contributor Docs](https://github.com/MetaMask/contributor-docs) and [MetaMask Extension Coding Standards](https://github.com/MetaMask/metamask-extension/blob/develop/.github/guidelines/CODING_GUIDELINES.md).
 - [ ] I've completed the PR template to the best of my ability
 - [ ] I’ve included tests if applicable
 - [ ] I’ve documented my code using [JSDoc](https://jsdoc.app/) format if applicable

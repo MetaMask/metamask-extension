@@ -174,7 +174,7 @@ export const Connections = () => {
         index ===
         mergedAccounts.reduce(
           (
-            acc: string | number,
+            acc: number,
             cur: { metadata: { lastSelected: number } },
             // TODO: Replace `any` with type
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -191,7 +191,10 @@ export const Connections = () => {
   );
 
   return (
-    <Page data-testid="connections-page" className="connections-page">
+    <Page
+      data-testid="connections-page"
+      className="main-container connections-page"
+    >
       <Header
         backgroundColor={BackgroundColor.backgroundDefault}
         startAccessory={

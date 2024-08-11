@@ -5,7 +5,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   sendScreenToConfirmScreen,
-  unlockWallet,
+  logInWithBalanceValidation,
 } = require('../../helpers');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
@@ -127,9 +127,6 @@ async function mockInfuraWithFailedResponses(mockServer) {
  */
 describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
   it('should not show security alerts for benign requests', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         dapp: true,
@@ -145,8 +142,7 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
       },
 
       async ({ driver }) => {
-        // await driver.delay(10000)
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver);
 
         await sendScreenToConfirmScreen(driver, mockBenignAddress, '1');
         // await driver.delay(100000)
@@ -162,9 +158,6 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
    * e.g. test/e2e/flask/ppom-blockaid-alert-<name>.spec.js
    */
   it('should show security alerts for malicious requests', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         dapp: true,
@@ -180,7 +173,7 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver);
 
         await sendScreenToConfirmScreen(driver, mockMaliciousAddress, '1');
 
@@ -220,8 +213,7 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
       },
 
       async ({ driver }) => {
-        // await driver.delay(10000)
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver);
 
         await sendScreenToConfirmScreen(
           driver,

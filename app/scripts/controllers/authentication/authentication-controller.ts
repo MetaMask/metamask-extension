@@ -3,6 +3,11 @@ import {
   RestrictedControllerMessenger,
   StateMetadata,
 } from '@metamask/base-controller';
+import type {
+  KeyringControllerGetStateAction,
+  KeyringControllerLockEvent,
+  KeyringControllerUnlockEvent,
+} from '@metamask/keyring-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import {
   createSnapPublicKeyRequest,
@@ -83,15 +88,21 @@ export type AuthenticationControllerGetSessionProfile =
 export type AuthenticationControllerIsSignedIn = ActionsObj['isSignedIn'];
 
 // Allowed Actions
-export type AllowedActions = HandleSnapRequest;
+export type AllowedActions =
+  | HandleSnapRequest
+  | KeyringControllerGetStateAction;
+
+export type AllowedEvents =
+  | KeyringControllerLockEvent
+  | KeyringControllerUnlockEvent;
 
 // Messenger
 export type AuthenticationControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
   Actions | AllowedActions,
-  never,
+  AllowedEvents,
   AllowedActions['type'],
-  never
+  AllowedEvents['type']
 >;
 
 /**
@@ -104,6 +115,25 @@ export default class AuthenticationController extends BaseController<
   AuthenticationControllerMessenger
 > {
   #metametrics: MetaMetricsAuth;
+
+  #isUnlocked = false;
+
+  #keyringController = {
+    setupLockedStateSubscriptions: () => {
+      const { isUnlocked } = this.messagingSystem.call(
+        'KeyringController:getState',
+      );
+      this.#isUnlocked = isUnlocked;
+
+      this.messagingSystem.subscribe('KeyringController:unlock', () => {
+        this.#isUnlocked = true;
+      });
+
+      this.messagingSystem.subscribe('KeyringController:lock', () => {
+        this.#isUnlocked = false;
+      });
+    },
+  };
 
   constructor({
     messenger,
@@ -127,6 +157,7 @@ export default class AuthenticationController extends BaseController<
 
     this.#metametrics = metametrics;
 
+    this.#keyringController.setupLockedStateSubscriptions();
     this.#registerMessageHandlers();
   }
 
@@ -267,6 +298,7 @@ export default class AuthenticationController extends BaseController<
         accessToken,
       };
     } catch (e) {
+      console.error('Failed to authenticate', e);
       const errorMessage =
         e instanceof Error ? e.message : JSON.stringify(e ?? '');
       throw new Error(
@@ -293,17 +325,35 @@ export default class AuthenticationController extends BaseController<
     return THIRTY_MIN_MS > diffMs;
   }
 
+  #_snapPublicKeyCache: string | undefined;
+
   /**
    * Returns the auth snap public key.
    *
    * @returns The snap public key.
    */
-  #snapGetPublicKey(): Promise<string> {
-    return this.messagingSystem.call(
+  async #snapGetPublicKey(): Promise<string> {
+    if (this.#_snapPublicKeyCache) {
+      return this.#_snapPublicKeyCache;
+    }
+
+    if (!this.#isUnlocked) {
+      throw new Error(
+        '#snapGetPublicKey - unable to call snap, wallet is locked',
+      );
+    }
+
+    const result = (await this.messagingSystem.call(
       'SnapController:handleRequest',
       createSnapPublicKeyRequest(),
-    ) as Promise<string>;
+    )) as string;
+
+    this.#_snapPublicKeyCache = result;
+
+    return result;
   }
+
+  #_snapSignMessageCache: Record<`metamask:${string}`, string> = {};
 
   /**
    * Signs a specific message using an underlying auth snap.
@@ -311,10 +361,24 @@ export default class AuthenticationController extends BaseController<
    * @param message - A specific tagged message to sign.
    * @returns A Signature created by the snap.
    */
-  #snapSignMessage(message: `metamask:${string}`): Promise<string> {
-    return this.messagingSystem.call(
+  async #snapSignMessage(message: `metamask:${string}`): Promise<string> {
+    if (this.#_snapSignMessageCache[message]) {
+      return this.#_snapSignMessageCache[message];
+    }
+
+    if (!this.#isUnlocked) {
+      throw new Error(
+        '#snapSignMessage - unable to call snap, wallet is locked',
+      );
+    }
+
+    const result = (await this.messagingSystem.call(
       'SnapController:handleRequest',
       createSnapSignMessageRequest(message),
-    ) as Promise<string>;
+    )) as string;
+
+    this.#_snapSignMessageCache[message] = result;
+
+    return result;
   }
 }

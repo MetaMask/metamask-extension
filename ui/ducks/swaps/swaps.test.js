@@ -37,7 +37,7 @@ describe('Ducks - Swaps', () => {
   describe('fetchSwapsLivenessAndFeatureFlags', () => {
     const cleanFeatureFlagApiCache = () => {
       setStorageItem(
-        'cachedFetch:https://swap.metaswap.codefi.network/featureFlags',
+        'cachedFetch:https://swap.api.cx.metamask.io/featureFlags',
         null,
       );
     };
@@ -50,7 +50,7 @@ describe('Ducks - Swaps', () => {
       featureFlagsResponse,
       replyWithError = false,
     } = {}) => {
-      const apiNock = nock('https://swap.metaswap.codefi.network').get(
+      const apiNock = nock('https://swap.api.cx.metamask.io').get(
         '/featureFlags',
       );
       if (replyWithError) {

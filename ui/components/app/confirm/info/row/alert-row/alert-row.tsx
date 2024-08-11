@@ -3,7 +3,7 @@ import {
   Severity,
   TextColor,
 } from '../../../../../../helpers/constants/design-system';
-import InlineAlert from '../../../../confirmations/alerts/inline-alert/inline-alert';
+import InlineAlert from '../../../../alert-system/inline-alert/inline-alert';
 import useAlerts from '../../../../../../hooks/useAlerts';
 import {
   ConfirmInfoRow,
@@ -11,14 +11,14 @@ import {
   ConfirmInfoRowVariant,
 } from '../row';
 import { Box } from '../../../../../component-library';
-import { MultipleAlertModal } from '../../../../confirmations/alerts/multiple-alert-modal';
+import { MultipleAlertModal } from '../../../../alert-system/multiple-alert-modal';
 
-export type AlertRowProps = ConfirmInfoRowProps & {
+export type ConfirmInfoAlertRowProps = ConfirmInfoRowProps & {
   alertKey: string;
   ownerId: string;
 };
 
-export function getAlertTextColors(
+function getAlertTextColors(
   variant?: ConfirmInfoRowVariant | Severity,
 ): TextColor {
   switch (variant) {
@@ -36,12 +36,12 @@ export function getAlertTextColors(
   }
 }
 
-export const AlertRow = ({
+export const ConfirmInfoAlertRow = ({
   alertKey,
   ownerId,
   variant,
   ...rowProperties
-}: AlertRowProps) => {
+}: ConfirmInfoAlertRowProps) => {
   const { getFieldAlerts } = useAlerts(ownerId);
   const fieldAlerts = getFieldAlerts(alertKey);
   const hasFieldAlert = fieldAlerts.length > 0;
@@ -49,11 +49,11 @@ export const AlertRow = ({
 
   const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
 
-  const handleCloseModal = () => {
+  const handleModalClose = () => {
     setAlertModalVisible(false);
   };
 
-  const handleOpenModal = () => {
+  const handleInlineAlertClick = () => {
     setAlertModalVisible(true);
   };
 
@@ -66,7 +66,10 @@ export const AlertRow = ({
 
   const inlineAlert = hasFieldAlert ? (
     <Box marginLeft={1}>
-      <InlineAlert onClick={handleOpenModal} severity={selectedAlertSeverity} />
+      <InlineAlert
+        onClick={handleInlineAlertClick}
+        severity={selectedAlertSeverity}
+      />
     </Box>
   ) : null;
 
@@ -74,10 +77,10 @@ export const AlertRow = ({
     <>
       {alertModalVisible && (
         <MultipleAlertModal
-          alertKey={alertKey}
+          alertKey={fieldAlerts[0].key}
           ownerId={ownerId}
-          onFinalAcknowledgeClick={handleCloseModal}
-          onClose={handleCloseModal}
+          onFinalAcknowledgeClick={handleModalClose}
+          onClose={handleModalClose}
         />
       )}
       <ConfirmInfoRow {...confirmInfoRowProps} labelChildren={inlineAlert} />

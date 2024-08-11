@@ -6,11 +6,11 @@ const exec = util.promisify(require('node:child_process').exec);
 const PPOM_VERSION_URL =
   'https://static.cx.metamask.io/api/v1/confirmations/ppom/ppom_version.json';
 const PPOM_CONFIG_URL =
-  'https://static.metafi.codefi.network/api/v1/confirmations/ppom/config/0x1/';
+  'https://static.cx.metamask.io/api/v1/confirmations/ppom/config/0x1/';
 const PPOM_STALE_URL =
-  'https://static.metafi.codefi.network/api/v1/confirmations/ppom/stale/0x1/';
+  'https://static.cx.metamask.io/api/v1/confirmations/ppom/stale/0x1/';
 const PPOM_STALE_DIFF_URL =
-  'https://static.metafi.codefi.network/api/v1/confirmations/ppom/stale_diff/0x1/';
+  'https://static.cx.metamask.io/api/v1/confirmations/ppom/stale_diff/0x1/';
 const MOCK_CDN_FOLDER_URL = 'test/e2e/mock-cdn/';
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';

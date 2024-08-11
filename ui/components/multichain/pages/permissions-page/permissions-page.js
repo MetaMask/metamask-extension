@@ -69,7 +69,7 @@ export const PermissionsPage = () => {
     });
 
   return (
-    <Page data-testid="permissions-page">
+    <Page className="main-container" data-testid="permissions-page">
       <Header
         backgroundColor={BackgroundColor.backgroundDefault}
         startAccessory={

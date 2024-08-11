@@ -6,14 +6,17 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import AdvancedTab from '.';
 
-const mockSetAutoLockTimeLimit = jest.fn();
+const mockSetAutoLockTimeLimit = jest.fn().mockReturnValue({ type: 'TYPE' });
 const mockSetShowTestNetworks = jest.fn();
+const mockSetShowFiatConversionOnTestnetsPreference = jest.fn();
 const mockSetStxOptIn = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => {
   return {
-    setAutoLockTimeLimit: () => mockSetAutoLockTimeLimit,
+    setAutoLockTimeLimit: (...args) => mockSetAutoLockTimeLimit(...args),
     setShowTestNetworks: () => mockSetShowTestNetworks,
+    setShowFiatConversionOnTestnetsPreference: () =>
+      mockSetShowFiatConversionOnTestnetsPreference,
     setSmartTransactionsOptInStatus: () => mockSetStxOptIn,
   };
 });
@@ -31,12 +34,6 @@ describe('AdvancedTab Component', () => {
     const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
     const backupButton = queryByTestId('backup-button');
     expect(backupButton).toBeInTheDocument();
-  });
-
-  it('should render restore button', () => {
-    const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
-    const restoreFile = queryByTestId('restore-file');
-    expect(restoreFile).toBeInTheDocument();
   });
 
   it('should default the auto-lockout time to 0', () => {
@@ -60,6 +57,30 @@ describe('AdvancedTab Component', () => {
     expect(mockSetAutoLockTimeLimit).toHaveBeenCalled();
   });
 
+  it('should update the auto-lockout time to 0 if the input field is set to empty', () => {
+    const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
+    const autoLockoutTime = queryByTestId('auto-lockout-time');
+    const autoLockoutButton = queryByTestId('auto-lockout-button');
+
+    fireEvent.change(autoLockoutTime, { target: { value: '' } });
+
+    expect(autoLockoutTime).toHaveValue('');
+
+    fireEvent.click(autoLockoutButton);
+
+    expect(mockSetAutoLockTimeLimit).toHaveBeenCalledWith(0);
+  });
+
+  it('should toggle show fiat on test networks', () => {
+    const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
+
+    const testShowFiatOnTestnets = queryAllByRole('checkbox')[2];
+
+    fireEvent.click(testShowFiatOnTestnets);
+
+    expect(mockSetShowFiatConversionOnTestnetsPreference).toHaveBeenCalled();
+  });
+
   it('should toggle show test networks', () => {
     const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
 
@@ -68,23 +89,6 @@ describe('AdvancedTab Component', () => {
     fireEvent.click(testNetworkToggle);
 
     expect(mockSetShowTestNetworks).toHaveBeenCalled();
-  });
-
-  it('should not render ledger live control with desktop pairing enabled', () => {
-    const mockStoreWithDesktopEnabled = configureMockStore([thunk])({
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        desktopEnabled: true,
-      },
-    });
-
-    const { queryByTestId } = renderWithProvider(
-      <AdvancedTab />,
-      mockStoreWithDesktopEnabled,
-    );
-
-    expect(queryByTestId('ledger-live-control')).not.toBeInTheDocument();
   });
 
   describe('renderToggleStxOptIn', () => {

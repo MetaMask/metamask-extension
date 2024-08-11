@@ -21,6 +21,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import { CopyIcon } from './copy-icon';
 
 export enum ConfirmInfoRowVariant {
   Default = 'default',
@@ -36,6 +37,8 @@ export type ConfirmInfoRowProps = {
   style?: React.CSSProperties;
   labelChildren?: React.ReactNode;
   color?: TextColor;
+  copyEnabled?: boolean;
+  copyText?: string;
 };
 
 const BACKGROUND_COLORS = {
@@ -47,7 +50,7 @@ const BACKGROUND_COLORS = {
 const TEXT_COLORS = {
   [ConfirmInfoRowVariant.Default]: TextColor.textDefault,
   [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
-  [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
+  [ConfirmInfoRowVariant.Warning]: Color.warningDefault,
 };
 
 const TOOLTIP_ICONS = {
@@ -59,14 +62,14 @@ const TOOLTIP_ICONS = {
 const TOOLTIP_ICON_COLORS = {
   [ConfirmInfoRowVariant.Default]: Color.iconMuted,
   [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
-  [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
+  [ConfirmInfoRowVariant.Warning]: Color.warningDefault,
 };
 
 export const ConfirmInfoRowContext = createContext({
   variant: ConfirmInfoRowVariant.Default,
 });
 
-export const ConfirmInfoRow = ({
+export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   label,
   children,
   variant = ConfirmInfoRowVariant.Default,
@@ -74,7 +77,9 @@ export const ConfirmInfoRow = ({
   style,
   labelChildren,
   color,
-}: ConfirmInfoRowProps) => (
+  copyEnabled = false,
+  copyText = undefined,
+}) => (
   <ConfirmInfoRowContext.Provider value={{ variant }}>
     <Box
       className="confirm-info-row"
@@ -87,19 +92,22 @@ export const ConfirmInfoRow = ({
       marginTop={2}
       marginBottom={2}
       paddingLeft={2}
-      paddingRight={2}
-      color={color ?? (TEXT_COLORS[variant] as TextColor)}
+      paddingRight={copyEnabled ? 5 : 2}
+      color={TEXT_COLORS[variant] as TextColor}
       style={{
         overflowWrap: OverflowWrap.Anywhere,
         minHeight: '24px',
+        position: 'relative',
         ...style,
       }}
     >
+      {copyEnabled && <CopyIcon copyText={copyText ?? ''} />}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
+        color={color}
       >
         <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
           {label}
@@ -121,7 +129,9 @@ export const ConfirmInfoRow = ({
         )}
       </Box>
       {typeof children === 'string' ? (
-        <Text color={TextColor.inherit}>{children}</Text>
+        <Text marginRight={copyEnabled ? 3 : 0} color={TextColor.inherit}>
+          {children}
+        </Text>
       ) : (
         children
       )}

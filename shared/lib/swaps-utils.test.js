@@ -10,7 +10,11 @@ import {
   TOKENS,
   MOCK_TRADE_RESPONSE_2,
 } from '../../ui/pages/swaps/swaps-util-test-constants';
-import { fetchTradesInfo, shouldEnableDirectWrapping } from './swaps-utils';
+import {
+  fetchTradesInfo,
+  shouldEnableDirectWrapping,
+  calculateMaxGasLimit,
+} from './swaps-utils';
 
 jest.mock('./storage-helpers', () => ({
   getStorageItem: jest.fn(),
@@ -63,7 +67,7 @@ describe('Swaps Utils', () => {
       },
     };
     it('should fetch trade info on prod', async () => {
-      nock('https://swap.metaswap.codefi.network')
+      nock('https://swap.api.cx.metamask.io')
         .get('/networks/1/trades')
         .query(true)
         .reply(200, MOCK_TRADE_RESPONSE_2);
@@ -222,6 +226,48 @@ describe('Swaps Utils', () => {
 
     it('returns false if source and destination tokens are undefined', () => {
       expect(shouldEnableDirectWrapping(CHAIN_IDS.MAINNET)).toBe(false);
+    });
+  });
+
+  describe('calculateMaxGasLimit', () => {
+    const gasEstimate = '0x37b15';
+    const maxGas = 273740;
+    let expectedMaxGas = '42d4c';
+    let gasMultiplier = 1.2;
+    let customMaxGas = '';
+
+    it('should return the max gas limit', () => {
+      const result = calculateMaxGasLimit(
+        gasEstimate,
+        gasMultiplier,
+        maxGas,
+        customMaxGas,
+      );
+      expect(result).toStrictEqual(expectedMaxGas);
+    });
+
+    it('should return the custom max gas limit', () => {
+      customMaxGas = '46d4c';
+      const result = calculateMaxGasLimit(
+        gasEstimate,
+        gasMultiplier,
+        maxGas,
+        customMaxGas,
+      );
+      expect(result).toStrictEqual(customMaxGas);
+    });
+
+    it('should return the max gas limit with a gas multiplier of 4.5', () => {
+      gasMultiplier = 4.5;
+      expectedMaxGas = 'fa9df';
+      customMaxGas = '';
+      const result = calculateMaxGasLimit(
+        gasEstimate,
+        gasMultiplier,
+        maxGas,
+        customMaxGas,
+      );
+      expect(result).toStrictEqual(expectedMaxGas);
     });
   });
 });

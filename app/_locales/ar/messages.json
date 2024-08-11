@@ -79,9 +79,6 @@
   "asset": {
     "message": "الأصل"
   },
-  "attemptingConnect": {
-    "message": "محاولة الاتصال بسلسلة الكتل."
-  },
   "attributions": {
     "message": "الصفات"
   },
@@ -629,9 +626,6 @@
   },
   "send": {
     "message": "إرسال"
-  },
-  "sendTokens": {
-    "message": "إرسال عملات رمزية"
   },
   "settings": {
     "message": "الإعدادات"

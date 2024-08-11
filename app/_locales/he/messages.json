@@ -75,9 +75,6 @@
   "asset": {
     "message": "נכס"
   },
-  "attemptingConnect": {
-    "message": "מנסה להתחבר לבלוקצ'יין."
-  },
   "attributions": {
     "message": "תכונות"
   },
@@ -629,9 +626,6 @@
   },
   "send": {
     "message": "שלח"
-  },
-  "sendTokens": {
-    "message": "שלח טוקנים"
   },
   "settings": {
     "message": "הגדרות"

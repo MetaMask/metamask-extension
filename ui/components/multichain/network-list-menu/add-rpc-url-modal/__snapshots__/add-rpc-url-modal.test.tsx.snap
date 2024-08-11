@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddRpcUrlModal should render correctly 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--padding-4"
+  >
+    <div
+      class="mm-box mm-form-text-field mm-box--display-flex mm-box--flex-direction-column"
+    >
+      <label
+        class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-sm-medium mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+        for="additional-rpc-url"
+      >
+        additionalRpcUrl
+      </label>
+      <div
+        class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+      >
+        <input
+          autocomplete="off"
+          class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+          focused="false"
+          id="additional-rpc-url"
+          type="text"
+          value=""
+        />
+      </div>
+    </div>
+    <button
+      class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--margin-top-8 mm-box--margin-right-auto mm-box--margin-left-auto mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-block mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+    >
+      addUrl
+    </button>
+  </div>
+</div>
+`;

@@ -3,14 +3,14 @@ import {
   assertIsJsonRpcFailure,
   assertIsJsonRpcSuccess,
 } from '@metamask/utils';
-import { createMethodMiddleware } from '.';
+import { createMethodMiddleware, createLegacyMethodMiddleware } from '.';
 
 jest.mock('@metamask/permission-controller', () => ({
   permissionRpcMethods: { handlers: [] },
 }));
 
-jest.mock('./handlers', () => [
-  {
+jest.mock('./handlers', () => {
+  const getHandler = () => ({
     implementation: (req, res, _next, end, hooks) => {
       if (Array.isArray(req.params)) {
         switch (req.params[0]) {
@@ -35,10 +35,18 @@ jest.mock('./handlers', () => [
     },
     hookNames: { hook1: true, hook2: true },
     methodNames: ['method1', 'method2'],
-  },
-]);
+  });
 
-describe('createMethodMiddleware', () => {
+  return {
+    handlers: [getHandler()],
+    legacyHandlers: [getHandler()],
+  };
+});
+
+describe.each([
+  ['createMethodMiddleware', createMethodMiddleware],
+  ['createLegacyMethodMiddleware', createLegacyMethodMiddleware],
+])('%s', (_name, createMiddleware) => {
   const method1 = 'method1';
 
   const getDefaultHooks = () => ({
@@ -47,7 +55,7 @@ describe('createMethodMiddleware', () => {
   });
 
   it('should return a function', () => {
-    const middleware = createMethodMiddleware(getDefaultHooks());
+    const middleware = createMiddleware(getDefaultHooks());
     expect(typeof middleware).toBe('function');
   });
 
@@ -55,9 +63,7 @@ describe('createMethodMiddleware', () => {
     const hooks = { hook1: () => 42 };
 
     // @ts-expect-error Intentional destructive testing
-    expect(() => createMethodMiddleware(hooks)).toThrow(
-      'Missing expected hooks',
-    );
+    expect(() => createMiddleware(hooks)).toThrow('Missing expected hooks');
   });
 
   it('should throw an error if an extraneous hook is provided', () => {
@@ -66,13 +72,11 @@ describe('createMethodMiddleware', () => {
       extraneousHook: () => 100,
     };
 
-    expect(() => createMethodMiddleware(hooks)).toThrow(
-      'Received unexpected hooks',
-    );
+    expect(() => createMiddleware(hooks)).toThrow('Received unexpected hooks');
   });
 
   it('should call the handler for the matching method (uses hook1)', async () => {
-    const middleware = createMethodMiddleware(getDefaultHooks());
+    const middleware = createMiddleware(getDefaultHooks());
     const engine = new JsonRpcEngine();
     engine.push(middleware);
 
@@ -88,7 +92,7 @@ describe('createMethodMiddleware', () => {
   });
 
   it('should call the handler for the matching method (uses hook2)', async () => {
-    const middleware = createMethodMiddleware(getDefaultHooks());
+    const middleware = createMiddleware(getDefaultHooks());
     const engine = new JsonRpcEngine();
     engine.push(middleware);
 
@@ -104,7 +108,7 @@ describe('createMethodMiddleware', () => {
   });
 
   it('should not call the handler for a non-matching method', async () => {
-    const middleware = createMethodMiddleware(getDefaultHooks());
+    const middleware = createMiddleware(getDefaultHooks());
     const engine = new JsonRpcEngine();
     engine.push(middleware);
 
@@ -122,23 +126,8 @@ describe('createMethodMiddleware', () => {
     });
   });
 
-  it('should reject unsupported methods', async () => {
-    const middleware = createMethodMiddleware(getDefaultHooks());
-    const engine = new JsonRpcEngine();
-    engine.push(middleware);
-
-    const response = await engine.handle({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'eth_signTransaction',
-    });
-    assertIsJsonRpcFailure(response);
-
-    expect(response.error.message).toBe('Method not supported.');
-  });
-
   it('should handle errors returned by the implementation', async () => {
-    const middleware = createMethodMiddleware(getDefaultHooks());
+    const middleware = createMiddleware(getDefaultHooks());
     const engine = new JsonRpcEngine();
     engine.push(middleware);
 
@@ -154,7 +143,7 @@ describe('createMethodMiddleware', () => {
   });
 
   it('should handle errors thrown by the implementation', async () => {
-    const middleware = createMethodMiddleware(getDefaultHooks());
+    const middleware = createMiddleware(getDefaultHooks());
     const engine = new JsonRpcEngine();
     engine.push(middleware);
 
@@ -170,7 +159,7 @@ describe('createMethodMiddleware', () => {
   });
 
   it('should handle non-errors thrown by the implementation', async () => {
-    const middleware = createMethodMiddleware(getDefaultHooks());
+    const middleware = createMiddleware(getDefaultHooks());
     const engine = new JsonRpcEngine();
     engine.push(middleware);
 

@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const { promises: fs } = require('fs');
-const path = require('path');
+
 const {
   defaultGanacheOptions,
   withFixtures,
@@ -38,13 +38,6 @@ const getBackupJson = async () => {
     return null;
   }
 };
-
-const restoreFile = path.join(
-  __dirname,
-  '../..',
-  'restore',
-  'MetaMaskUserData.json',
-);
 
 describe('Backup and Restore', function () {
   it('should backup the account settings', async function () {
@@ -84,46 +77,6 @@ describe('Backup and Restore', function () {
         assert.equal(
           Object.values(info?.network?.networkConfigurations)?.[0].chainId,
           '0x539',
-        );
-      },
-    );
-  });
-
-  it('should restore the account settings', async function () {
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
-      // Chrome shows OS level download prompt which can't be dismissed by Selenium
-      this.skip();
-    }
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-
-        // Restore
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({ text: 'Advanced', tag: 'div' });
-        const restore = await driver.findElement('#restore-file');
-        await restore.sendKeys(restoreFile);
-
-        // Dismiss success message
-        await driver.waitForSelector({
-          css: '[data-testid="restore-user-data-banner-alert-description"]',
-          text: 'Your data has been restored successfully',
-        });
-        await driver.clickElement({ text: 'Dismiss', tag: 'button' });
-
-        // Verify restore
-        await driver.clickElement({ text: 'Contacts', tag: 'div' });
-        const recipient = await driver.findElement('[data-testid="recipient"]');
-        assert.ok(
-          /Test\sAccount\s*0x0c54...AaFb/u.test(await recipient.getText()),
         );
       },
     );

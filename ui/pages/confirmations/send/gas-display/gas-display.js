@@ -23,7 +23,6 @@ import TransactionDetail from '../../components/transaction-detail';
 import ActionableMessage from '../../../../components/ui/actionable-message';
 import {
   getPreferences,
-  getIsBuyableChain,
   transactionFeeSelector,
   getIsTestnet,
   getUseCurrencyRateCheck,
@@ -46,7 +45,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import useRamps from '../../../../hooks/experiences/useRamps';
+import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
+import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 
 export default function GasDisplay({ gasError }) {
   const t = useContext(I18nContext);
@@ -58,7 +58,7 @@ export default function GasDisplay({ gasError }) {
 
   const providerConfig = useSelector(getProviderConfig);
   const isTestnet = useSelector(getIsTestnet);
-  const isBuyableChain = useSelector(getIsBuyableChain);
+  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { showFiatInTestnets, useNativeCurrencyAsPrimaryCurrency } =
@@ -96,15 +96,15 @@ export default function GasDisplay({ gasError }) {
 
   let title;
   if (
-    draftTransaction?.asset.details?.standard === TokenStandard.ERC721 ||
-    draftTransaction?.asset.details?.standard === TokenStandard.ERC1155
+    draftTransaction?.sendAsset.details?.standard === TokenStandard.ERC721 ||
+    draftTransaction?.sendAsset.details?.standard === TokenStandard.ERC1155
   ) {
-    title = draftTransaction?.asset.details?.name;
+    title = draftTransaction?.sendAsset.details?.name;
   } else if (
-    draftTransaction?.asset.details?.standard === TokenStandard.ERC20
+    draftTransaction?.sendAsset.details?.standard === TokenStandard.ERC20
   ) {
     title = `${hexWEIToDecETH(draftTransaction.amount.value)} ${
-      draftTransaction?.asset.details?.symbol
+      draftTransaction?.sendAsset.details?.symbol
     }`;
   }
 
@@ -119,7 +119,7 @@ export default function GasDisplay({ gasError }) {
 
   let detailTotal, maxAmount;
 
-  if (draftTransaction?.asset.type === 'NATIVE') {
+  if (draftTransaction?.sendAsset.type === 'NATIVE') {
     detailTotal = (
       <Box
         height={BLOCK_SIZES.MAX}
@@ -221,7 +221,8 @@ export default function GasDisplay({ gasError }) {
           >
             <ActionableMessage
               message={
-                isBuyableChain && draftTransaction.asset.type === 'NATIVE' ? (
+                isBuyableChain &&
+                draftTransaction.sendAsset.type === 'NATIVE' ? (
                   <Typography variant={TypographyVariant.H7} align="left">
                     {t('insufficientCurrencyBuyOrReceive', [
                       nativeCurrency,

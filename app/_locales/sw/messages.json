@@ -75,9 +75,6 @@
   "asset": {
     "message": "Rasilimali"
   },
-  "attemptingConnect": {
-    "message": "Inajaribu kuunganisha kwenye blockchain."
-  },
   "attributions": {
     "message": "Sifa"
   },
@@ -610,9 +607,6 @@
   },
   "send": {
     "message": "Tuma"
-  },
-  "sendTokens": {
-    "message": "Tuma Vianzio"
   },
   "settings": {
     "message": "Mipangilio"

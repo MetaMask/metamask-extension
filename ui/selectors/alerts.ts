@@ -17,6 +17,11 @@ export const selectGeneralAlerts = createSelector(
   (alerts) => alerts.filter((alert) => !alert.field),
 );
 
+export const selectFieldAlerts = createSelector(
+  (state: AlertsState, ownerId: string) => selectAlerts(state, ownerId),
+  (alerts) => alerts.filter((alert) => alert.field),
+);
+
 export function selectConfirmedAlertKeys(
   state: AlertsState,
   ownerId: string,

@@ -7,7 +7,12 @@ const { format } = require('prettier');
 const { isObject } = require('@metamask/utils');
 const { SENTRY_UI_STATE } = require('../../../../app/scripts/lib/setupSentry');
 const FixtureBuilder = require('../../fixture-builder');
-const { convertToHexValue, withFixtures } = require('../../helpers');
+const {
+  convertToHexValue,
+  logInWithBalanceValidation,
+  withFixtures,
+} = require('../../helpers');
+const { PAGES } = require('../../webdriver/driver');
 
 /**
  * Derive a UI state field from a background state field.
@@ -168,7 +173,7 @@ function getMissingProperties(complete, object) {
 describe('Sentry errors', function () {
   const migrationError =
     process.env.SELENIUM_BROWSER === Browser.CHROME
-      ? `Cannot read properties of undefined (reading 'version')`
+      ? `"type":"TypeError","value":"Cannot read properties of undefined (reading 'version')`
       : 'meta is undefined';
   async function mockSentryMigratorError(mockServer) {
     return await mockServer
@@ -215,7 +220,7 @@ describe('Sentry errors', function () {
     ],
   };
 
-  describe('before initialization, after opting out of metrics', function () {
+  describe('before initialization, after opting out of metrics @no-mmi', function () {
     it('should NOT send error events in the background', async function () {
       await withFixtures(
         {
@@ -234,7 +239,8 @@ describe('Sentry errors', function () {
           testSpecificMock: mockSentryMigratorError,
         },
         async ({ driver, mockedEndpoint }) => {
-          await driver.navigate();
+          // we don't wait for the controllers to be loaded
+          await driver.navigate(PAGES.HOME, { waitForControllers: false });
 
           // Wait for Sentry request
           await driver.delay(3000);
@@ -299,7 +305,8 @@ describe('Sentry errors', function () {
           testSpecificMock: mockSentryMigratorError,
         },
         async ({ driver, mockedEndpoint }) => {
-          await driver.navigate();
+          // we don't wait for the controllers to be loaded
+          await driver.navigate(PAGES.HOME, { waitForControllers: false });
 
           // Wait for Sentry request
           await driver.wait(async () => {
@@ -310,12 +317,16 @@ describe('Sentry errors', function () {
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
-          const { level } = mockJsonBody;
-          const [{ type, value }] = mockJsonBody.exception.values;
           // Verify request
-          assert.equal(type, 'TypeError');
-          assert(value.includes(migrationError));
-          assert.equal(level, 'error');
+          const escapedMigrationError = migrationError.replace(
+            /[.*+?^${}()|[\]\\]/gu,
+            '\\$&',
+          );
+          const migrationErrorRegex = new RegExp(escapedMigrationError, 'u');
+          assert.match(
+            JSON.stringify(mockJsonBody.exception),
+            migrationErrorRegex,
+          );
         },
       );
     });
@@ -338,7 +349,8 @@ describe('Sentry errors', function () {
           testSpecificMock: mockSentryMigratorError,
         },
         async ({ driver, mockedEndpoint }) => {
-          await driver.navigate();
+          // we don't wait for the controllers to be loaded
+          await driver.navigate(PAGES.HOME, { waitForControllers: false });
 
           // Wait for Sentry request
           await driver.wait(async () => {
@@ -528,7 +540,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('after initialization, after opting out of metrics', function () {
+  describe('after initialization, after opting out of metrics @no-mmi', function () {
     it('should NOT send error events in the background', async function () {
       await withFixtures(
         {
@@ -649,9 +661,8 @@ describe('Sentry errors', function () {
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
         },
-        async ({ driver, mockedEndpoint }) => {
-          await driver.navigate();
-          await driver.findElement('#password');
+        async ({ driver, ganacheServer, mockedEndpoint }) => {
+          await logInWithBalanceValidation(driver, ganacheServer);
 
           // Trigger error
           await driver.executeScript(
@@ -743,9 +754,8 @@ describe('Sentry errors', function () {
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
         },
-        async ({ driver, mockedEndpoint }) => {
-          await driver.navigate();
-          await driver.findElement('#password');
+        async ({ driver, ganacheServer, mockedEndpoint }) => {
+          await logInWithBalanceValidation(driver, ganacheServer);
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
@@ -815,6 +825,7 @@ describe('Sentry errors', function () {
       lastFetchedBlockNumbers: false,
       preferences: {
         autoLockTimeLimit: true, // Initialized as undefined
+        showConfirmationAdvancedDetails: true,
       },
       smartTransactionsState: {
         fees: {
@@ -855,6 +866,7 @@ describe('Sentry errors', function () {
           SENTRY_UI_STATE.metamask,
           fullUiState.metamask,
         );
+
         const unexpectedExtraMaskProperties = getMissingProperties(
           extraMaskProperties,
           expectedMissingState,

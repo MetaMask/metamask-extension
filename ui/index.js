@@ -59,17 +59,6 @@ export const updateBackgroundConnection = (backgroundConnection) => {
 
 export default function launchMetamaskUi(opts, cb) {
   const { backgroundConnection } = opts;
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-  let desktopEnabled = false;
-
-  backgroundConnection.getDesktopEnabled(function (err, result) {
-    if (err) {
-      return;
-    }
-
-    desktopEnabled = result;
-  });
-  ///: END:ONLY_INCLUDE_IF
 
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
@@ -78,9 +67,6 @@ export default function launchMetamaskUi(opts, cb) {
         err,
         {
           ...metamaskState,
-          ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-          desktopEnabled,
-          ///: END:ONLY_INCLUDE_IF
         },
         backgroundConnection,
       );
@@ -88,18 +74,24 @@ export default function launchMetamaskUi(opts, cb) {
     }
     startApp(metamaskState, backgroundConnection, opts).then((store) => {
       setupStateHooks(store);
-      cb(
-        null,
-        store,
-        ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-        backgroundConnection,
-        ///: END:ONLY_INCLUDE_IF
-      );
+      cb(null, store);
     });
   });
 }
 
-async function startApp(metamaskState, backgroundConnection, opts) {
+/**
+ * Method to setup initial redux store for the ui application
+ *
+ * @param {*} metamaskState - flatten background state
+ * @param {*} backgroundConnection - rpc client connecting to the background process
+ * @param {*} activeTab - active browser tab
+ * @returns redux store
+ */
+export async function setupInitialStore(
+  metamaskState,
+  backgroundConnection,
+  activeTab,
+) {
   // parse opts
   if (!metamaskState.featureFlags) {
     metamaskState.featureFlags = {};
@@ -114,7 +106,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   }
 
   const draftInitialState = {
-    activeTab: opts.activeTab,
+    activeTab,
 
     // metamaskState represents the cross-tab state
     metamask: metamaskState,
@@ -164,7 +156,6 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   // if unconfirmed txs, start on txConf page
   const unapprovedTxsAll = txHelper(
     unapprovedTxs,
-    metamaskState.unapprovedMsgs,
     metamaskState.unapprovedPersonalMsgs,
     metamaskState.unapprovedDecryptMsgs,
     metamaskState.unapprovedEncryptionPublicKeyMsgs,
@@ -180,6 +171,16 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       }),
     );
   }
+
+  return store;
+}
+
+async function startApp(metamaskState, backgroundConnection, opts) {
+  const store = await setupInitialStore(
+    metamaskState,
+    backgroundConnection,
+    opts.activeTab,
+  );
 
   // global metamask api - used by tooling
   global.metamask = {
@@ -267,6 +268,9 @@ function setupStateHooks(store) {
 
   window.stateHooks.getCleanAppState = async function () {
     const state = clone(store.getState());
+    // we use the manifest.json version from getVersion and not
+    // `process.env.METAMASK_VERSION` as they can be different (see `getVersion`
+    // for more info)
     state.version = global.platform.getVersion();
     state.browser = window.navigator.userAgent;
     state.completeTxList = await actions.getTransactions({
@@ -290,6 +294,12 @@ function setupStateHooks(store) {
     return logsArray;
   };
 }
+
+// Check for local feature flags and represent them so they're avialable
+// to the front-end of the app
+window.metamaskFeatureFlags = {
+  networkMenuRedesign: Boolean(process.env.ENABLE_NETWORK_UI_REDESIGN),
+};
 
 window.logStateString = async function (cb) {
   const state = await window.stateHooks.getCleanAppState();

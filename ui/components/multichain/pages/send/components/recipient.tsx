@@ -10,7 +10,8 @@ import {
 } from '../../../../../ducks/send';
 import {
   getDomainError,
-  getDomainResolution,
+  getDomainResolutions,
+  getDomainType,
   getDomainWarning,
 } from '../../../../../ducks/domains';
 import {
@@ -18,82 +19,109 @@ import {
   BannerAlertSeverity,
   Box,
 } from '../../../../component-library';
-import { getAddressBookEntry } from '../../../../../selectors';
 import { Tab, Tabs } from '../../../../ui/tabs';
-import { AddressListItem } from '../../../address-list-item';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import { DomainInputResolutionCell } from './domain-input-resolution-cell';
 import { SendPageAddressBook, SendPageRow, SendPageYourAccounts } from '.';
 
 const CONTACTS_TAB_KEY = 'contacts';
 const ACCOUNTS_TAB_KEY = 'accounts';
 
-const renderExplicitAddress = (
-  address: string,
-  nickname: string,
-  type: string,
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dispatch: any,
-) => {
-  return (
-    <AddressListItem
-      address={address}
-      label={nickname}
-      onClick={() => {
-        dispatch(
-          addHistoryEntry(
-            `sendFlow - User clicked recipient from ${type}. address: ${address}, nickname ${nickname}`,
-          ),
-        );
-        dispatch(updateRecipient({ address, nickname }));
-        dispatch(updateRecipientUserInput(address));
-      }}
-    />
-  );
-};
-
 export const SendPageRecipient = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const recipient = useSelector(getRecipient);
   const userInput = useSelector(getRecipientUserInput) || '';
 
-  const domainResolution = useSelector(getDomainResolution);
+  const domainResolutions = useSelector(getDomainResolutions) || [];
   const domainError = useSelector(getDomainError);
   const domainWarning = useSelector(getDomainWarning);
-
-  let addressBookEntryName = '';
-  const entry = useSelector((state) =>
-    getAddressBookEntry(state, domainResolution),
-  );
-  if (domainResolution && entry?.name) {
-    addressBookEntryName = entry.name;
-  }
+  const domainType = useSelector(getDomainType);
 
   const showErrorBanner =
     domainError || (recipient.error && recipient.error !== 'required');
   const showWarningBanner =
     !showErrorBanner && (domainWarning || recipient.warning);
 
+  type DomainResolution = {
+    resolvedAddress: string;
+    resolvingSnap?: string;
+    protocol: string;
+    addressBookEntryName?: string;
+    domainName: string;
+  };
+
+  const onClick = (
+    address: string,
+    nickname: string,
+    type: string = 'user input',
+  ) => {
+    dispatch(
+      addHistoryEntry(
+        `sendFlow - User clicked recipient from ${type}. address: ${address}, nickname ${nickname}`,
+      ),
+    );
+    trackEvent({
+      event: MetaMetricsEventName.sendRecipientSelected,
+      category: MetaMetricsEventCategory.Send,
+      properties: {
+        location: 'send page recipient screen',
+        inputType: type,
+      },
+    });
+    dispatch(updateRecipient({ address, nickname }));
+    dispatch(updateRecipientUserInput(address));
+  };
+
   let contents;
   if (recipient.address) {
-    contents = renderExplicitAddress(
-      recipient.address,
-      recipient.nickname,
-      'validated user input',
-      dispatch,
+    contents = (
+      <DomainInputResolutionCell
+        domainType={domainType}
+        address={recipient.address}
+        domainName={recipient.nickname}
+        onClick={() => onClick(recipient.address, recipient.nickname)}
+      />
     );
-  } else if (domainResolution && !recipient.error) {
-    contents = renderExplicitAddress(
-      domainResolution,
-      addressBookEntryName || userInput,
-      'ENS resolution',
-      dispatch,
-    );
+  } else if (domainResolutions?.length > 0 && !recipient.error) {
+    contents = domainResolutions.map((domainResolution: DomainResolution) => {
+      const {
+        resolvedAddress,
+        resolvingSnap,
+        addressBookEntryName,
+        protocol,
+        domainName,
+      } = domainResolution;
+      return (
+        <DomainInputResolutionCell
+          key={`${resolvedAddress}${resolvingSnap}${protocol}`}
+          domainType={domainType}
+          address={resolvedAddress}
+          domainName={addressBookEntryName ?? domainName}
+          onClick={() =>
+            onClick(
+              resolvedAddress,
+              addressBookEntryName ?? domainName,
+              'Domain resolution',
+            )
+          }
+          protocol={protocol}
+          resolvingSnap={resolvingSnap}
+        />
+      );
+    });
   } else {
     contents = (
       <Tabs
-        defaultActiveTabKey={userInput ? CONTACTS_TAB_KEY : ACCOUNTS_TAB_KEY}
+        defaultActiveTabKey={
+          userInput.length > 0 ? CONTACTS_TAB_KEY : ACCOUNTS_TAB_KEY
+        }
       >
         {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment

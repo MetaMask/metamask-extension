@@ -12,6 +12,7 @@ import {
 import {
   IconColor,
   TextColor,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { PriorityLevels } from '../../../../../shared/constants/gas';
@@ -102,37 +103,49 @@ const GasDetailsItem = ({
     if (supportsEIP1559 && isNetworkBusy) {
       return (
         <>
-          <Text>{t('estimatedFee')}</Text>
-          <Tooltip interactive position="top" html={t('networkIsBusy')}>
-            &nbsp;&nbsp;
+          {t('estimatedFee')}
+          <Tooltip
+            wrapperClassName="gas-details-item__dangerTooltip"
+            interactive
+            position="top"
+            html={t('networkIsBusy')}
+          >
             <Icon
               data-testid="network-busy-tooltip"
               name={IconName.Danger}
               size={IconSize.Sm}
               color={IconColor.errorDefault}
-              marginTop={2}
             />
           </Tooltip>
         </>
       );
     }
-    return <Text>{t('estimatedFee')}</Text>;
+    return <>{t('estimatedFee')}</>;
   };
   return (
     <TransactionDetailItem
       key="gas-details-item"
       data-testid={dataTestId}
       detailTitle={detailTitle()}
-      detailTitleColor={TextColor.textDefault}
       detailText={
         Object.keys(draftTransaction).length === 0 && (
-          <div className="gas-details-item__currency-container">
+          <div
+            className="gas-details-item__currency-container"
+            style={{ width: '100%' }}
+          >
             <LoadingHeartBeat estimateUsed={estimateUsed} />
             <EditGasFeeIcon
               userAcknowledgedGasMissing={userAcknowledgedGasMissing}
             />
             {useCurrencyRateCheck && (
               <UserPreferencedCurrencyDisplay
+                paddingInlineStart={1}
+                suffixProps={{
+                  variant: TextVariant.bodyMdBold,
+                }}
+                textProps={{
+                  variant: TextVariant.bodyMdBold,
+                }}
                 type={SECONDARY}
                 value={getTransactionFeeTotal}
                 hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
@@ -145,12 +158,21 @@ const GasDetailsItem = ({
         <div className="gas-details-item__currency-container">
           <LoadingHeartBeat estimateUsed={estimateUsed} />
           <UserPreferencedCurrencyDisplay
+            suffixProps={{
+              variant: TextVariant.bodyMd,
+              color: TextColor.textAlternative,
+            }}
+            textProps={{
+              variant: TextVariant.bodyMd,
+              color: TextColor.textAlternative,
+            }}
             type={PRIMARY}
             value={getTransactionFeeTotal || draftHexMinimumTransactionFee}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
           />
         </div>
       }
+      hasDetailTextInSeparateRow
       subText={
         <>
           <Box
@@ -163,21 +185,33 @@ const GasDetailsItem = ({
             })}
           >
             <LoadingHeartBeat estimateUsed={estimateUsed} />
-            <Box marginRight={1}>
-              <strong>
+            <Box>
+              <Text
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodySmMedium}
+              >
                 {(estimateUsed === PriorityLevels.high ||
                   estimateUsed === PriorityLevels.dappSuggestedHigh) &&
                   '⚠ '}
                 {t('editGasSubTextFeeLabel')}
-              </strong>
+              </Text>
             </Box>
             <div
               key="editGasSubTextFeeValue"
               className="gas-details-item__currency-container"
+              paddingStart={1}
             >
               <LoadingHeartBeat estimateUsed={estimateUsed} />
               <UserPreferencedCurrencyDisplay
                 key="editGasSubTextFeeAmount"
+                suffixProps={{
+                  color: TextColor.textAlternative,
+                  variant: TextVariant.bodySm,
+                }}
+                textProps={{
+                  color: TextColor.textAlternative,
+                  variant: TextVariant.bodySm,
+                }}
                 type={PRIMARY}
                 value={
                   getMaxTransactionFeeTotal || draftHexMaximumTransactionFee

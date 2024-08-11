@@ -36,14 +36,13 @@ import {
   getSwapsTokensReceivedFromTxMeta,
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { getBlockaidMetricsProps } from '../../../../ui/helpers/utils/metrics';
-///: END:ONLY_INCLUDE_IF
 import { getSmartTransactionMetricsProperties } from '../../../../shared/modules/metametrics';
 import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
 } from '../snap-keyring/metrics';
+import { REDESIGN_TRANSACTION_TYPES } from '../../../../ui/pages/confirmations/utils';
 
 export type TransactionMetricsRequest = {
   createEventFragment: (
@@ -76,12 +75,12 @@ export type TransactionMetricsRequest = {
   getEIP1559GasFeeEstimates(options?: FetchGasFeeEstimateOptions): Promise<any>;
   getParticipateInMetrics: () => boolean;
   getSelectedAddress: () => string;
-  getTokenStandardAndDetails: () => {
+  getTokenStandardAndDetails: () => Promise<{
     decimals?: string;
     balance?: string;
     symbol?: string;
     standard?: TokenStandard;
-  };
+  }>;
   getTransaction: (transactionId: string) => TransactionMeta;
   provider: Provider;
   snapAndHardwareMessenger: SnapAndHardwareMessenger;
@@ -92,6 +91,10 @@ export type TransactionMetricsRequest = {
   getSmartTransactionByMinedTxHash: (
     txhash: string | undefined,
   ) => SmartTransaction;
+  getRedesignedTransactionsEnabled: () => boolean;
+  getMethodData: (data: string) => Promise<{ name: string }>;
+  getIsRedesignedConfirmationsDeveloperEnabled: () => boolean;
+  getIsConfirmationAdvancedDetailsOpen: () => boolean;
 };
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
@@ -789,7 +792,6 @@ async function buildEventFragmentProperties({
     currentTokenBalance,
     originalApprovalAmount,
     finalApprovalAmount,
-    contractMethodName,
     securityProviderResponse,
     simulationFails,
   } = transactionMeta;
@@ -801,6 +803,14 @@ async function buildEventFragmentProperties({
     query,
     transactionMetricsRequest.getTokenStandardAndDetails,
   );
+
+  let contractMethodName;
+  if (transactionMeta.txParams.data) {
+    const { name } = await transactionMetricsRequest.getMethodData(
+      transactionMeta.txParams.data,
+    );
+    contractMethodName = name;
+  }
 
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -884,6 +894,7 @@ async function buildEventFragmentProperties({
       TransactionType.tokenMethodTransfer,
       TransactionType.tokenMethodTransferFrom,
       TransactionType.swap,
+      TransactionType.swapAndSend,
       TransactionType.swapApproval,
     ].includes(type);
 
@@ -956,6 +967,7 @@ async function buildEventFragmentProperties({
   }
 
   const uiCustomizations = [];
+  let isAdvancedDetailsOpen = null;
 
   /** securityProviderResponse is used by the OpenSea <> Blockaid provider */
   // eslint-disable-next-line no-lonely-if
@@ -967,7 +979,6 @@ async function buildEventFragmentProperties({
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const blockaidProperties: any = getBlockaidMetricsProps(transactionMeta);
@@ -975,12 +986,29 @@ async function buildEventFragmentProperties({
   if (blockaidProperties?.ui_customizations?.length > 0) {
     uiCustomizations.push(...blockaidProperties.ui_customizations);
   }
-  ///: END:ONLY_INCLUDE_IF
 
   if (simulationFails) {
     uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
   }
+  const isRedesignedConfirmationsDeveloperSettingEnabled =
+    transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled() ||
+    Boolean(process.env.ENABLE_CONFIRMATION_REDESIGN);
 
+  const isRedesignedTransactionsUserSettingEnabled =
+    transactionMetricsRequest.getRedesignedTransactionsEnabled();
+
+  if (
+    (isRedesignedConfirmationsDeveloperSettingEnabled ||
+      isRedesignedTransactionsUserSettingEnabled) &&
+    REDESIGN_TRANSACTION_TYPES.includes(transactionMeta.type as TransactionType)
+  ) {
+    uiCustomizations.push(
+      MetaMetricsEventUiCustomization.RedesignedConfirmation,
+    );
+
+    isAdvancedDetailsOpen =
+      transactionMetricsRequest.getIsConfirmationAdvancedDetailsOpen();
+  }
   const smartTransactionMetricsProperties =
     getSmartTransactionMetricsProperties(
       transactionMetricsRequest,
@@ -1008,11 +1036,10 @@ async function buildEventFragmentProperties({
     token_standard: tokenStandard,
     transaction_type: transactionType,
     transaction_speed_up: type === TransactionType.retry,
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     ...blockaidProperties,
-    ///: END:ONLY_INCLUDE_IF
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
+    transaction_advanced_view: isAdvancedDetailsOpen,
     ...smartTransactionMetricsProperties,
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -75,9 +75,6 @@
   "asset": {
     "message": "Aktīvs"
   },
-  "attemptingConnect": {
-    "message": "Mēģina izveidot savienojumu ar bloku ķēdi."
-  },
   "attributions": {
     "message": "Atribūti"
   },
@@ -628,9 +625,6 @@
   },
   "send": {
     "message": "Sūtīt"
-  },
-  "sendTokens": {
-    "message": "Nosūtīt marķierus"
   },
   "settings": {
     "message": "Iestatījumi"
