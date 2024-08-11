@@ -4,6 +4,12 @@ import { memoize } from 'lodash';
 import { sha256 } from '@noble/hashes/sha256';
 import { NonEmptyArray, bytesToHex, remove0x } from '@metamask/utils';
 import { unescape as unescapeEntities } from 'he';
+import {
+  BackgroundColor,
+  BlockSize,
+  Display,
+  FlexDirection,
+} from '../../../../helpers/constants/design-system';
 import { COMPONENT_MAPPING } from './components';
 import { UIComponent } from './components/types';
 
@@ -11,7 +17,8 @@ export type MapToTemplateParams = {
   map: Record<string, number>;
   element: JSXElement;
   form?: string;
-  footer?: boolean;
+  useFooter: boolean;
+  onCancel: () => void;
 };
 
 /**
@@ -110,3 +117,19 @@ export const mapTextToTemplate = (
 
     return mapToTemplate({ ...params, element });
   }) as NonEmptyArray<UIComponent | string>;
+
+export const getSnapFooter = (children: NonEmptyArray<UIComponent>) => ({
+  element: 'Box',
+  children,
+  props: {
+    display: Display.Flex,
+    flexDirection: FlexDirection.Row,
+    width: BlockSize.Full,
+    padding: 4,
+    className: 'snap-ui-renderer__footer',
+    backgroundColor: BackgroundColor.backgroundDefault,
+    style: {
+      boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
+    },
+  },
+});

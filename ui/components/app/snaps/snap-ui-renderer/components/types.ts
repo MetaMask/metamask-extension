@@ -4,7 +4,8 @@ export type UIComponentParams<T extends JSXElement> = {
   map: Record<string, number>;
   element: T;
   form?: string;
-  footer?: boolean;
+  useFooter: boolean;
+  onCancel: () => void;
 };
 
 export type UIComponent = {
