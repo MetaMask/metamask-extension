@@ -48,20 +48,19 @@ export const SnapIcon: FunctionComponent<SnapIconProps> = ({
 
   // We choose the first non-symbol char as the fallback icon.
   const fallbackIcon = getAvatarFallbackLetter(snapName);
+
   return iconUrl ? (
     <AvatarFavicon
       style={{
         backgroundColor: 'var(--color-background-alternative-hover)',
       }}
-      size={avatarSize as unknown as AvatarFaviconSize}
       src={iconUrl}
       name={snapName}
       {...props}
+      size={avatarSize as unknown as AvatarFaviconSize}
     />
   ) : (
     <AvatarBase
-      {...props}
-      size={avatarSize as unknown as AvatarBaseSize}
       display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.center}
@@ -70,6 +69,8 @@ export const SnapIcon: FunctionComponent<SnapIconProps> = ({
         borderWidth: '0px',
         backgroundColor: 'var(--color-background-alternative-hover)',
       }}
+      {...props}
+      size={avatarSize as unknown as AvatarBaseSize}
     >
       {fallbackIcon}
     </AvatarBase>
