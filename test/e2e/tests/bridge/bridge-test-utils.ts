@@ -13,6 +13,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import GanacheContractAddressRegistry from '../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../webdriver/driver';
 import { FeatureFlagResponse } from '../../../../ui/pages/bridge/bridge.util';
+import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 import {
   DEFAULT_FEATURE_FLAGS_RESPONSE,
   ETH_CONVERSION_RATE_USD,
@@ -104,7 +105,9 @@ export class BridgePage {
     await this.driver.switchToWindowWithTitle('MetaMask Portfolio - Bridge');
     assert.equal(
       (await this.driver.getAllWindowHandles()).length,
-      IS_FIREFOX ? expectedHandleCount : expectedHandleCount + 1,
+      IS_FIREFOX || !isManifestV3
+        ? expectedHandleCount
+        : expectedHandleCount + 1,
     );
     assert.match(
       await this.driver.getCurrentUrl(),
@@ -120,7 +123,9 @@ export class BridgePage {
     });
     assert.equal(
       (await this.driver.getAllWindowHandles()).length,
-      IS_FIREFOX ? expectedHandleCount : expectedHandleCount + 1,
+      IS_FIREFOX || !isManifestV3
+        ? expectedHandleCount
+        : expectedHandleCount + 1,
     );
     assert.match(await this.driver.getCurrentUrl(), /.+cross-chain\/swaps/u);
   };
