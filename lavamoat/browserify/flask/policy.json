@@ -1035,12 +1035,8 @@
       }
     },
     "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": {
-      "globals": {
-        "mode": true
-      },
       "packages": {
-        "browserify>buffer": true,
-        "browserify>insert-module-globals>is-buffer": true
+        "browserify>buffer": true
       }
     },
     "@metamask/controllers>web3": {
@@ -2279,13 +2275,8 @@
         "console.log": true
       },
       "packages": {
-        "@metamask/profile-sync-controller>siwe>@spruceid/siwe-parser>apg-js": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": true,
         "@noble/hashes": true
-      }
-    },
-    "@metamask/profile-sync-controller>siwe>@spruceid/siwe-parser>apg-js": {
-      "packages": {
-        "browserify>buffer": true
       }
     },
     "@metamask/profile-sync-controller>siwe>@stablelib/random": {
@@ -2815,9 +2806,24 @@
       "packages": {
         "@metamask/message-signing-snap>@noble/curves": true,
         "@metamask/scure-bip39": true,
-        "@metamask/utils": true,
+        "@metamask/snaps-sdk>@metamask/key-tree>@metamask/utils": true,
         "@metamask/utils>@scure/base": true,
         "@noble/hashes": true
+      }
+    },
+    "@metamask/snaps-sdk>@metamask/key-tree>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/snaps-utils": {
@@ -2858,9 +2864,24 @@
     "@metamask/snaps-utils>@metamask/snaps-registry": {
       "packages": {
         "@metamask/message-signing-snap>@noble/curves": true,
-        "@metamask/utils": true,
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/snaps-utils>@metamask/snaps-registry>@metamask/utils": true,
+        "@noble/hashes": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/snaps-registry>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
-        "superstruct": true
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/snaps-utils>cron-parser": {
