@@ -71,15 +71,14 @@ export const TransactionData = () => {
     <Container>
       <>
         {data.map((method, index) => (
-          <>
+          <React.Fragment key={index}>
             <FunctionContainer
-              key={index}
               method={method}
               source={source}
               isExpandable={isExpandable}
             />
             {index < data.length - 1 && <ConfirmInfoRowDivider />}
-          </>
+          </React.Fragment>
         ))}
         <CopyDataButton transactionData={transactionData} />
       </>

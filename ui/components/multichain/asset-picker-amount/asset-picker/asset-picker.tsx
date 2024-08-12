@@ -184,7 +184,7 @@ export function AssetPicker({
               badge={
                 <AvatarNetwork
                   size={AvatarNetworkSize.Xs}
-                  name={currentNetwork?.nickname}
+                  name={currentNetwork?.nickname ?? ''}
                   src={currentNetwork?.rpcPrefs?.imageUrl}
                   backgroundColor={testNetworkBackgroundColor}
                   borderColor={
@@ -199,7 +199,6 @@ export function AssetPicker({
                 borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
                 src={primaryTokenImage}
                 size={AvatarTokenSize.Md}
-                showHalo={!isNFT}
                 name={symbol}
                 {...(isNFT && { backgroundColor: BackgroundColor.transparent })}
               />

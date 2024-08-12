@@ -819,7 +819,6 @@ describe('Actions', () => {
                 options: {},
                 methods: [
                   'personal_sign',
-                  'eth_sign',
                   'eth_signTransaction',
                   'eth_signTypedData_v1',
                   'eth_signTypedData_v3',
@@ -867,7 +866,6 @@ describe('Actions', () => {
                 options: {},
                 methods: [
                   'personal_sign',
-                  'eth_sign',
                   'eth_signTransaction',
                   'eth_signTypedData_v1',
                   'eth_signTypedData_v3',
@@ -1726,12 +1724,6 @@ describe('Actions', () => {
   });
 
   describe('#setParticipateInMetaMetrics', () => {
-    beforeAll(() => {
-      window.sentry = {
-        toggleSession: jest.fn(),
-        endSession: jest.fn(),
-      };
-    });
     it('sets participateInMetaMetrics to true', async () => {
       const store = mockStore();
       const setParticipateInMetaMetricsStub = jest.fn((_, cb) => cb());
@@ -1747,7 +1739,6 @@ describe('Actions', () => {
         true,
         expect.anything(),
       );
-      expect(window.sentry.toggleSession).toHaveBeenCalled();
     });
   });
 

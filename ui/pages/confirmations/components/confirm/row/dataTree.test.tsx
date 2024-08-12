@@ -1,6 +1,9 @@
 import React from 'react';
 
-import { permitSignatureMsg } from '../../../../../../test/data/confirmations/typed_sign';
+import {
+  orderSignatureMsg,
+  permitSignatureMsg,
+} from '../../../../../../test/data/confirmations/typed_sign';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import configureStore from '../../../../../store/store';
@@ -74,6 +77,16 @@ describe('DataTree', () => {
     const { container } = renderWithProvider(
       <DataTree
         data={JSON.parse(permitSignatureMsg.msgParams?.data as string)}
+      />,
+      store,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match snapshot for order signature type', () => {
+    const { container } = renderWithProvider(
+      <DataTree
+        data={JSON.parse(orderSignatureMsg.msgParams?.data as string)}
       />,
       store,
     );

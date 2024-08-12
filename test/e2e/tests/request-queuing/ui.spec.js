@@ -11,6 +11,7 @@ const {
   WINDOW_TITLES,
   defaultGanacheOptions,
   switchToNotificationWindow,
+  tempToggleSettingRedesignedConfirmations,
   veryLargeDelayMs,
   DAPP_TWO_URL,
 } = require('../../helpers');
@@ -635,6 +636,7 @@ describe('Request-queue UI changes', function () {
       },
       async ({ driver, ganacheServer, secondaryGanacheServer }) => {
         await unlockWallet(driver);
+        await tempToggleSettingRedesignedConfirmations(driver);
 
         // Navigate to extension home screen
         await driver.navigate(PAGES.HOME);
