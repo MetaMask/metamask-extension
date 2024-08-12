@@ -1452,9 +1452,6 @@
   "data": {
     "message": "Datos"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Hindi maibalik ang iyong data. Mukhang sira ang file."
-  },
   "dataCollectionForMarketing": {
     "message": "Koleksyon ng data para sa marketing"
   },
@@ -4409,12 +4406,6 @@
   "restore": {
     "message": "Ibalik"
   },
-  "restoreFailed": {
-    "message": "Hindi maibalik ang iyong data mula sa file na ibinigay"
-  },
-  "restoreSuccessful": {
-    "message": "Ang iyong data ay matagumpay na naibalik"
-  },
   "restoreUserData": {
     "message": "Ibalik ang data ng user"
   },
@@ -4807,9 +4798,6 @@
   },
   "signatureRequestGuidance": {
     "message": "Pirmahan lang ang mensaheng ito kung ganap mong nauunawaan ang nilalaman at nagtitiwala sa site na humihiling."
-  },
-  "signatureRequestWarning": {
-    "message": "Ang pagpirma sa mensaheng ito ay maaaring mapanganib. Maaari kang magbigay ng buong kontrol ng iyong account at mga asset sa partido sa kabilang dulo ng mensaheng ito. Nangangahulugan iyon na maaari nitong ubusin ang laman ng iyong account anumang oras. Magpatuloy nang may pag-iingat. $1."
   },
   "signed": {
     "message": "Napirmahan"
@@ -5926,45 +5914,6 @@
     "message": "Para kay/sa: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "Nanganganib ka sa mga phishing na pag-atake. Protektahan ang sarili mo sa pamamagitan ng pag-off sa eth_sign."
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "Kung pagaganahin mo ang setting na ito, maaari kang makakuha ng mga kahilingan sa paglagda na hindi nababasa. Sa pamamagitan ng pagpirma sa isang mensaheng hindi mo naiintindihan, posible kang sumang-ayon na ipamigay ang iyong mga pondo at NFT."
-  },
-  "toggleEthSignField": {
-    "message": "Mga kahilingan sa Eth_sign"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " baka niloloko ka"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "Kung hiniling sa iyo na i-on ang setting na ito,"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "Nauunawaan ko na maaaring mawala ang aking pondo at mga NFT kapag pinagana ko ang mga kahilingan sa eth-sign. "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "Ang pagbibigay ng pahintulot sa mga kahilingan ng eth_sign ay magpapahina sa iyo upang atakehin ng phishing. Palaging i-review ang URL a t mag-ingat kapag nagsa-sign ng mga mensahe na naglalaman ng code."
-  },
-  "toggleEthSignModalFormError": {
-    "message": "Mali ang text"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "Ilagay ang “pipirmahan ko lang kung ano ang nauunawaan ko” para magpatuloy"
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "Pipirmahan ko lang kung ano ang nauunawaan ko"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "Gamitin sa sarili mong pananagutan"
-  },
-  "toggleEthSignOff": {
-    "message": "I-OFF (Inirerekomenda)"
-  },
-  "toggleEthSignOn": {
-    "message": "I-ON (Hindi inirerekomenda)"
-  },
   "toggleRequestQueueDescription": {
     "message": "Pinahihintulutan ka nitong pumili ng network para sa bawat site sa halip na iisang piniling network para sa lahat ng site. Pipigilan ka ng feature na ito na magpalit ng network nang mano-mano, na maaaring makasira sa iyong karanasan bilang user sa ilang partikular na site."
   },
@@ -6561,9 +6510,6 @@
   },
   "yourBalance": {
     "message": "Iyong balanse"
-  },
-  "yourFundsMayBeAtRisk": {
-    "message": "Maaaring nasa panganib ang iyong pondo"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Maaaring nasa panganib ang iyong NFT"

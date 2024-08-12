@@ -1452,9 +1452,6 @@
   "data": {
     "message": "Data"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Tidak dapat memulihkan data Anda. File tampaknya rusak."
-  },
   "dataCollectionForMarketing": {
     "message": "Pengumpulan data untuk pemasaran"
   },
@@ -4409,12 +4406,6 @@
   "restore": {
     "message": "Pulihkan"
   },
-  "restoreFailed": {
-    "message": "Tidak dapat memulihkan data Anda dari berkas yang disediakan"
-  },
-  "restoreSuccessful": {
-    "message": "Data Anda telah berhasil dipulihkan"
-  },
   "restoreUserData": {
     "message": "Pulihkan data pengguna"
   },
@@ -4807,9 +4798,6 @@
   },
   "signatureRequestGuidance": {
     "message": "Tandatangani pesan ini hanya jika Anda benar-benar memahami isinya dan memercayai situs yang memintanya."
-  },
-  "signatureRequestWarning": {
-    "message": "Berhati-hatilah sebelum menandatangani pesan ini. Anda mungkin memberikan kendali penuh atas akun dan aset Anda kepada pihak lain pesan ini. Artinya, pihak tersebut dapat menguras akun Anda kapan saja. Lanjutkan dengan hati-hati. $1."
   },
   "signed": {
     "message": "Ditandatangani"
@@ -5926,45 +5914,6 @@
     "message": "Ke: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "Anda berisiko terkena serangan phishing. Lindungi diri dengan menonaktifkan eth_sign."
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "Jika mengaktifkan pengaturan ini, Anda akan mendapatkan permintaan tanda tangan yang tidak terbaca. Dengan menandatangani pesan yang tidak Anda pahami, Anda mungkin setuju untuk memberikan dana dan NFT Anda."
-  },
-  "toggleEthSignField": {
-    "message": "Permintaan et_sign"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " Anda mungkin ditipu"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "Jika Anda diminta mengaktifkan pengaturan ini,"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "Saya memahami bahwa saya dapat kehilangan semua dana dan NFT jika mengaktifkan permintaan eth_sign. "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "Mengizinkan permintaan eth_sign dapat membuat Anda rentan terhadap serangan phishing. Selalu tinjau URL dan berhati-hatilah saat menandatangani pesan yang berisi kode."
-  },
-  "toggleEthSignModalFormError": {
-    "message": "Teks salah"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "Masukkan \"Saya hanya menandatangani yang saya pahami\" untuk melanjutkan"
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "Saya hanya menandatangani yang saya pahami"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "Gunakan dengan risiko Anda sendiri"
-  },
-  "toggleEthSignOff": {
-    "message": "NONAKTIF (Disarankan)"
-  },
-  "toggleEthSignOn": {
-    "message": "AKTIF (Tidak disarankan)"
-  },
   "toggleRequestQueueDescription": {
     "message": "Hal ini memungkinkan Anda memilih jaringan untuk setiap situs, daripada satu jaringan yang dipilih untuk semua situs. Fitur ini akan mencegah Anda berpindah jaringan secara manual, yang dapat merusak pengalaman pengguna di situs tertentu."
   },
@@ -6561,9 +6510,6 @@
   },
   "yourBalance": {
     "message": "Saldo Anda"
-  },
-  "yourFundsMayBeAtRisk": {
-    "message": "Dana Anda mungkin berisiko"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT Anda mungkin berisiko"

@@ -26,7 +26,7 @@ import {
   getTokenList,
   getCurrentNetwork,
   getTestNetworkBackgroundColor,
-  contractExchangeRateSelector,
+  getTokenExchangeRates,
 } from '../../../selectors';
 import {
   addImportedTokens,
@@ -137,7 +137,7 @@ export const ImportTokensModal = ({ onClose }) => {
   const accounts = useSelector(getInternalAccounts);
   const tokens = useSelector((state) => state.metamask.tokens);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const contractExchangeRates = useSelector(contractExchangeRateSelector);
+  const contractExchangeRates = useSelector(getTokenExchangeRates);
 
   const [customAddress, setCustomAddress] = useState('');
   const [customAddressError, setCustomAddressError] = useState(null);
