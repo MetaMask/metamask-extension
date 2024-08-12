@@ -120,7 +120,7 @@ const DeveloperOptionsTab = () => {
         gap={4}
       >
         <div className="settings-page__content-item">
-          <span>{t('announcements')}</span>
+          <span>Announcements</span>
           <div className="settings-page__content-description">
             Resets isShown boolean to false for all announcements. Announcements
             are the notifications shown in the What's New popup modal.

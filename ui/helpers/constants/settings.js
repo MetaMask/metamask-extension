@@ -494,7 +494,7 @@ const SETTINGS_CONSTANTS = [
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
     tabMessage: DEVELOPER_OPTIONS_TAB_MESSAGE,
-    sectionMessage: (t) => t('announcements'),
+    sectionMessage: 'Announcements',
     descriptionMessage:
       "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal.",
     route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-announcements`,

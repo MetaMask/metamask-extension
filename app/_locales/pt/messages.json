@@ -550,9 +550,6 @@
     "message": "$1 e $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
-  "announcements": {
-    "message": "Comunicados"
-  },
   "appDescription": {
     "message": "Uma carteira de Ethereum no seu navegador",
     "description": "The description of the application"

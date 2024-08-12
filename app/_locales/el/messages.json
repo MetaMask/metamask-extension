@@ -550,9 +550,6 @@
     "message": "$1 και $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
-  "announcements": {
-    "message": "Ανακοινώσεις"
-  },
   "appDescription": {
     "message": "Ένα Πορτοφόλι Ethereum στο Πρόγραμμα Περιήγησής σας",
     "description": "The description of the application"
