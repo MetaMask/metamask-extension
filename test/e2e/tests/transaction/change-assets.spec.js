@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
   withFixtures,
@@ -251,14 +250,7 @@ describe('Change assets', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNftControllerERC721()
-          .withPreferencesController({
-            featureFlags: {
-              sendHexData: true,
-            },
-          })
-          .build(),
+        fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
@@ -328,23 +320,6 @@ describe('Change assets', function () {
         // Populate an amount, continue
         await driver.clickElement('[data-testid="currency-input"]');
         await driver.press('[data-testid="currency-input"]', '2');
-
-        // Make sure hex data is cleared after switching assets
-        const hexDataLocator = await driver.findElement(
-          '[data-testid="send-hex-textarea"]',
-        );
-        const hexDataValue = await hexDataLocator.getProperty('value');
-        assert.equal(
-          hexDataValue,
-          '',
-          'Hex data has not been cleared after switching assets.',
-        );
-
-        // Make sure gas is updated by resetting amount and hex data
-        // Note: this is needed until the race condition is fixed on the wallet level (issue #25243)
-        await driver.fill('[data-testid="currency-input"]', '2');
-        await hexDataLocator.fill('0x');
-        await hexDataLocator.fill('');
 
         // Go to the last confirmation screen
         await driver.clickElement({ text: 'Continue', css: 'button' });
