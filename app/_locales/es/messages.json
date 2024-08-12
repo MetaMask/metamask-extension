@@ -3517,9 +3517,6 @@
   "onboardedMetametricsTitle": {
     "message": "Ayúdenos a mejorar su experiencia"
   },
-  "onboarding": {
-    "message": "Incorporación"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "La puerta de enlace de IPFS permite acceder y visualizar datos alojados por terceros. Puede agregar una puerta de enlace de IPFS personalizada o continuar usando la predeterminada."
   },

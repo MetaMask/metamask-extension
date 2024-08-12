@@ -3517,9 +3517,6 @@
   "onboardedMetametricsTitle": {
     "message": "帮助我们改善您的体验"
   },
-  "onboarding": {
-    "message": "入门"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "IPFS 网关使访问和查看第三方托管的数据成为可能。您可以添加自定义 IPFS 网关或继续使用默认网关。"
   },

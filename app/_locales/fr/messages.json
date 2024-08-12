@@ -3517,9 +3517,6 @@
   "onboardedMetametricsTitle": {
     "message": "Aidez-nous à améliorer votre expérience utilisateur"
   },
-  "onboarding": {
-    "message": "Intégration"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "La passerelle IPFS vous permet d’accéder aux données hébergées par des tiers et de les visualiser. Vous pouvez ajouter une passerelle IPFS personnalisée ou continuer à utiliser la passerelle par défaut."
   },

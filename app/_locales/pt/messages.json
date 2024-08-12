@@ -3517,9 +3517,6 @@
   "onboardedMetametricsTitle": {
     "message": "Ajude-nos a melhorar sua experiência"
   },
-  "onboarding": {
-    "message": "Integração"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "O gateway IPFS possibilita acessar e visualizar dados hospedados por terceiros. Você pode adicionar um gateway IPFS personalizado ou continuar usando o padrão."
   },

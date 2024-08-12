@@ -3517,9 +3517,6 @@
   "onboardedMetametricsTitle": {
     "message": "エクスペリエンスの改善にご協力ください"
   },
-  "onboarding": {
-    "message": "オンボーディング"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "IPFSゲートウェイにより、第三者がホスティングしているデータへのアクセスと表示が可能になります。カスタムIPFSゲートウェイを追加するか、引き続きデフォルトを使用できます。"
   },

@@ -3552,9 +3552,6 @@
   "onboardedMetametricsTitle": {
     "message": "Help us enhance your experience"
   },
-  "onboarding": {
-    "message": "Onboarding"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "The IPFS gateway makes it possible to access and view data hosted by third parties. You can add a custom IPFS gateway or continue using the default."
   },

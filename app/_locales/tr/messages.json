@@ -3517,9 +3517,6 @@
   "onboardedMetametricsTitle": {
     "message": "Deneyiminizi iyileştirmemize yardımcı olun"
   },
-  "onboarding": {
-    "message": "Katılım"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "IPFS ağ geçidi üçüncü tarafların barındırdığı veriler için erişim ve görüntülemeyi mümkün kılar. Özel bir IPFS ağ geçidi ekleyebilir veya varsayılanı kullanmaya devam edebilirsiniz."
   },

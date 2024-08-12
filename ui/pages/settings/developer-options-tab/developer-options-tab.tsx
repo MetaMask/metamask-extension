@@ -169,7 +169,7 @@ const DeveloperOptionsTab = () => {
           className="settings-page__content-item"
           style={{ flex: '1 1 auto' }}
         >
-          <span>{t('onboarding')}</span>
+          <span>Onboarding</span>
           <div className="settings-page__content-description">
             {t('developerOptionsResetStatesOnboarding')}
           </div>

@@ -3517,9 +3517,6 @@
   "onboardedMetametricsTitle": {
     "message": "Hãy giúp chúng tôi nâng cao trải nghiệm của bạn"
   },
-  "onboarding": {
-    "message": "Giới thiệu"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "Cổng IPFS cho phép truy cập và xem dữ liệu do bên thứ ba lưu trữ. Bạn có thể thêm cổng IPFS tùy chỉnh hoặc tiếp tục sử dụng cổng mặc định."
   },

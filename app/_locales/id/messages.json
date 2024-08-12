@@ -3517,9 +3517,6 @@
   "onboardedMetametricsTitle": {
     "message": "Bantu kami meningkatkan pengalaman Anda"
   },
-  "onboarding": {
-    "message": "Orientasi"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "Gateway IPFS memungkinkan untuk mengakses dan melihat data yang disimpan oleh pihak ketiga. Anda dapat menambahkan gateway IPFS khusus atau melanjutkan menggunakan default."
   },
