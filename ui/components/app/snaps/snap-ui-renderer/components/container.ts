@@ -55,6 +55,10 @@ export const container: UIComponentFactory<BoxElement> = ({
   if (useFooter && !children[1]) {
     templateChildren.push({
       ...DEFAULT_FOOTER,
+      props: {
+        ...DEFAULT_FOOTER.props,
+        className: 'snap-ui-renderer__footer-centered',
+      },
       children: {
         element: 'SnapFooterButton',
         key: 'default-button',
