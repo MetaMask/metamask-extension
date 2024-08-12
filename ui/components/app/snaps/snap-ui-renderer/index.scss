@@ -37,6 +37,10 @@
     }
   }
 
+  &__image {
+    max-width: 100%;
+  }
+
   &__footer {
     grid-area: footer;
     margin-top: auto;

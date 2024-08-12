@@ -17,6 +17,7 @@ export const SnapUIImage = ({
 
   return (
     <img
+      className="snap-ui-renderer__image"
       data-testid="snaps-ui-image"
       src={src}
       width={width}

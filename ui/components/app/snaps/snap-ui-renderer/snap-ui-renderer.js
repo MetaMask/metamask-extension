@@ -39,7 +39,6 @@ const SnapUIRendererComponent = ({
   useDelineator = true,
   useFooter = false,
   onCancel,
-  header,
 }) => {
   const t = useI18nContext();
 
@@ -120,19 +119,16 @@ const SnapUIRendererComponent = ({
       </Box>
     </SnapDelineator>
   ) : (
-    <>
-      {header}
-      <SnapInterfaceContextProvider
-        snapId={snapId}
-        interfaceId={interfaceId}
-        initialState={initialState}
-        context={context}
-      >
-        <Box className="snap-ui-renderer__content" height={BlockSize.Full}>
-          <MetaMaskTemplateRenderer sections={sections} />
-        </Box>
-      </SnapInterfaceContextProvider>
-    </>
+    <SnapInterfaceContextProvider
+      snapId={snapId}
+      interfaceId={interfaceId}
+      initialState={initialState}
+      context={context}
+    >
+      <Box className="snap-ui-renderer__content" height={BlockSize.Full}>
+        <MetaMaskTemplateRenderer sections={sections} />
+      </Box>
+    </SnapInterfaceContextProvider>
   );
 };
 
@@ -158,5 +154,4 @@ SnapUIRendererComponent.propTypes = {
   useDelineator: PropTypes.bool,
   useFooter: PropTypes.bool,
   onCancel: PropTypes.func,
-  header: PropTypes.element,
 };

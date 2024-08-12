@@ -43,6 +43,7 @@ import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IF
 import { DAY } from '../../../../shared/constants/time';
+import { Display } from '../../../helpers/constants/design-system';
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
@@ -496,25 +497,27 @@ export default function ConfirmationPage({
         </div>
       )}
       {isSnapCustomUIDialog ? (
-        <SnapUIRenderer
-          header={
+        <>
+          <Box display={Display.Flex} style={{ overflow: 'hidden' }}>
             <SnapAuthorshipHeader
               snapId={pendingConfirmation?.origin}
               onCancel={handleSnapDialogCancel}
             />
-          }
-          snapId={pendingConfirmation?.origin}
-          interfaceId={pendingConfirmation?.requestData.id}
-          isPrompt={isSnapPrompt}
-          inputValue={isSnapPrompt && inputStates[pendingConfirmation?.type]}
-          onInputChange={isSnapPrompt && onInputChange}
-          placeholder={
-            isSnapPrompt && pendingConfirmation?.requestData.placeholder
-          }
-          useDelineator={false}
-          onCancel={handleSnapDialogCancel}
-          useFooter={isSnapDefaultDialog}
-        />
+          </Box>
+          <SnapUIRenderer
+            snapId={pendingConfirmation?.origin}
+            interfaceId={pendingConfirmation?.requestData.id}
+            isPrompt={isSnapPrompt}
+            inputValue={isSnapPrompt && inputStates[pendingConfirmation?.type]}
+            onInputChange={isSnapPrompt && onInputChange}
+            placeholder={
+              isSnapPrompt && pendingConfirmation?.requestData.placeholder
+            }
+            useDelineator={false}
+            onCancel={handleSnapDialogCancel}
+            useFooter={isSnapDefaultDialog}
+          />
+        </>
       ) : (
         <div className="confirmation-page__content">
           {templatedValues.networkDisplay ? (
