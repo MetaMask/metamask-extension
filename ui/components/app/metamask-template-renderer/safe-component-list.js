@@ -12,7 +12,7 @@ import TextField from '../../ui/text-field';
 import ConfirmationNetworkSwitch from '../../../pages/confirmations/confirmation/components/confirmation-network-switch';
 import UrlIcon from '../../ui/url-icon';
 import Tooltip from '../../ui/tooltip/tooltip';
-import { AvatarIcon, Text } from '../../component-library';
+import { AvatarIcon, FormTextField, Text } from '../../component-library';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import { AccountListItem } from '../../multichain';
 import {
@@ -94,6 +94,7 @@ export const safeComponentList = {
   SnapUICheckbox,
   SnapUITooltip,
   SnapFooterButton,
+  FormTextField,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   CreateSnapAccount,
   RemoveSnapAccount,

@@ -7,7 +7,7 @@ import { isEqual } from 'lodash';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import { SnapDelineator } from '../snap-delineator';
 import { getSnapMetadata, getMemoizedInterface } from '../../../../selectors';
-import { Box, FormTextField } from '../../../component-library';
+import { Box } from '../../../component-library';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
@@ -18,6 +18,7 @@ import {
   Display,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { mapToTemplate } from './utils';
 
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
@@ -40,6 +41,8 @@ const SnapUIRendererComponent = ({
   onCancel,
   header,
 }) => {
+  const t = useI18nContext();
+
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),
   );
@@ -51,11 +54,21 @@ const SnapUIRendererComponent = ({
     (oldState, newState) => isEqual(oldState.content, newState.content),
   );
   const rawContent = interfaceState?.content;
-
+  console.log('rerender');
   const content =
     rawContent?.type === 'Container' || !rawContent
       ? rawContent
       : Container({ children: rawContent });
+
+  const promptLegacyProps = useMemo(
+    () =>
+      isPrompt && {
+        inputValue,
+        onInputChange,
+        placeholder,
+      },
+    [inputValue, onInputChange, placeholder, isPrompt],
+  );
 
   const sections = useMemo(
     () =>
@@ -65,8 +78,10 @@ const SnapUIRendererComponent = ({
         element: content,
         onCancel,
         useFooter,
+        promptLegacyProps,
+        t,
       }),
-    [content, onCancel, useFooter],
+    [content, onCancel, useFooter, promptLegacyProps, t],
   );
 
   if (isLoading || !content) {
@@ -103,16 +118,6 @@ const SnapUIRendererComponent = ({
         >
           <MetaMaskTemplateRenderer sections={sections} />
         </SnapInterfaceContextProvider>
-        {isPrompt && (
-          <FormTextField
-            marginTop={4}
-            className="snap-prompt-input"
-            maxLength={300}
-            value={inputValue}
-            onChange={onInputChange}
-            placeholder={placeholder}
-          />
-        )}
       </Box>
     </SnapDelineator>
   ) : (
@@ -126,16 +131,6 @@ const SnapUIRendererComponent = ({
       >
         <Box className="snap-ui-renderer__content" height={BlockSize.Full}>
           <MetaMaskTemplateRenderer sections={sections} />
-          {isPrompt && (
-            <FormTextField
-              marginTop={4}
-              className="snap-prompt-input"
-              maxLength={300}
-              value={inputValue}
-              onChange={onInputChange}
-              placeholder={placeholder}
-            />
-          )}
         </Box>
       </SnapInterfaceContextProvider>
     </>

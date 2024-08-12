@@ -25,7 +25,11 @@ export const DEFAULT_FOOTER = {
   },
 };
 
-const getDefaultButtons = (footer: FooterElement, onCancel: () => void) => {
+const getDefaultButtons = (
+  footer: FooterElement,
+  t: (value: string) => string,
+  onCancel: () => void,
+) => {
   const children = getJsxChildren(footer);
 
   if (children.length === 1) {
@@ -36,7 +40,7 @@ const getDefaultButtons = (footer: FooterElement, onCancel: () => void) => {
         onCancel,
         isSnapAction: false,
       },
-      children: 'Cancel',
+      children: t('cancel'),
     };
   }
 
@@ -45,9 +49,10 @@ const getDefaultButtons = (footer: FooterElement, onCancel: () => void) => {
 
 export const footer: UIComponentFactory<FooterElement> = ({
   element,
+  t,
   onCancel,
 }) => {
-  const defaultButtons = getDefaultButtons(element, onCancel);
+  const defaultButtons = getDefaultButtons(element, t, onCancel);
 
   const footerChildren = (getJsxChildren(element) as ButtonElement[]).map(
     (children) => {

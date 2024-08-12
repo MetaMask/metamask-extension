@@ -1,7 +1,6 @@
 .snap-ui-renderer {
   &__container {
     & > div:first-child {
-      flex: 1;
       padding: 16px;
     }
   }
@@ -40,6 +39,7 @@
 
   &__footer {
     grid-area: footer;
+    margin-top: auto;
 
     &-centered {
       & button {

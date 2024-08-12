@@ -4,6 +4,7 @@ import { memoize } from 'lodash';
 import { sha256 } from '@noble/hashes/sha256';
 import { NonEmptyArray, bytesToHex, remove0x } from '@metamask/utils';
 import { unescape as unescapeEntities } from 'he';
+import { ChangeEvent as ReactChangeEvent } from 'react';
 import { COMPONENT_MAPPING } from './components';
 import { UIComponent } from './components/types';
 
@@ -13,6 +14,12 @@ export type MapToTemplateParams = {
   form?: string;
   useFooter?: boolean;
   onCancel?: () => void;
+  promptLegacyProps?: {
+    onInputChange: (event: ReactChangeEvent<HTMLInputElement>) => void;
+    inputValue: string;
+    placeholder?: string;
+  };
+  t: (key: string) => string;
 };
 
 /**

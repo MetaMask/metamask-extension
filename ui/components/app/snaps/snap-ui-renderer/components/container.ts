@@ -13,6 +13,8 @@ export const container: UIComponentFactory<BoxElement> = ({
   element,
   useFooter,
   onCancel,
+  promptLegacyProps,
+  t,
   ...params
 }) => {
   const children = getJsxChildren(element);
@@ -26,10 +28,27 @@ export const container: UIComponentFactory<BoxElement> = ({
     mapToTemplate({
       useFooter,
       onCancel,
+      t,
       ...params,
       element: child as JSXElement,
     }),
   );
+
+  if (promptLegacyProps) {
+    templateChildren.push({
+      element: 'FormTextField',
+      key: 'snap-prompt-input',
+      props: {
+        marginLeft: 4,
+        marginRight: 4,
+        className: 'snap-prompt-input',
+        value: promptLegacyProps.inputValue,
+        onChange: promptLegacyProps.onInputChange,
+        placeholder: promptLegacyProps.placeholder,
+        maxLength: 300,
+      },
+    });
+  }
 
   if (useFooter && !children[1]) {
     templateChildren.push({
@@ -41,7 +60,7 @@ export const container: UIComponentFactory<BoxElement> = ({
           onCancel,
           isSnapAction: false,
         },
-        children: 'Cancel',
+        children: t('close'),
       },
     });
   }
