@@ -10,7 +10,8 @@ type VersionedData = {
 export const version = 120.2;
 
 /**
- * This migration removes any dangling instances of SelectedNetworkController.perDomainNetwork and SnapController.snapErrors
+ * This migration removes obsolete state from various controllers. In all cases, this was done to
+ * address Sentry errors.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.

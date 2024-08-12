@@ -11,7 +11,10 @@ import {
   MetaMetricsEventLocation,
 } from '../../../../shared/constants/metametrics';
 import { createMockImplementation, mock4byte } from '../../helpers';
-import { getUnapprovedTransaction } from './transactionDataHelpers';
+import {
+  getMaliciousUnapprovedTransaction,
+  getUnapprovedTransaction,
+} from './transactionDataHelpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
@@ -61,6 +64,21 @@ const getMetaMaskStateWithUnapprovedContractInteraction = (
     },
     transactions: [
       getUnapprovedTransaction(
+        accountAddress,
+        pendingTransactionId,
+        pendingTransactionTime,
+      ),
+    ],
+  };
+};
+
+const getMetaMaskStateWithMaliciousUnapprovedContractInteraction = (
+  accountAddress: string,
+) => {
+  return {
+    ...getMetaMaskStateWithUnapprovedContractInteraction(accountAddress),
+    transactions: [
+      getMaliciousUnapprovedTransaction(
         accountAddress,
         pendingTransactionId,
         pendingTransactionTime,
@@ -159,5 +177,29 @@ describe('Contract Interaction Confirmation', () => {
         queryByTestId('confirmation-account-details-modal__account-name'),
       ).not.toBeInTheDocument();
     });
+  });
+
+  it('displays the header account modal with correct data', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithMaliciousUnapprovedContractInteraction(
+        account.address,
+      );
+
+    const { getByText } = await integrationTestRender({
+      preloadedState: mockedMetaMaskState,
+      backgroundConnection: backgroundConnectionMocked,
+    });
+
+    const headingText = 'This is a deceptive request';
+    const bodyText =
+      'If you approve this request, a third party known for scams will take all your assets.';
+    expect(getByText(headingText)).toBeInTheDocument();
+    expect(getByText(bodyText)).toBeInTheDocument();
   });
 });
