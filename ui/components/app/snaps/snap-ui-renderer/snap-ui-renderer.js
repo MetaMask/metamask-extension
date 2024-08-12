@@ -52,7 +52,10 @@ const SnapUIRendererComponent = ({
   );
   const rawContent = interfaceState?.content;
 
-  const content = rawContent?.type !== 'Container' ? Container({ children: rawContent }) : rawContent;
+  const content =
+    rawContent?.type === 'Container' || !rawContent
+      ? rawContent
+      : Container({ children: rawContent });
 
   const sections = useMemo(
     () =>
