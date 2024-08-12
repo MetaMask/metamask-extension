@@ -101,7 +101,7 @@ export default async function init() {
     iframe.onload = () => {
       setupMessageListeners(iframe);
       resolve();
-    }
+    };
     document.body.appendChild(iframe);
   });
 }
