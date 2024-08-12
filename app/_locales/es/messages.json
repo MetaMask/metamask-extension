@@ -1546,30 +1546,6 @@
   "details": {
     "message": "Detalles"
   },
-  "developerOptions": {
-    "message": "Opciones de desarrollador"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Activa o desactiva la función de rediseño de confirmaciones que se encuentra en fase de desarrollo"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Rediseño de confirmaciones"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Activa o desactiva el nuevo diseño del menú Redes"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Rediseño del menú Redes"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Restablece el valor booleano isShown a falso para todos los anuncios. Los anuncios son las notificaciones que se muestran en la ventana emergente Novedades."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Restablece varios estados relacionados con la incorporación y redirige a la página de incorporación \"Asegure su monedero\"."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "El resultado es una marca de tiempo que se guarda continuamente en session.storage"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” está desactivado porque no cumple el mínimo de un aumento del 10 % respecto a la tarifa de gas original.",
     "description": "$1 is gas estimate type which can be market or aggressive"

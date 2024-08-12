@@ -1546,30 +1546,6 @@
   "details": {
     "message": "详细信息"
   },
-  "developerOptions": {
-    "message": "开发者选项"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "启用或禁用当前正在开发的确认重新设计功能"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "确认重新设计"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "切换网络菜单的新设计"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "网络菜单新设计"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "将所有公告的布尔值显示重设为 false。公告是显示在“最新资讯”（What's New）弹出模式中的通知。"
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "重设与入门相关的各种状态，并重定向到“保护您的钱包”入门页面。"
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "导致时间戳持续保存到 session.storage"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1”已被禁用，因为它不满足在原来的燃料费用基础上至少增加10%的要求。",
     "description": "$1 is gas estimate type which can be market or aggressive"
