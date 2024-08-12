@@ -972,8 +972,8 @@
       },
       "packages": {
         "@metamask/eth-json-rpc-filters>@metamask/eth-query": true,
+        "@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine": true,
         "@metamask/eth-json-rpc-filters>async-mutex": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/safe-event-emitter": true,
         "pify": true
       }
@@ -982,6 +982,13 @@
       "packages": {
         "@metamask/eth-query>json-rpc-random-id": true,
         "watchify>xtend": true
+      }
+    },
+    "@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/eth-json-rpc-filters>async-mutex": {
@@ -999,10 +1006,10 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/eth-json-rpc-middleware>@metamask/json-rpc-engine": true,
         "@metamask/eth-json-rpc-middleware>klona": true,
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "pify": true
@@ -1010,8 +1017,22 @@
     },
     "@metamask/eth-json-rpc-middleware>@metamask/eth-json-rpc-provider": {
       "packages": {
-        "@metamask/providers>@metamask/json-rpc-engine": true,
+        "@metamask/eth-json-rpc-middleware>@metamask/eth-json-rpc-provider>@metamask/json-rpc-engine": true,
         "@metamask/safe-event-emitter": true
+      }
+    },
+    "@metamask/eth-json-rpc-middleware>@metamask/eth-json-rpc-provider>@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/eth-json-rpc-middleware>@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring": {
@@ -1807,10 +1828,17 @@
       },
       "packages": {
         "@metamask/eth-json-rpc-middleware>@metamask/eth-json-rpc-provider": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "node-fetch": true
+      }
+    },
+    "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
@@ -2073,13 +2101,6 @@
         "@metamask/ppom-validator>elliptic>minimalistic-assert": true,
         "@metamask/ppom-validator>elliptic>minimalistic-crypto-utils": true,
         "ethers>@ethersproject/sha2>hash.js": true
-      }
-    },
-    "@metamask/providers>@metamask/json-rpc-engine": {
-      "packages": {
-        "@metamask/rpc-errors": true,
-        "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true
       }
     },
     "@metamask/queued-request-controller": {
