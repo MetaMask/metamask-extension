@@ -78,7 +78,7 @@ const NetworkChangeToastLegacy = ({
     <Box className="toast_wrapper">
       <Toast
         onClose={hideToast}
-        text={t('networkSwitchMessage', [networkName])}
+        text={t('networkSwitchMessage', [networkName ?? ''])}
         startAdornment={null}
       />
     </Box>
