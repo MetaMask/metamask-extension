@@ -573,4 +573,58 @@ describe('migration #120.2', () => {
       });
     });
   });
+
+  it('migrates state from all controllers', async () => {
+    const oldState = {
+      NetworkController: {
+        networkDetails: {},
+        networkId: 'example',
+        networkStatus: 'example',
+        previousProviderStore: 'example',
+        provider: 'example',
+        providerConfig: {
+          id: 'some-id',
+        },
+        selectedNetworkClientId: 'example',
+      },
+      PhishingController: {
+        listState: {},
+        phishingLists: [],
+      },
+      SelectedNetworkController: {
+        domains: {
+          'https://metamask.io': {
+            network: 'mainnet',
+          },
+        },
+        perDomainNetwork: true,
+      },
+      SnapController: {
+        snapErrors: {},
+        snapStates: {},
+        unencryptedSnapStates: {},
+        snaps: {},
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: cloneDeep(oldState),
+    });
+
+    expect(transformedState.data).toEqual({
+      NetworkController: {
+        providerConfig: {},
+        selectedNetworkClientId: 'example',
+      },
+      PhishingController: {
+        phishingLists: [],
+      },
+      SnapController: {
+        snapStates: {},
+        unencryptedSnapStates: {},
+        snaps: {},
+      },
+    });
+  });
 });
