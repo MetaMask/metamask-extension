@@ -47,7 +47,6 @@ import {
 } from '../../../pages/remove-snap-account';
 import { SnapAccountRedirect } from '../../../pages/snap-account-redirect';
 import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
-
 ///: END:ONLY_INCLUDE_IF
 
 export const safeComponentList = {
