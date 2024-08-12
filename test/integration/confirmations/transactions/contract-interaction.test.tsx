@@ -126,6 +126,7 @@ const setupSubmitRequestToBackgroundMocks = (
 describe('Contract Interaction Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    setupSubmitRequestToBackgroundMocks();
     mock4byte();
   });
 
@@ -145,8 +146,6 @@ describe('Contract Interaction Confirmation', () => {
       getMetaMaskStateWithUnapprovedContractInteraction({
         accountAddress: account.address,
       });
-
-    setupSubmitRequestToBackgroundMocks();
 
     const { getByTestId, queryByTestId, findByTestId } =
       await integrationTestRender({
@@ -220,8 +219,6 @@ describe('Contract Interaction Confirmation', () => {
         accountAddress: account.address,
       });
 
-    setupSubmitRequestToBackgroundMocks();
-
     const { getByTestId, getByText, findByTestId } =
       await integrationTestRender({
         preloadedState: mockedMetaMaskState,
@@ -238,7 +235,6 @@ describe('Contract Interaction Confirmation', () => {
     const simulationSection = getByTestId('simulation-details-layout');
     expect(simulationSection).toBeInTheDocument();
     expect(simulationSection).toHaveTextContent('Estimated changes');
-    // ToDo: Fix this test : simulation details are not displayed
     const simulationDetailsRow = await findByTestId('simulation-rows-incoming');
     expect(simulationSection).toContainElement(simulationDetailsRow);
     expect(simulationDetailsRow).toHaveTextContent('You receive');
@@ -285,7 +281,6 @@ describe('Contract Interaction Confirmation', () => {
     mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
       createMockImplementation({ setPreference: {} }),
     );
-    setupSubmitRequestToBackgroundMocks();
 
     const account =
       mockMetaMaskState.internalAccounts.accounts[
@@ -321,7 +316,6 @@ describe('Contract Interaction Confirmation', () => {
     mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
       createMockImplementation({ setPreference: {} }),
     );
-    setupSubmitRequestToBackgroundMocks();
 
     const account =
       mockMetaMaskState.internalAccounts.accounts[
