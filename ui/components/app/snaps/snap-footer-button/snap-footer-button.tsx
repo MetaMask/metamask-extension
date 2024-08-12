@@ -1,4 +1,4 @@
-import React, { FunctionComponent, MouseEvent } from 'react';
+import React, { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
 import { ButtonVariant, UserInputEventType } from '@metamask/snaps-sdk';
 import { Button, ButtonSize, IconSize } from '../../../component-library';
 import {
@@ -26,7 +26,7 @@ export const SnapFooterButton: FunctionComponent<SnapFooterButtonProps> = ({
 }) => {
   const { handleEvent, snapId } = useSnapInterfaceContext();
 
-  const handleSnapAction = (event: MouseEvent<HTMLElement>) => {
+  const handleSnapAction = (event: ReactMouseEvent<HTMLElement>) => {
     event.preventDefault();
 
     handleEvent({

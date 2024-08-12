@@ -11,6 +11,7 @@ import { UIComponentFactory } from './types';
 
 export const DEFAULT_FOOTER = {
   element: 'Box',
+  key: 'default-footer',
   props: {
     display: Display.Flex,
     flexDirection: FlexDirection.Row,

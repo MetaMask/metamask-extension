@@ -1,6 +1,7 @@
 import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { Container } from '@metamask/snaps-sdk/jsx';
 
 import { isEqual } from 'lodash';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
@@ -49,7 +50,9 @@ const SnapUIRendererComponent = ({
     // We do this to avoid useless re-renders.
     (oldState, newState) => isEqual(oldState.content, newState.content),
   );
-  const content = interfaceState?.content;
+  const rawContent = interfaceState?.content;
+
+  const content = rawContent?.type !== 'Container' ? Container({ children: rawContent }) : rawContent;
 
   const sections = useMemo(
     () =>
