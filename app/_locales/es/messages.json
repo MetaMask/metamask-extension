@@ -1452,9 +1452,6 @@
   "data": {
     "message": "Datos"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "No se pueden restaurar sus datos. El archivo parece estar corrupto."
-  },
   "dataCollectionForMarketing": {
     "message": "Recopilación de datos para marketing"
   },
@@ -4408,12 +4405,6 @@
   },
   "restore": {
     "message": "Restaurar"
-  },
-  "restoreFailed": {
-    "message": "No se pueden restaurar sus datos desde el archivo proporcionado"
-  },
-  "restoreSuccessful": {
-    "message": "Sus datos se restauraron correctamente"
   },
   "restoreUserData": {
     "message": "Restaure sus datos de usuario"

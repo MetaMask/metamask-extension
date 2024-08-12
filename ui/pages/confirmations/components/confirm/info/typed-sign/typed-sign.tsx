@@ -46,7 +46,7 @@ const TypedSignInfo: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      if (!isPermit || !isOrder) {
+      if (!isPermit && !isOrder) {
         return;
       }
       const { decimals: tokenDecimals } = await getTokenStandardAndDetails(

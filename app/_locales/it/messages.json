@@ -633,9 +633,6 @@
   "darkTheme": {
     "message": "Scuro"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Impossibile ripristinare i tuoi dati. Il file sembra essere corrotto."
-  },
   "decimal": {
     "message": "Precisione Decimali"
   },

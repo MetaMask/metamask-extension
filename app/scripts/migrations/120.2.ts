@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash';
 import { hasProperty, isObject } from '@metamask/utils';
+import log from 'loglevel';
 
 type VersionedData = {
   meta: { version: number };
@@ -9,7 +10,8 @@ type VersionedData = {
 export const version = 120.2;
 
 /**
- * This migration removes any dangling instances of SelectedNetworkController.perDomainNetwork and SnapController.snapErrors
+ * This migration removes obsolete state from various controllers. In all cases, this was done to
+ * address Sentry errors.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
@@ -40,7 +42,7 @@ function removeObsoleteSnapControllerState(
   if (!hasProperty(state, 'SnapController')) {
     return;
   } else if (!isObject(state.SnapController)) {
-    global.sentry.captureException(
+    global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: Invalid SnapController state of type '${typeof state.SnapController}'`,
       ),
@@ -80,6 +82,110 @@ function removeObsoleteSelectedNetworkControllerState(
 }
 
 /**
+ * Remove obsolete NetworkController state.
+ *
+ * We don't know exactly why yet, but we see from Sentry that some users have these properties
+ * in state. They should have been removed by migrations long ago. They are no longer used.
+ *
+ * @param state - The persisted MetaMask state, keyed by controller.
+ */
+function removeObsoleteNetworkControllerState(
+  state: Record<string, unknown>,
+): void {
+  if (!hasProperty(state, 'NetworkController')) {
+    return;
+  } else if (!isObject(state.NetworkController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: Invalid NetworkController state of type '${typeof state.NetworkController}'`,
+      ),
+    );
+    return;
+  }
+
+  const networkControllerState = state.NetworkController;
+
+  // Check for invalid `providerConfig.id`, and remove if found
+  if (
+    hasProperty(networkControllerState, 'providerConfig') &&
+    // This should be impossible because `undefined` cannot be returned from persisted state,
+    // it's not valid JSON. But a bug in migration 14 ends up setting this to `undefined`.
+    networkControllerState.providerConfig !== undefined
+  ) {
+    if (!isObject(networkControllerState.providerConfig)) {
+      global.sentry?.captureException?.(
+        new Error(
+          `Migration ${version}: Invalid NetworkController providerConfig state of type '${typeof state
+            .NetworkController.providerConfig}'`,
+        ),
+      );
+      return;
+    }
+    const { providerConfig } = networkControllerState;
+
+    const validNetworkConfigurationIds = [];
+    if (hasProperty(networkControllerState, 'networkConfigurations')) {
+      if (!isObject(networkControllerState.networkConfigurations)) {
+        global.sentry?.captureException?.(
+          new Error(
+            `Migration ${version}: Invalid NetworkController networkConfigurations state of type '${typeof networkControllerState.networkConfigurations}'`,
+          ),
+        );
+        return;
+      }
+
+      validNetworkConfigurationIds.push(
+        ...Object.keys(networkControllerState.networkConfigurations),
+      );
+    }
+
+    if (hasProperty(providerConfig, 'id')) {
+      if (
+        typeof providerConfig.id !== 'string' ||
+        !validNetworkConfigurationIds.includes(providerConfig.id)
+      ) {
+        log.warn(
+          `Migration ${version}: Removing invalid provider id ${providerConfig.id}`,
+        );
+        delete providerConfig.id;
+      }
+    }
+  }
+
+  delete networkControllerState.networkDetails;
+  delete networkControllerState.networkId;
+  delete networkControllerState.networkStatus;
+  delete networkControllerState.previousProviderStore;
+  delete networkControllerState.provider;
+}
+
+/**
+ * Remove obsolete `listState` property from PhishingController state.
+ *
+ * We don't know exactly why yet, but we see from Sentry that some users have this property still
+ * in state. It is no longer used.
+ *
+ * @param state - The persisted MetaMask state, keyed by controller.
+ */
+function removeObsoletePhishingControllerState(
+  state: Record<string, unknown>,
+): void {
+  if (!hasProperty(state, 'PhishingController')) {
+    return;
+  } else if (!isObject(state.PhishingController)) {
+    global.sentry.captureException(
+      new Error(
+        `Migration ${version}: Invalid PhishingController state of type '${typeof state.PhishingController}'`,
+      ),
+    );
+    return;
+  }
+  if (hasProperty(state.PhishingController, 'listState')) {
+    delete state.PhishingController.listState;
+  }
+}
+
+/**
  * Remove obsolete controller state.
  *
  * @param state - The persisted MetaMask state, keyed by controller.
@@ -87,4 +193,6 @@ function removeObsoleteSelectedNetworkControllerState(
 function transformState(state: Record<string, unknown>): void {
   removeObsoleteSnapControllerState(state);
   removeObsoleteSelectedNetworkControllerState(state);
+  removeObsoleteNetworkControllerState(state);
+  removeObsoletePhishingControllerState(state);
 }
