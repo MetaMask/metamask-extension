@@ -894,6 +894,7 @@ const TEST_SEED_PHRASE_TWO =
   'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
 /**
+ * Checks the balance for specific address and defaults to first address if none is passed.
  * Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
  *
  * @param {WebDriver} driver - The webdriver instance
