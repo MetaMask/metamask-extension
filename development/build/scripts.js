@@ -136,17 +136,17 @@ module.exports = createScriptTasks;
  * @returns {object} A set of tasks, one for each build target.
  */
 function createScriptTasks({
-  shouldIncludeSnow,
-  applyLavaMoat,
-  browserPlatforms,
-  buildType,
-  ignoredFiles,
-  isLavaMoat,
-  livereload,
-  policyOnly,
-  shouldLintFenceFiles,
-  version,
-}) {
+                             shouldIncludeSnow,
+                             applyLavaMoat,
+                             browserPlatforms,
+                             buildType,
+                             ignoredFiles,
+                             isLavaMoat,
+                             livereload,
+                             policyOnly,
+                             shouldLintFenceFiles,
+                             version,
+                           }) {
   // high level tasks
   return {
     // dev tasks (live reload)
@@ -421,17 +421,17 @@ function createScriptTasks({
  * @returns {Function} A function that creates the set of bundles.
  */
 async function createManifestV3AppInitializationBundle({
-  shouldIncludeSnow,
-  applyLavaMoat,
-  browserPlatforms,
-  buildTarget,
-  buildType,
-  ignoredFiles,
-  jsBundles,
-  policyOnly,
-  shouldLintFenceFiles,
-  version,
-}) {
+                                                         shouldIncludeSnow,
+                                                         applyLavaMoat,
+                                                         browserPlatforms,
+                                                         buildTarget,
+                                                         buildType,
+                                                         ignoredFiles,
+                                                         jsBundles,
+                                                         policyOnly,
+                                                         shouldLintFenceFiles,
+                                                         version,
+                                                       }) {
   const label = 'app-init';
   // TODO: remove this filter for firefox once MV3 is supported in it
   const mv3BrowserPlatforms = browserPlatforms.filter(
@@ -514,18 +514,18 @@ async function createManifestV3AppInitializationBundle({
  * @returns {Function} A function that creates the set of bundles.
  */
 function createFactoredBuild({
-  shouldIncludeSnow,
-  applyLavaMoat,
-  browserPlatforms,
-  buildTarget,
-  buildType,
-  entryFiles,
-  ignoredFiles,
-  policyOnly,
-  shouldLintFenceFiles,
-  version,
-}) {
-  return async function () {
+                               shouldIncludeSnow,
+                               applyLavaMoat,
+                               browserPlatforms,
+                               buildTarget,
+                               buildType,
+                               entryFiles,
+                               ignoredFiles,
+                               policyOnly,
+                               shouldLintFenceFiles,
+                               version,
+                             }) {
+  return async function() {
     // create bundler setup and apply defaults
     const buildConfiguration = createBuildConfiguration();
     buildConfiguration.label = 'primary';
@@ -801,20 +801,20 @@ function createFactoredBuild({
  * @returns {Function} A function that creates the bundle.
  */
 function createNormalBundle({
-  browserPlatforms,
-  buildTarget,
-  buildType,
-  destFilepath,
-  entryFilepath,
-  extraEnvironmentVariables,
-  ignoredFiles,
-  label,
-  policyOnly,
-  shouldLintFenceFiles,
-  version,
-  applyLavaMoat,
-}) {
-  return async function () {
+                              browserPlatforms,
+                              buildTarget,
+                              buildType,
+                              destFilepath,
+                              entryFilepath,
+                              extraEnvironmentVariables,
+                              ignoredFiles,
+                              label,
+                              policyOnly,
+                              shouldLintFenceFiles,
+                              version,
+                              applyLavaMoat,
+                            }) {
+  return async function() {
     // create bundler setup and apply defaults
     const buildConfiguration = createBuildConfiguration();
     buildConfiguration.label = label;
@@ -929,7 +929,7 @@ function setupBundlerDefaults(
       [
         babelify,
         {
-          only: ['./**/node_modules/firebase', './**/node_modules/@firebase'],
+          only: ['./**/node_modules/firebase', './**/node_modules/@firebase', './**/node_modules/axios'],
           global: true,
         },
       ],
@@ -1136,13 +1136,13 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
 }
 
 function renderJavaScriptLoader({
-  groupSet,
-  commonSet,
-  browserPlatforms,
-  shouldIncludeSnow,
-  applyLavaMoat,
-  destinationFileName,
-}) {
+                                  groupSet,
+                                  commonSet,
+                                  browserPlatforms,
+                                  shouldIncludeSnow,
+                                  applyLavaMoat,
+                                  destinationFileName,
+                                }) {
   if (applyLavaMoat === undefined) {
     throw new Error(
       'build/scripts/renderHtmlFile - must specify "applyLavaMoat" option',
@@ -1155,16 +1155,16 @@ function renderJavaScriptLoader({
 
   const securityScripts = applyLavaMoat
     ? [
-        './scripts/runtime-lavamoat.js',
-        './scripts/lockdown-more.js',
-        './scripts/policy-load.js',
-      ]
+      './scripts/runtime-lavamoat.js',
+      './scripts/lockdown-more.js',
+      './scripts/policy-load.js',
+    ]
     : [
-        './scripts/lockdown-install.js',
-        './scripts/lockdown-run.js',
-        './scripts/lockdown-more.js',
-        './scripts/runtime-cjs.js',
-      ];
+      './scripts/lockdown-install.js',
+      './scripts/lockdown-run.js',
+      './scripts/lockdown-more.js',
+      './scripts/runtime-cjs.js',
+    ];
 
   const requiredScripts = [
     ...(shouldIncludeSnow
@@ -1190,13 +1190,13 @@ function renderJavaScriptLoader({
 }
 
 function renderHtmlFile({
-  htmlName,
-  browserPlatforms,
-  shouldIncludeSnow,
-  applyLavaMoat,
-  isMMI,
-  isTest,
-}) {
+                          htmlName,
+                          browserPlatforms,
+                          shouldIncludeSnow,
+                          applyLavaMoat,
+                          isMMI,
+                          isTest,
+                        }) {
   if (applyLavaMoat === undefined) {
     throw new Error(
       'build/scripts/renderHtmlFile - must specify "applyLavaMoat" option',
