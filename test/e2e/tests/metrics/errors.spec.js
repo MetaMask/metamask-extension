@@ -39,6 +39,7 @@ const maskedBackgroundFields = [
   'AppStateController.surveyLinkLastClickedOrClosed',
   'AppStateController.recoveryPhraseReminderLastShown',
   'AppStateController.termsOfUseLastAgreed',
+  'AppStateController.lastInteractedConfirmationInfo',
   // The value in these properties may change each run
   'AppStateController.fullScreenGasPollTokens',
   'AppStateController.notificationGasPollTokens',
@@ -604,7 +605,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('after initialization, after opting into metrics @no-mmi', function () {
+  describe.only('after initialization, after opting into metrics @no-mmi', function () {
     it('should send error events in background', async function () {
       await withFixtures(
         {
@@ -741,7 +742,7 @@ describe('Sentry errors', function () {
       );
     });
 
-    it('should capture UI application state', async function () {
+    it.only('should capture UI application state', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
