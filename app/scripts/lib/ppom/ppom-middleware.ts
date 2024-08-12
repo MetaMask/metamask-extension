@@ -1,12 +1,7 @@
 import { AccountsController } from '@metamask/accounts-controller';
 import { PPOMController } from '@metamask/ppom-validator';
 import { NetworkController } from '@metamask/network-controller';
-import {
-  Json,
-  JsonRpcParams,
-  JsonRpcRequest,
-  JsonRpcResponse,
-} from '@metamask/utils';
+import { Json, JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
 import { detectSIWE } from '@metamask/controller-utils';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
@@ -46,7 +41,7 @@ const CONFIRMATION_METHODS = Object.freeze([
  * @returns PPOMMiddleware function.
  */
 export function createPPOMMiddleware<
-  Params extends JsonRpcParams,
+  Params extends (string | { to: string })[],
   Result extends Json,
 >(
   ppomController: PPOMController,
@@ -61,7 +56,9 @@ export function createPPOMMiddleware<
   ) => void,
 ) {
   return async (
-    req: JsonRpcRequest<Params>,
+    req: Required<JsonRpcRequest<Params>> & {
+      securityAlertResponse: SecurityAlertResponse;
+    },
     _res: JsonRpcResponse<Result>,
     next: () => void,
   ) => {
@@ -80,13 +77,18 @@ export function createPPOMMiddleware<
         return;
       }
 
-      const { isSIWEMessage } = detectSIWE({ data: req?.params?.[0] });
-      if (isSIWEMessage) {
-        return;
+      if (!req.params) {
+        throw new Error(`'params' property missing from request object`);
       }
+      const data = req.params[0];
 
-      if (req.method === MESSAGE_TYPE.ETH_SEND_TRANSACTION) {
-        const { to: toAddress } = req?.params?.[0] ?? {};
+      if (typeof data === 'string') {
+        const { isSIWEMessage } = detectSIWE({ data });
+        if (isSIWEMessage) {
+          return;
+        }
+      } else if (req.method === MESSAGE_TYPE.ETH_SEND_TRANSACTION) {
+        const { to: toAddress } = data;
         const internalAccounts = accountsController.listAccounts();
         const isToInternalAccount = internalAccounts.some(
           ({ address }) => address?.toLowerCase() === toAddress?.toLowerCase(),

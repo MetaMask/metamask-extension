@@ -1,8 +1,4 @@
-import {
-  type Hex,
-  JsonRpcRequestStruct,
-  JsonRpcResponseStruct,
-} from '@metamask/utils';
+import { type Hex, JsonRpcResponseStruct } from '@metamask/utils';
 import * as ControllerUtils from '@metamask/controller-utils';
 
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -30,6 +26,12 @@ const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
   securityAlertId: SECURITY_ALERT_ID_MOCK,
   result_type: BlockaidResultType.Malicious,
   reason: BlockaidReason.permitFarming,
+};
+
+const REQUEST_MOCK = {
+  params: [],
+  id: '',
+  jsonrpc: '2.0' as const,
 };
 
 const createMiddleware = (
@@ -117,14 +119,14 @@ describe('PPOMMiddleware', () => {
     });
 
     const req = {
-      ...JsonRpcRequestStruct,
+      ...REQUEST_MOCK,
       method: 'eth_sendTransaction',
-      securityAlertResponse: undefined,
+      securityAlertResponse: { reason: '', result_type: '' },
     };
 
     await middlewareFunction(
       req,
-      { ...JsonRpcResponseStruct },
+      { ...JsonRpcResponseStruct.TYPE },
       () => undefined,
     );
 
@@ -142,14 +144,14 @@ describe('PPOMMiddleware', () => {
     const middlewareFunction = createMiddleware();
 
     const req = {
-      ...JsonRpcRequestStruct,
+      ...REQUEST_MOCK,
       method: 'eth_sendTransaction',
-      securityAlertResponse: undefined,
+      securityAlertResponse: { reason: '', result_type: '' },
     };
 
     await middlewareFunction(
       req,
-      { ...JsonRpcResponseStruct },
+      { ...JsonRpcResponseStruct.TYPE },
       () => undefined,
     );
 
@@ -165,11 +167,12 @@ describe('PPOMMiddleware', () => {
     });
 
     const req = {
-      ...JsonRpcRequestStruct,
+      ...REQUEST_MOCK,
       method: 'eth_sendTransaction',
-      securityAlertResponse: undefined,
+      securityAlertResponse: { reason: '', result_type: '' },
     };
 
+    // @ts-expect-error Plugging in invalid input for testing purposes
     await middlewareFunction(req, undefined, () => undefined);
 
     expect(req.securityAlertResponse).toBeUndefined();
@@ -183,14 +186,14 @@ describe('PPOMMiddleware', () => {
     });
 
     const req = {
-      ...JsonRpcRequestStruct,
+      ...REQUEST_MOCK,
       method: 'eth_sendTransaction',
-      securityAlertResponse: undefined,
+      securityAlertResponse: { reason: '', result_type: '' },
     };
 
     await middlewareFunction(
       req,
-      { ...JsonRpcResponseStruct },
+      { ...JsonRpcResponseStruct.TYPE },
       () => undefined,
     );
 
@@ -202,14 +205,14 @@ describe('PPOMMiddleware', () => {
     const middlewareFunction = createMiddleware();
 
     const req = {
-      ...JsonRpcRequestStruct,
-      method: 'eth_someRequest',
-      securityAlertResponse: undefined,
+      ...REQUEST_MOCK,
+      method: 'eth_sendTransaction',
+      securityAlertResponse: { reason: '', result_type: '' },
     };
 
     await middlewareFunction(
       req,
-      { ...JsonRpcResponseStruct },
+      { ...JsonRpcResponseStruct.TYPE },
       () => undefined,
     );
 
@@ -221,15 +224,15 @@ describe('PPOMMiddleware', () => {
     const middlewareFunction = createMiddleware();
 
     const req = {
-      ...JsonRpcRequestStruct,
-      params: [{ to: INTERNAL_ACCOUNT_ADDRESS }],
+      ...REQUEST_MOCK,
       method: 'eth_sendTransaction',
-      securityAlertResponse: undefined,
+      securityAlertResponse: { reason: '', result_type: '' },
+      params: [{ to: INTERNAL_ACCOUNT_ADDRESS }],
     };
 
     await middlewareFunction(
       req,
-      { ...JsonRpcResponseStruct },
+      { ...JsonRpcResponseStruct.TYPE },
       () => undefined,
     );
 
@@ -243,18 +246,19 @@ describe('PPOMMiddleware', () => {
     });
 
     const req = {
+      ...REQUEST_MOCK,
+      securityAlertResponse: { reason: '', result_type: '' },
       method: 'personal_sign',
       params: [
         '0x6d6574616d61736b2e6769746875622e696f2077616e747320796f7520746f207369676e20696e207769746820796f757220457468657265756d206163636f756e743a0a3078393335653733656462396666353265323362616337663765303433613165636430366430353437370a0a492061636365707420746865204d6574614d61736b205465726d73206f6620536572766963653a2068747470733a2f2f636f6d6d756e6974792e6d6574616d61736b2e696f2f746f730a0a5552493a2068747470733a2f2f6d6574616d61736b2e6769746875622e696f0a56657273696f6e3a20310a436861696e2049443a20310a4e6f6e63653a2033323839313735370a4973737565642041743a20323032312d30392d33305431363a32353a32342e3030305a',
         '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
         'Example password',
       ],
-      jsonrpc: '2.0',
+      jsonrpc: '2.0' as const,
       id: 2974202441,
       origin: 'https://metamask.github.io',
       networkClientId: 'mainnet',
       tabId: 1048745900,
-      securityAlertResponse: undefined,
     };
     jest.spyOn(ControllerUtils, 'detectSIWE').mockReturnValue({
       isSIWEMessage: true,
@@ -276,6 +280,7 @@ describe('PPOMMiddleware', () => {
       },
     });
 
+    // @ts-expect-error Plugging in invalid input for testing purposes
     await middlewareFunction(req, undefined, () => undefined);
 
     expect(req.securityAlertResponse).toBeUndefined();
@@ -287,8 +292,12 @@ describe('PPOMMiddleware', () => {
     const nextMock = jest.fn();
 
     await middlewareFunction(
-      { ...JsonRpcRequestStruct, method: 'eth_sendTransaction' },
-      { ...JsonRpcResponseStruct },
+      {
+        ...REQUEST_MOCK,
+        method: 'eth_sendTransaction',
+        securityAlertResponse: { reason: '', result_type: '' },
+      },
+      { ...JsonRpcResponseStruct.TYPE },
       nextMock,
     );
 
@@ -304,12 +313,12 @@ describe('PPOMMiddleware', () => {
     const middlewareFunction = createMiddleware({ error });
 
     const req = {
-      ...JsonRpcRequestStruct,
+      ...REQUEST_MOCK,
       method: 'eth_sendTransaction',
-      securityAlertResponse: undefined,
+      securityAlertResponse: { reason: '', result_type: '' },
     };
 
-    await middlewareFunction(req, { ...JsonRpcResponseStruct }, nextMock);
+    await middlewareFunction(req, { ...JsonRpcResponseStruct.TYPE }, nextMock);
 
     expect(req.securityAlertResponse).toStrictEqual(
       SECURITY_ALERT_RESPONSE_MOCK,

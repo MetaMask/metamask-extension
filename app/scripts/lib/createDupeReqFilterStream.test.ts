@@ -3,7 +3,7 @@ import OurReadableStream from 'readable-stream';
 import ReadableStream2 from 'readable-stream-2';
 import ReadableStream3 from 'readable-stream-3';
 
-import type { JsonRpcRequest } from '@metamask/utils';
+import { JsonRpcNotification, type JsonRpcRequest } from '@metamask/utils';
 import createDupeReqFilterStream, {
   THREE_MINUTES,
 } from './createDupeReqFilterStream';
@@ -26,7 +26,7 @@ function createTestStream(output: JsonRpcRequest[] = [], S = Transform) {
 }
 
 function runStreamTest(
-  requests: JsonRpcRequest[] = [],
+  requests: (JsonRpcRequest | JsonRpcNotification)[] = [],
   advanceTimersTime = 10,
   S = Transform,
 ) {
@@ -52,13 +52,13 @@ describe('createDupeReqFilterStream', () => {
 
   it('lets through requests with ids being seen for the first time', async () => {
     const requests = [
-      { id: 1, method: 'foo' },
-      { id: 2, method: 'bar' },
+      { id: 1, method: 'foo', jsonrpc: '2.0' as const },
+      { id: 2, method: 'bar', jsonrpc: '2.0' as const },
     ];
 
     const expectedOutput = [
-      { id: 1, method: 'foo' },
-      { id: 2, method: 'bar' },
+      { id: 1, method: 'foo', jsonrpc: '2.0' },
+      { id: 2, method: 'bar', jsonrpc: '2.0' },
     ];
 
     const output = await runStreamTest(requests);
@@ -67,20 +67,26 @@ describe('createDupeReqFilterStream', () => {
 
   it('does not let through the request if the id has been seen before', async () => {
     const requests = [
-      { id: 1, method: 'foo' },
-      { id: 1, method: 'foo' }, // duplicate
+      { id: 1, method: 'foo', jsonrpc: '2.0' as const },
+      { id: 1, method: 'foo', jsonrpc: '2.0' as const }, // duplicate
     ];
 
-    const expectedOutput = [{ id: 1, method: 'foo' }];
+    const expectedOutput = [{ id: 1, method: 'foo', jsonrpc: '2.0' }];
 
     const output = await runStreamTest(requests);
     expect(output).toEqual(expectedOutput);
   });
 
   it("lets through requests if they don't have an id", async () => {
-    const requests = [{ method: 'notify1' }, { method: 'notify2' }];
+    const requests = [
+      { method: 'notify1', jsonrpc: '2.0' as const },
+      { method: 'notify2', jsonrpc: '2.0' as const },
+    ];
 
-    const expectedOutput = [{ method: 'notify1' }, { method: 'notify2' }];
+    const expectedOutput = [
+      { method: 'notify1', jsonrpc: '2.0' },
+      { method: 'notify2', jsonrpc: '2.0' },
+    ];
 
     const output = await runStreamTest(requests);
     expect(output).toEqual(expectedOutput);
@@ -88,21 +94,21 @@ describe('createDupeReqFilterStream', () => {
 
   it('handles a mix of request types', async () => {
     const requests = [
-      { id: 1, method: 'foo' },
-      { method: 'notify1' },
-      { id: 1, method: 'foo' },
-      { id: 2, method: 'bar' },
-      { method: 'notify2' },
-      { id: 2, method: 'bar' },
-      { id: 3, method: 'baz' },
+      { id: 1, method: 'foo', jsonrpc: '2.0' as const },
+      { method: 'notify1', jsonrpc: '2.0' as const },
+      { id: 1, method: 'foo', jsonrpc: '2.0' as const },
+      { id: 2, method: 'bar', jsonrpc: '2.0' as const },
+      { method: 'notify2', jsonrpc: '2.0' as const },
+      { id: 2, method: 'bar', jsonrpc: '2.0' as const },
+      { id: 3, method: 'baz', jsonrpc: '2.0' as const },
     ];
 
     const expectedOutput = [
-      { id: 1, method: 'foo' },
-      { method: 'notify1' },
-      { id: 2, method: 'bar' },
-      { method: 'notify2' },
-      { id: 3, method: 'baz' },
+      { id: 1, method: 'foo', jsonrpc: '2.0' },
+      { method: 'notify1', jsonrpc: '2.0' },
+      { id: 2, method: 'bar', jsonrpc: '2.0' },
+      { method: 'notify2', jsonrpc: '2.0' },
+      { id: 3, method: 'baz', jsonrpc: '2.0' },
     ];
 
     const output = await runStreamTest(requests);

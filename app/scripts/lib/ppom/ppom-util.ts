@@ -20,6 +20,7 @@ import { SecurityAlertResponse } from './types';
 import {
   getSecurityAlertsAPISupportedChainIds,
   isSecurityAlertsAPIEnabled,
+  SecurityAlertsAPIRequest,
   validateWithSecurityAlertsAPI,
 } from './security-alerts-api';
 
@@ -30,6 +31,11 @@ const METHOD_SEND_TRANSACTION = 'eth_sendTransaction';
 const SECURITY_ALERT_RESPONSE_ERROR = {
   result_type: BlockaidResultType.Errored,
   reason: BlockaidReason.errored,
+};
+
+type PPOMRequest = Exclude<JsonRpcRequest, 'method' | 'params'> & {
+  method: typeof METHOD_SEND_TRANSACTION;
+  params: [TransactionParams];
 };
 
 export async function validateRequestWithPPOM({
@@ -45,6 +51,11 @@ export async function validateRequestWithPPOM({
 }): Promise<SecurityAlertResponse> {
   try {
     const normalizedRequest = normalizePPOMRequest(request);
+    if (!normalizedRequest) {
+      throw new Error(
+        'Expected PPOM request with "eth_sendTransaction" method',
+      );
+    }
 
     const ppomResponse = isSecurityAlertsAPIEnabled()
       ? await validateWithAPI(ppomController, chainId, normalizedRequest)
@@ -129,12 +140,18 @@ export async function isChainSupported(chainId: Hex): Promise<boolean> {
   return supportedChainIds.includes(chainId);
 }
 
-function normalizePPOMRequest(request: JsonRpcRequest): JsonRpcRequest {
-  if (request.method !== METHOD_SEND_TRANSACTION) {
-    return request;
+function normalizePPOMRequest(
+  request: JsonRpcRequest,
+): PPOMRequest | undefined {
+  if (
+    !((req): req is PPOMRequest => req.method === METHOD_SEND_TRANSACTION)(
+      request,
+    )
+  ) {
+    return undefined;
   }
 
-  const transactionParams = (request.params?.[0] || {}) as TransactionParams;
+  const transactionParams = request.params[0] ?? {};
   const normalizedParams = normalizeTransactionParams(transactionParams);
 
   return {
@@ -195,7 +212,7 @@ async function findConfirmationBySecurityAlertId(
 
 async function validateWithController(
   ppomController: PPOMController,
-  request: JsonRpcRequest,
+  request: JsonRpcRequest | SecurityAlertsAPIRequest,
 ): Promise<SecurityAlertResponse> {
   const response = (await ppomController.usePPOM((ppom: PPOM) =>
     ppom.validateJsonRpc(request),
@@ -210,7 +227,8 @@ async function validateWithController(
 async function validateWithAPI(
   ppomController: PPOMController,
   chainId: string,
-  request: JsonRpcRequest,
+  request: Exclude<JsonRpcRequest, 'method' | 'params'> &
+    SecurityAlertsAPIRequest,
 ): Promise<SecurityAlertResponse> {
   try {
     const response = await validateWithSecurityAlertsAPI(chainId, request);
