@@ -13,19 +13,16 @@ import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
-import { AuthenticationController } from '@metamask/profile-sync-controller';
+import {
+  AuthenticationController,
+  UserStorageController,
+} from '@metamask/profile-sync-controller';
 import {
   PushPlatformNotificationsControllerEnablePushNotifications,
   PushPlatformNotificationsControllerDisablePushNotifications,
   PushPlatformNotificationsControllerUpdateTriggerPushNotifications,
   PushPlatformNotificationsControllerOnNewNotificationEvent,
 } from '../push-platform-notifications/push-platform-notifications';
-import {
-  UserStorageControllerEnableProfileSyncing,
-  UserStorageControllerGetStorageKey,
-  UserStorageControllerPerformGetStorage,
-  UserStorageControllerPerformSetStorage,
-} from '../user-storage/user-storage-controller';
 import {
   TRIGGER_TYPES,
   TRIGGER_TYPES_GROUPS,
@@ -200,10 +197,10 @@ export type AllowedActions =
   | AuthenticationController.AuthenticationControllerGetBearerToken
   | AuthenticationController.AuthenticationControllerIsSignedIn
   // User Storage Controller Requests
-  | UserStorageControllerEnableProfileSyncing
-  | UserStorageControllerGetStorageKey
-  | UserStorageControllerPerformGetStorage
-  | UserStorageControllerPerformSetStorage
+  | UserStorageController.UserStorageControllerEnableProfileSyncing
+  | UserStorageController.UserStorageControllerGetStorageKey
+  | UserStorageController.UserStorageControllerPerformGetStorage
+  | UserStorageController.UserStorageControllerPerformSetStorage
   // Push Notifications Controller Requests
   | PushPlatformNotificationsControllerEnablePushNotifications
   | PushPlatformNotificationsControllerDisablePushNotifications
@@ -292,13 +289,13 @@ export class MetamaskNotificationsController extends BaseController<
     getNotificationStorage: async () => {
       return await this.messagingSystem.call(
         'UserStorageController:performGetStorage',
-        'notification_settings',
+        'notifications.notificationSettings',
       );
     },
     setNotificationStorage: async (state: string) => {
       return await this.messagingSystem.call(
         'UserStorageController:performSetStorage',
-        'notification_settings',
+        'notifications.notificationSettings',
         state,
       );
     },

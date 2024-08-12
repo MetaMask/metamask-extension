@@ -1520,6 +1520,17 @@ export default class MetamaskController extends EventEmitter {
       state: initState.MetamaskNotificationsController,
     });
 
+    // Temporary add missing methods (due to notification controller migration)
+    this.controllerMessenger.registerActionHandler(
+      'NotificationServicesController:disableNotificationServices',
+      () => this.metamaskNotificationsController.disableMetamaskNotifications(),
+    );
+    this.controllerMessenger.registerActionHandler(
+      'NotificationServicesController:selectIsNotificationServicesEnabled',
+      () =>
+        this.metamaskNotificationsController.selectIsMetamaskNotificationsEnabled(),
+    );
+
     // account tracker watches balances, nonces, and any code at their address
     this.accountTracker = new AccountTracker({
       provider: this.provider,

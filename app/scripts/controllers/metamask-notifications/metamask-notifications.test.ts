@@ -6,13 +6,10 @@ import {
   KeyringControllerStateChangeEvent,
 } from '@metamask/keyring-controller';
 import { waitFor } from '@testing-library/react';
-import { AuthenticationController } from '@metamask/profile-sync-controller';
 import {
-  UserStorageControllerGetStorageKey,
-  UserStorageControllerPerformGetStorage,
-  UserStorageControllerPerformSetStorage,
-  UserStorageControllerEnableProfileSyncing,
-} from '../user-storage/user-storage-controller';
+  AuthenticationController,
+  UserStorageController,
+} from '@metamask/profile-sync-controller';
 import {
   PushPlatformNotificationsControllerEnablePushNotifications,
   PushPlatformNotificationsControllerDisablePushNotifications,
@@ -671,20 +668,20 @@ function mockNotificationMessenger() {
     typedMockAction<PushPlatformNotificationsControllerUpdateTriggerPushNotifications>();
 
   const mockGetStorageKey =
-    typedMockAction<UserStorageControllerGetStorageKey>().mockResolvedValue(
+    typedMockAction<UserStorageController.UserStorageControllerGetStorageKey>().mockResolvedValue(
       'MOCK_STORAGE_KEY',
     );
 
   const mockEnableProfileSyncing =
-    typedMockAction<UserStorageControllerEnableProfileSyncing>();
+    typedMockAction<UserStorageController.UserStorageControllerEnableProfileSyncing>();
 
   const mockPerformGetStorage =
-    typedMockAction<UserStorageControllerPerformGetStorage>().mockResolvedValue(
+    typedMockAction<UserStorageController.UserStorageControllerPerformGetStorage>().mockResolvedValue(
       JSON.stringify(createMockFullUserStorage()),
     );
 
   const mockPerformSetStorage =
-    typedMockAction<UserStorageControllerPerformSetStorage>();
+    typedMockAction<UserStorageController.UserStorageControllerPerformSetStorage>();
 
   jest.spyOn(messenger, 'call').mockImplementation((...args) => {
     const [actionType] = args;
