@@ -661,7 +661,7 @@ exports[`SmartTransactionStatusPage renders the component with initial props 1`]
           >
             <div
               class="smart-transaction-status-page__loading-bar"
-              style="width: 2.2222222222222223%;"
+              style="width: 0%;"
             />
           </div>
         </div>
@@ -677,7 +677,7 @@ exports[`SmartTransactionStatusPage renders the component with initial props 1`]
               <p
                 class="mm-box mm-text smart-transaction-status-page__countdown mm-text--body-sm mm-text--text-align-center mm-box--display-inline-block mm-box--color-text-alternative"
               >
-                0:44
+                0:45
               </p>
               
                
