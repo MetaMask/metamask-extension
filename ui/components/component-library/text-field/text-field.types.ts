@@ -100,6 +100,10 @@ export interface TextFieldStyleUtilityProps
    */
   onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
   /**
+   * Callback fired when the TextField has a keypress event
+   */
+  onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  /**
    * The short hint displayed in the input before the user enters a value.
    */
   placeholder?: string;

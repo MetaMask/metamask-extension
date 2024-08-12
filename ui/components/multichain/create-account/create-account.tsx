@@ -136,9 +136,13 @@ export const CreateAccount: CreateAccountComponent = React.memo(
             }
             helpText={errorMessage}
             error={!isValidAccountName}
-            onKeyPress={(e: KeyboardEvent<HTMLFormElement>) => {
+            onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => {
               if (e.key === 'Enter') {
-                onSubmit(e);
+                onSubmit({
+                  ...e,
+                  currentTarget: (e.target as HTMLInputElement).form!,
+                  target: (e.target as HTMLInputElement).form!,
+                });
               }
             }}
           />
