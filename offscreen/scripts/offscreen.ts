@@ -29,10 +29,20 @@ function initializePostMessageStream() {
  * post message stream for the Snaps environment.
  */
 async function init(): Promise<void> {
-  await initLedger();
+  initializePostMessageStream();
   initTrezor();
   initLattice();
-  initializePostMessageStream();
+
+  try {
+    const ledgerInitTimeout = new Promise((_, reject) => {
+      setTimeout(() => {
+        reject(new Error('Ledger initialization timed out'));
+      }, 5000);
+    });
+    await Promise.race([initLedger(), ledgerInitTimeout]);
+  } catch (error) {
+    console.error('Ledger initialization failed:', error);
+  }
 }
 
 init().then(() => {
