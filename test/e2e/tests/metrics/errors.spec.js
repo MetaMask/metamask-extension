@@ -823,6 +823,7 @@ describe('Sentry errors', function () {
       // Part of transaction controller store, but missing from the initial
       // state
       lastFetchedBlockNumbers: false,
+      lastInteractedConfirmationInfo: undefined,
       preferences: {
         autoLockTimeLimit: true, // Initialized as undefined
         showConfirmationAdvancedDetails: true,
@@ -847,7 +848,6 @@ describe('Sentry errors', function () {
       opts: true,
       store: true,
       configurationClient: true,
-      lastInteractedConfirmationInfo: undefined,
     };
     await withFixtures(
       {
