@@ -19,6 +19,17 @@ jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn(),
 }));
 
+jest.mock(
+  '../../../../../components/app/alert-system/contexts/alertMetricsContext',
+  () => ({
+    useAlertMetrics: jest.fn(() => ({
+      trackInlineAlertClicked: jest.fn(),
+      trackAlertRender: jest.fn(),
+      trackAlertActionClicked: jest.fn(),
+    })),
+  }),
+);
+
 const render = (args = {}) => {
   const store = configureStore({
     metamask: {
