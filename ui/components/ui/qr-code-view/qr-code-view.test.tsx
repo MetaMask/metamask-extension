@@ -28,6 +28,7 @@ const render = (
       ...mockState.metamask,
     },
   });
+  // @ts-expect-error TODO fix types
   return renderWithProvider(<QRCodeView Qr={Qr} warning={warning} />, store);
 };
 

@@ -52,6 +52,7 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
       size = FormTextFieldSize.Md,
       textFieldProps,
       truncate,
+      // @ts-expect-error TODO refactor from enums to consts
       type = TextFieldType.Text,
       value,
       ...props

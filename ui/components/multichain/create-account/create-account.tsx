@@ -123,6 +123,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
 
       return (
         <Box as="form" onSubmit={onSubmit}>
+          {/* @ts-expect-error TODO fix types */}
           <FormTextField
             ref={ref}
             size={FormTextFieldSize.Lg}
