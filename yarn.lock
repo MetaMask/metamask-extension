@@ -18274,10 +18274,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eta@npm:^3.1.1, eta@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "eta@npm:3.2.0"
-  checksum: 10/f4aa8ff6b9a4adf3d5db83255793be0136bdbcf2341154ad64c019bacc04d69e10218e54764af572eb8ba016996b8cbac9dc7a6fc2e9eb5005a0323bab883692
+"eta@npm:^3.2.0, eta@npm:^3.4.0":
+  version: 3.4.1
+  resolution: "eta@npm:3.4.1"
+  checksum: 10/be903dbe7b01b0c7bde1f6ee311a6b6e5a4bc5aa0400c970912d517cafb1a5cc2aab58e19751d8333cadb80a2256bf02e6e0c08a2aef0153800774f61cc4db49
   languageName: node
   linkType: hard
 
@@ -21169,21 +21169,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-bundler-webpack-plugin@npm:^3.6.5":
-  version: 3.6.5
-  resolution: "html-bundler-webpack-plugin@npm:3.6.5"
+"html-bundler-webpack-plugin@npm:^3.17.3":
+  version: 3.17.3
+  resolution: "html-bundler-webpack-plugin@npm:3.17.3"
   dependencies:
     "@types/html-minifier-terser": "npm:^7.0.2"
     ansis: "npm:2.0.3"
     enhanced-resolve: "npm:>=5.7.0"
-    eta: "npm:^3.1.1"
+    eta: "npm:^3.4.0"
     html-minifier-terser: "npm:^7.2.0"
   peerDependencies:
     ejs: ">=3.1.9"
     favicons: ">=7.1.4"
     handlebars: ">=4.7.7"
     liquidjs: ">=10.7.0"
-    markdown-it: ">=13.0.1"
+    markdown-it: ">=12"
     mustache: ">=4.2.0"
     nunjucks: ">=3.2.3"
     parse5: ">=7.1.2"
@@ -21214,7 +21214,7 @@ __metadata:
       optional: true
     twig:
       optional: true
-  checksum: 10/8558240b9301d120448b415285a3bf08dc9660c4be8d378e8f3ac513fad267e2b56234df9e3cb6e7bda5c1b49951c93a333093a12dee07903b9a8502e41d2d29
+  checksum: 10/6e1456f580ab24bfbf28f00e2876a08013e2bf9ae67e6a99b87c9b58a186b980ae02b9319fc7f609466d51b6342afa16630ce9cc4d597f8a43bc9a3f4797c45d
   languageName: node
   linkType: hard
 
@@ -26094,7 +26094,7 @@ __metadata:
     gulp-zip: "npm:^5.1.0"
     he: "npm:^1.2.0"
     history: "npm:^5.0.0"
-    html-bundler-webpack-plugin: "npm:^3.6.5"
+    html-bundler-webpack-plugin: "npm:^3.17.3"
     https-browserify: "npm:^1.0.0"
     human-standard-token-abi: "npm:^2.0.0"
     husky: "npm:^8.0.3"
