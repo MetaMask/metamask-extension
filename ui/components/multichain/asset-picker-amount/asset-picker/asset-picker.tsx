@@ -184,7 +184,7 @@ export function AssetPicker({
               badge={
                 <AvatarNetwork
                   size={AvatarNetworkSize.Xs}
-                  name={currentNetwork?.nickname}
+                  name={currentNetwork?.nickname ?? ''}
                   src={currentNetwork?.rpcPrefs?.imageUrl}
                   backgroundColor={testNetworkBackgroundColor}
                   borderColor={
