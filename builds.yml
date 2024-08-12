@@ -37,9 +37,7 @@ buildTypes:
   beta:
     features:
       - build-beta
-      - snaps
       - keyring-snaps
-      - blockaid
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
