@@ -1,4 +1,4 @@
-import { fireEvent, getByTestId, waitFor } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { ApprovalType } from '@metamask/controller-utils';
 import nock from 'nock';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -14,7 +14,6 @@ import { createMockImplementation, mock4byte } from '../../helpers';
 import {
   getMaliciousUnapprovedTransaction,
   getUnapprovedTransaction,
-  getUnapprovedTransaction2,
 } from './transactionDataHelpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
