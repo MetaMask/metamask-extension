@@ -244,7 +244,7 @@ const ConfirmPageContainer = (props) => {
             submitText={t('confirm')}
             disabled={disabled}
             unapprovedTxCount={unapprovedTxCount}
-            rejectNText={t('rejectTxsN', [unapprovedTxCount])}
+            rejectNText={t('rejectTxsN', [unapprovedTxCount || ''])}
             origin={origin}
             ethGasPriceWarning={ethGasPriceWarning}
             supportsEIP1559={supportsEIP1559}
@@ -291,7 +291,7 @@ const ConfirmPageContainer = (props) => {
                         }}
                         key={`${nativeCurrency}-buy-button`}
                       >
-                        {t('buyAsset', [nativeCurrency])}
+                        {t('buyAsset', [nativeCurrency || ''])}
                       </Button>,
                       ///: END:ONLY_INCLUDE_IF
                     ])}
@@ -303,8 +303,8 @@ const ConfirmPageContainer = (props) => {
                     as="h6"
                   >
                     {t('insufficientCurrencyDeposit', [
-                      nativeCurrency,
-                      networkName,
+                      nativeCurrency || '',
+                      networkName || '',
                     ])}
                   </Text>
                 )

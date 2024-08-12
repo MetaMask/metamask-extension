@@ -151,7 +151,7 @@ const CustodyConfirmLink: React.FC<CustodyConfirmLinkProps> = ({
             variant={TextVariant.bodySm}
             className="custody-confirm-link__description"
           >
-            {text || t('custodyDeeplinkDescription', [displayName])}
+            {text || t('custodyDeeplinkDescription', [displayName || ''])}
           </Text>
           <Button
             data-testid="custody-confirm-link__btn"

@@ -38,15 +38,15 @@ export default function ViewQuotePriceDifference(props) {
   let priceDifferenceClass = GasRecommendations.high;
   if (!priceSlippageUnknownFiatValue) {
     priceDifferenceTitle = t('swapPriceDifferenceTitle', [
-      priceDifferencePercentage,
+      priceDifferencePercentage || '',
     ]);
     priceDifferenceMessage = t('swapPriceDifference', [
-      sourceTokenValue, // Number of source token to swap
-      usedQuote.sourceTokenInfo.symbol, // Source token symbol
-      priceSlippageFromSource, // Source tokens total value
-      destinationTokenValue, // Number of destination tokens in return
-      usedQuote.destinationTokenInfo.symbol, // Destination token symbol,
-      priceSlippageFromDestination, // Destination tokens total value
+      sourceTokenValue || '', // Number of source token to swap
+      usedQuote?.sourceTokenInfo?.symbol || '', // Source token symbol
+      priceSlippageFromSource || '', // Source tokens total value
+      destinationTokenValue || '', // Number of destination tokens in return
+      usedQuote?.destinationTokenInfo?.symbol || '', // Destination token symbol,
+      priceSlippageFromDestination || '', // Destination tokens total value
     ]);
     priceDifferenceClass = usedQuote.priceSlippage.bucket;
   }
