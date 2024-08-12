@@ -34,6 +34,7 @@ export const container: UIComponentFactory<BoxElement> = ({
     }),
   );
 
+  // Injects the prompt input field into the template if the dialog is a prompt type.
   if (promptLegacyProps) {
     templateChildren.push({
       element: 'FormTextField',
@@ -50,6 +51,7 @@ export const container: UIComponentFactory<BoxElement> = ({
     });
   }
 
+  // Injects the default footer if the dialog uses default footer but none was provided.
   if (useFooter && !children[1]) {
     templateChildren.push({
       ...DEFAULT_FOOTER,
