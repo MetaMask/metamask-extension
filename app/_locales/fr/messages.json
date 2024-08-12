@@ -1549,30 +1549,6 @@
   "details": {
     "message": "Détails"
   },
-  "developerOptions": {
-    "message": "Options pour les développeurs"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Active ou désactive la fonction de restructuration des confirmations actuellement en phase de développement"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Restructuration des confirmations"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Permet de changer le design du menu « Réseaux »"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Refonte du menu « Réseaux »"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Règle la valeur de « isShown boolean » sur faux (false) pour toutes les annonces. Les annonces sont les notifications affichées dans la fenêtre contextuelle « Nouveautés »."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Réinitialise divers états liés au processus d’intégration et redirige vers la page d’accueil « Sécuriser votre portefeuille »."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Les résultats d’un horodatage sont continuellement sauvegardés dans « session.storage »"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "« $1 » est désactivé parce qu’il ne correspond pas au minimum d’augmentation de 10 % par rapport aux gas fees initiaux.",
     "description": "$1 is gas estimate type which can be market or aggressive"

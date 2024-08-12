@@ -70,7 +70,7 @@ const DeveloperOptionsTab = () => {
     });
 
   useEffect(() => {
-    handleSettingsRefs(t, t('developerOptions'), settingsRefs);
+    handleSettingsRefs(t, 'Developer Options', settingsRefs);
   }, [t, settingsRefs]);
 
   const handleResetAnnouncementClick = useCallback((): void => {
@@ -122,7 +122,8 @@ const DeveloperOptionsTab = () => {
         <div className="settings-page__content-item">
           <span>{t('announcements')}</span>
           <div className="settings-page__content-description">
-            {t('developerOptionsResetStatesAnnouncementsDescription')}
+            Resets isShown boolean to false for all announcements. Announcements
+            are the notifications shown in the What's New popup modal.
           </div>
         </div>
 
@@ -171,7 +172,8 @@ const DeveloperOptionsTab = () => {
         >
           <span>Onboarding</span>
           <div className="settings-page__content-description">
-            {t('developerOptionsResetStatesOnboarding')}
+            Resets various states related to onboarding and redirects to the
+            "Secure Your Wallet" onboarding page.
           </div>
         </div>
 
@@ -207,8 +209,8 @@ const DeveloperOptionsTab = () => {
   const renderServiceWorkerKeepAliveToggle = () => {
     return (
       <ToggleRow
-        title={t('serviceWorkerKeepAlive')}
-        description={t('developerOptionsServiceWorkerKeepAlive')}
+        title="Service Worker Keep Alive"
+        description="Results in a timestamp being continuously saved to session.storage"
         isEnabled={isServiceWorkerKeptAlive}
         onToggle={(value) => handleToggleServiceWorkerAlive(!value)}
         dataTestId="developer-options-service-worker-alive-toggle"
@@ -220,8 +222,8 @@ const DeveloperOptionsTab = () => {
   const renderNetworkMenuRedesign = () => {
     return (
       <ToggleRow
-        title={t('developerOptionsNetworkMenuRedesignTitle')}
-        description={t('developerOptionsNetworkMenuRedesignDescription')}
+        title="Network Menu Redesign"
+        description="Toggles the new design of the Networks menu"
         isEnabled={enableNetworkRedesign}
         onToggle={(value) => {
           setEnableNetworkRedesign(!value);
@@ -238,10 +240,8 @@ const DeveloperOptionsTab = () => {
   const renderEnableConfirmationsRedesignToggle = () => {
     return (
       <ToggleRow
-        title={t('developerOptionsEnableConfirmationsRedesignTitle')}
-        description={t(
-          'developerOptionsEnableConfirmationsRedesignDescription',
-        )}
+        title="Confirmations Redesign"
+        description="Enables or disables the confirmations redesign feature currently in development"
         isEnabled={isRedesignedConfirmationsFeatureEnabled}
         onToggle={(value: boolean) =>
           setEnableConfirmationsRedesignEnabled(!value)

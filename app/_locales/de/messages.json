@@ -1549,30 +1549,6 @@
   "details": {
     "message": "Details"
   },
-  "developerOptions": {
-    "message": "Entwickler-Optionen"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Aktiviert oder deaktiviert die Funktion zur Neugestaltung von Bestätigungen, die sich derzeit in Entwicklung befindet"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Neugestaltung der Bestätigungen"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Schaltet das neue Design des Menüs Netzwerke ein und aus"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Neugestaltung des Netzwerkmenüs"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Setzt den Booleschen Wert isShown für alle Ankündigungen auf false zurück. Ankündigungen sind die Benachrichtigungen, die im Was-neu-ist-Popup-Modal angezeigt werden."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Setzt verschiedene Status im Zusammenhang mit dem Onboarding zurück und leitet zur Onboarding-Seite „Sichern Sie Ihre Wallet“ weiter."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Führt dazu, dass ein Zeitstempel kontinuierlich in session.storage gespeichert wird."
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” ist deaktiviert, weil es nicht das Minimum einer zehnprozentigen Erhöhung gegenüber der ursprünglichen Gasgebühr erfüllt.",
     "description": "$1 is gas estimate type which can be market or aggressive"

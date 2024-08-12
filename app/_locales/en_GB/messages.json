@@ -1555,30 +1555,6 @@
   "details": {
     "message": "Details"
   },
-  "developerOptions": {
-    "message": "Developer Options"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Enables or disables the confirmations redesign feature currently in development"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Confirmations Redesign"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Toggles the new design of the Networks menu"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Network Menu Redesign"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Resets various states related to onboarding and redirects to the \"Secure Your Wallet\" onboarding page."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Results in a timestamp being continuously saved to session.storage"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
     "description": "$1 is gas estimate type which can be market or aggressive"

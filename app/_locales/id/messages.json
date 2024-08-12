@@ -1549,30 +1549,6 @@
   "details": {
     "message": "Detail"
   },
-  "developerOptions": {
-    "message": "Opsi Pengembang"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Mengaktifkan atau menonaktifkan fitur desain ulang konfirmasi yang sedang dikembangkan"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Desain Ulang Konfirmasi"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Mengalihkan desain baru menu Jaringan"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Desain Ulang Menu Jaringan"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Reset boolean isShown bernilai salah untuk semua pengumuman. Pengumuman adalah notifikasi yang ditampilkan di modal popup Yang Baru."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Reset berbagai state terkait orientasi dan alihkan ke halaman orientasi \"Amankan Dompet Anda\"."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Menjadikan stempel waktu disimpan ke session.storage secara kontinu"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” dinonaktifkan karena tidak memenuhi kenaikan minimum 10% dari biaya gas asli.",
     "description": "$1 is gas estimate type which can be market or aggressive"

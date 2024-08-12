@@ -1549,30 +1549,6 @@
   "details": {
     "message": "詳細"
   },
-  "developerOptions": {
-    "message": "開発者用オプション"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "現在開発中の承認のデザイン変更機能の有効・無効を切り替えます"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "承認のデザイン変更"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "ネットワークメニューを新しいデザインに切り替えます"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "ネットワークメニューのデザイン変更"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "すべてのお知らせのisShownのブール値をfalseにリセットします。お知らせとは、「最新情報」ポップアップモーダルに表示される通知のことです。"
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "オンボーディングに関するさまざまなステートをリセットし、「ウォレットのセキュリティ保護」オンボーディングページにリダイレクトします。"
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "タイムスタンプがセッションストレージに継続的に保存されるようになります"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "元のガス代の10%以上という増額の条件を満たしていないため、「$1」は無効になっています。",
     "description": "$1 is gas estimate type which can be market or aggressive"

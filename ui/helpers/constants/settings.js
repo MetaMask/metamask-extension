@@ -13,6 +13,11 @@ import {
 } from './routes';
 
 /**
+ * Developer Options Settings is not i18n supported since it is only used internally.
+ */
+const DEVELOPER_OPTIONS_TAB_MESSAGE = 'Developer Options';
+
+/**
  * @typedef SettingRouteConfig
  * # @param {Function} tabMessage
  * # @param {Function} sectionMessage
@@ -479,7 +484,7 @@ const SETTINGS_CONSTANTS = [
   // developerOptions settingsRefs[0]
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
-    tabMessage: (t) => t('developerOptions'),
+    tabMessage: DEVELOPER_OPTIONS_TAB_MESSAGE,
     sectionMessage: (t) => t('resetStates'),
     descriptionMessage: (t) => t('resetStates'),
     route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states`,
@@ -488,28 +493,30 @@ const SETTINGS_CONSTANTS = [
   // developerOptions settingsRefs[1]
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
-    tabMessage: (t) => t('developerOptions'),
+    tabMessage: DEVELOPER_OPTIONS_TAB_MESSAGE,
     sectionMessage: (t) => t('announcements'),
-    descriptionMessage: (t) =>
-      t('developerOptionsResetStatesAnnouncementsDescription'),
+    descriptionMessage:
+      "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal.",
     route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-announcements`,
     icon: IconName.CodeCircle,
   },
   // developerOptions settingsRefs[2]
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
-    tabMessage: (t) => t('developerOptions'),
-    sectionMessage: (t) => t('serviceWorkerKeepAlive'),
-    descriptionMessage: (t) => t('developerOptionsResetStatesOnboarding'),
+    tabMessage: DEVELOPER_OPTIONS_TAB_MESSAGE,
+    sectionMessage: 'Service Worker Keep Alive',
+    descriptionMessage:
+      'Resets various states related to onboarding and redirects to the "Secure Your Wallet" onboarding page.',
     route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-onboarding`,
     icon: IconName.CodeCircle,
   },
   // developerOptions settingsRefs[3]
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
-    tabMessage: (t) => t('developerOptions'),
-    sectionMessage: (t) => t('serviceWorkerKeepAlive'),
-    descriptionMessage: (t) => t('developerOptionsServiceWorkerKeepAlive'),
+    tabMessage: DEVELOPER_OPTIONS_TAB_MESSAGE,
+    sectionMessage: 'Service Worker Keep Alive',
+    descriptionMessage:
+      'Results in a timestamp being continuously saved to session.storage',
     route: `${DEVELOPER_OPTIONS_ROUTE}#service-worker-keep-alive`,
     icon: IconName.CodeCircle,
   },

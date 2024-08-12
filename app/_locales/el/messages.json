@@ -1549,30 +1549,6 @@
   "details": {
     "message": "Λεπτομέρειες"
   },
-  "developerOptions": {
-    "message": "Επιλογές προγραμματιστών"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Ενεργοποιεί ή απενεργοποιεί τη λειτουργία επανασχεδιασμού επιβεβαιώσεων που βρίσκεται υπό ανάπτυξη"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Επανασχεδιασμός επιβεβαιώσεων"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Ενεργοποιεί το νέο σχεδιασμό του μενού Δίκτυα"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Επανασχεδιασμός του μενού Δίκτυα"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Επαναφέρει το δυαδικό isShown σε ψευδές για όλες τις ανακοινώσεις. Οι ανακοινώσεις είναι οι ειδοποιήσεις που εμφανίζονται στο αναδυόμενο παράθυρο \"Τι νέο υπάρχει\"."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Επαναφέρει διάφορες καταστάσεις που σχετίζονται με την ενσωμάτωση και ανακατευθύνει στη σελίδα ενσωμάτωσης \"Ασφαλίστε το πορτοφόλι σας\"."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Αυτό έχει ως αποτέλεσμα τη συνεχή αποθήκευση μιας χρονοσφραγίδας στο session.storage"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "Το \"1$\" είναι απενεργοποιημένο επειδή δεν πληροί την ελάχιστη αύξηση 10% σε σχέση με τα αρχικά τέλη συναλλαγής.",
     "description": "$1 is gas estimate type which can be market or aggressive"

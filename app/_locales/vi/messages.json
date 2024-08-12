@@ -1549,30 +1549,6 @@
   "details": {
     "message": "Chi tiết"
   },
-  "developerOptions": {
-    "message": "Tùy chọn Nhà phát triển"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Bật hoặc tắt tính năng thiết kế lại xác nhận hiện đang được phát triển"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Thiết kế lại xác nhận"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Bật/tắt thiết kế mới của trình đơn Mạng"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Tái thiết kế Trình đơn Mạng"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Đặt lại giá trị isShown thành \"false\" cho tất cả thông báo. Thông báo là các nội dung hiển thị trong cửa sổ bật lên \"Xem tính năng mới\"."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Đặt lại các trạng thái khác nhau liên quan đến phần giới thiệu và chuyển hướng đến trang giới thiệu \"Bảo mật ví của bạn\"."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Kết quả trong dấu thời gian được lưu liên tục vào session.storage"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” bị vô hiệu hóa vì không đạt mức tăng tối thiểu 10% so với phí gas ban đầu.",
     "description": "$1 is gas estimate type which can be market or aggressive"

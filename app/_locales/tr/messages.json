@@ -1549,30 +1549,6 @@
   "details": {
     "message": "Ayrıntılar"
   },
-  "developerOptions": {
-    "message": "Geliştirici Seçenekleri"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Şu anda geliştirme aşamasında olan yeni onay tasarımı özelliğini etkinleştirir veya devre dışı bırakır"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Yeni Onay Tasarımı"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Ağlar menüsünün yeni tasarımını açar ve kapatır"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Ağ Menüsünün Yeni Tasarımı"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Tüm duyurular için isShown boolean değerini false olarak sıfırlar. Duyurular, Yenilikler açılır penceresi modalında gösterilen bildirimlerdir."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Katılım ile ilgili çeşitli durumları sıfırlar ve \"Cüzdanınızı Koruyun\" katılım sayfasına yeniden yönlendirir."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Zaman damgasının sürekli olarak oturum depolama alanına kaydedilmesine neden olur"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "Orijinal gaz ücretinden minimum %10'luk bir artışı karşılamadığı için \"$1\" devre dışı bırakıldı.",
     "description": "$1 is gas estimate type which can be market or aggressive"
