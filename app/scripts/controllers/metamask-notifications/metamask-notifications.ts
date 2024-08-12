@@ -13,10 +13,7 @@ import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
-import {
-  AuthenticationControllerGetBearerToken,
-  AuthenticationControllerIsSignedIn,
-} from '../authentication/authentication-controller';
+import { AuthenticationController } from '@metamask/profile-sync-controller';
 import {
   PushPlatformNotificationsControllerEnablePushNotifications,
   PushPlatformNotificationsControllerDisablePushNotifications,
@@ -200,8 +197,8 @@ export type AllowedActions =
   | KeyringControllerGetAccountsAction
   | KeyringControllerGetStateAction
   // Auth Controller Requests
-  | AuthenticationControllerGetBearerToken
-  | AuthenticationControllerIsSignedIn
+  | AuthenticationController.AuthenticationControllerGetBearerToken
+  | AuthenticationController.AuthenticationControllerIsSignedIn
   // User Storage Controller Requests
   | UserStorageControllerEnableProfileSyncing
   | UserStorageControllerGetStorageKey

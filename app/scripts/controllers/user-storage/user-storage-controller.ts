@@ -9,21 +9,35 @@ import type {
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
-import {
-  AuthenticationControllerGetBearerToken,
-  AuthenticationControllerGetSessionProfile,
-  AuthenticationControllerIsSignedIn,
-  AuthenticationControllerPerformSignIn,
-  AuthenticationControllerPerformSignOut,
-} from '../authentication/authentication-controller';
+import { AuthenticationController } from '@metamask/profile-sync-controller';
+
 import {
   MetamaskNotificationsControllerDisableMetamaskNotifications,
   MetamaskNotificationsControllerSelectIsMetamaskNotificationsEnabled,
 } from '../metamask-notifications/metamask-notifications';
-import { createSnapSignMessageRequest } from '../authentication/auth-snap-requests';
 import { getUserStorage, upsertUserStorage } from './services';
 import { UserStorageEntryKeys } from './schema';
 import { createSHA256Hash } from './encryption';
+
+type SnapRPCRequest = Parameters<HandleSnapRequest['handler']>[0];
+
+/**
+ * Constructs Request to get Message Signing Snap to sign a message.
+ *
+ * @param message - message to sign
+ * @returns Snap Sign Message Request
+ */
+export function createSnapSignMessageRequest(message: `metamask:${string}`) {
+  return {
+    snapId: 'npm:@metamask/message-signing-snap',
+    origin: '',
+    handler: 'onRpcRequest',
+    request: {
+      method: 'signMessage',
+      params: { message },
+    },
+  } as unknown as SnapRPCRequest;
+}
 
 const controllerName = 'UserStorageController';
 
@@ -86,11 +100,11 @@ export type AllowedActions =
   // Snap Requests
   | HandleSnapRequest
   // Auth Requests
-  | AuthenticationControllerGetBearerToken
-  | AuthenticationControllerGetSessionProfile
-  | AuthenticationControllerPerformSignIn
-  | AuthenticationControllerIsSignedIn
-  | AuthenticationControllerPerformSignOut
+  | AuthenticationController.AuthenticationControllerGetBearerToken
+  | AuthenticationController.AuthenticationControllerGetSessionProfile
+  | AuthenticationController.AuthenticationControllerPerformSignIn
+  | AuthenticationController.AuthenticationControllerIsSignedIn
+  | AuthenticationController.AuthenticationControllerPerformSignOut
   // Metamask Notifications
   | MetamaskNotificationsControllerDisableMetamaskNotifications
   | MetamaskNotificationsControllerSelectIsMetamaskNotificationsEnabled;

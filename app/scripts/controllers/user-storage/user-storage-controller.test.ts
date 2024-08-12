@@ -1,11 +1,6 @@
 import nock from 'nock';
 import { ControllerMessenger } from '@metamask/base-controller';
-import {
-  AuthenticationControllerGetBearerToken,
-  AuthenticationControllerGetSessionProfile,
-  AuthenticationControllerIsSignedIn,
-  AuthenticationControllerPerformSignIn,
-} from '../authentication/authentication-controller';
+import { AuthenticationController } from '@metamask/profile-sync-controller';
 import {
   MetamaskNotificationsControllerDisableMetamaskNotifications,
   MetamaskNotificationsControllerSelectIsMetamaskNotificationsEnabled,
@@ -349,11 +344,11 @@ function mockUserStorageMessenger() {
 
   const mockAuthGetBearerToken =
     typedMockFn<
-      AuthenticationControllerGetBearerToken['handler']
+      AuthenticationController.AuthenticationControllerGetBearerToken['handler']
     >().mockResolvedValue('MOCK_BEARER_TOKEN');
 
   const mockAuthGetSessionProfile = typedMockFn<
-    AuthenticationControllerGetSessionProfile['handler']
+    AuthenticationController.AuthenticationControllerGetSessionProfile['handler']
   >().mockResolvedValue({
     identifierId: '',
     profileId: 'MOCK_PROFILE_ID',
@@ -361,17 +356,17 @@ function mockUserStorageMessenger() {
 
   const mockAuthPerformSignIn =
     typedMockFn<
-      AuthenticationControllerPerformSignIn['handler']
+      AuthenticationController.AuthenticationControllerPerformSignIn['handler']
     >().mockResolvedValue('New Access Token');
 
   const mockAuthIsSignedIn =
     typedMockFn<
-      AuthenticationControllerIsSignedIn['handler']
+      AuthenticationController.AuthenticationControllerIsSignedIn['handler']
     >().mockReturnValue(true);
 
   const mockAuthPerformSignOut =
     typedMockFn<
-      AuthenticationControllerIsSignedIn['handler']
+      AuthenticationController.AuthenticationControllerIsSignedIn['handler']
     >().mockReturnValue(true);
 
   const mockMetamaskNotificationsIsMetamaskNotificationsEnabled =
@@ -442,11 +437,7 @@ function mockUserStorageMessenger() {
       return mockKeyringControllerGetState();
     }
 
-    function exhaustedMessengerMocks(action: never) {
-      throw new Error(`MOCK_FAIL - unsupported messenger call: ${action}`);
-    }
-
-    return exhaustedMessengerMocks(actionType);
+    throw new Error(`MOCK_FAIL - unsupported messenger call: ${actionType}`);
   });
 
   return {
