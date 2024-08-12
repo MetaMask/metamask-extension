@@ -9,6 +9,9 @@ import {
   withFixtures,
   openDapp,
   WINDOW_TITLES,
+  locateAccountBalanceDOM,
+  clickNestedButton,
+  ACCOUNT_2,
 } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { SMART_CONTRACTS } from '../seeder/smart-contracts';
@@ -34,7 +37,11 @@ describe('Snap Account Contract interaction', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, contractRegistry }: TestSuiteArguments) => {
+      async ({
+        driver,
+        contractRegistry,
+        ganacheServer,
+      }: TestSuiteArguments) => {
         // Install Snap Simple Keyring and import key
         await installSnapSimpleKeyring(driver, false);
         await importKeyAndSwitch(driver);
@@ -56,8 +63,24 @@ describe('Snap Account Contract interaction', function () {
           css: 'h2',
           text: 'Transaction request',
         });
-
         await scrollAndConfirmAndAssertConfirm(driver);
+
+        // Confirm the transaction activity
+        await driver.waitUntilXWindowHandles(3);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await clickNestedButton(driver, 'Activity');
+        await driver.waitForSelector(
+          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+        );
+        await driver.waitForSelector({
+          css: '[data-testid="transaction-list-item-primary-currency"]',
+          text: '-4 ETH',
+        });
+
+        // renders the correct ETH balance
+        await locateAccountBalanceDOM(driver, ganacheServer, ACCOUNT_2);
       },
     );
   });

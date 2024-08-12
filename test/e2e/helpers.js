@@ -893,7 +893,13 @@ const TEST_SEED_PHRASE =
 const TEST_SEED_PHRASE_TWO =
   'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
-// Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
+/**
+ * Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
+ *
+ * @param {WebDriver} driver - The webdriver instance
+ * @param {Ganache|undefined} ganacheServer - The ganache server instance
+ * @param {(string|null)} address - The address to unlock
+ */
 const locateAccountBalanceDOM = async (
   driver,
   ganacheServer,
