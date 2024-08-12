@@ -182,7 +182,7 @@ const DeveloperOptionsTab = () => {
             variant={ButtonVariant.Primary}
             onClick={handleResetOnboardingClick}
           >
-            {t('reset')}
+            Reset
           </Button>
         </div>
         <div className="settings-page__content-item-col">
