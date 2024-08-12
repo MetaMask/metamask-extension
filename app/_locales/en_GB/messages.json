@@ -1458,9 +1458,6 @@
   "data": {
     "message": "Data"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Can not restore your data. The file appears to be corrupt."
-  },
   "dataCollectionForMarketing": {
     "message": "Data collection for marketing"
   },
@@ -4421,12 +4418,6 @@
   "restore": {
     "message": "Restore"
   },
-  "restoreFailed": {
-    "message": "Can not restore your data from the file provided"
-  },
-  "restoreSuccessful": {
-    "message": "Your data has been restored successfully"
-  },
   "restoreUserData": {
     "message": "Restore user data"
   },
@@ -4822,9 +4813,6 @@
   },
   "signatureRequestGuidance": {
     "message": "Only sign this message if you fully understand the content and trust the requesting site."
-  },
-  "signatureRequestWarning": {
-    "message": "Signing this message could be dangerous. You may be giving total control of your account and assets to the party on the other end of this message. That means they could drain your account at any time. Proceed with caution. $1."
   },
   "signed": {
     "message": "Signed"
@@ -6576,9 +6564,6 @@
   },
   "yourBalance": {
     "message": "Your balance"
-  },
-  "yourFundsMayBeAtRisk": {
-    "message": "Your funds may be at risk"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"

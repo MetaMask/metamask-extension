@@ -38,6 +38,7 @@ module.exports = {
   ],
   testPathIgnorePatterns: [
     '<rootDir>/test/unit-global/protect-intrinsics.test.js',
+    '<rootDir>/development/webpack/',
   ],
   testTimeout: 5500,
   // We have to specify the environment we are running in, which is jsdom. The

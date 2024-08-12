@@ -42,7 +42,7 @@
     "message": "关联您的二维码硬件钱包"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave (即将上线)"
+    "message": "Ngrave Zero"
   },
   "SIWEAddressInvalid": {
     "message": "登录请求中的地址与您用于登录的账户地址不匹配。"
@@ -1451,9 +1451,6 @@
   },
   "data": {
     "message": "数据"
-  },
-  "dataBackupSeemsCorrupt": {
-    "message": "无法还原数据。文件似乎已损坏。"
   },
   "dataCollectionForMarketing": {
     "message": "用于营销目的的数据收集"
@@ -4409,12 +4406,6 @@
   "restore": {
     "message": "恢复"
   },
-  "restoreFailed": {
-    "message": "无法使用所提供的文件恢复数据"
-  },
-  "restoreSuccessful": {
-    "message": "您的数据已成功恢复"
-  },
   "restoreUserData": {
     "message": "恢复用户数据"
   },
@@ -4807,9 +4798,6 @@
   },
   "signatureRequestGuidance": {
     "message": "只有在您完全理解内容并信任请求网站的情况下，才能签署此消息。"
-  },
-  "signatureRequestWarning": {
-    "message": "签署此消息可能会很危险。您可能会将您的账户和资产的全部控制权交给此消息另一端的一方。这意味着他们可以随时耗尽您的账户。请谨慎行事。$1。"
   },
   "signed": {
     "message": "已签名"
@@ -5926,45 +5914,6 @@
     "message": "至：$1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "您面临网络钓鱼攻击的风险。通过关闭 eth_sign 保护自己。"
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "如果启用此设置，您可能会收到不可读的签名请求。通过签署一条您不理解的信息，您可能同意放弃您的资金和 NFT。"
-  },
-  "toggleEthSignField": {
-    "message": "Eth_sign 请求"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " 您可能遭受了欺诈"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "如果要求您打开此设置，"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "我明白，如果我启用 eth_sign 请求，我可能失去所有资金和 NFT。 "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "允许 eth_sign 请求可能会使您易于受到网络钓鱼攻击。始终检查 URL，并且在签署包含代码的消息时保持谨慎。"
-  },
-  "toggleEthSignModalFormError": {
-    "message": "文本不正确"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "输入“我只签署我理解的内容”以继续"
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "我只签署我理解的内容"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "使用风险自负"
-  },
-  "toggleEthSignOff": {
-    "message": "关闭（推荐）"
-  },
-  "toggleEthSignOn": {
-    "message": "开启（不推荐）"
-  },
   "toggleRequestQueueDescription": {
     "message": "这使您可以为每个网站选择网络，而不是为所有网站选择同一个网络。此功能将阻止您手动切换网络，这可能会破坏您在某些网站上的用户体验。"
   },
@@ -6561,9 +6510,6 @@
   },
   "yourBalance": {
     "message": "您的余额"
-  },
-  "yourFundsMayBeAtRisk": {
-    "message": "您的资金可能面临风险"
   },
   "yourNFTmayBeAtRisk": {
     "message": "您的 NFT 可能面临风险"
