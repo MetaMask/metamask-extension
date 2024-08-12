@@ -74,7 +74,12 @@ export default class ComposableObservableStore extends ObservableStore {
         );
       }
 
-      initialState[key] = store.state ?? store.getState?.();
+      const initialStoreState = store.state ?? store.getState?.();
+
+      initialState[key] =
+        this.persist && config[key].metadata
+          ? getPersistentState(initialStoreState, config[key].metadata)
+          : initialStoreState;
     }
     this.updateState(initialState);
   }

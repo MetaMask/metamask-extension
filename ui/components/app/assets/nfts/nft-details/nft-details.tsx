@@ -345,7 +345,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
               alt={image ? nftImageAlt : ''}
               name={name}
               tokenId={tokenId}
-              networkName={currentChain.nickname}
+              networkName={currentChain.nickname ?? ''}
               networkSrc={currentChain.rpcPrefs?.imageUrl}
               isIpfsURL={isIpfsURL}
               onClick={handleImageClick}
