@@ -11,6 +11,7 @@ import {
   HelpTextSeverity,
   Label,
   TextFieldSize,
+  TextFieldType,
 } from '..';
 import { PolymorphicRef } from '../box';
 import type { BoxProps } from '../box';
@@ -51,7 +52,7 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
       size = FormTextFieldSize.Md,
       textFieldProps,
       truncate,
-      type = 'text',
+      type = TextFieldType.Text,
       value,
       ...props
     }: FormTextFieldProps<C>,
