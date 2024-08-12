@@ -39,7 +39,6 @@ const maskedBackgroundFields = [
   'AppStateController.surveyLinkLastClickedOrClosed',
   'AppStateController.recoveryPhraseReminderLastShown',
   'AppStateController.termsOfUseLastAgreed',
-  'AppStateController.lastInteractedConfirmationInfo',
   // The value in these properties may change each run
   'AppStateController.fullScreenGasPollTokens',
   'AppStateController.notificationGasPollTokens',
@@ -55,6 +54,7 @@ const removedBackgroundFields = [
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
+  'AppStateController.lastInteractedConfirmationInfo',
   'PPOMController.chainStatus.0x539.lastVisited',
   'PPOMController.versionInfo',
 ];
@@ -605,7 +605,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe.only('after initialization, after opting into metrics @no-mmi', function () {
+  describe('after initialization, after opting into metrics @no-mmi', function () {
     it('should send error events in background', async function () {
       await withFixtures(
         {
@@ -742,7 +742,7 @@ describe('Sentry errors', function () {
       );
     });
 
-    it.only('should capture UI application state', async function () {
+    it('should capture UI application state', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
@@ -824,7 +824,6 @@ describe('Sentry errors', function () {
       // Part of transaction controller store, but missing from the initial
       // state
       lastFetchedBlockNumbers: false,
-      lastInteractedConfirmationInfo: undefined,
       preferences: {
         autoLockTimeLimit: true, // Initialized as undefined
         showConfirmationAdvancedDetails: true,
@@ -849,6 +848,7 @@ describe('Sentry errors', function () {
       opts: true,
       store: true,
       configurationClient: true,
+      lastInteractedConfirmationInfo: undefined,
     };
     await withFixtures(
       {
