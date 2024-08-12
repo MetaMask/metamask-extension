@@ -63,7 +63,9 @@ const ConfirmAddCustodianToken: React.FC = () => {
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
   const mmiActions = mmiActionsFactory();
+
   const mmiConfiguration = useSelector(getMMIConfiguration);
+  const custodians = mmiConfiguration?.custodians;
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const connectRequests = useSelector(
     getInstitutionalConnectRequests,
@@ -71,8 +73,6 @@ const ConfirmAddCustodianToken: React.FC = () => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [connectError, setConnectError] = useState('');
-
-  const custodians = mmiConfiguration?.custodians;
 
   const connectRequest = connectRequests?.[0];
 
