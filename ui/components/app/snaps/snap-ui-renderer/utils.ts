@@ -19,7 +19,7 @@ export type MapToTemplateParams = {
     inputValue: string;
     placeholder?: string;
   };
-  t: (key: string) => string;
+  t?: (key: string) => string;
 };
 
 /**
