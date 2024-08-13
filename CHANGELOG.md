@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.0.2]
+### Fixed
+- Prevented data persistence errors related to networks, and phishing protection ([#26396](https://github.com/MetaMask/metamask-extension/pull/26396))
 
 ## [12.0.1]
 ### Removed
