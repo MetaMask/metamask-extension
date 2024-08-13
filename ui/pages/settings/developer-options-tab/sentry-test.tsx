@@ -16,7 +16,6 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { trace } from '../../../../shared/lib/trace';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export function SentryTest() {
   return (
@@ -34,8 +33,6 @@ export function SentryTest() {
 }
 
 function GenerateUIError() {
-  const t = useI18nContext();
-
   const handleClick = useCallback(async () => {
     await window.stateHooks.throwTestError?.('Developer Options');
   }, []);
@@ -51,8 +48,6 @@ function GenerateUIError() {
 }
 
 function GenerateBackgroundError() {
-  const t = useI18nContext();
-
   const handleClick = useCallback(async () => {
     await window.stateHooks.throwTestBackgroundError?.('Developer Options');
   }, []);
@@ -68,8 +63,6 @@ function GenerateBackgroundError() {
 }
 
 function GenerateTrace() {
-  const t = useI18nContext();
-
   const handleClick = useCallback(async () => {
     await trace(
       {
