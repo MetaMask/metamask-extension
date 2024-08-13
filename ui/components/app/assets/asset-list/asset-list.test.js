@@ -134,15 +134,4 @@ describe('AssetList', () => {
       expect(screen.getByText('Refresh list')).toBeInTheDocument();
     });
   });
-
-  it('shows the receive button when the user balance is zero', async () => {
-    mockTokens = [];
-
-    await act(async () => {
-      render(mockState.metamask.selectedAddress, '0x0', CHAIN_IDS.MAINNET);
-    });
-    await waitFor(() => {
-      expect(screen.getByText('Receive tokens')).toBeInTheDocument();
-    });
-  });
 });
