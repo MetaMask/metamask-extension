@@ -198,8 +198,7 @@ describe('migration #120.4', () => {
     it('deletes obsolete properties from the NetworkController state', async () => {
       const oldState = {
         NetworkController: {
-          phishing: 'test',
-          lastFetched: 'test',
+          network: 'test',
         },
       };
 
