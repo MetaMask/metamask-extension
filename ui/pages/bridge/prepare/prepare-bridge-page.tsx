@@ -10,6 +10,7 @@ import {
   switchToAndFromTokens,
 } from '../../../ducks/bridge/actions';
 import {
+  getBridgeQuotes,
   getFromAmount,
   getFromChain,
   getFromChains,
@@ -28,11 +29,15 @@ import {
   ButtonIcon,
   IconName,
 } from '../../../components/component-library';
+import {
+  AlignItems,
+  Display,
+  BlockSize,
+} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TokenBucketPriority } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/useTokensWithFiltering';
 import { setActiveNetwork } from '../../../store/actions';
-import { BlockSize } from '../../../helpers/constants/design-system';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const PrepareBridgePage = () => {
@@ -55,6 +60,8 @@ const PrepareBridgePage = () => {
 
   const fromAmount = useSelector(getFromAmount);
   const toAmount = useSelector(getToAmount);
+
+  const quotes = useSelector(getBridgeQuotes);
 
   const fromTokenListGenerator = useTokensWithFiltering(
     fromTokens,
@@ -79,7 +86,12 @@ const PrepareBridgePage = () => {
           header={t('bridgeFrom')}
           token={fromToken}
           onAmountChange={(e) => {
-            dispatch(setFromTokenInputValue(e));
+            dispatch(
+              setFromTokenInputValue({
+                amount: e,
+                decimals: Number(fromToken.decimals),
+              }),
+            );
           }}
           onAssetChange={(token) => dispatch(setFromToken(token))}
           networkProps={{
@@ -155,6 +167,13 @@ const PrepareBridgePage = () => {
             value: toAmount,
           }}
         />
+      </Box>
+      <Box
+        className="bridge-quotes-container"
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+      >
+        {JSON.stringify(quotes).slice(6, 10)}
       </Box>
     </div>
   );
