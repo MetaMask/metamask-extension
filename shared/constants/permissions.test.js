@@ -10,16 +10,11 @@ import {
 
 describe('EndowmentPermissions', () => {
   it('has the expected permission keys', () => {
-    // Since some permissions are fenced out, this causes problems with the
-    // test, so we re-add them here.
     expect(Object.keys(EndowmentPermissions).sort()).toStrictEqual(
-      [
-        'endowment:name-lookup',
-        ...Object.keys(endowmentPermissionBuilders).filter(
-          (targetName) =>
-            !Object.keys(ExcludedSnapEndowments).includes(targetName),
-        ),
-      ].sort(),
+      Object.keys(endowmentPermissionBuilders).filter(
+        (targetName) =>
+          !Object.keys(ExcludedSnapEndowments).includes(targetName),
+      ),
     );
   });
 });
