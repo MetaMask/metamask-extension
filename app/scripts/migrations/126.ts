@@ -1,6 +1,26 @@
-import { hasProperty, isObject } from '@metamask/utils';
+import { hasProperty, Hex, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
-import { BUILT_IN_NETWORKS } from '@metamask/controller-utils';
+
+const BUILT_IN_NETWORKS = {
+  goerli: {
+    chainId: '0x5',
+  },
+  sepolia: {
+    chainId: '0xaa36a7',
+  },
+  mainnet: {
+    chainId: '0x1',
+  },
+  'linea-goerli': {
+    chainId: '0xe704',
+  },
+  'linea-sepolia': {
+    chainId: '0xe705',
+  },
+  'linea-mainnet': {
+    chainId: '0xe708',
+  },
+};
 
 const Caip25CaveatType = 'authorizedScopes';
 const Caip25EndowmentPermissionName = 'endowment:caip25';
@@ -96,36 +116,41 @@ export async function migrate(
 
 function transformState(state: Record<string, unknown>) {
   if (
-    !hasProperty(state, 'SnapController') ||
     !hasProperty(state, 'PermissionController') ||
     !isObject(state.PermissionController) ||
     !hasProperty(state, 'NetworkController') ||
     !isObject(state.NetworkController)
+    // !hasProperty(state, 'SelectedNetworkController') ||
+    // !isObject(state.SelectedNetworkController)
   ) {
     return state;
   }
   const {
     PermissionController: { subjects },
     NetworkController: { selectedNetworkClientId, networkConfigurations },
+    // SelectedNetworkController: { domains }
   } = state;
-  if (typeof selectedNetworkClientId !== 'string' || !networkConfigurations) {
+  if (
+    !isObject(subjects) ||
+    !selectedNetworkClientId ||
+    typeof selectedNetworkClientId !== 'string' ||
+    !isObject(networkConfigurations)
+    // !isObject(domains)
+  ) {
     return state;
   }
 
-  // don't we actullay want the current chain for the origin specifically?...
+  // do we actually want the chain for the origin, not the globally selected?
   const networkConfiguration =
-    networkConfigurations[selectedNetworkClientId] ??
-    BUILT_IN_NETWORKS[selectedNetworkClientId];
-  const currentChainId = networkConfiguration.chainId;
-  if (typeof currentChainId !== 'string') {
+    (networkConfigurations[selectedNetworkClientId] as { chainId: Hex }) ??
+    BUILT_IN_NETWORKS[
+      selectedNetworkClientId as unknown as keyof typeof BUILT_IN_NETWORKS
+    ];
+  const currentChainId = networkConfiguration?.chainId;
+  if (!currentChainId || typeof currentChainId !== 'string') {
     return state;
   }
 
-  if (!isObject(subjects)) {
-    return state;
-  }
-
-  // use Object.values instead?
   for (const subject of Object.values(subjects)) {
     if (!isObject(subject)) {
       return state;
@@ -138,15 +163,15 @@ function transformState(state: Record<string, unknown>) {
 
     let basePermission = {};
 
-    let ethAccounts = [];
+    let ethAccounts: string[] = [];
     if (
       isObject(permissions.eth_accounts) &&
       Array.isArray(permissions.eth_accounts.caveats)
     ) {
       ethAccounts = permissions.eth_accounts.caveats[0]?.value ?? [];
       basePermission = permissions.eth_accounts;
-      delete permissions.eth_accounts;
     }
+    delete permissions.eth_accounts;
 
     let chainIds: string[] = [];
     if (
@@ -155,28 +180,27 @@ function transformState(state: Record<string, unknown>) {
     ) {
       chainIds = permissions.permittedChains.caveats[0]?.value ?? [];
       basePermission ??= permissions.permittedChains;
-      delete permissions.permittedChains;
     }
+    delete permissions.permittedChains;
 
-    if (permissions[Caip25EndowmentPermissionName]) {
-      // nothing to migrate?
-      continue;
-    }
+    // this shouldn't be possible?
+    // if (permissions[Caip25EndowmentPermissionName]) {
+    //   continue;
+    // }
 
     if (ethAccounts.length === 0 && chainIds.length === 0) {
-      // nothing to migrate
-      // have we properly handled snaps here?
       continue;
     }
 
     if (ethAccounts.length > 0 && chainIds.length === 0) {
+      // should this resolve from domains?
       chainIds = [currentChainId];
     }
 
-    const scopes = {};
+    const scopes: Record<string, unknown> = {};
 
     chainIds.forEach((chainId) => {
-      const scopeString = `eip155:${chainId}`;
+      const scopeString = `eip155:${parseInt(chainId, 16)}`;
       const caipAccounts = ethAccounts.map(
         (account) => `${scopeString}:${account}`,
       );
