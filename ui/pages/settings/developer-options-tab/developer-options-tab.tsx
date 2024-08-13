@@ -38,6 +38,15 @@ import { getIsRedesignedConfirmationsDeveloperEnabled } from '../../confirmation
 import ToggleRow from './developer-options-toggle-row-component';
 import { SentryTest } from './sentry-test';
 
+/**
+ * Settings Page for Developer Options (internal-only)
+ *
+ * This page does not need i18n translation support because it's an internal settings page.
+ * We only support the t('developerOptions') translation because the general settings architecture
+ * utilizes the translation key to render.
+ *
+ * @returns
+ */
 const DeveloperOptionsTab = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
