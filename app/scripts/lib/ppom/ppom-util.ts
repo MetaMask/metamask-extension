@@ -87,7 +87,6 @@ export async function updateSecurityAlertResponse({
     transactionController,
   );
 
-  console.log('securityAlertResponse = ', securityAlertResponse);
   if (isSignatureRequest) {
     appStateController.addSignatureSecurityAlertResponse(securityAlertResponse);
   } else {
