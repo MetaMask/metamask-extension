@@ -13,6 +13,7 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import {
+  MinPermissionAbstractionDisplayCount,
   PermissionsAbstractionThreshold,
   PermissionWeightThreshold,
 } from '../../../../../shared/constants/permissions';
@@ -60,7 +61,7 @@ export default function SnapPermissionsList({
   const filteredPermissions = getFilteredSnapPermissions(
     weightedPermissions,
     PermissionWeightThreshold.snapInstall,
-    true,
+    MinPermissionAbstractionDisplayCount,
   );
 
   const onShowAllPermissionsHandler = () => {

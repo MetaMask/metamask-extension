@@ -36,6 +36,9 @@ export const PermissionWeightThreshold = Object.freeze({
   snapUpdateApprovedPermissions: 2 as const,
 });
 
+// Specify minimum number of permissions to be shown, when abstraction is applied
+export const MinPermissionAbstractionDisplayCount = 3;
+
 // Specify number of permissions used as threshold for permission abstraction logic to be applied
 export const PermissionsAbstractionThreshold = 3;
 

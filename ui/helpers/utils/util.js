@@ -783,27 +783,43 @@ export const getAvatarFallbackLetter = (subjectName) => {
 };
 
 /**
- * Get Snap permissions filtered by weight.
+ * Get abstracted Snap permissions filtered by weight.
  *
  * @param weightedPermissions - Set of Snap permissions that have 'weight' property assigned.
  * @param weightThreshold - Number that represents weight threshold for filtering.
- * @param showFirstThreeOnEmpty - Boolean flag to control if first three permissions should be shown
- * when no permissions meet the weight criteria.
- * @returns Subset of permissions passing weight threshold.
+ * @param minPermissionCount - Minimum number of permissions to show,
+ * if filtered permissions count are less than the value specified.
+ * @returns Subset of permissions passing weight criteria.
  */
 export const getFilteredSnapPermissions = (
   weightedPermissions,
   weightThreshold,
-  showFirstThreeOnEmpty = false,
+  minPermissionCount = 3,
 ) => {
-  let filteredPermissions = weightedPermissions.filter(
+  const filteredPermissions = weightedPermissions.filter(
     (permission) => permission.weight <= (weightThreshold ?? Infinity),
   );
 
-  // If there are no permissions that fall into desired set filtered by weight,
-  // then show only the first three, no matter what the weight is
-  if (showFirstThreeOnEmpty && filteredPermissions.length === 0) {
-    filteredPermissions = weightedPermissions.slice(0, 3);
+  // If there are not enough permissions that fall into desired set filtered by weight,
+  // then fill the gap, no matter what the weight is
+  if (minPermissionCount && filteredPermissions.length < minPermissionCount) {
+    const remainingPermissions = [...weightedPermissions];
+
+    // Remove already filtered permissions to avoid duplicates
+    for (const permission of filteredPermissions) {
+      const index = remainingPermissions.indexOf(permission);
+      if (index > -1) {
+        remainingPermissions.splice(index, 1);
+      }
+    }
+
+    // Add permissions until desired count is reached
+    while (
+      filteredPermissions.length < minPermissionCount &&
+      remainingPermissions.length > 0
+    ) {
+      filteredPermissions.push(remainingPermissions.shift());
+    }
   }
 
   return filteredPermissions;
