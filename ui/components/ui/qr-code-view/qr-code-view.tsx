@@ -125,6 +125,7 @@ function QrCodeView({
         alignItems={AlignItems.center}
         color={TextColor.primaryDefault}
         className="qr-code__copy-button"
+        data-testid="address-copy-button-text"
         onClick={() => {
           handleCopy(checksummedAddress);
           trackEvent({
