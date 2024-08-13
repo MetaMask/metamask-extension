@@ -11,7 +11,7 @@ import {
 describe('EndowmentPermissions', () => {
   it('has the expected permission keys', () => {
     expect(Object.keys(EndowmentPermissions).sort()).toStrictEqual(
-      ...Object.keys(endowmentPermissionBuilders)
+      Object.keys(endowmentPermissionBuilders)
         .filter(
           (targetName) =>
             !Object.keys(ExcludedSnapEndowments).includes(targetName),
