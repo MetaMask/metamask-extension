@@ -276,15 +276,17 @@ export const AccountListMenu = ({
 
   const onAccountListItemItemClicked = useCallback(
     (account) => {
-      onClose();
-      trackEvent({
-        category: MetaMetricsEventCategory.Navigation,
-        event: MetaMetricsEventName.NavAccountSwitched,
-        properties: {
-          location: 'Main Menu',
-        },
-      });
-      dispatch(setSelectedAccount(account.address));
+      return () => {
+        onClose();
+        trackEvent({
+          category: MetaMetricsEventCategory.Navigation,
+          event: MetaMetricsEventName.NavAccountSwitched,
+          properties: {
+            location: 'Main Menu',
+          },
+        });
+        dispatch(setSelectedAccount(account.address));
+      };
     },
     [dispatch, onClose, trackEvent],
   );
@@ -582,7 +584,7 @@ export const AccountListMenu = ({
                     key={account.address}
                   >
                     <AccountListItem
-                      onClick={() => onAccountListItemItemClicked(account)}
+                      onClick={onAccountListItemItemClicked(account)}
                       account={account}
                       key={account.address}
                       selected={selectedAccount.address === account.address}
