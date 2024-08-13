@@ -134,6 +134,7 @@ const migrations = [
   require('./120.1'),
   require('./120.2'),
   require('./120.3'),
+  require('./120.4'),
   require('./121'),
   require('./122'),
   require('./123'),
