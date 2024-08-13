@@ -899,7 +899,7 @@ const TEST_SEED_PHRASE_TWO =
  *
  * @param {WebDriver} driver - The webdriver instance
  * @param {Ganache} [ganacheServer] - The ganache server instance
- * @param {string} [address] - The address to unlock
+ * @param {string} [address] - The address to check the balance for
  */
 const locateAccountBalanceDOM = async (
   driver,
