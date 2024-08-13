@@ -41,6 +41,22 @@ type Label = {
   value: string;
 };
 
+type Custodian = {
+  type: string;
+  iconUrl: string;
+  name: string;
+  website: string;
+  envName: string;
+  apiUrl: string | null;
+  displayName: string | null;
+  production: boolean;
+  refreshTokenUrl: string | null;
+  websocketApiUrl: string;
+  isNoteToTraderSupported: boolean;
+  version: number;
+  isQRCodeSupported: boolean;
+};
+
 const ConfirmAddCustodianToken: React.FC = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -48,7 +64,8 @@ const ConfirmAddCustodianToken: React.FC = () => {
   const trackEvent = useContext(MetaMetricsContext);
   const mmiActions = mmiActionsFactory();
 
-  const { custodians } = useSelector(getMMIConfiguration);
+  const mmiConfiguration = useSelector(getMMIConfiguration);
+  const custodians = mmiConfiguration?.custodians;
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const connectRequests = useSelector(
     getInstitutionalConnectRequests,
@@ -144,7 +161,7 @@ const ConfirmAddCustodianToken: React.FC = () => {
 
   const custodian = findCustodianByEnvName(
     connectRequest.environment || custodianLabel,
-    custodians,
+    custodians as Custodian[],
   );
 
   return (
