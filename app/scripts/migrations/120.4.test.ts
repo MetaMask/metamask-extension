@@ -95,4 +95,137 @@ describe('migration #120.4', () => {
       });
     });
   });
+
+  describe('PhishingController', () => {
+    it('does nothing if PhishingController state is not set', async () => {
+      const oldState = {
+        OtherController: {},
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: cloneDeep(oldState),
+      });
+
+      expect(transformedState.data).toEqual(oldState);
+    });
+
+    it('captures an error and leaves state unchanged if PhishingController state is corrupted', async () => {
+      const oldState = {
+        PhishingController: 'invalid',
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: cloneDeep(oldState),
+      });
+
+      expect(transformedState.data).toEqual(oldState);
+      expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+        new Error(
+          `Migration ${version}: Invalid PhishingController state of type 'string'`,
+        ),
+      );
+    });
+
+    it('deletes obsolete properties from the PhishingController state', async () => {
+      const oldState = {
+        PhishingController: {
+          phishing: 'test',
+          lastFetched: 'test',
+        },
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: cloneDeep(oldState),
+      });
+
+      expect(transformedState.data).toEqual({ PhishingController: {} });
+    });
+
+    it('does not delete non-obsolete properties from the PhishingController state', async () => {
+      const oldState = {
+        PhishingController: {
+          phishing: 'test',
+          phishingLists: 'test',
+        },
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: cloneDeep(oldState),
+      });
+
+      expect(transformedState.data).toEqual({
+        PhishingController: { phishingLists: 'test' },
+      });
+    });
+  });
+
+  describe('NetworkController', () => {
+    it('does nothing if NetworkController state is not set', async () => {
+      const oldState = {
+        OtherController: {},
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: cloneDeep(oldState),
+      });
+
+      expect(transformedState.data).toEqual(oldState);
+    });
+
+    it('captures an error and leaves state unchanged if NetworkController state is corrupted', async () => {
+      const oldState = {
+        NetworkController: 'invalid',
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: cloneDeep(oldState),
+      });
+
+      expect(transformedState.data).toEqual(oldState);
+      expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+        new Error(
+          `Migration ${version}: Invalid NetworkController state of type 'string'`,
+        ),
+      );
+    });
+
+    it('deletes obsolete properties from the NetworkController state', async () => {
+      const oldState = {
+        NetworkController: {
+          network: 'test',
+        },
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: cloneDeep(oldState),
+      });
+
+      expect(transformedState.data).toEqual({ NetworkController: {} });
+    });
+
+    it('does not delete non-obsolete properties from the NetworkController state', async () => {
+      const oldState = {
+        NetworkController: {
+          network: 'test',
+          selectedNetworkClientId: 'test',
+        },
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: cloneDeep(oldState),
+      });
+
+      expect(transformedState.data).toEqual({
+        NetworkController: { selectedNetworkClientId: 'test' },
+      });
+    });
+  });
 });
