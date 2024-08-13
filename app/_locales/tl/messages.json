@@ -1546,6 +1546,30 @@
   "details": {
     "message": "Mga Detalye"
   },
+  "developerOptions": {
+    "message": "Mga Opsyon ng Developer"
+  },
+  "developerOptionsEnableConfirmationsRedesignDescription": {
+    "message": "Pinapagana o hindi pinapagana ang tampok na muling pagdisenyo ng kumpirmasyon na kasalukuyang pinapaunlad"
+  },
+  "developerOptionsEnableConfirmationsRedesignTitle": {
+    "message": "Muling Pagdisenyo ng Kumpirmasyon"
+  },
+  "developerOptionsNetworkMenuRedesignDescription": {
+    "message": "Lilipat sa bagong disenyo ng menu ng Networks"
+  },
+  "developerOptionsNetworkMenuRedesignTitle": {
+    "message": "Muling disenyo ng Network Menu"
+  },
+  "developerOptionsResetStatesAnnouncementsDescription": {
+    "message": "Ang mga reset ay ipinapakita sa boolean para maging false sa lahat ng anunsiyo. Ang mga anunisyo ay mga notipikasyon na ipinapakita sa What's New popup modal."
+  },
+  "developerOptionsResetStatesOnboarding": {
+    "message": "Nire-reset ang iba't ibang estado kaugnay sa onboarding at nire-redirect sa \"Secure Your Wallet\" onboarding page."
+  },
+  "developerOptionsServiceWorkerKeepAlive": {
+    "message": "Magreresulta sa isang timestamp na tuloy-tuloy na naka-save sa session.storage"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "Ang “$1” ay hindi pinagagana dahil hindi nito naabot ang pinakamababang 10% na dagdag mula sa orihinal na bayad sa gas.",
     "description": "$1 is gas estimate type which can be market or aggressive"

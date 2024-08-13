@@ -13,11 +13,6 @@ import {
 } from './routes';
 
 /**
- * Developer Options Settings is not i18n supported since it is only used internally.
- */
-const DEVELOPER_OPTIONS_TAB_MESSAGE = 'Developer Options';
-
-/**
  * @typedef SettingRouteConfig
  * # @param {Function} tabMessage
  * # @param {Function} sectionMessage
@@ -484,7 +479,7 @@ const SETTINGS_CONSTANTS = [
   // developerOptions settingsRefs[0]
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
-    tabMessage: DEVELOPER_OPTIONS_TAB_MESSAGE,
+    tabMessage: (t) => t('developerOptions'),
     sectionMessage: 'Reset States',
     descriptionMessage: 'Reset States',
     route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states`,
@@ -493,7 +488,7 @@ const SETTINGS_CONSTANTS = [
   // developerOptions settingsRefs[1]
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
-    tabMessage: DEVELOPER_OPTIONS_TAB_MESSAGE,
+    tabMessage: (t) => t('developerOptions'),
     sectionMessage: 'Announcements',
     descriptionMessage:
       "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal.",
@@ -503,7 +498,7 @@ const SETTINGS_CONSTANTS = [
   // developerOptions settingsRefs[2]
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
-    tabMessage: DEVELOPER_OPTIONS_TAB_MESSAGE,
+    tabMessage: (t) => t('developerOptions'),
     sectionMessage: 'Service Worker Keep Alive',
     descriptionMessage:
       'Resets various states related to onboarding and redirects to the "Secure Your Wallet" onboarding page.',
@@ -513,7 +508,7 @@ const SETTINGS_CONSTANTS = [
   // developerOptions settingsRefs[3]
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
-    tabMessage: DEVELOPER_OPTIONS_TAB_MESSAGE,
+    tabMessage: (t) => t('developerOptions'),
     sectionMessage: 'Service Worker Keep Alive',
     descriptionMessage:
       'Results in a timestamp being continuously saved to session.storage',

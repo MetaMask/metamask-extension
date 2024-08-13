@@ -1546,6 +1546,30 @@
   "details": {
     "message": "Подробности"
   },
+  "developerOptions": {
+    "message": "Параметры разработчика"
+  },
+  "developerOptionsEnableConfirmationsRedesignDescription": {
+    "message": "Включает или отключает функцию редизайна подтверждений, которая в настоящее время находится в разработке"
+  },
+  "developerOptionsEnableConfirmationsRedesignTitle": {
+    "message": "Редизайн подтверждений"
+  },
+  "developerOptionsNetworkMenuRedesignDescription": {
+    "message": "Переключает на новый дизайн меню «Сети»"
+  },
+  "developerOptionsNetworkMenuRedesignTitle": {
+    "message": "Переработка дизайна меню «Сети»"
+  },
+  "developerOptionsResetStatesAnnouncementsDescription": {
+    "message": "Сбрасывает логическое значение isShown в значение false для всех объявлений. Объявления — это уведомления, отображаемые во всплывающем модальном окне «Что нового»."
+  },
+  "developerOptionsResetStatesOnboarding": {
+    "message": "Сбрасывает различные состояния, связанные с регистрацией, и перенаправляет на страницу регистрации «Защитите свой кошелек»."
+  },
+  "developerOptionsServiceWorkerKeepAlive": {
+    "message": "В результате отметка времени постоянно сохраняется в session.storage"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "$1 отключена, поскольку не соответствует минимальному увеличению на 10% от первоначальной платы за газ.",
     "description": "$1 is gas estimate type which can be market or aggressive"

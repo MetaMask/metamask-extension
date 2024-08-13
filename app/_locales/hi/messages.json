@@ -1546,6 +1546,30 @@
   "details": {
     "message": "विस्तृत जानकारी"
   },
+  "developerOptions": {
+    "message": "डेवलपर विकल्प"
+  },
+  "developerOptionsEnableConfirmationsRedesignDescription": {
+    "message": "वर्तमान में विकास में कन्फर्मेशन रीडिज़ाइन सुविधा को चालू या बंद करता है"
+  },
+  "developerOptionsEnableConfirmationsRedesignTitle": {
+    "message": "कन्फर्मेशन रीडिज़ाइन"
+  },
+  "developerOptionsNetworkMenuRedesignDescription": {
+    "message": "नेटवर्क मेनू के नए डिज़ाइन को टॉगल करता है"
+  },
+  "developerOptionsNetworkMenuRedesignTitle": {
+    "message": "नेटवर्क मेनू रीडिज़ाइन"
+  },
+  "developerOptionsResetStatesAnnouncementsDescription": {
+    "message": "सभी घोषणाओं के लिए isShown boolean को गलत पर रीसेट करता है। घोषणाएं व्हाट्स न्यू पॉपअप मोडल में दिखाई जाने वाली सूचनाएं हैं।"
+  },
+  "developerOptionsResetStatesOnboarding": {
+    "message": "ऑनबोर्डिंग से संबंधित विभिन्न स्टेट को रीसेट करता है और \"सिक्योर योर वॉलेट\" ऑनबोर्डिंग पेज पर रीडायरेक्ट करता है।"
+  },
+  "developerOptionsServiceWorkerKeepAlive": {
+    "message": "हर टाइमस्टैम्प के परिणाम को लगातार session.storage में सेव किया जा रहा है"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "\"$1\" डिसेबल किया गया है क्योंकि यह ओरिजिनल गैस फ़ीस से कम-से-कम 10% वृद्धि को पूरा नहीं करता है।",
     "description": "$1 is gas estimate type which can be market or aggressive"

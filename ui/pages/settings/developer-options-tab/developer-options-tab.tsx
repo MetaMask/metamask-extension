@@ -62,7 +62,7 @@ const DeveloperOptionsTab = () => {
   );
 
   const settingsRefs = Array(
-    getNumberOfSettingRoutesInTab(t, 'Developer Options'),
+    getNumberOfSettingRoutesInTab(t, t('developerOptions')),
   )
     .fill(undefined)
     .map(() => {
@@ -70,7 +70,7 @@ const DeveloperOptionsTab = () => {
     });
 
   useEffect(() => {
-    handleSettingsRefs(t, 'Developer Options', settingsRefs);
+    handleSettingsRefs(t, t('developerOptions'), settingsRefs);
   }, [t, settingsRefs]);
 
   const handleResetAnnouncementClick = useCallback((): void => {
