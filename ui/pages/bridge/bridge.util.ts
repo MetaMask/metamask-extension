@@ -25,23 +25,18 @@ import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../shared/modules/swaps.utils';
+import {
+  BridgeAsset,
+  BridgeFlag,
+  FeatureFlagResponse,
+  Quote,
+  QuoteRequest,
+  QuoteResponse,
+  TxData,
+} from './types';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
 const CACHE_REFRESH_TEN_MINUTES = 10 * MINUTE;
-
-// Types copied from Metabridge API
-enum BridgeFlag {
-  EXTENSION_SUPPORT = 'extension-support',
-  NETWORK_SRC_ALLOWLIST = 'src-network-allowlist',
-  NETWORK_DEST_ALLOWLIST = 'dest-network-allowlist',
-}
-
-export type FeatureFlagResponse = {
-  [BridgeFlag.EXTENSION_SUPPORT]: boolean;
-  [BridgeFlag.NETWORK_SRC_ALLOWLIST]: number[];
-  [BridgeFlag.NETWORK_DEST_ALLOWLIST]: number[];
-};
-// End of copied types
 
 type Validator<ExpectedResponse, DataToValidate> = {
   property: keyof ExpectedResponse | string;
@@ -158,4 +153,106 @@ export async function fetchBridgeTokens(
     }
   });
   return transformedTokens;
+}
+
+// Returns a list of bridge tx quotes
+export async function fetchBridgeQuotes(
+  request: QuoteRequest,
+): Promise<QuoteResponse[]> {
+  const url = `${BRIDGE_API_BASE_URL}/getQuote?${Object.entries(request)
+    .map(([k, v]) => `${k}=${v}`)
+    .join('&')}`;
+  const quotes = await fetchWithCache({
+    url,
+    fetchOptions: { method: 'GET', headers: CLIENT_ID_HEADER },
+    cacheOptions: { cacheRefreshTime: 0 },
+    functionName: 'fetchBridgeQuotes',
+  });
+
+  const filteredQuotes = quotes.filter((quote: QuoteResponse) =>
+    validateResponse<QuoteResponse, unknown>(
+      [
+        {
+          property: 'quote',
+          type: 'object',
+          validator: (v): v is Quote =>
+            typeof v === 'object' &&
+            v !== null &&
+            v !== undefined &&
+            [
+              'requestId',
+              'srcTokenAmount',
+              'destTokenAmount',
+              'bridgeId',
+            ].every(
+              (k) => k in v && typeof v[k as keyof typeof v] === 'string',
+            ) &&
+            ['srcTokenAmount', 'destTokenAmount'].every(
+              (k) =>
+                k in v &&
+                typeof v[k as keyof typeof v] === 'string' &&
+                /^\d+$/u.test(v[k as keyof typeof v] as string),
+            ) &&
+            ['srcAsset', 'destAsset'].every(
+              (k) =>
+                k in v &&
+                typeof v[k as keyof typeof v] === 'object' &&
+                'address' in v[k as keyof typeof v] &&
+                typeof (v[k as keyof typeof v] as BridgeAsset).address ===
+                  'string' &&
+                'decimals' in v[k as keyof typeof v] &&
+                typeof (v[k as keyof typeof v] as BridgeAsset).decimals ===
+                  'number',
+            ),
+        },
+        {
+          property: 'approval',
+          type: 'object|undefined',
+          validator: (v): v is TxData | undefined =>
+            v === undefined ||
+            (v
+              ? typeof v === 'object' &&
+                'gasLimit' in v &&
+                typeof v.gasLimit === 'number' &&
+                'to' in v &&
+                typeof v.to === 'string' &&
+                'from' in v &&
+                typeof v.from === 'string' &&
+                'data' in v &&
+                typeof v.data === 'string'
+              : false),
+        },
+        {
+          property: 'trade',
+          type: 'object',
+          validator: (v): v is TxData =>
+            v
+              ? typeof v === 'object' &&
+                'gasLimit' in v &&
+                typeof v.gasLimit === 'number' &&
+                'to' in v &&
+                typeof v.to === 'string' &&
+                'from' in v &&
+                typeof v.from === 'string' &&
+                'data' in v &&
+                typeof v.data === 'string' &&
+                'value' in v &&
+                typeof v.value === 'string' &&
+                v.value.startsWith('0x')
+              : false,
+        },
+        {
+          property: 'estimatedProcessingTimeInSeconds',
+          type: 'number',
+          validator: (v): v is number[] =>
+            Object.values(v as { [s: string]: unknown }).every(
+              (i) => typeof i === 'number',
+            ),
+        },
+      ],
+      quote,
+      url,
+    ),
+  );
+  return filteredQuotes;
 }
