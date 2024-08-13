@@ -62,7 +62,7 @@ const DeveloperOptionsTab = () => {
   );
 
   const settingsRefs = Array(
-    getNumberOfSettingRoutesInTab(t, t('developerOptions')),
+    getNumberOfSettingRoutesInTab(t, 'Developer Options'),
   )
     .fill(undefined)
     .map(() => {
