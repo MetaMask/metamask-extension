@@ -4539,16 +4539,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<string>} The address of the newly-created account.
    */
   async addNewAccount(accountCount) {
-    // const oldAccounts = await this.keyringController.getAccounts();
-
     const addedAccountAddress = await this.keyringController.addNewAccount(
       accountCount,
     );
-
-    // if (!oldAccounts.includes(addedAccountAddress)) {
-    //   this.preferencesController.setSelectedAddress(addedAccountAddress);
-    // }
-
     return addedAccountAddress;
   }
 
