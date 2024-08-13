@@ -16,6 +16,7 @@ import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
 import { PermissionNames } from '../../../controllers/permissions';
 import { getValidUrl } from '../../util';
+import { Caip25CaveatType, Caip25EndowmentPermissionName } from '../../multichain-api/caip25permissions';
 
 export function findExistingNetwork(chainId, findNetworkConfigurationBy) {
   if (
@@ -203,12 +204,18 @@ export async function switchChain(
   },
 ) {
   try {
+    // if CAIP-25 with isMultichain false, then requestUserApproval
+    // if CAIP-25 with isMultichain true, then scope for chain must be present
+    // if no CAIP-25 then, requestUserApproval
+    // ?????
+    const caip25Caveat = getCaveat({
+      target: Caip25EndowmentPermissionName,
+      caveatType: Caip25CaveatType
+    }) ?? {};
+
+
     if (getChainPermissionsFeatureFlag()) {
       const { value: permissionedChainIds } =
-        getCaveat({
-          target: PermissionNames.permittedChains,
-          caveatType: CaveatTypes.restrictNetworkSwitching,
-        }) ?? {};
 
       if (
         permissionedChainIds === undefined ||

@@ -2101,6 +2101,7 @@ export default class MetamaskController extends EventEmitter {
         { origin: innerOrigin },
         { suppressUnauthorizedError = true } = {},
       ) => {
+        // what?..
         if (innerOrigin === ORIGIN_METAMASK) {
           const selectedAddress =
             this.accountsController.getSelectedAccount().address;
@@ -4625,42 +4626,52 @@ export default class MetamaskController extends EventEmitter {
    */
   async getPermittedAccounts(
     origin,
-    { suppressUnauthorizedError = true } = {},
+    { suppressUnauthorizedError = true } = {}, // what to do with this
   ) {
+
+    let caveat;
     try {
-      return await this.permissionController.executeRestrictedMethod(
-        origin,
-        RestrictedMethods.eth_accounts,
+      caveat = getCaveat(
+        req.origin,
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
       );
-    } catch (error) {
-      if (
-        suppressUnauthorizedError &&
-        error.code === rpcErrorCodes.provider.unauthorized
-      ) {
-        return [];
-      }
-      throw error;
+    } catch (err) {
+      // noop
     }
+    if (!caveat) {
+      return [];
+    }
+
+    const ethAccounts = [];
+    const sessionScopes = mergeScopes(
+      caveat.value.requiredScopes,
+      caveat.value.optionalScopes,
+    );
+
+    Object.entries(sessionScopes).forEach(([_, { accounts }]) => {
+      accounts?.forEach((account) => {
+        const {
+          address,
+          chain: { namespace },
+        } = parseCaipAccountId(account);
+
+        if (namespace === KnownCaipNamespace.Eip155) {
+          ethAccounts.push(address);
+        }
+      });
+    });
+    return Array.from(new Set(ethAccounts));
   }
 
   /**
    * Stops exposing the specified chain ID to all third parties.
-   * Exposed chain IDs are stored in caveats of the permittedChains permission. This
-   * method uses `PermissionController.updatePermissionsByCaveat` to
-   * remove the specified chain ID from every permittedChains permission. If a
-   * permission only included this chain ID, the permission is revoked entirely.
    *
    * @param {string} targetChainId - The chain ID to stop exposing
    * to third parties.
    */
   removeAllChainIdPermissions(targetChainId) {
-    this.permissionController.updatePermissionsByCaveat(
-      CaveatTypes.restrictNetworkSwitching,
-      (existingChainIds) =>
-        CaveatMutatorFactories[
-          CaveatTypes.restrictNetworkSwitching
-        ].removeChainId(targetChainId, existingChainIds),
-    );
+
     this.permissionController.updatePermissionsByCaveat(
       Caip25CaveatType,
       (existingScopes) =>
@@ -5523,6 +5534,7 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
+        // this can be changed to hit the approval controller instead
         requestAccountsPermission:
           this.permissionController.requestPermissions.bind(
             this.permissionController,
@@ -5530,6 +5542,7 @@ export default class MetamaskController extends EventEmitter {
             { eth_accounts: {} },
           ),
         requestPermittedChainsPermission: (chainIds) =>
+          // TODO: Translate this into CAIP-25
           this.permissionController.requestPermissionsIncremental(
             { origin },
             {
@@ -5850,16 +5863,6 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController,
       ),
       shouldEnqueueRequest: (request) => {
-        // TODO: figure out what to do with this
-        if (
-          request.method === 'eth_requestAccounts' &&
-          this.permissionController.hasPermission(
-            request.origin,
-            PermissionNames.eth_accounts,
-          )
-        ) {
-          return false;
-        }
         return methodsWithConfirmation.includes(request.method);
       },
     });
@@ -5894,9 +5897,8 @@ export default class MetamaskController extends EventEmitter {
         endApprovalFlow: this.approvalController.endFlow.bind(
           this.approvalController,
         ),
-        // Permission-related
-        // TODO remove this hook
         requestPermittedChainsPermission: (chainIds) =>
+          // TODO: Translate this into CAIP-25
           this.permissionController.requestPermissions(
             { origin },
             {
@@ -5944,21 +5946,22 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.upsertNetworkConfiguration.bind(
             this.networkController,
           ),
+        // seems like we should make this a noop in the multichain flow
         setActiveNetwork: async (networkClientId) => {
-          await this.networkController.setActiveNetwork(networkClientId);
+          // await this.networkController.setActiveNetwork(networkClientId);
           // if the origin has the eth_accounts permission
           // we set per dapp network selection state
-          if (
-            this.permissionController.hasPermission(
-              origin,
-              PermissionNames.eth_accounts,
-            )
-          ) {
-            this.selectedNetworkController.setNetworkClientIdForDomain(
-              origin,
-              networkClientId,
-            );
-          }
+          // if (
+          //   this.permissionController.hasPermission(
+          //     origin,
+          //     PermissionNames.eth_accounts,
+          //   )
+          // ) {
+          //   this.selectedNetworkController.setNetworkClientIdForDomain(
+          //     origin,
+          //     networkClientId,
+          //   );
+          // }
         },
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
         // TODO refactor `add-ethereum-chain` handler so that this hook can be removed from multichain middleware

@@ -15,7 +15,6 @@ const ethereumAccounts = {
   implementation: ethAccountsHandler,
   hookNames: {
     getAccounts: true,
-    getCaveat: true,
   },
 };
 export default ethereumAccounts;
@@ -35,49 +34,12 @@ export default ethereumAccounts;
  * @param {EthAccountsOptions} options - The RPC method hooks.
  */
 async function ethAccountsHandler(
-  req,
+  _req,
   res,
   _next,
   end,
-  { getAccounts, getCaveat },
+  { getAccounts },
 ) {
-  if (process.env.BARAD_DUR) {
-    let caveat;
-    try {
-      caveat = getCaveat(
-        req.origin,
-        Caip25EndowmentPermissionName,
-        Caip25CaveatType,
-      );
-    } catch (err) {
-      // noop
-    }
-    if (!caveat) {
-      res.result = [];
-      return end();
-    }
-
-    const ethAccounts = [];
-    const sessionScopes = mergeScopes(
-      caveat.value.requiredScopes,
-      caveat.value.optionalScopes,
-    );
-
-    Object.entries(sessionScopes).forEach(([_, { accounts }]) => {
-      accounts?.forEach((account) => {
-        const {
-          address,
-          chain: { namespace },
-        } = parseCaipAccountId(account);
-
-        if (namespace === KnownCaipNamespace.Eip155) {
-          ethAccounts.push(address);
-        }
-      });
-    });
-    res.result = Array.from(new Set(ethAccounts));
-    return end();
-  }
   res.result = await getAccounts();
   return end();
 }

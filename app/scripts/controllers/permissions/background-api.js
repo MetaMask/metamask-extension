@@ -57,6 +57,7 @@ export function getPermissionBackgroundApiMethods(permissionController) {
       }
     },
 
+    // hmm...
     requestAccountsPermissionWithId: async (origin) => {
       const id = nanoid();
       permissionController.requestPermissions(

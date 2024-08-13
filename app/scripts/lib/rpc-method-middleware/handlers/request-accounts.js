@@ -13,6 +13,8 @@ import {
   validNotifications,
   validRpcMethods,
 } from '../../multichain-api/scope';
+import { RestrictedMethods } from '../../../../../shared/constants/permissions';
+import { MethodNames } from '@metamask/permission-controller';
 
 /**
  * This method attempts to retrieve the Ethereum accounts available to the
@@ -88,7 +90,7 @@ async function requestEthereumAccountsHandler(
     return end();
   }
 
-  if (hasPermission(MESSAGE_TYPE.ETH_ACCOUNTS)) {
+  if (hasPermission(Caip25EndowmentPermissionName)) {
     // We wait for the extension to unlock in this case only, because permission
     // requests are handled when the extension is unlocked, regardless of the
     // lock state when they were received.
@@ -106,52 +108,31 @@ async function requestEthereumAccountsHandler(
   }
 
   // If no accounts, request the accounts permission
+  let accounts = []
   try {
-    await requestAccountsPermission();
+    const [grantedPermissions] = await requestUserApproval(
+      {
+        id: nanoid(),
+        origin,
+        requestData: {
+          metadata: {
+            id,
+            origin
+          },
+          permissions: {
+            [RestrictedMethods.eth_accounts]: {}
+          }
+        },
+        type: MethodNames.requestPermissions,
+      },
+    );
+    accounts = grantedPermissions[RestrictedMethods.eth_accounts].caveats[0].value
   } catch (err) {
     res.error = err;
     return end();
   }
 
-  // Get the approved accounts
-  const accounts = await getAccounts();
-  /* istanbul ignore else: too hard to induce, see below comment */
-  const permissions = getPermissionsForOrigin(origin);
-  if (accounts.length > 0) {
-    res.result = accounts;
-
-    const numberOfConnectedAccounts =
-      permissions.eth_accounts.caveats[0].value.length;
-    // first time connection to dapp will lead to no log in the permissionHistory
-    // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
-    // we will leverage that to identify `is_first_visit` for metrics
-    const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
-      origin,
-    );
-    if (shouldEmitDappViewedEvent(metamaskState.metaMetricsId)) {
-      sendMetrics({
-        event: MetaMetricsEventName.DappViewed,
-        category: MetaMetricsEventCategory.InpageProvider,
-        referrer: {
-          url: origin,
-        },
-        properties: {
-          is_first_visit: isFirstVisit,
-          number_of_accounts: Object.keys(metamaskState.accounts).length,
-          number_of_accounts_connected: numberOfConnectedAccounts,
-        },
-      });
-    }
-  } else {
-    // This should never happen, because it should be caught in the
-    // above catch clause
-    res.error = ethErrors.rpc.internal(
-      'Accounts unexpectedly unavailable. Please report this bug.',
-    );
-    return end();
-  }
-
-  if (process.env.BARAD_DUR) {
+    // TODO: NOT SURE IF THIS IS TRUE ANYMORE. VERIFY
     // caip25 endowment will never exist at this point in code because
     // the provider_authorize grants the eth_accounts permission in addition
     // to the caip25 endowment and the eth_requestAccounts hanlder
@@ -186,6 +167,46 @@ async function requestEthereumAccountsHandler(
         },
       },
     });
+
+  /* istanbul ignore else: too hard to induce, see below comment */
+  // const permissions = getPermissionsForOrigin(origin);
+  if (accounts.length > 0) {
+    res.result = accounts;
+
+    // const numberOfConnectedAccounts =
+    //   permissions.eth_accounts.caveats[0].value.length;
+    const numberOfConnectedAccounts = getAccounts().length
+    // first time connection to dapp will lead to no log in the permissionHistory
+    // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
+    // we will leverage that to identify `is_first_visit` for metrics
+    const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
+      origin,
+    );
+    if (shouldEmitDappViewedEvent(metamaskState.metaMetricsId)) {
+      sendMetrics({
+        event: MetaMetricsEventName.DappViewed,
+        category: MetaMetricsEventCategory.InpageProvider,
+        referrer: {
+          url: origin,
+        },
+        properties: {
+          is_first_visit: isFirstVisit,
+          number_of_accounts: Object.keys(metamaskState.accounts).length,
+          number_of_accounts_connected: numberOfConnectedAccounts,
+        },
+      });
+    }
+  } else {
+    // This should never happen, because it should be caught in the
+    // above catch clause
+    res.error = ethErrors.rpc.internal(
+      'Accounts unexpectedly unavailable. Please report this bug.',
+    );
+    return end();
+  }
+
+  if (process.env.BARAD_DUR) {
+
   }
 
   return end();
