@@ -7,10 +7,12 @@ import { filterEvents } from './sentry-filter-events';
 
 const projectLogger = createProjectLogger('sentry');
 
-const log = createModuleLogger(
+export const log = createModuleLogger(
   projectLogger,
   globalThis.document ? 'ui' : 'background',
 );
+
+const internalLog = createModuleLogger(log, 'internal');
 
 /* eslint-disable prefer-destructuring */
 // Destructuring breaks the inlining of the environment variables
@@ -456,6 +458,7 @@ export default function setupSentry() {
 
   return {
     ...Sentry,
+    getMetaMetricsEnabled,
   };
 }
 
@@ -472,6 +475,7 @@ function getClientOptions() {
     integrations: [
       Sentry.dedupeIntegration(),
       Sentry.extraErrorDataIntegration(),
+      Sentry.browserTracingIntegration(),
       filterEvents({ getMetaMetricsEnabled, log }),
     ],
     release: RELEASE,
@@ -482,6 +486,7 @@ function getClientOptions() {
     // we can safely turn them off by setting the `sendClientReports` option to
     // `false`.
     sendClientReports: false,
+    tracesSampleRate: 0.01,
     transport: makeTransport,
   };
 }
@@ -638,6 +643,7 @@ function setSentryClient() {
     release,
   });
 
+  Sentry.registerSpanErrorInstrumentation();
   Sentry.init(clientOptions);
 
   addDebugListeners();
@@ -862,7 +868,7 @@ function integrateLogging() {
   for (const loggerType of ['log', 'error']) {
     logger[loggerType] = (...args) => {
       const message = args[0].replace(`Sentry Logger [${loggerType}]: `, '');
-      log(message, ...args.slice(1));
+      internalLog(message, ...args.slice(1));
     };
   }
 
@@ -877,18 +883,14 @@ function addDebugListeners() {
   const client = Sentry.getClient();
 
   client?.on('beforeEnvelope', (event) => {
-    const type = event?.[1]?.[0]?.[0]?.type;
-    const data = event?.[1]?.[0]?.[1] ?? {};
-
-    if (type !== 'session' || data.status !== 'exited') {
-      return;
+    if (isCompletedSessionEnvelope(event)) {
+      log('Completed session', event);
     }
-
-    log('Completed session', data);
   });
 
   client?.on('afterSendEvent', (event) => {
-    log('Event', event);
+    const type = getEventType(event);
+    log(type, event);
   });
 
   log('Added debug listeners');
@@ -904,4 +906,23 @@ function makeTransport(options) {
 
     return await fetch(...args);
   });
+}
+
+function isCompletedSessionEnvelope(envelope) {
+  const type = envelope?.[1]?.[0]?.[0]?.type;
+  const data = envelope?.[1]?.[0]?.[1] ?? {};
+
+  return type === 'session' && data.status === 'exited';
+}
+
+function getEventType(event) {
+  if (event.type === 'transaction') {
+    return 'Trace';
+  }
+
+  if (event.level === 'error') {
+    return 'Error';
+  }
+
+  return 'Event';
 }
