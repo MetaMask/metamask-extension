@@ -9,7 +9,7 @@ global.sentry = {
 
 const oldVersion = 120.3;
 
-describe.only('migration #120.4', () => {
+describe('migration #120.4', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
