@@ -38,7 +38,7 @@
     width: 35px;
   }
 
-  &__message-container>div:first-child {
+  &__message-container > div:first-child {
     @include design-system.Paragraph;
 
     margin-top: 18px;
