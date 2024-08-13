@@ -57,9 +57,8 @@ export const TransactionData = () => {
 
   if (!value) {
     return (
-      <Container>
+      <Container transactionData={transactionData}>
         <RawDataRow transactionData={transactionData} />
-        <CopyDataButton transactionData={transactionData} />
       </Container>
     );
   }
@@ -68,7 +67,7 @@ export const TransactionData = () => {
   const isExpandable = data.length > 1;
 
   return (
-    <Container>
+    <Container transactionData={transactionData}>
       <>
         {data.map((method, index) => (
           <>
@@ -81,7 +80,6 @@ export const TransactionData = () => {
             {index < data.length - 1 && <ConfirmInfoRowDivider />}
           </>
         ))}
-        <CopyDataButton transactionData={transactionData} />
       </>
     </Container>
   );
@@ -90,16 +88,22 @@ export const TransactionData = () => {
 function Container({
   children,
   isLoading,
+  transactionData,
 }: {
   children?: React.ReactNode;
   isLoading?: boolean;
+  transactionData?: string;
 }) {
   const t = useI18nContext();
 
   return (
     <>
       <ConfirmInfoSection>
-        <ConfirmInfoRow label={t('advancedDetailsDataDesc')}>
+        <ConfirmInfoRow
+          label={t('advancedDetailsDataDesc')}
+          copyEnabled={Boolean(transactionData)}
+          copyText={transactionData || undefined}
+        >
           <Box>{isLoading && <Preloader size={20} />}</Box>
         </ConfirmInfoRow>
         {children}
