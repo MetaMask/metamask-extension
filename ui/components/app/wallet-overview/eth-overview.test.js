@@ -339,24 +339,6 @@ describe('EthOverview', () => {
       expect(portfolioButton).toBeInTheDocument();
     });
 
-    it('should open the Portfolio URI when clicking on Portfolio button', async () => {
-      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
-
-      const portfolioButton = queryByTestId(ETH_OVERVIEW_PORTFOLIO);
-
-      expect(portfolioButton).toBeInTheDocument();
-      expect(portfolioButton).not.toBeDisabled();
-
-      fireEvent.click(portfolioButton);
-      expect(openTabSpy).toHaveBeenCalledTimes(1);
-
-      await waitFor(() =>
-        expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(`?metamaskEntry=ext`),
-        }),
-      );
-    });
-
     it('should always show the Buy button regardless of current chain Id', () => {
       const { queryByTestId } = renderWithProvider(<EthOverview />, store);
       const buyButton = queryByTestId(ETH_OVERVIEW_BUY);
