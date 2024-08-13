@@ -496,14 +496,12 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     weight: 3,
   }),
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   [EndowmentPermissions['endowment:name-lookup']]: ({ t }) => ({
     label: t('permission_nameLookup'),
     description: t('permission_nameLookupDescription'),
     leftIcon: IconName.Search,
     weight: 4,
   }),
-  ///: END:ONLY_INCLUDE_IF
   [EndowmentPermissions['endowment:signature-insight']]: ({
     t,
     permissionValue,
