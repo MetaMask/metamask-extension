@@ -4706,9 +4706,6 @@
   "sepolia": {
     "message": "Sepolia test network"
   },
-  "serviceWorkerKeepAlive": {
-    "message": "Service Worker Keep Alive"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask uses these trusted third-party services to enhance product usability and safety."
   },

@@ -4674,9 +4674,6 @@
   "sepolia": {
     "message": "Тестовая сеть Sepolia"
   },
-  "serviceWorkerKeepAlive": {
-    "message": "Поддерживать активным сервисный модуль"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask использует эти доверенные сторонние сервисы для повышения удобства использования и безопасности продукта."
   },

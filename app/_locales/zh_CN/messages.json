@@ -4674,9 +4674,6 @@
   "sepolia": {
     "message": "Sepolia测试网络"
   },
-  "serviceWorkerKeepAlive": {
-    "message": "Service Worker 保持活跃"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask 使用这些可信的第三方服务来提高产品可用性和安全性。"
   },

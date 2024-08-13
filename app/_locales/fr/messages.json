@@ -4674,9 +4674,6 @@
   "sepolia": {
     "message": "Réseau de test Sepolia"
   },
-  "serviceWorkerKeepAlive": {
-    "message": "Garder le « Service Worker » activé"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask utilise ces services tiers de confiance pour améliorer la convivialité et la sécurité des produits."
   },
