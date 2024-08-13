@@ -97,7 +97,7 @@ describe('migration #120.4', () => {
   });
 
   describe('PhishingController', () => {
-    it('does nothing if CurrencyController state is not set', async () => {
+    it('does nothing if PhishingController state is not set', async () => {
       const oldState = {
         OtherController: {},
       };
