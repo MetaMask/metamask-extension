@@ -115,7 +115,9 @@ describe('confirm util', () => {
       expect(toPunycodeURL('https://iոfura.io/gnosis')).toStrictEqual(
         'https://xn--ifura-dig.io/gnosis',
       );
-      expect(toPunycodeURL('https://www.google.com')).toStrictEqual('https://www.google.com/');
+      expect(toPunycodeURL('https://www.google.com')).toStrictEqual(
+        'https://www.google.com/',
+      );
     });
   });
 });

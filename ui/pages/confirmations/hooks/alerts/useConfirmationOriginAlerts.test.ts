@@ -9,8 +9,8 @@ const signatureConfirmationMock = {
   time: new Date().getTime(),
   type: ApprovalType.PersonalSign,
   msgParams: {
-    origin: 'https://iոfura.io/gnosis'
-  }
+    origin: 'https://iոfura.io/gnosis',
+  },
 };
 
 const transactionConfirmationMock = {
@@ -18,7 +18,7 @@ const transactionConfirmationMock = {
   status: 'unapproved',
   time: new Date().getTime(),
   type: ApprovalType.Transaction,
-  origin: 'https://iոfura.io/gnosis'
+  origin: 'https://iոfura.io/gnosis',
 };
 
 const getMockExpectedState = (confirmationMock: Record<string, unknown>) => ({
