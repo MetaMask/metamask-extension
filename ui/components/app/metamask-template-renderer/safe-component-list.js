@@ -12,7 +12,7 @@ import TextField from '../../ui/text-field';
 import ConfirmationNetworkSwitch from '../../../pages/confirmations/confirmation/components/confirmation-network-switch';
 import UrlIcon from '../../ui/url-icon';
 import Tooltip from '../../ui/tooltip/tooltip';
-import { AvatarIcon, Text } from '../../component-library';
+import { AvatarIcon, FormTextField, Text } from '../../component-library';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import { AccountListItem } from '../../multichain';
 import {
@@ -35,6 +35,7 @@ import { SnapUIDropdown } from '../snaps/snap-ui-dropdown';
 import { SnapUIRadioGroup } from '../snaps/snap-ui-radio-group';
 import { SnapUICheckbox } from '../snaps/snap-ui-checkbox';
 import { SnapUITooltip } from '../snaps/snap-ui-tooltip';
+import { SnapFooterButton } from '../snaps/snap-footer-button';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
 import { SnapAccountErrorMessage } from '../../../pages/confirmations/components/snap-account-error-message';
@@ -91,6 +92,8 @@ export const safeComponentList = {
   SnapUIRadioGroup,
   SnapUICheckbox,
   SnapUITooltip,
+  SnapFooterButton,
+  FormTextField,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   CreateSnapAccount,
   RemoveSnapAccount,
