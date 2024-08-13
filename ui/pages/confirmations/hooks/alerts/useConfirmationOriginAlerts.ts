@@ -26,7 +26,7 @@ const useConfirmationOriginAlerts = (): Alert[] => {
       ? (currentConfirmation as SignatureRequestType).msgParams?.origin
       : (currentConfirmation as TransactionMeta).origin;
 
-    if (isValidASCIIURL(origin)) {
+    if (origin && isValidASCIIURL(origin)) {
       return [];
     }
 
