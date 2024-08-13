@@ -4355,9 +4355,6 @@
   "reset": {
     "message": "Redefinir"
   },
-  "resetStates": {
-    "message": "Redefinir estados"
-  },
   "resetWallet": {
     "message": "Redefinir carteira"
   },

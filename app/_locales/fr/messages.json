@@ -4355,9 +4355,6 @@
   "reset": {
     "message": "Reinitialiser"
   },
-  "resetStates": {
-    "message": "Réinitialiser les états"
-  },
   "resetWallet": {
     "message": "Réinitialiser le portefeuille"
   },

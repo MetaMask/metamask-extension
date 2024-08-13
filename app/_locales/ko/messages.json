@@ -4355,9 +4355,6 @@
   "reset": {
     "message": "재설정"
   },
-  "resetStates": {
-    "message": "상태 초기화"
-  },
   "resetWallet": {
     "message": "지갑 초기화"
   },

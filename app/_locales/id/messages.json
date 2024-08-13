@@ -4355,9 +4355,6 @@
   "reset": {
     "message": "Atur ulang"
   },
-  "resetStates": {
-    "message": "Reset State"
-  },
   "resetWallet": {
     "message": "Reset dompet"
   },

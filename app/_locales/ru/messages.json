@@ -4355,9 +4355,6 @@
   "reset": {
     "message": "Сбросить"
   },
-  "resetStates": {
-    "message": "Сбросить состояния"
-  },
   "resetWallet": {
     "message": "Сбросить кошелек"
   },

@@ -4355,9 +4355,6 @@
   "reset": {
     "message": "Đặt lại"
   },
-  "resetStates": {
-    "message": "Đặt lại trạng thái"
-  },
   "resetWallet": {
     "message": "Đặt lại ví"
   },

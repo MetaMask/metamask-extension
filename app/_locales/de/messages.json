@@ -4355,9 +4355,6 @@
   "reset": {
     "message": "Zurücksetzen"
   },
-  "resetStates": {
-    "message": "Status zurücksetzen"
-  },
   "resetWallet": {
     "message": "Wallet zurücksetzen"
   },

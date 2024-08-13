@@ -4355,9 +4355,6 @@
   "reset": {
     "message": "Sıfırla"
   },
-  "resetStates": {
-    "message": "Durumları Sıfırla"
-  },
   "resetWallet": {
     "message": "Cüzdanı sıfırla"
   },

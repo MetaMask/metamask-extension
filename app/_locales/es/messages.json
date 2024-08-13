@@ -4355,9 +4355,6 @@
   "reset": {
     "message": "Restablecer"
   },
-  "resetStates": {
-    "message": "Restablecer estados"
-  },
   "resetWallet": {
     "message": "Restablecer monedero"
   },

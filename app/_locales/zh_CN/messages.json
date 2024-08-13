@@ -4355,9 +4355,6 @@
   "reset": {
     "message": "重置"
   },
-  "resetStates": {
-    "message": "重设状态"
-  },
   "resetWallet": {
     "message": "重置钱包"
   },

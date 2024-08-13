@@ -485,8 +485,8 @@ const SETTINGS_CONSTANTS = [
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
     tabMessage: DEVELOPER_OPTIONS_TAB_MESSAGE,
-    sectionMessage: (t) => t('resetStates'),
-    descriptionMessage: (t) => t('resetStates'),
+    sectionMessage: 'Reset States',
+    descriptionMessage: 'Reset States',
     route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states`,
     icon: IconName.CodeCircle,
   },

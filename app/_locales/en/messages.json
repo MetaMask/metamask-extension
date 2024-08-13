@@ -4381,9 +4381,6 @@
   "reset": {
     "message": "Reset"
   },
-  "resetStates": {
-    "message": "Reset States"
-  },
   "resetWallet": {
     "message": "Reset wallet"
   },

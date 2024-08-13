@@ -4355,9 +4355,6 @@
   "reset": {
     "message": "रीसेट करें"
   },
-  "resetStates": {
-    "message": "स्टेट रीसेट करें"
-  },
   "resetWallet": {
     "message": "वॉलेट रीसेट करें"
   },

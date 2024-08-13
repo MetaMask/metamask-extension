@@ -263,7 +263,7 @@ const DeveloperOptionsTab = () => {
         paddingTop={6}
         ref={settingsRefs[0] as React.RefObject<HTMLDivElement>}
       >
-        {t('resetStates')}
+        Reset States
       </Text>
 
       <div className="settings-page__content-padded">

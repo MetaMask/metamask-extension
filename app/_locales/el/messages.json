@@ -4355,9 +4355,6 @@
   "reset": {
     "message": "Επαναφορά"
   },
-  "resetStates": {
-    "message": "Επαναφορά καταστάσεων"
-  },
   "resetWallet": {
     "message": "Επαναφορά πορτοφολιού"
   },

@@ -4355,9 +4355,6 @@
   "reset": {
     "message": "I-reset"
   },
-  "resetStates": {
-    "message": "I-reset ang Mga Estado"
-  },
   "resetWallet": {
     "message": "I-reset ang wallet"
   },
