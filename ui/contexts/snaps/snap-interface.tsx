@@ -118,8 +118,8 @@ export const SnapInterfaceContextProvider: FunctionComponent<
         params: {
           event: {
             type: event,
-            ...(name ? { name } : {}),
-            ...(value ? { value } : {}),
+            ...(name === undefined ? {} : { name }),
+            ...(value === undefined ? {} : { value }),
           },
           id: interfaceId,
           context,
@@ -218,8 +218,8 @@ export const SnapInterfaceContextProvider: FunctionComponent<
         params: {
           event: {
             type: UserInputEventType.FileUploadEvent,
-            ...(name ? { name } : {}),
-            ...(file ? { file } : {}),
+            ...(name === undefined ? {} : { name }),
+            ...(file === undefined ? {} : { file }),
           },
           id: interfaceId,
           context,
