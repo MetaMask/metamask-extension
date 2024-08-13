@@ -40,11 +40,11 @@ function GenerateUIError() {
   return (
     <TestButton
       name="Generate UI Error"
-      description={(
+      description={
         <>
           Generate an unhandled <b>TestError</b> in this window.
         </>
-      )}
+      }
       onClick={handleClick}
       expectError
     />
@@ -59,11 +59,11 @@ function GenerateBackgroundError() {
   return (
     <TestButton
       name="Generate Background Error"
-      description={(
+      description={
         <>
           Generate an unhandled <b>TestError</b> in the service worker.
         </>
-      )}
+      }
       onClick={handleClick}
       expectError
     />
@@ -105,11 +105,11 @@ function GenerateTrace() {
   return (
     <TestButton
       name="Generate Trace"
-      description={(
+      description={
         <>
           Generate a <b>Developer Test</b> Sentry trace.
         </>
-      )}
+      }
       onClick={handleClick}
     />
   );
