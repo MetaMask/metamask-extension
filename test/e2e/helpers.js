@@ -898,8 +898,8 @@ const TEST_SEED_PHRASE_TWO =
  * Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
  *
  * @param {WebDriver} driver - The webdriver instance
- * @param {Ganache|undefined} ganacheServer - The ganache server instance
- * @param {(string|null)} address - The address to unlock
+ * @param {Ganache} [ganacheServer] - The ganache server instance
+ * @param {string} [address] - The address to unlock
  */
 const locateAccountBalanceDOM = async (
   driver,
