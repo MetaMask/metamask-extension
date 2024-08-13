@@ -18,9 +18,7 @@ const transactionConfirmationMock = {
   status: 'unapproved',
   time: new Date().getTime(),
   type: ApprovalType.Transaction,
-  txParams: {
-    origin: 'https://iոfura.io/gnosis'
-  }
+  origin: 'https://iոfura.io/gnosis'
 };
 
 const getMockExpectedState = (confirmationMock: Record<string, unknown>) => ({
@@ -48,9 +46,14 @@ const expectedAlert = [
   {
     key: 'originSpecialCharacterWarning',
     message:
-      "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue. Punycode version: xn--https://ifura-cto.io/gnosis",
-    reason: 'title',
+      "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue.",
+    reason: 'Site address mismatch',
     severity: 'warning',
+    alertDetails: [
+      'Current URL: https://iոfura.io/gnosis',
+      'Punycode version: https://xn--ifura-dig.io/gnosis',
+    ],
+    field: 'originSpecialCharacterWarning',
   },
 ];
 
