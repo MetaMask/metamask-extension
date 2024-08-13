@@ -69,3 +69,30 @@ export const getUnapprovedTransaction = (
     gasFeeEstimatesLoaded: true,
   };
 };
+
+export const getMaliciousUnapprovedTransaction = (
+  accountAddress: string,
+  pendingTransactionId: string,
+  pendingTransactionTime: number,
+) => {
+  return {
+    ...getUnapprovedTransaction(
+      accountAddress,
+      pendingTransactionId,
+      pendingTransactionTime,
+    ),
+    securityAlertResponse: {
+      block: 6485814,
+      result_type: 'Malicious',
+      reason: 'raw_native_token_transfer',
+      description:
+        'Interaction with a known malicious address: 0x5fbdb2315678afecb367f032d93f642f64180aa3',
+      features: ['Interaction with a known malicious address'],
+      providerRequestsCount: {
+        eth_getBlockByNumber: 1,
+      },
+      source: 'local',
+      securityAlertId: '22ff30c4-0fe6-4d8b-af39-92aae0bd3c2c',
+    },
+  };
+};
