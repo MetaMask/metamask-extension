@@ -256,10 +256,7 @@ export async function switchChain<Result extends Json = never>(
         }) ?? {};
 
       if (!permissionedChainIds?.includes(chainId)) {
-        await requestPermittedChainsPermission([
-          ...(permissionedChainIds ?? []),
-          chainId,
-        ]);
+        await requestPermittedChainsPermission([chainId]);
       }
     } else {
       await requestUserApproval({
