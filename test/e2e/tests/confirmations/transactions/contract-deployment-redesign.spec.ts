@@ -7,14 +7,12 @@ import {
   TestSuiteArguments,
 } from './shared';
 
-const { hexToNumber } = require('@metamask/utils');
 const {
   defaultGanacheOptions,
   defaultGanacheOptionsForType2Transactions,
   withFixtures,
 } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
-const { CHAIN_IDS } = require('../../../../../shared/constants/network');
 
 describe('Confirmation Redesign Contract Deployment Component', function () {
   describe('Create a deposit transaction @no-mmi', function () {
