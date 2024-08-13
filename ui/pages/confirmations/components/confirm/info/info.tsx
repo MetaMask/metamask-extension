@@ -25,6 +25,7 @@ const Info = () => {
       },
       [TransactionType.contractInteraction]: () => ContractInteractionInfo,
       [TransactionType.tokenMethodApprove]: () => ApproveInfo,
+      [TransactionType.deployContract]: () => ContractInteractionInfo,
     }),
     [currentConfirmation],
   );
