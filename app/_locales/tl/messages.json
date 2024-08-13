@@ -5243,9 +5243,6 @@
   "stateLogsDescription": {
     "message": "Naglalaman ang mga log ng estado ng iyong mga address ng pampublikong account at ipinadalang transaksyon."
   },
-  "states": {
-    "message": "Mga estado"
-  },
   "status": {
     "message": "Katayuan"
   },

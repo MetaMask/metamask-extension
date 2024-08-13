@@ -5243,9 +5243,6 @@
   "stateLogsDescription": {
     "message": "Logs de estado podem conter o seu endereço e transações enviadas da sua conta pública."
   },
-  "states": {
-    "message": "Estados"
-  },
   "status": {
     "message": "Status"
   },

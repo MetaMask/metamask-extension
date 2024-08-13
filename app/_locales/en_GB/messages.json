@@ -5258,9 +5258,6 @@
   "stateLogsDescription": {
     "message": "State logs contain your public account addresses and sent transactions."
   },
-  "states": {
-    "message": "States"
-  },
   "status": {
     "message": "Status"
   },

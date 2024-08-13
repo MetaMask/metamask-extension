@@ -255,7 +255,7 @@ const DeveloperOptionsTab = () => {
   return (
     <div className="settings-page__body">
       <Text className="settings-page__security-tab-sub-header__bold">
-        {t('states')}
+        States
       </Text>
       <Text
         className="settings-page__security-tab-sub-header"

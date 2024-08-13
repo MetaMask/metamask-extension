@@ -5243,9 +5243,6 @@
   "stateLogsDescription": {
     "message": "Die Statusprotokolle enthalten Ihre öffentlichen Kontoadressen und gesendeten Transaktionen."
   },
-  "states": {
-    "message": "Status"
-  },
   "status": {
     "message": "Status"
   },

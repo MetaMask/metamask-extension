@@ -5243,9 +5243,6 @@
   "stateLogsDescription": {
     "message": "状态日志包含您的公共账户地址和已发送的交易。"
   },
-  "states": {
-    "message": "状态"
-  },
   "status": {
     "message": "状态"
   },

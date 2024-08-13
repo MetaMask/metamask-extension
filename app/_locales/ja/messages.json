@@ -5243,9 +5243,6 @@
   "stateLogsDescription": {
     "message": "ステートログには、パブリックアカウントアドレスと送信済みトランザクションが含まれています。"
   },
-  "states": {
-    "message": "ステート"
-  },
   "status": {
     "message": "ステータス"
   },

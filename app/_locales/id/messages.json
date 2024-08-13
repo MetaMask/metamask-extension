@@ -5243,9 +5243,6 @@
   "stateLogsDescription": {
     "message": "Log status berisi alamat akun publik Anda dan transaksi terkirim."
   },
-  "states": {
-    "message": "State"
-  },
   "status": {
     "message": "Status"
   },

@@ -5243,9 +5243,6 @@
   "stateLogsDescription": {
     "message": "Durum günlükleri genel hesap adreslerinizi ve gönderilen işlemleri içerir."
   },
-  "states": {
-    "message": "Durumlar"
-  },
   "status": {
     "message": "Durum"
   },

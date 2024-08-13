@@ -5243,9 +5243,6 @@
   "stateLogsDescription": {
     "message": "Les journaux d’état contiennent les adresses publiques de vos comptes et vos transactions envoyées."
   },
-  "states": {
-    "message": "États"
-  },
   "status": {
     "message": "État"
   },

@@ -5243,9 +5243,6 @@
   "stateLogsDescription": {
     "message": "Nhật ký trạng thái có chứa các địa chỉ tài khoản công khai của bạn và các giao dịch đã gửi."
   },
-  "states": {
-    "message": "Trạng thái"
-  },
   "status": {
     "message": "Trạng thái"
   },

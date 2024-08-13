@@ -5243,9 +5243,6 @@
   "stateLogsDescription": {
     "message": "상태 로그에 공개 계정 주소와 전송된 트랜잭션이 있습니다."
   },
-  "states": {
-    "message": "상태"
-  },
   "status": {
     "message": "상태"
   },

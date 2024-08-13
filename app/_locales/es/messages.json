@@ -5243,9 +5243,6 @@
   "stateLogsDescription": {
     "message": "Los registros de estado contienen sus direcciones de cuentas públicas y las transacciones enviadas."
   },
-  "states": {
-    "message": "Estados"
-  },
   "status": {
     "message": "Estado"
   },
