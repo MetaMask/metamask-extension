@@ -1228,7 +1228,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-1"
+                aria-describedby="tippy-tooltip-2"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -1359,7 +1359,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                 </p>
                 <div>
                   <div
-                    aria-describedby="tippy-tooltip-2"
+                    aria-describedby="tippy-tooltip-3"
                     class=""
                     data-original-title="This is the site asking for your signature."
                     data-tooltipped=""
@@ -1667,7 +1667,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                           style="min-width: 0;"
                         >
                           <div
-                            aria-describedby="tippy-tooltip-3"
+                            aria-describedby="tippy-tooltip-4"
                             class=""
                             data-original-title="30"
                             data-tooltipped=""
