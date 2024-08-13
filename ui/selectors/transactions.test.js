@@ -4,6 +4,10 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import {
+  SmartTransactionStatuses,
+  SmartTransactionMinedTx,
+} from '@metamask/smart-transactions-controller/dist/types';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import {
   ETH_4337_METHODS,
@@ -18,59 +22,12 @@ import {
   submittedPendingTransactionsSelector,
   hasTransactionPendingApprovals,
   getApprovedAndSignedTransactions,
+  smartTransactionsListSelector,
   getTransactions,
 } from './transactions';
 
 describe('Transaction Selectors', () => {
   describe('unapprovedMessagesSelector', () => {
-    it('returns eth sign msg from unapprovedMsgs', () => {
-      const msg = {
-        id: 1,
-        msgParams: {
-          from: '0xAddress',
-          data: '0xData',
-          origin: 'origin',
-        },
-        time: 1,
-        status: TransactionStatus.unapproved,
-        type: 'eth_sign',
-      };
-
-      const state = {
-        metamask: {
-          unapprovedMsgs: {
-            1: msg,
-          },
-          providerConfig: {
-            chainId: '0x5',
-          },
-          internalAccounts: {
-            accounts: {
-              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-                address: '0xAddress',
-                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-                metadata: {
-                  name: 'Test Account',
-                  keyring: {
-                    type: 'HD Key Tree',
-                  },
-                },
-                options: {},
-                methods: ETH_EOA_METHODS,
-                type: EthAccountType.Eoa,
-              },
-            },
-            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-          },
-        },
-      };
-
-      const msgSelector = unapprovedMessagesSelector(state);
-
-      expect(Array.isArray(msgSelector)).toStrictEqual(true);
-      expect(msgSelector).toStrictEqual([msg]);
-    });
-
     it('returns personal sign from unapprovedPersonalMsgsSelector', () => {
       const msg = {
         id: 1,
@@ -130,6 +87,255 @@ describe('Transaction Selectors', () => {
 
       expect(Array.isArray(msgSelector)).toStrictEqual(true);
       expect(msgSelector).toStrictEqual([msg]);
+    });
+  });
+  describe('smartTransactionsListSelector', () => {
+    const createSmartTransaction = (customParams = {}) => {
+      return {
+        uuid: 'uuid1',
+        status: customParams.status || SmartTransactionStatuses.SUCCESS,
+        type: customParams.type || TransactionType.contractInteraction,
+        cancellable: false,
+        confirmed: customParams.confirmed ?? false,
+        statusMetadata: {
+          cancellationFeeWei: 36777567771000,
+          cancellationReason:
+            customParams.cancellationReason || 'not_cancelled',
+          deadlineRatio: 0.6400288486480713,
+          minedHash: customParams.minedHash || '',
+          minedTx: customParams.minedTx || '',
+        },
+        txParams: {
+          from: customParams.fromAddress || '0xAddress',
+          to: '0xRecipient',
+        },
+      };
+    };
+
+    const createState = (smartTransaction) => {
+      return {
+        metamask: {
+          providerConfig: {
+            nickname: 'mainnet',
+            chainId: CHAIN_IDS.MAINNET,
+          },
+          featureFlags: {},
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                address: '0xAddress',
+              },
+              metadata: {
+                name: 'Test Account',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          smartTransactionsState: {
+            liveness: true,
+            fees: null,
+            smartTransactions: {
+              [CHAIN_IDS.MAINNET]: smartTransaction ? [smartTransaction] : [],
+            },
+          },
+        },
+      };
+    };
+
+    it('returns an empty array if there are no smart transactions in state', () => {
+      const state = createState();
+      state.metamask.smartTransactionsState.smartTransactions = {
+        [CHAIN_IDS.MAINNET]: [],
+      };
+
+      const result = smartTransactionsListSelector(state);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('does not return a confirmed transaction with status "success"', () => {
+      const smartTransaction = createSmartTransaction({
+        minedHash:
+          '0x55ad39634ee10d417b6e190cfd3736098957e958879cffe78f1f00f4fd2654d6',
+        minedTx: SmartTransactionMinedTx.SUCCESS,
+        confirmed: true,
+      });
+      const state = createState(smartTransaction);
+
+      const result = smartTransactionsListSelector(state);
+
+      const expected = [];
+      expect(result).toStrictEqual(expected);
+    });
+
+    it('does not return a confirmed transaction with status "reverted"', () => {
+      const smartTransaction = createSmartTransaction({
+        minedTx: SmartTransactionMinedTx.REVERTED,
+        confirmed: true,
+      });
+      const state = createState(smartTransaction);
+
+      const result = smartTransactionsListSelector(state);
+
+      const expected = [];
+      expect(result).toStrictEqual(expected);
+    });
+
+    it('does not return a confirmed transaction', () => {
+      const smartTransaction = createSmartTransaction({
+        confirmed: true,
+      });
+      const state = createState(smartTransaction);
+
+      const result = smartTransactionsListSelector(state);
+
+      const expected = [];
+      expect(result).toStrictEqual(expected);
+    });
+
+    it('does not return an unconfirmed transaction with status "pending" for a different from address', () => {
+      const smartTransaction = createSmartTransaction({
+        status: SmartTransactionStatuses.PENDING,
+        fromAddress: '0xAddress2',
+      });
+      const state = createState(smartTransaction);
+
+      const result = smartTransactionsListSelector(state);
+
+      const expected = [];
+      expect(result).toStrictEqual(expected);
+    });
+
+    it('returns an unconfirmed transaction with status "pending"', () => {
+      const smartTransaction = createSmartTransaction({
+        status: SmartTransactionStatuses.PENDING,
+      });
+      const state = createState(smartTransaction);
+
+      const result = smartTransactionsListSelector(state);
+
+      const expected = [
+        {
+          ...smartTransaction,
+          isSmartTransaction: true,
+        },
+      ];
+      expect(result).toStrictEqual(expected);
+    });
+
+    it('returns an unconfirmed transaction with status "cancelled" and type "swap"', () => {
+      const smartTransaction = createSmartTransaction({
+        status: SmartTransactionStatuses.PENDING,
+        type: TransactionType.swap,
+      });
+      const state = createState(smartTransaction);
+
+      const result = smartTransactionsListSelector(state);
+
+      const expected = [
+        {
+          ...smartTransaction,
+          isSmartTransaction: true,
+        },
+      ];
+      expect(result).toStrictEqual(expected);
+    });
+
+    it('returns an unconfirmed transaction with status "cancelled" and type "swapApproval"', () => {
+      const smartTransaction = createSmartTransaction({
+        status: SmartTransactionStatuses.PENDING,
+        type: TransactionType.swapApproval,
+      });
+      const state = createState(smartTransaction);
+
+      const result = smartTransactionsListSelector(state);
+
+      const expected = [
+        {
+          ...smartTransaction,
+          isSmartTransaction: true,
+        },
+      ];
+      expect(result).toStrictEqual(expected);
+    });
+
+    it('returns an unconfirmed transaction with status "unknown" and type "swap"', () => {
+      const smartTransaction = createSmartTransaction({
+        status: SmartTransactionStatuses.UNKNOWN,
+        type: TransactionType.swap,
+      });
+      const state = createState(smartTransaction);
+
+      const result = smartTransactionsListSelector(state);
+
+      const expected = [
+        {
+          ...smartTransaction,
+          isSmartTransaction: true,
+        },
+      ];
+      expect(result).toStrictEqual(expected);
+    });
+
+    it('returns an unconfirmed transaction with status "resolved" and type "swap"', () => {
+      const smartTransaction = createSmartTransaction({
+        status: SmartTransactionStatuses.RESOLVED,
+        type: TransactionType.swap,
+      });
+      const state = createState(smartTransaction);
+
+      const result = smartTransactionsListSelector(state);
+
+      const expected = [
+        {
+          ...smartTransaction,
+          isSmartTransaction: true,
+        },
+      ];
+      expect(result).toStrictEqual(expected);
+    });
+
+    it('does not return an unconfirmed transaction with status "cancelled" and type "simpleSend"', () => {
+      const smartTransaction = createSmartTransaction({
+        status: SmartTransactionStatuses.CANCELLED,
+        type: TransactionType.simpleSend,
+      });
+      const state = createState(smartTransaction);
+
+      const result = smartTransactionsListSelector(state);
+
+      const expected = [];
+      expect(result).toStrictEqual(expected);
+    });
+
+    it('does not return an unconfirmed transaction with status "unknown" and type "simpleSend"', () => {
+      const smartTransaction = createSmartTransaction({
+        status: SmartTransactionStatuses.UNKNOWN,
+        type: TransactionType.simpleSend,
+      });
+      const state = createState(smartTransaction);
+
+      const result = smartTransactionsListSelector(state);
+
+      const expected = [];
+      expect(result).toStrictEqual(expected);
+    });
+
+    it('does not return an unconfirmed transaction with status "reverted" and type "simpleSend"', () => {
+      const smartTransaction = createSmartTransaction({
+        status: SmartTransactionStatuses.REVERTED,
+        type: TransactionType.simpleSend,
+      });
+      const state = createState(smartTransaction);
+
+      const result = smartTransactionsListSelector(state);
+
+      const expected = [];
+      expect(result).toStrictEqual(expected);
     });
   });
 
@@ -258,7 +464,7 @@ describe('Transaction Selectors', () => {
   });
 
   describe('nonceSortedTransactionsSelector', () => {
-    it('returns transaction group nonce sorted tx from from selectedTxList wit', () => {
+    it('returns transaction group nonce sorted tx from selectedTxList', () => {
       const tx1 = {
         id: 0,
         time: 0,
@@ -521,7 +727,6 @@ describe('Transaction Selectors', () => {
     it.each([
       [ApprovalType.EthDecrypt],
       [ApprovalType.EthGetEncryptionPublicKey],
-      [ApprovalType.EthSign],
       [ApprovalType.EthSignTypedData],
       [ApprovalType.PersonalSign],
     ])(

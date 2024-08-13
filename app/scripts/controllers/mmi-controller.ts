@@ -570,33 +570,6 @@ export default class MMIController extends EventEmitter {
     return accounts;
   }
 
-  async getCustodianAccountsByAddress(
-    token: string,
-    envName: string,
-    address: string,
-    custodianType: string,
-  ) {
-    let keyring;
-
-    if (custodianType) {
-      const custodian = CUSTODIAN_TYPES[custodianType.toUpperCase()];
-      if (!custodian) {
-        throw new Error('No such custodian');
-      }
-
-      keyring = await this.addKeyringIfNotExists(custodian.keyringClass.type);
-    } else {
-      throw new Error('No custodian specified');
-    }
-
-    const accounts = await keyring.getCustodianAccounts(
-      token,
-      envName,
-      address,
-    );
-    return accounts;
-  }
-
   async getCustodianTransactionDeepLink(address: string, txId: string) {
     const custodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(address),
@@ -817,23 +790,25 @@ export default class MMIController extends EventEmitter {
     const isCustodial = Boolean(accountDetails);
     const updatedMsgParams = { ...msgParams, deferSetAsSigned: isCustodial };
 
-    if (req.method.includes('eth_signTypedData')) {
+    if (
+      req.method === 'eth_signTypedData' ||
+      req.method === 'eth_signTypedData_v3' ||
+      req.method === 'eth_signTypedData_v4'
+    ) {
       return await this.signatureController.newUnsignedTypedMessage(
         updatedMsgParams as PersonalMessageParams,
         req as OriginalRequest,
         version,
         { parseJsonData: false },
       );
-    } else if (req.method.includes('personal_sign')) {
+    } else if (req.method === 'personal_sign') {
       return await this.signatureController.newUnsignedPersonalMessage(
         updatedMsgParams as PersonalMessageParams,
         req as OriginalRequest,
       );
     }
-    return await this.signatureController.newUnsignedMessage(
-      updatedMsgParams as PersonalMessageParams,
-      req as OriginalRequest,
-    );
+
+    throw new Error('Unexpected method');
   }
 
   async handleSigningEvents(

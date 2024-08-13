@@ -221,7 +221,6 @@ describe('Selectors', () => {
         selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
           metamask: {
             transactions: [],
-            unapprovedMsgs: {},
           },
         }),
       ).toStrictEqual(0);
@@ -254,7 +253,7 @@ describe('Selectors', () => {
                 status: TransactionStatus.unapproved,
               },
             ],
-            unapprovedMsgs: {
+            unapprovedPersonalMsgs: {
               2: {
                 id: 2,
                 msgParams: {
@@ -264,7 +263,7 @@ describe('Selectors', () => {
                 },
                 time: 1,
                 status: TransactionStatus.unapproved,
-                type: 'eth_sign',
+                type: 'personal_sign',
               },
             },
           },
@@ -294,7 +293,7 @@ describe('Selectors', () => {
                 status: TransactionStatus.unapproved,
               },
             ],
-            unapprovedMsgs: {
+            unapprovedTypedMessages: {
               1: {
                 id: 1,
                 msgParams: {
@@ -304,7 +303,7 @@ describe('Selectors', () => {
                 },
                 time: 1,
                 status: TransactionStatus.unapproved,
-                type: 'eth_sign',
+                type: 'eth_signTypedData',
               },
             },
           },
@@ -324,7 +323,6 @@ describe('Selectors', () => {
         isUnlocked: true,
         useRequestQueue: true,
         selectedTabOrigin: SELECTED_ORIGIN,
-        unapprovedMsgs: [],
         unapprovedDecryptMsgs: [],
         unapprovedPersonalMsgs: [],
         unapprovedEncryptionPublicKeyMsgs: [],
@@ -593,6 +591,20 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#getEditedNetwork', () => {
+    it('returns undefined if getEditedNetwork is undefined', () => {
+      expect(selectors.getNewNetworkAdded({ appState: {} })).toBeUndefined();
+    });
+
+    it('returns getEditedNetwork', () => {
+      expect(
+        selectors.getEditedNetwork({
+          appState: { editedNetwork: 'test-chain' },
+        }),
+      ).toStrictEqual('test-chain');
+    });
+  });
+
   describe('#getRpcPrefsForCurrentProvider', () => {
     it('returns an empty object if state.metamask.providerConfig is empty', () => {
       expect(
@@ -668,6 +680,38 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#getNonTestNetworks', () => {
+    it('returns nonTestNetworks', () => {
+      const nonTestNetworks = selectors.getNonTestNetworks({
+        metamask: {
+          networkConfigurations: {},
+        },
+      });
+
+      // Assert that the `nonTestNetworks` array returned by the selector matches a specific structure.
+      expect(nonTestNetworks).toStrictEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            chainId: expect.any(String),
+            nickname: expect.any(String),
+            rpcUrl: expect.any(String),
+            rpcPrefs: expect.objectContaining({
+              imageUrl: expect.any(String),
+            }),
+            providerType: expect.any(String),
+            ticker: expect.any(String),
+            id: expect.any(String),
+            removable: expect.any(Boolean),
+          }),
+        ]),
+      );
+
+      // Verify that each network object has a 'ticker' property that is not undefined
+      nonTestNetworks.forEach((network) => {
+        expect(network.ticker).toBeDefined();
+      });
+    });
+  });
   describe('#getAllNetworks', () => {
     it('sorts Localhost to the bottom of the test lists', () => {
       const networks = selectors.getAllNetworks({
@@ -752,9 +796,6 @@ describe('Selectors', () => {
       };
       const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
 
-      // Replace rpcUrl by type for consistency between environments because it's determined
-      // by environment variable.
-      currentNetwork.rpcUrl = typeof currentNetwork.rpcUrl;
       expect(currentNetwork).toMatchInlineSnapshot(`
         {
           "chainId": "0xaa36a7",
@@ -762,7 +803,7 @@ describe('Selectors', () => {
           "nickname": "Sepolia",
           "providerType": "sepolia",
           "removable": false,
-          "rpcUrl": "string",
+          "rpcUrl": "https://sepolia.infura.io/v3/undefined",
           "ticker": "SepoliaETH",
         }
       `);
@@ -797,6 +838,7 @@ describe('Selectors', () => {
 
       expect(currentNetwork).toMatchInlineSnapshot(`
         {
+          "blockExplorerUrl": undefined,
           "chainId": "0x9999",
           "id": "mock-network-config-id",
           "removable": true,
@@ -875,40 +917,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getIsNetworkSupportedByBlockaid', () => {
-    it('returns true if current network is Linea', () => {
-      const modifiedMockState = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          providerConfig: {
-            ...mockState.metamask.providerConfig,
-            chainId: CHAIN_IDS.LINEA_MAINNET,
-          },
-        },
-      };
-      const isSupported =
-        selectors.getIsNetworkSupportedByBlockaid(modifiedMockState);
-      expect(isSupported).toBe(true);
-    });
-
-    it('returns false if current network is Goerli', () => {
-      const modifiedMockState = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          providerConfig: {
-            ...mockState.metamask.providerConfig,
-            chainId: CHAIN_IDS.GOERLI,
-          },
-        },
-      };
-      const isSupported =
-        selectors.getIsNetworkSupportedByBlockaid(modifiedMockState);
-      expect(isSupported).toBe(false);
-    });
-  });
-
   describe('#getAllEnabledNetworks', () => {
     it('returns only Mainnet and Linea with showTestNetworks off', () => {
       const networks = selectors.getAllEnabledNetworks({
@@ -950,6 +958,46 @@ describe('Selectors', () => {
       const mockStateWithTrezor = modifyStateWithHWKeyring(KeyringType.trezor);
       expect(selectors.isHardwareWallet(mockStateWithTrezor)).toBe(true);
     });
+
+    it('returns true if it is a Lattice HW wallet', () => {
+      const mockStateWithLattice = modifyStateWithHWKeyring(
+        KeyringType.lattice,
+      );
+      expect(selectors.isHardwareWallet(mockStateWithLattice)).toBe(true);
+    });
+
+    it('returns true if it is a QR HW wallet', () => {
+      const mockStateWithQr = modifyStateWithHWKeyring(KeyringType.qr);
+      expect(selectors.isHardwareWallet(mockStateWithQr)).toBe(true);
+    });
+  });
+
+  describe('#accountSupportsSmartTx', () => {
+    it('returns false if the account type is "snap"', () => {
+      const state = {
+        metamask: {
+          internalAccounts: {
+            accounts: {
+              'mock-id-1': {
+                address: '0x987654321',
+                metadata: {
+                  name: 'Account 1',
+                  keyring: {
+                    type: 'Snap Keyring',
+                  },
+                },
+              },
+            },
+            selectedAccount: 'mock-id-1',
+          },
+        },
+      };
+      expect(selectors.accountSupportsSmartTx(state)).toBe(false);
+    });
+
+    it('returns true if the account type is not "snap"', () => {
+      expect(selectors.accountSupportsSmartTx(mockState)).toBe(true);
+    });
   });
 
   describe('#getHardwareWalletType', () => {
@@ -990,7 +1038,6 @@ describe('Selectors', () => {
       options: {},
       methods: [
         'personal_sign',
-        'eth_sign',
         'eth_signTransaction',
         'eth_signTypedData_v1',
         'eth_signTypedData_v3',
@@ -1241,11 +1288,6 @@ describe('Selectors', () => {
     const totalUnapprovedSignatureRequestCount =
       selectors.getTotalUnapprovedSignatureRequestCount(mockState);
     expect(totalUnapprovedSignatureRequestCount).toStrictEqual(0);
-  });
-
-  it('#getIsDesktopEnabled', () => {
-    const isDesktopEnabled = selectors.getIsDesktopEnabled(mockState);
-    expect(isDesktopEnabled).toBeFalsy();
   });
 
   describe('#getPetnamesEnabled', () => {
@@ -1680,7 +1722,6 @@ describe('Selectors', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1705,7 +1746,6 @@ describe('Selectors', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1729,7 +1769,6 @@ describe('Selectors', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1755,7 +1794,6 @@ describe('Selectors', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1783,7 +1821,6 @@ describe('Selectors', () => {
         },
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1806,7 +1843,6 @@ describe('Selectors', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',

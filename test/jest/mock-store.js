@@ -650,6 +650,7 @@ export const createSwapsMockStore = () => {
           ],
         },
       },
+      balances: {},
     },
     appState: {
       modal: {
@@ -663,6 +664,25 @@ export const createSwapsMockStore = () => {
         },
       },
       gasLoadingAnimationIsShowing: false,
+    },
+  };
+};
+
+export const createBridgeMockStore = () => {
+  const swapsStore = createSwapsMockStore();
+  return {
+    ...swapsStore,
+    bridge: {
+      toChain: null,
+    },
+    metamask: {
+      ...swapsStore.metamask,
+      bridgeState: {
+        ...(swapsStore.metamask.bridgeState ?? {}),
+        bridgeFeatureFlags: {
+          extensionSupport: false,
+        },
+      },
     },
   };
 };

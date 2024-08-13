@@ -234,15 +234,6 @@ export default function reduceMetamask(state = initialState, action) {
         confirmationExchangeRates: action.value,
       };
 
-    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-    case actionConstants.FORCE_DISABLE_DESKTOP: {
-      return {
-        ...metamaskState,
-        desktopEnabled: false,
-      };
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     default:
       return metamaskState;
   }
@@ -382,6 +373,7 @@ export function isNotEIP1559Network(state) {
  */
 export function isEIP1559Network(state, networkClientId) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
+
   return (
     state.metamask.networksMetadata?.[
       networkClientId ?? selectedNetworkClientId

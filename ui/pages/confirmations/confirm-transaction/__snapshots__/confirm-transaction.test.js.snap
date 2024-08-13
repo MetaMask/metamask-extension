@@ -24,7 +24,7 @@ exports[`Confirmation Transaction Page should display the Loading component when
           transform="rotate(0 50 50)"
         >
           <rect
-            fill="var(--color-warning-default)"
+            fill="var(--color-icon-muted)"
             height="30"
             rx="0"
             ry="0"
@@ -45,7 +45,7 @@ exports[`Confirmation Transaction Page should display the Loading component when
           transform="rotate(30 50 50)"
         >
           <rect
-            fill="var(--color-warning-default)"
+            fill="var(--color-icon-muted)"
             height="30"
             rx="0"
             ry="0"
@@ -66,7 +66,7 @@ exports[`Confirmation Transaction Page should display the Loading component when
           transform="rotate(60 50 50)"
         >
           <rect
-            fill="var(--color-warning-default)"
+            fill="var(--color-icon-muted)"
             height="30"
             rx="0"
             ry="0"
@@ -87,7 +87,7 @@ exports[`Confirmation Transaction Page should display the Loading component when
           transform="rotate(90 50 50)"
         >
           <rect
-            fill="var(--color-warning-default)"
+            fill="var(--color-icon-muted)"
             height="30"
             rx="0"
             ry="0"
@@ -108,7 +108,7 @@ exports[`Confirmation Transaction Page should display the Loading component when
           transform="rotate(120 50 50)"
         >
           <rect
-            fill="var(--color-warning-default)"
+            fill="var(--color-icon-muted)"
             height="30"
             rx="0"
             ry="0"
@@ -129,7 +129,7 @@ exports[`Confirmation Transaction Page should display the Loading component when
           transform="rotate(150 50 50)"
         >
           <rect
-            fill="var(--color-warning-default)"
+            fill="var(--color-icon-muted)"
             height="30"
             rx="0"
             ry="0"
@@ -150,7 +150,7 @@ exports[`Confirmation Transaction Page should display the Loading component when
           transform="rotate(180 50 50)"
         >
           <rect
-            fill="var(--color-warning-default)"
+            fill="var(--color-icon-muted)"
             height="30"
             rx="0"
             ry="0"
@@ -171,7 +171,7 @@ exports[`Confirmation Transaction Page should display the Loading component when
           transform="rotate(210 50 50)"
         >
           <rect
-            fill="var(--color-warning-default)"
+            fill="var(--color-icon-muted)"
             height="30"
             rx="0"
             ry="0"
@@ -192,7 +192,7 @@ exports[`Confirmation Transaction Page should display the Loading component when
           transform="rotate(240 50 50)"
         >
           <rect
-            fill="var(--color-warning-default)"
+            fill="var(--color-icon-muted)"
             height="30"
             rx="0"
             ry="0"
@@ -213,7 +213,7 @@ exports[`Confirmation Transaction Page should display the Loading component when
           transform="rotate(270 50 50)"
         >
           <rect
-            fill="var(--color-warning-default)"
+            fill="var(--color-icon-muted)"
             height="30"
             rx="0"
             ry="0"
@@ -234,7 +234,7 @@ exports[`Confirmation Transaction Page should display the Loading component when
           transform="rotate(300 50 50)"
         >
           <rect
-            fill="var(--color-warning-default)"
+            fill="var(--color-icon-muted)"
             height="30"
             rx="0"
             ry="0"
@@ -255,7 +255,7 @@ exports[`Confirmation Transaction Page should display the Loading component when
           transform="rotate(330 50 50)"
         >
           <rect
-            fill="var(--color-warning-default)"
+            fill="var(--color-icon-muted)"
             height="30"
             rx="0"
             ry="0"

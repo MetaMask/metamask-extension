@@ -30,7 +30,7 @@
     "fullScreenGasPollTokens": "object",
     "recoveryPhraseReminderHasBeenShown": true,
     "recoveryPhraseReminderLastShown": "number",
-    "outdatedBrowserWarningLastShown": "number",
+    "outdatedBrowserWarningLastShown": "object",
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
@@ -59,6 +59,9 @@
     "approvalFlows": "object"
   },
   "AuthenticationController": { "isSignedIn": "boolean" },
+  "BridgeController": {
+    "bridgeState": { "bridgeFeatureFlags": { "extensionSupport": "boolean" } }
+  },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
     "currencyRates": {
@@ -90,19 +93,21 @@
     "nonRPCGasFeeApisDisabled": "boolean"
   },
   "KeyringController": {
-    "isUnlocked": false,
+    "isUnlocked": true,
     "keyrings": "object",
-    "vault": "string"
+    "vault": "string",
+    "encryptionKey": "string",
+    "encryptionSalt": "string"
   },
   "LoggingController": { "logs": "object" },
   "MetaMetricsController": {
     "participateInMetaMetrics": true,
     "metaMetricsId": "fake-metrics-id",
+    "dataCollectionForMarketing": "boolean",
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "previousUserTraits": "object",
     "fragments": "object",
-    "dataCollectionForMarketing": "boolean",
     "segmentApiCalls": "object"
   },
   "MetamaskNotificationsController": {
@@ -116,6 +121,12 @@
     "isFetchingMetamaskNotifications": "boolean",
     "isUpdatingMetamaskNotificationsAccount": "object",
     "isCheckingAccountsPresence": "boolean"
+  },
+  "MultichainBalancesController": { "balances": "object" },
+  "MultichainRatesController": {
+    "fiatCurrency": "usd",
+    "rates": { "btc": { "conversionDate": 0, "conversionRate": "0" } },
+    "cryptocurrencies": ["btc"]
   },
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
@@ -152,7 +163,7 @@
     "completedOnboarding": true,
     "onboardingTabs": "object"
   },
-  "PPOMController": { "storageMetadata": {}, "versionFileETag": "string" },
+  "PPOMController": { "storageMetadata": {} },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {
     "permissionHistory": "object",
@@ -163,9 +174,7 @@
     "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
-    "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
-    "hasDismissedOpenSeaToBlockaidBanner": false,
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": false,
     "useNftDetection": false,
@@ -174,6 +183,8 @@
     "useRequestQueue": true,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
+    "bitcoinSupportEnabled": "boolean",
+    "bitcoinTestnetSupportEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},
@@ -191,7 +202,10 @@
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
-      "showTokenAutodetectModal": "boolean"
+      "showTokenAutodetectModal": "boolean",
+      "redesignedConfirmationsEnabled": true,
+      "redesignedTransactionsEnabled": "boolean",
+      "isRedesignedConfirmationsDeveloperEnabled": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
@@ -207,15 +221,11 @@
     "selectedAddress": "string"
   },
   "PushPlatformNotificationsController": { "fcmToken": "string" },
-  "QueuedRequestController": {
-    "queuedRequestCount": 0
-  },
+  "QueuedRequestController": { "queuedRequestCount": 0 },
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
-    "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",
     "unapprovedTypedMessages": "object",
-    "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgCount": 0,
     "unapprovedTypedMessagesCount": 0
   },
@@ -263,7 +273,8 @@
       "swapsQuotePrefetchingRefreshTime": 60000,
       "swapsStxBatchStatusRefreshTime": 10000,
       "swapsStxGetTransactionsRefreshTime": 10000,
-      "swapsStxMaxFeeMultiplier": 2
+      "swapsStxMaxFeeMultiplier": 2,
+      "swapsFeatureFlags": {}
     }
   },
   "TokenListController": {
@@ -271,9 +282,7 @@
     "tokensChainsCache": {},
     "preventPollingOnNetworkRestart": false
   },
-  "TokenRatesController": {
-    "marketData": "object"
-  },
+  "TokenRatesController": { "marketData": "object" },
   "TokensController": {
     "tokens": "object",
     "ignoredTokens": "object",
