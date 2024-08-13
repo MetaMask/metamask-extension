@@ -63,10 +63,57 @@ function removeObsoleteCurrencyControllerState(
 }
 
 /**
+ * Remove obsolete PhishingController state
+ *
+ * @param state - The persisted MetaMask state, keyed by controller.
+ */
+function removeObsoletePhishingControllerState(
+  state: Record<string, unknown>,
+): void {
+  if (!hasProperty(state, 'PhishingController')) {
+    return;
+  } else if (!isObject(state.PhishingController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: Invalid PhishingController state of type '${typeof state.PhishingController}'`,
+      ),
+    );
+    return;
+  }
+
+  delete state.PhishingController.phishing;
+  delete state.PhishingController.lastFetched;
+}
+
+/**
+ * Remove obsolete NetworkController state
+ *
+ * @param state - The persisted MetaMask state, keyed by controller.
+ */
+function removeObsoleteNetworkControllerState(
+  state: Record<string, unknown>,
+): void {
+  if (!hasProperty(state, 'NetworkController')) {
+    return;
+  } else if (!isObject(state.NetworkController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: Invalid NetworkController state of type '${typeof state.NetworkController}'`,
+      ),
+    );
+    return;
+  }
+
+  delete state.NetworkController.network;
+}
+
+/**
  * Remove obsolete controller state.
  *
  * @param state - The persisted MetaMask state, keyed by controller.
  */
 function transformState(state: Record<string, unknown>): void {
   removeObsoleteCurrencyControllerState(state);
+  removeObsoletePhishingControllerState(state);
+  removeObsoleteNetworkControllerState(state);
 }
