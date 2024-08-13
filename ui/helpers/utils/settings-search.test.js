@@ -96,6 +96,8 @@ const t = (key) => {
       return 'Sepolia test network';
     case 'localhost':
       return 'Localhost 8545';
+    case 'developerOptions':
+      return 'Developer Options';
     case 'experimental':
       return 'Experimental';
     case 'autoDetectTokens':
@@ -187,7 +189,7 @@ describe('Settings Search Utils', () => {
 
     it('returns 0 "Developer Options" section count when env flag is disabled', () => {
       expect(
-        getNumberOfSettingRoutesInTab(t, 'Developer Options'),
+        getNumberOfSettingRoutesInTab(t, t('developerOptions')),
       ).toStrictEqual(0);
     });
 
