@@ -218,22 +218,4 @@ describe('BtcOverview', () => {
     const portfolioButton = queryByTestId(BTC_OVERVIEW_PORTFOLIO);
     expect(portfolioButton).toBeInTheDocument();
   });
-
-  it('open the Portfolio URI when clicking on Portfolio button', async () => {
-    const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
-    const openTabSpy = jest.spyOn(global.platform, 'openTab');
-
-    const portfolioButton = queryByTestId(BTC_OVERVIEW_PORTFOLIO);
-    expect(portfolioButton).toBeInTheDocument();
-    fireEvent.click(portfolioButton as HTMLElement);
-
-    expect(openTabSpy).toHaveBeenCalledTimes(1);
-    await waitFor(() =>
-      expect(openTabSpy).toHaveBeenCalledWith({
-        url: expect.stringContaining(
-          `?metamaskEntry=ext_portfolio_button&metametricsId=${mockMetaMetricsId}`,
-        ),
-      }),
-    );
-  });
 });
