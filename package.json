@@ -759,7 +759,8 @@
       "@pmmmwh/react-refresh-webpack-plugin>core-js-pure": true,
       "@swc/core": true,
       "@lydell/node-pty": true,
-      "$root$": true
+      "$root$": true,
+      "core-js-pure": true
     }
   },
   "packageManager": "yarn@4.2.2"
