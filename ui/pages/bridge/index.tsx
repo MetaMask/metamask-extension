@@ -24,7 +24,11 @@ import {
   Header,
 } from '../../components/multichain/pages/page';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
-import { resetInputFields, setFromChain } from '../../ducks/bridge/actions';
+import {
+  resetBridgeState,
+  resetInputFields,
+  setFromChain,
+} from '../../ducks/bridge/actions';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import { BridgeCTAButton } from './prepare/bridge-cta-button';
 
@@ -45,11 +49,20 @@ const CrossChainSwap = () => {
       isBridgeEnabled &&
       providerConfig &&
       dispatch(setFromChain(providerConfig.chainId));
-
-    return () => {
-      dispatch(resetInputFields());
-    };
   }, [isBridgeChain, isBridgeEnabled, providerConfig]);
+
+  useEffect(() => {
+    // Reset controller before unloading the page
+    const onBeforeUnload = () => {
+      dispatch(resetInputFields());
+      dispatch(resetBridgeState());
+    };
+
+    window.addEventListener('beforeunload', onBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', onBeforeUnload);
+    };
+  }, []);
 
   const redirectToDefaultRoute = async () => {
     history.push({

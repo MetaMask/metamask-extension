@@ -13,11 +13,9 @@ import {
   BRIDGE_CONTROLLER_NAME,
   DEFAULT_BRIDGE_CONTROLLER_STATE,
 } from './constants';
-import {
-  BridgeControllerState,
-  BridgeControllerMessenger,
-  BridgeFeatureFlagsKey,
-} from './types';
+import { BridgeControllerState, BridgeControllerMessenger } from './types';
+import { QuoteRequest } from '../../../../ui/pages/bridge/types';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 const metadata: StateMetadata<{ bridgeState: BridgeControllerState }> = {
   bridgeState: {
@@ -51,7 +49,28 @@ export default class BridgeController extends BaseController<
       `${BRIDGE_CONTROLLER_NAME}:selectDestNetwork`,
       this.selectDestNetwork.bind(this),
     );
+    this.messagingSystem.registerActionHandler(
+      `${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`,
+      this.updateBridgeQuoteRequestParams.bind(this),
+    );
   }
+
+  updateBridgeQuoteRequestParams = (paramsToUpdate: Partial<QuoteRequest>) => {
+    const { bridgeState } = this.state;
+    const updatedQuoteRequest = {
+      ...bridgeState.quoteRequest,
+      ...paramsToUpdate,
+    };
+
+    this.update((_state) => {
+      _state.bridgeState = {
+        ...bridgeState,
+        quoteRequest: {
+          ...updatedQuoteRequest,
+        },
+      };
+    });
+  };
 
   resetState = () => {
     this.update((_state) => {
@@ -67,17 +86,23 @@ export default class BridgeController extends BaseController<
     this.update((_state) => {
       _state.bridgeState = { ...bridgeState, bridgeFeatureFlags };
     });
-    this.setIntervalLength(
-      bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].refreshRate,
-    );
+    // this.setIntervalLength(
+    //   bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].refreshRate,
+    // );
   };
 
   selectSrcNetwork = async (chainId: Hex) => {
+    this.updateBridgeQuoteRequestParams({
+      srcChainId: Number(hexToDecimal(chainId)),
+    });
     await this.#setTopAssets(chainId, 'srcTopAssets');
     await this.#setTokens(chainId, 'srcTokens');
   };
 
   selectDestNetwork = async (chainId: Hex) => {
+    this.updateBridgeQuoteRequestParams({
+      destChainId: Number(hexToDecimal(chainId)),
+    });
     await this.#setTopAssets(chainId, 'destTopAssets');
     await this.#setTokens(chainId, 'destTokens');
   };
