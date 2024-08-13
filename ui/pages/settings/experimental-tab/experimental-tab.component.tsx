@@ -282,7 +282,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
       toggleValue: watchAccountEnabled,
       toggleCallback: (value) => {
         trackEvent({
-          event: MetaMetricsEventName.EthereumWatchAccountsToggled,
+          event: MetaMetricsEventName.WatchEthereumAccountsToggled,
           category: MetaMetricsEventCategory.Settings,
           properties: {
             enabled: !value,
