@@ -43,7 +43,7 @@ import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IF
 import { DAY } from '../../../../shared/constants/time';
-import { Display } from '../../../helpers/constants/design-system';
+import { BlockSize } from '../../../helpers/constants/design-system';
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
@@ -498,7 +498,7 @@ export default function ConfirmationPage({
       )}
       {isSnapCustomUIDialog ? (
         <>
-          <Box display={Display.Flex} style={{ overflow: 'hidden' }}>
+          <Box width={BlockSize.Screen}>
             <SnapAuthorshipHeader
               snapId={pendingConfirmation?.origin}
               onCancel={handleSnapDialogCancel}
