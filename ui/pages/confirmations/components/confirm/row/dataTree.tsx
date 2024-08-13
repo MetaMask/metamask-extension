@@ -11,7 +11,7 @@ import { getTokenStandardAndDetails } from '../../../../../store/actions';
 
 import { Box } from '../../../../../components/component-library';
 import { BlockSize } from '../../../../../helpers/constants/design-system';
-import * as hookModule from '../../../../../hooks/useAsyncResult';
+import { useAsyncResult } from '../../../../../hooks/useAsyncResult';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -19,8 +19,6 @@ import {
   ConfirmInfoRowText,
   ConfirmInfoRowTextTokenUnits,
 } from '../../../../../components/app/confirm/info/row';
-
-const { useAsyncResult } = hookModule;
 
 type ValueType = string | Record<string, TreeData> | TreeData[];
 
