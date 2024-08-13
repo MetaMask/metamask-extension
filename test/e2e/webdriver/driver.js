@@ -10,7 +10,9 @@ const {
 } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
+const { debounce } = require('lodash');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
+const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 const { WindowHandles } = require('../background-socket/window-handles');
 
 const PAGES = {
@@ -132,6 +134,7 @@ class Driver {
     this.timeout = timeout;
     this.exceptions = [];
     this.errors = [];
+    this.eventProcessingStack = [];
     this.windowHandles = new WindowHandles(this.driver);
 
     // The following values are found in
@@ -871,10 +874,7 @@ class Driver {
   async waitUntilXWindowHandles(_x, delayStep = 1000, timeout = this.timeout) {
     // In the MV3 build, there is an extra windowHandle with a title of "MetaMask Offscreen Page"
     // So we add 1 to the expected number of window handles
-    const x =
-      process.env.ENABLE_MV3 === 'true' || process.env.ENABLE_MV3 === undefined
-        ? _x + 1
-        : _x;
+    const x = isManifestV3 ? _x + 1 : _x;
 
     let timeElapsed = 0;
     let windowHandles = [];
@@ -930,6 +930,19 @@ class Driver {
    */
   async switchToWindowWithTitle(title) {
     return await this.windowHandles.switchToWindowWithProperty('title', title);
+  }
+
+  /**
+   * Waits for the specified number of window handles to be present and then switches to the window
+   * tab with the given title.
+   *
+   * @param {number} handles - The number window handles to wait for
+   * @param {string} title - The title of the window to switch to
+   * @returns {Promise<void>} promise that resolves once the switch is complete
+   */
+  async waitAndSwitchToWindowWithTitle(handles, title) {
+    await this.waitUntilXWindowHandles(handles);
+    await this.switchToWindowWithTitle(title);
   }
 
   /**
@@ -1114,8 +1127,6 @@ class Driver {
   }
 
   async checkBrowserForConsoleErrors(_ignoredConsoleErrors) {
-    const ignoreAllErrors = _ignoredConsoleErrors.includes('ignore-all');
-
     const ignoredConsoleErrors = _ignoredConsoleErrors.concat([
       // Third-party Favicon 404s show up as errors
       'favicon.ico - Failed to load resource: the server responded with a status of 404',
@@ -1123,23 +1134,51 @@ class Driver {
       'Failed to load resource: the server responded with a status of 429',
       // 4Byte
       'Failed to load resource: the server responded with a status of 502 (Bad Gateway)',
+      // Sentry error that is not actually a problem
+      'Event fragment with id transaction-added-',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');
 
+    // Flush the event processing stack 50ms after the last event is added
+    const debounceEventProcessingStack = debounce(
+      this.#flushEventProcessingStack.bind(this),
+      50,
+    );
+
     this.driver.onLogEvent(cdpConnection, (event) => {
       if (event.type === 'error') {
         if (event.args.length !== 0) {
-          const newError = this.#getErrorFromEvent(event);
+          event.ignoredConsoleErrors = ignoredConsoleErrors;
 
-          const ignored = logBrowserError(ignoredConsoleErrors, newError);
+          this.eventProcessingStack.push(event);
 
-          if (!ignored && !ignoreAllErrors) {
-            this.errors.push(newError);
-          }
+          debounceEventProcessingStack();
         }
       }
     });
+  }
+
+  #flushEventProcessingStack() {
+    let completeErrorText = '';
+
+    // Combine all events together that have arrived in the last 50ms, because they are actually just one error
+    this.eventProcessingStack.forEach((event) => {
+      completeErrorText += `${this.#getErrorFromEvent(event)}\n`;
+    });
+    completeErrorText = completeErrorText.trim();
+
+    const { ignoredConsoleErrors } = this.eventProcessingStack[0];
+
+    const ignored = logBrowserError(ignoredConsoleErrors, completeErrorText);
+
+    const ignoreAllErrors = ignoredConsoleErrors.includes('ignore-all');
+
+    if (!ignored && !ignoreAllErrors) {
+      this.errors.push(completeErrorText);
+    }
+
+    this.eventProcessingStack = [];
   }
 
   #getErrorFromEvent(event) {

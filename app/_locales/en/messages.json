@@ -42,7 +42,7 @@
     "message": "Connect your QR hardware wallet"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave (coming soon)"
+    "message": "Ngrave Zero"
   },
   "SIWEAddressInvalid": {
     "message": "The address in the sign-in request does not match the address of the account you are using to sign in."
@@ -195,6 +195,9 @@
   "addAccount": {
     "message": "Add account"
   },
+  "addAccountToMetaMask": {
+    "message": "Add account to MetaMask"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -319,6 +322,9 @@
   },
   "addUrl": {
     "message": "Add URL"
+  },
+  "addingAccount": {
+    "message": "Adding account"
   },
   "addingCustomNetwork": {
     "message": "Adding Network"
@@ -1455,9 +1461,6 @@
   "data": {
     "message": "Data"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Can not restore your data. The file appears to be corrupt."
-  },
   "dataCollectionForMarketing": {
     "message": "Data collection for marketing"
   },
@@ -1575,6 +1578,24 @@
   },
   "developerOptionsResetStatesOnboarding": {
     "message": "Resets various states related to onboarding and redirects to the \"Secure Your Wallet\" onboarding page."
+  },
+  "developerOptionsSentryButtonGenerateBackgroundError": {
+    "message": "Generate Background Error"
+  },
+  "developerOptionsSentryButtonGenerateTrace": {
+    "message": "Generate Trace"
+  },
+  "developerOptionsSentryButtonGenerateUIError": {
+    "message": "Generate UI Error"
+  },
+  "developerOptionsSentryDescriptionGenerateBackgroundError": {
+    "message": "Generate an unhandled $1 in the service worker."
+  },
+  "developerOptionsSentryDescriptionGenerateTrace": {
+    "message": " Generate a $1 Sentry trace."
+  },
+  "developerOptionsSentryDescriptionGenerateUIError": {
+    "message": "Generate an unhandled $1 in this window."
   },
   "developerOptionsServiceWorkerKeepAlive": {
     "message": "Results in a timestamp being continuously saved to session.storage"
@@ -2974,6 +2995,10 @@
     "message": "Choose a nickname...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1 is asking for your approval to:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "Do you want this site to do the following?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3107,6 +3132,10 @@
   },
   "networkURLDefinition": {
     "message": "The URL used to access this network."
+  },
+  "networkUrlErrorWarning": {
+    "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue. Punycode version: $1",
+    "description": "$1 replaced by RPC URL for network"
   },
   "networks": {
     "message": "Networks"
@@ -3990,7 +4019,7 @@
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
   },
   "permission_walletSwitchEthereumChain": {
-    "message": "Switch to and use the following network",
+    "message": "Use your enabled networks",
     "description": "The label for the `wallet_switchEthereumChain` permission"
   },
   "permission_webAssembly": {
@@ -4282,6 +4311,12 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "Turn this on to see signature requests in an enhanced format."
   },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "Improved transaction requests"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "Turn this on to see transactions requests in an enhanced format."
+  },
   "refreshList": {
     "message": "Refresh list"
   },
@@ -4418,12 +4453,6 @@
   "restore": {
     "message": "Restore"
   },
-  "restoreFailed": {
-    "message": "Can not restore your data from the file provided"
-  },
-  "restoreSuccessful": {
-    "message": "Your data has been restored successfully"
-  },
   "restoreUserData": {
     "message": "Restore user data"
   },
@@ -4490,6 +4519,9 @@
   },
   "reviewAlerts": {
     "message": "Review alerts"
+  },
+  "reviewPermissions": {
+    "message": "Review permissions"
   },
   "revokeAllTokensTitle": {
     "message": "Revoke permission to access and transfer all of your $1?",
@@ -4588,13 +4620,10 @@
   "seedPhraseIntroRecommendedButtonCopy": {
     "message": "Secure my wallet (recommended)"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "Write down and store in multiple secret places"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Save in a password manager"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "Store in a safe deposit box"
   },
   "seedPhraseIntroSidebarCopyOne": {
@@ -4819,9 +4848,6 @@
   },
   "signatureRequestGuidance": {
     "message": "Only sign this message if you fully understand the content and trust the requesting site."
-  },
-  "signatureRequestWarning": {
-    "message": "Signing this message could be dangerous. You may be giving total control of your account and assets to the party on the other end of this message. That means they could drain your account at any time. Proceed with caution. $1."
   },
   "signed": {
     "message": "Signed"
@@ -5938,45 +5964,6 @@
     "message": "To: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "You’re at risk for phishing attacks. Protect yourself by turning off eth_sign."
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "If you enable this setting, you might get signature requests that aren’t readable. By signing a message you don't understand, you could be agreeing to give away your funds and NFTs."
-  },
-  "toggleEthSignField": {
-    "message": "Eth_sign requests"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " you might be getting scammed"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "If you've been asked to turn this setting on,"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "I understand that I can lose all of my funds and NFTs if I enable eth_sign requests. "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "Allowing eth_sign requests can make you vulnerable to phishing attacks. Always review the URL and be careful when signing  messages that contain code."
-  },
-  "toggleEthSignModalFormError": {
-    "message": "The text is incorrect"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "Enter “I only sign what I understand” to continue"
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "I only sign what I understand"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "Use at your own risk"
-  },
-  "toggleEthSignOff": {
-    "message": "OFF (Recommended)"
-  },
-  "toggleEthSignOn": {
-    "message": "ON (Not recommended)"
-  },
   "toggleRequestQueueDescription": {
     "message": "This allows you to select a network for each site instead of a single selected network for all sites. This feature will prevent you from switching networks manually, which may break your user experience on certain sites."
   },
@@ -6573,9 +6560,6 @@
   },
   "yourBalance": {
     "message": "Your balance"
-  },
-  "yourFundsMayBeAtRisk": {
-    "message": "Your funds may be at risk"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"

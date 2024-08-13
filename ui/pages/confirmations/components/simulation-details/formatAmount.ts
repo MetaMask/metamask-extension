@@ -4,18 +4,67 @@ import {
   DEFAULT_PRECISION,
 } from '../../../../hooks/useCurrencyDisplay';
 
+const MAX_ELLIPSIS_LEFT_DIGITS = 15;
+
 // The number of significant decimals places to show for amounts less than 1.
 const MAX_SIGNIFICANT_DECIMAL_PLACES = 3;
 
 const ZERO_DISPLAY = '0';
 
+/**
+ * This function receives an formatted number and will append an ellipsis if the number of digits
+ * is greater than MAX_LEFT_DIGITS. Currently, we're only supporting en-US format. When we support
+ * i18n numbers, we'll need to update this method to support i18n.
+ *
+ * This method has been designed to receive results of formatAmount.
+ *
+ * There is no need to format the decimal portion because formatAmount shaves the portions off
+ * accordingly.
+ *
+ * @param amountText
+ * @param maxLeftDigits
+ */
+export function ellipsisAmountText(
+  amountText: string,
+  maxLeftDigits: number = MAX_ELLIPSIS_LEFT_DIGITS,
+): string {
+  const [integerPart] = amountText.split('.');
+  const cleanIntegerPart = integerPart.replace(/,/gu, '');
+
+  if (cleanIntegerPart.length > maxLeftDigits) {
+    let result = '';
+    let digitCount = 0;
+
+    for (let i = 0; digitCount < maxLeftDigits; i++) {
+      const integerChar = integerPart[i];
+      result += integerChar;
+      if (integerChar !== ',') {
+        digitCount += 1;
+      }
+    }
+
+    return `${result}...`;
+  }
+
+  return amountText;
+}
+
 export function formatAmountMaxPrecision(
   locale: string,
   num: number | BigNumber,
 ): string {
-  return new Intl.NumberFormat(locale, {
-    minimumSignificantDigits: 1,
-  }).format(new BigNumber(num.toString()).toNumber());
+  const bigNumberValue = new BigNumber(num);
+  const numberOfDecimals = bigNumberValue.decimalPlaces();
+  const formattedValue = bigNumberValue.toFixed(numberOfDecimals);
+
+  const [integerPart, fractionalPart] = formattedValue.split('.');
+  const formattedIntegerPart = new Intl.NumberFormat(locale).format(
+    integerPart as unknown as number,
+  );
+
+  return fractionalPart
+    ? `${formattedIntegerPart}.${fractionalPart}`
+    : formattedIntegerPart;
 }
 
 /**
@@ -82,5 +131,10 @@ export function formatAmount(locale: string, amount: BigNumber): string {
 
   return new Intl.NumberFormat(locale, {
     maximumFractionDigits,
-  } as Intl.NumberFormatOptions).format(amount.toNumber());
+  } as Intl.NumberFormatOptions).format(
+    // string is valid parameter for format function
+    // for some reason it gives TS issue
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/format#number
+    amount.toFixed(maximumFractionDigits) as unknown as number,
+  );
 }

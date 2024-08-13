@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { pipeline } from 'readable-stream';
+import { finished, pipeline } from 'readable-stream';
 import {
   AssetsContractController,
   CurrencyRateController,
@@ -208,6 +208,7 @@ import {
   getFeatureFlagsByChainId,
   getSmartTransactionsOptInStatus,
   getCurrentChainSupportsSmartTransactions,
+  getHardwareWalletType,
 } from '../../shared/modules/selectors';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import { BaseUrl } from '../../shared/constants/urls';
@@ -461,7 +462,6 @@ export default class MetamaskController extends EventEmitter {
       }),
       showApprovalRequest: opts.showUserConfirmation,
       typesExcludedFromRateLimiting: [
-        ApprovalType.EthSign,
         ApprovalType.PersonalSign,
         ApprovalType.EthSignTypedData,
         ApprovalType.Transaction,
@@ -840,7 +840,10 @@ export default class MetamaskController extends EventEmitter {
       }),
       storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
       provider: this.provider,
-      ppomProvider: { PPOM: PPOMModule.PPOM, ppomInit: PPOMModule.default },
+      ppomProvider: {
+        PPOM: PPOMModule.PPOM,
+        ppomInit: () => PPOMModule.default(process.env.PPOM_URI),
+      },
       state: initState.PPOMController,
       chainId: this.networkController.state.providerConfig.chainId,
       securityAlertsEnabled:
@@ -1033,6 +1036,7 @@ export default class MetamaskController extends EventEmitter {
         'KeyringController:getAccounts',
         'AccountsController:setSelectedAccount',
         'AccountsController:getAccountByAddress',
+        'AccountsController:setAccountName',
       ],
     });
 
@@ -1078,7 +1082,6 @@ export default class MetamaskController extends EventEmitter {
         snapKeyringBuildMessenger,
         getSnapController,
         persistAndUpdateAccounts,
-        (address) => this.preferencesController.setSelectedAddress(address),
         (address) => this.removeAccount(address),
         this.metaMetricsController.trackEvent.bind(this.metaMetricsController),
         getSnapName,
@@ -1416,9 +1419,11 @@ export default class MetamaskController extends EventEmitter {
       messenger: this.controllerMessenger.getRestricted({
         name: 'AuthenticationController',
         allowedActions: [
+          'KeyringController:getState',
           'SnapController:handleRequest',
           'UserStorageController:disableProfileSyncing',
         ],
+        allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
       }),
       metametrics: {
         getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
@@ -1432,6 +1437,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
         allowedActions: [
+          'KeyringController:getState',
           'SnapController:handleRequest',
           'AuthenticationController:getBearerToken',
           'AuthenticationController:getSessionProfile',
@@ -1441,6 +1447,7 @@ export default class MetamaskController extends EventEmitter {
           'MetamaskNotificationsController:disableMetamaskNotifications',
           'MetamaskNotificationsController:selectIsMetamaskNotificationsEnabled',
         ],
+        allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
       }),
     });
 
@@ -1458,9 +1465,10 @@ export default class MetamaskController extends EventEmitter {
       'PushPlatformNotificationsController:onNewNotifications',
       (notification) => {
         this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.PushNotificationReceived,
           category: MetaMetricsEventCategory.PushNotifications,
+          event: MetaMetricsEventName.NotificationReceived,
           properties: {
+            notification_channel: 'push',
             notification_type: notification.type,
             chain_id: notification?.chain_id,
           },
@@ -1471,11 +1479,14 @@ export default class MetamaskController extends EventEmitter {
       'PushPlatformNotificationsController:pushNotificationClicked',
       (notification) => {
         this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.PushNotificationClicked,
           category: MetaMetricsEventCategory.PushNotifications,
+          event: MetaMetricsEventName.NotificationClicked,
           properties: {
+            notification_id: notification.id,
             notification_type: notification.type,
             chain_id: notification?.chain_id,
+            notification_is_read: notification.isRead,
+            click_type: 'push_notification',
           },
         });
       },
@@ -1486,6 +1497,7 @@ export default class MetamaskController extends EventEmitter {
         name: 'MetamaskNotificationsController',
         allowedActions: [
           'KeyringController:getAccounts',
+          'KeyringController:getState',
           'AuthenticationController:getBearerToken',
           'AuthenticationController:isSignedIn',
           'UserStorageController:enableProfileSyncing',
@@ -1498,6 +1510,8 @@ export default class MetamaskController extends EventEmitter {
         ],
         allowedEvents: [
           'KeyringController:stateChange',
+          'KeyringController:lock',
+          'KeyringController:unlock',
           'PushPlatformNotificationsController:onNewNotifications',
         ],
       }),
@@ -1794,9 +1808,6 @@ export default class MetamaskController extends EventEmitter {
           `${this.loggingController.name}:add`,
         ],
       }),
-      isEthSignEnabled: () =>
-        this.preferencesController.store.getState()
-          ?.disabledRpcMethodPreferences?.eth_sign,
       getAllState: this.getState.bind(this),
       getCurrentChainId: () =>
         this.networkController.state.providerConfig.chainId,
@@ -1943,6 +1954,20 @@ export default class MetamaskController extends EventEmitter {
         trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
+        getMetaMetricsProps: async () => {
+          const selectedAddress =
+            this.accountsController.getSelectedAccount().address;
+          const accountHardwareType = await getHardwareWalletType(
+            this._getMetaMaskState(),
+          );
+          const accountType = await this.getAccountType(selectedAddress);
+          const deviceModel = await this.getDeviceModel(selectedAddress);
+          return {
+            accountHardwareType,
+            accountType,
+            deviceModel,
+          };
+        },
       },
       {
         supportedChainIds: getAllowedSmartTransactionsChainIds(),
@@ -2073,9 +2098,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       // msg signing
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      processEthSignMessage: this.signatureController.newUnsignedMessage.bind(
-        this.signatureController,
-      ),
       processTypedMessage:
         this.signatureController.newUnsignedTypedMessage.bind(
           this.signatureController,
@@ -2096,9 +2118,6 @@ export default class MetamaskController extends EventEmitter {
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       /* eslint-disable no-dupe-keys */
-      processEthSignMessage: this.mmiController.newUnsignedMessage.bind(
-        this.mmiController,
-      ),
       processTypedMessage: this.mmiController.newUnsignedMessage.bind(
         this.mmiController,
       ),
@@ -3215,14 +3234,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setDismissSeedBackUpReminder.bind(
           preferencesController,
         ),
-      setDisabledRpcMethodPreference:
-        preferencesController.setDisabledRpcMethodPreference.bind(
-          preferencesController,
-        ),
-      getRpcMethodPreferences:
-        preferencesController.getRpcMethodPreferences.bind(
-          preferencesController,
-        ),
       setAdvancedGasFee: preferencesController.setAdvancedGasFee.bind(
         preferencesController,
       ),
@@ -3246,7 +3257,6 @@ export default class MetamaskController extends EventEmitter {
         accountsController.setAccountName.bind(accountsController),
 
       setAccountLabel: (address, label) => {
-        this.preferencesController.setAccountLabel(address, label);
         const account = this.accountsController.getAccountByAddress(address);
         if (account === undefined) {
           throw new Error(`No account found for address: ${address}`);
@@ -5072,14 +5082,39 @@ export default class MetamaskController extends EventEmitter {
       this.once('startUISync', startUISync);
     }
 
-    outStream.on('end', () => {
-      this.activeControllerConnections -= 1;
-      this.emit(
-        'controllerConnectionChanged',
-        this.activeControllerConnections,
-      );
-      this.removeListener('update', handleUpdate);
-    });
+    const outstreamEndHandler = () => {
+      if (!outStream.mmFinished) {
+        this.activeControllerConnections -= 1;
+        this.emit(
+          'controllerConnectionChanged',
+          this.activeControllerConnections,
+        );
+        outStream.mmFinished = true;
+        this.removeListener('update', handleUpdate);
+      }
+    };
+
+    // The presence of both of the below handlers may be redundant.
+    // After upgrading metamask/object-multiples to v2.0.0, which included
+    // an upgrade of readable-streams from v2 to v3, we saw that the
+    // `outStream.on('end'` handler was almost never being called. This seems to
+    // related to how v3 handles errors vs how v2 handles errors; there
+    // are "premature close" errors in both cases, although in the case
+    // of v2 they don't prevent `outStream.on('end'` from being called.
+    // At the time that this comment was committed, it was known that we
+    // need to investigate and resolve the underlying error, however,
+    // for expediency, we are not addressing them at this time. Instead, we
+    // can observe that `readableStream.finished` preserves the same
+    // functionality as we had when we relied on readable-stream v2. Meanwhile,
+    // the `outStream.on('end')` handler was observed to have been called at least once.
+    // In an abundance of caution to prevent against unexpected future behavioral changes in
+    // streams implementations, we redundantly use multiple paths to attach the same event handler.
+    // The outstreamEndHandler therefore needs to be idempotent, which introduces the `mmFinished` property.
+
+    outStream.mmFinished = false;
+    finished(outStream, outstreamEndHandler);
+    outStream.once('close', outstreamEndHandler);
+    outStream.once('end', outstreamEndHandler);
   }
 
   /**
@@ -5139,7 +5174,8 @@ export default class MetamaskController extends EventEmitter {
           }
         });
         connectionId && this.removeConnection(origin, connectionId);
-        if (err) {
+        // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
+        if (err && !err.message?.match('Premature close')) {
           log.error(err);
         }
       },
@@ -5427,7 +5463,7 @@ export default class MetamaskController extends EventEmitter {
             { eth_accounts: {} },
           ),
         requestPermittedChainsPermission: (chainIds) =>
-          this.permissionController.requestPermissions(
+          this.permissionController.requestPermissionsIncremental(
             { origin },
             {
               [PermissionNames.permittedChains]: {
@@ -5663,7 +5699,8 @@ export default class MetamaskController extends EventEmitter {
 
     pipeline(configStream, outStream, (err) => {
       configStream.destroy();
-      if (err) {
+      // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
+      if (err && !err.message?.match('Premature close')) {
         log.error(err);
       }
     });
@@ -6087,6 +6124,9 @@ export default class MetamaskController extends EventEmitter {
       },
       getRedesignedConfirmationsEnabled: () => {
         return this.preferencesController.getRedesignedConfirmationsEnabled;
+      },
+      getRedesignedTransactionsEnabled: () => {
+        return this.preferencesController.getRedesignedTransactionsEnabled;
       },
       getMethodData: (data) => {
         if (!data) {
