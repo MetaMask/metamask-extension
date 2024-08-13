@@ -77,7 +77,7 @@ describe('migration #120.4', () => {
       expect(transformedState.data).toEqual({ CurrencyController: {} });
     });
 
-    it('does not delete non0obsolete properties from the CurrencyController state', async () => {
+    it('does not delete non-obsolete properties from the CurrencyController state', async () => {
       const oldState = {
         CurrencyController: {
           currencyRates: { test: 123 },
