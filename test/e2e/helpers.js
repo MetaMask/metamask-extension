@@ -894,12 +894,13 @@ const TEST_SEED_PHRASE_TWO =
   'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
 /**
- * Checks the balance for specific address and defaults to first address if none is passed.
- * Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
+ * Checks the balance for a specific address. If no address is provided, it defaults to the first address.
+ * This function is typically used during onboarding to ensure the state is retrieved correctly from metamaskState,
+ * or after a transaction is made.
  *
- * @param {WebDriver} driver - The webdriver instance
- * @param {Ganache} [ganacheServer] - The ganache server instance
- * @param {string} [address] - The address to check the balance for
+ * @param {WebDriver} driver - The WebDriver instance.
+ * @param {Ganache} [ganacheServer] - The Ganache server instance (optional).
+ * @param {string} [address] - The address to check the balance for (optional).
  */
 const locateAccountBalanceDOM = async (
   driver,
