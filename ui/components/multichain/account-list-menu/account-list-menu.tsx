@@ -92,6 +92,11 @@ import {
   AccountConnections,
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
+import {
+  ACCOUNT_WATCHER_NAME,
+  ACCOUNT_WATCHER_SNAP_ID,
+} from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
+import SnapHome from '../../../pages/snaps/snap-view/snap-home';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -101,6 +106,8 @@ const ACTION_MODES = {
   MENU: 'menu',
   // Displays the add account form controls
   ADD: 'add',
+  // Displays the add account form controls (for watch-only account)
+  ADD_WATCH_ONLY: 'add-watch-only',
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // Displays the add account form controls (for bitcoin account)
   ADD_BITCOIN: 'add-bitcoin',
@@ -124,6 +131,8 @@ export const getActionTitle = (
 ) => {
   switch (actionMode) {
     case ACTION_MODES.ADD:
+    case ACTION_MODES.MENU:
+    case ACTION_MODES.ADD_WATCH_ONLY:
       return t('addAccount');
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     case ACTION_MODES.ADD_BITCOIN:
@@ -131,8 +140,6 @@ export const getActionTitle = (
     case ACTION_MODES.ADD_BITCOIN_TESTNET:
       return t('addAccount');
     ///: END:ONLY_INCLUDE_IF
-    case ACTION_MODES.MENU:
-      return t('addAccount');
     case ACTION_MODES.IMPORT:
       return t('importAccount');
     default:
@@ -218,6 +225,22 @@ export const AccountListMenu = ({
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
+  // TODO: implement toggle and selector for this
+  const isAddWatchAccountEnabled = true;
+  const handleAddWatchAccount = async () => {
+    await trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.AccountAddSelected,
+      properties: {
+        account_type: MetaMetricsEventAccountType.Snap,
+        snap_id: ACCOUNT_WATCHER_SNAP_ID,
+        snap_name: ACCOUNT_WATCHER_NAME,
+        location: 'Main Menu',
+      },
+    });
+    onClose();
+    history.push(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
+  };
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
   const bitcoinTestnetSupportEnabled = useSelector(
@@ -340,6 +363,19 @@ export const AccountListMenu = ({
                 {t('addNewAccount')}
               </ButtonLink>
             </Box>
+            {isAddWatchAccountEnabled && (
+              <Box marginTop={4}>
+                <ButtonLink
+                  disabled={!isAddWatchAccountEnabled}
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Add}
+                  onClick={handleAddWatchAccount}
+                  data-testid="multichain-account-menu-popover-add-watch-only-account"
+                >
+                  {t('addWatchOnlyAccount')}
+                </ButtonLink>
+              </Box>
+            )}
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
               bitcoinSupportEnabled && (

@@ -344,6 +344,9 @@
   "addressCopied": {
     "message": "Address copied!"
   },
+  "addWatchOnlyAccount": {
+    "message": "Watch Ethereum account (Beta)"
+  },
   "advanced": {
     "message": "Advanced"
   },
