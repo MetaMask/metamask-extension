@@ -51,11 +51,6 @@ export async function validateRequestWithPPOM({
 }): Promise<SecurityAlertResponse> {
   try {
     const normalizedRequest = normalizePPOMRequest(request);
-    if (!normalizedRequest) {
-      throw new Error(
-        'Expected PPOM request with "eth_sendTransaction" method',
-      );
-    }
 
     const ppomResponse = isSecurityAlertsAPIEnabled()
       ? await validateWithAPI(ppomController, chainId, normalizedRequest)
@@ -141,14 +136,14 @@ export async function isChainSupported(chainId: Hex): Promise<boolean> {
 }
 
 function normalizePPOMRequest(
-  request: JsonRpcRequest,
-): PPOMRequest | undefined {
+  request: PPOMRequest | JsonRpcRequest,
+): PPOMRequest | JsonRpcRequest {
   if (
     !((req): req is PPOMRequest => req.method === METHOD_SEND_TRANSACTION)(
       request,
     )
   ) {
-    return undefined;
+    return request;
   }
 
   const transactionParams = request.params[0] ?? {};
@@ -227,8 +222,9 @@ async function validateWithController(
 async function validateWithAPI(
   ppomController: PPOMController,
   chainId: string,
-  request: Exclude<JsonRpcRequest, 'method' | 'params'> &
-    SecurityAlertsAPIRequest,
+  request:
+    | (Exclude<JsonRpcRequest, 'method' | 'params'> & SecurityAlertsAPIRequest)
+    | JsonRpcRequest,
 ): Promise<SecurityAlertResponse> {
   try {
     const response = await validateWithSecurityAlertsAPI(chainId, request);

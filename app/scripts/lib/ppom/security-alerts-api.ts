@@ -1,4 +1,4 @@
-import { Hex } from '@metamask/utils';
+import { Hex, JsonRpcRequest } from '@metamask/utils';
 import { SecurityAlertResponse } from './types';
 
 const ENDPOINT_VALIDATE = 'validate';
@@ -16,7 +16,7 @@ export function isSecurityAlertsAPIEnabled() {
 
 export async function validateWithSecurityAlertsAPI(
   chainId: string,
-  body: SecurityAlertsAPIRequest,
+  body: SecurityAlertsAPIRequest | Pick<JsonRpcRequest, 'method' | 'params'>,
 ): Promise<SecurityAlertResponse> {
   const endpoint = `${ENDPOINT_VALIDATE}/${chainId}`;
   return request(endpoint, {
