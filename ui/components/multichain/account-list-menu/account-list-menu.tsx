@@ -64,6 +64,7 @@ import {
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
+  getIsWatchEthereumAccountEnabled,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -96,7 +97,6 @@ import {
   ACCOUNT_WATCHER_NAME,
   ACCOUNT_WATCHER_SNAP_ID,
 } from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
-import SnapHome from '../../../pages/snaps/snap-view/snap-home';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -225,8 +225,9 @@ export const AccountListMenu = ({
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
-  // TODO: implement toggle and selector for this
-  const isAddWatchAccountEnabled = true;
+  const isAddWatchEthereumAccountEnabled = useSelector(
+    getIsWatchEthereumAccountEnabled,
+  );
   const handleAddWatchAccount = async () => {
     await trackEvent({
       category: MetaMetricsEventCategory.Navigation,
@@ -363,16 +364,16 @@ export const AccountListMenu = ({
                 {t('addNewAccount')}
               </ButtonLink>
             </Box>
-            {isAddWatchAccountEnabled && (
+            {isAddWatchEthereumAccountEnabled && (
               <Box marginTop={4}>
                 <ButtonLink
-                  disabled={!isAddWatchAccountEnabled}
+                  disabled={!isAddWatchEthereumAccountEnabled}
                   size={ButtonLinkSize.Sm}
                   startIconName={IconName.Add}
                   onClick={handleAddWatchAccount}
                   data-testid="multichain-account-menu-popover-add-watch-only-account"
                 >
-                  {t('addWatchOnlyAccount')}
+                  {t('addEthereumWatchOnlyAccount')}
                 </ButtonLink>
               </Box>
             )}

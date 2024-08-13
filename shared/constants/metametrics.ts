@@ -529,6 +529,7 @@ export enum MetaMetricsEventName {
   EncryptionPublicKeyApproved = 'Encryption Approved',
   EncryptionPublicKeyRejected = 'Encryption Rejected',
   EncryptionPublicKeyRequested = 'Encryption Requested',
+  EthereumWatchAccountsToggled = 'Ethereum Watch Accounts Toggled',
   ExternalLinkClicked = 'External Link Clicked',
   KeyExportSelected = 'Key Export Selected',
   KeyExportRequested = 'Key Export Requested',
