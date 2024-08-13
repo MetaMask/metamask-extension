@@ -42,10 +42,8 @@ function GenerateUIError() {
 
   return (
     <TestButton
-      name={t('developerOptionsSentryButtonGenerateUIError')}
-      description={t('developerOptionsSentryDescriptionGenerateUIError', [
-        <b>TestError</b>,
-      ])}
+      name="Generate UI Error"
+      description={(<>Generate an unhandled <b>TestError</b> in this window.</>)}
       onClick={handleClick}
       expectError
     />
@@ -61,11 +59,8 @@ function GenerateBackgroundError() {
 
   return (
     <TestButton
-      name={t('developerOptionsSentryButtonGenerateBackgroundError')}
-      description={t(
-        'developerOptionsSentryDescriptionGenerateBackgroundError',
-        [<b>TestError</b>],
-      )}
+      name="Generate Background Error"
+      description={(<>Generate an unhandled <b>TestError</b> in the service worker.</>)}
       onClick={handleClick}
       expectError
     />
@@ -108,10 +103,8 @@ function GenerateTrace() {
 
   return (
     <TestButton
-      name={t('developerOptionsSentryButtonGenerateTrace')}
-      description={t('developerOptionsSentryDescriptionGenerateTrace', [
-        <b>Developer Test</b>,
-      ])}
+      name="Generate Trace"
+      description={(<>Generate a <b>Developer Test</b> Sentry trace.</>)}
       onClick={handleClick}
     />
   );
