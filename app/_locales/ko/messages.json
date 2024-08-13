@@ -1452,9 +1452,6 @@
   "data": {
     "message": "데이터"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "사용자 데이터를 복구할 수 없습니다. 파일이 손상된 것 같습니다."
-  },
   "dataCollectionForMarketing": {
     "message": "마케팅을 위한 데이터 수집"
   },
@@ -4408,12 +4405,6 @@
   },
   "restore": {
     "message": "복구"
-  },
-  "restoreFailed": {
-    "message": "제공된 파일에서 데이터를 복구할 수 없습니다."
-  },
-  "restoreSuccessful": {
-    "message": "데이터가 성공적으로 복구되었습니다."
   },
   "restoreUserData": {
     "message": "사용자 데이터 복구"
