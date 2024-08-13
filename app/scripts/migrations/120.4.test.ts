@@ -164,7 +164,7 @@ describe('migration #120.4', () => {
   });
 
   describe('NetworkController', () => {
-    it('does nothing if CurrencyController state is not set', async () => {
+    it('does nothing if NetworkController state is not set', async () => {
       const oldState = {
         OtherController: {},
       };
