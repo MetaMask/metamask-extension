@@ -1,43 +1,46 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import punycode from 'punycode/punycode';
+import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { Confirmation, SignatureRequestType } from '../../types/confirm';
 import { currentConfirmationSelector } from '../../selectors';
+import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
 import { isSignatureTransactionType } from '../../utils';
 
 const useConfirmationOriginAlerts = (): Alert[] => {
   const t = useI18nContext();
 
-  const currentConfirmation = useSelector(
+  const currentConfirmation: Confirmation | undefined = useSelector(
     currentConfirmationSelector,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ) as Record<string, any>;
+  );
 
   return useMemo<Alert[]>((): Alert[] => {
-    if (
-      !currentConfirmation
-    ) {
+    if (!currentConfirmation) {
       return [];
     }
 
     const origin = isSignatureTransactionType(currentConfirmation)
-      ? currentConfirmation.msgParams.origin
-      : currentConfirmation.txParams.origin;
+      ? (currentConfirmation as SignatureRequestType).msgParams?.origin
+      : (currentConfirmation as TransactionMeta).origin;
 
-    // if (origin === punycode.toASCII(origin)) {
-    //   return [];
-    // }
+    if (isValidASCIIURL(origin)) {
+      return [];
+    }
 
     return [
       {
         key: 'originSpecialCharacterWarning',
-        reason: 'title',
+        reason: t('addressMismatch'),
         field: 'originSpecialCharacterWarning',
         severity: Severity.Warning,
-        message: t('networkUrlErrorWarning', [punycode.toASCII(origin)]),
+        message: t('addressMismatchWarning'),
+        alertDetails: [
+          t('addressMismatchOriginal', [origin]),
+          t('addressMismatchPunycode', [origin ? toPunycodeURL(origin) : '']),
+        ],
       },
     ];
   }, [currentConfirmation, t]);

@@ -344,6 +344,20 @@
   "addressCopied": {
     "message": "Address copied!"
   },
+  "addressMismatch": {
+    "message": "Site address mismatch"
+  },
+  "addressMismatchOriginal": {
+    "message": "Current URL: $1",
+    "description": "$1 replaced by origin URL in confirmation request"
+  },
+  "addressMismatchPunycode": {
+    "message": "Punycode version: $1",
+    "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addressMismatchWarning": {
+    "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue."
+  },
   "advanced": {
     "message": "Advanced"
   },

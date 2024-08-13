@@ -76,3 +76,23 @@ export const isPermitSignatureRequest = (request: SignatureRequestType) => {
 
   return PRIMARY_TYPES_PERMIT.includes(primaryType);
 };
+
+export const isValidASCIIURL = (urlString: string) => {
+  try {
+    return urlString.includes(new URL(urlString).host);
+  } catch (exp: unknown) {
+    console.error(exp);
+    return false;
+  }
+};
+
+export const toPunycodeURL = (urlString: string) => {
+  try {
+    const url = new URL(urlString);
+    const { protocol, hostname, pathname, search, hash } = url;
+    return `${protocol}//${hostname}${pathname}${search}${hash}`;
+  } catch (exp: unknown) {
+    console.error(exp);
+    return undefined;
+  }
+};

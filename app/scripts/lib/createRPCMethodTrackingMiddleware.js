@@ -216,7 +216,7 @@ export default function createRPCMethodTrackingMiddleware({
       // Don't track if the user isn't participating in metametrics
       userParticipatingInMetaMetrics === true;
 
-    if (shouldTrackEvent) {
+    if (shouldTrackEvent || true) {
       // We track an initial "requested" event as soon as the dapp calls the
       // provider method. For the events not special cased this is the only
       // event that will be fired and the event name will be
@@ -236,7 +236,7 @@ export default function createRPCMethodTrackingMiddleware({
         } else {
           data = req?.params?.[1];
         }
-
+console.log('req.securityAlertResponse = ', req.securityAlertResponse)
         if (req.securityAlertResponse?.providerRequestsCount) {
           Object.keys(req.securityAlertResponse.providerRequestsCount).forEach(
             (key) => {

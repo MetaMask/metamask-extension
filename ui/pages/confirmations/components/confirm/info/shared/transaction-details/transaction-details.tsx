@@ -2,6 +2,8 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { isValidAddress } from 'ethereumjs-util';
 import React from 'react';
 import { useSelector } from 'react-redux';
+
+import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -28,12 +30,14 @@ const OriginRow = () => {
   }
 
   return (
-    <ConfirmInfoRow
+    <ConfirmInfoAlertRow
+      alertKey="originSpecialCharacterWarning"
+      ownerId={currentConfirmation.id}
       label={t('requestFrom')}
       tooltip={t('requestFromTransactionDescription')}
     >
       <ConfirmInfoRowUrl url={origin} />
-    </ConfirmInfoRow>
+    </ConfirmInfoAlertRow>
   );
 };
 
