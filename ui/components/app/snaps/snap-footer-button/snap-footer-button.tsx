@@ -3,10 +3,8 @@ import { ButtonVariant, UserInputEventType } from '@metamask/snaps-sdk';
 import { Button, ButtonSize, IconSize } from '../../../component-library';
 import {
   AlignItems,
-  BorderColor,
   Display,
   FlexDirection,
-  IconColor,
 } from '../../../../helpers/constants/design-system';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { SnapIcon } from '../snap-icon';
@@ -50,11 +48,6 @@ export const SnapFooterButton: FunctionComponent<SnapFooterButtonProps> = ({
         alignItems: AlignItems.center,
         flexDirection: FlexDirection.Row,
       }}
-      borderColor={
-        isSnapAction
-          ? undefined
-          : (IconColor.iconDefault as unknown as BorderColor)
-      }
     >
       {isSnapAction && (
         <SnapIcon snapId={snapId} avatarSize={IconSize.Xs} marginRight={1} />
