@@ -10,6 +10,7 @@
     "url": "https://metamask.github.io/test-dapp/"
   },
   "appState": {
+    "buyView": {},
     "networkDropdownOpen": false,
     "importNftsModal": {
       "open": false
