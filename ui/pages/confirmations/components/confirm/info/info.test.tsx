@@ -7,6 +7,15 @@ import { unapprovedTypedSignMsgV3 } from '../../../../../../test/data/confirmati
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import Info from './info';
 
+jest.mock(
+  '../../../../../components/app/alert-system/contexts/alertMetricsContext',
+  () => ({
+    useAlertMetrics: jest.fn(() => ({
+      trackAlertMetrics: jest.fn(),
+    })),
+  }),
+);
+
 describe('Info', () => {
   it('renders info section for personal sign request', () => {
     const state = {
