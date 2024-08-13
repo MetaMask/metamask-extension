@@ -461,7 +461,11 @@ export default function ConfirmationPage({
   };
 
   const handleSnapDialogCancel =
-    templatedValues.onCancel ?? templatedValues.onSubmit ?? null;
+    templatedValues.onCancel ||
+    // /!\ Treat cancel as submit only if approval type is appropriate /!\
+    (pendingConfirmation?.type === ApprovalType.SnapDialogAlert
+      ? handleSubmit
+      : null);
 
   return (
     <div className="confirmation-page">
