@@ -3532,6 +3532,22 @@
         "webpack>events": true
       }
     },
+    "@welldone-software/why-did-you-render": {
+      "globals": {
+        "Element": true,
+        "console.group": true,
+        "console.groupCollapsed": true,
+        "console.groupEnd": true,
+        "console.log": true,
+        "console.warn": true,
+        "define": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "lodash": true,
+        "react": true
+      }
+    },
     "@zxing/browser": {
       "globals": {
         "HTMLElement": true,
