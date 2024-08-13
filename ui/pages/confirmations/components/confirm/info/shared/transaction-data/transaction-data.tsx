@@ -230,30 +230,6 @@ function ParamRow({
   );
 }
 
-function CopyDataButton({ transactionData }: { transactionData: string }) {
-  const t = useI18nContext();
-  const [copied, handleCopy] = useCopyToClipboard();
-
-  const handleClick = useCallback(() => {
-    handleCopy(transactionData);
-  }, [handleCopy, transactionData]);
-
-  return (
-    <Box paddingInline={2}>
-      <Tooltip position="right" title={copied ? t('copiedExclamation') : ''}>
-        <Button
-          onClick={handleClick}
-          variant={ButtonVariant.Link}
-          size={ButtonSize.Lg}
-          startIconName={copied ? IconName.CopySuccess : IconName.Copy}
-        >
-          {t('copyRawTransactionData')}
-        </Button>
-      </Tooltip>
-    </Box>
-  );
-}
-
 function UniswapPath({ pathPools }: { pathPools: UniswapPathPool[] }) {
   return (
     <Box
