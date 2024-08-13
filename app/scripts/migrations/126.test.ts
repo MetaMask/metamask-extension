@@ -327,7 +327,13 @@ describe('migration #126', () => {
 
     const newStorage = await migrate(oldStorage);
     expect(newStorage.data).toStrictEqual({
-      ...baseData(),
+      NetworkController: {
+        selectedNetworkClientId: 'mainnet',
+        networkConfigurations: {},
+      },
+      SelectedNetworkController: {
+        domains: {},
+      },
       PermissionController: {
         subjects: {
           'test.com': {
