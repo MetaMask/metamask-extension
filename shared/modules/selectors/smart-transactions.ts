@@ -50,7 +50,8 @@ type SmartTransactionsMetaMaskState = {
     smartTransactionsState: {
       liveness: boolean;
     };
-    networkConfigurations?: {
+    selectedNetworkClientId: string;
+    networkConfigurations: {
       [key: string]: {
         chainId: Hex;
         rpcUrl: string;
