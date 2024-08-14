@@ -760,6 +760,23 @@ export default class Routes extends Component {
             onAutoHideToast={onAutoHideToast}
           />
         ) : null}
+
+        {process.env.CHAIN_PERMISSIONS ?
+          <Toast
+            key="switched-network-toast"
+            startAdornment={
+              <AvatarNetwork
+                size={AvatarAccountSize.Md}
+                borderColor={BorderColor.transparent}
+                src=""
+                name="hhhh"
+              />
+            }
+            text="app.uniswap.org has been given access to Optimism."
+            actionText={this.context.t('editPermissions')}
+            onActionClick={() => console.log('Yo')}
+            onClose={() => console.log('lo')}
+          /> : null}
       </ToastContainer>
     );
   }
