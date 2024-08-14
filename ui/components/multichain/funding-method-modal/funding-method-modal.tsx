@@ -55,6 +55,7 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
       isMetaMetricsEnabled,
       isMarketingEnabled,
       accountAddress,
+      'transfer'
     );
     global.platform.openTab({ url });
   }, [metaMetricsId, isMetaMetricsEnabled, isMarketingEnabled]);

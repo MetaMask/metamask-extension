@@ -5,6 +5,7 @@ export function getPortfolioUrl(
   metricsEnabled = false,
   marketingEnabled = false,
   accountAddress,
+  tab,
 ) {
   const baseUrl = process.env.PORTFOLIO_URL || '';
   const url = new URL(endpoint, baseUrl);
@@ -18,6 +19,10 @@ export function getPortfolioUrl(
 
   if (accountAddress) {
     url.searchParams.append('accountAddress', accountAddress);
+  }
+
+  if (tab) {
+    url.searchParams.append('tab', tab);
   }
 
   return url.href;
