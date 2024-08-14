@@ -188,18 +188,30 @@ describe('Import flow @no-mmi', function () {
         await driver.clickElement('[data-testid="account-list-menu-details"');
         await driver.findVisibleElement('.qr-code__wrapper');
 
-        // Shows the correct account address
-        await driver.findElement({
-          xpath: `//p[contains(@class, 'qr-code__address-segments') and contains(., '${testAddress.substring(
-            0,
-            6,
-          )}')]/p[contains(@class, 'qr-code__address-inner-segment') and contains(., '${testAddress.substring(
-            6,
-            -4,
-          )}')]/following-sibling::text()[contains(., '${testAddress.slice(
-            -4,
-          )}')]`,
-        });
+        // Extract address segments from the DOM
+        const outerSegment = await driver.findElement(
+          '.qr-code__address-segments',
+        );
+        const innerSegment = await driver.findElement(
+          '.qr-code__address-inner-segment',
+        );
+
+        // Get the text content of each segment
+        const outerSegmentText = await outerSegment.getText();
+        const innerSegmentText = await innerSegment.getText();
+
+        // Reassemble the full address
+        const displayedAddress = `${outerSegmentText.slice(
+          0,
+          6,
+        )}${innerSegmentText}${outerSegmentText.slice(6)}`;
+
+        // Assert that the displayed address matches the testAddress
+        assert.strictEqual(
+          displayedAddress.toLowerCase(),
+          testAddress.toLowerCase(),
+          'The displayed address does not match the test address',
+        );
       },
     );
   });
