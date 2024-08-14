@@ -1,17 +1,8 @@
 import {
-  constructPermission,
-  PermissionType,
-  SubjectType,
-} from '@metamask/permission-controller';
-import {
   caveatSpecifications as snapsCaveatsSpecifications,
   endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications,
 } from '@metamask/snaps-rpc-methods';
-import { isValidHexAddress } from '@metamask/utils';
-import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
+import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import {
   Caip25CaveatFactoryFn,
   Caip25CaveatType,
@@ -44,15 +35,8 @@ export const CaveatFactories = Object.freeze({
 /**
  * Gets the specifications for all caveats that will be recognized by the
  * PermissionController.
- *
- * @param {{
- *   getInternalAccounts: () => Record<string, import('@metamask/keyring-api').InternalAccount>,
- * }} options - Options bag.
  */
-export const getCaveatSpecifications = ({
-  getInternalAccounts,
-  findNetworkClientIdByChainId,
-}) => {
+export const getCaveatSpecifications = () => {
   return {
     [Caip25CaveatType]: {
       type: Caip25CaveatType,
@@ -80,9 +64,7 @@ export const getCaveatSpecifications = ({
  * current MetaMask instance.
  */
 export const getPermissionSpecifications = ({
-  getAllAccounts,
   getInternalAccounts,
-  captureKeyringTypesWithMissingIdentities,
   findNetworkClientIdByChainId,
 }) => {
   return {

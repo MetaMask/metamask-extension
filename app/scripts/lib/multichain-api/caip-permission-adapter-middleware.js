@@ -12,10 +12,6 @@ export async function CaipPermissionAdapterMiddleware(
   end,
   hooks,
 ) {
-  if (!process.env.BARAD_DUR) {
-    return next();
-  }
-
   const { networkClientId, method } = request;
 
   let caveat;
