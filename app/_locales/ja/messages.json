@@ -513,12 +513,6 @@
   "allow": {
     "message": "許可する"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "MetaMaskによる自動検出でのNFTの検出と表示を許可してください。これにより、次のことが可能になります:"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "MetaMaskによる自動検出でのトークンの検出と表示を許可してください。これにより、次のことが可能になります:"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "これにより、MMIが$1に接続してアカウントをインポートできるようになります。"
   },
@@ -1633,12 +1627,6 @@
   "displayNftMediaDescription": {
     "message": "NFTのメディアとデータを表示した場合、IPアドレスがOpenSeaをはじめとするサードパーティに公開されます。その結果、攻撃者がユーザーのIPアドレスとイーサリアムアドレスを関連付けられるようになる可能性があります。NFTの自動検出はこの設定に依存しており、この設定を無効にすると利用できなくなります。"
   },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "NFTをすぐに使用開始"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "トークンをすぐに使用開始"
-  },
   "doNotShare": {
     "message": "これは誰にも教えないでください"
   },
@@ -1770,9 +1758,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "高速化用のガス代を編集"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "デジタル資産を簡単に運用"
-  },
   "enable": {
     "message": "有効にする"
   },
@@ -1782,21 +1767,12 @@
   "enableFromSettings": {
     "message": " 設定で有効にします。"
   },
-  "enableNftAutoDetection": {
-    "message": "NFTの自動検出を有効にする"
-  },
   "enableSnap": {
     "message": "有効にする"
   },
   "enableToken": {
     "message": "$1を有効にする",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "トークンの自動検出を有効にする"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "基本機能トグルがオンになっているユーザーは、MetaMask拡張機能 v12.3.0で、この機能が自動的にオンになります。"
   },
   "enabled": {
     "message": "有効"
@@ -2309,12 +2285,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "NFTにすぐにアクセス"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "トークンにすぐにアクセス"
   },
   "import": {
     "message": "インポート",
@@ -3279,9 +3249,6 @@
   },
   "notEnoughGas": {
     "message": "ガスが不足しています"
-  },
-  "notRightNow": {
-    "message": "また後で"
   },
   "note": {
     "message": "備考"

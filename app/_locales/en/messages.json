@@ -1791,9 +1791,6 @@
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
-  "enableNftAutoDetection": {
-    "message": "Enable NFT autodetection"
-  },
   "enableSnap": {
     "message": "Enable"
   },

@@ -513,12 +513,6 @@
   "allow": {
     "message": "Genehmigen"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "Erlauben Sie MetaMask, Ihre NFTs mit automatischer Erkennung zu identifizieren und anzuzeigen. Das können Sie tun:"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "Erlauben Sie MetaMask, Ihre Token mit automatischer Erkennung zu entdecken und anzuzeigen. Das können Sie tun:"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "Dadurch kann MMI sich zum Importieren Ihrer Konten mit $1 verbinden."
   },
@@ -1633,12 +1627,6 @@
   "displayNftMediaDescription": {
     "message": "Durch die Anzeige von NFT-Medien und -Daten wird Ihre IP-Adresse an OpenSea oder andere Dritte weitergegeben. Dies kann es Angreifern ermöglichen, Ihre IP-Adresse mit Ihrer Ethereum-Adresse in Verbindung zu bringen. Die automatische NFT-Erkennung basiert auf dieser Einstellung und ist nicht verfügbar, wenn diese ausgeschaltet ist."
   },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "Verwenden Sie Ihre NFTs sofort"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "Verwenden Sie Ihre Tokens sofort"
-  },
   "doNotShare": {
     "message": "Teilen Sie dies mit niemanden"
   },
@@ -1770,9 +1758,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Beschleunigung der Gasgebühr bearbeiten"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "Mühelose Navigation durch Ihre digitalen Assets"
-  },
   "enable": {
     "message": "Aktivieren"
   },
@@ -1782,21 +1767,12 @@
   "enableFromSettings": {
     "message": " In den Einstellungen aktivieren."
   },
-  "enableNftAutoDetection": {
-    "message": "Automatische NFT-Erkennung aktivieren"
-  },
   "enableSnap": {
     "message": "Aktivieren"
   },
   "enableToken": {
     "message": "$1 aktivieren",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "Automatische Token-Erkennung aktivieren"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "Bei Nutzern, deren Basisfunktionalität aktiviert ist, wird diese automatisch in der Metamask-Erweiterung v12.3.0 aktiviert"
   },
   "enabled": {
     "message": "Aktiviert"
@@ -2309,12 +2285,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "Sofortiger Zugriff auf Ihre NFTs"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "Sofortiger Zugriff auf Ihre Tokens"
   },
   "import": {
     "message": "Importieren",
@@ -3279,9 +3249,6 @@
   },
   "notEnoughGas": {
     "message": "Nicht genügend Gas"
-  },
-  "notRightNow": {
-    "message": "Im Moment nicht"
   },
   "note": {
     "message": "Notiz"

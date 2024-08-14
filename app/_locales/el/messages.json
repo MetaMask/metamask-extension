@@ -513,12 +513,6 @@
   "allow": {
     "message": "Να επιτρέπεται"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "Επιτρέψτε στο MetaMask να ανιχνεύει και να εμφανίζει τα NFT σας με αυτόματο εντοπισμό. Θα μπορείτε να:"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "Επιτρέψτε στο MetaMask να ανιχνεύει και να εμφανίζει τα tokens σας με αυτόματο εντοπισμό. Θα μπορείτε να:"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "Αυτό θα επιτρέψει στο MMI να συνδεθεί στο $1 για να εισαγάγει τους λογαριασμούς σας."
   },
@@ -1633,12 +1627,6 @@
   "displayNftMediaDescription": {
     "message": "Η προβολή μέσων και δεδομένων NFT εκθέτει τη διεύθυνση IP σας στo OpenSea ή σε άλλους τρίτους. Αυτό μπορεί να επιτρέψει στους εισβολείς να συσχετίσουν τη διεύθυνση IP σας με τη διεύθυνση σας στο Ethereum. Η αυτόματη ανίχνευση NFT βασίζεται σε αυτή τη ρύθμιση και δεν θα είναι διαθέσιμη όταν είναι απενεργοποιημένη."
   },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "Ενημερωθείτε για τη χρήση των NFT σας"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "Ενημερωθείτε για τη χρήση των tokens σας"
-  },
   "doNotShare": {
     "message": "Μην το μοιραστείτε με κανέναν"
   },
@@ -1770,9 +1758,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Επεξεργασία τελών επίσπευσης συναλλαγής"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "Εύκολη περιήγηση στα ψηφιακά σας περιουσιακά στοιχεία"
-  },
   "enable": {
     "message": "Ενεργοποίηση"
   },
@@ -1782,21 +1767,12 @@
   "enableFromSettings": {
     "message": "Ενεργοποιήστε το από τις Ρυθμίσεις."
   },
-  "enableNftAutoDetection": {
-    "message": "Ενεργοποίηση της αυτόματης ανίχνευσης NFT"
-  },
   "enableSnap": {
     "message": "Ενεργοποίηση"
   },
   "enableToken": {
     "message": "ενεργοποίηση $1",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "Ενεργοποίηση της αυτόματης ανίχνευσης των tokens"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "Οι χρήστες με ενεργοποιημένη την επιλογή Βασικές Λειτουργίες θα την έχουν ενεργοποιήσει αυτόματα στην επέκταση του Metamask v12.3.0"
   },
   "enabled": {
     "message": "Ενεργοποιημένο"
@@ -2309,12 +2285,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "Άμεση πρόσβαση στα NFT σας"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "Άμεση πρόσβαση στα tokens σας"
   },
   "import": {
     "message": "Εισαγωγή",
@@ -3279,9 +3249,6 @@
   },
   "notEnoughGas": {
     "message": "Δεν υπάρχει αρκετό τέλος συναλλαγής"
-  },
-  "notRightNow": {
-    "message": "Όχι τώρα"
   },
   "note": {
     "message": "Σημείωση"
