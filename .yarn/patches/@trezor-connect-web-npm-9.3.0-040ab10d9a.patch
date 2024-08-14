@@ -1,0 +1,33 @@
+diff --git a/lib/impl/core-in-iframe.js b/lib/impl/core-in-iframe.js
+index c47cf3bff860d6b1855341c00b80fc6c40f9d6d5..275eb0f312ff396819fa406c154a3562842db49d 100644
+--- a/lib/impl/core-in-iframe.js
++++ b/lib/impl/core-in-iframe.js
+@@ -116,7 +116,9 @@ class CoreInIframe {
+         this._log.enabled = !!this._settings.debug;
+         window.addEventListener('message', this.boundHandleMessage);
+         window.addEventListener('unload', this.boundDispose);
+-        await iframe.init(this._settings);
++        const modifiedSettings = Object.assign({}, this.settings);
++        modifiedSettings.env = 'webextension';
++        await iframe.init(modifiedSettings);
+         if (this._settings.sharedLogger !== false) {
+             iframe.initIframeLogger();
+         }
+diff --git a/lib/popup/index.js b/lib/popup/index.js
+index 9b13c370a5ac8b4e4fc0315ed40cdf615d0bb0cb..4dbd97fc28df49beb73379451974ec48a8a42ea7 100644
+--- a/lib/popup/index.js
++++ b/lib/popup/index.js
+@@ -229,10 +229,12 @@ class PopupManager extends events_1.default {
+         }
+         else if (message.type === events_2.POPUP.LOADED) {
+             this.handleMessage(message);
++            const modifiedSettings = Object.assign({}, this.settings);
++            modifiedSettings.env = 'webextension';
+             this.channel.postMessage({
+                 type: events_2.POPUP.INIT,
+                 payload: {
+-                    settings: this.settings,
++                    settings: modifiedSettings,
+                     useCore: true,
+                 },
+             });
