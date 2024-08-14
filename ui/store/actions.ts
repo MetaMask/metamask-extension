@@ -10,7 +10,7 @@ import { capitalize, isEqual } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import { Hex, Json } from '@metamask/utils';
+import type { Hex, Json } from '@metamask/utils';
 import {
   AssetsContractController,
   BalanceMap,
@@ -1239,7 +1239,9 @@ export function removeSnap(
   };
 }
 
-export async function handleSnapRequest<Params>(args: {
+export async function handleSnapRequest<
+  Params extends JsonRpcParams = JsonRpcParams,
+>(args: {
   snapId: string;
   origin: string;
   handler: string;
