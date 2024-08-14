@@ -33,7 +33,7 @@ export const ConnectionPermission = Object.freeze({
 // permissions to show or hide on certain Snap-related flows (Install, Update, etc.)
 export const PermissionWeightThreshold = Object.freeze({
   snapInstall: 3 as const,
-  snapUpdateApprovedPermissions: 2 as const,
+  snapUpdateApprovedPermissions: 3 as const,
 });
 
 // Specify minimum number of permissions to be shown, when abstraction is applied

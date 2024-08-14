@@ -796,7 +796,7 @@ export const getFilteredSnapPermissions = (
   weightThreshold = Infinity,
   minPermissionCount = 3,
 ) => {
-  let filteredPermissions = weightedPermissions.filter(
+  const filteredPermissions = weightedPermissions.filter(
     (permission) => permission.weight <= weightThreshold,
   );
 
@@ -807,7 +807,7 @@ export const getFilteredSnapPermissions = (
       (permission) => permission.weight > weightThreshold,
     );
     // Add permissions until desired count is reached
-    filteredPermissions = filteredPermissions.concat(
+    return filteredPermissions.concat(
       remainingPermissions.slice(
         0,
         minPermissionCount - filteredPermissions.length,
