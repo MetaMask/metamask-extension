@@ -150,13 +150,13 @@ exports[`AssetPage should render a native asset 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/scan-barcode.svg');"
+              style="mask-image: url('./images/icons/diagram.svg');"
             />
           </div>
           <p
             class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
-            Receive
+            Portfolio
           </p>
         </button>
       </div>
