@@ -35,7 +35,9 @@ function transformState(state: Record<string, unknown>) {
     state.PreferencesController.useExternalServices === true
   ) {
     state.PreferencesController.useNftDetection = true;
-    // todo openseaenabled too probably
+
+    // 'Display NFT media' must be enabled when NFT detection is on
+    state.PreferencesController.openSeaEnabled = true;
   }
 
   return state;

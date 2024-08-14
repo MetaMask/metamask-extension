@@ -42,6 +42,7 @@ describe(`migration #${version}`, () => {
       PreferencesController: {
         useExternalServices: true,
         useNftDetection: true,
+        openSeaEnabled: true,
       },
     });
   });
