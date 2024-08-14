@@ -709,7 +709,7 @@ export enum MetaMetricsEventName {
   NotificationReceived = 'Notification Received',
   NotificationsSettingsUpdated = 'Notifications Settings Updated',
   NotificationClicked = 'Notification Clicked',
-  NotificationsEnablingFlowHandled = 'Notifications Enabling Flow Handled',
+  NotificationMenuOpened = 'Notification Menu Opened',
 
   NftAutoDetectionEnableModal = 'Nft Autodetection Enabled from modal',
   NftAutoDetectionDisableModal = 'Nft Autodetection Disabled from modal',
@@ -757,7 +757,6 @@ export enum MetaMetricsEventCategory {
   Messages = 'Messages',
   Navigation = 'Navigation',
   Network = 'Network',
-  EnableNotifications = 'Enable Notifications',
   Onboarding = 'Onboarding',
   NotificationInteraction = 'Notification Interaction',
   NotificationSettings = 'Notification Settings',
