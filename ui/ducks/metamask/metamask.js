@@ -294,6 +294,7 @@ export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
 
 // Note: The network controller does not store built in networks in
 // `state.networkConfigurations`, so we represent the equivalent data here.
+// They will be in state in a future version, at which point this can be removed.
 const builtInNetworkConfigurations = {
   [NETWORK_TYPES.SEPOLIA]: {
     type: NETWORK_TYPES.SEPOLIA,
