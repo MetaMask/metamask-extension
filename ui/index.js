@@ -1,4 +1,4 @@
-import '../wdyr'; //
+import '../development/wdyr';
 import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
 import { clone } from 'lodash';
