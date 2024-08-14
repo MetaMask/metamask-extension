@@ -291,11 +291,7 @@ describe('PPOMMiddleware', () => {
     const nextMock = jest.fn();
 
     await middlewareFunction(
-      {
-        ...REQUEST_MOCK,
-        method: 'eth_sendTransaction',
-        securityAlertResponse: undefined,
-      },
+      { ...REQUEST_MOCK, method: 'eth_sendTransaction' },
       { ...JsonRpcResponseStruct.TYPE },
       nextMock,
     );

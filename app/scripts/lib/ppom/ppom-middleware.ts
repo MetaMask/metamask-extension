@@ -31,7 +31,7 @@ const CONFIRMATION_METHODS = Object.freeze([
 export type PPOMMiddlewareRequest<
   Params extends JsonRpcParams = JsonRpcParams,
 > = Required<JsonRpcRequest<Params>> & {
-  securityAlertResponse: SecurityAlertResponse | undefined;
+  securityAlertResponse?: SecurityAlertResponse | undefined;
 };
 
 /**
