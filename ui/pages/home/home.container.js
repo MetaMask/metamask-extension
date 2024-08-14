@@ -52,9 +52,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
 import {
-  getIsShowTokenAutodetectModal,
   getIsSmartTransactionsOptInModalAvailable,
-  getIsShowNftAutodetectModal,
 } from '../../../shared/modules/selectors';
 
 import {
@@ -74,9 +72,6 @@ import {
   setActiveNetwork,
   setNewTokensImportedError,
   setDataCollectionForMarketing,
-  setShowTokenAutodetectModal,
-  setShowTokenAutodetectModalOnUpgrade,
-  setShowNftAutodetectModal,
   setEditedNetwork,
 } from '../../store/actions';
 import {
@@ -233,8 +228,6 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IF
     isSmartTransactionsOptInModalAvailable:
       getIsSmartTransactionsOptInModalAvailable(state),
-    isShowTokenAutodetectModal: getIsShowTokenAutodetectModal(state),
-    isShowNftAutodetectModal: getIsShowNftAutodetectModal(state),
   };
 };
 
@@ -287,15 +280,6 @@ const mapDispatchToProps = (dispatch) => {
     },
     setActiveNetwork: (networkConfigurationId) => {
       dispatch(setActiveNetwork(networkConfigurationId));
-    },
-    setTokenAutodetectModal: (val) => {
-      dispatch(setShowTokenAutodetectModal(val));
-    },
-    setShowTokenAutodetectModalOnUpgrade: (val) => {
-      dispatch(setShowTokenAutodetectModalOnUpgrade(val));
-    },
-    setNftAutodetectModal: (val) => {
-      dispatch(setShowNftAutodetectModal(val));
     },
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     setWaitForConfirmDeepLinkDialog: (wait) =>

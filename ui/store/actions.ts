@@ -3119,10 +3119,6 @@ export function setSmartTransactionsOptInStatus(
   };
 }
 
-export function setShowTokenAutodetectModal(value: boolean) {
-  return setPreference('showTokenAutodetectModal', value);
-}
-
 export function setAutoLockTimeLimit(value: number | null) {
   return setPreference('autoLockTimeLimit', value);
 }
@@ -4096,27 +4092,6 @@ export function setFirstTimeFlowType(
     } catch (err) {
       dispatch(displayWarning(err));
     }
-  };
-}
-
-export function setShowTokenAutodetectModalOnUpgrade(
-  val: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.setShowTokenAutodetectModalOnUpgrade`);
-    callBackgroundMethod(
-      'setShowTokenAutodetectModalOnUpgrade',
-      [val],
-      (err) => {
-        if (err) {
-          dispatch(displayWarning(err));
-        }
-      },
-    );
-    dispatch({
-      type: actionConstants.SET_SHOW_TOKEN_AUTO_DETECT_MODAL_UPGRADE,
-      value: val,
-    });
   };
 }
 
@@ -5620,10 +5595,6 @@ export function setIsProfileSyncingEnabled(
       dispatch(hideLoadingIndication());
     }
   };
-}
-
-export function setShowNftAutodetectModal(value: boolean) {
-  return setPreference('showNftAutodetectModal', value);
 }
 
 export function setConfirmationAdvancedDetailsOpen(value: boolean) {
