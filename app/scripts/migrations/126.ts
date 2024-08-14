@@ -213,6 +213,7 @@ function transformState(state: Record<string, unknown>) {
 
     permissions[Caip25EndowmentPermissionName] = {
       ...basePermission,
+      parentCapability: Caip25EndowmentPermissionName,
       caveats: [
         {
           type: Caip25CaveatType,
