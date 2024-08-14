@@ -52,7 +52,7 @@ describe('Change assets', function () {
 
         // Choose an NFT instead
         await driver.clickElement({ css: 'button', text: 'NFTs' });
-        await driver.clickElement('[data-testid="nft-default-image"]');
+        await driver.clickElement('[data-testid="nft-image"]');
 
         // Validate that an NFT is chosen in the AssetAmountPicker
         await driver.waitForSelector({
@@ -135,7 +135,7 @@ describe('Change assets', function () {
 
         // Choose an NFT instead
         await driver.clickElement({ css: 'button', text: 'NFTs' });
-        await driver.clickElement('[data-testid="nft-default-image"]');
+        await driver.clickElement('[data-testid="nft-image"]');
 
         // Validate that an NFT is chosen in the AssetAmountPicker
         await driver.waitForSelector({
@@ -181,7 +181,7 @@ describe('Change assets', function () {
 
         // Choose the nft
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
-        await driver.clickElement('[data-testid="nft-default-image"]');
+        await driver.clickElement('[data-testid="nft-image"]');
         await driver.clickElement('[data-testid="nft-send-button"]');
 
         // Chose a recipient
@@ -286,7 +286,7 @@ describe('Change assets', function () {
 
         // Choose the nft
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
-        await driver.clickElement('[data-testid="nft-default-image"]');
+        await driver.clickElement('[data-testid="nft-image"]');
         await driver.clickElement('[data-testid="nft-send-button"]');
 
         // Chose a recipient
