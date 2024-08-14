@@ -825,6 +825,8 @@ export enum MetaMetricsEventLocation {
   TokenDetection = 'token_detection',
   TokenMenu = 'token_menu',
   Transaction = 'transaction',
+  Confirmation = 'confirmation',
+  AlertFrictionModal = 'alert_friction_modal',
 }
 
 export enum MetaMetricsEventUiCustomization {

@@ -27,6 +27,7 @@ import {
 import { confirmSelector } from '../../../selectors';
 import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
 import { getConfirmationSender } from '../utils';
+import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 
 const ConfirmButton = ({
   alertOwnerId = '',
@@ -37,7 +38,7 @@ const ConfirmButton = ({
   alertOwnerId?: string;
   disabled: boolean;
   onSubmit: () => void;
-  onCancel: () => void;
+  onCancel: ({ location }: { location: MetaMetricsEventLocation }) => void;
 }) => {
   const t = useI18nContext();
 
@@ -112,18 +113,21 @@ const Footer = () => {
     return false;
   });
 
-  const onCancel = useCallback(() => {
-    if (!currentConfirmation) {
-      return;
-    }
+  const onCancel = useCallback(
+    ({ location }: { location?: MetaMetricsEventLocation }) => {
+      if (!currentConfirmation) {
+        return;
+      }
 
-    dispatch(
-      rejectPendingApproval(
-        currentConfirmation.id,
-        serializeError(ethErrors.provider.userRejectedRequest()),
-      ),
-    );
-  }, [currentConfirmation]);
+      const error = ethErrors.provider.userRejectedRequest();
+      error.data = { location };
+
+      dispatch(
+        rejectPendingApproval(currentConfirmation.id, serializeError(error)),
+      );
+    },
+    [currentConfirmation],
+  );
 
   const onSubmit = useCallback(() => {
     if (!currentConfirmation) {
@@ -153,12 +157,16 @@ const Footer = () => {
     }
   }, [currentConfirmation, customNonceValue]);
 
+  const onFooterCancel = useCallback(() => {
+    onCancel({ location: MetaMetricsEventLocation.Confirmation });
+  }, [currentConfirmation]);
+
   return (
     <PageFooter className="confirm-footer_page-footer">
       <Button
         block
         data-testid="confirm-footer-cancel-button"
-        onClick={onCancel}
+        onClick={onFooterCancel}
         size={ButtonSize.Lg}
         variant={ButtonVariant.Secondary}
       >

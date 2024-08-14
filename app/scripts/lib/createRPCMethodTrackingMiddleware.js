@@ -345,6 +345,7 @@ export default function createRPCMethodTrackingMiddleware({
       let event;
       if (res.error?.code === errorCodes.provider.userRejectedRequest) {
         event = eventType.REJECTED;
+        eventProperties.location = res.error.data?.location;
       } else if (
         res.error?.code === errorCodes.rpc.internal &&
         res.error?.message === 'Request rejected by user or snap.'
