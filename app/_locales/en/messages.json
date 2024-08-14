@@ -253,7 +253,7 @@
     "message": "You are adding a new RPC provider for Ethereum Mainnet"
   },
   "addEthereumWatchOnlyAccount": {
-    "message": "Watch Ethereum account (Beta)"
+    "message": "Watch an Ethereum account (Beta)"
   },
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"

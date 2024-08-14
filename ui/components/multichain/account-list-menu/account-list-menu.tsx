@@ -364,19 +364,6 @@ export const AccountListMenu = ({
                 {t('addNewAccount')}
               </ButtonLink>
             </Box>
-            {isAddWatchEthereumAccountEnabled && (
-              <Box marginTop={4}>
-                <ButtonLink
-                  disabled={!isAddWatchEthereumAccountEnabled}
-                  size={ButtonLinkSize.Sm}
-                  startIconName={IconName.Add}
-                  onClick={handleAddWatchAccount}
-                  data-testid="multichain-account-menu-popover-add-watch-only-account"
-                >
-                  {t('addEthereumWatchOnlyAccount')}
-                </ButtonLink>
-              </Box>
-            )}
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
               bitcoinSupportEnabled && (
@@ -537,6 +524,19 @@ export const AccountListMenu = ({
               </Box>
               ///: END:ONLY_INCLUDE_IF
             }
+            {isAddWatchEthereumAccountEnabled && (
+              <Box marginTop={4}>
+                <ButtonLink
+                  disabled={!isAddWatchEthereumAccountEnabled}
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Eye}
+                  onClick={handleAddWatchAccount}
+                  data-testid="multichain-account-menu-popover-add-watch-only-account"
+                >
+                  {t('addEthereumWatchOnlyAccount')}
+                </ButtonLink>
+              </Box>
+            )}
           </Box>
         ) : null}
         {actionMode === ACTION_MODES.LIST ? (
