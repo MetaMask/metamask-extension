@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.0.4]
+### Uncategorized
+- Version v12.0.3 RC ([#26416](https://github.com/MetaMask/metamask-extension/pull/26416))
+- fix: V12.0.3/cherry pick notifications events ([#26419](https://github.com/MetaMask/metamask-extension/pull/26419))
+- fix: notifications use better events ([#26410](https://github.com/MetaMask/metamask-extension/pull/26410))
+- refactor: fix event names used to track notifications ([#25521](https://github.com/MetaMask/metamask-extension/pull/25521))
+- Version v12.0.3
+
 ## [12.0.3]
 
 ## [12.0.2]
@@ -4909,7 +4917,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.0.3...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.0.4...HEAD
+[12.0.4]: https://github.com/MetaMask/metamask-extension/compare/v12.0.3...v12.0.4
 [12.0.3]: https://github.com/MetaMask/metamask-extension/compare/v12.0.2...v12.0.3
 [12.0.2]: https://github.com/MetaMask/metamask-extension/compare/v12.0.1...v12.0.2
 [12.0.1]: https://github.com/MetaMask/metamask-extension/compare/v12.0.0...v12.0.1
