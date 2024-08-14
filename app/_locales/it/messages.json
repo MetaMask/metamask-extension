@@ -42,7 +42,7 @@
     "message": "Portafoglio HW basato su QR"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave (in arrivo)"
+    "message": "Ngrave Zero"
   },
   "SIWEAddressInvalid": {
     "message": "L'indirizzo nella richiesta di accesso non corrisponde all'indirizzo dell'account che stai utilizzando per accedere."
@@ -632,9 +632,6 @@
   },
   "darkTheme": {
     "message": "Scuro"
-  },
-  "dataBackupSeemsCorrupt": {
-    "message": "Impossibile ripristinare i tuoi dati. Il file sembra essere corrotto."
   },
   "decimal": {
     "message": "Precisione Decimali"

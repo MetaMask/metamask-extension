@@ -28,54 +28,6 @@ import {
 
 describe('Transaction Selectors', () => {
   describe('unapprovedMessagesSelector', () => {
-    it('returns eth sign msg from unapprovedMsgs', () => {
-      const msg = {
-        id: 1,
-        msgParams: {
-          from: '0xAddress',
-          data: '0xData',
-          origin: 'origin',
-        },
-        time: 1,
-        status: TransactionStatus.unapproved,
-        type: 'eth_sign',
-      };
-
-      const state = {
-        metamask: {
-          unapprovedMsgs: {
-            1: msg,
-          },
-          providerConfig: {
-            chainId: '0x5',
-          },
-          internalAccounts: {
-            accounts: {
-              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-                address: '0xAddress',
-                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-                metadata: {
-                  name: 'Test Account',
-                  keyring: {
-                    type: 'HD Key Tree',
-                  },
-                },
-                options: {},
-                methods: ETH_EOA_METHODS,
-                type: EthAccountType.Eoa,
-              },
-            },
-            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-          },
-        },
-      };
-
-      const msgSelector = unapprovedMessagesSelector(state);
-
-      expect(Array.isArray(msgSelector)).toStrictEqual(true);
-      expect(msgSelector).toStrictEqual([msg]);
-    });
-
     it('returns personal sign from unapprovedPersonalMsgsSelector', () => {
       const msg = {
         id: 1,
@@ -775,7 +727,6 @@ describe('Transaction Selectors', () => {
     it.each([
       [ApprovalType.EthDecrypt],
       [ApprovalType.EthGetEncryptionPublicKey],
-      [ApprovalType.EthSign],
       [ApprovalType.EthSignTypedData],
       [ApprovalType.PersonalSign],
     ])(

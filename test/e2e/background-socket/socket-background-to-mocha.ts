@@ -1,4 +1,5 @@
 import log from 'loglevel';
+import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { MessageType, WindowProperties } from './types';
 
 /**
@@ -86,10 +87,7 @@ class SocketBackgroundToMocha {
 
   // This function exists to support both MV2 and MV3
   private async queryTabs(queryInfo: object): Promise<chrome.tabs.Tab[]> {
-    if (
-      process.env.ENABLE_MV3 === 'true' ||
-      process.env.ENABLE_MV3 === undefined
-    ) {
+    if (isManifestV3) {
       // With MV3, chrome.tabs.query has an await form
       return await chrome.tabs.query(queryInfo);
     }
