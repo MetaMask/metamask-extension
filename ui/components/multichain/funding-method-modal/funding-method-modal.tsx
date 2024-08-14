@@ -49,7 +49,7 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
 
   const handleTransferCryptoClick = useCallback(() => {
     const url = getPortfolioUrl(
-      'transfers',
+      'transfer',
       'ext_funding_method_modal',
       metaMetricsId,
       isMetaMetricsEnabled,
