@@ -153,12 +153,13 @@ export function validateAddEthereumChainParams(
   };
 
   const firstValidRPCUrl = rpcUrls.find(
-    (rpcUrl) => typeof rpcUrl === 'string' && isLocalhostOrHttps(rpcUrl),
+    (rpcUrl): rpcUrl is string =>
+      typeof rpcUrl === 'string' && isLocalhostOrHttps(rpcUrl),
   );
   const firstValidBlockExplorerUrl =
     blockExplorerUrls !== null && Array.isArray(blockExplorerUrls)
       ? blockExplorerUrls.find(
-          (blockExplorerUrl) =>
+          (blockExplorerUrl): blockExplorerUrl is string =>
             typeof blockExplorerUrl === 'string' &&
             isLocalhostOrHttps(blockExplorerUrl),
         )
