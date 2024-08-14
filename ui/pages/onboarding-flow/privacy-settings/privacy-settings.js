@@ -243,6 +243,16 @@ export default function PrivacySettings() {
       );
     } else {
       profileSyncingProps.setIsProfileSyncingEnabled(true);
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
+        properties: {
+          settings_group: 'advanced',
+          settings_type: 'profile_syncing',
+          old_value: false,
+          new_value: true,
+        },
+      });
     }
   };
 
