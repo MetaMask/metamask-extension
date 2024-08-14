@@ -171,12 +171,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
         ) : null
         ///: END:ONLY_INCLUDE_IF
       }
-      {showReceiveModal && (
-        <ReceiveModal
-          address={selectedAccount?.address}
-          onClose={() => setShowReceiveModal(false)}
-        />
-      )}
       <TokenListItem
         onClick={() => onClickAsset(nativeCurrency)}
         title={nativeCurrency}
@@ -243,6 +237,12 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
       )}
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
+      )}
+      {showReceiveModal && (
+        <ReceiveModal
+          address={selectedAccount?.address}
+          onClose={() => setShowReceiveModal(false)}
+        />
       )}
       {showFundingMethodModal && (
         <FundingMethodModal
