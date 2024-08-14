@@ -226,11 +226,7 @@ export default function SnapInstall({
           cancelButtonType="default"
           hideCancel={hasError}
           disabled={
-            isLoading ||
-            (!hasError &&
-              isScrollable &&
-              !hasScrolledToBottom &&
-              !showAllPermissions)
+            isLoading || (!hasError && isScrollable && !hasScrolledToBottom)
           }
           onCancel={onCancel}
           cancelText={t('cancel')}
