@@ -1,14 +1,9 @@
 import { Suite } from 'mocha';
 
 import FixtureBuilder from '../fixture-builder';
-import {
-  defaultGanacheOptions,
-  unlockWallet,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../helpers';
+import { defaultGanacheOptions, WINDOW_TITLES, withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
+import { installSnapSimpleKeyring } from './common';
 
 /**
  * Starts the flow to create a Snap account, including unlocking the wallet,
@@ -20,34 +15,7 @@ import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
  * @returns A promise that resolves when the setup steps are complete.
  */
 async function startCreateSnapAccountFlow(driver: Driver): Promise<void> {
-  await unlockWallet(driver);
-
-  // navigate to test Snaps page and connect
-  await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
-  await driver.clickElement('#connectButton');
-
-  // switch to metamask extension and click connect to start installing the snap
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElement({
-    text: 'Connect',
-    tag: 'button',
-  });
-
-  // scroll to the bottom of the page
-  await driver.waitForSelector({ text: 'Confirm' });
-  await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
-
-  // click the install button to install the snap
-  await driver.waitForSelector({ text: 'Confirm' });
-  await driver.clickElement({
-    text: 'Confirm',
-    tag: 'button',
-  });
-  await driver.waitForSelector({ text: 'OK' });
-  await driver.clickElement({
-    text: 'OK',
-    tag: 'button',
-  });
+  await installSnapSimpleKeyring(driver, false);
 
   // move back to the Snap window to test the create account flow
   await driver.waitAndSwitchToWindowWithTitle(
@@ -125,14 +93,14 @@ describe('Create Snap Account', function (this: Suite) {
           '[data-testid="submit-add-account-with-name"]',
         );
 
-        // success screen should show account created with the default name
+        // success screen should show account created with the snap suggested name
         await driver.findElement({
           tag: 'h3',
           text: 'Account created',
         });
         await driver.findElement({
           css: '.multichain-account-list-item__account-name__button',
-          text: 'Snap Account 1',
+          text: 'SSK Account',
         });
 
         // click the okay button
@@ -155,11 +123,76 @@ describe('Create Snap Account', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // account should be created with the default name
+        // account should be created with the snap suggested name
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
-          text: 'Snap Account 1',
+          text: 'SSK Account',
         });
+      },
+    );
+  });
+
+  it('creates multiple Snap accounts with increasing numeric suffixes', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await installSnapSimpleKeyring(driver, false);
+
+        const expectedNames = ['SSK Account', 'SSK Account 2', 'SSK Account 3'];
+
+        for (const [index, expectedName] of expectedNames.entries()) {
+          // move to the dapp window
+          await driver.waitAndSwitchToWindowWithTitle(
+            2,
+            WINDOW_TITLES.SnapSimpleKeyringDapp,
+          );
+
+          // create new account on dapp
+          if (index === 0) {
+            // Only click the div for the first snap account creation
+            await driver.clickElement({
+              text: 'Create account',
+              tag: 'div',
+            });
+          }
+          await driver.clickElement({
+            text: 'Create Account',
+            tag: 'button',
+          });
+
+          // wait until dialog is opened before proceeding
+          await driver.waitAndSwitchToWindowWithTitle(3, WINDOW_TITLES.Dialog);
+
+          // click the create button on the confirmation modal
+          await driver.clickElement(
+            '[data-testid="confirmation-submit-button"]',
+          );
+
+          // click the add account button on the naming modal
+          await driver.clickElement(
+            '[data-testid="submit-add-account-with-name"]',
+          );
+
+          // click the okay button on the success screen
+          await driver.clickElement(
+            '[data-testid="confirmation-submit-button"]',
+          );
+
+          // switch to extension full screen view
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+
+          // verify the account is created with the expected name
+          await driver.findElement({
+            css: '[data-testid="account-menu-icon"]',
+            text: expectedName,
+          });
+        }
       },
     );
   });
@@ -180,7 +213,7 @@ describe('Create Snap Account', function (this: Suite) {
 
         // Add a custom name to the account
         const newAccountLabel = 'Custom name';
-        await driver.fill('[placeholder="Snap Account 1"]', newAccountLabel);
+        await driver.fill('[placeholder="SSK Account"]', newAccountLabel);
         // click the add account button on the naming modal
         await driver.clickElement(
           '[data-testid="submit-add-account-with-name"]',
@@ -259,7 +292,7 @@ describe('Create Snap Account', function (this: Suite) {
         // account should not be created
         await driver.assertElementNotPresent({
           css: '[data-testid="account-menu-icon"]',
-          text: 'Snap Account 1',
+          text: 'SSK Account',
         });
       },
     );
@@ -304,7 +337,7 @@ describe('Create Snap Account', function (this: Suite) {
         // account should not be created
         await driver.assertElementNotPresent({
           css: '[data-testid="account-menu-icon"]',
-          text: 'Snap Account 1',
+          text: 'SSK Account',
         });
       },
     );

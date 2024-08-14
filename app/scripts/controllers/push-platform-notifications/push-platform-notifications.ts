@@ -3,10 +3,11 @@ import {
   RestrictedControllerMessenger,
   ControllerGetStateAction,
 } from '@metamask/base-controller';
+import { AuthenticationController } from '@metamask/profile-sync-controller';
+
 import log from 'loglevel';
 
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
-import type { AuthenticationControllerGetBearerToken } from '../authentication/authentication-controller';
 import type { Notification } from '../metamask-notifications/types/notification/notification';
 import {
   activatePushNotifications,
@@ -44,7 +45,8 @@ export type PushPlatformNotificationsControllerMessengerActions =
   | PushPlatformNotificationsControllerUpdateTriggerPushNotifications
   | ControllerGetStateAction<'state', PushPlatformNotificationsControllerState>;
 
-type AllowedActions = AuthenticationControllerGetBearerToken;
+type AllowedActions =
+  AuthenticationController.AuthenticationControllerGetBearerToken;
 
 export type PushPlatformNotificationsControllerOnNewNotificationEvent = {
   type: `${typeof controllerName}:onNewNotifications`;
