@@ -8,7 +8,7 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
-import { createPPOMMiddleware } from './ppom-middleware';
+import { createPPOMMiddleware, PPOMMiddlewareRequest } from './ppom-middleware';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -121,7 +121,7 @@ describe('PPOMMiddleware', () => {
     const req = {
       ...REQUEST_MOCK,
       method: 'eth_sendTransaction',
-      securityAlertResponse: { reason: '', result_type: '' },
+      securityAlertResponse: undefined,
     };
 
     await middlewareFunction(
@@ -143,10 +143,10 @@ describe('PPOMMiddleware', () => {
   it('adds loading response to confirmation requests while validation is in progress', async () => {
     const middlewareFunction = createMiddleware();
 
-    const req = {
+    const req: PPOMMiddlewareRequest<(string | { to: string })[]> = {
       ...REQUEST_MOCK,
       method: 'eth_sendTransaction',
-      securityAlertResponse: { reason: '', result_type: '' },
+      securityAlertResponse: undefined,
     };
 
     await middlewareFunction(
@@ -155,8 +155,8 @@ describe('PPOMMiddleware', () => {
       () => undefined,
     );
 
-    expect(req.securityAlertResponse.reason).toBe(BlockaidReason.inProgress);
-    expect(req.securityAlertResponse.result_type).toBe(
+    expect(req.securityAlertResponse?.reason).toBe(BlockaidReason.inProgress);
+    expect(req.securityAlertResponse?.result_type).toBe(
       BlockaidResultType.Loading,
     );
   });
@@ -169,10 +169,10 @@ describe('PPOMMiddleware', () => {
     const req = {
       ...REQUEST_MOCK,
       method: 'eth_sendTransaction',
-      securityAlertResponse: { reason: '', result_type: '' },
+      securityAlertResponse: undefined,
     };
 
-    // @ts-expect-error Plugging in invalid input for testing purposes
+    // @ts-expect-error Passing in invalid input for testing purposes
     await middlewareFunction(req, undefined, () => undefined);
 
     expect(req.securityAlertResponse).toBeUndefined();
@@ -188,7 +188,7 @@ describe('PPOMMiddleware', () => {
     const req = {
       ...REQUEST_MOCK,
       method: 'eth_sendTransaction',
-      securityAlertResponse: { reason: '', result_type: '' },
+      securityAlertResponse: undefined,
     };
 
     await middlewareFunction(
@@ -206,8 +206,8 @@ describe('PPOMMiddleware', () => {
 
     const req = {
       ...REQUEST_MOCK,
-      method: 'eth_sendTransaction',
-      securityAlertResponse: { reason: '', result_type: '' },
+      method: 'eth_someRequest',
+      securityAlertResponse: undefined,
     };
 
     await middlewareFunction(
@@ -225,9 +225,9 @@ describe('PPOMMiddleware', () => {
 
     const req = {
       ...REQUEST_MOCK,
-      method: 'eth_sendTransaction',
-      securityAlertResponse: { reason: '', result_type: '' },
       params: [{ to: INTERNAL_ACCOUNT_ADDRESS }],
+      method: 'eth_sendTransaction',
+      securityAlertResponse: undefined,
     };
 
     await middlewareFunction(
@@ -246,8 +246,6 @@ describe('PPOMMiddleware', () => {
     });
 
     const req = {
-      ...REQUEST_MOCK,
-      securityAlertResponse: { reason: '', result_type: '' },
       method: 'personal_sign',
       params: [
         '0x6d6574616d61736b2e6769746875622e696f2077616e747320796f7520746f207369676e20696e207769746820796f757220457468657265756d206163636f756e743a0a3078393335653733656462396666353265323362616337663765303433613165636430366430353437370a0a492061636365707420746865204d6574614d61736b205465726d73206f6620536572766963653a2068747470733a2f2f636f6d6d756e6974792e6d6574616d61736b2e696f2f746f730a0a5552493a2068747470733a2f2f6d6574616d61736b2e6769746875622e696f0a56657273696f6e3a20310a436861696e2049443a20310a4e6f6e63653a2033323839313735370a4973737565642041743a20323032312d30392d33305431363a32353a32342e3030305a',
@@ -259,6 +257,7 @@ describe('PPOMMiddleware', () => {
       origin: 'https://metamask.github.io',
       networkClientId: 'mainnet',
       tabId: 1048745900,
+      securityAlertResponse: undefined,
     };
     jest.spyOn(ControllerUtils, 'detectSIWE').mockReturnValue({
       isSIWEMessage: true,
@@ -280,7 +279,7 @@ describe('PPOMMiddleware', () => {
       },
     });
 
-    // @ts-expect-error Plugging in invalid input for testing purposes
+    // @ts-expect-error Passing invalid input for testing purposes
     await middlewareFunction(req, undefined, () => undefined);
 
     expect(req.securityAlertResponse).toBeUndefined();
@@ -295,7 +294,7 @@ describe('PPOMMiddleware', () => {
       {
         ...REQUEST_MOCK,
         method: 'eth_sendTransaction',
-        securityAlertResponse: { reason: '', result_type: '' },
+        securityAlertResponse: undefined,
       },
       { ...JsonRpcResponseStruct.TYPE },
       nextMock,
@@ -315,7 +314,7 @@ describe('PPOMMiddleware', () => {
     const req = {
       ...REQUEST_MOCK,
       method: 'eth_sendTransaction',
-      securityAlertResponse: { reason: '', result_type: '' },
+      securityAlertResponse: undefined,
     };
 
     await middlewareFunction(req, { ...JsonRpcResponseStruct.TYPE }, nextMock);
