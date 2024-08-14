@@ -1,6 +1,5 @@
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
-import { ApprovalType } from '@metamask/controller-utils';
-
+import { ApprovalType, toHex } from '@metamask/controller-utils';
 import {
   BUILT_IN_INFURA_NETWORKS,
   CHAIN_ID_TO_RPC_URL_MAP,
@@ -12,11 +11,19 @@ import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
-import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
-import { PermissionNames } from '../../../controllers/permissions';
 import { getValidUrl } from '../../util';
-import { Caip25CaveatType, Caip25EndowmentPermissionName } from '../../multichain-api/caip25permissions';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '../../multichain-api/caip25permissions';
+import {
+  KnownCaipNamespace,
+  mergeScopes,
+  parseScopeString,
+} from '../../multichain-api/scope';
+import { CaveatTypes } from '../../../../../shared/constants/permissions';
+import { PermissionNames } from '../../../controllers/permissions';
 
 export function findExistingNetwork(chainId, findNetworkConfigurationBy) {
   if (
@@ -195,33 +202,53 @@ export async function switchChain(
   networkClientId,
   approvalFlowId,
   {
-    getChainPermissionsFeatureFlag,
     setActiveNetwork,
     endApprovalFlow,
     requestUserApproval,
     getCaveat,
-    requestPermittedChainsPermission,
+    requestPermissionApprovalForOrigin,
   },
 ) {
   try {
-    // if CAIP-25 with isMultichain false, then requestUserApproval
-    // if CAIP-25 with isMultichain true, then scope for chain must be present
-    // if no CAIP-25 then, requestUserApproval
-    // ?????
-    const caip25Caveat = getCaveat({
-      target: Caip25EndowmentPermissionName,
-      caveatType: Caip25CaveatType
-    }) ?? {};
+    const caip25Caveat =
+      getCaveat({
+        target: Caip25EndowmentPermissionName,
+        caveatType: Caip25CaveatType,
+      }) ?? {};
 
+    if (caip25Caveat) {
+      const scopes = mergeScopes(
+        caip25Caveat.value.requiredScopes,
+        caip25Caveat.value.optionalScopes,
+      );
 
-    if (getChainPermissionsFeatureFlag()) {
-      const { value: permissionedChainIds } =
+      const permissionedChainIds = [];
 
-      if (
-        permissionedChainIds === undefined ||
-        !permissionedChainIds.includes(chainId)
-      ) {
-        await requestPermittedChainsPermission([chainId]);
+      Object.keys(scopes).forEach((scopeString) => {
+        const { namespace, reference } = parseScopeString(scopeString);
+        if (namespace === KnownCaipNamespace.Eip155) {
+          permissionedChainIds.push(toHex(reference));
+        }
+      });
+
+      if (caip25Caveat.value.isMultichainOrigin) {
+        if (!permissionedChainIds.includes(chainId)) {
+          return end(
+            new Error(
+              'cannot switch to chain that was not permissioned in the multichain flow',
+            ),
+          ); // TODO: better error
+        }
+      } else if (!permissionedChainIds.includes(chainId)) {
+        await requestPermissionApprovalForOrigin({
+          [PermissionNames.permittedChains]: {
+            caveats: [
+              { type: CaveatTypes.restrictNetworkSwitching, value: [chainId] },
+            ],
+          },
+        });
+
+        // TODO: Add to the CAIP-25 permission
       }
     } else {
       await requestUserApproval({
@@ -234,6 +261,7 @@ export async function switchChain(
     await setActiveNetwork(networkClientId);
     res.result = null;
   } catch (error) {
+    // TODO: need to verify we didn't break this
     // We don't want to return an error if user rejects the request
     // and this is a chained switch request after wallet_addEthereumChain.
     // approvalFlowId is only defined when this call is of a
