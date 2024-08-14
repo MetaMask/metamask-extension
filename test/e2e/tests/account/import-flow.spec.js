@@ -61,7 +61,7 @@ describe('Import flow @no-mmi', function () {
         await driver.clickElement(
           '[data-testid="account-list-item-menu-button"]',
         );
-        await driver.clickElement('[data-testid="eth-overview-portfolio"]');
+        await driver.clickElement('[data-testid="account-list-menu-details"');
         await driver.findVisibleElement('.qr-code__wrapper');
 
         // shows a QR code for the account
@@ -187,10 +187,18 @@ describe('Import flow @no-mmi', function () {
         );
         await driver.clickElement('[data-testid="account-list-menu-details"');
         await driver.findVisibleElement('.qr-code__wrapper');
-        // shows the correct account address
+
+        // Shows the correct account address
         await driver.findElement({
-          css: '.qr-code__address-segments',
-          text: testAddress,
+          xpath: `//p[contains(@class, 'qr-code__address-segments') and contains(., '${testAddress.substring(
+            0,
+            6,
+          )}')]/p[contains(@class, 'qr-code__address-inner-segment') and contains(., '${testAddress.substring(
+            6,
+            -4,
+          )}')]/following-sibling::text()[contains(., '${testAddress.slice(
+            -4,
+          )}')]`,
         });
       },
     );
