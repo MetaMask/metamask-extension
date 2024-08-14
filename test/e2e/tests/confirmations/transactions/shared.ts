@@ -72,7 +72,7 @@ export async function confirmRedesignedContractDeploymentTransaction(
 
   await driver.waitForSelector({
     css: 'p',
-    text: 'This transaction will deploy a contract',
+    text: 'This site wants you to deploy a contract',
   });
 
   await driver.clickElement({ text: 'Confirm', tag: 'button' });

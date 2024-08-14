@@ -2,8 +2,10 @@
 import { openDapp, unlockWallet, WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
+  confirmDepositTransaction,
   confirmRedesignedContractDeploymentTransaction,
   createContractDeploymentTransaction,
+  createDepositTransaction,
   TestSuiteArguments,
 } from './shared';
 
@@ -40,6 +42,11 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
           await createContractDeploymentTransaction(driver);
 
           await confirmRedesignedContractDeploymentTransaction(driver);
+
+          // confirm deposits can be made to the deployed contract
+          await createDepositTransaction(driver);
+
+          await confirmDepositTransaction(driver);
         },
       );
     });
@@ -70,6 +77,11 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
           await scrollDown(driver);
 
           await confirmRedesignedContractDeploymentTransaction(driver);
+
+          // confirm deposits can be made to the deployed contract
+          await createDepositTransaction(driver);
+
+          await confirmDepositTransaction(driver);
         },
       );
     });
