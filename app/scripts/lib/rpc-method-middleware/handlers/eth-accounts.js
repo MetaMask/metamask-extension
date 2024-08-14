@@ -1,10 +1,4 @@
-import { parseCaipAccountId } from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import {
-  Caip25CaveatType,
-  Caip25EndowmentPermissionName,
-} from '../../multichain-api/caip25permissions';
-import { KnownCaipNamespace, mergeScopes } from '../../multichain-api/scope';
 
 /**
  * A wrapper for `eth_accounts` that returns an empty array when permission is denied.
@@ -27,19 +21,13 @@ export default ethereumAccounts;
 
 /**
  *
- * @param {import('json-rpc-engine').JsonRpcRequest<unknown>} req - The JSON-RPC request object.
+ * @param {import('json-rpc-engine').JsonRpcRequest<unknown>} _req - The JSON-RPC request object.
  * @param {import('json-rpc-engine').JsonRpcResponse<true>} res - The JSON-RPC response object.
  * @param {Function} _next - The json-rpc-engine 'next' callback.
  * @param {Function} end - The json-rpc-engine 'end' callback.
  * @param {EthAccountsOptions} options - The RPC method hooks.
  */
-async function ethAccountsHandler(
-  _req,
-  res,
-  _next,
-  end,
-  { getAccounts },
-) {
+async function ethAccountsHandler(_req, res, _next, end, { getAccounts }) {
   res.result = await getAccounts();
   return end();
 }
