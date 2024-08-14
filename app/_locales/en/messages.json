@@ -1791,6 +1791,9 @@
   "editPermission": {
     "message": "Edit permission"
   },
+  "editPermissions": {
+    "message": "Edit permissions"
+  },
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Edit speed up gas fee"
   },
