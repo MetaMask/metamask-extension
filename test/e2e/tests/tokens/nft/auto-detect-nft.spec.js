@@ -8,14 +8,18 @@ const FixtureBuilder = require('../../../fixture-builder');
 const { setupAutoDetectMocking } = require('./mocks');
 
 describe('NFT detection', function () {
-  /**
-   * TODO Revisit this test once we enable nft auto detection by default. Use .withPreferencesControllerNftDetectionEnabled().
-   */
   it('displays NFT media', async function () {
     const driverOptions = { mock: true };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerOnMainnet()
+          .withPreferencesController({
+            useExternalServices: false,
+            openSeaEnabled: false,
+            useNftDetection: false,
+          })
+          .build(),
         driverOptions,
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
