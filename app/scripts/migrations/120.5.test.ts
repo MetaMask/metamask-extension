@@ -205,7 +205,15 @@ describe('migration #120.5', () => {
         },
       },
       SelectedNetworkController: {
-        domains: {},
+        domains: {
+          'example1.test': '123',
+          'example2.test': 'mainnet',
+          'example3.test': 'goerli',
+          'example4.test': 'sepolia',
+          'example5.test': 'linea-goerli',
+          'example6.test': 'linea-sepolia',
+          'example7.test': 'linea-mainnet',
+        },
       },
     };
 

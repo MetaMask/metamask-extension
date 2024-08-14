@@ -29,6 +29,25 @@ export async function migrate(
 }
 
 /**
+ * A list of InfuraNetworkType values from extension v12.0.1
+ * This version of the extension uses `@metamask/network-controller@18.1.2`, which in turn uses
+ * the types from `@metamask/controller-utils@9.1.0`
+ *
+ * See https://github.com/MetaMask/core/blob/34542cf6e808f294fd83c7c5f70d1bc7418f8a9e/packages/controller-utils/src/types.ts#L4
+ *
+ * Hard-coded here rather than imported so that this migration continues to work correctly as these
+ * constants get updated in the future.
+ */
+const infuraNetworkTypes = [
+  'mainnet',
+  'goerli',
+  'sepolia',
+  'linea-goerli',
+  'linea-sepolia',
+  'linea-mainnet',
+];
+
+/**
  * Remove invalid network configuration IDs from the SelectedNetworkController.
  *
  * @param state - The persisted MetaMask state, keyed by controller.
@@ -82,9 +101,10 @@ function transformState(state: Record<string, unknown>): void {
     return;
   }
 
-  const validNetworkConfigurationIds = Object.keys(
-    state.NetworkController.networkConfigurations,
-  );
+  const validNetworkConfigurationIds = [
+    ...infuraNetworkTypes,
+    ...Object.keys(state.NetworkController.networkConfigurations),
+  ];
   const domainMappedNetworkConfigurationIds = Object.values(
     state.SelectedNetworkController.domains,
   );
