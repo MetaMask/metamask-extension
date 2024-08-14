@@ -11,7 +11,10 @@ import {
   MetaMetricsEventLocation,
 } from '../../../../shared/constants/metametrics';
 import { createMockImplementation, mock4byte } from '../../helpers';
-import { getUnapprovedTransaction } from '../../data/transaction-helpers';
+import {
+  getMaliciousUnapprovedTransaction,
+  getUnapprovedTransaction,
+} from './transactionDataHelpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
@@ -121,6 +124,21 @@ const setupSubmitRequestToBackgroundMocks = (
       ...(mockRequests ?? {}),
     }),
   );
+};
+
+const getMetaMaskStateWithMaliciousUnapprovedContractInteraction = (
+  accountAddress: string,
+) => {
+  return {
+    ...getMetaMaskStateWithUnapprovedContractInteraction(accountAddress),
+    transactions: [
+      getMaliciousUnapprovedTransaction(
+        accountAddress,
+        pendingTransactionId,
+        pendingTransactionTime,
+      ),
+    ],
+  };
 };
 
 describe('Contract Interaction Confirmation', () => {
@@ -382,5 +400,29 @@ describe('Contract Interaction Confirmation', () => {
     expect(dataSection).toContainElement(transactionDataParams);
     expect(transactionDataParams).toHaveTextContent('Number Of Tokens');
     expect(transactionDataParams).toHaveTextContent('1');
+  });
+
+  it('displays the warning for malicious request', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithMaliciousUnapprovedContractInteraction(
+        account.address,
+      );
+
+    const { getByText } = await integrationTestRender({
+      preloadedState: mockedMetaMaskState,
+      backgroundConnection: backgroundConnectionMocked,
+    });
+
+    const headingText = 'This is a deceptive request';
+    const bodyText =
+      'If you approve this request, a third party known for scams will take all your assets.';
+    expect(getByText(headingText)).toBeInTheDocument();
+    expect(getByText(bodyText)).toBeInTheDocument();
   });
 });
