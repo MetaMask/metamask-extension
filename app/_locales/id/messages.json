@@ -4198,9 +4198,6 @@
   "receive": {
     "message": "Terima"
   },
-  "receiveTokensCamelCase": {
-    "message": "Terima token"
-  },
   "recipientAddressPlaceholder": {
     "message": "Masukkan alamat publik (0x) atau nama ENS"
   },

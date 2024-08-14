@@ -4198,9 +4198,6 @@
   "receive": {
     "message": "받기"
   },
-  "receiveTokensCamelCase": {
-    "message": "토큰 받기"
-  },
   "recipientAddressPlaceholder": {
     "message": "공개 주소(0x) 또는 ENS 제목 입력"
   },

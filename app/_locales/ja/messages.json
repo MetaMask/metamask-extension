@@ -4198,9 +4198,6 @@
   "receive": {
     "message": "受取"
   },
-  "receiveTokensCamelCase": {
-    "message": "トークンの受取"
-  },
   "recipientAddressPlaceholder": {
     "message": "パブリックアドレス (0x) またはENS名を入力してください"
   },

@@ -4198,9 +4198,6 @@
   "receive": {
     "message": "Empfangen"
   },
-  "receiveTokensCamelCase": {
-    "message": "Tokens erhalten"
-  },
   "recipientAddressPlaceholder": {
     "message": "Öffentliche Adresse (0x) oder ENS-Name eingeben"
   },
