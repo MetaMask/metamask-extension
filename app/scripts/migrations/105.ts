@@ -103,7 +103,6 @@ function createInternalAccountsForAccountsController(
           // initial updateAccounts call.
           type: 'HD Key Tree',
         },
-        importTime: Date.now(),
       },
       methods: ETH_EOA_METHODS,
       type: EthAccountType.Eoa,
