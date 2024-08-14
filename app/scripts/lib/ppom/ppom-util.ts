@@ -207,7 +207,7 @@ async function findConfirmationBySecurityAlertId(
 
 async function validateWithController(
   ppomController: PPOMController,
-  request: JsonRpcRequest | SecurityAlertsAPIRequest,
+  request: SecurityAlertsAPIRequest | JsonRpcRequest,
 ): Promise<SecurityAlertResponse> {
   const response = (await ppomController.usePPOM((ppom: PPOM) =>
     ppom.validateJsonRpc(request),
@@ -222,9 +222,7 @@ async function validateWithController(
 async function validateWithAPI(
   ppomController: PPOMController,
   chainId: string,
-  request:
-    | (Exclude<JsonRpcRequest, 'method' | 'params'> & SecurityAlertsAPIRequest)
-    | JsonRpcRequest,
+  request: SecurityAlertsAPIRequest | JsonRpcRequest,
 ): Promise<SecurityAlertResponse> {
   try {
     const response = await validateWithSecurityAlertsAPI(chainId, request);
