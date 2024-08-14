@@ -176,7 +176,7 @@
     "useMultiAccountBalanceChecker": true,
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": true,
-    "useNftDetection": false,
+    "useNftDetection": true,
     "use4ByteResolution": true,
     "useCurrencyRateCheck": true,
     "useRequestQueue": true,

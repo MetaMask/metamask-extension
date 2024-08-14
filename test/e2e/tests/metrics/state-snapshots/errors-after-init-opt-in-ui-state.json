@@ -110,7 +110,7 @@
     "useMultiAccountBalanceChecker": true,
     "useSafeChainsListValidation": true,
     "useTokenDetection": true,
-    "useNftDetection": false,
+    "useNftDetection": true,
     "useCurrencyRateCheck": true,
     "useRequestQueue": true,
     "openSeaEnabled": true,
