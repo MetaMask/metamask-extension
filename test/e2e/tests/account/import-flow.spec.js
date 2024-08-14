@@ -163,7 +163,8 @@ describe('Import flow @no-mmi', function () {
   });
 
   it('Import wallet using Secret Recovery Phrase with pasting word by word', async function () {
-    const testAddress = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
+    const testAddress =
+      '0x0cc5261ab8ce458dc977078a3623e2badd2261ab8ce458dc977078a3623e2badd27afd3';
 
     await withFixtures(
       {
