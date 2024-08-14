@@ -41,6 +41,7 @@ function getSnapNameComponent(snapName) {
       fontWeight={FontWeight.Medium}
       variant={TextVariant.inherit}
       color={TextColor.inherit}
+      style={{ lineBreak: 'anywhere' }}
     >
       {snapName}
     </Text>
@@ -270,6 +271,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
               variant={TextVariant.inherit}
               fontWeight={FontWeight.Medium}
               key={snapId}
+              style={{ lineBreak: 'anywhere' }}
             >
               {snapName}
             </Text>,
@@ -566,6 +568,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
             fontWeight={FontWeight.Medium}
             variant={TextVariant.inherit}
             color={TextColor.inherit}
+            style={{ lineBreak: 'anywhere' }}
           >
             {connectionName}
           </Text>,
