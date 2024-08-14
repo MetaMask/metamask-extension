@@ -113,7 +113,7 @@
     "useNftDetection": false,
     "useCurrencyRateCheck": true,
     "useRequestQueue": true,
-    "openSeaEnabled": false,
+    "openSeaEnabled": true,
     "securityAlertsEnabled": "boolean",
     "bitcoinSupportEnabled": "boolean",
     "bitcoinTestnetSupportEnabled": "boolean",

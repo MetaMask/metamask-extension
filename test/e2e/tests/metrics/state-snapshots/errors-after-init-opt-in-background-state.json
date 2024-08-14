@@ -180,7 +180,7 @@
     "use4ByteResolution": true,
     "useCurrencyRateCheck": true,
     "useRequestQueue": true,
-    "openSeaEnabled": false,
+    "openSeaEnabled": true,
     "securityAlertsEnabled": "boolean",
     "bitcoinSupportEnabled": "boolean",
     "bitcoinTestnetSupportEnabled": "boolean",
