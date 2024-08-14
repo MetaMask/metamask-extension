@@ -181,7 +181,11 @@ describe('Import flow @no-mmi', function () {
         );
 
         // Show account information
-        await driver.clickElement('[data-testid="eth-overview-portfolio"]');
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="account-list-item-menu-button"]',
+        );
+        await driver.clickElement('[data-testid="account-list-menu-details"');
         await driver.findVisibleElement('.qr-code__wrapper');
         // shows the correct account address
         await driver.findElement({
