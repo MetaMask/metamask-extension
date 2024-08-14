@@ -46,13 +46,13 @@ import {
   showSecondaryCurrency,
 } from '../../../../../shared/modules/currency-display.utils';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../helpers/utils/util';
+import { FundingMethodModal } from '../../../multichain/funding-method-modal/funding-method-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
   RAMPS_CARD_VARIANT_TYPES,
   RampsCard,
 } from '../../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
-import { FundingMethodModal } from '../../../multichain/funding-method-modal/funding-method-modal';
 ///: END:ONLY_INCLUDE_IF
 
 const AssetList = ({ onClickAsset, showTokensLinks }) => {
