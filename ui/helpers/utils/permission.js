@@ -410,6 +410,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
             color={TextColor.inherit}
             variant={TextVariant.inherit}
             fontWeight={FontWeight.Medium}
+            style={{ lineBreak: 'anywhere' }}
           >
             {allowedOrigins[0]}
           </Text>
@@ -423,6 +424,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
               color={TextColor.inherit}
               variant={TextVariant.inherit}
               fontWeight={FontWeight.Medium}
+              style={{ lineBreak: 'anywhere' }}
             >
               {origin}
             </Text>
@@ -437,6 +439,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
             variant={TextVariant.inherit}
             fontWeight={FontWeight.Medium}
             key="2"
+            style={{ lineBreak: 'anywhere' }}
           >
             {lastOrigin}
           </Text>,
