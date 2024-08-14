@@ -67,7 +67,10 @@ const createMiddleware = (
     state: {
       selectedNetworkClientId: 'networkClientId',
       networkConfigurations: {
-        networkClientId: { chainId: chainId || CHAIN_IDS.MAINNET },
+        networkClientId: {
+          id: 'networkClientId',
+          chainId: chainId || CHAIN_IDS.MAINNET,
+        },
       },
     },
   };
