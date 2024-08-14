@@ -59,7 +59,11 @@ function migrateData(state: Record<string, unknown>): void {
 
           if (isObject(nftContractsByChainId)) {
             for (const chainId of Object.keys(nftContractsByChainId)) {
-              if (chainId === 'undefined' || chainId === undefined) {
+              if (
+                chainId === 'undefined' ||
+                chainId === undefined ||
+                chainId === 'null'
+              ) {
                 delete nftContractsByChainId[chainId];
               }
             }
@@ -96,7 +100,11 @@ function migrateData(state: Record<string, unknown>): void {
 
           if (isObject(nftsByChainId)) {
             for (const chainId of Object.keys(nftsByChainId)) {
-              if (chainId === 'undefined' || chainId === undefined) {
+              if (
+                chainId === 'undefined' ||
+                chainId === undefined ||
+                chainId === 'null'
+              ) {
                 delete nftsByChainId[chainId];
               }
             }
@@ -142,7 +150,11 @@ function migrateData(state: Record<string, unknown>): void {
       for (const chainId of Object.keys(
         tokenListControllerState.tokensChainsCache,
       )) {
-        if (chainId === 'undefined' || chainId === undefined) {
+        if (
+          chainId === 'undefined' ||
+          chainId === undefined ||
+          chainId === 'null'
+        ) {
           delete tokenListControllerState.tokensChainsCache[chainId];
         }
       }
@@ -183,7 +195,11 @@ function migrateData(state: Record<string, unknown>): void {
       const { allTokens } = tokensControllerState;
 
       for (const chainId of Object.keys(allTokens)) {
-        if (chainId === 'undefined' || chainId === undefined) {
+        if (
+          chainId === 'undefined' ||
+          chainId === undefined ||
+          chainId === 'null'
+        ) {
           delete allTokens[chainId];
         }
       }
@@ -212,7 +228,11 @@ function migrateData(state: Record<string, unknown>): void {
       const { allIgnoredTokens } = tokensControllerState;
 
       for (const chainId of Object.keys(allIgnoredTokens)) {
-        if (chainId === 'undefined' || chainId === undefined) {
+        if (
+          chainId === 'undefined' ||
+          chainId === undefined ||
+          chainId === 'null'
+        ) {
           delete allIgnoredTokens[chainId];
         }
       }
@@ -241,7 +261,11 @@ function migrateData(state: Record<string, unknown>): void {
       const { allDetectedTokens } = tokensControllerState;
 
       for (const chainId of Object.keys(allDetectedTokens)) {
-        if (chainId === 'undefined' || chainId === undefined) {
+        if (
+          chainId === 'undefined' ||
+          chainId === undefined ||
+          chainId === 'null'
+        ) {
           delete allDetectedTokens[chainId];
         }
       }

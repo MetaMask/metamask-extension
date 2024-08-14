@@ -44,7 +44,7 @@ type ManualConnectCustodianProps = {
   handleConnectError: (e: Error) => void;
   setAccounts: Dispatch<SetStateAction<Account[] | undefined | null>>;
   removeConnectRequest: () => void;
-  connectRequest: object;
+  connectRequest?: object;
 };
 
 const ManualConnectCustodian: React.FC<ManualConnectCustodianProps> = ({
