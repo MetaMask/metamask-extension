@@ -3,7 +3,7 @@ import OurReadableStream from 'readable-stream';
 import ReadableStream2 from 'readable-stream-2';
 import ReadableStream3 from 'readable-stream-3';
 
-import { JsonRpcNotification, type JsonRpcRequest } from '@metamask/utils';
+import type { JsonRpcNotification, JsonRpcRequest } from '@metamask/utils';
 import createDupeReqFilterStream, {
   THREE_MINUTES,
 } from './createDupeReqFilterStream';
@@ -52,14 +52,14 @@ describe('createDupeReqFilterStream', () => {
 
   it('lets through requests with ids being seen for the first time', async () => {
     const requests = [
-      { id: 1, method: 'foo', jsonrpc: '2.0' as const },
-      { id: 2, method: 'bar', jsonrpc: '2.0' as const },
-    ];
+      { id: 1, method: 'foo' },
+      { id: 2, method: 'bar' },
+    ].map((request) => ({ ...request, jsonrpc: '2.0' as const }));
 
     const expectedOutput = [
-      { id: 1, method: 'foo', jsonrpc: '2.0' },
-      { id: 2, method: 'bar', jsonrpc: '2.0' },
-    ];
+      { id: 1, method: 'foo' },
+      { id: 2, method: 'bar' },
+    ].map((output) => ({ ...output, jsonrpc: '2.0' }));
 
     const output = await runStreamTest(requests);
     expect(output).toEqual(expectedOutput);
@@ -67,26 +67,27 @@ describe('createDupeReqFilterStream', () => {
 
   it('does not let through the request if the id has been seen before', async () => {
     const requests = [
-      { id: 1, method: 'foo', jsonrpc: '2.0' as const },
-      { id: 1, method: 'foo', jsonrpc: '2.0' as const }, // duplicate
-    ];
+      { id: 1, method: 'foo' },
+      { id: 1, method: 'foo' }, // duplicate
+    ].map((request) => ({ ...request, jsonrpc: '2.0' as const }));
 
-    const expectedOutput = [{ id: 1, method: 'foo', jsonrpc: '2.0' }];
+    const expectedOutput = [{ id: 1, method: 'foo' }].map((output) => ({
+      ...output,
+      jsonrpc: '2.0',
+    }));
 
     const output = await runStreamTest(requests);
     expect(output).toEqual(expectedOutput);
   });
 
   it("lets through requests if they don't have an id", async () => {
-    const requests = [
-      { method: 'notify1', jsonrpc: '2.0' as const },
-      { method: 'notify2', jsonrpc: '2.0' as const },
-    ];
+    const requests = [{ method: 'notify1' }, { method: 'notify2' }].map(
+      (request) => ({ ...request, jsonrpc: '2.0' as const }),
+    );
 
-    const expectedOutput = [
-      { method: 'notify1', jsonrpc: '2.0' },
-      { method: 'notify2', jsonrpc: '2.0' },
-    ];
+    const expectedOutput = [{ method: 'notify1' }, { method: 'notify2' }].map(
+      (output) => ({ ...output, jsonrpc: '2.0' }),
+    );
 
     const output = await runStreamTest(requests);
     expect(output).toEqual(expectedOutput);
@@ -94,22 +95,22 @@ describe('createDupeReqFilterStream', () => {
 
   it('handles a mix of request types', async () => {
     const requests = [
-      { id: 1, method: 'foo', jsonrpc: '2.0' as const },
-      { method: 'notify1', jsonrpc: '2.0' as const },
-      { id: 1, method: 'foo', jsonrpc: '2.0' as const },
-      { id: 2, method: 'bar', jsonrpc: '2.0' as const },
-      { method: 'notify2', jsonrpc: '2.0' as const },
-      { id: 2, method: 'bar', jsonrpc: '2.0' as const },
-      { id: 3, method: 'baz', jsonrpc: '2.0' as const },
-    ];
+      { id: 1, method: 'foo' },
+      { method: 'notify1' },
+      { id: 1, method: 'foo' },
+      { id: 2, method: 'bar' },
+      { method: 'notify2' },
+      { id: 2, method: 'bar' },
+      { id: 3, method: 'baz' },
+    ].map((request) => ({ ...request, jsonrpc: '2.0' as const }));
 
     const expectedOutput = [
-      { id: 1, method: 'foo', jsonrpc: '2.0' },
-      { method: 'notify1', jsonrpc: '2.0' },
-      { id: 2, method: 'bar', jsonrpc: '2.0' },
-      { method: 'notify2', jsonrpc: '2.0' },
-      { id: 3, method: 'baz', jsonrpc: '2.0' },
-    ];
+      { id: 1, method: 'foo' },
+      { method: 'notify1' },
+      { id: 2, method: 'bar' },
+      { method: 'notify2' },
+      { id: 3, method: 'baz' },
+    ].map((output) => ({ ...output, jsonrpc: '2.0' }));
 
     const output = await runStreamTest(requests);
     expect(output).toEqual(expectedOutput);
