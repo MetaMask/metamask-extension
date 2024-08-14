@@ -78,9 +78,7 @@ describe('useBridging', () => {
         const { result } = renderUseBridging({
           metamask: {
             useExternalServices: true,
-            providerConfig: {
-              chainId: '0x1',
-            },
+            selectedNetworkClientId: 'mainnet',
             metaMetricsId: MOCK_METAMETRICS_ID,
             bridgeState: {
               bridgeFeatureFlags: {
@@ -149,9 +147,7 @@ describe('useBridging', () => {
         const { result } = renderUseBridging({
           metamask: {
             useExternalServices: true,
-            providerConfig: {
-              chainId: '0x1',
-            },
+            selectedNetworkClientId: 'mainnet',
             metaMetricsId: MOCK_METAMETRICS_ID,
             bridgeState: {
               bridgeFeatureFlags: {
