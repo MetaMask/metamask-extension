@@ -109,7 +109,7 @@
     "dismissSeedBackUpReminder": true,
     "useMultiAccountBalanceChecker": true,
     "useSafeChainsListValidation": true,
-    "useTokenDetection": false,
+    "useTokenDetection": true,
     "useNftDetection": false,
     "useCurrencyRateCheck": true,
     "useRequestQueue": true,
