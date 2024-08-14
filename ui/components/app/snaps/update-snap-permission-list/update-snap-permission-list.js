@@ -13,7 +13,10 @@ import {
   Display,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
-import { PermissionWeightThreshold } from '../../../../../shared/constants/permissions';
+import {
+  MinPermissionAbstractionDisplayCount,
+  PermissionWeightThreshold,
+} from '../../../../../shared/constants/permissions';
 import {
   getFilteredSnapPermissions,
   getSnapName,
@@ -90,23 +93,12 @@ export default function UpdateSnapPermissionList({
   // Because approved permissions are sometimes hidden following the abstraction logic,
   // it is needed sometimes to fill the gap in permission display, in certain edge cases
   // when there is not enough new and revoked permissions to be shown.
-  let minApprovedPermissionsToShow;
   const totalNewAndRevokedPermissions =
     newWeightedPermissions.length + revokedWeightedPermissions.length;
-
-  switch (totalNewAndRevokedPermissions) {
-    case 0:
-      minApprovedPermissionsToShow = 3;
-      break;
-    case 1:
-      minApprovedPermissionsToShow = 2;
-      break;
-    case 2:
-      minApprovedPermissionsToShow = 1;
-      break;
-    default:
-      minApprovedPermissionsToShow = 0;
-  }
+  const minApprovedPermissionsToShow = Math.max(
+    MinPermissionAbstractionDisplayCount - totalNewAndRevokedPermissions,
+    0,
+  );
 
   const filteredApprovedWeightedPermissions = getFilteredSnapPermissions(
     approvedWeightedPermissions,

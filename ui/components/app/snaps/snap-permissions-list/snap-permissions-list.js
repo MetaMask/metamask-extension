@@ -87,7 +87,7 @@ export default function SnapPermissionsList({
           paddingTop={2}
           paddingBottom={2}
         >
-          <ButtonLink onClick={() => onShowAllPermissionsHandler()}>
+          <ButtonLink onClick={onShowAllPermissionsHandler}>
             {t('seeAllPermissions')}
           </ButtonLink>
         </Box>

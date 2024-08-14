@@ -793,33 +793,26 @@ export const getAvatarFallbackLetter = (subjectName) => {
  */
 export const getFilteredSnapPermissions = (
   weightedPermissions,
-  weightThreshold,
+  weightThreshold = Infinity,
   minPermissionCount = 3,
 ) => {
-  const filteredPermissions = weightedPermissions.filter(
-    (permission) => permission.weight <= (weightThreshold ?? Infinity),
+  let filteredPermissions = weightedPermissions.filter(
+    (permission) => permission.weight <= weightThreshold,
   );
 
   // If there are not enough permissions that fall into desired set filtered by weight,
   // then fill the gap, no matter what the weight is
   if (minPermissionCount && filteredPermissions.length < minPermissionCount) {
-    const remainingPermissions = [...weightedPermissions];
-
-    // Remove already filtered permissions to avoid duplicates
-    for (const permission of filteredPermissions) {
-      const index = remainingPermissions.indexOf(permission);
-      if (index > -1) {
-        remainingPermissions.splice(index, 1);
-      }
-    }
-
+    const remainingPermissions = weightedPermissions.filter(
+      (permission) => permission.weight > weightThreshold,
+    );
     // Add permissions until desired count is reached
-    while (
-      filteredPermissions.length < minPermissionCount &&
-      remainingPermissions.length > 0
-    ) {
-      filteredPermissions.push(remainingPermissions.shift());
-    }
+    filteredPermissions = filteredPermissions.concat(
+      remainingPermissions.slice(
+        0,
+        minPermissionCount - filteredPermissions.length,
+      ),
+    );
   }
 
   return filteredPermissions;
