@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   useHistory,
@@ -41,7 +41,6 @@ import {
   getParticipateInMetaMetrics,
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
-  getSelectedAccount,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -65,11 +64,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box, Icon, IconName } from '../../component-library';
 import IconButton from '../../ui/icon-button';
-import { ReceiveModal } from '../../multichain/receive-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-
+import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 
 const CoinButtons = ({
@@ -95,9 +93,7 @@ const CoinButtons = ({
 }) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const [showReceiveModal, setShowReceiveModal] = useState(false);
 
-  const { address: selectedAddress } = useSelector(getSelectedAccount);
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -216,6 +212,8 @@ const CoinButtons = ({
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const { openBuyCryptoInPdapp } = useRamps();
+
+  const { openBridgeExperience } = useBridging();
   ///: END:ONLY_INCLUDE_IF
 
   const handleSendOnClick = useCallback(async () => {
@@ -290,31 +288,36 @@ const CoinButtons = ({
   }, [chainId, defaultSwapsToken]);
 
   const handleBridgeOnClick = useCallback(() => {
-    if (isBridgeChain) {
-      const portfolioUrl = getPortfolioUrl(
-        'bridge',
-        'ext_bridge_button',
-        metaMetricsId,
-        isMetaMetricsEnabled,
-        isMarketingEnabled,
-      );
-      global.platform.openTab({
-        url: `${portfolioUrl}${
-          location.pathname.includes('asset') ? '&token=native' : ''
-        }`,
-      });
-      trackEvent({
-        category: MetaMetricsEventCategory.Navigation,
-        event: MetaMetricsEventName.BridgeLinkClicked,
-        properties: {
-          location: 'Home',
-          text: 'Bridge',
-          chain_id: chainId,
-          token_symbol: 'ETH',
-        },
-      });
+    if (!defaultSwapsToken) {
+      return;
     }
-  }, [isBridgeChain, chainId, metaMetricsId]);
+    openBridgeExperience(
+      'Home',
+      defaultSwapsToken,
+      location.pathname.includes('asset') ? '&token=native' : '',
+    );
+  }, [defaultSwapsToken, location, openBridgeExperience]);
+
+  const handlePortfolioOnClick = useCallback(() => {
+    const url = getPortfolioUrl(
+      '',
+      'ext_portfolio_button',
+      metaMetricsId,
+      isMetaMetricsEnabled,
+      isMarketingEnabled,
+    );
+    global.platform.openTab({ url });
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PortfolioLinkClicked,
+      properties: {
+        location: 'Home',
+        text: 'Portfolio',
+        chain_id: chainId,
+        token_symbol: 'ETH',
+      },
+    });
+  }, [chainId, metaMetricsId]);
   ///: END:ONLY_INCLUDE_IF
 
   return (
@@ -396,28 +399,15 @@ const CoinButtons = ({
       }
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        <>
-          {showReceiveModal && (
-            <ReceiveModal
-              address={selectedAddress}
-              onClose={() => setShowReceiveModal(false)}
-            />
-          )}
-          <IconButton
-            className={`${classPrefix}-overview__button`}
-            data-testid={`${classPrefix}-overview-portfolio`}
-            Icon={
-              <Icon
-                name={IconName.ScanBarcode}
-                color={IconColor.primaryInverse}
-              />
-            }
-            label={t('receive')}
-            onClick={() => {
-              setShowReceiveModal(true);
-            }}
-          />
-        </>
+        <IconButton
+          className={`${classPrefix}-overview__button`}
+          data-testid={`${classPrefix}-overview-portfolio`}
+          Icon={
+            <Icon name={IconName.Diagram} color={IconColor.primaryInverse} />
+          }
+          label={t('portfolio')}
+          onClick={handlePortfolioOnClick}
+        />
         ///: END:ONLY_INCLUDE_IF
       }
     </Box>
