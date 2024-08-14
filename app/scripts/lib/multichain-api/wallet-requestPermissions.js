@@ -25,6 +25,7 @@ export const requestPermissionsHandler = {
     getNetworkConfigurationByNetworkClientId: true,
     updateCaveat: true,
     grantPermissions: true,
+    requestPermissionApprovalForOrigin: true,
   },
 };
 
@@ -41,6 +42,7 @@ export const requestPermissionsHandler = {
  * @param options.getNetworkConfigurationByNetworkClientId
  * @param options.updateCaveat
  * @param options.grantPermissions
+ * @param options.requestPermissionApprovalForOrigin
  * @returns A promise that resolves to nothing
  */
 async function requestPermissionsImplementation(
@@ -54,6 +56,7 @@ async function requestPermissionsImplementation(
     getNetworkConfigurationByNetworkClientId,
     updateCaveat,
     grantPermissions,
+    requestPermissionApprovalForOrigin,
   },
 ) {
   const { origin, params } = req;
@@ -63,19 +66,44 @@ async function requestPermissionsImplementation(
   }
 
   const [requestedPermissions] = params;
+  const caip25Permission = requestedPermissions[Caip25EndowmentPermissionName];
   delete requestedPermissions[Caip25EndowmentPermissionName];
 
-  const [_grantedPermissions] = await requestPermissionsForOrigin(
-    requestedPermissions,
-  );
+  let ethAccountsApproval;
+  if (requestedPermissions[RestrictedMethods.eth_accounts]) {
+    if (
+      caip25Permission &&
+      caip25Permission.caveats[0].value.isMultichainOrigin
+    ) {
+      return end(
+        new Error(
+          'cannot modify eth_accounts when CAIP-25 permission from multichain flow exists',
+        ),
+      ); // TODO: better error
+    }
 
-  // caveat values are frozen and must be cloned before modified
-  const grantedPermissions = { ..._grantedPermissions };
+    ethAccountsApproval = await requestPermissionApprovalForOrigin({
+      [RestrictedMethods.eth_accounts]:
+        requestedPermissions[RestrictedMethods.eth_accounts],
+    });
+    delete requestedPermissions[RestrictedMethods.eth_accounts];
+  }
 
-  const ethAccountsPermission =
-    grantedPermissions[RestrictedMethods.eth_accounts];
+  // TODO: Handle permittedChains?
 
-  if (process.env.BARAD_DUR && ethAccountsPermission) {
+  let grantedPermissions = {};
+  if (
+    (Object.keys(requestedPermissions).length === 0 && !ethAccountsApproval) ||
+    Object.keys(requestedPermissions).length > 0
+  ) {
+    const [_grantedPermissions] = await requestPermissionsForOrigin(
+      requestedPermissions,
+    );
+    // permissions are frozen and must be cloned before modified
+    grantedPermissions = { ..._grantedPermissions };
+  }
+
+  if (ethAccountsApproval) {
     // TODO: Use permittedChains permission returned from requestPermissionsForOrigin() when available
     const { chainId } = getNetworkConfigurationByNetworkClientId(
       req.networkClientId,
@@ -83,17 +111,18 @@ async function requestPermissionsImplementation(
 
     const scopeString = `eip155:${parseInt(chainId, 16)}`;
 
-    const ethAccounts = ethAccountsPermission.caveats[0].value;
+    const ethAccounts = ethAccountsApproval.approvedAccounts;
 
     const caipAccounts = ethAccounts.map(
       (account) => `${scopeString}:${account}`,
     );
 
-    const permissions = getPermissionsForOrigin(origin);
+    const permissions = getPermissionsForOrigin(origin) || {};
     const caip25Endowment = permissions[Caip25EndowmentPermissionName];
     const caip25Caveat = caip25Endowment?.caveats.find(
       ({ type }) => type === Caip25CaveatType,
     );
+    // TODO: need to check if isMultichainOrigin is set and bail if so
     if (caip25Caveat) {
       const { optionalScopes, ...caveatValue } = caip25Caveat.value;
       const optionalScope = {
@@ -175,7 +204,7 @@ async function requestPermissionsImplementation(
       grantedPermissions[RestrictedMethods.eth_accounts] = {
         ...caip25GrantedPermissions[Caip25EndowmentPermissionName],
         parentCapability: RestrictedMethods.eth_accounts,
-        caveats: ethAccountsPermission.caveats,
+        caveats: ethAccountsApproval.caveats,
       };
     }
   }

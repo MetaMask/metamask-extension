@@ -36,7 +36,7 @@ function getPermissionsImplementation(
   end,
   { getPermissionsForOrigin },
 ) {
-  // caveat values are frozen and must be cloned before modified
+  // permissions are frozen and must be cloned before modified
   const permissions = { ...getPermissionsForOrigin() } || {};
   const caip25Endowment = permissions[Caip25EndowmentPermissionName];
   const caip25Caveat = caip25Endowment?.caveats.find(
@@ -44,9 +44,7 @@ function getPermissionsImplementation(
   );
   delete permissions[Caip25EndowmentPermissionName];
 
-  if (process.env.BARAD_DUR && caip25Caveat) {
-    delete permissions[RestrictedMethods.eth_accounts];
-
+  if (caip25Caveat) {
     const ethAccounts = [];
     const sessionScopes = mergeScopes(
       caip25Caveat.value.requiredScopes,
@@ -78,6 +76,8 @@ function getPermissionsImplementation(
         ],
       };
     }
+
+    // TODO: Handle permittedChains
   }
 
   res.result = Object.values(permissions);

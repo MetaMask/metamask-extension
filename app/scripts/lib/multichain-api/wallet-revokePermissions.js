@@ -1,6 +1,7 @@
 import { invalidParams, MethodNames } from '@metamask/permission-controller';
 import { isNonEmptyArray } from '@metamask/utils';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
+import { PermissionNames } from '../../controllers/permissions';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -47,7 +48,7 @@ function revokePermissionsImplementation(
 
   // For now, this API revokes the entire permission key
   // even if caveats are specified.
-  const permissionKeys = Object.keys(param).filter(
+  let permissionKeys = Object.keys(param).filter(
     (name) => name !== Caip25EndowmentPermissionName,
   );
 
@@ -55,7 +56,19 @@ function revokePermissionsImplementation(
     return end(invalidParams({ data: { request: req } }));
   }
 
-  revokePermissionsForOrigin(permissionKeys);
+  const shouldRevokeEthAccounts = permissionKeys.includes(
+    RestrictedMethods.eth_accounts,
+  );
+  permissionKeys = permissionKeys.filter(
+    (name) => name !== PermissionNames.eth_accounts,
+  );
+
+  if (
+    (permissionKeys.length === 0 && !shouldRevokeEthAccounts) ||
+    permissionKeys.length > 0
+  ) {
+    revokePermissionsForOrigin(permissionKeys);
+  }
 
   const permissions = getPermissionsForOrigin(origin) || {};
   const caip25Endowment = permissions?.[Caip25EndowmentPermissionName];
@@ -63,11 +76,14 @@ function revokePermissionsImplementation(
     ({ type }) => type === Caip25CaveatType,
   );
 
-  if (
-    process.env.BARAD_DUR &&
-    permissionKeys.includes(RestrictedMethods.eth_accounts) &&
-    caip25Caveat
-  ) {
+  // TODO: handle permittedChains
+  if (shouldRevokeEthAccounts && caip25Caveat) {
+    if (caip25Caveat.value.isMultichainOrigin) {
+      return end(
+        new Error('cannot modify permission granted from multichain flow'),
+      ); // TODO: better error
+    }
+
     // should we remove accounts from required scopes? if so doesn't that mean we should
     // just revoke the caip25Endowment entirely?
 
