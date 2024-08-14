@@ -102,6 +102,7 @@ export type CombinedBackgroundAndReduxState = RootReducerReturnType & {
   confirmAlerts: RootReducerReturnType['confirmAlerts'];
   confirmTransaction: RootReducerReturnType['confirmTransaction'];
   swaps: RootReducerReturnType['swaps'];
+  bridge: RootReducerReturnType['bridge'];
   gas: RootReducerReturnType['gas'];
   localeMessages: RootReducerReturnType['localeMessages'];
 };
