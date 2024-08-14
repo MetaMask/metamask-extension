@@ -33,11 +33,10 @@ const SECURITY_ALERT_RESPONSE_ERROR = {
   reason: BlockaidReason.errored,
 };
 
-type PPOMRequest = Exclude<JsonRpcRequest, 'method' | 'params'> & {
+type PPOMRequest = Omit<JsonRpcRequest, 'method' | 'params'> & {
   method: typeof METHOD_SEND_TRANSACTION;
   params: [TransactionParams];
 };
-
 export async function validateRequestWithPPOM({
   ppomController,
   request,
@@ -146,7 +145,7 @@ function normalizePPOMRequest(
     return request;
   }
 
-  const transactionParams = request.params[0] ?? {};
+  const transactionParams = request.params[0];
   const normalizedParams = normalizeTransactionParams(transactionParams);
 
   return {
