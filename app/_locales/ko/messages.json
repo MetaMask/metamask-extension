@@ -275,7 +275,7 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "새 계정 추가"
+    "message": "새 이더리움 계정 추가"
   },
   "addNewToken": {
     "message": "신규 토큰 추가"
@@ -1552,6 +1552,9 @@
     "message": "$1 활성화",
     "description": "$1 is a token symbol, e.g. ETH"
   },
+  "enableTokenAutoDetection": {
+    "message": "토큰 자동 감지 활성화"
+  },
   "enabled": {
     "message": "활성화됨"
   },
@@ -2495,9 +2498,6 @@
     "message": "다른 사람이 이 화면을 보고 있지는 않은지 확인하세요.",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "설정에서 관리"
-  },
   "max": {
     "message": "최대"
   },
@@ -2931,6 +2931,9 @@
   "noSnaps": {
     "message": "설치된 스냅이 없습니다"
   },
+  "noThanks": {
+    "message": "괜찮습니다"
+  },
   "noTransactions": {
     "message": "트랜잭션이 없습니다."
   },
@@ -3100,7 +3103,7 @@
   },
   "notificationTransactionSuccessView": {
     "message": "$1에서 보기",
-    "description": "Additional content in browser notification that appears when a transaction is confirmed and has a block explorer URL"
+    "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
   "notifications": {
     "message": "알림"
@@ -5878,7 +5881,7 @@
     "message": "NFT 자동 감지"
   },
   "useNftDetectionDescriptionText": {
-    "message": "MetaMask가 제삼자 서비스(예: OpenSea)를 이용하여 회원님의 NFT를 추가할 수 있도록 합니다. NFT를 자동 감지하면 이러한 서비스에 IP와 계정 주소가 노출됩니다. 이 기능을 켜면 IP 주소가 이더리움 주소와 연결되고 사기꾼이 에어드랍한 가짜 NFT가 표시될 수 있습니다. 이러한 위험을 피하기 위해 수동으로 토큰을 추가할 수 있습니다."
+    "message": "MetaMask가 제삼자 서비스를 이용하여 회원님의 NFT를 추가할 수 있도록 합니다. NFT를 자동 감지하면 이러한 서비스에 IP와 계정 주소가 노출됩니다. 이 기능을 켜면 IP 주소가 이더리움 주소와 연결되고 사기꾼이 에어드랍한 가짜 NFT가 표시될 수 있습니다. 이러한 위험을 피하기 위해 수동으로 토큰을 추가할 수 있습니다."
   },
   "usePhishingDetection": {
     "message": "피싱 감지 사용"
