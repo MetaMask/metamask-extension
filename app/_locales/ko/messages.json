@@ -550,9 +550,6 @@
     "message": "$1 및 $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
-  "announcements": {
-    "message": "공지"
-  },
   "appDescription": {
     "message": "브라우저의 이더리움 지갑",
     "description": "The description of the application"
@@ -1548,30 +1545,6 @@
   },
   "details": {
     "message": "세부 정보"
-  },
-  "developerOptions": {
-    "message": "개발자 옵션"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "현재 개발 중인 확인 재설계 기능을 활성화 또는 비활성화합니다."
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "확인 재설계"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "네트워크 메뉴를 새로운 디자인으로 전환"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "네트워크 메뉴 디자인 변경"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "온보딩과 관련된 다양한 상태를 초기화하고 '지갑 보안' 온보딩 페이지로 리디렉션합니다."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "session.storage에 타임스탬프가 지속적으로 저장됩니다"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” 유형은 오리지널 가스비를 최소 10% 인상해야 하는 기준에 미치지 못하므로 비활성화되었습니다.",
@@ -3517,9 +3490,6 @@
   "onboardedMetametricsTitle": {
     "message": "사용자 경험을 개선할 수 있도록 도와주세요"
   },
-  "onboarding": {
-    "message": "온보딩"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "IPFS 게이트웨이를 사용하면 타사 호스팅 데이터에 액세스하여 이를 볼 수 있습니다. 사용자 지정 IPFS 게이트웨이를 추가하셔도 좋고 기본 설정을 계속 사용하셔도 됩니다."
   },
@@ -4385,9 +4355,6 @@
   "reset": {
     "message": "재설정"
   },
-  "resetStates": {
-    "message": "상태 초기화"
-  },
   "resetWallet": {
     "message": "지갑 초기화"
   },
@@ -4706,9 +4673,6 @@
   },
   "sepolia": {
     "message": "Sepolia 테스트 네트워크"
-  },
-  "serviceWorkerKeepAlive": {
-    "message": "서비스 작업자 유지"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "이와 같이 MetaMask는 신용있는 타사의 서비스를 사용하여 제품 가용성과 안전성을 향상합니다."
@@ -5272,9 +5236,6 @@
   },
   "stateLogsDescription": {
     "message": "상태 로그에 공개 계정 주소와 전송된 트랜잭션이 있습니다."
-  },
-  "states": {
-    "message": "상태"
   },
   "status": {
     "message": "상태"
