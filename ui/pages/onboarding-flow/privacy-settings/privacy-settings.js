@@ -210,9 +210,11 @@ export default function PrivacySettings() {
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
       properties: {
+        is_profile_syncing_enabled: profileSyncingProps.isProfileSyncingEnabled,
         show_incoming_tx: incomingTransactionsPreferences,
         use_phising_detection: usePhishingDetection,
         turnon_token_detection: turnOnTokenDetection,
+        settings_group: 'advanced',
       },
     });
 
@@ -226,6 +228,16 @@ export default function PrivacySettings() {
           name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
           turnOffProfileSyncing: () => {
             profileSyncingProps.setIsProfileSyncingEnabled(false);
+            trackEvent({
+              category: MetaMetricsEventCategory.Onboarding,
+              event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
+              properties: {
+                settings_group: 'advanced',
+                settings_type: 'profile_syncing',
+                old_value: true,
+                new_value: false,
+              },
+            });
           },
         }),
       );
