@@ -154,16 +154,16 @@ __metadata:
   linkType: hard
 
 "@babel/eslint-parser@npm:^7.23.10":
-  version: 7.23.10
-  resolution: "@babel/eslint-parser@npm:7.23.10"
+  version: 7.25.1
+  resolution: "@babel/eslint-parser@npm:7.25.1"
   dependencies:
     "@nicolo-ribaudo/eslint-scope-5-internals": "npm:5.1.1-v1"
     eslint-visitor-keys: "npm:^2.1.0"
     semver: "npm:^6.3.1"
   peerDependencies:
     "@babel/core": ^7.11.0
-    eslint: ^7.5.0 || ^8.0.0
-  checksum: 10/eb62ad6a1098836331317be978ebd5991a9257d58118062f252b002e995b4f35b76a5dc976b07d84d21e64c8395587a044c5e6e444b3b69ab53e50a18facf2af
+    eslint: ^7.5.0 || ^8.0.0 || ^9.0.0
+  checksum: 10/9a2ddab3accd391a1eb95cb1ea655daa8603515d0f17081c542db8621c6bbbc65aa3b9b96b779854eed80cc8664a8969d7ac54479e8738876c0be5d26fd66efa
   languageName: node
   linkType: hard
 
@@ -4817,9 +4817,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-watcher@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "@metamask/account-watcher@npm:4.0.2"
+"@metamask/account-watcher@npm:^4.0.3":
+  version: 4.0.3
+  resolution: "@metamask/account-watcher@npm:4.0.3"
   dependencies:
     "@ethereumjs/tx": "npm:^5.1.0"
     "@ethereumjs/util": "npm:^9.0.1"
@@ -4828,7 +4828,7 @@ __metadata:
     "@metamask/utils": "npm:^8.3.0"
     ethers: "npm:^5.7.2"
     uuid: "npm:^9.0.0"
-  checksum: 10/661dd1758ba9c90a14b40b5156114bbbd5a6917ab8e5aa202e9599fdb0bff4c03c4050c564c573685de217549e971403b119919421dd039e06dffeb2c51f3e62
+  checksum: 10/16b7991446f586c2a78f8f520de5ca2482514f5803e04f24caee1c729b61c3403370d3fe19134ce11d8d78dd97699f6e3c3d55ce56260c17dd6714eaa16e4924
   languageName: node
   linkType: hard
 
@@ -26046,7 +26046,7 @@ __metadata:
     "@metamask-institutional/transaction-update": "npm:^0.2.5"
     "@metamask-institutional/types": "npm:^1.1.0"
     "@metamask/abi-utils": "npm:^2.0.2"
-    "@metamask/account-watcher": "npm:^4.0.2"
+    "@metamask/account-watcher": "npm:^4.0.3"
     "@metamask/accounts-controller": "npm:^17.2.0"
     "@metamask/address-book-controller": "npm:^4.0.1"
     "@metamask/announcement-controller": "npm:^6.1.0"
