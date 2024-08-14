@@ -16,7 +16,7 @@ const mockStore = configureMockStore([thunk]);
 
 describe('FundingMethodModal', () => {
   let store = configureMockStore([thunk])(mockState);
-  let openBuyCryptoInPdapp: jest.Mock<Function>;
+  let openBuyCryptoInPdapp: jest.Mock<() => void>;
 
   beforeEach(() => {
     store = mockStore(mockState);
