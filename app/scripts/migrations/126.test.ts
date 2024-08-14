@@ -14,7 +14,7 @@ describe(`migration #${version}`, () => {
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('Does nothing if providerConfig in not the network controller state', async () => {
+  it('Does nothing if `providerConfig` is not in the network controller state', async () => {
     const oldState = {
       NetworkController: {
         selectedNetworkClientId: 'mainnet',
@@ -26,7 +26,7 @@ describe(`migration #${version}`, () => {
       data: oldState,
     });
 
-    expect(transformedState.data).toEqual(oldState);
+    expect(transformedState.data).toStrictEqual(oldState);
   });
 
   it('Removes providerConfig from the network controller state', async () => {
@@ -44,7 +44,7 @@ describe(`migration #${version}`, () => {
       data: oldState,
     });
 
-    delete oldState?.NetworkController?.providerConfig;
-    expect(transformedState.data).toEqual(oldState);
+    delete oldState.NetworkController.providerConfig;
+    expect(transformedState.data).toStrictEqual(oldState);
   });
 });
