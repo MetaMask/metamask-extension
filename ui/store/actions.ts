@@ -452,7 +452,6 @@ export function addNewAccount(): ThunkAction<
 > {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
-    console.time('actions/addNewAccount');
     const oldAccounts = getInternalAccounts(getState()).filter(
       (internalAccount) =>
         internalAccount.metadata.keyring.type === KeyringTypes.hd,
@@ -472,7 +471,6 @@ export function addNewAccount(): ThunkAction<
     }
 
     await forceUpdateMetamaskState(dispatch);
-    console.timeEnd('actions/addNewAccount');
     return addedAccountAddress;
   };
 }
