@@ -480,8 +480,8 @@ const SETTINGS_CONSTANTS = [
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
     tabMessage: (t) => t('developerOptions'),
-    sectionMessage: (t) => t('resetStates'),
-    descriptionMessage: (t) => t('resetStates'),
+    sectionMessage: 'Reset States',
+    descriptionMessage: 'Reset States',
     route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states`,
     icon: IconName.CodeCircle,
   },
@@ -489,9 +489,9 @@ const SETTINGS_CONSTANTS = [
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
     tabMessage: (t) => t('developerOptions'),
-    sectionMessage: (t) => t('announcements'),
-    descriptionMessage: (t) =>
-      t('developerOptionsResetStatesAnnouncementsDescription'),
+    sectionMessage: 'Announcements',
+    descriptionMessage:
+      "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal.",
     route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-announcements`,
     icon: IconName.CodeCircle,
   },
@@ -499,8 +499,9 @@ const SETTINGS_CONSTANTS = [
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
     tabMessage: (t) => t('developerOptions'),
-    sectionMessage: (t) => t('serviceWorkerKeepAlive'),
-    descriptionMessage: (t) => t('developerOptionsResetStatesOnboarding'),
+    sectionMessage: 'Service Worker Keep Alive',
+    descriptionMessage:
+      'Resets various states related to onboarding and redirects to the "Secure Your Wallet" onboarding page.',
     route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-onboarding`,
     icon: IconName.CodeCircle,
   },
@@ -508,8 +509,9 @@ const SETTINGS_CONSTANTS = [
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
     tabMessage: (t) => t('developerOptions'),
-    sectionMessage: (t) => t('serviceWorkerKeepAlive'),
-    descriptionMessage: (t) => t('developerOptionsServiceWorkerKeepAlive'),
+    sectionMessage: 'Service Worker Keep Alive',
+    descriptionMessage:
+      'Results in a timestamp being continuously saved to session.storage',
     route: `${DEVELOPER_OPTIONS_ROUTE}#service-worker-keep-alive`,
     icon: IconName.CodeCircle,
   },
