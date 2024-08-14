@@ -100,15 +100,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     name?: string,
     value?: Json,
   ) => {
-    handleSnapRequest<{
-      event: {
-        type: UserInputEventType;
-        name?: string;
-        value?: Json;
-      };
-      id: string;
-      context: Json;
-    }>({
+    handleSnapRequest<Parameters<HandleEvent>[0]>({
       snapId,
       origin: '',
       handler: 'onUserInput',
@@ -200,15 +192,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   };
 
   const uploadFile = (name: string, file: File | null) => {
-    handleSnapRequest<{
-      event: {
-        type: UserInputEventType;
-        name?: string;
-        file?: File;
-      };
-      id: string;
-      context: Json;
-    }>({
+    handleSnapRequest<Parameters<HandleEvent>[0]>({
       snapId,
       origin: '',
       handler: 'onUserInput',
