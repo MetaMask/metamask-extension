@@ -120,13 +120,7 @@ async function addEthereumChainHandler<
 ): Promise<void> {
   let validParams;
   try {
-    validParams = ((params) => validateAddEthereumChainParams(params))(
-      req.params[0],
-    ) as Omit<
-      ReturnType<typeof validateAddEthereumChainParams>,
-      'firstValidBlockExplorerUrl' | 'firstValidRPCUrl'
-    > &
-      Record<'firstValidBlockExplorerUrl' | 'firstValidRPCUrl', string>;
+    validParams = validateAddEthereumChainParams(req.params[0]);
   } catch (error: unknown) {
     // TODO: Remove at `@metamask/json-rpc-engine@8.0.2`: `JsonRpcEngineEndCallback` (type of `end`), is redefined from `(error?: JsonRpcEngineCallbackError) => void` to `(error?: unknown) => void`.
     // @ts-expect-error intentionally passing unhandled error of any type into `end`
@@ -171,6 +165,13 @@ async function addEthereumChainHandler<
 
   if (!existingNetwork || existingNetwork.rpcUrl !== firstValidRPCUrl) {
     try {
+      if (
+        firstValidBlockExplorerUrl === null ||
+        firstValidBlockExplorerUrl === undefined
+      ) {
+        throw new Error('firstValidBlockExplorerUrl is not found.');
+      }
+
       await requestUserApproval({
         origin,
         type: ApprovalType.AddEthereumChain,
