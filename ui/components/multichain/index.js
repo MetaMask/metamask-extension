@@ -49,3 +49,4 @@ export { NotificationListItemSnap } from './notification-list-item-snap';
 export { NotificationsTagCounter } from './notifications-tag-counter';
 export { Toast, ToastContainer } from './toast';
 export { PermissionDetailsModal } from './permission-details-modal';
+export { ReceiveModal } from './receive-modal';

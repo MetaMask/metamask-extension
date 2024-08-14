@@ -882,6 +882,12 @@
     "message": "Buy $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
+  "buyCrypto": {
+    "message": "Buy crypto"
+  },
+  "buyFirstCrypto": {
+    "message": "Buy your first crypto with a debit or credit card."
+  },
   "buyMoreAsset": {
     "message": "Buy more $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1533,6 +1539,9 @@
   "deposit": {
     "message": "Deposit"
   },
+  "depositCrypto": {
+    "message": "Deposit crypto from another account with a wallet address or QR code."
+  },
   "deprecatedGoerliNtwrkMsg": {
     "message": "Because of updates to the Ethereum system, the Goerli test network will be phased out soon."
   },
@@ -2174,6 +2183,12 @@
   "genericExplorerView": {
     "message": "View account on $1"
   },
+  "getStarted": {
+    "message": "Get Started"
+  },
+  "getStartedByFundingWallet": {
+    "message": "Get started by adding some crypto to your wallet."
+  },
   "getStartedWithNFTs": {
     "message": "Get $1 to buy NFTs",
     "description": "$1 is the token symbol"
@@ -2746,6 +2761,9 @@
   },
   "link": {
     "message": "Link"
+  },
+  "linkCentralizedExchanges": {
+    "message": "Link your Coinbase or Binance accounts to transfer crypto to MetaMask for free."
   },
   "links": {
     "message": "Links"
@@ -4266,6 +4284,9 @@
   "receive": {
     "message": "Receive"
   },
+  "receiveCrypto": {
+    "message": "Receive crypto"
+  },
   "receiveTokensCamelCase": {
     "message": "Receive tokens"
   },
@@ -4682,6 +4703,9 @@
   },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Turn on Display NFT Media"
+  },
+  "selectFundingMethod": {
+    "message": "Select a funding method"
   },
   "selectHdPath": {
     "message": "Select HD path"
@@ -6153,6 +6177,9 @@
   },
   "transfer": {
     "message": "Transfer"
+  },
+  "transferCrypto": {
+    "message": "Transfer crypto"
   },
   "transferFrom": {
     "message": "Transfer from"
