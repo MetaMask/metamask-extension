@@ -57,7 +57,6 @@ type TemporaryBackgroundState = {
   transactions: TransactionMeta[];
   ledgerTransportType: LedgerTransportTypes;
   unapprovedDecryptMsgs: MessagesIndexedById;
-  unapprovedMsgs: MessagesIndexedById;
   unapprovedPersonalMsgs: MessagesIndexedById;
   unapprovedTypedMessages: MessagesIndexedById;
   networksMetadata: {
@@ -85,6 +84,7 @@ type TemporaryBackgroundState = {
     };
     selectedAccount: string;
   };
+  keyrings: { type: string; accounts: string[] }[];
 };
 
 type RootReducerReturnType = ReturnType<typeof rootReducer>;

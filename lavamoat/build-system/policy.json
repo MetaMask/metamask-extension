@@ -105,8 +105,8 @@
         "define": true
       },
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true
       }
     },
     "@babel/core>@babel/generator": {
@@ -117,8 +117,8 @@
       "packages": {
         "@babel/core>@babel/generator>jsesc": true,
         "@babel/core>@babel/types": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true
       }
     },
     "@babel/core>@babel/generator>jsesc": {
@@ -136,7 +136,7 @@
         "@babel/core>@babel/helper-compilation-targets>semver": true,
         "@babel/preset-env>@babel/compat-data": true,
         "@babel/preset-env>@babel/helper-validator-option": true,
-        "webpack>browserslist": true
+        "browserslist": true
       }
     },
     "@babel/core>@babel/helper-compilation-targets>lru-cache": {
@@ -1161,7 +1161,7 @@
         "@lavamoat/lavapack>combine-source-map>inline-source-map": true,
         "@lavamoat/lavapack>combine-source-map>lodash.memoize": true,
         "@lavamoat/lavapack>combine-source-map>source-map": true,
-        "gulp-sourcemaps>convert-source-map": true
+        "nyc>convert-source-map": true
       }
     },
     "@lavamoat/lavapack>combine-source-map>inline-source-map": {
@@ -1351,10 +1351,10 @@
         "autoprefixer>caniuse-lite": true,
         "autoprefixer>fraction.js": true,
         "autoprefixer>normalize-range": true,
+        "browserslist": true,
         "postcss": true,
         "postcss>picocolors": true,
-        "stylelint>postcss-value-parser": true,
-        "webpack>browserslist": true
+        "stylelint>postcss-value-parser": true
       }
     },
     "babelify": {
@@ -1668,30 +1668,6 @@
     "browserify>duplexer2>readable-stream>string_decoder": {
       "packages": {
         "browserify>duplexer2>readable-stream>safe-buffer": true
-      }
-    },
-    "browserify>glob": {
-      "builtin": {
-        "assert": true,
-        "events.EventEmitter": true,
-        "fs": true,
-        "path.join": true,
-        "path.resolve": true,
-        "util": true
-      },
-      "globals": {
-        "console.error": true,
-        "process.cwd": true,
-        "process.nextTick": true,
-        "process.platform": true
-      },
-      "packages": {
-        "@metamask/object-multiplex>once": true,
-        "eslint>minimatch": true,
-        "gulp-watch>path-is-absolute": true,
-        "mocha>glob>fs.realpath": true,
-        "mocha>glob>inflight": true,
-        "pumpify>inherits": true
       }
     },
     "browserify>has": {
@@ -2042,6 +2018,28 @@
         "watchify>xtend": true
       }
     },
+    "browserslist": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "fs.statSync": true,
+        "path.basename": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.relative": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "console.warn": true,
+        "process.env": true,
+        "process.versions.node": true
+      },
+      "packages": {
+        "autoprefixer>caniuse-lite": true,
+        "browserslist>electron-to-chromium": true,
+        "browserslist>node-releases": true
+      }
+    },
     "chalk": {
       "packages": {
         "chalk>ansi-styles": true,
@@ -2337,7 +2335,7 @@
         "setTimeout": true
       },
       "packages": {
-        "browserify>glob": true
+        "nyc>glob": true
       }
     },
     "depcheck>@babel/traverse": {
@@ -2576,11 +2574,11 @@
         "process.cwd": true
       },
       "packages": {
-        "browserify>glob": true,
         "del>is-glob": true,
         "depcheck>resolve": true,
         "eslint-plugin-import>tsconfig-paths": true,
-        "nock>debug": true
+        "nock>debug": true,
+        "nyc>glob": true
       }
     },
     "eslint-plugin-import": {
@@ -3126,6 +3124,7 @@
         "path.dirname": true
       },
       "globals": {
+        "__dirname": true,
         "__filename": true
       },
       "packages": {
@@ -3287,8 +3286,22 @@
         "__dirname": true
       },
       "packages": {
-        "del>rimraf": true,
-        "eslint>file-entry-cache>flat-cache>flatted": true
+        "eslint>file-entry-cache>flat-cache>flatted": true,
+        "eslint>file-entry-cache>flat-cache>rimraf": true
+      }
+    },
+    "eslint>file-entry-cache>flat-cache>rimraf": {
+      "builtin": {
+        "assert": true,
+        "fs": true,
+        "path.join": true
+      },
+      "globals": {
+        "process.platform": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "nyc>glob": true
       }
     },
     "eslint>glob-parent": {
@@ -3416,30 +3429,6 @@
       "packages": {
         "chokidar>anymatch>picomatch": true,
         "chokidar>braces": true
-      }
-    },
-    "firebase>@firebase/database>faye-websocket>websocket-driver": {
-      "builtin": {
-        "crypto.createHash": true,
-        "crypto.randomBytes": true,
-        "events.EventEmitter": true,
-        "stream.Stream": true,
-        "url.parse": true,
-        "util.inherits": true
-      },
-      "globals": {
-        "Buffer": true,
-        "process.version.match": true
-      },
-      "packages": {
-        "firebase>@firebase/database>faye-websocket>websocket-driver>http-parser-js": true,
-        "firebase>@firebase/database>faye-websocket>websocket-driver>websocket-extensions": true
-      }
-    },
-    "firebase>@firebase/database>faye-websocket>websocket-driver>http-parser-js": {
-      "builtin": {
-        "assert.equal": true,
-        "assert.ok": true
       }
     },
     "fs-extra": {
@@ -3767,7 +3756,7 @@
         "setInterval": true
       },
       "packages": {
-        "firebase>@firebase/database>faye-websocket>websocket-driver": true
+        "webpack-dev-server>sockjs>websocket-driver": true
       }
     },
     "gulp-postcss": {
@@ -3934,13 +3923,13 @@
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map": true,
         "gulp-sourcemaps>@gulp-sourcemaps/map-sources": true,
         "gulp-sourcemaps>acorn": true,
-        "gulp-sourcemaps>convert-source-map": true,
         "gulp-sourcemaps>css": true,
         "gulp-sourcemaps>debug-fabulous": true,
         "gulp-sourcemaps>detect-newline": true,
         "gulp-sourcemaps>source-map": true,
         "gulp-sourcemaps>strip-bom-string": true,
-        "gulp-sourcemaps>through2": true
+        "gulp-sourcemaps>through2": true,
+        "nyc>convert-source-map": true
       }
     },
     "gulp-sourcemaps>@gulp-sourcemaps/identity-map": {
@@ -4050,15 +4039,6 @@
     "gulp-sourcemaps>acorn": {
       "globals": {
         "define": true
-      }
-    },
-    "gulp-sourcemaps>convert-source-map": {
-      "builtin": {
-        "fs.readFileSync": true,
-        "path.join": true
-      },
-      "globals": {
-        "Buffer.from": true
       }
     },
     "gulp-sourcemaps>css": {
@@ -5157,7 +5137,7 @@
         "gulp>gulp-cli>matchdep>micromatch>regex-not": true,
         "gulp>gulp-cli>matchdep>micromatch>snapdragon": true,
         "gulp>gulp-cli>matchdep>micromatch>to-regex": true,
-        "gulp>gulp-cli>replace-homedir>is-absolute>is-windows": true
+        "nyc>spawn-wrap>is-windows": true
       }
     },
     "gulp>gulp-cli>matchdep>micromatch>nanomatch>define-property": {
@@ -5442,7 +5422,7 @@
     "gulp>gulp-cli>replace-homedir>is-absolute": {
       "packages": {
         "gulp>gulp-cli>replace-homedir>is-absolute>is-relative": true,
-        "gulp>gulp-cli>replace-homedir>is-absolute>is-windows": true
+        "nyc>spawn-wrap>is-windows": true
       }
     },
     "gulp>gulp-cli>replace-homedir>is-absolute>is-relative": {
@@ -5453,13 +5433,6 @@
     "gulp>gulp-cli>replace-homedir>is-absolute>is-relative>is-unc-path": {
       "packages": {
         "gulp>gulp-cli>replace-homedir>is-absolute>is-relative>is-unc-path>unc-path-regex": true
-      }
-    },
-    "gulp>gulp-cli>replace-homedir>is-absolute>is-windows": {
-      "globals": {
-        "define": true,
-        "isWindows": "write",
-        "process": true
       }
     },
     "gulp>undertaker": {
@@ -5682,7 +5655,6 @@
         "process.nextTick": true
       },
       "packages": {
-        "browserify>glob": true,
         "eslint>glob-parent": true,
         "gulp>glob-watcher>is-negated-glob": true,
         "gulp>vinyl-fs>glob-stream>ordered-read-streams": true,
@@ -5690,6 +5662,7 @@
         "gulp>vinyl-fs>glob-stream>readable-stream": true,
         "gulp>vinyl-fs>glob-stream>to-absolute-glob": true,
         "gulp>vinyl-fs>glob-stream>unique-stream": true,
+        "nyc>glob": true,
         "react-markdown>unified>extend": true,
         "vinyl>remove-trailing-separator": true
       }
@@ -6176,11 +6149,11 @@
       },
       "packages": {
         "del>graceful-fs": true,
-        "gulp-sourcemaps>convert-source-map": true,
         "gulp-watch>anymatch>normalize-path": true,
         "gulp>vinyl-fs>remove-bom-buffer": true,
         "gulp>vinyl-fs>vinyl-sourcemap>append-buffer": true,
         "gulp>vinyl-fs>vinyl-sourcemap>now-and-later": true,
+        "nyc>convert-source-map": true,
         "vinyl": true
       }
     },
@@ -6476,7 +6449,7 @@
       },
       "packages": {
         "mocha>find-up>locate-path": true,
-        "mocha>find-up>path-exists": true
+        "nyc>find-up>path-exists": true
       }
     },
     "mocha>find-up>locate-path": {
@@ -6498,47 +6471,6 @@
     "mocha>find-up>locate-path>p-locate": {
       "packages": {
         "@storybook/test-runner>jest-circus>p-limit": true
-      }
-    },
-    "mocha>find-up>path-exists": {
-      "builtin": {
-        "fs.access": true,
-        "fs.accessSync": true,
-        "util.promisify": true
-      }
-    },
-    "mocha>glob>fs.realpath": {
-      "builtin": {
-        "fs.lstat": true,
-        "fs.lstatSync": true,
-        "fs.readlink": true,
-        "fs.readlinkSync": true,
-        "fs.realpath": true,
-        "fs.realpathSync": true,
-        "fs.stat": true,
-        "fs.statSync": true,
-        "path.normalize": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "console.error": true,
-        "console.trace": true,
-        "process.env.NODE_DEBUG": true,
-        "process.nextTick": true,
-        "process.noDeprecation": true,
-        "process.platform": true,
-        "process.throwDeprecation": true,
-        "process.traceDeprecation": true,
-        "process.version": true
-      }
-    },
-    "mocha>glob>inflight": {
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "@metamask/object-multiplex>once": true,
-        "@metamask/object-multiplex>once>wrappy": true
       }
     },
     "mocha>log-symbols": {
@@ -6602,6 +6534,105 @@
     },
     "node-sass": {
       "native": true
+    },
+    "nyc>convert-source-map": {
+      "builtin": {
+        "fs.readFileSync": true,
+        "path.join": true
+      },
+      "globals": {
+        "Buffer.from": true
+      }
+    },
+    "nyc>find-up>path-exists": {
+      "builtin": {
+        "fs.access": true,
+        "fs.accessSync": true,
+        "util.promisify": true
+      }
+    },
+    "nyc>glob": {
+      "builtin": {
+        "assert": true,
+        "events.EventEmitter": true,
+        "fs": true,
+        "path.join": true,
+        "path.resolve": true,
+        "util": true
+      },
+      "globals": {
+        "console.error": true,
+        "process.cwd": true,
+        "process.nextTick": true,
+        "process.platform": true
+      },
+      "packages": {
+        "@metamask/object-multiplex>once": true,
+        "eslint>minimatch": true,
+        "gulp-watch>path-is-absolute": true,
+        "nyc>glob>fs.realpath": true,
+        "nyc>glob>inflight": true,
+        "pumpify>inherits": true
+      }
+    },
+    "nyc>glob>fs.realpath": {
+      "builtin": {
+        "fs.lstat": true,
+        "fs.lstatSync": true,
+        "fs.readlink": true,
+        "fs.readlinkSync": true,
+        "fs.realpath": true,
+        "fs.realpathSync": true,
+        "fs.stat": true,
+        "fs.statSync": true,
+        "path.normalize": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "console.error": true,
+        "console.trace": true,
+        "process.env.NODE_DEBUG": true,
+        "process.nextTick": true,
+        "process.noDeprecation": true,
+        "process.platform": true,
+        "process.throwDeprecation": true,
+        "process.traceDeprecation": true,
+        "process.version": true
+      }
+    },
+    "nyc>glob>inflight": {
+      "globals": {
+        "process.nextTick": true
+      },
+      "packages": {
+        "@metamask/object-multiplex>once": true,
+        "@metamask/object-multiplex>once>wrappy": true
+      }
+    },
+    "nyc>resolve-from": {
+      "builtin": {
+        "fs.realpathSync": true,
+        "module._nodeModulePaths": true,
+        "module._resolveFilename": true,
+        "path.join": true,
+        "path.resolve": true
+      }
+    },
+    "nyc>signal-exit": {
+      "builtin": {
+        "assert.equal": true,
+        "events": true
+      },
+      "globals": {
+        "process": true
+      }
+    },
+    "nyc>spawn-wrap>is-windows": {
+      "globals": {
+        "define": true,
+        "isWindows": "write",
+        "process": true
+      }
     },
     "nyc>yargs>set-blocking": {
       "globals": {
@@ -7940,6 +7971,7 @@
         "lodash": true,
         "mocha>log-symbols": true,
         "nock>debug": true,
+        "nyc>resolve-from": true,
         "stylelint>@stylelint/postcss-css-in-js": true,
         "stylelint>@stylelint/postcss-markdown": true,
         "stylelint>autoprefixer": true,
@@ -7967,7 +7999,6 @@
         "stylelint>postcss-selector-parser": true,
         "stylelint>postcss-syntax": true,
         "stylelint>postcss-value-parser": true,
-        "stylelint>resolve-from": true,
         "stylelint>specificity": true,
         "stylelint>style-search": true,
         "stylelint>sugarss": true,
@@ -8084,11 +8115,11 @@
       "packages": {
         "autoprefixer>caniuse-lite": true,
         "autoprefixer>normalize-range": true,
+        "browserslist": true,
         "stylelint>autoprefixer>num2fraction": true,
         "stylelint>postcss": true,
         "stylelint>postcss-value-parser": true,
-        "stylelint>postcss>picocolors": true,
-        "webpack>browserslist": true
+        "stylelint>postcss>picocolors": true
       }
     },
     "stylelint>cosmiconfig": {
@@ -8168,7 +8199,7 @@
         "setTimeout": true
       },
       "packages": {
-        "browserify>glob": true
+        "nyc>glob": true
       }
     },
     "stylelint>file-entry-cache>flat-cache>write": {
@@ -8470,15 +8501,6 @@
         "process.platform": true
       }
     },
-    "stylelint>resolve-from": {
-      "builtin": {
-        "fs.realpathSync": true,
-        "module._nodeModulePaths": true,
-        "module._resolveFilename": true,
-        "path.join": true,
-        "path.resolve": true
-      }
-    },
     "stylelint>specificity": {
       "globals": {
         "define": true
@@ -8590,18 +8612,9 @@
       },
       "packages": {
         "eslint>imurmurhash": true,
+        "nyc>signal-exit": true,
         "stylelint>write-file-atomic>is-typedarray": true,
-        "stylelint>write-file-atomic>signal-exit": true,
         "stylelint>write-file-atomic>typedarray-to-buffer": true
-      }
-    },
-    "stylelint>write-file-atomic>signal-exit": {
-      "builtin": {
-        "assert.equal": true,
-        "events": true
-      },
-      "globals": {
-        "process": true
       }
     },
     "stylelint>write-file-atomic>typedarray-to-buffer": {
@@ -8633,10 +8646,31 @@
         "terser>@jridgewell/source-map": true
       }
     },
+    "terser-webpack-plugin>@jridgewell/trace-mapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
+      }
+    },
+    "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
+      "globals": {
+        "define": true
+      }
+    },
+    "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
+      }
+    },
     "terser>@jridgewell/source-map": {
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true
       }
     },
     "terser>@jridgewell/source-map>@jridgewell/gen-mapping": {
@@ -8644,33 +8678,12 @@
         "define": true
       },
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true
       }
     },
     "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": {
-      "globals": {
-        "define": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "define": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/trace-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
       "globals": {
         "define": true
       }
@@ -8773,8 +8786,8 @@
         "define": true
       },
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
       }
     },
     "ts-node>acorn-walk": {
@@ -9139,26 +9152,28 @@
         "watchify>xtend": true
       }
     },
-    "webpack>browserslist": {
+    "webpack-dev-server>sockjs>websocket-driver": {
       "builtin": {
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "fs.statSync": true,
-        "path.basename": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.relative": true,
-        "path.resolve": true
+        "crypto.createHash": true,
+        "crypto.randomBytes": true,
+        "events.EventEmitter": true,
+        "stream.Stream": true,
+        "url.parse": true,
+        "util.inherits": true
       },
       "globals": {
-        "console.warn": true,
-        "process.env": true,
-        "process.versions.node": true
+        "process.version": true
       },
       "packages": {
-        "autoprefixer>caniuse-lite": true,
-        "webpack>browserslist>electron-to-chromium": true,
-        "webpack>browserslist>node-releases": true
+        "koa>content-disposition>safe-buffer": true,
+        "webpack-dev-server>sockjs>websocket-driver>http-parser-js": true,
+        "webpack-dev-server>sockjs>websocket-driver>websocket-extensions": true
+      }
+    },
+    "webpack-dev-server>sockjs>websocket-driver>http-parser-js": {
+      "builtin": {
+        "assert.equal": true,
+        "assert.ok": true
       }
     },
     "webpack>json-parse-even-better-errors": {
@@ -9191,13 +9206,24 @@
         "process": true
       },
       "packages": {
+        "yargs-parser": true,
         "yargs>cliui": true,
         "yargs>escalade": true,
         "yargs>get-caller-file": true,
         "yargs>require-directory": true,
         "yargs>string-width": true,
-        "yargs>y18n": true,
-        "yargs>yargs-parser": true
+        "yargs>y18n": true
+      }
+    },
+    "yargs-parser": {
+      "builtin": {
+        "fs.readFileSync": true,
+        "path.normalize": true,
+        "path.resolve": true,
+        "util.format": true
+      },
+      "globals": {
+        "process": true
       }
     },
     "yargs>cliui": {
