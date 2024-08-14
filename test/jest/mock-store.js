@@ -664,7 +664,7 @@ export const createSwapsMockStore = () => {
   };
 };
 
-export const createBridgeMockStore = () => {
+export const createBridgeMockStore = (featureFlagOverrides = {}) => {
   const swapsStore = createSwapsMockStore();
   return {
     ...swapsStore,
@@ -677,6 +677,7 @@ export const createBridgeMockStore = () => {
         ...(swapsStore.metamask.bridgeState ?? {}),
         bridgeFeatureFlags: {
           extensionSupport: false,
+          ...featureFlagOverrides,
         },
       },
     },

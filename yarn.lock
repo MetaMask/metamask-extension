@@ -15626,10 +15626,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js-pure@npm:^3.0.0, core-js-pure@npm:^3.23.3":
-  version: 3.30.2
-  resolution: "core-js-pure@npm:3.30.2"
-  checksum: 10/52bba8bf4bfdec61c3459244a4f349393dd9890307df698993f0c575abc891c5dda9ff8d2af7fc8d4abdef06e6babe48483ddc44749760557b3015406b8d2acc
+"core-js-pure@npm:^3.0.0, core-js-pure@npm:^3.23.3, core-js-pure@npm:^3.38.0":
+  version: 3.38.0
+  resolution: "core-js-pure@npm:3.38.0"
+  checksum: 10/56a0346bb691f0a9eddd88e92daa29213f3591c4db84731fe47c89dfb7bab116c9c1bd983a2286a558a35b736312da2d0ccb603a40d73af6857bd22b352f2988
   languageName: node
   linkType: hard
 
@@ -26205,6 +26205,7 @@ __metadata:
     contentful: "npm:^10.8.7"
     copy-to-clipboard: "npm:^3.3.3"
     copy-webpack-plugin: "npm:^12.0.2"
+    core-js-pure: "npm:^3.38.0"
     cross-spawn: "npm:^7.0.3"
     crypto-browserify: "npm:^3.12.0"
     css-loader: "npm:^6.10.0"
