@@ -61,8 +61,8 @@ export default function TurnOnMetamaskNotifications() {
     setButtonState(true);
     await createNotifications();
     trackEvent({
-      category: MetaMetricsEventCategory.EnableNotifications,
-      event: MetaMetricsEventName.NotificationsEnablingFlowHandled,
+      category: MetaMetricsEventCategory.NotificationInteraction,
+      event: MetaMetricsEventName.NotificationMenuOpened,
       properties: {
         is_profile_syncing_enabled: isProfileSyncingEnabled,
         is_notifications_enabled: isNotificationEnabled,
@@ -74,8 +74,8 @@ export default function TurnOnMetamaskNotifications() {
   const handleHideModal = () => {
     hideModal();
     trackEvent({
-      category: MetaMetricsEventCategory.EnableNotifications,
-      event: MetaMetricsEventName.NotificationsEnablingFlowHandled,
+      category: MetaMetricsEventCategory.NotificationInteraction,
+      event: MetaMetricsEventName.NotificationMenuOpened,
       properties: {
         is_profile_syncing_enabled: isProfileSyncingEnabled,
         is_notifications_enabled: isNotificationEnabled,
