@@ -1801,6 +1801,11 @@
     "message": "enable $1",
     "description": "$1 is a token symbol, e.g. ETH"
   },
+  "enabled": {
+    "message": "Enabled"
+  },
+  "enabledNetworks": {
+    "message": "Enabled networks"
   },
   "encryptionPublicKeyRequest": {
     "message": "Request encryption public key"
