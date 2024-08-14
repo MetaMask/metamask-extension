@@ -2637,7 +2637,7 @@
         "URL": true,
         "clearTimeout": true,
         "document.getElementById": true,
-        "fetch.bind": true,
+        "fetch": true,
         "setTimeout": true
       },
       "packages": {

@@ -1,5 +1,10 @@
 {
   "resources": {
+    "@metamask/snaps-controllers": {
+      "globals": {
+        "fetch": true
+      }
+    },
     "@metamask/snaps-execution-environments": {
       "packages": {
         "@metamask/post-message-stream": true,
