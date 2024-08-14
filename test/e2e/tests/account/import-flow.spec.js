@@ -189,7 +189,7 @@ describe('Import flow @no-mmi', function () {
         await driver.findVisibleElement('.qr-code__wrapper');
         // shows the correct account address
         await driver.findElement({
-          css: '.qr-code [data-testid="address-copy-button-text"]',
+          css: '.qr-code [data-testid="qr-code__address-segments"]',
           text: testAddress,
         });
       },
