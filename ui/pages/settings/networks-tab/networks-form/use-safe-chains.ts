@@ -45,15 +45,15 @@ export const rpcIdentifierUtility = (
   rpcUrl: string,
   safeChains: SafeChain[],
 ) => {
-  const knownRpcUrls = new Set();
+  const { host } = new URL(rpcUrl);
 
-  safeChains.forEach((chain) => {
-    chain.rpc.forEach((rpc) => {
-      const sanitizedRpc = new URL(rpc).host;
-      knownRpcUrls.add(sanitizedRpc);
-    });
-  });
+  for (const chain of safeChains) {
+    for (const rpc of chain.rpc) {
+      if (host === new URL(rpc).host) {
+        return host;
+      }
+    }
+  }
 
-  const sanitizedRpc = new URL(rpcUrl).host;
-  return knownRpcUrls.has(sanitizedRpc) ? sanitizedRpc : 'Unknown rpcUrl';
+  return 'Unknown rpcUrl';
 };
