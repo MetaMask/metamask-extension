@@ -1,11 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   useEnableProfileSyncing,
   useDisableProfileSyncing,
   useSetIsProfileSyncingEnabled,
 } from '../../../../hooks/metamask-notifications/useProfileSyncing';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
 import {
   selectIsProfileSyncingEnabled,
   selectIsProfileSyncingUpdateLoading,
@@ -40,6 +45,7 @@ function ProfileSyncBasicFunctionalitySetting() {
 }
 
 const ProfileSyncToggle = () => {
+  const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { enableProfileSyncing, error: enableProfileSyncingError } =
@@ -63,11 +69,31 @@ const ProfileSyncToggle = () => {
           name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
           turnOffProfileSyncing: () => {
             disableProfileSyncing();
+            trackEvent({
+              category: MetaMetricsEventCategory.Settings,
+              event: MetaMetricsEventName.SettingsUpdated,
+              properties: {
+                settings_group: 'security',
+                settings_type: 'profile_syncing',
+                old_value: true,
+                new_value: false,
+              },
+            });
           },
         }),
       );
     } else {
       await enableProfileSyncing();
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.SettingsUpdated,
+        properties: {
+          settings_group: 'security',
+          settings_type: 'profile_syncing',
+          old_value: false,
+          new_value: true,
+        },
+      });
     }
   };
 
