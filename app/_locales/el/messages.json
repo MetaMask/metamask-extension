@@ -550,9 +550,6 @@
     "message": "$1 και $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
-  "announcements": {
-    "message": "Ανακοινώσεις"
-  },
   "appDescription": {
     "message": "Ένα Πορτοφόλι Ethereum στο Πρόγραμμα Περιήγησής σας",
     "description": "The description of the application"
@@ -1548,30 +1545,6 @@
   },
   "details": {
     "message": "Λεπτομέρειες"
-  },
-  "developerOptions": {
-    "message": "Επιλογές προγραμματιστών"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Ενεργοποιεί ή απενεργοποιεί τη λειτουργία επανασχεδιασμού επιβεβαιώσεων που βρίσκεται υπό ανάπτυξη"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Επανασχεδιασμός επιβεβαιώσεων"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Ενεργοποιεί το νέο σχεδιασμό του μενού Δίκτυα"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Επανασχεδιασμός του μενού Δίκτυα"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Επαναφέρει το δυαδικό isShown σε ψευδές για όλες τις ανακοινώσεις. Οι ανακοινώσεις είναι οι ειδοποιήσεις που εμφανίζονται στο αναδυόμενο παράθυρο \"Τι νέο υπάρχει\"."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Επαναφέρει διάφορες καταστάσεις που σχετίζονται με την ενσωμάτωση και ανακατευθύνει στη σελίδα ενσωμάτωσης \"Ασφαλίστε το πορτοφόλι σας\"."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Αυτό έχει ως αποτέλεσμα τη συνεχή αποθήκευση μιας χρονοσφραγίδας στο session.storage"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "Το \"1$\" είναι απενεργοποιημένο επειδή δεν πληροί την ελάχιστη αύξηση 10% σε σχέση με τα αρχικά τέλη συναλλαγής.",
@@ -3517,9 +3490,6 @@
   "onboardedMetametricsTitle": {
     "message": "Βοηθήστε μας να βελτιώσουμε την εμπειρία σας"
   },
-  "onboarding": {
-    "message": "Ενσωμάτωση"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "Η πύλη IPFS επιτρέπει την πρόσβαση και την προβολή δεδομένων που φιλοξενούνται από τρίτους. Μπορείτε να προσθέσετε μια προσαρμοσμένη πύλη IPFS ή να συνεχίσετε να χρησιμοποιείτε την προεπιλεγμένη."
   },
@@ -4385,9 +4355,6 @@
   "reset": {
     "message": "Επαναφορά"
   },
-  "resetStates": {
-    "message": "Επαναφορά καταστάσεων"
-  },
   "resetWallet": {
     "message": "Επαναφορά πορτοφολιού"
   },
@@ -4706,9 +4673,6 @@
   },
   "sepolia": {
     "message": "Δίκτυο δοκιμών Sepolia"
-  },
-  "serviceWorkerKeepAlive": {
-    "message": "Διατηρήστε το Service Worker"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "Το MetaMask χρησιμοποιεί αυτές τις αξιόπιστες υπηρεσίες τρίτων για να ενισχύσει τη χρηστικότητα και την ασφάλεια των προϊόντων."
@@ -5272,9 +5236,6 @@
   },
   "stateLogsDescription": {
     "message": "Τα αρχεία καταγραφής κατάστασης περιέχουν τις διευθύνσεις του δημόσιου λογαριασμού σας και τις συναλλαγές οι οποίες έχουν αποσταλεί."
-  },
-  "states": {
-    "message": "Καταστάσεις"
   },
   "status": {
     "message": "Κατάσταση"

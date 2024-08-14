@@ -745,7 +745,7 @@ const PRIVATE_KEY =
   '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
 
 const PRIVATE_KEY_TWO =
-  '0xa444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
+  '0xf444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
 
 const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
@@ -776,6 +776,12 @@ const multipleGanacheOptions = {
       balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
     },
   ],
+};
+
+const multipleGanacheOptionsForType2Transactions = {
+  ...multipleGanacheOptions,
+  // EVM version that supports type 2 transactions (EIP1559)
+  hardfork: 'london',
 };
 
 const generateGanacheOptions = ({
@@ -887,7 +893,15 @@ const TEST_SEED_PHRASE =
 const TEST_SEED_PHRASE_TWO =
   'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
-// Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
+/**
+ * Checks the balance for a specific address. If no address is provided, it defaults to the first address.
+ * This function is typically used during onboarding to ensure the state is retrieved correctly from metamaskState,
+ * or after a transaction is made.
+ *
+ * @param {WebDriver} driver - The WebDriver instance.
+ * @param {Ganache} [ganacheServer] - The Ganache server instance (optional).
+ * @param {string} [address] - The address to check the balance for (optional).
+ */
 const locateAccountBalanceDOM = async (
   driver,
   ganacheServer,
@@ -1230,6 +1244,8 @@ module.exports = {
   connectToDapp,
   multipleGanacheOptions,
   defaultGanacheOptions,
+  defaultGanacheOptionsForType2Transactions,
+  multipleGanacheOptionsForType2Transactions,
   sendTransaction,
   sendScreenToConfirmScreen,
   findAnotherAccountFromAccountList,
@@ -1258,7 +1274,6 @@ module.exports = {
   getCleanAppState,
   editGasFeeForm,
   clickNestedButton,
-  defaultGanacheOptionsForType2Transactions,
   removeSelectedAccount,
   getSelectedAccountAddress,
   tempToggleSettingRedesignedConfirmations,
