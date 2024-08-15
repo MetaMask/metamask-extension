@@ -79,9 +79,14 @@ async function openDappAndSwitchChain(
   }
 }
 
+/**
+ *
+ * @param {import('../../webdriver/driver').Driver} driver
+ * @param {*} dappUrl
+ */
 async function selectDappClickSend(driver, dappUrl) {
   await driver.switchToWindowWithUrl(dappUrl);
-  await driver.clickElement('#sendButton');
+  await driver.clickElementAndWaitForWindowToClose('#sendButton');
 }
 
 async function selectDappClickPersonalSign(driver, dappUrl) {

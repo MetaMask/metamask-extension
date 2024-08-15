@@ -54,7 +54,7 @@ export class BridgePage {
       default:
         bridgeButtonTestIdPrefix = 'token';
     }
-    await this.driver.clickElement(
+    await this.driver.clickElementAndWaitForWindowToClose(
       `[data-testid="${bridgeButtonTestIdPrefix}-overview-bridge"]`,
     );
   };
