@@ -3389,6 +3389,14 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setSwitchedNetworkNeverShowMessage.bind(
           appStateController,
         ),
+      getLastInteractedConfirmationInfo:
+        appStateController.getLastInteractedConfirmationInfo.bind(
+          appStateController,
+        ),
+      setLastInteractedConfirmationInfo:
+        appStateController.setLastInteractedConfirmationInfo.bind(
+          appStateController,
+        ),
 
       // EnsController
       tryReverseResolveAddress:
