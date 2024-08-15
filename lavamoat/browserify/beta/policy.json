@@ -2059,7 +2059,7 @@
       "packages": {
         "@metamask/ppom-validator>elliptic>minimalistic-assert": true,
         "@metamask/ppom-validator>elliptic>minimalistic-crypto-utils": true,
-        "ethereumjs-util>ethereum-cryptography>hash.js": true
+        "ethers>@ethersproject/sha2>hash.js": true
       }
     },
     "@metamask/profile-sync-controller": {
@@ -2102,7 +2102,7 @@
         "@metamask/controller-utils>@spruceid/siwe-parser>valid-url": true,
         "@metamask/profile-sync-controller>siwe>@spruceid/siwe-parser": true,
         "@metamask/profile-sync-controller>siwe>@stablelib/random": true,
-        "@metamask/test-bundler>ethers": true
+        "ethers": true
       }
     },
     "@metamask/profile-sync-controller>siwe>@spruceid/siwe-parser": {
@@ -2783,53 +2783,6 @@
     "@metamask/test-bundler>@ethersproject/networks": {
       "packages": {
         "ethers>@ethersproject/logger": true
-      }
-    },
-    "@metamask/test-bundler>ethers": {
-      "packages": {
-        "@ethersproject/abi": true,
-        "@ethersproject/abi>@ethersproject/address": true,
-        "@ethersproject/abi>@ethersproject/constants": true,
-        "@ethersproject/abi>@ethersproject/keccak256": true,
-        "@ethersproject/abi>@ethersproject/logger": true,
-        "@ethersproject/abi>@ethersproject/properties": true,
-        "@ethersproject/abi>@ethersproject/strings": true,
-        "@ethersproject/bignumber": true,
-        "@ethersproject/bytes": true,
-        "@ethersproject/contracts": true,
-        "@ethersproject/hash": true,
-        "@ethersproject/hash>@ethersproject/abstract-signer": true,
-        "@ethersproject/hash>@ethersproject/base64": true,
-        "@ethersproject/hdnode": true,
-        "@ethersproject/hdnode>@ethersproject/basex": true,
-        "@ethersproject/hdnode>@ethersproject/sha2": true,
-        "@ethersproject/hdnode>@ethersproject/signing-key": true,
-        "@ethersproject/hdnode>@ethersproject/transactions": true,
-        "@ethersproject/hdnode>@ethersproject/wordlists": true,
-        "@ethersproject/providers": true,
-        "@ethersproject/providers>@ethersproject/rlp": true,
-        "@ethersproject/providers>@ethersproject/web": true,
-        "@ethersproject/wallet": true,
-        "@ethersproject/wallet>@ethersproject/json-wallets": true,
-        "@ethersproject/wallet>@ethersproject/random": true,
-        "@metamask/test-bundler>ethers>@ethersproject/solidity": true,
-        "@metamask/test-bundler>ethers>@ethersproject/units": true
-      }
-    },
-    "@metamask/test-bundler>ethers>@ethersproject/solidity": {
-      "packages": {
-        "@ethersproject/abi>@ethersproject/keccak256": true,
-        "@ethersproject/abi>@ethersproject/logger": true,
-        "@ethersproject/abi>@ethersproject/strings": true,
-        "@ethersproject/bignumber": true,
-        "@ethersproject/bytes": true,
-        "@ethersproject/hdnode>@ethersproject/sha2": true
-      }
-    },
-    "@metamask/test-bundler>ethers>@ethersproject/units": {
-      "packages": {
-        "@ethersproject/abi>@ethersproject/logger": true,
-        "@ethersproject/bignumber": true
       }
     },
     "@metamask/transaction-controller": {
@@ -4251,6 +4204,37 @@
         "crypto.getRandomValues": true
       }
     },
+    "ethers": {
+      "packages": {
+        "@ethersproject/abi": true,
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bytes": true,
+        "@ethersproject/contracts": true,
+        "@ethersproject/hash": true,
+        "@ethersproject/hdnode": true,
+        "@ethersproject/wallet": true,
+        "ethers>@ethersproject/abstract-signer": true,
+        "ethers>@ethersproject/address": true,
+        "ethers>@ethersproject/base64": true,
+        "ethers>@ethersproject/basex": true,
+        "ethers>@ethersproject/constants": true,
+        "ethers>@ethersproject/json-wallets": true,
+        "ethers>@ethersproject/keccak256": true,
+        "ethers>@ethersproject/logger": true,
+        "ethers>@ethersproject/properties": true,
+        "ethers>@ethersproject/providers": true,
+        "ethers>@ethersproject/random": true,
+        "ethers>@ethersproject/rlp": true,
+        "ethers>@ethersproject/sha2": true,
+        "ethers>@ethersproject/signing-key": true,
+        "ethers>@ethersproject/solidity": true,
+        "ethers>@ethersproject/strings": true,
+        "ethers>@ethersproject/transactions": true,
+        "ethers>@ethersproject/units": true,
+        "ethers>@ethersproject/web": true,
+        "ethers>@ethersproject/wordlists": true
+      }
+    },
     "ethers>@ethersproject/abstract-provider": {
       "packages": {
         "@ethersproject/bignumber": true,
@@ -4346,6 +4330,56 @@
         "ethers>@ethersproject/logger": true
       }
     },
+    "ethers>@ethersproject/providers": {
+      "globals": {
+        "WebSocket": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.log": true,
+        "console.warn": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bytes": true,
+        "@ethersproject/hash": true,
+        "ethers>@ethersproject/abstract-provider": true,
+        "ethers>@ethersproject/abstract-signer": true,
+        "ethers>@ethersproject/address": true,
+        "ethers>@ethersproject/base64": true,
+        "ethers>@ethersproject/basex": true,
+        "ethers>@ethersproject/constants": true,
+        "ethers>@ethersproject/logger": true,
+        "ethers>@ethersproject/properties": true,
+        "ethers>@ethersproject/providers>@ethersproject/networks": true,
+        "ethers>@ethersproject/providers>@ethersproject/web": true,
+        "ethers>@ethersproject/providers>bech32": true,
+        "ethers>@ethersproject/random": true,
+        "ethers>@ethersproject/sha2": true,
+        "ethers>@ethersproject/strings": true,
+        "ethers>@ethersproject/transactions": true
+      }
+    },
+    "ethers>@ethersproject/providers>@ethersproject/networks": {
+      "packages": {
+        "ethers>@ethersproject/logger": true
+      }
+    },
+    "ethers>@ethersproject/providers>@ethersproject/web": {
+      "globals": {
+        "clearTimeout": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethersproject/bytes": true,
+        "ethers>@ethersproject/base64": true,
+        "ethers>@ethersproject/logger": true,
+        "ethers>@ethersproject/properties": true,
+        "ethers>@ethersproject/strings": true
+      }
+    },
     "ethers>@ethersproject/random": {
       "packages": {
         "@ethersproject/bytes": true,
@@ -4379,6 +4413,16 @@
         "ethers>@ethersproject/properties": true
       }
     },
+    "ethers>@ethersproject/solidity": {
+      "packages": {
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bytes": true,
+        "ethers>@ethersproject/keccak256": true,
+        "ethers>@ethersproject/logger": true,
+        "ethers>@ethersproject/sha2": true,
+        "ethers>@ethersproject/strings": true
+      }
+    },
     "ethers>@ethersproject/strings": {
       "packages": {
         "@ethersproject/bytes": true,
@@ -4397,6 +4441,26 @@
         "ethers>@ethersproject/properties": true,
         "ethers>@ethersproject/rlp": true,
         "ethers>@ethersproject/signing-key": true
+      }
+    },
+    "ethers>@ethersproject/units": {
+      "packages": {
+        "@ethersproject/bignumber": true,
+        "ethers>@ethersproject/logger": true
+      }
+    },
+    "ethers>@ethersproject/web": {
+      "globals": {
+        "clearTimeout": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethersproject/bytes": true,
+        "ethers>@ethersproject/base64": true,
+        "ethers>@ethersproject/logger": true,
+        "ethers>@ethersproject/properties": true,
+        "ethers>@ethersproject/strings": true
       }
     },
     "ethers>@ethersproject/wordlists": {
