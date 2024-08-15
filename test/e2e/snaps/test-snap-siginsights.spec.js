@@ -40,25 +40,24 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#connectsignature-insights');
 
         // switch to metamask extension and click connect
-        await driver.withWindowUntilClose(WINDOW_TITLES.Dialog, async () => {
-          await driver.clickElement({
-            text: 'Connect',
-            tag: 'button',
-          });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+        });
 
-          await driver.waitForSelector({ text: 'Confirm' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
-          await driver.clickElement({
-            text: 'Confirm',
-            tag: 'button',
-          });
+        await driver.clickElement({
+          text: 'Confirm',
+          tag: 'button',
+        });
 
-          await driver.waitForSelector({ text: 'OK' });
+        await driver.waitForSelector({ text: 'OK' });
 
-          await driver.clickElement({
-            text: 'OK',
-            tag: 'button',
-          });
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'OK',
+          tag: 'button',
         });
 
         // switch to test-snaps page
@@ -76,27 +75,26 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#personalSign');
 
         // switch back to MetaMask window and switch to tx insights pane
-        await driver.withWindowUntilClose(WINDOW_TITLES.Dialog, async () => {
-          // wait for and click sign
-          await clickSignOnSignatureConfirmation({
-            driver,
-            snapSigInsights: true,
-          });
-
-          // look for returned signature insights data
-          await driver.waitForSelector({
-            text: '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
-            tag: 'p',
-          });
-
-          // click checkbox to authorize signing
-          await driver.clickElement('.mm-checkbox__input-wrapper');
-
-          // click sign button
-          await driver.clickElement(
-            '[data-testid="snapInsightsButtonConfirm"]',
-          );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        // wait for and click sign
+        await clickSignOnSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
         });
+
+        // look for returned signature insights data
+        await driver.waitForSelector({
+          text: '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
+          tag: 'p',
+        });
+
+        // click checkbox to authorize signing
+        await driver.clickElement('.mm-checkbox__input-wrapper');
+
+        // click sign button
+        await driver.clickElementAndWaitForWindowToClose(
+          '[data-testid="snapInsightsButtonConfirm"]',
+        );
 
         // switch back to test-dapp window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -114,27 +112,26 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedData');
 
         // switch back to MetaMask window and switch to tx insights pane
-        await driver.withWindowUntilClose(WINDOW_TITLES.Dialog, async () => {
-          // wait for and click sign
-          await clickSignOnSignatureConfirmation({
-            driver,
-            snapSigInsights: true,
-          });
-
-          // look for returned signature insights data
-          await driver.waitForSelector({
-            text: '1',
-            tag: 'p',
-          });
-
-          // click checkbox to authorize signing
-          await driver.clickElement('.mm-checkbox__input-wrapper');
-
-          // click sign button
-          await driver.clickElement(
-            '[data-testid="snapInsightsButtonConfirm"]',
-          );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        // wait for and click sign
+        await clickSignOnSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
         });
+
+        // look for returned signature insights data
+        await driver.waitForSelector({
+          text: '1',
+          tag: 'p',
+        });
+
+        // click checkbox to authorize signing
+        await driver.clickElement('.mm-checkbox__input-wrapper');
+
+        // click sign button
+        await driver.clickElementAndWaitForWindowToClose(
+          '[data-testid="snapInsightsButtonConfirm"]',
+        );
 
         // switch back to test-dapp window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -152,31 +149,30 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedDataV3');
 
         // switch back to MetaMask window and switch to tx insights pane
-        await driver.withWindowUntilClose(WINDOW_TITLES.Dialog, async () => {
-          // click down arrow
-          await driver.waitForSelector('.fa-arrow-down');
-          await driver.clickElement('.fa-arrow-down');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        // click down arrow
+        await driver.waitForSelector('.fa-arrow-down');
+        await driver.clickElement('.fa-arrow-down');
 
-          // wait for and click sign
-          await clickSignOnSignatureConfirmation({
-            driver,
-            snapSigInsights: true,
-          });
-
-          // look for returned signature insights data
-          await driver.waitForSelector({
-            text: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC has been identified as a malicious verifying contract.',
-            tag: 'p',
-          });
-
-          // click checkbox to authorize signing
-          await driver.clickElement('.mm-checkbox__input-wrapper');
-
-          // click sign button
-          await driver.clickElement(
-            '[data-testid="snapInsightsButtonConfirm"]',
-          );
+        // wait for and click sign
+        await clickSignOnSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
         });
+
+        // look for returned signature insights data
+        await driver.waitForSelector({
+          text: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC has been identified as a malicious verifying contract.',
+          tag: 'p',
+        });
+
+        // click checkbox to authorize signing
+        await driver.clickElement('.mm-checkbox__input-wrapper');
+
+        // click sign button
+        await driver.clickElementAndWaitForWindowToClose(
+          '[data-testid="snapInsightsButtonConfirm"]',
+        );
 
         // switch back to test-dapp window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -194,31 +190,30 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedDataV4');
 
         // switch back to MetaMask window and switch to tx insights pane
-        await driver.withWindowUntilClose(WINDOW_TITLES.Dialog, async () => {
-          // click down arrow
-          await driver.waitForSelector('.fa-arrow-down');
-          await driver.clickElement('.fa-arrow-down');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        // click down arrow
+        await driver.waitForSelector('.fa-arrow-down');
+        await driver.clickElement('.fa-arrow-down');
 
-          // wait for and click sign
-          await clickSignOnSignatureConfirmation({
-            driver,
-            snapSigInsights: true,
-          });
-
-          // look for returned signature insights data
-          await driver.waitForSelector({
-            text: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC has been identified as a malicious verifying contract.',
-            tag: 'p',
-          });
-
-          // click checkbox to authorize signing
-          await driver.clickElement('.mm-checkbox__input-wrapper');
-
-          // click sign button
-          await driver.clickElement(
-            '[data-testid="snapInsightsButtonConfirm"]',
-          );
+        // wait for and click sign
+        await clickSignOnSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
         });
+
+        // look for returned signature insights data
+        await driver.waitForSelector({
+          text: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC has been identified as a malicious verifying contract.',
+          tag: 'p',
+        });
+
+        // click checkbox to authorize signing
+        await driver.clickElement('.mm-checkbox__input-wrapper');
+
+        // click sign button
+        await driver.clickElementAndWaitForWindowToClose(
+          '[data-testid="snapInsightsButtonConfirm"]',
+        );
 
         // switch back to test-dapp window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

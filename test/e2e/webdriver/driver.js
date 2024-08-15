@@ -863,32 +863,17 @@ class Driver {
   }
 
   /**
-   * Switches the context of the browser session to the window/tab with the
-   * given title, executes the given callback, then waits for the window to
-   * *automatically* close.
+   * Function that aims to simulate a click action on a specified web element
+   * within a web page and waits for the current window to close.
    *
-   * ⚠️**If the callback does not initiate closing the window, this will wait forever**⚠️
-   *
-   * @template Return
-   * @param {string} title - The title of the window or tab to switch to and wait for.
-   * @param {(handle: string) => Promise<Return>} callback
-   * @returns {Promise<Return>} The return value of the callback function
-   * @example
-   * ```js
-   * const actual = await withWindowUntilClose(WINDOW_TITLES.Dialog, async (handle) => {
-   *  const value = await getValueFromWindow(handle);
-   *  // initiate closing the window
-   *  await driver.clickElement('[data-testid="ButtonConfirm"]');
-   *  return value;
-   * });
-   * assert.strictEqual(actual, 'expected value');
-   * ```
+   * @param {string | object} rawLocator - Element locator
+   * @param {number} [retries] - The number of times to retry the click action if it fails
+   * @returns {Promise<void>} promise that resolves to the WebElement
    */
-  async withWindowUntilClose(title, callback) {
-    const handle = await this.switchToWindowWithTitle(title);
-    const value = await callback(handle);
+  async clickElementAndWaitForWindowToClose(rawLocator, retries = 3) {
+    const handle = await this.driver.getWindowHandle();
+    await this.clickElement(rawLocator, retries);
     await this.waitForWindowToClose(handle);
-    return value;
   }
 
   /**
