@@ -17,18 +17,16 @@ const useConfirmationOriginAlerts = (): Alert[] => {
     currentConfirmationSelector,
   );
 
+  const origin = isSignatureTransactionType(currentConfirmation)
+  ? (currentConfirmation as SignatureRequestType).msgParams?.origin
+  : (currentConfirmation as TransactionMeta).origin;
+
+  const isValidOrigin = origin && isValidASCIIURL(origin);
+
   return useMemo<Alert[]>((): Alert[] => {
-    if (!currentConfirmation) {
+    if (!currentConfirmation || isValidOrigin) {
       return [];
     }
-
-    const origin = isSignatureTransactionType(currentConfirmation)
-      ? (currentConfirmation as SignatureRequestType).msgParams?.origin
-      : (currentConfirmation as TransactionMeta).origin;
-
-    // if (origin && isValidASCIIURL(origin)) {
-    //   return [];
-    // }
 
     return [
       {
@@ -43,7 +41,7 @@ const useConfirmationOriginAlerts = (): Alert[] => {
         ],
       },
     ];
-  }, [currentConfirmation, t]);
+  }, [origin, isValidOrigin, t]);
 };
 
 export default useConfirmationOriginAlerts;
