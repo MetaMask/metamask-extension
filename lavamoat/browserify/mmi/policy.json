@@ -2107,7 +2107,7 @@
         "removeEventListener": true
       },
       "packages": {
-        "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": true,
+        "@contentful/rich-text-html-renderer": true,
         "@metamask/notification-services-controller>@metamask/base-controller": true,
         "@metamask/notification-services-controller>@metamask/controller-utils": true,
         "@metamask/notification-services-controller>firebase": true,
@@ -2115,11 +2115,6 @@
         "bignumber.js": true,
         "loglevel": true,
         "uuid": true
-      }
-    },
-    "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": {
-      "globals": {
-        "SuppressedError": true
       }
     },
     "@metamask/notification-services-controller>@metamask/base-controller": {
@@ -2136,7 +2131,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/snaps-sdk>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
