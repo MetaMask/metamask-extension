@@ -73,24 +73,10 @@ describe('Incremental Security', function () {
         );
         await driver.clickElement('[data-testid="account-list-menu-details"');
 
-        // gets the current accounts address
-        // Extract address segments from the DOM
         const outerSegment = await driver.findElement(
           '.qr-code__address-segments',
         );
-        const innerSegment = await driver.findElement(
-          '.qr-code__address-inner-segment',
-        );
-
-        // Get the text content of each segment
-        const outerSegmentText = await outerSegment.getText();
-        const innerSegmentText = await innerSegment.getText();
-
-        // Reassemble the full address
-        const publicAddress = `${outerSegmentText.slice(
-          0,
-          6,
-        )}${innerSegmentText}${outerSegmentText.slice(6)}`;
+        const publicAddress = await outerSegment.getText();
 
         // wait for account modal to be visible
         await driver.findVisibleElement(
@@ -111,8 +97,10 @@ describe('Incremental Security', function () {
         await openDapp(driver);
 
         // sends eth to the current account
-        await driver.fill('#address', publicAddress.substring(0, 42));
+        await driver.fill('#address', publicAddress);
         await driver.clickElement('#send');
+
+        await new Promise((resolve) => setTimeout(resolve, 180000));
 
         await driver.waitForSelector(
           { css: '#success', text: 'Success' },
