@@ -103,7 +103,7 @@ describe('FundingMethodModal', () => {
 
     fireEvent.click(getByText('Transfer crypto'));
     expect(global.platform.openTab).toHaveBeenCalledWith({
-      url: expect.stringContaining('transfers'),
+      url: expect.stringContaining('transfer'),
     });
   });
 });
