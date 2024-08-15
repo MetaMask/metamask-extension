@@ -1,7 +1,7 @@
 import {
   BridgeFeatureFlagsKey,
   BridgeFeatureFlags,
-} from '../../../app/scripts/controllers/bridge';
+} from '../../../app/scripts/controllers/bridge/types';
 import {
   BRIDGE_API_BASE_URL,
   BRIDGE_CLIENT_ID,
