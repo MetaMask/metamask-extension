@@ -92,7 +92,7 @@ export const toPunycodeURL = (urlString: string) => {
     const { protocol, hostname, pathname, search, hash } = url;
     return `${protocol}//${hostname}${pathname}${search}${hash}`;
   } catch (exp: unknown) {
-    console.error(exp);
+    console.error(`Failed to convert URL to Punycode: ${exp}`);
     return undefined;
   }
 };

@@ -36,7 +36,7 @@ const useConfirmationOriginAlerts = (): Alert[] => {
         reason: t('addressMismatch'),
         field: 'requestFrom',
         severity: Severity.Warning,
-        message: t('addressMismatchWarning'),
+        message: t('alertMessageAddressMismatchWarning'),
         alertDetails: [
           t('addressMismatchOriginal', [origin]),
           t('addressMismatchPunycode', [origin ? toPunycodeURL(origin) : '']),
