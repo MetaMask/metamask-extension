@@ -8,6 +8,7 @@ import {
   getSnapsMetadata,
 } from '../../../../selectors';
 import {
+  BlockSize,
   Display,
   FlexDirection,
   JustifyContent,
@@ -70,8 +71,12 @@ export default function SnapPermissionsList({
   };
 
   return (
-    <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-      <Box className="snap-permissions-list">
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      width={BlockSize.Full}
+    >
+      <Box className="snap-permissions-list" width={BlockSize.Full}>
         <SnapPermissionAdapter
           permissions={showAll ? weightedPermissions : filteredPermissions}
           snapId={snapId}
