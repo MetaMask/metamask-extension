@@ -71,7 +71,11 @@ export default function SnapPermissionsList({
   };
 
   return (
-    <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      width={BlockSize.Full}
+    >
       <Box className="snap-permissions-list" width={BlockSize.Full}>
         <SnapPermissionAdapter
           permissions={showAll ? weightedPermissions : filteredPermissions}
