@@ -113,8 +113,8 @@ import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import type { MarkAsReadNotificationsParam } from '../../app/scripts/controllers/metamask-notifications/types/notification/notification';
-import { BridgeFeatureFlags } from '../../app/scripts/controllers/bridge';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
+import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -3882,16 +3882,6 @@ export function setInitialGasEstimate(
   };
 }
 
-// Bridge
-export function setBridgeFeatureFlags(
-  featureFlags: BridgeFeatureFlags,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('setBridgeFeatureFlags', [featureFlags]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
 // Permissions
 
 export function requestAccountsPermissionWithId(
@@ -5667,4 +5657,21 @@ export async function multichainUpdateBalance(
 
 export async function multichainUpdateBalances(): Promise<void> {
   return await submitRequestToBackground<void>('multichainUpdateBalances', []);
+}
+
+export async function getLastInteractedConfirmationInfo(): Promise<
+  LastInteractedConfirmationInfo | undefined
+> {
+  return await submitRequestToBackground<void>(
+    'getLastInteractedConfirmationInfo',
+  );
+}
+
+export async function setLastInteractedConfirmationInfo(
+  info: LastInteractedConfirmationInfo,
+): Promise<void> {
+  return await submitRequestToBackground<void>(
+    'setLastInteractedConfirmationInfo',
+    [info],
+  );
 }

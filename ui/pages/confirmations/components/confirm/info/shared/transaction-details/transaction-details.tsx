@@ -33,6 +33,7 @@ const OriginRow = () => {
     <ConfirmInfoAlertRow
       alertKey="originSpecialCharacterWarning"
       ownerId={currentConfirmation.id}
+      data-testid="transaction-details-origin-row"
       label={t('requestFrom')}
       tooltip={t('requestFromTransactionDescription')}
     >
@@ -57,6 +58,7 @@ const RecipientRow = () => {
 
   return (
     <ConfirmInfoRow
+      data-testid="transaction-details-recipient-row"
       label={t('interactingWith')}
       tooltip={t('interactingWithTransactionDescription')}
     >
@@ -80,6 +82,7 @@ const MethodDataRow = () => {
 
   return (
     <ConfirmInfoRow
+      data-testid="transaction-details-method-data-row"
       label={t('methodData')}
       tooltip={t('methodDataTransactionDesc')}
     >
@@ -110,6 +113,7 @@ const PaymasterRow = () => {
   return (
     <ConfirmInfoSection>
       <ConfirmInfoRow
+        data-testid="transaction-details-paymaster-row"
         label={t('confirmFieldPaymaster')}
         tooltip={t('confirmFieldTooltipPaymaster')}
       >
@@ -122,7 +126,7 @@ const PaymasterRow = () => {
 export const TransactionDetails = () => {
   return (
     <>
-      <ConfirmInfoSection>
+      <ConfirmInfoSection data-testid="transaction-details-section">
         <OriginRow />
         <RecipientRow />
         <MethodDataRow />

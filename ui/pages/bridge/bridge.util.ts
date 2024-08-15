@@ -1,7 +1,7 @@
 import {
   BridgeFeatureFlagsKey,
   BridgeFeatureFlags,
-} from '../../../app/scripts/controllers/bridge';
+} from '../../../app/scripts/controllers/bridge/types';
 import {
   BRIDGE_API_BASE_URL,
   BRIDGE_CLIENT_ID,
@@ -18,7 +18,7 @@ enum BridgeFlag {
   EXTENSION_SUPPORT = 'extension-support',
 }
 
-type FeatureFlagResponse = {
+export type FeatureFlagResponse = {
   [BridgeFlag.EXTENSION_SUPPORT]: boolean;
 };
 // End of copied types
