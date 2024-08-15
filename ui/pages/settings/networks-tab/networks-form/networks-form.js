@@ -56,7 +56,6 @@ import {
   showDeprecatedNetworkModal,
   showModal,
   toggleNetworkMenu,
-  upsertNetworkConfiguration,
 } from '../../../../store/actions';
 import {
   Box,
@@ -924,7 +923,7 @@ const NetworksForm = ({
             {
               rpcUrl,
               ticker,
-              networkConfigurationId: selectedNetwork.networkConfigurationId,
+              id: selectedNetwork.networkConfigurationId,
               chainId: prefixedChainId,
               nickname: networkName,
               rpcPrefs: {
@@ -935,7 +934,7 @@ const NetworksForm = ({
             },
             {
               source: MetaMetricsNetworkEventSource.CustomNetworkForm,
-              setActive: true
+              setActive: true,
             },
           ),
         );

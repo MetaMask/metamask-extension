@@ -1156,7 +1156,7 @@ describe('Actions', () => {
       await expect(() =>
         store.dispatch(
           actions.upsertNetworkConfiguration({
-            networkConfigurationId: 'networkConfigurationId',
+            id: 'networkConfigurationId',
             rpcUrl: 'newRpc',
             chainId: '0x',
             ticker: 'ETH',

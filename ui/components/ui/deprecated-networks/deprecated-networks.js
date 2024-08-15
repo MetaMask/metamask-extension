@@ -61,7 +61,7 @@ export default function DeprecatedNetworks() {
         await dispatch(
           upsertNetworkConfiguration(
             {
-              networkConfigurationId: id,
+              id,
               chainId: CHAIN_IDS.AURORA,
               nickname: AURORA_DISPLAY_NAME,
               rpcUrl: 'https://mainnet.aurora.dev',
