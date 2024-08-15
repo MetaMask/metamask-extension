@@ -587,7 +587,7 @@ describe('Custom network', function () {
           fixtures: new FixtureBuilder()
             .withNetworkController({
               networkConfigurations: {
-                networkConfigurationId2: {
+                arbitrumNetworkConfiguration: {
                   rpcUrl: networkURL,
                   chainId: chainID,
                   nickname: networkNAME,

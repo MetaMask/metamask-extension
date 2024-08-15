@@ -53,6 +53,7 @@ type SmartTransactionsMetaMaskState = {
     smartTransactionsState: {
       liveness: boolean;
     };
+    // todo?
     // networkConfigurations: {
     //   [key: string]: {
     //     chainId: Hex;

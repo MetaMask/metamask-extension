@@ -116,6 +116,13 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         },
         snapsInstallPrivacyWarningShown: true,
       },
+      BridgeController: {
+        bridgeState: {
+          bridgeFeatureFlags: {
+            extensionSupport: false,
+          },
+        },
+      },
       CurrencyController: {
         currentCurrency: 'usd',
         currencyRates: {

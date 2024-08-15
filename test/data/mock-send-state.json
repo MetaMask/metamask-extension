@@ -146,6 +146,7 @@
     "showTestnetMessageInDropdown": true,
     "networkConfigurations": {
       "goerli": {
+        "id": "goerli",
         "chainId": "0x5"
       }
     },

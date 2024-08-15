@@ -143,6 +143,13 @@
       "ignoredTokens": "object",
       "tokens": "object"
     },
+    "BridgeController": {
+      "bridgeState": {
+        "bridgeFeatureFlags": {
+          "extensionSupport": "boolean"
+        }
+      }
+    },
     "TransactionController": { "transactions": "object" },
     "config": "object",
     "firstTimeInfo": "object"
