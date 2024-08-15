@@ -79,7 +79,9 @@ async function openDappAndSwitchChain(
     await driver.findClickableElement(
       '[data-testid="confirmation-submit-button"]',
     );
-    await driver.clickElementAndWaitForWindowToClose('[data-testid="confirmation-submit-button"]');
+    await driver.clickElementAndWaitForWindowToClose(
+      '[data-testid="confirmation-submit-button"]',
+    );
 
     // Switch back to the dapp
     await driver.switchToWindowWithUrl(dappUrl);
@@ -129,7 +131,10 @@ async function switchToNotificationPopoverValidateDetails(
 }
 
 async function rejectTransaction(driver) {
-  await driver.clickElementAndWaitForWindowToClose({ tag: 'button', text: 'Reject' });
+  await driver.clickElementAndWaitForWindowToClose({
+    tag: 'button',
+    text: 'Reject',
+  });
 }
 
 async function confirmTransaction(driver) {
