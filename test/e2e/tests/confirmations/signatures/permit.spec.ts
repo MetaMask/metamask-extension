@@ -82,12 +82,10 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
         await driver.clickElement('#signPermit');
         await switchToNotificationWindow(driver);
 
-        await driver.clickElement(
+        await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirm-footer-cancel-button"]',
         );
-        await driver.delay(1000);
 
-        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         const rejectionResult = await driver.findElement('#signPermitResult');

@@ -57,7 +57,7 @@ describe('Test Snap JSX', function () {
 
         await driver.waitForSelector({ text: 'OK' });
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
