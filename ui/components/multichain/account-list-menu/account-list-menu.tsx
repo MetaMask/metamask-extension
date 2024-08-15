@@ -228,7 +228,7 @@ export const AccountListMenu = ({
   const isAddWatchEthereumAccountEnabled = useSelector(
     getIsWatchEthereumAccountEnabled,
   );
-  const handleAddWatchAccount = async () => {
+  const handleAddWatchAccount = useCallback(async () => {
     await trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.AccountAddSelected,
@@ -241,7 +241,7 @@ export const AccountListMenu = ({
     });
     onClose();
     history.push(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
-  };
+  }, [trackEvent, onClose, history]);
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
   const bitcoinTestnetSupportEnabled = useSelector(
