@@ -275,7 +275,7 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "Adicionar uma nova conta"
+    "message": "Adicionar uma nova conta Ethereum"
   },
   "addNewToken": {
     "message": "Adicionar novo token"
@@ -1555,6 +1555,9 @@
     "message": "ativar $1",
     "description": "$1 is a token symbol, e.g. ETH"
   },
+  "enableTokenAutoDetection": {
+    "message": "Ativar detecção automática de tokens"
+  },
   "enabled": {
     "message": "Ativado"
   },
@@ -2498,9 +2501,6 @@
     "message": "Certifique-se de que ninguém está olhando",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Gerenciar em configurações"
-  },
   "max": {
     "message": "Máximo"
   },
@@ -2934,6 +2934,9 @@
   "noSnaps": {
     "message": "Você não tem nenhum snap instalado."
   },
+  "noThanks": {
+    "message": "Não, obrigado"
+  },
   "noTransactions": {
     "message": "Você não tem transações"
   },
@@ -3103,7 +3106,7 @@
   },
   "notificationTransactionSuccessView": {
     "message": "Ver em $1",
-    "description": "Additional content in browser notification that appears when a transaction is confirmed and has a block explorer URL"
+    "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
   "notifications": {
     "message": "Notificações"
@@ -5881,7 +5884,7 @@
     "message": "Detectar NFTs automaticamente"
   },
   "useNftDetectionDescriptionText": {
-    "message": "Permita que a MetaMask use serviços de terceiros (como o OpenSea) para adicionar os NFTs que você possui. A detecção automática de NFTs expõe seu endereço IP e o endereço da sua conta a esses serviços. Ativar esse recurso pode associar seu endereço IP ao seu endereço Ethereum e exibir NFTs falsos enviados por golpistas via AirDrop. Você pode adicionar tokens manualmente para evitar esse risco."
+    "message": "Permita que a MetaMask use serviços de terceiros para adicionar os NFTs que você possui. A detecção automática de NFTs expõe seu endereço IP e o endereço da sua conta a esses serviços. Ativar esse recurso pode associar seu endereço IP ao seu endereço Ethereum e exibir NFTs falsos enviados por golpistas. Você pode adicionar tokens manualmente para evitar esse risco."
   },
   "usePhishingDetection": {
     "message": "Usar detecção de phishing"
