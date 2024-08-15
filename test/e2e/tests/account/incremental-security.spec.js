@@ -111,7 +111,7 @@ describe('Incremental Security', function () {
         await openDapp(driver);
 
         // sends eth to the current account
-        await driver.fill('#address', publicAddress);
+        await driver.fill('#address', publicAddress.substring(0, 42));
         await driver.clickElement('#send');
 
         await driver.waitForSelector(
