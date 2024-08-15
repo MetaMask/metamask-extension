@@ -7,12 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.0.4]
-### Uncategorized
-- Version v12.0.3 RC ([#26416](https://github.com/MetaMask/metamask-extension/pull/26416))
-- fix: V12.0.3/cherry pick notifications events ([#26419](https://github.com/MetaMask/metamask-extension/pull/26419))
-- fix: notifications use better events ([#26410](https://github.com/MetaMask/metamask-extension/pull/26410))
-- refactor: fix event names used to track notifications ([#25521](https://github.com/MetaMask/metamask-extension/pull/25521))
-- Version v12.0.3
+### Fixed
+- Further prevented data persistence errors related to networks ([#26432](https://github.com/MetaMask/metamask-extension/pull/26432))
 
 ## [12.0.3]
 
