@@ -224,6 +224,15 @@ export function validateAddEthereumChainParams(
   };
 }
 
+type SwitchChainOptions = {
+  getChainPermissionsFeatureFlag: GetChainPermissionsFeatureFlag;
+  setActiveNetwork: SetActiveNetwork;
+  endApprovalFlow?: EndApprovalFlow;
+  requestUserApproval: RequestUserApproval;
+  getCaveat: GetCaveat;
+  requestPermittedChainsPermission: RequestPermittedChainsPermission;
+};
+
 export async function switchChain<Result extends Json = never>(
   res: JsonRpcResponse<Result | null>,
   end: JsonRpcEngineEndCallback,
@@ -231,7 +240,7 @@ export async function switchChain<Result extends Json = never>(
   chainId: Hex,
   requestData: Record<string, Json>,
   networkClientId: string,
-  approvalFlowId: string,
+  approvalFlowId: string | null,
   {
     getChainPermissionsFeatureFlag,
     setActiveNetwork,
@@ -239,14 +248,7 @@ export async function switchChain<Result extends Json = never>(
     requestUserApproval,
     getCaveat,
     requestPermittedChainsPermission,
-  }: {
-    getChainPermissionsFeatureFlag: GetChainPermissionsFeatureFlag;
-    setActiveNetwork: SetActiveNetwork;
-    endApprovalFlow: EndApprovalFlow;
-    requestUserApproval: RequestUserApproval;
-    getCaveat: GetCaveat;
-    requestPermittedChainsPermission: RequestPermittedChainsPermission;
-  },
+  }: SwitchChainOptions,
 ) {
   try {
     if (getChainPermissionsFeatureFlag()) {
@@ -287,7 +289,7 @@ export async function switchChain<Result extends Json = never>(
     // @ts-expect-error intentionally passing unhandled error of any type into `end`
     return end(error);
   } finally {
-    if (approvalFlowId) {
+    if (approvalFlowId && endApprovalFlow) {
       endApprovalFlow({ id: approvalFlowId });
     }
   }
