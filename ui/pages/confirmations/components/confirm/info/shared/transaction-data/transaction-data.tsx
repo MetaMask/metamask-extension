@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { hexStripZeros } from '@ethersproject/bytes';
@@ -18,15 +18,7 @@ import {
   FlexWrap,
   JustifyContent,
 } from '../../../../../../../helpers/constants/design-system';
-import {
-  Box,
-  Button,
-  ButtonSize,
-  ButtonVariant,
-  IconName,
-} from '../../../../../../../components/component-library';
-import Tooltip from '../../../../../../../components/ui/tooltip';
-import { useCopyToClipboard } from '../../../../../../../hooks/useCopyToClipboard';
+import { Box } from '../../../../../../../components/component-library';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
 import Preloader from '../../../../../../../components/ui/icon/preloader';
@@ -57,9 +49,8 @@ export const TransactionData = () => {
 
   if (!value) {
     return (
-      <Container>
+      <Container transactionData={transactionData}>
         <RawDataRow transactionData={transactionData} />
-        <CopyDataButton transactionData={transactionData} />
       </Container>
     );
   }
@@ -68,7 +59,7 @@ export const TransactionData = () => {
   const isExpandable = data.length > 1;
 
   return (
-    <Container>
+    <Container transactionData={transactionData}>
       <>
         {data.map((method, index) => (
           <>
@@ -81,7 +72,6 @@ export const TransactionData = () => {
             {index < data.length - 1 && <ConfirmInfoRowDivider />}
           </>
         ))}
-        <CopyDataButton transactionData={transactionData} />
       </>
     </Container>
   );
@@ -90,16 +80,22 @@ export const TransactionData = () => {
 function Container({
   children,
   isLoading,
+  transactionData,
 }: {
   children?: React.ReactNode;
   isLoading?: boolean;
+  transactionData?: string;
 }) {
   const t = useI18nContext();
 
   return (
     <>
       <ConfirmInfoSection>
-        <ConfirmInfoRow label={t('advancedDetailsDataDesc')}>
+        <ConfirmInfoRow
+          label={t('advancedDetailsDataDesc')}
+          copyEnabled={Boolean(transactionData)}
+          copyText={transactionData || undefined}
+        >
           <Box>{isLoading && <Preloader size={20} />}</Box>
         </ConfirmInfoRow>
         {children}
@@ -223,30 +219,6 @@ function ParamRow({
       </ConfirmInfoRow>
       {childRows && <Box paddingLeft={2}>{childRows}</Box>}
     </>
-  );
-}
-
-function CopyDataButton({ transactionData }: { transactionData: string }) {
-  const t = useI18nContext();
-  const [copied, handleCopy] = useCopyToClipboard();
-
-  const handleClick = useCallback(() => {
-    handleCopy(transactionData);
-  }, [handleCopy, transactionData]);
-
-  return (
-    <Box paddingInline={2}>
-      <Tooltip position="right" title={copied ? t('copiedExclamation') : ''}>
-        <Button
-          onClick={handleClick}
-          variant={ButtonVariant.Link}
-          size={ButtonSize.Lg}
-          startIconName={copied ? IconName.CopySuccess : IconName.Copy}
-        >
-          {t('copyRawTransactionData')}
-        </Button>
-      </Tooltip>
-    </Box>
   );
 }
 

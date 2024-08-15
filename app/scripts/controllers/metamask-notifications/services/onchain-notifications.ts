@@ -1,4 +1,5 @@
 import log from 'loglevel';
+import { UserStorageController } from '@metamask/profile-sync-controller';
 import type { UserStorage } from '../types/user-storage/user-storage';
 import type { OnChainRawNotification } from '../types/on-chain-notification/on-chain-notification';
 import {
@@ -8,7 +9,8 @@ import {
 } from '../utils/utils';
 import { TRIGGER_TYPES } from '../constants/notification-schema';
 import type { components } from '../types/on-chain-notification/schema';
-import { createSHA256Hash } from '../../user-storage/encryption';
+
+const { createSHA256Hash } = UserStorageController;
 
 export type NotificationTrigger = {
   id: string;

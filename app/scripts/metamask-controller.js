@@ -143,6 +143,10 @@ import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import {
+  AuthenticationController,
+  UserStorageController,
+} from '@metamask/profile-sync-controller';
+import {
   methodsRequiringNetworkSwitch,
   methodsWithConfirmation,
 } from '../../shared/constants/methods-tags';
@@ -320,16 +324,16 @@ import PREINSTALLED_SNAPS from './snaps/preinstalled-snaps';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 
 // Notification controllers
-import AuthenticationController from './controllers/authentication/authentication-controller';
-import UserStorageController from './controllers/user-storage/user-storage-controller';
 import { PushPlatformNotificationsController } from './controllers/push-platform-notifications/push-platform-notifications';
 import { MetamaskNotificationsController } from './controllers/metamask-notifications/metamask-notifications';
 import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
-import BridgeController from './controllers/bridge';
 import { decodeTransactionData } from './lib/transaction/decode/util';
+import { BridgeBackgroundAction } from './controllers/bridge/types';
+import BridgeController from './controllers/bridge/bridge-controller';
+import { BRIDGE_CONTROLLER_NAME } from './controllers/bridge/constants';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1414,25 +1418,25 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // Notification Controllers
-    this.authenticationController = new AuthenticationController({
+    this.authenticationController = new AuthenticationController.Controller({
       state: initState.AuthenticationController,
       messenger: this.controllerMessenger.getRestricted({
         name: 'AuthenticationController',
         allowedActions: [
           'KeyringController:getState',
           'SnapController:handleRequest',
-          'UserStorageController:disableProfileSyncing',
         ],
         allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
       }),
       metametrics: {
         getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
+        agent: 'extension',
       },
     });
 
-    this.userStorageController = new UserStorageController({
+    this.userStorageController = new UserStorageController.Controller({
       getMetaMetricsState: () =>
-        this.metaMetricsController.state.participateInMetaMetrics,
+        this.metaMetricsController.state.participateInMetaMetrics ?? false,
       state: initState.UserStorageController,
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
@@ -1444,8 +1448,8 @@ export default class MetamaskController extends EventEmitter {
           'AuthenticationController:isSignedIn',
           'AuthenticationController:performSignOut',
           'AuthenticationController:performSignIn',
-          'MetamaskNotificationsController:disableMetamaskNotifications',
-          'MetamaskNotificationsController:selectIsMetamaskNotificationsEnabled',
+          'NotificationServicesController:disableNotificationServices',
+          'NotificationServicesController:selectIsNotificationServicesEnabled',
         ],
         allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
       }),
@@ -1517,6 +1521,17 @@ export default class MetamaskController extends EventEmitter {
       }),
       state: initState.MetamaskNotificationsController,
     });
+
+    // Temporary add missing methods (due to notification controller migration)
+    this.controllerMessenger.registerActionHandler(
+      'NotificationServicesController:disableNotificationServices',
+      () => this.metamaskNotificationsController.disableMetamaskNotifications(),
+    );
+    this.controllerMessenger.registerActionHandler(
+      'NotificationServicesController:selectIsNotificationServicesEnabled',
+      () =>
+        this.metamaskNotificationsController.selectIsMetamaskNotificationsEnabled(),
+    );
 
     // account tracker watches balances, nonces, and any code at their address
     this.accountTracker = new AccountTracker({
@@ -1934,7 +1949,16 @@ export default class MetamaskController extends EventEmitter {
       },
       initState.SwapsController,
     );
-    this.bridgeController = new BridgeController();
+
+    const bridgeControllerMessenger = this.controllerMessenger.getRestricted({
+      name: BRIDGE_CONTROLLER_NAME,
+      allowedActions: [],
+      allowedEvents: [],
+    });
+    this.bridgeController = new BridgeController({
+      messenger: bridgeControllerMessenger,
+    });
+
     this.smartTransactionsController = new SmartTransactionsController(
       {
         getNetworkClientById: this.networkController.getNetworkClientById.bind(
@@ -2172,7 +2196,7 @@ export default class MetamaskController extends EventEmitter {
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
       SignatureController: this.signatureController,
       SwapsController: this.swapsController,
-      BridgeController: this.bridgeController.store,
+      BridgeController: this.bridgeController,
       EnsController: this.ensController,
       ApprovalController: this.approvalController,
       PPOMController: this.ppomController,
@@ -2295,6 +2319,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       this.signatureController.resetState.bind(this.signatureController),
       this.swapsController.resetState.bind(this.swapsController),
+      this.bridgeController.resetState.bind(this.bridgeController),
       this.ensController.resetState.bind(this.ensController),
       this.approvalController.clear.bind(this.approvalController),
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
@@ -3013,7 +3038,6 @@ export default class MetamaskController extends EventEmitter {
       appMetadataController,
       permissionController,
       preferencesController,
-      bridgeController,
       tokensController,
       smartTransactionsController,
       txController,
@@ -3674,8 +3698,11 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // Bridge
-      setBridgeFeatureFlags:
-        bridgeController.setBridgeFeatureFlags.bind(bridgeController),
+      [BridgeBackgroundAction.SET_FEATURE_FLAGS]:
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.SET_FEATURE_FLAGS}`,
+        ),
 
       // Smart Transactions
       fetchSmartTransactionFees: smartTransactionsController.getFees.bind(
