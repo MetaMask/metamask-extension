@@ -500,14 +500,21 @@ export default function ConfirmationPage({
           </button>
         </div>
       )}
-      {isSnapCustomUIDialog ? (
-        <>
+      <div className="confirmation-page__content">
+        {isSnapCustomUIDialog && (
           <Box width={BlockSize.Screen}>
             <SnapAuthorshipHeader
               snapId={pendingConfirmation?.origin}
               onCancel={handleSnapDialogCancel}
             />
           </Box>
+        )}
+        {templatedValues.networkDisplay ? (
+          <Box justifyContent="center" marginTop={2}>
+            <NetworkDisplay />
+          </Box>
+        ) : null}
+        {isSnapCustomUIDialog ? (
           <SnapUIRenderer
             snapId={pendingConfirmation?.origin}
             interfaceId={pendingConfirmation?.requestData.id}
@@ -521,27 +528,21 @@ export default function ConfirmationPage({
             onCancel={handleSnapDialogCancel}
             useFooter={isSnapDefaultDialog}
           />
-        </>
-      ) : (
-        <div className="confirmation-page__content">
-          {templatedValues.networkDisplay ? (
-            <Box justifyContent="center" marginTop={2}>
-              <NetworkDisplay />
-            </Box>
-          ) : null}
+        ) : (
           <MetaMaskTemplateRenderer sections={templatedValues.content} />
-          {showWarningModal && (
-            <ConfirmationWarningModal
-              onSubmit={async () => {
-                const res = await templatedValues.onSubmit();
-                await handleSubmitResult(res);
-                setShowWarningModal(false);
-              }}
-              onCancel={templatedValues.onCancel}
-            />
-          )}
-        </div>
-      )}
+        )}
+
+        {showWarningModal && (
+          <ConfirmationWarningModal
+            onSubmit={async () => {
+              const res = await templatedValues.onSubmit();
+              await handleSubmitResult(res);
+              setShowWarningModal(false);
+            }}
+            onCancel={templatedValues.onCancel}
+          />
+        )}
+      </div>
       {!isSnapDefaultDialog && (
         <ConfirmationFooter
           alerts={

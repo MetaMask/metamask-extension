@@ -1,4 +1,8 @@
 .snap-ui-renderer {
+  &__content {
+    margin-bottom: 0 !important;
+  }
+
   &__container {
     & > div:first-child {
       padding: 16px;
@@ -42,11 +46,9 @@
   }
 
   &__footer {
-    grid-area: footer;
     margin-top: auto;
 
     &-centered {
-      grid-area: footer;
       margin-top: auto;
 
       & button {
