@@ -75,6 +75,7 @@ describe('Test Snap Signature Insights', function () {
 
         // switch back to MetaMask window and switch to tx insights pane
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
         // wait for and click sign
         await clickSignOnSignatureConfirmation({
           driver,
