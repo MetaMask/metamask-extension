@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { calcTokenAmount } from '../../../../../shared/lib/transactions-controller-utils';
+import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 
 type FormatOptions = {
   decimalPlaces?: number;

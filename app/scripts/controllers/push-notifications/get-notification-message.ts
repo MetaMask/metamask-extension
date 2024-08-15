@@ -1,15 +1,13 @@
-// We are defining that this file uses a webworker global scope.
-// eslint-disable-next-line spaced-comment
-/// <reference lib="webworker" />
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 
-import { CHAIN_SYMBOLS } from '../../metamask-notifications/constants/notification-schema';
-import type { TRIGGER_TYPES } from '../../metamask-notifications/constants/notification-schema';
-import type { OnChainRawNotification } from '../../metamask-notifications/types/on-chain-notification/on-chain-notification';
-import { t } from '../../../translate';
-import type { Notification } from '../../metamask-notifications/types/types';
-import ExtensionPlatform from '../../../platforms/extension';
-import { getAmount, formatAmount } from './get-notification-data';
-import { getNotificationImage } from './get-notification-image';
+import { t } from '../../translate';
+import { formatAmount, getAmount } from './get-notification-data';
+
+type TRIGGER_TYPES = NotificationServicesController.Constants.TRIGGER_TYPES;
+type Notification = NotificationServicesController.Types.INotification;
+const CHAIN_SYMBOLS =
+  NotificationServicesController.UI.NOTIFICATION_NETWORK_CURRENCY_SYMBOL;
+type ValidChainId = keyof typeof CHAIN_SYMBOLS;
 
 type PushNotificationMessage = {
   title: string;
@@ -28,66 +26,8 @@ type NotificationMessageDict = {
   >;
 };
 
-const sw = self as unknown as ServiceWorkerGlobalScope;
-const extensionPlatform = new ExtensionPlatform();
-
 function getChainSymbol(chainId: number) {
-  return CHAIN_SYMBOLS[chainId] ?? null;
-}
-
-export async function onPushNotification(
-  notification: Notification,
-): Promise<void> {
-  const notificationMessage = createNotificationMessage(notification);
-  if (!notificationMessage) {
-    return;
-  }
-
-  const registration = sw?.registration;
-  if (!registration) {
-    return;
-  }
-
-  const iconUrl = await getNotificationImage();
-
-  await registration.showNotification(notificationMessage.title, {
-    body: notificationMessage.description,
-    icon: iconUrl,
-    tag: notification?.id,
-    data: notification,
-  });
-}
-
-export async function onNotificationClick(
-  event: NotificationEvent,
-  emitEvent?: (n: Notification) => void,
-) {
-  // Close notification
-  event.notification.close();
-
-  // Get Data
-  const data: Notification = event?.notification?.data;
-  emitEvent?.(data);
-
-  // Navigate
-  const destination = `${extensionPlatform.getExtensionURL(
-    null,
-    null,
-  )}#notifications/${data.id}`;
-  event.waitUntil(sw.clients.openWindow(destination));
-}
-
-export function isOnChainNotification(n: unknown): n is OnChainRawNotification {
-  const assumed = n as OnChainRawNotification;
-
-  // We don't have a validation/parsing library to check all possible types of an on chain notification
-  // It is safe enough just to check "some" fields, and catch any errors down the line if the shape is bad.
-  const isValidEnoughToBeOnChainNotification = [
-    assumed?.id,
-    assumed?.data,
-    assumed?.trigger_id,
-  ].every((field) => field !== undefined);
-  return isValidEnoughToBeOnChainNotification;
+  return CHAIN_SYMBOLS[chainId as ValidChainId] ?? null;
 }
 
 const notificationMessageDict: NotificationMessageDict = {
