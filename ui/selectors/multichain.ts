@@ -18,11 +18,14 @@ import {
 } from '../ducks/metamask/metamask';
 import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
+
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
   NETWORK_TYPES,
+  TEST_NETWORK_IDS,
 } from '../../shared/constants/network';
+
 import { AccountsState } from './accounts';
 import {
   getCurrentChainId,
@@ -34,6 +37,7 @@ import {
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
   getShouldShowFiat,
+  getShowFiatInTestnets,
 } from '.';
 
 export type RatesState = {
@@ -155,7 +159,6 @@ export function getMultichainNetwork(
     // TODO: Adapt this for other non-EVM networks
     nickname: nonEvmNetwork.nickname,
     isEvmNetwork: false,
-    // FIXME: We should use CAIP-2 chain ID here, and not only the reference part
     chainId: nonEvmNetwork?.chainId,
     network: nonEvmNetwork,
   };
@@ -252,10 +255,13 @@ export function getMultichainShouldShowFiat(
   state: MultichainState,
   account?: InternalAccount,
 ) {
-  return getMultichainIsEvm(state, account)
+  const selectedAccount = account ?? getSelectedInternalAccount(state);
+  const isTestnet = getMultichainIsTestnet(state, selectedAccount);
+  const isMainnet = !isTestnet;
+
+  return getMultichainIsEvm(state, selectedAccount)
     ? getShouldShowFiat(state)
-    : // For now we force this for non-EVM
-      true;
+    : isMainnet || (isTestnet && getShowFiatInTestnets(state));
 }
 
 export function getMultichainDefaultToken(
@@ -281,11 +287,33 @@ export function getMultichainIsMainnet(
 ) {
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const providerConfig = getMultichainProviderConfig(state, selectedAccount);
-  return getMultichainIsEvm(state)
+  return getMultichainIsEvm(state, account)
     ? getIsMainnet(state)
     : // TODO: For now we only check for bitcoin, but we will need to
       // update this for other non-EVM networks later!
       providerConfig.chainId === MultichainNetworks.BITCOIN;
+}
+
+export function getMultichainIsTestnet(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  // NOTE: Since there are 2 different implementations for `IsTestnet` and `IsMainnet` we follow
+  // the same pattern here too!
+  const selectedAccount = account ?? getSelectedInternalAccount(state);
+  const providerConfig = getMultichainProviderConfig(state, selectedAccount);
+  return getMultichainIsEvm(state, account)
+    ? // FIXME: There are multiple ways of checking for an EVM test network, but
+      // current implementation differ between each other. So we do not use
+      // `getIsTestnet` here and uses the actual `TEST_NETWORK_IDS` which seems
+      // more up-to-date
+      (TEST_NETWORK_IDS as string[]).includes(
+        (providerConfig as ProviderConfig).chainId,
+      )
+    : // TODO: For now we only check for bitcoin, but we will need to
+      // update this for other non-EVM networks later!
+      (providerConfig as MultichainProviderConfig).chainId ===
+        MultichainNetworks.BITCOIN_TESTNET;
 }
 
 export function getMultichainBalances(
