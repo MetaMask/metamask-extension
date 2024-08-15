@@ -1129,6 +1129,7 @@ describe('Actions', () => {
       setBackgroundConnection(background.getApi());
 
       const networkConfiguration = {
+        id: 'networkConfigurationId',
         rpcUrl: 'newRpc',
         chainId: '0x',
         ticker: 'ETH',
