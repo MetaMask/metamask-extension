@@ -86,7 +86,7 @@ async function openDappAndSwitchChain(
  */
 async function selectDappClickSend(driver, dappUrl) {
   await driver.switchToWindowWithUrl(dappUrl);
-  await driver.clickElementAndWaitForWindowToClose('#sendButton');
+  await driver.clickElement('#sendButton');
 }
 
 async function selectDappClickPersonalSign(driver, dappUrl) {

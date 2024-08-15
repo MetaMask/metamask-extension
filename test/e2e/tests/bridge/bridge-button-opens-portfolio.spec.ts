@@ -1,8 +1,5 @@
 import { Suite } from 'mocha';
 import { withFixtures, logInWithBalanceValidation } from '../../helpers';
-import { Ganache } from '../../seeder/ganache';
-import { Driver } from '../../webdriver/driver';
-import GanacheContractAddressRegistry from '../../seeder/ganache-contract-address-registry';
 import { BridgePage, getBridgeFixtures } from './bridge-test-utils';
 
 describe('Click bridge button @no-mmi', function (this: Suite) {
