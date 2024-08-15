@@ -24,6 +24,13 @@ const { PAGES } = require('../../webdriver/driver');
 // validate two dapps instead of 3
 const IS_FIREFOX = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
+/**
+ *
+ * @param {import('../../webdriver/driver').Driver} driver
+ * @param {*} dappUrl
+ * @param {*} chainId
+ * @param {*} notificationWindowIndex
+ */
 async function openDappAndSwitchChain(
   driver,
   dappUrl,
@@ -45,7 +52,7 @@ async function openDappAndSwitchChain(
     tag: 'button',
     css: '[data-testid="page-container-footer-next"]',
   });
-  await driver.clickElement({
+  await driver.clickElementAndWaitForWindowToClose({
     text: 'Confirm',
     tag: 'button',
     css: '[data-testid="page-container-footer-next"]',
@@ -72,7 +79,7 @@ async function openDappAndSwitchChain(
     await driver.findClickableElement(
       '[data-testid="confirmation-submit-button"]',
     );
-    await driver.clickElement('[data-testid="confirmation-submit-button"]');
+    await driver.clickElementAndWaitForWindowToClose('[data-testid="confirmation-submit-button"]');
 
     // Switch back to the dapp
     await driver.switchToWindowWithUrl(dappUrl);
