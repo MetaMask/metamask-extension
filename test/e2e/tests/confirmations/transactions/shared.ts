@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockedEndpoint } from 'mockttp';
+import { veryLargeDelayMs } from '../../../helpers';
+import { Ganache } from '../../../seeder/ganache';
 import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
-import { Ganache } from '../../../seeder/ganache';
 
 const {
   logInWithBalanceValidation,
@@ -109,6 +110,7 @@ export async function confirmDepositTransactionWithCustomNonce(
     text: 'Save',
     tag: 'button',
   });
+  await driver.delay(veryLargeDelayMs);
   await scrollAndConfirmAndAssertConfirm(driver);
 
   // Confirm tx was submitted with the higher nonce

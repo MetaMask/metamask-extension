@@ -113,7 +113,6 @@ import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import type { MarkAsReadNotificationsParam } from '../../app/scripts/controllers/metamask-notifications/types/notification/notification';
-import { BridgeFeatureFlags } from '../../app/scripts/controllers/bridge';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -3882,16 +3881,6 @@ export function setInitialGasEstimate(
   };
 }
 
-// Bridge
-export function setBridgeFeatureFlags(
-  featureFlags: BridgeFeatureFlags,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('setBridgeFeatureFlags', [featureFlags]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
 // Permissions
 
 export function requestAccountsPermissionWithId(
@@ -5161,7 +5150,7 @@ export function setName(
  * Throw an error in the background for testing purposes.
  *
  * @param message - The error message.
- * @deprecated This is only mean to facilitiate E2E testing. We should not use
+ * @deprecated This is only meant to facilitiate E2E testing. We should not use
  * this for handling errors.
  */
 export async function throwTestBackgroundError(message: string): Promise<void> {

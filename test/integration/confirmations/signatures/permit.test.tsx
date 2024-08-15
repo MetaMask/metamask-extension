@@ -71,7 +71,9 @@ describe('Permit Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
-      createMockImplementation('getTokenStandardAndDetails', { decimal: '10' }),
+      createMockImplementation({
+        getTokenStandardAndDetails: { decimal: '10' },
+      }),
     );
   });
 

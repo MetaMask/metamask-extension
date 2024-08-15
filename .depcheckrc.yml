@@ -75,6 +75,7 @@ ignores:
   - 'https-browserify' # polyfill
   - 'path-browserify' # polyfill
   - 'nyc' # coverage
+  - 'core-js-pure' # polyfills
   # babel
   - '@babel/plugin-transform-logical-assignment-operators'
   # trezor
