@@ -185,7 +185,7 @@ describe('Import flow @no-mmi', function () {
         await driver.clickElement(
           '[data-testid="account-list-item-menu-button"]',
         );
-        await driver.clickElement('[data-testid="account-list-menu-details"');
+        await driver.clickElement('[data-testid="account-list-menu-details"]');
         await driver.findVisibleElement('.qr-code__wrapper');
 
         // Extract address segments from the DOM
