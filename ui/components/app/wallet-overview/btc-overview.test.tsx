@@ -10,6 +10,7 @@ import { renderWithProvider } from '../../../../test/jest/rendering';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { RampsMetaMaskEntry } from '../../../hooks/ramps/useRamps/useRamps';
 import { defaultBuyableChains } from '../../../ducks/ramps/constants';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import BtcOverview from './btc-overview';
 
 const PORTOFOLIO_URL = 'https://portfolio.test';
@@ -107,6 +108,10 @@ function makePortfolioUrl(path: string, getParams: Record<string, string>) {
 }
 
 describe('BtcOverview', () => {
+  beforeEach(() => {
+    setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() } as never);
+  });
+
   it('shows the primary balance', async () => {
     const { queryByTestId, queryByText } = renderWithProvider(
       <BtcOverview />,
