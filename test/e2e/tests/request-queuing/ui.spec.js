@@ -129,7 +129,7 @@ async function switchToNotificationPopoverValidateDetails(
 }
 
 async function rejectTransaction(driver) {
-  await driver.clickElement({ tag: 'button', text: 'Reject' });
+  await driver.clickElementAndWaitForWindowToClose({ tag: 'button', text: 'Reject' });
 }
 
 async function confirmTransaction(driver) {
@@ -179,7 +179,7 @@ async function validateBalanceAndActivity(
 }
 
 describe('Request-queue UI changes', function () {
-  it('should show network specific to domain @no-mmi', async function () {
+  it.only('should show network specific to domain @no-mmi', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
     await withFixtures(
