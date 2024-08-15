@@ -24,13 +24,6 @@ const { PAGES } = require('../../webdriver/driver');
 // validate two dapps instead of 3
 const IS_FIREFOX = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
-/**
- *
- * @param {import('../../webdriver/driver').Driver} driver
- * @param {*} dappUrl
- * @param {*} chainId
- * @param {*} notificationWindowIndex
- */
 async function openDappAndSwitchChain(
   driver,
   dappUrl,
@@ -88,11 +81,6 @@ async function openDappAndSwitchChain(
   }
 }
 
-/**
- *
- * @param {import('../../webdriver/driver').Driver} driver
- * @param {*} dappUrl
- */
 async function selectDappClickSend(driver, dappUrl) {
   await driver.switchToWindowWithUrl(dappUrl);
   await driver.clickElement('#sendButton');
@@ -184,7 +172,7 @@ async function validateBalanceAndActivity(
 }
 
 describe('Request-queue UI changes', function () {
-  it.only('should show network specific to domain @no-mmi', async function () {
+  it('should show network specific to domain @no-mmi', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
     await withFixtures(
