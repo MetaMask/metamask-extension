@@ -28,6 +28,8 @@ const mockShowModal = jest.fn();
 jest.mock('../../../../store/actions.ts', () => {
   return {
     showModal: () => mockShowModal,
+    getLastInteractedConfirmationInfo: jest.fn(),
+    setLastInteractedConfirmationInfo: jest.fn(),
   };
 });
 
