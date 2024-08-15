@@ -2444,18 +2444,8 @@ export function editAndSetNetworkConfiguration(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     log.debug(
-      `background.removeNetworkConfiguration: ${networkConfigurationId}`,
+      `background.upsertNetworkConfiguration: ${rpcUrl} ${chainId} ${ticker} ${nickname}`,
     );
-    try {
-      await submitRequestToBackground('removeNetworkConfiguration', [
-        networkConfigurationId,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem removing network!'));
-      return;
-    }
-
     try {
       await submitRequestToBackground('upsertNetworkConfiguration', [
         {
