@@ -100,8 +100,6 @@ describe('Incremental Security', function () {
         await driver.fill('#address', publicAddress);
         await driver.clickElement('#send');
 
-        await new Promise((resolve) => setTimeout(resolve, 180000));
-
         await driver.waitForSelector(
           { css: '#success', text: 'Success' },
           { timeout: 15000 },
