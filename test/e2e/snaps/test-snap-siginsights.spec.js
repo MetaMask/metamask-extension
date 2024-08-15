@@ -4,7 +4,6 @@ const {
   defaultGanacheOptions,
   openDapp,
   unlockWallet,
-  switchToNotificationWindow,
   tempToggleSettingRedesignedConfirmations,
   WINDOW_TITLES,
 } = require('../helpers');

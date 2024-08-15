@@ -883,6 +883,7 @@ class Driver {
    */
   async waitForWindowToClose(handle) {
     let start = Date.now();
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       const handles = await this.getAllWindowHandles();
       if (!handles.includes(handle)) {
