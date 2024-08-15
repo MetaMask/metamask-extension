@@ -395,7 +395,6 @@
     "ethereumjs-util": "^7.0.10",
     "extension-port-stream": "^3.0.0",
     "fast-json-patch": "^3.1.1",
-    "firebase": "^10.11.0",
     "fuse.js": "^3.2.0",
     "he": "^1.2.0",
     "human-standard-token-abi": "^2.0.0",
