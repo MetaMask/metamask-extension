@@ -1,4 +1,4 @@
-import React, { useContext, useState, useMemo } from 'react';
+import React, { useContext, useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
@@ -187,7 +187,7 @@ type AccountListMenuProps = {
 export const AccountListMenu = ({
   onClose,
   showAccountCreation = true,
-  accountListItemProps = {},
+  accountListItemProps,
   allowedAccountTypes = [
     EthAccountType.Eoa,
     EthAccountType.Erc4337,
@@ -283,7 +283,10 @@ export const AccountListMenu = ({
   }
   searchResults = mergeAccounts(searchResults, filteredAccounts);
 
-  const title = getActionTitle(t as (text: string) => string, actionMode);
+  const title = useMemo(
+    () => getActionTitle(t as (text: string) => string, actionMode),
+    [actionMode, t],
+  );
 
   // eslint-disable-next-line no-empty-function
   let onBack = () => {};
@@ -294,6 +297,23 @@ export const AccountListMenu = ({
       onBack = () => setActionMode(ACTION_MODES.MENU);
     }
   }
+
+  const onAccountListItemItemClicked = useCallback(
+    (account) => {
+      return () => {
+        onClose();
+        trackEvent({
+          category: MetaMetricsEventCategory.Navigation,
+          event: MetaMetricsEventName.NavAccountSwitched,
+          properties: {
+            location: 'Main Menu',
+          },
+        });
+        dispatch(setSelectedAccount(account.address));
+      };
+    },
+    [dispatch, onClose, trackEvent],
+  );
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -601,17 +621,7 @@ export const AccountListMenu = ({
                     key={account.address}
                   >
                     <AccountListItem
-                      onClick={() => {
-                        onClose();
-                        trackEvent({
-                          category: MetaMetricsEventCategory.Navigation,
-                          event: MetaMetricsEventName.NavAccountSwitched,
-                          properties: {
-                            location: 'Main Menu',
-                          },
-                        });
-                        dispatch(setSelectedAccount(account.address));
-                      }}
+                      onClick={onAccountListItemItemClicked(account)}
                       account={account}
                       key={account.address}
                       selected={selectedAccount.address === account.address}

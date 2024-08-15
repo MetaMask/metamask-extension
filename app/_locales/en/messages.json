@@ -3849,6 +3849,14 @@
     "message": "Let $1 access your preferred language from your MetaMask settings. This can be used to localize and display $1's content using your language.",
     "description": "An extended description for the `snap_getLocale` permission. $1 is the snap name."
   },
+  "permission_getPreferences": {
+    "message": "See information like your preferred language and fiat currency.",
+    "description": "The description for the `snap_getPreferences` permission"
+  },
+  "permission_getPreferencesDescription": {
+    "message": "Let $1 access information like your preferred language and fiat currency in your MetaMask settings. This helps $1 display content tailored to your preferences. ",
+    "description": "An extended description for the `snap_getPreferences` permission. $1 is the snap name."
+  },
   "permission_homePage": {
     "message": "Display a custom screen",
     "description": "The description for the `endowment:page-home` permission"

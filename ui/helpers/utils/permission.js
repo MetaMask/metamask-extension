@@ -251,6 +251,14 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.Global,
     weight: PermissionWeight.snap_getLocale,
   }),
+  [RestrictedMethods.snap_getPreferences]: ({ t, subjectName }) => ({
+    label: t('permission_getPreferences'),
+    description: t('permission_getPreferencesDescription', [
+      getSnapNameComponent(subjectName),
+    ]),
+    leftIcon: IconName.Customize,
+    weight: 4,
+  }),
   [RestrictedMethods.wallet_snap]: ({ t, permissionValue, getSubjectName }) => {
     const snaps = permissionValue.caveats[0].value;
     const baseDescription = {
