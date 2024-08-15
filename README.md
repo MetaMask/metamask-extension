@@ -85,6 +85,7 @@ To start a development build (e.g. with logging and file watching) run `yarn sta
 
 Alternatively, one can skip wallet onboarding and preload the vault state with a specific SRP by adding `TEST_SRP='<insert SRP here>'` and `PASSWORD='<insert wallet password here>'` to the `.metamaskrc` file and running `yarn start:skip-onboarding`.
 
+You can also start a development build using the `yarn webpack` command, or `yarn webpack --watch`. This uses an alternative build system that is much faster, but not yet production ready. See the [Webpack README](./development/webpack/README.md) for more information.
 
 #### React and Redux DevTools
 
@@ -138,7 +139,7 @@ Note: The `yarn start:test` command (which initiates the testDev build type) has
 Once you have your test build ready, choose the browser for your e2e tests:
 
 - For Firefox, run `yarn test:e2e:firefox`.
-  - Note:  If you are running Firefox as a snap package on Linux, ensure you enable the appropriate environment variable: `FIREFOX_SNAP=true yarn test:e2e:firefox`
+  - Note: If you are running Firefox as a snap package on Linux, ensure you enable the appropriate environment variable: `FIREFOX_SNAP=true yarn test:e2e:firefox`
 - For Chrome, run `yarn test:e2e:chrome`.
 
 These scripts support additional options for debugging. Use `--help`to see all available options.

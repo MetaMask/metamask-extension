@@ -47,6 +47,7 @@ globalThis.stateHooks.getSentryState = function () {
   };
   // If `getSentryAppState` is set, it implies that initialization has completed
   if (globalThis.stateHooks.getSentryAppState) {
+    sentryLocalStore.cleanUpMostRecentRetrievedState();
     return {
       ...sentryState,
       state: globalThis.stateHooks.getSentryAppState(),

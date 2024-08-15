@@ -418,7 +418,6 @@
           "options": {},
           "methods": [
             "personal_sign",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v3",
@@ -438,7 +437,6 @@
           "options": {},
           "methods": [
             "personal_sign",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v3",
@@ -458,7 +456,6 @@
           "options": {},
           "methods": [
             "personal_sign",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v3",
@@ -478,7 +475,6 @@
           "options": {},
           "methods": [
             "personal_sign",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v3",
@@ -498,7 +494,6 @@
           "options": {},
           "methods": [
             "personal_sign",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v3",
@@ -522,7 +517,6 @@
           "options": {},
           "methods": [
             "personal_sign",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v3",
@@ -782,8 +776,6 @@
         }
       }
     },
-    "unapprovedMsgs": {},
-    "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgs": {},
     "unapprovedPersonalMsgCount": 0,
     "unapprovedDecryptMsgs": {},
@@ -1942,6 +1934,54 @@
         "eth_accounts": {
           "accounts": {
             "0dcd5d886577d5081b0c52e242ef29e70be3e7bc": 1709225290848
+          }
+        }
+      }
+    },
+    "subjects": {
+      "npm:@metamask/test-snap-bip44": {
+        "origin": "npm:@metamask/test-snap-bip44",
+        "permissions": {
+          "endowment:rpc": {
+            "caveats": [
+              {
+                "type": "rpcOrigin",
+                "value": {
+                  "allowedOrigins": ["npm:@metamask/json-rpc-example-snap"],
+                  "dapps": true
+                }
+              }
+            ],
+            "date": 1718117256761,
+            "id": "MhjpHKQFfGpMzI6YzkPGU",
+            "invoker": "npm:@metamask/test-snap-bip44",
+            "parentCapability": "endowment:rpc"
+          },
+          "snap_dialog": {
+            "caveats": null,
+            "date": 1718117256761,
+            "id": "sBxmdvnow7QiN9aS4uSdn",
+            "invoker": "npm:@metamask/test-snap-bip44",
+            "parentCapability": "snap_dialog"
+          },
+          "snap_getBip44Entropy": {
+            "caveats": [
+              {
+                "type": "permittedCoinTypes",
+                "value": [
+                  {
+                    "coinType": 1
+                  },
+                  {
+                    "coinType": 3
+                  }
+                ]
+              }
+            ],
+            "date": 1718117256762,
+            "id": "R9tggB2pDzyCcbt6dIebN",
+            "invoker": "npm:@metamask/test-snap-bip44",
+            "parentCapability": "snap_getBip44Entropy"
           }
         }
       }

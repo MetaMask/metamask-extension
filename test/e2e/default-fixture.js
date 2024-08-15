@@ -41,7 +41,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
               options: {},
               methods: [
                 'personal_sign',
-                'eth_sign',
                 'eth_signTransaction',
                 'eth_signTypedData_v1',
                 'eth_signTypedData_v3',
@@ -116,6 +115,13 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           [CHAIN_IDS.LOCALHOST]: true,
         },
         snapsInstallPrivacyWarningShown: true,
+      },
+      BridgeController: {
+        bridgeState: {
+          bridgeFeatureFlags: {
+            extensionSupport: false,
+          },
+        },
       },
       CurrencyController: {
         currentCurrency: 'usd',

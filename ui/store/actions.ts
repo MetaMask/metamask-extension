@@ -113,8 +113,8 @@ import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import type { MarkAsReadNotificationsParam } from '../../app/scripts/controllers/metamask-notifications/types/notification/notification';
-import { BridgeFeatureFlags } from '../../app/scripts/controllers/bridge';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
+import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -1011,6 +1011,7 @@ export function addTransactionAndRouteToConfirmationPage(
     } catch (error) {
       dispatch(hideLoadingIndication());
       dispatch(displayWarning(error));
+      throw error;
     }
     return null;
   };
@@ -3082,6 +3083,10 @@ export function setRedesignedConfirmationsEnabled(value: boolean) {
   return setPreference('redesignedConfirmationsEnabled', value);
 }
 
+export function setRedesignedTransactionsEnabled(value: boolean) {
+  return setPreference('redesignedTransactionsEnabled', value);
+}
+
 export function setFeatureNotificationsEnabled(value: boolean) {
   return setPreference('featureNotificationsEnabled', value);
 }
@@ -3263,17 +3268,12 @@ export function setParticipateInMetaMetrics(
             reject(err);
             return;
           }
-          /**
-           * We need to inform sentry that the user's optin preference may have
-           * changed. The logic to determine which way to toggle is in the
-           * toggleSession handler in setupSentry.js.
-           */
-          window.sentry?.toggleSession();
 
           dispatch({
             type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
             value: participationPreference,
           });
+
           resolve([participationPreference, metaMetricsId as string]);
         },
       );
@@ -3882,16 +3882,6 @@ export function setInitialGasEstimate(
   };
 }
 
-// Bridge
-export function setBridgeFeatureFlags(
-  featureFlags: BridgeFeatureFlags,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('setBridgeFeatureFlags', [featureFlags]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
 // Permissions
 
 export function requestAccountsPermissionWithId(
@@ -4211,20 +4201,6 @@ export function setDismissSeedBackUpReminder(
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     await submitRequestToBackground('setDismissSeedBackUpReminder', [value]);
-    dispatch(hideLoadingIndication());
-  };
-}
-
-export function setDisabledRpcMethodPreference(
-  methodName: string,
-  value: number,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    await submitRequestToBackground('setDisabledRpcMethodPreference', [
-      methodName,
-      value,
-    ]);
     dispatch(hideLoadingIndication());
   };
 }
@@ -5175,7 +5151,7 @@ export function setName(
  * Throw an error in the background for testing purposes.
  *
  * @param message - The error message.
- * @deprecated This is only mean to facilitiate E2E testing. We should not use
+ * @deprecated This is only meant to facilitiate E2E testing. We should not use
  * this for handling errors.
  */
 export async function throwTestBackgroundError(message: string): Promise<void> {
@@ -5681,4 +5657,21 @@ export async function multichainUpdateBalance(
 
 export async function multichainUpdateBalances(): Promise<void> {
   return await submitRequestToBackground<void>('multichainUpdateBalances', []);
+}
+
+export async function getLastInteractedConfirmationInfo(): Promise<
+  LastInteractedConfirmationInfo | undefined
+> {
+  return await submitRequestToBackground<void>(
+    'getLastInteractedConfirmationInfo',
+  );
+}
+
+export async function setLastInteractedConfirmationInfo(
+  info: LastInteractedConfirmationInfo,
+): Promise<void> {
+  return await submitRequestToBackground<void>(
+    'setLastInteractedConfirmationInfo',
+    [info],
+  );
 }

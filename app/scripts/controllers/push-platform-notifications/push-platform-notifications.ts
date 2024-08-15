@@ -3,9 +3,11 @@ import {
   RestrictedControllerMessenger,
   ControllerGetStateAction,
 } from '@metamask/base-controller';
+import { AuthenticationController } from '@metamask/profile-sync-controller';
+
 import log from 'loglevel';
 
-import type { AuthenticationControllerGetBearerToken } from '../authentication/authentication-controller';
+import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 import type { Notification } from '../metamask-notifications/types/notification/notification';
 import {
   activatePushNotifications,
@@ -43,7 +45,8 @@ export type PushPlatformNotificationsControllerMessengerActions =
   | PushPlatformNotificationsControllerUpdateTriggerPushNotifications
   | ControllerGetStateAction<'state', PushPlatformNotificationsControllerState>;
 
-type AllowedActions = AuthenticationControllerGetBearerToken;
+type AllowedActions =
+  AuthenticationController.AuthenticationControllerGetBearerToken;
 
 export type PushPlatformNotificationsControllerOnNewNotificationEvent = {
   type: `${typeof controllerName}:onNewNotifications`;
@@ -152,7 +155,7 @@ export class PushPlatformNotificationsController extends BaseController<
   public async enablePushNotifications(UUIDs: string[]) {
     // TEMP: disabling push notifications if browser does not support MV3.
     // Will need work to support firefox on MV2
-    if (!process.env.ENABLE_MV3) {
+    if (!isManifestV3) {
       return;
     }
 
@@ -202,7 +205,7 @@ export class PushPlatformNotificationsController extends BaseController<
   public async disablePushNotifications(UUIDs: string[]) {
     // TEMP: disabling push notifications if browser does not support MV3.
     // Will need work to support firefox on MV2
-    if (!process.env.ENABLE_MV3) {
+    if (!isManifestV3) {
       return;
     }
 
@@ -248,7 +251,7 @@ export class PushPlatformNotificationsController extends BaseController<
   public async updateTriggerPushNotifications(UUIDs: string[]) {
     // TEMP: disabling push notifications if browser does not support MV3.
     // Will need work to support firefox on MV2
-    if (!process.env.ENABLE_MV3) {
+    if (!isManifestV3) {
       return;
     }
 

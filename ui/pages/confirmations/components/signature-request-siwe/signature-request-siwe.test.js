@@ -27,6 +27,8 @@ const mockShowModal = jest.fn();
 jest.mock('../../../../store/actions.ts', () => {
   return {
     showModal: () => mockShowModal,
+    getLastInteractedConfirmationInfo: jest.fn(),
+    setLastInteractedConfirmationInfo: jest.fn(),
   };
 });
 
@@ -57,7 +59,7 @@ const mockProps = {
         },
       },
     },
-    type: ApprovalType.EthSign,
+    type: ApprovalType.PersonalSign,
   },
 };
 
@@ -184,7 +186,7 @@ describe('SignatureRequestSIWE (Sign in with Ethereum)', () => {
               status: 'unapproved',
             },
           ],
-          unapprovedMsgCount: 2,
+          unapprovedPersonalMsgCount: 2,
         },
       });
 

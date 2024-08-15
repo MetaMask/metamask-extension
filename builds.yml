@@ -151,6 +151,7 @@ env:
   - SUPPORT_LINK: https://support.metamask.io
   - SUPPORT_REQUEST_LINK: https://support.metamask.io
   - SKIP_BACKGROUND_INITIALIZATION: false
+  - PPOM_URI: ./ppom_bg.wasm
   # CDN for blockaid files
   - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
   # Blockaid public key for verifying signatures of data files downloaded from CDN
@@ -287,3 +288,8 @@ env:
   ###
 
   - EIP_4337_ENTRYPOINT: null
+  ###
+  # Enable/disable why did you render debug tool: https://github.com/welldone-software/why-did-you-render
+  # This should NEVER be enabled in production since it slows down react
+  ###
+  - ENABLE_WHY_DID_YOU_RENDER: false
