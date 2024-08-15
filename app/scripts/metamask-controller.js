@@ -331,7 +331,9 @@ import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
 import { decodeTransactionData } from './lib/transaction/decode/util';
-import BridgeController, { BridgeBackgroundAction } from './controllers/bridge';
+import { BridgeBackgroundAction } from './controllers/bridge/types';
+import BridgeController from './controllers/bridge/bridge-controller';
+import { BRIDGE_CONTROLLER_NAME } from './controllers/bridge/constants';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1947,7 +1949,16 @@ export default class MetamaskController extends EventEmitter {
       },
       initState.SwapsController,
     );
-    this.bridgeController = new BridgeController();
+
+    const bridgeControllerMessenger = this.controllerMessenger.getRestricted({
+      name: BRIDGE_CONTROLLER_NAME,
+      allowedActions: [],
+      allowedEvents: [],
+    });
+    this.bridgeController = new BridgeController({
+      messenger: bridgeControllerMessenger,
+    });
+
     this.smartTransactionsController = new SmartTransactionsController(
       {
         getNetworkClientById: this.networkController.getNetworkClientById.bind(
@@ -2185,7 +2196,7 @@ export default class MetamaskController extends EventEmitter {
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
       SignatureController: this.signatureController,
       SwapsController: this.swapsController,
-      BridgeController: this.bridgeController.store,
+      BridgeController: this.bridgeController,
       EnsController: this.ensController,
       ApprovalController: this.approvalController,
       PPOMController: this.ppomController,
@@ -3027,7 +3038,6 @@ export default class MetamaskController extends EventEmitter {
       appMetadataController,
       permissionController,
       preferencesController,
-      bridgeController,
       tokensController,
       smartTransactionsController,
       txController,
@@ -3375,6 +3385,14 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setSwitchedNetworkNeverShowMessage.bind(
           appStateController,
         ),
+      getLastInteractedConfirmationInfo:
+        appStateController.getLastInteractedConfirmationInfo.bind(
+          appStateController,
+        ),
+      setLastInteractedConfirmationInfo:
+        appStateController.setLastInteractedConfirmationInfo.bind(
+          appStateController,
+        ),
 
       // EnsController
       tryReverseResolveAddress:
@@ -3681,8 +3699,9 @@ export default class MetamaskController extends EventEmitter {
 
       // Bridge
       [BridgeBackgroundAction.SET_FEATURE_FLAGS]:
-        bridgeController[BridgeBackgroundAction.SET_FEATURE_FLAGS].bind(
-          bridgeController,
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.SET_FEATURE_FLAGS}`,
         ),
 
       // Smart Transactions
