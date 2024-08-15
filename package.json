@@ -544,6 +544,7 @@
     "@types/yargs-parser": "^21.0.3",
     "@typescript-eslint/eslint-plugin": "^7.10.0",
     "@typescript-eslint/parser": "^7.10.0",
+    "@welldone-software/why-did-you-render": "^8.0.3",
     "@whitespace/storybook-addon-html": "^5.1.6",
     "addons-linter": "^6.28.0",
     "autoprefixer": "^10.4.19",
