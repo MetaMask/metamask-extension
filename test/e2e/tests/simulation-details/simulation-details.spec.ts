@@ -6,6 +6,7 @@ import {
   withFixtures,
   createDappTransaction,
   switchToNotificationWindow,
+  Fixtures,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -51,11 +52,6 @@ const mockNetworkRequest = async (mockServer: Mockttp) => {
   });
 };
 
-type TestArgs = {
-  driver: Driver;
-  mockServer: MockttpServer;
-};
-
 async function withFixturesForSimulationDetails(
   {
     title,
@@ -66,7 +62,7 @@ async function withFixturesForSimulationDetails(
     inputChainId?: string;
     mockRequests: (mockServer: MockttpServer) => Promise<void>;
   },
-  test: (args: TestArgs) => Promise<void>,
+  test: (args: Pick<Fixtures, 'driver' | 'mockServer'>) => Promise<void>,
 ) {
   const testSpecificMock = async (mockServer: MockttpServer) => {
     await mockNetworkRequest(mockServer);
@@ -85,7 +81,7 @@ async function withFixturesForSimulationDetails(
         chainId: hexToNumber(inputChainId),
       },
     },
-    async ({ driver, mockServer }: TestArgs) => {
+    async ({ driver, mockServer }) => {
       await unlockWallet(driver);
       await test({ driver, mockServer });
     },
@@ -151,7 +147,7 @@ describe('Simulation Details', () => {
     };
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
-      async ({ driver }: TestArgs) => {
+      async ({ driver }) => {
         await createDappTransaction(driver, BUY_ERC20_TRANSACTION);
 
         await switchToNotificationWindow(driver);
@@ -168,7 +164,7 @@ describe('Simulation Details', () => {
     };
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
-      async ({ driver }: TestArgs) => {
+      async ({ driver }) => {
         await createDappTransaction(driver, BUY_ERC721_TRANSACTION_MOCK);
 
         await switchToNotificationWindow(driver);
@@ -191,7 +187,7 @@ describe('Simulation Details', () => {
     };
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
-      async ({ driver }: TestArgs) => {
+      async ({ driver }) => {
         await createDappTransaction(driver, BUY_ERC1155_TRANSACTION_MOCK);
 
         await switchToNotificationWindow(driver);
