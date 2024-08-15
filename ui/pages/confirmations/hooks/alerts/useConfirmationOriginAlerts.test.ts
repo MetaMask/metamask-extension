@@ -53,7 +53,7 @@ const expectedAlert = [
       'Current URL: https://iոfura.io/gnosis',
       'Punycode version: https://xn--ifura-dig.io/gnosis',
     ],
-    field: 'originSpecialCharacterWarning',
+    field: 'requestFrom',
   },
 ];
 

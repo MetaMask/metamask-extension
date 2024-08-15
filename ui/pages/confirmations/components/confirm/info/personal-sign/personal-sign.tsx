@@ -51,7 +51,7 @@ const PersonalSignInfo: React.FC = () => {
       )}
       <ConfirmInfoSection>
         <ConfirmInfoAlertRow
-          alertKey="requestFrom,originSpecialCharacterWarning"
+          alertKey="requestFrom"
           ownerId={currentConfirmation.id}
           label={t('requestFrom')}
           tooltip={isSIWE ? undefined : t('requestFromInfo')}

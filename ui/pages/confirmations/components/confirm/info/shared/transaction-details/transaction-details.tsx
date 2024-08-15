@@ -31,7 +31,7 @@ const OriginRow = () => {
 
   return (
     <ConfirmInfoAlertRow
-      alertKey="originSpecialCharacterWarning"
+      alertKey="requestFrom"
       ownerId={currentConfirmation.id}
       data-testid="transaction-details-origin-row"
       label={t('requestFrom')}

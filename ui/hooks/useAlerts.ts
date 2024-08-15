@@ -37,10 +37,7 @@ const useAlerts = (ownerId: string) => {
       if (!field) {
         return [];
       }
-      const fields = field.split(',');
-      return alerts.filter(
-        (alert) => alert.field && fields.includes(alert.field),
-      );
+      return alerts.filter((alert) => alert.field === field);
     },
     [alerts],
   );

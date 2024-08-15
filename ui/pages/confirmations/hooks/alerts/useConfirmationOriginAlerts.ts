@@ -26,15 +26,15 @@ const useConfirmationOriginAlerts = (): Alert[] => {
       ? (currentConfirmation as SignatureRequestType).msgParams?.origin
       : (currentConfirmation as TransactionMeta).origin;
 
-    if (origin && isValidASCIIURL(origin)) {
-      return [];
-    }
+    // if (origin && isValidASCIIURL(origin)) {
+    //   return [];
+    // }
 
     return [
       {
         key: 'originSpecialCharacterWarning',
         reason: t('addressMismatch'),
-        field: 'originSpecialCharacterWarning',
+        field: 'requestFrom',
         severity: Severity.Warning,
         message: t('addressMismatchWarning'),
         alertDetails: [

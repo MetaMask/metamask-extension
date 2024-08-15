@@ -29,7 +29,7 @@ const TypedSignV1Info: React.FC = () => {
     <>
       <ConfirmInfoSection>
         <ConfirmInfoAlertRow
-          alertKey="originSpecialCharacterWarning"
+          alertKey="requestFrom"
           ownerId={currentConfirmation.id}
           label={t('requestFrom')}
           tooltip={t('requestFromInfo')}
