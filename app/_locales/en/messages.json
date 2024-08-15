@@ -4557,6 +4557,10 @@
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
   },
+  "seeAllPermissions": {
+    "message": "See all permissions",
+    "description": "Used for revealing more content (e.g. permission list, etc.)"
+  },
   "seeDetails": {
     "message": "See details"
   },
