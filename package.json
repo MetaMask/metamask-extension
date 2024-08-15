@@ -543,6 +543,7 @@
     "@types/yargs-parser": "^21.0.3",
     "@typescript-eslint/eslint-plugin": "^7.10.0",
     "@typescript-eslint/parser": "^7.10.0",
+    "@welldone-software/why-did-you-render": "^8.0.3",
     "@whitespace/storybook-addon-html": "^5.1.6",
     "addons-linter": "^6.28.0",
     "autoprefixer": "^10.4.19",
@@ -557,6 +558,7 @@
     "concurrently": "^8.2.2",
     "contentful": "^10.8.7",
     "copy-webpack-plugin": "^12.0.2",
+    "core-js-pure": "^3.38.0",
     "cross-spawn": "^7.0.3",
     "crypto-browserify": "^3.12.0",
     "css-loader": "^6.10.0",
@@ -754,7 +756,8 @@
       "@pmmmwh/react-refresh-webpack-plugin>core-js-pure": true,
       "@swc/core": true,
       "@lydell/node-pty": true,
-      "$root$": true
+      "$root$": true,
+      "core-js-pure": true
     }
   },
   "packageManager": "yarn@4.2.2"

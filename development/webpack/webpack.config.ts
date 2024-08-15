@@ -142,6 +142,14 @@ const plugins: WebpackPluginInstance[] = [
     Buffer: ['buffer', 'Buffer'],
     // Make a global `process` variable that points to the `process` package.
     process: 'process/browser',
+    // polyfill usages of `setImmediate`, ideally this would be automatically
+    // handled by `swcLoader`'s `env.usage = 'entry'` option, but that setting
+    // results in a compilation error: `Module parse failed: 'import' and
+    // 'export' may appear only with 'sourceType: module' (2:0)`. I spent a few
+    // hours trying to figure it out but couldn't. So, this is the workaround.
+    // Note: we should probably remove usages of `setImmediate` from our
+    // codebase so we don't have to polyfill it.
+    setImmediate: 'core-js-pure/actual/set-immediate',
   }),
   new CopyPlugin({
     patterns: [
