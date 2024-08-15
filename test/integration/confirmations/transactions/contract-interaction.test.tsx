@@ -130,7 +130,7 @@ const getMetaMaskStateWithMaliciousUnapprovedContractInteraction = (
   accountAddress: string,
 ) => {
   return {
-    ...getMetaMaskStateWithUnapprovedContractInteraction(accountAddress),
+    ...getMetaMaskStateWithUnapprovedContractInteraction({ accountAddress }),
     transactions: [
       getMaliciousUnapprovedTransaction(
         accountAddress,
