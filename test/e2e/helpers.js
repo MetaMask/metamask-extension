@@ -40,7 +40,7 @@ const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
 /**
- * @typedef {Object} Fixtures
+ * @typedef {object} Fixtures
  * @property {import('./webdriver/driver').Driver} driver - The driver number.
  * @property {GanacheContractAddressRegistry | undefined} contractRegistry - The contract registry.
  * @property {Ganache | undefined} ganacheServer - The Ganache server.
@@ -52,7 +52,7 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
 /**
  *
- * @param {Object} options
+ * @param {object} options
  * @param {(fixtures: Fixtures) => Promise<void>} testSuite
  */
 async function withFixtures(options, testSuite) {

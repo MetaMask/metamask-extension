@@ -879,7 +879,7 @@ class Driver {
   /**
    * Waits for the specified window handle to close before returning.
    *
-   * @param {string} handle The handle of the window or tab we'll wait for.
+   * @param {string} handle - The handle of the window or tab we'll wait for.
    */
   async waitForWindowToClose(handle) {
     let start = Date.now();
@@ -888,8 +888,10 @@ class Driver {
       if (!handles.includes(handle)) {
         break;
       }
-      if (start && (Date.now() - start) > 15000) {
-        console.info("The window did not close after 15 seconds, are you sure you closed it?");
+      if (start && Date.now() - start > 15000) {
+        console.info(
+          'The window did not close after 15 seconds, are you sure you closed it?',
+        );
         start = null; // only log once
       }
     }
