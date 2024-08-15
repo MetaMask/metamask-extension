@@ -91,8 +91,8 @@ export const toPunycodeURL = (urlString: string) => {
     const url = new URL(urlString);
     const { protocol, hostname, pathname, search, hash } = url;
     return `${protocol}//${hostname}${pathname}${search}${hash}`;
-  } catch (exp: unknown) {
-    console.error(`Failed to convert URL to Punycode: ${exp}`);
+  } catch (err: unknown) {
+    console.error(`Failed to convert URL to Punycode: ${err}`);
     return undefined;
   }
 };
