@@ -1,6 +1,6 @@
 import { ControllerMessenger } from '@metamask/base-controller';
+import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
-import type { AuthenticationControllerGetBearerToken } from '../authentication/authentication-controller';
 import type {
   PushPlatformNotificationsControllerMessenger,
   PushPlatformNotificationsControllerState,
@@ -118,7 +118,7 @@ type WithControllerCallback<ReturnValue> = ({
 
 function buildMessenger() {
   return new ControllerMessenger<
-    AuthenticationControllerGetBearerToken,
+    AuthenticationController.AuthenticationControllerGetBearerToken,
     never
   >();
 }
@@ -152,7 +152,8 @@ async function withController<ReturnValue>(
 function mockAuthBearerTokenCall(
   messenger: PushPlatformNotificationsControllerMessenger,
 ) {
-  type Fn = AuthenticationControllerGetBearerToken['handler'];
+  type Fn =
+    AuthenticationController.AuthenticationControllerGetBearerToken['handler'];
   const mockAuthGetBearerToken = jest
     .fn<ReturnType<Fn>, Parameters<Fn>>()
     .mockResolvedValue(MOCK_JWT);

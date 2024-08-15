@@ -15,6 +15,7 @@ import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNati
 import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { getIntlLocale } from '../../../ducks/locale/locale';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import EthOverview from './eth-overview';
 
 jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
@@ -149,6 +150,7 @@ describe('EthOverview', () => {
         },
       });
       openTabSpy = jest.spyOn(global.platform, 'openTab');
+      setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() });
     });
 
     beforeEach(() => {

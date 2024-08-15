@@ -550,9 +550,6 @@
     "message": "$1 và $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
-  "announcements": {
-    "message": "Thông báo"
-  },
   "appDescription": {
     "message": "Ví Ethereum trên trình duyệt của bạn",
     "description": "The description of the application"
@@ -1548,30 +1545,6 @@
   },
   "details": {
     "message": "Chi tiết"
-  },
-  "developerOptions": {
-    "message": "Tùy chọn Nhà phát triển"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Bật hoặc tắt tính năng thiết kế lại xác nhận hiện đang được phát triển"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Thiết kế lại xác nhận"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Bật/tắt thiết kế mới của trình đơn Mạng"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Tái thiết kế Trình đơn Mạng"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Đặt lại giá trị isShown thành \"false\" cho tất cả thông báo. Thông báo là các nội dung hiển thị trong cửa sổ bật lên \"Xem tính năng mới\"."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Đặt lại các trạng thái khác nhau liên quan đến phần giới thiệu và chuyển hướng đến trang giới thiệu \"Bảo mật ví của bạn\"."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Kết quả trong dấu thời gian được lưu liên tục vào session.storage"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” bị vô hiệu hóa vì không đạt mức tăng tối thiểu 10% so với phí gas ban đầu.",
@@ -3517,9 +3490,6 @@
   "onboardedMetametricsTitle": {
     "message": "Hãy giúp chúng tôi nâng cao trải nghiệm của bạn"
   },
-  "onboarding": {
-    "message": "Giới thiệu"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "Cổng IPFS cho phép truy cập và xem dữ liệu do bên thứ ba lưu trữ. Bạn có thể thêm cổng IPFS tùy chỉnh hoặc tiếp tục sử dụng cổng mặc định."
   },
@@ -4385,9 +4355,6 @@
   "reset": {
     "message": "Đặt lại"
   },
-  "resetStates": {
-    "message": "Đặt lại trạng thái"
-  },
   "resetWallet": {
     "message": "Đặt lại ví"
   },
@@ -4706,9 +4673,6 @@
   },
   "sepolia": {
     "message": "Mạng thử nghiệm Sepolia"
-  },
-  "serviceWorkerKeepAlive": {
-    "message": "Duy Trì Hoạt Động Service Worker"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask sử dụng các dịch vụ của bên thứ ba đáng tin cậy này để nâng cao sự hữu ích và an toàn của sản phẩm."
@@ -5272,9 +5236,6 @@
   },
   "stateLogsDescription": {
     "message": "Nhật ký trạng thái có chứa các địa chỉ tài khoản công khai của bạn và các giao dịch đã gửi."
-  },
-  "states": {
-    "message": "Trạng thái"
   },
   "status": {
     "message": "Trạng thái"
