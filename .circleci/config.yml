@@ -1084,7 +1084,11 @@ jobs:
           command: mv ./dist-test-webpack ./dist
       - run:
           name: test:e2e:chrome:webpack
+<<<<<<< Updated upstream
           command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:webpack
+=======
+          command: ENABLE_MV3=false timeout 20m yarn test:e2e:chrome:webpack --retries 1
+>>>>>>> Stashed changes
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
