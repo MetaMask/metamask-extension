@@ -39,6 +39,22 @@ const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
+/**
+ * @typedef {Object} Fixtures
+ * @property {import('./webdriver/driver').Driver} driver - The driver number.
+ * @property {GanacheContractAddressRegistry | undefined} contractRegistry - The contract registry.
+ * @property {Ganache | undefined} ganacheServer - The Ganache server.
+ * @property {Ganache | undefined} secondaryGanacheServer - The secondary Ganache server.
+ * @property {mockttp.MockedEndpoint | undefined} mockedEndpoint - The mocked endpoint.
+ * @property {Bundler} bundlerServer - The bundler server.
+ * @property {mockttp.Mockttp} mockServer - The mock server.
+ */
+
+/**
+ *
+ * @param {Object} options
+ * @param {(fixtures: Fixtures) => Promise<void>} testSuite
+ */
 async function withFixtures(options, testSuite) {
   const {
     dapp,
