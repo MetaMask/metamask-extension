@@ -1,0 +1,52 @@
+diff --git a/dist/chunk-6W5EQ3JQ.js b/dist/chunk-6W5EQ3JQ.js
+index 81c2d0d1e6a0ad6db8b361423774b9a843fb46f6..fa8a115bb9b392a958265fa8df8b5549636952ff 100644
+--- a/dist/chunk-6W5EQ3JQ.js
++++ b/dist/chunk-6W5EQ3JQ.js
+@@ -416,7 +416,7 @@ fetchAndMapExchangeRatesForUnsupportedNativeCurrency_fn = async function({
+       ...acc,
+       [tokenAddress]: {
+         ...token,
+-        value: token.value ? token.value * fallbackCurrencyToNativeCurrencyConversionRate : void 0
++        price: token.price ? token.price * fallbackCurrencyToNativeCurrencyConversionRate : void 0
+       }
+     };
+     return acc;
+diff --git a/dist/chunk-NEXY7SE2.js b/dist/chunk-NEXY7SE2.js
+index 8c506d9d26d81eac470bb4d7b84a4396a1651a83..d1ec2d220491aa353340da4f12a5b40ddaa30afc 100644
+--- a/dist/chunk-NEXY7SE2.js
++++ b/dist/chunk-NEXY7SE2.js
+@@ -182,7 +182,7 @@ async function fetchTokenContractExchangeRates({
+     (obj, [tokenAddress, tokenPrice]) => {
+       return {
+         ...obj,
+-        [_controllerutils.toChecksumHexAddress.call(void 0, tokenAddress)]: tokenPrice?.value
++        [_controllerutils.toChecksumHexAddress.call(void 0, tokenAddress)]: tokenPrice?.price
+       };
+     },
+     {}
+diff --git a/dist/chunk-Q5JRBGWO.mjs b/dist/chunk-Q5JRBGWO.mjs
+index 6c2a61a7703d0b8ecac3561935443994badd451c..1bbe069ba07b9ab6c213a27988c68c5be6321589 100644
+--- a/dist/chunk-Q5JRBGWO.mjs
++++ b/dist/chunk-Q5JRBGWO.mjs
+@@ -182,7 +182,7 @@ async function fetchTokenContractExchangeRates({
+     (obj, [tokenAddress, tokenPrice]) => {
+       return {
+         ...obj,
+-        [toChecksumHexAddress(tokenAddress)]: tokenPrice?.value
++        [toChecksumHexAddress(tokenAddress)]: tokenPrice?.price
+       };
+     },
+     {}
+diff --git a/dist/chunk-X4FFNQHE.mjs b/dist/chunk-X4FFNQHE.mjs
+index f0264520818f7f715df4bb8c08fdc8c95baee999..74dae86c2a30a143684ed076867259e8b3d878c0 100644
+--- a/dist/chunk-X4FFNQHE.mjs
++++ b/dist/chunk-X4FFNQHE.mjs
+@@ -416,7 +416,7 @@ fetchAndMapExchangeRatesForUnsupportedNativeCurrency_fn = async function({
+       ...acc,
+       [tokenAddress]: {
+         ...token,
+-        value: token.value ? token.value * fallbackCurrencyToNativeCurrencyConversionRate : void 0
++        price: token.price ? token.price * fallbackCurrencyToNativeCurrencyConversionRate : void 0
+       }
+     };
+     return acc;
