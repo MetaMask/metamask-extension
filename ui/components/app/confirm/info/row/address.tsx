@@ -50,7 +50,7 @@ export const ConfirmInfoRowAddress = memo(
                 display={Display.Flex}
                 flexDirection={FlexDirection.Row}
                 alignItems={AlignItems.center}
-                onClick={handleDisplayNameClick}
+                onClick={isSnapUsingThis ? () => null : handleDisplayNameClick}
               >
                 <AvatarAccount
                   address={address}
