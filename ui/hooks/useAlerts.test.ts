@@ -10,8 +10,6 @@ describe('useAlerts', () => {
   const ownerIdMock = '123';
   const ownerId2Mock = '321';
   const fromAlertKeyMock = 'from';
-  const toAlertKeyMock = 'to';
-  const multipleAlertKeyMock = 'from,to';
   const dataAlertKeyMock = 'data';
   const alertsMock = [
     {
@@ -25,12 +23,6 @@ describe('useAlerts', () => {
       severity: Severity.Warning as AlertSeverity,
       message: 'Alert 2',
     },
-    {
-      key: toAlertKeyMock,
-      field: toAlertKeyMock,
-      severity: Severity.Warning as AlertSeverity,
-      message: 'Alert 3',
-    },
   ];
 
   const mockState = {
@@ -38,16 +30,6 @@ describe('useAlerts', () => {
       alerts: { [ownerIdMock]: alertsMock, [ownerId2Mock]: [alertsMock[0]] },
       confirmed: {
         [ownerIdMock]: { [fromAlertKeyMock]: true, [dataAlertKeyMock]: false },
-        [ownerId2Mock]: { [fromAlertKeyMock]: false },
-      },
-    },
-  };
-
-  const multipleFieldAlertsMockState = {
-    confirmAlerts: {
-      alerts: { [ownerIdMock]: alertsMock, [ownerId2Mock]: [alertsMock[0]] },
-      confirmed: {
-        [ownerIdMock]: { [fromAlertKeyMock]: true, [toAlertKeyMock]: true },
         [ownerId2Mock]: { [fromAlertKeyMock]: false },
       },
     },
@@ -110,20 +92,6 @@ describe('useAlerts', () => {
       ]);
     });
 
-    it('returns all alerts for multiple alert keys', () => {
-      const { result: result2 } = renderHookUseAlert(
-        undefined,
-        multipleFieldAlertsMockState,
-      );
-      const fieldAlerts = alertsMock.filter(
-        (alert) =>
-          alert.field && multipleAlertKeyMock.split(',').includes(alert.field),
-      );
-      expect(result2.current.getFieldAlerts(multipleAlertKeyMock)).toEqual(
-        fieldAlerts,
-      );
-    });
-
     it('returns empty array if field is not provided', () => {
       expect(result.current.getFieldAlerts()).toEqual([]);
     });
@@ -135,11 +103,10 @@ describe('useAlerts', () => {
 
   describe('fieldAlerts', () => {
     it('returns all alerts with field property', () => {
-      const expectedFieldAlerts = alertsMock.filter(
-        (alert) =>
-          alert.field && multipleAlertKeyMock.split(',').includes(alert.field),
+      const expectedFieldAlerts = alertsMock.find(
+        (alert) => alert.field === fromAlertKeyMock,
       );
-      expect(result.current.fieldAlerts).toEqual(expectedFieldAlerts);
+      expect(result.current.fieldAlerts).toEqual([expectedFieldAlerts]);
     });
 
     it('returns empty array if no alerts with field property', () => {

@@ -37,6 +37,7 @@ const useAlerts = (ownerId: string) => {
       if (!field) {
         return [];
       }
+
       return alerts.filter((alert) => alert.field === field);
     },
     [alerts],

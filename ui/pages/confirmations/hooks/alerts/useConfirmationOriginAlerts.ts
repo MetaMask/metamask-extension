@@ -18,8 +18,8 @@ const useConfirmationOriginAlerts = (): Alert[] => {
   );
 
   const origin = isSignatureTransactionType(currentConfirmation)
-  ? (currentConfirmation as SignatureRequestType)?.msgParams?.origin
-  : (currentConfirmation as TransactionMeta)?.origin;
+    ? (currentConfirmation as SignatureRequestType)?.msgParams?.origin
+    : (currentConfirmation as TransactionMeta)?.origin;
 
   const isValidOrigin = origin && isValidASCIIURL(origin);
 

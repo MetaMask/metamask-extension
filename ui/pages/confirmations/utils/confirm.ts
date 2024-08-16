@@ -88,9 +88,7 @@ export const isValidASCIIURL = (urlString: string) => {
 
 export const toPunycodeURL = (urlString: string) => {
   try {
-    const url = new URL(urlString);
-    const { protocol, hostname, pathname, search, hash } = url;
-    return `${protocol}//${hostname}${pathname}${search}${hash}`;
+    return new URL(urlString).href;
   } catch (err: unknown) {
     console.error(`Failed to convert URL to Punycode: ${err}`);
     return undefined;
