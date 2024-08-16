@@ -28,6 +28,7 @@ export type ConfirmInfoRowTextProps = {
   onEditClick?: () => void;
   editIconClassName?: string;
   tooltip?: string;
+  'data-testid'?: string;
 };
 
 export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
@@ -35,6 +36,7 @@ export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
   onEditClick,
   editIconClassName,
   tooltip,
+  'data-testid': dataTestId,
 }) => {
   const t = useContext(I18nContext);
 
@@ -42,6 +44,7 @@ export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
 
   return (
     <Box
+      data-testid={dataTestId}
       display={Display.Flex}
       alignItems={AlignItems.center}
       flexWrap={FlexWrap.Wrap}
