@@ -1039,14 +1039,14 @@ export function setupController(
   function getUnreadNotificationsCount() {
     try {
       const { isNotificationServicesEnabled, isFeatureAnnouncementsEnabled } =
-        controller.metamaskNotificationsController.state;
+        controller.notificationServicesController.state;
 
       const snapNotificationCount = Object.values(
         controller.notificationController.state.notifications,
       ).filter((notification) => notification.readDate === null).length;
 
       const featureAnnouncementCount = isFeatureAnnouncementsEnabled
-        ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
+        ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
             (notification) =>
               !notification.isRead &&
               notification.type ===
@@ -1056,7 +1056,7 @@ export function setupController(
         : 0;
 
       const walletNotificationCount = isNotificationServicesEnabled
-        ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
+        ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
             (notification) =>
               !notification.isRead &&
               notification.type !==

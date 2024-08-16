@@ -2,10 +2,10 @@
   "data": {
     "AuthenticationController": { "isSignedIn": "boolean" },
     "UserStorageController": { "isProfileSyncingEnabled": true },
-    "MetamaskNotificationsController": {
+    "NotificationServicesController": {
       "subscriptionAccountsSeen": "object",
       "isFeatureAnnouncementsEnabled": "boolean",
-      "isMetamaskNotificationsEnabled": "boolean",
+      "isNotificationServicesEnabled": "boolean",
       "isMetamaskNotificationsFeatureSeen": "boolean",
       "metamaskNotificationsList": "object",
       "metamaskNotificationsReadList": "object"
