@@ -148,6 +148,7 @@
     "ignoredNfts": "object"
   },
   "NotificationController": { "notifications": "object" },
+  "NotificationServicesPushController": { "fcmToken": "string" },
   "OnboardingController": {
     "seedPhraseBackedUp": true,
     "firstTimeFlowType": "import",
@@ -211,7 +212,6 @@
     "useExternalServices": "boolean",
     "selectedAddress": "string"
   },
-  "PushPlatformNotificationsController": { "fcmToken": "string" },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {

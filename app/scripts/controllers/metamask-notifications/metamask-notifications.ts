@@ -17,12 +17,7 @@ import {
   AuthenticationController,
   UserStorageController,
 } from '@metamask/profile-sync-controller';
-import {
-  PushPlatformNotificationsControllerEnablePushNotifications,
-  PushPlatformNotificationsControllerDisablePushNotifications,
-  PushPlatformNotificationsControllerUpdateTriggerPushNotifications,
-  PushPlatformNotificationsControllerOnNewNotificationEvent,
-} from '../push-platform-notifications/push-platform-notifications';
+import { NotificationsServicesPushController } from '@metamask/notification-services-controller';
 import {
   TRIGGER_TYPES,
   TRIGGER_TYPES_GROUPS,
@@ -202,9 +197,9 @@ export type AllowedActions =
   | UserStorageController.UserStorageControllerPerformGetStorage
   | UserStorageController.UserStorageControllerPerformSetStorage
   // Push Notifications Controller Requests
-  | PushPlatformNotificationsControllerEnablePushNotifications
-  | PushPlatformNotificationsControllerDisablePushNotifications
-  | PushPlatformNotificationsControllerUpdateTriggerPushNotifications;
+  | NotificationsServicesPushController.NotificationServicesPushControllerEnablePushNotificationsAction
+  | NotificationsServicesPushController.NotificationServicesPushControllerDisablePushNotificationsAction
+  | NotificationsServicesPushController.NotificationServicesPushControllerUpdateTriggerPushNotificationsAction;
 
 // Events
 export type Events =
@@ -218,7 +213,7 @@ export type AllowedEvents =
   | KeyringControllerLockEvent
   | KeyringControllerUnlockEvent
   // Push Notification Events
-  | PushPlatformNotificationsControllerOnNewNotificationEvent;
+  | NotificationsServicesPushController.NotificationServicesPushControllerOnNewNotificationEvent;
 
 // Type for the messenger of MetamaskNotificationsController
 export type MetamaskNotificationsControllerMessenger =
@@ -305,7 +300,7 @@ export class MetamaskNotificationsController extends BaseController<
     enablePushNotifications: async (UUIDs: string[]) => {
       try {
         await this.messagingSystem.call(
-          'PushPlatformNotificationsController:enablePushNotifications',
+          'NotificationServicesPushController:enablePushNotifications',
           UUIDs,
         );
       } catch (e) {
@@ -315,7 +310,7 @@ export class MetamaskNotificationsController extends BaseController<
     disablePushNotifications: async (UUIDs: string[]) => {
       try {
         await this.messagingSystem.call(
-          'PushPlatformNotificationsController:disablePushNotifications',
+          'NotificationServicesPushController:disablePushNotifications',
           UUIDs,
         );
       } catch (e) {
@@ -325,7 +320,7 @@ export class MetamaskNotificationsController extends BaseController<
     updatePushNotifications: async (UUIDs: string[]) => {
       try {
         await this.messagingSystem.call(
-          'PushPlatformNotificationsController:updateTriggerPushNotifications',
+          'NotificationServicesPushController:updateTriggerPushNotifications',
           UUIDs,
         );
       } catch (e) {
@@ -334,7 +329,7 @@ export class MetamaskNotificationsController extends BaseController<
     },
     subscribe: () => {
       this.messagingSystem.subscribe(
-        'PushPlatformNotificationsController:onNewNotifications',
+        'NotificationServicesPushController:onNewNotifications',
         (notification) => {
           this.updateMetamaskNotificationsList(notification);
         },

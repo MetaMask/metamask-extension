@@ -28,11 +28,12 @@ export const DEFAULT_FOOTER = {
 const getDefaultButtons = (
   footer: FooterElement,
   t: (value: string) => string,
-  onCancel: () => void,
+  onCancel?: () => void,
 ) => {
   const children = getJsxChildren(footer);
 
-  if (children.length === 1) {
+  // If onCancel is omitted by the caller we assume that it is safe to not display the default footer.
+  if (children.length === 1 && onCancel) {
     return {
       element: 'SnapFooterButton',
       key: 'default-button',
