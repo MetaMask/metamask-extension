@@ -185,7 +185,6 @@ import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
-  SNAP_DIALOG_TYPES,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
 import {
@@ -1409,6 +1408,8 @@ export default class MetamaskController extends EventEmitter {
         allowedActions: [
           `${this.phishingController.name}:maybeUpdateState`,
           `${this.phishingController.name}:testOrigin`,
+          `${this.approvalController.name}:hasRequest`,
+          `${this.approvalController.name}:acceptRequest`,
         ],
       });
 
@@ -2572,7 +2573,11 @@ export default class MetamaskController extends EventEmitter {
       ...buildSnapRestrictedMethodSpecifications(
         Object.keys(ExcludedSnapPermissions),
         {
-          getLocale: this.getLocale.bind(this),
+          getPreferences: () => {
+            const locale = this.getLocale();
+            const currency = this.currencyRateController.state.currentCurrency;
+            return { locale, currency };
+          },
           clearSnapState: this.controllerMessenger.call.bind(
             this.controllerMessenger,
             'SnapController:clearSnapState',
@@ -2590,12 +2595,10 @@ export default class MetamaskController extends EventEmitter {
             this.controllerMessenger,
             'SnapController:getSnapState',
           ),
-          showDialog: (origin, type, id, placeholder) =>
-            this.approvalController.addAndShowApprovalRequest({
-              origin,
-              type: SNAP_DIALOG_TYPES[type],
-              requestData: { id, placeholder },
-            }),
+          requestUserApproval:
+            this.approvalController.addAndShowApprovalRequest.bind(
+              this.approvalController,
+            ),
           showNativeNotification: (origin, args) =>
             this.controllerMessenger.call(
               'RateLimitController:call',
@@ -3383,6 +3386,14 @@ export default class MetamaskController extends EventEmitter {
         appStateController.clearSwitchedNetworkDetails.bind(appStateController),
       setSwitchedNetworkNeverShowMessage:
         appStateController.setSwitchedNetworkNeverShowMessage.bind(
+          appStateController,
+        ),
+      getLastInteractedConfirmationInfo:
+        appStateController.getLastInteractedConfirmationInfo.bind(
+          appStateController,
+        ),
+      setLastInteractedConfirmationInfo:
+        appStateController.setLastInteractedConfirmationInfo.bind(
           appStateController,
         ),
 
@@ -5657,6 +5668,11 @@ export default class MetamaskController extends EventEmitter {
         updateInterface: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapInterfaceController:updateInterface',
+          origin,
+        ),
+        resolveInterface: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapInterfaceController:resolveInterface',
           origin,
         ),
         getSnap: this.controllerMessenger.call.bind(
