@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/browser';
 import { createModuleLogger, createProjectLogger } from '@metamask/utils';
 import { logger } from '@sentry/utils';
+import browser from 'webextension-polyfill';
 import { AllProperties } from '../../../shared/modules/object.utils';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
@@ -752,6 +753,16 @@ export function rewriteReport(report) {
     }
 
     report.extra.appState = appState;
+    report.extra.extensionId = 'unknown';
+    if (
+      typeof browser !== 'undefined' &&
+      browser.runtime &&
+      browser.runtime.id
+    ) {
+      report.extra.extensionId = browser.runtime.id;
+    }
+
+    console.log('TEST_REPORT:', report);
   } catch (err) {
     log('Error rewriting report', err);
   }
