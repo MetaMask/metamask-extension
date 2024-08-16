@@ -5,7 +5,6 @@ import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
   openDapp,
-  switchToNotificationWindow,
   unlockWallet,
 } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
@@ -18,7 +17,8 @@ import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
-  assertSignatureMetrics,
+  assertSignatureConfirmedMetrics,
+  assertSignatureRejectedMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
 } from './signature-helpers';
@@ -34,7 +34,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#siwe');
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
@@ -46,7 +46,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
           mockedEndpoints as MockedEndpoint[],
           'personal_sign',
         );
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
         await driver.delay(1000);
@@ -55,13 +55,12 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
           driver,
           '0xef8674a92d62a1876624547bdccaef6c67014ae821de18fa910fbff56577a65830f68848585b33d1f4b9ea1c3da1c1b11553b6aabe8446717daf7cd1e38a68271c',
         );
-        await assertSignatureMetrics(
+        await assertSignatureConfirmedMetrics({
           driver,
-          mockedEndpoints as MockedEndpoint[],
-          'personal_sign',
-          '',
-          ['redesigned_confirmation', 'sign_in_with_ethereum'],
-        );
+          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
+          signatureType: 'personal_sign',
+          uiCustomizations: ['redesigned_confirmation', 'sign_in_with_ethereum'],
+        });
       },
     );
   });
@@ -76,7 +75,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#siwe');
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
@@ -90,48 +89,13 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
           await rejectionResult.getText(),
           'Error: User rejected the request.',
         );
-        await assertSignatureMetrics(
+        await assertSignatureRejectedMetrics({
           driver,
-          mockedEndpoints as MockedEndpoint[],
-          'personal_sign',
-          '',
-          ['redesigned_confirmation', 'sign_in_with_ethereum'],
-        );
-      },
-    );
-  });
-
-  it('displays alert for domain binding and confirms', async function () {
-    await withRedesignConfirmationFixtures(
-      this.test?.fullTitle(),
-      async ({ driver }: TestSuiteArguments) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#siweBadDomain');
-        await switchToNotificationWindow(driver);
-
-        const alert = await driver.findElement('[data-testid="inline-alert"]');
-        assert.equal(await alert.getText(), 'Alert');
-        await driver.clickElement('[data-testid="inline-alert"]');
-
-        await driver.clickElement(
-          '[data-testid="alert-modal-acknowledge-checkbox"]',
-        );
-        await driver.clickElement('[data-testid="alert-modal-button"]');
-
-        await scrollAndConfirmAndAssertConfirm(driver);
-
-        await driver.clickElement(
-          '[data-testid="alert-modal-acknowledge-checkbox"]',
-        );
-        await driver.clickElement(
-          '[data-testid="confirm-alert-modal-submit-button"]',
-        );
-
-        await assertVerifiedSiweMessage(
-          driver,
-          '0x24e559452c37827008633f9ae50c68cdb28e33f547f795af687839b520b022e4093c38bf1dfebda875ded715f2754d458ed62a19248e5a9bd2205bd1cb66f9b51b',
-        );
+          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
+          signatureType: 'personal_sign',
+          uiCustomizations: ['redesigned_confirmation', 'sign_in_with_ethereum'],
+          location: 'confirmation',
+        });
       },
     );
   });

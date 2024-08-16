@@ -5,7 +5,6 @@ import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
   openDapp,
-  switchToNotificationWindow,
   unlockWallet,
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
@@ -16,7 +15,8 @@ import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
-  assertSignatureMetrics,
+  assertSignatureConfirmedMetrics,
+  assertSignatureRejectedMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
 } from './signature-helpers';
@@ -36,7 +36,7 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#personalSign');
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
@@ -48,17 +48,17 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
           mockedEndpoints as MockedEndpoint[],
           'personal_sign',
         );
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await assertInfoValues(driver);
 
         await driver.clickElement('[data-testid="confirm-footer-button"]');
 
         await assertVerifiedPersonalMessage(driver, publicAddress);
-        await assertSignatureMetrics(
+        await assertSignatureConfirmedMetrics({
           driver,
-          mockedEndpoints as MockedEndpoint[],
-          'personal_sign',
-        );
+          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
+          signatureType: 'personal_sign',
+        });
       },
     );
   });
@@ -73,7 +73,7 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#personalSign');
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
@@ -87,11 +87,12 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
           text: 'Error: User rejected the request.',
         });
         assert.ok(rejectionResult);
-        await assertSignatureMetrics(
+        await assertSignatureRejectedMetrics({
           driver,
-          mockedEndpoints as MockedEndpoint[],
-          'personal_sign',
-        );
+          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
+          signatureType: 'personal_sign',
+          location: 'confirmation',
+        });
       },
     );
   });

@@ -5,7 +5,6 @@ import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
   openDapp,
-  switchToNotificationWindow,
   unlockWallet,
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
@@ -19,7 +18,8 @@ import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
-  assertSignatureMetrics,
+  assertSignatureConfirmedMetrics,
+  assertSignatureRejectedMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
 } from './signature-helpers';
@@ -39,7 +39,7 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signTypedDataV4');
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
@@ -56,12 +56,13 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
         await scrollAndConfirmAndAssertConfirm(driver);
         await driver.delay(1000);
 
-        await assertSignatureMetrics(
+        await assertSignatureConfirmedMetrics({
           driver,
-          mockedEndpoints as MockedEndpoint[],
-          'eth_signTypedData_v4',
-          'Mail',
-        );
+          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
+          signatureType: 'eth_signTypedData_v4',
+          primaryType: 'Mail',
+        });
+
         await assertVerifiedResults(driver, publicAddress);
       },
     );
@@ -77,19 +78,20 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signTypedDataV4');
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
         );
         await driver.delay(1000);
 
-        await assertSignatureMetrics(
+        await assertSignatureRejectedMetrics({
           driver,
-          mockedEndpoints as MockedEndpoint[],
-          'eth_signTypedData_v4',
-          'Mail',
-        );
+          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
+          signatureType: 'eth_signTypedData_v4',
+          primaryType: 'Mail',
+          location: 'confirmation',
+        });
 
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

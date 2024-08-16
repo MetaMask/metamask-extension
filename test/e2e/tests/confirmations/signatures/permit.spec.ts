@@ -5,7 +5,6 @@ import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
   openDapp,
-  switchToNotificationWindow,
   unlockWallet,
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
@@ -19,7 +18,8 @@ import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
-  assertSignatureMetrics,
+  assertSignatureConfirmedMetrics,
+  assertSignatureRejectedMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
 } from './signature-helpers';
@@ -39,7 +39,7 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signPermit');
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
@@ -51,19 +51,19 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
         await driver.delay(1000);
 
-        await assertSignatureMetrics(
+        await assertSignatureConfirmedMetrics({
           driver,
-          mockedEndpoints as MockedEndpoint[],
-          'eth_signTypedData_v4',
-          'Permit',
-          ['redesigned_confirmation', 'permit'],
-        );
+          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
+          signatureType: 'eth_signTypedData_v4',
+          primaryType: 'Permit',
+          uiCustomizations: ['redesigned_confirmation', 'permit'],
+        });
 
         await assertVerifiedResults(driver, publicAddress);
       },
@@ -80,7 +80,7 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signPermit');
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
@@ -96,13 +96,14 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
           'Error: User rejected the request.',
         );
 
-        await assertSignatureMetrics(
+        await assertSignatureRejectedMetrics({
           driver,
-          mockedEndpoints as MockedEndpoint[],
-          'eth_signTypedData_v4',
-          'Permit',
-          ['redesigned_confirmation', 'permit'],
-        );
+          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
+          signatureType: 'eth_signTypedData_v4',
+          primaryType: 'Permit',
+          uiCustomizations: ['redesigned_confirmation', 'permit'],
+          location: 'confirmation',
+        });
       },
     );
   });

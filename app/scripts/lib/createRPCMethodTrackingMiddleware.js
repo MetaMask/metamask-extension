@@ -341,11 +341,11 @@ export default function createRPCMethodTrackingMiddleware({
       if (shouldTrackEvent === false || typeof eventType === 'undefined') {
         return callback();
       }
+      const location = res.error?.data?.location;
 
       let event;
       if (res.error?.code === errorCodes.provider.userRejectedRequest) {
         event = eventType.REJECTED;
-        eventProperties.location = res.error.data?.location;
       } else if (
         res.error?.code === errorCodes.rpc.internal &&
         res.error?.message === 'Request rejected by user or snap.'
@@ -368,10 +368,10 @@ export default function createRPCMethodTrackingMiddleware({
           securityAlertResponse,
         });
       }
-
       const properties = {
         ...eventProperties,
         ...blockaidMetricProps,
+        location,
         // if security_alert_response from blockaidMetricProps is Benign, force set security_alert_reason to empty string
         security_alert_reason:
           blockaidMetricProps.security_alert_response ===
