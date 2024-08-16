@@ -82,7 +82,6 @@ describe('migration #120.6', () => {
         },
       },
     };
-    const oldStorageDataClone = cloneDeep(oldStorage.data);
 
     const newStorage = await migrate(oldStorage);
 
