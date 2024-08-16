@@ -65,7 +65,7 @@ function SnapView() {
   };
 
   const handleBackClick = () => {
-    if (snap.preinstalled) {
+    if (snap.preinstalled && !snap.removable) {
       history.push(DEFAULT_ROUTE);
     } else if (showSettings && hasHomePage) {
       setShowSettings(false);
