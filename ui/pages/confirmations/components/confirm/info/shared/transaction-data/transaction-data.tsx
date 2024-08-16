@@ -62,15 +62,14 @@ export const TransactionData = () => {
     <Container transactionData={transactionData}>
       <>
         {data.map((method, index) => (
-          <>
+          <React.Fragment key={index}>
             <FunctionContainer
-              key={index}
               method={method}
               source={source}
               isExpandable={isExpandable}
             />
             {index < data.length - 1 && <ConfirmInfoRowDivider />}
-          </>
+          </React.Fragment>
         ))}
       </>
     </Container>
@@ -90,7 +89,7 @@ function Container({
 
   return (
     <>
-      <ConfirmInfoSection>
+      <ConfirmInfoSection data-testid="advanced-details-data-section">
         <ConfirmInfoRow
           label={t('advancedDetailsDataDesc')}
           copyEnabled={Boolean(transactionData)}
@@ -106,10 +105,12 @@ function Container({
 
 function RawDataRow({ transactionData }: { transactionData: string }) {
   const t = useI18nContext();
-
   return (
     <ConfirmInfoRow label={t('advancedDetailsHexDesc')}>
-      <ConfirmInfoRowText text={transactionData} />
+      <ConfirmInfoRowText
+        data-testid="advanced-details-transaction-hex"
+        text={transactionData}
+      />
     </ConfirmInfoRow>
   );
 }
@@ -146,7 +147,10 @@ function FunctionContainer({
         content={paramRows}
         startExpanded
       >
-        <ConfirmInfoRowText text={method.name} />
+        <ConfirmInfoRowText
+          data-testid="advanced-details-data-function"
+          text={method.name}
+        />
       </ConfirmInfoExpandableRow>
     );
   }
@@ -154,6 +158,7 @@ function FunctionContainer({
   return (
     <>
       <ConfirmInfoRow
+        data-testid="advanced-details-data-function"
         label={t('transactionDataFunction')}
         tooltip={method.description}
       >
@@ -202,6 +207,7 @@ function ParamRow({
   const { name, type, description } = param;
   const label = name ? _.startCase(name) : `Param #${index + 1}`;
   const tooltip = `${type}${description ? ` - ${description}` : ''}`;
+  const dataTestId = `advanced-details-data-param-${index}`;
 
   const childRows = param.children?.map((childParam, childIndex) => (
     <ParamRow
@@ -214,7 +220,7 @@ function ParamRow({
 
   return (
     <>
-      <ConfirmInfoRow label={label} tooltip={tooltip}>
+      <ConfirmInfoRow label={label} tooltip={tooltip} data-testid={dataTestId}>
         {!childRows?.length && <ParamValue param={param} source={source} />}
       </ConfirmInfoRow>
       {childRows && <Box paddingLeft={2}>{childRows}</Box>}
