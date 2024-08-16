@@ -28,7 +28,7 @@ export const DEFAULT_FOOTER = {
 const getDefaultButtons = (
   footer: FooterElement,
   t: (value: string) => string,
-  onCancel: () => void,
+  onCancel?: () => void,
 ) => {
   const children = getJsxChildren(footer);
 
