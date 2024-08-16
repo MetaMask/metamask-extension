@@ -2,6 +2,7 @@ import { type Locator, type Page } from '@playwright/test';
 
 export class SwapPage {
   private page: Page;
+  private swapQty: string;
 
   readonly toggleSmartSwap: Locator;
 
@@ -29,6 +30,7 @@ export class SwapPage {
 
   constructor(page: Page) {
     this.page = page;
+    this.swapQty = '';
     this.toggleSmartSwap = this.page.locator('text="On"');
     this.updateSettingsButton = this.page.getByTestId(
       'update-transaction-settings-button',
@@ -55,9 +57,10 @@ export class SwapPage {
     this.backButton = this.page.locator('[title="Cancel"]');
   }
 
-  async fetchQuote(options: { from?: string; to: string; qty: string }) {
+  async enterQuote(options: { from?: string; to: string; qty: string }) {
     // Enter Swap Quantity
     await this.tokenQty.fill(options.qty);
+    this.swapQty = options.qty;
 
     // Enter source token
     if (options.from) {
@@ -72,18 +75,34 @@ export class SwapPage {
     await this.selectTokenFromList(options.to);
   }
 
+  async waitForQuote() {
+    do {
+      // Clear Swap Anyway button if present
+      const swapAnywayButton = await this.page.$('text=/Swap anyway/');
+      if (swapAnywayButton) {
+        await swapAnywayButton.click();
+      }
+
+      // No quotes available
+      const noQuotes = await this.page.$('text=/No quotes available/');
+      if (noQuotes) {
+        //re-entering the qty will trigger new quote
+        await this.tokenQty.fill('');
+        await this.tokenQty.fill(this.swapQty);
+      }
+
+      if (await this.page.$('text=/New quotes in/')) break;
+
+      await this.page.waitForTimeout(500);
+    } while (true);
+  }
+
   async swap() {
     await this.waitForCountDown();
-
-    // Clear Swap Anyway button if present
-    const swapAnywayButton = await this.page.$('text=/Swap anyway/');
-    if (swapAnywayButton) {
-      await swapAnywayButton.click();
-    }
     await this.swapTokenButton.click();
   }
 
-  async switchTokens() {
+  async switchTokenOrder() {
     // Wait for swap button to appear
     await this.swapTokenButton.waitFor();
     await this.switchTokensButton.click();
