@@ -81,7 +81,7 @@ export const SnapHomeRenderer = ({ snapId }) => {
           interfaceId={interfaceId}
           isLoading={loading}
           useDelineator={false}
-          useFooter={true}
+          useFooter
         />
       )}
     </Box>
