@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.0.5]
+### Fixed
+- Prevent network selection per dapp from breaking if the rpc url of the currently selected network is edited ([#26453](https://github.com/MetaMask/metamask-extension/pull/26453))
+- Fix the display of prices and balances of some tokens on networks other than ethereum mainnet ([#26450](https://github.com/MetaMask/metamask-extension/pull/26450))
 
 ## [12.0.4]
 ### Fixed
