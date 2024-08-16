@@ -38,7 +38,7 @@ export const SnapDelineator = ({
   children,
   onClick,
   boxProps,
-  disablePadding = false
+  disablePadding = false,
 }) => {
   const t = useI18nContext();
   const isError =
@@ -130,4 +130,5 @@ SnapDelineator.propTypes = {
   onClick: PropTypes.func,
   boxProps: PropTypes.object,
   children: PropTypes.node,
+  disablePadding: PropTypes.bool,
 };
