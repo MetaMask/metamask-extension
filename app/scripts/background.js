@@ -20,6 +20,8 @@ import PortStream from 'extension-port-stream';
 
 import { ethErrors } from 'eth-rpc-errors';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
+
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -78,8 +80,6 @@ import { generateSkipOnboardingState } from './skip-onboarding';
 import { createOffscreen } from './offscreen';
 
 /* eslint-enable import/first */
-
-import { TRIGGER_TYPES } from './controllers/metamask-notifications/constants/notification-schema';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -1038,7 +1038,7 @@ export function setupController(
 
   function getUnreadNotificationsCount() {
     try {
-      const { isMetamaskNotificationsEnabled, isFeatureAnnouncementsEnabled } =
+      const { isNotificationServicesEnabled, isFeatureAnnouncementsEnabled } =
         controller.metamaskNotificationsController.state;
 
       const snapNotificationCount = Object.values(
@@ -1049,15 +1049,19 @@ export function setupController(
         ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
             (notification) =>
               !notification.isRead &&
-              notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+              notification.type ===
+                NotificationServicesController.Constants.TRIGGER_TYPES
+                  .FEATURES_ANNOUNCEMENT,
           ).length
         : 0;
 
-      const walletNotificationCount = isMetamaskNotificationsEnabled
+      const walletNotificationCount = isNotificationServicesEnabled
         ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
             (notification) =>
               !notification.isRead &&
-              notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+              notification.type !==
+                NotificationServicesController.Constants.TRIGGER_TYPES
+                  .FEATURES_ANNOUNCEMENT,
           ).length
         : 0;
 
