@@ -81,7 +81,14 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
       'transfer',
     );
     global.platform.openTab({ url });
-  }, [metaMetricsId, isMetaMetricsEnabled, isMarketingEnabled]);
+  }, [
+    metaMetricsId,
+    isMetaMetricsEnabled,
+    isMarketingEnabled,
+    chainId,
+    symbol,
+    accountAddress,
+  ]);
 
   const handleBuyCryptoClick = useCallback(() => {
     trackEvent({
@@ -95,7 +102,7 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
       },
     });
     openBuyCryptoInPdapp(chainId as ChainId | CaipChainId);
-  }, []);
+  }, [chainId, symbol]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} data-testid="funding-method-modal">
