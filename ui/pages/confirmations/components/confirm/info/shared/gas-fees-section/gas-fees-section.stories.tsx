@@ -33,21 +33,10 @@ const Story = {
       </Provider>
     ),
   ],
-  argTypes: {
-    showAdvancedDetails: {
-      control: 'select',
-      options: [false, true],
-    },
-  },
-  args: {
-    showAdvancedDetails: false,
-  },
 };
 
 export default Story;
 
-export const DefaultStory = (args) => (
-  <GasFeesSection showAdvancedDetails={args.showAdvancedDetails} />
-);
+export const DefaultStory = () => <GasFeesSection />;
 
 DefaultStory.storyName = 'Default';

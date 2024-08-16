@@ -8,15 +8,14 @@ import {
   useSetIsProfileSyncingEnabled,
 } from '../../../../hooks/metamask-notifications/useProfileSyncing';
 import {
-  selectIsProfileSyncingEnabled,
-  selectIsProfileSyncingUpdateLoading,
-} from '../../../../selectors/metamask-notifications/profile-syncing';
-import { selectParticipateInMetaMetrics } from '../../../../selectors/metamask-notifications/authentication';
-import { showModal } from '../../../../store/actions';
-import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import {
+  selectIsProfileSyncingEnabled,
+  selectIsProfileSyncingUpdateLoading,
+} from '../../../../selectors/metamask-notifications/profile-syncing';
+import { showModal } from '../../../../store/actions';
 import { Box, Text } from '../../../../components/component-library';
 import ToggleButton from '../../../../components/ui/toggle-button';
 import {
@@ -46,8 +45,8 @@ function ProfileSyncBasicFunctionalitySetting() {
 }
 
 const ProfileSyncToggle = () => {
-  const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const t = useI18nContext();
   const dispatch = useDispatch();
   const { enableProfileSyncing, error: enableProfileSyncingError } =
     useEnableProfileSyncing();
@@ -59,7 +58,6 @@ const ProfileSyncToggle = () => {
   const error = enableProfileSyncingError || disableProfileSyncingError;
 
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
-  const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
   const isProfileSyncingUpdateLoading = useSelector(
     selectIsProfileSyncingUpdateLoading,
   );
@@ -73,9 +71,12 @@ const ProfileSyncToggle = () => {
             disableProfileSyncing();
             trackEvent({
               category: MetaMetricsEventCategory.Settings,
-              event: MetaMetricsEventName.TurnOffProfileSyncing,
+              event: MetaMetricsEventName.SettingsUpdated,
               properties: {
-                participateInMetaMetrics,
+                settings_group: 'security',
+                settings_type: 'profile_syncing',
+                old_value: true,
+                new_value: false,
               },
             });
           },
@@ -85,10 +86,12 @@ const ProfileSyncToggle = () => {
       await enableProfileSyncing();
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.TurnOnProfileSyncing,
+        event: MetaMetricsEventName.SettingsUpdated,
         properties: {
-          isProfileSyncingEnabled,
-          participateInMetaMetrics,
+          settings_group: 'security',
+          settings_type: 'profile_syncing',
+          old_value: false,
+          new_value: true,
         },
       });
     }

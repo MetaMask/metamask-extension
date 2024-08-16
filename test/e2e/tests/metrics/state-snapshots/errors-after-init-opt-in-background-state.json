@@ -157,6 +157,7 @@
     "ignoredNfts": "object"
   },
   "NotificationController": { "notifications": "object" },
+  "NotificationServicesPushController": { "fcmToken": "string" },
   "OnboardingController": {
     "seedPhraseBackedUp": true,
     "firstTimeFlowType": "import",
@@ -174,7 +175,6 @@
     "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
-    "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": false,
@@ -185,6 +185,7 @@
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
     "bitcoinSupportEnabled": "boolean",
+    "bitcoinTestnetSupportEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},
@@ -202,7 +203,10 @@
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
-      "showTokenAutodetectModal": "boolean"
+      "showTokenAutodetectModal": "boolean",
+      "redesignedConfirmationsEnabled": true,
+      "redesignedTransactionsEnabled": "boolean",
+      "isRedesignedConfirmationsDeveloperEnabled": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
@@ -217,14 +221,11 @@
     "useExternalServices": "boolean",
     "selectedAddress": "string"
   },
-  "PushPlatformNotificationsController": { "fcmToken": "string" },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
-    "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",
     "unapprovedTypedMessages": "object",
-    "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgCount": 0,
     "unapprovedTypedMessagesCount": 0
   },
@@ -273,7 +274,8 @@
       "swapsStxBatchStatusRefreshTime": 10000,
       "swapsStxStatusDeadline": 180,
       "swapsStxGetTransactionsRefreshTime": 10000,
-      "swapsStxMaxFeeMultiplier": 2
+      "swapsStxMaxFeeMultiplier": 2,
+      "swapsFeatureFlags": {}
     }
   },
   "TokenListController": {
@@ -297,7 +299,7 @@
   },
   "UserOperationController": { "userOperations": "object" },
   "UserStorageController": {
-    "isProfileSyncingEnabled": true,
+    "isProfileSyncingEnabled": null,
     "isProfileSyncingUpdateLoading": "boolean"
   }
 }

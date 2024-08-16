@@ -156,7 +156,6 @@ export async function setupInitialStore(
   // if unconfirmed txs, start on txConf page
   const unapprovedTxsAll = txHelper(
     unapprovedTxs,
-    metamaskState.unapprovedMsgs,
     metamaskState.unapprovedPersonalMsgs,
     metamaskState.unapprovedDecryptMsgs,
     metamaskState.unapprovedEncryptionPublicKeyMsgs,
@@ -241,7 +240,11 @@ async function startApp(metamaskState, backgroundConnection, opts) {
  * @param {object} store - The Redux store.
  */
 function setupStateHooks(store) {
-  if (process.env.METAMASK_DEBUG || process.env.IN_TEST) {
+  if (
+    process.env.METAMASK_DEBUG ||
+    process.env.IN_TEST ||
+    process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS
+  ) {
     /**
      * The following stateHook is a method intended to throw an error, used in
      * our E2E test to ensure that errors are attempted to be sent to sentry.
@@ -263,12 +266,15 @@ function setupStateHooks(store) {
     window.stateHooks.throwTestBackgroundError = async function (
       msg = 'Test Error',
     ) {
-      store.dispatch(actions.throwTestBackgroundError(msg));
+      await actions.throwTestBackgroundError(msg);
     };
   }
 
   window.stateHooks.getCleanAppState = async function () {
     const state = clone(store.getState());
+    // we use the manifest.json version from getVersion and not
+    // `process.env.METAMASK_VERSION` as they can be different (see `getVersion`
+    // for more info)
     state.version = global.platform.getVersion();
     state.browser = window.navigator.userAgent;
     state.completeTxList = await actions.getTransactions({

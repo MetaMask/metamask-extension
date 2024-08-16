@@ -3,6 +3,7 @@
 // This import sets up global functions required for Sentry to function.
 // It must be run first in case an error is thrown later during initialization.
 import './lib/setup-initial-state-hooks';
+import '../../development/wdyr';
 
 // dev only, "react-devtools" import is skipped in prod builds
 import 'react-devtools';
@@ -208,6 +209,10 @@ async function start() {
       }
       isUIInitialised = true;
 
+      if (process.env.IN_TEST) {
+        window.document?.documentElement?.classList.add('controller-loaded');
+      }
+
       const state = store.getState();
       const { metamask: { completedOnboarding } = {} } = state;
 
@@ -231,6 +236,24 @@ async function start() {
 }
 
 async function queryCurrentActiveTab(windowType) {
+  // Shims the activeTab for E2E test runs only if the
+  // "activeTabOrigin" querystring key=value is set
+  if (process.env.IN_TEST) {
+    const searchParams = new URLSearchParams(window.location.search);
+    const mockUrl = searchParams.get('activeTabOrigin');
+    if (mockUrl) {
+      const { origin, protocol } = new URL(mockUrl);
+      const returnUrl = {
+        id: 'mock-site',
+        title: 'Mock Site',
+        url: mockUrl,
+        origin,
+        protocol,
+      };
+      return returnUrl;
+    }
+  }
+
   // At the time of writing we only have the `activeTab` permission which means
   // that this query will only succeed in the popup context (i.e. after a "browserAction")
   if (windowType !== ENVIRONMENT_TYPE_POPUP) {

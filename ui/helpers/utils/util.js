@@ -63,6 +63,30 @@ export function formatDateWithYearContext(
     now.year === dateTime.year ? formatThisYear : fallback,
   );
 }
+
+export function formatDateWithSuffix(timestamp) {
+  const date = DateTime.fromMillis(timestamp * 1000); // Convert to milliseconds
+  const { day } = date;
+  const suffix = getOrdinalSuffix(day);
+
+  return date.toFormat(`MMM d'${suffix}', yyyy`);
+}
+
+function getOrdinalSuffix(day) {
+  if (day > 3 && day < 21) {
+    return 'th';
+  } // because 11th, 12th, 13th
+  switch (day % 10) {
+    case 1:
+      return 'st';
+    case 2:
+      return 'nd';
+    case 3:
+      return 'rd';
+    default:
+      return 'th';
+  }
+}
 /**
  * Determines if the provided chainId is a default MetaMask chain
  *
@@ -223,24 +247,30 @@ export function getRandomFileName() {
  * @param {number} options.truncatedCharLimit - The maximum length of the string.
  * @param {number} options.truncatedStartChars - The number of characters to preserve at the beginning.
  * @param {number} options.truncatedEndChars - The number of characters to preserve at the end.
+ * @param {boolean} options.skipCharacterInEnd - Skip the character at the end.
  * @returns {string} The shortened string.
  */
 export function shortenString(
   stringToShorten = '',
-  { truncatedCharLimit, truncatedStartChars, truncatedEndChars } = {
+  {
+    truncatedCharLimit,
+    truncatedStartChars,
+    truncatedEndChars,
+    skipCharacterInEnd,
+  } = {
     truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
     truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
     truncatedEndChars: TRUNCATED_ADDRESS_END_CHARS,
+    skipCharacterInEnd: false,
   },
 ) {
   if (stringToShorten.length < truncatedCharLimit) {
     return stringToShorten;
   }
 
-  return `${stringToShorten.slice(
-    0,
-    truncatedStartChars,
-  )}...${stringToShorten.slice(-truncatedEndChars)}`;
+  return `${stringToShorten.slice(0, truncatedStartChars)}...${
+    skipCharacterInEnd ? '' : stringToShorten.slice(-truncatedEndChars)
+  }`;
 }
 
 /**
@@ -259,6 +289,7 @@ export function shortenAddress(address = '') {
     truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
     truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
     truncatedEndChars: TRUNCATED_ADDRESS_END_CHARS,
+    skipCharacterInEnd: false,
   });
 }
 
@@ -749,4 +780,40 @@ export const hexToText = (hex) => {
  */
 export const getAvatarFallbackLetter = (subjectName) => {
   return subjectName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
+};
+
+/**
+ * Get abstracted Snap permissions filtered by weight.
+ *
+ * @param weightedPermissions - Set of Snap permissions that have 'weight' property assigned.
+ * @param weightThreshold - Number that represents weight threshold for filtering.
+ * @param minPermissionCount - Minimum number of permissions to show,
+ * if filtered permissions count are less than the value specified.
+ * @returns Subset of permissions passing weight criteria.
+ */
+export const getFilteredSnapPermissions = (
+  weightedPermissions,
+  weightThreshold = Infinity,
+  minPermissionCount = 3,
+) => {
+  const filteredPermissions = weightedPermissions.filter(
+    (permission) => permission.weight <= weightThreshold,
+  );
+
+  // If there are not enough permissions that fall into desired set filtered by weight,
+  // then fill the gap, no matter what the weight is
+  if (minPermissionCount && filteredPermissions.length < minPermissionCount) {
+    const remainingPermissions = weightedPermissions.filter(
+      (permission) => permission.weight > weightThreshold,
+    );
+    // Add permissions until desired count is reached
+    return filteredPermissions.concat(
+      remainingPermissions.slice(
+        0,
+        minPermissionCount - filteredPermissions.length,
+      ),
+    );
+  }
+
+  return filteredPermissions;
 };

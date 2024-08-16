@@ -9,6 +9,7 @@ import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import AssetPage from './asset-page';
 
 // Mock the price chart
@@ -110,6 +111,10 @@ describe('AssetPage', () => {
       },
     });
     openTabSpy = jest.spyOn(global.platform, 'openTab');
+    setBackgroundConnection({
+      getTokenSymbol: jest.fn(),
+      setBridgeFeatureFlags: jest.fn(),
+    } as never);
   });
 
   beforeEach(() => {
@@ -246,9 +251,7 @@ describe('AssetPage', () => {
 
     await waitFor(() =>
       expect(openTabSpy).toHaveBeenCalledWith({
-        url: expect.stringContaining(
-          `/bridge?metamaskEntry=ext_bridge_button&metametricsId=&token=${token.address}`,
-        ),
+        url: `https://portfolio.test/bridge?metamaskEntry=ext_bridge_button&metametricsId=&metricsEnabled=false&marketingEnabled=false&token=${token.address}`,
       }),
     );
   });

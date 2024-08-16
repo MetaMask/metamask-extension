@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
   setBitcoinSupportEnabled,
+  setBitcoinTestnetSupportEnabled,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   setAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
@@ -10,9 +11,11 @@ import {
   setPetnamesEnabled,
   setFeatureNotificationsEnabled,
   setRedesignedConfirmationsEnabled,
+  setRedesignedTransactionsEnabled,
 } from '../../../store/actions';
 import {
   getIsBitcoinSupportEnabled,
+  getIsBitcoinTestnetSupportEnabled,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
@@ -20,6 +23,7 @@ import {
   getPetnamesEnabled,
   getFeatureNotificationsEnabled,
   getRedesignedConfirmationsEnabled,
+  getRedesignedTransactionsEnabled,
 } from '../../../selectors';
 import type {
   MetaMaskReduxDispatch,
@@ -32,6 +36,7 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
   const featureNotificationsEnabled = getFeatureNotificationsEnabled(state);
   return {
     bitcoinSupportEnabled: getIsBitcoinSupportEnabled(state),
+    bitcoinTestnetSupportEnabled: getIsBitcoinTestnetSupportEnabled(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: getIsAddSnapAccountEnabled(state),
     ///: END:ONLY_INCLUDE_IF
@@ -39,6 +44,7 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
     petnamesEnabled,
     featureNotificationsEnabled,
     redesignedConfirmationsEnabled: getRedesignedConfirmationsEnabled(state),
+    redesignedTransactionsEnabled: getRedesignedTransactionsEnabled(state),
   };
 };
 
@@ -46,6 +52,8 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
   return {
     setBitcoinSupportEnabled: (value: boolean) =>
       setBitcoinSupportEnabled(value),
+    setBitcoinTestnetSupportEnabled: (value: boolean) =>
+      setBitcoinTestnetSupportEnabled(value),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     setAddSnapAccountEnabled: (value: boolean) =>
       setAddSnapAccountEnabled(value),
@@ -59,6 +67,8 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
     },
     setRedesignedConfirmationsEnabled: (value: boolean) =>
       dispatch(setRedesignedConfirmationsEnabled(value)),
+    setRedesignedTransactionsEnabled: (value: boolean) =>
+      dispatch(setRedesignedTransactionsEnabled(value)),
   };
 };
 

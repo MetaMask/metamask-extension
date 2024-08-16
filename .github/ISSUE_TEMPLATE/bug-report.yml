@@ -48,6 +48,18 @@ body:
      label: Error messages or log output
      description: Please copy and paste any relevant error messages or log output. This will be automatically formatted, so there is no need for backticks.
      render: shell
+ - type: dropdown
+   id: stage
+   attributes:
+     label: Detection stage
+     description: At what stage was the bug detected?
+     options:
+       - In production (default)
+       - In beta
+       - During release testing
+       - On the development branch
+   validations:
+     required: true
  - type: input
    id: version
    attributes:
