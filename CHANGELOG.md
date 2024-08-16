@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.1.0]
+
 ## [12.0.0]
 ### Added
 - Allow users to 'Select networks for each site' ([#24274](https://github.com/MetaMask/metamask-extension/pull/24274))
@@ -4890,8 +4891,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.1.0...HEAD
-[12.1.0]: https://github.com/MetaMask/metamask-extension/compare/v11.16.7...v12.1.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.0.0...HEAD
+[12.1.0]: https://github.com/MetaMask/metamask-extension/compare/v12.0.0...v12.1.0
 [12.0.0]: https://github.com/MetaMask/metamask-extension/compare/v11.16.16...v12.0.0
 [11.16.16]: https://github.com/MetaMask/metamask-extension/compare/v11.16.15...v11.16.16
 [11.16.15]: https://github.com/MetaMask/metamask-extension/compare/v11.16.14...v11.16.15
