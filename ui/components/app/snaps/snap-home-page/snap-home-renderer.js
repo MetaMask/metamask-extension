@@ -66,7 +66,7 @@ export const SnapHomeRenderer = ({ snapId }) => {
   return (
     <Box height={BlockSize.Full}>
       {error && (
-        <Box height={BlockSize.Full} paddingRight={4} paddingLeft={4}>
+        <Box height={BlockSize.Full} padding={4}>
           <SnapDelineator snapName={snapName} type={DelineatorType.Error}>
             <Text variant={TextVariant.bodySm} marginBottom={4}>
               {t('snapsUIError', [<b key="0">{snapName}</b>])}
