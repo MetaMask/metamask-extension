@@ -10,11 +10,8 @@ import {
   AuthenticationController,
   UserStorageController,
 } from '@metamask/profile-sync-controller';
-import {
-  PushPlatformNotificationsControllerEnablePushNotifications,
-  PushPlatformNotificationsControllerDisablePushNotifications,
-  PushPlatformNotificationsControllerUpdateTriggerPushNotifications,
-} from '../push-platform-notifications/push-platform-notifications';
+import { NotificationsServicesPushController } from '@metamask/notification-services-controller';
+
 import {
   AllowedActions,
   AllowedEvents,
@@ -629,9 +626,9 @@ function mockNotificationMessenger() {
       'KeyringController:getState',
       'AuthenticationController:getBearerToken',
       'AuthenticationController:isSignedIn',
-      'PushPlatformNotificationsController:disablePushNotifications',
-      'PushPlatformNotificationsController:enablePushNotifications',
-      'PushPlatformNotificationsController:updateTriggerPushNotifications',
+      'NotificationServicesPushController:disablePushNotifications',
+      'NotificationServicesPushController:enablePushNotifications',
+      'NotificationServicesPushController:updateTriggerPushNotifications',
       'UserStorageController:getStorageKey',
       'UserStorageController:performGetStorage',
       'UserStorageController:performSetStorage',
@@ -641,7 +638,7 @@ function mockNotificationMessenger() {
       'KeyringController:stateChange',
       'KeyringController:lock',
       'KeyringController:unlock',
-      'PushPlatformNotificationsController:onNewNotifications',
+      'NotificationServicesPushController:onNewNotifications',
     ],
   });
 
@@ -659,13 +656,13 @@ function mockNotificationMessenger() {
     );
 
   const mockDisablePushNotifications =
-    typedMockAction<PushPlatformNotificationsControllerDisablePushNotifications>();
+    typedMockAction<NotificationsServicesPushController.NotificationServicesPushControllerDisablePushNotificationsAction>();
 
   const mockEnablePushNotifications =
-    typedMockAction<PushPlatformNotificationsControllerEnablePushNotifications>();
+    typedMockAction<NotificationsServicesPushController.NotificationServicesPushControllerEnablePushNotificationsAction>();
 
   const mockUpdateTriggerPushNotifications =
-    typedMockAction<PushPlatformNotificationsControllerUpdateTriggerPushNotifications>();
+    typedMockAction<NotificationsServicesPushController.NotificationServicesPushControllerUpdateTriggerPushNotificationsAction>();
 
   const mockGetStorageKey =
     typedMockAction<UserStorageController.UserStorageControllerGetStorageKey>().mockResolvedValue(
@@ -704,21 +701,21 @@ function mockNotificationMessenger() {
 
     if (
       actionType ===
-      'PushPlatformNotificationsController:disablePushNotifications'
+      'NotificationServicesPushController:disablePushNotifications'
     ) {
       return mockDisablePushNotifications(params[0]);
     }
 
     if (
       actionType ===
-      'PushPlatformNotificationsController:enablePushNotifications'
+      'NotificationServicesPushController:enablePushNotifications'
     ) {
       return mockEnablePushNotifications(params[0]);
     }
 
     if (
       actionType ===
-      'PushPlatformNotificationsController:updateTriggerPushNotifications'
+      'NotificationServicesPushController:updateTriggerPushNotifications'
     ) {
       return mockUpdateTriggerPushNotifications(params[0]);
     }

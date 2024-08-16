@@ -1758,20 +1758,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@contentful/rich-text-html-renderer@npm:^16.3.5":
-  version: 16.3.5
-  resolution: "@contentful/rich-text-html-renderer@npm:16.3.5"
+"@contentful/content-source-maps@npm:^0.6.0":
+  version: 0.6.1
+  resolution: "@contentful/content-source-maps@npm:0.6.1"
   dependencies:
-    "@contentful/rich-text-types": "npm:^16.3.5"
-    escape-html: "npm:^1.0.3"
-  checksum: 10/560ea4a5e8f7b34409c97732c7393f7e3b054a9a4ba9e32a0921cba347759ee5678b4579a1c0bcf538b97bbe033689e98bd13fba827f8dfbc7c54ee99499a423
+    "@vercel/stega": "npm:^0.1.2"
+    json-pointer: "npm:^0.6.2"
+  checksum: 10/c29ae369959504f6e57912d1419c76c9e42549588f560f5f3b105fafd39ee709d57dc73d85afaf122acb5aa7964c301831292c654985133737592bb3d4f47482
   languageName: node
   linkType: hard
 
-"@contentful/rich-text-types@npm:^16.0.2, @contentful/rich-text-types@npm:^16.3.5":
-  version: 16.3.5
-  resolution: "@contentful/rich-text-types@npm:16.3.5"
-  checksum: 10/ce06c18b6e9c6353f820784a4ff81b757df905204fea97952708c63ca6be53f98e6982a36fee1a443d7f200f4a534c70a7cc32679d4e7de1b5aa618dc241500b
+"@contentful/rich-text-html-renderer@npm:^16.3.5, @contentful/rich-text-html-renderer@npm:^16.5.2":
+  version: 16.6.8
+  resolution: "@contentful/rich-text-html-renderer@npm:16.6.8"
+  dependencies:
+    "@contentful/rich-text-types": "npm:^16.8.3"
+    escape-html: "npm:^1.0.3"
+  checksum: 10/eafe2bb2f7fc72ba0bb5f308cf53fbf7c500394e954f143e0c52fd96912257993e67aff56e36b92f4762ad2c43fa511aa42ed1d9b652c8459b4f082bf8739d0d
+  languageName: node
+  linkType: hard
+
+"@contentful/rich-text-types@npm:^16.0.2, @contentful/rich-text-types@npm:^16.8.3":
+  version: 16.8.3
+  resolution: "@contentful/rich-text-types@npm:16.8.3"
+  checksum: 10/790b40930e89d6da910bc1522375c657f167d0002db04d8673fb4ec91f8044a4dbc49afd138e3cbad4d5586ddc8e71887ee6daf65319e42d4391462b5df4fae6
   languageName: node
   linkType: hard
 
@@ -5915,6 +5925,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/notification-services-controller@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@metamask/notification-services-controller@npm:0.2.1"
+  dependencies:
+    "@contentful/rich-text-html-renderer": "npm:^16.5.2"
+    "@metamask/base-controller": "npm:^6.0.2"
+    "@metamask/controller-utils": "npm:^11.0.2"
+    bignumber.js: "npm:^4.1.0"
+    contentful: "npm:^10.3.6"
+    firebase: "npm:^10.11.0"
+    loglevel: "npm:^1.8.1"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/keyring-controller": ^17.0.0
+    "@metamask/profile-sync-controller": ^0.2.1
+  checksum: 10/f2969150edcd91bda44b46baee977d45ab6f0a23b9d34e5212b37aed462e36b2af99a7983e3585f0be6d4a5c32336acdab4e48d96fb3772fcdc1bd2524e09326
+  languageName: node
+  linkType: hard
+
 "@metamask/number-to-bn@npm:1.7.1, @metamask/number-to-bn@npm:^1.7.1":
   version: 1.7.1
   resolution: "@metamask/number-to-bn@npm:1.7.1"
@@ -6130,9 +6159,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/profile-sync-controller@npm:0.2.0"
+"@metamask/profile-sync-controller@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@metamask/profile-sync-controller@npm:0.2.1"
   dependencies:
     "@metamask/base-controller": "npm:^6.0.2"
     "@metamask/snaps-sdk": "npm:^6.1.1"
@@ -6143,8 +6172,9 @@ __metadata:
     loglevel: "npm:^1.8.1"
     siwe: "npm:^2.3.2"
   peerDependencies:
+    "@metamask/keyring-controller": ^17.0.0
     "@metamask/snaps-controllers": ^9.3.0
-  checksum: 10/b9feaaca39215b33c6bcc1bb75aa5e9f9a78c0ae409279746f040f5ad5d0d3cb1aad3ab8984198472076e20dd0ecc1bbcdf855406d673d4abc459768f7a821fc
+  checksum: 10/2eecdeca7d4f136b4d498cfa2e7b1c91322812b644cd744be1b3c70218dc8f348291023adf76335fbfe6d03af55513f26b6d05490ddddf182f29466e6b6597f5
   languageName: node
   linkType: hard
 
@@ -11570,6 +11600,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vercel/stega@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "@vercel/stega@npm:0.1.2"
+  checksum: 10/67ade78b77f579e39bbdd010cc31c39e75b1c1a1ef5a8accdd78df57d156ecd163c767a1feb61b95df190f8ab10642d038776bc5f2fab48bf705d49ee9cced01
+  languageName: node
+  linkType: hard
+
 "@vue/compiler-core@npm:3.1.4":
   version: 3.1.4
   resolution: "@vue/compiler-core@npm:3.1.4"
@@ -13118,14 +13155,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.1.3, axios@npm:^1.6.7":
-  version: 1.6.8
-  resolution: "axios@npm:1.6.8"
+"axios@npm:^1.1.3, axios@npm:^1.7.4":
+  version: 1.7.4
+  resolution: "axios@npm:1.7.4"
   dependencies:
     follow-redirects: "npm:^1.15.6"
     form-data: "npm:^4.0.0"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10/3f9a79eaf1d159544fca9576261ff867cbbff64ed30017848e4210e49f3b01e97cf416390150e6fdf6633f336cd43dc1151f890bbd09c3c01ad60bb0891eee63
+  checksum: 10/7a1429be1e3d0c2e1b96d4bba4d113efbfabc7c724bed107beb535c782c7bea447ff634886b0c7c43395a264d085450d009eb1154b5f38a8bae49d469fdcbc61
   languageName: node
   linkType: hard
 
@@ -15420,39 +15457,40 @@ __metadata:
   languageName: node
   linkType: hard
 
-"contentful-resolve-response@npm:^1.8.1":
-  version: 1.8.1
-  resolution: "contentful-resolve-response@npm:1.8.1"
+"contentful-resolve-response@npm:^1.9.0":
+  version: 1.9.0
+  resolution: "contentful-resolve-response@npm:1.9.0"
   dependencies:
     fast-copy: "npm:^2.1.7"
-  checksum: 10/6023824e98843d47c900501d2252336dd1dfebe8d868cb81b650252f5946963063cbe2b466e8e2238d41634a779dbfe4a43ba6c7996ca77124824c2554f66cab
+  checksum: 10/0c5daa59a3a6b020f9b5316812e3f14e62833b4aead008527c5bfde6549365e8e8e9f373af8836f06ca7b2023d861fdd2c241d3e74d3797133d18983be8bb3b3
   languageName: node
   linkType: hard
 
-"contentful-sdk-core@npm:^8.1.0":
-  version: 8.1.2
-  resolution: "contentful-sdk-core@npm:8.1.2"
+"contentful-sdk-core@npm:^8.3.1":
+  version: 8.3.1
+  resolution: "contentful-sdk-core@npm:8.3.1"
   dependencies:
     fast-copy: "npm:^2.1.7"
     lodash.isplainobject: "npm:^4.0.6"
     lodash.isstring: "npm:^4.0.1"
     p-throttle: "npm:^4.1.1"
     qs: "npm:^6.11.2"
-  checksum: 10/9e5b6dc1b2a1a91a9c4a01b0f24aff23606d0a6f7b56b7ca5930d57f4c29503886874e2ac653d924b742e9445da31b862c651b2d98e1f74ec35f6f0a3afdb912
+  checksum: 10/645d3a5d296d0e2a5ce87cceb04cf1ddf572183b5946cb1b3b717436bc7be96864216225fb845e61850d580436021c6284e7c95da0600a16c89c0af81a5f0d2c
   languageName: node
   linkType: hard
 
-"contentful@npm:^10.8.7":
-  version: 10.8.7
-  resolution: "contentful@npm:10.8.7"
+"contentful@npm:^10.3.6, contentful@npm:^10.8.7":
+  version: 10.14.0
+  resolution: "contentful@npm:10.14.0"
   dependencies:
+    "@contentful/content-source-maps": "npm:^0.6.0"
     "@contentful/rich-text-types": "npm:^16.0.2"
-    axios: "npm:^1.6.7"
-    contentful-resolve-response: "npm:^1.8.1"
-    contentful-sdk-core: "npm:^8.1.0"
+    axios: "npm:^1.7.4"
+    contentful-resolve-response: "npm:^1.9.0"
+    contentful-sdk-core: "npm:^8.3.1"
     json-stringify-safe: "npm:^5.0.1"
     type-fest: "npm:^4.0.0"
-  checksum: 10/db0bf6342ed9fdc577c583bc627626ea95ee2af3a0b47600fae48dbb1354f64bc226174c4d98dfd224d4f991391d1bfa367a5a01bad9ea44fbc5f9f424de6798
+  checksum: 10/93d6268150b4ae28c85e718b70c6fff8b0a2c4c9ecad4d5f88d775fee0ee2382f00d267f2a30456be962c010af731962491413bccdf07be8c8632aa979fb77a6
   languageName: node
   linkType: hard
 
@@ -19681,6 +19719,13 @@ __metadata:
   dependencies:
     for-in: "npm:^1.0.1"
   checksum: 10/233238f6e9060f61295a7f7c7e3e9de11aaef57e82a108e7f350dc92ae84fe2189848077ac4b8db47fd8edd45337ed8d9f66bd0b1efa4a6a1b3f38aa21b7ab2e
+  languageName: node
+  linkType: hard
+
+"foreach@npm:^2.0.4":
+  version: 2.0.6
+  resolution: "foreach@npm:2.0.6"
+  checksum: 10/93b0e65b3f03d9f696418d45f589d0135268b97bf71b4c2628687ce77ce49c20abd60f3c1b23052306b4e789435683a467a7828beac486d2ea17ba8b80933d38
   languageName: node
   linkType: hard
 
@@ -24072,6 +24117,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"json-pointer@npm:^0.6.2":
+  version: 0.6.2
+  resolution: "json-pointer@npm:0.6.2"
+  dependencies:
+    foreach: "npm:^2.0.4"
+  checksum: 10/1d8fc507008cf28815ad398baa7a6d62a73cce2d5ca7859097bb56043b3b6889e393bf5285db9674ddcdb8bc10551146cf8048d3d6430d55ce922105813661e2
+  languageName: node
+  linkType: hard
+
 "json-rpc-engine@npm:^6.1.0":
   version: 6.1.0
   resolution: "json-rpc-engine@npm:6.1.0"
@@ -26017,6 +26071,7 @@ __metadata:
     "@metamask/name-controller": "npm:^8.0.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A19.0.0#~/.yarn/patches/@metamask-network-controller-npm-19.0.0-a5e0d1fe14.patch"
     "@metamask/notification-controller": "npm:^5.0.1"
+    "@metamask/notification-services-controller": "npm:^0.2.1"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^10.0.0"
@@ -26025,7 +26080,7 @@ __metadata:
     "@metamask/phishing-warning": "npm:^3.0.3"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:^0.32.0"
-    "@metamask/profile-sync-controller": "npm:^0.2.0"
+    "@metamask/profile-sync-controller": "npm:^0.2.1"
     "@metamask/providers": "npm:^14.0.2"
     "@metamask/queued-request-controller": "npm:^2.0.0"
     "@metamask/rate-limit-controller": "npm:^5.0.1"
@@ -26191,7 +26246,6 @@ __metadata:
     fast-glob: "npm:^3.2.2"
     fast-json-patch: "npm:^3.1.1"
     fflate: "npm:^0.8.2"
-    firebase: "npm:^10.11.0"
     fs-extra: "npm:^8.1.0"
     fuse.js: "npm:^3.2.0"
     ganache: "patch:ganache@npm%3A7.9.2#~/.yarn/patches/ganache-npm-7.9.2-a70dc8da34.patch"
