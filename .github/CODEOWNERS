@@ -98,6 +98,8 @@ ui/hooks/useTransactionInsights.js   @MetaMask/snaps-devs
 ui/components/multichain              @MetaMask/metamask-wallet-ux
 ui/components/app/whats-new-popup     @MetaMask/metamask-wallet-ux
 ui/css                                @MetaMask/metamask-wallet-ux
+ui/pages/home                         @MetaMask/metamask-wallet-ux
+ui/pages/onboarding-flow              @MetaMask/metamask-wallet-ux
 
 # Assets
 ui/components/app/add-network                         @MetaMask/metamask-assets
