@@ -43,11 +43,11 @@ export async function confirmContractDeploymentTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
-    css: '.confirm-page-container-summary__action__name',
-    text: 'Contract deployment',
+    css: 'h2',
+    text: 'Deploy a contract',
   });
 
-  await driver.clickElement({ text: 'Confirm', tag: 'button' });
+  await scrollAndConfirmAndAssertConfirm(driver);
 
   await driver.delay(2000);
   await driver.waitUntilXWindowHandles(2);
