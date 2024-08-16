@@ -107,7 +107,7 @@ export const SnapDelineator = ({
 
       <Box
         className="snap-delineator__content"
-        padding={4}
+        padding={type === DelineatorType.Error ? 4 : 0}
         display={isCollapsable && isCollapsed ? Display.None : Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={isLoading && AlignItems.center}
