@@ -74,8 +74,6 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
 
           await createContractDeploymentTransaction(driver);
 
-          await scrollDown(driver);
-
           await confirmRedesignedContractDeploymentTransaction(driver);
 
           // confirm deposits can be made to the deployed contract
@@ -87,9 +85,3 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
     });
   });
 });
-
-async function scrollDown(driver: Driver) {
-  await driver.waitUntilXWindowHandles(3);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElement('[aria-label="Scroll down"]');
-}
