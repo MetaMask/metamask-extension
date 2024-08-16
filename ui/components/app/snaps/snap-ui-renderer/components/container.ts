@@ -52,7 +52,8 @@ export const container: UIComponentFactory<BoxElement> = ({
   }
 
   // Injects the default footer if the dialog uses default footer but none was provided.
-  if (useFooter && !children[1]) {
+  // If onCancel is omitted by the caller we assume that it is safe to not display the default footer.
+  if (useFooter && onCancel && !children[1]) {
     templateChildren.push({
       ...DEFAULT_FOOTER,
       props: {
