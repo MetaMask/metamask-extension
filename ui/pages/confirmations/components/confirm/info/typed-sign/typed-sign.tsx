@@ -6,7 +6,6 @@ import { parseTypedDataMessage } from '../../../../../../../shared/modules/trans
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
-  ConfirmInfoRowDivider,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';

@@ -8,7 +8,6 @@ import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/prefe
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
 import {
   BannerAlert,
-  BannerAlertSeverity,
   Box,
   ButtonLink,
   ButtonLinkSize,
@@ -32,8 +31,6 @@ import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-
-const CORRUPT_JSON_FILE = 'CORRUPT_JSON_FILE';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -61,7 +58,6 @@ export default class AdvancedTab extends PureComponent {
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
     backupUserData: PropTypes.func.isRequired,
-    restoreUserData: PropTypes.func.isRequired,
     setDisabledRpcMethodPreference: PropTypes.func.isRequired,
     disabledRpcMethodPreferences: PropTypes.shape({
       eth_sign: PropTypes.bool.isRequired,
@@ -74,9 +70,6 @@ export default class AdvancedTab extends PureComponent {
     autoLockTimeLimit: this.props.autoLockTimeLimit,
     autoLockTimeLimitBeforeNormalization: this.props.autoLockTimeLimit,
     lockTimeError: '',
-    showResultMessage: false,
-    restoreSuccessful: true,
-    restoreMessage: null,
   };
 
   settingsRefs = Array(
@@ -111,39 +104,6 @@ export default class AdvancedTab extends PureComponent {
 
       reader.readAsText(file);
     });
-  }
-
-  async handleFileUpload(event) {
-    /**
-     * we need this to be able to access event.target after
-     * the event handler has been called. [Synthetic Event Pooling, pre React 17]
-     *
-     * @see https://fb.me/react-event-pooling
-     */
-    event.persist();
-    const file = event.target.files[0];
-    const jsonString = await this.getTextFromFile(file);
-    /**
-     * so that we can restore same file again if we want to.
-     * chrome blocks uploading same file twice.
-     */
-    event.target.value = '';
-    try {
-      const result = await this.props.restoreUserData(jsonString);
-      this.setState({
-        showResultMessage: true,
-        restoreSuccessful: result,
-        restoreMessage: null,
-      });
-    } catch (e) {
-      if (e.message.match(/Unexpected.+JSON/iu)) {
-        this.setState({
-          showResultMessage: true,
-          restoreSuccessful: false,
-          restoreMessage: CORRUPT_JSON_FILE,
-        });
-      }
-    }
   }
 
   backupUserData = async () => {
@@ -678,75 +638,6 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderRestoreUserData() {
-    const { t } = this.context;
-    const { showResultMessage, restoreSuccessful, restoreMessage } = this.state;
-
-    const defaultRestoreMessage = restoreSuccessful
-      ? t('restoreSuccessful')
-      : t('restoreFailed');
-    const restoreMessageToRender =
-      restoreMessage === CORRUPT_JSON_FILE
-        ? t('dataBackupSeemsCorrupt')
-        : defaultRestoreMessage;
-
-    return (
-      <Box
-        ref={this.settingsRefs[12]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-data-restore"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('restoreUserData')}</span>
-          <span className="settings-page__content-description">
-            {t('restoreUserDataDescription')}
-          </span>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <label
-              htmlFor="restore-file"
-              className="button btn btn--rounded btn-secondary btn--large settings-page__button"
-            >
-              {t('restore')}
-            </label>
-            <input
-              id="restore-file"
-              data-testid="restore-file"
-              style={{ visibility: 'hidden' }}
-              type="file"
-              accept=".json"
-              onChange={(e) => this.handleFileUpload(e)}
-            />
-          </div>
-          {showResultMessage && (
-            <BannerAlert
-              severity={
-                restoreSuccessful
-                  ? BannerAlertSeverity.Success
-                  : BannerAlertSeverity.Danger
-              }
-              description={restoreMessageToRender}
-              descriptionProps={{
-                'data-testid': 'restore-user-data-banner-alert-description',
-              }}
-              actionButtonLabel={t('dismiss')}
-              actionButtonOnClick={() => {
-                this.setState({
-                  showResultMessage: false,
-                  restoreSuccessful: true,
-                  restoreMessage: null,
-                });
-              }}
-            />
-          )}
-        </div>
-      </Box>
-    );
-  }
-
   render() {
     const { warning } = this.props;
 
@@ -763,7 +654,6 @@ export default class AdvancedTab extends PureComponent {
         {this.renderUseNonceOptIn()}
         {this.renderAutoLockTimeLimit()}
         {this.renderUserDataBackup()}
-        {this.renderRestoreUserData()}
         {this.renderDismissSeedBackupReminderControl()}
         {this.renderToggleEthSignControl()}
       </div>

@@ -593,7 +593,7 @@ export default class SwapsController {
   ): Promise<[string | null, Record<string, Quote>] | Record<string, never>> {
     const { marketData } = this.getTokenRatesState();
     const chainId = this._getCurrentChainId();
-    const tokenConversionRates = marketData[chainId];
+    const tokenConversionRates = marketData?.[chainId] ?? {};
 
     const {
       swapsState: { customGasPrice, customMaxPriorityFeePerGas },

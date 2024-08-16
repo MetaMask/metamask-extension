@@ -105,6 +105,7 @@ import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS } from '../../shared/constants/security-provider';
 import {
+  getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
 } from './transactions';
@@ -1474,24 +1475,6 @@ export const getConnectedSitesList = createDeepEqualSelector(
   },
 );
 
-export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
-  getConnectedSitesList,
-  getAllDomains,
-  getAllNetworks,
-  (sitesList, domains, networks) => {
-    Object.keys(sitesList).forEach((siteKey) => {
-      const connectedNetwork = networks.find(
-        (network) => network.id === domains[siteKey],
-      );
-      // For the testnets, if we do not have an image, we will have a fallback string
-      sitesList[siteKey].networkIconUrl =
-        connectedNetwork.rpcPrefs?.imageUrl || '';
-      sitesList[siteKey].networkName = connectedNetwork.nickname;
-    });
-    return sitesList;
-  },
-);
-
 export const getConnectedSnapsList = createDeepEqualSelector(
   getSnapsList,
   (snapsData) => {
@@ -1778,7 +1761,9 @@ export function getShowRecoveryPhraseReminder(state) {
  * @returns Number of unapproved transactions
  */
 export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
-  const unapprovedTxs = getUnapprovedTransactions(state);
+  const unapprovedTxs = getAllUnapprovedTransactions(state);
+  const queuedRequestCount = getQueuedRequestCount(state);
+
   const allUnapprovedMessages = {
     ...unapprovedTxs,
     ...state.metamask.unapprovedMsgs,
@@ -1788,18 +1773,63 @@ export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
     ...state.metamask.unapprovedTypedMessages,
   };
   const numUnapprovedMessages = Object.keys(allUnapprovedMessages).length;
-  return numUnapprovedMessages;
+  return numUnapprovedMessages + queuedRequestCount;
 }
 
 export const getCurrentNetwork = createDeepEqualSelector(
   getAllNetworks,
   getProviderConfig,
+  /**
+   * Get the current network configuration.
+   *
+   * @param {Record<string, unknown>[]} allNetworks - All network configurations.
+   * @param {Record<string, unknown>} providerConfig - The configuration for the current network's provider.
+   * @returns {{
+   *   chainId: `0x${string}`;
+   *   id?: string;
+   *   nickname?: string;
+   *   providerType?: string;
+   *   rpcPrefs?: { blockExplorerUrl?: string; imageUrl?: string; };
+   *   rpcUrl: string;
+   *   ticker: string;
+   * }} networkConfiguration - Configuration for the current network.
+   */
   (allNetworks, providerConfig) => {
     const filter =
       providerConfig.type === 'rpc'
         ? (network) => network.id === providerConfig.id
         : (network) => network.id === providerConfig.type;
-    return allNetworks.find(filter);
+    return (
+      allNetworks.find(filter) ?? {
+        chainId: providerConfig.chainId,
+        nickname: providerConfig.nickname,
+        rpcPrefs: providerConfig.rpcPrefs,
+        rpcUrl: providerConfig.rpcUrl,
+        ticker: providerConfig.ticker,
+      }
+    );
+  },
+);
+
+export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
+  getConnectedSitesList,
+  getAllDomains,
+  getAllNetworks,
+  getCurrentNetwork,
+  (sitesList, domains, networks, currentNetwork) => {
+    Object.keys(sitesList).forEach((siteKey) => {
+      const connectedNetwork = networks.find(
+        (network) => network.id === domains[siteKey],
+      );
+      // For the testnets, if we do not have an image, we will have a fallback string
+      sitesList[siteKey].networkIconUrl =
+        connectedNetwork?.rpcPrefs?.imageUrl ||
+        currentNetwork?.rpcPrefs?.imageUrl ||
+        '';
+      sitesList[siteKey].networkName =
+        connectedNetwork?.nickname || currentNetwork?.nickname || '';
+    });
+    return sitesList;
   },
 );
 
