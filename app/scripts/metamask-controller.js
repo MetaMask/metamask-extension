@@ -146,6 +146,7 @@ import {
   AuthenticationController,
   UserStorageController,
 } from '@metamask/profile-sync-controller';
+import { NotificationsServicesPushController } from '@metamask/notification-services-controller';
 import {
   methodsRequiringNetworkSwitch,
   methodsWithConfirmation,
@@ -323,7 +324,6 @@ import PREINSTALLED_SNAPS from './snaps/preinstalled-snaps';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 
 // Notification controllers
-import { PushPlatformNotificationsController } from './controllers/push-platform-notifications/push-platform-notifications';
 import { MetamaskNotificationsController } from './controllers/metamask-notifications/metamask-notifications';
 import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
@@ -333,6 +333,10 @@ import { decodeTransactionData } from './lib/transaction/decode/util';
 import { BridgeBackgroundAction } from './controllers/bridge/types';
 import BridgeController from './controllers/bridge/bridge-controller';
 import { BRIDGE_CONTROLLER_NAME } from './controllers/bridge/constants';
+import {
+  onPushNotificationClicked,
+  onPushNotificationReceived,
+} from './controllers/push-notifications';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1456,18 +1460,35 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
-    const pushPlatformNotificationsControllerMessenger =
+    const notificationServicesPushControllerMessenger =
       this.controllerMessenger.getRestricted({
-        name: 'PushPlatformNotificationsController',
+        name: 'NotificationServicesPushController',
         allowedActions: ['AuthenticationController:getBearerToken'],
+        allowedEvents: [],
       });
-    this.pushPlatformNotificationsController =
-      new PushPlatformNotificationsController({
-        state: initState.PushPlatformNotificationsController,
-        messenger: pushPlatformNotificationsControllerMessenger,
+    this.notificationServicesPushController =
+      new NotificationsServicesPushController.Controller({
+        messenger: notificationServicesPushControllerMessenger,
+        state: initState.NotificationsServicesPushController,
+        env: {
+          apiKey: process.env.FIREBASE_API_KEY ?? '',
+          authDomain: process.env.FIREBASE_AUTH_DOMAIN ?? '',
+          storageBucket: process.env.FIREBASE_STORAGE_BUCKET ?? '',
+          projectId: process.env.FIREBASE_PROJECT_ID ?? '',
+          messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID ?? '',
+          appId: process.env.FIREBASE_APP_ID ?? '',
+          measurementId: process.env.FIREBASE_MEASUREMENT_ID ?? '',
+          vapidKey: process.env.VAPID_KEY ?? '',
+        },
+        config: {
+          isPushEnabled: isManifestV3,
+          platform: 'extension',
+          onPushNotificationReceived,
+          onPushNotificationClicked,
+        },
       });
-    pushPlatformNotificationsControllerMessenger.subscribe(
-      'PushPlatformNotificationsController:onNewNotifications',
+    notificationServicesPushControllerMessenger.subscribe(
+      'NotificationServicesPushController:onNewNotifications',
       (notification) => {
         this.metaMetricsController.trackEvent({
           category: MetaMetricsEventCategory.PushNotifications,
@@ -1480,8 +1501,8 @@ export default class MetamaskController extends EventEmitter {
         });
       },
     );
-    pushPlatformNotificationsControllerMessenger.subscribe(
-      'PushPlatformNotificationsController:pushNotificationClicked',
+    notificationServicesPushControllerMessenger.subscribe(
+      'NotificationServicesPushController:pushNotificationClicked',
       (notification) => {
         this.metaMetricsController.trackEvent({
           category: MetaMetricsEventCategory.PushNotifications,
@@ -1509,15 +1530,15 @@ export default class MetamaskController extends EventEmitter {
           'UserStorageController:getStorageKey',
           'UserStorageController:performGetStorage',
           'UserStorageController:performSetStorage',
-          'PushPlatformNotificationsController:enablePushNotifications',
-          'PushPlatformNotificationsController:disablePushNotifications',
-          'PushPlatformNotificationsController:updateTriggerPushNotifications',
+          'NotificationServicesPushController:enablePushNotifications',
+          'NotificationServicesPushController:disablePushNotifications',
+          'NotificationServicesPushController:updateTriggerPushNotifications',
         ],
         allowedEvents: [
           'KeyringController:stateChange',
           'KeyringController:lock',
           'KeyringController:unlock',
-          'PushPlatformNotificationsController:onNewNotifications',
+          'NotificationServicesPushController:onNewNotifications',
         ],
       }),
       state: initState.MetamaskNotificationsController,
@@ -2250,8 +2271,8 @@ export default class MetamaskController extends EventEmitter {
       AuthenticationController: this.authenticationController,
       UserStorageController: this.userStorageController,
       MetamaskNotificationsController: this.metamaskNotificationsController,
-      PushPlatformNotificationsController:
-        this.pushPlatformNotificationsController,
+      NotificationServicesPushController:
+        this.notificationServicesPushController,
       ...resetOnRestartStore,
     });
 
@@ -2302,8 +2323,8 @@ export default class MetamaskController extends EventEmitter {
         UserStorageController: this.userStorageController,
         MetamaskNotificationsController: this.metamaskNotificationsController,
         QueuedRequestController: this.queuedRequestController,
-        PushPlatformNotificationsController:
-          this.pushPlatformNotificationsController,
+        NotificationServicesPushController:
+          this.notificationServicesPushController,
         ...resetOnRestartStore,
       },
       controllerMessenger: this.controllerMessenger,
@@ -3052,7 +3073,7 @@ export default class MetamaskController extends EventEmitter {
       authenticationController,
       userStorageController,
       metamaskNotificationsController,
-      pushPlatformNotificationsController,
+      notificationServicesPushController,
     } = this;
 
     return {
@@ -3868,16 +3889,16 @@ export default class MetamaskController extends EventEmitter {
           metamaskNotificationsController,
         ),
       enablePushNotifications:
-        pushPlatformNotificationsController.enablePushNotifications.bind(
-          pushPlatformNotificationsController,
+        notificationServicesPushController.enablePushNotifications.bind(
+          notificationServicesPushController,
         ),
       disablePushNotifications:
-        pushPlatformNotificationsController.disablePushNotifications.bind(
-          pushPlatformNotificationsController,
+        notificationServicesPushController.disablePushNotifications.bind(
+          notificationServicesPushController,
         ),
       updateTriggerPushNotifications:
-        pushPlatformNotificationsController.updateTriggerPushNotifications.bind(
-          pushPlatformNotificationsController,
+        notificationServicesPushController.updateTriggerPushNotifications.bind(
+          notificationServicesPushController,
         ),
       enableMetamaskNotifications:
         metamaskNotificationsController.enableMetamaskNotifications.bind(
