@@ -30,8 +30,8 @@ EOF
 
 function upload_sourcemaps {
   local release="${1}"; shift
-  local dist="${1}"; shift
   local dist_directory="${1}"; shift
+  local dist="${1}"; shift
 
   sentry-cli releases files "${release}" upload-sourcemaps --dist "${dist}" "${dist_directory}"/chrome/ "${dist_directory}"/sourcemaps/ --rewrite --url-prefix '/metamask'
 }
