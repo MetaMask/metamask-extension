@@ -38,6 +38,7 @@ export const SnapDelineator = ({
   children,
   onClick,
   boxProps,
+  disablePadding = false
 }) => {
   const t = useI18nContext();
   const isError =
@@ -107,7 +108,7 @@ export const SnapDelineator = ({
 
       <Box
         className="snap-delineator__content"
-        padding={type === DelineatorType.Error ? 4 : 0}
+        padding={!disablePadding || isLoading ? 4 : 0}
         display={isCollapsable && isCollapsed ? Display.None : Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={isLoading && AlignItems.center}
