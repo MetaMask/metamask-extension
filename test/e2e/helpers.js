@@ -737,6 +737,10 @@ const switchToOrOpenDapp = async (
   }
 };
 
+/**
+ *
+ * @param {import('./webdriver/driver').Driver} driver
+ */
 const connectToDapp = async (driver) => {
   await openDapp(driver);
   // Connect to dapp
@@ -745,12 +749,12 @@ const connectToDapp = async (driver) => {
     tag: 'button',
   });
 
-  await switchToNotificationWindow(driver);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({
     text: 'Next',
     tag: 'button',
   });
-  await driver.clickElement({
+  await driver.clickElementAndWaitForWindowToClose({
     text: 'Confirm',
     tag: 'button',
   });
@@ -1052,7 +1056,7 @@ async function switchToNotificationWindow(driver) {
  * @param {WebDriver} driver
  * @param {import('mockttp').MockedEndpoint[]} mockedEndpoints
  * @param {boolean} hasRequest
- * @returns {import('mockttp/dist/pluggable-admin').MockttpClientResponse[]}
+ * @returns {Promise<import('mockttp/dist/pluggable-admin').MockttpClientResponse[]>}
  */
 async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
   await driver.wait(
