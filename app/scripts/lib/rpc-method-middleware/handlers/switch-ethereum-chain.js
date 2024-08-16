@@ -17,6 +17,7 @@ const switchEthereumChain = {
     requestUserApproval: true,
     getChainPermissionsFeatureFlag: true,
     requestPermissionApprovalForOrigin: true,
+    updateCaveat: true,
   },
 };
 
@@ -35,6 +36,7 @@ async function switchEthereumChainHandler(
     requestUserApproval,
     getChainPermissionsFeatureFlag,
     requestPermissionApprovalForOrigin,
+    updateCaveat,
   },
 ) {
   let chainId;
@@ -90,6 +92,7 @@ async function switchEthereumChainHandler(
       setActiveNetwork,
       requestUserApproval,
       getCaveat,
+      updateCaveat,
       requestPermissionApprovalForOrigin,
     },
   );

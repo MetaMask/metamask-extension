@@ -21,6 +21,8 @@ import {
   KnownCaipNamespace,
   mergeScopes,
   parseScopeString,
+  validNotifications,
+  validRpcMethods,
 } from '../../multichain-api/scope';
 import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
@@ -207,14 +209,14 @@ export async function switchChain(
     requestUserApproval,
     getCaveat,
     requestPermissionApprovalForOrigin,
+    updateCaveat,
   },
 ) {
   try {
-    const caip25Caveat =
-      getCaveat({
-        target: Caip25EndowmentPermissionName,
-        caveatType: Caip25CaveatType,
-      }) ?? {};
+    const caip25Caveat = getCaveat({
+      target: Caip25EndowmentPermissionName,
+      caveatType: Caip25CaveatType,
+    });
 
     if (caip25Caveat) {
       const scopes = mergeScopes(
@@ -231,15 +233,14 @@ export async function switchChain(
         }
       });
 
-      if (caip25Caveat.value.isMultichainOrigin) {
-        if (!permissionedChainIds.includes(chainId)) {
+      if (!permissionedChainIds.includes(chainId)) {
+        if (caip25Caveat.value.isMultichainOrigin) {
           return end(
             new Error(
               'cannot switch to chain that was not permissioned in the multichain flow',
             ),
           ); // TODO: better error
         }
-      } else if (!permissionedChainIds.includes(chainId)) {
         await requestPermissionApprovalForOrigin({
           [PermissionNames.permittedChains]: {
             caveats: [
@@ -248,7 +249,20 @@ export async function switchChain(
           },
         });
 
-        // TODO: Add to the CAIP-25 permission
+        const scopeString = `eip155:${parseInt(chainId, 16)}`;
+        const newOptionalScopes = {
+          ...caip25Caveat.value.optionalScopes,
+          [scopeString]: {
+            methods: validRpcMethods,
+            notifications: validNotifications,
+            accounts: [], // Should this be empty?
+          },
+        };
+
+        updateCaveat(origin, Caip25EndowmentPermissionName, Caip25CaveatType, {
+          ...caip25Caveat.value,
+          optionalScopes: newOptionalScopes,
+        });
       }
     } else {
       await requestUserApproval({
