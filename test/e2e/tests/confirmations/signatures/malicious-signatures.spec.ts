@@ -2,19 +2,17 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import {
-  DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
   openDapp,
-  switchToNotificationWindow,
   unlockWallet,
 } from '../../../helpers';
-import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
-import { scrollAndConfirmAndAssertConfirm, withRedesignConfirmationFixtures } from '../helpers';
-import { TestSuiteArguments } from '../transactions/shared';
 import {
-  assertSignatureRejectedMetrics,
-} from './signature-helpers';
+  scrollAndConfirmAndAssertConfirm,
+  withRedesignConfirmationFixtures,
+} from '../helpers';
+import { TestSuiteArguments } from '../transactions/shared';
+import { assertSignatureRejectedMetrics } from './signature-helpers';
 
 describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this: Suite) {
   it('displays alert for domain binding and confirms', async function () {
@@ -24,7 +22,7 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#siweBadDomain');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog)
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const alert = await driver.findElement('[data-testid="inline-alert"]');
         assert.equal(await alert.getText(), 'Alert');
@@ -62,7 +60,7 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#siweBadDomain');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog)
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
@@ -80,7 +78,10 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
-          uiCustomizations: ['redesigned_confirmation', 'sign_in_with_ethereum'],
+          uiCustomizations: [
+            'redesigned_confirmation',
+            'sign_in_with_ethereum',
+          ],
           location: 'confirmation',
         });
       },
@@ -97,7 +98,7 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#siweBadDomain');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog)
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await scrollAndConfirmAndAssertConfirm(driver);
 
@@ -116,14 +117,16 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
-          uiCustomizations: ['redesigned_confirmation', 'sign_in_with_ethereum'],
+          uiCustomizations: [
+            'redesigned_confirmation',
+            'sign_in_with_ethereum',
+          ],
           location: 'alert_friction_modal',
         });
       },
     );
   });
 });
-
 
 async function assertVerifiedMessage(driver: Driver, message: string) {
   await driver.waitUntilXWindowHandles(2);

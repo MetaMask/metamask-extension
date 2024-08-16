@@ -59,7 +59,10 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
-          uiCustomizations: ['redesigned_confirmation', 'sign_in_with_ethereum'],
+          uiCustomizations: [
+            'redesigned_confirmation',
+            'sign_in_with_ethereum',
+          ],
         });
       },
     );
@@ -93,7 +96,10 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
-          uiCustomizations: ['redesigned_confirmation', 'sign_in_with_ethereum'],
+          uiCustomizations: [
+            'redesigned_confirmation',
+            'sign_in_with_ethereum',
+          ],
           location: 'confirmation',
         });
       },

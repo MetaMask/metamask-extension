@@ -82,7 +82,7 @@ export async function assertSignatureConfirmedMetrics({
   );
 
   assertSignatureRequestedMetrics(events, signatureEventProperty);
-  assert.equal(events[1].event, 'Signature Accepted');
+  assert.equal(events[1].event, 'Signature Approved');
   assert.deepStrictEqual(
     events[1].properties,
     signatureEventProperty,
