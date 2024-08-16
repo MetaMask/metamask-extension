@@ -16,25 +16,6 @@ import {
   RecipientRow,
 } from '../transaction-details/transaction-details';
 
-export const ApproveDetails = () => {
-  const showAdvancedDetails = useSelector(
-    selectConfirmationAdvancedDetailsOpen,
-  );
-
-  return (
-    <ConfirmInfoSection>
-      <Spender />
-      <OriginRow />
-      {showAdvancedDetails && (
-        <>
-          <RecipientRow />
-          <MethodDataRow />
-        </>
-      )}
-    </ConfirmInfoSection>
-  );
-};
-
 const Spender = () => {
   const t = useI18nContext();
 
@@ -58,5 +39,24 @@ const Spender = () => {
 
       <ConfirmInfoRowDivider />
     </>
+  );
+};
+
+export const ApproveDetails = () => {
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
+  );
+
+  return (
+    <ConfirmInfoSection>
+      <Spender />
+      <OriginRow />
+      {showAdvancedDetails && (
+        <>
+          <RecipientRow />
+          <MethodDataRow />
+        </>
+      )}
+    </ConfirmInfoSection>
   );
 };
