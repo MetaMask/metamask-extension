@@ -39,7 +39,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { useSafeChainsListValidationSelector } from '../../../../selectors';
 import {
-  editAndSetNetworkConfiguration,
   setNewNetworkAdded,
   setSelectedNetworkConfigurationId,
   showDeprecatedNetworkModal,
@@ -612,11 +611,11 @@ const NetworksForm = ({
         dispatch(showDeprecatedNetworkModal());
       } else if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
         await dispatch(
-          editAndSetNetworkConfiguration(
+          upsertNetworkConfiguration(
             {
               rpcUrl,
               ticker,
-              networkConfigurationId: selectedNetwork.networkConfigurationId,
+              id: selectedNetwork.networkConfigurationId,
               chainId: prefixedChainId,
               nickname: networkName,
               rpcPrefs: {
@@ -627,6 +626,7 @@ const NetworksForm = ({
             },
             {
               source: MetaMetricsNetworkEventSource.CustomNetworkForm,
+              setActive: true,
             },
           ),
         );
