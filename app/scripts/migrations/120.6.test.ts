@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { migrate, version } from './120.3';
+import { migrate, version } from './120.6';
 
 const sentryCaptureExceptionMock = jest.fn();
 
@@ -7,9 +7,9 @@ global.sentry = {
   captureException: sentryCaptureExceptionMock,
 };
 
-const oldVersion = 120.2;
+const oldVersion = 120.5;
 
-describe('migration #120.3', () => {
+describe('migration #120.6', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
@@ -72,7 +72,7 @@ describe('migration #120.3', () => {
     expect(newStorage.data).toStrictEqual(oldStorageDataClone);
   });
 
-  it('reports error and returns state unchanged if transactions property is invalid', async () => {
+  it('removes transactions property if it is invalid', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
@@ -86,10 +86,10 @@ describe('migration #120.3', () => {
 
     const newStorage = await migrate(oldStorage);
 
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
-      `Migration ${version}: Invalid TransactionController transactions state of type 'string'`,
-    );
-    expect(newStorage.data).toStrictEqual(oldStorageDataClone);
+    expect(newStorage.data).toStrictEqual({
+      PreferencesController: {},
+      TransactionController: {},
+    });
   });
 
   it('reports error and returns state unchanged if there is an invalid transaction', async () => {
