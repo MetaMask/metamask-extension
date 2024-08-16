@@ -317,8 +317,11 @@ export const SENTRY_BACKGROUND_STATE = {
     snapStates: false,
     snaps: false,
   },
-  SnapInterface: {
+  SnapInterfaceController: {
     interfaces: false,
+  },
+  SnapInsightsController: {
+    insights: false,
   },
   SnapsRegistry: {
     database: false,

@@ -202,9 +202,9 @@
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
+      "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
-      "redesignedTransactionsEnabled": "boolean",
-      "isRedesignedConfirmationsDeveloperEnabled": "boolean"
+      "redesignedTransactionsEnabled": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
@@ -239,7 +239,8 @@
     "snapStates": "object",
     "unencryptedSnapStates": "object"
   },
-  "SnapInterfaceController": "object",
+  "SnapInsightsController": { "insights": "object" },
+  "SnapInterfaceController": { "interfaces": "object" },
   "SnapsRegistry": {
     "database": "object",
     "lastUpdated": "object",

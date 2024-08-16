@@ -34,9 +34,9 @@
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
+      "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
-      "redesignedTransactionsEnabled": "boolean",
-      "isRedesignedConfirmationsDeveloperEnabled": "boolean"
+      "redesignedTransactionsEnabled": "boolean"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
@@ -193,6 +193,7 @@
     "databaseUnavailable": "boolean",
     "notifications": "object",
     "interfaces": "object",
+    "insights": "object",
     "names": "object",
     "nameSources": "object",
     "userOperations": "object",
