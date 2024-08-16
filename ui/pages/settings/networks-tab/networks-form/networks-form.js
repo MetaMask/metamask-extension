@@ -48,7 +48,7 @@ import {
   useSafeChainsListValidationSelector,
 } from '../../../../selectors';
 import {
-  editAndSetNetworkConfiguration,
+  upsertNetworkConfiguration,
   requestUserApproval,
   setEditedNetwork,
   setNewNetworkAdded,
@@ -56,7 +56,6 @@ import {
   showDeprecatedNetworkModal,
   showModal,
   toggleNetworkMenu,
-  upsertNetworkConfiguration,
 } from '../../../../store/actions';
 import {
   Box,
@@ -920,11 +919,11 @@ const NetworksForm = ({
         dispatch(showDeprecatedNetworkModal());
       } else if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
         await dispatch(
-          editAndSetNetworkConfiguration(
+          upsertNetworkConfiguration(
             {
               rpcUrl,
               ticker,
-              networkConfigurationId: selectedNetwork.networkConfigurationId,
+              id: selectedNetwork.networkConfigurationId,
               chainId: prefixedChainId,
               nickname: networkName,
               rpcPrefs: {
@@ -935,6 +934,7 @@ const NetworksForm = ({
             },
             {
               source: MetaMetricsNetworkEventSource.CustomNetworkForm,
+              setActive: true,
             },
           ),
         );
