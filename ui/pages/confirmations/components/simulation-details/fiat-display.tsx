@@ -52,7 +52,11 @@ export const IndividualFiatDisplay: React.FC<{
   }
   const absFiat = Math.abs(fiatAmount);
 
-  return <Text {...textStyle}>{fiatFormatter(absFiat, { shorten })}</Text>;
+  return (
+    <Text {...textStyle} data-testid="individual-fiat-display">
+      {fiatFormatter(absFiat, { shorten })}
+    </Text>
+  );
 };
 
 /**

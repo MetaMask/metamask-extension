@@ -42,7 +42,7 @@ export const GasFeesSection = () => {
   }
 
   return (
-    <ConfirmInfoSection>
+    <ConfirmInfoSection data-testid="gas-fee-section">
       <GasFeesDetails setShowCustomizeGasPopover={setShowCustomizeGasPopover} />
       {!supportsEIP1559 && showCustomizeGasPopover && (
         <LegacyTransactionGasModal

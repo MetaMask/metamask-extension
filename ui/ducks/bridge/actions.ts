@@ -1,4 +1,4 @@
-import { BridgeBackgroundAction } from '../../../app/scripts/controllers/bridge';
+import { BridgeBackgroundAction } from '../../../app/scripts/controllers/bridge/types';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { MetaMaskReduxDispatch } from '../../store/store';
