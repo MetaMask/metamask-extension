@@ -3103,7 +3103,6 @@
         "path.dirname": true
       },
       "globals": {
-        "__dirname": true,
         "__filename": true
       },
       "packages": {
@@ -3406,12 +3405,12 @@
         "util.inherits": true
       },
       "globals": {
-        "process.version": true
+        "Buffer": true,
+        "process.version.match": true
       },
       "packages": {
         "firebase>@firebase/database>faye-websocket>websocket-driver>http-parser-js": true,
-        "firebase>@firebase/database>faye-websocket>websocket-driver>websocket-extensions": true,
-        "koa>content-disposition>safe-buffer": true
+        "firebase>@firebase/database>faye-websocket>websocket-driver>websocket-extensions": true
       }
     },
     "firebase>@firebase/database>faye-websocket>websocket-driver>http-parser-js": {
