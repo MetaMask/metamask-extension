@@ -4827,9 +4827,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-watcher@npm:^4.0.3":
-  version: 4.0.3
-  resolution: "@metamask/account-watcher@npm:4.0.3"
+"@metamask/account-watcher@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@metamask/account-watcher@npm:4.1.0"
   dependencies:
     "@ethereumjs/tx": "npm:^5.1.0"
     "@ethereumjs/util": "npm:^9.0.1"
@@ -4838,7 +4838,7 @@ __metadata:
     "@metamask/utils": "npm:^8.3.0"
     ethers: "npm:^5.7.2"
     uuid: "npm:^9.0.0"
-  checksum: 10/16b7991446f586c2a78f8f520de5ca2482514f5803e04f24caee1c729b61c3403370d3fe19134ce11d8d78dd97699f6e3c3d55ce56260c17dd6714eaa16e4924
+  checksum: 10/51c150cc1a703c6726f7c11eb6b4906636a5c33cf25c2b60c7d120e67483fae37ac79ba46a5156518cb9666c2c64fea00f1d6ec23faa266b28a814c4fcefa561
   languageName: node
   linkType: hard
 
@@ -26040,7 +26040,7 @@ __metadata:
     "@metamask-institutional/transaction-update": "npm:^0.2.5"
     "@metamask-institutional/types": "npm:^1.1.0"
     "@metamask/abi-utils": "npm:^2.0.2"
-    "@metamask/account-watcher": "npm:^4.0.3"
+    "@metamask/account-watcher": "npm:^4.1.0"
     "@metamask/accounts-controller": "npm:^17.2.0"
     "@metamask/address-book-controller": "npm:^4.0.1"
     "@metamask/announcement-controller": "npm:^6.1.0"
