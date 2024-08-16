@@ -64,7 +64,7 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
       event: MetaMetricsEventName.NavSendButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
-        location: RampsMetaMaskEntry.TokensBanner,
+        location: RampsMetaMaskEntry?.TokensBanner,
         text: 'Transfer crypto',
         chain_id: chainId,
         token_symbol: symbol,
@@ -88,7 +88,7 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
-        location: RampsMetaMaskEntry.TokensBanner,
+        location: RampsMetaMaskEntry?.TokensBanner,
         text: 'Buy crypto',
         chain_id: chainId,
         token_symbol: symbol,
