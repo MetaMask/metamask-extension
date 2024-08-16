@@ -1113,114 +1113,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#editAndSetNetworkConfiguration', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('removes then re-adds the given network configuration', async () => {
-      const store = mockStore();
-
-      const removeNetworkConfigurationStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
-
-      const upsertNetworkConfigurationStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
-
-      background.getApi.returns({
-        removeNetworkConfiguration: removeNetworkConfigurationStub,
-        upsertNetworkConfiguration: upsertNetworkConfigurationStub,
-      });
-      setBackgroundConnection(background.getApi());
-
-      const networkConfiguration = {
-        rpcUrl: 'newRpc',
-        chainId: '0x',
-        ticker: 'ETH',
-        nickname: 'nickname',
-        rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
-      };
-
-      await store.dispatch(
-        actions.editAndSetNetworkConfiguration(
-          {
-            ...networkConfiguration,
-            networkConfigurationId: 'networkConfigurationId',
-          },
-          { source: 'https://test-dapp.com' },
-        ),
-      );
-      expect(
-        removeNetworkConfigurationStub.calledOnceWith('networkConfigurationId'),
-      ).toBe(true);
-      expect(
-        upsertNetworkConfigurationStub.calledOnceWith(networkConfiguration, {
-          setActive: true,
-          referrer: ORIGIN_METAMASK,
-          source: 'https://test-dapp.com',
-        }),
-      ).toBe(true);
-    });
-
-    it('displays warning when removeNetworkConfiguration throws', async () => {
-      const store = mockStore();
-
-      const upsertNetworkConfigurationStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
-
-      const removeNetworkConfigurationStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb(new Error('error')));
-
-      background.getApi.returns({
-        removeNetworkConfiguration: removeNetworkConfigurationStub,
-        upsertNetworkConfiguration: upsertNetworkConfigurationStub,
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      const expectedActions = [
-        { type: 'DISPLAY_WARNING', payload: 'Had a problem removing network!' },
-      ];
-
-      await store.dispatch(
-        actions.editAndSetNetworkConfiguration(
-          {
-            networkConfigurationId: 'networkConfigurationId',
-            rpcUrl: 'newRpc',
-            chainId: '0x',
-            ticker: 'ETH',
-            nickname: 'nickname',
-            rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
-          },
-          { source: 'https://test-dapp.com' },
-        ),
-      );
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-
-    it('throws when no options object is passed as a second argument', async () => {
-      const store = mockStore();
-      await expect(() =>
-        store.dispatch(
-          actions.editAndSetNetworkConfiguration({
-            networkConfigurationId: 'networkConfigurationId',
-            rpcUrl: 'newRpc',
-            chainId: '0x',
-            ticker: 'ETH',
-            nickname: 'nickname',
-            rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
-          }),
-        ),
-      ).toThrow(
-        "Cannot destructure property 'source' of 'undefined' as it is undefined.",
-      );
-    });
-  });
-
   describe('#upsertNetworkConfiguration', () => {
     afterEach(() => {
       sinon.restore();
@@ -1239,6 +1131,7 @@ describe('Actions', () => {
       setBackgroundConnection(background.getApi());
 
       const networkConfiguration = {
+        id: 'networkConfigurationId',
         rpcUrl: 'newRpc',
         chainId: '0x',
         ticker: 'ETH',
@@ -1266,7 +1159,7 @@ describe('Actions', () => {
       await expect(() =>
         store.dispatch(
           actions.upsertNetworkConfiguration({
-            networkConfigurationId: 'networkConfigurationId',
+            id: 'networkConfigurationId',
             rpcUrl: 'newRpc',
             chainId: '0x',
             ticker: 'ETH',
