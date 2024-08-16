@@ -2270,18 +2270,55 @@
     },
     "@metamask/phishing-controller": {
       "globals": {
+        "URL": true,
         "fetch": true
       },
       "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/phishing-warning>eth-phishing-detect": true,
+        "@metamask/phishing-controller>@metamask/base-controller": true,
+        "@metamask/phishing-controller>@metamask/controller-utils": true,
+        "@metamask/phishing-controller>fastest-levenshtein": true,
         "punycode": true
       }
     },
-    "@metamask/phishing-warning>eth-phishing-detect": {
+    "@metamask/phishing-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
       "packages": {
-        "eslint>optionator>fast-levenshtein": true
+        "immer": true
+      }
+    },
+    "@metamask/phishing-controller>@metamask/base-controller>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/snaps-sdk>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
+      }
+    },
+    "@metamask/phishing-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/ethjs>@metamask/ethjs-unit": true,
+        "@metamask/phishing-controller>@metamask/base-controller>@metamask/utils": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true
       }
     },
     "@metamask/post-message-stream": {
@@ -2908,14 +2945,14 @@
         "@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/base-controller": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
-        "@metamask/snaps-controllers>@metamask/phishing-controller>@metamask/controller-utils": true,
+        "@metamask/snaps-controllers>@metamask/permission-controller>@metamask/controller-utils": true,
         "@metamask/snaps-controllers>@metamask/utils": true,
         "@metamask/snaps-controllers>nanoid": true,
         "deep-freeze-strict": true,
         "immer": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/phishing-controller>@metamask/controller-utils": {
+    "@metamask/snaps-controllers>@metamask/permission-controller>@metamask/controller-utils": {
       "globals": {
         "URL": true,
         "console.error": true,
@@ -4529,16 +4566,6 @@
     "eslint-plugin-react>array-includes>is-string": {
       "packages": {
         "koa>is-generator-function>has-tostringtag": true
-      }
-    },
-    "eslint>optionator>fast-levenshtein": {
-      "globals": {
-        "Intl": true,
-        "Levenshtein": "write",
-        "console.log": true,
-        "define": true,
-        "importScripts": true,
-        "postMessage": true
       }
     },
     "eth-ens-namehash": {
