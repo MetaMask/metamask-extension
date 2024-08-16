@@ -5,7 +5,9 @@ const { get, has, set, unset, cloneDeep } = require('lodash');
 const { Browser } = require('selenium-webdriver');
 const { format } = require('prettier');
 const { isObject } = require('@metamask/utils');
-const { SENTRY_UI_STATE } = require('../../../../app/scripts/lib/setupSentry');
+const {
+  SENTRY_UI_STATE,
+} = require('../../../../app/scripts/constants/sentry-state');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   convertToHexValue,
