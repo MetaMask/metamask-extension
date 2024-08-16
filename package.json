@@ -626,7 +626,7 @@
     "postcss-loader": "^8.1.1",
     "postcss-rtlcss": "^4.0.9",
     "prettier": "^2.7.1",
-    "prettier-eslint": "^16.3.0",
+    "prettier-eslint": "^15.0.1",
     "prettier-plugin-sort-json": "^1.0.0",
     "process": "^0.11.10",
     "pumpify": "^2.0.1",
