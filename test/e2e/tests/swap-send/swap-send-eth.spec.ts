@@ -1,8 +1,8 @@
 import { Suite } from 'mocha';
 import {
-  withFixtures,
-  openActionMenuAndStartSendFlow,
   logInWithBalanceValidation,
+  openActionMenuAndStartSendFlow,
+  withFixtures,
 } from '../../helpers';
 import {
   NATIVE_TOKEN_SYMBOL,

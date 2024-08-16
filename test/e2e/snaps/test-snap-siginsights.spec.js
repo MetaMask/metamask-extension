@@ -65,8 +65,6 @@ describe('Test Snap Signature Insights', function () {
         // open the test-dapp page
         await openDapp(driver);
 
-        // poll windowHandles and switch to test-dapp
-
         // TEST ONE: personal sign
         // find and scroll to personal sign and click sign
         const personalSignButton1 = await driver.findElement('#personalSign');

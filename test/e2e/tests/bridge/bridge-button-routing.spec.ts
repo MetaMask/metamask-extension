@@ -1,5 +1,5 @@
 import { Suite } from 'mocha';
-import { withFixtures, logInWithBalanceValidation } from '../../helpers';
+import { logInWithBalanceValidation, withFixtures } from '../../helpers';
 import { BridgePage, getBridgeFixtures } from './bridge-test-utils';
 
 describe('Click bridge button @no-mmi', function (this: Suite) {

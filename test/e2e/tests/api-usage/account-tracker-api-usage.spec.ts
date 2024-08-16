@@ -1,13 +1,13 @@
 import { strict as assert } from 'assert';
-import { MockedEndpoint } from 'mockttp';
 import { JsonRpcRequest } from '@metamask/utils';
+import { MockedEndpoint } from 'mockttp';
+import FixtureBuilder from '../../fixture-builder';
 import {
-  withFixtures,
   defaultGanacheOptions,
   unlockWallet,
   veryLargeDelayMs,
+  withFixtures,
 } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
 import { Mockttp } from '../../mock-e2e';
 
 async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
