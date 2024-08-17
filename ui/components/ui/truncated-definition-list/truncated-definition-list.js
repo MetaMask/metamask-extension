@@ -49,7 +49,7 @@ export default function TruncatedDefinitionList({
             style={{ width: '50%' }}
             onClick={() => setIsPopoverOpen(false)}
           >
-            Close
+            {t('close')}
           </Button>
         }
       >
