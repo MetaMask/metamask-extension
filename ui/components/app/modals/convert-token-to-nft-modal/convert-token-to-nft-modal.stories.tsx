@@ -4,6 +4,7 @@ import { Provider, useSelector } from 'react-redux';
 import configureStore from '../../../../store/store';
 import ConvertTokenToNFTModal from './convert-token-to-nft-modal';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../test/jest/mocks';
 
 const storeMock = configureStore({
   metamask: {
