@@ -10,7 +10,6 @@ import {
 import { addressSummary } from '../../../../helpers/utils/util';
 import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import ConfirmRemoveAccount from '.';
 
 global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
