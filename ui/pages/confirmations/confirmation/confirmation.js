@@ -35,7 +35,7 @@ import {
 } from '../../../selectors';
 import NetworkDisplay from '../../../components/app/network-display/network-display';
 import Callout from '../../../components/ui/callout';
-import { Icon, IconName } from '../../../components/component-library';
+import { Box, Icon, IconName } from '../../../components/component-library';
 import Loading from '../../../components/ui/loading-screen';
 import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
 import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
@@ -500,15 +500,15 @@ export default function ConfirmationPage({
           </button>
         </div>
       )}
-      <div className="confirmation-page__content">
-        {isSnapCustomUIDialog && (
+      <Box className="confirmation-page__content" paddingTop={4}>
+        {templatedValues.networkDisplay && !process.env.CHAIN_PERMISSIONS ? (
           <Box width={BlockSize.Screen}>
             <SnapAuthorshipHeader
               snapId={pendingConfirmation?.origin}
               onCancel={handleSnapDialogCancel}
             />
           </Box>
-        )}
+        ): null }
         {templatedValues.networkDisplay ? (
           <Box justifyContent="center" marginTop={2}>
             <NetworkDisplay />
@@ -542,7 +542,7 @@ export default function ConfirmationPage({
             onCancel={templatedValues.onCancel}
           />
         )}
-      </div>
+      </Box>
       {!isSnapDefaultDialog && (
         <ConfirmationFooter
           alerts={
