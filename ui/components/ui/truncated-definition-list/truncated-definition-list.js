@@ -18,74 +18,63 @@ export default function TruncatedDefinitionList({
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const t = useI18nContext();
 
+  const renderDefinitionList = (isFullList) => (
+    <DefinitionList
+      gap={Size.MD}
+      tooltips={tooltips}
+      warnings={warnings}
+      dictionary={isFullList ? dictionary : pick(dictionary, prefaceKeys)}
+    />
+  );
+
+  const renderButton = () => (
+    <Button
+      className="truncated-definition-list__view-more"
+      type="link"
+      onClick={() => setIsPopoverOpen(true)}
+    >
+      {t(process.env.CHAIN_PERMISSIONS ? 'seeDetails' : 'viewAllDetails')}
+    </Button>
+  );
+
+  const renderPopover = () =>
+    isPopoverOpen && (
+      <Popover
+        title={title}
+        open={isPopoverOpen}
+        onClose={() => setIsPopoverOpen(false)}
+        footer={
+          <Button
+            type="primary"
+            style={{ width: '50%' }}
+            onClick={() => setIsPopoverOpen(false)}
+          >
+            Close
+          </Button>
+        }
+      >
+        <Box padding={6} paddingTop={0}>
+          {renderDefinitionList(true)}
+        </Box>
+      </Popover>
+    );
+
   const renderContent = () => {
     if (process.env.CHAIN_PERMISSIONS) {
       return isPopoverOpen ? (
-        <DefinitionList
-          gap={Size.MD}
-          tooltips={tooltips}
-          warnings={warnings}
-          dictionary={dictionary}
-        />
+        renderDefinitionList(true)
       ) : (
         <>
-          <DefinitionList
-            dictionary={pick(dictionary, prefaceKeys)}
-            warnings={warnings}
-            tooltips={tooltips}
-          />
-          <Button
-            className="truncated-definition-list__view-more"
-            type="link"
-            onClick={() => setIsPopoverOpen(true)}
-          >
-            {t('seeDetails')}
-          </Button>
+          {renderDefinitionList(false)}
+          {renderButton()}
         </>
       );
     } else {
       return (
         <>
-          <DefinitionList
-            dictionary={pick(dictionary, prefaceKeys)}
-            warnings={warnings}
-            tooltips={tooltips}
-          />
-          <Button
-            className="truncated-definition-list__view-more"
-            type="link"
-            onClick={() => setIsPopoverOpen(true)}
-          >
-            {t('viewAllDetails')}
-          </Button>
-          {isPopoverOpen && (
-            <Popover
-              title={title}
-              open={isPopoverOpen}
-              onClose={() => setIsPopoverOpen(false)}
-              footer={
-                <>
-                  <div />
-                  <Button
-                    type="primary"
-                    style={{ width: '50%' }}
-                    onClick={() => setIsPopoverOpen(false)}
-                  >
-                    Close
-                  </Button>
-                </>
-              }
-            >
-              <Box padding={6} paddingTop={0}>
-                <DefinitionList
-                  gap={Size.MD}
-                  tooltips={tooltips}
-                  warnings={warnings}
-                  dictionary={dictionary}
-                />
-              </Box>
-            </Popover>
-          )}
+          {renderDefinitionList(false)}
+          {renderButton()}
+          {renderPopover()}
         </>
       );
     }
