@@ -550,9 +550,6 @@
     "message": "$1 dan $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
-  "announcements": {
-    "message": "Pengumuman"
-  },
   "appDescription": {
     "message": "Dompet Ethereum pada Browser Anda",
     "description": "The description of the application"
@@ -1548,30 +1545,6 @@
   },
   "details": {
     "message": "Detail"
-  },
-  "developerOptions": {
-    "message": "Opsi Pengembang"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Mengaktifkan atau menonaktifkan fitur desain ulang konfirmasi yang sedang dikembangkan"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Desain Ulang Konfirmasi"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Mengalihkan desain baru menu Jaringan"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Desain Ulang Menu Jaringan"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Reset boolean isShown bernilai salah untuk semua pengumuman. Pengumuman adalah notifikasi yang ditampilkan di modal popup Yang Baru."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Reset berbagai state terkait orientasi dan alihkan ke halaman orientasi \"Amankan Dompet Anda\"."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Menjadikan stempel waktu disimpan ke session.storage secara kontinu"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” dinonaktifkan karena tidak memenuhi kenaikan minimum 10% dari biaya gas asli.",
@@ -3517,9 +3490,6 @@
   "onboardedMetametricsTitle": {
     "message": "Bantu kami meningkatkan pengalaman Anda"
   },
-  "onboarding": {
-    "message": "Orientasi"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "Gateway IPFS memungkinkan untuk mengakses dan melihat data yang disimpan oleh pihak ketiga. Anda dapat menambahkan gateway IPFS khusus atau melanjutkan menggunakan default."
   },
@@ -4385,9 +4355,6 @@
   "reset": {
     "message": "Atur ulang"
   },
-  "resetStates": {
-    "message": "Reset State"
-  },
   "resetWallet": {
     "message": "Reset dompet"
   },
@@ -4706,9 +4673,6 @@
   },
   "sepolia": {
     "message": "Jaringan uji Sepolia"
-  },
-  "serviceWorkerKeepAlive": {
-    "message": "Service Worker Tetap Menyala"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask menggunakan layanan pihak ketiga tepercaya ini untuk meningkatkan kegunaan dan keamanan produk."
@@ -5272,9 +5236,6 @@
   },
   "stateLogsDescription": {
     "message": "Log status berisi alamat akun publik Anda dan transaksi terkirim."
-  },
-  "states": {
-    "message": "State"
   },
   "status": {
     "message": "Status"

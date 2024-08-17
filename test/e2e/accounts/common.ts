@@ -183,7 +183,7 @@ async function switchToAccount2(driver: Driver) {
 
   await driver.clickElement({
     tag: 'Button',
-    text: 'Snap Account 1',
+    text: 'SSK Account',
   });
 
   await driver.assertElementNotPresent({

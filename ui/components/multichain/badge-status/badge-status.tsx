@@ -37,6 +37,7 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const custodianIcon = useSelector((state) =>
+    // @ts-expect-error todo - https://consensyssoftware.atlassian.net/browse/MMI-5367
     getCustodianIconForAddress(state, address),
   );
   ///: END:ONLY_INCLUDE_IF
