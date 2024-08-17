@@ -13,7 +13,10 @@ import {
 import { act } from 'react-dom/test-utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../test/jest/mocks';
+import {
+  INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+  mockNetworkState,
+} from '../../../../test/jest/mocks';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -352,10 +355,7 @@ describe('Confirm Transaction Base', () => {
     const state = {
       metamask: {
         ...baseStore.metamask,
-        selectedNetworkClientId: 'optimism',
-        networkConfigurations: {
-          optimism: { chainId: CHAIN_IDS.OPTIMISM },
-        },
+        ...mockNetworkState(CHAIN_IDS.OPTIMISM),
       },
 
       confirmTransaction: {
@@ -1012,7 +1012,7 @@ describe('Confirm Transaction Base', () => {
               txParams,
             },
           ],
-          selectedNetworkClientId: 'sepolia',
+          ...mockNetworkState(CHAIN_IDS.SEPOLIA),
         },
         confirmTransaction: {
           ...baseStore.confirmTransaction,

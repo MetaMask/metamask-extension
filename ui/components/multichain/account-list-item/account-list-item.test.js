@@ -11,6 +11,7 @@ import {
   SEPOLIA_DISPLAY_NAME,
   CHAIN_IDS,
 } from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/jest/mocks';
 import { AccountListItem, AccountListItemMenuTypes } from '.';
 
 const mockAccount = {
@@ -207,13 +208,7 @@ describe('AccountListItem', () => {
           },
           {
             metamask: {
-              selectedNetworkClientId: 'networkClientId',
-              networkConfigurations: {
-                networkClientId: {
-                  chainId: CHAIN_IDS.SEPOLIA,
-                  nickname: SEPOLIA_DISPLAY_NAME,
-                },
-              },
+              ...mockNetworkState(CHAIN_IDS.SEPOLIA),
               preferences: {
                 showFiatInTestnets: false,
               },
@@ -257,7 +252,6 @@ describe('AccountListItem', () => {
                   ticker: 'ETH',
                 },
               },
-
               preferences: {
                 showFiatInTestnets: true,
               },

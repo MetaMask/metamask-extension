@@ -18,6 +18,7 @@ import {
   setRemoveNftMessage,
 } from '../../../../../store/actions';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../../test/jest/mocks';
 import NftDetails from './nft-details';
 
 jest.mock('copy-to-clipboard');
@@ -220,7 +221,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          selectedNetworkClientId: 'mainnet',
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
         },
       };
       const mainnetMockStore = configureMockStore([thunk])(mainnetState);
@@ -248,14 +249,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: {
-              id: 'networkClientId',
-              chainId: CHAIN_IDS.POLYGON,
-            },
-          },
+          ...mockNetworkState(CHAIN_IDS.POLYGON),
         },
       };
       const polygonMockStore = configureMockStore([thunk])(polygonState);
@@ -283,7 +277,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          selectedNetworkClientId: 'sepolia',
+          ...mockNetworkState(CHAIN_IDS.SEPOLIA),
         },
       };
       const sepoliaMockStore = configureMockStore([thunk])(sepoliaState);
@@ -311,10 +305,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: { id: 'networkClientId', chainId: '0x99' },
-          },
+          ...mockNetworkState('0x99'),
         },
       };
       const randomNetworkMockStore = configureMockStore([thunk])(

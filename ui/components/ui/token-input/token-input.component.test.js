@@ -7,6 +7,7 @@ import {
   CHAIN_IDS,
   CURRENCY_SYMBOLS,
 } from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/jest/mocks';
 import TokenInput from '.';
 
 describe('TokenInput Component', () => {
@@ -73,13 +74,7 @@ describe('TokenInput Component', () => {
             ...mockState.metamask.preferences,
             showFiatInTestnets: true,
           },
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: {
-              chainId: CHAIN_IDS.POLYGON,
-              ticker: CURRENCY_SYMBOLS.MATIC,
-            },
-          },
+          ...mockNetworkState(CHAIN_IDS.POLYGON),
         },
       };
       const mockStore = configureMockStore()(showFiatState);

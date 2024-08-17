@@ -2,6 +2,8 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { mockNetworkState } from '../../../../test/jest/mocks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import UserPreferencedCurrencyDisplay from '.';
 
 describe('UserPreferencedCurrencyDisplay Component', () => {
@@ -9,7 +11,7 @@ describe('UserPreferencedCurrencyDisplay Component', () => {
     const defaultState = {
       metamask: {
         ...mockState.metamask,
-        selectedNetworkClientId: 'mainnet',
+        ...mockNetworkState(CHAIN_IDS.MAINNET),
         currencyRates: {},
         preferences: {
           useNativeCurrencyAsPrimaryCurrency: true,

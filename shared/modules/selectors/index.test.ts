@@ -1,5 +1,6 @@
 import { createSwapsMockStore } from '../../../test/jest';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../constants/network';
+import { mockNetworkState } from '../../../test/jest/mocks';
 import {
   getSmartTransactionsOptInStatus,
   getCurrentChainSupportsSmartTransactions,
@@ -147,10 +148,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          selectedNetworkClientId: 'polygon',
-          networkConfigurations: {
-            polygon: { chainId: CHAIN_IDS.POLYGON, rpcUrl: '' },
-          },
+          ...mockNetworkState(CHAIN_IDS.POLYGON),
         },
       };
       expect(getSmartTransactionsEnabled(newState)).toBe(false);
@@ -162,10 +160,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          selectedNetworkClientId: 'bsc',
-          networkConfigurations: {
-            bsc: { chainId: CHAIN_IDS.BSC, rpcUrl: '' },
-          },
+          ...mockNetworkState(CHAIN_IDS.BSC),
         },
       };
       expect(getSmartTransactionsEnabled(newState)).toBe(false);
@@ -271,10 +266,7 @@ describe('Selectors', () => {
             ...state.metamask.preferences,
             smartTransactionsOptInStatus: null,
           },
-          selectedNetworkClientId: 'polygon',
-          networkConfigurations: {
-            polygon: { chainId: CHAIN_IDS.POLYGON, rpcUrl: '' },
-          },
+          ...mockNetworkState(CHAIN_IDS.POLYGON),
         },
       };
       expect(getIsSmartTransactionsOptInModalAvailable(newState)).toBe(false);

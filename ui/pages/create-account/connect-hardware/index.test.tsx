@@ -7,6 +7,8 @@ import {
   LedgerTransportTypes,
   HardwareDeviceNames,
 } from '../../../../shared/constants/hardware-wallets';
+import { mockNetworkState } from '../../../../test/jest/mocks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import ConnectHardwareForm from '.';
 
 const mockConnectHardware = jest.fn();
@@ -53,7 +55,7 @@ const mockProps = {
 
 const mockState = {
   metamask: {
-    selectedNetworkClientId: 'mainnet',
+    ...mockNetworkState(CHAIN_IDS.MAINNET),
   },
   appState: {
     networkDropdownOpen: false,

@@ -5,6 +5,8 @@ import { fireEvent, waitFor, screen, act } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import Fuse from 'fuse.js';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { mockNetworkState } from '../../../../test/jest/mocks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Account } from './custody';
 import CustodyPage from '.';
 
@@ -55,7 +57,7 @@ const MockedFuse = Fuse as unknown as MockedFuseType;
 describe('CustodyPage', function () {
   const mockStore = {
     metamask: {
-      selectedNetworkClientId: 'mainnet',
+      ...mockNetworkState(CHAIN_IDS.MAINNET),
       institutionalFeatures: {
         connectRequests: [],
       },

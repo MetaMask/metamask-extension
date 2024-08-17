@@ -6,6 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../test/jest/mocks';
 import { nonceSortedTransactionsSelector } from './transactions';
 
 const RECIPIENTS = {
@@ -82,7 +83,7 @@ const getStateTree = ({
   unapprovedTypedMessages = [],
 } = {}) => ({
   metamask: {
-    selectedNetworkClientId: 'mainnet',
+    ...mockNetworkState(CHAIN_IDS.MAINNET),
     unapprovedTypedMessages,
     internalAccounts: {
       accounts: {

@@ -1,11 +1,10 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import sinon from 'sinon';
-import { NetworkStatus } from '@metamask/network-controller';
-import { NetworkType } from '@metamask/controller-utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
 
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { mockNetworkState } from '../../../test/jest/mocks';
 import ConfirmTransactionReducer, * as actions from './confirm-transaction.duck';
 
 const initialState = {
@@ -329,7 +328,7 @@ describe('Confirm Transaction Duck', () => {
               conversionRate: 468.58,
             },
           },
-          selectedNetworkClientId: 'mainnet',
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
         },
         confirmTransaction: {
           ethTransactionAmount: '1',
@@ -384,17 +383,7 @@ describe('Confirm Transaction Duck', () => {
               conversionRate: 468.58,
             },
           },
-          selectedNetworkClientId: 'goerli',
-          networkConfigurations: {
-            goerli: { chainId: CHAIN_IDS.GOERLI },
-          },
-          networksMetadata: {
-            [NetworkType.goerli]: {
-              EIPS: {},
-              status: NetworkStatus.Available,
-            },
-          },
-
+          ...mockNetworkState(CHAIN_IDS.GOERLI),
           transactions: [
             {
               history: [],

@@ -1,7 +1,11 @@
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { GasEstimateTypes } from '../../shared/constants/gas';
-import { getInitialSendStateWithExistingTxState } from '../../test/jest/mocks';
+import {
+  getInitialSendStateWithExistingTxState,
+  mockNetworkState,
+} from '../../test/jest/mocks';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import {
   getCustomGasLimit,
   getCustomGasPrice,
@@ -26,7 +30,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             low: '1',
           },
-          selectedNetworkClientId: NetworkType.mainnet,
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
           networksMetadata: {
             [NetworkType.mainnet]: {
               EIPS: {},
@@ -47,7 +51,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             low: '1',
           },
-          selectedNetworkClientId: NetworkType.mainnet,
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
           networksMetadata: {
             [NetworkType.mainnet]: {
               EIPS: {},
@@ -68,7 +72,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             low: '1',
           },
-          selectedNetworkClientId: NetworkType.mainnet,
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
           networksMetadata: {
             [NetworkType.mainnet]: {
               EIPS: {},
@@ -89,7 +93,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             low: undefined,
           },
-          selectedNetworkClientId: NetworkType.mainnet,
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
           networksMetadata: {
             [NetworkType.mainnet]: {
               EIPS: {},
@@ -113,7 +117,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '150',
           },
-          selectedNetworkClientId: NetworkType.mainnet,
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
           networksMetadata: {
             [NetworkType.mainnet]: {
               EIPS: {},
@@ -134,7 +138,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: undefined,
           },
-          selectedNetworkClientId: NetworkType.mainnet,
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
           networksMetadata: {
             [NetworkType.mainnet]: {
               EIPS: {},
@@ -155,7 +159,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '139',
           },
-          selectedNetworkClientId: NetworkType.mainnet,
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
           networksMetadata: {
             [NetworkType.mainnet]: {
               EIPS: {},
@@ -176,7 +180,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '139',
           },
-          selectedNetworkClientId: NetworkType.mainnet,
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
           networksMetadata: {
             [NetworkType.mainnet]: {
               EIPS: {},
@@ -197,7 +201,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '139',
           },
-          selectedNetworkClientId: NetworkType.mainnet,
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
           networksMetadata: {
             [NetworkType.mainnet]: {
               EIPS: {},
@@ -218,7 +222,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '139',
           },
-          selectedNetworkClientId: NetworkType.mainnet,
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
           networksMetadata: {
             [NetworkType.mainnet]: {
               EIPS: {},
@@ -239,7 +243,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '139',
           },
-          selectedNetworkClientId: NetworkType.mainnet,
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
           networksMetadata: {
             [NetworkType.mainnet]: {
               EIPS: {},
@@ -265,7 +269,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '139',
           },
-          selectedNetworkClientId: NetworkType.mainnet,
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
           networksMetadata: {
             [NetworkType.mainnet]: {
               EIPS: {},

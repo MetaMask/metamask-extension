@@ -22,6 +22,7 @@ import {
   NETWORK_TYPES,
 } from '../../shared/constants/network';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
+import { mockNetworkState } from '../../test/jest/mocks';
 import { AccountsState } from './accounts';
 import {
   MultichainState,
@@ -64,7 +65,7 @@ function getEvmState(): TestState {
       preferences: {
         showFiatInTestnets: false,
       },
-      selectedNetworkClientId: 'mainnet',
+      ...mockNetworkState(CHAIN_IDS.MAINNET),
 
       currentCurrency: 'ETH',
       currencyRates: {

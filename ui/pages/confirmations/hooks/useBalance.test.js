@@ -6,20 +6,13 @@ import { EthAccountType } from '@metamask/keyring-api';
 import configureStore from '../../../store/store';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/jest/mocks';
 import { useBalance } from './useBalance';
 
 const renderUseBalance = (fromAddress, stateVariables = {}) => {
   const mockState = {
     metamask: {
-      selectedNetworkClientId: 'goerli',
-      networkConfigurations: {
-        goerli: {
-          id: 'goerli',
-          chainId: CHAIN_IDS.GOERLI,
-          ticker: 'ETH',
-          nickname: 'Goerli',
-        },
-      },
+      ...mockNetworkState(CHAIN_IDS.GOERLI),
       currentCurrency: 'ETH',
       tokenList: {},
       accountsByChainId: {

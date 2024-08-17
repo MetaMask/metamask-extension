@@ -24,6 +24,7 @@ import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
 } from '../../store/actions';
+import { mockNetworkState } from '../../../test/jest/mocks';
 import OnboardingFlow from './onboarding-flow';
 
 jest.mock('../../store/actions', () => ({
@@ -40,7 +41,7 @@ describe('Onboarding Flow', () => {
         accounts: {},
         selectedAccount: '',
       },
-      selectedNetworkClientId: 'mainnet',
+      ...mockNetworkState(CHAIN_IDS.MAINNET),
 
       incomingTransactionsPreferences: {
         [CHAIN_IDS.MAINNET]: true,

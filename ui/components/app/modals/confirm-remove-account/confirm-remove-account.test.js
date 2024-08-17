@@ -3,10 +3,14 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { BtcAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { createMockInternalAccount } from '../../../../../test/jest/mocks';
+import {
+  createMockInternalAccount,
+  mockNetworkState,
+} from '../../../../../test/jest/mocks';
 import { addressSummary } from '../../../../helpers/utils/util';
 import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import ConfirmRemoveAccount from '.';
 
 global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
@@ -54,7 +58,7 @@ describe('Confirm Remove Account', () => {
   const state = {
     metamask: {
       completedOnboarding: true,
-      selectedNetworkClientId: 'mainnet',
+      ...mockNetworkState(CHAIN_IDS.MAINNET),
       internalAccounts: {
         accounts: {
           [mockAccount.id]: mockAccount,

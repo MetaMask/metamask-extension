@@ -1,16 +1,18 @@
 import React, { FC } from 'react';
 import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
+import { Hex } from '@metamask/utils';
 import configureStore from '../../../store/store';
+import { mockNetworkState } from '../../../../test/jest/mocks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import useRamps, { RampsMetaMaskEntry } from './useRamps';
 
 const mockedMetametricsId = '0xtestMetaMetricsId';
 
 let mockStoreState = {
   metamask: {
-    selectedNetworkClientId: 'mainnet',
+    ...mockNetworkState(CHAIN_IDS.MAINNET),
     metaMetricsId: mockedMetametricsId,
-    networkConfigurations: {},
   },
 };
 
@@ -79,15 +81,12 @@ describe('useRamps', () => {
   // @ts-ignore
   it.each(['0x1', '0x38', '0xa'])(
     'should open the buy crypto URL with the currently connected chain ID',
-    (mockChainId: string) => {
+    (mockChainId: Hex) => {
       mockStoreState = {
         ...mockStoreState,
         metamask: {
           ...mockStoreState.metamask,
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: { chainId: mockChainId },
-          },
+          ...mockNetworkState(mockChainId),
         },
       };
 

@@ -3,13 +3,18 @@ import { renderWithProvider, screen, fireEvent } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 
+import { mockNetworkState } from '../../../../test/jest/mocks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import DetectedToken from './detected-token';
 
 describe('DetectedToken', () => {
   it('should render the detected token found page', async () => {
     const store = configureStore({
       ...testData,
-      metamask: { ...testData.metamask, selectedNetworkClientId: 'sepolia' },
+      metamask: {
+        ...testData.metamask,
+        ...mockNetworkState(CHAIN_IDS.SEPOLIA),
+      },
     });
     const props = {
       setShowDetectedTokens: jest.fn(),

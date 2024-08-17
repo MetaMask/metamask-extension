@@ -1,4 +1,5 @@
 import { NftContract } from '@metamask/assets-controllers';
+import { mockNetworkState } from '../../test/jest/mocks';
 import {
   getNftContractsByAddressByChain,
   getNftContractsByAddressOnCurrentChain,
@@ -68,11 +69,7 @@ describe('NFT Selectors', () => {
 
       const state = {
         metamask: {
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: { chainId: chainIdMock1 },
-          },
-
+          ...mockNetworkState(chainIdMock1),
           allNftContracts: {
             [userAccountMock1]: {
               [chainIdMock1]: [contractMock1, contractMock2],

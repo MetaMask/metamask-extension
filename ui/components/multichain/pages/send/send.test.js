@@ -10,7 +10,10 @@ import {
   fireEvent,
 } from '../../../../../test/jest';
 import { domainInitialState } from '../../../../ducks/domains';
-import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../../test/jest/mocks';
+import {
+  INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+  mockNetworkState,
+} from '../../../../../test/jest/mocks';
 import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import { SEND_STAGES, startNewDraftTransaction } from '../../../../ducks/send';
 import { AssetType } from '../../../../../shared/constants/transaction';
@@ -379,14 +382,7 @@ describe('SendPage', () => {
         metamask: {
           ...mockSendState.metamask,
           gasEstimateType: 'none',
-          selectedNetworkClientId: 'goerli',
-          networkConfigurations: {
-            goerli: {
-              chainId: CHAIN_IDS.GOERLI,
-              nickname: GOERLI_DISPLAY_NAME,
-              ticker: 'ETH',
-            },
-          },
+          ...mockNetworkState(CHAIN_IDS.GOERLI),
         },
       };
 

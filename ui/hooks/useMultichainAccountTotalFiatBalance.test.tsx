@@ -4,7 +4,10 @@ import { Provider } from 'react-redux';
 import { BtcAccountType, InternalAccount } from '@metamask/keyring-api';
 import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
-import { createMockInternalAccount } from '../../test/jest/mocks';
+import {
+  createMockInternalAccount,
+  mockNetworkState,
+} from '../../test/jest/mocks';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { useMultichainAccountTotalFiatBalance } from './useMultichainAccountTotalFiatBalance';
 
@@ -101,7 +104,7 @@ const renderUseMultichainAccountTotalFiatBalance = (
           },
         },
       },
-      selectedNetworkClientId: 'mainnet',
+      ...mockNetworkState(CHAIN_IDS.MAINNET),
 
       detectedTokens: {
         '0x1': {

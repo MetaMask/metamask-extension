@@ -3,6 +3,8 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import MetaMaskController from '../../../app/scripts/metamask-controller';
 import { setBackgroundConnection } from '../background-connection';
+import { mockNetworkState } from '../../../test/jest/mocks';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   showInteractiveReplacementTokenModal,
   showCustodyConfirmLink,
@@ -14,7 +16,7 @@ const middleware = [thunk];
 const defaultState = {
   metamask: {
     currentLocale: 'test',
-    selectedNetworkClientId: 'mainnet',
+    ...mockNetworkState(CHAIN_IDS.MAINNET),
 
     accounts: {
       '0xFirstAddress': {
@@ -196,7 +198,7 @@ describe('#updateCustodyState', () => {
     setBackgroundConnection(background.getApi());
 
     const newState = {
-      selectedNetworkClientId: 'mainnet',
+      ...mockNetworkState(CHAIN_IDS.MAINNET),
 
       featureFlags: {},
     };
@@ -217,7 +219,7 @@ describe('#updateCustodyState', () => {
     setBackgroundConnection(background.getApi());
 
     const newState = {
-      selectedNetworkClientId: 'mainnet',
+      ...mockNetworkState(CHAIN_IDS.MAINNET),
 
       featureFlags: {},
       transactions: [
@@ -269,7 +271,7 @@ describe('#updateCustodyState', () => {
     setBackgroundConnection(background.getApi());
 
     const newState = {
-      selectedNetworkClientId: 'mainnet',
+      ...mockNetworkState(CHAIN_IDS.MAINNET),
 
       featureFlags: {},
       transactions: [

@@ -11,6 +11,7 @@ import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import { mockNetworkState } from '../../../../test/jest/mocks';
 import EthOverview from './eth-overview';
 
 jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
@@ -33,15 +34,7 @@ describe('EthOverview', () => {
 
   const mockStore = {
     metamask: {
-      selectedNetworkClientId: 'networkClientId',
-      networkConfigurations: {
-        networkClientId: {
-          chainId: CHAIN_IDS.MAINNET,
-          ticker: 'ETH',
-          rpcUrl: 'https://testrpc.com',
-        },
-      },
-
+      ...mockNetworkState(CHAIN_IDS.MAINNET),
       accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
           '0x1': { address: '0x1', balance: '0x1F4' },
@@ -195,10 +188,7 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: { chainId: '0xa86a' },
-          },
+          ...mockNetworkState('0xa86a'),
         },
       };
       const mockedStore = configureMockStore([thunk])(mockedAvalancheStore);
@@ -285,10 +275,7 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: { chainId: 0xa86a },
-          },
+          ...mockNetworkState(CHAIN_IDS.SEPOLIA),
         },
       };
       const mockedStore = configureMockStore([thunk])(mockedFantomStore);
@@ -341,10 +328,7 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: { chainId: CHAIN_IDS.GOERLI },
-          },
+          ...mockNetworkState(CHAIN_IDS.GOERLI),
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -365,11 +349,7 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: { chainId: '0x89' },
-          },
+          ...mockNetworkState(CHAIN_IDS.POLYGON),
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -390,11 +370,7 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: { chainId: '0x89' },
-          },
+          ...mockNetworkState(CHAIN_IDS.POLYGON),
         },
       };
       const mockedStore = configureMockStore([thunk])(

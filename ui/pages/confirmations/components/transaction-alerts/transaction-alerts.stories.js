@@ -7,7 +7,11 @@ import { NetworkStatus } from '@metamask/network-controller';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import configureStore from '../../../../store/store';
 import testData from '../../../../../.storybook/test-data';
-import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
+import {
+  getSelectedInternalAccountFromMockState,
+  mockNetworkState,
+} from '../../../../../test/jest/mocks';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import TransactionAlerts from '.';
 
 const mockSelectedInternalAccount =
@@ -63,7 +67,7 @@ const customStore = ({
         networkCongestion: isNetworkBusy ? 1 : 0.1,
       },
       // supportsEIP1559
-      selectedNetworkClientId: NetworkType.mainnet,
+      ...mockNetworkState(CHAIN_IDS.MAINNET),
       networksMetadata: {
         ...testData?.metamask?.networksMetadata,
         [NetworkType.mainnet]: {

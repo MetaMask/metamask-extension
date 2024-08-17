@@ -1,11 +1,13 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
+import { mockNetworkState } from '../../../../test/jest/mocks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import NetworksTab from '.';
 
 const mockState = {
   metamask: {
-    selectedNetworkClientId: 'mainnet',
+    ...mockNetworkState(CHAIN_IDS.MAINNET),
     networkConfigurations: {},
     orderedNetworkList: {
       chainId: '0x539',

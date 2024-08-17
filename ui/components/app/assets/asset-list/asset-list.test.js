@@ -6,7 +6,10 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getTokenSymbol } from '../../../../store/actions';
-import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
+import {
+  getSelectedInternalAccountFromMockState,
+  mockNetworkState,
+} from '../../../../../test/jest/mocks';
 import AssetList from './asset-list';
 
 // Specific to just the ETH FIAT conversion
@@ -74,10 +77,7 @@ const render = (balance = ETH_BALANCE, chainId = CHAIN_IDS.MAINNET) => {
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      selectedNetworkClientId: 'networkClientId',
-      networkConfigurations: {
-        networkClientId: { id: 'networkClientId', chainId },
-      },
+      ...mockNetworkState(chainId),
       currencyRates: {
         ETH: {
           conversionRate: CONVERSION_RATE,

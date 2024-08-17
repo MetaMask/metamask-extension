@@ -12,6 +12,7 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
+import { mockNetworkState } from '../../../../test/jest/mocks';
 import { createPPOMMiddleware } from './ppom-middleware';
 import {
   generateSecurityAlertId,
@@ -64,15 +65,7 @@ const createMiddleware = (
   }
 
   const networkController = {
-    state: {
-      selectedNetworkClientId: 'networkClientId',
-      networkConfigurations: {
-        networkClientId: {
-          id: 'networkClientId',
-          chainId: chainId || CHAIN_IDS.MAINNET,
-        },
-      },
-    },
+    state: mockNetworkState(chainId || CHAIN_IDS.MAINNET),
   };
 
   const appStateController = {

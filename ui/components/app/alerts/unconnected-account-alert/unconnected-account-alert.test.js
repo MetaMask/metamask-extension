@@ -13,6 +13,7 @@ import * as actions from '../../../../store/actions';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { KeyringType } from '../../../../../shared/constants/keyring';
 
+import { mockNetworkState } from '../../../../../test/jest/mocks';
 import UnconnectedAccountAlert from '.';
 
 describe('Unconnected Account Alert', () => {
@@ -109,7 +110,7 @@ describe('Unconnected Account Alert', () => {
       accounts,
       accountsByChainId,
       keyrings,
-      selectedNetworkClientId: 'mainnet',
+      ...mockNetworkState(CHAIN_IDS.MAINNET),
       permissionHistory: {
         'https://test.dapp': {
           eth_accounts: {

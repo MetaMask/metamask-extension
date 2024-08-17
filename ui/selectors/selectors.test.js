@@ -12,7 +12,10 @@ import {
 } from '../../shared/constants/network';
 import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
-import { createMockInternalAccount } from '../../test/jest/mocks';
+import {
+  createMockInternalAccount,
+  mockNetworkState,
+} from '../../test/jest/mocks';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import * as selectors from './selectors';
 
@@ -373,7 +376,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          selectedNetworkClientId: NETWORK_TYPES.LINEA_SEPOLIA,
+          ...mockNetworkState(CHAIN_IDS.SEPOLIA),
           queuedRequestCount: 1,
         },
       });
@@ -880,7 +883,7 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          selectedNetworkClientId: 'mainnet',
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
         },
       };
       const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
@@ -1299,20 +1302,14 @@ describe('Selectors', () => {
   it('#getIsBridgeChain', () => {
     const isOptimismSupported = selectors.getIsBridgeChain({
       metamask: {
-        selectedNetworkClientId: 'networkClientId',
-        networkConfigurations: {
-          networkClientId: { chainId: CHAIN_IDS.OPTIMISM },
-        },
+        ...mockNetworkState(CHAIN_IDS.OPTIMISM),
       },
     });
     expect(isOptimismSupported).toBeTruthy();
 
     const isFantomSupported = selectors.getIsBridgeChain({
       metamask: {
-        selectedNetworkClientId: 'networkClientId',
-        networkConfigurations: {
-          networkClientId: { chainId: CHAIN_IDS.FANTOM },
-        },
+        ...mockNetworkState(CHAIN_IDS.FANTOM),
       },
     });
     expect(isFantomSupported).toBeFalsy();

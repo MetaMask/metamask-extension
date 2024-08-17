@@ -1,6 +1,9 @@
 import { toChecksumAddress } from 'ethereumjs-util';
 import { EthAccountType } from '@metamask/keyring-api';
+import { Hex } from '@metamask/utils';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../test/jest/mocks';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   getConfiguredCustodians,
   getCustodianIconForAddress,
@@ -248,7 +251,7 @@ describe('Institutional selectors', () => {
               supportedChains: ['1', '2', '3'],
             },
           },
-          selectedNetworkClientId: 'mainnet',
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
         },
       });
 
@@ -287,7 +290,7 @@ describe('Institutional selectors', () => {
               supportedChains: ['4'],
             },
           },
-          selectedNetworkClientId: 'mainnet',
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
         },
       });
 
@@ -329,7 +332,7 @@ describe('Institutional selectors', () => {
             },
             selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           },
-          selectedNetworkClientId: 'mainnet',
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
         },
       });
 
@@ -404,7 +407,7 @@ describe('Institutional selectors', () => {
           custodianSupportedChains: {
             [accountAddress]: null,
           },
-          selectedNetworkClientId: 'mainnet',
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
         },
       });
 
@@ -449,7 +452,7 @@ describe('Institutional selectors', () => {
               supportedChains: [],
             },
           },
-          selectedNetworkClientId: 'mainnet',
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
         },
       });
 
@@ -494,10 +497,7 @@ describe('Institutional selectors', () => {
               supportedChains: ['1'],
             },
           },
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: { chainId: 1 },
-          },
+          ...mockNetworkState(1 as Hex),
         },
       });
 
@@ -542,10 +542,7 @@ describe('Institutional selectors', () => {
               supportedChains: ['1'],
             },
           },
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: { chainId: 'not a hex number' },
-          },
+          ...mockNetworkState('not a hex number' as Hex),
         },
       });
 

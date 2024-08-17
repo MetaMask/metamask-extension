@@ -9,10 +9,20 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import { v4 as uuidv4 } from 'uuid';
 import { keyringTypeToName } from '@metamask/accounts-controller';
 import {
+  NetworksMetadata,
+  NetworkState,
+  NetworkStatus,
+} from '@metamask/network-controller';
+import { Hex } from '@metamask/utils';
+import {
   draftTransactionInitialState,
   initialState,
 } from '../../ui/ducks/send';
 import { MetaMaskReduxState } from '../../ui/store/store';
+import {
+  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
+  NETWORK_TO_NAME_MAP,
+} from '../../shared/constants/network';
 
 export const MOCK_DEFAULT_ADDRESS =
   '0xd5e099c71b797516c10ed0f0d895f429c2781111';
@@ -240,4 +250,44 @@ export const getSelectedInternalAccountFromMockState = (
   return state.metamask.internalAccounts.accounts[
     state.metamask.internalAccounts.selectedAccount
   ];
+};
+
+export const mockNetworkState = (
+  selectedChainId: Hex,
+  ...otherChainIDs: Hex[]
+): NetworkState => {
+  const chainIds = [selectedChainId, ...otherChainIDs];
+  const networkClientId = (chainId: Hex) => `network-client-id-${chainId}`;
+
+  const networkConfigurations = chainIds.reduce((acc, chainId) => {
+    const id = networkClientId(chainId);
+    acc[id] = {
+      id,
+      chainId,
+      rpcUrl: `https://localhost/rpc/${chainId}`,
+      nickname: (NETWORK_TO_NAME_MAP as Record<Hex, string>)[chainId],
+      ticker: (CHAIN_ID_TO_CURRENCY_SYMBOL_MAP as Record<Hex, string>)[chainId],
+      rpcPrefs: {
+        blockExplorerUrl: `https://localhost/blockExplorer/${chainId}`,
+      },
+    };
+    return acc;
+  }, {} as NetworkState['networkConfigurations']);
+
+  const networksMetadata = chainIds.reduce(
+    (acc, chainId) => ({
+      ...acc,
+      [networkClientId(chainId)]: {
+        EIPS: {},
+        status: NetworkStatus.Available,
+      },
+    }),
+    {} as NetworksMetadata,
+  );
+
+  return {
+    selectedNetworkClientId: networkClientId(selectedChainId),
+    networkConfigurations,
+    networksMetadata,
+  };
 };

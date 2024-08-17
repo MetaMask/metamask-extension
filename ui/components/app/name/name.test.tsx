@@ -8,6 +8,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { useDisplayName } from '../../../hooks/useDisplayName';
+import { mockNetworkState } from '../../../../test/jest/mocks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import Name from './name';
 
 jest.mock('../../../hooks/useDisplayName');
@@ -23,7 +25,7 @@ const SAVED_NAME_MOCK = 'TestName';
 
 const STATE_MOCK = {
   metamask: {
-    selectedNetworkClientId: 'mainnet',
+    ...mockNetworkState(CHAIN_IDS.MAINNET),
   },
 };
 

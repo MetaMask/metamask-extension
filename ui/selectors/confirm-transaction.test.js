@@ -1,5 +1,6 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import { mockNetworkState } from '../../test/jest/mocks';
 import {
   sendTokenTokenAmountAndToAddressSelector,
   contractExchangeRateSelector,
@@ -49,10 +50,7 @@ describe('Confirm Transaction Selector', () => {
             '0xTokenAddress': { price: '10' },
           },
         },
-        selectedNetworkClientId: 'goerli',
-        networkConfigurations: {
-          goerli: { chainId: CHAIN_IDS.GOERLI },
-        },
+        ...mockNetworkState(CHAIN_IDS.GOERLI),
       },
       confirmTransaction: {
         txData: {
@@ -77,7 +75,7 @@ describe('Confirm Transaction Selector', () => {
               conversionRate: 556.12,
             },
           },
-          selectedNetworkClientId: 'mainnet',
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
         },
       };
       expect(conversionRateSelector(state)).toStrictEqual(556.12);

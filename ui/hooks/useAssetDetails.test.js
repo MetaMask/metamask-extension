@@ -9,6 +9,7 @@ import * as Actions from '../store/actions';
 import { TokenStandard } from '../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import { mockNetworkState } from '../../test/jest/mocks';
 
 const renderUseAssetDetails = ({
   tokenAddress,
@@ -17,11 +18,7 @@ const renderUseAssetDetails = ({
 }) => {
   const mockState = {
     metamask: {
-      selectedNetworkClientId: 'goerli',
-      networkConfigurations: {
-        goerli: { chainId: CHAIN_IDS.GOERLI },
-      },
-
+      ...mockNetworkState(CHAIN_IDS.GOERLI),
       tokenList: {},
       tokens: [],
       internalAccounts: {

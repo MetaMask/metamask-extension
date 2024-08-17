@@ -1,4 +1,6 @@
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockState from '../../../../test/data/mock-state.json';
+import { mockNetworkState } from '../../../../test/jest/mocks';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import useConfirmationNetworkInfo from './useConfirmationNetworkInfo';
 
@@ -10,7 +12,7 @@ describe('useConfirmationNetworkInfo', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          selectedNetworkClientId: 'mainnet',
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
         },
         confirm: {
           currentConfirmation: { id: '1', chainId: '0x1' },

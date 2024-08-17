@@ -3,6 +3,8 @@ import { waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import nock from 'nock';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { mockNetworkState } from '../../../../test/jest/mocks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import NewNetworkInfo from './new-network-info';
 
 const fetchWithCache =
@@ -39,7 +41,7 @@ describe('NewNetworkInfo', () => {
   describe('fetch token successfully', () => {
     const state = {
       metamask: {
-        selectedNetworkClientId: 'mainnet',
+        ...mockNetworkState(CHAIN_IDS.MAINNET),
         useExternalServices: true,
         useTokenDetection: false,
         currencyRates: {},
@@ -126,7 +128,7 @@ describe('NewNetworkInfo', () => {
     describe('add token link', () => {
       const newState = {
         metamask: {
-          selectedNetworkClientId: 'mainnet',
+          ...mockNetworkState(CHAIN_IDS.MAINNET),
 
           useExternalServices: true,
           useTokenDetection: true,

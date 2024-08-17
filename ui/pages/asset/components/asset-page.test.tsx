@@ -4,12 +4,13 @@ import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType } from '@metamask/keyring-api';
 import nock from 'nock';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import { mockNetworkState } from '../../../../test/jest/mocks';
 import AssetPage from './asset-page';
 
 // Mock the price chart
@@ -41,12 +42,7 @@ describe('AssetPage', () => {
       tokenList: {},
       currentCurrency: 'usd',
       accounts: {},
-
-      selectedNetworkClientId: 'networkClientId',
-      networkConfigurations: {
-        networkClientId: { chainId: CHAIN_IDS.MAINNET, ticker: 'ETH' },
-      },
-
+      ...mockNetworkState(CHAIN_IDS.MAINNET),
       currencyRates: {
         ETH: {
           conversionRate: 123,
@@ -194,7 +190,7 @@ describe('AssetPage', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          selectedNetworkClientId: NETWORK_TYPES.SEPOLIA,
+          ...mockNetworkState(CHAIN_IDS.SEPOLIA),
         },
       }),
     );
@@ -208,10 +204,7 @@ describe('AssetPage', () => {
       ...mockStore,
       metamask: {
         ...mockStore.metamask,
-        selectedNetworkClientId: 'networkClientId',
-        networkConfigurations: {
-          networkClientId: { chainId: CHAIN_IDS.POLYGON },
-        },
+        ...mockNetworkState(CHAIN_IDS.POLYGON),
       },
     };
     const mockedStore = configureMockStore([thunk])(
@@ -262,7 +255,7 @@ describe('AssetPage', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          selectedNetworkClientId: NETWORK_TYPES.SEPOLIA,
+          ...mockNetworkState(CHAIN_IDS.SEPOLIA),
         },
       }),
     );

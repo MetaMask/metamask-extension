@@ -3,7 +3,8 @@ import { fireEvent, renderWithProvider, screen } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 
-import { NETWORK_TYPES } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/jest/mocks';
 import { DetectedTokensBanner } from '.';
 
 describe('DetectedTokensBanner', () => {
@@ -15,7 +16,7 @@ describe('DetectedTokensBanner', () => {
     ...testData,
     metamask: {
       ...testData.metamask,
-      selectedNetworkClientId: NETWORK_TYPES.SEPOLIA,
+      ...mockNetworkState(CHAIN_IDS.SEPOLIA),
     },
   };
 

@@ -5,15 +5,12 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getIntlLocale } from '../../../ducks/locale/locale';
+import { mockNetworkState } from '../../../../test/jest/mocks';
 import { TokenListItem } from '.';
 
 const state = {
   metamask: {
-    selectedNetworkClientId: 'networkClientId',
-    networkConfigurations: {
-      networkClientId: { chainId: CHAIN_IDS.MAINNET },
-    },
-
+    ...mockNetworkState(CHAIN_IDS.MAINNET),
     useTokenDetection: false,
     currencyRates: {},
     preferences: {

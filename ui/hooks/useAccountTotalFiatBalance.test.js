@@ -6,7 +6,10 @@ import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
 
 import { CHAIN_IDS } from '../../shared/constants/network';
-import { createMockInternalAccount } from '../../test/jest/mocks';
+import {
+  createMockInternalAccount,
+  mockNetworkState,
+} from '../../test/jest/mocks';
 import { useAccountTotalFiatBalance } from './useAccountTotalFiatBalance';
 
 const mockAccount = createMockInternalAccount({
@@ -75,7 +78,7 @@ const renderUseAccountTotalFiatBalance = (address) => {
           },
         },
       },
-      selectedNetworkClientId: 'mainnet',
+      ...mockNetworkState(CHAIN_IDS.MAINNET),
 
       detectedTokens: {
         '0x1': {

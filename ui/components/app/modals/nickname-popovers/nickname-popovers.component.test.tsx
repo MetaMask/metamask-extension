@@ -92,7 +92,7 @@ describe('NicknamePopover', () => {
     });
   });
 
-  it.only('opens non-EVM block explorer', () => {
+  it('opens non-EVM block explorer', () => {
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
     const expectedExplorerUrl = `${
       MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[MultichainNetworks.BITCOIN]
