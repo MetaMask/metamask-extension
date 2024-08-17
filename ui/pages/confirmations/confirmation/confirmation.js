@@ -15,7 +15,6 @@ import log from 'loglevel';
 import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
-import Box from '../../../components/ui/box';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -500,16 +499,16 @@ export default function ConfirmationPage({
           </button>
         </div>
       )}
-      <Box className="confirmation-page__content" paddingTop={4}>
-        {templatedValues.networkDisplay && !process.env.CHAIN_PERMISSIONS ? (
+      <Box className="confirmation-page__content">
+        {isSnapCustomUIDialog && (
           <Box width={BlockSize.Screen}>
             <SnapAuthorshipHeader
               snapId={pendingConfirmation?.origin}
               onCancel={handleSnapDialogCancel}
             />
           </Box>
-        ): null }
-        {templatedValues.networkDisplay ? (
+        )}
+        {templatedValues.networkDisplay && !process.env.CHAIN_PERMISSIONS ? (
           <Box justifyContent="center" marginTop={2}>
             <NetworkDisplay />
           </Box>
