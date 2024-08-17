@@ -8,7 +8,7 @@ import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import NetworksTabContent from '.';
 
 const mockState = {
-  metamask: { ...mockNetworkState(CHAIN_IDS.MAINNET), orderedNetworkList: {} },
+  metamask: { ...mockNetworkState(CHAIN_IDS.LOCALHOST), orderedNetworkList: {} },
 };
 
 jest.mock('../../../../helpers/utils/feature-flags', () => ({

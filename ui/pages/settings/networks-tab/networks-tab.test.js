@@ -7,12 +7,7 @@ import NetworksTab from '.';
 
 const mockState = {
   metamask: {
-    ...mockNetworkState(CHAIN_IDS.MAINNET),
-    networkConfigurations: {},
-    orderedNetworkList: {
-      chainId: '0x539',
-      rpcUrl: 'http://localhost:8545',
-    },
+    ...mockNetworkState(CHAIN_IDS.LOCALHOST),
   },
   appState: {
     networksTabSelectedRpcUrl: 'http://localhost:8545',

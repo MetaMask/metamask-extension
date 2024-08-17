@@ -497,7 +497,7 @@ describe('Institutional selectors', () => {
               supportedChains: ['1'],
             },
           },
-          ...mockNetworkState(1 as Hex),
+          ...mockNetworkState(1 as unknown as Hex),
         },
       });
 

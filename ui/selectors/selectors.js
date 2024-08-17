@@ -1344,8 +1344,7 @@ export function getIsSwapsChain(state) {
 
 export function getIsBridgeChain(state) {
   const chainId = getCurrentChainId(state);
-  const allowed = ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
-  return allowed;
+  return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
 
 function getBridgeFeatureFlags(state) {
