@@ -78,7 +78,7 @@ const renderUseAccountTotalFiatBalance = (address) => {
           },
         },
       },
-      ...mockNetworkState(CHAIN_IDS.MAINNET),
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
       detectedTokens: {
         '0x1': {

@@ -110,7 +110,7 @@ describe('Unconnected Account Alert', () => {
       accounts,
       accountsByChainId,
       keyrings,
-      ...mockNetworkState(CHAIN_IDS.MAINNET),
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       permissionHistory: {
         'https://test.dapp': {
           eth_accounts: {

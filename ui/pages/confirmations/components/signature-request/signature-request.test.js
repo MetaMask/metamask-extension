@@ -26,6 +26,7 @@ import {
   pendingApprovalsSortedSelector,
 } from '../../../../selectors';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../../../test/jest/mocks';
 import SignatureRequest from './signature-request';
 
 const baseProps = {
@@ -37,16 +38,12 @@ const baseProps = {
 };
 const mockStore = {
   metamask: {
-    selectedNetworkClientId: 'networkClientId',
-    networkConfigurations: {
-      networkClientId: {
-        chainId: '0x539',
-        nickname: 'Localhost 8545',
-        rpcUrl: 'http://localhost:8545',
-        ticker: 'ETH',
-      },
-    },
-
+    ...mockNetworkState({
+      chainId: '0x539',
+      nickname: 'Localhost 8545',
+      rpcUrl: 'http://localhost:8545',
+      ticker: 'ETH',
+    }),
     preferences: {
       useNativeCurrencyAsPrimaryCurrency: true,
     },

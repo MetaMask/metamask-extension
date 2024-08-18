@@ -30,7 +30,7 @@ const render = (
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      ...mockNetworkState(CHAIN_IDS.MAINNET),
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
           [selectedInternalAccount.address]: { balance },

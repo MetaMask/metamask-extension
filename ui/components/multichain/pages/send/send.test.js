@@ -1,7 +1,6 @@
 import React from 'react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
-import { NetworkType } from '@metamask/controller-utils';
 import { EthAccountType } from '@metamask/keyring-api';
 import { act } from '@testing-library/react';
 import {
@@ -17,10 +16,7 @@ import {
 import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import { SEND_STAGES, startNewDraftTransaction } from '../../../../ducks/send';
 import { AssetType } from '../../../../../shared/constants/transaction';
-import {
-  CHAIN_IDS,
-  GOERLI_DISPLAY_NAME,
-} from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { KeyringType } from '../../../../../shared/constants/keyring';
@@ -167,26 +163,16 @@ const baseStore = {
         accounts: ['0x0'],
       },
     ],
-    selectedNetworkClientId: NetworkType.goerli,
-    networksMetadata: {
-      [NetworkType.goerli]: {
-        EIPS: {},
-        status: 'available',
-      },
-    },
+    ...mockNetworkState({
+      chainId: CHAIN_IDS.GOERLI,
+      ticker: 'ETH',
+    }),
     tokens: [],
     preferences: {
       useNativeCurrencyAsPrimaryCurrency: false,
       showFiatInTestnets: true,
     },
     currentCurrency: 'USD',
-    networkConfigurations: {
-      goerli: {
-        chainId: CHAIN_IDS.GOERLI,
-        ticker: 'ETH',
-        nickname: GOERLI_DISPLAY_NAME,
-      },
-    },
     nativeCurrency: 'ETH',
     featureFlags: {
       sendHexData: false,
@@ -382,7 +368,7 @@ describe('SendPage', () => {
         metamask: {
           ...mockSendState.metamask,
           gasEstimateType: 'none',
-          ...mockNetworkState(CHAIN_IDS.GOERLI),
+          ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
         },
       };
 

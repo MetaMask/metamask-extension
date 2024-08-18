@@ -1,16 +1,20 @@
 import { InternalAccount } from '@metamask/keyring-api';
-import { createMockInternalAccount } from '../../test/jest/mocks';
+import {
+  createMockInternalAccount,
+  mockNetworkState,
+} from '../../test/jest/mocks';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import { getSelectedNetworkClientId } from '../selectors';
 import { MultichainState, getMultichainIsEvm } from '../selectors/multichain';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import { useMultichainSelector } from './useMultichainSelector';
 
 const mockAccount = createMockInternalAccount();
-const mockNetworkId = '0x1';
+const mockNetworkId = 'network-client-id';
 
 const mockState = {
   metamask: {
-    selectedNetworkClientId: mockNetworkId,
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET, id: mockNetworkId }),
     completedOnboarding: true,
     internalAccounts: {
       accounts: {

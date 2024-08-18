@@ -8,7 +8,10 @@ import {
   MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP,
   MultichainNetworks,
 } from '../../../../../shared/constants/multichain/networks';
-import { createMockInternalAccount } from '../../../../../test/jest/mocks';
+import {
+  createMockInternalAccount,
+  mockNetworkState,
+} from '../../../../../test/jest/mocks';
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import NicknamePopover from './nickname-popovers.component';
 
@@ -50,19 +53,10 @@ const render = (
         },
         selectedAccount: mockAccount.id,
       },
-      selectedNetworkClientId: 'chain5',
-      networkConfigurations: {
-        chain5: {
-          type: 'rpc',
-          chainId: '0x5',
-          ticker: 'ETH',
-          nickname: 'Chain 5',
-          id: 'chain5',
-          rpcPrefs: {
-            blockExplorerUrl: mockEvmExplorer,
-          },
-        },
-      },
+      ...mockNetworkState({
+        chainId: '0x5',
+        blockExplorerUrl: mockEvmExplorer,
+      }),
       completedOnboarding: true,
     },
   });

@@ -78,7 +78,7 @@ describe('ConfirmInfoRowAddress', () => {
             ...mockState.metamask.preferences,
             petnamesEnabled: false,
           },
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           addressBook: {
             [CHAIN_IDS.MAINNET]: {
               [TEST_ADDRESS]: {
@@ -107,7 +107,7 @@ describe('ConfirmInfoRowAddress', () => {
         {
           metamask: {
             ...mockState.metamask,
-            ...mockNetworkState(CHAIN_IDS.MAINNET),
+            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
             tokenList: {
               [WBTC.address]: {
                 address: WBTC.address,

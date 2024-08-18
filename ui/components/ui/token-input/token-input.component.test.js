@@ -74,7 +74,7 @@ describe('TokenInput Component', () => {
             ...mockState.metamask.preferences,
             showFiatInTestnets: true,
           },
-          ...mockNetworkState(CHAIN_IDS.POLYGON),
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
         },
       };
       const mockStore = configureMockStore()(showFiatState);

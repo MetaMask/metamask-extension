@@ -40,7 +40,7 @@ const PROPOSED_NAME_2_MOCK = 'TestProposedName2';
 
 const STATE_MOCK = {
   metamask: {
-    ...mockNetworkState(CHAIN_IDS.MAINNET),
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
     nameSources: {
       [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },

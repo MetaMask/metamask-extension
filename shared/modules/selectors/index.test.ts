@@ -1,5 +1,5 @@
 import { createSwapsMockStore } from '../../../test/jest';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../constants/network';
+import { CHAIN_IDS } from '../../constants/network';
 import { mockNetworkState } from '../../../test/jest/mocks';
 import {
   getSmartTransactionsOptInStatus,
@@ -148,7 +148,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          ...mockNetworkState(CHAIN_IDS.POLYGON),
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
         },
       };
       expect(getSmartTransactionsEnabled(newState)).toBe(false);
@@ -160,7 +160,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          ...mockNetworkState(CHAIN_IDS.BSC),
+          ...mockNetworkState({ chainId: CHAIN_IDS.BSC }),
         },
       };
       expect(getSmartTransactionsEnabled(newState)).toBe(false);
@@ -266,7 +266,7 @@ describe('Selectors', () => {
             ...state.metamask.preferences,
             smartTransactionsOptInStatus: null,
           },
-          ...mockNetworkState(CHAIN_IDS.POLYGON),
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
         },
       };
       expect(getIsSmartTransactionsOptInModalAvailable(newState)).toBe(false);
@@ -282,14 +282,10 @@ describe('Selectors', () => {
             ...state.metamask.preferences,
             smartTransactionsOptInStatus: null,
           },
-          selectedNetworkClientId: 'network-configuration-id-1',
-          networkConfigurations: {
-            'network-configuration-id-1': {
-              chainId: CHAIN_IDS.MAINNET,
-              ticker: CURRENCY_SYMBOLS.ETH,
-              rpcUrl: 'https://mainnet.quiknode.pro/',
-            },
-          },
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.MAINNET,
+            rpcUrl: 'https://mainnet.quiknode.pro/',
+          }),
         },
       };
       expect(getIsSmartTransactionsOptInModalAvailable(newState)).toBe(false);

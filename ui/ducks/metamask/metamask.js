@@ -22,18 +22,7 @@ import {
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
-import {
-  BUILT_IN_NETWORKS,
-  CHAIN_ID_TO_RPC_URL_MAP,
-  CHAIN_IDS,
-  CURRENCY_SYMBOLS,
-  LINEA_MAINNET_DISPLAY_NAME,
-  LINEA_SEPOLIA_DISPLAY_NAME,
-  MAINNET_DISPLAY_NAME,
-  NETWORK_TYPES,
-  SEPOLIA_DISPLAY_NAME,
-  TEST_NETWORK_TICKER_MAP,
-} from '../../../shared/constants/network';
+import { BUILT_IN_INFURA_NETWORKS } from '../../../shared/constants/network';
 
 const initialState = {
   isInitialized: false,
@@ -292,63 +281,21 @@ export function updateGasFees({
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
 
-// Note: The network controller does not store built in networks in
-// `state.networkConfigurations`, so we represent the equivalent data here.
-// They will be in state in a future version, at which point this can be removed.
-const builtInNetworkConfigurations = {
-  [NETWORK_TYPES.SEPOLIA]: {
-    type: NETWORK_TYPES.SEPOLIA,
-    rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
-    chainId: CHAIN_IDS.SEPOLIA,
-    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
-    nickname: SEPOLIA_DISPLAY_NAME,
-  },
-  [NETWORK_TYPES.LINEA_SEPOLIA]: {
-    type: NETWORK_TYPES.LINEA_SEPOLIA,
-    rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_SEPOLIA],
-    chainId: CHAIN_IDS.LINEA_SEPOLIA,
-    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
-    nickname: LINEA_SEPOLIA_DISPLAY_NAME,
-  },
-  [NETWORK_TYPES.MAINNET]: {
-    type: NETWORK_TYPES.MAINNET,
-    rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
-    chainId: CHAIN_IDS.MAINNET,
-    ticker: CURRENCY_SYMBOLS.ETH,
-    nickname: MAINNET_DISPLAY_NAME,
-    rpcPrefs: {
-      blockExplorerUrl:
-        BUILT_IN_NETWORKS[NETWORK_TYPES.MAINNET].blockExplorerUrl,
-    },
-  },
-  [NETWORK_TYPES.LINEA_MAINNET]: {
-    type: NETWORK_TYPES.LINEA_MAINNET,
-    rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
-    chainId: CHAIN_IDS.LINEA_MAINNET,
-    ticker: CURRENCY_SYMBOLS.ETH,
-    nickname: LINEA_MAINNET_DISPLAY_NAME,
-    rpcPrefs: {
-      blockExplorerUrl:
-        BUILT_IN_NETWORKS[NETWORK_TYPES.LINEA_MAINNET].blockExplorerUrl,
-    },
-  },
-};
-
 /**
  * Get the provider configuration for the current selected network.
  *
  * @param {object} state - Redux state object.
  */
 export function getProviderConfig(state) {
-  const networkConfigurations = {
-    ...builtInNetworkConfigurations,
-    ...getNetworkConfigurations(state),
-  };
-
-  const selectedNetworkClientId = getSelectedNetworkClientId(state);
-  const networkConfiguration = networkConfigurations[selectedNetworkClientId];
-  const { type, ...rest } = networkConfiguration ?? {};
-  return { ...rest, id: selectedNetworkClientId, type: type ?? 'rpc' };
+  const networkClientId = getSelectedNetworkClientId(state);
+  const builtInNetwork = BUILT_IN_INFURA_NETWORKS[networkClientId];
+  return builtInNetwork
+    ? {
+        ...builtInNetwork,
+        type: networkClientId,
+        rpcPrefs: { blockExplorerUrl: builtInNetwork.blockExplorerUrl },
+      }
+    : { ...getNetworkConfigurations(state)[networkClientId], type: 'rpc' };
 }
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>

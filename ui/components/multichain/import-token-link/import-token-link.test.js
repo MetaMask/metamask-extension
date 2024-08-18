@@ -31,7 +31,7 @@ describe('Import Token Link', () => {
   it('should match snapshot for goerli chainId', () => {
     const mockState = {
       metamask: {
-        ...mockNetworkState(CHAIN_IDS.GOERLI),
+        ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
       },
     };
 
@@ -45,7 +45,7 @@ describe('Import Token Link', () => {
   it('should match snapshot for mainnet chainId', () => {
     const mockState = {
       metamask: {
-        ...mockNetworkState(CHAIN_IDS.MAINNET),
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       },
     };
 
@@ -59,7 +59,7 @@ describe('Import Token Link', () => {
   it('should detectTokens when clicking refresh', () => {
     const mockState = {
       metamask: {
-        ...mockNetworkState(CHAIN_IDS.GOERLI),
+        ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
       },
     };
 
@@ -76,7 +76,7 @@ describe('Import Token Link', () => {
   it('should push import token route', () => {
     const mockState = {
       metamask: {
-        ...mockNetworkState(CHAIN_IDS.GOERLI),
+        ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
       },
     };
 

@@ -221,7 +221,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
       };
       const mainnetMockStore = configureMockStore([thunk])(mainnetState);
@@ -249,7 +249,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          ...mockNetworkState(CHAIN_IDS.POLYGON),
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
         },
       };
       const polygonMockStore = configureMockStore([thunk])(polygonState);
@@ -277,7 +277,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          ...mockNetworkState(CHAIN_IDS.SEPOLIA),
+          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
         },
       };
       const sepoliaMockStore = configureMockStore([thunk])(sepoliaState);
@@ -305,7 +305,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          ...mockNetworkState('0x99'),
+          ...mockNetworkState({ chainId: '0x99' }),
         },
       };
       const randomNetworkMockStore = configureMockStore([thunk])(

@@ -25,7 +25,7 @@ const SAVED_NAME_MOCK = 'TestName';
 
 const STATE_MOCK = {
   metamask: {
-    ...mockNetworkState(CHAIN_IDS.MAINNET),
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
   },
 };
 

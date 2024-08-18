@@ -1,5 +1,3 @@
-import { NetworkType } from '@metamask/controller-utils';
-import { NetworkStatus } from '@metamask/network-controller';
 import { GasEstimateTypes } from '../../shared/constants/gas';
 import {
   getInitialSendStateWithExistingTxState,
@@ -30,13 +28,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             low: '1',
           },
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
-          networksMetadata: {
-            [NetworkType.mainnet]: {
-              EIPS: {},
-              status: NetworkStatus.Available,
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
         gas: {
           customData: { price: '0x77359400' },
@@ -51,13 +43,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             low: '1',
           },
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
-          networksMetadata: {
-            [NetworkType.mainnet]: {
-              EIPS: {},
-              status: NetworkStatus.Available,
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
         gas: {
           customData: { price: null },
@@ -72,13 +58,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             low: '1',
           },
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
-          networksMetadata: {
-            [NetworkType.mainnet]: {
-              EIPS: {},
-              status: NetworkStatus.Available,
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
         gas: {
           customData: { price: undefined },
@@ -93,13 +73,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             low: undefined,
           },
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
-          networksMetadata: {
-            [NetworkType.mainnet]: {
-              EIPS: {},
-              status: NetworkStatus.Available,
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
         gas: {
           customData: { price: '0x77359400' },
@@ -117,13 +91,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '150',
           },
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
-          networksMetadata: {
-            [NetworkType.mainnet]: {
-              EIPS: {},
-              status: NetworkStatus.Available,
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
         gas: {
           customData: { price: null },
@@ -138,13 +106,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: undefined,
           },
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
-          networksMetadata: {
-            [NetworkType.mainnet]: {
-              EIPS: {},
-              status: NetworkStatus.Available,
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
         gas: {
           customData: { price: '0x77359400' },
@@ -159,13 +121,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '139',
           },
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
-          networksMetadata: {
-            [NetworkType.mainnet]: {
-              EIPS: {},
-              status: NetworkStatus.Available,
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
         gas: {
           customData: { price: '0x205d0bae00' },
@@ -180,13 +136,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '139',
           },
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
-          networksMetadata: {
-            [NetworkType.mainnet]: {
-              EIPS: {},
-              status: NetworkStatus.Available,
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
         gas: {
           customData: { price: '0x1bf08eb000' },
@@ -201,13 +151,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '139',
           },
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
-          networksMetadata: {
-            [NetworkType.mainnet]: {
-              EIPS: {},
-              status: NetworkStatus.Available,
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
         gas: {
           customData: { price: '0x28bed01600' },
@@ -222,13 +166,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '139',
           },
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
-          networksMetadata: {
-            [NetworkType.mainnet]: {
-              EIPS: {},
-              status: NetworkStatus.Available,
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
         gas: {
           customData: { price: '0x30e4f9b400' },
@@ -243,13 +181,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '139',
           },
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
-          networksMetadata: {
-            [NetworkType.mainnet]: {
-              EIPS: {},
-              status: NetworkStatus.Available,
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
         send: getInitialSendStateWithExistingTxState({
           gas: {
@@ -269,13 +201,7 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '139',
           },
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
-          networksMetadata: {
-            [NetworkType.mainnet]: {
-              EIPS: {},
-              status: NetworkStatus.Available,
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
         send: getInitialSendStateWithExistingTxState({
           gas: {

@@ -1,9 +1,8 @@
-import { NetworkType } from '@metamask/controller-utils';
-import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType } from '@metamask/keyring-api';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { mockNetworkState } from './mocks';
 
 export const createGetSmartTransactionFeesApiResponse = () => {
   return {
@@ -136,15 +135,6 @@ export const createSwapsMockStore = () => {
       swapsSTXLoading: false,
     },
     metamask: {
-      selectedNetworkClientId: NetworkType.mainnet,
-      networksMetadata: {
-        [NetworkType.mainnet]: {
-          EIPS: {
-            1559: false,
-          },
-          status: NetworkStatus.Available,
-        },
-      },
       preferences: {
         showFiatInTestnets: true,
         smartTransactionsOptInStatus: true,
@@ -370,13 +360,12 @@ export const createSwapsMockStore = () => {
           accounts: ['0xd85a4b6a394794842887b8284293d69163007bbb'],
         },
       ],
-      networkConfigurations: {
-        'network-configuration-id-1': {
-          chainId: CHAIN_IDS.MAINNET,
-          ticker: CURRENCY_SYMBOLS.ETH,
-          rpcUrl: 'https://mainnet.infura.io/v3/',
-        },
-      },
+      ...mockNetworkState({
+        chainId: CHAIN_IDS.MAINNET,
+        ticker: CURRENCY_SYMBOLS.ETH,
+        rpcUrl: 'https://mainnet.infura.io/v3/',
+        blockExplorerUrl: 'https://etherscan.io',
+      }),
       tokens: [
         {
           erc20: true,

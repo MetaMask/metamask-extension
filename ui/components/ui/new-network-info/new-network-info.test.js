@@ -41,7 +41,7 @@ describe('NewNetworkInfo', () => {
   describe('fetch token successfully', () => {
     const state = {
       metamask: {
-        ...mockNetworkState(CHAIN_IDS.MAINNET),
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         useExternalServices: true,
         useTokenDetection: false,
         currencyRates: {},
@@ -128,7 +128,7 @@ describe('NewNetworkInfo', () => {
     describe('add token link', () => {
       const newState = {
         metamask: {
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
           useExternalServices: true,
           useTokenDetection: true,

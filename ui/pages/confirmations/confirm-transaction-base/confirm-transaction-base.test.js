@@ -3,8 +3,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent } from '@testing-library/react';
 
-import { NetworkType } from '@metamask/controller-utils';
-import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType } from '@metamask/keyring-api';
 import {
   TransactionStatus,
@@ -108,19 +106,9 @@ const baseStore = {
         accounts: ['0x0'],
       },
     ],
-    selectedNetworkClientId: NetworkType.goerli,
-    networkConfigurations: {
-      goerli: { id: 'goerli', chainId: CHAIN_IDS.GOERLI },
-    },
-    networksMetadata: {
-      goerli: { EIPS: {} },
-      optimism: { EIPS: {} },
-      sepolia: { EIPS: {} },
-      [NetworkType.mainnet]: {
-        EIPS: {},
-        status: NetworkStatus.Available,
-      },
-    },
+    ...mockNetworkState({
+      chainId: CHAIN_IDS.GOERLI,
+    }),
     tokens: [],
     preferences: {
       useNativeCurrencyAsPrimaryCurrency: false,
@@ -284,7 +272,15 @@ const render = async ({ props, state } = {}) => {
 
 describe('Confirm Transaction Base', () => {
   it('should match snapshot', async () => {
-    const { container } = await render();
+    const state = {
+      ...baseStore,
+      metamask: {
+        ...baseStore.metamask,
+        ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI, ticker: undefined }),
+      },
+    };
+
+    const { container } = await render({ state });
     expect(container).toMatchSnapshot();
   });
 
@@ -355,7 +351,7 @@ describe('Confirm Transaction Base', () => {
     const state = {
       metamask: {
         ...baseStore.metamask,
-        ...mockNetworkState(CHAIN_IDS.OPTIMISM),
+        ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
       },
 
       confirmTransaction: {
@@ -424,16 +420,10 @@ describe('Confirm Transaction Base', () => {
           },
         },
         gasEstimateType: GasEstimateTypes.feeMarket,
-        selectedNetworkClientId: NetworkType.goerli,
-        networksMetadata: {
-          ...baseStore.metamask.networksMetadata,
-          [NetworkType.goerli]: {
-            EIPS: {
-              1559: true,
-            },
-            status: NetworkStatus.Available,
-          },
-        },
+        ...mockNetworkState({
+          chainId: CHAIN_IDS.GOERLI,
+          metadata: { EIPS: { 1559: true } },
+        }),
         customGas: {
           gasLimit: '0x5208',
           gasPrice: '0x59682f00',
@@ -534,15 +524,10 @@ describe('Confirm Transaction Base', () => {
           },
         },
         gasEstimateType: GasEstimateTypes.feeMarket,
-        networksMetadata: {
-          ...baseStore.metamask.networksMetadata,
-          [NetworkType.goerli]: {
-            EIPS: {
-              1559: true,
-            },
-            status: NetworkStatus.Available,
-          },
-        },
+        ...mockNetworkState({
+          chainId: CHAIN_IDS.GOERLI,
+          metadata: { EIPS: { 1559: true } },
+        }),
         customGas: {
           gasLimit: '0x5208',
           gasPrice: '0x59682f00',
@@ -672,15 +657,10 @@ describe('Confirm Transaction Base', () => {
           },
         },
         gasEstimateType: GasEstimateTypes.feeMarket,
-        networksMetadata: {
-          ...baseStore.metamask.networksMetadata,
-          [NetworkType.goerli]: {
-            EIPS: {
-              1559: true,
-            },
-            status: NetworkStatus.Available,
-          },
-        },
+        ...mockNetworkState({
+          chainId: CHAIN_IDS.GOERLI,
+          metadata: { EIPS: { 1559: true } },
+        }),
         customGas: {
           gasLimit: '0x5208',
           gasPrice: '0x59682f00',
@@ -1012,7 +992,7 @@ describe('Confirm Transaction Base', () => {
               txParams,
             },
           ],
-          ...mockNetworkState(CHAIN_IDS.SEPOLIA),
+          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
         },
         confirmTransaction: {
           ...baseStore.confirmTransaction,

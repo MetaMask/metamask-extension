@@ -1,6 +1,10 @@
 import { EthAccountType } from '@metamask/keyring-api';
-import { createMockInternalAccount } from '../../test/jest/mocks';
+import {
+  createMockInternalAccount,
+  mockNetworkState,
+} from '../../test/jest/mocks';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import {
   getConnectedSubjectsForSelectedAddress,
   getLastConnectedInfo,
@@ -202,6 +206,7 @@ describe('selectors', () => {
         url: 'https://remix.ethereum.org/',
       },
       metamask: {
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         accounts: {
           '0x7250739de134d33ec7ab1ee592711e15098c9d2d': {
             address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',

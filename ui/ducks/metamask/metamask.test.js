@@ -1,4 +1,3 @@
-import { NetworkType } from '@metamask/controller-utils';
 import { EthAccountType } from '@metamask/keyring-api';
 import {
   GasFeeEstimateType,
@@ -127,7 +126,7 @@ describe('MetaMask Reducers', () => {
             conversionRate: 1200.88200327,
           },
         },
-        ...mockNetworkState(CHAIN_IDS.GOERLI),
+        ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
         accounts: {
           '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
             code: '0x',
@@ -475,15 +474,10 @@ describe('MetaMask Reducers', () => {
           ...mockState,
           metamask: {
             ...mockState.metamask,
-            selectedNetworkClientId: NetworkType.mainnet,
-            networksMetadata: {
-              [NetworkType.mainnet]: {
-                EIPS: {
-                  1559: false,
-                },
-                status: 'available',
-              },
-            },
+            ...mockNetworkState({
+              chainId: CHAIN_IDS.MAINNET,
+              metadata: { EIPS: { 1559: false } },
+            }),
           },
         }),
       ).toStrictEqual(true);
@@ -497,13 +491,10 @@ describe('MetaMask Reducers', () => {
           ...mockState,
           metamask: {
             ...mockState.metamask,
-            selectedNetworkClientId: NetworkType.mainnet,
-            networksMetadata: {
-              [NetworkType.mainnet]: {
-                EIPS: { 1559: true },
-                status: 'available',
-              },
-            },
+            ...mockNetworkState({
+              chainId: CHAIN_IDS.MAINNET,
+              metadata: { EIPS: { 1559: true } },
+            }),
           },
         }),
       ).toStrictEqual(false);

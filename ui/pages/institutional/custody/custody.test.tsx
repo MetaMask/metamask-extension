@@ -57,7 +57,7 @@ const MockedFuse = Fuse as unknown as MockedFuseType;
 describe('CustodyPage', function () {
   const mockStore = {
     metamask: {
-      ...mockNetworkState(CHAIN_IDS.MAINNET),
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       institutionalFeatures: {
         connectRequests: [],
       },

@@ -11,7 +11,7 @@ const store = configureStore({
   ...testData,
   metamask: {
     ...testData.metamask,
-    ...mockNetworkState(CHAIN_IDS.SEPOLIA),
+    ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
   },
 });
 

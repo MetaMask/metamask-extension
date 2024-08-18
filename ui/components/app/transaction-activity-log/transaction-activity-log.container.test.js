@@ -1,4 +1,5 @@
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/jest/mocks';
 
 /* eslint-disable import/unambiguous */
 let mapStateToProps;
@@ -22,17 +23,17 @@ describe('TransactionActivityLog container', () => {
               conversionRate: 280.45,
             },
           },
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: { chainId: CHAIN_IDS.MAINNET, ticker: 'ETH' },
-          },
+
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
       };
 
       expect(mapStateToProps(mockState)).toStrictEqual({
         conversionRate: 280.45,
         nativeCurrency: 'ETH',
-        rpcPrefs: {},
+        rpcPrefs: {
+          blockExplorerUrl: 'https://localhost/blockExplorer/0x1',
+        },
       });
     });
 
@@ -44,18 +45,11 @@ describe('TransactionActivityLog container', () => {
               conversionRate: 280.45,
             },
           },
-
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: {
-              chainId: CHAIN_IDS.MAINNET,
-              ticker: 'ETH',
-              rpcUrl: 'https://customnetwork.com/',
-              rpcPrefs: {
-                blockExplorerUrl: 'https://customblockexplorer.com/',
-              },
-            },
-          },
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.MAINNET,
+            rpcUrl: 'https://customnetwork.com/',
+            blockExplorerUrl: 'https://customblockexplorer.com/',
+          }),
         },
       };
 

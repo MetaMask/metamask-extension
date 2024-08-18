@@ -15,7 +15,7 @@ describe('Wrong Network Notification', function () {
     ...testData,
     metamask: {
       ...testData.metamask,
-      ...mockNetworkState(toHex(3)),
+      ...mockNetworkState({ chainId: toHex(3) }),
       accountsByChainId: {
         [toHex(1)]: {
           '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': { balance: '0x0' },

@@ -38,7 +38,7 @@ const HIGH_GAS_OPTION = {
 const render = async (componentProps) => {
   const mockStore = {
     metamask: {
-      ...mockNetworkState(CHAIN_IDS.MAINNET),
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       accountsByChainId: {
         '0x1': {
           '0xAddress': {

@@ -7,6 +7,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { AvatarNetwork } from '../../../../components/component-library/avatar-network';
+import { mockNetworkState } from '../../../../../test/jest/mocks';
 import { AssetPill } from './asset-pill';
 import { NATIVE_ASSET_IDENTIFIER, TokenAssetIdentifier } from './types';
 
@@ -55,10 +56,7 @@ describe('AssetPill', () => {
       }) => {
         const store = configureStore({
           metamask: {
-            selectedNetworkClientId: 'networkClientId',
-            networkConfigurations: {
-              networkClientId: { chainId, ticker: expected.ticker },
-            },
+            ...mockNetworkState({ chainId }),
           },
         });
 

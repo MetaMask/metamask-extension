@@ -11,7 +11,7 @@ const mockedMetametricsId = '0xtestMetaMetricsId';
 
 let mockStoreState = {
   metamask: {
-    ...mockNetworkState(CHAIN_IDS.MAINNET),
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     metaMetricsId: mockedMetametricsId,
   },
 };
@@ -86,7 +86,7 @@ describe('useRamps', () => {
         ...mockStoreState,
         metamask: {
           ...mockStoreState.metamask,
-          ...mockNetworkState(mockChainId),
+          ...mockNetworkState({ chainId: mockChainId }),
         },
       };
 

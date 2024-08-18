@@ -65,7 +65,7 @@ function getEvmState(): TestState {
       preferences: {
         showFiatInTestnets: false,
       },
-      ...mockNetworkState(CHAIN_IDS.MAINNET),
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
       currentCurrency: 'ETH',
       currencyRates: {
@@ -181,23 +181,17 @@ describe('Multichain Selectors', () => {
     it('returns rpcUrl as its nickname if its not defined', () => {
       const mockNetworkRpc = 'https://mock-rpc.com';
       const mockNetwork = {
-        id: 'mock-network',
-        type: 'rpc',
         ticker: 'MOCK',
         chainId: '0x123123123',
         rpcUrl: mockNetworkRpc,
         // `nickname` is undefined here
-      };
+      } as const;
 
       const state = {
         ...getEvmState(),
         metamask: {
           ...getEvmState().metamask,
-          selectedNetworkClientId: mockNetwork.id,
-          providerConfig: mockNetwork,
-          networkConfigurations: {
-            [mockNetwork.id]: mockNetwork,
-          },
+          ...mockNetworkState(mockNetwork),
         },
       };
 

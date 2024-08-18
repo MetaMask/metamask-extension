@@ -41,9 +41,9 @@ exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
             class="confirm-page-container-navigation__navtext"
           >
             0
-             
+
             of
-             
+
             0
           </div>
           <div
@@ -88,7 +88,7 @@ exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
           class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-muted"
         >
           1
-           
+
           of
            2
         </h6>
@@ -154,7 +154,7 @@ exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
             <span
               class="icon-with-fallback__fallback"
             >
-              E
+              M
             </span>
           </div>
         </div>
@@ -165,7 +165,7 @@ exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
             class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
             data-testid="signature-request-network-display"
           >
-            Ethereum Mainnet
+            mainnet
           </h6>
           <h6
             class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
@@ -187,12 +187,12 @@ exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
           class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
         >
           10
-           
+
           TST
         </h6>
       </div>
     </div>
-    
+
     <div
       class="box box--display-flex box--flex-direction-row box--justify-content-center"
     >
@@ -223,8 +223,8 @@ exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
         class="mm-box mm-text mm-text--heading-md mm-box--color-text-default"
       >
         <span>
-           
-          Spending cap request for your 
+
+          Spending cap request for your
           <div
             class="box box--margin-top-4 box--flex-direction-row"
           >
@@ -322,8 +322,8 @@ exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
               </div>
             </div>
           </div>
-          
-           
+
+
         </span>
       </h3>
     </div>
@@ -408,17 +408,17 @@ exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
           class="mm-box mm-text mm-help-text mm-text--body-sm mm-box--color-text-default"
         >
           <span>
-             
-            This allows the third party to spend 
+
+            This allows the third party to spend
             <span
               class="mm-box mm-text mm-text--body-sm-bold mm-box--color-text-default"
             >
               1
-               
+
               TST
             </span>
              from your current balance.
-             
+
           </span>
         </div>
         <a

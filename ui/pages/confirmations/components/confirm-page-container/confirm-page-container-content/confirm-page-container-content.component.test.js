@@ -17,7 +17,7 @@ import ConfirmPageContainerContent from './confirm-page-container-content.compon
 describe('Confirm Page Container Content', () => {
   const mockStore = {
     metamask: {
-      ...mockNetworkState(CHAIN_IDS.GOERLI),
+      ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
       addressBook: {
         '0x5': {
           '0x06195827297c7A80a443b6894d3BDB8824b43896': {

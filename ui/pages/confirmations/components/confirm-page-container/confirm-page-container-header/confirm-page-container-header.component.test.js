@@ -15,7 +15,7 @@ jest.mock('../../../../../../app/scripts/lib/util', () => ({
 describe('Confirm Detail Row Component', () => {
   const mockState = {
     metamask: {
-      ...mockNetworkState(CHAIN_IDS.GOERLI),
+      ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
     },
   };
 

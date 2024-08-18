@@ -11,6 +11,8 @@ import { ORIGIN_METAMASK } from '../../shared/constants/app';
 import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametrics';
 import { TRIGGER_TYPES } from '../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../test/jest/mocks';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -24,6 +26,7 @@ const defaultState = {
         balance: '0x0',
       },
     },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -243,6 +246,7 @@ describe('Actions', () => {
 
       background.getState.callsFake((cb) =>
         cb(null, {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           currentLocale: 'test',
           accounts: {
             '0xAnotherAddress': {
@@ -1956,6 +1960,7 @@ describe('Actions', () => {
         }),
         getState: sinon.stub().callsFake((cb) =>
           cb(null, {
+            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
             currentLocale: 'test',
             accounts: {
               '0xFirstAddress': {

@@ -65,7 +65,7 @@ const createMiddleware = (
   }
 
   const networkController = {
-    state: mockNetworkState(chainId || CHAIN_IDS.MAINNET),
+    state: mockNetworkState({ chainId: chainId || CHAIN_IDS.MAINNET }),
   };
 
   const appStateController = {

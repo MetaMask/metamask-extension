@@ -38,7 +38,7 @@ describe('Signature Request Data', () => {
             unlisted: false,
           },
         },
-        ...mockNetworkState(CHAIN_IDS.GOERLI),
+        ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
         internalAccounts: {
           accounts: {
             'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {

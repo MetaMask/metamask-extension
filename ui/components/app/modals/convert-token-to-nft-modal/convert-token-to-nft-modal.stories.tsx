@@ -51,19 +51,7 @@ const storeMock = configureStore({
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
-    ...mockNetworkState(CHAIN_IDS.MAINNET),
-    networksMetadata: {
-      mainnet: {
-        EIPS: {
-          1559: false,
-        },
-        status: 'Available',
-      },
-    },
-    providerConfig: {
-      chainId: '1',
-      ticker: 'ETH',
-    },
+    ...mockNetworkState({chainId:CHAIN_IDS.MAINNET}),
     preferences: {
       useCurrencyRateCheck: true,
       currentCurrency: 'ETH',

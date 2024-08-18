@@ -12,7 +12,7 @@ import useAddressDetails from './useAddressDetails';
 const renderUseAddressDetails = (toAddress, stateVariables = {}) => {
   const mockState = {
     metamask: {
-      ...mockNetworkState(CHAIN_IDS.GOERLI),
+      ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
 
       tokenList: {},
       internalAccounts: {

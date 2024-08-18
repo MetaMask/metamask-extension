@@ -12,7 +12,7 @@ describe('useConfirmationNetworkInfo', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
         confirm: {
           currentConfirmation: { id: '1', chainId: '0x1' },
@@ -31,16 +31,11 @@ describe('useConfirmationNetworkInfo', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurations: {
-            networkClientId: {
-              id: 'networkClientId',
-              chainId: '0x7',
-              rpcUrl: 'https://testrpc.com',
-              nickname: 'Custom Mainnet RPC',
-            },
-          },
+          ...mockNetworkState({
+            chainId: '0x7',
+            rpcUrl: 'https://testrpc.com',
+            nickname: 'Custom Mainnet RPC',
+          }),
         },
         confirm: {
           currentConfirmation: { id: '1', msgParams: {} },
@@ -54,12 +49,8 @@ describe('useConfirmationNetworkInfo', () => {
   it('returns correct details about custom network whose chainId is same as a network pre-defined in extension', () => {
     const customNetwork = {
       chainId: '0x1',
-      id: '2f9ae569-1d3e-492b-8741-cb10c2434f91',
       nickname: 'Flashbots Protect',
-      rpcPrefs: { imageUrl: './images/eth_logo.svg' },
       rpcUrl: 'https://rpc.flashbots.net',
-      ticker: 'ETH',
-      removable: true,
     };
     const { result } = renderHookWithProvider(
       () => useConfirmationNetworkInfo(),
@@ -67,11 +58,7 @@ describe('useConfirmationNetworkInfo', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          selectedNetworkClientId: customNetwork.id,
-          networkConfigurations: {
-            ...mockState.metamask.networkConfigurations,
-            [customNetwork.id]: customNetwork,
-          },
+          ...mockNetworkState(customNetwork),
         },
         confirm: {
           currentConfirmation: { id: '1', chainId: '0x1' },

@@ -10,7 +10,7 @@ import { TokenListItem } from '.';
 
 const state = {
   metamask: {
-    ...mockNetworkState(CHAIN_IDS.MAINNET),
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     useTokenDetection: false,
     currencyRates: {},
     preferences: {

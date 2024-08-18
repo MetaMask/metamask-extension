@@ -69,7 +69,7 @@ describe('NFT Selectors', () => {
 
       const state = {
         metamask: {
-          ...mockNetworkState(chainIdMock1),
+          ...mockNetworkState({ chainId: chainIdMock1 }),
           allNftContracts: {
             [userAccountMock1]: {
               [chainIdMock1]: [contractMock1, contractMock2],

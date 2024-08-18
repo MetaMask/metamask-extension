@@ -50,7 +50,7 @@ describe('Confirm Transaction Selector', () => {
             '0xTokenAddress': { price: '10' },
           },
         },
-        ...mockNetworkState(CHAIN_IDS.GOERLI),
+        ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
       },
       confirmTransaction: {
         txData: {
@@ -75,7 +75,7 @@ describe('Confirm Transaction Selector', () => {
               conversionRate: 556.12,
             },
           },
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
       };
       expect(conversionRateSelector(state)).toStrictEqual(556.12);

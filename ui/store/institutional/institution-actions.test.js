@@ -16,7 +16,7 @@ const middleware = [thunk];
 const defaultState = {
   metamask: {
     currentLocale: 'test',
-    ...mockNetworkState(CHAIN_IDS.MAINNET),
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
     accounts: {
       '0xFirstAddress': {
@@ -198,7 +198,7 @@ describe('#updateCustodyState', () => {
     setBackgroundConnection(background.getApi());
 
     const newState = {
-      ...mockNetworkState(CHAIN_IDS.MAINNET),
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
       featureFlags: {},
     };
@@ -219,7 +219,7 @@ describe('#updateCustodyState', () => {
     setBackgroundConnection(background.getApi());
 
     const newState = {
-      ...mockNetworkState(CHAIN_IDS.MAINNET),
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
       featureFlags: {},
       transactions: [
@@ -271,7 +271,7 @@ describe('#updateCustodyState', () => {
     setBackgroundConnection(background.getApi());
 
     const newState = {
-      ...mockNetworkState(CHAIN_IDS.MAINNET),
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
       featureFlags: {},
       transactions: [

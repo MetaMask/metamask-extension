@@ -208,7 +208,7 @@ describe('AccountListItem', () => {
           },
           {
             metamask: {
-              ...mockNetworkState(CHAIN_IDS.SEPOLIA),
+              ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
               preferences: {
                 showFiatInTestnets: false,
               },
@@ -244,14 +244,11 @@ describe('AccountListItem', () => {
           },
           {
             metamask: {
-              selectedNetworkClientId: 'networkClientId',
-              networkConfigurations: {
-                networkClientId: {
-                  chainId: CHAIN_IDS.SEPOLIA,
-                  nickname: SEPOLIA_DISPLAY_NAME,
-                  ticker: 'ETH',
-                },
-              },
+              ...mockNetworkState({
+                chainId: CHAIN_IDS.SEPOLIA,
+                nickname: SEPOLIA_DISPLAY_NAME,
+                ticker: 'ETH',
+              }),
               preferences: {
                 showFiatInTestnets: true,
               },

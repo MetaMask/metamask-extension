@@ -3,11 +3,11 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor } from '@testing-library/react';
 
-import { NetworkStatus } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 import Confirmation from '../confirmation';
+import { mockNetworkState } from '../../../../../test/jest/mocks';
 
 jest.mock('../../../../../shared/lib/fetch-with-cache');
 
@@ -44,19 +44,10 @@ const mockBaseStore = {
     },
     approvalFlows: [],
     subjectMetadata: {},
-    selectedNetworkClientId: 'test-network-client-id',
-    networkConfigurations: {
-      'test-network-client-id': {
-        chainId: '0x9999',
-        nickname: 'Test initial state',
-      },
-    },
-    networksMetadata: {
-      'test-network-client-id': {
-        EIPS: {},
-        status: NetworkStatus.Available,
-      },
-    },
+    ...mockNetworkState({
+      chainId: '0x9999',
+      nickname: 'Test initial state',
+    }),
     snaps: {},
   },
 };

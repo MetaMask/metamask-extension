@@ -9,7 +9,7 @@ import CancelTransactionGasFee from './cancel-transaction-gas-fee.component';
 describe('CancelTransactionGasFee Component', () => {
   const defaultState = {
     metamask: {
-      ...mockNetworkState(CHAIN_IDS.MAINNET),
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       currencyRates: {},
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: false,

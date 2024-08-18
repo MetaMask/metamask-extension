@@ -4,6 +4,7 @@ import { EthAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/jest/mocks';
 import ConfTx from '.';
 
 const mockState = {
@@ -26,11 +27,11 @@ const mockState = {
       },
     },
     unapprovedTypedMessagesCount: 1,
-    selectedNetworkClientId: 'goerli',
-    networkConfigurations: {
-      goerli: { chainId: CHAIN_IDS.GOERLI, nickname: 'Goerli test network' },
-    },
-
+    ...mockNetworkState({
+      chainId: CHAIN_IDS.GOERLI,
+      nickname: 'Goerli test network',
+      ticker: undefined,
+    }),
     currencyRates: {},
     keyrings: [],
     subjectMetadata: {},

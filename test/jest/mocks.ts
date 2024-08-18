@@ -9,7 +9,7 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import { v4 as uuidv4 } from 'uuid';
 import { keyringTypeToName } from '@metamask/accounts-controller';
 import {
-  NetworksMetadata,
+  NetworkMetadata,
   NetworkState,
   NetworkStatus,
 } from '@metamask/network-controller';
@@ -253,41 +253,61 @@ export const getSelectedInternalAccountFromMockState = (
 };
 
 export const mockNetworkState = (
-  selectedChainId: Hex,
-  ...otherChainIDs: Hex[]
+  ...networks: {
+    id?: string;
+    type?: string;
+    chainId: Hex;
+    rpcUrl?: string;
+    nickname?: string;
+    ticker?: string;
+    blockExplorerUrl?: string;
+    metadata?: NetworkMetadata;
+  }[]
 ): NetworkState => {
-  const chainIds = [selectedChainId, ...otherChainIDs];
-  const networkClientId = (chainId: Hex) => `network-client-id-${chainId}`;
-
-  const networkConfigurations = chainIds.reduce((acc, chainId) => {
-    const id = networkClientId(chainId);
-    acc[id] = {
-      id,
-      chainId,
-      rpcUrl: `https://localhost/rpc/${chainId}`,
-      nickname: (NETWORK_TO_NAME_MAP as Record<Hex, string>)[chainId],
-      ticker: (CHAIN_ID_TO_CURRENCY_SYMBOL_MAP as Record<Hex, string>)[chainId],
+  const networkConfigurations = networks.map((network) => ({
+    id: network.id ?? uuidv4(),
+    chainId: network.chainId,
+    rpcUrl:
+      'rpcUrl' in network
+        ? network.rpcUrl
+        : `https://localhost/rpc/${network.chainId}`,
+    // type: 'type' in network ? network.type : 'rpc',
+    nickname:
+      'nickname' in network
+        ? network.nickname
+        : (NETWORK_TO_NAME_MAP as Record<Hex, string>)[network.chainId],
+    ticker:
+      'ticker' in network
+        ? network.ticker
+        : (CHAIN_ID_TO_CURRENCY_SYMBOL_MAP as Record<Hex, string>)[
+            network.chainId
+          ],
+    ...((!('blockExplorerUrl' in network) || network.blockExplorerUrl) && {
       rpcPrefs: {
-        blockExplorerUrl: `https://localhost/blockExplorer/${chainId}`,
+        blockExplorerUrl:
+          network.blockExplorerUrl ??
+          `https://localhost/blockExplorer/${network.chainId}`,
       },
-    };
-    return acc;
-  }, {} as NetworkState['networkConfigurations']);
+    }),
+  }));
 
-  const networksMetadata = chainIds.reduce(
-    (acc, chainId) => ({
+  const networksMetadata = networks.reduce(
+    (acc, network, i) => ({
       ...acc,
-      [networkClientId(chainId)]: {
+      [networkConfigurations[i].id]: network.metadata ?? {
         EIPS: {},
         status: NetworkStatus.Available,
       },
     }),
-    {} as NetworksMetadata,
+    {},
   );
 
   return {
-    selectedNetworkClientId: networkClientId(selectedChainId),
-    networkConfigurations,
+    selectedNetworkClientId: networkConfigurations[0].id,
+    networkConfigurations: networkConfigurations.reduce(
+      (acc, network) => ({ ...acc, [network.id]: network }),
+      {},
+    ),
     networksMetadata,
   };
 };

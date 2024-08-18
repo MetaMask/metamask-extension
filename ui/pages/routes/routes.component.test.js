@@ -120,7 +120,7 @@ describe('Routes Component', () => {
           pendingApprovals: {},
           approvalFlows: [],
           announcements: {},
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           newPrivacyPolicyToastShownDate: new Date('0'),
         },
         send: {

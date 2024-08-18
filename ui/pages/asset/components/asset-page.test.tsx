@@ -42,7 +42,7 @@ describe('AssetPage', () => {
       tokenList: {},
       currentCurrency: 'usd',
       accounts: {},
-      ...mockNetworkState(CHAIN_IDS.MAINNET),
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       currencyRates: {
         ETH: {
           conversionRate: 123,
@@ -190,7 +190,7 @@ describe('AssetPage', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          ...mockNetworkState(CHAIN_IDS.SEPOLIA),
+          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
         },
       }),
     );
@@ -204,7 +204,7 @@ describe('AssetPage', () => {
       ...mockStore,
       metamask: {
         ...mockStore.metamask,
-        ...mockNetworkState(CHAIN_IDS.POLYGON),
+        ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
       },
     };
     const mockedStore = configureMockStore([thunk])(
@@ -255,7 +255,7 @@ describe('AssetPage', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          ...mockNetworkState(CHAIN_IDS.SEPOLIA),
+          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
         },
       }),
     );

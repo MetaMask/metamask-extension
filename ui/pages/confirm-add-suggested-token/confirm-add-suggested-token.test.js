@@ -71,7 +71,7 @@ const renderComponent = (tokens = []) => {
     metamask: {
       pendingApprovals: PENDING_APPROVALS,
       tokens,
-      ...mockNetworkState(CHAIN_IDS.MAINNET),
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
       internalAccounts: {
         accounts: {

@@ -230,7 +230,7 @@ const state = {
         symbol: 'UMA',
       },
     },
-    ...mockNetworkState(CHAIN_IDS.MAINNET),
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     currencyRates: {},
     preferences: {
       showFiatInTestnets: true,

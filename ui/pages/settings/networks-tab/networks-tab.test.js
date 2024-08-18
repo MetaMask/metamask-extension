@@ -7,7 +7,7 @@ import NetworksTab from '.';
 
 const mockState = {
   metamask: {
-    ...mockNetworkState(CHAIN_IDS.LOCALHOST),
+    ...mockNetworkState({ chainId: CHAIN_IDS.LOCALHOST }),
     orderedNetworkList: {},
   },
   appState: {

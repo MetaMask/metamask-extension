@@ -34,7 +34,7 @@ describe('EthOverview', () => {
 
   const mockStore = {
     metamask: {
-      ...mockNetworkState(CHAIN_IDS.MAINNET),
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
           '0x1': { address: '0x1', balance: '0x1F4' },
@@ -188,7 +188,7 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          ...mockNetworkState('0xa86a'),
+          ...mockNetworkState({ chainId: '0xa86a' }),
         },
       };
       const mockedStore = configureMockStore([thunk])(mockedAvalancheStore);
@@ -275,7 +275,7 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          ...mockNetworkState(CHAIN_IDS.SEPOLIA),
+          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
         },
       };
       const mockedStore = configureMockStore([thunk])(mockedFantomStore);
@@ -328,7 +328,7 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          ...mockNetworkState(CHAIN_IDS.GOERLI),
+          ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -349,7 +349,7 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          ...mockNetworkState(CHAIN_IDS.POLYGON),
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -370,7 +370,7 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          ...mockNetworkState(CHAIN_IDS.POLYGON),
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
         },
       };
       const mockedStore = configureMockStore([thunk])(

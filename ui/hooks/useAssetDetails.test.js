@@ -18,7 +18,7 @@ const renderUseAssetDetails = ({
 }) => {
   const mockState = {
     metamask: {
-      ...mockNetworkState(CHAIN_IDS.GOERLI),
+      ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
       tokenList: {},
       tokens: [],
       internalAccounts: {

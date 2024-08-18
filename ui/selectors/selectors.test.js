@@ -1,5 +1,5 @@
 import { deepClone } from '@metamask/snaps-utils';
-import { ApprovalType, NetworkType } from '@metamask/controller-utils';
+import { ApprovalType } from '@metamask/controller-utils';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import mockState from '../../test/data/mock-state.json';
@@ -376,7 +376,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          ...mockNetworkState(CHAIN_IDS.SEPOLIA),
+          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
           queuedRequestCount: 1,
         },
       });
@@ -592,25 +592,14 @@ describe('Selectors', () => {
 
   // todo
   describe('#getRpcPrefsForCurrentProvider', () => {
-    it('returns an empty object if state.metamask.providerConfig is empty', () => {
-      expect(
-        selectors.getRpcPrefsForCurrentProvider({
-          metamask: {},
-        }),
-      ).toStrictEqual({});
-    });
-
     it('returns rpcPrefs from the providerConfig', () => {
       expect(
         selectors.getRpcPrefsForCurrentProvider({
           metamask: {
-            selectedNetworkClientId: 'networkClientId',
-            networkConfigurations: {
-              networkClientId: {
-                chainId: '0x1',
-                rpcPrefs: { blockExplorerUrl: 'https://test-block-explorer' },
-              },
-            },
+            ...mockNetworkState({
+              chainId: '0x1',
+              blockExplorerUrl: 'https://test-block-explorer',
+            }),
           },
         }),
       ).toStrictEqual({ blockExplorerUrl: 'https://test-block-explorer' });
@@ -674,9 +663,7 @@ describe('Selectors', () => {
   describe('#getNonTestNetworks', () => {
     it('returns nonTestNetworks', () => {
       const nonTestNetworks = selectors.getNonTestNetworks({
-        metamask: {
-          networkConfigurations: {},
-        },
+        metamask: {},
       });
 
       // Assert that the `nonTestNetworks` array returned by the selector matches a specific structure.
@@ -710,12 +697,10 @@ describe('Selectors', () => {
           preferences: {
             showTestNetworks: true,
           },
-          networkConfigurations: {
-            'some-config-name': {
-              chainId: CHAIN_IDS.LOCALHOST,
-              nickname: LOCALHOST_DISPLAY_NAME,
-            },
-          },
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.LOCALHOST,
+            nickname: LOCALHOST_DISPLAY_NAME,
+          }),
         },
       });
       const lastItem = networks.pop();
@@ -728,13 +713,11 @@ describe('Selectors', () => {
           preferences: {
             showTestNetworks: true,
           },
-          networkConfigurations: {
-            'some-config-name': {
-              chainId: CHAIN_IDS.LOCALHOST,
-              nickname: LOCALHOST_DISPLAY_NAME,
-              id: 'some-config-name',
-            },
-          },
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.LOCALHOST,
+            nickname: LOCALHOST_DISPLAY_NAME,
+            id: 'some-config-name',
+          }),
         },
       });
 
@@ -755,13 +738,10 @@ describe('Selectors', () => {
           preferences: {
             showTestNetworks: true,
           },
-          networkConfigurations: {
-            'some-config-name': {
-              chainId: CHAIN_IDS.OPTIMISM,
-              nickname: OPTIMISM_DISPLAY_NAME,
-              id: 'some-config-name',
-            },
-          },
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.OPTIMISM,
+            nickname: OPTIMISM_DISPLAY_NAME,
+          }),
         },
       });
 
@@ -802,16 +782,13 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          selectedNetworkClientId: mockNetworkConfigurationId,
-          networkConfigurations: {
-            ...mockState.networkConfigurations,
-            [mockNetworkConfigurationId]: {
-              rpcUrl: 'https://mock-rpc-endpoint.test',
-              chainId: '0x9999',
-              ticker: 'TST',
-              id: mockNetworkConfigurationId,
-            },
-          },
+          ...mockNetworkState({
+            rpcUrl: 'https://mock-rpc-endpoint.test',
+            chainId: '0x9999',
+            ticker: 'TST',
+            id: mockNetworkConfigurationId,
+            blockExplorerUrl: undefined,
+          }),
         },
       };
 
@@ -822,40 +799,11 @@ describe('Selectors', () => {
           "blockExplorerUrl": undefined,
           "chainId": "0x9999",
           "id": "mock-network-config-id",
+          "nickname": undefined,
           "removable": true,
           "rpcPrefs": {
             "imageUrl": undefined,
           },
-          "rpcUrl": "https://mock-rpc-endpoint.test",
-          "ticker": "TST",
-        }
-      `);
-    });
-
-    it('returns custom network configuration that is missing from networkConfigurations state', () => {
-      const mockNetworkConfigurationId = 'mock-network-config-id';
-      const modifiedMockState = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          selectedNetworkClientId: mockNetworkConfigurationId,
-          networkConfigurations: {
-            [mockNetworkConfigurationId]: {
-              rpcUrl: 'https://mock-rpc-endpoint.test',
-              chainId: '0x9999',
-              ticker: 'TST',
-            },
-          },
-        },
-      };
-
-      const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
-
-      expect(currentNetwork).toMatchInlineSnapshot(`
-        {
-          "chainId": "0x9999",
-          "nickname": undefined,
-          "rpcPrefs": undefined,
           "rpcUrl": "https://mock-rpc-endpoint.test",
           "ticker": "TST",
         }
@@ -883,7 +831,7 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
       };
       const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
@@ -1059,27 +1007,14 @@ describe('Selectors', () => {
     });
 
     it('returns true if network does not support EIP-1559', () => {
-      let not1559Network = selectors.checkNetworkOrAccountNotSupports1559({
+      const not1559Network = selectors.checkNetworkOrAccountNotSupports1559({
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          networksMetadata: {
-            [NetworkType.goerli]: {
-              EIPS: { 1559: false },
-            },
-          },
-        },
-      });
-      expect(not1559Network).toStrictEqual(true);
-      not1559Network = selectors.checkNetworkOrAccountNotSupports1559({
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          networksMetadata: {
-            [NetworkType.goerli]: {
-              EIPS: { 1559: false },
-            },
-          },
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.GOERLI,
+            metadata: { EIPS: { 1559: false } },
+          }),
         },
       });
       expect(not1559Network).toStrictEqual(true);
@@ -1302,14 +1237,14 @@ describe('Selectors', () => {
   it('#getIsBridgeChain', () => {
     const isOptimismSupported = selectors.getIsBridgeChain({
       metamask: {
-        ...mockNetworkState(CHAIN_IDS.OPTIMISM),
+        ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
       },
     });
     expect(isOptimismSupported).toBeTruthy();
 
     const isFantomSupported = selectors.getIsBridgeChain({
       metamask: {
-        ...mockNetworkState(CHAIN_IDS.FANTOM),
+        ...mockNetworkState({ chainId: CHAIN_IDS.FANTOM }),
       },
     });
     expect(isFantomSupported).toBeFalsy();
@@ -1337,12 +1272,10 @@ describe('Selectors', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        networksMetadata: {
-          ...mockState.metamask.networksMetadata,
-          goerli: {
-            status: 'blocked',
-          },
-        },
+        ...mockNetworkState({
+          chainId: CHAIN_IDS.GOERLI,
+          metadata: { status: 'blocked' },
+        }),
       },
     };
     isInfuraBlocked = selectors.getInfuraBlocked(modifiedMockState);

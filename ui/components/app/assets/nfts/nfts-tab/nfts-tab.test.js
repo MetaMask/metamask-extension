@@ -181,7 +181,7 @@ const render = ({
         [CHAIN_IDS.MAINNET]: {},
         [CHAIN_IDS.GOERLI]: {},
       },
-      ...mockNetworkState(chainId),
+      ...mockNetworkState({ chainId }),
       currencyRates: {},
       accounts: {
         [selectedAddress]: {

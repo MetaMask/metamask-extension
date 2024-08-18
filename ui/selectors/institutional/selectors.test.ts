@@ -251,7 +251,7 @@ describe('Institutional selectors', () => {
               supportedChains: ['1', '2', '3'],
             },
           },
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
       });
 
@@ -290,7 +290,7 @@ describe('Institutional selectors', () => {
               supportedChains: ['4'],
             },
           },
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
       });
 
@@ -332,7 +332,7 @@ describe('Institutional selectors', () => {
             },
             selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           },
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
       });
 
@@ -345,6 +345,7 @@ describe('Institutional selectors', () => {
       const accountAddress = '0x1';
       const state = buildState({
         metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           internalAccounts: {
             selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
             accounts: {
@@ -407,7 +408,7 @@ describe('Institutional selectors', () => {
           custodianSupportedChains: {
             [accountAddress]: null,
           },
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
       });
 
@@ -452,7 +453,7 @@ describe('Institutional selectors', () => {
               supportedChains: [],
             },
           },
-          ...mockNetworkState(CHAIN_IDS.MAINNET),
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
       });
 
@@ -497,7 +498,7 @@ describe('Institutional selectors', () => {
               supportedChains: ['1'],
             },
           },
-          ...mockNetworkState(1 as unknown as Hex),
+          ...mockNetworkState({ chainId: 1 as unknown as Hex }),
         },
       });
 
@@ -542,7 +543,7 @@ describe('Institutional selectors', () => {
               supportedChains: ['1'],
             },
           },
-          ...mockNetworkState('not a hex number' as Hex),
+          ...mockNetworkState({ chainId: 'not a hex number' as Hex }),
         },
       });
 

@@ -12,7 +12,7 @@ describe('AddContact component', () => {
   const middleware = [thunk];
   const state = {
     metamask: {
-      ...mockNetworkState(CHAIN_IDS.SEPOLIA),
+      ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
     },
   };
   const props = {

@@ -8,7 +8,7 @@ import NetworksListItem from '.';
 
 const mockState = {
   metamask: {
-    ...mockNetworkState(CHAIN_IDS.GOERLI),
+    ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
   },
 };
 
