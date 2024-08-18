@@ -59,8 +59,8 @@ describe('Selectors', () => {
         },
         ...mockNetworkState({
           id: 'network-configuration-id-1',
-            chainId: CHAIN_IDS.MAINNET,
-            rpcUrl: 'https://mainnet.infura.io/v3/',
+          chainId: CHAIN_IDS.MAINNET,
+          rpcUrl: 'https://mainnet.infura.io/v3/',
         }),
       },
     };
