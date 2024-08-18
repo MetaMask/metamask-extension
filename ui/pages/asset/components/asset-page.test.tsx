@@ -10,7 +10,7 @@ import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import { mockNetworkState } from '../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import AssetPage from './asset-page';
 
 // Mock the price chart

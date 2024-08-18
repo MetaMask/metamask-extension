@@ -4,7 +4,7 @@ import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
-import { mockNetworkState } from '../../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import ConfirmApproveContent from '.';
 

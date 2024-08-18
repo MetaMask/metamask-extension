@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { toHex } = require('@metamask/controller-utils');
+const { mockNetworkState } = require('../../../stub/networks');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   defaultGanacheOptions,
@@ -585,17 +586,14 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
-            .withNetworkController({
-              networkConfigurations: {
-                arbitrumNetworkConfiguration: {
-                  rpcUrl: networkURL,
-                  chainId: chainID,
-                  nickname: networkNAME,
-                  ticker: currencySYMBOL,
-                  rpcPrefs: {},
-                },
-              },
-            })
+            .withNetworkController(
+              mockNetworkState({
+                rpcUrl: networkURL,
+                chainId: chainID,
+                nickname: networkNAME,
+                ticker: currencySYMBOL,
+              }),
+            )
             .build(),
           ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),

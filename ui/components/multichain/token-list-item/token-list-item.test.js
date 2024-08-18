@@ -5,7 +5,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { mockNetworkState } from '../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { TokenListItem } from '.';
 
 const state = {

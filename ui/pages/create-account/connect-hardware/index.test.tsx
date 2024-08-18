@@ -7,7 +7,7 @@ import {
   LedgerTransportTypes,
   HardwareDeviceNames,
 } from '../../../../shared/constants/hardware-wallets';
-import { mockNetworkState } from '../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import ConnectHardwareForm from '.';
 

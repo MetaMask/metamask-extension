@@ -1,6 +1,6 @@
 import { createSwapsMockStore } from '../../../test/jest';
 import { CHAIN_IDS } from '../../constants/network';
-import { mockNetworkState } from '../../../test/jest/mocks';
+import { mockNetworkState } from '../../../test/stub/networks';
 import {
   getSmartTransactionsOptInStatus,
   getCurrentChainSupportsSmartTransactions,

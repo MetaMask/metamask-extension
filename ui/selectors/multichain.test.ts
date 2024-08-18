@@ -22,7 +22,7 @@ import {
   NETWORK_TYPES,
 } from '../../shared/constants/network';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
-import { mockNetworkState } from '../../test/jest/mocks';
+import { mockNetworkState } from '../../test/stub/networks';
 import { AccountsState } from './accounts';
 import {
   MultichainState,

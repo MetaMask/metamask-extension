@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import defaultMockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
-import { mockNetworkState } from '../../../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 import ConfirmDetailRow from '.';
 
 describe('Confirm Detail Row Component', () => {

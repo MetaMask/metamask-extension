@@ -13,7 +13,7 @@ import * as actions from '../../../../store/actions';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { KeyringType } from '../../../../../shared/constants/keyring';
 
-import { mockNetworkState } from '../../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import UnconnectedAccountAlert from '.';
 
 describe('Unconnected Account Alert', () => {

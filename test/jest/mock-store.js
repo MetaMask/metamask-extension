@@ -2,7 +2,7 @@ import { EthAccountType } from '@metamask/keyring-api';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
-import { mockNetworkState } from './mocks';
+import { mockNetworkState } from '../stub/networks';
 
 export const createGetSmartTransactionFeesApiResponse = () => {
   return {

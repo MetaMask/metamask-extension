@@ -6,7 +6,7 @@ import { renderWithProvider } from '../../../test/lib/render-helpers';
 import Identicon from '../../components/ui/identicon';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
-import { mockNetworkState } from '../../../test/jest/mocks';
+import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import TokenDetailsPage from './token-details-page';
 

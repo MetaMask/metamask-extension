@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { defaultNetworksData } from '../networks-tab.constants';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { mockNetworkState } from '../../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import NetworksList from '.';
 
 const mockState = {

@@ -4,7 +4,7 @@ import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,
 } from '../../../../shared/constants/first-party-contracts';
-import { mockNetworkState } from '../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import {
   createTxVerificationMiddleware,
   TxParams,

@@ -1,6 +1,6 @@
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockState from '../../../../test/data/mock-state.json';
-import { mockNetworkState } from '../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import useConfirmationNetworkInfo from './useConfirmationNetworkInfo';
 

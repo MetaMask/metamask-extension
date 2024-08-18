@@ -6,7 +6,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { SEND_STAGES } from '../../../ducks/send';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { mockNetworkState } from '../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { AppHeader } from '.';
 
 jest.mock('../../../../app/scripts/lib/util', () => ({

@@ -4,7 +4,7 @@ import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { mockNetworkState } from '../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { DetectedTokensBanner } from '.';
 
 describe('DetectedTokensBanner', () => {

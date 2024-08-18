@@ -18,7 +18,7 @@ import {
   setRemoveNftMessage,
 } from '../../../../../store/actions';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
-import { mockNetworkState } from '../../../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 import NftDetails from './nft-details';
 
 jest.mock('copy-to-clipboard');

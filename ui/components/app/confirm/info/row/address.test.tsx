@@ -4,7 +4,7 @@ import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import configureStore from '../../../../../store/store';
-import { mockNetworkState } from '../../../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 import { ConfirmInfoRowAddress } from './address';
 import { TEST_ADDRESS } from './constants';
 

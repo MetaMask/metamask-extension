@@ -3,7 +3,7 @@ import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametri
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
-import { mockNetworkState } from '../../../test/jest/mocks';
+import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import useBridging from './useBridging';
 

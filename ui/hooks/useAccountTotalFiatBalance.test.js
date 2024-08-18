@@ -8,9 +8,9 @@ import configureStore from '../store/store';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import {
   createMockInternalAccount,
-  mockNetworkState,
 } from '../../test/jest/mocks';
 import { useAccountTotalFiatBalance } from './useAccountTotalFiatBalance';
+import { mockNetworkState } from '../../test/stub/networks';
 
 const mockAccount = createMockInternalAccount({
   address: '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da',

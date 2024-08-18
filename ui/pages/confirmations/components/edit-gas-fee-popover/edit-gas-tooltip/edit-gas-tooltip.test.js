@@ -3,7 +3,7 @@ import { act } from '@testing-library/react';
 import configureStore from '../../../../../store/store';
 import { renderWithProvider } from '../../../../../../test/jest';
 import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
-import { mockNetworkState } from '../../../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import EditGasToolTip from './edit-gas-tooltip';
 

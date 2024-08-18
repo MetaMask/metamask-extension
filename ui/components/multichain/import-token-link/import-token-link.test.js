@@ -4,7 +4,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import { detectTokens } from '../../../store/actions';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { mockNetworkState } from '../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { ImportTokenLink } from '.';
 
 const mockPushHistory = jest.fn();

@@ -26,7 +26,7 @@ import {
   pendingApprovalsSortedSelector,
 } from '../../../../selectors';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
-import { mockNetworkState } from '../../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import SignatureRequest from './signature-request';
 
 const baseProps = {

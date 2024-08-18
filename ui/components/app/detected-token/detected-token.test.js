@@ -3,7 +3,7 @@ import { renderWithProvider, screen, fireEvent } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 
-import { mockNetworkState } from '../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import DetectedToken from './detected-token';
 

@@ -24,7 +24,7 @@ import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
 } from '../../store/actions';
-import { mockNetworkState } from '../../../test/jest/mocks';
+import { mockNetworkState } from '../../../test/stub/networks';
 import OnboardingFlow from './onboarding-flow';
 
 jest.mock('../../store/actions', () => ({

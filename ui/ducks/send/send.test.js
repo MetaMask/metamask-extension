@@ -31,9 +31,9 @@ import { BURN_ADDRESS } from '../../../shared/modules/hexstring-utils';
 import {
   getInitialSendStateWithExistingTxState,
   INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-  mockNetworkState,
 } from '../../../test/jest/mocks';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../test/stub/networks';
 import * as Utils from './swap-and-send-utils';
 import sendReducer, {
   initialState,

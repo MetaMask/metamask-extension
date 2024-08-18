@@ -11,10 +11,7 @@ import {
 import { act } from 'react-dom/test-utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import {
-  INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-  mockNetworkState,
-} from '../../../../test/jest/mocks';
+import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../test/jest/mocks';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -26,6 +23,7 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import ConfirmTransactionBase from './confirm-transaction-base.container';
 
 jest.mock('../components/simulation-details/useSimulationMetrics');

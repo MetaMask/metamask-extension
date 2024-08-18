@@ -8,9 +8,9 @@ import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalN
 import { getTokenSymbol } from '../../../../store/actions';
 import {
   getSelectedInternalAccountFromMockState,
-  mockNetworkState,
 } from '../../../../../test/jest/mocks';
 import AssetList from './asset-list';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 
 // Specific to just the ETH FIAT conversion
 const CONVERSION_RATE = 1597.32;

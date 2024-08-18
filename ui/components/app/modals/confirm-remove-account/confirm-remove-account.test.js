@@ -5,12 +5,12 @@ import { BtcAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import {
   createMockInternalAccount,
-  mockNetworkState,
 } from '../../../../../test/jest/mocks';
 import { addressSummary } from '../../../../helpers/utils/util';
 import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import ConfirmRemoveAccount from '.';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 
 global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 

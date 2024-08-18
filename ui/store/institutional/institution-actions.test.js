@@ -3,7 +3,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import MetaMaskController from '../../../app/scripts/metamask-controller';
 import { setBackgroundConnection } from '../background-connection';
-import { mockNetworkState } from '../../../test/jest/mocks';
+import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   showInteractiveReplacementTokenModal,

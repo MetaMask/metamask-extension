@@ -5,7 +5,7 @@ import { fireEvent, waitFor, screen, act } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import Fuse from 'fuse.js';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { mockNetworkState } from '../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Account } from './custody';
 import CustodyPage from '.';

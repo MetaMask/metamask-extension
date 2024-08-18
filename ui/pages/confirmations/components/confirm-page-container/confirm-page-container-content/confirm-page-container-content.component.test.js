@@ -11,7 +11,7 @@ import {
 } from '../../../../../helpers/constants/error-keys';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
-import { mockNetworkState } from '../../../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 import ConfirmPageContainerContent from './confirm-page-container-content.component';
 
 describe('Confirm Page Container Content', () => {

@@ -9,7 +9,7 @@ import * as Actions from '../store/actions';
 import { TokenStandard } from '../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { CHAIN_IDS } from '../../shared/constants/network';
-import { mockNetworkState } from '../../test/jest/mocks';
+import { mockNetworkState } from '../../test/stub/networks';
 
 const renderUseAssetDetails = ({
   tokenAddress,

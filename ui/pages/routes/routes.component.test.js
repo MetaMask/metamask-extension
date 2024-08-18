@@ -12,11 +12,9 @@ import { renderWithProvider } from '../../../test/jest';
 import mockSendState from '../../../test/data/mock-send-state.json';
 import mockState from '../../../test/data/mock-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeTokenSymbol';
-import {
-  createMockInternalAccount,
-  mockNetworkState,
-} from '../../../test/jest/mocks';
+import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { mockNetworkState } from '../../../test/stub/networks';
 import Routes from '.';
 
 const middlewares = [thunk];

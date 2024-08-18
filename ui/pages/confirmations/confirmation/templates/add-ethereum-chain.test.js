@@ -9,7 +9,7 @@ import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import Confirmation from '../confirmation';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
-import { mockNetworkState } from '../../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 
 jest.mock('../../../../../shared/lib/fetch-with-cache');
 

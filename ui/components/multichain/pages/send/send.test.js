@@ -9,10 +9,7 @@ import {
   fireEvent,
 } from '../../../../../test/jest';
 import { domainInitialState } from '../../../../ducks/domains';
-import {
-  INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-  mockNetworkState,
-} from '../../../../../test/jest/mocks';
+import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../../test/jest/mocks';
 import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import { SEND_STAGES, startNewDraftTransaction } from '../../../../ducks/send';
 import { AssetType } from '../../../../../shared/constants/transaction';
@@ -21,6 +18,7 @@ import mockSendState from '../../../../../test/data/mock-send-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { KeyringType } from '../../../../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import { SendPage } from '.';
 
 jest.mock('@ethersproject/providers', () => {

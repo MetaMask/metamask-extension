@@ -1,12 +1,10 @@
 import { InternalAccount } from '@metamask/keyring-api';
-import {
-  createMockInternalAccount,
-  mockNetworkState,
-} from '../../test/jest/mocks';
+import { createMockInternalAccount } from '../../test/jest/mocks';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import { getSelectedNetworkClientId } from '../selectors';
 import { MultichainState, getMultichainIsEvm } from '../selectors/multichain';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import { mockNetworkState } from '../../test/stub/networks';
 import { useMultichainSelector } from './useMultichainSelector';
 
 const mockAccount = createMockInternalAccount();

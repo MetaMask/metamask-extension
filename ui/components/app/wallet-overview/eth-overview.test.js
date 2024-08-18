@@ -11,7 +11,7 @@ import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import { mockNetworkState } from '../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import EthOverview from './eth-overview';
 
 jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {

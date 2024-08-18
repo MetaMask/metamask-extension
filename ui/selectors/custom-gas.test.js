@@ -1,9 +1,7 @@
 import { GasEstimateTypes } from '../../shared/constants/gas';
-import {
-  getInitialSendStateWithExistingTxState,
-  mockNetworkState,
-} from '../../test/jest/mocks';
+import { getInitialSendStateWithExistingTxState } from '../../test/jest/mocks';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import { mockNetworkState } from '../../test/stub/networks';
 import {
   getCustomGasLimit,
   getCustomGasPrice,

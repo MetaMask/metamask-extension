@@ -7,7 +7,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 import Confirmation from '../confirmation';
-import { mockNetworkState } from '../../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 
 jest.mock('../../../../../shared/lib/fetch-with-cache');
 

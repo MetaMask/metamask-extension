@@ -3,7 +3,7 @@
  */
 import { EthAccountType } from '@metamask/keyring-api';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
-import { mockNetworkState } from '../../../test/jest/mocks';
+import { mockNetworkState } from '../../../test/stub/networks';
 import Backup from './backup';
 
 function getMockPreferencesController() {

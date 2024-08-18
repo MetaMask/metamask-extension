@@ -5,11 +5,9 @@ import { cloneDeep } from 'lodash';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import configureStore from '../../../../store/store';
 import testData from '../../../../../.storybook/test-data';
-import {
-  getSelectedInternalAccountFromMockState,
-  mockNetworkState,
-} from '../../../../../test/jest/mocks';
+import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import TransactionAlerts from '.';
 
 const mockSelectedInternalAccount =

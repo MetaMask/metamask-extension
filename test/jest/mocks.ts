@@ -9,20 +9,10 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import { v4 as uuidv4 } from 'uuid';
 import { keyringTypeToName } from '@metamask/accounts-controller';
 import {
-  NetworkMetadata,
-  NetworkState,
-  NetworkStatus,
-} from '@metamask/network-controller';
-import { Hex } from '@metamask/utils';
-import {
   draftTransactionInitialState,
   initialState,
 } from '../../ui/ducks/send';
 import { MetaMaskReduxState } from '../../ui/store/store';
-import {
-  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
-  NETWORK_TO_NAME_MAP,
-} from '../../shared/constants/network';
 
 export const MOCK_DEFAULT_ADDRESS =
   '0xd5e099c71b797516c10ed0f0d895f429c2781111';
@@ -250,64 +240,4 @@ export const getSelectedInternalAccountFromMockState = (
   return state.metamask.internalAccounts.accounts[
     state.metamask.internalAccounts.selectedAccount
   ];
-};
-
-export const mockNetworkState = (
-  ...networks: {
-    id?: string;
-    type?: string;
-    chainId: Hex;
-    rpcUrl?: string;
-    nickname?: string;
-    ticker?: string;
-    blockExplorerUrl?: string;
-    metadata?: NetworkMetadata;
-  }[]
-): NetworkState => {
-  const networkConfigurations = networks.map((network) => ({
-    id: network.id ?? uuidv4(),
-    chainId: network.chainId,
-    rpcUrl:
-      'rpcUrl' in network
-        ? network.rpcUrl
-        : `https://localhost/rpc/${network.chainId}`,
-    // type: 'type' in network ? network.type : 'rpc',
-    nickname:
-      'nickname' in network
-        ? network.nickname
-        : (NETWORK_TO_NAME_MAP as Record<Hex, string>)[network.chainId],
-    ticker:
-      'ticker' in network
-        ? network.ticker
-        : (CHAIN_ID_TO_CURRENCY_SYMBOL_MAP as Record<Hex, string>)[
-            network.chainId
-          ],
-    ...((!('blockExplorerUrl' in network) || network.blockExplorerUrl) && {
-      rpcPrefs: {
-        blockExplorerUrl:
-          network.blockExplorerUrl ??
-          `https://localhost/blockExplorer/${network.chainId}`,
-      },
-    }),
-  }));
-
-  const networksMetadata = networks.reduce(
-    (acc, network, i) => ({
-      ...acc,
-      [networkConfigurations[i].id]: network.metadata ?? {
-        EIPS: {},
-        status: NetworkStatus.Available,
-      },
-    }),
-    {},
-  );
-
-  return {
-    selectedNetworkClientId: networkConfigurations[0].id,
-    networkConfigurations: networkConfigurations.reduce(
-      (acc, network) => ({ ...acc, [network.id]: network }),
-      {},
-    ),
-    networksMetadata,
-  };
 };

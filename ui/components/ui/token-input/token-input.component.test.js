@@ -7,7 +7,7 @@ import {
   CHAIN_IDS,
   CURRENCY_SYMBOLS,
 } from '../../../../shared/constants/network';
-import { mockNetworkState } from '../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import TokenInput from '.';
 
 describe('TokenInput Component', () => {

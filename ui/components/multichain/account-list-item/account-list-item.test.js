@@ -11,7 +11,7 @@ import {
   SEPOLIA_DISPLAY_NAME,
   CHAIN_IDS,
 } from '../../../../shared/constants/network';
-import { mockNetworkState } from '../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { AccountListItem, AccountListItemMenuTypes } from '.';
 
 const mockAccount = {

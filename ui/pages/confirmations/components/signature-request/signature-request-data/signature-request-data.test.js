@@ -6,7 +6,7 @@ import { sanitizeMessage } from '../../../../../helpers/utils/util';
 import Identicon from '../../../../../components/ui/identicon';
 import { ETH_EOA_METHODS } from '../../../../../../shared/constants/eth-methods';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
-import { mockNetworkState } from '../../../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 import SignatureRequestData from './signature-request-data';
 
 describe('Signature Request Data', () => {

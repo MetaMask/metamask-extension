@@ -6,9 +6,10 @@ import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import {
   getSelectedInternalAccountFromMockState,
-  mockNetworkState,
+
 } from '../../../../../test/jest/mocks';
 import AssetList from './asset-list';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 
 // Specific to just the ETH FIAT conversion
 const ETH_BALANCE = '0x041173b2c0e57d'; // 0.0011 ETH ($1.83)

@@ -7,7 +7,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { AvatarNetwork } from '../../../../components/component-library/avatar-network';
-import { mockNetworkState } from '../../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import { AssetPill } from './asset-pill';
 import { NATIVE_ASSET_IDENTIFIER, TokenAssetIdentifier } from './types';
 

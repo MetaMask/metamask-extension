@@ -10,7 +10,7 @@ import configureStore from '../../../../../store/store';
 import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
 
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
-import { mockNetworkState } from '../../../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 import EditGasItem from './edit-gas-item';
 
 jest.mock('../../../../../store/actions', () => ({

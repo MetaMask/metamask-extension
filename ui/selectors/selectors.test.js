@@ -12,11 +12,9 @@ import {
 } from '../../shared/constants/network';
 import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
-import {
-  createMockInternalAccount,
-  mockNetworkState,
-} from '../../test/jest/mocks';
+import { createMockInternalAccount } from '../../test/jest/mocks';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../test/stub/networks';
 import * as selectors from './selectors';
 
 jest.mock('../../app/scripts/lib/util', () => ({

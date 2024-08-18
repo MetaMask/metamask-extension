@@ -6,10 +6,8 @@ import { MOCKS, createSwapsMockStore } from '../../../test/jest';
 import { setSwapsLiveness, setSwapsFeatureFlags } from '../../store/actions';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { setStorageItem } from '../../../shared/lib/storage-helpers';
-import {
-  createMockInternalAccount,
-  mockNetworkState,
-} from '../../../test/jest/mocks';
+import { createMockInternalAccount } from '../../../test/jest/mocks';
+import { mockNetworkState } from '../../../test/stub/networks';
 import swapsReducer, * as swaps from './swaps';
 
 const middleware = [thunk];

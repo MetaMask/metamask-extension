@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import { TransactionStatus } from '@metamask/transaction-controller';
 
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { mockNetworkState } from '../../../test/jest/mocks';
+import { mockNetworkState } from '../../../test/stub/networks';
 import ConfirmTransactionReducer, * as actions from './confirm-transaction.duck';
 
 const initialState = {

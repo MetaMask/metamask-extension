@@ -4,7 +4,7 @@ import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
-import { mockNetworkState } from '../../../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 import ConfirmPageContainerHeader from '.';
 
 jest.mock('../../../../../../app/scripts/lib/util', () => ({

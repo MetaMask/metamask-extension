@@ -8,11 +8,9 @@ import { renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
 
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
-import {
-  getSelectedInternalAccountFromMockState,
-  mockNetworkState,
-} from '../../../../../test/jest/mocks';
+import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import ConfirmGasDisplay from './confirm-gas-display';
 
 jest.mock('../../../../store/actions', () => ({

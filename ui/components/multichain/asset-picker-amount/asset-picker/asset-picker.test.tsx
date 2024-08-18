@@ -6,7 +6,7 @@ import { AssetType } from '../../../../../shared/constants/transaction';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import configureStore from '../../../../store/store';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { mockNetworkState } from '../../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import { AssetPicker } from './asset-picker';
 
 const unknownChainId = '0x2489078';

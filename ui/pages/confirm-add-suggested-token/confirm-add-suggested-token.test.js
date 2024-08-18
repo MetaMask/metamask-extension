@@ -10,7 +10,7 @@ import {
 import configureStore from '../../store/store';
 import { renderWithProvider } from '../../../test/jest/rendering';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
-import { mockNetworkState } from '../../../test/jest/mocks';
+import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import ConfirmAddSuggestedToken from '.';
 

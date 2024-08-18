@@ -9,7 +9,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import * as Utils from '../lib/util';
-import { mockNetworkState } from '../../../test/jest/mocks';
+import { mockNetworkState } from '../../../test/stub/networks';
 import MetaMetricsController from './metametrics';
 
 const segment = createSegmentMock(2, 10000);

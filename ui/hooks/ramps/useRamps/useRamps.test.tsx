@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 import { Hex } from '@metamask/utils';
 import configureStore from '../../../store/store';
-import { mockNetworkState } from '../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import useRamps, { RampsMetaMaskEntry } from './useRamps';
 

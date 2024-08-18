@@ -1,5 +1,5 @@
 import { NftContract } from '@metamask/assets-controllers';
-import { mockNetworkState } from '../../test/jest/mocks';
+import { mockNetworkState } from '../../test/stub/networks';
 import {
   getNftContractsByAddressByChain,
   getNftContractsByAddressOnCurrentChain,
