@@ -41,11 +41,13 @@ function onboardingFixture() {
       },
       NetworkController: {
         ...mockNetworkState({
+          id: 'network-client-id',
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
         }),
+        providerConfig: { id: 'network-client-id' },
       },
       PreferencesController: {
         advancedGasFee: null,

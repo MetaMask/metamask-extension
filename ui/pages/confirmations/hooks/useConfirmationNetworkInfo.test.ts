@@ -48,7 +48,7 @@ describe('useConfirmationNetworkInfo', () => {
 
   it('returns correct details about custom network whose chainId is same as a network pre-defined in extension', () => {
     const customNetwork = {
-      chainId: '0x1',
+      chainId: '0x1' as const,
       nickname: 'Flashbots Protect',
       rpcUrl: 'https://rpc.flashbots.net',
     };

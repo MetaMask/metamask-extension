@@ -152,11 +152,13 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       },
       NetworkController: {
         ...mockNetworkState({
+          id: 'network-client-id',
           chainId: inputChainId,
           nickname: 'Localhost 8545',
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
         }),
+        providerConfig: { id: 'network-client-id' },
       },
       OnboardingController: {
         completedOnboarding: true,
