@@ -393,8 +393,8 @@ describe('Custom network', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .build(),
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
           ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
@@ -752,8 +752,7 @@ describe('Custom network', function () {
           assert.equal(suggestedTicker, false);
           assert.equal(tickerWarning, false);
 
-          driver.clickElement(selectors.tickerButton);
-          driver.clickElement(selectors.saveButton);
+          await driver.clickElement(selectors.saveButton);
 
           // Validate the network was added
           const networkAdded = await driver.isElementPresent(
@@ -867,8 +866,8 @@ describe('Custom network', function () {
           assert.equal(suggestedTicker, true);
           assert.equal(tickerWarning, true);
 
-          driver.clickElement(selectors.tickerButton);
-          driver.clickElement(selectors.saveButton);
+          await driver.clickElement(selectors.tickerButton);
+          await driver.clickElement(selectors.saveButton);
 
           // Validate the network was added
           const networkAdded = await driver.isElementPresent(
@@ -1014,7 +1013,7 @@ async function toggleOffSafeChainsListValidation(driver) {
     'Safe chains list validation toggle is ON',
   );
 
-  driver.delay(regularDelayMs);
+  await driver.delay(regularDelayMs);
 
   // return to the home screen
   const appHeaderSelector = '[data-testid="app-header-logo"]';
