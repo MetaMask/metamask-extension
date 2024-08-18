@@ -586,14 +586,15 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
-            .withNetworkController(
-              mockNetworkState({
+            .withNetworkController({
+              ...mockNetworkState({
                 rpcUrl: networkURL,
                 chainId: chainID,
                 nickname: networkNAME,
                 ticker: currencySYMBOL,
               }),
-            )
+              selectedNetworkClientId: 'mainnet',
+            })
             .build(),
           ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
