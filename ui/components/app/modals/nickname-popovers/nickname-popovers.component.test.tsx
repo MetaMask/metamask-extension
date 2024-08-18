@@ -8,12 +8,10 @@ import {
   MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP,
   MultichainNetworks,
 } from '../../../../../shared/constants/multichain/networks';
-import {
-  createMockInternalAccount,
-} from '../../../../../test/jest/mocks';
+import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
-import NicknamePopover from './nickname-popovers.component';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import NicknamePopover from './nickname-popovers.component';
 
 const mockAccount = createMockInternalAccount({
   name: 'Account 1',

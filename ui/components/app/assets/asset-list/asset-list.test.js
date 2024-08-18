@@ -6,11 +6,9 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getTokenSymbol } from '../../../../store/actions';
-import {
-  getSelectedInternalAccountFromMockState,
-} from '../../../../../test/jest/mocks';
-import AssetList from './asset-list';
+import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import AssetList from './asset-list';
 
 // Specific to just the ETH FIAT conversion
 const CONVERSION_RATE = 1597.32;
