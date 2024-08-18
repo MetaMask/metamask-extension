@@ -2087,7 +2087,6 @@ describe('MetaMaskController', () => {
             }),
           ).toStrictEqual({
             rpcUrl: POLYGON_RPC_URL,
-
             chainId: POLYGON_CHAIN_ID,
             ticker: MATIC,
             nickname: 'Polygon',
@@ -2124,7 +2123,6 @@ describe('MetaMaskController', () => {
             }),
           ).toStrictEqual({
             rpcUrl: POLYGON_RPC_URL,
-
             chainId: POLYGON_CHAIN_ID,
             ticker: MATIC,
             nickname: 'Polygon',

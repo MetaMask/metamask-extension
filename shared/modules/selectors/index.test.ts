@@ -57,7 +57,11 @@ describe('Selectors', () => {
         smartTransactionsState: {
           liveness: true,
         },
-        selectedNetworkClientId: 'mainnet',
+        ...mockNetworkState({
+          id: 'network-configuration-id-1',
+            chainId: CHAIN_IDS.MAINNET,
+            rpcUrl: 'https://mainnet.infura.io/v3/',
+        }),
       },
     };
   };
@@ -91,7 +95,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          selectedNetworkClientId: 'sepolia',
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
         },
       };
       const result = getCurrentChainSupportsSmartTransactions(newState);
@@ -172,7 +176,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          selectedNetworkClientId: 'linea-mainnet',
+          ...mockNetworkState({ chainId: CHAIN_IDS.LINEA_MAINNET }),
         },
       };
       expect(getSmartTransactionsEnabled(newState)).toBe(false);
