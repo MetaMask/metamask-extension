@@ -53,7 +53,9 @@ export const rpcIdentifierUtility = (
         if (host === new URL(rpc).host) {
           return host;
         }
-      } catch {}
+      } catch {
+        continue;
+      }
     }
   }
 

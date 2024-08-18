@@ -393,8 +393,8 @@ describe('Custom network', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
+            .withPermissionControllerConnectedToTestDapp()
+            .build(),
           ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
