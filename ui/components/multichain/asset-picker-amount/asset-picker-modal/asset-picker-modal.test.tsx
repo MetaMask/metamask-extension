@@ -69,6 +69,7 @@ describe('AssetPickerModal', () => {
   const onCloseMock = jest.fn();
 
   const defaultProps = {
+    header: 'sendSelectReceiveAsset',
     isOpen: true,
     onClose: onCloseMock,
     asset: {
