@@ -75,7 +75,7 @@ export async function confirmRedesignedContractDeploymentTransaction(
     text: 'This site wants you to deploy a contract',
   });
 
-  await driver.clickElement({ text: 'Confirm', tag: 'button' });
+  await scrollAndConfirmAndAssertConfirm(driver);
 
   await driver.delay(2000);
   await driver.waitUntilXWindowHandles(2);
