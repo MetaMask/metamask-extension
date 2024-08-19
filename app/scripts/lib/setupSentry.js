@@ -58,7 +58,6 @@ export default function setupSentry() {
 function getClientOptions() {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
-  console.log('ManagementVT', browser.management);
   browser.management
     .getSelf()
     .then((extensionInfo) => {
@@ -347,7 +346,6 @@ export function rewriteReport(report) {
       report.extra.extensionId = browser.runtime.id;
     }
     report.extra.installType = installType;
-    console.log('EXTRA:', report.extra);
   } catch (err) {
     log('Error rewriting report', err);
   }
