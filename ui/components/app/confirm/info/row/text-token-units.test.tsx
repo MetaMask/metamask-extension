@@ -40,7 +40,7 @@ describe('ConfirmInfoRowTextTokenUnits', () => {
       <ConfirmInfoRowTextTokenUnits value={value} decimals={decimals} />,
     );
 
-    expect(getByText('30,001,231,231,212')).toBeInTheDocument();
+    expect(getByText('30,001,231,231,...')).toBeInTheDocument();
   });
 
   it('renders the value with the correct formatted number and ellipsis', () => {
@@ -50,6 +50,6 @@ describe('ConfirmInfoRowTextTokenUnits', () => {
       <ConfirmInfoRowTextTokenUnits value={value} decimals={decimals} />,
     );
 
-    expect(getByText('3,000,123,123,121,23...')).toBeInTheDocument();
+    expect(getByText('3,000,123,123,1...')).toBeInTheDocument();
   });
 });
