@@ -13,24 +13,6 @@ export const CONTRACT_INTERACTION_SENDER_ADDRESS =
 
 export const DEPOSIT_METHOD_DATA = '0xd0e30db0';
 
-export const genUnapprovedApproveConfirmation = ({
-  address = CONTRACT_INTERACTION_SENDER_ADDRESS,
-}: {
-  address?: Hex;
-} = {}) => ({
-  ...genUnapprovedContractInteractionConfirmation(),
-  txParams: {
-    from: address,
-    data: '0x095ea7b30000000000000000000000002e0d7e8c45221fca00d74a3609a0f7097035d09b0000000000000000000000000000000000000000000000000000000000000001',
-    gas: '0x16a92',
-    to: '0x076146c765189d51be3160a2140cf80bfc73ad68',
-    value: '0x0',
-    maxFeePerGas: '0x5b06b0c0d',
-    maxPriorityFeePerGas: '0x59682f00',
-  },
-  type: TransactionType.tokenMethodApprove,
-});
-
 export const genUnapprovedContractInteractionConfirmation = ({
   address = CONTRACT_INTERACTION_SENDER_ADDRESS,
   txData = DEPOSIT_METHOD_DATA,
