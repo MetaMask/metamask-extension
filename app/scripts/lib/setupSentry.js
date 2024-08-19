@@ -1,11 +1,12 @@
 import * as Sentry from '@sentry/browser';
 import { createModuleLogger, createProjectLogger } from '@metamask/utils';
 import { logger } from '@sentry/utils';
-import { management } from 'webextension-polyfill';
+import { management, runtime } from 'webextension-polyfill';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
 
 const projectLogger = createProjectLogger('sentry');
+let installType = 'unknown';
 
 export const log = createModuleLogger(
   projectLogger,
@@ -57,7 +58,14 @@ export default function setupSentry() {
 function getClientOptions() {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
-
+  management
+    .getSelf()
+    .then((extensionInfo) => {
+      installType = extensionInfo.installType;
+    })
+    .catch((error) => {
+      log('Error getting extension installType', error);
+    });
   return {
     beforeBreadcrumb: beforeBreadcrumb(),
     beforeSend: (report) => rewriteReport(report),
@@ -334,12 +342,11 @@ export function rewriteReport(report) {
     }
 
     report.extra.appState = appState;
-    report.extra.extensionId = 'unknown';
-    management.getSelf().then((extensionInfo) => {
-      report.extra.extensionId = extensionInfo.id;
-      report.extra.installType = extensionInfo.installType;
-      console.log('Extra:', report.extra);
-    });
+    if (runtime && runtime.id) {
+      report.extra.extensionId = runtime.id;
+    }
+    report.extra.installType = installType;
+    console.log('EXTRA:', report.extra);
   } catch (err) {
     log('Error rewriting report', err);
   }
