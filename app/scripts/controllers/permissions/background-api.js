@@ -32,6 +32,7 @@ export function getPermissionBackgroundApiMethods(
     addMorePermittedAccounts: (origin, accounts) =>
       addMoreAccounts(origin, accounts),
 
+    // Update this too
     removePermittedAccount: (origin, account) => {
       const { value: existingAccounts } = permissionController.getCaveat(
         origin,
