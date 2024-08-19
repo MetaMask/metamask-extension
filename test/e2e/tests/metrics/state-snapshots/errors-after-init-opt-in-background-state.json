@@ -18,8 +18,7 @@
     "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
-    "currentMigrationVersion": "number",
-    "showTokenAutodetectModalOnUpgrade": "object"
+    "currentMigrationVersion": "number"
   },
   "AppStateController": {
     "connectedStatusPopoverHasBeenShown": true,
@@ -203,7 +202,6 @@
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
-      "showTokenAutodetectModal": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean"
