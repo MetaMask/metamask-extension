@@ -56,10 +56,11 @@ export type AssetPickerProps = {
   sendingAsset?: Asset;
   onClick?: () => void;
   isDisabled?: boolean;
-};
+} & Pick<React.ComponentProps<typeof AssetPickerModal>, 'header'>;
 
 // A component that lets the user pick from a list of assets.
 export function AssetPicker({
+  header,
   asset,
   onAssetChange,
   sendingAsset,
@@ -133,6 +134,7 @@ export function AssetPicker({
     <>
       {/* This is the Modal that ask to choose token to send */}
       <AssetPickerModal
+        header={header}
         isOpen={showAssetPickerModal}
         onClose={() => setShowAssetPickerModal(false)}
         asset={asset}

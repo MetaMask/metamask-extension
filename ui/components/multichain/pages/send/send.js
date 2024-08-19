@@ -362,6 +362,7 @@ export const SendPage = () => {
         {isSendFormShown && (
           <AssetPickerAmount
             error={error}
+            header={t('sendSelectSendAsset')}
             asset={transactionAsset}
             amount={amount}
             onAssetChange={handleSelectSendToken}

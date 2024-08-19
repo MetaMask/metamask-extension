@@ -47,7 +47,11 @@ describe('AssetPicker', () => {
 
     const { asFragment } = render(
       <Provider store={store()}>
-        <AssetPicker asset={asset} onAssetChange={() => mockAssetChange()} />
+        <AssetPicker
+          header={'testHeader'}
+          asset={asset}
+          onAssetChange={() => mockAssetChange()}
+        />
       </Provider>,
     );
     expect(asFragment()).toMatchSnapshot();
@@ -83,7 +87,11 @@ describe('AssetPicker', () => {
 
     const { getByText, getByRole } = render(
       <Provider store={store('NATIVE')}>
-        <AssetPicker asset={asset} onAssetChange={() => mockAssetChange()} />
+        <AssetPicker
+          header={'testHeader'}
+          asset={asset}
+          onAssetChange={() => mockAssetChange()}
+        />
       </Provider>,
     );
     expect(getByText('NATIVE')).toBeInTheDocument();
@@ -100,7 +108,11 @@ describe('AssetPicker', () => {
 
     const { getByText, getByRole } = render(
       <Provider store={store('NATIVE TOKEN')}>
-        <AssetPicker asset={asset} onAssetChange={() => mockAssetChange()} />
+        <AssetPicker
+          header={'testHeader'}
+          asset={asset}
+          onAssetChange={() => mockAssetChange()}
+        />
       </Provider>,
     );
     expect(getByText('NATIVE...')).toBeInTheDocument();
@@ -126,7 +138,11 @@ describe('AssetPicker', () => {
           'token address': { iconUrl: 'token icon url' },
         })}
       >
-        <AssetPicker asset={asset} onAssetChange={() => mockAssetChange()} />
+        <AssetPicker
+          header={'testHeader'}
+          asset={asset}
+          onAssetChange={() => mockAssetChange()}
+        />
       </Provider>,
     );
     expect(getByText('symbol')).toBeInTheDocument();
@@ -152,7 +168,11 @@ describe('AssetPicker', () => {
           'token address': { iconUrl: 'token icon url' },
         })}
       >
-        <AssetPicker asset={asset} onAssetChange={() => mockAssetChange()} />
+        <AssetPicker
+          header={'testHeader'}
+          asset={asset}
+          onAssetChange={() => mockAssetChange()}
+        />
       </Provider>,
     );
     expect(getByText('symbol...')).toBeInTheDocument();
@@ -178,7 +198,11 @@ describe('AssetPicker', () => {
           { address: 'token address', iconUrl: 'token icon url' },
         ])}
       >
-        <AssetPicker asset={asset} onAssetChange={() => mockAssetChange()} />
+        <AssetPicker
+          header={'testHeader'}
+          asset={asset}
+          onAssetChange={() => mockAssetChange()}
+        />
       </Provider>,
     );
     expect(getByText('symbol')).toBeInTheDocument();
@@ -199,7 +223,11 @@ describe('AssetPicker', () => {
 
     const { getByText } = render(
       <Provider store={store()}>
-        <AssetPicker asset={asset} onAssetChange={() => mockAssetChange()} />
+        <AssetPicker
+          header={'testHeader'}
+          asset={asset}
+          onAssetChange={() => mockAssetChange()}
+        />
       </Provider>,
     );
     expect(getByText('#1234567890')).toBeInTheDocument();
@@ -219,7 +247,11 @@ describe('AssetPicker', () => {
 
     const { getByText } = render(
       <Provider store={store()}>
-        <AssetPicker asset={asset} onAssetChange={() => mockAssetChange()} />
+        <AssetPicker
+          header={'testHeader'}
+          asset={asset}
+          onAssetChange={() => mockAssetChange()}
+        />
       </Provider>,
     );
     expect(getByText('#123456...3456')).toBeInTheDocument();
@@ -244,6 +276,7 @@ describe('AssetPicker', () => {
         ])}
       >
         <AssetPicker
+          header={'testHeader'}
           asset={asset}
           onAssetChange={() => mockAssetChange()}
           isDisabled
