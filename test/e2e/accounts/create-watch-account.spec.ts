@@ -3,11 +3,9 @@ import { Suite } from 'mocha';
 import FixtureBuilder from '../fixture-builder';
 import { multipleGanacheOptions, unlockWallet, withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import { CHAIN_IDS } from '../../../shared/constants/network.ts';
 
 const eoaAddress = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 const ensName = 'vitalik.eth';
-const defaultWatchAccountLabel = 'Watched Account 1';
 
 /**
  * Starts the flow to create a watch account.
@@ -31,9 +29,7 @@ describe('Account-watcher snap', function (this: Suite) {
   it('user can add watch account with valid EOA address', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({
-          inputChainId: CHAIN_IDS.MAINNET,
-        })
+        fixtures: new FixtureBuilder()
           .withPreferencesControllerAndFeatureFlag({
             watchEthereumAccountEnabled: true,
           })
@@ -68,9 +64,7 @@ describe('Account-watcher snap', function (this: Suite) {
   it('user can add watch account with valid ENS name', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({
-          inputChainId: CHAIN_IDS.MAINNET,
-        })
+        fixtures: new FixtureBuilder()
           .withPreferencesControllerAndFeatureFlag({
             watchEthereumAccountEnabled: true,
           })
