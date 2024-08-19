@@ -2,6 +2,7 @@ import { type Locator, type Page } from '@playwright/test';
 
 export class SwapPage {
   private page: Page;
+
   private swapQty: string;
 
   readonly toggleSmartSwap: Locator;
@@ -65,17 +66,20 @@ export class SwapPage {
     // Enter source token
     if (options.from) {
       this.swapFromDropDown.click();
+      await this.page.waitForTimeout(2000);
       await this.tokenSearch.fill(options.from);
       await this.selectTokenFromList(options.from);
     }
 
     // Enter destionation token
     await this.swapToDropDown.click();
+    await this.page.waitForTimeout(2000);
     await this.tokenSearch.fill(options.to);
     await this.selectTokenFromList(options.to);
   }
 
   async waitForQuote() {
+    let quoteFound = false;
     do {
       // Clear Swap Anyway button if present
       const swapAnywayButton = await this.page.$('text=/Swap anyway/');
@@ -86,15 +90,18 @@ export class SwapPage {
       // No quotes available
       const noQuotes = await this.page.$('text=/No quotes available/');
       if (noQuotes) {
-        //re-entering the qty will trigger new quote
+        // re-entering the qty will trigger new quote
         await this.tokenQty.fill('');
         await this.tokenQty.fill(this.swapQty);
       }
 
-      if (await this.page.$('text=/New quotes in/')) break;
+      if (await this.page.$('text=/New quotes in/')) {
+        quoteFound = true;
+        break;
+      }
 
       await this.page.waitForTimeout(500);
-    } while (true);
+    } while (!quoteFound);
   }
 
   async swap() {

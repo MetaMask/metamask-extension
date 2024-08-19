@@ -29,7 +29,6 @@ export class WalletPage {
     await this.importTokensButton.click();
     await this.importButton.waitFor({ state: 'visible' });
     await this.importButton.click();
-    await this.page.waitForTimeout(6000);
   }
 
   async selectTokenWallet() {

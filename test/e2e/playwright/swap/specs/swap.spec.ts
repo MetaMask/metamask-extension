@@ -20,7 +20,6 @@ const Tenderly = {
     symbol: 'ETH',
   },
 };
-//url: 'https://rpc.tenderly.co/fork/cdbcd795-097d-4624-aa16-680374d89a43'
 
 test.beforeEach(
   'Initialize extension, import wallet and add custom networks',
@@ -45,7 +44,7 @@ test('Swap ETH to DAI - Switch to Arbitrum and fetch quote - Switch ETH - WETH',
   await walletPage.importTokens();
   await walletPage.selectSwapAction();
   await swapPage.enterQuote({ from: 'ETH', to: 'DAI', qty: '.001' });
-  await swapPage.waitForQuote()
+  await swapPage.waitForQuote();
   await swapPage.swap();
   await swapPage.waitForTransactionToComplete();
   await walletPage.selectActivityList();
@@ -64,11 +63,11 @@ test('Swap ETH to DAI - Switch to Arbitrum and fetch quote - Switch ETH - WETH',
     activity: 'Swap ETH to DAI',
   });
   await walletPage.selectTokenWallet();
-  //await walletPage.importTokens();
+  // await walletPage.importTokens();
 
   await walletPage.selectSwapAction();
   await swapPage.enterQuote({ from: 'ETH', to: 'WETH', qty: '.001' });
-  await swapPage.waitForQuote()
+  await swapPage.waitForQuote();
   await swapPage.swap();
   await swapPage.waitForTransactionToComplete();
   await walletPage.selectActivityList();
@@ -82,7 +81,7 @@ test('Swap WETH to ETH - Switch to Avalanche and fetch quote - Switch DAI - USDC
 
   await walletPage.selectSwapAction();
   await swapPage.enterQuote({ from: 'ETH', to: 'WETH', qty: '.001' });
-  await swapPage.waitForQuote()
+  await swapPage.waitForQuote();
   await swapPage.swap();
   await swapPage.waitForTransactionToComplete();
   await walletPage.selectActivityList();
@@ -104,13 +103,13 @@ test('Swap WETH to ETH - Switch to Avalanche and fetch quote - Switch DAI - USDC
     activity: 'Swap ETH to WETH',
   });
   await walletPage.selectTokenWallet();
-  //await walletPage.importTokens();
+  // await walletPage.importTokens();
 
   await walletPage.selectSwapAction();
   await swapPage.enterQuote({ from: 'DAI', to: 'USDC', qty: '.5' });
-  await swapPage.waitForQuote()
+  await swapPage.waitForQuote();
   await swapPage.switchTokenOrder();
-  await swapPage.waitForQuote()
+  await swapPage.waitForQuote();
   await swapPage.swap();
   await swapPage.waitForTransactionToComplete();
   await walletPage.selectActivityList();
