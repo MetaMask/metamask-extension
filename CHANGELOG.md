@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced permit signatures with a simulation section ([#24862](https://github.com/MetaMask/metamask-extension/pull/24862))
 - Introduced dynamic support for identifying 'buyable' networks through the Ramps API ([#24041](https://github.com/MetaMask/metamask-extension/pull/24041))
 - Introduced a new notification counter over the Fox icon to display unread notifications ([#25093](https://github.com/MetaMask/metamask-extension/pull/25093))
+- Improved the display of large and small token values on the permit signature page ([#25720](https://github.com/MetaMask/metamask-extension/pull/25720))
+- Replaced "Approve spend limit" with "Spending cap" in the Permit signature redesign ([#25618](https://github.com/MetaMask/metamask-extension/pull/25618))
 
 ### Changed
 - Introduced the ability to edit custom networks directly from the modal ([#25272](https://github.com/MetaMask/metamask-extension/pull/25272))
@@ -58,6 +60,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Resolved an issue by ensuring max gas values for swaps are rounded to integers ([#25488](https://github.com/MetaMask/metamask-extension/pull/25488))
 - Updated the outdated browser warning to display immediately for new installations ([#25366](https://github.com/MetaMask/metamask-extension/pull/25366))
 - Enhanced the Send flow by displaying a network badge next to the chosen asset ([#25470](https://github.com/MetaMask/metamask-extension/pull/25470))
+- Fixed various display issues in the asset picker modal and balance display ([#25601](https://github.com/MetaMask/metamask-extension/pull/25601))
+- Corrected the display of decimal places for token values on permit pages ([#25718](https://github.com/MetaMask/metamask-extension/pull/25718))
+- Added ellipsis for long permit values and fixed errors with very large numbers ([#25741](https://github.com/MetaMask/metamask-extension/pull/25741))
+- Fixed an issue where the connected account was missing on the connection page ([#25500](https://github.com/MetaMask/metamask-extension/pull/25500))
+- Removed the NFT autodetection modal when the feature is disabled in settings ([#25993](https://github.com/MetaMask/metamask-extension/pull/25993))
+- Fixed the Blockaid report URL on redesigned pages ([#25702](https://github.com/MetaMask/metamask-extension/pull/25702))
+- Fixed the "Show conversion in testnets" option for Bitcoin and Ethereum test assets ([#26224](https://github.com/MetaMask/metamask-extension/pull/26224))
+- Enabled the Save button on the Add Contact page when a valid address or ENS name is entered ([#26456](https://github.com/MetaMask/metamask-extension/pull/26456))
+- Fixed fallback conversion rates for token market data to ensure accurate market cap ([#26460](https://github.com/MetaMask/metamask-extension/pull/26460))
 
 ## [11.16.7]
 ### Fixed
