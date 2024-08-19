@@ -39,15 +39,15 @@ describe('MultichainSubscriptionManager', () => {
       findNetworkClientIdByChainId: mockFindNetworkClientIdByChainId,
       getNetworkClientById: mockGetNetworkClientById,
     });
-    const spy = jest.fn();
+    const onNotificationSpy = jest.fn();
 
-    subscriptionManager.on('notification', spy);
+    subscriptionManager.on('notification', onNotificationSpy);
     subscriptionManager.subscribe(scope, domain);
     subscriptionManager.subscriptionManagerByChain[scope].events.emit(
       'notification',
       newHeadsNotificationMock,
     );
-    expect(spy).toHaveBeenCalledWith(domain, {
+    expect(onNotificationSpy).toHaveBeenCalledWith(domain, {
       method: 'wallet_invokeMethod',
       params: {
         scope,
@@ -68,8 +68,8 @@ describe('MultichainSubscriptionManager', () => {
       findNetworkClientIdByChainId: mockFindNetworkClientIdByChainId,
       getNetworkClientById: mockGetNetworkClientById,
     });
-    const spy = jest.fn();
-    subscriptionManager.on('notification', spy);
+    const onNotificationSpy = jest.fn();
+    subscriptionManager.on('notification', onNotificationSpy);
     subscriptionManager.subscribe(scope, domain);
     const scopeSubscriptionManager =
       subscriptionManager.subscriptionManagerByChain[scope];
@@ -79,7 +79,7 @@ describe('MultichainSubscriptionManager', () => {
       newHeadsNotificationMock,
     );
 
-    expect(spy).not.toHaveBeenCalled();
+    expect(onNotificationSpy).not.toHaveBeenCalled();
   });
 
   it('should unsubscribe from a scope', () => {
@@ -94,8 +94,8 @@ describe('MultichainSubscriptionManager', () => {
       findNetworkClientIdByChainId: mockFindNetworkClientIdByChainId,
       getNetworkClientById: mockGetNetworkClientById,
     });
-    const spy = jest.fn();
-    subscriptionManager.on('notification', spy);
+    const onNotificationSpy = jest.fn();
+    subscriptionManager.on('notification', onNotificationSpy);
     subscriptionManager.subscribe(scope, domain);
     const scopeSubscriptionManager =
       subscriptionManager.subscriptionManagerByChain[scope];
@@ -105,7 +105,7 @@ describe('MultichainSubscriptionManager', () => {
       newHeadsNotificationMock,
     );
 
-    expect(spy).not.toHaveBeenCalled();
+    expect(onNotificationSpy).not.toHaveBeenCalled();
   });
 
   it('should unsubscribe all', () => {
@@ -120,8 +120,8 @@ describe('MultichainSubscriptionManager', () => {
       findNetworkClientIdByChainId: mockFindNetworkClientIdByChainId,
       getNetworkClientById: mockGetNetworkClientById,
     });
-    const spy = jest.fn();
-    subscriptionManager.on('notification', spy);
+    const onNotificationSpy = jest.fn();
+    subscriptionManager.on('notification', onNotificationSpy);
     subscriptionManager.subscribe(scope, domain);
     const scope2 = 'eip155:2';
     subscriptionManager.subscribe(scope2, domain);
@@ -139,6 +139,6 @@ describe('MultichainSubscriptionManager', () => {
       newHeadsNotificationMock,
     );
 
-    expect(spy).not.toHaveBeenCalled();
+    expect(onNotificationSpy).not.toHaveBeenCalled();
   });
 });

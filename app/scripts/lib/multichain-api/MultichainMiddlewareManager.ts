@@ -2,6 +2,7 @@ import { JsonRpcMiddleware } from 'json-rpc-engine';
 import { Scope } from './scope';
 
 // Extend JsonRpcMiddleware to include the destroy method
+// this was introduced in 7.0.0 of json-rpc-engine: https://github.com/MetaMask/json-rpc-engine/blob/v7.0.0/src/JsonRpcEngine.ts#L29-L40
 export type ExtendedJsonRpcMiddleware = JsonRpcMiddleware<unknown, unknown> & {
   destroy?: () => void;
 };
