@@ -192,11 +192,6 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       pattern: '',
     },
     {
-      src: `./offscreen/`,
-      pattern: `*.html`,
-      dest: '',
-    },
-    {
       src: getPathInsideNodeModules('@blockaid/ppom_release', '/'),
       pattern: '*.wasm',
       dest: isManifestV3 ? 'scripts/' : '',
