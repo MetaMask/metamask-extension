@@ -326,13 +326,13 @@ exports[`Develop options tab should match snapshot 1`] = `
             class="settings-page__content-description"
           >
             <span>
-               
-              Generate an unhandled 
+
+              Generate an unhandled
               <b>
                 TestError
               </b>
                in this window.
-               
+
             </span>
           </div>
         </div>
@@ -370,13 +370,13 @@ exports[`Develop options tab should match snapshot 1`] = `
             class="settings-page__content-description"
           >
             <span>
-               
-              Generate an unhandled 
+
+              Generate an unhandled
               <b>
                 TestError
               </b>
                in the service worker.
-               
+
             </span>
           </div>
         </div>
@@ -414,13 +414,13 @@ exports[`Develop options tab should match snapshot 1`] = `
             class="settings-page__content-description"
           >
             <span>
-               
-               Generate a 
+
+               Generate a
               <b>
                 Developer Test
               </b>
                Sentry trace.
-               
+
             </span>
           </div>
         </div>

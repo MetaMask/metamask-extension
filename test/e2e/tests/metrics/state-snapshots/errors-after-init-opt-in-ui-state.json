@@ -34,7 +34,6 @@
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
-      "showTokenAutodetectModal": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean"
@@ -96,7 +95,6 @@
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
-    "showTokenAutodetectModalOnUpgrade": "object",
     "balances": "object",
     "selectedNetworkClientId": "string",
     "networksMetadata": {
@@ -109,7 +107,6 @@
     "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
-    "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
     "useSafeChainsListValidation": true,
     "useTokenDetection": false,
@@ -204,7 +201,7 @@
     "isProfileSyncingUpdateLoading": "boolean",
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
-    "isMetamaskNotificationsEnabled": "boolean",
+    "isNotificationServicesEnabled": "boolean",
     "isFeatureAnnouncementsEnabled": "boolean",
     "metamaskNotificationsList": "object",
     "metamaskNotificationsReadList": "object",
@@ -221,10 +218,8 @@
     "unapprovedDecryptMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object",
     "unapprovedEncryptionPublicKeyMsgCount": 0,
-    "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",
     "unapprovedTypedMessages": "object",
-    "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgCount": 0,
     "unapprovedTypedMessagesCount": 0,
     "swapsState": {

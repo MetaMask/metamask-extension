@@ -88,7 +88,6 @@ export const SENTRY_BACKGROUND_STATE = {
     currentMigrationVersion: true,
     previousAppVersion: true,
     previousMigrationVersion: true,
-    showTokenAutodetectModalOnUpgrade: false,
   },
   ApprovalController: {
     approvalFlows: false,
@@ -169,10 +168,10 @@ export const SENTRY_BACKGROUND_STATE = {
   LoggingController: {
     logs: false,
   },
-  MetamaskNotificationsController: {
+  NotificationServicesController: {
     subscriptionAccountsSeen: false,
     isMetamaskNotificationsFeatureSeen: false,
-    isMetamaskNotificationsEnabled: false,
+    isNotificationServicesEnabled: false,
     isFeatureAnnouncementsEnabled: false,
     metamaskNotificationsList: false,
     metamaskNotificationsReadList: false,
@@ -240,7 +239,6 @@ export const SENTRY_BACKGROUND_STATE = {
   PreferencesController: {
     advancedGasFee: true,
     currentLocale: true,
-    disabledRpcMethodPreferences: true,
     dismissSeedBackUpReminder: true,
     featureFlags: true,
     forgottenPassword: true,
@@ -264,7 +262,6 @@ export const SENTRY_BACKGROUND_STATE = {
       smartTransactionsOptInStatus: true,
       useNativeCurrencyAsPrimaryCurrency: true,
       petnamesEnabled: true,
-      showTokenAutodetectModal: false,
       showConfirmationAdvancedDetails: true,
     },
     useExternalServices: false,
@@ -285,7 +282,7 @@ export const SENTRY_BACKGROUND_STATE = {
     useTransactionSimulations: true,
     enableMV3TimestampSave: true,
   },
-  PushPlatformNotificationsController: {
+  NotificationServicesPushController: {
     fcmToken: false,
   },
   MultichainRatesController: {
@@ -298,8 +295,6 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   SelectedNetworkController: { domains: false },
   SignatureController: {
-    unapprovedMsgCount: true,
-    unapprovedMsgs: false,
     unapprovedPersonalMsgCount: true,
     unapprovedPersonalMsgs: false,
     unapprovedTypedMessages: false,

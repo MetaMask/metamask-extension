@@ -105,14 +105,6 @@ jest.mock('lodash', () => ({
   debounce: (fn) => fn,
 }));
 
-setBackgroundConnection({
-  addPollingTokenToAppState: jest.fn(),
-  addTransaction: jest.fn((_u, _v, cb) => {
-    cb(null, { transactionMeta: null });
-  }),
-  updateTransactionSendFlowHistory: jest.fn((_x, _y, _z, cb) => cb(null)),
-});
-
 const getTestUUIDTx = (state) => state.draftTransactions['test-uuid'];
 
 describe('Send Slice', () => {
@@ -124,6 +116,14 @@ describe('Send Slice', () => {
   let setDefaultHomeActiveTabNameStub;
 
   beforeEach(() => {
+    setBackgroundConnection({
+      addPollingTokenToAppState: jest.fn(),
+      addTransaction: jest.fn((_u, _v, cb) => {
+        cb(null, { transactionMeta: null });
+      }),
+      updateTransactionSendFlowHistory: jest.fn((_x, _y, _z, cb) => cb(null)),
+    });
+
     jest.useFakeTimers();
     getTokenStandardAndDetailsStub = jest
       .spyOn(Actions, 'getTokenStandardAndDetails')
@@ -283,7 +283,28 @@ describe('Send Slice', () => {
         expect(draft.amount.value).toStrictEqual('0xadf7');
         expect(draft.status).toStrictEqual(SEND_STATUSES.VALID);
       });
+
+      it('should not error when draft transaction is not defined', () => {
+        const state = getInitialSendStateWithExistingTxState({
+          gas: {
+            gasPrice: '0x1',
+            maxFeePerGas: '0x2',
+            gasLimit: GAS_LIMITS.SIMPLE,
+          },
+        });
+
+        delete state.draftTransactions['test-uuid'];
+
+        const action = {
+          type: 'send/calculateGasTotal',
+        };
+
+        const runAction = () => sendReducer(state, action);
+
+        expect(runAction).not.toThrow();
+      });
     });
+
     describe('resetSendState', () => {
       it('should set the state back to a blank slate matching the initialState object', () => {
         const action = {
@@ -1076,6 +1097,29 @@ describe('Send Slice', () => {
         );
         expect(draftTransaction.status).toBe(SEND_STATUSES.INVALID);
       });
+
+      it('should not throw error when draft transaction does not exist', () => {
+        const tokenAssetState = getInitialSendStateWithExistingTxState({
+          amount: {
+            value: '0x77359400', // 2000000000
+          },
+          sendAsset: {
+            type: AssetType.token,
+            balance: '0x6fc23ac0', // 1875000000
+            details: {
+              decimals: 0,
+            },
+          },
+        });
+
+        const action = {
+          type: 'send/validateAmountField',
+        };
+
+        delete tokenAssetState.draftTransactions['test-uuid'];
+
+        expect(() => sendReducer(tokenAssetState, action)).not.toThrow();
+      });
     });
 
     describe('validateGasField', () => {
@@ -1100,6 +1144,24 @@ describe('Send Slice', () => {
         expect(draftTransaction.gas.error).toStrictEqual(
           INSUFFICIENT_FUNDS_ERROR,
         );
+      });
+      it('should not throw error when draft transaction does not exist', () => {
+        const gasFieldState = getInitialSendStateWithExistingTxState({
+          account: {
+            balance: '0x0',
+          },
+          gas: {
+            gasTotal: '0x1319718a5000', // 21000000000000
+          },
+        });
+
+        delete gasFieldState.draftTransactions['test-uuid'];
+
+        const action = {
+          type: 'send/validateGasField',
+        };
+
+        expect(() => sendReducer(gasFieldState, action)).not.toThrow();
       });
     });
 
@@ -3020,6 +3082,74 @@ describe('Send Slice', () => {
             addTransactionAndRouteToConfirmationPageStub.mock.calls[0][0].to,
           ).toStrictEqual('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
         });
+        it('should rethrow addTransactionAndRouteToConfirmationPage errors', async () => {
+          const tokenTransferTxState = {
+            metamask: {
+              providerConfig: {
+                chainId: CHAIN_IDS.GOERLI,
+              },
+              transactions: [
+                {
+                  id: 1,
+                  chainId: CHAIN_IDS.GOERLI,
+                  status: 'unapproved',
+                  txParams: {
+                    value: 'oldTxValue',
+                  },
+                },
+              ],
+            },
+            send: {
+              ...getInitialSendStateWithExistingTxState({
+                id: 1,
+                sendAsset: {
+                  details: {
+                    address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+                  },
+                  type: 'TOKEN',
+                },
+                receiveAsset: {
+                  details: {
+                    address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+                  },
+                  type: 'TOKEN',
+                },
+                recipient: {
+                  address: '4F90e18605Fd46F9F9Fab0e225D88e1ACf5F5324',
+                },
+                amount: {
+                  value: '0x1',
+                },
+              }),
+              stage: SEND_STAGES.DRAFT,
+              selectedAccount: {
+                address: '0x6784e8507A1A46443f7bDc8f8cA39bdA92A675A6',
+              },
+            },
+          };
+
+          jest.mock('../../store/actions.ts');
+
+          const store = mockStore(tokenTransferTxState);
+
+          const ERROR = new Error('rejected');
+
+          const history = { push: jest.fn() };
+
+          setBackgroundConnection({
+            addPollingTokenToAppState: jest.fn(),
+            addTransaction: jest.fn((_u, _v) => {
+              throw new Error(ERROR);
+            }),
+            updateTransactionSendFlowHistory: jest.fn((_x, _y, _z, cb) =>
+              cb(null),
+            ),
+          });
+
+          await expect(
+            store.dispatch(signTransaction(history)),
+          ).rejects.toThrow('rejected');
+        });
       });
 
       describe('with swap+send', () => {
@@ -3932,7 +4062,6 @@ describe('Send Slice', () => {
                 },
                 methods: [
                   'personal_sign',
-                  'eth_sign',
                   'eth_signTransaction',
                   'eth_signTypedData_v1',
                   'eth_signTypedData_v3',
