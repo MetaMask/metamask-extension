@@ -32,6 +32,7 @@ const mockNonEvmAccount = {
 
 const DEFAULT_PROPS = {
   account: mockAccount,
+  selected: false,
   onClick: jest.fn(),
 };
 
@@ -210,6 +211,9 @@ describe('AccountListItem', () => {
                 chainId: CHAIN_IDS.SEPOLIA,
                 nickname: SEPOLIA_DISPLAY_NAME,
               },
+              preferences: {
+                showFiatInTestnets: false,
+              },
             },
           },
         );
@@ -263,7 +267,7 @@ describe('AccountListItem', () => {
           '[data-testid="avatar-group"]',
         );
 
-        const expectedBalance = '$0.00';
+        const expectedBalance = '$3.31';
 
         expect(firstCurrencyDisplay).toBeInTheDocument();
         expect(firstCurrencyDisplay.firstChild.textContent).toContain(
@@ -275,9 +279,18 @@ describe('AccountListItem', () => {
       });
 
       it('renders fiat for non-EVM account', () => {
-        const { container } = render({
-          account: mockNonEvmAccount,
-        });
+        const { container } = render(
+          {
+            account: mockNonEvmAccount,
+          },
+          {
+            metamask: {
+              preferences: {
+                showFiatInTestnets: true,
+              },
+            },
+          },
+        );
 
         const firstCurrencyDisplay = container.querySelector(
           '[data-testid="first-currency-display"]',

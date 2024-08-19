@@ -19,7 +19,6 @@ export const REDESIGN_APPROVAL_TYPES = [
 export const REDESIGN_TRANSACTION_TYPES = [TransactionType.contractInteraction];
 
 const SIGNATURE_APPROVAL_TYPES = [
-  ApprovalType.EthSign,
   ApprovalType.PersonalSign,
   ApprovalType.EthSignTypedData,
 ];

@@ -7,7 +7,11 @@ module.exports = {
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
   ],
   coverageDirectory: './coverage',
-  coveragePathIgnorePatterns: ['.stories.*', '.snap'],
+  coveragePathIgnorePatterns: [
+    '<rootDir>/test/unit-global/protect-intrinsics.test.js',
+    '.stories.*',
+    '.snap',
+  ],
   coverageReporters: process.env.CI ? ['json'] : ['html', 'json'],
   reporters: [
     'default',
@@ -31,6 +35,10 @@ module.exports = {
     '<rootDir>/development/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/helpers.test.js',
+  ],
+  testPathIgnorePatterns: [
+    '<rootDir>/test/unit-global/protect-intrinsics.test.js',
+    '<rootDir>/development/webpack/',
   ],
   testTimeout: 5500,
   // We have to specify the environment we are running in, which is jsdom. The

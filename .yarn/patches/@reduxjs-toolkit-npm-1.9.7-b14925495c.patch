@@ -92,3 +92,29 @@ index bb433432ec76331e12d6b62e200f06530055cb16..9caf4051aa96bd14ee2890ef6c79bf5b
      return EnhancerArray;
  }(Array));
  function freezeDraftable(val) {
+diff --git a/dist/redux-toolkit.esm.js b/dist/redux-toolkit.esm.js
+index f26a1669405b4dd92dfecd791dc536078a7e2e12..591e7495fcaf3233d26cfb9c4eae09fd7ae3eb98 100644
+--- a/dist/redux-toolkit.esm.js
++++ b/dist/redux-toolkit.esm.js
+@@ -192,9 +192,6 @@ function getMessage(type) {
+ }
+ function createActionCreatorInvariantMiddleware(options) {
+     if (options === void 0) { options = {}; }
+-    if (process.env.NODE_ENV === "production") {
+-        return function () { return function (next) { return function (action) { return next(action); }; }; };
+-    }
+     var _c = options.isActionCreator, isActionCreator2 = _c === void 0 ? isActionCreator : _c;
+     return function () { return function (next) { return function (action) {
+         if (isActionCreator2(action)) {
+diff --git a/package.json b/package.json
+index 684ea845ee663f719bff6c140001baebdaa69344..568d6215514a8625bfb3be5e49b6cbfe11231e6a 100644
+--- a/package.json
++++ b/package.json
+@@ -23,7 +23,6 @@
+     "access": "public"
+   },
+   "main": "dist/index.js",
+-  "module": "dist/redux-toolkit.esm.js",
+   "unpkg": "dist/redux-toolkit.umd.min.js",
+   "types": "dist/index.d.ts",
+   "devDependencies": {
