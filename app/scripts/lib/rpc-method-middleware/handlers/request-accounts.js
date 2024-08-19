@@ -179,6 +179,7 @@ async function requestEthereumAccountsHandler(
                     accounts: caipAccounts,
                   },
                 },
+                isMultichainOrigin: false,
               },
             },
           ],

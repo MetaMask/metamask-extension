@@ -395,6 +395,32 @@ class FixtureBuilder {
     });
   }
 
+  withPermissionControllerSnapAccountConnectedToTestDapp(
+    restrictReturnedAccounts = true,
+  ) {
+    return this.withPermissionController({
+      subjects: {
+        [DAPP_URL]: {
+          origin: DAPP_URL,
+          permissions: {
+            eth_accounts: {
+              id: 'ZaqPEWxyhNCJYACFw93jE',
+              parentCapability: 'eth_accounts',
+              invoker: DAPP_URL,
+              caveats: restrictReturnedAccounts && [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: ['0x09781764c08de8ca82e156bbf156a3ca217c7950'],
+                },
+              ],
+              date: 1664388714636,
+            },
+          },
+        },
+      },
+    });
+  }
+
   withPermissionControllerConnectedToTwoTestDapps(
     restrictReturnedAccounts = true,
   ) {
@@ -562,7 +588,6 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -583,7 +608,6 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -603,7 +627,6 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -632,7 +655,6 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -653,7 +675,6 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',

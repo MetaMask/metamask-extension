@@ -42,7 +42,7 @@
     "message": "Ikonekta ang iyong QR na wallet na hardware"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "AirGap Vault at Ngrave (paparating na)"
+    "message": "Ngrave Zero"
   },
   "SIWEAddressInvalid": {
     "message": "Ang address sa kahilingan sa pag-sign in ay hindi tugma sa address ng account na ginagamit mo sa pag-sign in."
@@ -549,9 +549,6 @@
   "andForTwoItems": {
     "message": "$1 at $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
-  },
-  "announcements": {
-    "message": "Mga Anunsiyo"
   },
   "appDescription": {
     "message": "Ethereum Wallet sa iyong Browser",
@@ -1452,9 +1449,6 @@
   "data": {
     "message": "Datos"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Hindi maibalik ang iyong data. Mukhang sira ang file."
-  },
   "dataCollectionForMarketing": {
     "message": "Koleksyon ng data para sa marketing"
   },
@@ -1551,30 +1545,6 @@
   },
   "details": {
     "message": "Mga Detalye"
-  },
-  "developerOptions": {
-    "message": "Mga Opsyon ng Developer"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Pinapagana o hindi pinapagana ang tampok na muling pagdisenyo ng kumpirmasyon na kasalukuyang pinapaunlad"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Muling Pagdisenyo ng Kumpirmasyon"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Lilipat sa bagong disenyo ng menu ng Networks"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Muling disenyo ng Network Menu"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Ang mga reset ay ipinapakita sa boolean para maging false sa lahat ng anunsiyo. Ang mga anunisyo ay mga notipikasyon na ipinapakita sa What's New popup modal."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Nire-reset ang iba't ibang estado kaugnay sa onboarding at nire-redirect sa \"Secure Your Wallet\" onboarding page."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Magreresulta sa isang timestamp na tuloy-tuloy na naka-save sa session.storage"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "Ang “$1” ay hindi pinagagana dahil hindi nito naabot ang pinakamababang 10% na dagdag mula sa orihinal na bayad sa gas.",
@@ -3520,9 +3490,6 @@
   "onboardedMetametricsTitle": {
     "message": "Tulungan kami na paghusayin ang iyong karanasan"
   },
-  "onboarding": {
-    "message": "Onboarding"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "Ginagawang posible ng IPFS gateway na ma-access at makita ang datos na pinangangasiwaan ng mga third party. Maaari kang magdagdag ng custom na IPFS gateway o magpatuloy sa paggamit ng default."
   },
@@ -4388,9 +4355,6 @@
   "reset": {
     "message": "I-reset"
   },
-  "resetStates": {
-    "message": "I-reset ang Mga Estado"
-  },
   "resetWallet": {
     "message": "I-reset ang wallet"
   },
@@ -4408,12 +4372,6 @@
   },
   "restore": {
     "message": "Ibalik"
-  },
-  "restoreFailed": {
-    "message": "Hindi maibalik ang iyong data mula sa file na ibinigay"
-  },
-  "restoreSuccessful": {
-    "message": "Ang iyong data ay matagumpay na naibalik"
   },
   "restoreUserData": {
     "message": "Ibalik ang data ng user"
@@ -4716,9 +4674,6 @@
   "sepolia": {
     "message": "Sepolia test network"
   },
-  "serviceWorkerKeepAlive": {
-    "message": "Service Worker Keep Alive"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "Ginagamit ng MetaMask ang mga pinagkakatiwalaang serbisyo ng third-party na ito para mapahusay ang kakayahang magamit at kaligtasan ng produkto."
   },
@@ -4807,9 +4762,6 @@
   },
   "signatureRequestGuidance": {
     "message": "Pirmahan lang ang mensaheng ito kung ganap mong nauunawaan ang nilalaman at nagtitiwala sa site na humihiling."
-  },
-  "signatureRequestWarning": {
-    "message": "Ang pagpirma sa mensaheng ito ay maaaring mapanganib. Maaari kang magbigay ng buong kontrol ng iyong account at mga asset sa partido sa kabilang dulo ng mensaheng ito. Nangangahulugan iyon na maaari nitong ubusin ang laman ng iyong account anumang oras. Magpatuloy nang may pag-iingat. $1."
   },
   "signed": {
     "message": "Napirmahan"
@@ -5284,9 +5236,6 @@
   },
   "stateLogsDescription": {
     "message": "Naglalaman ang mga log ng estado ng iyong mga address ng pampublikong account at ipinadalang transaksyon."
-  },
-  "states": {
-    "message": "Mga estado"
   },
   "status": {
     "message": "Katayuan"
@@ -5926,45 +5875,6 @@
     "message": "Para kay/sa: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "Nanganganib ka sa mga phishing na pag-atake. Protektahan ang sarili mo sa pamamagitan ng pag-off sa eth_sign."
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "Kung pagaganahin mo ang setting na ito, maaari kang makakuha ng mga kahilingan sa paglagda na hindi nababasa. Sa pamamagitan ng pagpirma sa isang mensaheng hindi mo naiintindihan, posible kang sumang-ayon na ipamigay ang iyong mga pondo at NFT."
-  },
-  "toggleEthSignField": {
-    "message": "Mga kahilingan sa Eth_sign"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " baka niloloko ka"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "Kung hiniling sa iyo na i-on ang setting na ito,"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "Nauunawaan ko na maaaring mawala ang aking pondo at mga NFT kapag pinagana ko ang mga kahilingan sa eth-sign. "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "Ang pagbibigay ng pahintulot sa mga kahilingan ng eth_sign ay magpapahina sa iyo upang atakehin ng phishing. Palaging i-review ang URL a t mag-ingat kapag nagsa-sign ng mga mensahe na naglalaman ng code."
-  },
-  "toggleEthSignModalFormError": {
-    "message": "Mali ang text"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "Ilagay ang “pipirmahan ko lang kung ano ang nauunawaan ko” para magpatuloy"
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "Pipirmahan ko lang kung ano ang nauunawaan ko"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "Gamitin sa sarili mong pananagutan"
-  },
-  "toggleEthSignOff": {
-    "message": "I-OFF (Inirerekomenda)"
-  },
-  "toggleEthSignOn": {
-    "message": "I-ON (Hindi inirerekomenda)"
-  },
   "toggleRequestQueueDescription": {
     "message": "Pinahihintulutan ka nitong pumili ng network para sa bawat site sa halip na iisang piniling network para sa lahat ng site. Pipigilan ka ng feature na ito na magpalit ng network nang mano-mano, na maaaring makasira sa iyong karanasan bilang user sa ilang partikular na site."
   },
@@ -6561,9 +6471,6 @@
   },
   "yourBalance": {
     "message": "Iyong balanse"
-  },
-  "yourFundsMayBeAtRisk": {
-    "message": "Maaaring nasa panganib ang iyong pondo"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Maaaring nasa panganib ang iyong NFT"

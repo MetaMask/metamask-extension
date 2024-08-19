@@ -66,7 +66,7 @@ describe('wallet_getSession', () => {
     );
   });
 
-  it('gets the authorized scopes from the CAIP-25 endowement permission', async () => {
+  it('gets the authorized scopes from the CAIP-25 endowment permission', async () => {
     const { handler, getCaveat } = createMockedHandler();
 
     await handler(baseRequest);
@@ -77,7 +77,7 @@ describe('wallet_getSession', () => {
     );
   });
 
-  it('throws an error if the CAIP-25 endowement permission does not exist', async () => {
+  it('throws an error if the CAIP-25 endowment permission does not exist', async () => {
     const { handler, getCaveat, end } = createMockedHandler();
     getCaveat.mockReturnValue(null);
 

@@ -42,7 +42,7 @@
     "message": "अपने QR hardware wallet को कनेक्ट करें"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave (जल्द आ रहा है)"
+    "message": "Ngrave Zero"
   },
   "SIWEAddressInvalid": {
     "message": "साइन-इन रिक्वेस्ट का एड्रेस उस अकाउंट के एड्रेस से मेल नहीं खाता जिसका इस्तेमाल आप साइन इन करने के लिए कर रहे हैं।"
@@ -549,9 +549,6 @@
   "andForTwoItems": {
     "message": "$1 और $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
-  },
-  "announcements": {
-    "message": "घोषणाएं"
   },
   "appDescription": {
     "message": "आपके ब्राउज़र में एक Ethereum वॉलेट",
@@ -1452,9 +1449,6 @@
   "data": {
     "message": "डेटा"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "आपका डेटा रीस्टोर नहीं किया जा सकता। लगता है फाइल करप्ट हुई है।"
-  },
   "dataCollectionForMarketing": {
     "message": "विपणन के लिए डेटा संग्रह"
   },
@@ -1551,30 +1545,6 @@
   },
   "details": {
     "message": "विस्तृत जानकारी"
-  },
-  "developerOptions": {
-    "message": "डेवलपर विकल्प"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "वर्तमान में विकास में कन्फर्मेशन रीडिज़ाइन सुविधा को चालू या बंद करता है"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "कन्फर्मेशन रीडिज़ाइन"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "नेटवर्क मेनू के नए डिज़ाइन को टॉगल करता है"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "नेटवर्क मेनू रीडिज़ाइन"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "सभी घोषणाओं के लिए isShown boolean को गलत पर रीसेट करता है। घोषणाएं व्हाट्स न्यू पॉपअप मोडल में दिखाई जाने वाली सूचनाएं हैं।"
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "ऑनबोर्डिंग से संबंधित विभिन्न स्टेट को रीसेट करता है और \"सिक्योर योर वॉलेट\" ऑनबोर्डिंग पेज पर रीडायरेक्ट करता है।"
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "हर टाइमस्टैम्प के परिणाम को लगातार session.storage में सेव किया जा रहा है"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "\"$1\" डिसेबल किया गया है क्योंकि यह ओरिजिनल गैस फ़ीस से कम-से-कम 10% वृद्धि को पूरा नहीं करता है।",
@@ -3520,9 +3490,6 @@
   "onboardedMetametricsTitle": {
     "message": "आपके अनुभव को बेहतर करने में हमारी सहायता करें"
   },
-  "onboarding": {
-    "message": "ऑनबोर्ड हो रहा है"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "IPFS (आईपीएफएस) गेटवे थर्ड पार्टियों द्वारा होस्ट किए गए डेटा को एक्सेस करना और देखना संभव बनाता है। आप एक कस्टम IPFS गेटवे जोड़ सकते हैं या डिफॉल्ट का इस्तेमाल जारी रख सकते हैं।"
   },
@@ -4388,9 +4355,6 @@
   "reset": {
     "message": "रीसेट करें"
   },
-  "resetStates": {
-    "message": "स्टेट रीसेट करें"
-  },
   "resetWallet": {
     "message": "वॉलेट रीसेट करें"
   },
@@ -4408,12 +4372,6 @@
   },
   "restore": {
     "message": "रीस्टोर करें"
-  },
-  "restoreFailed": {
-    "message": "प्रदान की गई फाइल से आपके डेटा को रीस्टोर नहीं किया जा सकता"
-  },
-  "restoreSuccessful": {
-    "message": "आपके डेटा को सफलतापूर्वक रीस्टोर किया गया है"
   },
   "restoreUserData": {
     "message": "यूज़र डेटा रीस्टोर करें"
@@ -4716,9 +4674,6 @@
   "sepolia": {
     "message": "Sepolia टेस्ट नेटवर्क"
   },
-  "serviceWorkerKeepAlive": {
-    "message": "सेवाकर्मी जीवित रहें"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask उत्पाद की उपयोगिता और सुरक्षा को बढ़ाने के लिए इन विश्वसनीय तीसरे-पक्ष की सेवाओं का इस्तेमाल करता है।"
   },
@@ -4807,9 +4762,6 @@
   },
   "signatureRequestGuidance": {
     "message": "यदि आप कंटेंट को पूरी तरह से समझते हैं और रिक्वेस्ट करने वाली साइट पर भरोसा करते हैं तो ही इस मैसेज पर हस्ताक्षर करें।"
-  },
-  "signatureRequestWarning": {
-    "message": "इस मैसेज पर हस्ताक्षर करना खतरनाक हो सकता है। हो सकता है कि आप इस मैसेज के दूसरे सिरे पर पार्टी को अपने अकाउंट और संपत्ति का पूर्ण नियंत्रण दे रहे हों। इसका मतलब है कि वे किसी भी समय आपका अकाउंट खाली कर सकते हैं। सावधानी के साथ आगे बढ़ें। $1."
   },
   "signed": {
     "message": "हस्ताक्षर किया गया"
@@ -5284,9 +5236,6 @@
   },
   "stateLogsDescription": {
     "message": "स्टेट लॉग में आपके सार्वजनिक अकाउंट के एड्रेस और भेजे गए ट्रांसेक्शन शामिल होते हैं।"
-  },
-  "states": {
-    "message": "स्टेट"
   },
   "status": {
     "message": "स्टेटस"
@@ -5926,45 +5875,6 @@
     "message": "प्रति: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "आपको फ़िशिंग हमलों का जोखिम है। Eth_sign को बंद करके अपनी सुरक्षा करें।"
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "यदि आप इस सेटिंग को एनेबल करते हैं, तो आपको हस्ताक्षर रिक्वेस्ट प्राप्त हो सकते हैं जो पढ़ने योग्य नहीं हैं। एक ऐसे मैसेज पर हस्ताक्षर करके जिसे आप समझ नहीं पा रहे हैं, आप अपने फंड और NFT दे देने के लिए सहमत हो सकते हैं।"
-  },
-  "toggleEthSignField": {
-    "message": "Eth_sign अनुरोध"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " आपके साथ धोखा हो सकता है"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "यदि आपसे यह सेटिंग चालू करने के लिए कहा गया है,"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "मैं समझता हूं कि अगर मैं eth_sign रिक्वेस्ट्स को इनेबल करता हूं, तो मैं अपने सभी फंड और NFT's खो सकता हूं। "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "eth_sign रिक्वेस्ट्स को अनुमति देने से आप फ़िशिंग हमलों के प्रति असुरक्षित हो सकते हैं। URL की हमेशा समीक्षा करें और कोड वाले मैसेज पर हस्ताक्षर करते समय सावधान रहें।"
-  },
-  "toggleEthSignModalFormError": {
-    "message": "टेक्स्ट गलत है"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "जारी रखने के लिए \"मैं केवल वही हस्ताक्षर करता हूं जो मुझे समझ में आता है\" डालें"
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "मैं केवल वही हस्ताक्षर करता हूं जो मुझे समझ में आता है"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "अपने जोखिम पर इस्तेमाल करें"
-  },
-  "toggleEthSignOff": {
-    "message": "बंद (अनुशंसित)"
-  },
-  "toggleEthSignOn": {
-    "message": "चालू (अनुशंसित नहीं)"
-  },
   "toggleRequestQueueDescription": {
     "message": "ऐसा करके, आप सभी साइटों के लिए कोई सिंगल नेटवर्क चुनने के बजाय हरेक साइट के लिए एक नेटवर्क चुन सकते हैं। यह फीचर आपको मैन्युअल तरीके से नेटवर्क स्विच करने से रोकता है, इस वजह से कुछ साइटों पर आपका यूज़र अनुभव ख़राब हो सकता है।"
   },
@@ -6561,9 +6471,6 @@
   },
   "yourBalance": {
     "message": "आपका बैलेंस"
-  },
-  "yourFundsMayBeAtRisk": {
-    "message": "आपके फंड खतरे में हो सकते हैं"
   },
   "yourNFTmayBeAtRisk": {
     "message": "आपका NFT खतरे में हो सकता है"

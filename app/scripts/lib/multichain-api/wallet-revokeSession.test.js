@@ -44,7 +44,7 @@ describe('wallet_revokeSession', () => {
     );
   });
 
-  it('revokes the the CAIP-25 endowement permission', async () => {
+  it('revokes the the CAIP-25 endowment permission', async () => {
     const { handler, revokePermission } = createMockedHandler();
 
     await handler(baseRequest);
@@ -54,7 +54,7 @@ describe('wallet_revokeSession', () => {
     );
   });
 
-  it('throws an error if the CAIP-25 endowement permission does not exist', async () => {
+  it('throws an error if the CAIP-25 endowment permission does not exist', async () => {
     const { handler, revokePermission, end } = createMockedHandler();
     revokePermission.mockImplementation(() => {
       throw new PermissionDoesNotExistError();

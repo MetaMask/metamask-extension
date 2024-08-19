@@ -29,6 +29,7 @@ describe('endowment:caip25', () => {
 
     expect(specification.endowmentGetter()).toBeNull();
   });
+
   describe('caveat mutator removeScope', () => {
     it('can remove a caveat', () => {
       const ethereumGoerliCaveat = {
@@ -45,6 +46,7 @@ describe('endowment:caip25', () => {
           },
         },
         sessionProperties: {},
+        isMultichainOrigin: true,
       };
       const result = removeScope('eip155:5', ethereumGoerliCaveat);
       expect(result).toStrictEqual({
@@ -60,6 +62,7 @@ describe('endowment:caip25', () => {
         },
       });
     });
+
     it('can revoke the entire permission when a requiredScope is removed', () => {
       const ethereumGoerliCaveat = {
         requiredScopes: {
@@ -75,12 +78,14 @@ describe('endowment:caip25', () => {
           },
         },
         sessionProperties: {},
+        isMultichainOrigin: true,
       };
       const result = removeScope('eip155:1', ethereumGoerliCaveat);
       expect(result).toStrictEqual({
         operation: CaveatMutatorOperation.revokePermission,
       });
     });
+
     it('can noop when nothing is removed', () => {
       const ethereumGoerliCaveat = {
         requiredScopes: {
@@ -96,6 +101,7 @@ describe('endowment:caip25', () => {
           },
         },
         sessionProperties: {},
+        isMultichainOrigin: true,
       };
       const result = removeScope('eip155:2', ethereumGoerliCaveat);
       expect(result).toStrictEqual({
@@ -103,6 +109,7 @@ describe('endowment:caip25', () => {
       });
     });
   });
+
   describe('caveat mutator removeAccount', () => {
     it('can remove an account', () => {
       const ethereumGoerliCaveat: Caip25CaveatValue = {
@@ -114,6 +121,7 @@ describe('endowment:caip25', () => {
           },
         },
         optionalScopes: {},
+        isMultichainOrigin: true,
       };
       const result = removeAccount('0x1', ethereumGoerliCaveat);
       expect(result).toStrictEqual({
@@ -127,9 +135,11 @@ describe('endowment:caip25', () => {
             },
           },
           optionalScopes: {},
+          isMultichainOrigin: true,
         },
       });
     });
+
     it('can remove an account in multiple scopes in optional and required', () => {
       const ethereumGoerliCaveat: Caip25CaveatValue = {
         requiredScopes: {
@@ -151,6 +161,7 @@ describe('endowment:caip25', () => {
             accounts: ['eip155:3:0x1', 'eip155:3:0x2'],
           },
         },
+        isMultichainOrigin: true,
       };
       const result = removeAccount('0x1', ethereumGoerliCaveat);
       expect(result).toStrictEqual({
@@ -175,9 +186,11 @@ describe('endowment:caip25', () => {
               accounts: ['eip155:3:0x2'],
             },
           },
+          isMultichainOrigin: true,
         },
       });
     });
+
     it('can noop when nothing is removed', () => {
       const ethereumGoerliCaveat: Caip25CaveatValue = {
         requiredScopes: {
@@ -193,6 +206,7 @@ describe('endowment:caip25', () => {
             notifications: ['accountsChanged'],
           },
         },
+        isMultichainOrigin: true,
       };
       const result = removeAccount('0x3', ethereumGoerliCaveat);
       expect(result).toStrictEqual({
@@ -200,4 +214,6 @@ describe('endowment:caip25', () => {
       });
     });
   });
+
+  // it.todo('permission validator');
 });

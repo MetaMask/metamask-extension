@@ -42,7 +42,7 @@
     "message": "Подключите свой аппаратный кошелек на основе QR-кодов"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave (скоро появятся)"
+    "message": "Ngrave Zero"
   },
   "SIWEAddressInvalid": {
     "message": "Адрес в запросе на вход не соответствует адресу счета, который вы используете для входа."
@@ -549,9 +549,6 @@
   "andForTwoItems": {
     "message": "$1 и $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
-  },
-  "announcements": {
-    "message": "Объявления"
   },
   "appDescription": {
     "message": "Кошелек Ethereum в вашем браузере",
@@ -1452,9 +1449,6 @@
   "data": {
     "message": "Данные"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Не удается восстановить ваши данные. Файл, по-видимому, поврежден."
-  },
   "dataCollectionForMarketing": {
     "message": "Сбор данных для маркетинга"
   },
@@ -1551,30 +1545,6 @@
   },
   "details": {
     "message": "Подробности"
-  },
-  "developerOptions": {
-    "message": "Параметры разработчика"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Включает или отключает функцию редизайна подтверждений, которая в настоящее время находится в разработке"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Редизайн подтверждений"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Переключает на новый дизайн меню «Сети»"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Переработка дизайна меню «Сети»"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Сбрасывает логическое значение isShown в значение false для всех объявлений. Объявления — это уведомления, отображаемые во всплывающем модальном окне «Что нового»."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Сбрасывает различные состояния, связанные с регистрацией, и перенаправляет на страницу регистрации «Защитите свой кошелек»."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "В результате отметка времени постоянно сохраняется в session.storage"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "$1 отключена, поскольку не соответствует минимальному увеличению на 10% от первоначальной платы за газ.",
@@ -3520,9 +3490,6 @@
   "onboardedMetametricsTitle": {
     "message": "Помогите нам улучшить ваш опыт"
   },
-  "onboarding": {
-    "message": "Регистрация"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "Шлюз IPFS позволяет получать доступ к данным, размещенным третьими сторонами, и просматривать их. Вы можете добавить пользовательский шлюз IPFS или продолжить использовать шлюз по умолчанию."
   },
@@ -4388,9 +4355,6 @@
   "reset": {
     "message": "Сбросить"
   },
-  "resetStates": {
-    "message": "Сбросить состояния"
-  },
   "resetWallet": {
     "message": "Сбросить кошелек"
   },
@@ -4408,12 +4372,6 @@
   },
   "restore": {
     "message": "Восстановить"
-  },
-  "restoreFailed": {
-    "message": "Не удается восстановить ваши данные из предоставленного файла"
-  },
-  "restoreSuccessful": {
-    "message": "Ваши данные успешно восстановлены"
   },
   "restoreUserData": {
     "message": "Восстановить пользовательские данные"
@@ -4716,9 +4674,6 @@
   "sepolia": {
     "message": "Тестовая сеть Sepolia"
   },
-  "serviceWorkerKeepAlive": {
-    "message": "Поддерживать активным сервисный модуль"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask использует эти доверенные сторонние сервисы для повышения удобства использования и безопасности продукта."
   },
@@ -4807,9 +4762,6 @@
   },
   "signatureRequestGuidance": {
     "message": "Подписывайте это сообщение только в том случае, если вы полностью понимаете его содержание и доверяете запрашивающему сайту."
-  },
-  "signatureRequestWarning": {
-    "message": "Подписание этого сообщения может быть опасным. Возможно, вы предоставляете полный контроль над своим счетом и активами стороне на другом конце этого сообщения. Это означает, что она может опустошить ваш счет в любое время. Действуйте с осторожностью. $1."
   },
   "signed": {
     "message": "Подписано"
@@ -5284,9 +5236,6 @@
   },
   "stateLogsDescription": {
     "message": "Журналы состояния содержат ваши адреса публичных счетов и отправленные транзакции."
-  },
-  "states": {
-    "message": "Состояния"
   },
   "status": {
     "message": "Статус"
@@ -5926,45 +5875,6 @@
     "message": "Адресат: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "Вы подвержены риску фишинговых атак. Защитите себя, отключив eth_sign."
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "Если вы включите этот параметр, вы можете получать запросы подписи, которые невозможно прочитать. Подписав сообщение, которое вы не понимаете, вы можете согласиться отдать свои средства и NFT."
-  },
-  "toggleEthSignField": {
-    "message": "Запросы eth_sign"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " вас могут обмануть"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "Если вас попросили включить этот параметр,"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "Я понимаю, что могу потерять все свои средства и NFT, если включу запросы eth_sign. "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "Разрешение запросов eth_sign может сделать вас уязвимыми для фишинговых атак. Всегда проверяйте URL и будьте осторожны при подписании сообщений, содержащих код."
-  },
-  "toggleEthSignModalFormError": {
-    "message": "Текст неверный"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "Введите «Я подписываю только то, что понимаю», чтобы продолжить."
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "Я подписываю только то, что понимаю"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "Используйте на свой риск"
-  },
-  "toggleEthSignOff": {
-    "message": "ВЫКЛ. (рекомендуется)"
-  },
-  "toggleEthSignOn": {
-    "message": "ВКЛ. (не рекомендуется)"
-  },
   "toggleRequestQueueDescription": {
     "message": "Это позволяет вам выбрать сеть для каждого сайта вместо одной выбранной сети для всех сайтов. Эта функция не позволит вам переключать сети вручную, что может снизить удобство использования некоторых сайтов."
   },
@@ -6561,9 +6471,6 @@
   },
   "yourBalance": {
     "message": "Ваш баланс"
-  },
-  "yourFundsMayBeAtRisk": {
-    "message": "Ваши средства могут быть в опасности"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Ваш NFT могут быть в опасности"

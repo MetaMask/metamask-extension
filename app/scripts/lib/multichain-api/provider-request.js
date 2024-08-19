@@ -39,7 +39,7 @@ export async function providerRequestHandler(
     Caip25EndowmentPermissionName,
     Caip25CaveatType,
   );
-  if (!caveat) {
+  if (!caveat?.value.isMultichainOrigin) {
     return end(new Error('missing CAIP-25 endowment'));
   }
 

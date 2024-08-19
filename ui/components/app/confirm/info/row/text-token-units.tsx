@@ -6,6 +6,7 @@ import {
   formatAmount,
   formatAmountMaxPrecision,
 } from '../../../../../pages/confirmations/components/simulation-details/formatAmount';
+import { shortenString } from '../../../../../helpers/utils/util';
 import { ConfirmInfoRowText } from './text';
 
 type ConfirmInfoRowTextTokenUnitsProps = {
@@ -18,15 +19,17 @@ export const ConfirmInfoRowTextTokenUnits: React.FC<
 > = ({ value, decimals }) => {
   const tokenValue = calcTokenAmount(value, decimals);
 
-  // FIXME - Precision may be lost for large values when using formatAmount
-  /** @see {@link https://github.com/MetaMask/metamask-extension/issues/25755} */
   const tokenText = formatAmount('en-US', tokenValue);
   const tokenTextMaxPrecision = formatAmountMaxPrecision('en-US', tokenValue);
 
   return (
     <ConfirmInfoRowText
-      isEllipsis={true}
-      text={tokenText}
+      text={shortenString(tokenText, {
+        truncatedCharLimit: 15,
+        truncatedStartChars: 15,
+        truncatedEndChars: 0,
+        skipCharacterInEnd: true,
+      })}
       tooltip={tokenTextMaxPrecision}
     />
   );
