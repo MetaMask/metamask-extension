@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.1.0]
+## [12.0.4]
+### Fixed
+- Further prevented data persistence errors related to networks ([#26432](https://github.com/MetaMask/metamask-extension/pull/26432))
+
+## [12.0.3]
+
 ## [12.0.2]
 ### Fixed
 - Prevented data persistence errors related to networks, and phishing protection ([#26383](https://github.com/MetaMask/metamask-extension/pull/26383), [#26396](https://github.com/MetaMask/metamask-extension/pull/26396))
@@ -4913,6 +4919,9 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.0.0...HEAD
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.0.1...HEAD
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.0.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.0.4...HEAD
+[12.0.4]: https://github.com/MetaMask/metamask-extension/compare/v12.0.3...v12.0.4
+[12.0.3]: https://github.com/MetaMask/metamask-extension/compare/v12.0.2...v12.0.3
 [12.0.2]: https://github.com/MetaMask/metamask-extension/compare/v12.0.1...v12.0.2
 [12.0.1]: https://github.com/MetaMask/metamask-extension/compare/v12.0.0...v12.0.1
 [12.0.0]: https://github.com/MetaMask/metamask-extension/compare/v11.16.16...v12.0.0

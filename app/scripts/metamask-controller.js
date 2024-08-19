@@ -1526,9 +1526,10 @@ export default class MetamaskController extends EventEmitter {
       'PushPlatformNotificationsController:onNewNotifications',
       (notification) => {
         this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.PushNotificationReceived,
           category: MetaMetricsEventCategory.PushNotifications,
+          event: MetaMetricsEventName.NotificationReceived,
           properties: {
+            notification_channel: 'push',
             notification_type: notification.type,
             chain_id: notification?.chain_id,
           },
@@ -1539,11 +1540,14 @@ export default class MetamaskController extends EventEmitter {
       'PushPlatformNotificationsController:pushNotificationClicked',
       (notification) => {
         this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.PushNotificationClicked,
           category: MetaMetricsEventCategory.PushNotifications,
+          event: MetaMetricsEventName.NotificationClicked,
           properties: {
+            notification_id: notification.id,
             notification_type: notification.type,
             chain_id: notification?.chain_id,
+            notification_is_read: notification.isRead,
+            click_type: 'push_notification',
           },
         });
       },
