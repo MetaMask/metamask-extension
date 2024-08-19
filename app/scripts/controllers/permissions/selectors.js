@@ -175,13 +175,15 @@ export const getRemovedAuthorizations = (
   newAuthorizationsMap,
   previousAuthorizationsMap,
 ) => {
-  // If there are no previous authorizations, there are no removed authorizations.
-  if (previousAuthorizationsMap === undefined) {
-    return new Map();
-  }
-
   const removedAuthorizations = new Map();
-  if (newAuthorizationsMap === previousAuthorizationsMap) {
+
+  // If there are no previous authorizations, there are no removed authorizations.
+  // OR If the new authorizations map is the same as the previous authorizations map,
+  // there are no removed authorizations
+  if (
+    previousAuthorizationsMap === undefined ||
+    newAuthorizationsMap === previousAuthorizationsMap
+  ) {
     return removedAuthorizations;
   }
 
