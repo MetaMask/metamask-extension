@@ -4,7 +4,6 @@ import { NameType } from '@metamask/name-controller';
 
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { parseTypedDataMessage } from '../../../../../../../../shared/modules/transaction.utils';
-import { Numeric } from '../../../../../../../../shared/modules/Numeric';
 import Name from '../../../../../../../components/app/name/name';
 import {
   ConfirmInfoRow,
