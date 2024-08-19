@@ -310,7 +310,6 @@ describe('Sentry errors', function () {
         async ({ driver, mockedEndpoint }) => {
           // we don't wait for the controllers to be loaded
           await driver.navigate(PAGES.HOME, { waitForControllers: false });
-
           // Wait for Sentry request
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();

@@ -375,19 +375,17 @@ export const SENTRY_BACKGROUND_STATE = {
 
 const flattenedBackgroundStateMask = Object.values(
   SENTRY_BACKGROUND_STATE,
-).reduce((partialBackgroundState: any, controllerState: object) => {
+).reduce((partialBackgroundState, controllerState: object) => {
   return {
     ...partialBackgroundState,
     ...controllerState,
   };
 }, {});
 
-
 // This describes the subset of Redux state attached to errors sent to Sentry
 // These properties have some potential to be useful for debugging, and they do
 // not contain any identifiable information.
 export const SENTRY_UI_STATE = {
-
   gas: true,
   history: true,
   metamask: {
