@@ -1267,7 +1267,6 @@
       "globals": {
         "clearTimeout": true,
         "console.error": true,
-        "console.log": true,
         "setTimeout": true
       },
       "packages": {
@@ -1970,7 +1969,6 @@
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-infura": {
       "globals": {
-        "console.log": true,
         "setTimeout": true
       },
       "packages": {
@@ -2548,7 +2546,6 @@
         "browserify>buffer": true,
         "fast-json-patch": true,
         "lodash": true,
-        "superstruct": true,
         "uuid": true,
         "webpack>events": true
       }
@@ -4927,9 +4924,6 @@
       }
     },
     "json-rpc-engine": {
-      "globals": {
-        "console.log": true
-      },
       "packages": {
         "eth-rpc-errors": true,
         "json-rpc-engine>@metamask/safe-event-emitter": true
