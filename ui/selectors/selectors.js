@@ -1779,12 +1779,35 @@ export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
 export const getCurrentNetwork = createDeepEqualSelector(
   getAllNetworks,
   getProviderConfig,
+  /**
+   * Get the current network configuration.
+   *
+   * @param {Record<string, unknown>[]} allNetworks - All network configurations.
+   * @param {Record<string, unknown>} providerConfig - The configuration for the current network's provider.
+   * @returns {{
+   *   chainId: `0x${string}`;
+   *   id?: string;
+   *   nickname?: string;
+   *   providerType?: string;
+   *   rpcPrefs?: { blockExplorerUrl?: string; imageUrl?: string; };
+   *   rpcUrl: string;
+   *   ticker: string;
+   * }} networkConfiguration - Configuration for the current network.
+   */
   (allNetworks, providerConfig) => {
     const filter =
       providerConfig.type === 'rpc'
         ? (network) => network.id === providerConfig.id
         : (network) => network.id === providerConfig.type;
-    return allNetworks.find(filter);
+    return (
+      allNetworks.find(filter) ?? {
+        chainId: providerConfig.chainId,
+        nickname: providerConfig.nickname,
+        rpcPrefs: providerConfig.rpcPrefs,
+        rpcUrl: providerConfig.rpcUrl,
+        ticker: providerConfig.ticker,
+      }
+    );
   },
 );
 

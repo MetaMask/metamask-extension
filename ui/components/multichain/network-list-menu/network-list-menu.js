@@ -34,6 +34,7 @@ import {
   getUseRequestQueue,
   getNetworkConfigurations,
   getEditedNetwork,
+  getAllDomains,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -99,6 +100,7 @@ export const NetworkListMenu = ({ onClose }) => {
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const useRequestQueue = useSelector(getUseRequestQueue);
   const networkConfigurations = useSelector(getNetworkConfigurations);
+  const domains = useSelector(getAllDomains);
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -304,10 +306,14 @@ export const NetworkListMenu = ({ onClose }) => {
             dispatch(setActiveNetwork(network.id));
           }
 
-          // If presently on a dapp, communicate a change to
-          // the dapp via silent switchEthereumChain that the
-          // network has changed due to user action
-          if (useRequestQueue && selectedTabOrigin) {
+          // If presently on and connected to a dapp, communicate a change to
+          // the dapp via silent switchEthereumChain that the network has
+          // changed due to user action
+          if (
+            useRequestQueue &&
+            selectedTabOrigin &&
+            domains[selectedTabOrigin]
+          ) {
             setNetworkClientIdForDomain(selectedTabOrigin, network.id);
           }
 

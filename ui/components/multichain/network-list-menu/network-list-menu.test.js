@@ -7,6 +7,7 @@ import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
   SEPOLIA_DISPLAY_NAME,
+  NETWORK_TYPES,
 } from '../../../../shared/constants/network';
 import { NetworkListMenu } from '.';
 
@@ -14,24 +15,29 @@ const mockSetShowTestNetworks = jest.fn();
 const mockSetProviderType = jest.fn();
 const mockToggleNetworkMenu = jest.fn();
 const mockNetworkMenuRedesignToggle = jest.fn();
+const mockSetNetworkClientIdForDomain = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => mockSetShowTestNetworks,
   setProviderType: () => mockSetProviderType,
   toggleNetworkMenu: () => mockToggleNetworkMenu,
+  setNetworkClientIdForDomain: (network, id) =>
+    mockSetNetworkClientIdForDomain(network, id),
 }));
 
 jest.mock('../../../helpers/utils/feature-flags', () => ({
   ...jest.requireActual('../../../helpers/utils/feature-flags'),
   getLocalNetworkMenuRedesignFeatureFlag: () => mockNetworkMenuRedesignToggle,
 }));
+const MOCK_ORIGIN = 'https://portfolio.metamask.io';
 
 const render = ({
   showTestNetworks = false,
   currentChainId = '0x5',
   providerConfigId = 'chain5',
   isUnlocked = true,
-  origin = 'https://portfolio.metamask.io',
+  origin = MOCK_ORIGIN,
+  selectedTabOriginInDomainsState = true,
 } = {}) => {
   const state = {
     metamask: {
@@ -46,6 +52,11 @@ const render = ({
         showTestNetworks,
       },
       useRequestQueue: true,
+      domains: {
+        ...(selectedTabOriginInDomainsState
+          ? { [origin]: providerConfigId }
+          : {}),
+      },
     },
     activeTab: {
       origin,
@@ -65,6 +76,7 @@ describe('NetworkListMenu', () => {
     const { container } = render();
     expect(container).toMatchSnapshot();
   });
+
   it('displays important controls', () => {
     const { getByText, getByPlaceholderText } = render();
 
@@ -200,6 +212,34 @@ describe('NetworkListMenu', () => {
       // "Linea Sepolia" should be visible, but "Sepolia" should not
       expect(queryByText('Linea Sepolia')).toBeInTheDocument();
       expect(queryByText('Sepolia')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('selectedTabOrigin is connected to wallet', () => {
+    it('fires setNetworkClientIdForDomain when network item is clicked', () => {
+      const { getByText } = render();
+      fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
+      expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
+        MOCK_ORIGIN,
+        NETWORK_TYPES.MAINNET,
+      );
+    });
+
+    it('fires setNetworkClientIdForDomain when test network item is clicked', () => {
+      const { getByText } = render({ showTestNetworks: true });
+      fireEvent.click(getByText(SEPOLIA_DISPLAY_NAME));
+      expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
+        MOCK_ORIGIN,
+        NETWORK_TYPES.SEPOLIA,
+      );
+    });
+  });
+
+  describe('selectedTabOrigin is not connected to wallet', () => {
+    it('does not fire setNetworkClientIdForDomain when network item is clicked', () => {
+      const { getByText } = render({ selectedTabOriginInDomainsState: false });
+      fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
+      expect(mockSetNetworkClientIdForDomain).not.toHaveBeenCalled();
     });
   });
 });

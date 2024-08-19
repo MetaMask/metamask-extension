@@ -1263,9 +1263,6 @@
   "data": {
     "message": "Daten"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Ihre Daten konnten nicht wiederhergestellt werden. Die Datei scheint beschädigt zu sein."
-  },
   "dataHex": {
     "message": "Hexadezimal"
   },
@@ -4038,12 +4035,6 @@
   },
   "restore": {
     "message": "Wiederherstellen"
-  },
-  "restoreFailed": {
-    "message": "Wiederherstellung Ihrer Daten aus der bereitgestellten Datei nicht möglich"
-  },
-  "restoreSuccessful": {
-    "message": "Ihre Daten wurden erfolgreich wiederhergestellt."
   },
   "restoreUserData": {
     "message": "Benutzerdaten wiederherstellen"
