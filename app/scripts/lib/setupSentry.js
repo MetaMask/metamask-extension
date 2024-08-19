@@ -46,6 +46,16 @@ export default function setupSentry() {
 
   log('Initializing');
 
+  // Normally this would be awaited, but getSelf should be available by the time the report is finalized.
+  // If it's not, we still get the extensionId, and we'll just log an error for installType.
+  browser.management
+    .getSelf()
+    .then((extensionInfo) => {
+      installType = extensionInfo.installType;
+    })
+    .catch((error) => {
+      log('Error getting extension installType', error);
+    });
   integrateLogging();
   setSentryClient();
 
@@ -58,14 +68,7 @@ export default function setupSentry() {
 function getClientOptions() {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
-  browser.management
-    .getSelf()
-    .then((extensionInfo) => {
-      installType = extensionInfo.installType;
-    })
-    .catch((error) => {
-      log('Error getting extension installType', error);
-    });
+
   return {
     beforeBreadcrumb: beforeBreadcrumb(),
     beforeSend: (report) => rewriteReport(report),
