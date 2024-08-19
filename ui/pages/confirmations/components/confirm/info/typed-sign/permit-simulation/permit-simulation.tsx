@@ -1,5 +1,6 @@
 import { Hex } from '@metamask/utils';
 import React from 'react';
+import { Box } from '../../../../../../../components/component-library';
 import { PrimaryType } from '../../../../../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../../../../../shared/modules/transaction.utils';
 import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
