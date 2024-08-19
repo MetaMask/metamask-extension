@@ -5,11 +5,6 @@
         "regeneratorRuntime": "write"
       }
     },
-    "@contentful/rich-text-html-renderer": {
-      "globals": {
-        "SuppressedError": true
-      }
-    },
     "@ensdomains/content-hash": {
       "globals": {
         "console.warn": true
@@ -2098,6 +2093,186 @@
         "crypto.getRandomValues": true
       }
     },
+    "@metamask/notification-services-controller": {
+      "globals": {
+        "Intl.NumberFormat": true,
+        "addEventListener": true,
+        "fetch": true,
+        "registration": true,
+        "removeEventListener": true
+      },
+      "packages": {
+        "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": true,
+        "@metamask/notification-services-controller>@metamask/base-controller": true,
+        "@metamask/notification-services-controller>@metamask/controller-utils": true,
+        "@metamask/notification-services-controller>firebase": true,
+        "@metamask/profile-sync-controller": true,
+        "bignumber.js": true,
+        "loglevel": true,
+        "uuid": true
+      }
+    },
+    "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": {
+      "globals": {
+        "SuppressedError": true
+      }
+    },
+    "@metamask/notification-services-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
+      }
+    },
+    "@metamask/notification-services-controller>@metamask/base-controller>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/snaps-sdk>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
+      }
+    },
+    "@metamask/notification-services-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/ethjs>@metamask/ethjs-unit": true,
+        "@metamask/notification-services-controller>@metamask/base-controller>@metamask/utils": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase": {
+      "packages": {
+        "@metamask/notification-services-controller>firebase>@firebase/app": true,
+        "@metamask/notification-services-controller>firebase>@firebase/messaging": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/app": {
+      "globals": {
+        "FinalizationRegistry": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": true,
+        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/logger": true,
+        "@metamask/notification-services-controller>firebase>@firebase/app>idb": true,
+        "@metamask/notification-services-controller>firebase>@firebase/util": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": {
+      "packages": {
+        "@metamask/notification-services-controller>firebase>@firebase/util": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/logger": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "@swc/helpers>tslib": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/app>idb": {
+      "globals": {
+        "DOMException": true,
+        "IDBCursor": true,
+        "IDBDatabase": true,
+        "IDBIndex": true,
+        "IDBObjectStore": true,
+        "IDBRequest": true,
+        "IDBTransaction": true,
+        "indexedDB.deleteDatabase": true,
+        "indexedDB.open": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/installations": {
+      "globals": {
+        "BroadcastChannel": true,
+        "Headers": true,
+        "btoa": true,
+        "console.error": true,
+        "crypto": true,
+        "fetch": true,
+        "msCrypto": true,
+        "navigator.onLine": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/notification-services-controller>firebase>@firebase/app": true,
+        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": true,
+        "@metamask/notification-services-controller>firebase>@firebase/app>idb": true,
+        "@metamask/notification-services-controller>firebase>@firebase/util": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/messaging": {
+      "globals": {
+        "Headers": true,
+        "Notification.maxActions": true,
+        "Notification.permission": true,
+        "Notification.requestPermission": true,
+        "PushSubscription.prototype.hasOwnProperty": true,
+        "ServiceWorkerRegistration": true,
+        "URL": true,
+        "addEventListener": true,
+        "atob": true,
+        "btoa": true,
+        "clients.matchAll": true,
+        "clients.openWindow": true,
+        "console.warn": true,
+        "document": true,
+        "fetch": true,
+        "indexedDB": true,
+        "location.href": true,
+        "location.origin": true,
+        "navigator": true,
+        "origin.replace": true,
+        "registration.showNotification": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/notification-services-controller>firebase>@firebase/app": true,
+        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": true,
+        "@metamask/notification-services-controller>firebase>@firebase/app>idb": true,
+        "@metamask/notification-services-controller>firebase>@firebase/installations": true,
+        "@metamask/notification-services-controller>firebase>@firebase/util": true,
+        "@swc/helpers>tslib": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/util": {
+      "globals": {
+        "atob": true,
+        "browser": true,
+        "btoa": true,
+        "chrome": true,
+        "console": true,
+        "document": true,
+        "indexedDB": true,
+        "navigator": true,
+        "process": true,
+        "self": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "process": true
+      }
+    },
     "@metamask/object-multiplex": {
       "globals": {
         "console.warn": true
@@ -3875,9 +4050,41 @@
     "@trezor/connect-web>@trezor/connect>@trezor/protobuf": {
       "packages": {
         "@swc/helpers>tslib": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": true,
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
-        "browserify>buffer": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": true
+        "browserify>buffer": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": {
+      "globals": {
+        "process": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/aspromise": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/base64": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/codegen": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/eventemitter": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/fetch": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/float": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/inquire": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/path": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/pool": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/utf8": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/codegen": {
+      "globals": {
+        "console.log": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/fetch": {
+      "globals": {
+        "XMLHttpRequest": true
+      },
+      "packages": {
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/aspromise": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/inquire": true
       }
     },
     "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": {
@@ -4814,153 +5021,6 @@
         "clearTimeout": true,
         "removeEventListener": true,
         "setTimeout": true
-      }
-    },
-    "firebase": {
-      "packages": {
-        "firebase>@firebase/app": true,
-        "firebase>@firebase/messaging": true
-      }
-    },
-    "firebase>@firebase/app": {
-      "globals": {
-        "FinalizationRegistry": true,
-        "console.warn": true
-      },
-      "packages": {
-        "firebase>@firebase/app>@firebase/component": true,
-        "firebase>@firebase/app>@firebase/logger": true,
-        "firebase>@firebase/app>idb": true,
-        "firebase>@firebase/util": true
-      }
-    },
-    "firebase>@firebase/app>@firebase/component": {
-      "packages": {
-        "firebase>@firebase/util": true
-      }
-    },
-    "firebase>@firebase/app>@firebase/logger": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "@swc/helpers>tslib": true
-      }
-    },
-    "firebase>@firebase/app>idb": {
-      "globals": {
-        "DOMException": true,
-        "IDBCursor": true,
-        "IDBDatabase": true,
-        "IDBIndex": true,
-        "IDBObjectStore": true,
-        "IDBRequest": true,
-        "IDBTransaction": true,
-        "indexedDB.deleteDatabase": true,
-        "indexedDB.open": true
-      }
-    },
-    "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": {
-      "globals": {
-        "process": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/aspromise": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/base64": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/codegen": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/eventemitter": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/fetch": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/float": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/inquire": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/path": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/pool": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/utf8": true
-      }
-    },
-    "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/codegen": {
-      "globals": {
-        "console.log": true
-      }
-    },
-    "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/fetch": {
-      "globals": {
-        "XMLHttpRequest": true
-      },
-      "packages": {
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/aspromise": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/inquire": true
-      }
-    },
-    "firebase>@firebase/installations": {
-      "globals": {
-        "BroadcastChannel": true,
-        "Headers": true,
-        "btoa": true,
-        "console.error": true,
-        "crypto": true,
-        "fetch": true,
-        "msCrypto": true,
-        "navigator.onLine": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "firebase>@firebase/app": true,
-        "firebase>@firebase/app>@firebase/component": true,
-        "firebase>@firebase/app>idb": true,
-        "firebase>@firebase/util": true
-      }
-    },
-    "firebase>@firebase/messaging": {
-      "globals": {
-        "Headers": true,
-        "Notification.maxActions": true,
-        "Notification.permission": true,
-        "Notification.requestPermission": true,
-        "PushSubscription.prototype.hasOwnProperty": true,
-        "ServiceWorkerRegistration": true,
-        "URL": true,
-        "addEventListener": true,
-        "atob": true,
-        "btoa": true,
-        "clients.matchAll": true,
-        "clients.openWindow": true,
-        "console.warn": true,
-        "document": true,
-        "fetch": true,
-        "indexedDB": true,
-        "location.href": true,
-        "location.origin": true,
-        "navigator": true,
-        "origin.replace": true,
-        "registration.showNotification": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@swc/helpers>tslib": true,
-        "firebase>@firebase/app": true,
-        "firebase>@firebase/app>@firebase/component": true,
-        "firebase>@firebase/app>idb": true,
-        "firebase>@firebase/installations": true,
-        "firebase>@firebase/util": true
-      }
-    },
-    "firebase>@firebase/util": {
-      "globals": {
-        "atob": true,
-        "browser": true,
-        "btoa": true,
-        "chrome": true,
-        "console": true,
-        "document": true,
-        "indexedDB": true,
-        "navigator": true,
-        "process": true,
-        "self": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "process": true
       }
     },
     "fuse.js": {
