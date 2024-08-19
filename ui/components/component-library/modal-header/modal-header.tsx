@@ -51,6 +51,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
             ariaLabel={t('close')}
             size={ButtonIconSize.Sm}
             onClick={onClose}
+            data-testid="alert-modal-close-button"
             {...closeButtonProps}
           />
         ))

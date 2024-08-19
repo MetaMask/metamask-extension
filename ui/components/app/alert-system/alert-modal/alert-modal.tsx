@@ -166,7 +166,12 @@ function AlertDetails({
     >
       {customDetails ?? (
         <Box>
-          <Text variant={TextVariant.bodyMd}>{selectedAlert.message}</Text>
+          <Text
+            variant={TextVariant.bodyMd}
+            data-testid="alert-modal__selected-alert"
+          >
+            {selectedAlert.message}
+          </Text>
           {selectedAlert.alertDetails?.length ? (
             <Text variant={TextVariant.bodyMdBold} marginTop={1}>
               {t('alertModalDetails')}

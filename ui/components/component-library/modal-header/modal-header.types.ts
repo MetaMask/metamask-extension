@@ -41,4 +41,6 @@ export interface ModalHeaderProps extends HeaderBaseStyleUtilityProps {
    * Default to have the close `ButtonIcon` when `onClose` is passed, but passing a  `endAccessory` will override this
    */
   endAccessory?: React.ReactNode;
+
+  'data-testId'?: string;
 }
