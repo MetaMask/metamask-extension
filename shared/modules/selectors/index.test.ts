@@ -15,7 +15,6 @@ describe('Selectors', () => {
       metamask: {
         preferences: {
           smartTransactionsOptInStatus: true,
-          showTokenAutodetectModal: true,
         },
         internalAccounts: {
           selectedAccount: 'account1',
@@ -68,14 +67,6 @@ describe('Selectors', () => {
 
   describe('getSmartTransactionsOptInStatus', () => {
     it('should return the smart transactions opt-in status', () => {
-      const state = createMockState();
-      const result = getSmartTransactionsOptInStatus(state);
-      expect(result).toBe(true);
-    });
-  });
-
-  describe('getShowTokenAutodetectModal', () => {
-    it('should return show autodetection token modal status', () => {
       const state = createMockState();
       const result = getSmartTransactionsOptInStatus(state);
       expect(result).toBe(true);

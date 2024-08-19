@@ -88,7 +88,6 @@ export const SENTRY_BACKGROUND_STATE = {
     currentMigrationVersion: true,
     previousAppVersion: true,
     previousMigrationVersion: true,
-    showTokenAutodetectModalOnUpgrade: false,
   },
   ApprovalController: {
     approvalFlows: false,
@@ -169,10 +168,10 @@ export const SENTRY_BACKGROUND_STATE = {
   LoggingController: {
     logs: false,
   },
-  MetamaskNotificationsController: {
+  NotificationServicesController: {
     subscriptionAccountsSeen: false,
     isMetamaskNotificationsFeatureSeen: false,
-    isMetamaskNotificationsEnabled: false,
+    isNotificationServicesEnabled: false,
     isFeatureAnnouncementsEnabled: false,
     metamaskNotificationsList: false,
     metamaskNotificationsReadList: false,
@@ -254,7 +253,6 @@ export const SENTRY_BACKGROUND_STATE = {
       smartTransactionsOptInStatus: true,
       useNativeCurrencyAsPrimaryCurrency: true,
       petnamesEnabled: true,
-      showTokenAutodetectModal: false,
       showConfirmationAdvancedDetails: true,
     },
     useExternalServices: false,
@@ -310,8 +308,11 @@ export const SENTRY_BACKGROUND_STATE = {
     snapStates: false,
     snaps: false,
   },
-  SnapInterface: {
+  SnapInterfaceController: {
     interfaces: false,
+  },
+  SnapInsightsController: {
+    insights: false,
   },
   SnapsRegistry: {
     database: false,

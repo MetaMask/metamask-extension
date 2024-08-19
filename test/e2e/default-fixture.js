@@ -16,10 +16,10 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       UserStorageController: {
         isProfileSyncingEnabled: true,
       },
-      MetamaskNotificationsController: {
+      NotificationServicesController: {
         subscriptionAccountsSeen: [],
         isFeatureAnnouncementsEnabled: false,
-        isMetamaskNotificationsEnabled: false,
+        isNotificationServicesEnabled: false,
         isMetamaskNotificationsFeatureSeen: false,
         metamaskNotificationsList: [],
         metamaskNotificationsReadList: [],
@@ -197,7 +197,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
-          showTokenAutodetectModal: false,
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
         },

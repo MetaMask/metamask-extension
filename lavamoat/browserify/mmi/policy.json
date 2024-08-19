@@ -5,11 +5,6 @@
         "regeneratorRuntime": "write"
       }
     },
-    "@contentful/rich-text-html-renderer": {
-      "globals": {
-        "SuppressedError": true
-      }
-    },
     "@ensdomains/content-hash": {
       "globals": {
         "console.warn": true
@@ -2107,7 +2102,7 @@
         "removeEventListener": true
       },
       "packages": {
-        "@contentful/rich-text-html-renderer": true,
+        "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": true,
         "@metamask/notification-services-controller>@metamask/base-controller": true,
         "@metamask/notification-services-controller>@metamask/controller-utils": true,
         "@metamask/notification-services-controller>firebase": true,
@@ -2115,6 +2110,11 @@
         "bignumber.js": true,
         "loglevel": true,
         "uuid": true
+      }
+    },
+    "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": {
+      "globals": {
+        "SuppressedError": true
       }
     },
     "@metamask/notification-services-controller>@metamask/base-controller": {
