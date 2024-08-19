@@ -745,7 +745,7 @@ const PRIVATE_KEY =
   '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
 
 const PRIVATE_KEY_TWO =
-  '0xa444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
+  '0xf444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
 
 const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
@@ -776,6 +776,12 @@ const multipleGanacheOptions = {
       balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
     },
   ],
+};
+
+const multipleGanacheOptionsForType2Transactions = {
+  ...multipleGanacheOptions,
+  // EVM version that supports type 2 transactions (EIP1559)
+  hardfork: 'london',
 };
 
 const generateGanacheOptions = ({
@@ -887,11 +893,23 @@ const TEST_SEED_PHRASE =
 const TEST_SEED_PHRASE_TWO =
   'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
-// Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
-const locateAccountBalanceDOM = async (driver, ganacheServer) => {
+/**
+ * Checks the balance for a specific address. If no address is provided, it defaults to the first address.
+ * This function is typically used during onboarding to ensure the state is retrieved correctly from metamaskState,
+ * or after a transaction is made.
+ *
+ * @param {WebDriver} driver - The WebDriver instance.
+ * @param {Ganache} [ganacheServer] - The Ganache server instance (optional).
+ * @param {string} [address] - The address to check the balance for (optional).
+ */
+const locateAccountBalanceDOM = async (
+  driver,
+  ganacheServer,
+  address = null,
+) => {
   const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
   if (ganacheServer) {
-    const balance = await ganacheServer.getBalance();
+    const balance = await ganacheServer.getBalance(address);
     await driver.waitForSelector({
       css: balanceSelector,
       text: `${balance} ETH`,
@@ -967,12 +985,10 @@ function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
  *
  * @param {object} options - Options for the function.
  * @param {WebDriver} options.driver - The WebDriver instance controlling the browser.
- * @param {string} [options.locatorID] - ID of the signature element (if any).
  * @param {boolean} [options.snapSigInsights] - Whether to wait for the insights snap to be ready before clicking the sign button.
  */
 async function clickSignOnSignatureConfirmation({
   driver,
-  locatorID = null,
   snapSigInsights = false,
 }) {
   if (snapSigInsights) {
@@ -982,15 +998,6 @@ async function clickSignOnSignatureConfirmation({
   }
 
   await driver.clickElement({ text: 'Sign', tag: 'button' });
-
-  // #ethSign has a second Sign confirmation button that says "Your funds may be at risk"
-  if (locatorID === '#ethSign') {
-    await driver.clickElement({
-      text: 'Sign',
-      tag: 'button',
-      css: '[data-testid="signature-warning-sign-button"]',
-    });
-  }
 }
 
 /**
@@ -1237,6 +1244,8 @@ module.exports = {
   connectToDapp,
   multipleGanacheOptions,
   defaultGanacheOptions,
+  defaultGanacheOptionsForType2Transactions,
+  multipleGanacheOptionsForType2Transactions,
   sendTransaction,
   sendScreenToConfirmScreen,
   findAnotherAccountFromAccountList,
@@ -1265,7 +1274,6 @@ module.exports = {
   getCleanAppState,
   editGasFeeForm,
   clickNestedButton,
-  defaultGanacheOptionsForType2Transactions,
   removeSelectedAccount,
   getSelectedAccountAddress,
   tempToggleSettingRedesignedConfirmations,

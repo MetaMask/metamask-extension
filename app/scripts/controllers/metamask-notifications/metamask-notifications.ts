@@ -2,7 +2,6 @@ import {
   BaseController,
   RestrictedControllerMessenger,
   ControllerGetStateAction,
-  ControllerStateChangeEvent,
   StateMetadata,
 } from '@metamask/base-controller';
 import log from 'loglevel';
@@ -10,23 +9,15 @@ import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
   KeyringControllerGetAccountsAction,
   KeyringControllerStateChangeEvent,
+  KeyringControllerGetStateAction,
+  KeyringControllerLockEvent,
+  KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
 import {
-  AuthenticationControllerGetBearerToken,
-  AuthenticationControllerIsSignedIn,
-} from '../authentication/authentication-controller';
-import {
-  PushPlatformNotificationsControllerEnablePushNotifications,
-  PushPlatformNotificationsControllerDisablePushNotifications,
-  PushPlatformNotificationsControllerUpdateTriggerPushNotifications,
-  PushPlatformNotificationsControllerOnNewNotificationEvent,
-} from '../push-platform-notifications/push-platform-notifications';
-import {
-  UserStorageControllerEnableProfileSyncing,
-  UserStorageControllerGetStorageKey,
-  UserStorageControllerPerformGetStorage,
-  UserStorageControllerPerformSetStorage,
-} from '../user-storage/user-storage-controller';
+  AuthenticationController,
+  UserStorageController,
+} from '@metamask/profile-sync-controller';
+import { NotificationsServicesPushController } from '@metamask/notification-services-controller';
 import {
   TRIGGER_TYPES,
   TRIGGER_TYPES_GROUPS,
@@ -196,39 +187,40 @@ export type Actions =
 export type AllowedActions =
   // Keyring Controller Requests
   | KeyringControllerGetAccountsAction
+  | KeyringControllerGetStateAction
   // Auth Controller Requests
-  | AuthenticationControllerGetBearerToken
-  | AuthenticationControllerIsSignedIn
+  | AuthenticationController.AuthenticationControllerGetBearerToken
+  | AuthenticationController.AuthenticationControllerIsSignedIn
   // User Storage Controller Requests
-  | UserStorageControllerEnableProfileSyncing
-  | UserStorageControllerGetStorageKey
-  | UserStorageControllerPerformGetStorage
-  | UserStorageControllerPerformSetStorage
+  | UserStorageController.UserStorageControllerEnableProfileSyncing
+  | UserStorageController.UserStorageControllerGetStorageKey
+  | UserStorageController.UserStorageControllerPerformGetStorage
+  | UserStorageController.UserStorageControllerPerformSetStorage
   // Push Notifications Controller Requests
-  | PushPlatformNotificationsControllerEnablePushNotifications
-  | PushPlatformNotificationsControllerDisablePushNotifications
-  | PushPlatformNotificationsControllerUpdateTriggerPushNotifications;
+  | NotificationsServicesPushController.NotificationServicesPushControllerEnablePushNotificationsAction
+  | NotificationsServicesPushController.NotificationServicesPushControllerDisablePushNotificationsAction
+  | NotificationsServicesPushController.NotificationServicesPushControllerUpdateTriggerPushNotificationsAction;
 
 // Events
-export type MetamaskNotificationsControllerMessengerEvents =
-  ControllerStateChangeEvent<
-    typeof controllerName,
-    MetamaskNotificationsControllerState
-  >;
+export type Events =
+  | MetamaskNotificationsControllerNotificationsListUpdatedEvent
+  | MetamaskNotificationsControllerMarkNotificationsAsRead;
 
 // Allowed Events
 export type AllowedEvents =
+  // Keyring Events
   | KeyringControllerStateChangeEvent
-  | PushPlatformNotificationsControllerOnNewNotificationEvent
-  | MetamaskNotificationsControllerNotificationsListUpdatedEvent
-  | MetamaskNotificationsControllerMarkNotificationsAsRead;
+  | KeyringControllerLockEvent
+  | KeyringControllerUnlockEvent
+  // Push Notification Events
+  | NotificationsServicesPushController.NotificationServicesPushControllerOnNewNotificationEvent;
 
 // Type for the messenger of MetamaskNotificationsController
 export type MetamaskNotificationsControllerMessenger =
   RestrictedControllerMessenger<
     typeof controllerName,
     Actions | AllowedActions,
-    AllowedEvents,
+    Events | AllowedEvents,
     AllowedActions['type'],
     AllowedEvents['type']
   >;
@@ -241,6 +233,34 @@ export class MetamaskNotificationsController extends BaseController<
   MetamaskNotificationsControllerState,
   MetamaskNotificationsControllerMessenger
 > {
+  // Flag to check is notifications have been setup when the browser/extension is initialized.
+  // We want to re-initialize push notifications when the browser/extension is refreshed
+  // To ensure we subscribe to the most up-to-date notifications
+  #isPushNotificationsSetup = false;
+
+  #isUnlocked = false;
+
+  #keyringController = {
+    setupLockedStateSubscriptions: (onUnlock: () => Promise<void>) => {
+      const { isUnlocked } = this.messagingSystem.call(
+        'KeyringController:getState',
+      );
+      this.#isUnlocked = isUnlocked;
+
+      this.messagingSystem.subscribe('KeyringController:unlock', () => {
+        this.#isUnlocked = true;
+        // messaging system cannot await promises
+        // we don't need to wait for a result on this.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        onUnlock();
+      });
+
+      this.messagingSystem.subscribe('KeyringController:lock', () => {
+        this.#isUnlocked = false;
+      });
+    },
+  };
+
   #auth = {
     getBearerToken: async () => {
       return await this.messagingSystem.call(
@@ -264,13 +284,13 @@ export class MetamaskNotificationsController extends BaseController<
     getNotificationStorage: async () => {
       return await this.messagingSystem.call(
         'UserStorageController:performGetStorage',
-        'notification_settings',
+        'notifications.notificationSettings',
       );
     },
     setNotificationStorage: async (state: string) => {
       return await this.messagingSystem.call(
         'UserStorageController:performSetStorage',
-        'notification_settings',
+        'notifications.notificationSettings',
         state,
       );
     },
@@ -280,7 +300,7 @@ export class MetamaskNotificationsController extends BaseController<
     enablePushNotifications: async (UUIDs: string[]) => {
       try {
         await this.messagingSystem.call(
-          'PushPlatformNotificationsController:enablePushNotifications',
+          'NotificationServicesPushController:enablePushNotifications',
           UUIDs,
         );
       } catch (e) {
@@ -290,7 +310,7 @@ export class MetamaskNotificationsController extends BaseController<
     disablePushNotifications: async (UUIDs: string[]) => {
       try {
         await this.messagingSystem.call(
-          'PushPlatformNotificationsController:disablePushNotifications',
+          'NotificationServicesPushController:disablePushNotifications',
           UUIDs,
         );
       } catch (e) {
@@ -300,7 +320,7 @@ export class MetamaskNotificationsController extends BaseController<
     updatePushNotifications: async (UUIDs: string[]) => {
       try {
         await this.messagingSystem.call(
-          'PushPlatformNotificationsController:updateTriggerPushNotifications',
+          'NotificationServicesPushController:updateTriggerPushNotifications',
           UUIDs,
         );
       } catch (e) {
@@ -309,7 +329,7 @@ export class MetamaskNotificationsController extends BaseController<
     },
     subscribe: () => {
       this.messagingSystem.subscribe(
-        'PushPlatformNotificationsController:onNewNotifications',
+        'NotificationServicesPushController:onNewNotifications',
         (notification) => {
           this.updateMetamaskNotificationsList(notification);
         },
@@ -317,6 +337,12 @@ export class MetamaskNotificationsController extends BaseController<
     },
     initializePushNotifications: async () => {
       if (!this.state.isMetamaskNotificationsEnabled) {
+        return;
+      }
+      if (this.#isPushNotificationsSetup) {
+        return;
+      }
+      if (!this.#isUnlocked) {
         return;
       }
 
@@ -327,6 +353,7 @@ export class MetamaskNotificationsController extends BaseController<
 
       const uuids = MetamaskNotificationsUtils.getAllUUIDs(storage);
       await this.#pushNotifications.enablePushNotifications(uuids);
+      this.#isPushNotificationsSetup = true;
     },
   };
 
@@ -434,6 +461,9 @@ export class MetamaskNotificationsController extends BaseController<
 
     this.#registerMessageHandlers();
     this.#clearLoadingStates();
+    this.#keyringController.setupLockedStateSubscriptions(
+      this.#pushNotifications.initializePushNotifications,
+    );
     this.#accounts.initialize();
     this.#pushNotifications.initializePushNotifications();
     this.#accounts.subscribe();

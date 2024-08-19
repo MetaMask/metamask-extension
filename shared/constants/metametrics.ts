@@ -699,8 +699,6 @@ export enum MetaMetricsEventName {
   SnapAccountTransactionFinalizeRedirectGoToSiteClicked = 'Snap Account Transaction Finalize Redirect "Go To Site" Clicked',
   SnapAccountTransactionFinalizeRedirectSnapUrlClicked = 'Snap Account Transaction Finalize Redirect "Snap URL" Clicked',
   SnapAccountTransactionFinalizeClosed = 'Snap Account Transaction Finalize Closed',
-  TokenAutoDetectionEnableModal = 'Token Autodetection Enabled from modal',
-  TokenAutoDetectionDisableModal = 'Token Autodetection Disabled from modal',
   ///: END:ONLY_INCLUDE_IF
   TurnOnMetaMetrics = 'MetaMetrics Turned On',
   TurnOffMetaMetrics = 'MetaMetrics Turned Off',
@@ -708,10 +706,8 @@ export enum MetaMetricsEventName {
   NotificationReceived = 'Notification Received',
   NotificationsSettingsUpdated = 'Notifications Settings Updated',
   NotificationClicked = 'Notification Clicked',
-  NotificationsEnablingFlowHandled = 'Notifications Enabling Flow Handled',
+  NotificationMenuOpened = 'Notification Menu Opened',
 
-  NftAutoDetectionEnableModal = 'Nft Autodetection Enabled from modal',
-  NftAutoDetectionDisableModal = 'Nft Autodetection Disabled from modal',
   // Send
   sendAssetSelected = 'Send Asset Selected',
   sendFlowExited = 'Send Flow Exited',
@@ -756,7 +752,6 @@ export enum MetaMetricsEventCategory {
   Messages = 'Messages',
   Navigation = 'Navigation',
   Network = 'Network',
-  EnableNotifications = 'Enable Notifications',
   Onboarding = 'Onboarding',
   NotificationInteraction = 'Notification Interaction',
   NotificationSettings = 'Notification Settings',
@@ -832,6 +827,7 @@ export enum MetaMetricsEventUiCustomization {
   FlaggedAsSafetyUnknown = 'flagged_as_safety_unknown',
   FlaggedAsWarning = 'flagged_as_warning',
   GasEstimationFailed = 'gas_estimation_failed',
+  Order = 'order',
   RedesignedConfirmation = 'redesigned_confirmation',
   SecurityAlertError = 'security_alert_error',
   Siwe = 'sign_in_with_ethereum',

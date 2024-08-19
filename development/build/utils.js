@@ -255,7 +255,7 @@ function getPathInsideNodeModules(packageName, pathToFiles) {
  * @param {string} options.buildType - The build type of the current build.
  * @param {boolean} options.applyLavaMoat - Flag if lavamoat was applied.
  * @param {boolean} options.shouldIncludeSnow - Flag if snow should be included in the build name.
- * @param {boolean} options.shouldIncludeMV3 - Flag if mv3 should be included in the build name.
+ * @param {boolean} options.isManifestV3 - Flag if mv3 should be included in the build name.
  * @param options.environment
  * @returns {string} The build name.
  */
@@ -264,7 +264,7 @@ function getBuildName({
   buildType,
   applyLavaMoat,
   shouldIncludeSnow,
-  shouldIncludeMV3,
+  isManifestV3,
 }) {
   const config = loadBuildTypesConfig();
 
@@ -273,7 +273,7 @@ function getBuildName({
     `MetaMask ${capitalize(buildType)}`;
 
   if (environment !== ENVIRONMENT.PRODUCTION) {
-    const mv3Str = shouldIncludeMV3 ? ' MV3' : '';
+    const mv3Str = isManifestV3 ? ' MV3' : '';
     const lavamoatStr = applyLavaMoat ? ' lavamoat' : '';
     const snowStr = shouldIncludeSnow ? ' snow' : '';
     name += `${mv3Str}${lavamoatStr}${snowStr}`;

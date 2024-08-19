@@ -10,6 +10,7 @@ import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
+import { shortenString } from '../../../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../../selectors';
 import { Box, Text } from '../../../../../../../components/component-library';
@@ -53,6 +54,10 @@ const PermitSimulation: React.FC<{
   }, [exchangeRate, value]);
 
   const { tokenValue, tokenValueMaxPrecision } = useMemo(() => {
+    if (!value) {
+      return { tokenValue: null, tokenValueMaxPrecision: null };
+    }
+
     const tokenAmount = calcTokenAmount(value, tokenDecimals);
 
     return {
@@ -89,9 +94,13 @@ const PermitSimulation: React.FC<{
                   borderRadius={BorderRadius.XL}
                   paddingInline={2}
                   textAlign={TextAlign.Center}
-                  ellipsis
                 >
-                  {tokenValue}
+                  {shortenString(tokenValue || '', {
+                    truncatedCharLimit: 15,
+                    truncatedStartChars: 15,
+                    truncatedEndChars: 0,
+                    skipCharacterInEnd: true,
+                  })}
                 </Text>
               </Tooltip>
             </Box>

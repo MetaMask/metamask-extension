@@ -7,21 +7,11 @@ import {
 } from '@metamask/keyring-controller';
 import { waitFor } from '@testing-library/react';
 import {
-  AuthenticationControllerGetBearerToken,
-  AuthenticationControllerIsSignedIn,
-} from '../authentication/authentication-controller';
-import { MOCK_ACCESS_TOKEN } from '../authentication/mocks/mockResponses';
-import {
-  UserStorageControllerGetStorageKey,
-  UserStorageControllerPerformGetStorage,
-  UserStorageControllerPerformSetStorage,
-  UserStorageControllerEnableProfileSyncing,
-} from '../user-storage/user-storage-controller';
-import {
-  PushPlatformNotificationsControllerEnablePushNotifications,
-  PushPlatformNotificationsControllerDisablePushNotifications,
-  PushPlatformNotificationsControllerUpdateTriggerPushNotifications,
-} from '../push-platform-notifications/push-platform-notifications';
+  AuthenticationController,
+  UserStorageController,
+} from '@metamask/profile-sync-controller';
+import { NotificationsServicesPushController } from '@metamask/notification-services-controller';
+
 import {
   AllowedActions,
   AllowedEvents,
@@ -49,6 +39,12 @@ import { processNotification } from './processors/process-notifications';
 import * as OnChainNotifications from './services/onchain-notifications';
 import { UserStorage } from './types/user-storage/user-storage';
 import * as MetamaskNotificationsUtils from './utils/utils';
+
+const AuthMocks = AuthenticationController.Mocks;
+
+// Mock type used for testing purposes
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type MockVar = any;
 
 describe('metamask-notifications - constructor()', () => {
   test('initializes state & override state', () => {
@@ -627,11 +623,12 @@ function mockNotificationMessenger() {
     name: 'MetamaskNotificationsController',
     allowedActions: [
       'KeyringController:getAccounts',
+      'KeyringController:getState',
       'AuthenticationController:getBearerToken',
       'AuthenticationController:isSignedIn',
-      'PushPlatformNotificationsController:disablePushNotifications',
-      'PushPlatformNotificationsController:enablePushNotifications',
-      'PushPlatformNotificationsController:updateTriggerPushNotifications',
+      'NotificationServicesPushController:disablePushNotifications',
+      'NotificationServicesPushController:enablePushNotifications',
+      'NotificationServicesPushController:updateTriggerPushNotifications',
       'UserStorageController:getStorageKey',
       'UserStorageController:performGetStorage',
       'UserStorageController:performSetStorage',
@@ -639,7 +636,9 @@ function mockNotificationMessenger() {
     ],
     allowedEvents: [
       'KeyringController:stateChange',
-      'PushPlatformNotificationsController:onNewNotifications',
+      'KeyringController:lock',
+      'KeyringController:unlock',
+      'NotificationServicesPushController:onNewNotifications',
     ],
   });
 
@@ -647,37 +646,39 @@ function mockNotificationMessenger() {
     typedMockAction<KeyringControllerGetAccountsAction>().mockResolvedValue([]);
 
   const mockGetBearerToken =
-    typedMockAction<AuthenticationControllerGetBearerToken>().mockResolvedValue(
-      MOCK_ACCESS_TOKEN,
+    typedMockAction<AuthenticationController.AuthenticationControllerGetBearerToken>().mockResolvedValue(
+      AuthMocks.MOCK_ACCESS_TOKEN,
     );
 
   const mockIsSignedIn =
-    typedMockAction<AuthenticationControllerIsSignedIn>().mockReturnValue(true);
+    typedMockAction<AuthenticationController.AuthenticationControllerIsSignedIn>().mockReturnValue(
+      true,
+    );
 
   const mockDisablePushNotifications =
-    typedMockAction<PushPlatformNotificationsControllerDisablePushNotifications>();
+    typedMockAction<NotificationsServicesPushController.NotificationServicesPushControllerDisablePushNotificationsAction>();
 
   const mockEnablePushNotifications =
-    typedMockAction<PushPlatformNotificationsControllerEnablePushNotifications>();
+    typedMockAction<NotificationsServicesPushController.NotificationServicesPushControllerEnablePushNotificationsAction>();
 
   const mockUpdateTriggerPushNotifications =
-    typedMockAction<PushPlatformNotificationsControllerUpdateTriggerPushNotifications>();
+    typedMockAction<NotificationsServicesPushController.NotificationServicesPushControllerUpdateTriggerPushNotificationsAction>();
 
   const mockGetStorageKey =
-    typedMockAction<UserStorageControllerGetStorageKey>().mockResolvedValue(
+    typedMockAction<UserStorageController.UserStorageControllerGetStorageKey>().mockResolvedValue(
       'MOCK_STORAGE_KEY',
     );
 
   const mockEnableProfileSyncing =
-    typedMockAction<UserStorageControllerEnableProfileSyncing>();
+    typedMockAction<UserStorageController.UserStorageControllerEnableProfileSyncing>();
 
   const mockPerformGetStorage =
-    typedMockAction<UserStorageControllerPerformGetStorage>().mockResolvedValue(
+    typedMockAction<UserStorageController.UserStorageControllerPerformGetStorage>().mockResolvedValue(
       JSON.stringify(createMockFullUserStorage()),
     );
 
   const mockPerformSetStorage =
-    typedMockAction<UserStorageControllerPerformSetStorage>();
+    typedMockAction<UserStorageController.UserStorageControllerPerformSetStorage>();
 
   jest.spyOn(messenger, 'call').mockImplementation((...args) => {
     const [actionType] = args;
@@ -700,21 +701,21 @@ function mockNotificationMessenger() {
 
     if (
       actionType ===
-      'PushPlatformNotificationsController:disablePushNotifications'
+      'NotificationServicesPushController:disablePushNotifications'
     ) {
       return mockDisablePushNotifications(params[0]);
     }
 
     if (
       actionType ===
-      'PushPlatformNotificationsController:enablePushNotifications'
+      'NotificationServicesPushController:enablePushNotifications'
     ) {
       return mockEnablePushNotifications(params[0]);
     }
 
     if (
       actionType ===
-      'PushPlatformNotificationsController:updateTriggerPushNotifications'
+      'NotificationServicesPushController:updateTriggerPushNotifications'
     ) {
       return mockUpdateTriggerPushNotifications(params[0]);
     }
@@ -735,10 +736,11 @@ function mockNotificationMessenger() {
       return mockPerformSetStorage(params[0], params[1]);
     }
 
-    function exhaustedMessengerMocks(action: never) {
-      return new Error(`MOCK_FAIL - unsupported messenger call: ${action}`);
+    if (actionType === 'KeyringController:getState') {
+      return { isUnlocked: true } as MockVar;
     }
-    throw exhaustedMessengerMocks(actionType);
+
+    throw new Error(`MOCK_FAIL - unsupported messenger call: ${actionType}`);
   });
 
   return {
