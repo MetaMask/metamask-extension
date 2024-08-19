@@ -52,6 +52,7 @@ import AssetList from './AssetList';
 import { Search } from './asset-picker-modal-search';
 
 type AssetPickerModalProps = {
+  header: JSX.Element | string | null;
   isOpen: boolean;
   onClose: () => void;
   asset: Asset;
@@ -63,6 +64,7 @@ type AssetPickerModalProps = {
 const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
 export function AssetPickerModal({
+  header,
   isOpen,
   onClose,
   asset,
@@ -256,7 +258,7 @@ export function AssetPickerModal({
       <ModalContent modalDialogProps={{ padding: 0 }}>
         <ModalHeader onClose={onClose}>
           <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
-            {t(isDest ? 'sendSelectReceiveAsset' : 'sendSelectSendAsset')}
+            {header}
           </Text>
         </ModalHeader>
         {isDest && (
