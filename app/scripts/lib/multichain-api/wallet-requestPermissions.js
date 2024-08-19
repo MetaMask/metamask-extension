@@ -10,7 +10,6 @@ import {
 } from './caip25permissions';
 import { validNotifications, validRpcMethods } from './scope';
 import { setEthAccounts } from './caip-permission-adapter-eth-accounts';
-import { PermissionNames } from '../../controllers/permissions';
 
 export const requestPermissionsHandler = {
   methodNames: [MethodNames.requestPermissions],
