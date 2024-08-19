@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-import { openDapp, unlockWallet, WINDOW_TITLES } from '../../../helpers';
-import { Driver } from '../../../webdriver/driver';
+import { openDapp, unlockWallet } from '../../../helpers';
 import {
   confirmDepositTransaction,
   confirmRedesignedContractDeploymentTransaction,
