@@ -722,7 +722,7 @@ export default class MetamaskController extends EventEmitter {
       // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
       disabled:
         this.preferencesController.store.getState().useNftDetection ===
-          undefined
+        undefined
           ? false // the detection is enabled by default
           : !this.preferencesController.store.getState().useNftDetection,
     });
@@ -1249,13 +1249,13 @@ export default class MetamaskController extends EventEmitter {
     this.snapExecutionService =
       shouldUseOffscreenExecutionService === false
         ? new IframeExecutionService({
-          ...snapExecutionServiceArgs,
-          iframeUrl: new URL(process.env.IFRAME_EXECUTION_ENVIRONMENT_URL),
-        })
+            ...snapExecutionServiceArgs,
+            iframeUrl: new URL(process.env.IFRAME_EXECUTION_ENVIRONMENT_URL),
+          })
         : new OffscreenExecutionService({
-          ...snapExecutionServiceArgs,
-          offscreenPromise: this.offscreenPromise,
-        });
+            ...snapExecutionServiceArgs,
+            offscreenPromise: this.offscreenPromise,
+          });
 
     const snapControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'SnapController',
@@ -1739,7 +1739,7 @@ export default class MetamaskController extends EventEmitter {
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
       getSavedGasFees: () =>
         this.preferencesController.store.getState().advancedGasFee[
-        this.networkController.state.providerConfig.chainId
+          this.networkController.state.providerConfig.chainId
         ],
       incomingTransactions: {
         includeTokenTransfers: false,
@@ -1747,7 +1747,7 @@ export default class MetamaskController extends EventEmitter {
           Boolean(
             this.preferencesController.store.getState()
               .incomingTransactionsPreferences?.[
-            this.networkController.state.providerConfig.chainId
+              this.networkController.state.providerConfig.chainId
             ] && this.onboardingController.store.getState().completedOnboarding,
           ),
         queryEntireHistory: false,
@@ -4526,8 +4526,9 @@ export default class MetamaskController extends EventEmitter {
    */
 
   getAccountLabel(name, index, hdPathDescription) {
-    return `${name[0].toUpperCase()}${name.slice(1)} ${parseInt(index, 10) + 1
-      } ${hdPathDescription || ''}`.trim();
+    return `${name[0].toUpperCase()}${name.slice(1)} ${
+      parseInt(index, 10) + 1
+    } ${hdPathDescription || ''}`.trim();
   }
 
   /**
@@ -6494,10 +6495,10 @@ export default class MetamaskController extends EventEmitter {
         params:
           newAccounts.length < 2
             ? // If the length is 1 or 0, the accounts are sorted by definition.
-            newAccounts
+              newAccounts
             : // If the length is 2 or greater, we have to execute
-            // `eth_accounts` vi this method.
-            await this.getPermittedAccounts(origin),
+              // `eth_accounts` vi this method.
+              await this.getPermittedAccounts(origin),
       });
     }
 
