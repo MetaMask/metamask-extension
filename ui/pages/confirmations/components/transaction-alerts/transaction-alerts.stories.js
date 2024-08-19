@@ -24,7 +24,7 @@ const customTransaction = ({
     userFeeLevel: estimateUsed ? 'low' : 'medium',
     blockNumber: `${10902987 + i}`,
     id: 4678200543090545 + i,
-    chainId: testData?.metamask?.providerConfig?.chainId,
+    chainId: '0x1',
     status: 'confirmed',
     time: 1600654021000,
     txParams: {
