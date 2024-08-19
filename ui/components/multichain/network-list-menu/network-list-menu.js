@@ -284,6 +284,52 @@ export const NetworkListMenu = ({ onClose }) => {
     };
   };
 
+  const generateNetworkListItem = ({
+    network,
+    isCurrentNetwork,
+    canDeleteNetwork,
+  }) => {
+    return (
+      <NetworkListItem
+        name={network.nickname}
+        iconSrc={network?.rpcPrefs?.imageUrl}
+        key={network.id}
+        selected={isCurrentNetwork}
+        focus={isCurrentNetwork && !focusSearch}
+        onClick={() => {
+          dispatch(toggleNetworkMenu());
+          if (network.providerType) {
+            dispatch(setProviderType(network.providerType));
+          } else {
+            dispatch(setActiveNetwork(network.id));
+          }
+
+          // If presently on a dapp, communicate a change to
+          // the dapp via silent switchEthereumChain that the
+          // network has changed due to user action
+          if (useRequestQueue && selectedTabOrigin) {
+            setNetworkClientIdForDomain(selectedTabOrigin, network.id);
+          }
+
+          trackEvent({
+            event: MetaMetricsEventName.NavNetworkSwitched,
+            category: MetaMetricsEventCategory.Network,
+            properties: {
+              location: 'Network Menu',
+              chain_id: currentChainId,
+              from_network: currentChainId,
+              to_network: network.chainId,
+            },
+          });
+        }}
+        onDeleteClick={
+          canDeleteNetwork ? getOnDeleteCallback(network.id) : null
+        }
+        onEditClick={getOnEditCallback(network)}
+      />
+    );
+  };
+
   const generateMenuItems = (desiredNetworks) => {
     return desiredNetworks.map((network) => {
       const isCurrentNetwork =
@@ -293,37 +339,11 @@ export const NetworkListMenu = ({ onClose }) => {
       const canDeleteNetwork =
         isUnlocked && !isCurrentNetwork && network.removable;
 
-      return (
-        <NetworkListItem
-          name={network.nickname}
-          iconSrc={network?.rpcPrefs?.imageUrl}
-          key={network.id}
-          selected={isCurrentNetwork && !focusSearch}
-          focus={isCurrentNetwork && !focusSearch}
-          onClick={() => {
-            dispatch(toggleNetworkMenu());
-            if (network.providerType) {
-              dispatch(setProviderType(network.providerType));
-            } else {
-              dispatch(setActiveNetwork(network.id));
-            }
-            trackEvent({
-              event: MetaMetricsEventName.NavNetworkSwitched,
-              category: MetaMetricsEventCategory.Network,
-              properties: {
-                location: 'Network Menu',
-                chain_id: currentChainId,
-                from_network: currentChainId,
-                to_network: network.chainId,
-              },
-            });
-          }}
-          onDeleteClick={
-            canDeleteNetwork ? getOnDeleteCallback(network.id) : null
-          }
-          onEditClick={getOnEditCallback(network)}
-        />
-      );
+      return generateNetworkListItem({
+        network,
+        isCurrentNetwork,
+        canDeleteNetwork,
+      });
     });
   };
 

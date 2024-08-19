@@ -77,7 +77,7 @@ describe('useSigningOrSubmittingAlerts', () => {
     ).toEqual([]);
   });
 
-  it('returns no alerts if transaction on different chain', () => {
+  it('returns alerts if transaction on different chain', () => {
     expect(
       runHook({
         currentConfirmation: CONFIRMATION_MOCK,
@@ -89,7 +89,7 @@ describe('useSigningOrSubmittingAlerts', () => {
           },
         ],
       }),
-    ).toEqual([]);
+    ).toEqual([EXPECTED_ALERT]);
   });
 
   it('returns no alerts if transaction has alternate status', () => {
