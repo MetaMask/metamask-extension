@@ -1,11 +1,16 @@
 import nanoid from 'nanoid';
+import { MethodNames } from '@metamask/permission-controller';
 import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
 import { CaveatFactories } from './specifications';
 
-export function getPermissionBackgroundApiMethods(permissionController) {
+export function getPermissionBackgroundApiMethods(
+  permissionController,
+  approvalController,
+) {
+  // TODO: Update this too
   const addMoreAccounts = (origin, accountOrAccounts) => {
     const accounts = Array.isArray(accountOrAccounts)
       ? accountOrAccounts
@@ -60,13 +65,21 @@ export function getPermissionBackgroundApiMethods(permissionController) {
     // hmm...
     requestAccountsPermissionWithId: async (origin) => {
       const id = nanoid();
-      permissionController.requestPermissions(
-        { origin },
-        {
-          eth_accounts: {},
+      approvalController.addAndShowApprovalRequest({
+        id,
+        origin,
+        requestData: {
+          metadata: {
+            id,
+            origin,
+          },
+          permissions: {
+            eth_accounts: {},
+          },
         },
-        { id },
-      );
+        type: MethodNames.requestPermissions,
+      });
+      // TODO Handle this on approval
       return id;
     },
   };
