@@ -513,12 +513,6 @@
   "allow": {
     "message": "허용"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "자동 감지를 통해 MetaMask가 NFT를 감지하고 표시하도록 허용합니다. 다음과 같은 작업을 할 수 있습니다."
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "자동 감지를 통해 MetaMask가 토큰을 감지하고 표시하도록 허용합니다. 다음과 같은 작업을 할 수 있습니다."
-  },
   "allowMmiToConnectToCustodian": {
     "message": "허용할 경우, MMI가 $1에 연결하여 계정을 가져올 수 있습니다."
   },
@@ -549,9 +543,6 @@
   "andForTwoItems": {
     "message": "$1 및 $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
-  },
-  "announcements": {
-    "message": "공지"
   },
   "appDescription": {
     "message": "브라우저의 이더리움 지갑",
@@ -1549,30 +1540,6 @@
   "details": {
     "message": "세부 정보"
   },
-  "developerOptions": {
-    "message": "개발자 옵션"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "현재 개발 중인 확인 재설계 기능을 활성화 또는 비활성화합니다."
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "확인 재설계"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "네트워크 메뉴를 새로운 디자인으로 전환"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "네트워크 메뉴 디자인 변경"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "온보딩과 관련된 다양한 상태를 초기화하고 '지갑 보안' 온보딩 페이지로 리디렉션합니다."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "session.storage에 타임스탬프가 지속적으로 저장됩니다"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” 유형은 오리지널 가스비를 최소 10% 인상해야 하는 기준에 미치지 못하므로 비활성화되었습니다.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1632,12 +1599,6 @@
   },
   "displayNftMediaDescription": {
     "message": "NFT 미디어와 데이터를 표시하면 IP 주소가 OpenSea나 기타 제삼자에게 노출될 수 있습니다. 공격자는 이를 통해 회원님의 IP 주소와 이더리움 주소를 연결할 수 있습니다. NFT 자동 감지는 이 설정을 사용하며, 이 설정이 꺼져 있는 경우 사용할 수 없습니다."
-  },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "NFT 바로 사용"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "토큰 바로 사용"
   },
   "doNotShare": {
     "message": "누구와도 공유하지 마세요"
@@ -1770,9 +1731,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "가스비 가속 편집"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "디지털 자산을 손쉽게 탐색"
-  },
   "enable": {
     "message": "활성화"
   },
@@ -1782,21 +1740,12 @@
   "enableFromSettings": {
     "message": " 설정에서 이 기능을 활성화합니다."
   },
-  "enableNftAutoDetection": {
-    "message": "NFT 자동 감지 활성화"
-  },
   "enableSnap": {
     "message": "활성화"
   },
   "enableToken": {
     "message": "$1 활성화",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "토큰 자동 감지 활성화"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "기본 기능을 사용하면 Metamask 확장 v12.3.0에서 이 기능이 자동으로 켜집니다"
   },
   "enabled": {
     "message": "활성화됨"
@@ -2309,12 +2258,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "NFT에 즉시 액세스"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "토큰에 즉시 액세스"
   },
   "import": {
     "message": "가져오기",
@@ -3280,9 +3223,6 @@
   "notEnoughGas": {
     "message": "가스 부족"
   },
-  "notRightNow": {
-    "message": "나중에"
-  },
   "note": {
     "message": "메모"
   },
@@ -3516,9 +3456,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "사용자 경험을 개선할 수 있도록 도와주세요"
-  },
-  "onboarding": {
-    "message": "온보딩"
   },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "IPFS 게이트웨이를 사용하면 타사 호스팅 데이터에 액세스하여 이를 볼 수 있습니다. 사용자 지정 IPFS 게이트웨이를 추가하셔도 좋고 기본 설정을 계속 사용하셔도 됩니다."
@@ -4385,9 +4322,6 @@
   "reset": {
     "message": "재설정"
   },
-  "resetStates": {
-    "message": "상태 초기화"
-  },
   "resetWallet": {
     "message": "지갑 초기화"
   },
@@ -4706,9 +4640,6 @@
   },
   "sepolia": {
     "message": "Sepolia 테스트 네트워크"
-  },
-  "serviceWorkerKeepAlive": {
-    "message": "서비스 작업자 유지"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "이와 같이 MetaMask는 신용있는 타사의 서비스를 사용하여 제품 가용성과 안전성을 향상합니다."
@@ -5272,9 +5203,6 @@
   },
   "stateLogsDescription": {
     "message": "상태 로그에 공개 계정 주소와 전송된 트랜잭션이 있습니다."
-  },
-  "states": {
-    "message": "상태"
   },
   "status": {
     "message": "상태"

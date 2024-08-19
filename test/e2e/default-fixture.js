@@ -116,6 +116,13 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         },
         snapsInstallPrivacyWarningShown: true,
       },
+      BridgeController: {
+        bridgeState: {
+          bridgeFeatureFlags: {
+            extensionSupport: false,
+          },
+        },
+      },
       CurrencyController: {
         currentCurrency: 'usd',
         currencyRates: {
@@ -207,7 +214,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
-          showTokenAutodetectModal: false,
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
         },

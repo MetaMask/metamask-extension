@@ -14,21 +14,10 @@ import {
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
 import {
-  AuthenticationControllerGetBearerToken,
-  AuthenticationControllerIsSignedIn,
-} from '../authentication/authentication-controller';
-import {
-  PushPlatformNotificationsControllerEnablePushNotifications,
-  PushPlatformNotificationsControllerDisablePushNotifications,
-  PushPlatformNotificationsControllerUpdateTriggerPushNotifications,
-  PushPlatformNotificationsControllerOnNewNotificationEvent,
-} from '../push-platform-notifications/push-platform-notifications';
-import {
-  UserStorageControllerEnableProfileSyncing,
-  UserStorageControllerGetStorageKey,
-  UserStorageControllerPerformGetStorage,
-  UserStorageControllerPerformSetStorage,
-} from '../user-storage/user-storage-controller';
+  AuthenticationController,
+  UserStorageController,
+} from '@metamask/profile-sync-controller';
+import { NotificationsServicesPushController } from '@metamask/notification-services-controller';
 import {
   TRIGGER_TYPES,
   TRIGGER_TYPES_GROUPS,
@@ -200,17 +189,17 @@ export type AllowedActions =
   | KeyringControllerGetAccountsAction
   | KeyringControllerGetStateAction
   // Auth Controller Requests
-  | AuthenticationControllerGetBearerToken
-  | AuthenticationControllerIsSignedIn
+  | AuthenticationController.AuthenticationControllerGetBearerToken
+  | AuthenticationController.AuthenticationControllerIsSignedIn
   // User Storage Controller Requests
-  | UserStorageControllerEnableProfileSyncing
-  | UserStorageControllerGetStorageKey
-  | UserStorageControllerPerformGetStorage
-  | UserStorageControllerPerformSetStorage
+  | UserStorageController.UserStorageControllerEnableProfileSyncing
+  | UserStorageController.UserStorageControllerGetStorageKey
+  | UserStorageController.UserStorageControllerPerformGetStorage
+  | UserStorageController.UserStorageControllerPerformSetStorage
   // Push Notifications Controller Requests
-  | PushPlatformNotificationsControllerEnablePushNotifications
-  | PushPlatformNotificationsControllerDisablePushNotifications
-  | PushPlatformNotificationsControllerUpdateTriggerPushNotifications;
+  | NotificationsServicesPushController.NotificationServicesPushControllerEnablePushNotificationsAction
+  | NotificationsServicesPushController.NotificationServicesPushControllerDisablePushNotificationsAction
+  | NotificationsServicesPushController.NotificationServicesPushControllerUpdateTriggerPushNotificationsAction;
 
 // Events
 export type Events =
@@ -224,7 +213,7 @@ export type AllowedEvents =
   | KeyringControllerLockEvent
   | KeyringControllerUnlockEvent
   // Push Notification Events
-  | PushPlatformNotificationsControllerOnNewNotificationEvent;
+  | NotificationsServicesPushController.NotificationServicesPushControllerOnNewNotificationEvent;
 
 // Type for the messenger of MetamaskNotificationsController
 export type MetamaskNotificationsControllerMessenger =
@@ -295,13 +284,13 @@ export class MetamaskNotificationsController extends BaseController<
     getNotificationStorage: async () => {
       return await this.messagingSystem.call(
         'UserStorageController:performGetStorage',
-        'notification_settings',
+        'notifications.notificationSettings',
       );
     },
     setNotificationStorage: async (state: string) => {
       return await this.messagingSystem.call(
         'UserStorageController:performSetStorage',
-        'notification_settings',
+        'notifications.notificationSettings',
         state,
       );
     },
@@ -311,7 +300,7 @@ export class MetamaskNotificationsController extends BaseController<
     enablePushNotifications: async (UUIDs: string[]) => {
       try {
         await this.messagingSystem.call(
-          'PushPlatformNotificationsController:enablePushNotifications',
+          'NotificationServicesPushController:enablePushNotifications',
           UUIDs,
         );
       } catch (e) {
@@ -321,7 +310,7 @@ export class MetamaskNotificationsController extends BaseController<
     disablePushNotifications: async (UUIDs: string[]) => {
       try {
         await this.messagingSystem.call(
-          'PushPlatformNotificationsController:disablePushNotifications',
+          'NotificationServicesPushController:disablePushNotifications',
           UUIDs,
         );
       } catch (e) {
@@ -331,7 +320,7 @@ export class MetamaskNotificationsController extends BaseController<
     updatePushNotifications: async (UUIDs: string[]) => {
       try {
         await this.messagingSystem.call(
-          'PushPlatformNotificationsController:updateTriggerPushNotifications',
+          'NotificationServicesPushController:updateTriggerPushNotifications',
           UUIDs,
         );
       } catch (e) {
@@ -340,7 +329,7 @@ export class MetamaskNotificationsController extends BaseController<
     },
     subscribe: () => {
       this.messagingSystem.subscribe(
-        'PushPlatformNotificationsController:onNewNotifications',
+        'NotificationServicesPushController:onNewNotifications',
         (notification) => {
           this.updateMetamaskNotificationsList(notification);
         },
