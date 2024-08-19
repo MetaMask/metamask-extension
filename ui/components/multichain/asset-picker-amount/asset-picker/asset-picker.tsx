@@ -41,6 +41,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: END:ONLY_INCLUDE_IF
 import { ellipsify } from '../../../../pages/confirmations/send/send.utils';
 import { Token } from '../asset-picker-modal/types';
+import { TabName } from '../asset-picker-modal/asset-picker-modal-tabs';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
@@ -56,7 +57,10 @@ export type AssetPickerProps = {
   sendingAsset?: Asset;
   onClick?: () => void;
   isDisabled?: boolean;
-} & Pick<React.ComponentProps<typeof AssetPickerModal>, 'header'>;
+} & Pick<
+  React.ComponentProps<typeof AssetPickerModal>,
+  'visibleTabs' | 'header'
+>;
 
 // A component that lets the user pick from a list of assets.
 export function AssetPicker({
@@ -66,6 +70,7 @@ export function AssetPicker({
   sendingAsset,
   onClick,
   isDisabled = false,
+  visibleTabs,
 }: AssetPickerProps) {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const t = useI18nContext();
@@ -134,6 +139,7 @@ export function AssetPicker({
     <>
       {/* This is the Modal that ask to choose token to send */}
       <AssetPickerModal
+        visibleTabs={visibleTabs}
         header={header}
         isOpen={showAssetPickerModal}
         onClose={() => setShowAssetPickerModal(false)}
@@ -145,6 +151,9 @@ export function AssetPicker({
         sendingAssetImage={sendingTokenImage}
         sendingAssetSymbol={
           sendingAsset?.details?.symbol || nativeCurrencySymbol
+        }
+        defaultActiveTabKey={
+          asset?.type === AssetType.NFT ? TabName.NFTS : TabName.TOKENS
         }
       />
 

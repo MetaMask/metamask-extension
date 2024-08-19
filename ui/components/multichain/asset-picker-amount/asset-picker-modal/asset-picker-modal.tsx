@@ -2,7 +2,6 @@ import React, { useState, useCallback, useMemo } from 'react';
 
 import { useSelector } from 'react-redux';
 import { isEqual, uniqBy } from 'lodash';
-import { Tab, Tabs } from '../../../ui/tabs';
 import {
   Modal,
   ModalContent,
@@ -50,6 +49,7 @@ import { Asset, Collection, Token } from './types';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 import AssetList from './AssetList';
 import { Search } from './asset-picker-modal-search';
+import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
 
 type AssetPickerModalProps = {
   header: JSX.Element | string | null;
@@ -59,7 +59,10 @@ type AssetPickerModalProps = {
   onAssetChange: (asset: Token) => void;
   sendingAssetImage?: string;
   sendingAssetSymbol?: string;
-};
+} & Pick<
+  React.ComponentProps<typeof AssetPickerModalTabs>,
+  'visibleTabs' | 'defaultActiveTabKey'
+>;
 
 const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
@@ -71,6 +74,7 @@ export function AssetPickerModal({
   onAssetChange,
   sendingAssetImage,
   sendingAssetSymbol,
+  ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
 
@@ -109,8 +113,6 @@ export function AssetPickerModal({
   const isDest = sendingAssetImage && sendingAssetSymbol;
 
   const handleAssetChange = useCallback(onAssetChange, [onAssetChange]);
-
-  const defaultActiveTabKey = asset?.type === AssetType.NFT ? 'nfts' : 'tokens';
 
   const chainId = useSelector(getCurrentChainId);
 
@@ -279,8 +281,8 @@ export function AssetPickerModal({
           </Box>
         )}
         <Box className="modal-tab__wrapper">
-          {isDest ? (
-            <>
+          <AssetPickerModalTabs {...tabProps}>
+            <React.Fragment key={TabName.TOKENS}>
               <Search
                 searchQuery={searchQuery}
                 onChange={(value) => setSearchQuery(value)}
@@ -291,51 +293,21 @@ export function AssetPickerModal({
                 tokenList={filteredTokenList}
                 isTokenDisabled={getIsDisabled}
               />
-            </>
-          ) : (
-            <Tabs
-              defaultActiveTabKey={defaultActiveTabKey}
-              tabsClassName="modal-tab__tabs"
-            >
-              <Tab
-                activeClassName="modal-tab__tab--active"
-                className="modal-tab__tab"
-                name={t('tokens')}
-                tabKey="tokens"
-              >
+            </React.Fragment>
+            <AssetPickerModalNftTab
+              key={TabName.NFTS}
+              collectionDataFiltered={collectionDataFiltered}
+              previouslyOwnedCollection={previouslyOwnedCollection}
+              onClose={onClose}
+              renderSearch={() => (
                 <Search
+                  isNFTSearch
                   searchQuery={searchQuery}
                   onChange={(value) => setSearchQuery(value)}
                 />
-                <AssetList
-                  handleAssetChange={handleAssetChange}
-                  asset={asset}
-                  tokenList={filteredTokenList}
-                  isTokenDisabled={getIsDisabled}
-                />
-              </Tab>
-
-              <Tab
-                activeClassName="modal-tab__tab--active"
-                className="modal-tab__tab"
-                name={t('nfts')}
-                tabKey="nfts"
-              >
-                <AssetPickerModalNftTab
-                  collectionDataFiltered={collectionDataFiltered}
-                  previouslyOwnedCollection={previouslyOwnedCollection}
-                  onClose={onClose}
-                  renderSearch={() => (
-                    <Search
-                      isNFTSearch
-                      searchQuery={searchQuery}
-                      onChange={(value) => setSearchQuery(value)}
-                    />
-                  )}
-                />
-              </Tab>
-            </Tabs>
-          )}
+              )}
+            />
+          </AssetPickerModalTabs>
         </Box>
       </ModalContent>
     </Modal>
