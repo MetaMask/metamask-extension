@@ -61,7 +61,20 @@ function getPermissionsImplementation(
       };
     }
 
-    // TODO: Handle permittedChains
+    const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
+
+    if (ethChainIds.length > 0) {
+      permissions[PermissionNames.permittedChains] = {
+        ...caip25Endowment,
+        parentCapability: PermissionNames.permittedChains,
+        caveats: [
+          {
+            type: CaveatTypes.restrictNetworkSwitching,
+            value: ethChainIds,
+          },
+        ],
+      };
+    }
   }
 
   res.result = Object.values(permissions);
