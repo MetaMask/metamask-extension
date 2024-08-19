@@ -22,7 +22,6 @@ import {
   getIsSwapAndSendDisabledForNetwork,
   getSwapsBlockedTokens,
   ///: END:ONLY_INCLUDE_IF
-  getSendAsset,
 } from '../../../../../ducks/send';
 import { AssetType } from '../../../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../../../helpers/constants/common';

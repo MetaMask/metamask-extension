@@ -51,16 +51,13 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
-import {
-  MultichainProviderConfig,
-  ProviderConfigWithImageUrl,
-} from '../../../../shared/constants/multichain/networks';
 import { CONNECTIONS } from '../../../helpers/constants/routes';
+import { MultichainNetwork } from '../../../selectors/multichain';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;
   isEvmNetwork: boolean;
-  currentNetwork: ProviderConfigWithImageUrl | MultichainProviderConfig;
+  currentNetwork: MultichainNetwork;
   networkOpenCallback: () => void;
   disableNetworkPicker: boolean;
   disableAccountPicker: boolean;
@@ -135,7 +132,7 @@ export const AppHeaderUnlockedContent = ({
               className="multichain-app-header__contents--avatar-network"
               ref={menuRef}
               as="button"
-              src={currentNetwork?.rpcPrefs?.imageUrl ?? ''}
+              src={currentNetwork?.network?.rpcPrefs?.imageUrl ?? ''}
               label={currentNetwork?.nickname ?? ''}
               aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
               labelProps={{
@@ -162,7 +159,7 @@ export const AppHeaderUnlockedContent = ({
             margin={2}
             aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
             label={currentNetwork?.nickname ?? ''}
-            src={currentNetwork?.rpcPrefs?.imageUrl}
+            src={currentNetwork?.network?.rpcPrefs?.imageUrl}
             onClick={(e: React.MouseEvent<HTMLElement>) => {
               e.stopPropagation();
               e.preventDefault();

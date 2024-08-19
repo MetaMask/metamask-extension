@@ -38,6 +38,7 @@ import { LARGE_SYMBOL_LENGTH } from '../constants';
 import { getAssetImageURL } from '../../../../helpers/utils/util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+///: END:ONLY_INCLUDE_IF
 
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
@@ -70,7 +71,7 @@ export function AssetPicker({
 }: AssetPickerProps) {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const t = useI18nContext();
-
+  ///: END:ONLY_INCLUDE_IF
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 

@@ -4931,6 +4931,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 [12.0.3]: https://github.com/MetaMask/metamask-extension/compare/v12.0.2...v12.0.3
 [12.0.2]: https://github.com/MetaMask/metamask-extension/compare/v12.0.1...v12.0.2
 [12.0.1]: https://github.com/MetaMask/metamask-extension/compare/v12.0.0...v12.0.1
+[12.1.0]: https://github.com/MetaMask/metamask-extension/compare/v12.0.0...v12.1.0
 [12.0.0]: https://github.com/MetaMask/metamask-extension/compare/v11.16.16...v12.0.0
 [11.16.16]: https://github.com/MetaMask/metamask-extension/compare/v11.16.15...v11.16.16
 [11.16.15]: https://github.com/MetaMask/metamask-extension/compare/v11.16.14...v11.16.15

@@ -320,6 +320,7 @@ export default class AdvancedTab extends PureComponent {
             }
             offLabel={t('off')}
             onLabel={t('on')}
+            className="show-fiat-on-testnets-toggle"
           />
         </div>
       </Box>
