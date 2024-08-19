@@ -168,10 +168,10 @@ export const SENTRY_BACKGROUND_STATE = {
   LoggingController: {
     logs: false,
   },
-  MetamaskNotificationsController: {
+  NotificationServicesController: {
     subscriptionAccountsSeen: false,
     isMetamaskNotificationsFeatureSeen: false,
-    isMetamaskNotificationsEnabled: false,
+    isNotificationServicesEnabled: false,
     isFeatureAnnouncementsEnabled: false,
     metamaskNotificationsList: false,
     metamaskNotificationsReadList: false,
