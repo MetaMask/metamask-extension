@@ -24,6 +24,7 @@ setBackgroundConnection({
   tryReverseResolveAddress: jest.fn(),
   getNextNonce: jest.fn(),
   addKnownMethodData: jest.fn(),
+  getLastInteractedConfirmationInfo: jest.fn(),
 });
 
 const sendEther = {

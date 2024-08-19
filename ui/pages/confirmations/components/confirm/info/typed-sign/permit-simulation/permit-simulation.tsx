@@ -10,6 +10,7 @@ import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
+import { shortenString } from '../../../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../../selectors';
 import { Box, Text } from '../../../../../../../components/component-library';
@@ -94,9 +95,13 @@ const PermitSimulation: React.FC<{
                   paddingInline={2}
                   style={{ paddingTop: '1px', paddingBottom: '1px' }}
                   textAlign={TextAlign.Center}
-                  ellipsis
                 >
-                  {tokenValue}
+                  {shortenString(tokenValue || '', {
+                    truncatedCharLimit: 15,
+                    truncatedStartChars: 15,
+                    truncatedEndChars: 0,
+                    skipCharacterInEnd: true,
+                  })}
                 </Text>
               </Tooltip>
             </Box>

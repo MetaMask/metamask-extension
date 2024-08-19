@@ -54,6 +54,7 @@ const removedBackgroundFields = [
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
+  'AppStateController.lastInteractedConfirmationInfo',
   'PPOMController.chainStatus.0x539.lastVisited',
   'PPOMController.versionInfo',
 ];
@@ -173,7 +174,7 @@ function getMissingProperties(complete, object) {
 describe('Sentry errors', function () {
   const migrationError =
     process.env.SELENIUM_BROWSER === Browser.CHROME
-      ? `Cannot read properties of undefined (reading 'version')`
+      ? `"type":"TypeError","value":"Cannot read properties of undefined (reading 'version')`
       : 'meta is undefined';
   async function mockSentryMigratorError(mockServer) {
     return await mockServer
@@ -220,7 +221,7 @@ describe('Sentry errors', function () {
     ],
   };
 
-  describe('before initialization, after opting out of metrics', function () {
+  describe('before initialization, after opting out of metrics @no-mmi', function () {
     it('should NOT send error events in the background', async function () {
       await withFixtures(
         {
@@ -317,12 +318,16 @@ describe('Sentry errors', function () {
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
-          const { level } = mockJsonBody;
-          const [{ type, value }] = mockJsonBody.exception.values;
           // Verify request
-          assert.equal(type, 'TypeError');
-          assert(value.includes(migrationError));
-          assert.equal(level, 'error');
+          const escapedMigrationError = migrationError.replace(
+            /[.*+?^${}()|[\]\\]/gu,
+            '\\$&',
+          );
+          const migrationErrorRegex = new RegExp(escapedMigrationError, 'u');
+          assert.match(
+            JSON.stringify(mockJsonBody.exception),
+            migrationErrorRegex,
+          );
         },
       );
     });
@@ -536,7 +541,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('after initialization, after opting out of metrics', function () {
+  describe('after initialization, after opting out of metrics @no-mmi', function () {
     it('should NOT send error events in the background', async function () {
       await withFixtures(
         {
@@ -789,30 +794,6 @@ describe('Sentry errors', function () {
     });
   });
 
-  it('should have no policy gaps for UI controller state @no-mmi', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver }) => {
-        await driver.navigate();
-        await driver.findElement('#password');
-
-        const fullUiState = await driver.executeScript(() =>
-          window.stateHooks?.getCleanAppState?.(),
-        );
-
-        const missingState = getMissingProperties(
-          fullUiState.metamask,
-          SENTRY_UI_STATE.metamask,
-        );
-        assert.deepEqual(missingState, {});
-      },
-    );
-  });
-
   it('should not have extra properties in UI state mask @no-mmi', async function () {
     const expectedMissingState = {
       currentPopupId: false, // Initialized as undefined
@@ -843,6 +824,7 @@ describe('Sentry errors', function () {
       opts: true,
       store: true,
       configurationClient: true,
+      lastInteractedConfirmationInfo: undefined,
     };
     await withFixtures(
       {

@@ -409,7 +409,8 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
                     tabindex="0"
                   >
                     <p
-                      class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-inherit"
+                      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                      style="white-space: pre-wrap;"
                     >
                       3,000
                     </p>
