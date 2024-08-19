@@ -14,7 +14,6 @@ describe('Selectors', () => {
       metamask: {
         preferences: {
           smartTransactionsOptInStatus: true,
-          showTokenAutodetectModal: true,
         },
         internalAccounts: {
           selectedAccount: 'account1',
@@ -78,14 +77,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('getShowTokenAutodetectModal', () => {
-    it('should return show autodetection token modal status', () => {
-      const state = createMockState();
-      const result = getSmartTransactionsOptInStatus(state);
-      expect(result).toBe(true);
-    });
-  });
-
   describe('getCurrentChainSupportsSmartTransactions', () => {
     it('should return true if the chain ID is allowed for smart transactions', () => {
       const state = createMockState();
@@ -129,7 +120,7 @@ describe('Selectors', () => {
       expect(getSmartTransactionsEnabled(state)).toBe(false);
     });
 
-    it('returns false if feature flag is enabled, is a HW and is Ethereum network', () => {
+    it('returns true if feature flag is enabled, is a HW and is Ethereum network', () => {
       const state = createSwapsMockStore();
       const newState = {
         ...state,
@@ -150,7 +141,7 @@ describe('Selectors', () => {
           },
         },
       };
-      expect(getSmartTransactionsEnabled(newState)).toBe(false);
+      expect(getSmartTransactionsEnabled(newState)).toBe(true);
     });
 
     it('returns false if feature flag is enabled, not a HW and is Polygon network', () => {

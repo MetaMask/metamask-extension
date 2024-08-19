@@ -3,10 +3,17 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
 
 import {
+  orderSignatureMsg,
+  permitSignatureMsg,
+  unapprovedTypedSignMsgV4,
+} from '../../../../test/data/confirmations/typed_sign';
+import { SignatureRequestType } from '../types/confirm';
+import {
+  isOrderSignatureRequest,
+  isPermitSignatureRequest,
   isSignatureApprovalRequest,
   isSignatureTransactionType,
   parseSanitizeTypedDataMessage,
-  parseTypedDataMessage,
 } from './confirm';
 
 const typedDataMsg =
@@ -29,18 +36,6 @@ describe('confirm util', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as ApprovalRequest<any>);
       expect(result).toStrictEqual(false);
-    });
-  });
-
-  describe('parseTypedDataMessage', () => {
-    it('parses data passed correctly', () => {
-      const result = parseTypedDataMessage('{"test": "dummy"}');
-      expect(result.test).toBe('dummy');
-    });
-    it('throw error for invalid typedDataMessage', () => {
-      expect(() => {
-        parseSanitizeTypedDataMessage('');
-      }).toThrow();
     });
   });
 
@@ -68,6 +63,37 @@ describe('confirm util', () => {
       const result = isSignatureTransactionType({
         type: TransactionType.contractInteraction,
       });
+      expect(result).toStrictEqual(false);
+    });
+  });
+
+  describe('isPermitSignatureRequest', () => {
+    it('returns true for permit signature requests', () => {
+      const result = isPermitSignatureRequest(
+        permitSignatureMsg as SignatureRequestType,
+      );
+      expect(result).toStrictEqual(true);
+    });
+    it('returns false for request not of type permit signature', () => {
+      const result = isPermitSignatureRequest(
+        unapprovedTypedSignMsgV4 as SignatureRequestType,
+      );
+      expect(result).toStrictEqual(false);
+    });
+  });
+
+  describe('isOrderSignatureRequest', () => {
+    it('returns true for permit signature requests', () => {
+      const result = isOrderSignatureRequest(
+        orderSignatureMsg as SignatureRequestType,
+      );
+      expect(result).toStrictEqual(true);
+    });
+
+    it('returns false for request not of type permit signature', () => {
+      const result = isOrderSignatureRequest(
+        unapprovedTypedSignMsgV4 as SignatureRequestType,
+      );
       expect(result).toStrictEqual(false);
     });
   });

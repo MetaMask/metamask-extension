@@ -1,6 +1,11 @@
 const fs = require('fs');
 
-const { GAS_API_BASE_URL } = require('../../shared/constants/swaps');
+const { BRIDGE_API_BASE_URL } = require('../../shared/constants/bridge');
+const {
+  GAS_API_BASE_URL,
+  SWAPS_API_V2_BASE_URL,
+  TOKEN_API_BASE_URL,
+} = require('../../shared/constants/swaps');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -14,6 +19,10 @@ const CDN_STALE_DIFF_RES_HEADERS_PATH =
   'test/e2e/mock-cdn/cdn-stale-diff-res-headers.json';
 const CDN_STALE_RES_HEADERS_PATH =
   'test/e2e/mock-cdn/cdn-stale-res-headers.json';
+
+const AGGREGATOR_METADATA_PATH =
+  'test/e2e/mock-response-data/aggregator-metadata.json';
+const TOKEN_BLOCKLIST_PATH = 'test/e2e/mock-response-data/token-blocklist.json';
 
 const blacklistedHosts = [
   'arbitrum-mainnet.infura.io',
@@ -66,7 +75,7 @@ const browserAPIRequestDomains =
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
  * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH.
- * @returns {SetupMockReturn}
+ * @returns {Promise<SetupMockReturn>}
  */
 async function setupMocking(
   server,
@@ -183,63 +192,21 @@ async function setupMocking(
       };
     });
 
-  const gasPricesCallbackMock = () => ({
-    statusCode: 200,
-    json: {
-      SafeGasPrice: '1',
-      ProposeGasPrice: '2',
-      FastGasPrice: '3',
-    },
-  });
-  const suggestedGasFeesCallbackMock = () => ({
-    statusCode: 200,
-    json: {
-      low: {
-        suggestedMaxPriorityFeePerGas: '1',
-        suggestedMaxFeePerGas: '20.44436136',
-        minWaitTimeEstimate: 15000,
-        maxWaitTimeEstimate: 30000,
-      },
-      medium: {
-        suggestedMaxPriorityFeePerGas: '1.5',
-        suggestedMaxFeePerGas: '25.80554517',
-        minWaitTimeEstimate: 15000,
-        maxWaitTimeEstimate: 45000,
-      },
-      high: {
-        suggestedMaxPriorityFeePerGas: '2',
-        suggestedMaxFeePerGas: '27.277766977',
-        minWaitTimeEstimate: 15000,
-        maxWaitTimeEstimate: 60000,
-      },
-      estimatedBaseFee: '19.444436136',
-      networkCongestion: 0.14685,
-      latestPriorityFeeRange: ['0.378818859', '6.555563864'],
-      historicalPriorityFeeRange: ['0.1', '248.262969261'],
-      historicalBaseFeeRange: ['14.146999781', '28.825256275'],
-      priorityFeeTrend: 'down',
-      baseFeeTrend: 'up',
-    },
-  });
-
   await server
     .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/gasPrices`)
-    .thenCallback(gasPricesCallbackMock);
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          SafeGasPrice: '1',
+          ProposeGasPrice: '2',
+          FastGasPrice: '3',
+        },
+      };
+    });
 
   await server
-    .forGet(`${GAS_API_BASE_URL}/networks/1/gasPrices`)
-    .thenCallback(gasPricesCallbackMock);
-
-  await server
-    .forGet(`${GAS_API_BASE_URL}/networks/1/suggestedGasFees`)
-    .thenCallback(suggestedGasFeesCallbackMock);
-
-  await server
-    .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/suggestedGasFees`)
-    .thenCallback(suggestedGasFeesCallbackMock);
-
-  await server
-    .forGet('https://swap.api.cx.metamask.io/networks/1/token')
+    .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/token`)
     .withQuery({ address: '0x72c9Fb7ED19D3ce51cea5C56B3e023cd918baaDf' })
     .thenCallback(() => {
       return {
@@ -256,7 +223,42 @@ async function setupMocking(
     });
 
   await server
-    .forGet('https://swap.api.cx.metamask.io/featureFlags')
+    .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/suggestedGasFees`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          low: {
+            suggestedMaxPriorityFeePerGas: '1',
+            suggestedMaxFeePerGas: '20.44436136',
+            minWaitTimeEstimate: 15000,
+            maxWaitTimeEstimate: 30000,
+          },
+          medium: {
+            suggestedMaxPriorityFeePerGas: '1.5',
+            suggestedMaxFeePerGas: '25.80554517',
+            minWaitTimeEstimate: 15000,
+            maxWaitTimeEstimate: 45000,
+          },
+          high: {
+            suggestedMaxPriorityFeePerGas: '2',
+            suggestedMaxFeePerGas: '27.277766977',
+            minWaitTimeEstimate: 15000,
+            maxWaitTimeEstimate: 60000,
+          },
+          estimatedBaseFee: '19.444436136',
+          networkCongestion: 0.14685,
+          latestPriorityFeeRange: ['0.378818859', '6.555563864'],
+          historicalPriorityFeeRange: ['0.1', '248.262969261'],
+          historicalBaseFeeRange: ['14.146999781', '28.825256275'],
+          priorityFeeTrend: 'down',
+          baseFeeTrend: 'up',
+        },
+      };
+    });
+
+  await server
+    .forGet(`${SWAPS_API_V2_BASE_URL}/featureFlags`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -289,6 +291,17 @@ async function setupMocking(
             updated_at: '2022-03-17T15:54:00.360Z',
           },
         ],
+      };
+    });
+
+  await server
+    .forGet(`${BRIDGE_API_BASE_URL}/getAllFeatureFlags`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          'extension-support': false,
+        },
       };
     });
 
@@ -354,8 +367,29 @@ async function setupMocking(
       };
     });
 
+  const TOKEN_BLOCKLIST = fs.readFileSync(TOKEN_BLOCKLIST_PATH);
   await server
-    .forGet('https://swap.api.cx.metamask.io/networks/1/tokens')
+    .forGet(`${TOKEN_API_BASE_URL}/blocklist`)
+    .withQuery({ chainId: '1', region: 'global' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(TOKEN_BLOCKLIST),
+      };
+    });
+
+  const AGGREGATOR_METADATA = fs.readFileSync(AGGREGATOR_METADATA_PATH);
+  await server
+    .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/aggregatorMetadata`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(AGGREGATOR_METADATA),
+      };
+    });
+
+  await server
+    .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/tokens`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -439,7 +473,7 @@ async function setupMocking(
     });
 
   await server
-    .forGet('https://swap.api.cx.metamask.io/networks/1/topAssets')
+    .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/topAssets`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -597,6 +631,12 @@ async function setupMocking(
   // Notification APIs
   mockNotificationServices(server);
 
+  await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
+    return {
+      statusCode: 404,
+    };
+  });
+
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested
    * during the current test suite.
@@ -608,6 +648,15 @@ async function setupMocking(
   }
 
   /**
+   * Excludes hosts from the privacyReport if they are refered to by the MetaMask Portfolio
+   * in a different tab. This is because the Portfolio is a separate application
+   *
+   * @param request
+   */
+  const portfolioRequestsMatcher = (request) =>
+    request.headers.referer === 'https://portfolio.metamask.io/';
+
+  /**
    * Listen for requests and add the hostname to the privacy report if it did
    * not previously exist. This is used to track which hosts are requested
    * during the current test suite and used to ask for extra scrutiny when new
@@ -616,7 +665,10 @@ async function setupMocking(
    * operation. See the browserAPIRequestDomains regex above.
    */
   server.on('request-initiated', (request) => {
-    if (request.headers.host.match(browserAPIRequestDomains) === null) {
+    if (
+      request.headers.host.match(browserAPIRequestDomains) === null &&
+      !portfolioRequestsMatcher(request)
+    ) {
       privacyReport.add(request.headers.host);
     }
   });

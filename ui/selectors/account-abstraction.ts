@@ -1,5 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { UserOperationControllerState } from '@metamask/user-operation-controller';
+import { createSelector } from 'reselect';
 
 export type AccountAbstractionState = {
   confirmTransaction?: { txData?: TransactionMeta };
@@ -9,6 +10,12 @@ export type AccountAbstractionState = {
 export function getUserOperations(state: AccountAbstractionState) {
   return state.metamask.userOperations || {};
 }
+
+export const selectUserOperationMetadata = createSelector(
+  getUserOperations,
+  (_state: AccountAbstractionState, userOperationId: string) => userOperationId,
+  (userOperations, userOperationId) => userOperations[userOperationId],
+);
 
 export function getUserOperation(state: AccountAbstractionState) {
   const currentTransaction = state.confirmTransaction?.txData;
@@ -39,3 +46,20 @@ export function getIsUsingPaymaster(state: AccountAbstractionState) {
 
   return Boolean(paymasterData?.length) && paymasterData !== '0x';
 }
+
+export const selectPaymasterData = createSelector(
+  selectUserOperationMetadata,
+  (userOperationMetadata) => {
+    const paymasterAndData =
+      userOperationMetadata?.userOperation?.paymasterAndData;
+
+    return paymasterAndData === '0x' ? undefined : paymasterAndData;
+  },
+);
+
+export const selectPaymasterAddress = createSelector(
+  selectPaymasterData,
+  (paymasterData) => {
+    return paymasterData?.slice(0, 42);
+  },
+);

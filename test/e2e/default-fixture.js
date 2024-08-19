@@ -16,10 +16,10 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       UserStorageController: {
         isProfileSyncingEnabled: true,
       },
-      MetamaskNotificationsController: {
+      NotificationServicesController: {
         subscriptionAccountsSeen: [],
         isFeatureAnnouncementsEnabled: false,
-        isMetamaskNotificationsEnabled: false,
+        isNotificationServicesEnabled: false,
         isMetamaskNotificationsFeatureSeen: false,
         metamaskNotificationsList: [],
         metamaskNotificationsReadList: [],
@@ -41,7 +41,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
               options: {},
               methods: [
                 'personal_sign',
-                'eth_sign',
                 'eth_signTransaction',
                 'eth_signTypedData_v1',
                 'eth_signTypedData_v3',
@@ -117,6 +116,13 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         },
         snapsInstallPrivacyWarningShown: true,
       },
+      BridgeController: {
+        bridgeState: {
+          bridgeFeatureFlags: {
+            extensionSupport: false,
+          },
+        },
+      },
       CurrencyController: {
         currentCurrency: 'usd',
         currencyRates: {
@@ -141,8 +147,8 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         fragments: {},
         metaMetricsId: null,
         participateInMetaMetrics: false,
-        traits: {},
         dataCollectionForMarketing: false,
+        traits: {},
       },
       NetworkController: {
         selectedNetworkClientId: 'networkConfigurationId',
@@ -208,7 +214,8 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
-          showTokenAutodetectModal: false,
+          isRedesignedConfirmationsDeveloperEnabled: false,
+          showConfirmationAdvancedDetails: false,
         },
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',

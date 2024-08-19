@@ -34,6 +34,10 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import NoteToTrader from '../../../components/institutional/note-to-trader';
 ///: END:ONLY_INCLUDE_IF
+import {
+  AccountType,
+  CustodyStatus,
+} from '../../../../shared/constants/custody';
 
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
 import TransactionDetail from '../components/transaction-detail/transaction-detail.component';
@@ -69,7 +73,7 @@ import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 import { SimulationDetails } from '../components/simulation-details';
 import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
-import { BlockaidUnavailableBannerAlert } from '../components/blockaid-unavailable-banner-alert/blockaid-unavailable-banner-alert';
+import { NetworkChangeToastLegacy } from '../components/confirm/network-change-toast';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -177,6 +181,7 @@ export default class ConfirmTransactionBase extends Component {
     smartTransactionsOptInStatus: PropTypes.bool,
     currentChainSupportsSmartTransactions: PropTypes.bool,
     selectedNetworkClientId: PropTypes.string,
+    isSmartTransactionsEnabled: PropTypes.bool,
     hasPriorityApprovalRequest: PropTypes.bool,
     chainId: PropTypes.string,
   };
@@ -536,7 +541,6 @@ export default class ConfirmTransactionBase extends Component {
 
     return (
       <div className="confirm-page-container-content__details">
-        <BlockaidUnavailableBannerAlert />
         <TransactionAlerts
           txData={txData}
           setUserAcknowledgedGasMissing={() =>
@@ -589,7 +593,10 @@ export default class ConfirmTransactionBase extends Component {
                 })}
                 subTitle={t('transactionDetailGasTotalSubtitle')}
                 subText={
-                  <div className="confirm-page-container-content__total-amount">
+                  <div
+                    className="confirm-page-container-content__total-amount"
+                    data-testid="confirm-page-total-amount"
+                  >
                     <LoadingHeartBeat
                       estimateUsed={this.props.txData?.userFeeLevel}
                     />
@@ -835,15 +842,20 @@ export default class ConfirmTransactionBase extends Component {
       toAddress,
       showCustodianDeepLink,
       clearConfirmTransaction,
+      isSmartTransactionsEnabled,
     } = this.props;
     const { noteText } = this.state;
 
-    if (accountType === 'custody') {
-      txData.custodyStatus = 'created';
+    if (accountType === AccountType.CUSTODY) {
+      txData.custodyStatus = CustodyStatus.CREATED;
       txData.metadata = txData.metadata || {};
 
       if (isNoteToTraderSupported) {
         txData.metadata.note = noteText;
+      }
+
+      if (isSmartTransactionsEnabled) {
+        txData.origin += '#smartTransaction';
       }
 
       txData.metadata.custodianPublishesTransaction =
@@ -1158,7 +1170,7 @@ export default class ConfirmTransactionBase extends Component {
           noteComponent={
             isNoteToTraderSupported && (
               <NoteToTrader
-                maxLength="280"
+                maxLength={280}
                 placeholder={t('notePlaceholder')}
                 onChange={(value) => this.setState({ noteText: value })}
                 noteText={this.state.noteText}
@@ -1201,6 +1213,7 @@ export default class ConfirmTransactionBase extends Component {
           txData={txData}
           displayAccountBalanceHeader={displayAccountBalanceHeader}
         />
+        <NetworkChangeToastLegacy confirmation={txData} />
       </TransactionModalContextProvider>
     );
   }

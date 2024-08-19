@@ -49,7 +49,6 @@ const initialState = {
     useNativeCurrencyAsPrimaryCurrency: true,
     petnamesEnabled: true,
     featureNotificationsEnabled: false,
-    showTokenAutodetectModal: false,
   },
   firstTimeFlowType: null,
   completedOnboarding: false,
@@ -215,13 +214,6 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
-    case actionConstants.SET_SHOW_TOKEN_AUTO_DETECT_MODAL_UPGRADE: {
-      return {
-        ...metamaskState,
-        showTokenAutodetectModalOnUpgrade: action.value,
-      };
-    }
-
     case actionConstants.SET_NEXT_NONCE: {
       return {
         ...metamaskState,
@@ -233,15 +225,6 @@ export default function reduceMetamask(state = initialState, action) {
         ...metamaskState,
         confirmationExchangeRates: action.value,
       };
-
-    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-    case actionConstants.FORCE_DISABLE_DESKTOP: {
-      return {
-        ...metamaskState,
-        desktopEnabled: false,
-      };
-    }
-    ///: END:ONLY_INCLUDE_IF
 
     default:
       return metamaskState;
@@ -382,6 +365,7 @@ export function isNotEIP1559Network(state) {
  */
 export function isEIP1559Network(state, networkClientId) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
+
   return (
     state.metamask.networksMetadata?.[
       networkClientId ?? selectedNetworkClientId
@@ -539,7 +523,6 @@ export function getIsNetworkBusyByChainId(state, chainId) {
 export function getCompletedOnboarding(state) {
   return state.metamask.completedOnboarding;
 }
-
 export function getIsInitialized(state) {
   return state.metamask.isInitialized;
 }

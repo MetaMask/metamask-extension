@@ -15,6 +15,8 @@ import {
 } from '../../../shared/constants/app';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 
+/** @typedef {import('../../../shared/types/confirm').LastInteractedConfirmationInfo} LastInteractedConfirmationInfo */
+
 export default class AppStateController extends EventEmitter {
   /**
    * @param {object} opts
@@ -43,7 +45,7 @@ export default class AppStateController extends EventEmitter {
       fullScreenGasPollTokens: [],
       recoveryPhraseReminderHasBeenShown: false,
       recoveryPhraseReminderLastShown: new Date().getTime(),
-      outdatedBrowserWarningLastShown: new Date().getTime(),
+      outdatedBrowserWarningLastShown: null,
       nftsDetectionNoticeDismissed: false,
       showTestnetMessageInDropdown: true,
       showBetaHeader: isBeta(),
@@ -73,6 +75,7 @@ export default class AppStateController extends EventEmitter {
       switchedNetworkDetails: null,
       switchedNetworkNeverShowMessage: false,
       currentExtensionPopupId: 0,
+      lastInteractedConfirmationInfo: undefined,
     });
     this.timer = null;
 
@@ -227,7 +230,6 @@ export default class AppStateController extends EventEmitter {
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   /**
    * Record if popover for snaps privacy warning has been shown
    * on the first install of a snap.
@@ -239,7 +241,6 @@ export default class AppStateController extends EventEmitter {
       snapsInstallPrivacyWarningShown: shown,
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Record the timestamp of the last time the user has seen the outdated browser warning
@@ -557,6 +558,26 @@ export default class AppStateController extends EventEmitter {
   setCurrentPopupId(currentPopupId) {
     this.store.updateState({
       currentPopupId,
+    });
+  }
+
+  /**
+   * The function returns information about the last confirmation user interacted with
+   *
+   * @type {LastInteractedConfirmationInfo}: Information about the last confirmation user interacted with.
+   */
+  getLastInteractedConfirmationInfo() {
+    return this.store.getState().lastInteractedConfirmationInfo;
+  }
+
+  /**
+   * Update the information about the last confirmation user interacted with
+   *
+   * @type {LastInteractedConfirmationInfo} - information about transaction user last interacted with.
+   */
+  setLastInteractedConfirmationInfo(lastInteractedConfirmationInfo) {
+    this.store.updateState({
+      lastInteractedConfirmationInfo,
     });
   }
 

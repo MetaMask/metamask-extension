@@ -102,7 +102,6 @@ describe('Custom RPC history', function () {
         await rpcUrlInput.sendKeys(duplicateRpcUrl);
         await driver.findElement({
           text: 'This URL is currently used by the mainnet network.',
-          tag: 'h6',
         });
       },
     );
@@ -144,7 +143,6 @@ describe('Custom RPC history', function () {
         await chainIdInput.sendKeys(duplicateChainId);
         await driver.findElement({
           text: 'This Chain ID is currently used by the mainnet network.',
-          tag: 'h6',
         });
 
         await rpcUrlInput.clear();
@@ -160,7 +158,6 @@ describe('Custom RPC history', function () {
 
         await driver.findElement({
           text: 'Could not fetch chain ID. Is your RPC URL correct?',
-          tag: 'h6',
         });
       },
     );
@@ -294,7 +291,9 @@ describe('Custom RPC history', function () {
           value: customNetworkName,
         });
         // delete custom network in a modal
-        await driver.clickElement('.networks-tab__network-form .btn-danger');
+        await driver.clickElement(
+          '.networks-tab__network-form-footer .btn-danger',
+        );
         await driver.findVisibleElement(
           '[data-testid="confirm-delete-network-modal"]',
         );

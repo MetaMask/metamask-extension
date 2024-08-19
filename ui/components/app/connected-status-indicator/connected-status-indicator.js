@@ -20,7 +20,7 @@ import {
 } from '../../../selectors';
 import { ConnectedSiteMenu } from '../../multichain';
 
-export default function ConnectedStatusIndicator({ onClick }) {
+export default function ConnectedStatusIndicator({ onClick, disabled }) {
   const t = useI18nContext();
 
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
@@ -69,10 +69,12 @@ export default function ConnectedStatusIndicator({ onClick }) {
       text={tooltipText}
       as="button"
       onClick={onClick}
+      disabled={disabled}
     />
   );
 }
 
 ConnectedStatusIndicator.propTypes = {
   onClick: PropTypes.func,
+  disabled: PropTypes.bool,
 };

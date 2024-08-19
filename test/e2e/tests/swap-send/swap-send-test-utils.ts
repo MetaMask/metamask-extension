@@ -106,13 +106,13 @@ export class SwapSendPage {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       inputAmounts.map(async (e: any, index: number) => {
         await this.driver.delay(delayInMs);
-        const i = await e.nestedFindElement('input');
+        const i = await this.driver.findNestedElement(e, 'input');
         assert.ok(i);
         const v = await i.getProperty('value');
         assert.equal(v, expectedInputValues[index]);
-        const isDisabled = !(await i.isEnabled());
         if (index > 0) {
-          assert.ok(isDisabled);
+          const isDisabled = await i.getProperty('disabled');
+          assert.equal(isDisabled, true);
         }
       }),
     );
@@ -266,9 +266,7 @@ export const getSwapSendFixtures = (
 ) => {
   const ETH_CONVERSION_RATE_USD = 3010;
   return {
-    driverOptions: {
-      openDevToolsForTabs: true,
-    },
+    driverOptions: { responsive: true },
     fixtures: new FixtureBuilder()
       .withPreferencesController({
         featureFlags: {},
