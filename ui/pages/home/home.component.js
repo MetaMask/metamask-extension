@@ -14,8 +14,6 @@ import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminde
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import SmartTransactionsOptInModal from '../../components/app/smart-transactions/smart-transactions-opt-in-modal';
-import AutoDetectTokenModal from '../../components/app/auto-detect-token/auto-detect-token-modal';
-import AutoDetectNftModal from '../../components/app/auto-detect-nft/auto-detect-nft-modal';
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
@@ -153,8 +151,6 @@ export default class Home extends PureComponent {
     announcementsToShow: PropTypes.bool.isRequired,
     onboardedInThisUISession: PropTypes.bool,
     isSmartTransactionsOptInModalAvailable: PropTypes.bool.isRequired,
-    isShowTokenAutodetectModal: PropTypes.bool.isRequired,
-    isShowNftAutodetectModal: PropTypes.bool.isRequired,
     ///: END:ONLY_INCLUDE_IF
     newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
@@ -202,12 +198,6 @@ export default class Home extends PureComponent {
     clearNewNetworkAdded: PropTypes.func,
     clearEditedNetwork: PropTypes.func,
     setActiveNetwork: PropTypes.func,
-    // eslint-disable-next-line react/no-unused-prop-types
-    setTokenAutodetectModal: PropTypes.func,
-    // eslint-disable-next-line react/no-unused-prop-types
-    setShowTokenAutodetectModalOnUpgrade: PropTypes.func,
-    // eslint-disable-next-line react/no-unused-prop-types
-    setNftAutodetectModal: PropTypes.func,
     hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
@@ -976,11 +966,6 @@ export default class Home extends PureComponent {
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
       isSmartTransactionsOptInModalAvailable,
-      isShowTokenAutodetectModal,
-      setTokenAutodetectModal,
-      setShowTokenAutodetectModalOnUpgrade,
-      isShowNftAutodetectModal,
-      setNftAutodetectModal,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
@@ -1007,18 +992,6 @@ export default class Home extends PureComponent {
       showWhatsNewPopup &&
       !showSmartTransactionsOptInModal;
 
-    const showAutoDetectionModal =
-      canSeeModals &&
-      isShowTokenAutodetectModal &&
-      !showSmartTransactionsOptInModal &&
-      !showWhatsNew;
-    // TODO show ths after token autodetect modal is merged
-    const showNftAutoDetectionModal =
-      canSeeModals &&
-      isShowNftAutodetectModal &&
-      !showSmartTransactionsOptInModal &&
-      !showWhatsNew;
-
     const showTermsOfUse =
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
     ///: END:ONLY_INCLUDE_IF
@@ -1042,19 +1015,6 @@ export default class Home extends PureComponent {
           <SmartTransactionsOptInModal
             isOpen={showSmartTransactionsOptInModal}
             hideWhatsNewPopup={hideWhatsNewPopup}
-          />
-
-          <AutoDetectTokenModal
-            isOpen={showAutoDetectionModal}
-            onClose={setTokenAutodetectModal}
-            setShowTokenAutodetectModalOnUpgrade={
-              setShowTokenAutodetectModalOnUpgrade
-            }
-          />
-
-          <AutoDetectNftModal
-            isOpen={showNftAutoDetectionModal}
-            onClose={setNftAutodetectModal}
           />
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (

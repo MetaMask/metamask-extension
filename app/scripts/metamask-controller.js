@@ -2945,7 +2945,6 @@ export default class MetamaskController extends EventEmitter {
       networkController,
       announcementController,
       onboardingController,
-      appMetadataController,
       permissionController,
       preferencesController,
       bridgeController,
@@ -3382,12 +3381,6 @@ export default class MetamaskController extends EventEmitter {
       cancelEncryptionPublicKey:
         this.encryptionPublicKeyController.cancelEncryptionPublicKey.bind(
           this.encryptionPublicKeyController,
-        ),
-
-      // AppMetadataController
-      setShowTokenAutodetectModalOnUpgrade:
-        appMetadataController.setShowTokenAutodetectModalOnUpgrade.bind(
-          appMetadataController,
         ),
 
       // onboarding controller
