@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo } from 'react';
 
 import {
   PrimaryType,
@@ -11,6 +11,7 @@ import { getTokenStandardAndDetails } from '../../../../../store/actions';
 
 import { Box } from '../../../../../components/component-library';
 import { BlockSize } from '../../../../../helpers/constants/design-system';
+import { useAsyncResult } from '../../../../../hooks/useAsyncResult';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -73,7 +74,7 @@ const getTokenDecimalsOfDataTree = async (
   }
 
   const decimals = parseInt(
-    (await getTokenStandardAndDetails(tokenContract)).decimals ?? '0',
+    (await getTokenStandardAndDetails(tokenContract))?.decimals ?? '0',
     10,
   );
 
@@ -89,17 +90,13 @@ export const DataTree = ({
   primaryType?: PrimaryType;
   tokenDecimals?: number;
 }) => {
-  const [tokenContractDecimals, setTokenContractDecimals] = useState<
-    number | undefined
-  >(undefined);
+  const { value: decimalsResponse } = useAsyncResult(
+    async () => await getTokenDecimalsOfDataTree(data),
+    [data],
+  );
 
-  useEffect(() => {
-    getTokenDecimalsOfDataTree(data).then((decimals) => {
-      if (typeof decimals === 'number') {
-        setTokenContractDecimals(decimals);
-      }
-    });
-  }, [data]);
+  const tokenContractDecimals =
+    typeof decimalsResponse === 'number' ? decimalsResponse : undefined;
 
   return (
     <Box width={BlockSize.Full}>

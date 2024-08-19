@@ -544,9 +544,6 @@
     "message": "$1および$2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
-  "announcements": {
-    "message": "お知らせ"
-  },
   "appDescription": {
     "message": "ブラウザにあるイーサリアムウォレット",
     "description": "The description of the application"
@@ -1542,30 +1539,6 @@
   },
   "details": {
     "message": "詳細"
-  },
-  "developerOptions": {
-    "message": "開発者用オプション"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "現在開発中の承認のデザイン変更機能の有効・無効を切り替えます"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "承認のデザイン変更"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "ネットワークメニューを新しいデザインに切り替えます"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "ネットワークメニューのデザイン変更"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "すべてのお知らせのisShownのブール値をfalseにリセットします。お知らせとは、「最新情報」ポップアップモーダルに表示される通知のことです。"
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "オンボーディングに関するさまざまなステートをリセットし、「ウォレットのセキュリティ保護」オンボーディングページにリダイレクトします。"
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "タイムスタンプがセッションストレージに継続的に保存されるようになります"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "元のガス代の10%以上という増額の条件を満たしていないため、「$1」は無効になっています。",
@@ -3484,9 +3457,6 @@
   "onboardedMetametricsTitle": {
     "message": "エクスペリエンスの改善にご協力ください"
   },
-  "onboarding": {
-    "message": "オンボーディング"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "IPFSゲートウェイにより、第三者がホスティングしているデータへのアクセスと表示が可能になります。カスタムIPFSゲートウェイを追加するか、引き続きデフォルトを使用できます。"
   },
@@ -4352,9 +4322,6 @@
   "reset": {
     "message": "リセット"
   },
-  "resetStates": {
-    "message": "ステートのリセット"
-  },
   "resetWallet": {
     "message": "ウォレットをリセット"
   },
@@ -4673,9 +4640,6 @@
   },
   "sepolia": {
     "message": "Sepoliaテストネットワーク"
-  },
-  "serviceWorkerKeepAlive": {
-    "message": "Service Worker Keep Alive"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMaskはこれらの信頼できるサードパーティサービスを使用して、製品の使いやすさと安全性を向上させています。"
@@ -5239,9 +5203,6 @@
   },
   "stateLogsDescription": {
     "message": "ステートログには、パブリックアカウントアドレスと送信済みトランザクションが含まれています。"
-  },
-  "states": {
-    "message": "ステート"
   },
   "status": {
     "message": "ステータス"

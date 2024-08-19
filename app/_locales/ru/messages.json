@@ -544,9 +544,6 @@
     "message": "$1 и $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
-  "announcements": {
-    "message": "Объявления"
-  },
   "appDescription": {
     "message": "Кошелек Ethereum в вашем браузере",
     "description": "The description of the application"
@@ -1542,30 +1539,6 @@
   },
   "details": {
     "message": "Подробности"
-  },
-  "developerOptions": {
-    "message": "Параметры разработчика"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Включает или отключает функцию редизайна подтверждений, которая в настоящее время находится в разработке"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Редизайн подтверждений"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Переключает на новый дизайн меню «Сети»"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Переработка дизайна меню «Сети»"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Сбрасывает логическое значение isShown в значение false для всех объявлений. Объявления — это уведомления, отображаемые во всплывающем модальном окне «Что нового»."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Сбрасывает различные состояния, связанные с регистрацией, и перенаправляет на страницу регистрации «Защитите свой кошелек»."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "В результате отметка времени постоянно сохраняется в session.storage"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "$1 отключена, поскольку не соответствует минимальному увеличению на 10% от первоначальной платы за газ.",
@@ -3484,9 +3457,6 @@
   "onboardedMetametricsTitle": {
     "message": "Помогите нам улучшить ваш опыт"
   },
-  "onboarding": {
-    "message": "Регистрация"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "Шлюз IPFS позволяет получать доступ к данным, размещенным третьими сторонами, и просматривать их. Вы можете добавить пользовательский шлюз IPFS или продолжить использовать шлюз по умолчанию."
   },
@@ -4352,9 +4322,6 @@
   "reset": {
     "message": "Сбросить"
   },
-  "resetStates": {
-    "message": "Сбросить состояния"
-  },
   "resetWallet": {
     "message": "Сбросить кошелек"
   },
@@ -4673,9 +4640,6 @@
   },
   "sepolia": {
     "message": "Тестовая сеть Sepolia"
-  },
-  "serviceWorkerKeepAlive": {
-    "message": "Поддерживать активным сервисный модуль"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask использует эти доверенные сторонние сервисы для повышения удобства использования и безопасности продукта."
@@ -5239,9 +5203,6 @@
   },
   "stateLogsDescription": {
     "message": "Журналы состояния содержат ваши адреса публичных счетов и отправленные транзакции."
-  },
-  "states": {
-    "message": "Состояния"
   },
   "status": {
     "message": "Статус"
