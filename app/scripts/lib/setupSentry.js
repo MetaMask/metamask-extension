@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/browser';
 import { createModuleLogger, createProjectLogger } from '@metamask/utils';
 import { logger } from '@sentry/utils';
-import { management, runtime } from 'webextension-polyfill';
+import browser from 'webextension-polyfill';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
 
@@ -58,7 +58,8 @@ export default function setupSentry() {
 function getClientOptions() {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
-  management
+  console.log('ManagementVT', browser.management);
+  browser.management
     .getSelf()
     .then((extensionInfo) => {
       installType = extensionInfo.installType;
@@ -342,8 +343,8 @@ export function rewriteReport(report) {
     }
 
     report.extra.appState = appState;
-    if (runtime && runtime.id) {
-      report.extra.extensionId = runtime.id;
+    if (browser.runtime && browser.runtime.id) {
+      report.extra.extensionId = browser.runtime.id;
     }
     report.extra.installType = installType;
     console.log('EXTRA:', report.extra);
