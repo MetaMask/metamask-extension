@@ -1,5 +1,9 @@
 import { cloneDeep } from 'lodash';
-import { getChangedAccounts, getPermittedAccountsByOrigin } from './selectors';
+import {
+  getChangedAccounts,
+  getPermittedAccountsByOrigin,
+  getRemovedAuthorizations,
+} from './selectors';
 
 describe('PermissionController selectors', () => {
   describe('getChangedAccounts', () => {
@@ -111,6 +115,36 @@ describe('PermissionController selectors', () => {
       // Since we didn't mutate the state at this point, the value should once
       // again be the memoized.
       expect(selected2).toBe(getPermittedAccountsByOrigin(state2));
+    });
+  });
+  describe('getRemovedAuthorizations', () => {
+    it('returns an empty map if the new and previous values are the same', () => {
+      const newAuthorizations = new Map();
+      expect(
+        getRemovedAuthorizations(newAuthorizations, newAuthorizations),
+      ).toStrictEqual(new Map());
+    });
+
+    it('returns a new map of the removed authorizations if the new and previous values differ', () => {
+      const mockAuthorization = {
+        requiredScopes: {
+          'eip155:1': {
+            methods: ['eth_sendTransaction'],
+            notifications: [],
+          },
+        },
+        optionalScopes: {},
+      };
+      const previousAuthorizations = new Map([
+        ['foo.bar', mockAuthorization],
+        ['bar.baz', mockAuthorization],
+      ]);
+
+      const newAuthorizations = new Map([['foo.bar', mockAuthorization]]);
+
+      expect(
+        getRemovedAuthorizations(newAuthorizations, previousAuthorizations),
+      ).toStrictEqual(new Map([['bar.baz', mockAuthorization]]));
     });
   });
 });

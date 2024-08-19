@@ -311,6 +311,7 @@ import {
   getPermissionBackgroundApiMethods,
   getPermissionSpecifications,
   getPermittedAccountsByOrigin,
+  getRemovedAuthorizations,
   NOTIFICATION_NAMES,
   PermissionNames,
   unrestrictedMethods,
@@ -344,6 +345,8 @@ import {
 // import { multichainMethodCallValidatorMiddleware } from './lib/multichain-api/multichainMethodCallValidator';
 
 import { decodeTransactionData } from './lib/transaction/decode/util';
+import MultichainSubscriptionManager from './lib/multichain-api/MultichainSubscriptionManager';
+import MultichainMiddlewareManager from './lib/multichain-api/MultichainMiddlewareManager';
 import { walletRevokeSessionHandler } from './lib/multichain-api/wallet-revokeSession';
 import { walletGetSessionHandler } from './lib/multichain-api/wallet-getSession';
 import { mergeScopes } from './lib/multichain-api/scope';
@@ -549,7 +552,19 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsEvent: (...args) =>
         this.metaMetricsController.trackEvent(...args),
     });
+
     this.networkController.initializeProvider();
+    this.multichainSubscriptionManager = new MultichainSubscriptionManager({
+      getNetworkClientById: this.networkController.getNetworkClientById.bind(
+        this.networkController,
+      ),
+      findNetworkClientIdByChainId:
+        this.networkController.findNetworkClientIdByChainId.bind(
+          this.networkController,
+        ),
+    });
+
+    this.multichainMiddlewareManager = new MultichainMiddlewareManager();
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
     this.blockTracker =
@@ -2776,7 +2791,56 @@ export default class MetamaskController extends EventEmitter {
           previousValue,
         );
 
+        const removedAuthorizations = getRemovedAuthorizations(
+          currentValue,
+          previousValue,
+        );
+
+        // remove any existing notification subscriptions for removed authorizations
+        for (const [origin, authorization] of removedAuthorizations.entries()) {
+          const mergedScopes = mergeScopes(
+            authorization.requiredScopes,
+            authorization.optionalScopes,
+          );
+          // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
+          // then remove middleware and unsubscribe
+          Object.entries(mergedScopes).forEach(([scope, scopeObject]) => {
+            if (
+              scopeObject.notifications.includes('eth_subscription') &&
+              scopeObject.methods.includes('eth_subscribe')
+            ) {
+              this.multichainMiddlewareManager.removeMiddleware(scope, origin);
+              this.multichainSubscriptionManager.unsubscribe(scope, origin);
+            }
+          });
+        }
+
+        // add new notification subscriptions for changed authorizations
         for (const [origin, authorization] of changedAuthorizations.entries()) {
+          const mergedScopes = mergeScopes(
+            authorization.requiredScopes,
+            authorization.optionalScopes,
+          );
+
+          // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
+          // then get the subscriptionManager going for that scope
+          Object.entries(mergedScopes).forEach(([scope, scopeObject]) => {
+            if (
+              scopeObject.notifications.includes('eth_subscription') &&
+              scopeObject.methods.includes('eth_subscribe')
+            ) {
+              this.multichainMiddlewareManager.removeMiddleware(scope, origin);
+              this.multichainSubscriptionManager.unsubscribe(scope, origin);
+              const subscriptionManager =
+                this.multichainSubscriptionManager.subscribe(scope, origin);
+              this.multichainMiddlewareManager.addMiddleware(
+                scope,
+                origin,
+                subscriptionManager.middleware,
+              );
+            }
+          });
+
           this._notifyAuthorizationChange(origin, authorization);
         }
       },
@@ -4744,6 +4808,10 @@ export default class MetamaskController extends EventEmitter {
         config.type !== networkConfigurationId,
     );
 
+    const scope = `eip155:${parseInt(chainId, 16)}`;
+    this.multichainSubscriptionManager.unsubscribeScope(scope);
+    this.multichainMiddlewareManager.removeMiddleware(scope);
+
     // if this network configuration is only one for a given chainId
     // remove all permissions for that chainId
     if (!hasOtherConfigsForChainId) {
@@ -5849,6 +5917,8 @@ export default class MetamaskController extends EventEmitter {
       createScaffoldMiddleware({
         [MESSAGE_TYPE.PROVIDER_AUTHORIZE]: (request, response, next, end) => {
           return providerAuthorizeHandler(request, response, next, end, {
+            multichainMiddlewareManager: this.multichainMiddlewareManager,
+            multichainSubscriptionManager: this.multichainSubscriptionManager,
             grantPermissions: this.permissionController.grantPermissions.bind(
               this.permissionController,
             ),
@@ -5974,12 +6044,6 @@ export default class MetamaskController extends EventEmitter {
               },
             },
           ),
-        // TODO remove this hook
-        // requestPermissionsForOrigin:
-        //   this.permissionController.requestPermissions.bind(
-        //     this.permissionController,
-        //     { origin },
-        //   ),
         getCaveat: ({ target, caveatType }) => {
           try {
             return this.permissionController.getCaveat(
@@ -6049,6 +6113,17 @@ export default class MetamaskController extends EventEmitter {
     );
 
     engine.push(this.metamaskMiddleware);
+
+    this.multichainSubscriptionManager.on(
+      'notification',
+      (_origin, message) => {
+        if (origin === _origin) {
+          engine.emit('notification', message);
+        }
+      },
+    );
+
+    engine.push(this.multichainMiddlewareManager.middleware);
 
     engine.push((req, res, _next, end) => {
       const { provider } = this.networkController.getNetworkClientById(
@@ -6310,7 +6385,7 @@ export default class MetamaskController extends EventEmitter {
    */
   _onStateUpdate(newState) {
     this.isClientOpenAndUnlocked = newState.isUnlocked && this._isClientOpen;
-    this._notifyChainChange();
+    // this._notifyChainChange();
   }
 
   // misc
