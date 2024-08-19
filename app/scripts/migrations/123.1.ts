@@ -39,5 +39,12 @@ function transformState(state: Record<string, unknown>) {
     state.PreferencesController.useTokenDetection = true;
   }
 
+  if (
+    hasProperty(state, 'AppMetadataController') &&
+    isObject(state.AppMetadataController)
+  ) {
+    delete state.AppMetadataController.showTokenAutodetectModalOnUpgrade;
+  }
+
   return state;
 }
