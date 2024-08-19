@@ -301,11 +301,7 @@ describe('Create Snap Account', function (this: Suite) {
   it('cancelling naming Snap account results in account not created', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerAndFeatureFlag({
-            watchEthereumAccountEnabled: true,
-          })
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
