@@ -275,7 +275,7 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "Προσθήκη νέου λογαριασμού"
+    "message": "Προσθήκη νέου λογαριασμού Ethereum"
   },
   "addNewToken": {
     "message": "Προσθήκη νέου token"
@@ -1555,6 +1555,9 @@
     "message": "ενεργοποίηση $1",
     "description": "$1 is a token symbol, e.g. ETH"
   },
+  "enableTokenAutoDetection": {
+    "message": "Ενεργοποίηση της αυτόματης ανίχνευσης των tokens"
+  },
   "enabled": {
     "message": "Ενεργοποιημένο"
   },
@@ -2498,9 +2501,6 @@
     "message": "Βεβαιωθείτε ότι κανείς δεν κοιτάει",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Διαχείριση των ρυθμίσεων"
-  },
   "max": {
     "message": "Μέγ."
   },
@@ -2934,6 +2934,9 @@
   "noSnaps": {
     "message": "Δεν έχετε εγκαταστήσει κανένα snap."
   },
+  "noThanks": {
+    "message": "Όχι, ευχαριστώ"
+  },
   "noTransactions": {
     "message": "Δεν έχετε καμιά συναλλαγή"
   },
@@ -3103,7 +3106,7 @@
   },
   "notificationTransactionSuccessView": {
     "message": "Προβολή σε $1",
-    "description": "Additional content in browser notification that appears when a transaction is confirmed and has a block explorer URL"
+    "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
   "notifications": {
     "message": "Ειδοποιήσεις"
@@ -5881,7 +5884,7 @@
     "message": "Αυτόματη ανίχνευση των NFT"
   },
   "useNftDetectionDescriptionText": {
-    "message": "Επιτρέψτε στο MetaMask να προσθέτει NFT που σας ανήκουν χρησιμοποιώντας υπηρεσίες τρίτων (όπως το OpenSea). Ο αυτόματος εντοπισμός NFT εκθέτει τη διεύθυνση IP και τον λογαριασμό σας σε αυτές τις υπηρεσίες. Η ενεργοποίηση αυτής της λειτουργίας θα μπορούσε να συσχετίσει τη διεύθυνση IP σας με τη διεύθυνση Ethereum σας και να εμφανίσει ψεύτικα NFT που διοχετεύουν οι απατεώνες. Μπορείτε να προσθέσετε tokens χειροκίνητα για να αποφύγετε αυτόν τον κίνδυνο."
+    "message": "Επιτρέψτε στο MetaMask να προσθέτει NFT που σας ανήκουν χρησιμοποιώντας υπηρεσίες τρίτων. Ο αυτόματος εντοπισμός NFT εκθέτει τη διεύθυνση IP και την διεύθυνση του λογαριασμού σας σε αυτές τις υπηρεσίες. Η ενεργοποίηση αυτής της λειτουργίας θα μπορούσε να συσχετίσει τη διεύθυνση IP σας με τη διεύθυνση Ethereum σας και να εμφανίσει ψεύτικα NFT τακτικής airdrop που διοχετεύουν οι απατεώνες. Μπορείτε να προσθέσετε tokens μη αυτόματα για να αποφύγετε αυτόν τον κίνδυνο."
   },
   "usePhishingDetection": {
     "message": "Χρήση ανίχνευσης phishing"

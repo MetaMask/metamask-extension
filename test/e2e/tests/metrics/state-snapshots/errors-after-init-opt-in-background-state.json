@@ -105,6 +105,7 @@
     "traits": "object",
     "previousUserTraits": "object",
     "fragments": "object",
+    "dataCollectionForMarketing": "boolean",
     "segmentApiCalls": "object"
   },
   "MetamaskNotificationsController": {
@@ -295,7 +296,7 @@
   },
   "UserOperationController": { "userOperations": "object" },
   "UserStorageController": {
-    "isProfileSyncingEnabled": true,
+    "isProfileSyncingEnabled": null,
     "isProfileSyncingUpdateLoading": "boolean"
   }
 }

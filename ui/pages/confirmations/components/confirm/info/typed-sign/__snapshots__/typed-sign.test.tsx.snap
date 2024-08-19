@@ -93,7 +93,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
         </p>
         <div>
           <div
-            aria-describedby="tippy-tooltip-6"
+            aria-describedby="tippy-tooltip-8"
             class=""
             data-original-title="This is the site asking for your signature."
             data-tooltipped=""
@@ -222,7 +222,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
             </p>
           </div>
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -395,14 +395,26 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
                 </p>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
+                <div
+                  style="min-width: 0;"
                 >
-                  3000
-                </p>
+                  <div
+                    aria-describedby="tippy-tooltip-9"
+                    class=""
+                    data-original-title="3,000"
+                    data-tooltipped=""
+                    style="display: inline;"
+                    tabindex="0"
+                  >
+                    <p
+                      class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-inherit"
+                    >
+                      3,000
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
             <div
@@ -419,7 +431,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
                 </p>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -611,7 +623,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
             </p>
           </div>
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -658,7 +670,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                     </p>
                   </div>
                   <div
-                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -771,7 +783,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                     </p>
                   </div>
                   <div
-                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -868,7 +880,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                 </p>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1034,7 +1046,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
             </p>
           </div>
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1081,7 +1093,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                     </p>
                   </div>
                   <div
-                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1194,7 +1206,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                     </p>
                   </div>
                   <div
-                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1291,7 +1303,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                 </p>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1457,7 +1469,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
             </p>
           </div>
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1488,7 +1500,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                 </p>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1528,7 +1540,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                     </p>
                   </div>
                   <div
-                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1817,7 +1829,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                         </p>
                       </div>
                       <div
-                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"

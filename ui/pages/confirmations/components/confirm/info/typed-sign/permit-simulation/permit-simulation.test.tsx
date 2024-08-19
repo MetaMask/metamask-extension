@@ -15,7 +15,10 @@ describe('PermitSimulation', () => {
       },
     };
     const mockStore = configureMockStore([])(state);
-    const { container } = renderWithProvider(<PermitSimulation />, mockStore);
+    const { container } = renderWithProvider(
+      <PermitSimulation tokenDecimals={2} />,
+      mockStore,
+    );
     expect(container).toMatchSnapshot();
   });
 });
