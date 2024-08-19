@@ -88,6 +88,7 @@ const PermitSimulation: React.FC<{
                   backgroundColor={BackgroundColor.backgroundAlternative}
                   borderRadius={BorderRadius.XL}
                   paddingInline={2}
+                  style={{ paddingTop: '1px', paddingBottom: '1px' }}
                   textAlign={TextAlign.Center}
                 >
                   {shortenString(tokenValue || '', {
