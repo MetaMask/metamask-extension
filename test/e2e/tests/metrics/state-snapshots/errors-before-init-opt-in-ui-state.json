@@ -2,10 +2,10 @@
   "data": {
     "AuthenticationController": { "isSignedIn": "boolean" },
     "UserStorageController": { "isProfileSyncingEnabled": true },
-    "MetamaskNotificationsController": {
+    "NotificationServicesController": {
       "subscriptionAccountsSeen": "object",
       "isFeatureAnnouncementsEnabled": "boolean",
-      "isMetamaskNotificationsEnabled": "boolean",
+      "isNotificationServicesEnabled": "boolean",
       "isMetamaskNotificationsFeatureSeen": "boolean",
       "metamaskNotificationsList": "object",
       "metamaskNotificationsReadList": "object"
@@ -118,7 +118,6 @@
         "smartTransactionsOptInStatus": false,
         "useNativeCurrencyAsPrimaryCurrency": true,
         "petnamesEnabled": true,
-        "showTokenAutodetectModal": "boolean",
         "showConfirmationAdvancedDetails": false,
         "isRedesignedConfirmationsDeveloperEnabled": "boolean"
       },
@@ -150,6 +149,13 @@
       "detectedTokens": "object",
       "ignoredTokens": "object",
       "tokens": "object"
+    },
+    "BridgeController": {
+      "bridgeState": {
+        "bridgeFeatureFlags": {
+          "extensionSupport": "boolean"
+        }
+      }
     },
     "TransactionController": { "transactions": "object" },
     "config": "object",

@@ -513,12 +513,6 @@
   "allow": {
     "message": "允许"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "允许 MetaMask 使用自动检测功能检测并显示您的 NFT。您将能够："
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "允许 MetaMask 使用自动检测功能检测并显示您的代币。您将能够："
-  },
   "allowMmiToConnectToCustodian": {
     "message": "这将允许 MMI 连接到 $1，以导入您的账户。"
   },
@@ -549,9 +543,6 @@
   "andForTwoItems": {
     "message": "$1 和 $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
-  },
-  "announcements": {
-    "message": "公告"
   },
   "appDescription": {
     "message": "浏览器中的以太坊钱包",
@@ -1549,30 +1540,6 @@
   "details": {
     "message": "详细信息"
   },
-  "developerOptions": {
-    "message": "开发者选项"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "启用或禁用当前正在开发的确认重新设计功能"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "确认重新设计"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "切换网络菜单的新设计"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "网络菜单新设计"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "将所有公告的布尔值显示重设为 false。公告是显示在“最新资讯”（What's New）弹出模式中的通知。"
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "重设与入门相关的各种状态，并重定向到“保护您的钱包”入门页面。"
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "导致时间戳持续保存到 session.storage"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1”已被禁用，因为它不满足在原来的燃料费用基础上至少增加10%的要求。",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1632,12 +1599,6 @@
   },
   "displayNftMediaDescription": {
     "message": "显示 NFT 媒体和数据会将您的 IP 地址暴露给 OpenSea 或其他第三方。这可以让攻击者将您的 IP 地址与您的以太坊地址相关联。NFT 自动检测依赖于此设置，当此设置关闭时将无法使用。"
-  },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "直接开始使用您的 NFT"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "直接开始使用您的代币"
   },
   "doNotShare": {
     "message": "请勿与任何人分享此信息"
@@ -1770,9 +1731,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "编辑加速燃料费用"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "轻松浏览您的数字资产"
-  },
   "enable": {
     "message": "启用"
   },
@@ -1782,21 +1740,12 @@
   "enableFromSettings": {
     "message": " 从设置中启用它。"
   },
-  "enableNftAutoDetection": {
-    "message": "启用 NFT 自动检测"
-  },
   "enableSnap": {
     "message": "启用"
   },
   "enableToken": {
     "message": "启用 $1",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "启用代币自动检测"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "启用基本功能的用户将在 MetaMask Extension v12.3.0 中自动启用此功能"
   },
   "enabled": {
     "message": "已启用"
@@ -2309,12 +2258,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "立即访问您的 NFT"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "即时访问您的代币"
   },
   "import": {
     "message": "导入",
@@ -3280,9 +3223,6 @@
   "notEnoughGas": {
     "message": "燃料不足"
   },
-  "notRightNow": {
-    "message": "暂时不"
-  },
   "note": {
     "message": "单据"
   },
@@ -3516,9 +3456,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "帮助我们改善您的体验"
-  },
-  "onboarding": {
-    "message": "入门"
   },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "IPFS 网关使访问和查看第三方托管的数据成为可能。您可以添加自定义 IPFS 网关或继续使用默认网关。"
@@ -4385,9 +4322,6 @@
   "reset": {
     "message": "重置"
   },
-  "resetStates": {
-    "message": "重设状态"
-  },
   "resetWallet": {
     "message": "重置钱包"
   },
@@ -4706,9 +4640,6 @@
   },
   "sepolia": {
     "message": "Sepolia测试网络"
-  },
-  "serviceWorkerKeepAlive": {
-    "message": "Service Worker 保持活跃"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask 使用这些可信的第三方服务来提高产品可用性和安全性。"
@@ -5272,9 +5203,6 @@
   },
   "stateLogsDescription": {
     "message": "状态日志包含您的公共账户地址和已发送的交易。"
-  },
-  "states": {
-    "message": "状态"
   },
   "status": {
     "message": "状态"

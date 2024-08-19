@@ -513,12 +513,6 @@
   "allow": {
     "message": "Cho phép"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "Cho phép MetaMask phát hiện và hiển thị NFT của bạn bằng tính năng tự động phát hiện. Bạn sẽ có thể:"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "Cho phép MetaMask phát hiện và hiển thị token của bạn bằng tính năng tự động phát hiện. Bạn sẽ có thể:"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "Điều này sẽ cho phép MMI kết nối với $1 để nhập tài khoản của bạn."
   },
@@ -549,9 +543,6 @@
   "andForTwoItems": {
     "message": "$1 và $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
-  },
-  "announcements": {
-    "message": "Thông báo"
   },
   "appDescription": {
     "message": "Ví Ethereum trên trình duyệt của bạn",
@@ -1549,30 +1540,6 @@
   "details": {
     "message": "Chi tiết"
   },
-  "developerOptions": {
-    "message": "Tùy chọn Nhà phát triển"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Bật hoặc tắt tính năng thiết kế lại xác nhận hiện đang được phát triển"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Thiết kế lại xác nhận"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Bật/tắt thiết kế mới của trình đơn Mạng"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Tái thiết kế Trình đơn Mạng"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Đặt lại giá trị isShown thành \"false\" cho tất cả thông báo. Thông báo là các nội dung hiển thị trong cửa sổ bật lên \"Xem tính năng mới\"."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Đặt lại các trạng thái khác nhau liên quan đến phần giới thiệu và chuyển hướng đến trang giới thiệu \"Bảo mật ví của bạn\"."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Kết quả trong dấu thời gian được lưu liên tục vào session.storage"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” bị vô hiệu hóa vì không đạt mức tăng tối thiểu 10% so với phí gas ban đầu.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1632,12 +1599,6 @@
   },
   "displayNftMediaDescription": {
     "message": "Việc hiển thị dữ liệu và phương tiện NFT sẽ làm lộ địa chỉ IP của bạn với OpenSea hoặc các bên thứ ba khác. Điều này có thể cho phép kẻ tấn công liên kết địa chỉ IP với địa chỉ Ethereum của bạn. Tính năng tự động phát hiện NFT dựa trên chế độ cài đặt này và sẽ không khả dụng khi chế độ cài đặt này bị tắt."
-  },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "Bắt đầu sử dụng NFT của bạn ngay lập tức"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "Bắt đầu sử dụng token của bạn ngay lập tức"
   },
   "doNotShare": {
     "message": "Không chia sẻ thông tin này với bất kỳ ai"
@@ -1770,9 +1731,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Chỉnh sửa phí gas tăng tốc"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "Dễ dàng quản lý tài sản kỹ thuật số của bạn"
-  },
   "enable": {
     "message": "Bật"
   },
@@ -1782,21 +1740,12 @@
   "enableFromSettings": {
     "message": " Bật trong Cài Đặt."
   },
-  "enableNftAutoDetection": {
-    "message": "Bật tính năng tự động phát hiện NFT"
-  },
   "enableSnap": {
     "message": "Bật"
   },
   "enableToken": {
     "message": "bật $1",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "Bật tính năng tự động phát hiện token"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "Người dùng đã bật công tắc Chức năng cơ bản sẽ tự động bật tính năng này trong Tiện ích mở rộng Metamask v12.3.0"
   },
   "enabled": {
     "message": "Đã bật"
@@ -2309,12 +2258,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "Truy cập ngay lập tức vào NFT của bạn"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "Truy cập ngay vào các token của bạn"
   },
   "import": {
     "message": "Nhập",
@@ -3280,9 +3223,6 @@
   "notEnoughGas": {
     "message": "Không đủ phí gas"
   },
-  "notRightNow": {
-    "message": "Không phải bây giờ"
-  },
   "note": {
     "message": "Ghi chú"
   },
@@ -3516,9 +3456,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "Hãy giúp chúng tôi nâng cao trải nghiệm của bạn"
-  },
-  "onboarding": {
-    "message": "Giới thiệu"
   },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "Cổng IPFS cho phép truy cập và xem dữ liệu do bên thứ ba lưu trữ. Bạn có thể thêm cổng IPFS tùy chỉnh hoặc tiếp tục sử dụng cổng mặc định."
@@ -4385,9 +4322,6 @@
   "reset": {
     "message": "Đặt lại"
   },
-  "resetStates": {
-    "message": "Đặt lại trạng thái"
-  },
   "resetWallet": {
     "message": "Đặt lại ví"
   },
@@ -4706,9 +4640,6 @@
   },
   "sepolia": {
     "message": "Mạng thử nghiệm Sepolia"
-  },
-  "serviceWorkerKeepAlive": {
-    "message": "Duy Trì Hoạt Động Service Worker"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask sử dụng các dịch vụ của bên thứ ba đáng tin cậy này để nâng cao sự hữu ích và an toàn của sản phẩm."
@@ -5272,9 +5203,6 @@
   },
   "stateLogsDescription": {
     "message": "Nhật ký trạng thái có chứa các địa chỉ tài khoản công khai của bạn và các giao dịch đã gửi."
-  },
-  "states": {
-    "message": "Trạng thái"
   },
   "status": {
     "message": "Trạng thái"

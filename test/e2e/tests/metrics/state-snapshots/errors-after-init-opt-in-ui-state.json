@@ -34,7 +34,6 @@
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
-      "showTokenAutodetectModal": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean"
@@ -96,7 +95,6 @@
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
-    "showTokenAutodetectModalOnUpgrade": "object",
     "balances": "object",
     "selectedNetworkClientId": "string",
     "networksMetadata": {
@@ -203,7 +201,7 @@
     "isProfileSyncingUpdateLoading": "boolean",
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
-    "isMetamaskNotificationsEnabled": "boolean",
+    "isNotificationServicesEnabled": "boolean",
     "isFeatureAnnouncementsEnabled": "boolean",
     "metamaskNotificationsList": "object",
     "metamaskNotificationsReadList": "object",
