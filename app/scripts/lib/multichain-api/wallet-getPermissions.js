@@ -45,24 +45,7 @@ function getPermissionsImplementation(
   delete permissions[Caip25EndowmentPermissionName];
 
   if (caip25Caveat) {
-    const ethAccounts = [];
-    const sessionScopes = mergeScopes(
-      caip25Caveat.value.requiredScopes,
-      caip25Caveat.value.optionalScopes,
-    );
-
-    Object.entries(sessionScopes).forEach(([_, { accounts }]) => {
-      accounts?.forEach((account) => {
-        const {
-          address,
-          chain: { namespace },
-        } = parseCaipAccountId(account);
-
-        if (namespace === KnownCaipNamespace.Eip155) {
-          ethAccounts.push(address);
-        }
-      });
-    });
+    const ethAccounts = getEthAccounts(caip25Caveat.value);
 
     if (ethAccounts.length > 0) {
       permissions[RestrictedMethods.eth_accounts] = {
@@ -71,7 +54,7 @@ function getPermissionsImplementation(
         caveats: [
           {
             type: CaveatTypes.restrictReturnedAccounts,
-            value: Array.from(new Set(ethAccounts)),
+            value: ethAccounts,
           },
         ],
       };

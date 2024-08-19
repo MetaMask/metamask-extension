@@ -113,58 +113,29 @@ async function requestPermissionsImplementation(
 
     const ethAccounts = ethAccountsApproval.approvedAccounts;
 
-    const caipAccounts = ethAccounts.map(
-      (account) => `${scopeString}:${account}`,
-    );
-
     const permissions = getPermissionsForOrigin(origin) || {};
     const caip25Endowment = permissions[Caip25EndowmentPermissionName];
     const caip25Caveat = caip25Endowment?.caveats.find(
       ({ type }) => type === Caip25CaveatType,
     );
-    // TODO: need to check if isMultichainOrigin is set and bail if so
+
     if (caip25Caveat) {
-      const { optionalScopes, ...caveatValue } = caip25Caveat.value;
-      const optionalScope = {
-        methods: validRpcMethods,
-        notifications: validNotifications,
-        accounts: [],
-        // caveat values are frozen and must be cloned before modified
-        // this spread comes intentionally after the properties above
-        ...optionalScopes[scopeString],
-      };
-
-      optionalScope.accounts = Array.from(
-        new Set([...optionalScope.accounts, ...caipAccounts]),
+      if (caip25Caveat.value.isMultichainOrigin) {
+        return end(
+          new Error('cannot modify permission granted from multichain flow'),
+        ); // TODO: better error
+      }
+      const updatedCaveatValue = setEthAccounts(
+        caip25Caveat.value,
+        ethAccounts,
       );
 
-      const newOptionalScopes = {
-        ...caip25Caveat.value.optionalScopes,
-        [scopeString]: optionalScope,
-      };
-
-      updateCaveat(origin, Caip25EndowmentPermissionName, Caip25CaveatType, {
-        ...caveatValue,
-        optionalScopes: newOptionalScopes,
-      });
-
-      const sessionScopes = mergeScopes(
-        caip25Caveat.value.requiredScopes,
-        caip25Caveat.value.optionalScopes,
+      updateCaveat(
+        origin,
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+        updatedCaveatValue,
       );
-
-      Object.entries(sessionScopes).forEach(([_, { accounts }]) => {
-        accounts?.forEach((account) => {
-          const {
-            address,
-            chain: { namespace },
-          } = parseCaipAccountId(account);
-
-          if (namespace === KnownCaipNamespace.Eip155) {
-            ethAccounts.push(address);
-          }
-        });
-      });
 
       grantedPermissions[RestrictedMethods.eth_accounts] = {
         ...caip25Endowment,
@@ -172,11 +143,26 @@ async function requestPermissionsImplementation(
         caveats: [
           {
             type: CaveatTypes.restrictReturnedAccounts,
-            value: Array.from(new Set(ethAccounts)),
+            value: ethAccounts,
           },
         ],
       };
     } else {
+      const caveatValue = setEthAccounts(
+        {
+          requiredScopes: {},
+          optionalScopes: {
+            [scopeString]: {
+              methods: validRpcMethods,
+              notifications: validNotifications,
+              accounts: [],
+            },
+          },
+          isMultichainOrigin: false,
+        },
+        ethAccounts,
+      );
+
       const caip25GrantedPermissions = grantPermissions({
         subject: { origin },
         approvedPermissions: {
@@ -184,17 +170,7 @@ async function requestPermissionsImplementation(
             caveats: [
               {
                 type: Caip25CaveatType,
-                value: {
-                  requiredScopes: {},
-                  optionalScopes: {
-                    [scopeString]: {
-                      methods: validRpcMethods,
-                      notifications: validNotifications,
-                      accounts: caipAccounts,
-                    },
-                  },
-                  isMultichainOrigin: false,
-                },
+                value: caveatValue,
               },
             ],
           },
@@ -204,7 +180,12 @@ async function requestPermissionsImplementation(
       grantedPermissions[RestrictedMethods.eth_accounts] = {
         ...caip25GrantedPermissions[Caip25EndowmentPermissionName],
         parentCapability: RestrictedMethods.eth_accounts,
-        caveats: ethAccountsApproval.caveats,
+        caveats: [
+          {
+            type: CaveatTypes.restrictReturnedAccounts,
+            value: ethAccounts,
+          },
+        ],
       };
     }
   }

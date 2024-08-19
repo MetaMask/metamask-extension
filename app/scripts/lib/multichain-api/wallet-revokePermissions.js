@@ -87,35 +87,14 @@ function revokePermissionsImplementation(
     // should we remove accounts from required scopes? if so doesn't that mean we should
     // just revoke the caip25Endowment entirely?
 
-    const requiredScopesWithoutEip155Accounts = {};
-    Object.entries(caip25Caveat.value.requiredScopes).forEach(
-      ([scopeString, scopeObject]) => {
-        const { namespace } = parseScopeString(scopeString);
-        requiredScopesWithoutEip155Accounts[scopeString] = {
-          ...scopeObject,
-          accounts:
-            namespace === KnownCaipNamespace.Eip155 ? [] : scopeObject.accounts,
-        };
-      },
-    );
+    const updatedCaveatValue = setEthAccounts(caip25Caveat.value, []);
 
-    const optionalScopesWithoutEip155Accounts = {};
-    Object.entries(caip25Caveat.value.optionalScopes).forEach(
-      ([scopeString, scopeObject]) => {
-        const { namespace } = parseScopeString(scopeString);
-        optionalScopesWithoutEip155Accounts[scopeString] = {
-          ...scopeObject,
-          accounts:
-            namespace === KnownCaipNamespace.Eip155 ? [] : scopeObject.accounts,
-        };
-      },
+    updateCaveat(
+      origin,
+      Caip25EndowmentPermissionName,
+      Caip25CaveatType,
+      updatedCaveatValue,
     );
-
-    updateCaveat(origin, Caip25EndowmentPermissionName, Caip25CaveatType, {
-      ...caip25Caveat.value,
-      requiredScopes: requiredScopesWithoutEip155Accounts,
-      optionalScopes: optionalScopesWithoutEip155Accounts,
-    });
   }
 
   res.result = null;

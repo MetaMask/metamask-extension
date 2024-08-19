@@ -126,59 +126,42 @@ async function requestEthereumAccountsHandler(
 
   const scopeString = `eip155:${parseInt(chainId, 16)}`;
 
-  const caipAccounts = ethAccounts.map(
-    (account) => `${scopeString}:${account}`,
-  );
-
   const permissions = getPermissionsForOrigin(origin) || {};
   const caip25Endowment = permissions[Caip25EndowmentPermissionName];
   const caip25Caveat = caip25Endowment?.caveats.find(
     ({ type }) => type === Caip25CaveatType,
   );
-  // TODO: need to check if isMultichainOrigin is set and bail if so
+
   if (caip25Caveat) {
-    const { optionalScopes, ...caveatValue } = caip25Caveat.value;
-    const optionalScope = {
-      methods: validRpcMethods,
-      notifications: validNotifications,
-      accounts: [],
-      // caveat values are frozen and must be cloned before modified
-      // this spread comes intentionally after the properties above
-      ...optionalScopes[scopeString],
-    };
+    if (caip25Caveat.value.isMultichainOrigin) {
+      return end(
+        new Error('cannot modify permission granted from multichain flow'),
+      ); // TODO: better error
+    }
+    const updatedCaveatValue = setEthAccounts(caip25Caveat.value, ethAccounts);
 
-    optionalScope.accounts = Array.from(
-      new Set([...optionalScope.accounts, ...caipAccounts]),
+    updateCaveat(
+      origin,
+      Caip25EndowmentPermissionName,
+      Caip25CaveatType,
+      updatedCaveatValue,
     );
-
-    const newOptionalScopes = {
-      ...caip25Caveat.value.optionalScopes,
-      [scopeString]: optionalScope,
-    };
-
-    updateCaveat(origin, Caip25EndowmentPermissionName, Caip25CaveatType, {
-      ...caveatValue,
-      optionalScopes: newOptionalScopes,
-    });
-
-    const sessionScopes = mergeScopes(
-      caip25Caveat.value.requiredScopes,
-      caip25Caveat.value.optionalScopes,
-    );
-
-    Object.entries(sessionScopes).forEach(([_, { accounts }]) => {
-      accounts?.forEach((account) => {
-        const {
-          address,
-          chain: { namespace },
-        } = parseCaipAccountId(account);
-
-        if (namespace === KnownCaipNamespace.Eip155) {
-          ethAccounts.push(address);
-        }
-      });
-    });
   } else {
+    const caveatValue = setEthAccounts(
+      {
+        requiredScopes: {},
+        optionalScopes: {
+          [scopeString]: {
+            methods: validRpcMethods,
+            notifications: validNotifications,
+            accounts: [],
+          },
+        },
+        isMultichainOrigin: false,
+      },
+      ethAccounts,
+    );
+
     grantPermissions({
       subject: { origin },
       approvedPermissions: {
@@ -186,17 +169,7 @@ async function requestEthereumAccountsHandler(
           caveats: [
             {
               type: Caip25CaveatType,
-              value: {
-                requiredScopes: {},
-                optionalScopes: {
-                  [scopeString]: {
-                    methods: validRpcMethods,
-                    notifications: validNotifications,
-                    accounts: caipAccounts,
-                  },
-                },
-                isMultichainOrigin: false,
-              },
+              value: caveatValue,
             },
           ],
         },

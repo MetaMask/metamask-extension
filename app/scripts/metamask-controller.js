@@ -4661,25 +4661,7 @@ export default class MetamaskController extends EventEmitter {
       return [];
     }
 
-    const ethAccounts = [];
-    const sessionScopes = mergeScopes(
-      caveat.value.requiredScopes,
-      caveat.value.optionalScopes,
-    );
-
-    Object.entries(sessionScopes).forEach(([_, { accounts }]) => {
-      accounts?.forEach((account) => {
-        const {
-          address,
-          chain: { namespace },
-        } = parseCaipAccountId(account);
-
-        if (namespace === KnownCaipNamespace.Eip155) {
-          ethAccounts.push(address);
-        }
-      });
-    });
-    return Array.from(new Set(ethAccounts));
+    return getEthAccounts(caveat.value);
   }
 
   /**
