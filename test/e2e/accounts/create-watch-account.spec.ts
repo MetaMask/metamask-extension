@@ -26,6 +26,7 @@ async function startCreateWatchAccountFlow(driver: Driver): Promise<void> {
 }
 
 describe('Account-watcher snap', function (this: Suite) {
+  // ** Fails because cannot resolve address to expected ENS name **
   it('user can add watch account with valid EOA address', async function () {
     await withFixtures(
       {
@@ -55,12 +56,13 @@ describe('Account-watcher snap', function (this: Suite) {
         // check wallet now has the watched account with address resolved
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
-          text: ensName,
+          text: ensName, // shows default unresolved address name "Watched Account 1"
         });
       },
     );
   });
 
+  // ** Fails because cannot resolve ENS name to the expected address **
   it('user can add watch account with valid ENS name', async function () {
     await withFixtures(
       {
