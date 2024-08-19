@@ -93,8 +93,6 @@ export default class PreferencesController {
         redesignedConfirmationsEnabled: true,
         redesignedTransactionsEnabled: true,
         featureNotificationsEnabled: false,
-        showTokenAutodetectModal: null,
-        showNftAutodetectModal: null, // null because we want to show the modal only the first time
         isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: false,
       },

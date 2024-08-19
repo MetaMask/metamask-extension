@@ -1701,6 +1701,16 @@ export const getNotifySnaps = createDeepEqualSelector(
   },
 );
 
+function getAllSnapInsights(state) {
+  return state.metamask.insights;
+}
+
+export const getSnapInsights = createDeepEqualSelector(
+  getAllSnapInsights,
+  (_, id) => id,
+  (insights, id) => insights?.[id],
+);
+
 /**
  * @typedef {object} Notification
  * @property {string} id - A unique identifier for the notification
