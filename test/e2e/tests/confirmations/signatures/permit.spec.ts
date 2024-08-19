@@ -5,7 +5,6 @@ import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
   openDapp,
-  switchToNotificationWindow,
   unlockWallet,
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
@@ -39,7 +38,7 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signPermit');
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
@@ -51,7 +50,7 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
@@ -80,14 +79,12 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signPermit');
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElement(
+        await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirm-footer-cancel-button"]',
         );
-        await driver.delay(1000);
 
-        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         const rejectionResult = await driver.findElement('#signPermitResult');
