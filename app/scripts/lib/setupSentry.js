@@ -51,7 +51,9 @@ export default function setupSentry() {
   browser.management
     .getSelf()
     .then((extensionInfo) => {
-      installType = extensionInfo.installType;
+      if (extensionInfo.installType) {
+        installType = extensionInfo.installType;
+      }
     })
     .catch((error) => {
       log('Error getting extension installType', error);
