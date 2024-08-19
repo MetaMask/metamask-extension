@@ -106,6 +106,7 @@ const SnapUIRendererComponent = ({
       isCollapsed={isCollapsed}
       onClick={onClick}
       boxProps={boxProps}
+      disablePadding
     >
       <Box className="snap-ui-renderer__content">
         <SnapInterfaceContextProvider
