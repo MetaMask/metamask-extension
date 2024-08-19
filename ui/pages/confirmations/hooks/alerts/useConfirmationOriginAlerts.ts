@@ -22,7 +22,8 @@ const useConfirmationOriginAlerts = (): Alert[] => {
     ? (currentConfirmation as SignatureRequestType)?.msgParams?.origin
     : (currentConfirmation as TransactionMeta)?.origin;
 
-  const originUndefinedOrValid = origin === undefined || isValidASCIIURL(origin);
+  const originUndefinedOrValid =
+    origin === undefined || isValidASCIIURL(origin);
 
   return useMemo<Alert[]>((): Alert[] => {
     if (originUndefinedOrValid) {
