@@ -139,7 +139,7 @@ import {
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { parseCaipAccountId, toCaipChainId } from '@metamask/utils';
+import { toCaipChainId } from '@metamask/utils';
 import {
   AuthenticationController,
   UserStorageController,
@@ -343,7 +343,8 @@ import {
 import { decodeTransactionData } from './lib/transaction/decode/util';
 import { walletRevokeSessionHandler } from './lib/multichain-api/wallet-revokeSession';
 import { walletGetSessionHandler } from './lib/multichain-api/wallet-getSession';
-import { KnownCaipNamespace, mergeScopes } from './lib/multichain-api/scope';
+import { mergeScopes } from './lib/multichain-api/scope';
+import { getEthAccounts } from './lib/multichain-api/caip-permission-adapter-eth-accounts';
 import { CaipPermissionAdapterMiddleware } from './lib/multichain-api/caip-permission-adapter-middleware';
 import { BridgeBackgroundAction } from './controllers/bridge/types';
 import BridgeController from './controllers/bridge/bridge-controller';
@@ -3523,7 +3524,10 @@ export default class MetamaskController extends EventEmitter {
       removePermissionsFor: this.removePermissionsFor,
       approvePermissionsRequest: this.acceptPermissionsRequest,
       rejectPermissionsRequest: this.rejectPermissionsRequest,
-      ...getPermissionBackgroundApiMethods(permissionController),
+      ...getPermissionBackgroundApiMethods(
+        permissionController,
+        approvalController,
+      ),
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       connectCustodyAddresses: this.mmiController.connectCustodyAddresses.bind(

@@ -6,7 +6,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
-import { KnownCaipNamespace, parseScopeString } from './scope';
+import { setEthAccounts } from './caip-permission-adapter-eth-accounts';
 
 export const revokePermissionsHandler = {
   methodNames: [MethodNames.revokePermissions],

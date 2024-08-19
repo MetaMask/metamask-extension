@@ -1,14 +1,15 @@
 import { MethodNames } from '@metamask/permission-controller';
-import { parseCaipAccountId } from '@metamask/utils';
 import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
+import { PermissionNames } from '../../controllers/permissions';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
-import { KnownCaipNamespace, mergeScopes } from './scope';
+import { getEthAccounts } from './caip-permission-adapter-eth-accounts';
+import { getPermittedEthChainIds } from './caip-permission-adapter-permittedChains';
 
 export const getPermissionsHandler = {
   methodNames: [MethodNames.getPermissions],

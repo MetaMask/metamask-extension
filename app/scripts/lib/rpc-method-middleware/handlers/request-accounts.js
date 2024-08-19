@@ -1,5 +1,4 @@
 import { ethErrors } from 'eth-rpc-errors';
-import { parseCaipAccountId } from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   MetaMetricsEventName,
@@ -11,12 +10,11 @@ import {
   Caip25EndowmentPermissionName,
 } from '../../multichain-api/caip25permissions';
 import {
-  KnownCaipNamespace,
-  mergeScopes,
   validNotifications,
   validRpcMethods,
 } from '../../multichain-api/scope';
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
+import { setEthAccounts } from '../../multichain-api/caip-permission-adapter-eth-accounts';
 
 /**
  * This method attempts to retrieve the Ethereum accounts available to the

@@ -1,5 +1,5 @@
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
-import { ApprovalType, toHex } from '@metamask/controller-utils';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   BUILT_IN_INFURA_NETWORKS,
   CHAIN_ID_TO_RPC_URL_MAP,
@@ -17,15 +17,12 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '../../multichain-api/caip25permissions';
-import {
-  KnownCaipNamespace,
-  mergeScopes,
-  parseScopeString,
-  validNotifications,
-  validRpcMethods,
-} from '../../multichain-api/scope';
 import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
+import {
+  getPermittedEthChainIds,
+  addPermittedEthChainId,
+} from '../../multichain-api/caip-permission-adapter-permittedChains';
 
 export function findExistingNetwork(chainId, findNetworkConfigurationBy) {
   if (
@@ -219,21 +216,9 @@ export async function switchChain(
     });
 
     if (caip25Caveat) {
-      const scopes = mergeScopes(
-        caip25Caveat.value.requiredScopes,
-        caip25Caveat.value.optionalScopes,
-      );
+      const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
 
-      const permissionedChainIds = [];
-
-      Object.keys(scopes).forEach((scopeString) => {
-        const { namespace, reference } = parseScopeString(scopeString);
-        if (namespace === KnownCaipNamespace.Eip155) {
-          permissionedChainIds.push(toHex(reference));
-        }
-      });
-
-      if (!permissionedChainIds.includes(chainId)) {
+      if (!ethChainIds.includes(chainId)) {
         if (caip25Caveat.value.isMultichainOrigin) {
           return end(
             new Error(
@@ -249,20 +234,17 @@ export async function switchChain(
           },
         });
 
-        const scopeString = `eip155:${parseInt(chainId, 16)}`;
-        const newOptionalScopes = {
-          ...caip25Caveat.value.optionalScopes,
-          [scopeString]: {
-            methods: validRpcMethods,
-            notifications: validNotifications,
-            accounts: [], // Should this be empty?
-          },
-        };
+        const updatedCaveatValue = addPermittedEthChainId(
+          caip25Caveat.value,
+          chainId,
+        );
 
-        updateCaveat(origin, Caip25EndowmentPermissionName, Caip25CaveatType, {
-          ...caip25Caveat.value,
-          optionalScopes: newOptionalScopes,
-        });
+        updateCaveat(
+          origin,
+          Caip25EndowmentPermissionName,
+          Caip25CaveatType,
+          updatedCaveatValue,
+        );
       }
     } else {
       await requestUserApproval({

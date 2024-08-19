@@ -1,6 +1,5 @@
 import { isPlainObject } from '@metamask/controller-utils';
 import { invalidParams, MethodNames } from '@metamask/permission-controller';
-import { parseCaipAccountId } from '@metamask/utils';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -9,12 +8,9 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
-import {
-  KnownCaipNamespace,
-  mergeScopes,
-  validNotifications,
-  validRpcMethods,
-} from './scope';
+import { validNotifications, validRpcMethods } from './scope';
+import { setEthAccounts } from './caip-permission-adapter-eth-accounts';
+import { PermissionNames } from '../../controllers/permissions';
 
 export const requestPermissionsHandler = {
   methodNames: [MethodNames.requestPermissions],
