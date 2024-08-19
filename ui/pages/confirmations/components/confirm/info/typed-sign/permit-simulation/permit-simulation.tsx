@@ -48,7 +48,8 @@ const PermitSimulation: React.FC<{
 
   const fiatValue = useMemo(() => {
     if (exchangeRate && value) {
-      return exchangeRate.times(new Numeric(value, 10)).toNumber();
+      const tokenAmount = calcTokenAmount(value, tokenDecimals);
+      return exchangeRate.times(tokenAmount).toNumber();
     }
     return undefined;
   }, [exchangeRate, value]);
