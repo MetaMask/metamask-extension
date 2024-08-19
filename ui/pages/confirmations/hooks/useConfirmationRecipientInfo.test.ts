@@ -1,11 +1,12 @@
 import mockState from '../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { getInternalAccountByAddress } from '../../../selectors';
 import useConfirmationRecipientInfo from './useConfirmationRecipientInfo';
 
-const RecipientAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+const SenderAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
 describe('useConfirmationRecipientInfo', () => {
-  describe('when the current confirimation is a signature', () => {
+  describe('when the current confirmation is a signature', () => {
     it('returns the account name of the from address as the recipient name', () => {
       const { result } = renderHookWithProvider(
         () => useConfirmationRecipientInfo(),
@@ -14,16 +15,19 @@ describe('useConfirmationRecipientInfo', () => {
           confirm: {
             currentConfirmation: {
               id: '1',
-              msgParams: { from: RecipientAddress },
+              msgParams: { from: SenderAddress },
             },
           },
         },
       );
 
-      expect(result.current.recipientAddress).toBe(RecipientAddress);
-      expect(result.current.recipientName).toBe(
-        mockState.metamask.identities[RecipientAddress].name,
+      const expectedAccount = getInternalAccountByAddress(
+        mockState,
+        SenderAddress,
       );
+
+      expect(result.current.senderAddress).toBe(SenderAddress);
+      expect(result.current.senderName).toBe(expectedAccount.metadata.name);
     });
   });
 
@@ -33,7 +37,7 @@ describe('useConfirmationRecipientInfo', () => {
       mockState,
     );
 
-    expect(result.current.recipientAddress).toBe('');
-    expect(result.current.recipientName).toBe('');
+    expect(result.current.senderAddress).toBe('');
+    expect(result.current.senderName).toBe('');
   });
 });

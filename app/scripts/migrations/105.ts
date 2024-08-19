@@ -1,11 +1,8 @@
-import {
-  EthAccountType,
-  InternalAccount,
-  EthMethod,
-} from '@metamask/keyring-api';
+import { EthAccountType, InternalAccount } from '@metamask/keyring-api';
 import { sha256FromString } from 'ethereumjs-util';
 import { v4 as uuid } from 'uuid';
 import { cloneDeep } from 'lodash';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 
 type VersionedData = {
   meta: { version: number };
@@ -48,6 +45,22 @@ function migrateData(state: Record<string, unknown>): void {
   createSelectedAccountForAccountsController(state);
 }
 
+function findInternalAccountByAddress(
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  state: Record<string, any>,
+  address: string,
+): InternalAccount | undefined {
+  return Object.values<InternalAccount>(
+    state.AccountsController.internalAccounts.accounts,
+  ).find(
+    (account: InternalAccount) =>
+      account.address.toLowerCase() === address.toLowerCase(),
+  );
+}
+
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function createDefaultAccountsController(state: Record<string, any>) {
   state.AccountsController = {
     internalAccounts: {
@@ -58,6 +71,8 @@ function createDefaultAccountsController(state: Record<string, any>) {
 }
 
 function createInternalAccountsForAccountsController(
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   state: Record<string, any>,
 ) {
   const identities: {
@@ -89,7 +104,7 @@ function createInternalAccountsForAccountsController(
           type: 'HD Key Tree',
         },
       },
-      methods: [...Object.values(EthMethod)],
+      methods: ETH_EOA_METHODS,
       type: EthAccountType.Eoa,
     };
   });
@@ -97,10 +112,23 @@ function createInternalAccountsForAccountsController(
   state.AccountsController.internalAccounts.accounts = accounts;
 }
 
-function createSelectedAccountForAccountsController(
+function getFirstAddress(
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   state: Record<string, any>,
 ) {
-  const selectedAddress = state.PreferencesController?.selectedAddress;
+  const [firstAddress] = Object.keys(
+    state.PreferencesController?.identities || {},
+  );
+  return firstAddress;
+}
+
+function createSelectedAccountForAccountsController(
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  state: Record<string, any>,
+) {
+  let selectedAddress = state.PreferencesController?.selectedAddress;
 
   if (typeof selectedAddress !== 'string') {
     global.sentry?.captureException?.(
@@ -108,18 +136,18 @@ function createSelectedAccountForAccountsController(
         `state.PreferencesController?.selectedAddress is ${selectedAddress}`,
       ),
     );
+
+    // Get the first account if selectedAddress is not a string
+    selectedAddress = getFirstAddress(state);
   }
 
-  const selectedAccount = Object.values<InternalAccount>(
-    state.AccountsController.internalAccounts.accounts,
-  ).find((account: InternalAccount) => {
-    return account.address.toLowerCase() === selectedAddress.toLowerCase();
-  }) as InternalAccount;
-
+  const selectedAccount = findInternalAccountByAddress(state, selectedAddress);
   if (selectedAccount) {
+    // Required in case there was no address selected
+    state.PreferencesController.selectedAddress = selectedAccount.address;
     state.AccountsController.internalAccounts = {
       ...state.AccountsController.internalAccounts,
-      selectedAccount: selectedAccount.id ?? '',
+      selectedAccount: selectedAccount.id,
     };
   }
 }

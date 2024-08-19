@@ -17,6 +17,7 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   MMI_ONBOARDING_COMPLETION_ROUTE,
+  SRP_REMINDER,
   ///: END:ONLY_INCLUDE_IF
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
@@ -27,8 +28,9 @@ import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
   createNewVaultAndRestore,
+  setOnboardingDate,
 } from '../../store/actions';
-import { getFirstTimeFlowTypeRoute } from '../../selectors';
+import { getFirstTimeFlowTypeRouteAfterUnlock } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import Button from '../../components/ui/button';
 import RevealSRPModal from '../../components/app/reveal-SRP-modal';
@@ -42,6 +44,7 @@ import ExperimentalArea from '../../components/app/flask/experimental-area';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import OnboardingSuccessful from '../institutional/onboarding-successful/onboarding-successful';
+import { RemindSRP } from '../institutional/remind-srp/remind-srp';
 ///: END:ONLY_INCLUDE_IF
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
@@ -64,9 +67,13 @@ export default function OnboardingFlow() {
   const history = useHistory();
   const t = useI18nContext();
   const completedOnboarding = useSelector(getCompletedOnboarding);
-  const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
+  const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   const trackEvent = useContext(MetaMetricsContext);
+
+  useEffect(() => {
+    dispatch(setOnboardingDate());
+  }, [dispatch]);
 
   useEffect(() => {
     if (completedOnboarding && !isFromReminder) {
@@ -168,6 +175,12 @@ export default function OnboardingFlow() {
           <Route
             path={MMI_ONBOARDING_COMPLETION_ROUTE}
             component={OnboardingSuccessful}
+          />
+          <Route
+            path={SRP_REMINDER}
+            render={() => (
+              <RemindSRP secretRecoveryPhrase={secretRecoveryPhrase} />
+            )}
           />
           {
             ///: END:ONLY_INCLUDE_IF

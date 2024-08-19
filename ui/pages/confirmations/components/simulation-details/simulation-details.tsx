@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   SimulationData,
   SimulationError,
+  SimulationErrorCode,
 } from '@metamask/transaction-controller';
 import {
   Box,
@@ -29,13 +30,9 @@ import { useSimulationMetrics } from './useSimulationMetrics';
 export type SimulationDetailsProps = {
   simulationData?: SimulationData;
   transactionId: string;
+  enableMetrics?: boolean;
+  isTransactionsRedesign?: boolean;
 };
-
-/** Error messages that will cause the simulation details to be hidden. */
-const HIDE_SIMULATION_ERRORS = [
-  'Chain is not supported',
-  'Simulation disabled',
-];
 
 /**
  * Displayed while loading the simulation preview.
@@ -60,13 +57,9 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
   const t = useI18nContext();
 
   function getMessage() {
-    if (
-      error.isReverted ||
-      error.message?.includes('insufficient funds for gas')
-    ) {
-      return t('simulationDetailsTransactionReverted');
-    }
-    return t('simulationDetailsFailed');
+    return error.code === SimulationErrorCode.Reverted
+      ? t('simulationDetailsTransactionReverted')
+      : t('simulationDetailsFailed');
   }
 
   return (
@@ -88,12 +81,7 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
 const EmptyContent: React.FC = () => {
   const t = useI18nContext();
   return (
-    <Text
-      color={TextColor.textAlternative}
-      variant={TextVariant.bodySm}
-      display={Display.Flex}
-      alignItems={AlignItems.flexStart}
-    >
+    <Text color={TextColor.textAlternative} variant={TextVariant.bodyMd}>
       {t('simulationDetailsNoBalanceChanges')}
     </Text>
   );
@@ -124,8 +112,7 @@ const HeaderLayout: React.FC = ({ children }) => {
           {t('simulationDetailsTitle')}
         </Text>
         <InfoTooltip
-          position="right"
-          iconFillColor="var(--color-icon-muted)"
+          position="top"
           contentText={t('simulationDetailsTitleTooltip')}
         />
       </Box>
@@ -139,19 +126,26 @@ const HeaderLayout: React.FC = ({ children }) => {
  *
  * @param props
  * @param props.inHeader
+ * @param props.isTransactionsRedesign
  * @param props.children
  */
 const SimulationDetailsLayout: React.FC<{
   inHeader?: React.ReactNode;
-}> = ({ inHeader, children }) => (
+  isTransactionsRedesign: boolean;
+}> = ({ inHeader, isTransactionsRedesign, children }) => (
   <Box
     data-testid="simulation-details-layout"
+    className="simulation-details-layout"
     display={Display.Flex}
     flexDirection={FlexDirection.Column}
-    borderRadius={BorderRadius.MD}
-    borderColor={BorderColor.borderDefault}
+    borderRadius={BorderRadius.LG}
+    borderColor={
+      isTransactionsRedesign
+        ? BorderColor.transparent
+        : BorderColor.borderDefault
+    }
     padding={3}
-    margin={4}
+    margin={isTransactionsRedesign ? null : 4}
     gap={3}
   >
     <HeaderLayout>{inHeader}</HeaderLayout>
@@ -159,39 +153,31 @@ const SimulationDetailsLayout: React.FC<{
   </Box>
 );
 
-function useLoadingTime() {
-  const [loadingStart] = useState(Date.now());
-  const [loadingTime, setLoadingTime] = useState<number | undefined>();
-
-  const setLoadingComplete = () => {
-    if (loadingTime === undefined) {
-      setLoadingTime((Date.now() - loadingStart) / 1000);
-    }
-  };
-
-  return { loadingTime, setLoadingComplete };
-}
-
 /**
  * Preview of a transaction's effects using simulation data.
  *
  * @param props
  * @param props.simulationData - The simulation data to display.
  * @param props.transactionId - The ID of the transaction being simulated.
+ * @param props.enableMetrics - Whether to enable simulation metrics.
+ * @param props.isTransactionsRedesign - Whether or not the component is being
+ * used inside the transaction redesign flow.
  */
 export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   simulationData,
   transactionId,
+  enableMetrics = false,
+  isTransactionsRedesign = false,
 }: SimulationDetailsProps) => {
   const t = useI18nContext();
-  const { loadingTime, setLoadingComplete } = useLoadingTime();
   const balanceChangesResult = useBalanceChanges(simulationData);
   const loading = !simulationData || balanceChangesResult.pending;
 
   useSimulationMetrics({
+    enableMetrics,
     balanceChanges: balanceChangesResult.value,
-    loadingTime,
-    simulationData: simulationData as SimulationData,
+    loading,
+    simulationData,
     transactionId,
   });
 
@@ -199,18 +185,25 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     return (
       <SimulationDetailsLayout
         inHeader={<LoadingIndicator />}
+        isTransactionsRedesign={isTransactionsRedesign}
       ></SimulationDetailsLayout>
     );
   }
 
-  setLoadingComplete();
-
   const { error } = simulationData;
+
+  if (
+    [
+      SimulationErrorCode.ChainNotSupported,
+      SimulationErrorCode.Disabled,
+    ].includes(error?.code as SimulationErrorCode)
+  ) {
+    return null;
+  }
+
   if (error) {
-    return HIDE_SIMULATION_ERRORS.some((errorMessage) =>
-      error?.message?.includes(errorMessage),
-    ) ? null : (
-      <SimulationDetailsLayout>
+    return (
+      <SimulationDetailsLayout isTransactionsRedesign={isTransactionsRedesign}>
         <ErrorContent error={error} />
       </SimulationDetailsLayout>
     );
@@ -220,16 +213,16 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   const empty = balanceChanges.length === 0;
   if (empty) {
     return (
-      <SimulationDetailsLayout>
+      <SimulationDetailsLayout isTransactionsRedesign={isTransactionsRedesign}>
         <EmptyContent />
       </SimulationDetailsLayout>
     );
   }
 
-  const outgoing = balanceChanges.filter((change) => change.amount.isNegative);
-  const incoming = balanceChanges.filter((change) => !change.amount.isNegative);
+  const outgoing = balanceChanges.filter((bc) => bc.amount.isNegative());
+  const incoming = balanceChanges.filter((bc) => !bc.amount.isNegative());
   return (
-    <SimulationDetailsLayout>
+    <SimulationDetailsLayout isTransactionsRedesign={isTransactionsRedesign}>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
         <BalanceChangeList
           heading={t('simulationDetailsOutgoingHeading')}

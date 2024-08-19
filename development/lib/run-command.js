@@ -14,7 +14,7 @@ const spawn = require('cross-spawn');
  *
  * @param {string} command - The command to run
  * @param {Array<string>} [args] - The arguments to pass to the command
- * @returns {Array<string>} Lines of output received via STDOUT
+ * @returns {Promise<Array<string>>} Lines of output received via STDOUT
  */
 async function runCommand(command, args) {
   const output = [];
@@ -96,7 +96,7 @@ async function runInShell(command, args, output) {
   const internalError = new Error('Internal');
   try {
     await new Promise((resolve, reject) => {
-      const childProcess = spawn(command, args);
+      const childProcess = spawn(command, args, { shell: true });
       childProcess.stdout.setEncoding('utf8');
       childProcess.stderr.setEncoding('utf8');
       childProcess.stdout.pipe(process.stdout);

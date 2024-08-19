@@ -1,0 +1,51 @@
+diff --git a/dist/abnf.js b/dist/abnf.js
+index 15caf986714ddc2276571d17c35bf392941fa346..0eeac1eeb94284e201fb0bbaea887c0f3d060aaa 100644
+--- a/dist/abnf.js
++++ b/dist/abnf.js
+@@ -290,9 +290,6 @@ class ParsedMessage {
+         if (this.domain.length === 0) {
+             throw new Error("Domain cannot be empty.");
+         }
+-        if (!(0, utils_1.isEIP55Address)(this.address)) {
+-            throw new Error("Address not conformant to EIP-55.");
+-        }
+     }
+ }
+ exports.ParsedMessage = ParsedMessage;
+diff --git a/dist/regex.js b/dist/regex.js
+index 4740a7c271db7fb2b5f0885727053e1165e8e392..cbfa067030a975ae645ef68baa3b963059e89f2c 100644
+--- a/dist/regex.js
++++ b/dist/regex.js
+@@ -55,9 +55,7 @@ class ParsedMessage {
+             throw new Error("Domain cannot be empty.");
+         }
+         this.address = (_b = match === null || match === void 0 ? void 0 : match.groups) === null || _b === void 0 ? void 0 : _b.address;
+-        if (!(0, utils_1.isEIP55Address)(this.address)) {
+-            throw new Error("Address not conformant to EIP-55.");
+-        }
++
+         this.statement = (_c = match === null || match === void 0 ? void 0 : match.groups) === null || _c === void 0 ? void 0 : _c.statement;
+         this.uri = (_d = match === null || match === void 0 ? void 0 : match.groups) === null || _d === void 0 ? void 0 : _d.uri;
+         if (!uri.isUri(this.uri)) {
+diff --git a/lib/abnf.ts b/lib/abnf.ts
+index a7e5fcfaefdf39bac8bf0b5ee2d6e12cee4b07f0..6d022a2bd17ec5d7158b34e978a946465520aa74 100644
+--- a/lib/abnf.ts
++++ b/lib/abnf.ts
+@@ -1,6 +1,6 @@
+ import apgApi from "apg-js/src/apg-api/api";
+ import apgLib from "apg-js/src/apg-lib/node-exports";
+-import { isEIP55Address, parseIntegerNumber } from "./utils";
++import { parseIntegerNumber } from "./utils";
+ 
+ const GRAMMAR = `
+ sign-in-with-ethereum =
+@@ -358,9 +358,5 @@ export class ParsedMessage {
+ 		if (this.domain.length === 0) {
+ 			throw new Error("Domain cannot be empty.");
+ 		}
+-
+-		if (!isEIP55Address(this.address)) {
+-			throw new Error("Address not conformant to EIP-55.");
+-		}
+ 	}
+ }

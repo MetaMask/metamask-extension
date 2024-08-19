@@ -75,9 +75,6 @@
   "asset": {
     "message": "Activ"
   },
-  "attemptingConnect": {
-    "message": "Se încearcă conectarea la blockchain."
-  },
   "attributions": {
     "message": "Atribuții"
   },
@@ -616,9 +613,6 @@
   },
   "send": {
     "message": "Trimite"
-  },
-  "sendTokens": {
-    "message": "Trimiteți indicative"
   },
   "settings": {
     "message": "Setări"

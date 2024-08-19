@@ -18,6 +18,8 @@ export default function init() {
       msg: {
         target: string;
         action: TrezorAction;
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         params: any;
       },
       _sender,

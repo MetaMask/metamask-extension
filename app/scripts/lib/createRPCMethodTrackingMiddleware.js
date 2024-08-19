@@ -1,4 +1,4 @@
-import { detectSIWE } from '@metamask/controller-utils';
+import { ApprovalType, detectSIWE } from '@metamask/controller-utils';
 import { errorCodes } from 'eth-rpc-errors';
 import { isValidAddress } from 'ethereumjs-util';
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
@@ -7,39 +7,37 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
 } from '../../../shared/constants/metametrics';
-import { SECOND } from '../../../shared/constants/time';
+import { parseTypedDataMessage } from '../../../shared/modules/transaction.utils';
 
 import {
   BlockaidResultType,
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   BlockaidReason,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/security-provider';
-
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+import {
+  PRIMARY_TYPES_ORDER,
+  PRIMARY_TYPES_PERMIT,
+} from '../../../shared/constants/signatures';
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
-
 import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
-///: END:ONLY_INCLUDE_IF
+import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
  * These types determine how the method tracking middleware handles incoming
- * requests based on the method name. There are three options right now but
- * the types could be expanded to cover other options in the future.
+ * requests based on the method name.
  */
 const RATE_LIMIT_TYPES = {
-  RATE_LIMITED: 'rate_limited',
+  TIMEOUT: 'timeout',
   BLOCKED: 'blocked',
   NON_RATE_LIMITED: 'non_rate_limited',
+  RANDOM_SAMPLE: 'random_sample',
 };
 
 /**
  * This object maps a method name to a RATE_LIMIT_TYPE. If not in this map the
- * default is 'RATE_LIMITED'
+ * default is RANDOM_SAMPLE
  */
 const RATE_LIMIT_MAP = {
-  [MESSAGE_TYPE.ETH_SIGN]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
@@ -47,10 +45,22 @@ const RATE_LIMIT_MAP = {
   [MESSAGE_TYPE.ETH_DECRYPT]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY]:
     RATE_LIMIT_TYPES.NON_RATE_LIMITED,
-  [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS]: RATE_LIMIT_TYPES.RATE_LIMITED,
-  [MESSAGE_TYPE.WALLET_REQUEST_PERMISSIONS]: RATE_LIMIT_TYPES.RATE_LIMITED,
+  [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS]: RATE_LIMIT_TYPES.TIMEOUT,
+  [MESSAGE_TYPE.WALLET_REQUEST_PERMISSIONS]: RATE_LIMIT_TYPES.TIMEOUT,
   [MESSAGE_TYPE.SEND_METADATA]: RATE_LIMIT_TYPES.BLOCKED,
+  [MESSAGE_TYPE.ETH_CHAIN_ID]: RATE_LIMIT_TYPES.BLOCKED,
+  [MESSAGE_TYPE.ETH_ACCOUNTS]: RATE_LIMIT_TYPES.BLOCKED,
+  [MESSAGE_TYPE.LOG_WEB3_SHIM_USAGE]: RATE_LIMIT_TYPES.BLOCKED,
   [MESSAGE_TYPE.GET_PROVIDER_STATE]: RATE_LIMIT_TYPES.BLOCKED,
+};
+
+const MESSAGE_TYPE_TO_APPROVAL_TYPE = {
+  [MESSAGE_TYPE.PERSONAL_SIGN]: ApprovalType.PersonalSign,
+  [MESSAGE_TYPE.SIGN]: ApprovalType.SignTransaction,
+  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA]: ApprovalType.EthSignTypedData,
+  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1]: ApprovalType.EthSignTypedData,
+  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3]: ApprovalType.EthSignTypedData,
+  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4]: ApprovalType.EthSignTypedData,
 };
 
 /**
@@ -59,12 +69,6 @@ const RATE_LIMIT_MAP = {
  * appropriate event names.
  */
 const EVENT_NAME_MAP = {
-  [MESSAGE_TYPE.ETH_SIGN]: {
-    APPROVED: MetaMetricsEventName.SignatureApproved,
-    FAILED: MetaMetricsEventName.SignatureFailed,
-    REJECTED: MetaMetricsEventName.SignatureRejected,
-    REQUESTED: MetaMetricsEventName.SignatureRequested,
-  },
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA]: {
     APPROVED: MetaMetricsEventName.SignatureApproved,
     REJECTED: MetaMetricsEventName.SignatureRejected,
@@ -107,9 +111,18 @@ const EVENT_NAME_MAP = {
   },
 };
 
-const rateLimitTimeouts = {};
+/**
+ * This object maps a method name to a function that accept the method params and
+ * returns a non-sensitive version that can be included in tracked events.
+ * The default is to return undefined.
+ */
+const TRANSFORM_PARAMS_MAP = {
+  [MESSAGE_TYPE.WATCH_ASSET]: ({ type }) => ({ type }),
+};
 
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+const rateLimitTimeoutsByMethod = {};
+let globalRateLimitCount = 0;
+
 /**
  * Returns a middleware that tracks inpage_provider usage using sampling for
  * each type of event except those that require user interaction, such as
@@ -120,42 +133,65 @@ const rateLimitTimeouts = {};
  *  MetaMetricsController
  * @param {Function} opts.getMetricsState - get the state of
  *  MetaMetricsController
- * @param {number} [opts.rateLimitSeconds] - number of seconds to wait before
- *  allowing another set of events to be tracked.
+ * @param {number} [opts.rateLimitTimeout] - time, in milliseconds, to wait before
+ *  allowing another set of events to be tracked for methods rate limited by timeout.
+ * @param {number} [opts.rateLimitSamplePercent] - percentage, in decimal, of events
+ *  that should be tracked for methods rate limited by random sample.
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
+ * @param {Function} opts.isConfirmationRedesignEnabled
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
- * @param {AppStateController} opts.appStateController
+ * @param {number} [opts.globalRateLimitTimeout] - time, in milliseconds, of the sliding
+ * time window that should limit the number of method calls tracked to globalRateLimitMaxAmount.
+ * @param {number} [opts.globalRateLimitMaxAmount] - max number of method calls that should
+ * tracked within the globalRateLimitTimeout time window.
  * @returns {Function}
  */
-///: END:ONLY_INCLUDE_IF
 
 export default function createRPCMethodTrackingMiddleware({
   trackEvent,
   getMetricsState,
-  rateLimitSeconds = 60 * 5,
+  rateLimitTimeout = 60 * 5 * 1000, // 5 minutes
+  rateLimitSamplePercent = 0.001, // 0.1%
+  globalRateLimitTimeout = 60 * 5 * 1000, // 5 minutes
+  globalRateLimitMaxAmount = 10, // max of events in the globalRateLimitTimeout window. pass 0 for no global rate limit
   getAccountType,
   getDeviceModel,
+  isConfirmationRedesignEnabled,
   snapAndHardwareMessenger,
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   appStateController,
-  ///: END:ONLY_INCLUDE_IF
 }) {
   return async function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,
     /** @type {any} */ res,
     /** @type {Function} */ next,
   ) {
-    const { origin, method } = req;
+    const { origin, method, params } = req;
 
-    // Determine what type of rate limit to apply based on method
     const rateLimitType =
-      RATE_LIMIT_MAP[method] ?? RATE_LIMIT_TYPES.RATE_LIMITED;
+      RATE_LIMIT_MAP[method] ?? RATE_LIMIT_TYPES.RANDOM_SAMPLE;
 
-    // If the rateLimitType is RATE_LIMITED check the rateLimitTimeouts
-    const rateLimited =
-      rateLimitType === RATE_LIMIT_TYPES.RATE_LIMITED &&
-      typeof rateLimitTimeouts[method] !== 'undefined';
+    let isRateLimited;
+    switch (rateLimitType) {
+      case RATE_LIMIT_TYPES.TIMEOUT:
+        isRateLimited =
+          typeof rateLimitTimeoutsByMethod[method] !== 'undefined';
+        break;
+      case RATE_LIMIT_TYPES.NON_RATE_LIMITED:
+        isRateLimited = false;
+        break;
+      case RATE_LIMIT_TYPES.BLOCKED:
+        isRateLimited = true;
+        break;
+      default:
+      case RATE_LIMIT_TYPES.RANDOM_SAMPLE:
+        isRateLimited = Math.random() >= rateLimitSamplePercent;
+        break;
+    }
+
+    const isGlobalRateLimited =
+      globalRateLimitMaxAmount > 0 &&
+      globalRateLimitCount >= globalRateLimitMaxAmount;
 
     // Get the participateInMetaMetrics state to determine if we should track
     // anything. This is extra redundancy because this value is checked in
@@ -173,10 +209,10 @@ export default function createRPCMethodTrackingMiddleware({
     const shouldTrackEvent =
       // Don't track if the request came from our own UI or background
       origin !== ORIGIN_METAMASK &&
-      // Don't track if this is a blocked method
-      rateLimitType !== RATE_LIMIT_TYPES.BLOCKED &&
       // Don't track if the rate limit has been hit
-      rateLimited === false &&
+      !isRateLimited &&
+      // Don't track if the global rate limit has been hit
+      !isGlobalRateLimited &&
       // Don't track if the user isn't participating in metametrics
       userParticipatingInMetaMetrics === true;
 
@@ -201,7 +237,6 @@ export default function createRPCMethodTrackingMiddleware({
           data = req?.params?.[1];
         }
 
-        ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
         if (req.securityAlertResponse?.providerRequestsCount) {
           Object.keys(req.securityAlertResponse.providerRequestsCount).forEach(
             (key) => {
@@ -222,7 +257,19 @@ export default function createRPCMethodTrackingMiddleware({
           eventProperties.security_alert_description =
             req.securityAlertResponse.description;
         }
-        ///: END:ONLY_INCLUDE_IF
+
+        const isConfirmationRedesign =
+          isConfirmationRedesignEnabled() &&
+          REDESIGN_APPROVAL_TYPES.find(
+            (type) => type === MESSAGE_TYPE_TO_APPROVAL_TYPE[method],
+          );
+
+        if (isConfirmationRedesign) {
+          eventProperties.ui_customizations = [
+            ...(eventProperties.ui_customizations || []),
+            MetaMetricsEventUiCustomization.RedesignedConfirmation,
+          ];
+        }
 
         const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
           getAccountType,
@@ -237,9 +284,24 @@ export default function createRPCMethodTrackingMiddleware({
           if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
             const { isSIWEMessage } = detectSIWE({ data });
             if (isSIWEMessage) {
-              eventProperties.ui_customizations = (
-                eventProperties.ui_customizations || []
-              ).concat(MetaMetricsEventUiCustomization.Siwe);
+              eventProperties.ui_customizations = [
+                ...(eventProperties.ui_customizations || []),
+                MetaMetricsEventUiCustomization.Siwe,
+              ];
+            }
+          } else if (method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4) {
+            const { primaryType } = parseTypedDataMessage(data);
+            eventProperties.eip712_primary_type = primaryType;
+            if (PRIMARY_TYPES_PERMIT.includes(primaryType)) {
+              eventProperties.ui_customizations = [
+                ...(eventProperties.ui_customizations || []),
+                MetaMetricsEventUiCustomization.Permit,
+              ];
+            } else if (PRIMARY_TYPES_ORDER.includes(primaryType)) {
+              eventProperties.ui_customizations = [
+                ...(eventProperties.ui_customizations || []),
+                MetaMetricsEventUiCustomization.Order,
+              ];
             }
           }
         } catch (e) {
@@ -247,6 +309,11 @@ export default function createRPCMethodTrackingMiddleware({
         }
       } else {
         eventProperties.method = method;
+      }
+
+      const transformParams = TRANSFORM_PARAMS_MAP[method];
+      if (transformParams) {
+        eventProperties.params = transformParams(params);
       }
 
       trackEvent({
@@ -258,9 +325,16 @@ export default function createRPCMethodTrackingMiddleware({
         properties: eventProperties,
       });
 
-      rateLimitTimeouts[method] = setTimeout(() => {
-        delete rateLimitTimeouts[method];
-      }, SECOND * rateLimitSeconds);
+      if (rateLimitType === RATE_LIMIT_TYPES.TIMEOUT) {
+        rateLimitTimeoutsByMethod[method] = setTimeout(() => {
+          delete rateLimitTimeoutsByMethod[method];
+        }, rateLimitTimeout);
+      }
+
+      globalRateLimitCount += 1;
+      setTimeout(() => {
+        globalRateLimitCount -= 1;
+      }, globalRateLimitTimeout);
     }
 
     next(async (callback) => {
@@ -268,18 +342,8 @@ export default function createRPCMethodTrackingMiddleware({
         return callback();
       }
 
-      // The rpc error methodNotFound implies that 'eth_sign' is disabled in Advanced Settings
-      const isDisabledEthSignAdvancedSetting =
-        method === MESSAGE_TYPE.ETH_SIGN &&
-        res.error?.code === errorCodes.rpc.methodNotFound;
-
-      const isDisabledRPCMethod = isDisabledEthSignAdvancedSetting;
-
       let event;
-      if (isDisabledRPCMethod) {
-        event = eventType.FAILED;
-        eventProperties.error = res.error;
-      } else if (res.error?.code === errorCodes.provider.userRejectedRequest) {
+      if (res.error?.code === errorCodes.provider.userRejectedRequest) {
         event = eventType.REJECTED;
       } else if (
         res.error?.code === errorCodes.rpc.internal &&
@@ -293,21 +357,16 @@ export default function createRPCMethodTrackingMiddleware({
       }
 
       let blockaidMetricProps = {};
+      if (SIGNING_METHODS.includes(method)) {
+        const securityAlertResponse =
+          appStateController.getSignatureSecurityAlertResponse(
+            req.securityAlertResponse?.securityAlertId,
+          );
 
-      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-      if (!isDisabledRPCMethod) {
-        if (SIGNING_METHODS.includes(method)) {
-          const securityAlertResponse =
-            appStateController.getSignatureSecurityAlertResponse(
-              req.securityAlertResponse?.securityAlertId,
-            );
-
-          blockaidMetricProps = getBlockaidMetricsProps({
-            securityAlertResponse,
-          });
-        }
+        blockaidMetricProps = getBlockaidMetricsProps({
+          securityAlertResponse,
+        });
       }
-      ///: END:ONLY_INCLUDE_IF
 
       const properties = {
         ...eventProperties,

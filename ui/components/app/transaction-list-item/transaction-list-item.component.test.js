@@ -68,7 +68,6 @@ jest.mock('../../../hooks/useGasFeeEstimates', () => ({
 
 setBackgroundConnection({
   getGasFeeTimeEstimate: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest.fn(),
 });
 
 jest.mock('react', () => {

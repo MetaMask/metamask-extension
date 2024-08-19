@@ -38,6 +38,8 @@ const createMessengerMock = () =>
     registerInitialEventPayload: jest.fn(),
     publish: jest.fn(),
     call: jest.fn(),
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any as jest.Mocked<DecryptMessageControllerMessenger>);
 
 const createDecryptMessageManagerMock = <T>() =>
@@ -57,6 +59,8 @@ const createDecryptMessageManagerMock = <T>() =>
     hub: {
       on: jest.fn(),
     },
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any as jest.Mocked<T>);
 
 describe('DecryptMessageController', () => {
@@ -81,6 +85,8 @@ describe('DecryptMessageController', () => {
 
   const mockMessengerAction = (
     action: string,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     callback: (actionName: string, ...args: any[]) => any,
   ) => {
     messengerMock.call.mockImplementation((actionName, ...rest) => {
@@ -100,9 +106,17 @@ describe('DecryptMessageController', () => {
     );
 
     decryptMessageController = new MockDecryptMessageController({
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getState: getStateMock as any,
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       keyringController: keyringControllerMock as any,
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       messenger: messengerMock as any,
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       metricsEvent: metricsEventMock as any,
     } as DecryptMessageControllerOptions);
   });
@@ -116,6 +130,8 @@ describe('DecryptMessageController', () => {
     decryptMessageController.update(() => ({
       unapprovedDecryptMsgs: {
         [messageIdMock]: messageMock,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
       unapprovedDecryptMsgCount: 1,
     }));
@@ -131,6 +147,8 @@ describe('DecryptMessageController', () => {
   it('should add unapproved messages', async () => {
     await decryptMessageController.newRequestDecryptMessage(
       messageMock,
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       undefined as any,
     );
 
@@ -220,6 +238,8 @@ describe('DecryptMessageController', () => {
     const messageToDecrypt = {
       ...messageMock,
       data: messageDataMock,
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
     decryptMessageManagerMock.getMessage.mockReturnValue(messageToDecrypt);
     mockMessengerAction(
@@ -271,6 +291,8 @@ describe('DecryptMessageController', () => {
   it('should be able to reject all unapproved messages', async () => {
     decryptMessageManagerMock.getUnapprovedMessages.mockReturnValue({
       [messageIdMock]: messageMock,
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
     await decryptMessageController.rejectUnapproved('reason to cancel');

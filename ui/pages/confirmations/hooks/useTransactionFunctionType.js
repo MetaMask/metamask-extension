@@ -23,7 +23,8 @@ export const useTransactionFunctionType = (txData = {}) => {
 
   const isTokenApproval =
     txData.type === TransactionType.tokenMethodSetApprovalForAll ||
-    txData.type === TransactionType.tokenMethodApprove;
+    txData.type === TransactionType.tokenMethodApprove ||
+    txData.type === TransactionType.tokenMethodIncreaseAllowance;
 
   const isContractInteraction =
     txData.type === TransactionType.contractInteraction;

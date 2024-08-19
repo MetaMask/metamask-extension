@@ -1,0 +1,31 @@
+name: Cherry Pick Commit
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch_name:
+        description: 'Branch name you want the cherry-pick branch to be based from'
+        required: true
+      commit_hash:
+        description: 'Commit Hash'
+        required: true
+      PR_number:
+        description: 'PR # Associated with Cherry Pick'
+        required: true
+
+
+jobs:
+  cherry-pick:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Create Cherry Pick PR
+      id: create-cherry-pick-pr
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        ./scripts/create-cherry-pick-pr.sh ${{ github.event.inputs.branch_name }} ${{ github.event.inputs.commit_hash }} ${{ github.event.inputs.PR_number }}

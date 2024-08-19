@@ -35,12 +35,13 @@ import {
   IInteractiveRefreshTokenChangeEvent,
   Label,
   Signature,
+  ConnectionRequest,
 } from '../../../shared/constants/mmi-controller';
 import AccountTracker from '../lib/account-tracker';
-import AppStateController from './app-state';
 import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
 import { PreferencesController } from './preferences';
+import { AppStateController } from './app-state';
 
 type UpdateCustodianTransactionsParameters = {
   keyring: CustodyKeyring;
@@ -48,6 +49,8 @@ type UpdateCustodianTransactionsParameters = {
   txList: string[];
   custodyController: CustodyController;
   transactionUpdateController: TransactionUpdateController;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   txStateManager: any;
   getPendingNonce: (address: string) => Promise<number>;
   setTxHash: (txId: string, txHash: string) => void;
@@ -58,6 +61,8 @@ export default class MMIController extends EventEmitter {
 
   public mmiConfigurationController: MmiConfigurationController;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public keyringController: any;
 
   public preferencesController: PreferencesController;
@@ -68,8 +73,12 @@ export default class MMIController extends EventEmitter {
 
   private custodyController: CustodyController;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getState: () => any;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getPendingNonce: (address: string) => Promise<any>;
 
   private accountTracker: AccountTracker;
@@ -78,28 +87,46 @@ export default class MMIController extends EventEmitter {
 
   private networkController: NetworkController;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private permissionController: any;
 
   private signatureController: SignatureController;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private messenger: any;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private platform: any;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private extension: any;
 
   private updateTransactionHash: (txId: string, txHash: string) => void;
 
+  private setChannelId: (channelId: string) => void;
+
+  private setConnectionRequest: (payload: ConnectionRequest | null) => void;
+
   public trackTransactionEvents: (
     args: { transactionMeta: TransactionMeta },
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     event: any,
   ) => void;
 
   private txStateManager: {
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getTransactions: (query?: any, opts?: any, fullTx?: boolean) => any[];
     setTxStatusSigned: (txId: string) => void;
     setTxStatusSubmitted: (txId: string) => void;
     setTxStatusFailed: (txId: string) => void;
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     updateTransaction: (txMeta: any) => void;
   };
 
@@ -125,6 +152,8 @@ export default class MMIController extends EventEmitter {
     this.extension = opts.extension;
 
     this.updateTransactionHash = opts.updateTransactionHash;
+    this.setChannelId = opts.setChannelId;
+    this.setConnectionRequest = opts.setConnectionRequest;
 
     this.trackTransactionEvents = opts.trackTransactionEvents;
     this.txStateManager = {
@@ -163,6 +192,20 @@ export default class MMIController extends EventEmitter {
         await this.handleSigningEvents(signature, messageId, 'v4');
       },
     );
+
+    this.transactionUpdateController.on(
+      'handshake',
+      async ({ channelId }: { channelId: string }) => {
+        this.setChannelId(channelId);
+      },
+    );
+
+    this.transactionUpdateController.on(
+      'connection.request',
+      async (payload: ConnectionRequest) => {
+        this.setConnectionRequest(payload);
+      },
+    );
   } // End of constructor
 
   async persistKeyringsAfterRefreshTokenChange() {
@@ -171,6 +214,8 @@ export default class MMIController extends EventEmitter {
 
   async trackTransactionEventFromCustodianEvent(
     txMeta: TransactionMeta,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     event: any,
   ) {
     // transactionMetricsRequest parameter is already bound in the constructor
@@ -322,6 +367,8 @@ export default class MMIController extends EventEmitter {
       string,
       {
         name: string;
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         custodianDetails: any;
         labels: Label[];
         token: string;
@@ -523,33 +570,6 @@ export default class MMIController extends EventEmitter {
     return accounts;
   }
 
-  async getCustodianAccountsByAddress(
-    token: string,
-    envName: string,
-    address: string,
-    custodianType: string,
-  ) {
-    let keyring;
-
-    if (custodianType) {
-      const custodian = CUSTODIAN_TYPES[custodianType.toUpperCase()];
-      if (!custodian) {
-        throw new Error('No such custodian');
-      }
-
-      keyring = await this.addKeyringIfNotExists(custodian.keyringClass.type);
-    } else {
-      throw new Error('No custodian specified');
-    }
-
-    const accounts = await keyring.getCustodianAccounts(
-      token,
-      envName,
-      address,
-    );
-    return accounts;
-  }
-
   async getCustodianTransactionDeepLink(address: string, txId: string) {
     const custodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(address),
@@ -594,7 +614,9 @@ export default class MMIController extends EventEmitter {
   async getCustodianToken(address: string) {
     const keyring = await this.keyringController.getKeyringForAccount(address);
     const { authDetails } = keyring.getAccountDetails(address);
-    return keyring ? authDetails.jwt || authDetails.refreshToken : '';
+    return keyring
+      ? (authDetails && (authDetails.jwt || authDetails.refreshToken)) || ''
+      : '';
   }
 
   // Based on a custodian name, get all the tokens associated with that custodian
@@ -768,23 +790,25 @@ export default class MMIController extends EventEmitter {
     const isCustodial = Boolean(accountDetails);
     const updatedMsgParams = { ...msgParams, deferSetAsSigned: isCustodial };
 
-    if (req.method.includes('eth_signTypedData')) {
+    if (
+      req.method === 'eth_signTypedData' ||
+      req.method === 'eth_signTypedData_v3' ||
+      req.method === 'eth_signTypedData_v4'
+    ) {
       return await this.signatureController.newUnsignedTypedMessage(
         updatedMsgParams as PersonalMessageParams,
         req as OriginalRequest,
         version,
         { parseJsonData: false },
       );
-    } else if (req.method.includes('personal_sign')) {
+    } else if (req.method === 'personal_sign') {
       return await this.signatureController.newUnsignedPersonalMessage(
         updatedMsgParams as PersonalMessageParams,
         req as OriginalRequest,
       );
     }
-    return await this.signatureController.newUnsignedMessage(
-      updatedMsgParams as PersonalMessageParams,
-      req as OriginalRequest,
-    );
+
+    throw new Error('Unexpected method');
   }
 
   async handleSigningEvents(

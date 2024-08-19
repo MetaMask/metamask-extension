@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -7,13 +8,15 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Text } from '../../../../components/component-library';
 import { SizeNumber } from '../../../../components/component-library/box/box.types';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
+import { useHideFiatForTestnet } from '../../../../hooks/useHideFiatForTestnet';
 import { FIAT_UNAVAILABLE, FiatAmount } from './types';
 
 const textStyle = {
   color: TextColor.textAlternative,
   variant: TextVariant.bodySm,
   paddingRight: 2 as SizeNumber,
-};
+  textAlign: 'right' as TextAlign,
+} as const;
 
 const FiatNotAvailableDisplay: React.FC = () => {
   const t = useI18nContext();
@@ -29,19 +32,31 @@ export function calculateTotalFiat(fiatAmounts: FiatAmount[]): number {
 /**
  * Displays the fiat value of a single balance change.
  *
- * @param props
- * @param props.fiatAmount
+ * @param props - The props object.
+ * @param props.fiatAmount - The fiat amount to display.
+ * @param props.shorten - Whether to shorten the fiat amount.
  */
-export const IndividualFiatDisplay: React.FC<{ fiatAmount: FiatAmount }> = ({
-  fiatAmount,
-}) => {
+export const IndividualFiatDisplay: React.FC<{
+  fiatAmount: FiatAmount;
+  shorten?: boolean;
+}> = ({ fiatAmount, shorten = false }) => {
+  const hideFiatForTestnet = useHideFiatForTestnet();
   const fiatFormatter = useFiatFormatter();
+
+  if (hideFiatForTestnet) {
+    return null;
+  }
+
   if (fiatAmount === FIAT_UNAVAILABLE) {
     return <FiatNotAvailableDisplay />;
   }
   const absFiat = Math.abs(fiatAmount);
 
-  return <Text {...textStyle}>{fiatFormatter(absFiat)}</Text>;
+  return (
+    <Text {...textStyle} data-testid="individual-fiat-display">
+      {fiatFormatter(absFiat, { shorten })}
+    </Text>
+  );
 };
 
 /**
@@ -53,9 +68,14 @@ export const IndividualFiatDisplay: React.FC<{ fiatAmount: FiatAmount }> = ({
 export const TotalFiatDisplay: React.FC<{
   fiatAmounts: FiatAmount[];
 }> = ({ fiatAmounts }) => {
+  const hideFiatForTestnet = useHideFiatForTestnet();
   const t = useI18nContext();
   const fiatFormatter = useFiatFormatter();
   const totalFiat = calculateTotalFiat(fiatAmounts);
+
+  if (hideFiatForTestnet) {
+    return null;
+  }
 
   return totalFiat === 0 ? (
     <FiatNotAvailableDisplay />

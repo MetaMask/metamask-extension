@@ -1,9 +1,4 @@
-import React, {
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  useEffect,
-  ///: END:ONLY_INCLUDE_IF
-  useState,
-} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
@@ -40,7 +35,7 @@ import {
   getSnapLatestVersion,
   getSnapMetadata,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  getMemoizedMetaMaskIdentities,
+  getMemoizedMetaMaskInternalAccounts,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import {
@@ -60,7 +55,7 @@ import { ShowMore } from '../../../components/app/snaps/show-more';
 import { KeyringSnapRemovalResultStatus } from './constants';
 ///: END:ONLY_INCLUDE_IF
 
-function SnapSettings({ snapId }) {
+function SnapSettings({ snapId, initRemove, resetInitRemove }) {
   const history = useHistory();
   const t = useI18nContext();
   const snaps = useSelector(getSnaps);
@@ -77,7 +72,7 @@ function SnapSettings({ snapId }) {
   // eslint-disable-next-line no-unused-vars -- Main build does not use setKeyringAccounts
   const [keyringAccounts, setKeyringAccounts] = useState([]);
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  const identities = useSelector(getMemoizedMetaMaskIdentities);
+  const internalAccounts = useSelector(getMemoizedMetaMaskInternalAccounts);
   ///: END:ONLY_INCLUDE_IF
 
   const connectedSubjects = useSelector((state) =>
@@ -99,13 +94,14 @@ function SnapSettings({ snapId }) {
     if (isKeyringSnap) {
       (async () => {
         const addresses = await getSnapAccountsById(snap.id);
-        const snapIdentities = Object.values(identities).filter((identity) =>
-          addresses.includes(identity.address.toLowerCase()),
+        const snapIdentities = Object.values(internalAccounts).filter(
+          (internalAccount) =>
+            addresses.includes(internalAccount.address.toLowerCase()),
         );
         setKeyringAccounts(snapIdentities);
       })();
     }
-  }, [snap?.id, identities, isKeyringSnap]);
+  }, [snap?.id, internalAccounts, isKeyringSnap]);
   ///: END:ONLY_INCLUDE_IF
 
   const onDisconnect = (connectedOrigin) => {
@@ -133,6 +129,13 @@ function SnapSettings({ snapId }) {
     }
   };
 
+  useEffect(() => {
+    if (initRemove) {
+      setIsShowingRemoveWarning(true);
+      resetInitRemove();
+    }
+  }, [initRemove, resetInitRemove]);
+
   return (
     <Box>
       {isUpdateAvailable && (
@@ -151,12 +154,15 @@ function SnapSettings({ snapId }) {
         </SnapDelineator>
       </Box>
       <Box className="snap-view__content__permissions" marginTop={12}>
-        <Text variant={TextVariant.bodyLgMedium}>{t('permissions')}</Text>
+        <Text variant={TextVariant.bodyLgMedium} marginBottom={1}>
+          {t('permissions')}
+        </Text>
         <SnapPermissionsList
           snapId={snapId}
           snapName={snapName}
           permissions={permissions ?? {}}
           showOptions
+          showAllPermissions
         />
       </Box>
       <Box className="snap-view__content__connected-sites" marginTop={12}>
@@ -190,6 +196,7 @@ function SnapSettings({ snapId }) {
             size={ButtonSize.Lg}
             onClick={() => setIsShowingRemoveWarning(true)}
             data-testid="remove-snap-button"
+            disabled={snap.preinstalled && snap.removable === false}
           >
             <Text
               color={TextColor.inherit}
@@ -265,6 +272,8 @@ function SnapSettings({ snapId }) {
 
 SnapSettings.propTypes = {
   snapId: PropTypes.string.isRequired,
+  initRemove: PropTypes.bool,
+  resetInitRemove: PropTypes.func,
 };
 
 export default SnapSettings;

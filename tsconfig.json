@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    // permit using ES6 imports for `*.ts` files via tsx/bun
+    "allowImportingTsExtensions": true,
     "allowJs": true,
     // ensures single-file compilers, like babel, webpack+swc, etc work
     "isolatedModules": true,
@@ -29,5 +31,14 @@
   ],
   // this should match our node version in .nvmrc
   "extends": "@tsconfig/node20/tsconfig.json",
-  "include": ["app", "development", "shared", "types", "ui", "offscreen"]
+  "include": [
+    "app",
+    "development",
+    "offscreen",
+    "shared",
+    "test",
+    "types",
+    "ui",
+    "*.ts"
+  ]
 }

@@ -19,9 +19,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { ConfirmPageContainerWarning } from '../../components/confirm-page-container/confirm-page-container-content';
 import LedgerInstructionField from '../../components/ledger-instruction-field';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../../components/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-///: END:ONLY_INCLUDE_IF
 import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
 
 import { TokenStandard } from '../../../../../shared/constants/transaction';
@@ -48,9 +46,7 @@ import FeeDetailsComponent from '../../components/fee-details-component/fee-deta
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
     t: PropTypes.func,
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     trackEvent: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IF
   };
 
   static propTypes = {
@@ -78,7 +74,7 @@ export default class ConfirmApproveContent extends Component {
     isContract: PropTypes.bool,
     hexTransactionTotal: PropTypes.string,
     hexMinimumTransactionFee: PropTypes.string,
-    isMultiLayerFeeNetwork: PropTypes.bool,
+    hasLayer1GasFee: PropTypes.bool,
     supportsEIP1559: PropTypes.bool,
     assetName: PropTypes.string,
     tokenId: PropTypes.string,
@@ -158,7 +154,7 @@ export default class ConfirmApproveContent extends Component {
       hexTransactionTotal,
       hexMinimumTransactionFee,
       txData,
-      isMultiLayerFeeNetwork,
+      hasLayer1GasFee,
       supportsEIP1559,
       userAcknowledgedGasMissing,
       renderSimulationFailureWarning,
@@ -166,7 +162,7 @@ export default class ConfirmApproveContent extends Component {
       useNativeCurrencyAsPrimaryCurrency,
     } = this.props;
     if (
-      !isMultiLayerFeeNetwork &&
+      !hasLayer1GasFee &&
       supportsEIP1559 &&
       !renderSimulationFailureWarning
     ) {
@@ -178,7 +174,7 @@ export default class ConfirmApproveContent extends Component {
     }
     return (
       <div className="confirm-approve-content__transaction-details-content">
-        {isMultiLayerFeeNetwork ? (
+        {hasLayer1GasFee ? (
           <div className="confirm-approve-content__transaction-details-extra-content">
             <TransactionDetailItem
               key="confirm-approve-content-min-tx-fee"
@@ -189,6 +185,14 @@ export default class ConfirmApproveContent extends Component {
                   value={hexMinimumTransactionFee}
                   hideLabel={!useNativeCurrencyAsPrimaryCurrency}
                   numberOfDecimals={18}
+                  suffixProps={{
+                    color: TextColor.textDefault,
+                    variant: TextVariant.bodyMdBold,
+                  }}
+                  textProps={{
+                    color: TextColor.textDefault,
+                    variant: TextVariant.bodyMdBold,
+                  }}
                 />
               }
               detailText={
@@ -550,11 +554,12 @@ export default class ConfirmApproveContent extends Component {
           'confirm-approve-content--full': showFullTxDetails,
         })}
       >
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-          <BlockaidBannerAlert txData={txData} margin={[4, 4, 0, 4]} />
-          ///: END:ONLY_INCLUDE_IF
-        }
+        <BlockaidBannerAlert
+          txData={txData}
+          marginTop={4}
+          marginLeft={4}
+          marginRight={4}
+        />
         {isSuspiciousResponse(txData?.securityProviderResponse) && (
           <SecurityProviderBannerMessage
             securityProviderResponse={txData.securityProviderResponse}

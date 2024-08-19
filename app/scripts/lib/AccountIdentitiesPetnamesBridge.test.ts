@@ -27,7 +27,6 @@ const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
   address: ADDRESS_MOCK,
   name: NAME_MOCK,
   keyringType: KeyringTypes.hd,
-  is4337: false,
   snapOptions: undefined,
 });
 
@@ -105,16 +104,22 @@ function createNameControllerMock(
   return {
     state,
     setName: jest.fn(),
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;
 }
 
 function simulateSubscribe(
   messenger: jest.Mocked<AccountIdentitiesPetnamesBridgeMessenger>,
   stateChange: AccountsControllerState,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   patch: any[],
 ) {
   const listener = messenger.subscribe.mock.calls[0][1] as (
     stateChange: AccountsControllerState,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     patch: any[],
   ) => void;
   listener(stateChange, patch);
@@ -199,6 +204,7 @@ describe('AccountIdentitiesPetnamesBridge', () => {
   });
 
   describe('shouldSyncPetname', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       {
         origin: NameOrigin.ACCOUNT_IDENTITY,
@@ -210,7 +216,13 @@ describe('AccountIdentitiesPetnamesBridge', () => {
       },
     ])(
       'returns $expectedReturn if origin is $origin',
-      ({ origin, expectedReturn }) => {
+      ({
+        origin,
+        expectedReturn,
+      }: {
+        origin: NameOrigin;
+        expectedReturn: boolean;
+      }) => {
         class TestBridge extends AccountIdentitiesPetnamesBridge {
           public shouldSyncPetname(entry: PetnameEntry): boolean {
             return super.shouldSyncPetname(entry);

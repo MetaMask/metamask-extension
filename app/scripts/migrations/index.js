@@ -125,6 +125,23 @@ const migrations = [
   require('./112'),
   require('./113'),
   require('./114'),
+  require('./115'),
+  require('./116'),
+  require('./117'),
+  require('./118'),
+  require('./119'),
+  require('./120'),
+  require('./120.1'),
+  require('./120.2'),
+  // require('./120.3'), Renamed to 120.6, do not re-use this number
+  require('./120.4'),
+  require('./120.5'),
+  require('./120.6'),
+  require('./121'),
+  require('./122'),
+  require('./123'),
+  require('./124'),
+  require('./125'),
 ];
 
 export default migrations;

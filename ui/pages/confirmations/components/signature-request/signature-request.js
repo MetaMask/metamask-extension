@@ -37,7 +37,6 @@ import {
 } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useRejectTransactionModal } from '../../hooks/useRejectTransactionModal';
-
 import { ConfirmPageContainerNavigation } from '../confirm-page-container';
 import SignatureRequestHeader from '../signature-request-header/signature-request-header';
 import SecurityProviderBannerMessage from '../security-provider-banner-message';
@@ -49,7 +48,6 @@ import {
   BlockaidResultType,
   SECURITY_PROVIDER_MESSAGE_SEVERITY,
 } from '../../../../../shared/constants/security-provider';
-
 import {
   TextAlign,
   TextColor,
@@ -77,23 +75,16 @@ import {
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useMMICustodySignMessage } from '../../../../hooks/useMMICustodySignMessage';
+import { AccountType } from '../../../../../shared/constants/custody';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-///: END:ONLY_INCLUDE_IF
-
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
-///: END:ONLY_INCLUDE_IF
+import { NetworkChangeToastLegacy } from '../confirm/network-change-toast';
+import { QueuedRequestsBannerAlert } from '../../confirmation/components/queued-requests-banner-alert';
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
 
-const SignatureRequest = ({
-  txData,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  warnings,
-  ///: END:ONLY_INCLUDE_IF
-}) => {
+const SignatureRequest = ({ txData, warnings }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const t = useI18nContext();
@@ -132,10 +123,8 @@ const SignatureRequest = ({
   const { custodySignFn } = useMMICustodySignMessage();
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const [isShowingSigInsightWarnings, setIsShowingSigInsightWarnings] =
     useState(false);
-  ///: END:ONLY_INCLUDE_IF
 
   useEffect(() => {
     setMessageIsScrollable(
@@ -163,7 +152,7 @@ const SignatureRequest = ({
 
   const onSign = async () => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    if (accountType === 'custody') {
+    if (accountType === AccountType.CUSTODY) {
       await custodySignFn(txData);
     }
     ///: END:ONLY_INCLUDE_IF
@@ -219,11 +208,13 @@ const SignatureRequest = ({
           <SignatureRequestHeader txData={txData} />
         </div>
         <div className="signature-request-content">
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-            <BlockaidBannerAlert txData={txData} margin={[4, 4, 0, 4]} />
-            ///: END:ONLY_INCLUDE_IF
-          }
+          <BlockaidBannerAlert
+            txData={txData}
+            marginLeft={4}
+            marginRight={4}
+            marginBottom={4}
+          />
+          <QueuedRequestsBannerAlert />
           {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
             txData?.securityProviderResponse?.flagAsDangerous !==
               SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS) ||
@@ -326,11 +317,10 @@ const SignatureRequest = ({
         <Footer
           cancelAction={onCancel}
           signAction={() => {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
             if (warnings?.length >= 1) {
               return setIsShowingSigInsightWarnings(true);
             }
-            ///: END:ONLY_INCLUDE_IF
+
             return onSign();
           }}
           disabled={
@@ -362,9 +352,6 @@ const SignatureRequest = ({
           </ButtonLink>
         ) : null}
       </div>
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-      }
       {isShowingSigInsightWarnings && (
         <InsightWarnings
           warnings={warnings}
@@ -377,18 +364,14 @@ const SignatureRequest = ({
           }}
         />
       )}
-      {
-        ///: END:ONLY_INCLUDE_IF
-      }
+      <NetworkChangeToastLegacy confirmation={txData} />
     </>
   );
 };
 
 SignatureRequest.propTypes = {
   txData: PropTypes.object,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   warnings: PropTypes.array,
-  ///: END:ONLY_INCLUDE_IF
 };
 
 export default SignatureRequest;

@@ -8,16 +8,30 @@ export type SelectContextType = {
   isOpen: boolean | undefined;
   onOpenChange: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   isUncontrolledOpen: boolean;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setIsUncontrolledOpen: React.Dispatch<React.SetStateAction<any | null>>;
   toggleUncontrolledOpen: () => void;
   isDanger?: boolean;
   isDisabled?: boolean;
   isMultiSelect?: boolean;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any | null;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onValueChange?: any;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   uncontrolledValue: any | null;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setUncontrolledValue: React.Dispatch<React.SetStateAction<any | null>>;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   defaultValue: any | null;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   placeholder: any;
 };
 
@@ -36,21 +50,29 @@ export interface SelectWrapperStyleUtilityProps extends StyleUtilityProps {
    * Placeholder for SelectWrapper component to be displayed when no value or defaultValue is set.
    * Can be accessed within any component inside the SelectWrapper.
    */
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   placeholder?: any;
   /**
    * Selected value of SelectWrapper component.
    * Can be accessed within any component inside the SelectWrapper.
    */
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value?: any;
   /**
    * Default value of SelectWrapper component.
    * Can be accessed within any component inside the SelectWrapper.
    */
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   defaultValue?: any;
   /**
    * Callback function that is called when the value of the SelectWrapper component changes.
    * The new value is passed as an argument to the function.
    */
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onValueChange?: (newValue: any) => void;
   /**
    * isOpen boolean determines whether the SelectWrapper popover is open or closed.
@@ -67,6 +89,8 @@ export interface SelectWrapperStyleUtilityProps extends StyleUtilityProps {
   /**
    * onOpenChange callback function is called when the SelectWrapper popover is opened or closed.
    */
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onOpenChange?: any; // TO DO: confirm type
   /**
    * Callback function that is called when the SelectWrapper component loses focus.
@@ -78,7 +102,11 @@ export interface SelectWrapperStyleUtilityProps extends StyleUtilityProps {
    * SelectWrapper's popover will be anchored to this component.
    */
   triggerComponent: React.ReactElement<
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     any,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     string | React.JSXElementConstructor<any>
   > | null;
 

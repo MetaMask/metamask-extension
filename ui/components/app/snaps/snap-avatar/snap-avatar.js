@@ -1,28 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { useSelector } from 'react-redux';
+
 import {
-  TextColor,
   IconColor,
-  AlignItems,
-  Display,
-  JustifyContent,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import {
-  AvatarFavicon,
   BadgeWrapper,
   BadgeWrapperPosition,
   AvatarIcon,
-  AvatarBase,
   IconName,
   IconSize,
 } from '../../../component-library';
-import {
-  getSnapMetadata,
-  getTargetSubjectMetadata,
-} from '../../../../selectors';
+
+import { SnapIcon } from '../snap-icon';
 
 const SnapAvatar = ({
   snapId,
@@ -30,20 +22,8 @@ const SnapAvatar = ({
   avatarSize = IconSize.Lg,
   borderWidth = 2,
   className,
+  badgeBackgroundColor = BackgroundColor.backgroundAlternative,
 }) => {
-  const subjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snapId),
-  );
-
-  const { name: snapName } = useSelector((state) =>
-    getSnapMetadata(state, snapId),
-  );
-
-  const iconUrl = subjectMetadata?.iconUrl;
-
-  // We choose the first non-symbol char as the fallback icon.
-  const fallbackIcon = snapName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
-
   return (
     <BadgeWrapper
       className={classnames('snap-avatar', className)}
@@ -52,7 +32,7 @@ const SnapAvatar = ({
           iconName={IconName.Snaps}
           size={badgeSize}
           backgroundColor={IconColor.infoDefault}
-          borderColor={BackgroundColor.backgroundDefault}
+          borderColor={badgeBackgroundColor}
           borderWidth={borderWidth}
           iconProps={{
             color: IconColor.infoInverse,
@@ -61,26 +41,7 @@ const SnapAvatar = ({
       }
       position={BadgeWrapperPosition.bottomRight}
     >
-      {iconUrl ? (
-        <AvatarFavicon
-          backgroundColor={BackgroundColor.backgroundAlternative}
-          size={avatarSize}
-          src={iconUrl}
-          name={snapName}
-        />
-      ) : (
-        <AvatarBase
-          size={avatarSize}
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
-          color={TextColor.textAlternative}
-          style={{ borderWidth: '0px' }}
-          backgroundColor={BackgroundColor.backgroundAlternative}
-        >
-          {fallbackIcon}
-        </AvatarBase>
-      )}
+      <SnapIcon snapId={snapId} avatarSize={avatarSize} />
     </BadgeWrapper>
   );
 };
@@ -93,6 +54,10 @@ SnapAvatar.propTypes = {
   badgeSize: PropTypes.string,
   avatarSize: PropTypes.string,
   borderWidth: PropTypes.number,
+  /**
+   * The color of the badge background
+   */
+  badgeBackgroundColor: PropTypes.string,
   /**
    * The className of the SnapAvatar
    */

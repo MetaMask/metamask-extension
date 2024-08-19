@@ -3,6 +3,7 @@ import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
+import { QueueType } from '../../../../../../shared/constants/metametrics';
 import {
   Box,
   Button,
@@ -34,14 +35,17 @@ import {
   pendingConfirmationsSortedSelector,
 } from '../../../../../selectors';
 import { rejectPendingApproval } from '../../../../../store/actions';
+import { useQueuedConfirmationsEvent } from '../../../hooks/useQueuedConfirmationEvents';
 import { isSignatureApprovalRequest } from '../../../utils';
 
 const Nav = () => {
   const history = useHistory();
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
-  const pendingConfirmations = useSelector(pendingConfirmationsSortedSelector);
   const dispatch = useDispatch();
+
+  const currentConfirmation = useSelector(currentConfirmationSelector);
+
+  const pendingConfirmations = useSelector(pendingConfirmationsSortedSelector);
 
   const currentConfirmationPosition = useMemo(() => {
     if (pendingConfirmations?.length <= 0 || !currentConfirmation) {
@@ -61,9 +65,7 @@ const Nav = () => {
       // In new routing all confirmations will support
       // "/confirm-transaction/<confirmation_id>"
       history.replace(
-        `${CONFIRM_TRANSACTION_ROUTE}/${
-          pendingConfirmations[currentConfirmationPosition + pos].id
-        }${
+        `${CONFIRM_TRANSACTION_ROUTE}/${nextConfirmation.id}${
           isSignatureApprovalRequest(nextConfirmation)
             ? SIGNATURE_REQUEST_PATH
             : ''
@@ -84,6 +86,8 @@ const Nav = () => {
     });
   }, [pendingConfirmations]);
 
+  useQueuedConfirmationsEvent(QueueType.NavigationHeader);
+
   if (pendingConfirmations.length <= 1) {
     return null;
   }
@@ -96,10 +100,14 @@ const Nav = () => {
       flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.spaceBetween}
       padding={3}
+      style={{
+        zIndex: 2,
+      }}
     >
       <Box alignItems={AlignItems.center} display={Display.Flex}>
         <ButtonIcon
           ariaLabel="Previous Confirmation"
+          data-testid="confirm-nav__previous-confirmation"
           backgroundColor={BackgroundColor.backgroundAlternative}
           borderRadius={BorderRadius.full}
           className="confirm_nav__left_btn"
@@ -118,6 +126,7 @@ const Nav = () => {
         </Text>
         <ButtonIcon
           ariaLabel="Next Confirmation"
+          data-testid="confirm-nav__next-confirmation"
           backgroundColor={BackgroundColor.backgroundAlternative}
           borderRadius={BorderRadius.full}
           className="confirm_nav__right_btn"
@@ -133,6 +142,7 @@ const Nav = () => {
       <Button
         borderRadius={BorderRadius.XL}
         className="confirm_nav__reject_all"
+        data-testid="confirm-nav__reject-all"
         fontWeight={FontWeight.Normal}
         onClick={onRejectAll}
         paddingLeft={3}

@@ -26,6 +26,8 @@ export async function migrate(
   return versionedData;
 }
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
   if (!hasProperty(state, 'PreferencesController')) {
     return state;
@@ -43,6 +45,7 @@ function transformState(state: Record<string, any>) {
   ) {
     if (state.PreferencesController.transactionSecurityCheckEnabled) {
       state.PreferencesController.securityAlertsEnabled = true;
+      state.PreferencesController.hasMigratedFromOpenSeaToBlockaid = true;
     }
 
     delete state.PreferencesController.transactionSecurityCheckEnabled;

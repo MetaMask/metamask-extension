@@ -31,12 +31,12 @@
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
       "js": [
-        "disable-console.js",
-        "lockdown-install.js",
-        "lockdown-run.js",
-        "lockdown-more.js",
-        "contentscript.js",
-        "inpage.js"
+        "scripts/disable-console.js",
+        "scripts/lockdown-install.js",
+        "scripts/lockdown-run.js",
+        "scripts/lockdown-more.js",
+        "scripts/contentscript.js",
+        "scripts/inpage.js"
       ],
       "run_at": "document_start",
       "all_frames": true
@@ -64,13 +64,11 @@
     "storage",
     "unlimitedStorage",
     "clipboardWrite",
-    "http://localhost:8545/",
-    "https://*.infura.io/",
-    "https://*.codefi.network/",
-    "https://chainid.network/chains.json",
-    "https://lattice.gridplus.io/*",
+    "http://*/*",
+    "https://*/*",
     "activeTab",
     "webRequest",
+    "webRequestBlocking",
     "*://*.eth/",
     "notifications"
   ],

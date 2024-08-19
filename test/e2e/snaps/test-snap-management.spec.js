@@ -2,6 +2,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
+  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -34,24 +35,16 @@ describe('Test Snap Management', function () {
         await driver.clickElement('#connectnotifications');
 
         // switch to metamask extension and click connect
-        let windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await switchToNotificationWindow(driver);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
@@ -63,8 +56,9 @@ describe('Test Snap Management', function () {
         });
 
         // switch to the original MM tab
-        const extensionPage = windowHandles[0];
-        await driver.switchToWindow(extensionPage);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // click on the global action menu
         await driver.waitForSelector(
@@ -92,8 +86,7 @@ describe('Test Snap Management', function () {
         await driver.clickElement('.toggle-button > div');
 
         // switch back to test-snaps window
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait then try the notification test
         await driver.waitForSelector('#sendInAppNotification');
@@ -104,21 +97,31 @@ describe('Test Snap Management', function () {
         await driver.closeAlertPopup();
 
         // switch back to snaps page
-        await driver.switchToWindow(extensionPage);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // try to re-enaable the snap
         await driver.waitForSelector('.toggle-button > div');
         await driver.clickElement('.toggle-button > div');
 
         // switch back to test snaps page
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait then try the notification test
         await driver.waitForSelector('#sendInAppNotification');
         await driver.clickElement('#sendInAppNotification');
 
         // check to see that there is one notification
-        await driver.switchToWindow(extensionPage);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        // click the back arrow to return to the main extension page
+        await driver.waitForSelector('[aria-label="Back"]');
+        await driver.clickElement('[aria-label="Back"]');
+
+        // click account options menu button
         await driver.waitForSelector(
           '[data-testid="account-options-menu-button"]',
         );
@@ -129,10 +132,21 @@ describe('Test Snap Management', function () {
           css: '[data-testid="global-menu-notification-count"]',
           text: '1',
         });
+
         // this click will close the menu
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
+
+        // go into the notifications snap page
+        await driver.waitForSelector({
+          text: 'Notifications Example Snap',
+          tag: 'p',
+        });
+        await driver.clickElement({
+          text: 'Notifications Example Snap',
+          tag: 'p',
+        });
 
         // try to remove snap
         await driver.clickElement({

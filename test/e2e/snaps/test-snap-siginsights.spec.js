@@ -1,8 +1,10 @@
 const {
   withFixtures,
+  clickSignOnSignatureConfirmation,
   defaultGanacheOptions,
   openDapp,
   unlockWallet,
+  tempToggleSettingRedesignedConfirmations,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -13,14 +15,16 @@ describe('Test Snap Signature Insights', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
+        await tempToggleSettingRedesignedConfirmations(driver);
 
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
@@ -33,87 +37,33 @@ describe('Test Snap Signature Insights', function () {
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
         await driver.clickElement('#connectsignature-insights');
-        await driver.delay(1000);
 
         // switch to metamask extension and click connect
-        let windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
         await driver.waitForSelector({ text: 'OK' });
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
 
         // switch to test-snaps page
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // open the test-dapp page
         await openDapp(driver);
-
-        // poll windowHandles and switch to test-dapp
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.TestDApp,
-          windowHandles,
-        );
-
-        // wait for and click use flask
-        await driver.waitForSelector({
-          text: 'Use MetaMask Flask',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Use MetaMask Flask',
-          tag: 'button',
-        });
-
-        // find and scroll to basic actions and click connect
-        const connectButton1 = await driver.findElement('#connectButton');
-        await driver.scrollToElement(connectButton1);
-        await driver.clickElement('#connectButton');
-
-        // switch back to MetaMask window and deal with dialogs
-        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-        });
-        await driver.delay(1000);
-        await driver.clickElement({
-          text: 'Connect',
-          tag: 'button',
-        });
-
-        // switch to test-dapp page and send tx
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.TestDApp,
-          windowHandles,
-        );
 
         // TEST ONE: personal sign
         // find and scroll to personal sign and click sign
@@ -122,20 +72,12 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#personalSign');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // wait for and click sign
-        await driver.waitForSelector({
-          text: 'Sign',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Sign',
-          tag: 'button',
+        await clickSignOnSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
         });
 
         // look for returned signature insights data
@@ -148,13 +90,12 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
         // click sign button
-        await driver.clickElement('[data-testid="snapInsightsButtonConfirm"]');
+        await driver.clickElementAndWaitForWindowToClose(
+          '[data-testid="snapInsightsButtonConfirm"]',
+        );
 
         // switch back to test-dapp window
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.TestDApp,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // check result of test
         await driver.waitForSelector({
@@ -169,20 +110,12 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedData');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // wait for and click sign
-        await driver.waitForSelector({
-          text: 'Sign',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Sign',
-          tag: 'button',
+        await clickSignOnSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
         });
 
         // look for returned signature insights data
@@ -195,13 +128,12 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
         // click sign button
-        await driver.clickElement('[data-testid="snapInsightsButtonConfirm"]');
+        await driver.clickElementAndWaitForWindowToClose(
+          '[data-testid="snapInsightsButtonConfirm"]',
+        );
 
         // switch back to test-dapp window
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.TestDApp,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // check result of test
         await driver.waitForSelector({
@@ -216,24 +148,16 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedDataV3');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // click down arrow
         await driver.waitForSelector('.fa-arrow-down');
         await driver.clickElement('.fa-arrow-down');
 
         // wait for and click sign
-        await driver.waitForSelector({
-          text: 'Sign',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Sign',
-          tag: 'button',
+        await clickSignOnSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
         });
 
         // look for returned signature insights data
@@ -246,13 +170,12 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
         // click sign button
-        await driver.clickElement('[data-testid="snapInsightsButtonConfirm"]');
+        await driver.clickElementAndWaitForWindowToClose(
+          '[data-testid="snapInsightsButtonConfirm"]',
+        );
 
         // switch back to test-dapp window
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.TestDApp,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // check result of test
         await driver.waitForSelector({
@@ -267,24 +190,16 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedDataV4');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // click down arrow
         await driver.waitForSelector('.fa-arrow-down');
         await driver.clickElement('.fa-arrow-down');
 
         // wait for and click sign
-        await driver.waitForSelector({
-          text: 'Sign',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Sign',
-          tag: 'button',
+        await clickSignOnSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
         });
 
         // look for returned signature insights data
@@ -297,120 +212,16 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
         // click sign button
-        await driver.clickElement('[data-testid="snapInsightsButtonConfirm"]');
+        await driver.clickElementAndWaitForWindowToClose(
+          '[data-testid="snapInsightsButtonConfirm"]',
+        );
 
         // switch back to test-dapp window
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.TestDApp,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // check results of test
         await driver.waitForSelector({
           text: '0xcd2f9c55840f5e1bcf61812e93c1932485b524ca673b36355482a4fbdf52f692684f92b4f4ab6f6c8572dacce46bd107da154be1c06939b855ecce57a1616ba71b',
-          tag: 'span',
-        });
-
-        // TEST FIVE: eth_sign
-        // switch to metamask window
-        const extensionPage = windowHandles[0];
-        await driver.switchToWindow(extensionPage);
-
-        // click on the global action menu
-        await driver.waitForSelector(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-
-        // try to click on the settings item
-        await driver.clickElement({
-          text: 'Settings',
-          tag: 'div',
-        });
-
-        // try to click on the advanced item
-        await driver.clickElement({
-          text: 'Advanced',
-          tag: 'div',
-        });
-
-        // scroll to and click on Eth_sign requests toggle
-        const ethSignToggle1 = await driver.findElement('.eth-sign-toggle');
-        await driver.scrollToElement(ethSignToggle1);
-        await driver.clickElement('.eth-sign-toggle');
-
-        // wait for and click checkbox on modal and click continue
-        await driver.waitForSelector('#eth-sign-checkbox');
-        await driver.clickElement('#eth-sign-checkbox');
-        await driver.clickElement({
-          text: 'Continue',
-          tag: 'button',
-        });
-
-        // fill in annoyance field and click enable
-        await driver.waitForSelector('#enter-eth-sign-text');
-        await driver.fill(
-          '#enter-eth-sign-text',
-          'I only sign what I understand',
-        );
-        await driver.clickElement({
-          text: 'Enable',
-          tag: 'button',
-        });
-
-        // switch back to test-dapp window
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.TestDApp,
-          windowHandles,
-        );
-
-        // scroll to and click eth sign button
-        const ethSignButton1 = await driver.findElement('#ethSign');
-        await driver.scrollToElement(ethSignButton1);
-        await driver.clickElement('#ethSign');
-
-        // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
-
-        // wait for and click sign
-        await driver.waitForSelector({
-          text: 'Sign',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Sign',
-          tag: 'button',
-        });
-
-        // wait for and click signature warning sign button
-        await driver.waitForSelector(
-          '[data-testid="signature-warning-sign-button"]',
-        );
-        await driver.clickElement(
-          '[data-testid="signature-warning-sign-button"]',
-        );
-
-        // click checkbox to authorize signing
-        await driver.clickElement('.mm-checkbox__input-wrapper');
-
-        // click sign button
-        await driver.clickElement('[data-testid="snapInsightsButtonConfirm"]');
-
-        // switch back to test-dapp window
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.TestDApp,
-          windowHandles,
-        );
-
-        // check results of test
-        await driver.waitForSelector({
-          text: '"0x816ab6c5d5356548cc4e004ef35a37fdfab916742a2bbeda756cd064c3d3789a6557d41d49549be1de249e1937a8d048996dfcc70d0552111605dc7cc471e8531b"',
           tag: 'span',
         });
       },

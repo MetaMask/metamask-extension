@@ -1,7 +1,8 @@
 /**
  * @jest-environment node
  */
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import Backup from './backup';
 
 function getMockPreferencesController() {
@@ -161,6 +162,7 @@ const jsonData = JSON.stringify({
       showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
       showTestNetworks: true,
+      smartTransactionsOptInStatus: false,
       useNativeCurrencyAsPrimaryCurrency: true,
     },
     ipfsGateway: 'dweb.link',
@@ -168,7 +170,7 @@ const jsonData = JSON.stringify({
     theme: 'light',
     customNetworkListEnabled: false,
     textDirection: 'auto',
-    useRequestQueue: false,
+    useRequestQueue: true,
   },
   internalAccounts: {
     accounts: {
@@ -183,14 +185,7 @@ const jsonData = JSON.stringify({
           lastSelected: 1693289751176,
         },
         options: {},
-        methods: [
-          EthMethod.PersonalSign,
-          EthMethod.Sign,
-          EthMethod.SignTransaction,
-          EthMethod.SignTypedDataV1,
-          EthMethod.SignTypedDataV3,
-          EthMethod.SignTypedDataV4,
-        ],
+        methods: ETH_EOA_METHODS,
         type: EthAccountType.Eoa,
       },
     },
@@ -303,7 +298,6 @@ describe('Backup', function () {
         },
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',

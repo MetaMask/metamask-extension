@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { useSelector } from 'react-redux';
 import {
   AlignItems,
   Color,
@@ -24,6 +25,7 @@ import {
   Box,
 } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
+import { getRequestingNetworkInfo } from '../../../selectors';
 import { PermissionCellOptions } from './permission-cell-options';
 import { PermissionCellStatus } from './permission-cell-status';
 
@@ -36,9 +38,11 @@ const PermissionCell = ({
   avatarIcon,
   dateApproved,
   revoked,
+  approved,
   showOptions,
   hideStatus,
   accounts,
+  permissionValue,
 }) => {
   const infoIcon = IconName.Info;
   let infoIconColor = IconColor.iconMuted;
@@ -51,7 +55,7 @@ const PermissionCell = ({
     infoIconColor = IconColor.warningDefault;
   }
 
-  if (dateApproved) {
+  if (dateApproved || approved) {
     iconColor = IconColor.iconMuted;
     iconBackgroundColor = Color.backgroundAlternative;
   }
@@ -65,6 +69,10 @@ const PermissionCell = ({
   if (typeof avatarIcon !== 'string' && avatarIcon?.props?.iconName) {
     permissionIcon = avatarIcon.props.iconName;
   }
+
+  const networksInfo = useSelector((state) =>
+    getRequestingNetworkInfo(state, permissionValue),
+  );
 
   return (
     <Box
@@ -110,8 +118,10 @@ const PermissionCell = ({
         {!hideStatus && (
           <PermissionCellStatus
             revoked={revoked}
+            approved={approved}
             dateApproved={dateApproved}
             accounts={accounts}
+            networks={networksInfo || null}
           />
         )}
       </Box>
@@ -157,9 +167,11 @@ PermissionCell.propTypes = {
   avatarIcon: PropTypes.any.isRequired,
   dateApproved: PropTypes.number,
   revoked: PropTypes.bool,
+  approved: PropTypes.bool,
   showOptions: PropTypes.bool,
   hideStatus: PropTypes.bool,
   accounts: PropTypes.array,
+  permissionValue: PropTypes.array,
 };
 
 export default PermissionCell;

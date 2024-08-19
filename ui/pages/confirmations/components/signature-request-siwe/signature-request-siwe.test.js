@@ -1,7 +1,7 @@
 import React from 'react';
 import { cloneDeep } from 'lodash';
 import { fireEvent } from '@testing-library/react';
-import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
+import { ApprovalType } from '@metamask/controller-utils';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';
@@ -27,6 +27,8 @@ const mockShowModal = jest.fn();
 jest.mock('../../../../store/actions.ts', () => {
   return {
     showModal: () => mockShowModal,
+    getLastInteractedConfirmationInfo: jest.fn(),
+    setLastInteractedConfirmationInfo: jest.fn(),
   };
 });
 
@@ -57,7 +59,7 @@ const mockProps = {
         },
       },
     },
-    type: MESSAGE_TYPE.PERSONAL_SIGN,
+    type: ApprovalType.PersonalSign,
   },
 };
 
@@ -184,7 +186,7 @@ describe('SignatureRequestSIWE (Sign in with Ethereum)', () => {
               status: 'unapproved',
             },
           ],
-          unapprovedMsgCount: 2,
+          unapprovedPersonalMsgCount: 2,
         },
       });
 

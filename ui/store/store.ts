@@ -55,15 +55,8 @@ type TemporaryBackgroundState = {
     chainId: string;
   };
   transactions: TransactionMeta[];
-  selectedAddress: string;
-  identities: {
-    [address: string]: {
-      balance: string;
-    };
-  };
   ledgerTransportType: LedgerTransportTypes;
   unapprovedDecryptMsgs: MessagesIndexedById;
-  unapprovedMsgs: MessagesIndexedById;
   unapprovedPersonalMsgs: MessagesIndexedById;
   unapprovedTypedMessages: MessagesIndexedById;
   networksMetadata: {
@@ -81,6 +74,8 @@ type TemporaryBackgroundState = {
   gasFeeEstimates: GasFeeEstimates;
   gasEstimateType: GasEstimateType;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   custodyAccountDetails?: { [key: string]: any };
   ///: END:ONLY_INCLUDE_IF
   internalAccounts: {
@@ -89,6 +84,7 @@ type TemporaryBackgroundState = {
     };
     selectedAccount: string;
   };
+  keyrings: { type: string; accounts: string[] }[];
 };
 
 type RootReducerReturnType = ReturnType<typeof rootReducer>;
@@ -98,8 +94,21 @@ export type CombinedBackgroundAndReduxState = RootReducerReturnType & {
     origin: string;
   };
   metamask: RootReducerReturnType['metamask'] & TemporaryBackgroundState;
+  appState: RootReducerReturnType['appState'];
+  send: RootReducerReturnType['send'];
+  DNS: RootReducerReturnType['DNS'];
+  history: RootReducerReturnType['history'];
+  confirm: RootReducerReturnType['confirm'];
+  confirmAlerts: RootReducerReturnType['confirmAlerts'];
+  confirmTransaction: RootReducerReturnType['confirmTransaction'];
+  swaps: RootReducerReturnType['swaps'];
+  bridge: RootReducerReturnType['bridge'];
+  gas: RootReducerReturnType['gas'];
+  localeMessages: RootReducerReturnType['localeMessages'];
 };
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function configureStore(preloadedState: any) {
   const debugModeEnabled = Boolean(process.env.METAMASK_DEBUG);
   const isDev = debugModeEnabled && !process.env.IN_TEST;
@@ -132,16 +141,10 @@ export default function configureStore(preloadedState: any) {
         serializableCheck: false,
         /**
          * immutableCheck controls whether we get warnings about mutation of
-         * state, which will be true in dev. However in test lavamoat complains
-         * about something the middleware is doing. It would be good to figure
-         * that out and enable this in test environments so that mutation
-         * causes E2E failures.
+         * state, this is turned off by default for now since it heavily affects
+         * performance due to the Redux state growing larger.
          */
-        immutableCheck: isDev
-          ? {
-              warnAfter: 100,
-            }
-          : false,
+        immutableCheck: false,
       }),
     devTools: false,
     enhancers,

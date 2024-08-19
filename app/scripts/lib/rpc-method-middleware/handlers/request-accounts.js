@@ -4,6 +4,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../../shared/constants/metametrics';
+import { shouldEmitDappViewedEvent } from '../../util';
 
 /**
  * This method attempts to retrieve the Ethereum accounts available to the
@@ -114,18 +115,20 @@ async function requestEthereumAccountsHandler(
     const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
       origin,
     );
-    sendMetrics({
-      event: MetaMetricsEventName.DappViewed,
-      category: MetaMetricsEventCategory.InpageProvider,
-      referrer: {
-        url: origin,
-      },
-      properties: {
-        is_first_visit: isFirstVisit,
-        number_of_accounts: Object.keys(metamaskState.accounts).length,
-        number_of_accounts_connected: numberOfConnectedAccounts,
-      },
-    });
+    if (shouldEmitDappViewedEvent(metamaskState.metaMetricsId)) {
+      sendMetrics({
+        event: MetaMetricsEventName.DappViewed,
+        category: MetaMetricsEventCategory.InpageProvider,
+        referrer: {
+          url: origin,
+        },
+        properties: {
+          is_first_visit: isFirstVisit,
+          number_of_accounts: Object.keys(metamaskState.accounts).length,
+          number_of_accounts_connected: numberOfConnectedAccounts,
+        },
+      });
+    }
   } else {
     // This should never happen, because it should be caught in the
     // above catch clause

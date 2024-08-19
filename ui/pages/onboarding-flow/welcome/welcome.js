@@ -51,21 +51,32 @@ export default function OnboardingWelcome() {
   const currentKeyring = useSelector(getCurrentKeyring);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const [termsChecked, setTermsChecked] = useState(false);
+  const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
+    useState(false);
 
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
   useEffect(() => {
-    if (currentKeyring) {
+    if (currentKeyring && !newAccountCreationInProgress) {
       if (firstTimeFlowType === FirstTimeFlowType.import) {
+        history.replace(ONBOARDING_COMPLETION_ROUTE);
+      }
+      if (firstTimeFlowType === FirstTimeFlowType.restore) {
         history.replace(ONBOARDING_COMPLETION_ROUTE);
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       }
     }
-  }, [currentKeyring, history, firstTimeFlowType]);
+  }, [
+    currentKeyring,
+    history,
+    firstTimeFlowType,
+    newAccountCreationInProgress,
+  ]);
   const trackEvent = useContext(MetaMetricsContext);
 
   const onCreateClick = async () => {
+    setNewAccountCreationInProgress(true);
     dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
@@ -101,7 +112,7 @@ export default function OnboardingWelcome() {
   ]);
 
   const onImportClick = async () => {
-    dispatch(setFirstTimeFlowType('import'));
+    await dispatch(setFirstTimeFlowType(FirstTimeFlowType.import));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletImportStarted,

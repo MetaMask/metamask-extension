@@ -1,16 +1,25 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import { getUnconnectedAccounts } from '../../../selectors/selectors';
 import { ConnectAccountsModalList } from './connect-accounts-modal-list';
 
 export const ConnectAccountsModal = ({
   onClose,
   onAccountsUpdate,
+  activeTabOrigin,
 }: {
   onClose: () => void;
   onAccountsUpdate: () => void;
+  activeTabOrigin: string;
 }) => {
-  const accounts = useSelector(getUnconnectedAccounts);
+  const accounts = useSelector((state) =>
+    // We only consider EVM accounts.
+    // Connections with non-EVM accounts (Bitcoin only for now) are used implicitly and handled by the Bitcoin Snap itself.
+    getUnconnectedAccounts(state, activeTabOrigin).filter(
+      (account: InternalAccount) => isEvmAccountType(account.type),
+    ),
+  );
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
 
   const handleAccountClick = (address: string) => {
@@ -65,6 +74,7 @@ export const ConnectAccountsModal = ({
       isIndeterminate={isIndeterminate}
       onClose={onClose}
       onAccountsUpdate={onAccountsUpdate}
+      activeTabOrigin={activeTabOrigin}
     />
   );
 };

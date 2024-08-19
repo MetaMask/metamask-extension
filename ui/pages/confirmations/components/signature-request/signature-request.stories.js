@@ -9,7 +9,6 @@ const store = configureStore({
   ...testData,
   metamask: {
     ...testData.metamask,
-    selectedAddress: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
   },
 });
 

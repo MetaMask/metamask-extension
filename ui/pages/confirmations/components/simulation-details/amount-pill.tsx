@@ -1,5 +1,7 @@
 import React from 'react';
-import { Text } from '../../../../components/component-library';
+import { BigNumber } from 'bignumber.js';
+import { useSelector } from 'react-redux';
+import { Box, Text } from '../../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -11,7 +13,11 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { Amount, AssetIdentifier } from './types';
+import Tooltip from '../../../../components/ui/tooltip';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { shortenString as shortenAssetId } from '../../../../helpers/utils/util';
+import { AssetIdentifier } from './types';
+import { formatAmount, formatAmountMaxPrecision } from './formatAmount';
 
 /**
  * Displays a pill with an amount and a background color indicating whether the amount
@@ -23,39 +29,72 @@ import { Amount, AssetIdentifier } from './types';
  */
 export const AmountPill: React.FC<{
   asset: AssetIdentifier;
-  amount: Amount;
+  amount: BigNumber;
 }> = ({ asset, amount }) => {
-  const backgroundColor = amount.isNegative
+  const locale = useSelector(getIntlLocale);
+
+  const backgroundColor = amount.isNegative()
     ? BackgroundColor.errorMuted
     : BackgroundColor.successMuted;
 
-  const color = amount.isNegative
+  const color = amount.isNegative()
     ? TextColor.errorAlternative
     : TextColor.successDefault;
 
-  const amountParts: string[] = [amount.isNegative ? '-' : '+'];
+  const amountParts: string[] = [amount.isNegative() ? '-' : '+'];
+  const tooltipParts: string[] = [];
 
-  const hideAmount = asset.standard === TokenStandard.ERC721;
-  if (!hideAmount) {
-    amountParts.push(amount.numeric.abs().round(6).toString());
+  // ERC721 amounts are always 1 and are not displayed.
+  if (asset.standard !== TokenStandard.ERC721) {
+    const formattedAmount = formatAmount(locale, amount.abs());
+    const fullPrecisionAmount = formatAmountMaxPrecision(locale, amount.abs());
+
+    amountParts.push(formattedAmount);
+    tooltipParts.push(fullPrecisionAmount);
   }
+
   if (asset.tokenId) {
-    amountParts.push(`#${hexToDecimal(asset.tokenId)}`);
+    const decimalTokenId = hexToDecimal(asset.tokenId);
+    const shortenedDecimalTokenId = shortenAssetId(decimalTokenId, {
+      truncatedCharLimit: 11,
+      truncatedStartChars: 4,
+      truncatedEndChars: 4,
+      skipCharacterInEnd: false,
+    });
+
+    const shortenedTokenIdPart = `#${shortenedDecimalTokenId}`;
+    const tooltipIdPart = `#${decimalTokenId}`;
+
+    amountParts.push(shortenedTokenIdPart);
+    tooltipParts.push(tooltipIdPart);
   }
+
   return (
-    <Text
+    <Box
+      data-testid="simulation-details-amount-pill"
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
       backgroundColor={backgroundColor}
-      color={color}
+      alignItems={AlignItems.center}
       borderRadius={BorderRadius.pill}
       style={{
         padding: '0px 8px',
+        flexShrink: 1,
+        flexBasis: 'auto',
+        minWidth: 0,
       }}
-      variant={TextVariant.bodyMd}
     >
-      {amountParts.join(' ')}
-    </Text>
+      <Tooltip
+        position="bottom"
+        title={tooltipParts.join(' ')}
+        wrapperStyle={{ minWidth: 0 }}
+        theme="word-break-all"
+        interactive
+      >
+        <Text ellipsis variant={TextVariant.bodyMd} color={color}>
+          {amountParts.join(' ')}
+        </Text>
+      </Tooltip>
+    </Box>
   );
 };

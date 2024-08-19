@@ -5,6 +5,7 @@ const {
   onboardingBeginCreateNewWallet,
   onboardingChooseMetametricsOption,
   getEventPayloads,
+  tinyDelayMs,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -49,7 +50,7 @@ describe('App Installed Events @no-mmi', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await driver.navigate();
-
+        await driver.delay(tinyDelayMs);
         await onboardingBeginCreateNewWallet(driver);
         await onboardingChooseMetametricsOption(driver, true);
 

@@ -17,6 +17,7 @@ const mockPublicAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const providerConfig = {
   chainId: '0x5',
   nickname: '',
+  ticker: 'ETH',
 };
 const mockApproval = {
   id: mockApprovalId,
@@ -33,6 +34,7 @@ const mockBaseStore = {
       [mockSnapOrigin]: {
         id: mockSnapOrigin,
         manifest: {
+          proposedName: 'Test Snap',
           description: 'Test Snap',
         },
       },

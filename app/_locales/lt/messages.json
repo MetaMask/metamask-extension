@@ -75,9 +75,6 @@
   "asset": {
     "message": "Turtas"
   },
-  "attemptingConnect": {
-    "message": "Mėginama prisijungti prie „blockchain“."
-  },
   "attributions": {
     "message": "Požymiai"
   },
@@ -629,9 +626,6 @@
   },
   "send": {
     "message": "Siųsti"
-  },
-  "sendTokens": {
-    "message": "Siųsti žetonus"
   },
   "settings": {
     "message": "Nustatymai"

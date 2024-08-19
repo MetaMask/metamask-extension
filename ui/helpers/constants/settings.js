@@ -1,3 +1,4 @@
+/* eslint-disable @metamask/design-tokens/color-no-hex*/
 import { IconName } from '../../components/component-library';
 import {
   ALERTS_ROUTE,
@@ -8,6 +9,7 @@ import {
   NETWORKS_ROUTE,
   CONTACT_LIST_ROUTE,
   EXPERIMENTAL_ROUTE,
+  DEVELOPER_OPTIONS_ROUTE,
 } from './routes';
 
 /**
@@ -21,7 +23,7 @@ import {
  */
 
 /** @type {SettingRouteConfig[]} */
-export const SETTINGS_CONSTANTS = [
+const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('currencyConversion'),
@@ -80,6 +82,13 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('smartTransactions'),
+    descriptionMessage: (t) => t('stxOptInDescription'),
+    route: `${ADVANCED_ROUTE}#smart-transactions`,
+    icon: 'fas fa-upload',
+  },
+  {
+    tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('showHexData'),
     descriptionMessage: (t) => t('showHexDataDescription'),
     route: `${ADVANCED_ROUTE}#show-hexdata`,
@@ -102,7 +111,7 @@ export const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('nonceField'),
-    descriptionMessage: (t) => t('nonceFieldDescription'),
+    descriptionMessage: (t) => t('nonceFieldDesc'),
     route: `${ADVANCED_ROUTE}#customize-nonce`,
     icon: 'fas fa-sliders-h',
   },
@@ -125,13 +134,6 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('dismissReminderField'),
     descriptionMessage: (t) => t('dismissReminderDescriptionField'),
     route: `${ADVANCED_ROUTE}#dismiss-secretrecovery`,
-    icon: 'fas fa-sliders-h',
-  },
-  {
-    tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('toggleEthSignField'),
-    descriptionMessage: (t) => t('toggleEthSignDescriptionField'),
-    route: `${ADVANCED_ROUTE}#toggle-ethsign`,
     icon: 'fas fa-sliders-h',
   },
   {
@@ -439,10 +441,33 @@ export const SETTINGS_CONSTANTS = [
     route: `${EXPERIMENTAL_ROUTE}#nicknames`,
     icon: 'fas fa-flask',
   },
-
+  // experimental settingsRefs[1]
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('notificationsFeatureToggle'),
+    descriptionMessage: (t) => t('notificationsFeatureToggleDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#notifications`,
+    icon: 'fas fa-flask',
+  },
+  // experimental settingsRefs[2]
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('redesignedConfirmationsEnabledToggle'),
+    descriptionMessage: (t) => t('redesignedConfirmationsToggleDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#redesigned-confirmations`,
+    icon: 'fas fa-flask',
+  },
+  // experimental settingsRefs[3]
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('redesignedTransactionsEnabledToggle'),
+    descriptionMessage: (t) => t('redesignedTransactionsToggleDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#redesigned-transactions`,
+    icon: 'fas fa-flask',
+  },
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   // since this route is only included with keyring-snaps feature flag, this needs to be the last settingsRef for the experimental tab
-  // experimental settingsRefs[1]
+  // experimental settingsRefs[4]
   {
     tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('snaps'),
@@ -451,4 +476,45 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fas fa-flask',
   },
   ///: END:ONLY_INCLUDE_IF
+  // developerOptions settingsRefs[0]
+  {
+    featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
+    tabMessage: (t) => t('developerOptions'),
+    sectionMessage: 'Reset States',
+    descriptionMessage: 'Reset States',
+    route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states`,
+    icon: IconName.CodeCircle,
+  },
+  // developerOptions settingsRefs[1]
+  {
+    featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
+    tabMessage: (t) => t('developerOptions'),
+    sectionMessage: 'Announcements',
+    descriptionMessage:
+      "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal.",
+    route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-announcements`,
+    icon: IconName.CodeCircle,
+  },
+  // developerOptions settingsRefs[2]
+  {
+    featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
+    tabMessage: (t) => t('developerOptions'),
+    sectionMessage: 'Service Worker Keep Alive',
+    descriptionMessage:
+      'Resets various states related to onboarding and redirects to the "Secure Your Wallet" onboarding page.',
+    route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-onboarding`,
+    icon: IconName.CodeCircle,
+  },
+  // developerOptions settingsRefs[3]
+  {
+    featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
+    tabMessage: (t) => t('developerOptions'),
+    sectionMessage: 'Service Worker Keep Alive',
+    descriptionMessage:
+      'Results in a timestamp being continuously saved to session.storage',
+    route: `${DEVELOPER_OPTIONS_ROUTE}#service-worker-keep-alive`,
+    icon: IconName.CodeCircle,
+  },
 ];
+
+export default SETTINGS_CONSTANTS;

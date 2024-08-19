@@ -1,14 +1,12 @@
-/* global chrome */
 // This file is used only for manifest version 3
 
 // Represents if importAllScripts has been run
 // eslint-disable-next-line
 let scriptsLoadInitiated = false;
-
+const { chrome } = globalThis;
 const testMode = process.env.IN_TEST;
 
 const loadTimeLogs = [];
-
 // eslint-disable-next-line import/unambiguous
 function tryImport(...fileNames) {
   try {
@@ -51,33 +49,41 @@ function importAllScripts() {
 
   const startImportScriptsTime = Date.now();
 
+  // value of useSnow below is dynamically replaced at build time with actual value
+  const useSnow = process.env.USE_SNOW;
+  if (typeof useSnow !== 'boolean') {
+    throw new Error('Missing USE_SNOW environment variable');
+  }
+
   // value of applyLavaMoat below is dynamically replaced at build time with actual value
   const applyLavaMoat = process.env.APPLY_LAVAMOAT;
   if (typeof applyLavaMoat !== 'boolean') {
     throw new Error('Missing APPLY_LAVAMOAT environment variable');
   }
 
-  loadFile('./sentry-install.js');
+  loadFile('../scripts/sentry-install.js');
 
-  // eslint-disable-next-line no-undef
-  const isWorker = !self.document;
-  if (!isWorker) {
-    loadFile('./snow.js');
+  if (useSnow) {
+    // eslint-disable-next-line no-undef
+    const isWorker = !self.document;
+    if (!isWorker) {
+      loadFile('../scripts/snow.js');
+    }
+
+    loadFile('../scripts/use-snow.js');
   }
-
-  loadFile('./use-snow.js');
 
   // Always apply LavaMoat in e2e test builds, so that we can capture initialization stats
   if (testMode || applyLavaMoat) {
-    loadFile('./runtime-lavamoat.js');
-    loadFile('./lockdown-more.js');
-    loadFile('./policy-load.js');
+    loadFile('../scripts/runtime-lavamoat.js');
+    loadFile('../scripts/lockdown-more.js');
+    loadFile('../scripts/policy-load.js');
   } else {
-    loadFile('./init-globals.js');
-    loadFile('./lockdown-install.js');
-    loadFile('./lockdown-run.js');
-    loadFile('./lockdown-more.js');
-    loadFile('./runtime-cjs.js');
+    loadFile('../scripts/init-globals.js');
+    loadFile('../scripts/lockdown-install.js');
+    loadFile('../scripts/lockdown-run.js');
+    loadFile('../scripts/lockdown-more.js');
+    loadFile('../scripts/runtime-cjs.js');
   }
 
   // This environment variable is set to a string of comma-separated relative file paths.
@@ -135,6 +141,21 @@ chrome.runtime.onMessage.addListener(() => {
 });
 
 /*
+ * If the service worker is stopped and restarted, then the 'install' event will not occur
+ * and the chrome.runtime.onMessage will only occur if it was a message that restarted the
+ * the service worker. To ensure that importAllScripts is called, we need to call it in module
+ * scope as below. To avoid having `importAllScripts()` called before installation, we only
+ * call it if the serviceWorker state is 'activated'. More on service worker states here:
+ * https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker/state. Testing also shows
+ * that whenever the already installed service worker is stopped and then restarted, the state
+ * is 'activated'.
+ */
+// eslint-disable-next-line no-undef
+if (self.serviceWorker.state === 'activated') {
+  importAllScripts();
+}
+
+/*
  * This content script is injected programmatically because
  * MAIN world injection does not work properly via manifest
  * https://bugs.chromium.org/p/chromium/issues/detail?id=634381
@@ -145,9 +166,10 @@ const registerInPageContentScript = async () => {
       {
         id: 'inpage',
         matches: ['file://*/*', 'http://*/*', 'https://*/*'],
-        js: ['inpage.js'],
+        js: ['scripts/inpage.js'],
         runAt: 'document_start',
         world: 'MAIN',
+        allFrames: true,
       },
     ]);
   } catch (err) {
@@ -163,27 +185,3 @@ const registerInPageContentScript = async () => {
 };
 
 registerInPageContentScript();
-
-/**
- * Creates an offscreen document that can be used to load additional scripts
- * and iframes that can communicate with the extension through the chrome
- * runtime API. Only one offscreen document may exist, so any iframes required
- * by extension can be embedded in the offscreen.html file. See the offscreen
- * folder for more details.
- */
-async function createOffscreen() {
-  if (await chrome.offscreen.hasDocument()) {
-    return;
-  }
-
-  await chrome.offscreen.createDocument({
-    url: './offscreen.html',
-    reasons: ['IFRAME_SCRIPTING'],
-    justification:
-      'Used for Hardware Wallet and Snaps scripts to communicate with the extension.',
-  });
-
-  console.debug('Offscreen iframe loaded');
-}
-
-createOffscreen();

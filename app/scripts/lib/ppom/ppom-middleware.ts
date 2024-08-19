@@ -1,44 +1,32 @@
-import { PPOM } from '@blockaid/ppom_release';
+import { AccountsController } from '@metamask/accounts-controller';
 import { PPOMController } from '@metamask/ppom-validator';
 import { NetworkController } from '@metamask/network-controller';
 import {
-  Hex,
   Json,
   JsonRpcParams,
   JsonRpcRequest,
   JsonRpcResponse,
 } from '@metamask/utils';
-import { v4 as uuid } from 'uuid';
+import { detectSIWE } from '@metamask/controller-utils';
 
-import {
-  BlockaidReason,
-  BlockaidResultType,
-} from '../../../../shared/constants/security-provider';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences';
-import { SecurityAlertResponse } from '../transaction/util';
-import { normalizePPOMRequest } from './ppom-util';
-
-const { sentry } = global;
+import { AppStateController } from '../../controllers/app-state';
+import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
+import {
+  generateSecurityAlertId,
+  handlePPOMError,
+  isChainSupported,
+  validateRequestWithPPOM,
+} from './ppom-util';
+import { SecurityAlertResponse } from './types';
 
 const CONFIRMATION_METHODS = Object.freeze([
   'eth_sendRawTransaction',
   'eth_sendTransaction',
   ...SIGNING_METHODS,
 ]);
-
-export const SUPPORTED_CHAIN_IDS: Hex[] = [
-  CHAIN_IDS.ARBITRUM,
-  CHAIN_IDS.AVALANCHE,
-  CHAIN_IDS.BASE,
-  CHAIN_IDS.BSC,
-  CHAIN_IDS.LINEA_MAINNET,
-  CHAIN_IDS.MAINNET,
-  CHAIN_IDS.OPTIMISM,
-  CHAIN_IDS.POLYGON,
-  CHAIN_IDS.SEPOLIA,
-];
 
 /**
  * Middleware function that handles JSON RPC requests.
@@ -53,7 +41,8 @@ export const SUPPORTED_CHAIN_IDS: Hex[] = [
  * @param preferencesController - Instance of PreferenceController.
  * @param networkController - Instance of NetworkController.
  * @param appStateController
- * @param updateSecurityAlertResponseByTxId
+ * @param accountsController - Instance of AccountsController.
+ * @param updateSecurityAlertResponse
  * @returns PPOMMiddleware function.
  */
 export function createPPOMMiddleware<
@@ -63,118 +52,82 @@ export function createPPOMMiddleware<
   ppomController: PPOMController,
   preferencesController: PreferencesController,
   networkController: NetworkController,
-  appStateController: any,
-  updateSecurityAlertResponseByTxId: (
-    req: JsonRpcRequest<JsonRpcParams> & {
-      securityAlertResponse: SecurityAlertResponse;
-    },
+  appStateController: AppStateController,
+  accountsController: AccountsController,
+  updateSecurityAlertResponse: (
+    method: string,
+    signatureAlertId: string,
     securityAlertResponse: SecurityAlertResponse,
   ) => void,
 ) {
   return async (
-    req: JsonRpcRequest<Params> & {
-      securityAlertResponse: SecurityAlertResponse;
-    },
+    req: JsonRpcRequest<Params>,
     _res: JsonRpcResponse<Result>,
     next: () => void,
   ) => {
     try {
       const securityAlertsEnabled =
         preferencesController.store.getState()?.securityAlertsEnabled;
+
       const { chainId } = networkController.state.providerConfig;
+      const isSupportedChain = await isChainSupported(chainId);
+
       if (
-        securityAlertsEnabled &&
-        CONFIRMATION_METHODS.includes(req.method) &&
-        SUPPORTED_CHAIN_IDS.includes(chainId)
+        !securityAlertsEnabled ||
+        !CONFIRMATION_METHODS.includes(req.method) ||
+        !isSupportedChain
       ) {
-        // eslint-disable-next-line require-atomic-updates
-        const securityAlertId = uuid();
-        let securityAlertResponse: SecurityAlertResponse = {
-          reason: BlockaidResultType.Loading,
-          result_type: BlockaidReason.inProgress,
-          securityAlertId,
-        };
-
-        ppomController
-          .usePPOM(async (ppom: PPOM) => {
-            try {
-              const normalizedRequest = normalizePPOMRequest(req);
-
-              securityAlertResponse = await ppom.validateJsonRpc(
-                normalizedRequest,
-              );
-              securityAlertResponse.securityAlertId = securityAlertId;
-            } catch (error: unknown) {
-              sentry?.captureException(error);
-              console.error(
-                'Error validating JSON RPC using PPOM: ',
-                typeof error === 'object' || typeof error === 'string'
-                  ? error
-                  : JSON.stringify(error),
-              );
-
-              securityAlertResponse = {
-                result_type: BlockaidResultType.Errored,
-                reason: BlockaidReason.errored,
-                description:
-                  error instanceof Error
-                    ? `${error.name}: ${error.message}`
-                    : JSON.stringify(error),
-              };
-            }
-          })
-          .catch((error: unknown) => {
-            sentry?.captureException(error);
-            console.error(
-              'Error createPPOMMiddleware#usePPOM: ',
-              typeof error === 'object' || typeof error === 'string'
-                ? error
-                : JSON.stringify(error),
-            );
-
-            securityAlertResponse = {
-              result_type: BlockaidResultType.Errored,
-              reason: BlockaidReason.errored,
-              description:
-                error instanceof Error
-                  ? `${error.name}: ${error.message}`
-                  : JSON.stringify(error),
-            };
-          })
-          .finally(() => {
-            updateSecurityAlertResponseByTxId(req, {
-              ...securityAlertResponse,
-              securityAlertId,
-            });
-          });
-
-        if (SIGNING_METHODS.includes(req.method)) {
-          appStateController.addSignatureSecurityAlertResponse({
-            reason: BlockaidResultType.Loading,
-            result_type: BlockaidReason.inProgress,
-            securityAlertId,
-          });
-        }
-
-        req.securityAlertResponse = { ...securityAlertResponse };
+        return;
       }
-    } catch (error: unknown) {
-      sentry?.captureException(error);
-      console.error(
-        'Error createPPOMMiddleware: ',
-        typeof error === 'object' || typeof error === 'string'
-          ? error
-          : JSON.stringify(error),
-      );
 
-      req.securityAlertResponse = {
-        result_type: BlockaidResultType.Errored,
-        reason: BlockaidReason.errored,
-        description:
-          error instanceof Error
-            ? `${error.name}: ${error.message}`
-            : JSON.stringify(error),
+      const { isSIWEMessage } = detectSIWE({ data: req?.params?.[0] });
+      if (isSIWEMessage) {
+        return;
+      }
+
+      if (req.method === MESSAGE_TYPE.ETH_SEND_TRANSACTION) {
+        const { to: toAddress } = req?.params?.[0] ?? {};
+        const internalAccounts = accountsController.listAccounts();
+        const isToInternalAccount = internalAccounts.some(
+          ({ address }) => address?.toLowerCase() === toAddress?.toLowerCase(),
+        );
+        if (isToInternalAccount) {
+          return;
+        }
+      }
+
+      const securityAlertId = generateSecurityAlertId();
+
+      validateRequestWithPPOM({
+        ppomController,
+        request: req,
+        securityAlertId,
+        chainId,
+      }).then((securityAlertResponse) => {
+        updateSecurityAlertResponse(
+          req.method,
+          securityAlertId,
+          securityAlertResponse,
+        );
+      });
+
+      const loadingSecurityAlertResponse: SecurityAlertResponse = {
+        ...LOADING_SECURITY_ALERT_RESPONSE,
+        securityAlertId,
       };
+
+      if (SIGNING_METHODS.includes(req.method)) {
+        appStateController.addSignatureSecurityAlertResponse(
+          loadingSecurityAlertResponse,
+        );
+      }
+
+      req.securityAlertResponse = loadingSecurityAlertResponse;
+    } catch (error) {
+      req.securityAlertResponse = handlePPOMError(
+        error,
+        'Error createPPOMMiddleware: ',
+      );
     } finally {
       next();
     }

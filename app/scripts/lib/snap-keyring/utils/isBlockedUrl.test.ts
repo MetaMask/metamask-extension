@@ -6,6 +6,8 @@ describe('isBlockedUrl', () => {
   const messenger = new ControllerMessenger();
   const phishingControllerMessenger = messenger.getRestricted({
     name: 'PhishingController',
+    allowedActions: [],
+    allowedEvents: [],
   });
   const phishingController = new PhishingController({
     messenger: phishingControllerMessenger,
@@ -24,6 +26,7 @@ describe('isBlockedUrl', () => {
     },
   });
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     ['http://metamask.io', false],
     ['https://metamask.io', false],
@@ -36,6 +39,8 @@ describe('isBlockedUrl', () => {
     [1, true],
     [0, true],
     [-1, true],
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ])('"%s" is blocked: %s', async (url: any, expected: boolean) => {
     const result = await isBlockedUrl(
       url,

@@ -5,10 +5,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
+import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
 import {
-  BannerAlert,
-  BannerAlertSeverity,
   Box,
+  ButtonLink,
+  ButtonLinkSize,
 } from '../../../components/component-library';
 import Button from '../../../components/ui/button';
 import TextField from '../../../components/ui/text-field';
@@ -17,8 +18,8 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  Severity,
   TextVariant,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import {
   ExportableContentType,
@@ -28,8 +29,6 @@ import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-
-const CORRUPT_JSON_FILE = 'CORRUPT_JSON_FILE';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -43,34 +42,27 @@ export default class AdvancedTab extends PureComponent {
     setHexDataFeatureFlag: PropTypes.func,
     displayWarning: PropTypes.func,
     showResetAccountConfirmationModal: PropTypes.func,
-    showEthSignModal: PropTypes.func,
     warning: PropTypes.string,
     sendHexData: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
     showTestNetworks: PropTypes.bool,
-    showExtensionInFullSizeView: PropTypes.bool,
+    smartTransactionsOptInStatus: PropTypes.bool,
     autoLockTimeLimit: PropTypes.number,
     setAutoLockTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
     setShowTestNetworks: PropTypes.func.isRequired,
-    setShowExtensionInFullSizeView: PropTypes.func.isRequired,
+    setSmartTransactionsOptInStatus: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
     backupUserData: PropTypes.func.isRequired,
-    restoreUserData: PropTypes.func.isRequired,
-    setDisabledRpcMethodPreference: PropTypes.func.isRequired,
-    disabledRpcMethodPreferences: PropTypes.shape({
-      eth_sign: PropTypes.bool.isRequired,
-    }),
+    showExtensionInFullSizeView: PropTypes.bool,
+    setShowExtensionInFullSizeView: PropTypes.func.isRequired,
   };
 
   state = {
     autoLockTimeLimit: this.props.autoLockTimeLimit,
     autoLockTimeLimitBeforeNormalization: this.props.autoLockTimeLimit,
     lockTimeError: '',
-    showResultMessage: false,
-    restoreSuccessful: true,
-    restoreMessage: null,
   };
 
   settingsRefs = Array(
@@ -105,39 +97,6 @@ export default class AdvancedTab extends PureComponent {
 
       reader.readAsText(file);
     });
-  }
-
-  async handleFileUpload(event) {
-    /**
-     * we need this to be able to access event.target after
-     * the event handler has been called. [Synthetic Event Pooling, pre React 17]
-     *
-     * @see https://fb.me/react-event-pooling
-     */
-    event.persist();
-    const file = event.target.files[0];
-    const jsonString = await this.getTextFromFile(file);
-    /**
-     * so that we can restore same file again if we want to.
-     * chrome blocks uploading same file twice.
-     */
-    event.target.value = '';
-    try {
-      const result = await this.props.restoreUserData(jsonString);
-      this.setState({
-        showResultMessage: true,
-        restoreSuccessful: result,
-        restoreMessage: null,
-      });
-    } catch (e) {
-      if (e.message.match(/Unexpected.+JSON/iu)) {
-        this.setState({
-          showResultMessage: true,
-          restoreSuccessful: false,
-          restoreMessage: CORRUPT_JSON_FILE,
-        });
-      }
-    }
   }
 
   backupUserData = async () => {
@@ -238,13 +197,67 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  renderToggleStxOptIn() {
+    const { t } = this.context;
+    const { smartTransactionsOptInStatus, setSmartTransactionsOptInStatus } =
+      this.props;
+
+    const learMoreLink = (
+      <ButtonLink
+        size={ButtonLinkSize.Inherit}
+        textProps={{
+          variant: TextVariant.bodyMd,
+          alignItems: AlignItems.flexStart,
+        }}
+        as="a"
+        href={SMART_TRANSACTIONS_LEARN_MORE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {t('learnMoreUpperCase')}
+      </ButtonLink>
+    );
+
+    return (
+      <Box
+        ref={this.settingsRefs[2]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-enable-smart-transactions"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('smartTransactions')}</span>
+          <div className="settings-page__content-description">
+            {t('stxOptInDescription', [learMoreLink])}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={smartTransactionsOptInStatus}
+            onToggle={(oldValue) => {
+              const newValue = !oldValue;
+              setSmartTransactionsOptInStatus(newValue);
+            }}
+            offLabel={t('off')}
+            onLabel={t('on')}
+            dataTestId="settings-page-stx-opt-in-toggle"
+          />
+        </div>
+      </Box>
+    );
+  }
+
   renderHexDataOptIn() {
     const { t } = this.context;
     const { sendHexData, setHexDataFeatureFlag } = this.props;
 
     return (
       <Box
-        ref={this.settingsRefs[2]}
+        ref={this.settingsRefs[3]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -264,6 +277,7 @@ export default class AdvancedTab extends PureComponent {
             onToggle={(value) => setHexDataFeatureFlag(!value)}
             offLabel={t('off')}
             onLabel={t('on')}
+            className="hex-data-toggle"
           />
         </div>
       </Box>
@@ -277,7 +291,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[3]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -300,6 +314,7 @@ export default class AdvancedTab extends PureComponent {
             }
             offLabel={t('off')}
             onLabel={t('on')}
+            className="show-fiat-on-testnets-toggle"
           />
         </div>
       </Box>
@@ -312,7 +327,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[4]}
+        ref={this.settingsRefs[5]}
         className="settings-page__content-row"
         data-testid="advanced-setting-show-testnet-conversion"
         display={Display.Flex}
@@ -346,7 +361,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[7]}
+        ref={this.settingsRefs[8]}
         className="settings-page__content-row"
         data-testid="advanced-setting-show-extension-in-full-size-view"
         display={Display.Flex}
@@ -379,7 +394,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[5]}
+        ref={this.settingsRefs[6]}
         className="settings-page__content-row"
         data-testid="advanced-setting-custom-nonce"
         display={Display.Flex}
@@ -390,12 +405,13 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('nonceField')}</span>
           <div className="settings-page__content-description">
-            {t('nonceFieldDescription')}
+            {t('nonceFieldDesc')}
           </div>
         </div>
 
         <div className="settings-page__content-item-col">
           <ToggleButton
+            className="custom-nonce-toggle"
             value={useNonceField}
             onToggle={(value) => setUseNonceField(!value)}
             offLabel={t('off')}
@@ -413,7 +429,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[6]}
+        ref={this.settingsRefs[7]}
         className="settings-page__content-row"
         data-testid="advanced-setting-auto-lock"
         display={Display.Flex}
@@ -462,7 +478,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[8]}
+        ref={this.settingsRefs[9]}
         className="settings-page__content-row"
         data-testid="advanced-setting-dismiss-reminder"
         display={Display.Flex}
@@ -489,71 +505,13 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderToggleEthSignControl() {
-    const { t, trackEvent } = this.context;
-    const {
-      disabledRpcMethodPreferences,
-      showEthSignModal,
-      setDisabledRpcMethodPreference,
-    } = this.props;
-    const toggleOff = (value) => {
-      setDisabledRpcMethodPreference('eth_sign', !value);
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
-        properties: {
-          location: 'Settings',
-          enable_eth_sign: false,
-        },
-      });
-    };
-    return (
-      <Box
-        ref={this.settingsRefs[9]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-toggle-ethsign"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('toggleEthSignField')}</span>
-          <div className="settings-page__content-description">
-            {t('toggleEthSignDescriptionField')}
-          </div>
-        </div>
-        {disabledRpcMethodPreferences?.eth_sign ? (
-          <BannerAlert
-            severity={Severity.Danger}
-            marginTop={3}
-            marginBottom={4}
-            descriptionProps={{ variant: TextVariant.bodyMd }}
-          >
-            {t('toggleEthSignBannerDescription')}
-          </BannerAlert>
-        ) : null}
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            className="eth-sign-toggle"
-            value={disabledRpcMethodPreferences?.eth_sign || false}
-            onToggle={(value) => {
-              value ? toggleOff(value) : showEthSignModal();
-            }}
-            offLabel={t('toggleEthSignOff')}
-            onLabel={t('toggleEthSignOn')}
-          />
-        </div>
-      </Box>
-    );
-  }
-
   handleLockChange(autoLockTimeLimitBeforeNormalization) {
     const { t } = this.context;
 
     if (autoLockTimeLimitBeforeNormalization === '') {
       this.setState({
         autoLockTimeLimitBeforeNormalization,
-        autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT.toString(),
+        autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
         lockTimeError: '',
       });
       return;
@@ -589,7 +547,7 @@ export default class AdvancedTab extends PureComponent {
     const { t } = this.context;
     return (
       <Box
-        ref={this.settingsRefs[10]}
+        ref={this.settingsRefs[11]}
         className="settings-page__content-row"
         data-testid="advanced-setting-data-backup"
         display={Display.Flex}
@@ -617,75 +575,6 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderRestoreUserData() {
-    const { t } = this.context;
-    const { showResultMessage, restoreSuccessful, restoreMessage } = this.state;
-
-    const defaultRestoreMessage = restoreSuccessful
-      ? t('restoreSuccessful')
-      : t('restoreFailed');
-    const restoreMessageToRender =
-      restoreMessage === CORRUPT_JSON_FILE
-        ? t('dataBackupSeemsCorrupt')
-        : defaultRestoreMessage;
-
-    return (
-      <Box
-        ref={this.settingsRefs[11]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-data-restore"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('restoreUserData')}</span>
-          <span className="settings-page__content-description">
-            {t('restoreUserDataDescription')}
-          </span>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <label
-              htmlFor="restore-file"
-              className="button btn btn--rounded btn-secondary btn--large settings-page__button"
-            >
-              {t('restore')}
-            </label>
-            <input
-              id="restore-file"
-              data-testid="restore-file"
-              style={{ visibility: 'hidden' }}
-              type="file"
-              accept=".json"
-              onChange={(e) => this.handleFileUpload(e)}
-            />
-          </div>
-          {showResultMessage && (
-            <BannerAlert
-              severity={
-                restoreSuccessful
-                  ? BannerAlertSeverity.Success
-                  : BannerAlertSeverity.Danger
-              }
-              description={restoreMessageToRender}
-              descriptionProps={{
-                'data-testid': 'restore-user-data-banner-alert-description',
-              }}
-              actionButtonLabel={t('dismiss')}
-              actionButtonOnClick={() => {
-                this.setState({
-                  showResultMessage: false,
-                  restoreSuccessful: true,
-                  restoreMessage: null,
-                });
-              }}
-            />
-          )}
-        </div>
-      </Box>
-    );
-  }
-
   render() {
     const { warning } = this.props;
 
@@ -694,6 +583,7 @@ export default class AdvancedTab extends PureComponent {
         {warning ? <div className="settings-tab__error">{warning}</div> : null}
         {this.renderStateLogs()}
         {this.renderResetAccount()}
+        {this.renderToggleStxOptIn()}
         {this.renderHexDataOptIn()}
         {this.renderShowConversionInTestnets()}
         {this.renderToggleTestNetworks()}
@@ -701,9 +591,7 @@ export default class AdvancedTab extends PureComponent {
         {this.renderUseNonceOptIn()}
         {this.renderAutoLockTimeLimit()}
         {this.renderUserDataBackup()}
-        {this.renderRestoreUserData()}
         {this.renderDismissSeedBackupReminderControl()}
-        {this.renderToggleEthSignControl()}
       </div>
     );
   }

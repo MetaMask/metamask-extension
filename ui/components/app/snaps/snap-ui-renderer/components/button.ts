@@ -1,12 +1,13 @@
-import { Button } from '@metamask/snaps-sdk';
+import { ButtonElement } from '@metamask/snaps-sdk/jsx';
 import { UIComponentFactory } from './types';
 
-export const button: UIComponentFactory<Button> = ({ element }) => ({
+export const button: UIComponentFactory<ButtonElement> = ({ element }) => ({
   element: 'SnapUIButton',
   props: {
-    type: element.buttonType,
-    variant: element.variant,
-    name: element.name,
+    type: element.props.type,
+    variant: element.props.variant,
+    name: element.props.name,
+    disabled: element.props.disabled,
   },
-  children: element.value,
+  children: element.props.children,
 });

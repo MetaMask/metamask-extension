@@ -1,5 +1,12 @@
 {
   "resources": {
+    "@metamask/snaps-execution-environments": {
+      "packages": {
+        "@metamask/post-message-stream": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/controllers>web3-provider-engine>eth-json-rpc-middleware>node-fetch": {
       "globals": {
         "fetch": true
@@ -150,6 +157,9 @@
       }
     },
     "@metamask/announcement-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
       "packages": {
         "immer": true
       }

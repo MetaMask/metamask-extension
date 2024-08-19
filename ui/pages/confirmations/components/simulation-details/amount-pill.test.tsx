@@ -1,9 +1,27 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { BigNumber } from 'bignumber.js';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { Numeric } from '../../../../../shared/modules/Numeric';
+import Tooltip from '../../../../components/ui/tooltip';
 import { AmountPill } from './amount-pill';
-import { Amount, TokenAssetIdentifier } from './types';
+import {
+  AssetIdentifier,
+  NATIVE_ASSET_IDENTIFIER,
+  TokenAssetIdentifier,
+} from './types';
+
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn((selector) => selector()),
+}));
+
+jest.mock('../../../../ducks/locale/locale', () => ({
+  getIntlLocale: jest.fn(() => 'en-US'),
+}));
+
+jest.mock('../../../../components/ui/tooltip', () => ({
+  __esModule: true,
+  default: jest.fn(({ children }) => children),
+}));
 
 const TOKEN_ID_MOCK = '0xabc';
 
@@ -22,29 +40,97 @@ const ERC1155_ASSET_MOCK: TokenAssetIdentifier = {
   tokenId: TOKEN_ID_MOCK,
 };
 
-describe('AmountPill', () => {
-  describe('ERC20', () => {
-    const cases = [
-      {
-        isNegative: true,
-        numeric: new Numeric(-123.456, 10),
-        expected: '- 123.456',
-      },
-      {
-        isNegative: false,
-        numeric: new Numeric(789.012, 10),
-        expected: '+ 789.012',
-      },
-    ];
-    it.each(cases)(
-      'renders the correct sign and amount',
-      ({ isNegative, numeric, expected }) => {
-        const amount = { isNegative, numeric } as Amount;
+const renderAndExpect = (
+  asset: AssetIdentifier,
+  amount: BigNumber,
+  expected: { text: string; tooltip: string },
+): void => {
+  const { getByText } = render(<AmountPill asset={asset} amount={amount} />);
+  expect(getByText(expected.text)).toBeInTheDocument();
+  expect(Tooltip).toHaveBeenCalledWith(
+    expect.objectContaining({ title: expected.tooltip }),
+    {},
+  );
+};
 
-        const { getByText } = render(
-          <AmountPill asset={ERC20_ASSET_MOCK} amount={amount} />,
-        );
-        expect(getByText(expected)).toBeInTheDocument();
+describe('AmountPill', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  const nativeAndErc20Cases = [
+    {
+      amount: new BigNumber(-123.1234567),
+      expected: {
+        text: '- 123.1',
+        tooltip: '123.1234567',
+      },
+    },
+    {
+      amount: new BigNumber(789.412),
+      expected: {
+        text: '+ 789.4',
+        tooltip: '789.412',
+      },
+    },
+    {
+      amount: new BigNumber(-0.000000001),
+      expected: {
+        text: '- <0.000001',
+        tooltip: '0.000000001',
+      },
+    },
+    {
+      amount: new BigNumber(0.000000001),
+      expected: {
+        text: '+ <0.000001',
+        tooltip: '0.000000001',
+      },
+    },
+    {
+      amount: new BigNumber(-0),
+      expected: {
+        text: '- 0',
+        tooltip: '0',
+      },
+    },
+    {
+      amount: new BigNumber(0),
+      expected: {
+        text: '+ 0',
+        tooltip: '0',
+      },
+    },
+  ];
+
+  describe('Native', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each(nativeAndErc20Cases)(
+      'renders the correct sign and amount for $amount',
+      ({
+        amount,
+        expected,
+      }: {
+        amount: BigNumber;
+        expected: { text: string; tooltip: string };
+      }) => {
+        renderAndExpect(NATIVE_ASSET_IDENTIFIER, amount, expected);
+      },
+    );
+  });
+
+  describe('ERC20', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each(nativeAndErc20Cases)(
+      'renders the correct sign and amount for $amount',
+      ({
+        amount,
+        expected,
+      }: {
+        amount: BigNumber;
+        expected: { text: string; tooltip: string };
+      }) => {
+        renderAndExpect(ERC20_ASSET_MOCK, amount, expected);
       },
     );
   });
@@ -52,73 +138,88 @@ describe('AmountPill', () => {
   describe('ERC721', () => {
     const cases = [
       {
-        isNegative: true,
-        numeric: new Numeric(-1, 10),
-        expected: '- #2748',
+        amount: new BigNumber(-1),
+        expected: {
+          text: '- #2748',
+          tooltip: '#2748',
+        },
       },
       {
-        isNegative: false,
-        numeric: new Numeric(1, 10),
-        expected: '+ #2748',
+        amount: new BigNumber(1),
+        expected: {
+          text: '+ #2748',
+          tooltip: '#2748',
+        },
       },
     ];
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(cases)(
-      'renders the token ID with just a plus or minus',
-      ({ isNegative, numeric, expected }) => {
-        const amount = {
-          isNegative,
-          numeric,
-        } as Amount;
-
-        const { getByText } = render(
-          <AmountPill asset={ERC721_ASSET_MOCK} amount={amount} />,
-        );
-        expect(getByText(expected)).toBeInTheDocument();
+      'renders the token ID with just a plus or minus for $expected.text',
+      ({
+        amount,
+        expected,
+      }: {
+        amount: BigNumber;
+        expected: { text: string; tooltip: string };
+      }) => {
+        renderAndExpect(ERC721_ASSET_MOCK, amount, expected);
       },
     );
-
-    it('does not render the amount', () => {
-      const amount = {
-        isNegative: true,
-        numeric: new Numeric(1, 10),
-      } as Amount;
-
-      const { queryByText } = render(
-        <AmountPill asset={ERC721_ASSET_MOCK} amount={amount} />,
-      );
-      expect(queryByText('-')).not.toBeInTheDocument();
-    });
   });
 
   describe('ERC1155', () => {
     const cases = [
       {
-        isNegative: true,
-        numeric: new Numeric(-3, 10),
-        expected: '- 3 #2748',
+        amount: new BigNumber(-3),
+        expected: {
+          text: '- 3 #2748',
+          tooltip: '3 #2748',
+        },
       },
       {
-        isNegative: false,
-        numeric: new Numeric(8, 10),
-        expected: '+ 8 #2748',
+        amount: new BigNumber(8),
+        expected: {
+          text: '+ 8 #2748',
+          tooltip: '8 #2748',
+        },
       },
       {
-        isNegative: true,
-        numeric: new Numeric(-12, 10),
-        expected: '- 12 #2748',
+        amount: new BigNumber(-12),
+        expected: {
+          text: '- 12 #2748',
+          tooltip: '12 #2748',
+        },
       },
     ];
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(cases)(
-      'renders the correct sign, amount, and token ID',
-      ({ isNegative, numeric, expected }) => {
-        const amount = { isNegative, numeric } as Amount;
+      'renders the correct sign, amount, and token ID for $expected.text',
+      ({
+        amount,
+        expected,
+      }: {
+        amount: BigNumber;
+        expected: { text: string; tooltip: string };
+      }) => {
+        renderAndExpect(ERC1155_ASSET_MOCK, amount, expected);
+      },
+    );
+  });
 
-        const { getByText } = render(
-          <AmountPill asset={ERC1155_ASSET_MOCK} amount={amount} />,
-        );
-        expect(getByText(expected)).toBeInTheDocument();
+  it('renders shortened token id if given id is too long', () => {
+    const longHexadecimalTokenId = '0x11111111111111111111111111111';
+    const longTokenIdInDecimal = '5538449982437149470432529417834769';
+    renderAndExpect(
+      {
+        ...ERC721_ASSET_MOCK,
+        tokenId: longHexadecimalTokenId,
+      },
+      new BigNumber(1),
+      {
+        text: '+ #5538...4769',
+        tooltip: `#${longTokenIdInDecimal}`,
       },
     );
   });

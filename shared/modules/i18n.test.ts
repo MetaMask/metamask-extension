@@ -281,7 +281,7 @@ describe('I18N Module', () => {
     it('returns json from locale file', async () => {
       const result = await fetchLocale(localeCodeMock);
       expect(result).toStrictEqual({
-        url: `./_locales/${localeCodeMock}/messages.json`,
+        url: `../_locales/${localeCodeMock}/messages.json`,
       });
     });
 
@@ -307,6 +307,8 @@ describe('I18N Module', () => {
         RelativeTimeFormat: {
           __addLocaleData: addMock,
         },
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any;
 
       await loadRelativeTimeFormatLocaleData(`${localeCodeMock}_test`);
@@ -324,6 +326,8 @@ describe('I18N Module', () => {
         RelativeTimeFormat: {
           __addLocaleData: addMock,
         },
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any;
 
       await loadRelativeTimeFormatLocaleData(`${localeCodeMock}_test`);

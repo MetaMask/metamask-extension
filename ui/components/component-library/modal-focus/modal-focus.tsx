@@ -8,6 +8,8 @@ import type { ModalFocusProps } from './modal-focus.types';
  */
 
 const FocusTrap: typeof ReactFocusLock =
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (ReactFocusLock as any).default ?? ReactFocusLock;
 
 export const ModalFocus: React.FC<ModalFocusProps> = ({

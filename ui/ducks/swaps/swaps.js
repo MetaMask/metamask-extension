@@ -60,12 +60,15 @@ import {
   getSwapsDefaultToken,
   getCurrentChainId,
   isHardwareWallet,
-  accountSupportsSmartTx,
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
   getSelectedNetworkClientId,
+  getSelectedInternalAccount,
 } from '../../selectors';
-
+import {
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
+} from '../../../shared/modules/selectors';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -91,6 +94,7 @@ import {
 } from '../../../shared/lib/transactions-controller-utils';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { Numeric } from '../../../shared/modules/Numeric';
+import { calculateMaxGasLimit } from '../../../shared/lib/swaps-utils';
 
 export const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
@@ -98,8 +102,6 @@ export const GAS_PRICES_LOADING_STATES = {
   FAILED: 'FAILED',
   COMPLETED: 'COMPLETED',
 };
-
-export const FALLBACK_GAS_MULTIPLIER = 1.5;
 
 const initialState = {
   aggregatorMetadata: null,
@@ -322,24 +324,6 @@ export const getSmartTransactionsError = (state) =>
 export const getSmartTransactionsErrorMessageDismissed = (state) =>
   state.appState.smartTransactionsErrorMessageDismissed;
 
-export const getSmartTransactionsEnabled = (state) => {
-  const supportedAccount = accountSupportsSmartTx(state);
-  const chainId = getCurrentChainId(state);
-  const isAllowedNetwork =
-    ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId);
-  const smartTransactionsFeatureFlagEnabled =
-    state.metamask.swapsState?.swapsFeatureFlags?.smartTransactions
-      ?.extensionActive;
-  const smartTransactionsLiveness =
-    state.metamask.smartTransactionsState?.liveness;
-  return Boolean(
-    isAllowedNetwork &&
-      supportedAccount &&
-      smartTransactionsFeatureFlagEnabled &&
-      smartTransactionsLiveness,
-  );
-};
-
 export const getCurrentSmartTransactionsEnabled = (state) => {
   const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
   const currentSmartTransactionsError = getCurrentSmartTransactionsError(state);
@@ -432,10 +416,6 @@ export const getApproveTxParams = (state) => {
 
   const gasPrice = getUsedSwapsGasPrice(state);
   return { ...approvalNeeded, gasPrice, data };
-};
-
-export const getSmartTransactionsOptInStatus = (state) => {
-  return state.metamask.smartTransactionsState?.userOptInV2;
 };
 
 export const getCurrentSmartTransactions = (state) => {
@@ -531,6 +511,7 @@ export {
   swapCustomGasModalLimitEdited,
   swapCustomGasModalClosed,
   setTransactionSettingsOpened,
+  slice as swapsSlice,
 };
 
 export const navigateBackToBuildQuote = (history) => {
@@ -604,7 +585,7 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
         await dispatch(fetchSmartTransactionsLiveness());
         const transactions = await getTransactions({
           searchCriteria: {
-            from: state.metamask?.selectedAddress,
+            from: getSelectedInternalAccount(state)?.address,
           },
         });
         disableStxIfRegularTxInProgress(dispatch, transactions);
@@ -903,6 +884,8 @@ export const signAndSendSwapsSmartTransaction = ({
     dispatch(setSwapsSTXSubmitLoading(true));
     const state = getState();
     const fetchParams = getFetchParams(state);
+    const hardwareWalletUsed = isHardwareWallet(state);
+    const hardwareWalletType = getHardwareWalletType(state);
     const { metaData, value: swapTokenValue, slippage } = fetchParams;
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
     const usedQuote = getUsedQuote(state);
@@ -945,6 +928,8 @@ export const signAndSendSwapsSmartTransaction = ({
       performance_savings: usedQuote.savings?.performance,
       fee_savings: usedQuote.savings?.fee,
       median_metamask_fee: usedQuote.savings?.medianMetaMaskFee,
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
       stx_enabled: smartTransactionsEnabled,
       current_stx_enabled: currentSmartTransactionsEnabled,
       stx_user_opt_in: smartTransactionsOptInStatus,
@@ -1125,20 +1110,16 @@ export const signAndSendTransactions = (
     const usedQuote = getUsedQuote(state);
     const usedTradeTxParams = usedQuote.trade;
 
-    const estimatedGasLimit = new BigNumber(
-      usedQuote?.gasEstimate || 0,
-      16,
-    ).toString(16);
+    const estimatedGasLimit = new BigNumber(usedQuote?.gasEstimate || 0, 16)
+      .round(0)
+      .toString(16);
 
-    const maxGasLimit =
-      customSwapsGas ||
-      (usedQuote?.gasEstimate
-        ? `0x${estimatedGasLimit}`
-        : `0x${decimalToHex(
-            new BigNumber(usedQuote?.maxGas)
-              .mul(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER)
-              .toString() || 0,
-          )}`);
+    const maxGasLimit = calculateMaxGasLimit(
+      usedQuote?.gasEstimate,
+      usedQuote?.gasMultiplier,
+      usedQuote?.maxGas,
+      customSwapsGas,
+    );
 
     const usedGasPrice = getUsedSwapsGasPrice(state);
     usedTradeTxParams.gas = maxGasLimit;

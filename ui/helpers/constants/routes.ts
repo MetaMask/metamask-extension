@@ -5,6 +5,8 @@ const ASSET_ROUTE = '/asset';
 const SETTINGS_ROUTE = '/settings';
 const GENERAL_ROUTE = '/settings/general';
 const ADVANCED_ROUTE = '/settings/advanced';
+
+const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
 const EXPERIMENTAL_ROUTE = '/settings/experimental';
 const SECURITY_ROUTE = '/settings/security';
 const ABOUT_US_ROUTE = '/settings/about-us';
@@ -34,6 +36,7 @@ const CUSTODY_ACCOUNT_DONE_ROUTE = '/new-account/custody/done';
 const CONFIRM_ADD_CUSTODIAN_TOKEN = '/confirm-add-custodian-token';
 const INTERACTIVE_REPLACEMENT_TOKEN_PAGE =
   '/interactive-replacement-token-page';
+const SRP_REMINDER = '/onboarding/remind-srp';
 ///: END:ONLY_INCLUDE_IF
 const SEND_ROUTE = '/send';
 const CONNECTIONS = '/connections';
@@ -41,17 +44,17 @@ const PERMISSIONS = '/permissions';
 const TOKEN_DETAILS = '/token-details';
 const CONNECT_ROUTE = '/connect';
 const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 const CONNECT_SNAPS_CONNECT_ROUTE = '/snaps-connect';
 const CONNECT_SNAP_INSTALL_ROUTE = '/snap-install';
 const CONNECT_SNAP_UPDATE_ROUTE = '/snap-update';
 const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
-const NOTIFICATIONS_ROUTE = '/notifications';
 const SNAPS_ROUTE = '/snaps';
 const SNAPS_VIEW_ROUTE = '/snaps/view';
-///: END:ONLY_INCLUDE_IF
+const NOTIFICATIONS_ROUTE = '/notifications';
+const NOTIFICATIONS_SETTINGS_ROUTE = '/notifications/settings';
 const CONNECTED_ROUTE = '/connected';
 const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
+const CROSS_CHAIN_SWAP_ROUTE = '/cross-chain';
 const SWAPS_ROUTE = '/swaps';
 const PREPARE_SWAP_ROUTE = '/swaps/prepare-swap-page';
 const SWAPS_NOTIFICATION_ROUTE = '/swaps/notification-page';
@@ -84,10 +87,6 @@ const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-const DESKTOP_ERROR_ROUTE = '/desktop/error';
-const DESKTOP_PAIRING_ROUTE = '/desktop-pairing';
-///: END:ONLY_INCLUDE_IF
 
 const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
 const CONFIRM_SEND_ETHER_PATH = '/send-ether';
@@ -98,6 +97,7 @@ const CONFIRM_SET_APPROVAL_FOR_ALL_PATH = '/set-approval-for-all';
 const CONFIRM_TRANSFER_FROM_PATH = '/transfer-from';
 const CONFIRM_SAFE_TRANSFER_FROM_PATH = '/safe-transfer-from';
 const CONFIRM_TOKEN_METHOD_PATH = '/token-method';
+const CONFIRM_INCREASE_ALLOWANCE_PATH = '/increase-allowance';
 const SIGNATURE_REQUEST_PATH = '/signature-request';
 const DECRYPT_MESSAGE_REQUEST_PATH = '/decrypt-message-request';
 const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH = '/encryption-public-key-request';
@@ -110,9 +110,12 @@ const PATH_NAME_MAP = {
   [UNLOCK_ROUTE]: 'Unlock Page',
   [LOCK_ROUTE]: 'Lock Page',
   [`${ASSET_ROUTE}/:asset/:id`]: `Asset Page`,
+  [`${ASSET_ROUTE}/image/:asset/:id`]: `Nft Image Page`,
   [SETTINGS_ROUTE]: 'Settings Page',
   [GENERAL_ROUTE]: 'General Settings Page',
   [ADVANCED_ROUTE]: 'Advanced Settings Page',
+  // DEVELOPER_OPTIONS_ROUTE not included because we're not tracking analytics for this page
+  // [DEVELOPER_OPTIONS_ROUTE]: 'Experimental Settings Page',
   [EXPERIMENTAL_ROUTE]: 'Experimental Settings Page',
   [SECURITY_ROUTE]: 'Security Settings Page',
   [ABOUT_US_ROUTE]: 'About Us Page',
@@ -135,8 +138,9 @@ const PATH_NAME_MAP = {
   [NEW_ACCOUNT_ROUTE]: 'New Account Page',
   [CONFIRM_ADD_SUGGESTED_NFT_ROUTE]: 'Confirm Add Suggested NFT Page',
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   [NOTIFICATIONS_ROUTE]: 'Notifications Page',
+  [`${NOTIFICATIONS_ROUTE}/:uuid`]: 'Notification Detail Page',
+  [NOTIFICATIONS_SETTINGS_ROUTE]: 'Notifications Settings Page',
   [`${CONNECT_ROUTE}/:id${CONNECT_SNAPS_CONNECT_ROUTE}`]: 'Snaps Connect Page',
   [`${CONNECT_ROUTE}/:id${CONNECT_SNAP_INSTALL_ROUTE}`]: 'Snap Install Page',
   [`${CONNECT_ROUTE}/:id${CONNECT_SNAP_UPDATE_ROUTE}`]: 'Snap Update Page',
@@ -144,13 +148,13 @@ const PATH_NAME_MAP = {
     'Snap Install Result Page',
   [SNAPS_ROUTE]: 'Snaps List Page',
   [`${SNAPS_VIEW_ROUTE}/:snapId`]: 'Snap View Page',
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional Features Done Page',
   [CUSTODY_ACCOUNT_ROUTE]: 'Connect Custody',
   [CUSTODY_ACCOUNT_DONE_ROUTE]: 'Connect Custody Account done',
   [CONFIRM_ADD_CUSTODIAN_TOKEN]: 'Confirm Add Custodian Token',
   [INTERACTIVE_REPLACEMENT_TOKEN_PAGE]: 'Interactive replacement token page',
+  [SRP_REMINDER]: 'Secret Recovery Phrase Reminder',
   ///: END:ONLY_INCLUDE_IF
   [SEND_ROUTE]: 'Send Page',
   [CONNECTIONS]: 'Connections',
@@ -178,6 +182,8 @@ const PATH_NAME_MAP = {
     'Confirm Approve Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SET_APPROVAL_FOR_ALL_PATH}`]:
     'Confirm Set Approval For All Transaction Page',
+  [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_INCREASE_ALLOWANCE_PATH}`]:
+    'Confirm Increase Allowance Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_TRANSFER_FROM_PATH}`]:
     'Confirm Transfer From Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SAFE_TRANSFER_FROM_PATH}`]:
@@ -226,11 +232,13 @@ export {
   CONFIRM_TRANSFER_FROM_PATH,
   CONFIRM_SAFE_TRANSFER_FROM_PATH,
   CONFIRM_TOKEN_METHOD_PATH,
+  CONFIRM_INCREASE_ALLOWANCE_PATH,
   SIGNATURE_REQUEST_PATH,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   CONFIRMATION_V_NEXT_ROUTE,
   ADVANCED_ROUTE,
+  DEVELOPER_OPTIONS_ROUTE,
   EXPERIMENTAL_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
@@ -245,6 +253,7 @@ export {
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
   CONFIRM_ADD_CUSTODIAN_TOKEN,
   INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
+  SRP_REMINDER,
   ///: END:ONLY_INCLUDE_IF
   NETWORKS_ROUTE,
   NETWORKS_FORM_ROUTE,
@@ -252,15 +261,15 @@ export {
   ADD_POPULAR_CUSTOM_NETWORK,
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   CONNECT_SNAPS_CONNECT_ROUTE,
   CONNECT_SNAP_INSTALL_ROUTE,
   CONNECT_SNAP_UPDATE_ROUTE,
   CONNECT_SNAP_RESULT_ROUTE,
   NOTIFICATIONS_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
   SNAPS_ROUTE,
   SNAPS_VIEW_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
+  CROSS_CHAIN_SWAP_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   PATH_NAME_MAP,
@@ -292,7 +301,5 @@ export {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   INITIALIZE_EXPERIMENTAL_AREA,
   ONBOARDING_EXPERIMENTAL_AREA,
-  DESKTOP_ERROR_ROUTE,
-  DESKTOP_PAIRING_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 };

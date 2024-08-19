@@ -1,8 +1,6 @@
 import { connect } from 'react-redux';
-import {
-  getShouldShowFiat,
-  getIsMultiLayerFeeNetwork,
-} from '../../../selectors';
+import { TransactionType } from '@metamask/transaction-controller';
+import { getShouldShowFiat } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util';
 import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
@@ -11,6 +9,11 @@ import {
   subtractHexes,
   sumHexes,
 } from '../../../../shared/modules/conversion.utils';
+import {
+  calcTokenAmount,
+  getSwapsTokensReceivedFromTxMeta,
+} from '../../../../shared/lib/transactions-controller-utils';
+import { CONFIRMED_STATUS } from '../transaction-activity-log/transaction-activity-log.constants';
 import TransactionBreakdown from './transaction-breakdown.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -19,7 +22,67 @@ const mapStateToProps = (state, ownProps) => {
     txParams: { gas, gasPrice, maxFeePerGas, value } = {},
     txReceipt: { gasUsed, effectiveGasPrice, l1Fee: l1HexGasTotal } = {},
     baseFeePerGas,
+    sourceTokenAmount: rawSourceTokenAmount,
+    sourceTokenDecimals,
+    sourceTokenSymbol,
+    destinationTokenAddress,
+    destinationTokenAmount: rawDestinationTokenAmountEstimate,
+    destinationTokenDecimals,
+    destinationTokenSymbol,
+    status,
+    type,
   } = transaction;
+
+  const sourceTokenAmount =
+    rawSourceTokenAmount && sourceTokenDecimals
+      ? calcTokenAmount(rawSourceTokenAmount, sourceTokenDecimals).toFixed()
+      : undefined;
+  let destinationTokenAmount;
+
+  if (
+    type === TransactionType.swapAndSend &&
+    // ensure fallback values are available
+    rawDestinationTokenAmountEstimate &&
+    destinationTokenDecimals &&
+    destinationTokenSymbol
+  ) {
+    try {
+      // try to get the actual destination token amount from the on-chain events
+      destinationTokenAmount = getSwapsTokensReceivedFromTxMeta(
+        destinationTokenSymbol,
+        transaction,
+        destinationTokenAddress,
+        undefined,
+        destinationTokenDecimals,
+        undefined,
+        undefined,
+        null,
+      );
+
+      // if no amount is found, throw
+      if (!destinationTokenAmount) {
+        throw new Error('Actual destination token amount not found');
+      }
+    } catch (error) {
+      // if actual destination token amount is not found, use the estimated amount from the quote
+      destinationTokenAmount =
+        rawDestinationTokenAmountEstimate && destinationTokenDecimals
+          ? calcTokenAmount(
+              rawDestinationTokenAmountEstimate,
+              destinationTokenDecimals,
+            ).toFixed()
+          : undefined;
+    }
+  }
+
+  const sourceAmountFormatted =
+    sourceTokenAmount && sourceTokenDecimals && sourceTokenSymbol
+      ? `${sourceTokenAmount} ${sourceTokenSymbol}`
+      : undefined;
+  const destinationAmountFormatted =
+    destinationTokenAmount && status === CONFIRMED_STATUS
+      ? `${destinationTokenAmount} ${destinationTokenSymbol}`
+      : undefined;
 
   const gasLimit = typeof gasUsed === 'string' ? gasUsed : gas;
 
@@ -40,14 +103,7 @@ const mapStateToProps = (state, ownProps) => {
       getHexGasTotal({ gasLimit, gasPrice: usedGasPrice })) ||
     '0x0';
 
-  let totalInHex = sumHexes(hexGasTotal, value);
-
-  const isMultiLayerFeeNetwork =
-    getIsMultiLayerFeeNetwork(state) && l1HexGasTotal !== undefined;
-
-  if (isMultiLayerFeeNetwork) {
-    totalInHex = sumHexes(totalInHex, l1HexGasTotal);
-  }
+  const totalInHex = sumHexes(hexGasTotal, value, l1HexGasTotal ?? 0);
 
   return {
     nativeCurrency: getNativeCurrency(state),
@@ -62,8 +118,9 @@ const mapStateToProps = (state, ownProps) => {
     priorityFee,
     baseFee: baseFeePerGas,
     isEIP1559Transaction: isEIP1559Transaction(transaction),
-    isMultiLayerFeeNetwork,
     l1HexGasTotal,
+    sourceAmountFormatted,
+    destinationAmountFormatted,
   };
 };
 
