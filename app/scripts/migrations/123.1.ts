@@ -6,10 +6,12 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 126;
+export const version = 123.1;
 
 /**
  * This migration enables token auto-detection if the basic functionality toggle is on.
+ *
+ * It also removes an unused property `showTokenAutodetectModalOnUpgrade` from the app metadata controller.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
  * what we persist to dist.

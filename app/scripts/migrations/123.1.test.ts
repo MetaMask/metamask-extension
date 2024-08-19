@@ -1,6 +1,6 @@
-import { migrate, version } from './126';
+import { migrate, version } from './123.1';
 
-const oldVersion = version - 1;
+const oldVersion = 123;
 
 describe(`migration #${version}`, () => {
   afterEach(() => jest.resetAllMocks());
