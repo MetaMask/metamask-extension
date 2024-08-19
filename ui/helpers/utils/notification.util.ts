@@ -429,9 +429,11 @@ export const getNetworkFees = async (notification: OnChainRawNotification) => {
   }
 
   try {
-    const receipt = await provider.getTransactionReceipt(notification.tx_hash);
-    const transaction = await provider.getTransaction(notification.tx_hash);
-    const block = await provider.getBlock(notification.block_number);
+    const [receipt, transaction, block] = await Promise.all([
+      provider.getTransactionReceipt(notification.tx_hash),
+      provider.getTransaction(notification.tx_hash),
+      provider.getBlock(notification.block_number),
+    ]);
 
     const calculateUsdAmount = (value: string, decimalPlaces?: number) =>
       formatAmount(
