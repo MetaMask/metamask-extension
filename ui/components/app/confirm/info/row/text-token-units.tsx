@@ -28,7 +28,6 @@ export const ConfirmInfoRowTextTokenUnits: React.FC<
         truncatedCharLimit: 15,
         truncatedStartChars: 15,
         truncatedEndChars: 0,
-        skipCharacterInEnd: true,
       })}
       tooltip={tokenTextMaxPrecision}
     />

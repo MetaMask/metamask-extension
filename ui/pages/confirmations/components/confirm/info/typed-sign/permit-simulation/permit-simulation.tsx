@@ -94,7 +94,6 @@ const PermitSimulation: React.FC<{
                     truncatedCharLimit: 15,
                     truncatedStartChars: 15,
                     truncatedEndChars: 0,
-                    skipCharacterInEnd: true,
                   })}
                 </Text>
               </Tooltip>
