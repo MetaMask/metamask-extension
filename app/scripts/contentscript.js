@@ -10,6 +10,11 @@ import {
 } from '../../shared/modules/browser-runtime.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 import {
+  isDetectedPhishingSite,
+  connectPhishingChannelToWarningSystem,
+  initPhishingStreams,
+} from './streams/phishing-stream';
+import {
   initializeCookieHandlerSteam,
   isDetectedCookieMarketingSite,
 } from './streams/cookie-handler-stream';
@@ -23,10 +28,8 @@ import {
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
 const INPAGE = 'metamask-inpage';
-const PHISHING_WARNING_PAGE = 'metamask-phishing-warning-page';
 
 // stream channels
-const PHISHING_SAFELIST = 'metamask-phishing-safelist';
 const PROVIDER = 'metamask-provider';
 
 // For more information about these legacy streams, see here:
@@ -35,7 +38,6 @@ const PROVIDER = 'metamask-provider';
 const LEGACY_CONTENT_SCRIPT = 'contentscript';
 const LEGACY_INPAGE = 'inpage';
 const LEGACY_PROVIDER = 'provider';
-const LEGACY_PUBLIC_CONFIG = 'publicConfig';
 
 let legacyExtMux,
   legacyExtChannel,
@@ -45,176 +47,12 @@ let legacyExtMux,
   legacyPagePublicConfigChannel,
   notificationTransformStream;
 
-const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
-
-let phishingExtChannel,
-  phishingExtMux,
-  phishingExtPort,
-  phishingExtStream,
-  phishingPageChannel,
-  phishingPageMux;
-
 let extensionMux,
   extensionChannel,
   extensionPort,
-  extensionPhishingStream,
   extensionStream,
   pageMux,
   pageChannel;
-
-/**
- * PHISHING STREAM LOGIC
- */
-
-function setupPhishingPageStreams() {
-  // the transport-specific streams for communication between inpage and background
-  const phishingPageStream = new WindowPostMessageStream({
-    name: CONTENT_SCRIPT,
-    target: PHISHING_WARNING_PAGE,
-  });
-
-  // create and connect channel muxers
-  // so we can handle the channels individually
-  phishingPageMux = new ObjectMultiplex();
-  phishingPageMux.setMaxListeners(25);
-
-  pipeline(phishingPageMux, phishingPageStream, phishingPageMux, (err) =>
-    logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
-  );
-
-  phishingPageChannel = phishingPageMux.createStream(PHISHING_SAFELIST);
-  phishingPageMux.ignoreStream(METAMASK_COOKIE_HANDLER);
-  phishingPageMux.ignoreStream(LEGACY_PUBLIC_CONFIG);
-  phishingPageMux.ignoreStream(LEGACY_PROVIDER);
-  phishingPageMux.ignoreStream(METAMASK_PROVIDER);
-  phishingPageMux.ignoreStream(PHISHING_STREAM);
-}
-
-const setupPhishingExtStreams = () => {
-  phishingExtPort = browser.runtime.connect({
-    name: CONTENT_SCRIPT,
-  });
-  phishingExtStream = new PortStream(phishingExtPort);
-
-  // create and connect channel muxers
-  // so we can handle the channels individually
-  phishingExtMux = new ObjectMultiplex();
-  phishingExtMux.setMaxListeners(25);
-
-  pipeline(phishingExtMux, phishingExtStream, phishingExtMux, (err) => {
-    logStreamDisconnectWarning('MetaMask Background Multiplex', err);
-    window.postMessage(
-      {
-        target: PHISHING_WARNING_PAGE, // the post-message-stream "target"
-        data: {
-          // this object gets passed to @metamask/object-multiplex
-          name: PHISHING_SAFELIST, // the @metamask/object-multiplex channel name
-          data: {
-            jsonrpc: '2.0',
-            method: 'METAMASK_STREAM_FAILURE',
-          },
-        },
-      },
-      window.location.origin,
-    );
-  });
-
-  // forward communication across inpage-background for these channels only
-  phishingExtChannel = phishingExtMux.createStream(PHISHING_SAFELIST);
-  pipeline(
-    phishingPageChannel,
-    phishingExtChannel,
-    phishingPageChannel,
-    (error) =>
-      console.debug(
-        `MetaMask: Muxed traffic for channel "${PHISHING_SAFELIST}" failed.`,
-        error,
-      ),
-  );
-  phishingExtMux.ignoreStream(METAMASK_COOKIE_HANDLER);
-  phishingExtMux.ignoreStream(LEGACY_PUBLIC_CONFIG);
-  phishingExtMux.ignoreStream(LEGACY_PROVIDER);
-  phishingExtMux.ignoreStream(METAMASK_PROVIDER);
-  phishingExtMux.ignoreStream(PHISHING_STREAM);
-
-  // eslint-disable-next-line no-use-before-define
-  phishingExtPort.onDisconnect.addListener(onDisconnectDestroyPhishingStreams);
-};
-
-/** Destroys all of the phishing extension streams */
-const destroyPhishingExtStreams = () => {
-  phishingPageChannel.removeAllListeners();
-
-  phishingExtMux.removeAllListeners();
-  phishingExtMux.destroy();
-
-  phishingExtChannel.removeAllListeners();
-  phishingExtChannel.destroy();
-
-  phishingExtStream = null;
-};
-
-/**
- * This listener destroys the phishing extension streams when the extension port is disconnected,
- * so that streams may be re-established later the phishing extension port is reconnected.
- */
-const onDisconnectDestroyPhishingStreams = () => {
-  const err = checkForLastError();
-
-  phishingExtPort.onDisconnect.removeListener(
-    onDisconnectDestroyPhishingStreams,
-  );
-
-  destroyPhishingExtStreams();
-
-  /**
-   * If an error is found, reset the streams. When running two or more dapps, resetting the service
-   * worker may cause the error, "Error: Could not establish connection. Receiving end does not
-   * exist.", due to a race-condition. The disconnect event may be called by runtime.connect which
-   * may cause issues. We suspect that this is a chromium bug as this event should only be called
-   * once the port and connections are ready. Delay time is arbitrary.
-   */
-  if (err) {
-    console.warn(`${err} Resetting the phishing streams.`);
-    setTimeout(setupPhishingExtStreams, 1000);
-  }
-};
-
-/**
- * When the extension background is loaded it sends the EXTENSION_MESSAGES.READY message to the browser tabs.
- * This listener/callback receives the message to set up the streams after service worker in-activity.
- *
- * @param {object} msg
- * @param {string} msg.name - custom property and name to identify the message received
- * @returns {Promise|undefined}
- */
-const onMessageSetUpPhishingStreams = (msg) => {
-  if (msg.name === EXTENSION_MESSAGES.READY) {
-    if (!phishingExtStream) {
-      setupPhishingExtStreams();
-    }
-    return Promise.resolve(
-      `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for phishing streams`,
-    );
-  }
-  return undefined;
-};
-
-/**
- * Initializes two-way communication streams between the browser extension and
- * the phishing page context. This function also creates an event listener to
- * reset the streams if the service worker resets.
- */
-const initPhishingStreams = () => {
-  setupPhishingPageStreams();
-  setupPhishingExtStreams();
-
-  browser.runtime.onMessage.addListener(onMessageSetUpPhishingStreams);
-};
-
-/**
- * INPAGE - EXTENSION STREAM LOGIC
- */
 
 const setupPageStreams = () => {
   // the transport-specific streams for communication between inpage and background
@@ -270,8 +108,7 @@ const setupExtensionStreams = () => {
   );
 
   // connect "phishing" channel to warning system
-  extensionPhishingStream = extensionMux.createStream('phishing');
-  extensionPhishingStream.once('data', redirectToPhishingWarning);
+  connectPhishingChannelToWarningSystem(extensionMux);
 
   extensionMux.ignoreStream(METAMASK_COOKIE_HANDLER);
   extensionMux.ignoreStream(LEGACY_PROVIDER);
@@ -390,25 +227,6 @@ const destroyLegacyExtensionStreams = () => {
 };
 
 /**
- * When the extension background is loaded it sends the EXTENSION_MESSAGES.READY message to the browser tabs.
- * This listener/callback receives the message to set up the streams after service worker in-activity.
- *
- * @param {object} msg
- * @param {string} msg.name - custom property and name to identify the message received
- * @returns {Promise|undefined}
- */
-const onMessageSetUpExtensionStreams = (msg) => {
-  if (msg.name === EXTENSION_MESSAGES.READY) {
-    if (!extensionStream) {
-      setupExtensionStreams();
-      setupLegacyExtensionStreams();
-    }
-    return Promise.resolve(`MetaMask: handled ${EXTENSION_MESSAGES.READY}`);
-  }
-  return undefined;
-};
-
-/**
  * This listener destroys the extension streams when the extension port is disconnected,
  * so that streams may be re-established later when the extension port is reconnected.
  *
@@ -522,29 +340,7 @@ function notifyInpageOfStreamFailure() {
   );
 }
 
-/**
- * Redirects the current page to a phishing information page
- */
-function redirectToPhishingWarning() {
-  console.debug('MetaMask: Routing to Phishing Warning page.');
-  const { hostname, href } = window.location;
-  const baseUrl = process.env.PHISHING_WARNING_PAGE_URL;
-
-  const querystring = new URLSearchParams({ hostname, href });
-  window.location.href = `${baseUrl}#${querystring}`;
-  // eslint-disable-next-line no-constant-condition
-  while (1) {
-    console.log(
-      'MetaMask: Locking js execution, redirection will complete shortly',
-    );
-  }
-}
-
 const start = () => {
-  const isDetectedPhishingSite =
-    window.location.origin === phishingPageUrl.origin &&
-    window.location.pathname === phishingPageUrl.pathname;
-
   if (isDetectedPhishingSite) {
     initPhishingStreams();
     return;

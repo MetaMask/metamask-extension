@@ -1,8 +1,8 @@
 /**
- * Error handler for page to extension stream disconnections
+ * Error handler for page to extension stream disconnections.
  *
- * @param remoteLabel - Remote stream name
- * @param error - Stream connection error
+ * @param remoteLabel - The name of the remote stream that was disconnected.
+ * @param error - The stream connection error that occurred.
  */
 export function logStreamDisconnectWarning(
   remoteLabel: string,
