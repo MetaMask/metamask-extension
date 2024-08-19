@@ -118,7 +118,6 @@
         "smartTransactionsOptInStatus": false,
         "useNativeCurrencyAsPrimaryCurrency": true,
         "petnamesEnabled": true,
-        "showTokenAutodetectModal": "boolean",
         "showConfirmationAdvancedDetails": false,
         "isRedesignedConfirmationsDeveloperEnabled": "boolean"
       },
