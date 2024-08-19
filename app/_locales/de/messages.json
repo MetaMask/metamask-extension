@@ -544,9 +544,6 @@
     "message": "$1 und $2 ",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
-  "announcements": {
-    "message": "Ankündigungen"
-  },
   "appDescription": {
     "message": "Ethereum Browsererweiterung",
     "description": "The description of the application"
@@ -1542,30 +1539,6 @@
   },
   "details": {
     "message": "Details"
-  },
-  "developerOptions": {
-    "message": "Entwickler-Optionen"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Aktiviert oder deaktiviert die Funktion zur Neugestaltung von Bestätigungen, die sich derzeit in Entwicklung befindet"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Neugestaltung der Bestätigungen"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Schaltet das neue Design des Menüs Netzwerke ein und aus"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Neugestaltung des Netzwerkmenüs"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Setzt den Booleschen Wert isShown für alle Ankündigungen auf false zurück. Ankündigungen sind die Benachrichtigungen, die im Was-neu-ist-Popup-Modal angezeigt werden."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Setzt verschiedene Status im Zusammenhang mit dem Onboarding zurück und leitet zur Onboarding-Seite „Sichern Sie Ihre Wallet“ weiter."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Führt dazu, dass ein Zeitstempel kontinuierlich in session.storage gespeichert wird."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” ist deaktiviert, weil es nicht das Minimum einer zehnprozentigen Erhöhung gegenüber der ursprünglichen Gasgebühr erfüllt.",
@@ -3484,9 +3457,6 @@
   "onboardedMetametricsTitle": {
     "message": "Helfen Sie uns, Ihr Erlebnis zu verbessern"
   },
-  "onboarding": {
-    "message": "Onboarding"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "Das IPFS-Gateway ermöglicht es, auf von Dritten gehostete Daten zuzugreifen und diese einzusehen. Sie können ein benutzerdefiniertes IPFS-Gateway hinzufügen oder weiterhin das Standard-Gateway verwenden."
   },
@@ -4352,9 +4322,6 @@
   "reset": {
     "message": "Zurücksetzen"
   },
-  "resetStates": {
-    "message": "Status zurücksetzen"
-  },
   "resetWallet": {
     "message": "Wallet zurücksetzen"
   },
@@ -4673,9 +4640,6 @@
   },
   "sepolia": {
     "message": "Sepolia-Testnetzwerk"
-  },
-  "serviceWorkerKeepAlive": {
-    "message": "serviceWorkerKeepAlive"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask nutzt diese vertrauenswürdigen Dienstleistungen von Drittanbietern, um die Benutzerfreundlichkeit und Sicherheit der Produkte zu verbessern."
@@ -5239,9 +5203,6 @@
   },
   "stateLogsDescription": {
     "message": "Die Statusprotokolle enthalten Ihre öffentlichen Kontoadressen und gesendeten Transaktionen."
-  },
-  "states": {
-    "message": "Status"
   },
   "status": {
     "message": "Status"

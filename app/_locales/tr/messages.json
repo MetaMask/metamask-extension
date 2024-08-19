@@ -544,9 +544,6 @@
     "message": "$1 ve $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
-  "announcements": {
-    "message": "Duyurular"
-  },
   "appDescription": {
     "message": "Tarayıcında bir Ethereum Cüzdanı",
     "description": "The description of the application"
@@ -1542,30 +1539,6 @@
   },
   "details": {
     "message": "Ayrıntılar"
-  },
-  "developerOptions": {
-    "message": "Geliştirici Seçenekleri"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Şu anda geliştirme aşamasında olan yeni onay tasarımı özelliğini etkinleştirir veya devre dışı bırakır"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Yeni Onay Tasarımı"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Ağlar menüsünün yeni tasarımını açar ve kapatır"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Ağ Menüsünün Yeni Tasarımı"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Tüm duyurular için isShown boolean değerini false olarak sıfırlar. Duyurular, Yenilikler açılır penceresi modalında gösterilen bildirimlerdir."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Katılım ile ilgili çeşitli durumları sıfırlar ve \"Cüzdanınızı Koruyun\" katılım sayfasına yeniden yönlendirir."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Zaman damgasının sürekli olarak oturum depolama alanına kaydedilmesine neden olur"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "Orijinal gaz ücretinden minimum %10'luk bir artışı karşılamadığı için \"$1\" devre dışı bırakıldı.",
@@ -3484,9 +3457,6 @@
   "onboardedMetametricsTitle": {
     "message": "Deneyiminizi iyileştirmemize yardımcı olun"
   },
-  "onboarding": {
-    "message": "Katılım"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "IPFS ağ geçidi üçüncü tarafların barındırdığı veriler için erişim ve görüntülemeyi mümkün kılar. Özel bir IPFS ağ geçidi ekleyebilir veya varsayılanı kullanmaya devam edebilirsiniz."
   },
@@ -4352,9 +4322,6 @@
   "reset": {
     "message": "Sıfırla"
   },
-  "resetStates": {
-    "message": "Durumları Sıfırla"
-  },
   "resetWallet": {
     "message": "Cüzdanı sıfırla"
   },
@@ -4673,9 +4640,6 @@
   },
   "sepolia": {
     "message": "Sepolia test ağı"
-  },
-  "serviceWorkerKeepAlive": {
-    "message": "Service Worker'ı Canlı Tut"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask, ürünün kullanılabilirliğini ve güvenliğini iyileştirmek amacıyla bu güvenilir üçüncü taraf hizmetlerini kullanır."
@@ -5239,9 +5203,6 @@
   },
   "stateLogsDescription": {
     "message": "Durum günlükleri genel hesap adreslerinizi ve gönderilen işlemleri içerir."
-  },
-  "states": {
-    "message": "Durumlar"
   },
   "status": {
     "message": "Durum"

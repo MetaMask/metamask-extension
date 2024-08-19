@@ -544,9 +544,6 @@
     "message": "$1 और $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
-  "announcements": {
-    "message": "घोषणाएं"
-  },
   "appDescription": {
     "message": "आपके ब्राउज़र में एक Ethereum वॉलेट",
     "description": "The description of the application"
@@ -1542,30 +1539,6 @@
   },
   "details": {
     "message": "विस्तृत जानकारी"
-  },
-  "developerOptions": {
-    "message": "डेवलपर विकल्प"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "वर्तमान में विकास में कन्फर्मेशन रीडिज़ाइन सुविधा को चालू या बंद करता है"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "कन्फर्मेशन रीडिज़ाइन"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "नेटवर्क मेनू के नए डिज़ाइन को टॉगल करता है"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "नेटवर्क मेनू रीडिज़ाइन"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "सभी घोषणाओं के लिए isShown boolean को गलत पर रीसेट करता है। घोषणाएं व्हाट्स न्यू पॉपअप मोडल में दिखाई जाने वाली सूचनाएं हैं।"
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "ऑनबोर्डिंग से संबंधित विभिन्न स्टेट को रीसेट करता है और \"सिक्योर योर वॉलेट\" ऑनबोर्डिंग पेज पर रीडायरेक्ट करता है।"
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "हर टाइमस्टैम्प के परिणाम को लगातार session.storage में सेव किया जा रहा है"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "\"$1\" डिसेबल किया गया है क्योंकि यह ओरिजिनल गैस फ़ीस से कम-से-कम 10% वृद्धि को पूरा नहीं करता है।",
@@ -3484,9 +3457,6 @@
   "onboardedMetametricsTitle": {
     "message": "आपके अनुभव को बेहतर करने में हमारी सहायता करें"
   },
-  "onboarding": {
-    "message": "ऑनबोर्ड हो रहा है"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "IPFS (आईपीएफएस) गेटवे थर्ड पार्टियों द्वारा होस्ट किए गए डेटा को एक्सेस करना और देखना संभव बनाता है। आप एक कस्टम IPFS गेटवे जोड़ सकते हैं या डिफॉल्ट का इस्तेमाल जारी रख सकते हैं।"
   },
@@ -4352,9 +4322,6 @@
   "reset": {
     "message": "रीसेट करें"
   },
-  "resetStates": {
-    "message": "स्टेट रीसेट करें"
-  },
   "resetWallet": {
     "message": "वॉलेट रीसेट करें"
   },
@@ -4673,9 +4640,6 @@
   },
   "sepolia": {
     "message": "Sepolia टेस्ट नेटवर्क"
-  },
-  "serviceWorkerKeepAlive": {
-    "message": "सेवाकर्मी जीवित रहें"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask उत्पाद की उपयोगिता और सुरक्षा को बढ़ाने के लिए इन विश्वसनीय तीसरे-पक्ष की सेवाओं का इस्तेमाल करता है।"
@@ -5239,9 +5203,6 @@
   },
   "stateLogsDescription": {
     "message": "स्टेट लॉग में आपके सार्वजनिक अकाउंट के एड्रेस और भेजे गए ट्रांसेक्शन शामिल होते हैं।"
-  },
-  "states": {
-    "message": "स्टेट"
   },
   "status": {
     "message": "स्टेटस"

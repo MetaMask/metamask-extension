@@ -43,6 +43,7 @@ export const EditGasFeesRow = ({
     <ConfirmInfoAlertRow
       alertKey={RowAlertKey.EstimatedFee}
       ownerId={transactionMeta.id}
+      data-testid="edit-gas-fees-row"
       label={t('estimatedFee')}
       tooltip={t('estimatedFeeTooltip')}
     >
@@ -60,7 +61,11 @@ export const EditGasFeesRow = ({
         >
           {isNativeCurrencyUsed ? nativeFee : fiatFee}
         </Text>
-        <Text marginRight={2} color={TextColor.textAlternative}>
+        <Text
+          marginRight={2}
+          color={TextColor.textAlternative}
+          data-testid="native-currency"
+        >
           {isNativeCurrencyUsed ? fiatFee : nativeFee}
         </Text>
         <EditGasIconButton
