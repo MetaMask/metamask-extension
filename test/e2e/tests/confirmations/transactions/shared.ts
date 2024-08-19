@@ -110,6 +110,7 @@ export async function confirmDepositTransaction(driver: Driver) {
     text: 'Nonce',
   });
 
+  await driver.delay(veryLargeDelayMs);
   await scrollAndConfirmAndAssertConfirm(driver);
 }
 
