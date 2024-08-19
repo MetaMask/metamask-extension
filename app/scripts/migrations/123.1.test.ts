@@ -63,4 +63,45 @@ describe(`migration #${version}`, () => {
       },
     });
   });
+
+  it('Removes showTokenAutodetectModalOnUpgrade from the app metadata controller', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        AppMetadataController: {
+          previousMigrationVersion: oldVersion,
+          currentMigrationVersion: version,
+          showTokenAutodetectModalOnUpgrade: null,
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.data).toEqual({
+      AppMetadataController: {
+        previousMigrationVersion: oldVersion,
+        currentMigrationVersion: version,
+      },
+    });
+  });
+
+  it('Does nothing if showTokenAutodetectModalOnUpgrade is not in the app metadata controller', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        AppMetadataController: {
+          previousMigrationVersion: oldVersion,
+          currentMigrationVersion: version,
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.data).toEqual({
+      AppMetadataController: {
+        previousMigrationVersion: oldVersion,
+        currentMigrationVersion: version,
+      },
+    });
+  });
 });
