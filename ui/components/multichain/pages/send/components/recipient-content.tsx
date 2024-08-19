@@ -141,6 +141,7 @@ export const SendPageRecipientContent = ({
       ) : null}
       <SendPageRow>
         <AssetPickerAmount
+          header={t('sendSelectReceiveAsset')}
           asset={isSwapAllowed ? receiveAsset : sendAsset}
           sendingAsset={isSwapAllowed ? sendAsset : undefined}
           onAssetChange={useCallback(
