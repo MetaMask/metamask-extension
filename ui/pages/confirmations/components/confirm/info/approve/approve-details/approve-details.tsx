@@ -9,12 +9,12 @@ import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
-import { Container } from '../transaction-data/transaction-data';
+import { Container } from '../../shared/transaction-data/transaction-data';
 import {
   MethodDataRow,
   OriginRow,
   RecipientRow,
-} from '../transaction-details/transaction-details';
+} from '../../shared/transaction-details/transaction-details';
 
 const Spender = () => {
   const t = useI18nContext();
@@ -31,10 +31,12 @@ const Spender = () => {
     return null;
   }
 
+  const spender = value.data[0].params[0].value;
+
   return (
     <>
       <ConfirmInfoRow label={t('spender')} tooltip={t('spenderTooltipDesc')}>
-        <ConfirmInfoRowAddress address={value.data[0].params[0].value} />
+        <ConfirmInfoRowAddress address={spender} />
       </ConfirmInfoRow>
 
       <ConfirmInfoRowDivider />

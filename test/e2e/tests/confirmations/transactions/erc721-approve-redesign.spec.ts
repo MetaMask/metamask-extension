@@ -20,7 +20,7 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
 
   describe('Submit an Approve transaction @no-mmi', function () {
-    it('Sends a contract interaction type 0 transaction (Legacy)', async function () {
+    it('Sends a type 0 transaction (Legacy)', async function () {
       await withFixtures(
         {
           dapp: true,
@@ -51,7 +51,7 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
       );
     });
 
-    it('Sends a contract interaction type 2 transaction (EIP1559)', async function () {
+    it('Sends a type 2 transaction (EIP1559)', async function () {
       await withFixtures(
         {
           dapp: true,
