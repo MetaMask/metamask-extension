@@ -2388,12 +2388,14 @@ export function setProviderType(
 
 export function upsertNetworkConfiguration(
   {
+    id,
     rpcUrl,
     chainId,
     nickname,
     rpcPrefs,
     ticker = EtherDenomination.ETH,
   }: {
+    id?: string;
     rpcUrl: string;
     chainId: string;
     nickname: string;
@@ -2410,14 +2412,21 @@ export function upsertNetworkConfiguration(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     log.debug(
-      `background.upsertNetworkConfiguration: ${rpcUrl} ${chainId} ${ticker} ${nickname}`,
+      `background.upsertNetworkConfiguration: ${id} ${rpcUrl} ${chainId} ${ticker} ${nickname}`,
     );
     let networkConfigurationId;
     try {
       networkConfigurationId = await submitRequestToBackground(
         'upsertNetworkConfiguration',
         [
-          { rpcUrl, chainId, ticker, nickname: nickname || rpcUrl, rpcPrefs },
+          {
+            id,
+            rpcUrl,
+            chainId,
+            ticker,
+            nickname: nickname || rpcUrl,
+            rpcPrefs,
+          },
           { setActive, source, referrer: ORIGIN_METAMASK },
         ],
       );
@@ -2426,56 +2435,6 @@ export function upsertNetworkConfiguration(
       dispatch(displayWarning('Had a problem adding network!'));
     }
     return networkConfigurationId;
-  };
-}
-
-export function editAndSetNetworkConfiguration(
-  {
-    networkConfigurationId,
-    rpcUrl,
-    chainId,
-    nickname,
-    rpcPrefs,
-    ticker = EtherDenomination.ETH,
-  }: {
-    networkConfigurationId: string;
-    rpcUrl: string;
-    chainId: string;
-    nickname: string;
-    rpcPrefs: RPCDefinition['rpcPrefs'];
-    ticker: string;
-  },
-  { source }: { source: string },
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch) => {
-    log.debug(
-      `background.removeNetworkConfiguration: ${networkConfigurationId}`,
-    );
-    try {
-      await submitRequestToBackground('removeNetworkConfiguration', [
-        networkConfigurationId,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem removing network!'));
-      return;
-    }
-
-    try {
-      await submitRequestToBackground('upsertNetworkConfiguration', [
-        {
-          rpcUrl,
-          chainId,
-          ticker,
-          nickname: nickname || rpcUrl,
-          rpcPrefs,
-        },
-        { setActive: true, referrer: ORIGIN_METAMASK, source },
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem changing networks!'));
-    }
   };
 }
 
