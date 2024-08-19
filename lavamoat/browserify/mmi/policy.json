@@ -1359,6 +1359,7 @@
       "globals": {
         "clearTimeout": true,
         "console.error": true,
+        "console.log": true,
         "setTimeout": true
       },
       "packages": {
@@ -2061,6 +2062,7 @@
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-infura": {
       "globals": {
+        "console.log": true,
         "setTimeout": true
       },
       "packages": {
@@ -2631,13 +2633,14 @@
         "@metamask/smart-transactions-controller>@metamask/controller-utils": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/tx": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/util": true,
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry": true,
-        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
         "fast-json-patch": true,
         "lodash": true,
+        "superstruct": true,
         "uuid": true,
         "webpack>events": true
       }
@@ -2663,6 +2666,22 @@
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true,
         "webpack>events": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/nonce-tracker": {
+      "packages": {
+        "@ethersproject/providers": true,
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": true,
+        "browserify>assert": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@swc/helpers>tslib": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry": {
@@ -3372,7 +3391,7 @@
         "@metamask/transaction-controller>@metamask/base-controller": true,
         "@metamask/transaction-controller>@metamask/controller-utils": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
-        "@metamask/utils": true,
+        "@metamask/transaction-controller>@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
         "eth-method-registry": true,
@@ -3401,26 +3420,11 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/transaction-controller>@metamask/controller-utils>@metamask/utils": true,
+        "@metamask/transaction-controller>@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true
-      }
-    },
-    "@metamask/transaction-controller>@metamask/controller-utils>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/snaps-sdk>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
       }
     },
     "@metamask/transaction-controller>@metamask/nonce-tracker": {
@@ -3437,6 +3441,21 @@
       },
       "packages": {
         "@swc/helpers>tslib": true
+      }
+    },
+    "@metamask/transaction-controller>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/snaps-sdk>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/user-operation-controller": {
@@ -5000,6 +5019,9 @@
       }
     },
     "json-rpc-engine": {
+      "globals": {
+        "console.log": true
+      },
       "packages": {
         "eth-rpc-errors": true,
         "json-rpc-engine>@metamask/safe-event-emitter": true
