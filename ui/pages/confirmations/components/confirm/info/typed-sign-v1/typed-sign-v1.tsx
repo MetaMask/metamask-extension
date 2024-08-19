@@ -6,6 +6,7 @@ import {
   ConfirmInfoRow,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../selectors';
 import {
@@ -29,7 +30,7 @@ const TypedSignV1Info: React.FC = () => {
     <>
       <ConfirmInfoSection>
         <ConfirmInfoAlertRow
-          alertKey="requestFrom"
+          alertKey={RowAlertKey.RequestFrom}
           ownerId={currentConfirmation.id}
           label={t('requestFrom')}
           tooltip={t('requestFromInfo')}

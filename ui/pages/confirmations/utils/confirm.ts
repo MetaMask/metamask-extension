@@ -77,9 +77,9 @@ export const isPermitSignatureRequest = (request: SignatureRequestType) => {
   return PRIMARY_TYPES_PERMIT.includes(primaryType);
 };
 
-export const isValidASCIIURL = (urlString: string) => {
+export const isValidASCIIURL = (urlString?: string) => {
   try {
-    return urlString.includes(new URL(urlString).host);
+    return urlString?.includes(new URL(urlString).host);
   } catch (exp: unknown) {
     console.error(exp);
     return false;

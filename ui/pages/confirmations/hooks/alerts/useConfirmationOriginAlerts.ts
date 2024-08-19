@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Confirmation, SignatureRequestType } from '../../types/confirm';
@@ -21,10 +22,10 @@ const useConfirmationOriginAlerts = (): Alert[] => {
     ? (currentConfirmation as SignatureRequestType)?.msgParams?.origin
     : (currentConfirmation as TransactionMeta)?.origin;
 
-  const isValidOrigin = origin && isValidASCIIURL(origin);
+  const isValidOrigin = isValidASCIIURL(origin);
 
   return useMemo<Alert[]>((): Alert[] => {
-    if (!currentConfirmation || isValidOrigin) {
+    if (isValidOrigin) {
       return [];
     }
 
@@ -32,7 +33,7 @@ const useConfirmationOriginAlerts = (): Alert[] => {
       {
         key: 'originSpecialCharacterWarning',
         reason: t('addressMismatch'),
-        field: 'requestFrom',
+        field: RowAlertKey.RequestFrom,
         severity: Severity.Warning,
         message: t('alertMessageAddressMismatchWarning'),
         alertDetails: [

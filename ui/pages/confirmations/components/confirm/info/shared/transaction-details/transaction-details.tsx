@@ -11,6 +11,7 @@ import {
   ConfirmInfoRowUrl,
 } from '../../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { selectPaymasterAddress } from '../../../../../../../selectors/account-abstraction';
 import { currentConfirmationSelector } from '../../../../../selectors';
@@ -31,7 +32,7 @@ const OriginRow = () => {
 
   return (
     <ConfirmInfoAlertRow
-      alertKey="requestFrom"
+      alertKey={RowAlertKey.RequestFrom}
       ownerId={currentConfirmation.id}
       data-testid="transaction-details-origin-row"
       label={t('requestFrom')}
