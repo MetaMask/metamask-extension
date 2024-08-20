@@ -3,6 +3,8 @@ import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { PermissionsPage } from './permissions-page';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 
 mockState.metamask.subjectMetadata = {
   'https://metamask.github.io': {
@@ -86,7 +88,13 @@ mockState.metamask.domains = {
   'npm:@metamask/testSnap3': 'mainnet',
 };
 
-let store = configureStore(mockState);
+let store = configureStore({
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+  },
+});
 
 describe('All Connections', () => {
   describe('render', () => {
