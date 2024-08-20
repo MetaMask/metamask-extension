@@ -45,13 +45,7 @@ const mockSecurityAlertResponse = {
 
 describe('Blockaid Banner Alert', () => {
   const mockStore = {
-    localeMessages: {
-      currentLocale: 'en',
-    },
     metamask: {
-      tokenList: {},
-      currentCurrency: 'usd',
-      accounts: {},
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     },
   };
@@ -64,10 +58,6 @@ describe('Blockaid Banner Alert', () => {
       />,
       configureStore({
         ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        },
       }),
     );
 
@@ -86,10 +76,6 @@ describe('Blockaid Banner Alert', () => {
       />,
       configureStore({
         ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        },
       }),
     );
 
@@ -108,10 +94,6 @@ describe('Blockaid Banner Alert', () => {
       />,
       configureStore({
         ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        },
       }),
     );
     const warningBannerAlert = container.querySelector(
@@ -131,10 +113,6 @@ describe('Blockaid Banner Alert', () => {
       />,
       configureStore({
         ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        },
       }),
     );
     const warningBannerAlert = container.querySelector(
@@ -157,10 +135,6 @@ describe('Blockaid Banner Alert', () => {
       />,
       configureStore({
         ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        },
       }),
     );
     const dangerBannerAlert = container.querySelector(
@@ -183,10 +157,6 @@ describe('Blockaid Banner Alert', () => {
       />,
       configureStore({
         ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        },
       }),
     );
 
@@ -205,10 +175,6 @@ describe('Blockaid Banner Alert', () => {
       />,
       configureStore({
         ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        },
       }),
     );
 
@@ -228,10 +194,6 @@ describe('Blockaid Banner Alert', () => {
       />,
       configureStore({
         ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        },
       }),
     );
 
@@ -255,10 +217,6 @@ describe('Blockaid Banner Alert', () => {
       />,
       configureStore({
         ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        },
       }),
     );
 
@@ -279,10 +237,6 @@ describe('Blockaid Banner Alert', () => {
       />,
       configureStore({
         ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        },
       }),
     );
 
@@ -300,10 +254,6 @@ describe('Blockaid Banner Alert', () => {
       />,
       configureStore({
         ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        },
       }),
     );
 
@@ -325,7 +275,6 @@ describe('Blockaid Banner Alert', () => {
       configureStore({
         ...mockStore,
         metamask: {
-          ...mockStore.metamask,
           ...mockNetworkState({}),
         },
       }),
@@ -352,7 +301,6 @@ describe('Blockaid Banner Alert', () => {
           configureStore({
             ...mockStore,
             metamask: {
-              ...mockStore.metamask,
               ...mockNetworkState({}),
             },
           }),
