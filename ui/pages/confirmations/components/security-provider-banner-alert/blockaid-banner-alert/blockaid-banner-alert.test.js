@@ -6,6 +6,8 @@ import BlockaidPackage from '@blockaid/ppom_release/package.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import configureStore from '../../../../../store/store';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 
 import {
   BlockaidReason,
@@ -42,6 +44,17 @@ const mockSecurityAlertResponse = {
 };
 
 describe('Blockaid Banner Alert', () => {
+  const mockStore = {
+    localeMessages: {
+      currentLocale: 'en',
+    },
+    metamask: {
+      tokenList: {},
+      currentCurrency: 'usd',
+      accounts: {},
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+    },
+  };
   it('should not render when securityAlertResponse is not present', () => {
     const { container } = renderWithProvider(
       <BlockaidBannerAlert
@@ -49,7 +62,13 @@ describe('Blockaid Banner Alert', () => {
           securityAlertResponse: undefined,
         }}
       />,
-      configureStore(),
+      configureStore({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        },
+      }),
     );
 
     expect(container.querySelector('.mm-banner-alert')).toBeNull();
@@ -65,7 +84,13 @@ describe('Blockaid Banner Alert', () => {
           },
         }}
       />,
-      configureStore(),
+      configureStore({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        },
+      }),
     );
 
     expect(container.querySelector('.mm-banner-alert')).toBeNull();
@@ -81,7 +106,13 @@ describe('Blockaid Banner Alert', () => {
           },
         }}
       />,
-      configureStore(),
+      configureStore({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        },
+      }),
     );
     const warningBannerAlert = container.querySelector(
       '.mm-banner-alert--severity-warning',
@@ -98,7 +129,13 @@ describe('Blockaid Banner Alert', () => {
           securityAlertResponse: mockSecurityAlertResponse,
         }}
       />,
-      configureStore(),
+      configureStore({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        },
+      }),
     );
     const warningBannerAlert = container.querySelector(
       '.mm-banner-alert--severity-warning',
@@ -118,7 +155,13 @@ describe('Blockaid Banner Alert', () => {
           },
         }}
       />,
-      configureStore(),
+      configureStore({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        },
+      }),
     );
     const dangerBannerAlert = container.querySelector(
       '.mm-banner-alert--severity-danger',
@@ -138,7 +181,13 @@ describe('Blockaid Banner Alert', () => {
           },
         }}
       />,
-      configureStore(),
+      configureStore({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        },
+      }),
     );
 
     expect(getByText('This is a deceptive request')).toBeInTheDocument();
@@ -154,7 +203,13 @@ describe('Blockaid Banner Alert', () => {
           },
         }}
       />,
-      configureStore(),
+      configureStore({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        },
+      }),
     );
 
     expect(getByText('Be careful')).toBeInTheDocument();
@@ -171,7 +226,13 @@ describe('Blockaid Banner Alert', () => {
           },
         }}
       />,
-      configureStore(),
+      configureStore({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        },
+      }),
     );
 
     expect(getByText('This is a suspicious request')).toBeInTheDocument();
@@ -192,7 +253,13 @@ describe('Blockaid Banner Alert', () => {
           },
         }}
       />,
-      configureStore(),
+      configureStore({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        },
+      }),
     );
 
     expect(container).toMatchSnapshot();
@@ -210,7 +277,13 @@ describe('Blockaid Banner Alert', () => {
           features: undefined,
         }}
       />,
-      configureStore(),
+      configureStore({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        },
+      }),
     );
 
     expect(container).toMatchSnapshot();
@@ -225,7 +298,13 @@ describe('Blockaid Banner Alert', () => {
           features: undefined,
         }}
       />,
-      configureStore(),
+      configureStore({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        },
+      }),
     );
 
     expect(container).toMatchSnapshot();
@@ -243,7 +322,13 @@ describe('Blockaid Banner Alert', () => {
           features: undefined,
         }}
       />,
-      configureStore(),
+      configureStore({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({}),
+        },
+      }),
     );
 
     const elm = getByRole('link', { name: 'Report an issue' });
@@ -264,7 +349,13 @@ describe('Blockaid Banner Alert', () => {
               },
             }}
           />,
-          configureStore(),
+          configureStore({
+            ...mockStore,
+            metamask: {
+              ...mockStore.metamask,
+              ...mockNetworkState({}),
+            },
+          }),
         );
 
         const elm = getByRole('link', { name: 'Report an issue' });
@@ -315,7 +406,13 @@ describe('Blockaid Banner Alert', () => {
               },
             }}
           />,
-          configureStore(),
+          configureStore({
+            ...mockStore,
+            metamask: {
+              ...mockStore.metamask,
+              ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
+            },
+          }),
         );
 
         expect(getByText(expectedDescription)).toBeInTheDocument();
@@ -337,7 +434,13 @@ describe('Blockaid Banner Alert', () => {
             },
           }}
         />,
-        configureStore(),
+        configureStore({
+          ...mockStore,
+          metamask: {
+            ...mockStore.metamask,
+            ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
+          },
+        }),
       );
 
       expect(getByText(stubOtherDescription)).toBeInTheDocument();
@@ -362,7 +465,13 @@ describe('Blockaid Banner Alert', () => {
             },
           }}
         />,
-        configureStore(),
+        configureStore({
+          ...mockStore,
+          metamask: {
+            ...mockStore.metamask,
+            ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
+          },
+        }),
       );
 
       fireEvent.click(screen.queryByText('See details'));
