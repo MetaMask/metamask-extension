@@ -5,6 +5,7 @@ import {
   KnownCaipNamespace,
   mergeScopes,
   parseScopeString,
+  ScopesObject,
   validNotifications,
   validRpcMethods,
 } from './scope';
@@ -50,4 +51,47 @@ export const addPermittedEthChainId = (
   return caip25CaveatValue;
 };
 
-// You cannot revoke your only permitted chain
+// Should this deep clone rather than modify in-place?
+const filterEthScopesObjectByChainId = (
+  scopesObject: ScopesObject,
+  chainIds: Hex[],
+) => {
+  Object.keys(scopesObject).forEach((scopeString) => {
+    const { namespace, reference } = parseScopeString(scopeString);
+    if (!reference) {
+      return;
+    }
+    const chainId = toHex(reference);
+    if (
+      namespace === KnownCaipNamespace.Eip155 &&
+      !chainIds.includes(chainId)
+    ) {
+      delete scopesObject[scopeString];
+    }
+  });
+};
+
+export const setPermittedEthChainIds = (
+  caip25CaveatValue: Caip25CaveatValue,
+  chainIds: Hex[],
+) => {
+  filterEthScopesObjectByChainId(caip25CaveatValue.requiredScopes, chainIds);
+  filterEthScopesObjectByChainId(caip25CaveatValue.optionalScopes, chainIds);
+
+  chainIds.forEach((chainId) => {
+    const scopeString = `eip155:${parseInt(chainId, 16)}`;
+
+    if (
+      Object.keys(caip25CaveatValue.requiredScopes).includes(scopeString) ||
+      Object.keys(caip25CaveatValue.optionalScopes).includes(scopeString)
+    ) {
+      return;
+    }
+
+    caip25CaveatValue.optionalScopes[scopeString] = {
+      methods: validRpcMethods,
+      notifications: validNotifications,
+      accounts: [], // Should this be empty?
+    };
+  });
+};

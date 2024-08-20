@@ -1,3 +1,4 @@
+import { omit } from 'lodash';
 import { invalidParams, MethodNames } from '@metamask/permission-controller';
 import { isNonEmptyArray } from '@metamask/utils';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
@@ -6,7 +7,6 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
-import { setEthAccounts } from './caip-permission-adapter-eth-accounts';
 
 export const revokePermissionsHandler = {
   methodNames: [MethodNames.revokePermissions],
@@ -28,7 +28,6 @@ export const revokePermissionsHandler = {
  * @param options - Method hooks passed to the method implementation
  * @param options.revokePermissionsForOrigin - A hook that revokes given permission keys for an origin
  * @param options.getPermissionsForOrigin
- * @param options.updateCaveat
  * @returns A promise that resolves to nothing
  */
 function revokePermissionsImplementation(
@@ -36,7 +35,7 @@ function revokePermissionsImplementation(
   res,
   _next,
   end,
-  { revokePermissionsForOrigin, getPermissionsForOrigin, updateCaveat },
+  { revokePermissionsForOrigin, getPermissionsForOrigin },
 ) {
   const { params, origin } = req;
 
@@ -62,12 +61,16 @@ function revokePermissionsImplementation(
   const shouldRevokePermittedChains = permissionKeys.includes(
     PermissionNames.permittedChains,
   );
-  const shouldRevokeLegacyPermission = shouldRevokeEthAccounts || shouldRevokePermittedChains
+  const shouldRevokeLegacyPermission =
+    shouldRevokeEthAccounts || shouldRevokePermittedChains;
 
-  permissionKeys = omit(permissionKeys, [RestrictedMethods.eth_accounts, PermissionNames.permittedChains])
+  permissionKeys = omit(permissionKeys, [
+    RestrictedMethods.eth_accounts,
+    PermissionNames.permittedChains,
+  ]);
 
   if (
-    (permissionKeys.length === 0 && !shouldRevokeEthAccounts) ||
+    (permissionKeys.length === 0 && !shouldRevokeLegacyPermission) ||
     permissionKeys.length > 0
   ) {
     revokePermissionsForOrigin(permissionKeys);
@@ -80,24 +83,14 @@ function revokePermissionsImplementation(
   );
 
   // TODO: handle permittedChains
-  if (shouldRevokeEthAccounts && caip25Caveat) {
+  if (shouldRevokeLegacyPermission && caip25Caveat) {
     if (caip25Caveat.value.isMultichainOrigin) {
       return end(
         new Error('cannot modify permission granted from multichain flow'),
       ); // TODO: better error
     }
 
-    // should we remove accounts from required scopes? if so doesn't that mean we should
-    // just revoke the caip25Endowment entirely?
-
-    const updatedCaveatValue = setEthAccounts(caip25Caveat.value, []);
-
-    updateCaveat(
-      origin,
-      Caip25EndowmentPermissionName,
-      Caip25CaveatType,
-      updatedCaveatValue,
-    );
+    revokePermissionsForOrigin([Caip25EndowmentPermissionName]);
   }
 
   res.result = null;

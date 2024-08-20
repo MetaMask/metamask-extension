@@ -5,13 +5,13 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
+import { PermissionNames } from '../../controllers/permissions';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
-import { validNotifications, validRpcMethods } from './scope';
 import { setEthAccounts } from './caip-permission-adapter-eth-accounts';
-import { PermissionNames } from '../../controllers/permissions';
+import { setPermittedEthChainIds } from './caip-permission-adapter-permittedChains';
 
 export const requestPermissionsHandler = {
   methodNames: [MethodNames.requestPermissions],
@@ -19,7 +19,6 @@ export const requestPermissionsHandler = {
   hookNames: {
     requestPermissionsForOrigin: true,
     getPermissionsForOrigin: true,
-    getNetworkConfigurationByNetworkClientId: true,
     updateCaveat: true,
     grantPermissions: true,
     requestPermissionApprovalForOrigin: true,
@@ -36,7 +35,6 @@ export const requestPermissionsHandler = {
  * @param options - Method hooks passed to the method implementation
  * @param options.requestPermissionsForOrigin - The specific method hook needed for this method implementation
  * @param options.getPermissionsForOrigin
- * @param options.getNetworkConfigurationByNetworkClientId
  * @param options.updateCaveat
  * @param options.grantPermissions
  * @param options.requestPermissionApprovalForOrigin
@@ -50,7 +48,6 @@ async function requestPermissionsImplementation(
   {
     requestPermissionsForOrigin,
     getPermissionsForOrigin,
-    getNetworkConfigurationByNetworkClientId,
     updateCaveat,
     grantPermissions,
     requestPermissionApprovalForOrigin,
@@ -66,9 +63,12 @@ async function requestPermissionsImplementation(
   const caip25Permission = requestedPermissions[Caip25EndowmentPermissionName];
   delete requestedPermissions[Caip25EndowmentPermissionName];
 
-  const legacyRequestedPermissions = pick(requestedPermissions, [RestrictedMethods.eth_accounts, PermissionNames.permittedChains])
-  delete requestedPermissions[RestrictedMethods.eth_accounts]
-  delete requestedPermissions[PermissionNames.permittedChains]
+  const legacyRequestedPermissions = pick(requestedPermissions, [
+    RestrictedMethods.eth_accounts,
+    PermissionNames.permittedChains,
+  ]);
+  delete requestedPermissions[RestrictedMethods.eth_accounts];
+  delete requestedPermissions[PermissionNames.permittedChains];
 
   let legacyApproval;
   if (Object.keys(legacyRequestedPermissions).length > 0) {
@@ -83,7 +83,9 @@ async function requestPermissionsImplementation(
       ); // TODO: better error
     }
 
-    legacyApproval = await requestPermissionApprovalForOrigin(legacyRequestedPermissions);
+    legacyApproval = await requestPermissionApprovalForOrigin(
+      legacyRequestedPermissions,
+    );
   }
 
   let grantedPermissions = {};
@@ -98,66 +100,43 @@ async function requestPermissionsImplementation(
     grantedPermissions = { ..._grantedPermissions };
   }
 
-  const ethAccounts = legacyApproval?.approvedAccounts;
-  if (ethAccounts) {
-    // TODO: Use permittedChains permission returned from requestPermissionsForOrigin() when available
-    const { chainId } = getNetworkConfigurationByNetworkClientId(
-      req.networkClientId,
+  if (legacyApproval) {
+    // NOTE: the eth_accounts/permittedChains approvals will be combined in the future.
+    // We assume that approvedAccounts and permittedChains are both defined here.
+    // Until they are actually combined, when testing, you must request both
+    // eth_accounts and permittedChains together.
+    let caveatValue = {
+      requiredScopes: {},
+      optionalScopes: {},
+      isMultichainOrigin: false,
+    };
+    caveatValue = setPermittedEthChainIds(
+      caveatValue,
+      legacyApproval.permittedChains,
     );
 
-    const scopeString = `eip155:${parseInt(chainId, 16)}`;
+    caveatValue = setEthAccounts(caveatValue, legacyApproval.approvedAccounts);
 
     const permissions = getPermissionsForOrigin(origin) || {};
-    const caip25Endowment = permissions[Caip25EndowmentPermissionName];
-    const caip25Caveat = caip25Endowment?.caveats.find(
+    let caip25Endowment = permissions[Caip25EndowmentPermissionName];
+    const existingCaveat = caip25Endowment?.caveats.find(
       ({ type }) => type === Caip25CaveatType,
     );
-
-    if (caip25Caveat) {
-      if (caip25Caveat.value.isMultichainOrigin) {
+    if (existingCaveat) {
+      if (existingCaveat.value.isMultichainOrigin) {
         return end(
           new Error('cannot modify permission granted from multichain flow'),
         ); // TODO: better error
       }
-      const updatedCaveatValue = setEthAccounts(
-        caip25Caveat.value,
-        ethAccounts,
-      );
 
       updateCaveat(
         origin,
         Caip25EndowmentPermissionName,
         Caip25CaveatType,
-        updatedCaveatValue,
+        caveatValue,
       );
-
-      grantedPermissions[RestrictedMethods.eth_accounts] = {
-        ...caip25Endowment,
-        parentCapability: RestrictedMethods.eth_accounts,
-        caveats: [
-          {
-            type: CaveatTypes.restrictReturnedAccounts,
-            value: ethAccounts,
-          },
-        ],
-      };
     } else {
-      const caveatValue = setEthAccounts(
-        {
-          requiredScopes: {},
-          optionalScopes: {
-            [scopeString]: {
-              methods: validRpcMethods,
-              notifications: validNotifications,
-              accounts: [],
-            },
-          },
-          isMultichainOrigin: false,
-        },
-        ethAccounts,
-      );
-
-      const caip25GrantedPermissions = grantPermissions({
+      caip25Endowment = grantPermissions({
         subject: { origin },
         approvedPermissions: {
           [Caip25EndowmentPermissionName]: {
@@ -170,18 +149,29 @@ async function requestPermissionsImplementation(
           },
         },
       });
-
-      grantedPermissions[RestrictedMethods.eth_accounts] = {
-        ...caip25GrantedPermissions[Caip25EndowmentPermissionName],
-        parentCapability: RestrictedMethods.eth_accounts,
-        caveats: [
-          {
-            type: CaveatTypes.restrictReturnedAccounts,
-            value: ethAccounts,
-          },
-        ],
-      };
     }
+
+    grantedPermissions[RestrictedMethods.eth_accounts] = {
+      ...caip25Endowment,
+      parentCapability: RestrictedMethods.eth_accounts,
+      caveats: [
+        {
+          type: CaveatTypes.restrictReturnedAccounts,
+          value: legacyApproval.approvedAccounts,
+        },
+      ],
+    };
+
+    grantedPermissions[PermissionNames.permittedChains] = {
+      ...caip25Endowment,
+      parentCapability: PermissionNames.permittedChains,
+      caveats: [
+        {
+          type: CaveatTypes.restrictNetworkSwitching,
+          value: legacyApproval.permittedChains,
+        },
+      ],
+    };
   }
 
   res.result = Object.values(grantedPermissions);
