@@ -2,10 +2,12 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider } from '../../../../test/jest';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN } from '../../../store/actionConstants';
+import name from '../../../components/app/name';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import PrivacySettings from './privacy-settings';
 
@@ -26,32 +28,14 @@ jest.mock('../../../ducks/app/app.ts', () => {
 describe('Privacy Settings Onboarding View', () => {
   const mockStore = {
     metamask: {
-      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-
+      ...mockNetworkState(
+        { chainId: CHAIN_IDS.MAINNET },
+        { chainId: CHAIN_IDS.LINEA_MAINNET },
+        { chainId: CHAIN_IDS.SEPOLIA },
+        { chainId: CHAIN_IDS.LINEA_SEPOLIA },
+      ),
       preferences: {
         petnamesEnabled: true,
-      },
-      networkConfigurationsByChainId: {
-        [CHAIN_IDS.MAINNET]: {
-          name: 'Ethereum Mainnet',
-          chainId: CHAIN_IDS.MAINNET,
-          rpcEndpoints: [{}],
-        },
-        [CHAIN_IDS.LINEA_MAINNET]: {
-          name: 'Linea Mainnet',
-          chainId: CHAIN_IDS.LINEA_MAINNET,
-          rpcEndpoints: [{}],
-        },
-        [CHAIN_IDS.SEPOLIA]: {
-          name: 'Sepolia',
-          chainId: CHAIN_IDS.SEPOLIA,
-          rpcEndpoints: [{}],
-        },
-        [CHAIN_IDS.LINEA_SEPOLIA]: {
-          name: 'Linea Sepolia',
-          chainId: CHAIN_IDS.LINEA_SEPOLIA,
-          rpcEndpoints: [{}],
-        },
       },
       incomingTransactionsPreferences: {
         [CHAIN_IDS.MAINNET]: true,

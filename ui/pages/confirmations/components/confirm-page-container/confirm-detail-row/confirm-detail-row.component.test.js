@@ -14,12 +14,6 @@ describe('Confirm Detail Row Component', () => {
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
-      networksMetadata: {
-        [NetworkType.mainnet]: {
-          EIPS: {},
-          status: NetworkStatus.Available,
-        },
-      },
       internalAccounts: defaultMockState.metamask.internalAccounts,
     },
   };

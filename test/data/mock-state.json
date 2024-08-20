@@ -384,18 +384,21 @@
     "networkConfigurationsByChainId": {
       "0x1": {
         "chainId": "0x1",
-        "name": "Ethereum Mainnet",
+        "name": "Custom Mainnet RPC",
         "nativeCurrency": "ETH",
+        "defaultRpcEndpointIndex": 0,
         "rpcEndpoints": [
           {
-            "networkClientId": "mainnet"
+            "url": "https://testrpc.com",
+            "networkClientId": "testNetworkConfigurationId"
           }
         ]
       },
       "0x5": {
         "chainId": "0x5",
-        "name": "Goerli",
+        "name": "Chain 5",
         "nativeCurrency": "ETH",
+        "defaultRpcEndpointIndex": 0,
         "rpcEndpoints": [
           {
             "networkClientId": "goerli"

@@ -4586,7 +4586,7 @@ describe('Send Slice', () => {
             },
             send: {
               ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-              disabledSwapAndSendNetworks: ['0x123'],
+              disabledSwapAndSendNetworks: ['0x456'],
             },
           }),
         ).toStrictEqual(false);

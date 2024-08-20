@@ -2,6 +2,7 @@ import { Cryptocurrency } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
 import {
+  getDefaultNetworkControllerState,
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
@@ -73,8 +74,8 @@ function getEvmState(): TestState {
       preferences: {
         showFiatInTestnets: false,
       },
-      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-
+      // ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      ...getDefaultNetworkControllerState(),
       currentCurrency: 'ETH',
       currencyRates: {
         ETH: {

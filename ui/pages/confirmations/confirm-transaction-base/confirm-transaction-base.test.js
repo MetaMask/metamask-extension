@@ -113,16 +113,6 @@ const baseStore = {
     },
     currentCurrency: 'USD',
     currencyRates: {},
-    networkConfigurationsByChainId: {
-      [CHAIN_IDS.MAINNET]: {
-        chainId: CHAIN_IDS.MAINNET,
-        rpcEndpoints: [{ networkClientId: 'mainnet' }],
-      },
-      [CHAIN_IDS.GOERLI]: {
-        chainId: CHAIN_IDS.GOERLI,
-        rpcEndpoints: [{ networkClientId: 'goerli' }],
-      },
-    },
     featureFlags: {
       sendHexData: false,
     },

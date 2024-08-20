@@ -111,12 +111,7 @@ describe('NewNetworkInfo', () => {
       const store = configureMockStore()({
         metamask: {
           ...state.metamask,
-          networkConfigurationsByChainId: {
-            [CHAIN_IDS.MAINNET]: {
-              chainId: CHAIN_IDS.MAINNET,
-              rpcEndpoints: [{}],
-            },
-          },
+          ...mockNetworkState({ chainId: '0x3', ticker: undefined }),
         },
       });
       const { container, getByTestId } = renderWithProvider(
