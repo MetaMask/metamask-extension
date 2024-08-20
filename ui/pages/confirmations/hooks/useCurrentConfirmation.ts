@@ -1,9 +1,11 @@
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+///: END:ONLY_INCLUDE_IF
 import { ApprovalType } from '@metamask/controller-utils';
 import { useMemo } from 'react';
 import {
