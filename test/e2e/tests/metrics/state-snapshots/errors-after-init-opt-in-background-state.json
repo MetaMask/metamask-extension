@@ -202,7 +202,9 @@
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
-      "showTokenAutodetectModal": "boolean"
+      "showTokenAutodetectModal": "boolean",
+      "isRedesignedConfirmationsDeveloperEnabled": "boolean",
+      "redesignedConfirmationsEnabled": true
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",

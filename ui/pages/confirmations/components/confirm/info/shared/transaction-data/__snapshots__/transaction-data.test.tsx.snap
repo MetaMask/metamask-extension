@@ -39,7 +39,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         class="mm-box mm-box--display-flex"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -148,7 +148,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               </div>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -181,7 +181,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         class="mm-box mm-box--display-flex"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -290,7 +290,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               </div>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -329,7 +329,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               </div>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -392,7 +392,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -423,7 +423,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -484,7 +484,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               </div>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -517,7 +517,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         class="mm-box mm-box--display-flex"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -676,7 +676,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               </div>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -709,7 +709,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         class="mm-box mm-box--display-flex"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -868,7 +868,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               </div>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -936,7 +936,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
         </p>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -978,7 +978,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1067,7 +1067,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1148,7 +1148,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1386,7 +1386,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1425,7 +1425,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1464,7 +1464,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1586,7 +1586,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1625,7 +1625,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1664,7 +1664,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1786,7 +1786,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1825,7 +1825,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1864,7 +1864,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1955,7 +1955,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1995,7 +1995,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -2063,7 +2063,7 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
         </p>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"

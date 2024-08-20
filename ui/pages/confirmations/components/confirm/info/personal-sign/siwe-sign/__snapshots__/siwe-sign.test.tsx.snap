@@ -16,7 +16,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
       </p>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
     >
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -40,7 +40,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
       </p>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
     >
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -64,7 +64,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
       </p>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
     >
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -159,7 +159,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
       </p>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
     >
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -183,7 +183,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
       </p>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
     >
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -207,7 +207,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
       </p>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
     >
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -255,7 +255,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
       </p>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
     >
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -284,7 +284,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
       </p>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
     >
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -308,7 +308,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
       </p>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
     >
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -332,7 +332,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
       </p>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
     >
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -427,7 +427,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
       </p>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
     >
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -451,7 +451,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
       </p>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
     >
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -475,7 +475,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
       </p>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
     >
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -523,7 +523,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
       </p>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
     >
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -547,7 +547,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
       </p>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
     >
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -557,7 +557,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
       </p>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
     >
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"

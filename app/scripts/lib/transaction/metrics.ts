@@ -42,6 +42,7 @@ import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
 } from '../snap-keyring/metrics';
+import { REDESIGN_TRANSACTION_TYPES } from '../../../../ui/pages/confirmations/utils';
 
 export type TransactionMetricsRequest = {
   createEventFragment: (
@@ -90,6 +91,8 @@ export type TransactionMetricsRequest = {
   getSmartTransactionByMinedTxHash: (
     txhash: string | undefined,
   ) => SmartTransaction;
+  getRedesignedConfirmationsEnabled: () => boolean;
+  getIsRedesignedConfirmationsDeveloperEnabled: () => boolean;
 };
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
@@ -977,7 +980,22 @@ async function buildEventFragmentProperties({
   if (simulationFails) {
     uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
   }
+  const isRedesignedConfirmationsDeveloperSettingEnabled =
+    transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled() ||
+    process.env.ENABLE_CONFIRMATION_REDESIGN;
 
+  const isRedesignedConfirmationsUserSettingEnabled =
+    transactionMetricsRequest.getRedesignedConfirmationsEnabled();
+
+  if (
+    (isRedesignedConfirmationsDeveloperSettingEnabled ||
+      isRedesignedConfirmationsUserSettingEnabled) &&
+    REDESIGN_TRANSACTION_TYPES.includes(transactionMeta.type as TransactionType)
+  ) {
+    uiCustomizations.push(
+      MetaMetricsEventUiCustomization.RedesignedConfirmation,
+    );
+  }
   const smartTransactionMetricsProperties =
     getSmartTransactionMetricsProperties(
       transactionMetricsRequest,

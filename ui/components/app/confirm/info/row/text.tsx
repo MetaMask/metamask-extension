@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { I18nContext } from '../../../../../contexts/i18n';
 import {
   AlignItems,
+  BlockSize,
   Display,
   FlexWrap,
   IconColor,
@@ -10,8 +11,18 @@ import {
 import { Box, ButtonIcon, IconName, Text } from '../../../../component-library';
 import Tooltip from '../../../../ui/tooltip';
 
-const InfoText = ({ text }: { text: string }) => (
-  <Text color={TextColor.inherit} style={{ whiteSpace: 'pre-wrap' }}>
+const InfoText = ({
+  isEllipsis,
+  text,
+}: {
+  isEllipsis: boolean;
+  text: string;
+}) => (
+  <Text
+    color={TextColor.inherit}
+    style={isEllipsis ? {} : { whiteSpace: 'pre-wrap' }}
+    ellipsis={isEllipsis}
+  >
     {text}
   </Text>
 );
@@ -20,12 +31,14 @@ export type ConfirmInfoRowTextProps = {
   text: string;
   onEditClick?: () => void;
   editIconClassName?: string;
+  isEllipsis?: boolean;
   tooltip?: string;
 };
 
 export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
   text,
   onEditClick,
+  isEllipsis = false,
   editIconClassName,
   tooltip,
 }) => {
@@ -39,6 +52,7 @@ export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
       alignItems={AlignItems.center}
       flexWrap={FlexWrap.Wrap}
       gap={2}
+      minWidth={BlockSize.Zero}
     >
       {tooltip ? (
         <Tooltip
@@ -47,10 +61,10 @@ export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
           wrapperStyle={{ minWidth: 0 }}
           interactive
         >
-          <InfoText text={text} />
+          <InfoText isEllipsis={isEllipsis} text={text} />
         </Tooltip>
       ) : (
-        <InfoText text={text} />
+        <InfoText isEllipsis={isEllipsis} text={text} />
       )}
       {isEditable ? (
         <ButtonIcon

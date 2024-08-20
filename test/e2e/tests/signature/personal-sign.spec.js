@@ -4,6 +4,7 @@ const {
   withFixtures,
   openDapp,
   regularDelayMs,
+  tempToggleSettingRedesignedConfirmations,
   unlockWallet,
   WINDOW_TITLES,
 } = require('../../helpers');
@@ -24,6 +25,7 @@ describe('Personal sign', function () {
         const addresses = await ganacheServer.getAccounts();
         const publicAddress = addresses[0];
         await unlockWallet(driver);
+        await tempToggleSettingRedesignedConfirmations(driver);
 
         await openDapp(driver);
         await driver.clickElement('#personalSign');
@@ -47,6 +49,7 @@ describe('Personal sign', function () {
       },
     );
   });
+
   it('can queue multiple personal signs and confirm', async function () {
     await withFixtures(
       {
@@ -61,6 +64,7 @@ describe('Personal sign', function () {
         const addresses = await ganacheServer.getAccounts();
         const publicAddress = addresses[0];
         await unlockWallet(driver);
+        await tempToggleSettingRedesignedConfirmations(driver);
 
         await openDapp(driver);
         // Create personal sign
