@@ -22,48 +22,6 @@ $font-path: './fonts';
 );
 
 @font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 100;
-  src: local('Roboto Thin'), local('Roboto-Thin'), url('#{$font-path}/Roboto/Roboto-Thin.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 300;
-  src: local('Roboto Light'), local('Roboto-Light'), url('#{$font-path}/Roboto/Roboto-Light.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Roboto'), local('Roboto-Regular'), url('#{$font-path}/Roboto/Roboto-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 500;
-  src: local('Roboto Medium'), local('Roboto-Medium'), url('#{$font-path}/Roboto/Roboto-Medium.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Roboto Bold'), local('Roboto-Bold'), url('#{$font-path}/Roboto/Roboto-Bold.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 900;
-  src: local('Roboto Black'), local('Roboto-Black'), url('#{$font-path}/Roboto/Roboto-Black.ttf') format('truetype');
-}
-
-@font-face {
   font-family: 'Euclid Circular B';
   font-style: normal;
   font-weight: 400;
