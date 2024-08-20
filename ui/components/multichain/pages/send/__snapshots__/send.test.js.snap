@@ -477,7 +477,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                               <span
                                 class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                               >
-                                ETH
+                                USD
                               </span>
                             </div>
                           </div>
