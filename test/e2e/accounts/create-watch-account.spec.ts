@@ -66,7 +66,7 @@ async function removeSelectedAccount(driver: Driver): Promise<void> {
 }
 
 describe('Account-watcher snap', function (this: Suite) {
-  it('user can add watch account with valid EOA address', async function () {
+  it('adds watch account with valid EOA address', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -95,7 +95,7 @@ describe('Account-watcher snap', function (this: Suite) {
     );
   });
 
-  it("'Send' 'Swap' and 'Bridge' buttons are disabled for watch accounts", async function () {
+  it("disables 'Send' 'Swap' and 'Bridge' buttons for watch accounts", async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -145,7 +145,7 @@ describe('Account-watcher snap', function (this: Suite) {
     {
       input: 'd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       message: 'Invalid input',
-      description: 'missing 0x prefix',
+      description: 'address missing 0x prefix',
     },
     {
       input: '0x123ABC',
@@ -196,7 +196,7 @@ describe('Account-watcher snap', function (this: Suite) {
     });
   });
 
-  it('user cannot input private key of watched address', async function () {
+  it('does not allow user to import private key of watched address', async function () {
     const PRIVATE_KEY_TWO =
       '0xf444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
     const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
@@ -237,7 +237,7 @@ describe('Account-watcher snap', function (this: Suite) {
     );
   });
 
-  it("'Show private key' button is not displayed for watch accounts", async function () {
+  it("does not display 'Show private key' button for watch accounts", async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -267,7 +267,7 @@ describe('Account-watcher snap', function (this: Suite) {
     );
   });
 
-  it('removes a watch account', async function () {
+  it('removes a watched account', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -299,7 +299,7 @@ describe('Account-watcher snap', function (this: Suite) {
     );
   });
 
-  it('removes and re-adds a watch account', async function () {
+  it('can remove and recreate a watched account', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
