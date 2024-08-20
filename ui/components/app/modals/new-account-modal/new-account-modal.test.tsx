@@ -16,7 +16,6 @@ const mockNewMetamaskState = {
 const mockAddress = '0x1234567890';
 
 const mockSubmitRequestToBackground = jest.fn().mockImplementation((method) => {
-  console.log('method', method);
   switch (method) {
     case 'addNewAccount':
       return mockAddress;
