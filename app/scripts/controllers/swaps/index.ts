@@ -23,6 +23,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+  FALLBACK_SMART_TRANSACTIONS_DEADLINE,
 } from '../../../../shared/constants/smartTransactions';
 import {
   DEFAULT_ERC20_APPROVE_GAS,
@@ -1082,6 +1083,9 @@ export default class SwapsController extends BaseController<
       _state.swapsState.swapsStxMaxFeeMultiplier =
         swapsNetworkConfig?.stxMaxFeeMultiplier ||
         FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER;
+      _state.swapsState.swapsStxStatusDeadline =
+        swapsNetworkConfig?.stxStatusDeadline ||
+        FALLBACK_SMART_TRANSACTIONS_DEADLINE;
     });
   }
 
