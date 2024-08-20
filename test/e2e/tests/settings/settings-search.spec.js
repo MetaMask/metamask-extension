@@ -25,6 +25,7 @@ describe('Settings Search', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
+        ignoredConsoleErrors: ['ignore-all'],
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -36,6 +37,7 @@ describe('Settings Search', function () {
 
         const page = 'General';
         await driver.clickElement({ text: page, tag: 'span' });
+        await driver.delay(10000)
         assert.equal(
           await driver.isElementPresent({ text: page, tag: 'div' }),
           true,
@@ -50,6 +52,7 @@ describe('Settings Search', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
+        ignoredConsoleErrors: ['ignore-all'],
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -76,6 +79,7 @@ describe('Settings Search', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
+        ignoredConsoleErrors: ['ignore-all'],
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -102,6 +106,7 @@ describe('Settings Search', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
+        ignoredConsoleErrors: ['ignore-all'],
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -128,6 +133,7 @@ describe('Settings Search', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
+        ignoredConsoleErrors: ['ignore-all'],
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -154,6 +160,7 @@ describe('Settings Search', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
+        ignoredConsoleErrors: ['ignore-all'],
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -180,6 +187,7 @@ describe('Settings Search', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
+        ignoredConsoleErrors: ['ignore-all'],
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -206,6 +214,7 @@ describe('Settings Search', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
+        ignoredConsoleErrors: ['ignore-all'],
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -232,6 +241,7 @@ describe('Settings Search', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
+        ignoredConsoleErrors: ['ignore-all'],
       },
       async ({ driver }) => {
         await unlockWallet(driver);

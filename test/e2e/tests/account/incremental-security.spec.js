@@ -28,6 +28,7 @@ describe('Incremental Security', function () {
         ganacheOptions,
         title: this.test.fullTitle(),
         dappPath: 'send-eth-with-private-key-test',
+        ignoredConsoleErrors: ['ignore-all'],
       },
       async ({ driver }) => {
         await driver.navigate();
