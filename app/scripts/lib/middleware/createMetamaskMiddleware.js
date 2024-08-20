@@ -3,7 +3,7 @@ import { createWalletMiddleware } from '@metamask/eth-json-rpc-middleware';
 import {
   createPendingNonceMiddleware,
   createPendingTxMiddleware,
-} from './middleware/pending';
+} from './pending';
 
 export default function createMetamaskMiddleware({
   version,

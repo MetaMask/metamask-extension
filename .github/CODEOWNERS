@@ -93,3 +93,10 @@ app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 shared/constants/permissions.ts      @MetaMask/snaps-devs
 ui/helpers/utils/permission.js       @MetaMask/snaps-devs
 ui/hooks/useTransactionInsights.js   @MetaMask/snaps-devs
+
+# Wallet API Platform team
+
+app/scripts/lib/rpc-method-middleware/                @MetaMask/wallet-api-platform-engineers
+app/scripts/lib/middleware/                           @MetaMask/wallet-api-platform-engineers
+app/scripts/lib/metaRPCClientFactory.js               @MetaMask/wallet-api-platform-engineers
+app/scripts/lib/createDupeReqFilterStream.ts          @MetaMask/wallet-api-platform-engineers

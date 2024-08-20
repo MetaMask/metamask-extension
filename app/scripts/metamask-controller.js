@@ -269,17 +269,17 @@ import { mmiKeyringBuilderFactory } from './mmi-keyring-builder-factory';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
-import createLoggerMiddleware from './lib/createLoggerMiddleware';
+import createLoggerMiddleware from './lib/middleware/createLoggerMiddleware';
 import {
   createLegacyMethodMiddleware,
   createMethodMiddleware,
   createUnsupportedMethodMiddleware,
 } from './lib/rpc-method-middleware';
-import createOriginMiddleware from './lib/createOriginMiddleware';
-import createTabIdMiddleware from './lib/createTabIdMiddleware';
+import createOriginMiddleware from './lib/middleware/createOriginMiddleware';
+import createTabIdMiddleware from './lib/middleware/createTabIdMiddleware';
 import { NetworkOrderController } from './controllers/network-order';
 import { AccountOrderController } from './controllers/account-order';
-import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
+import createOnboardingMiddleware from './lib/middleware/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import PreferencesController from './controllers/preferences';
 import AppStateController from './controllers/app-state';
@@ -290,13 +290,13 @@ import DecryptMessageController from './controllers/decrypt-message';
 import SwapsController from './controllers/swaps';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
-import createMetaRPCHandler from './lib/createMetaRPCHandler';
+import createMetaRPCHandler from './lib/middleware/createMetaRPCHandler';
 import {
   addHexPrefix,
   getMethodDataName,
   previousValueComparator,
 } from './lib/util';
-import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
+import createMetamaskMiddleware from './lib/middleware/createMetamaskMiddleware';
 import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import AppMetadataController from './controllers/app-metadata';
@@ -313,7 +313,7 @@ import {
   PermissionNames,
   unrestrictedMethods,
 } from './controllers/permissions';
-import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
+import createRPCMethodTrackingMiddleware from './lib/middleware/createRPCMethodTrackingMiddleware';
 import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 import { updateCurrentLocale } from './translate';
 import { TrezorOffscreenBridge } from './lib/offscreen-bridge/trezor-offscreen-bridge';
@@ -330,7 +330,7 @@ import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 // Notification controllers
 import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
-import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
+import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/middleware/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
 import { decodeTransactionData } from './lib/transaction/decode/util';
 import { BridgeBackgroundAction } from './controllers/bridge/types';
