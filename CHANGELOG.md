@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Introduced a new notification counter over the Fox icon to display unread notifications ([#25093](https://github.com/MetaMask/metamask-extension/pull/25093))
 - Improved the display of large and small token values on the permit signature page ([#25720](https://github.com/MetaMask/metamask-extension/pull/25720))
 - Replaced "Approve spend limit" with "Spending cap" in the Permit signature redesign ([#25618](https://github.com/MetaMask/metamask-extension/pull/25618))
+- Display ellipsis to Permit simulation fiat values ([#26001](https://github.com/MetaMask/metamask-extension/pull/26001))
+- Display ellipsis for Permit values with over 15 characters ([#26458](https://github.com/MetaMask/metamask-extension/pull/26458))
 
 ### Changed
 - Introduced the ability to edit custom networks directly from the modal ([#25272](https://github.com/MetaMask/metamask-extension/pull/25272))
@@ -69,6 +71,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed the "Show conversion in testnets" option for Bitcoin and Ethereum test assets ([#26224](https://github.com/MetaMask/metamask-extension/pull/26224))
 - Enabled the Save button on the Add Contact page when a valid address or ENS name is entered ([#26456](https://github.com/MetaMask/metamask-extension/pull/26456))
 - Fixed fallback conversion rates for token market data to ensure accurate market cap ([#26460](https://github.com/MetaMask/metamask-extension/pull/26460))
+- Resolved the issue of selecting the correct network when multiple networks have the same chain ID ([#25805](https://github.com/MetaMask/metamask-extension/pull/25805))
+- Updated alignment and padding for permit simulations ([#26186](https://github.com/MetaMask/metamask-extension/pull/26186))
+- Updated the pending transactions badge to display a number instead of three dots ([#26116](https://github.com/MetaMask/metamask-extension/pull/26116))
+- Adjusted spacing in the send asset picker for proper vertical alignment with other dropdowns ([#25576](https://github.com/MetaMask/metamask-extension/pull/25576))
+- Fixed decimal display for Permit values and added a reusable component for displaying token units ([#26105](https://github.com/MetaMask/metamask-extension/pull/26105))
+- Fixed precision loss for very large values in signature simulations ([#25968](https://github.com/MetaMask/metamask-extension/pull/25968))
+- Included decimals in fiat calculations for Permit simulations and added tooltips for shortened values ([#26523](https://github.com/MetaMask/metamask-extension/pull/26523))
 
 ## [12.0.0]
 ### Added
