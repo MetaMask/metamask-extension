@@ -38,7 +38,10 @@ describe('Trezor Hardware', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        ganacheOptions: {
+          ...defaultGanacheOptions,
+          hardfork: 'london',
+        },
         title: this.test?.fullTitle(),
       },
       async ({

@@ -1,3 +1,4 @@
+import { Transaction } from '@ethereumjs/tx';
 import { ecsign } from '@ethereumjs/util';
 
 // BIP32 Public Key: xpub6ELgkkwgfoky9h9fFu4Auvx6oHvJ6XfwiS1NE616fe9Uf4H3JHtLGjCePVkb6RFcyDCqVvjXhNXbDNDqs6Kjoxw7pTAeP1GSEiLHmA5wYa9
@@ -58,6 +59,10 @@ export class FakeKeyringBridge {
   async getPublicKey() {
     return this.#publicKeyPayload;
   }
+
+  async ethereumSignTransaction(tx) {
+    return this.deviceSignTransaction(tx);
+  }
 }
 
 export class FakeTrezorBridge extends FakeKeyringBridge {
@@ -76,6 +81,18 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
 
   async dispose() {
     return Promise.resolve();
+  }
+
+  async deviceSignTransaction(tx) {
+    const txParams = tx.transaction;
+    const transaction = Transaction.fromTxData(txParams);
+    const message = transaction.getMessageToSign();
+
+    const signature = ecsign(
+      message,
+      Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'),
+    );
+    return signature;
   }
 }
 
