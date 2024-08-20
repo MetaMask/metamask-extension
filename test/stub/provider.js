@@ -1,7 +1,4 @@
-import {
-  JsonRpcEngine,
-  createScaffoldMiddleware,
-} from '@metamask/json-rpc-engine';
+import { JsonRpcEngine, createScaffoldMiddleware } from 'json-rpc-engine';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import Ganache from 'ganache';
 

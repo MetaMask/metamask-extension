@@ -1,4 +1,4 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import { JsonRpcEngine } from 'json-rpc-engine';
 import {
   assertIsJsonRpcFailure,
   assertIsJsonRpcSuccess,
@@ -9,24 +9,7 @@ jest.mock('@metamask/permission-controller', () => ({
   permissionRpcMethods: { handlers: [] },
 }));
 
-jest.mock('@metamask/rpc-errors', () => {
-  const actualRpcErrors = jest.requireActual('@metamask/rpc-errors');
-  return {
-    ...actualRpcErrors,
-    providerErrors: {
-      ...actualRpcErrors.providerErrors,
-      custom: jest.fn(({ code, message, data }) => ({
-        code,
-        message,
-        data,
-      })),
-    },
-  };
-});
-
 jest.mock('./handlers', () => {
-  const actualRpcErrors = jest.requireActual('@metamask/rpc-errors');
-
   const getHandler = () => ({
     implementation: (req, res, _next, end, hooks) => {
       if (Array.isArray(req.params)) {
@@ -38,15 +21,7 @@ jest.mock('./handlers', () => {
             res.result = hooks.hook2();
             break;
           case 3:
-            return end(
-              actualRpcErrors.providerErrors.custom({
-                code: 1001,
-                message: 'Test error',
-                data: {
-                  cause: 'Test cause',
-                },
-              }),
-            );
+            return end(new Error('test error'));
           case 4:
             throw new Error('test error');
           case 5:
@@ -164,7 +139,7 @@ describe.each([
     });
     assertIsJsonRpcFailure(response);
 
-    expect(response.error.message).toBe('Test error');
+    expect(response.error.message).toBe('test error');
   });
 
   it('should handle errors thrown by the implementation', async () => {
@@ -180,7 +155,7 @@ describe.each([
     });
     assertIsJsonRpcFailure(response);
 
-    expect(response.error.message).toBe('Internal JSON-RPC error.');
+    expect(response.error.message).toBe('test error');
   });
 
   it('should handle non-errors thrown by the implementation', async () => {

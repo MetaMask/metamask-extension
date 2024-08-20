@@ -23,18 +23,14 @@ export default getProviderState;
  */
 
 /**
- * @typedef {import('@metamask/utils').JsonRpcParams} JsonRpcParams
- */
-
-/**
  * @typedef {object} ProviderStateHandlerOptions
  * @property {() => ProviderStateHandlerResult} getProviderState - A function that
  * gets the current provider state.
  */
 
 /**
- * @param {import('@metamask/utils').JsonRpcRequest<JsonRpcParams>} req - The JSON-RPC request object.
- * @param {import('@metamask/utils').JsonRpcResponse<ProviderStateHandlerResult>} res - The JSON-RPC response object.
+ * @param {import('json-rpc-engine').JsonRpcRequest<[]>} req - The JSON-RPC request object.
+ * @param {import('json-rpc-engine').JsonRpcResponse<ProviderStateHandlerResult>} res - The JSON-RPC response object.
  * @param {Function} _next - The json-rpc-engine 'next' callback.
  * @param {Function} end - The json-rpc-engine 'end' callback.
  * @param {ProviderStateHandlerOptions} options

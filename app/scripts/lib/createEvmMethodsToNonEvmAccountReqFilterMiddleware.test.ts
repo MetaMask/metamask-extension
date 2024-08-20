@@ -1,11 +1,12 @@
-import { jsonrpc2, type Json } from '@metamask/utils';
+import { jsonrpc2 } from '@metamask/utils';
 import { BtcAccountType, EthAccountType } from '@metamask/keyring-api';
+import { Json } from 'json-rpc-engine';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware, {
   EvmMethodsToNonEvmAccountFilterMessenger,
 } from './createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 
 describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
-  const getMockRequest = (method: string, params?: Json[]) => ({
+  const getMockRequest = (method: string, params?: Json) => ({
     jsonrpc: jsonrpc2,
     id: 1,
     method,
@@ -249,7 +250,7 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
     }: {
       accountType: EthAccountType | BtcAccountType;
       method: string;
-      params?: Json[];
+      params?: Json;
       calledNext: number;
     }) => {
       const filterFn = createEvmMethodsToNonEvmAccountReqFilterMiddleware({

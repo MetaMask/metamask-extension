@@ -17,11 +17,6 @@ const logWeb3ShimUsage = {
 export default logWeb3ShimUsage;
 
 /**
- * @typedef {import('@metamask/utils').JsonRpcParams} JsonRpcParams
- * @typedef {import('@metamask/utils').Json} Json
- */
-
-/**
  * @typedef {object} LogWeb3ShimUsageOptions
  * @property {Function} getWeb3ShimUsageState - A function that gets web3 shim
  * usage state for the given origin.
@@ -30,8 +25,8 @@ export default logWeb3ShimUsage;
  */
 
 /**
- * @param {import('@metamask/utils').JsonRpcRequest<JsonRpcParams>} req - The JSON-RPC request object.
- * @param {import('@metamask/utils').JsonRpcResponse<Json>} res - The JSON-RPC response object.
+ * @param {import('json-rpc-engine').JsonRpcRequest<unknown>} req - The JSON-RPC request object.
+ * @param {import('json-rpc-engine').JsonRpcResponse<true>} res - The JSON-RPC response object.
  * @param {Function} _next - The json-rpc-engine 'next' callback.
  * @param {Function} end - The json-rpc-engine 'end' callback.
  * @param {LogWeb3ShimUsageOptions} options

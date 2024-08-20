@@ -8,13 +8,13 @@ import {
   hasProperty,
   isObject,
   type Hex,
-  JsonRpcRequest,
-  JsonRpcResponse,
 } from '@metamask/utils';
-import type {
-  JsonRpcEngineEndCallback,
-  JsonRpcEngineNextCallback,
-} from '@metamask/json-rpc-engine';
+import {
+  JsonRpcRequest,
+  type JsonRpcResponse,
+  type JsonRpcEngineEndCallback,
+  type JsonRpcEngineNextCallback,
+} from 'json-rpc-engine';
 import {
   EXPERIENCES_TO_VERIFY,
   getExperience,
