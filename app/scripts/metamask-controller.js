@@ -6932,6 +6932,7 @@ export default class MetamaskController extends EventEmitter {
         // This should be the same as the return value of `eth_accounts`,
         // namely an array of the current / most recently selected Ethereum
         // account.
+        // TODO: Can this be simplified?...
         params:
           newAccounts.length < 2
             ? // If the length is 1 or 0, the accounts are sorted by definition.
