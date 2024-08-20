@@ -36,9 +36,6 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   SwapsEthToken,
   getCurrentKeyring,
-  getDataCollectionForMarketing,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
   getSelectedAccount,
@@ -66,7 +63,6 @@ import {
 import { Box, Icon, IconName } from '../../component-library';
 import IconButton from '../../ui/icon-button';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { ReceiveModal } from '../../multichain/receive-modal';
@@ -103,9 +99,6 @@ const CoinButtons = ({
   const history = useHistory();
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
-  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   ///: END:ONLY_INCLUDE_IF
@@ -302,27 +295,6 @@ const CoinButtons = ({
       location.pathname.includes('asset') ? '&token=native' : '',
     );
   }, [defaultSwapsToken, location, openBridgeExperience]);
-
-  const handlePortfolioOnClick = useCallback(() => {
-    const url = getPortfolioUrl(
-      '',
-      'ext_portfolio_button',
-      metaMetricsId,
-      isMetaMetricsEnabled,
-      isMarketingEnabled,
-    );
-    global.platform.openTab({ url });
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.PortfolioLinkClicked,
-      properties: {
-        location: 'Home',
-        text: 'Portfolio',
-        chain_id: chainId,
-        token_symbol: 'ETH',
-      },
-    });
-  }, [chainId, metaMetricsId]);
   ///: END:ONLY_INCLUDE_IF
 
   return (
