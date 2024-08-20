@@ -21,7 +21,7 @@ describe('Alert for insufficient funds', function () {
       accounts: [
         {
           secretKey: PRIVATE_KEY,
-          balance: convertETHToHexGwei(0.0053), //Low balance only to create the contract and then trigger the alert for insufficient funds
+          balance: convertETHToHexGwei(0.0053), // Low balance only to create the contract and then trigger the alert for insufficient funds
         },
       ],
     };
@@ -43,7 +43,7 @@ describe('Alert for insufficient funds', function () {
       },
       async ({ driver, contractRegistry }: TestSuiteArguments) => {
         await openDAppWithContract(driver, contractRegistry, nftSmartContract);
-        
+
         await mintNft(driver);
 
         await verifyAlertForInsufficientBalance(driver);
@@ -58,7 +58,7 @@ describe('Alert for insufficient funds', function () {
 
 async function verifyConfirmationIsDisabled(driver: Driver) {
   const confirmButton = await driver.findElement(
-    '[data-testid="confirm-alert-modal-submit-button"]'
+    '[data-testid="confirm-alert-modal-submit-button"]',
   );
   assert.equal(await confirmButton.isEnabled(), false);
 }
@@ -70,12 +70,12 @@ async function verifyAlertForInsufficientBalance(driver: Driver) {
   await driver.clickElement('[data-testid="inline-alert"]');
 
   const alertDescription = await driver.findElement(
-    '[data-testid="alert-modal__selected-alert"]'
+    '[data-testid="alert-modal__selected-alert"]',
   );
   const alertDescriptionText = await alertDescription.getText();
   assert.equal(
     alertDescriptionText,
-    'You do not have enough ETH in your account to pay for transaction fees.'
+    'You do not have enough ETH in your account to pay for transaction fees.',
   );
   await driver.clickElement('[data-testid="alert-modal-close-button"]');
 }
@@ -87,4 +87,3 @@ async function mintNft(driver: Driver) {
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }
-
