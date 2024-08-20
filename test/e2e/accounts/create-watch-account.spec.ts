@@ -4,7 +4,7 @@ import FixtureBuilder from '../fixture-builder';
 import { defaultGanacheOptions, unlockWallet, withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 
-const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+const ACCOUNT_1 = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 const EOA_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 const SHORTENED_EOA_ADDRESS = '0xd8dA6...96045';
 const DEFAULT_WATCHED_ACCOUNT_NAME = 'Watched Account 1';
