@@ -3,6 +3,8 @@ import configureStore from 'redux-mock-store';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import { PermissionDetailsModal } from '.';
+import { mockNetworkState } from '../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 describe('PermissionDetailsModal', () => {
   const mockState = {
@@ -100,7 +102,10 @@ describe('PermissionDetailsModal', () => {
       },
     },
   };
-  const store = configureStore()(mockState);
+  const store = configureStore()({
+    ...mockState,
+    metamask: { ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }) },
+  });
   const onClick = jest.fn();
 
   const args = {
