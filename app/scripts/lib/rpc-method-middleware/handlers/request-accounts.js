@@ -13,8 +13,9 @@ import {
   validNotifications,
   validRpcMethods,
 } from '../../multichain-api/scope';
-import { RestrictedMethods } from '../../../../../shared/constants/permissions';
+import { CaveatTypes, RestrictedMethods } from '../../../../../shared/constants/permissions';
 import { setEthAccounts } from '../../multichain-api/adapters/caip-permission-adapter-eth-accounts';
+import { PermissionNames } from '../../../controllers/permissions';
 
 /**
  * This method attempts to retrieve the Ethereum accounts available to the
@@ -32,11 +33,9 @@ const requestEthereumAccounts = {
     getUnlockPromise: true,
     requestPermissionApprovalForOrigin: true,
     sendMetrics: true,
-    getPermissionsForOrigin: true,
     metamaskState: true,
     grantPermissions: true,
     getNetworkConfigurationByNetworkClientId: true,
-    updateCaveat: true,
   },
 };
 export default requestEthereumAccounts;
@@ -74,11 +73,9 @@ async function requestEthereumAccountsHandler(
     getUnlockPromise,
     requestPermissionApprovalForOrigin,
     sendMetrics,
-    getPermissionsForOrigin,
     metamaskState,
     grantPermissions,
     getNetworkConfigurationByNetworkClientId,
-    updateCaveat,
   },
 ) {
   const { origin } = req;
@@ -89,7 +86,7 @@ async function requestEthereumAccountsHandler(
     return end();
   }
 
-  let ethAccounts = await getAccounts();
+  const ethAccounts = await getAccounts();
   if (ethAccounts.length > 0) {
     // We wait for the extension to unlock in this case only, because permission
     // requests are handled when the extension is unlocked, regardless of the
@@ -107,73 +104,57 @@ async function requestEthereumAccountsHandler(
     return undefined;
   }
 
+  const { chainId } = getNetworkConfigurationByNetworkClientId(
+    req.networkClientId,
+  );
+
+  let legacyApproval;
   try {
-    const ethAccountsApproval = await requestPermissionApprovalForOrigin({
+    legacyApproval = await requestPermissionApprovalForOrigin({
       [RestrictedMethods.eth_accounts]: {},
+      [PermissionNames.permittedChains]: {
+        caveats: [
+          {
+            type: CaveatTypes.restrictNetworkSwitching,
+            value: [chainId]
+          }
+        ]
+      },
     });
-    ethAccounts = ethAccountsApproval.approvedAccounts;
   } catch (err) {
     res.error = err;
     return end();
   }
 
-  // TODO: Use permittedChains permission returned from requestPermissionsForOrigin() when available ?
-  const { chainId } = getNetworkConfigurationByNetworkClientId(
-    req.networkClientId,
+  // NOTE: the eth_accounts/permittedChains approvals will be combined in the future.
+  // We assume that approvedAccounts and permittedChains are both defined here.
+  // Until they are actually combined, when testing, you must request both
+  // eth_accounts and permittedChains together.
+  let caveatValue = {
+    requiredScopes: {},
+    optionalScopes: {},
+    isMultichainOrigin: false,
+  };
+  caveatValue = setPermittedEthChainIds(
+    caveatValue,
+    legacyApproval.approvedChainIds,
   );
 
-  const scopeString = `eip155:${parseInt(chainId, 16)}`;
+  caveatValue = setEthAccounts(caveatValue, legacyApproval.approvedAccounts);
 
-  const permissions = getPermissionsForOrigin(origin) || {};
-  const caip25Endowment = permissions[Caip25EndowmentPermissionName];
-  const caip25Caveat = caip25Endowment?.caveats.find(
-    ({ type }) => type === Caip25CaveatType,
-  );
-
-  if (caip25Caveat) {
-    if (caip25Caveat.value.isMultichainOrigin) {
-      return end(
-        new Error('cannot modify permission granted from multichain flow'),
-      ); // TODO: better error
-    }
-    const updatedCaveatValue = setEthAccounts(caip25Caveat.value, ethAccounts);
-
-    updateCaveat(
-      origin,
-      Caip25EndowmentPermissionName,
-      Caip25CaveatType,
-      updatedCaveatValue,
-    );
-  } else {
-    const caveatValue = setEthAccounts(
-      {
-        requiredScopes: {},
-        optionalScopes: {
-          [scopeString]: {
-            methods: validRpcMethods,
-            notifications: validNotifications,
-            accounts: [],
+  grantPermissions({
+    subject: { origin },
+    approvedPermissions: {
+      [Caip25EndowmentPermissionName]: {
+        caveats: [
+          {
+            type: Caip25CaveatType,
+            value: caveatValue,
           },
-        },
-        isMultichainOrigin: false,
+        ],
       },
-      ethAccounts,
-    );
-
-    grantPermissions({
-      subject: { origin },
-      approvedPermissions: {
-        [Caip25EndowmentPermissionName]: {
-          caveats: [
-            {
-              type: Caip25CaveatType,
-              value: caveatValue,
-            },
-          ],
-        },
-      },
-    });
-  }
+    },
+  });
 
   const numberOfConnectedAccounts = ethAccounts.length;
   // first time connection to dapp will lead to no log in the permissionHistory
