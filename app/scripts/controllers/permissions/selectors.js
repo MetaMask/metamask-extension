@@ -143,7 +143,10 @@ export const getChangedAuthorizations = (
   const newOrigins = new Set([...newAuthorizationsMap.keys()]);
 
   for (const origin of previousAuthorizationsMap.keys()) {
-    const newAuthorizations = newAuthorizationsMap.get(origin) ?? {};
+    const newAuthorizations = newAuthorizationsMap.get(origin) ?? {
+      requiredScopes: {},
+      optionalScopes: {},
+    };
 
     // The values of these maps are references to immutable values, which is why
     // a strict equality check is enough for diffing. The values are either from
