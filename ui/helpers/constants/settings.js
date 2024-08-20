@@ -421,13 +421,6 @@ const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('backupUserData'),
-    descriptionMessage: (t) => t('backupUserDataDescription'),
-    route: `${ADVANCED_ROUTE}#backup-userdata`,
-    icon: 'fas fa-download',
-  },
-  {
-    tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('restoreUserData'),
     descriptionMessage: (t) => t('restoreUserDataDescription'),
     route: `${ADVANCED_ROUTE}#restore-userdata`,
