@@ -180,32 +180,30 @@ export function AssetPicker({
         title={handleAssetPickerTitle()}
       >
         <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
-          <Box display={Display.Flex}>
-            <BadgeWrapper
-              badge={
-                <AvatarNetwork
-                  size={AvatarNetworkSize.Xs}
-                  name={currentNetwork?.nickname ?? ''}
-                  src={currentNetwork?.rpcPrefs?.imageUrl}
-                  backgroundColor={testNetworkBackgroundColor}
-                  borderColor={
-                    primaryTokenImage
-                      ? BorderColor.borderMuted
-                      : BorderColor.borderDefault
-                  }
-                />
-              }
-            >
-              <AvatarToken
-                borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
-                src={primaryTokenImage}
-                size={AvatarTokenSize.Md}
-                showHalo={!isNFT}
-                name={symbol}
-                {...(isNFT && { backgroundColor: BackgroundColor.transparent })}
+          <BadgeWrapper
+            badge={
+              <AvatarNetwork
+                size={AvatarNetworkSize.Xs}
+                name={currentNetwork?.nickname}
+                src={currentNetwork?.rpcPrefs?.imageUrl}
+                backgroundColor={testNetworkBackgroundColor}
+                borderColor={
+                  primaryTokenImage
+                    ? BorderColor.borderMuted
+                    : BorderColor.borderDefault
+                }
               />
-            </BadgeWrapper>
-          </Box>
+            }
+          >
+            <AvatarToken
+              borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
+              src={primaryTokenImage}
+              size={AvatarTokenSize.Md}
+              showHalo={!isNFT}
+              name={symbol}
+              {...(isNFT && { backgroundColor: BackgroundColor.transparent })}
+            />
+          </BadgeWrapper>
 
           <Tooltip disabled={!isSymbolLong} title={symbol} position="bottom">
             <Text className="asset-picker__symbol" variant={TextVariant.bodyMd}>
