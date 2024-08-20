@@ -105,6 +105,44 @@ const Footer = () => {
   const { mmiOnSignCallback, mmiSubmitDisabled } = useMMIConfirmations();
   ///: END:ONLY_INCLUDE_IF
 
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  const mmiApprovalFlow = () => {
+    if (accountType === AccountType.CUSTODY) {
+      fullTxData.custodyStatus = CustodyStatus.CREATED;
+      fullTxData.metadata = fullTxData.metadata || {};
+
+      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
+
+      const txId = fullTxData.id;
+      const fromAddress = fullTxData.txParams.from;
+      const closeNotification = false;
+      dispatch(updateAndApproveTx(customNonceMerge(fullTxData))).then(() => {
+        showCustodianDeepLink({
+          dispatch,
+          mmiActions,
+          txId,
+          fromAddress,
+          closeNotification,
+          onDeepLinkFetched: () => undefined,
+          onDeepLinkShown: () => {
+            dispatch(clearConfirmTransaction());
+            history.push(mostRecentOverviewPage);
+          },
+          showCustodyConfirmLink,
+        });
+        history.push(mostRecentOverviewPage);
+      });
+    } else {
+      // Non Custody accounts follow normal flow
+      dispatch(updateAndApproveTx(customNonceMerge(fullTxData))).then(() => {
+        dispatch(clearConfirmTransaction());
+        history.push(mostRecentOverviewPage);
+      });
+    }
+  };
+  ///: END:ONLY_INCLUDE_IF
+
   const hardwareWalletRequiresConnection = useSelector((state) => {
     if (from) {
       return doesAddressRequireLedgerHidConnection(state, from);
@@ -143,7 +181,14 @@ const Footer = () => {
         currentConfirmation as TransactionMeta,
       );
 
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      mmiApprovalFlow();
+      ///: END:ONLY_INCLUDE_IF
+
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       dispatch(updateAndApproveTx(updatedTx, true, ''));
+      ///: END:ONLY_INCLUDE_IF
+
     } else {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
 

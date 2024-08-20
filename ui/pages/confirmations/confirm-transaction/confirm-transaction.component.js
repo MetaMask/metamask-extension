@@ -164,9 +164,9 @@ const ConfirmTransaction = () => {
   // It takes care to render <Confirm /> component for confirmations of type Personal Sign.
   // Once we migrate all confirmations to new designs we can get rid of this code
   // and render <Confirm /> component for all confirmation requests.
-  if (currentConfirmation) {
-    return <Confirm />;
-  }
+  // if (currentConfirmation) {
+  //   return <Confirm />;
+  // }
 
   if (isValidTokenMethod && isValidTransactionId) {
     return <ConfirmTokenTransactionSwitch transaction={transaction} />;
