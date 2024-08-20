@@ -54,7 +54,7 @@ describe('Header', () => {
   it('contains network name and account name', () => {
     const { getByText } = render();
     expect(getByText('Test Account')).toBeInTheDocument();
-    expect(getByText('Chain 5')).toBeInTheDocument();
+    expect(getByText('Goerli')).toBeInTheDocument();
   });
 
   it('contains account info icon', async () => {
