@@ -5,10 +5,16 @@ import { merge } from 'lodash';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { IndividualFiatDisplay, TotalFiatDisplay } from './fiat-display';
 import { FIAT_UNAVAILABLE } from './types';
 
-const mockStateWithTestnet = merge({}, mockState, {});
+const mockStateWithTestnet = merge({}, mockState, {
+  metamask: {
+    ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
+  },
+});
 
 const mockStateWithShowingFiatOnTestnets = merge({}, mockStateWithTestnet, {
   metamask: {
