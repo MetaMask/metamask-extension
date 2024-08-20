@@ -13,12 +13,6 @@ import {
 } from '../caip25permissions';
 import { assignAccountsToScopes, validateAndUpsertEip3085 } from './helpers';
 
-const getAccountsFromPermission = (permission) => {
-  return permission.eth_accounts.caveats.find(
-    (caveat) => caveat.type === 'restrictReturnedAccounts',
-  )?.value;
-};
-
 // TODO:
 // Unless the dapp is known and trusted, give generic error messages for
 // - the user denies consent for exposing accounts that match the requested and approved chains,
@@ -53,8 +47,6 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     },
   } = req;
 
-  const { findNetworkClientIdByChainId } = hooks;
-
   if (Object.keys(restParams).length !== 0) {
     return end(
       new EthereumRpcError(
@@ -86,7 +78,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
 
     const existsNetworkClientForChainId = (chainId) => {
       try {
-        findNetworkClientIdByChainId(chainId);
+        hooks.findNetworkClientIdByChainId(chainId);
         return true;
       } catch (err) {
         return false;
@@ -132,17 +124,25 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     });
 
     // use old account popup for now to get the accounts
-    const [subjectPermission] = await hooks.requestPermissions(
-      { origin },
-      {
-        [RestrictedMethods.eth_accounts]: {},
-      },
+    const legacyApproval = await hooks.requestPermissionApprovalForOrigin({
+      [RestrictedMethods.eth_accounts]: {},
+    });
+    assignAccountsToScopes(
+      supportedRequiredScopes,
+      legacyApproval.approvedAccounts,
     );
-    const permittedAccounts = getAccountsFromPermission(subjectPermission);
-    assignAccountsToScopes(supportedRequiredScopes, permittedAccounts);
-    assignAccountsToScopes(supportableRequiredScopes, permittedAccounts);
-    assignAccountsToScopes(supportedOptionalScopes, permittedAccounts);
-    assignAccountsToScopes(supportableOptionalScopes, permittedAccounts);
+    assignAccountsToScopes(
+      supportableRequiredScopes,
+      legacyApproval.approvedAccounts,
+    );
+    assignAccountsToScopes(
+      supportedOptionalScopes,
+      legacyApproval.approvedAccounts,
+    );
+    assignAccountsToScopes(
+      supportableOptionalScopes,
+      legacyApproval.approvedAccounts,
+    );
 
     const grantedRequiredScopes = mergeScopes(
       supportedRequiredScopes,

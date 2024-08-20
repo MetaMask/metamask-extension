@@ -5974,10 +5974,6 @@ export default class MetamaskController extends EventEmitter {
             grantPermissions: this.permissionController.grantPermissions.bind(
               this.permissionController,
             ),
-            requestPermissions:
-              this.permissionController.requestPermissions.bind(
-                this.permissionController,
-              ),
             findNetworkClientIdByChainId:
               this.networkController.findNetworkClientIdByChainId.bind(
                 this.networkController,
@@ -5990,6 +5986,25 @@ export default class MetamaskController extends EventEmitter {
               this.networkController.removeNetworkConfiguration.bind(
                 this.networkController,
               ),
+              requestPermissionApprovalForOrigin: async (permissions) => {
+                const id = nanoid();
+                const result =
+                  await this.approvalController.addAndShowApprovalRequest({
+                    id,
+                    origin,
+                    requestData: {
+                      metadata: {
+                        id,
+                        origin,
+                      },
+                      permissions,
+                    },
+                    type: MethodNames.requestPermissions,
+                  });
+                // TODO: remove this log
+                console.log('requestPermissionApprovalForOrigin', result);
+                return result;
+              }
           });
         },
         [MESSAGE_TYPE.PROVIDER_REQUEST]: (request, response, next, end) => {
