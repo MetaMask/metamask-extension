@@ -8,9 +8,32 @@ const runtimeManifest =
  * is set to manifest version 3.
  */
 const isManifestV3 = runtimeManifest
-  ? runtimeManifest.manifest_version === 3
-  : process.env.ENABLE_MV3 === 'true' || // Tests on Node.js processes
+  ? console.log('branch A') && runtimeManifest.manifest_version === 3
+  : (console.log('branch B') && process.env.ENABLE_MV3 === 'true') || // Tests on Node.js processes
     process.env.ENABLE_MV3 === undefined;
+
+console.log(`Runtime manifest? ${Boolean(runtimeManifest)}`);
+console.log(`Runtime manifest version? ${runtimeManifest?.manifest_version}`);
+console.log(
+  `Runtime manifest version is 3: ${runtimeManifest?.manifest_version === 3}`,
+);
+console.log(`process.env.ENABLE_MV3: ${process.env.ENABLE_MV3}`);
+console.log(`process.env.ENABLE_MV3 type: ${typeof process.env.ENABLE_MV3}`);
+console.log(
+  `process.env.ENABLE_MV3 is true: ${process.env.ENABLE_MV3 === 'true'}`,
+);
+console.log(
+  `process.env.ENABLE_MV3 is undefined: ${
+    process.env.ENABLE_MV3 === undefined
+  }`,
+);
+console.log(
+  `process.env suggests that this is MV3: ${
+    process.env.ENABLE_MV3 === 'true' || // Tests on Node.js processes
+    process.env.ENABLE_MV3 === undefined
+  }`,
+);
+console.log(`isManifestV3 is ${isManifestV3}`);
 
 /**
  * A boolean indicating whether the browser supports the offscreen document api.
