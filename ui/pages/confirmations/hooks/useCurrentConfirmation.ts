@@ -82,8 +82,17 @@ const useCurrentConfirmation = () => {
   // facing feature toggles for signature or transactions are enabled, we show
   // only confirmations that shipped (contained in `REDESIGN_APPROVAL_TYPES` and
   // `REDESIGN_TRANSACTION_TYPES` respectively).
-  const shouldUseRedesign =
+  let shouldUseRedesign;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  shouldUseRedesign =
+    shouldUseRedesignForSignatures;
+  ///: END:ONLY_INCLUDE_IF
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  shouldUseRedesign =
     shouldUseRedesignForSignatures || shouldUseRedesignForTransactions;
+  ///: END:ONLY_INCLUDE_IF
 
   return useMemo(() => {
     if (!shouldUseRedesign) {
