@@ -10,7 +10,7 @@
   z-index: design-system.$modal-z-index;
 }
 
-@media screen and (min-width: 576px) {
+@media screen and (min-width: design-system.$screen-sm-max) {
   .toast_wrapper {
     max-width: 408px;
   }
