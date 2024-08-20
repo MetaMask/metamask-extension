@@ -10,7 +10,7 @@ import {
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 
-const rowLocators = {
+const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
   globalMenuSettingsButton: '[data-testid="global-menu-settings"]',
   securityAndPrivacySettings: { text: 'Security & privacy', tag: 'div' },
@@ -108,20 +108,20 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
       }) => {
         await unlockWallet(driver);
 
-        await driver.clickElement(rowLocators.accountOptionsMenuButton);
-        await driver.clickElement(rowLocators.globalMenuSettingsButton);
-        await driver.clickElement(rowLocators.securityAndPrivacySettings);
+        await driver.clickElement(selectors.accountOptionsMenuButton);
+        await driver.clickElement(selectors.globalMenuSettingsButton);
+        await driver.clickElement(selectors.securityAndPrivacySettings);
 
-        await driver.findElement(rowLocators.deletMetaMetricsSettings);
-        await driver.clickElement(rowLocators.deleteMetaMetricsDataButton);
+        await driver.findElement(selectors.deletMetaMetricsSettings);
+        await driver.clickElement(selectors.deleteMetaMetricsDataButton);
 
         // there is a race condition, where we need to wait before clicking clear button otherwise an error is thrown in the background
         // we cannot wait for a UI conditon, so we a delay to mitigate this until another solution is found
         await driver.delay(3000);
-        await driver.clickElementAndWaitToDisappear(rowLocators.clearButton);
+        await driver.clickElementAndWaitToDisappear(selectors.clearButton);
 
         const deleteMetaMetricsDataButton = await driver.findElement(
-          rowLocators.deleteMetaMetricsDataButton,
+          selectors.deleteMetaMetricsDataButton,
         );
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         await (deleteMetaMetricsDataButton as any).waitForElementState(
@@ -145,13 +145,13 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
         await driver.clickElementAndWaitToDisappear(
           '.mm-box button[aria-label="Close"]',
         );
-        await driver.clickElement(rowLocators.accountOptionsMenuButton);
-        await driver.clickElement(rowLocators.globalMenuSettingsButton);
-        await driver.clickElement(rowLocators.securityAndPrivacySettings);
+        await driver.clickElement(selectors.accountOptionsMenuButton);
+        await driver.clickElement(selectors.globalMenuSettingsButton);
+        await driver.clickElement(selectors.securityAndPrivacySettings);
 
         const deleteMetaMetricsDataButtonRefreshed =
           await driver.findClickableElement(
-            rowLocators.deleteMetaMetricsDataButton,
+            selectors.deleteMetaMetricsDataButton,
           );
         assert.equal(
           await deleteMetaMetricsDataButtonRefreshed.isEnabled(),
@@ -182,20 +182,20 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
       }) => {
         await unlockWallet(driver);
 
-        await driver.clickElement(rowLocators.accountOptionsMenuButton);
-        await driver.clickElement(rowLocators.globalMenuSettingsButton);
-        await driver.clickElement(rowLocators.securityAndPrivacySettings);
+        await driver.clickElement(selectors.accountOptionsMenuButton);
+        await driver.clickElement(selectors.globalMenuSettingsButton);
+        await driver.clickElement(selectors.securityAndPrivacySettings);
 
-        await driver.findElement(rowLocators.deletMetaMetricsSettings);
-        await driver.clickElement(rowLocators.deleteMetaMetricsDataButton);
+        await driver.findElement(selectors.deletMetaMetricsSettings);
+        await driver.clickElement(selectors.deleteMetaMetricsDataButton);
 
         // there is a race condition, where we need to wait before clicking clear button otherwise an error is thrown in the background
         // we cannot wait for a UI conditon, so we a delay to mitigate this until another solution is found
         await driver.delay(3000);
-        await driver.clickElementAndWaitToDisappear(rowLocators.clearButton);
+        await driver.clickElementAndWaitToDisappear(selectors.clearButton);
 
         const deleteMetaMetricsDataButton = await driver.findElement(
-          rowLocators.deleteMetaMetricsDataButton,
+          selectors.deleteMetaMetricsDataButton,
         );
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         await (deleteMetaMetricsDataButton as any).waitForElementState(
@@ -213,12 +213,12 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
         await driver.clickElementAndWaitToDisappear(
           '.mm-box button[aria-label="Close"]',
         );
-        await driver.clickElement(rowLocators.accountOptionsMenuButton);
-        await driver.clickElement(rowLocators.globalMenuSettingsButton);
-        await driver.clickElement(rowLocators.securityAndPrivacySettings);
+        await driver.clickElement(selectors.accountOptionsMenuButton);
+        await driver.clickElement(selectors.globalMenuSettingsButton);
+        await driver.clickElement(selectors.securityAndPrivacySettings);
 
         const deleteMetaMetricsDataButtonRefreshed = await driver.findElement(
-          rowLocators.deleteMetaMetricsDataButton,
+          selectors.deleteMetaMetricsDataButton,
         );
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         await (deleteMetaMetricsDataButtonRefreshed as any).waitForElementState(
@@ -243,13 +243,13 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
 
-        await driver.clickElement(rowLocators.accountOptionsMenuButton);
-        await driver.clickElement(rowLocators.globalMenuSettingsButton);
-        await driver.clickElement(rowLocators.securityAndPrivacySettings);
-        await driver.findElement(rowLocators.deletMetaMetricsSettings);
+        await driver.clickElement(selectors.accountOptionsMenuButton);
+        await driver.clickElement(selectors.globalMenuSettingsButton);
+        await driver.clickElement(selectors.securityAndPrivacySettings);
+        await driver.findElement(selectors.deletMetaMetricsSettings);
 
         const deleteMetaMetricsDataButton = await driver.findElement(
-          rowLocators.deleteMetaMetricsDataButton,
+          selectors.deleteMetaMetricsDataButton,
         );
         assert.equal(
           await deleteMetaMetricsDataButton.isEnabled(),
