@@ -133,7 +133,7 @@ describe('Account-watcher snap', function (this: Suite) {
           '[data-testid="eth-overview-bridge"].icon-button--disabled',
         );
 
-        // Check tooltips for disabled buttons
+        // check tooltips for disabled buttons
         await driver.findElement(
           '.icon-button--disabled [data-tooltipped][data-original-title="Not supported with this account."]',
         );
@@ -159,8 +159,7 @@ describe('Account-watcher snap', function (this: Suite) {
     },
     {
       input: ACCOUNT_1,
-      message:
-        "Unknown snap error: Account address '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1' already exists",
+      message: `Unknown snap error: Account address '${ACCOUNT_1}' already exists`,
       description: 'existing address',
     },
   ];
@@ -238,7 +237,7 @@ describe('Account-watcher snap', function (this: Suite) {
     );
   });
 
-  it('Show private key button is not displayed for watch accounts', async function () {
+  it("'Show private key' button is not displayed for watch accounts", async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -259,7 +258,7 @@ describe('Account-watcher snap', function (this: Suite) {
           '[data-testid="account-options-menu-button"]',
         );
         await driver.clickElement('[data-testid="account-list-menu-details"]');
-        // show private key button should not be displayed
+        // 'Show private key' button should not be displayed
         await driver.assertElementNotPresent({
           css: 'button',
           text: 'Show private key',
@@ -329,10 +328,10 @@ describe('Account-watcher snap', function (this: Suite) {
           text: SHORTENED_EOA_ADDRESS,
         });
 
-        // re-add the watch account
+        // re-add the same watch account
         await watchEoaAddress(driver, false);
 
-        // new account should be displayed in the account list
+        // same account should be displayed in the account list
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
           text: DEFAULT_WATCHED_ACCOUNT_NAME,
