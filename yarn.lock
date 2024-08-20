@@ -1710,10 +1710,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blockaid/ppom_release@npm:^1.5.1":
-  version: 1.5.1
-  resolution: "@blockaid/ppom_release@npm:1.5.1"
-  checksum: 10/e2283240e484b60525501772bc5c57e86a30eb153227168eb52584061ac7e10c717bb4a858bfcf0bbdd590033675c193a3a41de2658d066baef210ec48ed7a6e
+"@blockaid/ppom_release@npm:^1.5.2":
+  version: 1.5.2
+  resolution: "@blockaid/ppom_release@npm:1.5.2"
+  checksum: 10/b47af74e8a315d996abb8371a7b28f9923bf78272cc408b2307024e2050b57f36c53b6b9a57b276b0910b449ebb384897e293abad356131ccf65c6c3c5ca31ae
   languageName: node
   linkType: hard
 
@@ -4824,7 +4824,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^33.0.0":
+"@metamask/assets-controllers@npm:33.0.0":
   version: 33.0.0
   resolution: "@metamask/assets-controllers@npm:33.0.0"
   dependencies:
@@ -4863,6 +4863,48 @@ __metadata:
     "@metamask/network-controller": ^19.0.0
     "@metamask/preferences-controller": ^13.0.0
   checksum: 10/cb35e1a170c10f64df023938108593df3c5686e92070593f230c1146cd78d5ed4fbff9027cb18920c11a1ac2dc1090ce718ed22ba61dfd337fe68c18f4c06164
+  languageName: node
+  linkType: hard
+
+"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A33.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-33.0.0-3e7448c4cd.patch":
+  version: 33.0.0
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A33.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-33.0.0-3e7448c4cd.patch::version=33.0.0&hash=4c8a6f"
+  dependencies:
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@ethersproject/address": "npm:^5.7.0"
+    "@ethersproject/bignumber": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@metamask/abi-utils": "npm:^2.0.2"
+    "@metamask/accounts-controller": "npm:^17.0.0"
+    "@metamask/approval-controller": "npm:^7.0.0"
+    "@metamask/base-controller": "npm:^6.0.0"
+    "@metamask/contract-metadata": "npm:^2.4.0"
+    "@metamask/controller-utils": "npm:^11.0.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/keyring-controller": "npm:^17.1.0"
+    "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/network-controller": "npm:^19.0.0"
+    "@metamask/polling-controller": "npm:^8.0.0"
+    "@metamask/preferences-controller": "npm:^13.0.0"
+    "@metamask/rpc-errors": "npm:^6.2.1"
+    "@metamask/utils": "npm:^8.3.0"
+    "@types/bn.js": "npm:^5.1.5"
+    "@types/uuid": "npm:^8.3.0"
+    async-mutex: "npm:^0.5.0"
+    bn.js: "npm:^5.2.1"
+    cockatiel: "npm:^3.1.2"
+    lodash: "npm:^4.17.21"
+    multiformats: "npm:^9.5.2"
+    single-call-balance-checker-abi: "npm:^1.0.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/accounts-controller": ^17.0.0
+    "@metamask/approval-controller": ^7.0.0
+    "@metamask/keyring-controller": ^17.0.0
+    "@metamask/network-controller": ^19.0.0
+    "@metamask/preferences-controller": ^13.0.0
+  checksum: 10/effeb152b776dad38e173f9a699158d6df15d4175d27de763ba6ddd8f9b50cf604722683f8d91af989a7b5d721d1b846c5a78d2553ce7f84787925440f3c1107
   languageName: node
   linkType: hard
 
@@ -18621,13 +18663,13 @@ __metadata:
   linkType: hard
 
 "fast-xml-parser@npm:^4.3.4":
-  version: 4.3.4
-  resolution: "fast-xml-parser@npm:4.3.4"
+  version: 4.4.1
+  resolution: "fast-xml-parser@npm:4.4.1"
   dependencies:
     strnum: "npm:^1.0.5"
   bin:
     fxparser: src/cli/cli.js
-  checksum: 10/ef859101980cdd02b111fce09e25949a80e373654a6c424091355930f0d364abec144d8bb722d250a0c070416566518e621e198204a6b976db68f20c16d9300b
+  checksum: 10/0c05ab8703630d8c857fafadbd78d0020d3a8e54310c3842179cd4a0d9d97e96d209ce885e91241f4aa9dd8dfc2fd924a682741a423d65153cad34da2032ec44
   languageName: node
   linkType: hard
 
@@ -25197,7 +25239,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.2"
     "@babel/register": "npm:^7.22.15"
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch"
-    "@blockaid/ppom_release": "npm:^1.5.1"
+    "@blockaid/ppom_release": "npm:^1.5.2"
     "@contentful/rich-text-html-renderer": "npm:^16.3.5"
     "@ensdomains/content-hash": "npm:^2.5.7"
     "@ethereumjs/tx": "npm:^4.1.1"
@@ -25232,7 +25274,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^6.1.0"
     "@metamask/api-specs": "npm:^0.9.3"
     "@metamask/approval-controller": "npm:^7.0.0"
-    "@metamask/assets-controllers": "npm:^33.0.0"
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A33.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-33.0.0-3e7448c4cd.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^5.0.1"
     "@metamask/browser-passworder": "npm:^4.3.0"
