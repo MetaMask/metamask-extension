@@ -22,6 +22,7 @@ export const requestPermissionsHandler = {
     updateCaveat: true,
     grantPermissions: true,
     requestPermissionApprovalForOrigin: true,
+    getAccounts: true,
   },
 };
 
@@ -38,6 +39,7 @@ export const requestPermissionsHandler = {
  * @param options.updateCaveat
  * @param options.grantPermissions
  * @param options.requestPermissionApprovalForOrigin
+ * @param options.getAccounts
  * @returns A promise that resolves to nothing
  */
 async function requestPermissionsImplementation(
@@ -51,6 +53,7 @@ async function requestPermissionsImplementation(
     updateCaveat,
     grantPermissions,
     requestPermissionApprovalForOrigin,
+    getAccounts,
   },
 ) {
   const { origin, params } = req;
@@ -157,7 +160,7 @@ async function requestPermissionsImplementation(
       caveats: [
         {
           type: CaveatTypes.restrictReturnedAccounts,
-          value: legacyApproval.approvedAccounts,
+          value: await getAccounts(),
         },
       ],
     };

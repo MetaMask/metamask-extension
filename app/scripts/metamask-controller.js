@@ -140,7 +140,7 @@ import {
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { toCaipChainId } from '@metamask/utils';
+import { isValidHexAddress, toCaipChainId } from '@metamask/utils';
 import {
   AuthenticationController,
   UserStorageController,
@@ -1751,7 +1751,7 @@ export default class MetamaskController extends EventEmitter {
           this.networkController,
         ),
       getNetworkState: () => this.networkController.state,
-      getPermittedAccounts: this.getPermittedAccounts.bind(this),
+      getPermittedAccounts: this.getPermittedAccountsSorted.bind(this),
       getSavedGasFees: () =>
         this.preferencesController.store.getState().advancedGasFee[
           this.networkController.state.providerConfig.chainId
@@ -4716,6 +4716,80 @@ export default class MetamaskController extends EventEmitter {
     return selectedAddress;
   }
 
+  captureKeyringTypesWithMissingIdentities(
+    internalAccounts = [],
+    accounts = [],
+  ) {
+    const accountsMissingIdentities = accounts.filter(
+      (address) =>
+        !internalAccounts.some(
+          (account) => account.address.toLowerCase() === address.toLowerCase(),
+        ),
+    );
+    const keyringTypesWithMissingIdentities = accountsMissingIdentities.map(
+      (address) => this.keyringController.getAccountKeyringType(address),
+    );
+
+    const internalAccountCount = internalAccounts.length;
+
+    const accountTrackerCount = Object.keys(
+      this.accountTracker.store.getState().accounts || {},
+    ).length;
+
+    captureException(
+      new Error(
+        `Attempt to get permission specifications failed because their were ${accounts.length} accounts, but ${internalAccountCount} identities, and the ${keyringTypesWithMissingIdentities} keyrings included accounts with missing identities. Meanwhile, there are ${accountTrackerCount} accounts in the account tracker.`,
+      ),
+    );
+  }
+
+  async getAllEvmAccountsSorted() {
+    // We only consider EVM addresses here, hence the filtering:
+    const accounts = (await this.keyringController.getAccounts()).filter(
+      isValidHexAddress,
+    );
+    const internalAccounts = this.accountsController.listAccounts();
+
+    return accounts.sort((firstAddress, secondAddress) => {
+      const firstAccount = internalAccounts.find(
+        (internalAccount) =>
+          internalAccount.address.toLowerCase() === firstAddress.toLowerCase(),
+      );
+
+      const secondAccount = internalAccounts.find(
+        (internalAccount) =>
+          internalAccount.address.toLowerCase() === secondAddress.toLowerCase(),
+      );
+
+      if (!firstAccount) {
+        this.captureKeyringTypesWithMissingIdentities(
+          internalAccounts,
+          accounts,
+        );
+        throw new Error(`Missing identity for address: "${firstAddress}".`);
+      } else if (!secondAccount) {
+        this.captureKeyringTypesWithMissingIdentities(
+          internalAccounts,
+          accounts,
+        );
+        throw new Error(`Missing identity for address: "${secondAddress}".`);
+      } else if (
+        firstAccount.metadata.lastSelected ===
+        secondAccount.metadata.lastSelected
+      ) {
+        return 0;
+      } else if (firstAccount.metadata.lastSelected === undefined) {
+        return 1;
+      } else if (secondAccount.metadata.lastSelected === undefined) {
+        return -1;
+      }
+
+      return (
+        secondAccount.metadata.lastSelected - firstAccount.metadata.lastSelected
+      );
+    });
+  }
+
   /**
    * Gets the permitted accounts for the specified origin. Returns an empty
    * array if no accounts are permitted.
@@ -4725,7 +4799,6 @@ export default class MetamaskController extends EventEmitter {
    * array.
    */
   getPermittedAccounts(origin) {
-    // TODO: This originally was async and there are several callers that await this. why?
     let caveat;
     try {
       caveat = this.permissionController.getCaveat(
@@ -4741,6 +4814,14 @@ export default class MetamaskController extends EventEmitter {
     }
 
     return getEthAccounts(caveat.value);
+  }
+
+  async getPermittedAccountsSorted(origin) {
+    const permittedAccounts = this.getPermittedAccounts(origin);
+    const allEvmAccounts = await this.getAllEvmAccountsSorted();
+    return allEvmAccounts.filter((account) =>
+      permittedAccounts.includes(account),
+    );
   }
 
   /**
@@ -5441,6 +5522,8 @@ export default class MetamaskController extends EventEmitter {
       useRequestQueue: this.preferencesController.getUseRequestQueue.bind(
         this.preferencesController,
       ),
+      // TODO: Should this be made async in queued-request-controller package?
+      // Doing so allows us to DRY up getPermittedAcounts and getPermittedAccountsSorted
       shouldEnqueueRequest: (request) => {
         if (
           request.method === 'eth_requestAccounts' &&
@@ -5538,7 +5621,7 @@ export default class MetamaskController extends EventEmitter {
     // middleware.
     engine.push(
       createEthAccountsMethodMiddleware({
-        getAccounts: this.getPermittedAccounts.bind(this, origin),
+        getAccounts: this.getPermittedAccountsSorted.bind(this, origin),
       }),
     );
 
@@ -5601,7 +5684,7 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController,
         ),
         // Permission-related
-        getAccounts: this.getPermittedAccounts.bind(this, origin),
+        getAccounts: this.getPermittedAccountsSorted.bind(this, origin),
         getPermissionsForOrigin: this.permissionController.getPermissions.bind(
           this.permissionController,
           origin,
@@ -6289,7 +6372,7 @@ export default class MetamaskController extends EventEmitter {
         method: NOTIFICATION_NAMES.unlockStateChanged,
         params: {
           isUnlocked: true,
-          accounts: await this.getPermittedAccounts(origin),
+          accounts: await this.getPermittedAccountsSorted(origin),
         },
       };
     });
@@ -6840,7 +6923,7 @@ export default class MetamaskController extends EventEmitter {
               newAccounts
             : // If the length is 2 or greater, we have to execute
               // `eth_accounts` vi this method.
-              await this.getPermittedAccounts(origin),
+              await this.getPermittedAccountsSorted(origin),
       });
     }
 

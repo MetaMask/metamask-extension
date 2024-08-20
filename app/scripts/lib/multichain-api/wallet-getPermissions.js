@@ -8,7 +8,6 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
-import { getEthAccounts } from './adapters/caip-permission-adapter-eth-accounts';
 import { getPermittedEthChainIds } from './adapters/caip-permission-adapter-permittedChains';
 
 export const getPermissionsHandler = {
@@ -16,6 +15,7 @@ export const getPermissionsHandler = {
   implementation: getPermissionsImplementation,
   hookNames: {
     getPermissionsForOrigin: true,
+    getAccounts: true,
   },
 };
 
@@ -28,14 +28,15 @@ export const getPermissionsHandler = {
  * @param end - JsonRpcEngine end() callback
  * @param options - Method hooks passed to the method implementation
  * @param options.getPermissionsForOrigin - The specific method hook needed for this method implementation
+ * @param options.getAccounts
  * @returns A promise that resolves to nothing
  */
-function getPermissionsImplementation(
+async function getPermissionsImplementation(
   _req,
   res,
   _next,
   end,
-  { getPermissionsForOrigin },
+  { getPermissionsForOrigin, getAccounts },
 ) {
   // permissions are frozen and must be cloned before modified
   const permissions = { ...getPermissionsForOrigin() } || {};
@@ -46,7 +47,7 @@ function getPermissionsImplementation(
   delete permissions[Caip25EndowmentPermissionName];
 
   if (caip25Caveat) {
-    const ethAccounts = getEthAccounts(caip25Caveat.value);
+    const ethAccounts = await getAccounts();
 
     if (ethAccounts.length > 0) {
       permissions[RestrictedMethods.eth_accounts] = {
