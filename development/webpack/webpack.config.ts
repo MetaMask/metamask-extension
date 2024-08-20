@@ -117,7 +117,7 @@ const plugins: WebpackPluginInstance[] = [
         attributes: { as: 'font', crossorigin: true },
         // preload our own fonts, as other fonts use fallback formats we don't
         // want to preload
-        test: /fonts\/\.(?:ttf)$/u,
+        test: /fonts\/\.(?:woff2)$/u,
       },
     ],
   }),
