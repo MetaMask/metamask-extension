@@ -27,6 +27,7 @@ import {
   NETWORK_TYPES,
 } from '../../shared/constants/network';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
+import { mockNetworkState } from '../../test/stub/networks';
 import { AccountsState } from './accounts';
 import {
   MultichainState,
@@ -72,37 +73,8 @@ function getEvmState(): TestState {
       preferences: {
         showFiatInTestnets: false,
       },
-      selectedNetworkClientId: 'mainnet',
-      networkConfigurationsByChainId: {
-        [CHAIN_IDS.MAINNET]: {
-          chainId: CHAIN_IDS.MAINNET,
-          defaultRpcEndpointUrl: 'https://infura.io/mainnet',
-          name: 'mainnet',
-          nativeCurrency: 'ETH',
-          rpcEndpoints: [
-            {
-              type: RpcEndpointType.Infura,
-              networkClientId: 'mainnet',
-              name: 'Ethereum Mainnet',
-              url: 'https://infura.io/mainnet',
-            },
-          ],
-        },
-        [CHAIN_IDS.SEPOLIA]: {
-          chainId: CHAIN_IDS.SEPOLIA,
-          defaultRpcEndpointUrl: 'https://infura.io/sepolia',
-          name: 'sepolia',
-          nativeCurrency: 'ETH',
-          rpcEndpoints: [
-            {
-              type: RpcEndpointType.Infura,
-              networkClientId: 'sepolia',
-              name: 'Sepolia',
-              url: 'https://infura.io/sepolia',
-            },
-          ],
-        },
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
       currentCurrency: 'ETH',
       currencyRates: {
         ETH: {
@@ -217,23 +189,17 @@ describe('Multichain Selectors', () => {
     it('returns rpcUrl as its nickname if its not defined', () => {
       const mockNetworkRpc = 'https://mock-rpc.com';
       const mockNetwork = {
-        id: 'mock-network',
-        type: 'rpc',
         ticker: 'MOCK',
         chainId: '0x123123123',
         rpcUrl: mockNetworkRpc,
         // `nickname` is undefined here
-      };
+      } as const;
 
       const state = {
         ...getEvmState(),
         metamask: {
           ...getEvmState().metamask,
-          selectedNetworkClientId: mockNetwork.id,
-          providerConfig: mockNetwork,
-          networkConfigurations: {
-            [mockNetwork.id]: mockNetwork,
-          },
+          ...mockNetworkState(mockNetwork),
         },
       };
 

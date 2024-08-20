@@ -5,9 +5,7 @@ import { renderWithProvider } from '../../../../../test/jest/rendering';
 import NetworksTabSubheader from '.';
 
 const mockState = {
-  metamask: {
-    networkConfigurations: {},
-  },
+  metamask: {},
   appState: {
     networksTabSelectedRpcUrl: 'http://localhost:8545',
   },

@@ -5,6 +5,7 @@ import { toHex } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import testData from '../../../../.storybook/test-data';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import WrongNetworkNotification from '.';
 
 jest.mock('../../../../shared/modules/hash.utils');
@@ -14,14 +15,7 @@ describe('Wrong Network Notification', function () {
     ...testData,
     metamask: {
       ...testData.metamask,
-      selectedNetworkClientId: 'networkClientId',
-      networkConfigurationsByChainId: {
-        [toHex(3)]: {
-          chainId: toHex(3),
-          rpcEndpoints: [{ networkClientId: 'networkClientId' }],
-        },
-      },
-
+      ...mockNetworkState({ chainId: toHex(3) }),
       accountsByChainId: {
         [toHex(1)]: {
           '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': { balance: '0x0' },

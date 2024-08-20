@@ -1,6 +1,5 @@
 import { draftTransactionInitialState } from '../ui/ducks/send';
 import { KeyringType } from '../shared/constants/keyring';
-import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../shared/constants/network';
@@ -8,6 +7,7 @@ import { copyable, divider, heading, panel, text } from '@metamask/snaps-sdk';
 import { getJsxElementFromComponent } from '@metamask/snaps-utils';
 import { FirstTimeFlowType } from '../shared/constants/onboarding';
 import { ETH_EOA_METHODS } from '../shared/constants/eth-methods';
+import { mockNetworkState } from '../test/stub/networks';
 
 const state = {
   invalidCustomNetwork: {
@@ -179,15 +179,6 @@ const state = {
     networkDetails: {
       EIPS: {
         1559: true,
-      },
-    },
-    selectedNetworkClientId: NetworkType.mainnet,
-    networksMetadata: {
-      [NetworkType.mainnet]: {
-        EIPS: {
-          1559: true,
-        },
-        status: NetworkStatus.Available,
       },
     },
     gasFeeEstimates: '0x5208',
@@ -1227,43 +1218,23 @@ const state = {
         accounts: ['0x9d0ba4ddac06032527b140912ec808ab9451b788'],
       },
     ],
-    networkConfigurationsByChainId: {
-      [CHAIN_IDS.MAINNET]: {
-        nativeCurrency: 'ETH',
-        chainId: CHAIN_IDS.MAINNET,
-        name: 'mainnet',
-        rpcEndpoints: [{
-          url: 'https://testrpc.com',
-          networkClientId: 'mainnet',
-        }]
-      },
-      [CHAIN_IDS.SEPOLIA]: {
-        nativeCurrency: 'ETH',
-        chainId: CHAIN_IDS.SEPOLIA,
+    ...mockNetworkState({
+        id: 'test-networkConfigurationId-1',
+        rpcUrl: 'https://testrpc.com',
+        chainId: '0x1',
+        nickname: 'mainnet',
         blockExplorerUrl: 'https://etherscan.io',
-        rpcEndpoints: [{
-          url: 'http://localhost:8545',
-          networkClientId: 'sepolia',
-        }],
-      }
-      // todo one for 0x539?
-    },
-
-    // networkConfigurations: {
-    //   'test-networkConfigurationId-1': {
-    //     rpcUrl: 'https://testrpc.com',
-    //     chainId: '0x1',
-    //     nickname: 'mainnet',
-    //     rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
-    //   },
-    //   'test-networkConfigurationId-2': {
-    //     rpcUrl: 'http://localhost:8545',
-    //     chainId: '0x539',
-    //     ticker: 'ETH',
-    //     nickname: 'Localhost 8545',
-    //     rpcPrefs: {},
-    //   },
-    // },
+        metadata: {
+          EIPS: { 1559: true },
+          status: NetworkStatus.Available,
+        }
+      }, {
+        id: 'test-networkConfigurationId-2',
+        rpcUrl: 'http://localhost:8545',
+        chainId: '0x539',
+        ticker: 'ETH',
+        nickname: 'Localhost 8545',
+      }),
     accountTokens: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
         '0x1': [

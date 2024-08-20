@@ -6,17 +6,13 @@ import { EthAccountType } from '@metamask/keyring-api';
 import configureStore from '../store/store';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import { mockNetworkState } from '../../test/stub/networks';
 import useAddressDetails from './useAddressDetails';
 
 const renderUseAddressDetails = (toAddress, stateVariables = {}) => {
   const mockState = {
     metamask: {
-      networkConfigurationsByChainId: {
-        [CHAIN_IDS.GOERLI]: {
-          chainId: CHAIN_IDS.GOERLI,
-          rpcEndpoints: [{}],
-        },
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
 
       tokenList: {},
       internalAccounts: {

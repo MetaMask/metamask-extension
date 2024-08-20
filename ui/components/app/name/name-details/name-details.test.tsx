@@ -11,6 +11,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import NameDetails from './name-details';
 
 jest.mock('../../../../store/actions', () => ({
@@ -38,7 +40,7 @@ const PROPOSED_NAME_2_MOCK = 'TestProposedName2';
 
 const STATE_MOCK = {
   metamask: {
-    selectedNetworkClientId: 'mainnet',
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
     // networkConfigurationsByChainId: {
     //   [CHAIN_ID_MOCK]: {

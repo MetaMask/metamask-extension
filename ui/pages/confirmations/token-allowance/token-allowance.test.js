@@ -2,12 +2,11 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { act, fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
-import { NetworkType } from '@metamask/controller-utils';
-import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import TokenAllowance from './token-allowance';
 
@@ -17,6 +16,7 @@ const state = {
     customTokenAmount: '1',
   },
   metamask: {
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     accounts: {
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
         address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -72,19 +72,7 @@ const state = {
         name: 'Address Book Account 1',
       },
     ],
-    networkConfigurationsByChainId: {
-      [CHAIN_IDS.MAINNET]: {
-        chainId: CHAIN_IDS.MAINNET,
-        rpcEndpoints: [{ networkClientId: 'mainnet' }],
-      },
-    },
-    selectedNetworkClientId: NetworkType.mainnet,
-    networksMetadata: {
-      [NetworkType.mainnet]: {
-        EIPS: { 1559: true },
-        status: NetworkStatus.Available,
-      },
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET, nickname: 'mainnet' }),
     preferences: {
       showFiatInTestnets: true,
     },

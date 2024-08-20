@@ -4,12 +4,13 @@ import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType } from '@metamask/keyring-api';
 import nock from 'nock';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import AssetPage from './asset-page';
 
 // Mock the price chart
@@ -41,23 +42,7 @@ describe('AssetPage', () => {
       tokenList: {},
       currentCurrency: 'usd',
       accounts: {},
-
-      selectedNetworkClientId: 'networkClientId',
-      networkConfigurations: {
-        test: {
-          id: 'test',
-          chainId: CHAIN_IDS.MAINNET,
-        },
-      },
-      networkConfigurationsByChainId: {
-        [CHAIN_IDS.MAINNET]: {
-          nativeCurrency: 'ETH',
-          name: 'Ethereum Mainnet',
-          chainId: CHAIN_IDS.MAINNET,
-          rpcEndpoints: [{}],
-        },
-      },
-
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       currencyRates: {
         ETH: {
           conversionRate: 123,
@@ -206,12 +191,7 @@ describe('AssetPage', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          networkConfigurationsByChainId: {
-            [chainId]: {
-              chainId,
-              rpcEndpoints: [{}],
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
         },
       }),
     );
@@ -225,12 +205,7 @@ describe('AssetPage', () => {
       ...mockStore,
       metamask: {
         ...mockStore.metamask,
-        networkConfigurationsByChainId: {
-          [CHAIN_IDS.POLYGON]: {
-            chainId: CHAIN_IDS.POLYGON,
-            rpcEndpoints: [{}],
-          },
-        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
       },
     };
     const mockedStore = configureMockStore([thunk])(
@@ -282,12 +257,7 @@ describe('AssetPage', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          networkConfigurationsByChainId: {
-            [chainId]: {
-              chainId,
-              rpcEndpoints: [{}],
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
         },
       }),
     );

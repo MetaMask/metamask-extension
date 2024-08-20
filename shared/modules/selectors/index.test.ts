@@ -1,5 +1,6 @@
 import { createSwapsMockStore } from '../../../test/jest';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../constants/network';
+import { CHAIN_IDS } from '../../constants/network';
+import { mockNetworkState } from '../../../test/stub/networks';
 import {
   getSmartTransactionsOptInStatus,
   getCurrentChainSupportsSmartTransactions,
@@ -14,7 +15,6 @@ describe('Selectors', () => {
       metamask: {
         preferences: {
           smartTransactionsOptInStatus: true,
-          showTokenAutodetectModal: true,
         },
         internalAccounts: {
           selectedAccount: 'account1',
@@ -28,13 +28,6 @@ describe('Selectors', () => {
               address: '0x123',
               type: 'eip155:eoa',
             },
-          },
-        },
-        // selectedNetworkClientId: 'mainnet',
-        networkConfigurationsByChainId: {
-          [CHAIN_IDS.MAINNET]: {
-            chainId: CHAIN_IDS.MAINNET,
-            rpcEndpoints: [{}],
           },
         },
         accounts: {
@@ -63,20 +56,17 @@ describe('Selectors', () => {
         smartTransactionsState: {
           liveness: true,
         },
+        ...mockNetworkState({
+          id: 'network-configuration-id-1',
+          chainId: CHAIN_IDS.MAINNET,
+          rpcUrl: 'https://mainnet.infura.io/v3/',
+        }),
       },
     };
   };
 
   describe('getSmartTransactionsOptInStatus', () => {
     it('should return the smart transactions opt-in status', () => {
-      const state = createMockState();
-      const result = getSmartTransactionsOptInStatus(state);
-      expect(result).toBe(true);
-    });
-  });
-
-  describe('getShowTokenAutodetectModal', () => {
-    it('should return show autodetection token modal status', () => {
       const state = createMockState();
       const result = getSmartTransactionsOptInStatus(state);
       expect(result).toBe(true);
@@ -96,13 +86,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          selectedNetworkClientId: 'polygon',
-          networkConfigurationsByChainId: {
-            [CHAIN_IDS.POLYGON]: {
-              chainId: CHAIN_IDS.POLYGON,
-              rpcEndpoints: [{ networkClientId: 'polygon' }],
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
         },
       };
       const result = getCurrentChainSupportsSmartTransactions(newState);
@@ -160,13 +144,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          selectedNetworkClientId: 'polygon',
-          networkConfigurationsByChainId: {
-            [CHAIN_IDS.POLYGON]: {
-              chainId: CHAIN_IDS.POLYGON,
-              rpcEndpoints: [{ networkClientId: 'polygon' }],
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
         },
       };
       expect(getSmartTransactionsEnabled(newState)).toBe(false);
@@ -178,10 +156,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          selectedNetworkClientId: 'bsc',
-          networkConfigurations: {
-            bsc: { chainId: CHAIN_IDS.BSC, rpcUrl: '' },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.BSC }),
         },
       };
       expect(getSmartTransactionsEnabled(newState)).toBe(false);
@@ -193,7 +168,7 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          selectedNetworkClientId: 'linea-mainnet',
+          ...mockNetworkState({ chainId: CHAIN_IDS.LINEA_MAINNET }),
         },
       };
       expect(getSmartTransactionsEnabled(newState)).toBe(false);
@@ -288,10 +263,7 @@ describe('Selectors', () => {
             ...state.metamask.preferences,
             smartTransactionsOptInStatus: null,
           },
-          selectedNetworkClientId: 'polygon',
-          networkConfigurations: {
-            polygon: { chainId: CHAIN_IDS.POLYGON, rpcUrl: '' },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
         },
       };
       expect(getIsSmartTransactionsOptInModalAvailable(newState)).toBe(false);
@@ -307,14 +279,10 @@ describe('Selectors', () => {
             ...state.metamask.preferences,
             smartTransactionsOptInStatus: null,
           },
-          selectedNetworkClientId: 'network-configuration-id-1',
-          networkConfigurations: {
-            'network-configuration-id-1': {
-              chainId: CHAIN_IDS.MAINNET,
-              ticker: CURRENCY_SYMBOLS.ETH,
-              rpcUrl: 'https://mainnet.quiknode.pro/',
-            },
-          },
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.MAINNET,
+            rpcUrl: 'https://mainnet.quiknode.pro/',
+          }),
         },
       };
       expect(getIsSmartTransactionsOptInModalAvailable(newState)).toBe(false);

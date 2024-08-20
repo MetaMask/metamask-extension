@@ -4,6 +4,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import { detectTokens } from '../../../store/actions';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { ImportTokenLink } from '.';
 
 const mockPushHistory = jest.fn();
@@ -30,12 +31,7 @@ describe('Import Token Link', () => {
   it('should match snapshot for goerli chainId', () => {
     const mockState = {
       metamask: {
-        networkConfigurationsByChainId: {
-          [CHAIN_IDS.GOERLI]: {
-            chainId: CHAIN_IDS.GOERLI,
-            rpcEndpoints: [{}],
-          },
-        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
       },
     };
 
@@ -49,12 +45,7 @@ describe('Import Token Link', () => {
   it('should match snapshot for mainnet chainId', () => {
     const mockState = {
       metamask: {
-        networkConfigurationsByChainId: {
-          [CHAIN_IDS.MAINNET]: {
-            chainId: CHAIN_IDS.MAINNET,
-            rpcEndpoints: [{}],
-          },
-        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       },
     };
 
@@ -68,12 +59,7 @@ describe('Import Token Link', () => {
   it('should detectTokens when clicking refresh', () => {
     const mockState = {
       metamask: {
-        networkConfigurationsByChainId: {
-          [CHAIN_IDS.GOERLI]: {
-            chainId: CHAIN_IDS.GOERLI,
-            rpcEndpoints: [{}],
-          },
-        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
       },
     };
 
@@ -90,12 +76,7 @@ describe('Import Token Link', () => {
   it('should push import token route', () => {
     const mockState = {
       metamask: {
-        networkConfigurationsByChainId: {
-          [CHAIN_IDS.GOERLI]: {
-            chainId: CHAIN_IDS.GOERLI,
-            rpcEndpoints: [{}],
-          },
-        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
       },
     };
 

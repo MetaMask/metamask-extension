@@ -1,7 +1,6 @@
 import React from 'react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
-import { NetworkType } from '@metamask/controller-utils';
 import { EthAccountType } from '@metamask/keyring-api';
 import { act } from '@testing-library/react';
 import {
@@ -14,14 +13,12 @@ import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../../test/jest/
 import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import { SEND_STAGES, startNewDraftTransaction } from '../../../../ducks/send';
 import { AssetType } from '../../../../../shared/constants/transaction';
-import {
-  CHAIN_IDS,
-  GOERLI_DISPLAY_NAME,
-} from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { KeyringType } from '../../../../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import { SendPage } from '.';
 
 jest.mock('@ethersproject/providers', () => {
@@ -164,27 +161,16 @@ const baseStore = {
         accounts: ['0x0'],
       },
     ],
-    selectedNetworkClientId: NetworkType.goerli,
-    networksMetadata: {
-      [NetworkType.goerli]: {
-        EIPS: {},
-        status: 'available',
-      },
-    },
+    ...mockNetworkState({
+      chainId: CHAIN_IDS.GOERLI,
+      ticker: 'ETH',
+    }),
     tokens: [],
     preferences: {
       useNativeCurrencyAsPrimaryCurrency: false,
       showFiatInTestnets: true,
     },
     currentCurrency: 'USD',
-    networkConfigurationsByChainId: {
-      [CHAIN_IDS.GOERLI]: {
-        name: GOERLI_DISPLAY_NAME,
-        chainId: CHAIN_IDS.GOERLI,
-        defaultRpcEndpointIndex: 0,
-        rpcEndpoints: [{ networkClientId: 'goerli' }],
-      },
-    },
     nativeCurrency: 'ETH',
     featureFlags: {
       sendHexData: false,
@@ -380,6 +366,7 @@ describe('SendPage', () => {
         metamask: {
           ...mockSendState.metamask,
           gasEstimateType: 'none',
+          ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
         },
       };
 

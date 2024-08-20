@@ -40,6 +40,7 @@ import {
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -116,8 +117,8 @@ import {
 import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getMethodDataAsync } from '../../shared/lib/four-byte';
-import type { MarkAsReadNotificationsParam } from '../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
+import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -3048,10 +3049,6 @@ export function setSmartTransactionsOptInStatus(
   };
 }
 
-export function setShowTokenAutodetectModal(value: boolean) {
-  return setPreference('showTokenAutodetectModal', value);
-}
-
 export function setShowMultiRpcModal(value: boolean) {
   return setPreference('showMultiRpcModal', value);
 }
@@ -4023,27 +4020,6 @@ export function setFirstTimeFlowType(
     } catch (err) {
       dispatch(displayWarning(err));
     }
-  };
-}
-
-export function setShowTokenAutodetectModalOnUpgrade(
-  val: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.setShowTokenAutodetectModalOnUpgrade`);
-    callBackgroundMethod(
-      'setShowTokenAutodetectModalOnUpgrade',
-      [val],
-      (err) => {
-        if (err) {
-          dispatch(displayWarning(err));
-        }
-      },
-    );
-    dispatch({
-      type: actionConstants.SET_SHOW_TOKEN_AUTO_DETECT_MODAL_UPGRADE,
-      value: val,
-    });
   };
 }
 
@@ -5396,7 +5372,7 @@ export function fetchAndUpdateMetamaskNotifications(): ThunkAction<
  * @returns A thunk action that, when dispatched, attempts to mark MetaMask notifications as read.
  */
 export function markMetamaskNotificationsAsRead(
-  notifications: MarkAsReadNotificationsParam,
+  notifications: NotificationServicesController.Types.MarkAsReadNotificationsParam,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
@@ -5567,10 +5543,6 @@ export function setIsProfileSyncingEnabled(
   };
 }
 
-export function setShowNftAutodetectModal(value: boolean) {
-  return setPreference('showNftAutodetectModal', value);
-}
-
 export function setConfirmationAdvancedDetailsOpen(value: boolean) {
   return setPreference('showConfirmationAdvancedDetails', value);
 }
@@ -5612,4 +5584,21 @@ export async function multichainUpdateBalance(
 
 export async function multichainUpdateBalances(): Promise<void> {
   return await submitRequestToBackground<void>('multichainUpdateBalances', []);
+}
+
+export async function getLastInteractedConfirmationInfo(): Promise<
+  LastInteractedConfirmationInfo | undefined
+> {
+  return await submitRequestToBackground<void>(
+    'getLastInteractedConfirmationInfo',
+  );
+}
+
+export async function setLastInteractedConfirmationInfo(
+  info: LastInteractedConfirmationInfo,
+): Promise<void> {
+  return await submitRequestToBackground<void>(
+    'setLastInteractedConfirmationInfo',
+    [info],
+  );
 }

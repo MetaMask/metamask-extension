@@ -1,4 +1,6 @@
 const { strict: assert } = require('assert');
+const { mockNetworkState } = require('../../../stub/networks');
+
 const {
   defaultGanacheOptions,
   generateGanacheOptions,
@@ -186,24 +188,21 @@ describe('Custom RPC history', function () {
       {
         fixtures: new FixtureBuilder()
           .withNetworkController({
-            networkConfigurations: {
-              networkConfigurationIdOne: {
+            ...mockNetworkState(
+              {
                 rpcUrl: 'http://127.0.0.1:8545/1',
                 chainId: '0x539',
                 ticker: 'ETH',
                 nickname: 'http://127.0.0.1:8545/1',
-                rpcPrefs: {},
-                type: 'rpc',
               },
-              networkConfigurationIdTwo: {
+              {
                 rpcUrl: 'http://127.0.0.1:8545/2',
                 chainId: '0x539',
                 ticker: 'ETH',
                 nickname: 'http://127.0.0.1:8545/2',
-                rpcPrefs: {},
-                type: 'rpc',
               },
-            },
+            ),
+            selectedNetworkClientId: 'mainnet',
           })
           .build(),
         ganacheOptions: defaultGanacheOptions,
@@ -238,22 +237,21 @@ describe('Custom RPC history', function () {
       {
         fixtures: new FixtureBuilder()
           .withNetworkController({
-            networkConfigurations: {
-              networkConfigurationIdOne: {
+            ...mockNetworkState(
+              {
                 rpcUrl: 'http://127.0.0.1:8545/1',
                 chainId: '0x539',
                 ticker: 'ETH',
                 nickname: 'http://127.0.0.1:8545/1',
-                rpcPrefs: {},
               },
-              networkConfigurationIdTwo: {
+              {
                 rpcUrl: 'http://127.0.0.1:8545/2',
                 chainId: '0x539',
                 ticker: 'ETH',
                 nickname: 'http://127.0.0.1:8545/2',
-                rpcPrefs: {},
               },
-            },
+            ),
+            selectedNetworkClientId: 'mainnet',
           })
           .build(),
         ganacheOptions: defaultGanacheOptions,

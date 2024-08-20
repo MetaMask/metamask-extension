@@ -5,7 +5,6 @@ const EXPECTED_DEFAULT_STATE = {
   previousAppVersion: '',
   previousMigrationVersion: 0,
   currentMigrationVersion: 0,
-  showTokenAutodetectModalOnUpgrade: false,
   showMultiRpcModalUpgrade: false,
 };
 
@@ -17,7 +16,6 @@ describe('AppMetadataController', () => {
         previousAppVersion: '1',
         previousMigrationVersion: 1,
         currentMigrationVersion: 1,
-        showTokenAutodetectModalOnUpgrade: false,
         showMultiRpcModalUpgrade: false,
       };
       const appMetadataController = new AppMetadataController({
@@ -57,7 +55,6 @@ describe('AppMetadataController', () => {
       expect(appMetadataController.store.getState()).toStrictEqual({
         ...EXPECTED_DEFAULT_STATE,
         currentAppVersion: '1',
-        showTokenAutodetectModalOnUpgrade: null,
       });
     });
 
@@ -74,7 +71,6 @@ describe('AppMetadataController', () => {
         ...EXPECTED_DEFAULT_STATE,
         currentAppVersion: '3',
         previousAppVersion: '2',
-        showTokenAutodetectModalOnUpgrade: null,
       });
     });
 

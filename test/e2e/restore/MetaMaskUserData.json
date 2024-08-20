@@ -37,8 +37,7 @@
       "showFiatInTestnets": false,
       "showTestNetworks": false,
       "smartTransactionsOptInStatus": false,
-      "useNativeCurrencyAsPrimaryCurrency": true,
-      "showTokenAutodetectModal": "boolean"
+      "useNativeCurrencyAsPrimaryCurrency": true
     },
     "theme": "light",
     "useBlockie": false,

@@ -11,6 +11,7 @@ import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import EthOverview from './eth-overview';
 
 jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
@@ -33,13 +34,7 @@ describe('EthOverview', () => {
 
   const mockStore = {
     metamask: {
-      networkConfigurationsByChainId: {
-        [CHAIN_IDS.MAINNET]: {
-          chainId: CHAIN_IDS.MAINNET,
-          rpcEndpoints: [{}],
-        },
-      },
-
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
           '0x1': { address: '0x1', balance: '0x1F4' },
@@ -189,7 +184,14 @@ describe('EthOverview', () => {
     });
 
     it('should have the Bridge button enabled if chain id is part of supported chains', () => {
-      const mockedStore = configureMockStore([thunk])(mockStore);
+      const mockedAvalancheStore = {
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({ chainId: '0xa86a' }),
+        },
+      };
+      const mockedStore = configureMockStore([thunk])(mockedAvalancheStore);
 
       const { queryByTestId, queryByText } = renderWithProvider(
         <EthOverview />,
@@ -273,12 +275,7 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          networkConfigurationsByChainId: {
-            '0xfa': {
-              chainId: '0xfa',
-              rpcEndpoints: [{}],
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
         },
       };
       const mockedStore = configureMockStore([thunk])(mockedFantomStore);
@@ -331,12 +328,7 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          networkConfigurationsByChainId: {
-            [CHAIN_IDS.GOERLI]: {
-              chainId: CHAIN_IDS.GOERLI,
-              rpcEndpoints: [{}],
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -353,7 +345,16 @@ describe('EthOverview', () => {
     });
 
     it('should have the Buy native token enabled if chain id is part of supported buyable chains', () => {
-      const mockedStore = configureMockStore([thunk])(mockStore);
+      const mockedStoreWithUnbuyableChainId = {
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
+        },
+      };
+      const mockedStore = configureMockStore([thunk])(
+        mockedStoreWithUnbuyableChainId,
+      );
 
       const { queryByTestId } = renderWithProvider(
         <EthOverview />,
@@ -365,7 +366,16 @@ describe('EthOverview', () => {
     });
 
     it('should open the Buy native token URI when clicking on Buy button for a buyable chain ID', async () => {
-      const mockedStore = configureMockStore([thunk])(mockStore);
+      const mockedStoreWithBuyableChainId = {
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
+        },
+      };
+      const mockedStore = configureMockStore([thunk])(
+        mockedStoreWithBuyableChainId,
+      );
 
       const { queryByTestId } = renderWithProvider(
         <EthOverview />,

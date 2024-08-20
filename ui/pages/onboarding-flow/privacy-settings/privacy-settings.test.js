@@ -6,7 +6,7 @@ import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider } from '../../../../test/jest';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN } from '../../../store/actionConstants';
-import name from '../../../components/app/name';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import PrivacySettings from './privacy-settings';
 
 const mockOpenBasicFunctionalityModal = jest.fn().mockImplementation(() => {
@@ -26,6 +26,8 @@ jest.mock('../../../ducks/app/app.ts', () => {
 describe('Privacy Settings Onboarding View', () => {
   const mockStore = {
     metamask: {
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
       preferences: {
         petnamesEnabled: true,
       },

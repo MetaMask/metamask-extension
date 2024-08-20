@@ -14,8 +14,6 @@ import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminde
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import SmartTransactionsOptInModal from '../../components/app/smart-transactions/smart-transactions-opt-in-modal';
-import AutoDetectTokenModal from '../../components/app/assets/auto-detect-token/auto-detect-token-modal';
-import AutoDetectNftModal from '../../components/app/assets/auto-detect-nft/auto-detect-nft-modal';
 import MultiRpcEditModal from '../../components/app/multi-rpc-edit-modal/multi-rpc-edit-modal';
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
@@ -157,9 +155,7 @@ export default class Home extends PureComponent {
     announcementsToShow: PropTypes.bool.isRequired,
     onboardedInThisUISession: PropTypes.bool,
     isSmartTransactionsOptInModalAvailable: PropTypes.bool.isRequired,
-    isShowTokenAutodetectModal: PropTypes.bool.isRequired,
     showMultiRpcModal: PropTypes.bool.isRequired,
-    isShowNftAutodetectModal: PropTypes.bool.isRequired,
     ///: END:ONLY_INCLUDE_IF
     newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
@@ -208,10 +204,6 @@ export default class Home extends PureComponent {
     clearNewNetworkAdded: PropTypes.func,
     clearEditedNetwork: PropTypes.func,
     setActiveNetwork: PropTypes.func,
-    // eslint-disable-next-line react/no-unused-prop-types
-    setTokenAutodetectModal: PropTypes.func,
-    // eslint-disable-next-line react/no-unused-prop-types
-    setShowTokenAutodetectModalOnUpgrade: PropTypes.func,
     // eslint-disable-next-line react/no-unused-prop-types
     setShowMultiRpcModalUpgrade: PropTypes.func,
     // eslint-disable-next-line react/no-unused-prop-types
@@ -1002,13 +994,8 @@ export default class Home extends PureComponent {
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
       isSmartTransactionsOptInModalAvailable,
-      isShowTokenAutodetectModal,
       showMultiRpcModal,
-      setTokenAutodetectModal,
-      setShowTokenAutodetectModalOnUpgrade,
       setShowMultiRpcModalUpgrade,
-      isShowNftAutodetectModal,
-      setNftAutodetectModal,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
@@ -1035,26 +1022,6 @@ export default class Home extends PureComponent {
       showWhatsNewPopup &&
       !showSmartTransactionsOptInModal;
 
-    const showAutoDetectionModal =
-      canSeeModals &&
-      isShowTokenAutodetectModal &&
-      !showSmartTransactionsOptInModal &&
-      !showWhatsNew;
-
-    const showMultiRpcEditModal =
-      canSeeModals &&
-      showMultiRpcModal &&
-      !showSmartTransactionsOptInModal &&
-      !showWhatsNew;
-
-    // TODO show ths after token autodetect modal is merged
-    const showNftAutoDetectionModal =
-      canSeeModals &&
-      isShowNftAutodetectModal &&
-      !showAutoDetectionModal &&
-      !showSmartTransactionsOptInModal &&
-      !showWhatsNew;
-
     const showTermsOfUse =
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
     ///: END:ONLY_INCLUDE_IF
@@ -1078,26 +1045,6 @@ export default class Home extends PureComponent {
           <SmartTransactionsOptInModal
             isOpen={showSmartTransactionsOptInModal}
             hideWhatsNewPopup={hideWhatsNewPopup}
-          />
-
-          <AutoDetectTokenModal
-            isOpen={showAutoDetectionModal}
-            onClose={setTokenAutodetectModal}
-            setShowTokenAutodetectModalOnUpgrade={
-              setShowTokenAutodetectModalOnUpgrade
-            }
-          />
-
-          <MultiRpcEditModal
-            // isOpen
-            isOpen={showMultiRpcEditModal}
-            onClose={setTokenAutodetectModal}
-            setShowMultiRpcModalUpgrade={setShowMultiRpcModalUpgrade}
-          />
-
-          <AutoDetectNftModal
-            isOpen={showNftAutoDetectionModal}
-            onClose={setNftAutodetectModal}
           />
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (

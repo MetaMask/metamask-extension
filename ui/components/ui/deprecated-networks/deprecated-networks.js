@@ -17,7 +17,7 @@ import {
   DEPRECATED_NETWORKS,
   NEAR_AURORA_MAINNET_IMAGE_URL,
 } from '../../../../shared/constants/network';
-import { editAndSetNetworkConfiguration } from '../../../store/actions';
+import { upsertNetworkConfiguration } from '../../../store/actions';
 import { MetaMetricsNetworkEventSource } from '../../../../shared/constants/metametrics';
 
 export default function DeprecatedNetworks() {
@@ -60,9 +60,9 @@ export default function DeprecatedNetworks() {
         setIsClosed(true);
         // TODO: Implement after new network controller upgrade
         await dispatch(
-          editAndSetNetworkConfiguration(
+          upsertNetworkConfiguration(
             {
-              networkConfigurationId: id,
+              id,
               chainId: CHAIN_IDS.AURORA,
               nickname: AURORA_DISPLAY_NAME,
               rpcUrl: 'https://mainnet.aurora.dev',
@@ -72,7 +72,10 @@ export default function DeprecatedNetworks() {
                 blockExplorerUrl: 'https://aurorascan.dev',
               },
             },
-            { source: MetaMetricsNetworkEventSource.DeprecatedNetworkModal },
+            {
+              source: MetaMetricsNetworkEventSource.DeprecatedNetworkModal,
+              setActive: true,
+            },
           ),
         );
       },

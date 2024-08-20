@@ -1,11 +1,10 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import sinon from 'sinon';
-import { NetworkStatus } from '@metamask/network-controller';
-import { NetworkType } from '@metamask/controller-utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
 
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { mockNetworkState } from '../../../test/stub/networks';
 import ConfirmTransactionReducer, * as actions from './confirm-transaction.duck';
 
 const initialState = {
@@ -329,12 +328,7 @@ describe('Confirm Transaction Duck', () => {
               conversionRate: 468.58,
             },
           },
-          networkConfigurationsByChainId: {
-            [CHAIN_IDS.MAINNET]: {
-              chainId: CHAIN_IDS.MAINNET,
-              rpcEndpoints: [{}],
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
         confirmTransaction: {
           ethTransactionAmount: '1',
@@ -389,22 +383,7 @@ describe('Confirm Transaction Duck', () => {
               conversionRate: 468.58,
             },
           },
-          selectedNetworkClientId: 'goerli',
-          networkConfigurations: {
-            goerli: { chainId: CHAIN_IDS.GOERLI },
-          },
-          networksMetadata: {
-            [NetworkType.goerli]: {
-              EIPS: {},
-              status: NetworkStatus.Available,
-            },
-          },
-          networkConfigurationsByChainId: {
-            '0x5': {
-              chainId: '0x5',
-              rpcEndpoints: [{ networkClientId: NetworkType.goerli }],
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
           transactions: [
             {
               history: [],

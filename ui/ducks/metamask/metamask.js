@@ -23,18 +23,7 @@ import {
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
-import {
-  BUILT_IN_NETWORKS,
-  CHAIN_ID_TO_RPC_URL_MAP,
-  CHAIN_IDS,
-  CURRENCY_SYMBOLS,
-  LINEA_MAINNET_DISPLAY_NAME,
-  LINEA_SEPOLIA_DISPLAY_NAME,
-  MAINNET_DISPLAY_NAME,
-  NETWORK_TYPES,
-  SEPOLIA_DISPLAY_NAME,
-  TEST_NETWORK_TICKER_MAP,
-} from '../../../shared/constants/network';
+import { BUILT_IN_INFURA_NETWORKS } from '../../../shared/constants/network';
 
 const initialState = {
   isInitialized: false,
@@ -63,7 +52,6 @@ const initialState = {
     useNativeCurrencyAsPrimaryCurrency: true,
     petnamesEnabled: true,
     featureNotificationsEnabled: false,
-    showTokenAutodetectModal: false,
     showMultiRpcModal: false,
   },
   firstTimeFlowType: null,
@@ -227,13 +215,6 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
-    case actionConstants.SET_SHOW_TOKEN_AUTO_DETECT_MODAL_UPGRADE: {
-      return {
-        ...metamaskState,
-        showTokenAutodetectModalOnUpgrade: action.value,
-      };
-    }
-
     case actionConstants.SET_SHOW_MULTI_RPC_MODAL_UPGRADE: {
       return {
         ...metamaskState,
@@ -307,6 +288,7 @@ export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
  * @param {object} state - Redux state object.
  */
 export function getProviderConfig(state) {
+  // todo consider whether built in infura should use the simpler providerConfig to match existing behavior
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
   const networkConfigurationsByChainId =
     getNetworkConfigurationsByChainId(state);
@@ -608,7 +590,6 @@ export function getIsNetworkBusyByChainId(state, chainId) {
 export function getCompletedOnboarding(state) {
   return state.metamask.completedOnboarding;
 }
-
 export function getIsInitialized(state) {
   return state.metamask.isInitialized;
 }

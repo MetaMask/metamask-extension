@@ -1,6 +1,9 @@
 import { toChecksumAddress } from 'ethereumjs-util';
 import { EthAccountType } from '@metamask/keyring-api';
+import { Hex } from '@metamask/utils';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   getConfiguredCustodians,
   getCustodianIconForAddress,
@@ -254,12 +257,7 @@ describe('Institutional selectors', () => {
               supportedChains: ['1', '2', '3'],
             },
           },
-          networkConfigurationsByChainId: {
-            [toHex(1)]: {
-              chainId: toHex(1),
-              rpcEndpoints: [{}],
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
       });
 
@@ -298,12 +296,7 @@ describe('Institutional selectors', () => {
               supportedChains: ['4'],
             },
           },
-          networkConfigurationsByChainId: {
-            [toHex(1)]: {
-              chainId: toHex(1),
-              rpcEndpoints: [{}],
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
       });
 
@@ -345,12 +338,7 @@ describe('Institutional selectors', () => {
             },
             selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           },
-          networkConfigurationsByChainId: {
-            [toHex(1)]: {
-              chainId: toHex(1),
-              rpcEndpoints: [{}],
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
       });
 
@@ -363,6 +351,7 @@ describe('Institutional selectors', () => {
       const accountAddress = '0x1';
       const state = buildState({
         metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           internalAccounts: {
             selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
             accounts: {
@@ -431,12 +420,7 @@ describe('Institutional selectors', () => {
           custodianSupportedChains: {
             [accountAddress]: null,
           },
-          networkConfigurationsByChainId: {
-            [toHex(1)]: {
-              chainId: toHex(1),
-              rpcEndpoints: [{}],
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
       });
 
@@ -481,12 +465,7 @@ describe('Institutional selectors', () => {
               supportedChains: [],
             },
           },
-          networkConfigurationsByChainId: {
-            [toHex(1)]: {
-              chainId: toHex(1),
-              rpcEndpoints: [{}],
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
       });
 
@@ -531,12 +510,7 @@ describe('Institutional selectors', () => {
               supportedChains: ['1'],
             },
           },
-          networkConfigurationsByChainId: {
-            1: {
-              chainId: 1,
-              rpcEndpoints: [{}],
-            },
-          },
+          ...mockNetworkState({ chainId: 1 as unknown as Hex }),
         },
       });
 
@@ -581,12 +555,7 @@ describe('Institutional selectors', () => {
               supportedChains: ['1'],
             },
           },
-          networkConfigurationsByChainId: {
-            'not a hex number': {
-              chainId: 'not a hex number',
-              rpcEndpoints: [{}],
-            },
-          },
+          ...mockNetworkState({ chainId: 'not a hex number' as Hex }),
         },
       });
 

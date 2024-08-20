@@ -30,7 +30,7 @@ const MOCK_ORIGIN = 'https://portfolio.metamask.io';
 
 const render = ({
   showTestNetworks = false,
-  providerConfigId = 'goerli',
+  selectedNetworkClientId = 'goerli',
   isUnlocked = true,
   origin = MOCK_ORIGIN,
   selectedTabOriginInDomainsState = true,
@@ -39,21 +39,14 @@ const render = ({
     metamask: {
       ...mockState.metamask,
       isUnlocked,
-      // todo??
-      selectedNetworkClientId: providerConfigId,
-      // todo
-      // providerConfig: {
-      //   ...mockState.metamask.providerConfig,
-      //   chainId: currentChainId,
-      //   id: providerConfigId,
-      // },
+      selectedNetworkClientId,
       preferences: {
         showTestNetworks,
       },
       useRequestQueue: true,
       domains: {
         ...(selectedTabOriginInDomainsState
-          ? { [origin]: providerConfigId }
+          ? { [origin]: selectedNetworkClientId }
           : {}),
       },
     },
@@ -118,7 +111,7 @@ describe('NetworkListMenu', () => {
     render({
       showTestNetworks: false,
       currentChainId: CHAIN_IDS.MAINNET,
-      providerConfigId: 'testNetworkConfigurationId',
+      selectedNetworkClientId: 'testNetworkConfigurationId',
     });
 
     // Contains Mainnet, Linea Mainnet and the two custom networks

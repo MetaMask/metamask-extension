@@ -7,6 +7,7 @@ import {
   CHAIN_IDS,
   CURRENCY_SYMBOLS,
 } from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import TokenInput from '.';
 
 describe('TokenInput Component', () => {
@@ -73,14 +74,7 @@ describe('TokenInput Component', () => {
             ...mockState.metamask.preferences,
             showFiatInTestnets: true,
           },
-          selectedNetworkClientId: 'polygon',
-          networkConfigurationsByChainId: {
-            [CHAIN_IDS.POLYGON]: {
-              nativeCurrency: CURRENCY_SYMBOLS.MATIC,
-              chainId: CHAIN_IDS.POLYGON,
-              rpcEndpoints: [{ networkClientId: 'polygon' }],
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
         },
       };
       const mockStore = configureMockStore()(showFiatState);

@@ -2,22 +2,14 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import CancelTransactionGasFee from './cancel-transaction-gas-fee.component';
 
 describe('CancelTransactionGasFee Component', () => {
   const defaultState = {
     metamask: {
-      networkConfigurationsByChainId: {
-        [CHAIN_IDS.GOERLI]: {
-          chainId: CHAIN_IDS.GOERLI,
-          rpcEndpoints: [{}],
-        },
-      },
-      // providerConfig: {
-      //   chainId: CHAIN_IDS.GOERLI,
-      //   nickname: GOERLI_DISPLAY_NAME,
-      //   type: NETWORK_TYPES.GOERLI,
-      // },
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       currencyRates: {},
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: false,

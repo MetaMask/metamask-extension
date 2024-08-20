@@ -3,13 +3,13 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor, act } from '@testing-library/react';
 
-import { NetworkStatus } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 import Confirmation from '../confirmation';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 
 jest.mock('../../../../../shared/lib/fetch-with-cache');
 
@@ -38,19 +38,11 @@ const mockBaseStore = {
     },
     approvalFlows: [{ id: mockApprovalId, loadingText: null }],
     subjectMetadata: {},
-    networkConfigurationsByChainId: {
-      '0x9999': {
-        chainId: '0x9999',
-        rpcEndpoints: [{ networkClientId: 'test-network-client-id' }],
-      },
-    },
-
-    networksMetadata: {
-      networkClientId: {
-        EIPS: {},
-        status: NetworkStatus.Available,
-      },
-    },
+    ...mockNetworkState({
+      rpcUrl: 'http://example-custom-rpc.metamask.io',
+      chainId: '0x9999',
+      nickname: 'Test initial state',
+    }),
     snaps: {},
   },
 };

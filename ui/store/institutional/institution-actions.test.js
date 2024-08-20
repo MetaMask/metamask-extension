@@ -3,6 +3,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import MetaMaskController from '../../../app/scripts/metamask-controller';
 import { setBackgroundConnection } from '../background-connection';
+import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   showInteractiveReplacementTokenModal,
@@ -15,14 +16,7 @@ const middleware = [thunk];
 const defaultState = {
   metamask: {
     currentLocale: 'test',
-    selectedNetworkClientId: 'mainnet',
-
-    // networkConfigurationsByChainId: {
-    //   [CHAIN_IDS.MAINNET]: {
-    //     chainId: CHAIN_IDS.MAINNET,
-    //     rpcEndpoints: [{}],
-    //   },
-    // },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     accounts: {
       '0xFirstAddress': {
         balance: '0x0',
@@ -203,7 +197,7 @@ describe('#updateCustodyState', () => {
     setBackgroundConnection(background.getApi());
 
     const newState = {
-      selectedNetworkClientId: 'mainnet',
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
       // networkConfigurationsByChainId: {
       //   [CHAIN_IDS.MAINNET]: {
@@ -230,7 +224,7 @@ describe('#updateCustodyState', () => {
     setBackgroundConnection(background.getApi());
 
     const newState = {
-      selectedNetworkClientId: 'mainnet',
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
       // networkConfigurationsByChainId: {
       //   [CHAIN_IDS.MAINNET]: {
@@ -288,7 +282,7 @@ describe('#updateCustodyState', () => {
     setBackgroundConnection(background.getApi());
 
     const newState = {
-      selectedNetworkClientId: 'mainnet',
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
       // networkConfigurationsByChainId: {
       //   [CHAIN_IDS.MAINNET]: {

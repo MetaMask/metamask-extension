@@ -2,16 +2,13 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { defaultNetworksData } from '../networks-tab.constants';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import NetworksListItem from '.';
 
 const mockState = {
   metamask: {
-    networkConfigurationsByChainId: {
-      '0x5': {
-        chainId: '0x5',
-        rpcEndpoints: [{}],
-      },
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
   },
 };
 

@@ -7,6 +7,7 @@ import { setSwapsLiveness, setSwapsFeatureFlags } from '../../store/actions';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { setStorageItem } from '../../../shared/lib/storage-helpers';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
+import { mockNetworkState } from '../../../test/stub/networks';
 import swapsReducer, * as swaps from './swaps';
 
 const middleware = [thunk];
@@ -58,12 +59,7 @@ describe('Ducks - Swaps', () => {
 
       return () => ({
         metamask: {
-          networkConfigurationsByChainId: {
-            [CHAIN_IDS.MAINNET]: {
-              chainId: CHAIN_IDS.MAINNET,
-              rpcEndpoints: [{}],
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
           internalAccounts: {
             accounts: {

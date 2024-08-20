@@ -18,6 +18,7 @@ import {
   setRemoveNftMessage,
 } from '../../../../../store/actions';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 import NftDetails from './nft-details';
 
 jest.mock('copy-to-clipboard');
@@ -220,7 +221,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          selectedNetworkClientId: 'mainnet',
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
       };
       const mainnetMockStore = configureMockStore([thunk])(mainnetState);
@@ -248,13 +249,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          selectedNetworkClientId: 'polygon',
-          networkConfigurationsByChainId: {
-            [CHAIN_IDS.POLYGON]: {
-              chainId: CHAIN_IDS.POLYGON,
-              rpcEndpoints: [{ networkClientId: 'polygon' }],
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
         },
       };
       const polygonMockStore = configureMockStore([thunk])(polygonState);
@@ -282,13 +277,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          selectedNetworkClientId: 'sepolia',
-          networkConfigurationsByChainId: {
-            [CHAIN_IDS.SEPOLIA]: {
-              chainId: CHAIN_IDS.SEPOLIA,
-              rpcEndpoints: [{ networkClientId: 'sepolia' }],
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
         },
       };
       const sepoliaMockStore = configureMockStore([thunk])(sepoliaState);
@@ -316,13 +305,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          selectedNetworkClientId: 'networkClientId',
-          networkConfigurationsByChainId: {
-            '0x99': {
-              chainId: '0x99',
-              rpcEndpoints: [{ networkClientId: 'networkClientId' }],
-            },
-          },
+          ...mockNetworkState({ chainId: '0x99' }),
         },
       };
       const randomNetworkMockStore = configureMockStore([thunk])(

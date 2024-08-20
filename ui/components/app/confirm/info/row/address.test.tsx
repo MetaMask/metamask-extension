@@ -4,6 +4,7 @@ import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import configureStore from '../../../../../store/store';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 import { ConfirmInfoRowAddress } from './address';
 import { TEST_ADDRESS } from './constants';
 
@@ -77,13 +78,7 @@ describe('ConfirmInfoRowAddress', () => {
             ...mockState.metamask.preferences,
             petnamesEnabled: false,
           },
-          selectedNetworkClientId: 'mainnet',
-          networkConfigurationsByChainId: {
-            [CHAIN_IDS.MAINNET]: {
-              chainId: CHAIN_IDS.MAINNET,
-              rpcEndpoints: [{ networkClientId: 'mainnet' }],
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           addressBook: {
             [CHAIN_IDS.MAINNET]: {
               [TEST_ADDRESS]: {
@@ -112,13 +107,7 @@ describe('ConfirmInfoRowAddress', () => {
         {
           metamask: {
             ...mockState.metamask,
-            selectedNetworkClientId: 'mainnet',
-            networkConfigurationsByChainId: {
-              [CHAIN_IDS.MAINNET]: {
-                chainId: CHAIN_IDS.MAINNET,
-                rpcEndpoints: [{ networkClientId: 'mainnet' }],
-              },
-            },
+            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
             tokenList: {
               [WBTC.address]: {
                 address: WBTC.address,

@@ -148,6 +148,8 @@ export const CHAIN_IDS = {
   SEI: '0x531',
   BERACHAIN: '0x138d5',
   METACHAIN_ONE: '0x1b6e6',
+  NEAR: '0x18d',
+  NEAR_TESTNET: '0x18e',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -437,6 +439,7 @@ export const SCROLL_IMAGE_URL = './images/scroll.svg';
 export const NUMBERS_MAINNET_IMAGE_URL = './images/numbers-mainnet.svg';
 export const NUMBERS_TOKEN_IMAGE_URL = './images/numbers-token.png';
 export const SEI_IMAGE_URL = './images/sei.svg';
+export const NEAR_IMAGE_URL = './images/near.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -492,10 +495,12 @@ export const BUILT_IN_NETWORKS = {
   [NETWORK_TYPES.MAINNET]: {
     chainId: CHAIN_IDS.MAINNET,
     blockExplorerUrl: `https://etherscan.io`,
+    ticker: CURRENCY_SYMBOLS.ETH,
   },
   [NETWORK_TYPES.LINEA_MAINNET]: {
     chainId: CHAIN_IDS.LINEA_MAINNET,
     blockExplorerUrl: 'https://lineascan.build',
+    ticker: CURRENCY_SYMBOLS.ETH,
   },
   [NETWORK_TYPES.LOCALHOST]: {
     chainId: CHAIN_IDS.LOCALHOST,
@@ -714,6 +719,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ZKSYNC_ERA]: ZK_SYNC_ERA_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.NEAR]: NEAR_IMAGE_URL,
+  [CHAIN_IDS.NEAR_TESTNET]: NEAR_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ACALA_NETWORK]: ACALA_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ARBITRUM_NOVA]: ARBITRUM_NOVA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ASTAR]: ASTAR_IMAGE_URL,
@@ -791,6 +798,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_IMAGE_URL,
   [CHAIN_IDS.NUMBERS]: NUMBERS_TOKEN_IMAGE_URL,
   [CHAIN_IDS.SEI]: SEI_IMAGE_URL,
+  [CHAIN_IDS.NEAR]: NEAR_IMAGE_URL,
+  [CHAIN_IDS.NEAR_TESTNET]: NEAR_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';

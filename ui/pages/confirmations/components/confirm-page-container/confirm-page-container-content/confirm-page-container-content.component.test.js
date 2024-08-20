@@ -11,17 +11,13 @@ import {
 } from '../../../../../helpers/constants/error-keys';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 import ConfirmPageContainerContent from './confirm-page-container-content.component';
 
 describe('Confirm Page Container Content', () => {
   const mockStore = {
     metamask: {
-      networkConfigurationsByChainId: {
-        '0x5': {
-          chainId: '0x5',
-          rpcEndpoints: [{}],
-        },
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
       addressBook: {
         '0x5': {
           '0x06195827297c7A80a443b6894d3BDB8824b43896': {

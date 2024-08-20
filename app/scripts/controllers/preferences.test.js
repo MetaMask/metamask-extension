@@ -5,22 +5,27 @@ import { ControllerMessenger } from '@metamask/base-controller';
 import { TokenListController } from '@metamask/assets-controllers';
 import { AccountsController } from '@metamask/accounts-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { mockNetworkState } from '../../../test/stub/networks';
 import PreferencesController from './preferences';
 
-const NETWORK_CONFIGURATION_DATA = {
-  [CHAIN_IDS.GOERLI]: {
+const NETWORK_CONFIGURATION_DATA = mockNetworkState(
+  {
+    id: 'test-networkConfigurationId-1',
+    rpcUrl: 'https://testrpc.com',
     chainId: CHAIN_IDS.GOERLI,
     name: '0X5',
     blockExplorerUrl: 'https://etherscan.io',
     rpcEndpoints: [{ networkClientId: 'test-networkConfigurationId-1' }],
   },
-  '0x539': {
+  {
+    id: 'test-networkConfigurationId-2',
+    rpcUrl: 'http://localhost:8545',
     chainId: '0x539',
     name: 'Localhost 8545',
     nativeCurrency: 'ETH',
     rpcEndpoints: [{ networkClientId: 'test-networkConfigurationId-2' }],
   },
-};
+).networkConfigurations;
 
 describe('preferences controller', () => {
   let controllerMessenger;

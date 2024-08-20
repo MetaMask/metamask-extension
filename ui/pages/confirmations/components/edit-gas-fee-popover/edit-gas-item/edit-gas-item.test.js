@@ -10,6 +10,7 @@ import configureStore from '../../../../../store/store';
 import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
 
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 import EditGasItem from './edit-gas-item';
 
 jest.mock('../../../../../store/actions', () => ({
@@ -61,15 +62,7 @@ const render = async ({
   const store = configureStore({
     metamask: {
       currencyRates: {},
-
-      networkConfigurationsByChainId: {
-        [CHAIN_IDS.GOERLI]: {
-          nativeCurrency: 'ETH',
-          name: GOERLI_DISPLAY_NAME,
-          chainId: CHAIN_IDS.GOERLI,
-          rpcEndpoints: [{}],
-        },
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI, ticker: 'ETH' }),
       accountsByChainId: {
         [CHAIN_IDS.GOERLI]: {
           '0xAddress': {

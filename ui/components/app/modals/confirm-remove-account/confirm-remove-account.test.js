@@ -7,6 +7,7 @@ import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import { addressSummary } from '../../../../helpers/utils/util';
 import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import ConfirmRemoveAccount from '.';
 
 global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
@@ -53,14 +54,8 @@ const mockNonEvmNetwork = {
 describe('Confirm Remove Account', () => {
   const state = {
     metamask: {
-      // selectedNetworkClientId: 'mainnet',
-      networkConfigurationsByChainId: {
-        '0x99': {
-          chainId: '0x99',
-          rpcEndpoints: [{}],
-        },
-      },
       completedOnboarding: true,
+      ...mockNetworkState({ chainId: '0x99' }),
       internalAccounts: {
         accounts: {
           [mockAccount.id]: mockAccount,

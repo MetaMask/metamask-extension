@@ -1,5 +1,3 @@
-import { NetworkType } from '@metamask/controller-utils';
-import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType } from '@metamask/keyring-api';
 import {
   GasFeeEstimateType,
@@ -10,6 +8,7 @@ import { GAS_ESTIMATE_TYPES } from '@metamask/gas-fee-controller';
 import * as actionConstants from '../../store/actionConstants';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { mockNetworkState } from '../../../test/stub/networks';
 import reduceMetamask, {
   getBlockGasLimit,
   getConversionRate,
@@ -123,26 +122,11 @@ describe('MetaMask Reducers', () => {
         },
         useCurrencyRateCheck: true,
         currencyRates: {
-          TestETH: {
+          GoerliETH: {
             conversionRate: 1200.88200327,
           },
         },
-        selectedNetworkClientId: NetworkType.goerli,
-        networksMetadata: {
-          [NetworkType.goerli]: {
-            EIPS: {},
-            status: NetworkStatus.Available,
-          },
-        },
-
-        networkConfigurationsByChainId: {
-          '0x5': {
-            nativeCurrency: 'TestETH',
-            chainId: '0x5',
-            rpcEndpoints: [{ networkClientId: NetworkType.goerli }],
-          },
-        },
-
+        ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
         accounts: {
           '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
             code: '0x',
@@ -384,7 +368,7 @@ describe('MetaMask Reducers', () => {
 
     describe('getNativeCurrency()', () => {
       it('should return nativeCurrency when useCurrencyRateCheck is true', () => {
-        expect(getNativeCurrency(mockState)).toStrictEqual('TestETH');
+        expect(getNativeCurrency(mockState)).toStrictEqual('GoerliETH');
       });
 
       it('should return the ticker symbol of the selected network when useCurrencyRateCheck is false', () => {
@@ -396,7 +380,7 @@ describe('MetaMask Reducers', () => {
               useCurrencyRateCheck: false,
             },
           }),
-        ).toStrictEqual('TestETH');
+        ).toStrictEqual('GoerliETH');
       });
     });
 
@@ -490,15 +474,10 @@ describe('MetaMask Reducers', () => {
           ...mockState,
           metamask: {
             ...mockState.metamask,
-            selectedNetworkClientId: NetworkType.mainnet,
-            networksMetadata: {
-              [NetworkType.mainnet]: {
-                EIPS: {
-                  1559: false,
-                },
-                status: 'available',
-              },
-            },
+            ...mockNetworkState({
+              chainId: CHAIN_IDS.MAINNET,
+              metadata: { EIPS: { 1559: false } },
+            }),
           },
         }),
       ).toStrictEqual(true);
@@ -512,13 +491,10 @@ describe('MetaMask Reducers', () => {
           ...mockState,
           metamask: {
             ...mockState.metamask,
-            selectedNetworkClientId: NetworkType.mainnet,
-            networksMetadata: {
-              [NetworkType.mainnet]: {
-                EIPS: { 1559: true },
-                status: 'available',
-              },
-            },
+            ...mockNetworkState({
+              chainId: CHAIN_IDS.MAINNET,
+              metadata: { EIPS: { 1559: true } },
+            }),
           },
         }),
       ).toStrictEqual(false);

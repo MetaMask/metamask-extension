@@ -7,6 +7,7 @@ import configureStore from '../store/store';
 
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { createMockInternalAccount } from '../../test/jest/mocks';
+import { mockNetworkState } from '../../test/stub/networks';
 import { useAccountTotalFiatBalance } from './useAccountTotalFiatBalance';
 
 const mockAccount = createMockInternalAccount({
@@ -75,14 +76,8 @@ const renderUseAccountTotalFiatBalance = (address) => {
           },
         },
       },
-      selectedNetworkClientId: 'mainnet',
-      networkConfigurationsByChainId: {
-        [CHAIN_IDS.MAINNET]: {
-          nativeCurrency: 'ETH',
-          chainId: CHAIN_IDS.MAINNET,
-          rpcEndpoints: [{ networkClientId: 'mainnet' }],
-        },
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
       detectedTokens: {
         '0x1': {
           '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da': [

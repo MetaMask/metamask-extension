@@ -13,6 +13,7 @@ import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import EditGasFeePopover from './edit-gas-fee-popover';
 
 jest.mock('../../../../store/actions', () => ({
@@ -63,22 +64,7 @@ const render = async ({ txProps, contextProps } = {}) => {
   const store = configureStore({
     metamask: {
       currencyRates: {},
-      networkConfigurationsByChainId: {
-        [CHAIN_IDS.GOERLI]: {
-          nativeCurrency: 'ETH',
-          chainId: CHAIN_IDS.GOERLI,
-          rpcEndpoints: [{ networkClientId: 'goerli' }],
-        },
-      },
-      selectedNetworkClientId: 'goerli',
-      networksMetadata: {
-        goerli: {
-          EIPS: {
-            1559: true,
-          },
-          status: 'available',
-        },
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI, ticker: 'ETH' }),
       accountsByChainId: {
         [CHAIN_IDS.GOERLI]: {
           '0xAddress': { address: '0xAddress', balance: '0x1F4' },

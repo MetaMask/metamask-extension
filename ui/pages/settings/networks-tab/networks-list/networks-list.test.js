@@ -3,17 +3,12 @@ import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { defaultNetworksData } from '../networks-tab.constants';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import NetworksList from '.';
 
 const mockState = {
   metamask: {
-    networkConfigurationsByChainId: {
-      [CHAIN_IDS.GOERLI]: {
-        nativeCurrency: 'ETH',
-        chainId: CHAIN_IDS.GOERLI,
-        rpcEndpoints: [{ url: 'https://goerli.infura.io/v3/undefined' }],
-      },
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
   },
 };
 

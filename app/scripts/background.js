@@ -19,6 +19,9 @@ import { ApprovalType } from '@metamask/controller-utils';
 import PortStream from 'extension-port-stream';
 
 import { ethErrors } from 'eth-rpc-errors';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
+
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -78,8 +81,6 @@ import { generateSkipOnboardingState } from './skip-onboarding';
 import { createOffscreen } from './offscreen';
 
 /* eslint-enable import/first */
-
-import { TRIGGER_TYPES } from './controllers/metamask-notifications/constants/notification-schema';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -1035,26 +1036,30 @@ export function setupController(
 
   function getUnreadNotificationsCount() {
     try {
-      const { isMetamaskNotificationsEnabled, isFeatureAnnouncementsEnabled } =
-        controller.metamaskNotificationsController.state;
+      const { isNotificationServicesEnabled, isFeatureAnnouncementsEnabled } =
+        controller.notificationServicesController.state;
 
       const snapNotificationCount = Object.values(
         controller.notificationController.state.notifications,
       ).filter((notification) => notification.readDate === null).length;
 
       const featureAnnouncementCount = isFeatureAnnouncementsEnabled
-        ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
+        ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
             (notification) =>
               !notification.isRead &&
-              notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+              notification.type ===
+                NotificationServicesController.Constants.TRIGGER_TYPES
+                  .FEATURES_ANNOUNCEMENT,
           ).length
         : 0;
 
-      const walletNotificationCount = isMetamaskNotificationsEnabled
-        ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
+      const walletNotificationCount = isNotificationServicesEnabled
+        ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
             (notification) =>
               !notification.isRead &&
-              notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+              notification.type !==
+                NotificationServicesController.Constants.TRIGGER_TYPES
+                  .FEATURES_ANNOUNCEMENT,
           ).length
         : 0;
 
@@ -1100,6 +1105,7 @@ export function setupController(
         switch (type) {
           case ApprovalType.SnapDialogAlert:
           case ApprovalType.SnapDialogPrompt:
+          case DIALOG_APPROVAL_TYPES.default:
             controller.approvalController.accept(id, null);
             break;
           case ApprovalType.SnapDialogConfirmation:

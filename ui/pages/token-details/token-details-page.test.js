@@ -6,6 +6,7 @@ import { renderWithProvider } from '../../../test/lib/render-helpers';
 import Identicon from '../../components/ui/identicon';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import TokenDetailsPage from './token-details-page';
 
@@ -229,15 +230,7 @@ const state = {
         symbol: 'UMA',
       },
     },
-    networkConfigurationsByChainId: {
-      [CHAIN_IDS.MAINNET]: {
-        name: 'Ethereum Mainnet',
-        nativeCurrency: 'ETH',
-        chainId: CHAIN_IDS.MAINNET,
-        rpcEndpoints: [{ type: 'custom' }],
-      },
-    },
-
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     currencyRates: {},
     preferences: {
       showFiatInTestnets: true,
