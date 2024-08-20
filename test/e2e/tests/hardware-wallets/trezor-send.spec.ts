@@ -46,10 +46,10 @@ describe('Trezor Hardware', function (this: Suite) {
         ganacheServer,
       }: {
         driver: Driver;
-        ganacheServer: Ganache;
+        ganacheServer?: Ganache;
       }) => {
         // Seed the Trezor account with balance
-        await ganacheServer.setAccountBalance(
+        await ganacheServer?.setAccountBalance(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         );
@@ -60,7 +60,13 @@ describe('Trezor Hardware', function (this: Suite) {
         await driver.clickElement('.hw-account-list__item__checkbox');
         await driver.clickElement({ text: 'Unlock' });
 
-        await sendTransaction(driver, RECIPIENT, '2.0');
+        await sendTransaction(driver, RECIPIENT, '1');
+
+        // Wait for transaction to be confirmed
+        await driver.waitForSelector({
+          css: '.transaction-status-label',
+          text: 'Confirmed',
+        });
       },
     );
   });
