@@ -23,12 +23,13 @@ const mockSelectedInternalAccount =
 const render = (
   selectedInternalAccount = mockSelectedInternalAccount,
   balance = ETH_BALANCE,
+  chainId = CHAIN_IDS.MAINNET,
 ) => {
   const state = {
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      ...mockNetworkState({ chainId }),
       accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
           [selectedInternalAccount.address]: { balance },

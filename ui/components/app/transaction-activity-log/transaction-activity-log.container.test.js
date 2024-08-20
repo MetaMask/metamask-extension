@@ -24,16 +24,17 @@ describe('TransactionActivityLog container', () => {
             },
           },
 
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.MAINNET,
+            blockExplorerUrl: undefined,
+          }),
         },
       };
 
       expect(mapStateToProps(mockState)).toStrictEqual({
         conversionRate: 280.45,
         nativeCurrency: 'ETH',
-        rpcPrefs: {
-          blockExplorerUrl: 'https://localhost/blockExplorer/0x1',
-        },
+        rpcPrefs: {},
       });
     });
 
