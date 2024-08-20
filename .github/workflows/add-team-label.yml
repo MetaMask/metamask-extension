@@ -4,11 +4,10 @@ on:
   pull_request:
     types:
       - opened
-      - synchronize
 
 jobs:
   add-team-label:
-    uses: metamask/github-tools/.github/workflows/add-team-label.yml@add-team-label
+    uses: metamask/github-tools/.github/workflows/add-team-label.yml@main
     permissions:
        pull-requests: write
     secrets:
