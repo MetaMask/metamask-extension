@@ -663,9 +663,6 @@
   "back": {
     "message": "Zurück"
   },
-  "backup": {
-    "message": "Sichern"
-  },
   "backupApprovalInfo": {
     "message": "Dieser geheime Code ist zum Wiedererlangen Ihrer Wallet erforderlich, falls Sie Ihr Gerät verlieren, Ihr Passwort vergessen, MetaMask neu installieren müssen oder auf einem anderen Gerät auf Ihre Wallet zugreifen möchten."
   },
@@ -677,12 +674,6 @@
   },
   "backupNow": {
     "message": "Jetzt sichern"
-  },
-  "backupUserData": {
-    "message": "Sichern Sie Ihre Daten"
-  },
-  "backupUserDataDescription": {
-    "message": "Sie können Daten wie Ihre Kontakte und Einstellungen sichern."
   },
   "balance": {
     "message": "Guthaben:"
