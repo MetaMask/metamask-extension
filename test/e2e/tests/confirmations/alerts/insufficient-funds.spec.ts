@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import FixtureBuilder from '../../../fixture-builder';
 import {
   PRIVATE_KEY,
@@ -11,8 +12,6 @@ import {
   TestSuiteArguments,
   openDAppWithContract,
 } from '../transactions/shared';
-
-import { strict as assert } from 'assert';
 
 describe.only('Alert for insufficient funds', function () {
   it.only('Shows an alert when the user tries to send a transaction with insufficient funds', async function () {
