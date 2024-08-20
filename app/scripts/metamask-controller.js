@@ -4721,7 +4721,8 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<string[]>} The origin's permitted accounts, or an empty
    * array.
    */
-  async getPermittedAccounts(origin) {
+  getPermittedAccounts(origin) {
+    // TODO: This originally was async and there are several callers that await this. why?
     let caveat;
     try {
       caveat = this.permissionController.getCaveat(
@@ -5440,10 +5441,7 @@ export default class MetamaskController extends EventEmitter {
       shouldEnqueueRequest: (request) => {
         if (
           request.method === 'eth_requestAccounts' &&
-          this.permissionController.hasPermission(
-            request.origin,
-            PermissionNames.eth_accounts,
-          )
+          this.getPermittedAccounts().length > 0
         ) {
           return false;
         }
