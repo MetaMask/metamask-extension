@@ -66,14 +66,12 @@ export class SwapPage {
     // Enter source token
     if (options.from) {
       this.swapFromDropDown.click();
-      await this.page.waitForTimeout(2000);
       await this.tokenSearch.fill(options.from);
       await this.selectTokenFromList(options.from);
     }
 
     // Enter destionation token
     await this.swapToDropDown.click();
-    await this.page.waitForTimeout(2000);
     await this.tokenSearch.fill(options.to);
     await this.selectTokenFromList(options.to);
   }
@@ -147,6 +145,12 @@ export class SwapPage {
     let searchItem;
     do {
       searchItem = await this.tokenList.first().textContent();
+      const listCount = await this.tokenList.count();
+
+      if (listCount > 1 && searchItem !== symbol) {
+        await this.tokenQty.fill('');
+        await this.tokenQty.fill(symbol);
+      }
     } while (searchItem !== symbol);
 
     return await this.tokenList.first().click();

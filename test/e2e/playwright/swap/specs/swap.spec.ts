@@ -63,8 +63,6 @@ test('Swap ETH to DAI - Switch to Arbitrum and fetch quote - Switch ETH - WETH',
     activity: 'Swap ETH to DAI',
   });
   await walletPage.selectTokenWallet();
-  // await walletPage.importTokens();
-
   await walletPage.selectSwapAction();
   await swapPage.enterQuote({ from: 'ETH', to: 'WETH', qty: '.001' });
   await swapPage.waitForQuote();
@@ -103,8 +101,6 @@ test('Swap WETH to ETH - Switch to Avalanche and fetch quote - Switch DAI - USDC
     activity: 'Swap ETH to WETH',
   });
   await walletPage.selectTokenWallet();
-  // await walletPage.importTokens();
-
   await walletPage.selectSwapAction();
   await swapPage.enterQuote({ from: 'DAI', to: 'USDC', qty: '.5' });
   await swapPage.waitForQuote();
