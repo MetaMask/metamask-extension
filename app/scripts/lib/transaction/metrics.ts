@@ -907,7 +907,9 @@ async function buildEventFragmentProperties({
   let transactionApprovalAmountVsProposedRatio;
   let transactionApprovalAmountVsBalanceRatio;
   let transactionType = TransactionType.simpleSend;
-  if (type === TransactionType.cancel) {
+  if (type === TransactionType.swapAndSend) {
+    transactionType = TransactionType.swapAndSend;
+  } else if (type === TransactionType.cancel) {
     transactionType = TransactionType.cancel;
   } else if (type === TransactionType.retry && originalType) {
     transactionType = originalType;
