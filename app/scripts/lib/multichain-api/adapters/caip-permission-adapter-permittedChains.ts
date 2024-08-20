@@ -94,4 +94,6 @@ export const setPermittedEthChainIds = (
       accounts: [], // Should this be empty?
     };
   });
+
+  return caip25CaveatValue
 };
