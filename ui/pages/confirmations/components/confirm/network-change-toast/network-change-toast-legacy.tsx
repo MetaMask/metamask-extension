@@ -24,7 +24,7 @@ const NetworkChangeToastLegacy = ({
   const t = useI18nContext();
 
   const hideToast = useCallback(() => {
-    // setToastVisible(false);
+    setToastVisible(false);
   }, [setToastVisible]);
 
   useEffect(() => {
