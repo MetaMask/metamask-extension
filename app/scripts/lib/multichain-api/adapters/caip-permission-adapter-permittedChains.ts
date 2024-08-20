@@ -49,8 +49,8 @@ export const addPermittedEthChainId = (
         methods: validRpcMethods,
         notifications: validNotifications,
         accounts: [], // Should this be empty?
-      }
-    }
+      },
+    },
   };
 };
 
@@ -59,27 +59,25 @@ const filterEthScopesObjectByChainId = (
   scopesObject: ScopesObject,
   chainIds: Hex[],
 ) => {
-  const updatedScopesObject: ScopesObject = {}
+  const updatedScopesObject: ScopesObject = {};
 
   Object.entries(scopesObject).forEach(([scopeString, scopeObject]) => {
     const { namespace, reference } = parseScopeString(scopeString);
     if (!reference) {
-      updatedScopesObject[scopeString] = scopeObject
+      updatedScopesObject[scopeString] = scopeObject;
       return;
     }
-    if (
-      namespace === KnownCaipNamespace.Eip155
-    ) {
+    if (namespace === KnownCaipNamespace.Eip155) {
       const chainId = toHex(reference);
       if (chainIds.includes(chainId)) {
-        updatedScopesObject[scopeString] = scopeObject
+        updatedScopesObject[scopeString] = scopeObject;
       }
     } else {
-      updatedScopesObject[scopeString] = scopeObject
+      updatedScopesObject[scopeString] = scopeObject;
     }
   });
 
-  return updatedScopesObject
+  return updatedScopesObject;
 };
 
 export const setPermittedEthChainIds = (
@@ -88,9 +86,15 @@ export const setPermittedEthChainIds = (
 ) => {
   let updatedCaveatValue: Caip25CaveatValue = {
     ...caip25CaveatValue,
-    requiredScopes: filterEthScopesObjectByChainId(caip25CaveatValue.requiredScopes, chainIds),
-    optionalScopes: filterEthScopesObjectByChainId(caip25CaveatValue.optionalScopes, chainIds),
-  }
+    requiredScopes: filterEthScopesObjectByChainId(
+      caip25CaveatValue.requiredScopes,
+      chainIds,
+    ),
+    optionalScopes: filterEthScopesObjectByChainId(
+      caip25CaveatValue.optionalScopes,
+      chainIds,
+    ),
+  };
 
   chainIds.forEach((chainId) => {
     const scopeString = `eip155:${parseInt(chainId, 16)}`;
@@ -110,10 +114,10 @@ export const setPermittedEthChainIds = (
           methods: validRpcMethods,
           notifications: validNotifications,
           accounts: [], // Should this be empty?
-        }
-      }
-    }
+        },
+      },
+    };
   });
 
-  return updatedCaveatValue
+  return updatedCaveatValue;
 };

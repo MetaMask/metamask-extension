@@ -1,6 +1,11 @@
 import { CaipAccountId, Hex, parseCaipAccountId } from '@metamask/utils';
 import { Caip25CaveatValue } from '../caip25permissions';
-import { KnownCaipNamespace, mergeScopes, parseScopeString, ScopesObject } from '../scope';
+import {
+  KnownCaipNamespace,
+  mergeScopes,
+  parseScopeString,
+  ScopesObject,
+} from '../scope';
 
 export const getEthAccounts = (caip25CaveatValue: Caip25CaveatValue) => {
   const ethAccounts: string[] = [];
@@ -29,25 +34,26 @@ const setEthAccountsForScopesObject = (
   scopesObject: ScopesObject,
   accounts: Hex[],
 ) => {
-  let updatedScopesObject: ScopesObject = {}
+  const updatedScopesObject: ScopesObject = {};
 
-  Object.entries(scopesObject).forEach(
-    ([scopeString, scopeObject]) => {
-      const { namespace } = parseScopeString(scopeString);
+  Object.entries(scopesObject).forEach(([scopeString, scopeObject]) => {
+    const { namespace } = parseScopeString(scopeString);
 
-      const caipAccounts = accounts.map(
-        (account) => `${scopeString}:${account}` as CaipAccountId,
-      );
+    const caipAccounts = accounts.map(
+      (account) => `${scopeString}:${account}` as CaipAccountId,
+    );
 
-      updatedScopesObject[scopeString] = {
-        ...scopeObject,
-        accounts: namespace === KnownCaipNamespace.Eip155 ? caipAccounts : scopeObject.accounts
-      }
-    },
-  );
+    updatedScopesObject[scopeString] = {
+      ...scopeObject,
+      accounts:
+        namespace === KnownCaipNamespace.Eip155
+          ? caipAccounts
+          : scopeObject.accounts,
+    };
+  });
 
-  return updatedScopesObject
-}
+  return updatedScopesObject;
+};
 
 // This helper must be called with existing eip155 scopes
 export const setEthAccounts = (
@@ -56,7 +62,13 @@ export const setEthAccounts = (
 ) => {
   return {
     ...caip25CaveatValue,
-    requiredScopes: setEthAccountsForScopesObject(caip25CaveatValue.requiredScopes, accounts),
-    optionalScopes: setEthAccountsForScopesObject(caip25CaveatValue.optionalScopes, accounts),
-  }
+    requiredScopes: setEthAccountsForScopesObject(
+      caip25CaveatValue.requiredScopes,
+      accounts,
+    ),
+    optionalScopes: setEthAccountsForScopesObject(
+      caip25CaveatValue.optionalScopes,
+      accounts,
+    ),
+  };
 };
