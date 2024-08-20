@@ -937,6 +937,7 @@ export default class SwapsController extends BaseController<
       stxBatchStatus: refreshRates.stxBatchStatus * 1000,
       stxStatusDeadline: refreshRates.stxStatusDeadline,
       stxMaxFeeMultiplier: parameters.stxMaxFeeMultiplier,
+      swapsStxStatusDeadline: parameters.stxStatusDeadline,
     };
   }
 
@@ -1063,6 +1064,7 @@ export default class SwapsController extends BaseController<
       stxBatchStatus: number;
       stxStatusDeadline: number;
       stxMaxFeeMultiplier: number;
+      swapsStxStatusDeadline: number;
     } | null = null;
 
     try {
@@ -1085,7 +1087,7 @@ export default class SwapsController extends BaseController<
         swapsNetworkConfig?.stxMaxFeeMultiplier ||
         FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER;
       _state.swapsState.swapsStxStatusDeadline =
-        swapsNetworkConfig?.stxStatusDeadline ||
+        swapsNetworkConfig?.swapsStxStatusDeadline ||
         FALLBACK_SMART_TRANSACTIONS_DEADLINE;
     });
   }
