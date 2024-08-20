@@ -313,7 +313,6 @@ import {
   getPermittedAccountsByOrigin,
   getRemovedAuthorizations,
   NOTIFICATION_NAMES,
-  PermissionNames,
   unrestrictedMethods,
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
@@ -5683,12 +5682,13 @@ export default class MetamaskController extends EventEmitter {
           ),
         setActiveNetwork: async (networkClientId) => {
           await this.networkController.setActiveNetwork(networkClientId);
-          // if the origin has the eth_accounts permission
+          // if the origin has the CAIP-25 permission
           // we set per dapp network selection state
+          // TODO: Verify this is correct
           if (
             this.permissionController.hasPermission(
               origin,
-              PermissionNames.eth_accounts,
+              Caip25EndowmentPermissionName,
             )
           ) {
             this.selectedNetworkController.setNetworkClientIdForDomain(
@@ -6013,22 +6013,22 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.upsertNetworkConfiguration.bind(
             this.networkController,
           ),
-        // seems like we should make this a noop in the multichain flow
-        setActiveNetwork: async () => {
-          // await this.networkController.setActiveNetwork(networkClientId);
-          // if the origin has the eth_accounts permission
+        setActiveNetwork: async (networkClientId) => {
+          await this.networkController.setActiveNetwork(networkClientId);
+          // if the origin has the CAIP-25 permission
           // we set per dapp network selection state
-          // if (
-          //   this.permissionController.hasPermission(
-          //     origin,
-          //     PermissionNames.eth_accounts,
-          //   )
-          // ) {
-          //   this.selectedNetworkController.setNetworkClientIdForDomain(
-          //     origin,
-          //     networkClientId,
-          //   );
-          // }
+          // TODO: Verify this is correct
+          if (
+            this.permissionController.hasPermission(
+              origin,
+              Caip25EndowmentPermissionName,
+            )
+          ) {
+            this.selectedNetworkController.setNetworkClientIdForDomain(
+              origin,
+              networkClientId,
+            );
+          }
         },
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
         // TODO refactor `add-ethereum-chain` handler so that this hook can be removed from multichain middleware
