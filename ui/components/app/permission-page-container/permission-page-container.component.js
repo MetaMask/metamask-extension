@@ -147,7 +147,7 @@ export default class PermissionPageContainer extends Component {
         ),
       }),
       ...(_request.permissions.permittedChains && {
-        approvedChainIds: _request.permissions?.permittedChains?.caveats.find(
+        approvedChainIds: _request.permissions?.permittedChains?.caveats?.find(
           (caveat) => caveat.type === 'restrictNetworkSwitching',
         )?.value,
       }),
