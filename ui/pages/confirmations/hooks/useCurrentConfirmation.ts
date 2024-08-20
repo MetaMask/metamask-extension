@@ -10,12 +10,19 @@ import {
   ApprovalsMetaMaskState,
   getIsRedesignedConfirmationsDeveloperEnabled,
   getRedesignedConfirmationsEnabled,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getRedesignedTransactionsEnabled,
   getUnapprovedTransaction,
+  ///: END:ONLY_INCLUDE_IF
   latestPendingConfirmationSelector,
   selectPendingApproval,
 } from '../../../selectors';
-import { REDESIGN_APPROVAL_TYPES, REDESIGN_TRANSACTION_TYPES } from '../utils';
+import {
+  REDESIGN_APPROVAL_TYPES,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  REDESIGN_TRANSACTION_TYPES,
+  ///: END:ONLY_INCLUDE_IF
+} from '../utils';
 import { selectUnapprovedMessage } from '../../../selectors/signatures';
 
 /**
@@ -35,9 +42,11 @@ const useCurrentConfirmation = () => {
     getRedesignedConfirmationsEnabled,
   );
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isRedesignedTransactionsUserSettingEnabled = useSelector(
     getRedesignedTransactionsEnabled,
   );
+  ///: END:ONLY_INCLUDE_IF
 
   const isRedesignedConfirmationsDeveloperEnabled = useSelector(
     getIsRedesignedConfirmationsDeveloperEnabled,
@@ -51,18 +60,20 @@ const useCurrentConfirmation = () => {
     selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),
   );
 
+  const signatureMessage = useSelector((state) =>
+    selectUnapprovedMessage(state, confirmationId),
+  );
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const transactionMetadata = useSelector((state) =>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (getUnapprovedTransaction as any)(state, confirmationId),
   ) as TransactionMeta | undefined;
 
-  const signatureMessage = useSelector((state) =>
-    selectUnapprovedMessage(state, confirmationId),
-  );
-
   const isCorrectTransactionType = REDESIGN_TRANSACTION_TYPES.includes(
     transactionMetadata?.type as TransactionType,
   );
+  ///: END:ONLY_INCLUDE_IF
 
   const isCorrectApprovalType = REDESIGN_APPROVAL_TYPES.includes(
     pendingApproval?.type as ApprovalType,
@@ -72,10 +83,12 @@ const useCurrentConfirmation = () => {
     (isRedesignedSignaturesUserSettingEnabled && isCorrectApprovalType) ||
     (isRedesignedConfirmationsDeveloperSettingEnabled && isCorrectApprovalType);
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const shouldUseRedesignForTransactions =
     (isRedesignedTransactionsUserSettingEnabled && isCorrectTransactionType) ||
     (isRedesignedConfirmationsDeveloperSettingEnabled &&
       isCorrectTransactionType);
+  ///: END:ONLY_INCLUDE_IF
 
   // If the developer toggle or the build time environment variable are enabled,
   // all the signatures and transactions in development are shown. If the user
@@ -85,8 +98,7 @@ const useCurrentConfirmation = () => {
   let shouldUseRedesign;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  shouldUseRedesign =
-    shouldUseRedesignForSignatures;
+  shouldUseRedesign = shouldUseRedesignForSignatures;
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
