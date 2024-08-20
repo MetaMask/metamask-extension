@@ -1,6 +1,6 @@
 import { CaipAccountId, Hex, parseCaipAccountId } from '@metamask/utils';
 import { Caip25CaveatValue } from '../caip25permissions';
-import { KnownCaipNamespace, mergeScopes, parseScopeString } from '../scope';
+import { KnownCaipNamespace, mergeScopes, parseScopeString, ScopesObject } from '../scope';
 
 export const getEthAccounts = (caip25CaveatValue: Caip25CaveatValue) => {
   const ethAccounts: string[] = [];
@@ -25,35 +25,38 @@ export const getEthAccounts = (caip25CaveatValue: Caip25CaveatValue) => {
   return Array.from(new Set(ethAccounts));
 };
 
+const setEthAccountsForScopesObject = (
+  scopesObject: ScopesObject,
+  accounts: Hex[],
+) => {
+  let updatedScopesObject: ScopesObject = {}
+
+  Object.entries(scopesObject).forEach(
+    ([scopeString, scopeObject]) => {
+      const { namespace } = parseScopeString(scopeString);
+
+      const caipAccounts = accounts.map(
+        (account) => `${scopeString}:${account}` as CaipAccountId,
+      );
+
+      updatedScopesObject[scopeString] = {
+        ...scopeObject,
+        accounts: namespace === KnownCaipNamespace.Eip155 ? caipAccounts : scopeObject.accounts
+      }
+    },
+  );
+
+  return updatedScopesObject
+}
+
 // This helper must be called with existing eip155 scopes
 export const setEthAccounts = (
   caip25CaveatValue: Caip25CaveatValue,
   accounts: Hex[],
 ) => {
-  Object.entries(caip25CaveatValue.requiredScopes).forEach(
-    ([scopeString, scopeObject]) => {
-      const { namespace } = parseScopeString(scopeString);
-
-      if (namespace === KnownCaipNamespace.Eip155) {
-        scopeObject.accounts = accounts.map(
-          (account) => `${scopeString}:${account}` as CaipAccountId,
-        );
-      }
-    },
-  );
-
-  Object.entries(caip25CaveatValue.optionalScopes).forEach(
-    ([scopeString, scopeObject]) => {
-      const { namespace } = parseScopeString(scopeString);
-
-      if (namespace === KnownCaipNamespace.Eip155) {
-        scopeObject.accounts = accounts.map(
-          (account) => `${scopeString}:${account}` as CaipAccountId,
-        );
-      }
-    },
-  );
-
-  // Should we cloning this rather than modifying it in-place?
-  return caip25CaveatValue;
+  return {
+    ...caip25CaveatValue,
+    requiredScopes: setEthAccountsForScopesObject(caip25CaveatValue.requiredScopes, accounts),
+    optionalScopes: setEthAccountsForScopesObject(caip25CaveatValue.optionalScopes, accounts),
+  }
 };
