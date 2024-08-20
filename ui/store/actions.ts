@@ -4877,6 +4877,14 @@ export function setSecurityAlertsEnabled(val: boolean): void {
   }
 }
 
+export async function setWatchEthereumAccountEnabled(value: boolean) {
+  try {
+    await submitRequestToBackground('setWatchEthereumAccountEnabled', [value]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+
 export async function setBitcoinSupportEnabled(value: boolean) {
   try {
     await submitRequestToBackground('setBitcoinSupportEnabled', [value]);
