@@ -356,10 +356,6 @@ describe('Blockaid Banner Alert', () => {
           />,
           configureStore({
             ...mockStore,
-            metamask: {
-              ...mockStore.metamask,
-              ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
-            },
           }),
         );
 
@@ -384,10 +380,6 @@ describe('Blockaid Banner Alert', () => {
         />,
         configureStore({
           ...mockStore,
-          metamask: {
-            ...mockStore.metamask,
-            ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
-          },
         }),
       );
 
@@ -415,10 +407,6 @@ describe('Blockaid Banner Alert', () => {
         />,
         configureStore({
           ...mockStore,
-          metamask: {
-            ...mockStore.metamask,
-            ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
-          },
         }),
       );
 
