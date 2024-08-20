@@ -7,7 +7,6 @@ import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import configureStore from '../../../../../store/store';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 
 import {
   BlockaidReason,
@@ -46,7 +45,7 @@ const mockSecurityAlertResponse = {
 describe('Blockaid Banner Alert', () => {
   const mockStore = {
     metamask: {
-      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      ...mockNetworkState({}),
     },
   };
   it('should not render when securityAlertResponse is not present', () => {
@@ -274,9 +273,6 @@ describe('Blockaid Banner Alert', () => {
       />,
       configureStore({
         ...mockStore,
-        metamask: {
-          ...mockNetworkState({}),
-        },
       }),
     );
 
@@ -300,9 +296,6 @@ describe('Blockaid Banner Alert', () => {
           />,
           configureStore({
             ...mockStore,
-            metamask: {
-              ...mockNetworkState({}),
-            },
           }),
         );
 
