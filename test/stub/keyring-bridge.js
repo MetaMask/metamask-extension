@@ -43,6 +43,20 @@ export class FakeKeyringBridge {
   async getPublicKey() {
     return this.#publicKeyPayload;
   }
+
+  async ethereumSignTransaction() {
+    const mockedTransactionResponse = {
+      success: true,
+      payload: {
+        v: '0x1b',
+        r: '0xb4624f6245d1650f3d6e90e354fc79ce171ff125cfb5519a4dac6e57839542ba',
+        s: '0x452d70ea65f62d3c70e09f277a151ac4a0a4d866e5e77861a375344cf92d59d5',
+        serializedTx:
+          '0xb4624f6245d1650f3d6e90e354fc79ce171ff125cfb5519a4dac6e57839542ba452d70ea65f62d3c70e09f277a151ac4a0a4d866e5e77861a375344cf92d59d51b',
+      },
+    };
+    return mockedTransactionResponse;
+  }
 }
 
 export class FakeTrezorBridge extends FakeKeyringBridge {
