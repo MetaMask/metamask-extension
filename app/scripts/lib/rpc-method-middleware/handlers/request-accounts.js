@@ -13,7 +13,10 @@ import {
   validNotifications,
   validRpcMethods,
 } from '../../multichain-api/scope';
-import { CaveatTypes, RestrictedMethods } from '../../../../../shared/constants/permissions';
+import {
+  CaveatTypes,
+  RestrictedMethods,
+} from '../../../../../shared/constants/permissions';
 import { setEthAccounts } from '../../multichain-api/adapters/caip-permission-adapter-eth-accounts';
 import { PermissionNames } from '../../../controllers/permissions';
 
@@ -116,9 +119,9 @@ async function requestEthereumAccountsHandler(
         caveats: [
           {
             type: CaveatTypes.restrictNetworkSwitching,
-            value: [chainId]
-          }
-        ]
+            value: [chainId],
+          },
+        ],
       },
     });
   } catch (err) {
