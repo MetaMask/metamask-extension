@@ -436,6 +436,7 @@ export const SENTRY_UI_STATE = {
     welcomeScreenSeen: true,
     confirmationExchangeRates: true,
     useSafeChainsListValidation: true,
+    watchEthereumAccountEnabled: false,
     bitcoinSupportEnabled: false,
     bitcoinTestnetSupportEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
