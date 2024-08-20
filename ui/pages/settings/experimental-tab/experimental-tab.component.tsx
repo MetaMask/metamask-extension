@@ -34,6 +34,8 @@ import { SurveyUrl } from '../../../../shared/constants/urls';
 ///: END:ONLY_INCLUDE_IF
 
 type ExperimentalTabProps = {
+  watchAccountEnabled: boolean;
+  setWatchAccountEnabled: (value: boolean) => void;
   bitcoinSupportEnabled: boolean;
   setBitcoinSupportEnabled: (value: boolean) => void;
   bitcoinTestnetSupportEnabled: boolean;
@@ -261,6 +263,40 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     });
   }
 
+  renderWatchAccountToggle() {
+    const { t, trackEvent } = this.context;
+    const { watchAccountEnabled, setWatchAccountEnabled } = this.props;
+
+    return this.renderToggleSection({
+      title: t('watchEthereumAccountsToggle'),
+      description: t('watchEthereumAccountsDescription', [
+        <a
+          key="watch-account-feedback-form__link-text"
+          href="https://www.getfeedback.com/r/7Je8ckkq"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t('form')}
+        </a>,
+      ]),
+      toggleValue: watchAccountEnabled,
+      toggleCallback: (value) => {
+        trackEvent({
+          event: MetaMetricsEventName.WatchEthereumAccountsToggled,
+          category: MetaMetricsEventCategory.Settings,
+          properties: {
+            enabled: !value,
+          },
+        });
+        setWatchAccountEnabled(!value);
+      },
+      toggleContainerDataTestId: 'watch-account-toggle-div',
+      toggleDataTestId: 'watch-account-toggle',
+      toggleOffLabel: t('off'),
+      toggleOnLabel: t('on'),
+    });
+  }
+
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // We're only setting the code fences here since
   // we should remove it for the feature release
@@ -349,6 +385,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
           this.renderKeyringSnapsToggle()
           ///: END:ONLY_INCLUDE_IF
         }
+        {this.renderWatchAccountToggle()}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
           // We're only setting the code fences here since
