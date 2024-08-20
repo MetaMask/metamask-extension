@@ -47,7 +47,7 @@ export default function setupSentry() {
   log('Initializing');
 
   // Normally this would be awaited, but getSelf should be available by the time the report is finalized.
-  // If it's not, we still get the extensionId, and we'll just log an error for installType.
+  // If it's not, we still get the extensionId, but the installType will default to "unknown"
   browser.management
     .getSelf()
     .then((extensionInfo) => {
