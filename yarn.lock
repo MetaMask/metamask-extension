@@ -1710,10 +1710,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blockaid/ppom_release@npm:^1.5.1":
-  version: 1.5.1
-  resolution: "@blockaid/ppom_release@npm:1.5.1"
-  checksum: 10/e2283240e484b60525501772bc5c57e86a30eb153227168eb52584061ac7e10c717bb4a858bfcf0bbdd590033675c193a3a41de2658d066baef210ec48ed7a6e
+"@blockaid/ppom_release@npm:^1.5.2":
+  version: 1.5.2
+  resolution: "@blockaid/ppom_release@npm:1.5.2"
+  checksum: 10/b47af74e8a315d996abb8371a7b28f9923bf78272cc408b2307024e2050b57f36c53b6b9a57b276b0910b449ebb384897e293abad356131ccf65c6c3c5ca31ae
   languageName: node
   linkType: hard
 
@@ -1768,7 +1768,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@contentful/rich-text-html-renderer@npm:^16.3.5, @contentful/rich-text-html-renderer@npm:^16.5.2":
+"@contentful/rich-text-html-renderer@npm:^16.5.2":
   version: 16.6.8
   resolution: "@contentful/rich-text-html-renderer@npm:16.6.8"
   dependencies:
@@ -15442,7 +15442,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"contentful@npm:^10.3.6, contentful@npm:^10.8.7":
+"contentful@npm:^10.3.6":
   version: 10.14.0
   resolution: "contentful@npm:10.14.0"
   dependencies:
@@ -25955,8 +25955,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.2"
     "@babel/register": "npm:^7.22.15"
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch"
-    "@blockaid/ppom_release": "npm:^1.5.1"
-    "@contentful/rich-text-html-renderer": "npm:^16.3.5"
+    "@blockaid/ppom_release": "npm:^1.5.2"
     "@ensdomains/content-hash": "npm:^2.5.7"
     "@ethereumjs/tx": "npm:^4.1.1"
     "@ethersproject/abi": "npm:^5.6.4"
@@ -26165,7 +26164,6 @@ __metadata:
     chokidar: "npm:^3.6.0"
     classnames: "npm:^2.2.6"
     concurrently: "npm:^8.2.2"
-    contentful: "npm:^10.8.7"
     copy-to-clipboard: "npm:^3.3.3"
     copy-webpack-plugin: "npm:^12.0.2"
     core-js-pure: "npm:^3.38.0"
