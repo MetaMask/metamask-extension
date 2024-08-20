@@ -22,4 +22,31 @@ describe('Portfolio site', function () {
         };
       });
   }
+
+  it('should link to the portfolio site @no-mmi', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+        testSpecificMock: mockPortfolioSite,
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        // Click Portfolio site
+        await driver.clickElement('[data-testid="portfolio-link"]');
+        await driver.waitUntilXWindowHandles(2);
+        const windowHandles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle('E2E Test Page', windowHandles);
+
+        // Verify site
+        const currentUrl = await driver.getCurrentUrl();
+        const expectedUrl =
+          'https://portfolio.metamask.io/?metamaskEntry=ext_portfolio_button&metametricsId=null&metricsEnabled=false&marketingEnabled=false';
+        assert.equal(currentUrl, expectedUrl);
+      },
+    );
+  });
 });

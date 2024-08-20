@@ -125,6 +125,7 @@ export const CoinOverview = ({
             <div
               onClick={handlePortfolioOnClick}
               className="wallet-overview__portfolio_button"
+              data-testid="portfolio-link"
             >
               {t('portfolio')}
               <Icon name={IconName.Diagram} color={IconColor.primaryDefault} />
