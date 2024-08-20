@@ -1,9 +1,9 @@
 import { createSelector } from 'reselect';
-import { CaveatTypes } from '../../../../shared/constants/permissions';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '../../lib/multichain-api/caip25permissions';
+import { getEthAccounts } from '../../lib/multichain-api/adapters/caip-permission-adapter-eth-accounts';
 
 /**
  * This file contains selectors for PermissionController selector event
@@ -29,14 +29,14 @@ export const getPermittedAccountsByOrigin = createSelector(
   getSubjects,
   (subjects) => {
     return Object.values(subjects).reduce((originToAccountsMap, subject) => {
-      const caveats = subject.permissions?.eth_accounts?.caveats || [];
+      const caveats =
+        subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
 
-      const caveat = caveats.find(
-        ({ type }) => type === CaveatTypes.restrictReturnedAccounts,
-      );
+      const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
 
       if (caveat) {
-        originToAccountsMap.set(subject.origin, caveat.value);
+        const ethAccounts = getEthAccounts(caveat.value);
+        originToAccountsMap.set(subject.origin, ethAccounts);
       }
       return originToAccountsMap;
     }, new Map());

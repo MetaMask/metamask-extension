@@ -78,7 +78,6 @@ import {
 } from './lib/util';
 import { generateSkipOnboardingState } from './skip-onboarding';
 import { createOffscreen } from './offscreen';
-import { Caip25EndowmentPermissionName } from './lib/multichain-api/caip25permissions';
 
 /* eslint-enable import/first */
 
@@ -615,7 +614,7 @@ function emitDappViewedMetricEvent(origin) {
     return;
   }
 
-  const numberOfConnectedAccounts = controller.getPermittedAccounts(origin)
+  const numberOfConnectedAccounts = controller.getPermittedAccounts(origin);
   if (numberOfConnectedAccounts.length === 0) {
     return;
   }
