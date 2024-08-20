@@ -683,6 +683,13 @@ function createFactoredBuild({
               scripts,
             });
             renderHtmlFile({
+              htmlName: 'popup-init',
+              browserPlatforms,
+              shouldIncludeSnow,
+              applyLavaMoat,
+              scripts,
+            });
+            renderHtmlFile({
               htmlName: 'notification',
               browserPlatforms,
               shouldIncludeSnow,
