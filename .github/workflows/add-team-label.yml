@@ -7,7 +7,7 @@ on:
 
 jobs:
   add-team-label:
-    uses: metamask/github-tools/.github/workflows/add-team-label.yml@main
+    uses: metamask/github-tools/.github/workflows/add-team-label.yml@add-team-label
     permissions:
        pull-requests: write
     secrets:
