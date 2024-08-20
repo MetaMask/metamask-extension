@@ -13335,6 +13335,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"balanced-match@npm:^0.4.1":
+  version: 0.4.2
+  resolution: "balanced-match@npm:0.4.2"
+  checksum: 10/205ebb42ce8529fa8e043a808b41bfb9818d5f98a8eb76a1cd5483f8a98dd0baefc8a9d940f36b591b1316a04f56b35c32b60ac9b1f848e41e4698672cec6c1e
+  languageName: node
+  linkType: hard
+
 "balanced-match@npm:^1.0.0":
   version: 1.0.2
   resolution: "balanced-match@npm:1.0.2"
@@ -21021,6 +21028,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"has-flag@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "has-flag@npm:1.0.0"
+  checksum: 10/ce3f8ae978e70f16e4bbe17d3f0f6d6c0a3dd3b62a23f97c91d0fda9ed8e305e13baf95cc5bee4463b9f25ac9f5255de113165c5fb285e01b8065b2ac079b301
+  languageName: node
+  linkType: hard
+
 "has-flag@npm:^3.0.0":
   version: 3.0.0
   resolution: "has-flag@npm:3.0.0"
@@ -23790,6 +23804,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"js-base64@npm:^2.1.9":
+  version: 2.6.4
+  resolution: "js-base64@npm:2.6.4"
+  checksum: 10/c1a740a34fbb0ad0a528c2ab8749d7f873b1856a0638826306fcd98502e3c8c833334dff233085407e3201be543e5e71bf9692da7891ca680d9b03d027247a6a
+  languageName: node
+  linkType: hard
+
 "js-base64@npm:^3.6.0":
   version: 3.6.1
   resolution: "js-base64@npm:3.6.1"
@@ -26260,6 +26281,7 @@ __metadata:
     path-browserify: "npm:^1.0.1"
     pify: "npm:^5.0.0"
     postcss: "npm:^8.4.32"
+    postcss-discard-font-face: "npm:^3.0.0"
     postcss-loader: "npm:^8.1.1"
     postcss-rtlcss: "npm:^4.0.9"
     prettier: "npm:^2.7.1"
@@ -29216,6 +29238,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"postcss-discard-font-face@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "postcss-discard-font-face@npm:3.0.0"
+  dependencies:
+    balanced-match: "npm:^0.4.1"
+    postcss: "npm:^5.0.21"
+  checksum: 10/968632c4426bb04816787575ad768ad0bca572573366aa7ef2f91069ab5224319bea3517b14d7ffb501f6787bc1d8d4a265f40027d4cc593cfcd7824bf834c34
+  languageName: node
+  linkType: hard
+
 "postcss-html@npm:^0.36.0":
   version: 0.36.0
   resolution: "postcss-html@npm:0.36.0"
@@ -29449,6 +29481,18 @@ __metadata:
     source-map: "npm:^0.6.1"
     supports-color: "npm:^6.1.0"
   checksum: 10/bb1bfc6fd0b6aef7587a4f8867eed3c441529725131266f6c0e40bd0f3c8c40096a1391646989b82e78ee40f2bb930dc441fa413bec3325250727fd0a554bedc
+  languageName: node
+  linkType: hard
+
+"postcss@npm:^5.0.21":
+  version: 5.2.18
+  resolution: "postcss@npm:5.2.18"
+  dependencies:
+    chalk: "npm:^1.1.3"
+    js-base64: "npm:^2.1.9"
+    source-map: "npm:^0.5.6"
+    supports-color: "npm:^3.2.3"
+  checksum: 10/ad157696a258c37e8cdebd28c575bba8e028276b030621d7ac191f855b61d56de9fe751f405ca088693806971426a7321f0b0201e0e828e99b1960ac8f474215
   languageName: node
   linkType: hard
 
@@ -34172,6 +34216,15 @@ __metadata:
   version: 2.0.0
   resolution: "supports-color@npm:2.0.0"
   checksum: 10/d2957d19e782a806abc3e8616b6648cc1e70c3ebe94fb1c2d43160686f6d79cd7c9f22c4853bc4a362d89d1c249ab6d429788c5f6c83b3086e6d763024bf4581
+  languageName: node
+  linkType: hard
+
+"supports-color@npm:^3.2.3":
+  version: 3.2.3
+  resolution: "supports-color@npm:3.2.3"
+  dependencies:
+    has-flag: "npm:^1.0.0"
+  checksum: 10/476a70d263a1f7ac11c26c10dfc58f0d9439edf198005b95f0e358ea8182d06b492d96320f16a841e4e968c7189044dd8c3f3037bd533480d15c7cc00e17c5d8
   languageName: node
   linkType: hard
 
