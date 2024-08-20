@@ -137,7 +137,7 @@ export function getPermissionBackgroundApiMethods(
           };
           caveatValue = setPermittedEthChainIds(
             caveatValue,
-            legacyApproval.permittedChains,
+            legacyApproval.approvedChainIds,
           );
 
           caveatValue = setEthAccounts(

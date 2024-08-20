@@ -112,7 +112,7 @@ async function requestPermissionsImplementation(
     };
     caveatValue = setPermittedEthChainIds(
       caveatValue,
-      legacyApproval.permittedChains,
+      legacyApproval.approvedChainIds,
     );
 
     caveatValue = setEthAccounts(caveatValue, legacyApproval.approvedAccounts);
@@ -148,7 +148,7 @@ async function requestPermissionsImplementation(
             ],
           },
         },
-      });
+      })[Caip25EndowmentPermissionName];
     }
 
     grantedPermissions[RestrictedMethods.eth_accounts] = {
@@ -168,7 +168,7 @@ async function requestPermissionsImplementation(
       caveats: [
         {
           type: CaveatTypes.restrictNetworkSwitching,
-          value: legacyApproval.permittedChains,
+          value: legacyApproval.approvedChainIds,
         },
       ],
     };
