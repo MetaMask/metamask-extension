@@ -41,8 +41,10 @@ import ConfirmDeployContract from '../confirm-deploy-contract';
 import ConfirmSendEther from '../confirm-send-ether';
 import ConfirmSignatureRequest from '../confirm-signature-request';
 import ConfirmTransactionSwitch from '../confirm-transaction-switch';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import Confirm from '../confirm/confirm';
 import useCurrentConfirmation from '../hooks/useCurrentConfirmation';
+///: END:ONLY_INCLUDE_IF
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
 const ConfirmTransaction = () => {
@@ -70,7 +72,9 @@ const ConfirmTransaction = () => {
   ]);
   const [transaction, setTransaction] = useState(getTransaction);
   const use4ByteResolution = useSelector(use4ByteResolutionSelector);
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const { currentConfirmation } = useCurrentConfirmation();
+  ///: END:ONLY_INCLUDE_IF
 
   useEffect(() => {
     const tx = getTransaction();
@@ -164,9 +168,11 @@ const ConfirmTransaction = () => {
   // It takes care to render <Confirm /> component for confirmations of type Personal Sign.
   // Once we migrate all confirmations to new designs we can get rid of this code
   // and render <Confirm /> component for all confirmation requests.
-  // if (currentConfirmation) {
-  //   return <Confirm />;
-  // }
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  if (currentConfirmation) {
+    return <Confirm />;
+  }
+  ///: END:ONLY_INCLUDE_IF
 
   if (isValidTokenMethod && isValidTransactionId) {
     return <ConfirmTokenTransactionSwitch transaction={transaction} />;
