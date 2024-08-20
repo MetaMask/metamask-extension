@@ -350,6 +350,9 @@ export function AlertModal({
           startAccessory={headerStartAccessory}
           paddingBottom={0}
           display={headerStartAccessory ? Display.InlineFlex : Display.Block}
+          closeButtonProps={{
+            'data-testid': 'alert-modal-close-button',
+          }}
         />
         <AlertHeader selectedAlert={selectedAlert} customTitle={customTitle} />
         <ModalBody>

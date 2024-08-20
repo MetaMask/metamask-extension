@@ -50,7 +50,6 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
               <button
                 aria-label="Close"
                 class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-                data-testid="alert-modal-close-button"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
