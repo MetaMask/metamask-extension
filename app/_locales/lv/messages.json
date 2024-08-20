@@ -96,6 +96,9 @@
   "backupApprovalNotice": {
     "message": "Dublējiet savu slepeno atgūšanas kodu, lai maks un līdzekļi atrastos drošībā."
   },
+  "backupNow": {
+    "message": "Dublēt tagad"
+  },
   "balance": {
     "message": "Bilance"
   },

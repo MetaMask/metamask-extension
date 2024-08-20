@@ -84,6 +84,9 @@
   "backupApprovalNotice": {
     "message": "I-back up ang iyong Secret Recovery code para panatilihing secure ang iyong wallet at pondo."
   },
+  "backupNow": {
+    "message": "I-back up ngayon"
+  },
   "balance": {
     "message": "Balanse"
   },

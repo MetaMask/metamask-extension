@@ -96,6 +96,9 @@
   "backupApprovalNotice": {
     "message": "Sikkerhedskopiér din Hemmelige Gendannelseskode for at holde din tegnebog og dine penge sikre."
   },
+  "backupNow": {
+    "message": "Backup nu"
+  },
   "balance": {
     "message": "Saldo"
   },

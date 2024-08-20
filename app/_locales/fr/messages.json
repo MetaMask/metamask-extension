@@ -663,6 +663,9 @@
   "back": {
     "message": "Retour"
   },
+  "backup": {
+    "message": "Sauvegarder"
+  },
   "backupApprovalInfo": {
     "message": "Ce code secret est requis pour récupérer votre portefeuille si jamais vous perdez votre appareil, oubliez votre mot de passe, devez réinstaller MetaMask ou souhaitez accéder à votre portefeuille depuis un autre appareil."
   },
@@ -671,6 +674,15 @@
   },
   "backupKeyringSnapReminder": {
     "message": "Assurez-vous que vous pouvez accéder à tous les comptes créés par ce snap avant de le supprimer"
+  },
+  "backupNow": {
+    "message": "Sauvegarder maintenant"
+  },
+  "backupUserData": {
+    "message": "Sauvegardez vos données"
+  },
+  "backupUserDataDescription": {
+    "message": "Vous pouvez sauvegarder des paramètres tels que vos contacts et vos préférences."
   },
   "balance": {
     "message": "Solde"

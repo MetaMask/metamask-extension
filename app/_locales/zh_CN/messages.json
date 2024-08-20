@@ -663,6 +663,9 @@
   "back": {
     "message": "返回"
   },
+  "backup": {
+    "message": "备份"
+  },
   "backupApprovalInfo": {
     "message": "如果不慎丢失个人设备，忘记密码，需要重新安装 MetaMask，或者需在另一台设备上访问钱包，使用此助记词才能恢复您的钱包。"
   },
@@ -671,6 +674,15 @@
   },
   "backupKeyringSnapReminder": {
     "message": "请先确保您可以自行访问此Snap创建的任何账户，才可将其去除"
+  },
+  "backupNow": {
+    "message": "立即备份"
+  },
+  "backupUserData": {
+    "message": "将您的数据备份"
+  },
+  "backupUserDataDescription": {
+    "message": "您可以备份联系人和首选项等数据。"
   },
   "balance": {
     "message": "余额"

@@ -96,6 +96,9 @@
   "backupApprovalNotice": {
     "message": "Utwórz kopię zapasową tajnego kodu odzyskiwania, aby zapewnić bezpieczeństwo swojego portfela i środków."
   },
+  "backupNow": {
+    "message": "Utwórz kopię zapasową"
+  },
   "balance": {
     "message": "Ilość środków"
   },

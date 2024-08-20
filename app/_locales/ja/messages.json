@@ -663,6 +663,9 @@
   "back": {
     "message": "戻る"
   },
+  "backup": {
+    "message": "バックアップ"
+  },
   "backupApprovalInfo": {
     "message": "このシークレット コードは、デバイスをなくしたとき、パスワードを忘れたとき、MetaMaskの再インストールが必要なとき、または別のデバイスでウォレットにアクセスするときに必要です。"
   },
@@ -671,6 +674,15 @@
   },
   "backupKeyringSnapReminder": {
     "message": "削除する前に、このSnapが作成したすべてのアカウントに自分でアクセスできることを確認してください"
+  },
+  "backupNow": {
+    "message": "今すぐバックアップ"
+  },
+  "backupUserData": {
+    "message": "データをバックアップ"
+  },
+  "backupUserDataDescription": {
+    "message": "設定とアカウントアドレスを含むユーザー設定を、JSONファイルにバックアップできます。"
   },
   "balance": {
     "message": "残高"

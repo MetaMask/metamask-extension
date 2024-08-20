@@ -96,6 +96,9 @@
   "backupApprovalNotice": {
     "message": "Fes una còpia de seguretat del teu codi Secret de Recuperació per mantenir el teu moneder i els teus fons segurs."
   },
+  "backupNow": {
+    "message": "Fer còpia de seguretat ara"
+  },
   "balance": {
     "message": "Balanç"
   },

@@ -154,6 +154,9 @@
   "backupApprovalNotice": {
     "message": "備份你的助憶詞，保護你的錢包與資金。"
   },
+  "backupNow": {
+    "message": "現在備份"
+  },
   "balance": {
     "message": "餘額："
   },

@@ -663,6 +663,9 @@
   "back": {
     "message": "뒤로"
   },
+  "backup": {
+    "message": "백업"
+  },
   "backupApprovalInfo": {
     "message": "이 비밀 코드는 장치를 분실하여 지갑을 복구해야 하거나, 비밀번호를 잊은 경우, MetaMask를 다시 설치해야 하거나, 다른 장치에서 지갑에 액세스해야 할 때 필요합니다."
   },
@@ -671,6 +674,15 @@
   },
   "backupKeyringSnapReminder": {
     "message": "제거하기 전에 이 Snap에서 생성한 계정에 직접 액세스할 수 있는지 확인하세요"
+  },
+  "backupNow": {
+    "message": "지금 백업"
+  },
+  "backupUserData": {
+    "message": "데이터를 백업하세요"
+  },
+  "backupUserDataDescription": {
+    "message": "기본 설정과 계약이 포함된 사용자 설정을 JSON 파일로 백업할 수 있습니다."
   },
   "balance": {
     "message": "잔액"

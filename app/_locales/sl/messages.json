@@ -96,6 +96,9 @@
   "backupApprovalNotice": {
     "message": "Varnostno kopirajte kodo Secret Recovery, da ohranite denarnico in sredstva varna."
   },
+  "backupNow": {
+    "message": "Varnostno kopiraj zdaj"
+  },
   "balance": {
     "message": "Znesek"
   },

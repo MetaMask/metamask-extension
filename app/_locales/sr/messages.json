@@ -96,6 +96,9 @@
   "backupApprovalNotice": {
     "message": "Napravite rezervnu kopiju tajnog kôda za oporavak da bi vaš novčanik i sredstva bili bezbedni."
   },
+  "backupNow": {
+    "message": "Napravite rezervu sad"
+  },
   "balance": {
     "message": "Bilans"
   },

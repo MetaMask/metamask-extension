@@ -96,6 +96,9 @@
   "backupApprovalNotice": {
     "message": "Säkerhetskopiera din hemliga återställningskod för att se till att din plånbok och dina tillgångar är säkra."
   },
+  "backupNow": {
+    "message": "Säkerhetskopiera nu"
+  },
   "balance": {
     "message": "Saldo"
   },

@@ -90,6 +90,9 @@
   "backupApprovalNotice": {
     "message": "የቋትዎንና የገነዘብዎን ደህንነት ለማስጠበቅ ሚስጥራዊ የማስመለሻ ኮድዎን መጠባበቂያ ይያዙ።"
   },
+  "backupNow": {
+    "message": "አሁን መጠባበቂያ ያዝ"
+  },
   "balance": {
     "message": "ቀሪ ሂሳብ"
   },

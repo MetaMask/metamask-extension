@@ -554,20 +554,20 @@ export default class AdvancedTab extends PureComponent {
         flexDirection={FlexDirection.Column}
       >
         <div className="settings-page__content-item">
-          <span>{t('exportYourData')}</span>
+          <span>{t('backupUserData')}</span>
           <span className="settings-page__content-description">
-            {t('exportYourDataDescription')}
+            {t('backupUserDataDescription')}
           </span>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <Button
-              data-testid="export-data-button"
+              data-testid="backup-button"
               type="secondary"
               large
-              onClick={this.backupUserData}
+              onClick={() => this.backupUserData()}
             >
-              {t('exportYourDataButton')}
+              {t('backup')}
             </Button>
           </div>
         </div>

@@ -96,6 +96,9 @@
   "backupApprovalNotice": {
     "message": "Varmuuskopioi salainen palautuskoodisi pitääksesi kukkarosi ja varasi turvassa."
   },
+  "backupNow": {
+    "message": "Tee varmuuskopio nyt"
+  },
   "balance": {
     "message": "Saldo"
   },

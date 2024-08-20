@@ -30,10 +30,10 @@ describe('AdvancedTab Component', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should render export data button', () => {
+  it('should render backup button', () => {
     const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
-    const exportDataButton = queryByTestId('export-data-button');
-    expect(exportDataButton).toBeInTheDocument();
+    const backupButton = queryByTestId('backup-button');
+    expect(backupButton).toBeInTheDocument();
   });
 
   it('should default the auto-lockout time to 0', () => {
