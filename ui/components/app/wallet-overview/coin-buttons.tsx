@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   useHistory,
@@ -41,6 +41,7 @@ import {
   getParticipateInMetaMetrics,
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
+  getSelectedAccount,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -68,6 +69,7 @@ import IconButton from '../../ui/icon-button';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
+import { ReceiveModal } from '../../multichain/receive-modal';
 ///: END:ONLY_INCLUDE_IF
 
 const CoinButtons = ({
@@ -95,6 +97,9 @@ const CoinButtons = ({
   const dispatch = useDispatch();
 
   const trackEvent = useContext(MetaMetricsContext);
+  const [showReceiveModal, setShowReceiveModal] = useState(false);
+
+  const { address: selectedAddress } = useSelector(getSelectedAccount);
   const history = useHistory();
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
@@ -398,17 +403,28 @@ const CoinButtons = ({
         ///: END:ONLY_INCLUDE_IF
       }
       {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        <IconButton
-          className={`${classPrefix}-overview__button`}
-          data-testid={`${classPrefix}-overview-portfolio`}
-          Icon={
-            <Icon name={IconName.Diagram} color={IconColor.primaryInverse} />
-          }
-          label={t('portfolio')}
-          onClick={handlePortfolioOnClick}
-        />
-        ///: END:ONLY_INCLUDE_IF
+        <>
+          {showReceiveModal && (
+            <ReceiveModal
+              address={selectedAddress}
+              onClose={() => setShowReceiveModal(false)}
+            />
+          )}
+          <IconButton
+            className={`${classPrefix}-overview__button`}
+            data-testid={`${classPrefix}-overview-receive`}
+            Icon={
+              <Icon
+                name={IconName.ScanBarcode}
+                color={IconColor.primaryInverse}
+              />
+            }
+            label={t('receive')}
+            onClick={() => {
+              setShowReceiveModal(true);
+            }}
+          />
+        </>
       }
     </Box>
   );
