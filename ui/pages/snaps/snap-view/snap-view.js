@@ -108,7 +108,8 @@ function SnapView() {
         <Content
           backgroundColor={BackgroundColor.backgroundDefault}
           className="snap-view__content"
-          marginTop={4}
+          marginTop={showSettings ? 4 : 0}
+          padding={showSettings ? 4 : 0}
         >
           {showSettings ? (
             <SnapSettings

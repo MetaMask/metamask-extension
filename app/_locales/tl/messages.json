@@ -513,12 +513,6 @@
   "allow": {
     "message": "Payagan"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "Pahintulutan ang MetaMask na i-detect at ipakita ang iyong mga NFT gamit ang autodetection. Maaari mong:"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "Pahintulutan ang MetaMask na i-detect at ipakita ang iyong mga token gamit ang autodetection. Maaari mong:"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "Papayagan nito ang MMI na kumonekto sa $1 para i-import ang iyong mga account."
   },
@@ -549,9 +543,6 @@
   "andForTwoItems": {
     "message": "$1 at $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
-  },
-  "announcements": {
-    "message": "Mga Anunsiyo"
   },
   "appDescription": {
     "message": "Ethereum Wallet sa iyong Browser",
@@ -1549,30 +1540,6 @@
   "details": {
     "message": "Mga Detalye"
   },
-  "developerOptions": {
-    "message": "Mga Opsyon ng Developer"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Pinapagana o hindi pinapagana ang tampok na muling pagdisenyo ng kumpirmasyon na kasalukuyang pinapaunlad"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Muling Pagdisenyo ng Kumpirmasyon"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Lilipat sa bagong disenyo ng menu ng Networks"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Muling disenyo ng Network Menu"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Ang mga reset ay ipinapakita sa boolean para maging false sa lahat ng anunsiyo. Ang mga anunisyo ay mga notipikasyon na ipinapakita sa What's New popup modal."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Nire-reset ang iba't ibang estado kaugnay sa onboarding at nire-redirect sa \"Secure Your Wallet\" onboarding page."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Magreresulta sa isang timestamp na tuloy-tuloy na naka-save sa session.storage"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "Ang “$1” ay hindi pinagagana dahil hindi nito naabot ang pinakamababang 10% na dagdag mula sa orihinal na bayad sa gas.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1632,12 +1599,6 @@
   },
   "displayNftMediaDescription": {
     "message": "Ang pagpapakita ng NFT media at data ay naglalantad sa iyong IP address sa OpenSea o sa ibang mga third party. Maaari nitong payagan ang mga umaatake na iugnay ang iyong IP address sa iyong Ethereum address. Umaasa ang awtomatikong pagtuklas ng NFT sa setting na ito, at hindi magagamit kapag naka-off ito."
-  },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "Dumiretso sa paggamit ng iyong mga NFT"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "Dumiretso sa paggamit ng iyong mga token"
   },
   "doNotShare": {
     "message": "Huwag ibahagi ito sa sinuman"
@@ -1770,9 +1731,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "I-edit ang pagpapabilis ng bayad sa gas"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "Walang hirap na pamahalaan ang iyong mga digital na asset"
-  },
   "enable": {
     "message": "Payagan"
   },
@@ -1782,21 +1740,12 @@
   "enableFromSettings": {
     "message": " Paganahin ito mula sa Mga Setting."
   },
-  "enableNftAutoDetection": {
-    "message": "Paganahin ang autodetection ng NFT"
-  },
   "enableSnap": {
     "message": "Paganahin"
   },
   "enableToken": {
     "message": "paganahin ang $1",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "Paganahin ang autodetection ng token"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "Ang mga user na naka-toggle on ang Basic Functionality ay awtomatikong naka-on sa Extension ng MetaMask v12.3.0"
   },
   "enabled": {
     "message": "Pinagana"
@@ -2309,12 +2258,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "Agad na i-access ang mga NFT mo"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "Agarang access sa iyong mga token"
   },
   "import": {
     "message": "Mag-import",
@@ -3280,9 +3223,6 @@
   "notEnoughGas": {
     "message": "Hindi Sapat ang Gas"
   },
-  "notRightNow": {
-    "message": "Hindi ngayon"
-  },
   "note": {
     "message": "Tala"
   },
@@ -3516,9 +3456,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "Tulungan kami na paghusayin ang iyong karanasan"
-  },
-  "onboarding": {
-    "message": "Onboarding"
   },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "Ginagawang posible ng IPFS gateway na ma-access at makita ang datos na pinangangasiwaan ng mga third party. Maaari kang magdagdag ng custom na IPFS gateway o magpatuloy sa paggamit ng default."
@@ -4385,9 +4322,6 @@
   "reset": {
     "message": "I-reset"
   },
-  "resetStates": {
-    "message": "I-reset ang Mga Estado"
-  },
   "resetWallet": {
     "message": "I-reset ang wallet"
   },
@@ -4706,9 +4640,6 @@
   },
   "sepolia": {
     "message": "Sepolia test network"
-  },
-  "serviceWorkerKeepAlive": {
-    "message": "Service Worker Keep Alive"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "Ginagamit ng MetaMask ang mga pinagkakatiwalaang serbisyo ng third-party na ito para mapahusay ang kakayahang magamit at kaligtasan ng produkto."
@@ -5272,9 +5203,6 @@
   },
   "stateLogsDescription": {
     "message": "Naglalaman ang mga log ng estado ng iyong mga address ng pampublikong account at ipinadalang transaksyon."
-  },
-  "states": {
-    "message": "Mga estado"
   },
   "status": {
     "message": "Katayuan"

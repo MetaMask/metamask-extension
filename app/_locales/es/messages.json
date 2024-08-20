@@ -513,12 +513,6 @@
   "allow": {
     "message": "Permitir"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "Permita que MetaMask detecte y muestre sus NFT con autodetección. Podrá:"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "Permita que MetaMask detecte y muestre sus tokens con autodetección. Podrá:"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "Esto permitirá que MMI se conecte a $1 para importar sus cuentas."
   },
@@ -549,9 +543,6 @@
   "andForTwoItems": {
     "message": "$1 y $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
-  },
-  "announcements": {
-    "message": "Anuncios"
   },
   "appDescription": {
     "message": "Un monedero de Ethereum en el explorador",
@@ -1549,30 +1540,6 @@
   "details": {
     "message": "Detalles"
   },
-  "developerOptions": {
-    "message": "Opciones de desarrollador"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Activa o desactiva la función de rediseño de confirmaciones que se encuentra en fase de desarrollo"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Rediseño de confirmaciones"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Activa o desactiva el nuevo diseño del menú Redes"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Rediseño del menú Redes"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Restablece el valor booleano isShown a falso para todos los anuncios. Los anuncios son las notificaciones que se muestran en la ventana emergente Novedades."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Restablece varios estados relacionados con la incorporación y redirige a la página de incorporación \"Asegure su monedero\"."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "El resultado es una marca de tiempo que se guarda continuamente en session.storage"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” está desactivado porque no cumple el mínimo de un aumento del 10 % respecto a la tarifa de gas original.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1632,12 +1599,6 @@
   },
   "displayNftMediaDescription": {
     "message": "Mostrar los medios y datos NFT expone su dirección IP a OpenSea u otros terceros. Esto puede permitir que los atacantes asocien su dirección IP con su dirección Ethereum. La detección automática de NFT se basa en esta configuración y no estará disponible cuando esté desactivada."
-  },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "Comience a utilizar sus NFT"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "Comience a utilizar sus tokens"
   },
   "doNotShare": {
     "message": "No comparta esto con nadie"
@@ -1770,9 +1731,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Editar la tarifa de aceleración de gas"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "Navegue sin esfuerzo por sus activos digitales"
-  },
   "enable": {
     "message": "Habilitar"
   },
@@ -1782,21 +1740,12 @@
   "enableFromSettings": {
     "message": " Actívela en Configuración."
   },
-  "enableNftAutoDetection": {
-    "message": "Habilite la autodetección de NFT"
-  },
   "enableSnap": {
     "message": "Activar"
   },
   "enableToken": {
     "message": "activar $1",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "Activar la autodetección de tokens"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "Esta opción estará activada automáticamente en la extensión Metamask v12.3.0 para los usuarios que tengan activada la funcionalidad básica"
   },
   "enabled": {
     "message": "Activado"
@@ -2309,12 +2258,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "Acceda inmediatamente a sus NFT"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "Acceso inmediato a sus tokens"
   },
   "import": {
     "message": "Importar",
@@ -3280,9 +3223,6 @@
   "notEnoughGas": {
     "message": "No hay gas suficiente"
   },
-  "notRightNow": {
-    "message": "Ahora no"
-  },
   "note": {
     "message": "Nota"
   },
@@ -3516,9 +3456,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "Ayúdenos a mejorar su experiencia"
-  },
-  "onboarding": {
-    "message": "Incorporación"
   },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "La puerta de enlace de IPFS permite acceder y visualizar datos alojados por terceros. Puede agregar una puerta de enlace de IPFS personalizada o continuar usando la predeterminada."
@@ -4385,9 +4322,6 @@
   "reset": {
     "message": "Restablecer"
   },
-  "resetStates": {
-    "message": "Restablecer estados"
-  },
   "resetWallet": {
     "message": "Restablecer monedero"
   },
@@ -4706,9 +4640,6 @@
   },
   "sepolia": {
     "message": "Red de prueba Sepolia"
-  },
-  "serviceWorkerKeepAlive": {
-    "message": "Mantener activo el Service Worker"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask utiliza estos servicios de terceros de confianza para mejorar la usabilidad y la seguridad de los productos."
@@ -5272,9 +5203,6 @@
   },
   "stateLogsDescription": {
     "message": "Los registros de estado contienen sus direcciones de cuentas públicas y las transacciones enviadas."
-  },
-  "states": {
-    "message": "Estados"
   },
   "status": {
     "message": "Estado"

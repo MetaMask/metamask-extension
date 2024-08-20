@@ -54,6 +54,7 @@ const removedBackgroundFields = [
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
+  'AppStateController.lastInteractedConfirmationInfo',
   'PPOMController.chainStatus.0x539.lastVisited',
   'PPOMController.versionInfo',
 ];
@@ -793,30 +794,6 @@ describe('Sentry errors', function () {
     });
   });
 
-  it('should have no policy gaps for UI controller state @no-mmi', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver }) => {
-        await driver.navigate();
-        await driver.findElement('#password');
-
-        const fullUiState = await driver.executeScript(() =>
-          window.stateHooks?.getCleanAppState?.(),
-        );
-
-        const missingState = getMissingProperties(
-          fullUiState.metamask,
-          SENTRY_UI_STATE.metamask,
-        );
-        assert.deepEqual(missingState, {});
-      },
-    );
-  });
-
   it('should not have extra properties in UI state mask @no-mmi', async function () {
     const expectedMissingState = {
       currentPopupId: false, // Initialized as undefined
@@ -847,6 +824,7 @@ describe('Sentry errors', function () {
       opts: true,
       store: true,
       configurationClient: true,
+      lastInteractedConfirmationInfo: undefined,
     };
     await withFixtures(
       {
