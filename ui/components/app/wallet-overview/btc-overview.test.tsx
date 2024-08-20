@@ -17,7 +17,7 @@ const PORTOFOLIO_URL = 'https://portfolio.test';
 
 const BTC_OVERVIEW_BUY = 'coin-overview-buy';
 const BTC_OVERVIEW_BRIDGE = 'coin-overview-bridge';
-const BTC_OVERVIEW_PORTFOLIO = 'coin-overview-portfolio';
+const BTC_OVERVIEW_RECEIVE = 'coin-overview-receive';
 const BTC_OVERVIEW_SWAP = 'token-overview-button-swap';
 const BTC_OVERVIEW_SEND = 'coin-overview-send';
 const BTC_OVERVIEW_PRIMARY_CURRENCY = 'coin-overview__primary-currency';
@@ -218,9 +218,9 @@ describe('BtcOverview', () => {
     });
   });
 
-  it('always show the Portfolio button', () => {
+  it('always show the Receive button', () => {
     const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
-    const portfolioButton = queryByTestId(BTC_OVERVIEW_PORTFOLIO);
-    expect(portfolioButton).toBeInTheDocument();
+    const receiveButton = queryByTestId(BTC_OVERVIEW_RECEIVE);
+    expect(receiveButton).toBeInTheDocument();
   });
 });
