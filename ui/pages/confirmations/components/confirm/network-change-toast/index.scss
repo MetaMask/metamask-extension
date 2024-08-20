@@ -9,3 +9,9 @@
   width: 100%;
   z-index: design-system.$modal-z-index;
 }
+
+@media screen and (min-width: 576px) {
+  .toast_wrapper {
+      max-width: 408px;
+  }
+}
