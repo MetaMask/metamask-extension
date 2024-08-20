@@ -1,5 +1,5 @@
 import React from 'react';
-import { TRIGGER_TYPES } from '../../../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import type { NotificationComponent } from '../types/notifications/notifications';
@@ -30,8 +30,10 @@ import {
 } from '../../../../components/component-library';
 import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
+
 type LidoReadyWithDrawnNotification =
-  ExtractedNotification<TRIGGER_TYPES.LIDO_STAKE_READY_TO_BE_WITHDRAWN>;
+  ExtractedNotification<NotificationServicesController.Constants.TRIGGER_TYPES.LIDO_STAKE_READY_TO_BE_WITHDRAWN>;
 const isLidoReadyWithDrawnNotification = isOfTypeNodeGuard([
   TRIGGER_TYPES.LIDO_STAKE_READY_TO_BE_WITHDRAWN,
 ]);
