@@ -3603,10 +3603,11 @@ export default class MetamaskController extends EventEmitter {
       removePermissionsFor: this.removePermissionsFor,
       approvePermissionsRequest: this.acceptPermissionsRequest,
       rejectPermissionsRequest: this.rejectPermissionsRequest,
-      ...getPermissionBackgroundApiMethods(
+      ...getPermissionBackgroundApiMethods({
         permissionController,
         approvalController,
-      ),
+        networkController,
+      }),
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       connectCustodyAddresses: this.mmiController.connectCustodyAddresses.bind(
