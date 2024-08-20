@@ -4,21 +4,14 @@ import {
   UserStorageController,
 } from '@metamask/profile-sync-controller';
 import {
-  getMockFeatureAnnouncementResponse,
-  getMockBatchCreateTriggersResponse,
-  getMockBatchDeleteTriggersResponse,
-  getMockListNotificationsResponse,
-  getMockMarkNotificationsAsReadResponse,
-} from '../../../../app/scripts/controllers/metamask-notifications/mocks/mockResponses';
-import {
-  getMockRetrievePushNotificationLinksResponse,
-  getMockUpdatePushNotificationLinksResponse,
-  getMockCreateFCMRegistrationTokenResponse,
-  getMockDeleteFCMRegistrationTokenResponse,
-} from '../../../../app/scripts/controllers/push-platform-notifications/mocks/mockResponse';
+  NotificationServicesController,
+  NotificationsServicesPushController,
+} from '@metamask/notification-services-controller';
 
 const AuthMocks = AuthenticationController.Mocks;
 const StorageMocks = UserStorageController.Mocks;
+const NotificationMocks = NotificationServicesController.Mocks;
+const PushMocks = NotificationsServicesPushController.Mocks;
 
 type MockResponse = {
   url: string | RegExp;
@@ -42,17 +35,20 @@ export function mockNotificationServices(server: Mockttp) {
   mockAPICall(server, StorageMocks.getMockUserStoragePutResponse());
 
   // Notifications
-  mockAPICall(server, getMockFeatureAnnouncementResponse());
-  mockAPICall(server, getMockBatchCreateTriggersResponse());
-  mockAPICall(server, getMockBatchDeleteTriggersResponse());
-  mockAPICall(server, getMockListNotificationsResponse());
-  mockAPICall(server, getMockMarkNotificationsAsReadResponse());
+  mockAPICall(server, NotificationMocks.getMockFeatureAnnouncementResponse());
+  mockAPICall(server, NotificationMocks.getMockBatchCreateTriggersResponse());
+  mockAPICall(server, NotificationMocks.getMockBatchDeleteTriggersResponse());
+  mockAPICall(server, NotificationMocks.getMockListNotificationsResponse());
+  mockAPICall(
+    server,
+    NotificationMocks.getMockMarkNotificationsAsReadResponse(),
+  );
 
   // Push Notifications
-  mockAPICall(server, getMockRetrievePushNotificationLinksResponse());
-  mockAPICall(server, getMockUpdatePushNotificationLinksResponse());
-  mockAPICall(server, getMockCreateFCMRegistrationTokenResponse());
-  mockAPICall(server, getMockDeleteFCMRegistrationTokenResponse());
+  mockAPICall(server, PushMocks.getMockRetrievePushNotificationLinksResponse());
+  mockAPICall(server, PushMocks.getMockUpdatePushNotificationLinksResponse());
+  mockAPICall(server, PushMocks.getMockCreateFCMRegistrationTokenResponse());
+  mockAPICall(server, PushMocks.getMockDeleteFCMRegistrationTokenResponse());
 }
 
 function mockAPICall(server: Mockttp, response: MockResponse) {

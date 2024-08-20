@@ -4,10 +4,11 @@ import MessageSigningSnap from '@metamask/message-signing-snap/dist/preinstalled
 import BitcoinWalletSnap from '@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json';
 ///: END:ONLY_INCLUDE_IF
 
+// The casts here are less than ideal but we expect the SnapController to validate the inputs.
 const PREINSTALLED_SNAPS: readonly PreinstalledSnap[] = Object.freeze([
-  MessageSigningSnap as PreinstalledSnap,
+  MessageSigningSnap as unknown as PreinstalledSnap,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  BitcoinWalletSnap as PreinstalledSnap,
+  BitcoinWalletSnap as unknown as PreinstalledSnap,
   ///: END:ONLY_INCLUDE_IF
 ]);
 
