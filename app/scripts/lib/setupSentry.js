@@ -481,7 +481,7 @@ function getClientOptions() {
     beforeBreadcrumb: beforeBreadcrumb(),
     beforeSend: (report) => rewriteReport(report),
     debug: METAMASK_DEBUG,
-    dist: isManifestV3 ? ' mv3' : 'mv2',
+    dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
     environment,
     integrations: [
