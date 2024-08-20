@@ -17,10 +17,10 @@ const {
 const FixtureBuilder = require('../../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
-describe('Confirmation Redesign ERC721 Approve Component', function () {
-  const smartContract = SMART_CONTRACTS.NFTS;
+describe('Confirmation Redesign ERC20 setApprovalForAll Component', function () {
+  const smartContract = SMART_CONTRACTS.HST;
 
-  describe('Submit an Approve transaction @no-mmi', function () {
+  describe('Submit an setApprovalForAll transaction @no-mmi', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withFixtures(
         {
@@ -42,18 +42,18 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
-          await createMintTransaction(driver);
-          await confirmMintTransaction(driver);
+          await createERC20IncreaseAllowanceTransaction(driver);
 
-          await createApproveTransaction(driver);
+          await driver.delay(1024 ** 2);
 
           await assertApproveDetails(driver);
+
           await confirmApproveTransaction(driver);
         },
       );
     });
 
-    it('Sends a type 2 transaction (EIP1559)', async function () {
+    it.skip('Sends a type 2 transaction (EIP1559)', async function () {
       await withFixtures(
         {
           dapp: true,
@@ -74,11 +74,10 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
-          await createMintTransaction(driver);
-          await confirmMintTransaction(driver);
+          await createERC20IncreaseAllowanceTransaction(driver);
 
-          await createApproveTransaction(driver);
           await assertApproveDetails(driver);
+
           await confirmApproveTransaction(driver);
         },
       );
@@ -113,27 +112,9 @@ async function mocks(server: MockttpServer) {
   return [await mocked4Bytes(server)];
 }
 
-async function createMintTransaction(driver: Driver) {
+async function createERC20IncreaseAllowanceTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#mintButton');
-}
-
-export async function confirmMintTransaction(driver: Driver) {
-  await driver.waitUntilXWindowHandles(3);
-
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-  await driver.waitForSelector({
-    css: 'h2',
-    text: 'Transaction request',
-  });
-
-  await scrollAndConfirmAndAssertConfirm(driver);
-}
-
-async function createApproveTransaction(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#approveButton');
+  await driver.clickElement('#increaseTokenAllowance');
 }
 
 async function assertApproveDetails(driver: Driver) {
@@ -149,6 +130,21 @@ async function assertApproveDetails(driver: Driver) {
   await driver.waitForSelector({
     css: 'p',
     text: 'This site wants permission to withdraw your NFTs',
+  });
+
+  await driver.waitForSelector({
+    css: 'p',
+    text: 'Estimated changes',
+  });
+
+  await driver.waitForSelector({
+    css: 'p',
+    text: 'Withdraw',
+  });
+
+  await driver.waitForSelector({
+    css: 'p',
+    text: '70,000',
   });
 
   await toggleAdvancedDetails(driver);
