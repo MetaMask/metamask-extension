@@ -8,8 +8,8 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
-import { getEthAccounts } from './caip-permission-adapter-eth-accounts';
-import { getPermittedEthChainIds } from './caip-permission-adapter-permittedChains';
+import { getEthAccounts } from './adapters/caip-permission-adapter-eth-accounts';
+import { getPermittedEthChainIds } from './adapters/caip-permission-adapter-permittedChains';
 
 export const getPermissionsHandler = {
   methodNames: [MethodNames.getPermissions],

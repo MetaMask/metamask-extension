@@ -22,7 +22,7 @@ import { PermissionNames } from '../../../controllers/permissions';
 import {
   getPermittedEthChainIds,
   addPermittedEthChainId,
-} from '../../multichain-api/caip-permission-adapter-permittedChains';
+} from '../../multichain-api/adapters/caip-permission-adapter-permittedChains';
 
 export function findExistingNetwork(chainId, findNetworkConfigurationBy) {
   if (

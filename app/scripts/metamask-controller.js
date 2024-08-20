@@ -349,8 +349,8 @@ import MultichainMiddlewareManager from './lib/multichain-api/MultichainMiddlewa
 import { walletRevokeSessionHandler } from './lib/multichain-api/wallet-revokeSession';
 import { walletGetSessionHandler } from './lib/multichain-api/wallet-getSession';
 import { mergeScopes } from './lib/multichain-api/scope';
-import { getEthAccounts } from './lib/multichain-api/caip-permission-adapter-eth-accounts';
-import { CaipPermissionAdapterMiddleware } from './lib/multichain-api/caip-permission-adapter-middleware';
+import { getEthAccounts } from './lib/multichain-api/adapters/caip-permission-adapter-eth-accounts';
+import { CaipPermissionAdapterMiddleware } from './lib/multichain-api/adapters/caip-permission-adapter-middleware';
 import { BridgeBackgroundAction } from './controllers/bridge/types';
 import BridgeController from './controllers/bridge/bridge-controller';
 import { BRIDGE_CONTROLLER_NAME } from './controllers/bridge/constants';

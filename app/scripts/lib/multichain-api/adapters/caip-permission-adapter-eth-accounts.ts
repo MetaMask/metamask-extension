@@ -1,6 +1,6 @@
 import { CaipAccountId, Hex, parseCaipAccountId } from '@metamask/utils';
-import { Caip25CaveatValue } from './caip25permissions';
-import { KnownCaipNamespace, mergeScopes, parseScopeString } from './scope';
+import { Caip25CaveatValue } from '../caip25permissions';
+import { KnownCaipNamespace, mergeScopes, parseScopeString } from '../scope';
 
 // TODO(Jl): Move all the permission stuff into its own folder
 export const getEthAccounts = (caip25CaveatValue: Caip25CaveatValue) => {

@@ -14,7 +14,7 @@ import {
   validRpcMethods,
 } from '../../multichain-api/scope';
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
-import { setEthAccounts } from '../../multichain-api/caip-permission-adapter-eth-accounts';
+import { setEthAccounts } from '../../multichain-api/adapters/caip-permission-adapter-eth-accounts';
 
 /**
  * This method attempts to retrieve the Ethereum accounts available to the

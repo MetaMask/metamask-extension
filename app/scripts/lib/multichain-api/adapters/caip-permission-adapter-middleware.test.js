@@ -1,9 +1,9 @@
 import { providerErrors } from '@metamask/rpc-errors';
-import { CaipPermissionAdapterMiddleware } from './caip-permission-adapter-middleware';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from './caip25permissions';
+} from '../caip25permissions';
+import { CaipPermissionAdapterMiddleware } from './caip-permission-adapter-middleware';
 
 const baseRequest = {
   origin: 'http://test.com',

@@ -1,6 +1,6 @@
 import { Hex } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
-import { Caip25CaveatValue } from './caip25permissions';
+import { Caip25CaveatValue } from '../caip25permissions';
 import {
   KnownCaipNamespace,
   mergeScopes,
@@ -8,7 +8,7 @@ import {
   ScopesObject,
   validNotifications,
   validRpcMethods,
-} from './scope';
+} from '../scope';
 
 export const getPermittedEthChainIds = (
   caip25CaveatValue: Caip25CaveatValue,
