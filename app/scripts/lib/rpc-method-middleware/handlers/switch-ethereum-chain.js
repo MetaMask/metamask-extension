@@ -1,7 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
-  findExistingNetwork,
   validateSwitchEthereumChainParams,
   switchChain,
 } from './ethereum-chain-utils';
@@ -53,6 +52,7 @@ async function switchEthereumChainHandler(
 
   const networkConfigurationForRequestedChainId =
     getNetworkConfigurationByChainId(chainId);
+
   const networkClientIdToSwitchTo =
     networkConfigurationForRequestedChainId.rpcEndpoints[
       networkConfigurationForRequestedChainId.defaultRpcEndpointIndex
@@ -69,10 +69,7 @@ async function switchEthereumChainHandler(
 
   const requestData = {
     toNetworkConfiguration: networkConfigurationForRequestedChainId,
-    fromNetworkConfiguration: findExistingNetwork(
-      currentChainIdForOrigin,
-      findNetworkConfigurationBy,
-    ),
+    fromNetworkConfiguration: getNetworkConfigurationByChainId(chainId),
   };
 
   return switchChain(
