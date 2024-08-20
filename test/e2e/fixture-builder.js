@@ -87,7 +87,6 @@ function onboardingFixture() {
           smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
-          showTokenAutodetectModal: false,
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
         },
@@ -385,6 +384,32 @@ class FixtureBuilder {
                     '0x09781764c08de8ca82e156bbf156a3ca217c7950',
                     ERC_4337_ACCOUNT.toLowerCase(),
                   ],
+                },
+              ],
+              date: 1664388714636,
+            },
+          },
+        },
+      },
+    });
+  }
+
+  withPermissionControllerSnapAccountConnectedToTestDapp(
+    restrictReturnedAccounts = true,
+  ) {
+    return this.withPermissionController({
+      subjects: {
+        [DAPP_URL]: {
+          origin: DAPP_URL,
+          permissions: {
+            eth_accounts: {
+              id: 'ZaqPEWxyhNCJYACFw93jE',
+              parentCapability: 'eth_accounts',
+              invoker: DAPP_URL,
+              caveats: restrictReturnedAccounts && [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: ['0x09781764c08de8ca82e156bbf156a3ca217c7950'],
                 },
               ],
               date: 1664388714636,
