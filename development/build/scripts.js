@@ -1222,7 +1222,7 @@ function renderHtmlFile({
     .replace('./scripts/load/background.ts', './load-background.js')
     .replace(
       '<script src="./load-background.js" defer></script>',
-      `${scriptTags}\n    <script src="./chromereload.js" defer></script>`,
+      `${scriptTags}\n    <script src="./chromereload.js" async></script>`,
     )
     .replace('<script src="./scripts/load/ui.ts" defer></script>', scriptTags)
     .replace('<script src="./load-offscreen.js" defer></script>', scriptTags)
