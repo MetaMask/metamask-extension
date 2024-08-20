@@ -87,7 +87,7 @@ export default class DomainInput extends Component {
       return null;
     }
 
-    if ((IS_FLASK && !isHexString(input)) || isValidDomainName(input)) {
+    if (!isHexString(input) && isValidDomainName(input)) {
       lookupDomainName(input);
     } else {
       resetDomainResolution();

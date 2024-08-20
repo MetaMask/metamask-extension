@@ -17,7 +17,7 @@ function mapDispatchToProps(dispatch) {
   return {
     lookupDomainName: debounce(
       (domainName) => dispatch(lookupDomainName(domainName)),
-      450,
+      150,
     ),
     initializeDomainSlice: () => dispatch(initializeDomainSlice()),
     resetDomainResolution: debounce(
