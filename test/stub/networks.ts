@@ -10,6 +10,7 @@ import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
 } from '../../shared/constants/network';
 
+// TODO: Update me with new network controller schema
 export const mockNetworkState = (
   ...networks: {
     id?: string;
