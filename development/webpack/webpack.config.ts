@@ -112,6 +112,14 @@ const plugins: WebpackPluginInstance[] = [
       isTest: args.test,
       shouldIncludeSnow: args.snow,
     },
+    preload: [
+      {
+        attributes: { as: 'font', crossorigin: true },
+        // preload our own fonts, as other fonts use fallback formats we don't
+        // want to preload
+        test: /fonts\/\.(?:ttf)$/u,
+      },
+    ],
   }),
   new ManifestPlugin({
     web_accessible_resources: webAccessibleResources,
