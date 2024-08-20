@@ -197,7 +197,7 @@ async function requestEthereumAccountsHandler(
     });
   }
 
-  res.result = ethAccounts;
+  res.result = await getAccounts();
 
   return end();
 }
