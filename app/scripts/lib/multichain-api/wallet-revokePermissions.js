@@ -59,9 +59,12 @@ function revokePermissionsImplementation(
   const shouldRevokeEthAccounts = permissionKeys.includes(
     RestrictedMethods.eth_accounts,
   );
-  permissionKeys = permissionKeys.filter(
-    (name) => name !== PermissionNames.eth_accounts,
+  const shouldRevokePermittedChains = permissionKeys.includes(
+    PermissionNames.permittedChains,
   );
+  const shouldRevokeLegacyPermission = shouldRevokeEthAccounts || shouldRevokePermittedChains
+
+  permissionKeys = omit(permissionKeys, [RestrictedMethods.eth_accounts, PermissionNames.permittedChains])
 
   if (
     (permissionKeys.length === 0 && !shouldRevokeEthAccounts) ||

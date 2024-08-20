@@ -1,3 +1,4 @@
+import { pick } from 'lodash';
 import { isPlainObject } from '@metamask/controller-utils';
 import { invalidParams, MethodNames } from '@metamask/permission-controller';
 import {
@@ -10,6 +11,7 @@ import {
 } from './caip25permissions';
 import { validNotifications, validRpcMethods } from './scope';
 import { setEthAccounts } from './caip-permission-adapter-eth-accounts';
+import { PermissionNames } from '../../controllers/permissions';
 
 export const requestPermissionsHandler = {
   methodNames: [MethodNames.requestPermissions],
@@ -64,8 +66,12 @@ async function requestPermissionsImplementation(
   const caip25Permission = requestedPermissions[Caip25EndowmentPermissionName];
   delete requestedPermissions[Caip25EndowmentPermissionName];
 
-  let ethAccountsApproval;
-  if (requestedPermissions[RestrictedMethods.eth_accounts]) {
+  const legacyRequestedPermissions = pick(requestedPermissions, [RestrictedMethods.eth_accounts, PermissionNames.permittedChains])
+  delete requestedPermissions[RestrictedMethods.eth_accounts]
+  delete requestedPermissions[PermissionNames.permittedChains]
+
+  let legacyApproval;
+  if (Object.keys(legacyRequestedPermissions).length > 0) {
     if (
       caip25Permission &&
       caip25Permission.caveats[0].value.isMultichainOrigin
@@ -77,18 +83,12 @@ async function requestPermissionsImplementation(
       ); // TODO: better error
     }
 
-    ethAccountsApproval = await requestPermissionApprovalForOrigin({
-      [RestrictedMethods.eth_accounts]:
-        requestedPermissions[RestrictedMethods.eth_accounts],
-    });
-    delete requestedPermissions[RestrictedMethods.eth_accounts];
+    legacyApproval = await requestPermissionApprovalForOrigin(legacyRequestedPermissions);
   }
-
-  // TODO: Handle permittedChains?
 
   let grantedPermissions = {};
   if (
-    (Object.keys(requestedPermissions).length === 0 && !ethAccountsApproval) ||
+    (Object.keys(requestedPermissions).length === 0 && !legacyApproval) ||
     Object.keys(requestedPermissions).length > 0
   ) {
     const [_grantedPermissions] = await requestPermissionsForOrigin(
@@ -98,15 +98,14 @@ async function requestPermissionsImplementation(
     grantedPermissions = { ..._grantedPermissions };
   }
 
-  if (ethAccountsApproval) {
+  const ethAccounts = legacyApproval?.approvedAccounts;
+  if (ethAccounts) {
     // TODO: Use permittedChains permission returned from requestPermissionsForOrigin() when available
     const { chainId } = getNetworkConfigurationByNetworkClientId(
       req.networkClientId,
     );
 
     const scopeString = `eip155:${parseInt(chainId, 16)}`;
-
-    const ethAccounts = ethAccountsApproval.approvedAccounts;
 
     const permissions = getPermissionsForOrigin(origin) || {};
     const caip25Endowment = permissions[Caip25EndowmentPermissionName];
