@@ -8,5 +8,7 @@ on:
 jobs:
   add-team-label:
     uses: metamask/github-tools/.github/workflows/add-team-label.yml@main
+    permissions:
+       pull-requests: write
     secrets:
       PERSONAL_ACCESS_TOKEN: ${{ secrets.RELEASE_LABEL_TOKEN }}
