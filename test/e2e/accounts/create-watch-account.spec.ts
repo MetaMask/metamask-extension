@@ -19,7 +19,9 @@ async function startCreateWatchAccountFlow(
   driver: Driver,
   unlockWalletFirst: boolean = true,
 ): Promise<void> {
-  if (unlockWalletFirst) await unlockWallet(driver);
+  if (unlockWalletFirst) {
+    await unlockWallet(driver);
+  }
 
   await driver.clickElement('[data-testid="account-menu-icon"]');
   await driver.clickElement(
@@ -34,15 +36,15 @@ async function startCreateWatchAccountFlow(
  * Watches an EOA address.
  *
  * @param driver - The WebDriver instance used to control the browser.
- * @param unlockWallet - Whether to unlock the wallet before watching the address.
+ * @param unlockWalletFirst - Whether to unlock the wallet before watching the address.
  * @param address - The EOA address to watch.
  */
 async function watchEoaAddress(
   driver: Driver,
-  unlockWallet: boolean = true,
+  unlockWalletFirst: boolean = true,
   address: string = EOA_ADDRESS,
 ): Promise<void> {
-  await startCreateWatchAccountFlow(driver, unlockWallet);
+  await startCreateWatchAccountFlow(driver, unlockWalletFirst);
   await driver.fill(
     '[placeholder="Enter a public address or ENS name"]',
     address,
