@@ -2692,7 +2692,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/snaps-sdk>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,

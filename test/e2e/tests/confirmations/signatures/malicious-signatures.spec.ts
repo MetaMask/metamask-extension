@@ -1,11 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import {
-  WINDOW_TITLES,
-  openDapp,
-  unlockWallet,
-} from '../../../helpers';
+import { WINDOW_TITLES, openDapp, unlockWallet } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
   scrollAndConfirmAndAssertConfirm,
