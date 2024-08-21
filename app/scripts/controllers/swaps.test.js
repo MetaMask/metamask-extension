@@ -120,6 +120,7 @@ const EMPTY_INIT_STATE = {
     swapsStxGetTransactionsRefreshTime:
       FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
     swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
+    swapsStxStatusDeadline: 180,
     swapsUserFeeLevel: '',
     saveFetchedQuotes: false,
   },
@@ -1002,6 +1003,7 @@ describe('SwapsController', function () {
         const swapsQuotePrefetchingRefreshTime = 0;
         const swapsStxBatchStatusRefreshTime = 0;
         const swapsStxGetTransactionsRefreshTime = 0;
+        const swapsStxStatusDeadline = 0;
         swapsController.store.updateState({
           swapsState: {
             tokens,
@@ -1012,6 +1014,7 @@ describe('SwapsController', function () {
             swapsQuotePrefetchingRefreshTime,
             swapsStxBatchStatusRefreshTime,
             swapsStxGetTransactionsRefreshTime,
+            swapsStxStatusDeadline,
           },
         });
 
