@@ -41,17 +41,17 @@ function onboardingFixture() {
       },
       NetworkController: {
         ...mockNetworkState({
-          id: 'networkConfigurationId',
+          // id: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
           blockExplorerUrl: undefined,
         }),
-        providerConfig: { id: 'networkConfigurationId' },
+        // providerConfig: { id: 'networkConfigurationId' },
       },
       PreferencesController: {
-        advancedGasFee: null,
+        advancedGasFee: {},
         currentLocale: 'en',
         dismissSeedBackUpReminder: false,
         featureFlags: {},
