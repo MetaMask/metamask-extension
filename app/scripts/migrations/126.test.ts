@@ -1,6 +1,6 @@
-import { migrate, version } from './126';
-import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { AccountsControllerState } from '@metamask/accounts-controller';
+import { createMockInternalAccount } from '../../../test/jest/mocks';
+import { migrate, version } from './126';
 
 const oldVersion = 125;
 
@@ -44,9 +44,9 @@ describe('migration #126', () => {
     };
 
     const newStorage = await migrate(oldStorage);
-    const selectedAccount = (
-      newStorage.data.AccountsController as AccountsControllerState
-    ).internalAccounts.selectedAccount;
+    const {
+      internalAccounts: { selectedAccount },
+    } = newStorage.data.AccountsController as AccountsControllerState;
     expect(selectedAccount).toStrictEqual(mockInternalAccount.id);
     expect(newStorage.data.AccountsController).toStrictEqual(
       mockAccountsControllerState,
