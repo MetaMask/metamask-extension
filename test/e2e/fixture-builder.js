@@ -220,12 +220,12 @@ class FixtureBuilder {
 
   withNetworkControllerDoubleGanache() {
     const ganacheNetworks = mockNetworkState(
-      {
-        chainId: CHAIN_IDS.LOCALHOST,
-        nickname: 'Localhost 8545',
-        rpcUrl: 'http://localhost:8545',
-        ticker: 'ETH',
-      },
+      // {
+      //   chainId: CHAIN_IDS.LOCALHOST,
+      //   nickname: 'Localhost 8545',
+      //   rpcUrl: 'http://localhost:8545',
+      //   ticker: 'ETH',
+      // },
       {
         id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
         rpcUrl: 'http://localhost:8546',
