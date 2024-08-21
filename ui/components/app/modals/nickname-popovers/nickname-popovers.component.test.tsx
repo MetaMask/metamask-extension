@@ -24,7 +24,7 @@ const mockNonEvmAccount = createMockInternalAccount({
   type: BtcAccountType.P2wpkh,
 });
 
-const mockEvmExplorer = 'http://mock-explorer.com';
+const mockEvmExplorer = 'https://goerli.etherscan.io';
 
 const render = (
   {
