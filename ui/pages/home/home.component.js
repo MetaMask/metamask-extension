@@ -203,9 +203,6 @@ export default class Home extends PureComponent {
     clearNewNetworkAdded: PropTypes.func,
     clearEditedNetwork: PropTypes.func,
     setActiveNetwork: PropTypes.func,
-    // eslint-disable-next-line react/no-unused-prop-types
-    // eslint-disable-next-line react/no-unused-prop-types
-    setNftAutodetectModal: PropTypes.func,
     hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
