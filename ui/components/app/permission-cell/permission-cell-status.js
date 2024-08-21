@@ -48,94 +48,32 @@ export const PermissionCellStatus = ({
 
   const renderAccountsGroup = () => (
     <>
-      {process.env.CHAIN_PERMISSIONS ? (
-        <Box
-          as="span"
-          className="permission-cell__status__accounts-group-box"
-          display={Display.InlineFlex}
-        >
-          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-            {networks?.map((network, index) => (
-              <Box
-                key={`${network.nickname}_${index}`}
-                display={Display.Flex}
-                justifyContent={JustifyContent.flexStart}
-                alignItems={AlignItems.center}
-                marginTop={2}
-              >
-                <AvatarNetwork
-                  size={AvatarNetworkSize.Xs}
-                  src={network.rpcPrefs?.imageUrl}
-                  name={network.nickname}
-                />
-                <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
-                  {network.avatarName}
-                </Text>
-              </Box>
-            ))}
-          </Box>
+      <Box
+        as="span"
+        className="permission-cell__status__accounts-group-box"
+        display={Display.InlineFlex}
+      >
+        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+          {networks?.map((network, index) => (
+            <Box
+              key={`${network.nickname}_${index}`}
+              display={Display.Flex}
+              justifyContent={JustifyContent.flexStart}
+              alignItems={AlignItems.center}
+              marginTop={2}
+            >
+              <AvatarNetwork
+                size={AvatarNetworkSize.Xs}
+                src={network.rpcPrefs?.imageUrl}
+                name={network.nickname}
+              />
+              <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
+                {network.avatarName}
+              </Text>
+            </Box>
+          ))}
         </Box>
-      ) : (
-        <Box
-          as="span"
-          className="permission-cell__status__accounts-group-box"
-          display={Display.InlineFlex}
-        >
-          <Tooltip
-            position="bottom"
-            html={
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                justifyContent={JustifyContent.center}
-                alignItems={AlignItems.center}
-              >
-                <Text
-                  variant={TextVariant.headingSm}
-                  color={TextColor.textAlternative}
-                  textAlign={TextAlign.Center}
-                >
-                  {t('accounts')}
-                </Text>
-                <Box
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Column}
-                >
-                  {accounts.map((account, index) => (
-                    <Box
-                      key={`${account.avatarValue}_${index}`}
-                      display={Display.Flex}
-                      justifyContent={JustifyContent.flexStart}
-                      alignItems={AlignItems.center}
-                      marginTop={2}
-                    >
-                      <AvatarAccount
-                        address={account.avatarValue}
-                        size={AvatarAccountSize.Xs}
-                        borderColor={BorderColor.backgroundDefault}
-                      />
-                      <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
-                        {account.avatarName}
-                      </Text>
-                    </Box>
-                  ))}
-                </Box>
-              </Box>
-            }
-          >
-            <AvatarGroup
-              limit={3}
-              members={accounts}
-              avatarType={AvatarType.ACCOUNT}
-              size={AvatarTokenSize.Xs}
-              width={BlockSize.Min}
-              borderColor={BorderColor.backgroundDefault}
-              marginLeft={4}
-              paddingLeft={4}
-            />
-          </Tooltip>
-        </Box>
-      )}
+      </Box>
     </>
   );
 
