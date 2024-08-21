@@ -5,8 +5,8 @@ import {
 } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 
-import { UIComponentFactory } from './types';
 import { mapToTemplate } from '../utils';
+import { UIComponentFactory } from './types';
 
 export const selector: UIComponentFactory<SelectorElement> = ({
   element,
@@ -30,6 +30,7 @@ export const selector: UIComponentFactory<SelectorElement> = ({
     props: {
       id: element.props.name,
       name: element.props.name,
+      title: element.props.title,
       form,
       options,
     },

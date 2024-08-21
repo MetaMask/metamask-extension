@@ -9,26 +9,29 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Text,
 } from '../../../component-library';
 import {
-  AlignItems,
   BackgroundColor,
   BlockSize,
   BorderRadius,
   Display,
   FlexDirection,
   IconColor,
+  TextAlign,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 
 export type SnapUISelectorProps = {
+  title: string;
   options: string[];
-  optionComponents: any[];
+  optionComponents: React.ReactNode[];
   disabled?: boolean;
 };
 
 type SelectorItemProps = {
   value: string;
-  children: any;
+  children: React.ReactNode;
   onSelect: (value: string) => void;
 };
 
@@ -46,6 +49,10 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
       className="snap-ui-renderer__selector-item"
       backgroundColor={BackgroundColor.transparent}
       borderRadius={BorderRadius.LG}
+      paddingTop={2}
+      paddingBottom={2}
+      paddingRight={4}
+      paddingLeft={4}
       ellipsis
       textProps={{
         display: Display.Flex,
@@ -53,7 +60,13 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
       }}
       onClick={handleClick}
       // TODO: Decide on how to do this
-      style={{ justifyContent: 'inherit', textAlign: 'inherit', height: 'inherit', minHeight: '32px', maxHeight: '48px' }}
+      style={{
+        justifyContent: 'inherit',
+        textAlign: 'inherit',
+        height: 'inherit',
+        minHeight: '32px',
+        maxHeight: '64px',
+      }}
     >
       {children}
     </ButtonBase>
@@ -61,6 +74,7 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
 };
 
 export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
+  title,
   options,
   optionComponents,
   disabled,
@@ -81,15 +95,18 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
     (option) => option === selectedOptionValue,
   );
 
-
   const selectedOption = optionComponents[selectedOptionIndex];
 
   return (
     <>
       <ButtonBase
         className="snap-ui-renderer__selector"
-        backgroundColor={BackgroundColor.transparent}
+        backgroundColor={BackgroundColor.backgroundDefault}
         borderRadius={BorderRadius.LG}
+        paddingTop={2}
+        paddingBottom={2}
+        paddingRight={4}
+        paddingLeft={4}
         ellipsis
         textProps={{
           display: Display.Flex,
@@ -104,16 +121,34 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
         gap={2}
         onClick={handleModalOpen}
         // TODO: Decide on how to do this
-        style={{ justifyContent: 'inherit', textAlign: 'inherit', height: 'inherit', minHeight: '32px', maxHeight: '48px' }}
+        style={{
+          justifyContent: 'inherit',
+          textAlign: 'inherit',
+          height: 'inherit',
+          minHeight: '32px',
+          maxHeight: '64px',
+        }}
       >
         {selectedOption}
       </ButtonBase>
       <Modal isOpen={isModalOpen} onClose={handleModalClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader onClose={handleModalClose}>Title</ModalHeader>
+          <ModalHeader onClose={handleModalClose}>
+            <Text
+              variant={TextVariant.headingSm}
+              textAlign={TextAlign.Center}
+              ellipsis
+            >
+              {title}
+            </Text>
+          </ModalHeader>
           <ModalBody>
-            <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              gap={2}
+            >
               {optionComponents.map((component, index) => (
                 <SelectorItem value={options[index]} onSelect={handleSelect}>
                   {component}
