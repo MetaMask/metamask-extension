@@ -16,7 +16,10 @@ export const REDESIGN_APPROVAL_TYPES = [
   ApprovalType.PersonalSign,
 ];
 
-export const REDESIGN_TRANSACTION_TYPES = [TransactionType.contractInteraction];
+export const REDESIGN_TRANSACTION_TYPES = [
+  TransactionType.contractInteraction,
+  TransactionType.tokenMethodApprove,
+];
 
 const SIGNATURE_APPROVAL_TYPES = [
   ApprovalType.PersonalSign,
@@ -75,4 +78,22 @@ export const isPermitSignatureRequest = (request: SignatureRequestType) => {
   );
 
   return PRIMARY_TYPES_PERMIT.includes(primaryType);
+};
+
+export const isValidASCIIURL = (urlString?: string) => {
+  try {
+    return urlString?.includes(new URL(urlString).host);
+  } catch (exp: unknown) {
+    console.error(exp);
+    return false;
+  }
+};
+
+export const toPunycodeURL = (urlString: string) => {
+  try {
+    return new URL(urlString).href;
+  } catch (err: unknown) {
+    console.error(`Failed to convert URL to Punycode: ${err}`);
+    return undefined;
+  }
 };

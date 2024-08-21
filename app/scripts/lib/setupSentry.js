@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/browser';
 import { createModuleLogger, createProjectLogger } from '@metamask/utils';
 import { logger } from '@sentry/utils';
 import { AllProperties } from '../../../shared/modules/object.utils';
+import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
 
@@ -427,6 +428,7 @@ export const SENTRY_UI_STATE = {
     welcomeScreenSeen: true,
     confirmationExchangeRates: true,
     useSafeChainsListValidation: true,
+    watchEthereumAccountEnabled: false,
     bitcoinSupportEnabled: false,
     bitcoinTestnetSupportEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -470,6 +472,7 @@ function getClientOptions() {
     beforeBreadcrumb: beforeBreadcrumb(),
     beforeSend: (report) => rewriteReport(report),
     debug: METAMASK_DEBUG,
+    dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
     environment,
     integrations: [
