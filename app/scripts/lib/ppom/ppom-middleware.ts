@@ -28,6 +28,12 @@ const CONFIRMATION_METHODS = Object.freeze([
   ...SIGNING_METHODS,
 ]);
 
+export type PPOMMiddlewareRequest<
+  Params extends JsonRpcParams = JsonRpcParams,
+> = Required<JsonRpcRequest<Params>> & {
+  securityAlertResponse?: SecurityAlertResponse | undefined;
+};
+
 /**
  * Middleware function that handles JSON RPC requests.
  * This function will be called for every JSON RPC request.
@@ -46,7 +52,7 @@ const CONFIRMATION_METHODS = Object.freeze([
  * @returns PPOMMiddleware function.
  */
 export function createPPOMMiddleware<
-  Params extends JsonRpcParams,
+  Params extends (string | { to: string })[],
   Result extends Json,
 >(
   ppomController: PPOMController,
@@ -61,7 +67,7 @@ export function createPPOMMiddleware<
   ) => void,
 ) {
   return async (
-    req: JsonRpcRequest<Params>,
+    req: PPOMMiddlewareRequest<Params>,
     _res: JsonRpcResponse<Result>,
     next: () => void,
   ) => {
@@ -80,13 +86,14 @@ export function createPPOMMiddleware<
         return;
       }
 
-      const { isSIWEMessage } = detectSIWE({ data: req?.params?.[0] });
-      if (isSIWEMessage) {
-        return;
-      }
-
-      if (req.method === MESSAGE_TYPE.ETH_SEND_TRANSACTION) {
-        const { to: toAddress } = req?.params?.[0] ?? {};
+      const data = req.params[0];
+      if (typeof data === 'string') {
+        const { isSIWEMessage } = detectSIWE({ data });
+        if (isSIWEMessage) {
+          return;
+        }
+      } else if (req.method === MESSAGE_TYPE.ETH_SEND_TRANSACTION) {
+        const { to: toAddress } = data ?? {};
         const internalAccounts = accountsController.listAccounts();
         const isToInternalAccount = internalAccounts.some(
           ({ address }) => address?.toLowerCase() === toAddress?.toLowerCase(),
