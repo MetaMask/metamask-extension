@@ -1,28 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
   AvatarNetwork,
   AvatarNetworkSize,
-  AvatarTokenSize,
   Box,
   Text,
 } from '../../component-library';
 import {
   AlignItems,
-  BlockSize,
-  BorderColor,
   Display,
   FlexDirection,
   JustifyContent,
-  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import Tooltip from '../../ui/tooltip';
-import { AvatarGroup } from '../../multichain';
-import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatDate } from '../../../helpers/utils/util';
 
