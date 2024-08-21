@@ -249,7 +249,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
           <div
             class="confirm-page-container-summary__nonce"
           >
-            #undefined
+            #70
           </div>
         </div>
         <div
@@ -480,7 +480,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                       class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                       focused="false"
                       type="number"
-                      value="undefined"
+                      value="70"
                     />
                   </div>
                 </div>
