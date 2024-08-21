@@ -257,7 +257,6 @@ export async function switchChain(
     await setActiveNetwork(networkClientId);
     res.result = null;
   } catch (error) {
-    // TODO: need to verify we didn't break this
     // We don't want to return an error if user rejects the request
     // and this is a chained switch request after wallet_addEthereumChain.
     // approvalFlowId is only defined when this call is of a
