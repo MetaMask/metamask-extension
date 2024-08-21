@@ -472,7 +472,7 @@ describe('Transaction Utils', () => {
         expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
       });
 
-      it('send to users own acccount', async () => {
+      it('send to users own account', async () => {
         const sendRequest = {
           ...request,
           transactionParams: {
@@ -484,9 +484,7 @@ describe('Transaction Utils', () => {
           ...sendRequest,
           securityAlertsEnabled: false,
           chainId: '0x1',
-          internalAccounts: {
-            address: INTERNAL_ACCOUNT_ADDRESS,
-          } as InternalAccount,
+          internalAccounts: [{ address: INTERNAL_ACCOUNT_ADDRESS }],
         });
 
         expect(
