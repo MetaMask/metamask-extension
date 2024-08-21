@@ -93,6 +93,7 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
       message,
       Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'),
     );
+    // {r: Uint8Array(32), s: Uint8Array(32), v: 28n}
 
     // Convert Uint8Array to hex strings
     const r = `0x${Buffer.from(signature.r).toString('hex')}`;
@@ -119,8 +120,8 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
     );
     const recoveredAddress = bufferToHex(pubToAddress(recoveredPublicKey));
 
-    console.log('Expected Address:', expectedAddress); //0xf68464152d7289d7ea9a2bec2e0035c45188223c
-    console.log('Recovered Address:', recoveredAddress); //0xf68464152d7289d7ea9a2bec2e0035c45188223c
+    console.log('Expected Address:', expectedAddress); // 0xf68464152d7289d7ea9a2bec2e0035c45188223c
+    console.log('Recovered Address:', recoveredAddress); // 0xf68464152d7289d7ea9a2bec2e0035c45188223c
 
     const signedTx = {
       id: 1,
