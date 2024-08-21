@@ -120,10 +120,21 @@
         "console.warn": true
       },
       "packages": {
+        "@babel/core>@babel/generator>@babel/types": true,
         "@babel/core>@babel/generator>jsesc": true,
-        "@babel/core>@babel/types": true,
         "terser-webpack-plugin>@jridgewell/trace-mapping": true,
         "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true
+      }
+    },
+    "@babel/core>@babel/generator>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "@babel/core>@babel/types>to-fast-properties": true,
+        "depcheck>@babel/traverse>@babel/types>@babel/helper-string-parser": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
       }
     },
     "@babel/core>@babel/generator>jsesc": {
@@ -193,7 +204,7 @@
     "@babel/core>@babel/template": {
       "packages": {
         "@babel/code-frame": true,
-        "@babel/core>@babel/parser": true,
+        "@babel/core>@babel/template>@babel/parser": true,
         "@babel/core>@babel/types": true
       }
     },
@@ -1206,6 +1217,11 @@
     "@metamask/jazzicon>color>clone": {
       "globals": {
         "Buffer": true
+      }
+    },
+    "@metamask/network-controller>uri-js": {
+      "globals": {
+        "define": true
       }
     },
     "@metamask/object-multiplex>once": {
@@ -2346,30 +2362,81 @@
         "@babel/code-frame": true,
         "@babel/core>@babel/generator": true,
         "@babel/core>@babel/parser": true,
-        "@babel/core>@babel/types": true,
         "babel/preset-env>b@babel/types": true,
         "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
         "depcheck>@babel/traverse>@babel/helper-function-name": true,
         "depcheck>@babel/traverse>@babel/helper-hoist-variables": true,
         "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
+        "depcheck>@babel/traverse>@babel/types": true,
         "depcheck>@babel/traverse>globals": true,
         "nock>debug": true
       }
     },
     "depcheck>@babel/traverse>@babel/helper-function-name": {
       "packages": {
-        "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true
+        "depcheck>@babel/traverse>@babel/helper-function-name>@babel/template": true,
+        "depcheck>@babel/traverse>@babel/helper-function-name>@babel/types": true
+      }
+    },
+    "depcheck>@babel/traverse>@babel/helper-function-name>@babel/template": {
+      "packages": {
+        "@babel/code-frame": true,
+        "@babel/core>@babel/parser": true,
+        "depcheck>@babel/traverse>@babel/helper-function-name>@babel/types": true
+      }
+    },
+    "depcheck>@babel/traverse>@babel/helper-function-name>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "@babel/core>@babel/types>to-fast-properties": true,
+        "depcheck>@babel/traverse>@babel/types>@babel/helper-string-parser": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
       }
     },
     "depcheck>@babel/traverse>@babel/helper-hoist-variables": {
       "packages": {
-        "@babel/core>@babel/types": true
+        "depcheck>@babel/traverse>@babel/helper-hoist-variables>@babel/types": true
+      }
+    },
+    "depcheck>@babel/traverse>@babel/helper-hoist-variables>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "@babel/core>@babel/types>to-fast-properties": true,
+        "depcheck>@babel/traverse>@babel/types>@babel/helper-string-parser": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
       }
     },
     "depcheck>@babel/traverse>@babel/helper-split-export-declaration": {
       "packages": {
-        "@babel/core>@babel/types": true
+        "depcheck>@babel/traverse>@babel/helper-split-export-declaration>@babel/types": true
+      }
+    },
+    "depcheck>@babel/traverse>@babel/helper-split-export-declaration>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "@babel/core>@babel/types>to-fast-properties": true,
+        "depcheck>@babel/traverse>@babel/types>@babel/helper-string-parser": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
+      }
+    },
+    "depcheck>@babel/traverse>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "@babel/core>@babel/types>to-fast-properties": true,
+        "depcheck>@babel/traverse>@babel/types>@babel/helper-string-parser": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
       }
     },
     "depcheck>cosmiconfig>parse-json": {
@@ -6354,8 +6421,8 @@
         "process.env.BABEL_TYPES_8_BREAKING": true
       },
       "packages": {
-        "@babel/core>@babel/types>@babel/helper-string-parser": true,
         "@babel/core>@babel/types>to-fast-properties": true,
+        "lavamoat-viz>lavamoat-core>lavamoat-tofu>@babel/traverse>@babel/types>@babel/helper-string-parser": true,
         "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
       }
     },
@@ -7658,8 +7725,24 @@
     },
     "resolve-url-loader>es6-iterator>d": {
       "packages": {
-        "resolve-url-loader>es6-iterator>d>type": true,
-        "resolve-url-loader>es6-iterator>es5-ext": true
+        "resolve-url-loader>es6-iterator>d>es5-ext": true,
+        "resolve-url-loader>es6-iterator>d>type": true
+      }
+    },
+    "resolve-url-loader>es6-iterator>d>es5-ext": {
+      "packages": {
+        "resolve-url-loader>es6-iterator>d>es5-ext>es6-symbol": true
+      }
+    },
+    "resolve-url-loader>es6-iterator>d>es5-ext>es6-symbol": {
+      "packages": {
+        "resolve-url-loader>es6-iterator>d": true,
+        "resolve-url-loader>es6-iterator>d>es5-ext>es6-symbol>ext": true
+      }
+    },
+    "resolve-url-loader>es6-iterator>d>es5-ext>es6-symbol>ext": {
+      "globals": {
+        "__global__": true
       }
     },
     "resolve-url-loader>es6-iterator>es5-ext": {
@@ -7669,13 +7752,7 @@
     },
     "resolve-url-loader>es6-iterator>es6-symbol": {
       "packages": {
-        "resolve-url-loader>es6-iterator>d": true,
-        "resolve-url-loader>es6-iterator>es6-symbol>ext": true
-      }
-    },
-    "resolve-url-loader>es6-iterator>es6-symbol>ext": {
-      "globals": {
-        "__global__": true
+        "resolve-url-loader>es6-iterator>d": true
       }
     },
     "resolve-url-loader>rework>css>source-map-resolve": {
