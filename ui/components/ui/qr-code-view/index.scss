@@ -16,7 +16,7 @@
     z-index: 1;
     border: 1px solid var(--color-border-muted);
     border-radius: 16px;
-    background-color: white;
+    background-color: var(--brand-colors-white); // stay white regardless of theme
   }
 
   &__logo {
