@@ -18,8 +18,7 @@
     "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
-    "currentMigrationVersion": "number",
-    "showTokenAutodetectModalOnUpgrade": "object"
+    "currentMigrationVersion": "number"
   },
   "AppStateController": {
     "connectedStatusPopoverHasBeenShown": true,
@@ -110,18 +109,6 @@
     "fragments": "object",
     "segmentApiCalls": "object"
   },
-  "MetamaskNotificationsController": {
-    "subscriptionAccountsSeen": "object",
-    "isMetamaskNotificationsFeatureSeen": "boolean",
-    "isMetamaskNotificationsEnabled": "boolean",
-    "isFeatureAnnouncementsEnabled": "boolean",
-    "metamaskNotificationsList": "object",
-    "metamaskNotificationsReadList": "object",
-    "isUpdatingMetamaskNotifications": "boolean",
-    "isFetchingMetamaskNotifications": "boolean",
-    "isUpdatingMetamaskNotificationsAccount": "object",
-    "isCheckingAccountsPresence": "boolean"
-  },
   "MultichainBalancesController": { "balances": "object" },
   "MultichainRatesController": {
     "fiatCurrency": "usd",
@@ -157,6 +144,19 @@
     "ignoredNfts": "object"
   },
   "NotificationController": { "notifications": "object" },
+  "NotificationServicesController": {
+    "subscriptionAccountsSeen": "object",
+    "isMetamaskNotificationsFeatureSeen": "boolean",
+    "isNotificationServicesEnabled": "boolean",
+    "isFeatureAnnouncementsEnabled": "boolean",
+    "metamaskNotificationsList": "object",
+    "metamaskNotificationsReadList": "object",
+    "isUpdatingMetamaskNotifications": "boolean",
+    "isFetchingMetamaskNotifications": "boolean",
+    "isUpdatingMetamaskNotificationsAccount": "object",
+    "isCheckingAccountsPresence": "boolean"
+  },
+  "NotificationServicesPushController": { "fcmToken": "string" },
   "OnboardingController": {
     "seedPhraseBackedUp": true,
     "firstTimeFlowType": "import",
@@ -183,6 +183,7 @@
     "useRequestQueue": true,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
+    "watchEthereumAccountEnabled": "boolean",
     "bitcoinSupportEnabled": "boolean",
     "bitcoinTestnetSupportEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
@@ -202,10 +203,9 @@
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
-      "showTokenAutodetectModal": "boolean",
+      "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
-      "redesignedTransactionsEnabled": "boolean",
-      "isRedesignedConfirmationsDeveloperEnabled": "boolean"
+      "redesignedTransactionsEnabled": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
@@ -220,7 +220,6 @@
     "useExternalServices": "boolean",
     "selectedAddress": "string"
   },
-  "PushPlatformNotificationsController": { "fcmToken": "string" },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
@@ -241,7 +240,8 @@
     "snapStates": "object",
     "unencryptedSnapStates": "object"
   },
-  "SnapInterfaceController": "object",
+  "SnapInsightsController": { "insights": "object" },
+  "SnapInterfaceController": { "interfaces": "object" },
   "SnapsRegistry": {
     "database": "object",
     "lastUpdated": "object",
@@ -272,6 +272,7 @@
       "swapsQuoteRefreshTime": 60000,
       "swapsQuotePrefetchingRefreshTime": 60000,
       "swapsStxBatchStatusRefreshTime": 10000,
+      "swapsStxStatusDeadline": 180,
       "swapsStxGetTransactionsRefreshTime": 10000,
       "swapsStxMaxFeeMultiplier": 2,
       "swapsFeatureFlags": {}

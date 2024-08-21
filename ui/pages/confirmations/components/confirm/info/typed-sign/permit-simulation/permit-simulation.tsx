@@ -4,12 +4,12 @@ import { NameType } from '@metamask/name-controller';
 
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { parseTypedDataMessage } from '../../../../../../../../shared/modules/transaction.utils';
-import { Numeric } from '../../../../../../../../shared/modules/Numeric';
 import Name from '../../../../../../../components/app/name/name';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
+import { shortenString } from '../../../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../../selectors';
 import { Box, Text } from '../../../../../../../components/component-library';
@@ -25,7 +25,6 @@ import { SignatureRequestType } from '../../../../../types/confirm';
 import useTokenExchangeRate from '../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { IndividualFiatDisplay } from '../../../../simulation-details/fiat-display';
 import {
-  ellipsisAmountText,
   formatAmount,
   formatAmountMaxPrecision,
 } from '../../../../simulation-details/formatAmount';
@@ -48,7 +47,8 @@ const PermitSimulation: React.FC<{
 
   const fiatValue = useMemo(() => {
     if (exchangeRate && value) {
-      return exchangeRate.times(new Numeric(value, 10)).toNumber();
+      const tokenAmount = calcTokenAmount(value, tokenDecimals);
+      return exchangeRate.times(tokenAmount).toNumber();
     }
     return undefined;
   }, [exchangeRate, value]);
@@ -93,9 +93,15 @@ const PermitSimulation: React.FC<{
                   backgroundColor={BackgroundColor.backgroundAlternative}
                   borderRadius={BorderRadius.XL}
                   paddingInline={2}
+                  style={{ paddingTop: '1px', paddingBottom: '1px' }}
                   textAlign={TextAlign.Center}
                 >
-                  {ellipsisAmountText(tokenValue || '')}
+                  {shortenString(tokenValue || '', {
+                    truncatedCharLimit: 15,
+                    truncatedStartChars: 15,
+                    truncatedEndChars: 0,
+                    skipCharacterInEnd: true,
+                  })}
                 </Text>
               </Tooltip>
             </Box>
