@@ -44,7 +44,6 @@ import {
   FormTextFieldSize,
   HelpText,
   HelpTextSeverity,
-  Input,
   Text,
 } from '../../../../components/component-library';
 // import { FormTextField } from '../../../../components/component-library/form-text-field/deprecated';
@@ -52,19 +51,17 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderColor,
   BorderRadius,
-  BorderStyle,
   Display,
   FlexDirection,
-  FontWeight,
   JustifyContent,
-  Size,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { SizeNumber } from '../../../../components/component-library/box/box.types';
-import RpcListItem from '../../../../components/multichain/network-list-menu/rpc-list-item';
+import RpcListItem, {
+  stripKeyFromInfuraUrl,
+  stripProtocol,
+} from '../../../../components/multichain/network-list-menu/rpc-list-item';
 import DropdownEditor, { DropdownEditorStyle } from './dropdown-editor';
 import { useSafeChains } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
@@ -375,7 +372,6 @@ const NetworksForm = ({
           value={name}
         />
         <DropdownEditor
-          renderer={{ foo: () => '' }}
           title={t('defaultRpcUrl')}
           placeholder={t('addAUrl')}
           style={DropdownEditorStyle.Popover}
@@ -388,14 +384,19 @@ const NetworksForm = ({
               <RpcListItem rpcEndpoint={item} />
             ) : (
               <Text
+                ellipsis
                 variant={TextVariant.bodyMd}
                 paddingTop={3}
                 paddingBottom={3}
               >
-                {item.url}
+                {stripProtocol(stripKeyFromInfuraUrl(item.url))}
               </Text>
             )
           }
+          renderTooltip={(item, isList) => {
+            const url = stripKeyFromInfuraUrl(item.url);
+            return url.length > (isList ? 37 : 35) ? url : undefined;
+          }}
           addButtonText={t('addRpcUrl')}
           itemIsDeletable={(item) => item.type !== RpcEndpointType.Infura}
           onItemAdd={onRpcAdd}
@@ -485,7 +486,6 @@ const NetworksForm = ({
           </Box>
         ) : null}
         <FormTextField
-          //
           size={FormTextFieldSize.Lg}
           placeholder={t('enterSymbol')}
           paddingTop={4}
@@ -585,9 +585,10 @@ const NetworksForm = ({
               backgroundColor={BackgroundColor.transparent}
               ellipsis
             >
-              {item}
+              {stripProtocol(item)}
             </Text>
           )}
+          renderTooltip={(item) => (item.length > 36 ? item : undefined)}
         />
       </Box>
       <Box
@@ -597,7 +598,6 @@ const NetworksForm = ({
         width={BlockSize.Full}
       >
         <ButtonPrimary
-          // not just erorrs - also if fields not populated?
           disabled={
             !name ||
             !chainId ||

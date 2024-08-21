@@ -17,10 +17,6 @@ const mockState = {
   },
 };
 
-jest.mock('../../../../helpers/utils/feature-flags', () => ({
-  getLocalNetworkMenuRedesignFeatureFlag: jest.fn(() => false),
-}));
-
 const renderComponent = (props) => {
   const store = configureMockStore([])(mockState);
   return renderWithProvider(<NetworksTabContent {...props} />, store);

@@ -179,7 +179,6 @@ export default class Home extends PureComponent {
     pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
     pendingConfirmationsPrioritized: PropTypes.arrayOf(PropTypes.object)
       .isRequired,
-    networkMenuRedesign: PropTypes.bool,
     hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
@@ -380,7 +379,6 @@ export default class Home extends PureComponent {
       closeNotificationPopup,
       isNotification,
       hasAllowedPopupRedirectApprovals,
-      networkMenuRedesign,
       newNetworkAddedConfigurationId,
       setActiveNetwork,
       clearNewNetworkAdded,
@@ -397,10 +395,7 @@ export default class Home extends PureComponent {
     } = _prevProps;
     const { notificationClosing } = this.state;
 
-    if (
-      prevNewNetworkAddedConfigurationId !== newNetworkAddedConfigurationId &&
-      networkMenuRedesign
-    ) {
+    if (prevNewNetworkAddedConfigurationId !== newNetworkAddedConfigurationId) {
       setActiveNetwork(newNetworkAddedConfigurationId);
       clearNewNetworkAdded();
     }
@@ -504,11 +499,8 @@ export default class Home extends PureComponent {
       newTokensImportedError,
       setNewTokensImported,
       setNewTokensImportedError,
-      newNetworkAddedConfigurationId,
-      networkMenuRedesign,
       clearNewNetworkAdded,
       clearEditedNetwork,
-      setActiveNetwork,
     } = this.props;
 
     const onAutoHide = () => {
@@ -782,52 +774,6 @@ export default class Home extends PureComponent {
             key="home-outdatedBrowserNotification"
           />
         ) : null}
-        {newNetworkAddedConfigurationId && !networkMenuRedesign && (
-          <Popover
-            className="home__new-network-added"
-            onClose={() => clearNewNetworkAdded()}
-          >
-            <i className="fa fa-check-circle fa-2x home__new-network-added__check-circle" />
-            <Text
-              variant={TextVariant.headingSm}
-              as="h4"
-              marginTop={5}
-              marginRight={9}
-              marginLeft={9}
-              marginBottom={0}
-              fontWeight={FontWeight.Bold}
-            >
-              {t('networkAddedSuccessfully')}
-            </Text>
-            <Box marginTop={8} marginRight={8} marginLeft={8} marginBottom={5}>
-              <Button
-                type="primary"
-                className="home__new-network-added__switch-to-button"
-                onClick={() => {
-                  setActiveNetwork(newNetworkAddedConfigurationId);
-                  clearNewNetworkAdded();
-                }}
-              >
-                <Text
-                  variant={TextVariant.bodySm}
-                  as="h6"
-                  color={TextColor.primaryInverse}
-                >
-                  {t('switchToNetwork', [newNetworkAddedName])}
-                </Text>
-              </Button>
-              <Button type="secondary" onClick={() => clearNewNetworkAdded()}>
-                <Text
-                  variant={TextVariant.bodySm}
-                  as="h6"
-                  color={TextColor.primaryDefault}
-                >
-                  {t('dismiss')}
-                </Text>
-              </Button>
-            </Box>
-          </Popover>
-        )}
       </MultipleNotifications>
     );
   }

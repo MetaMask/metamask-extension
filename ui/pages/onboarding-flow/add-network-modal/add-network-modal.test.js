@@ -14,17 +14,8 @@ jest.mock('../../../store/actions', () => ({
 
 jest.mock('../../../pages/settings/networks-tab/networks-form/use-safe-chains');
 
-const mockNetworkMenuRedesignToggle = jest.fn();
-
-jest.mock('../../../helpers/utils/feature-flags', () => ({
-  ...jest.requireActual('../../../helpers/utils/feature-flags'),
-  getLocalNetworkMenuRedesignFeatureFlag: () => mockNetworkMenuRedesignToggle,
-}));
-
 describe('Add Network Modal', () => {
   it('should render', async () => {
-    mockNetworkMenuRedesignToggle.mockImplementation(() => false);
-
     jest.spyOn(useSafeChainsModule, 'useSafeChains').mockReturnValue({
       safeChains: [
         {
@@ -57,8 +48,6 @@ describe('Add Network Modal', () => {
   });
 
   it('should not render the new network flow modal', async () => {
-    mockNetworkMenuRedesignToggle.mockReturnValue(true);
-
     const mockStore = configureMockStore([thunk])({
       metamask: { useSafeChainsListValidation: true, orderedNetworkList: {} },
     });

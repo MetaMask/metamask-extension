@@ -24,10 +24,6 @@ const renderComponent = (props) => {
   return renderWithProvider(<NetworksForm {...props} />, store);
 };
 
-jest.mock('../../../../helpers/utils/feature-flags', () => ({
-  getLocalNetworkMenuRedesignFeatureFlag: jest.fn(() => false),
-}));
-
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
   viewOnly: true,

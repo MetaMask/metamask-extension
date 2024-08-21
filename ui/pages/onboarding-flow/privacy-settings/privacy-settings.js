@@ -81,7 +81,6 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
-import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../helpers/utils/feature-flags';
 import { Setting } from './setting';
 
 /**
@@ -170,10 +169,6 @@ export default function PrivacySettings() {
 
   const profileSyncingProps = useProfileSyncingProps(
     externalServicesOnboardingToggleState,
-  );
-
-  const networkMenuRedesign = useSelector(
-    getLocalNetworkMenuRedesignFeatureFlag,
   );
 
   const handleSubmit = () => {

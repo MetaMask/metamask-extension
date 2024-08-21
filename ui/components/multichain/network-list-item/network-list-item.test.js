@@ -6,7 +6,6 @@ import {
   MATIC_TOKEN_IMAGE_URL,
   POLYGON_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
-import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../helpers/utils/feature-flags';
 import { NetworkListItem } from '.';
 
 const DEFAULT_PROPS = {
@@ -22,30 +21,13 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-const generateUseSelectorRouter = (opts) => (selector) => {
-  if (selector === getLocalNetworkMenuRedesignFeatureFlag) {
-    return opts.networkMenuRedesign ?? false;
-  }
-  return undefined;
-};
-
 describe('NetworkListItem', () => {
   it('renders properly', () => {
-    useSelector.mockImplementation(
-      generateUseSelectorRouter({
-        networkMenuRedesign: false,
-      }),
-    );
     const { container } = render(<NetworkListItem {...DEFAULT_PROPS} />);
     expect(container).toMatchSnapshot();
   });
 
   it('does not render the delete icon when no onDeleteClick is clicked', () => {
-    useSelector.mockImplementation(
-      generateUseSelectorRouter({
-        networkMenuRedesign: false,
-      }),
-    );
     const { container } = render(
       <NetworkListItem {...DEFAULT_PROPS} onDeleteClick={null} />,
     );
@@ -55,11 +37,6 @@ describe('NetworkListItem', () => {
   });
 
   it('shows as selected when selected', () => {
-    useSelector.mockImplementation(
-      generateUseSelectorRouter({
-        networkMenuRedesign: false,
-      }),
-    );
     const { container } = render(
       <NetworkListItem {...DEFAULT_PROPS} selected />,
     );
@@ -71,11 +48,6 @@ describe('NetworkListItem', () => {
   });
 
   it('renders a tooltip when the network name is very long', () => {
-    useSelector.mockImplementation(
-      generateUseSelectorRouter({
-        networkMenuRedesign: false,
-      }),
-    );
     const { container } = render(
       <NetworkListItem
         {...DEFAULT_PROPS}
@@ -88,11 +60,6 @@ describe('NetworkListItem', () => {
   });
 
   it('executes onClick when the item is clicked', () => {
-    useSelector.mockImplementation(
-      generateUseSelectorRouter({
-        networkMenuRedesign: false,
-      }),
-    );
     const onClick = jest.fn();
     const { container } = render(
       <NetworkListItem {...DEFAULT_PROPS} onClick={onClick} />,
@@ -102,11 +69,6 @@ describe('NetworkListItem', () => {
   });
 
   it('executes onDeleteClick when the delete button is clicked', () => {
-    useSelector.mockImplementation(
-      generateUseSelectorRouter({
-        networkMenuRedesign: true,
-      }),
-    );
     const onDeleteClick = jest.fn();
     const onClick = jest.fn();
 

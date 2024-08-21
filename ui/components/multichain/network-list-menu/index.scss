@@ -9,3 +9,11 @@
   height: 100%;
   overflow: auto;
 }
+
+.rpc-list-item {
+  overflow: hidden;
+}
+
+.rpc-list-item button {
+  text-align: start;
+}

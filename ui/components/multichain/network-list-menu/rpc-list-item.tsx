@@ -10,7 +10,21 @@ import {
   TextColor,
   TextVariant,
   BackgroundColor,
+  BlockSize,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
+
+export const stripKeyFromInfuraUrl = (endpoint: string) =>
+  (endpoint = endpoint.endsWith('/v3/{infuraProjectId}')
+    ? endpoint.replace('/v3/{infuraProjectId}', '')
+    : endpoint.endsWith(`/v3/${infuraProjectId}`)
+    ? endpoint.replace(`/v3/${infuraProjectId}`, '')
+    : endpoint);
+9;
+export const stripProtocol = (endpoint: string) => {
+  const url = new URL(endpoint);
+  return `${url.host}${url.pathname === '/' ? '' : url.pathname}`;
+};
 
 const RpcListItem = ({
   rpcEndpoint,
@@ -24,25 +38,14 @@ const RpcListItem = ({
   const { url, type } = rpcEndpoint;
   const name = type == RpcEndpointType.Infura ? 'Infura' : rpcEndpoint.name;
 
-  const displayEndpoint = (endpoint?: string) => {
-    if (!endpoint) {
-      return '\u00A0';
-    }
-
-    endpoint = endpoint.endsWith('/v3/{infuraProjectId}')
-      ? endpoint.replace('/v3/{infuraProjectId}', '')
-      : endpoint.endsWith(`/v3/${infuraProjectId}`)
-      ? endpoint.replace(`/v3/${infuraProjectId}`, '')
-      : endpoint;
-
-    const url = new URL(endpoint);
-    return `${url.host}${url.pathname === '/' ? '' : url.pathname}`;
-  };
+  const displayEndpoint = (endpoint?: string) =>
+    !endpoint ? '\u00A0' : stripProtocol(stripKeyFromInfuraUrl(endpoint));
 
   const padding = name ? 2 : 4;
 
   return (
     <Box
+      className="rpc-list-item"
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       paddingTop={padding}
@@ -57,6 +60,7 @@ const RpcListItem = ({
         <Text
           as="button"
           padding={0}
+          width={BlockSize.Full}
           color={name ? TextColor.textDefault : TextColor.textAlternative}
           variant={name ? TextVariant.bodyMdMedium : TextVariant.bodySm}
           backgroundColor={BackgroundColor.transparent}
