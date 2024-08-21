@@ -6,6 +6,10 @@ export type InternalAccountWithBalance = InternalAccount & {
   balance: string;
 };
 
+export type InternalAccountWithBalanceLabel = InternalAccountWithBalance & {
+  label: string;
+};
+
 export type InternalAccountWithPinnedHiddenActiveLastSelected =
   InternalAccountWithBalance & {
     pinned: boolean;
