@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "12.0.1",
+  "version": "12.0.5",
   "private": true,
   "repository": {
     "type": "git",
@@ -61,6 +61,7 @@
     "test:e2e:mmi:visual": "./test/e2e/playwright/mmi/scripts/run-visual-test.sh check",
     "test:e2e:mmi:visual:update": "./test/e2e/playwright/mmi/scripts/run-visual-test.sh update",
     "test:e2e:swap": "yarn playwright test --project=swap",
+    "test:e2e:global": "yarn playwright test --project=global",
     "test:e2e:pw:report": "yarn playwright show-report public/playwright/playwright-reports/html",
     "test:e2e:chrome:rpc": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --rpc",
     "test:e2e:chrome:multi-provider": "MULTIPROVIDER=true SELENIUM_BROWSER=chrome node test/e2e/run-all.js --multi-provider",
@@ -270,8 +271,7 @@
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
-    "@blockaid/ppom_release": "^1.5.1",
-    "@contentful/rich-text-html-renderer": "^16.3.5",
+    "@blockaid/ppom_release": "^1.5.2",
     "@ensdomains/content-hash": "^2.5.7",
     "@ethereumjs/tx": "^4.1.1",
     "@ethersproject/abi": "^5.6.4",
@@ -298,6 +298,7 @@
     "@metamask-institutional/transaction-update": "^0.2.5",
     "@metamask-institutional/types": "^1.1.0",
     "@metamask/abi-utils": "^2.0.2",
+    "@metamask/account-watcher": "^4.1.0",
     "@metamask/accounts-controller": "^17.2.0",
     "@metamask/address-book-controller": "^4.0.1",
     "@metamask/announcement-controller": "^6.1.0",
@@ -554,7 +555,6 @@
     "chalk": "^4.1.2",
     "chokidar": "^3.6.0",
     "concurrently": "^8.2.2",
-    "contentful": "^10.8.7",
     "copy-webpack-plugin": "^12.0.2",
     "core-js-pure": "^3.38.0",
     "cross-spawn": "^7.0.3",

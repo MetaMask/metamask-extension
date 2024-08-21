@@ -168,10 +168,10 @@ export const SENTRY_BACKGROUND_STATE = {
   LoggingController: {
     logs: false,
   },
-  MetamaskNotificationsController: {
+  NotificationServicesController: {
     subscriptionAccountsSeen: false,
     isMetamaskNotificationsFeatureSeen: false,
-    isMetamaskNotificationsEnabled: false,
+    isNotificationServicesEnabled: false,
     isFeatureAnnouncementsEnabled: false,
     metamaskNotificationsList: false,
     metamaskNotificationsReadList: false,
@@ -317,8 +317,11 @@ export const SENTRY_BACKGROUND_STATE = {
     snapStates: false,
     snaps: false,
   },
-  SnapInterface: {
+  SnapInterfaceController: {
     interfaces: false,
+  },
+  SnapInsightsController: {
+    insights: false,
   },
   SnapsRegistry: {
     database: false,
@@ -349,6 +352,7 @@ export const SENTRY_BACKGROUND_STATE = {
       swapsQuotePrefetchingRefreshTime: true,
       swapsQuoteRefreshTime: true,
       swapsStxBatchStatusRefreshTime: true,
+      swapsStxStatusDeadline: true,
       swapsStxGetTransactionsRefreshTime: true,
       swapsStxMaxFeeMultiplier: true,
       swapsUserFeeLevel: true,
@@ -432,6 +436,7 @@ export const SENTRY_UI_STATE = {
     welcomeScreenSeen: true,
     confirmationExchangeRates: true,
     useSafeChainsListValidation: true,
+    watchEthereumAccountEnabled: false,
     bitcoinSupportEnabled: false,
     bitcoinTestnetSupportEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
