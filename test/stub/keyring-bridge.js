@@ -1,5 +1,5 @@
 import { Transaction } from '@ethereumjs/tx';
-import { ecsign, ecrecover, pubToAddress } from '@ethereumjs/util';
+import { ecsign, ecrecover, pubToAddress, toChecksumAddress, addHexPrefix } from '@ethereumjs/util';
 import { bufferToHex } from 'ethereumjs-util';
 
 // BIP32 Public Key: xpub6ELgkkwgfoky9h9fFu4Auvx6oHvJ6XfwiS1NE616fe9Uf4H3JHtLGjCePVkb6RFcyDCqVvjXhNXbDNDqs6Kjoxw7pTAeP1GSEiLHmA5wYa9
@@ -61,9 +61,6 @@ export class FakeKeyringBridge {
     return this.#publicKeyPayload;
   }
 
-  async ethereumSignTransaction(tx) {
-    return this.deviceSignTransaction(tx);
-  }
 }
 
 export class FakeTrezorBridge extends FakeKeyringBridge {
@@ -84,7 +81,7 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
     return Promise.resolve();
   }
 
-  async deviceSignTransaction(tx) {
+  async ethereumSignTransaction(tx) {
     const txParams = tx.transaction;
     const transaction = Transaction.fromTxData(txParams);
     const message = transaction.getMessageToSign();
@@ -111,7 +108,11 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
     const serializedTx = `0x${signedTransaction.serialize().toString('hex')}`;
 
     // Verify the signature
-    const expectedAddress = KNOWN_PUBLIC_KEY_ADDRESSES[0].address;
+    const rec = toChecksumAddress(
+      addHexPrefix(signedTransaction.getSenderAddress().toString('hex')),
+    );
+
+    console.log("Recoverd like trezor", rec)
     const recoveredPublicKey = ecrecover(
       message,
       signature.v,
@@ -120,8 +121,7 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
     );
     const recoveredAddress = bufferToHex(pubToAddress(recoveredPublicKey));
 
-    console.log('Expected Address:', expectedAddress); // 0xf68464152d7289d7ea9a2bec2e0035c45188223c
-    console.log('Recovered Address:', recoveredAddress); // 0xf68464152d7289d7ea9a2bec2e0035c45188223c
+   console.log('Recovered Address:', recoveredAddress); // 0xf68464152d7289d7ea9a2bec2e0035c45188223c
 
     const signedTx = {
       id: 1,
