@@ -229,9 +229,6 @@
   "editContact": {
     "message": "ಸಂಪರ್ಕವನ್ನು ಸಂಪಾದಿಸಿ"
   },
-  "ensRegistrationError": {
-    "message": "ENS ಹೆಸರಿನ ನೋಂದಣಿಯಲ್ಲಿ ದೋಷ"
-  },
   "enterPasswordContinue": {
     "message": "ಮುಂದುವರೆಯಲು ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ"
   },
@@ -354,9 +351,6 @@
   "invalidAddressRecipient": {
     "message": "ಸ್ವೀಕೃತಿದಾರರ ವಿಳಾಸವು ಅಮಾನ್ಯವಾಗಿದೆ"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "ETH ನೆಟ್‌ವರ್ಕ್‌ಗಳಿಲ್ಲ, ಸಣ್ಣಕ್ಷರಕ್ಕೆ ಹೊಂದಿಸಲಾಗಿದೆ"
-  },
   "invalidBlockExplorerURL": {
     "message": "ಅಮಾನ್ಯವಾದ Block Explorer URL"
   },
@@ -458,9 +452,6 @@
   },
   "next": {
     "message": "ಮುಂದೆ"
-  },
-  "noAddressForName": {
-    "message": "ಈ ಹೆಸರಿಗೆ ಯಾವುದೇ ವಿಳಾಸವನ್ನು ಹೊಂದಿಸಲಾಗಿಲ್ಲ."
   },
   "noConversionRateAvailable": {
     "message": "ಯಾವುದೇ ಪರಿವರ್ತನೆ ದರ ಲಭ್ಯವಿಲ್ಲ"

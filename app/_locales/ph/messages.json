@@ -445,9 +445,6 @@
     "message": "Nagbalik ang endpoint ng ibang chain ID: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "ensRegistrationError": {
-    "message": "Nagka-error sa pag-register ng ENS name"
-  },
   "enterMaxSpendLimit": {
     "message": "Ilagay ang Max na Limitasyon sa Paggastos"
   },
@@ -670,9 +667,6 @@
   "invalidAddressRecipient": {
     "message": "Hindi valid ang address ng tatanggap"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Hindi ETH network, itakda sa maliliit na letra"
-  },
   "invalidBlockExplorerURL": {
     "message": "Invalid na URL ng Block Explorer"
   },
@@ -878,9 +872,6 @@
   },
   "noAccountsFound": {
     "message": "Walang nakitang account para sa ibinigay na query sa paghahanap"
-  },
-  "noAddressForName": {
-    "message": "Walang naitakdang address para sa pangalang ito."
   },
   "noConversionRateAvailable": {
     "message": "Hindi Available ang Rate ng Conversion"

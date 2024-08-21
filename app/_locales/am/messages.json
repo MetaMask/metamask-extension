@@ -220,9 +220,6 @@
   "editContact": {
     "message": "ዕውቂያን አርትዕ"
   },
-  "ensRegistrationError": {
-    "message": "በ ENS የስም ምዝገባ ላይ የተፈጠረ ስህተት"
-  },
   "enterPasswordContinue": {
     "message": "ለመቀጠል የይለፍ ቃል ያስገቡ"
   },
@@ -345,9 +342,6 @@
   "invalidAddressRecipient": {
     "message": "የተቀባይ አድራሻ ትክክል አይደለም"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "ETH አውታረ መረብ አይደለም፣ ወደ ትናንሽ ፊደላት ቀይር"
-  },
   "invalidBlockExplorerURL": {
     "message": "ልክ ያልሆነ Block Explorer ዩአርኤል"
   },
@@ -443,9 +437,6 @@
   },
   "next": {
     "message": "ቀጣይ"
-  },
-  "noAddressForName": {
-    "message": "በዚህ ስም የተሞላ አድራሻ የለም።"
   },
   "noConversionRateAvailable": {
     "message": "ምንም የልወጣ ተመን አይገኝም"

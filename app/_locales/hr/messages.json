@@ -229,9 +229,6 @@
   "editContact": {
     "message": "Uredi kontakt"
   },
-  "ensRegistrationError": {
-    "message": "Greška u registraciji naziva ENS"
-  },
   "enterPasswordContinue": {
     "message": "Upišite lozinku za nastavak"
   },
@@ -350,9 +347,6 @@
   "invalidAddressRecipient": {
     "message": "Adresa primatelja nije valjana"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Ne mreža ETH, postavite na mala slova"
-  },
   "invalidBlockExplorerURL": {
     "message": "Nevaljani URL Block Explorer-a"
   },
@@ -451,9 +445,6 @@
   },
   "next": {
     "message": "Sljedeće"
-  },
-  "noAddressForName": {
-    "message": "Nijedna adresa nije postavljena za ovaj naziv."
   },
   "noConversionRateAvailable": {
     "message": "Nijedan konverzijski tečaj nije dostupan"

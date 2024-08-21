@@ -226,9 +226,6 @@
   "editContact": {
     "message": "পরিচিতি সম্পাদনা করুন"
   },
-  "ensRegistrationError": {
-    "message": "ENS নাম নিবন্ধীকরণে ত্রুটি হয়েছে"
-  },
   "enterPasswordContinue": {
     "message": "অবিরত রাখতে পাসওয়ার্ড লিখুন"
   },
@@ -351,9 +348,6 @@
   "invalidAddressRecipient": {
     "message": "প্রাপকের ঠিকানা অবৈধ"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "ETH নেটওয়ার্ক নয়, ছোটো হরফে সেট করা হয়েছে"
-  },
   "invalidBlockExplorerURL": {
     "message": "অবৈধ Block Explorer URL"
   },
@@ -452,9 +446,6 @@
   },
   "next": {
     "message": "পরবর্তী"
-  },
-  "noAddressForName": {
-    "message": "এই নামের জন্য কোনো ঠিকানা সেট করা হয় নি।"
   },
   "noConversionRateAvailable": {
     "message": "কোনো বিনিময় হার উপলভ্য নয়"

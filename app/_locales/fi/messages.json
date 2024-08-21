@@ -229,9 +229,6 @@
   "editContact": {
     "message": "Muokkaa yhteystietoa"
   },
-  "ensRegistrationError": {
-    "message": "Virhe ENS-nimen rekisteröinnissä"
-  },
   "enterPasswordContinue": {
     "message": "Syötä salasana voidaksesi jatkaa"
   },
@@ -354,9 +351,6 @@
   "invalidAddressRecipient": {
     "message": "Vastaanottajan osoite on virheellinen"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Ei ole ETH-verkosto; vaihda pieniin kirjaimiin"
-  },
   "invalidBlockExplorerURL": {
     "message": "Virheellinen Block Explorer URL-osoite"
   },
@@ -458,9 +452,6 @@
   },
   "next": {
     "message": "Seuraava"
-  },
-  "noAddressForName": {
-    "message": "Tälle nimelle ei ole määritetty osoitetta."
   },
   "noConversionRateAvailable": {
     "message": "Vaihtokurssi ei saatavilla"

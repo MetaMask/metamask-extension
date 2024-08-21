@@ -229,9 +229,6 @@
   "editContact": {
     "message": "ערוך איש קשר"
   },
-  "ensRegistrationError": {
-    "message": "שגיאה ברישום שם ENS"
-  },
   "enterPasswordContinue": {
     "message": "יש להזין ססמה כדי להמשיך"
   },
@@ -354,9 +351,6 @@
   "invalidAddressRecipient": {
     "message": "כתובת הנמען אינה חוקית"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "לא רשת ETH, מוגדר במצב אותיות קטנות"
-  },
   "invalidBlockExplorerURL": {
     "message": "כתובת URL לא חוקית של Block Explorer"
   },
@@ -455,9 +449,6 @@
   },
   "next": {
     "message": "הבא"
-  },
-  "noAddressForName": {
-    "message": "לא הוגדרה כתובת עבור שם זה."
   },
   "noConversionRateAvailable": {
     "message": "אין שער המרה זמין"

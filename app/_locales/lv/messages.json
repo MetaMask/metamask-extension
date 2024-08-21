@@ -229,9 +229,6 @@
   "editContact": {
     "message": "Rediģēt līgumu"
   },
-  "ensRegistrationError": {
-    "message": "Kļūda ENS vārda reģistrācijā"
-  },
   "enterPasswordContinue": {
     "message": "Ievadiet paroli, lai turpinātu"
   },
@@ -350,9 +347,6 @@
   "invalidAddressRecipient": {
     "message": "Nederīga saņēmēja adrese"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Nav ETH tīkls, iestatīti mazie burti"
-  },
   "invalidBlockExplorerURL": {
     "message": "Nederīgs Block Explorer URL"
   },
@@ -454,9 +448,6 @@
   },
   "next": {
     "message": "Nākamais"
-  },
-  "noAddressForName": {
-    "message": "Šim vārdam nav iestatīta adrese."
   },
   "noConversionRateAvailable": {
     "message": "Konversijas kurss nav pieejams"
