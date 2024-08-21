@@ -157,7 +157,6 @@ export default function PrivacySettings() {
   const trackEvent = useContext(MetaMetricsContext);
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getAllNetworks);
-  console.log('ALL NETWORKS: ', allNetworks);
 
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
