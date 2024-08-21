@@ -2,8 +2,8 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { JsonRpcMiddleware } from 'json-rpc-engine';
-import { RestrictedEthMethods } from '../../../shared/constants/permissions';
-import { unrestrictedEthSigningMethods } from '../controllers/permissions';
+import { RestrictedEthMethods } from '../../../../shared/constants/permissions';
+import { unrestrictedEthSigningMethods } from '../../controllers/permissions';
 
 type AllowedActions = AccountsControllerGetSelectedAccountAction;
 

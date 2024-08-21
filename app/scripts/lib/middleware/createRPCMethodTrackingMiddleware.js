@@ -1,26 +1,29 @@
 import { ApprovalType, detectSIWE } from '@metamask/controller-utils';
 import { errorCodes } from 'eth-rpc-errors';
 import { isValidAddress } from 'ethereumjs-util';
-import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
+import {
+  MESSAGE_TYPE,
+  ORIGIN_METAMASK,
+} from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
-} from '../../../shared/constants/metametrics';
-import { parseTypedDataMessage } from '../../../shared/modules/transaction.utils';
+} from '../../../../shared/constants/metametrics';
+import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 
 import {
   BlockaidResultType,
   BlockaidReason,
-} from '../../../shared/constants/security-provider';
+} from '../../../../shared/constants/security-provider';
 import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
-} from '../../../shared/constants/signatures';
-import { SIGNING_METHODS } from '../../../shared/constants/transaction';
-import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
-import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
-import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
+} from '../../../../shared/constants/signatures';
+import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
+import { getBlockaidMetricsProps } from '../../../../ui/helpers/utils/metrics';
+import { REDESIGN_APPROVAL_TYPES } from '../../../../ui/pages/confirmations/utils/confirm';
+import { getSnapAndHardwareInfoForMetrics } from '../snap-keyring/metrics';
 
 /**
  * These types determine how the method tracking middleware handles incoming

@@ -1,5 +1,5 @@
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import { isStreamWritable } from './stream-utils';
+import { isStreamWritable } from '../stream-utils';
 
 const createMetaRPCHandler = (api, outStream) => {
   return async (data) => {
