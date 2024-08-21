@@ -11,15 +11,19 @@ const mockRequestUserApproval = ({ requestData }) => {
 };
 
 const createMockMainnetConfiguration = () => ({
-  id: 123,
   chainId: CHAIN_IDS.MAINNET,
-  type: NETWORK_TYPES.MAINNET,
+  defaultRpcEndpointIndex: 0,
+  rpcEndpoints: [{
+    networkClientId:  NETWORK_TYPES.MAINNET,
+  }]
 });
 
 const createMockLineaMainnetConfiguration = () => ({
-  id: 1234,
   chainId: CHAIN_IDS.LINEA_MAINNET,
-  type: NETWORK_TYPES.LINEA_MAINNET,
+  defaultRpcEndpointIndex: 0,
+  rpcEndpoints: [{
+    networkClientId: NETWORK_TYPES.LINEA_MAINNET,
+  }]
 });
 
 describe('switchEthereumChainHandler', () => {
@@ -48,6 +52,7 @@ describe('switchEthereumChainHandler', () => {
         .mockImplementation(mockRequestUserApproval),
       requestPermittedChainsPermission: jest.fn(),
       getCaveat: mockGetCaveat,
+      getNetworkConfigurationByChainId: jest.fn(),
       ...overrides,
     };
   };
@@ -63,7 +68,7 @@ describe('switchEthereumChainHandler', () => {
       const mocks = makeMocks({
         permissionsFeatureFlagIsActive,
         overrides: {
-          findNetworkConfigurationBy: jest
+          getNetworkConfigurationByChainId: jest
             .fn()
             .mockReturnValue(createMockMainnetConfiguration()),
         },
@@ -81,7 +86,7 @@ describe('switchEthereumChainHandler', () => {
       );
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        createMockMainnetConfiguration().type,
+        createMockMainnetConfiguration().rpcEndpoints[0].networkClientId,
       );
     });
 
@@ -89,7 +94,7 @@ describe('switchEthereumChainHandler', () => {
       const mocks = makeMocks({
         permissionsFeatureFlagIsActive,
         overrides: {
-          findNetworkConfigurationBy: jest
+          getNetworkConfigurationByChainId: jest
             .fn()
             .mockReturnValue(createMockLineaMainnetConfiguration()),
         },
@@ -107,7 +112,7 @@ describe('switchEthereumChainHandler', () => {
       );
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        createMockLineaMainnetConfiguration().type,
+        createMockLineaMainnetConfiguration().rpcEndpoints[0].networkClientId,
       );
     });
 
@@ -115,7 +120,7 @@ describe('switchEthereumChainHandler', () => {
       const mocks = makeMocks({
         permissionsFeatureFlagIsActive,
         overrides: {
-          findNetworkConfigurationBy: jest
+          getNetworkConfigurationByChainId: jest
             .fn()
             .mockReturnValue(createMockLineaMainnetConfiguration()),
         },
@@ -133,9 +138,11 @@ describe('switchEthereumChainHandler', () => {
       );
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        createMockLineaMainnetConfiguration().type,
+        createMockLineaMainnetConfiguration().rpcEndpoints[0].networkClientId,
       );
     });
+
+// TODO: Fix below tests
 
     it('should call setActiveNetwork when switching to a custom network', async () => {
       const mocks = makeMocks({
@@ -159,7 +166,7 @@ describe('switchEthereumChainHandler', () => {
       );
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        createMockMainnetConfiguration().id,
+        createMockMainnetConfiguration().rpcEndpoints[0].networkClientId,
       );
     });
   });
