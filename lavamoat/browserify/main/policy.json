@@ -2596,7 +2596,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/snaps-sdk>@metamask/superstruct": true,
+        "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
