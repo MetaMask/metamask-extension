@@ -39,7 +39,7 @@
     width: 35px;
   }
 
-  &__message-container > div:first-child {
+  &__message-container>div:first-child {
     @include design-system.Paragraph;
 
     margin-top: 18px;
@@ -58,12 +58,6 @@
 
   &__copy-button {
     cursor: pointer;
-  }
-
-  &__message {
-    @include design-system.H7;
-
-    color: var(--color-warning-default);
   }
 
   &__error {
