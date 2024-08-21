@@ -34,7 +34,7 @@ describe('Test Snap Dialog', function () {
         await driver.clickElement('#connectdialogs');
 
         // switch to metamask extension and click connect
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -67,7 +67,7 @@ describe('Test Snap Dialog', function () {
         await driver.clickElement('#sendAlertButton');
 
         // switch to dialog popup
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // check dialog contents
         const result = await driver.findElement('.snap-ui-renderer__panel');
@@ -96,7 +96,7 @@ describe('Test Snap Dialog', function () {
         await driver.clickElement('#sendConfirmationButton');
 
         // switch to dialog popup
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // click reject
         await driver.clickElement({
@@ -117,7 +117,7 @@ describe('Test Snap Dialog', function () {
         await driver.clickElement('#sendConfirmationButton');
 
         // switch to dialog popup
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // click accept
         await driver.clickElement({
@@ -138,7 +138,7 @@ describe('Test Snap Dialog', function () {
         await driver.clickElement('#sendPromptButton');
 
         // switch to dialog popup
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // click cancel button
         await driver.clickElement({
@@ -159,7 +159,7 @@ describe('Test Snap Dialog', function () {
         await driver.clickElement('#sendPromptButton');
 
         // switch to dialog popup
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // fill '2323' in form field
         await driver.pasteIntoField('.mm-input', '2323');
