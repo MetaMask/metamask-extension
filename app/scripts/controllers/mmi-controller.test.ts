@@ -23,6 +23,7 @@ import { ControllerMessenger } from '@metamask/base-controller';
 import { mmiKeyringBuilderFactory } from '../mmi-keyring-builder-factory';
 import MetaMetricsController from './metametrics';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../test/stub/networks';
 
 jest.mock('@metamask-institutional/portfolio-dashboard', () => ({
   handleMmiPortfolio: jest.fn(),
@@ -98,6 +99,7 @@ describe('MMIController', function () {
           'NetworkController:infuraIsUnblocked',
         ],
       }),
+      state: mockNetworkState({chainId: CHAIN_IDS.SEPOLIA}),
       infuraProjectId: 'mock-infura-project-id',
     });
 
