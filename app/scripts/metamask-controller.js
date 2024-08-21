@@ -5703,22 +5703,18 @@ export default class MetamaskController extends EventEmitter {
         //   ),
         requestPermissionApprovalForOrigin: async (permissions) => {
           const id = nanoid();
-          const result =
-            await this.approvalController.addAndShowApprovalRequest({
-              id,
-              origin,
-              requestData: {
-                metadata: {
-                  id,
-                  origin,
-                },
-                permissions,
+          return this.approvalController.addAndShowApprovalRequest({
+            id,
+            origin,
+            requestData: {
+              metadata: {
+                id,
+                origin,
               },
-              type: MethodNames.requestPermissions,
-            });
-          // TODO: remove this log
-          console.log('requestPermissionApprovalForOrigin', result);
-          return result;
+              permissions,
+            },
+            type: MethodNames.requestPermissions,
+          });
         },
         requestPermissionsForOrigin:
           this.permissionController.requestPermissions.bind(
@@ -5986,22 +5982,18 @@ export default class MetamaskController extends EventEmitter {
               ),
             requestPermissionApprovalForOrigin: async (permissions) => {
               const id = nanoid();
-              const result =
-                await this.approvalController.addAndShowApprovalRequest({
-                  id,
-                  origin,
-                  requestData: {
-                    metadata: {
-                      id,
-                      origin,
-                    },
-                    permissions,
+              return this.approvalController.addAndShowApprovalRequest({
+                id,
+                origin,
+                requestData: {
+                  metadata: {
+                    id,
+                    origin,
                   },
-                  type: MethodNames.requestPermissions,
-                });
-              // TODO: remove this log
-              console.log('requestPermissionApprovalForOrigin', result);
-              return result;
+                  permissions,
+                },
+                type: MethodNames.requestPermissions,
+              });
             },
           });
         },
@@ -6150,22 +6142,18 @@ export default class MetamaskController extends EventEmitter {
 
         requestPermissionApprovalForOrigin: async (permissions) => {
           const id = nanoid();
-          const result =
-            await this.approvalController.addAndShowApprovalRequest({
-              id,
-              origin,
-              requestData: {
-                metadata: {
-                  id,
-                  origin,
-                },
-                permissions,
+          return this.approvalController.addAndShowApprovalRequest({
+            id,
+            origin,
+            requestData: {
+              metadata: {
+                id,
+                origin,
               },
-              type: MethodNames.requestPermissions,
-            });
-          // TODO: remove this log
-          console.log('requestPermissionApprovalForOrigin', result);
-          return result;
+              permissions,
+            },
+            type: MethodNames.requestPermissions,
+          });
         },
         updateCaveat: this.permissionController.updateCaveat.bind(
           this.permissionController,
