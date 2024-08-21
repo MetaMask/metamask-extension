@@ -69,7 +69,7 @@ async function removeSelectedAccount(driver: Driver): Promise<void> {
 }
 
 describe('Account-watcher snap', function (this: Suite) {
-  describe('Adding watch accounts', function () {
+  describe('Adding watched accounts', function () {
     it('adds watch account with valid EOA address', async function () {
       await withFixtures(
         {
@@ -429,7 +429,7 @@ describe('Account-watcher snap', function (this: Suite) {
       );
     });
 
-    it('disables and then re-enables the toggle and the option to add a watch-only account behaves as expected', async function () {
+    it('enables and then disables the toggle and the option to add a watch-only account behaves as expected', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
