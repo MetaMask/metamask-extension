@@ -297,7 +297,7 @@ export default function ConfirmationPage({
             currencySymbolWarning,
             existingNetworkConfiguration:
               networkConfigurationsByChainId?.[
-                pendingConfirmation.requestData.chainId
+                pendingConfirmation.requestData?.chainId
               ],
           },
           // Passing `t` in the contexts object is a bit redundant but since it's a
