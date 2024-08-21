@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
   TransactionMeta,
   TransactionType,
@@ -14,8 +14,8 @@ import {
   getRedesignedConfirmationsEnabled,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getRedesignedTransactionsEnabled,
-  getUnapprovedTransaction,
   ///: END:ONLY_INCLUDE_IF
+  getUnapprovedTransaction,
   latestPendingConfirmationSelector,
   selectPendingApproval,
 } from '../../../selectors';
@@ -66,12 +66,12 @@ const useCurrentConfirmation = () => {
     selectUnapprovedMessage(state, confirmationId),
   );
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const transactionMetadata = useSelector((state) =>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (getUnapprovedTransaction as any)(state, confirmationId),
   ) as TransactionMeta | undefined;
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isCorrectTransactionType = REDESIGN_TRANSACTION_TYPES.includes(
     transactionMetadata?.type as TransactionType,
   );
