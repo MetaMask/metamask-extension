@@ -12,7 +12,7 @@ export const CHAIN_CODE =
 
 export const KNOWN_PUBLIC_KEY_ADDRESSES = [
   {
-    address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+    address: '0xF68464152d7289D7eA9a2bEC2E0035c45188223c',
     balance: null,
     index: 0,
   },
