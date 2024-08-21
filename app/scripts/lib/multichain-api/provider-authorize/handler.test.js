@@ -1,6 +1,5 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
 import {
-  CaveatTypes,
   RestrictedMethods,
 } from '../../../../../shared/constants/permissions';
 import {
@@ -56,18 +55,9 @@ const baseRequest = {
 const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
-  const requestPermissions = jest.fn().mockResolvedValue([
-    {
-      eth_accounts: {
-        caveats: [
-          {
-            type: CaveatTypes.restrictReturnedAccounts,
-            value: ['0x1', '0x2', '0x3', '0x4'],
-          },
-        ],
-      },
-    },
-  ]);
+  const requestPermissionApprovalForOrigin = jest.fn().mockResolvedValue({
+    approvedAccounts: ['0x1', '0x2', '0x3', '0x4'],
+  });
   const grantPermissions = jest.fn().mockResolvedValue(undefined);
   const findNetworkClientIdByChainId = jest.fn().mockReturnValue('mainnet');
   const upsertNetworkConfiguration = jest.fn().mockResolvedValue();
@@ -89,7 +79,7 @@ const createMockedHandler = () => {
   const handler = (request) =>
     providerAuthorizeHandler(request, response, next, end, {
       findNetworkClientIdByChainId,
-      requestPermissions,
+      requestPermissionApprovalForOrigin,
       grantPermissions,
       upsertNetworkConfiguration,
       removeNetworkConfiguration,
@@ -102,7 +92,7 @@ const createMockedHandler = () => {
     next,
     end,
     findNetworkClientIdByChainId,
-    requestPermissions,
+    requestPermissionApprovalForOrigin,
     grantPermissions,
     upsertNetworkConfiguration,
     removeNetworkConfiguration,
@@ -350,8 +340,9 @@ describe('provider_authorize', () => {
     expect(isChainIdSupportableBody).toContain('validScopedProperties');
   });
 
-  it('requests permissions with no args even if there is accounts in the scope', async () => {
-    const { handler, requestPermissions } = createMockedHandler();
+  it('requests approval for account permission with no args even if there is accounts in the scope', async () => {
+    const { handler, requestPermissionApprovalForOrigin } =
+      createMockedHandler();
     bucketScopes
       .mockReturnValueOnce({
         supportedScopes: {
@@ -401,12 +392,9 @@ describe('provider_authorize', () => {
       });
     await handler(baseRequest);
 
-    expect(requestPermissions).toHaveBeenCalledWith(
-      { origin: 'http://test.com' },
-      {
-        [RestrictedMethods.eth_accounts]: {},
-      },
-    );
+    expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
+      [RestrictedMethods.eth_accounts]: {},
+    });
   });
 
   it('assigns the permitted accounts to the scopeObjects', async () => {
@@ -492,14 +480,15 @@ describe('provider_authorize', () => {
     );
   });
 
-  it('throws an error when requesting account permission fails', async () => {
-    const { handler, requestPermissions, end } = createMockedHandler();
-    requestPermissions.mockImplementation(() => {
-      throw new Error('failed to request account permissions');
+  it('throws an error when requesting account permission approval fails', async () => {
+    const { handler, requestPermissionApprovalForOrigin, end } =
+      createMockedHandler();
+    requestPermissionApprovalForOrigin.mockImplementation(() => {
+      throw new Error('failed to request account permission approval');
     });
     await handler(baseRequest);
     expect(end).toHaveBeenCalledWith(
-      new Error('failed to request account permissions'),
+      new Error('failed to request account permission approval'),
     );
   });
 
