@@ -16,7 +16,7 @@
     z-index: 1;
     border: 1px solid var(--color-border-muted);
     border-radius: 16px;
-    background-color: white;
+    background-color: var(--brand-colors-white); // stay white regardless of theme
   }
 
   &__logo {
@@ -25,7 +25,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 2;
-    background-color: white;
+    background-color: var(--brand-colors-white); // stay white regardless of theme
     display: flex;
     overflow: hidden;
     justify-content: center;
