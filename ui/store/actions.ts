@@ -4023,23 +4023,6 @@ export function setFirstTimeFlowType(
   };
 }
 
-export function setShowMultiRpcModalUpgrade(
-  val: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.setShowMultiRpcModalUpgrade`);
-    callBackgroundMethod('setShowMultiRpcModalUpgrade', [val], (err) => {
-      if (err) {
-        dispatch(displayWarning(err));
-      }
-    });
-    dispatch({
-      type: actionConstants.SET_SHOW_MULTI_RPC_MODAL_UPGRADE,
-      value: val,
-    });
-  };
-}
-
 export function setSelectedNetworkConfigurationId(
   networkConfigurationId: string,
 ): PayloadAction<string> {

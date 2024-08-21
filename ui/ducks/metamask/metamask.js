@@ -215,13 +215,6 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
-    case actionConstants.SET_SHOW_MULTI_RPC_MODAL_UPGRADE: {
-      return {
-        ...metamaskState,
-        showMultiRpcModalUpgrade: action.value,
-      };
-    }
-
     case actionConstants.SET_NEXT_NONCE: {
       return {
         ...metamaskState,

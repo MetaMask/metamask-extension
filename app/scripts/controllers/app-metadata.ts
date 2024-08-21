@@ -9,7 +9,6 @@ export type AppMetadataControllerState = {
   previousAppVersion: string;
   previousMigrationVersion: number;
   currentMigrationVersion: number;
-  showMultiRpcModalUpgrade: boolean | null;
 };
 
 /**
@@ -26,7 +25,6 @@ const defaultState: AppMetadataControllerState = {
   previousAppVersion: '',
   previousMigrationVersion: 0,
   currentMigrationVersion: 0,
-  showMultiRpcModalUpgrade: false,
 };
 
 /**
@@ -78,7 +76,6 @@ export default class AppMetadataController extends EventEmitter {
       this.store.updateState({
         currentAppVersion: maybeNewAppVersion,
         previousAppVersion: oldCurrentAppVersion,
-        showMultiRpcModalUpgrade: null,
       });
     }
   }
@@ -98,14 +95,5 @@ export default class AppMetadataController extends EventEmitter {
         currentMigrationVersion: maybeNewMigrationVersion,
       });
     }
-  }
-
-  /**
-   * Setter for the `showMultiRpcModalUpgrade` property
-   *
-   * @param val - Indicates the value of showMultiRpcModalUpgrade
-   */
-  setShowMultiRpcModalUpgrade(val: boolean): void {
-    this.store.updateState({ showMultiRpcModalUpgrade: val });
   }
 }

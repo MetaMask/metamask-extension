@@ -31,14 +31,9 @@ import NetworkListItem from './network-list-item/network-list-item';
 type MultiRpcEditModalProps = {
   isOpen: boolean;
   onClose: (arg: boolean) => void;
-  setShowMultiRpcModalUpgrade: (arg: boolean) => void;
 };
 
-function MultiRpcEditModal({
-  isOpen,
-  onClose,
-  setShowMultiRpcModalUpgrade,
-}: MultiRpcEditModalProps) {
+function MultiRpcEditModal({ isOpen, onClose }: MultiRpcEditModalProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
@@ -100,7 +95,7 @@ function MultiRpcEditModal({
                     key={index}
                     item={item}
                     index={index}
-                    rpcName={rpcName}
+                    rpcName={rpcName ?? ''}
                   />
                 );
               })}
@@ -109,8 +104,8 @@ function MultiRpcEditModal({
         </ModalBody>
         <ModalFooter
           onSubmit={() => {
+            // TODO: Configure the RPC used by the network according to the user's selection
             dispatch(setShowMultiRpcModal(true));
-            setShowMultiRpcModalUpgrade(true);
           }}
           submitButtonProps={{
             children: t('accept'),

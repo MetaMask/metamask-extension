@@ -89,24 +89,20 @@ describe('MultiRpcEditModal', () => {
 
   it('renders correctly with required props', () => {
     const onCloseMock = jest.fn();
-    const setShowMultiRpcModalUpgradeMock = jest.fn();
 
     const { container } = setup({
       isOpen: true,
       onClose: onCloseMock,
-      setShowMultiRpcModalUpgrade: setShowMultiRpcModalUpgradeMock,
     });
     expect(container).toMatchSnapshot();
   });
 
   it('renders the modal and displays the network information', () => {
     const onCloseMock = jest.fn();
-    const setShowMultiRpcModalUpgradeMock = jest.fn();
 
     setup({
       isOpen: true,
       onClose: onCloseMock,
-      setShowMultiRpcModalUpgrade: setShowMultiRpcModalUpgradeMock,
     });
 
     expect(screen.getByTestId('multi-rpc-edit-modal')).toBeInTheDocument();

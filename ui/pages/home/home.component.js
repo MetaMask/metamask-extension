@@ -79,7 +79,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain/account-overview';
-import { setEditedNetwork } from '../../store/actions';
+import { setEditedNetwork, setShowMultiRpcModal } from '../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { AccountType } from '../../../shared/constants/custody';
 ///: END:ONLY_INCLUDE_IF
@@ -204,7 +204,6 @@ export default class Home extends PureComponent {
     clearEditedNetwork: PropTypes.func,
     setActiveNetwork: PropTypes.func,
     // eslint-disable-next-line react/no-unused-prop-types
-    setShowMultiRpcModalUpgrade: PropTypes.func,
     // eslint-disable-next-line react/no-unused-prop-types
     setNftAutodetectModal: PropTypes.func,
     hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
@@ -941,7 +940,6 @@ export default class Home extends PureComponent {
       newNetworkAddedConfigurationId,
       isSmartTransactionsOptInModalAvailable,
       showMultiRpcModal,
-      setShowMultiRpcModalUpgrade,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
@@ -992,6 +990,7 @@ export default class Home extends PureComponent {
             isOpen={showSmartTransactionsOptInModal}
             hideWhatsNewPopup={hideWhatsNewPopup}
           />
+
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder

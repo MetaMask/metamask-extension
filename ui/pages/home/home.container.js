@@ -72,7 +72,6 @@ import {
   setNewTokensImportedError,
   setDataCollectionForMarketing,
   setEditedNetwork,
-  setShowMultiRpcModalUpgrade,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -280,9 +279,6 @@ const mapDispatchToProps = (dispatch) => {
     },
     setActiveNetwork: (networkConfigurationId) => {
       dispatch(setActiveNetwork(networkConfigurationId));
-    },
-    setShowMultiRpcModalUpgrade: (val) => {
-      dispatch(setShowMultiRpcModalUpgrade(val));
     },
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     setWaitForConfirmDeepLinkDialog: (wait) =>

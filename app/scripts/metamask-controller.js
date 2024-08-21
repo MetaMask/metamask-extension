@@ -3612,13 +3612,6 @@ export default class MetamaskController extends EventEmitter {
           this.encryptionPublicKeyController,
         ),
 
-      //
-      // todo: this doesnt belong on appMetadataController
-      setShowMultiRpcModalUpgrade:
-        appMetadataController.setShowMultiRpcModalUpgrade.bind(
-          appMetadataController,
-        ),
-
       // onboarding controller
       setSeedPhraseBackedUp:
         onboardingController.setSeedPhraseBackedUp.bind(onboardingController),
