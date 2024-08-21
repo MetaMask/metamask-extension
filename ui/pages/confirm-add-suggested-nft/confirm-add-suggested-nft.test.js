@@ -73,7 +73,10 @@ const renderComponent = (pendingNfts = {}) => {
     metamask: {
       ...mockState.metamask,
       pendingApprovals: pendingNfts,
-      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      ...mockNetworkState({
+        chainId: CHAIN_IDS.MAINNET,
+        blockExplorerUrl: undefined,
+      }),
     },
     history: {
       mostRecentOverviewPage: '/',
