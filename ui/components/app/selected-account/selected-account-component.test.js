@@ -97,7 +97,7 @@ describe('SelectedAccount Component', () => {
     );
   });
 
-  it.only('should render correctly if isCustodianSupportedChain to false', () => {
+  it('should render correctly if isCustodianSupportedChain to false', () => {
     getIsCustodianSupportedChain.mockReturnValue(false);
 
     const { container, queryByTestId } = renderWithProvider(
