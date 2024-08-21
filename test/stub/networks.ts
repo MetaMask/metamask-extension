@@ -14,7 +14,7 @@ import {
 export const mockNetworkState = (
   ...networks: {
     // id?: string;
-    type?: string;
+    // type?: string;
     chainId: Hex;
     rpcUrl?: string;
     nickname?: string;
@@ -26,8 +26,8 @@ export const mockNetworkState = (
   if (
     new Set(networks.map((network) => network.chainId)).size !== networks.length
   ) {
-    // todo
-    throw 'CANT DUPE CHAIN ID???';
+    // todo support multiple rpc urls per chain ids by grouping them
+    throw 'TODO: mockNetworkState doesnt yet support multiple rpc urls per chain id';
   }
 
   const networkConfigurations = networks.map((network) => {
