@@ -48,13 +48,12 @@ export const addPermittedEthChainId = (
       [scopeString]: {
         methods: validRpcMethods,
         notifications: validNotifications,
-        accounts: [], // Should this be empty?
+        accounts: [],
       },
     },
   };
 };
 
-// Should this deep clone rather than modify in-place?
 const filterEthScopesObjectByChainId = (
   scopesObject: ScopesObject,
   chainIds: Hex[],
@@ -97,26 +96,7 @@ export const setPermittedEthChainIds = (
   };
 
   chainIds.forEach((chainId) => {
-    const scopeString = `eip155:${parseInt(chainId, 16)}`;
-
-    if (
-      Object.keys(updatedCaveatValue.requiredScopes).includes(scopeString) ||
-      Object.keys(updatedCaveatValue.optionalScopes).includes(scopeString)
-    ) {
-      return;
-    }
-
-    updatedCaveatValue = {
-      ...updatedCaveatValue,
-      optionalScopes: {
-        ...updatedCaveatValue.optionalScopes,
-        [scopeString]: {
-          methods: validRpcMethods,
-          notifications: validNotifications,
-          accounts: [], // Should this be empty?
-        },
-      },
-    };
+    updatedCaveatValue = addPermittedEthChainId(updatedCaveatValue, chainId);
   });
 
   return updatedCaveatValue;
