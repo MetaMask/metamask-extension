@@ -41,6 +41,16 @@ html {
       }
     }
   }
+
+  &[data-theme] {
+    background: var(--color-background-alternative);
+  }
+
+  @include design-system.screen-sm-max {
+    &[data-theme] {
+      background-color: var(--color-background-default);
+    }
+  }
 }
 
 /*
@@ -62,13 +72,19 @@ html {
   display: flex;
   flex-direction: column;
 
-  html[data-theme] & {
-    background: var(--color-background-alternative);
-  }
+  // fade the app in so that if the app is redirected from popup-init.html to
+  // popup.html the transition between the two is seamless (rather than a blank
+  // background then a sudden loading screen). It still looks nice on
+  // `home.html`, even though there is no redirect. The duration of .3s was
+  // chosen because thats slightly faster than the amount of time it takes for
+  // the app to load on a very fast computer. If we make the app faster, we
+  // should also reduce the animation duration.
+  animation: .3s ease-in forwards app_fadeIn;
+  opacity: 0;
 
-  @include design-system.screen-sm-max {
-    html[data-theme] & {
-      background-color: var(--color-background-default);
+  @keyframes app_fadeIn {
+    to {
+        opacity: 1;
     }
   }
 }
