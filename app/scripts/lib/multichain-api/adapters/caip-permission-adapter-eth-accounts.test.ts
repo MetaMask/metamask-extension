@@ -33,7 +33,7 @@ describe('CAIP-25 eth_accounts adapters', () => {
             notifications: [],
             accounts: ['eip155:1:0x1', 'eip155:1:0x4'],
           },
-          'eip155:a': {
+          'eip155:10': {
             methods: [],
             notifications: [],
           },
@@ -78,7 +78,7 @@ describe('CAIP-25 eth_accounts adapters', () => {
             notifications: [],
             accounts: ['eip155:1:0x1', 'eip155:1:0x4'],
           },
-          'eip155:a': {
+          'eip155:10': {
             methods: [],
             notifications: [],
           },
@@ -118,10 +118,10 @@ describe('CAIP-25 eth_accounts adapters', () => {
             notifications: [],
             accounts: ['eip155:1:0x1', 'eip155:1:0x2', 'eip155:1:0x3'],
           },
-          'eip155:a': {
+          'eip155:10': {
             methods: [],
             notifications: [],
-            accounts: ['eip155:a:0x1', 'eip155:a:0x2', 'eip155:a:0x3'],
+            accounts: ['eip155:10:0x1', 'eip155:10:0x2', 'eip155:10:0x3'],
           },
           'eip155:100': {
             methods: [],
