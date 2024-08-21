@@ -3430,17 +3430,6 @@
         "browserify>process": true
       }
     },
-    "@sentry/integrations": {
-      "globals": {
-        "Request": true,
-        "__SENTRY_DEBUG__": true,
-        "console.log": true
-      },
-      "packages": {
-        "@sentry/utils": true,
-        "localforage": true
-      }
-    },
     "@sentry/utils": {
       "globals": {
         "CustomEvent": true,
