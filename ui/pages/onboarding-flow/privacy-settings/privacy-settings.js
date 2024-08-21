@@ -404,55 +404,50 @@ export default function PrivacySettings() {
                     gap={5}
                   >
                     {[CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET].map(
-                      (chainId) => {
-                        // Get just the protocol + domain, not the infura key in path
-                        const foundNetworkRpc = allNetworks.find(
-                          (network) => network.chainId === chainId,
-                        )?.rpcUrl;
-
-                        const rpcURLOrigin = foundNetworkRpc
-                          ? new URL(foundNetworkRpc).origin
-                          : undefined;
-                        return (
+                      (chainId) => (
+                        <Box
+                          key={chainId}
+                          className="privacy-settings__customizable-network"
+                          onClick={() => {
+                            dispatch(setEditedNetwork({ chainId }));
+                            dispatch(toggleNetworkMenu());
+                          }}
+                          display={Display.Flex}
+                          alignItems={AlignItems.center}
+                          justifyContent={JustifyContent.spaceBetween}
+                        >
                           <Box
-                            key={chainId}
-                            className="privacy-settings__customizable-network"
-                            onClick={() => {
-                              dispatch(setEditedNetwork({ chainId }));
-                              dispatch(toggleNetworkMenu());
-                            }}
                             display={Display.Flex}
                             alignItems={AlignItems.center}
-                            justifyContent={JustifyContent.spaceBetween}
                           >
-                            <Box
-                              display={Display.Flex}
-                              alignItems={AlignItems.center}
-                            >
-                              <AvatarNetwork
-                                src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
-                              />
-                              <Box textAlign={TextAlign.Left} marginLeft={3}>
-                                <Text variant={TextVariant.bodySmMedium}>
-                                  {NETWORK_TO_NAME_MAP[chainId]}
-                                </Text>
-                                {rpcURLOrigin && (
-                                  <Text
-                                    variant={TextVariant.bodyXs}
-                                    color={TextColor.textAlternative}
-                                  >
-                                    {rpcURLOrigin}
-                                  </Text>
-                                )}
-                              </Box>
-                            </Box>
-                            <ButtonIcon
-                              iconName={IconName.ArrowRight}
-                              size={IconSize.Md}
+                            <AvatarNetwork
+                              src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
                             />
+                            <Box textAlign={TextAlign.Left} marginLeft={3}>
+                              <Text variant={TextVariant.bodySmMedium}>
+                                {NETWORK_TO_NAME_MAP[chainId]}
+                              </Text>
+                              <Text
+                                variant={TextVariant.bodyXs}
+                                color={TextColor.textAlternative}
+                              >
+                                {
+                                  // Get just the protocol + domain, not the infura key in path
+                                  new URL(
+                                    allNetworks.find(
+                                      (network) => network.chainId === chainId,
+                                    )?.rpcUrl,
+                                  )?.origin
+                                }
+                              </Text>
+                            </Box>
                           </Box>
-                        );
-                      },
+                          <ButtonIcon
+                            iconName={IconName.ArrowRight}
+                            size={IconSize.Md}
+                          />
+                        </Box>
+                      ),
                     )}
                     <ButtonLink
                       onClick={() => {
