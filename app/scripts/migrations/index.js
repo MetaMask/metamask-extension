@@ -133,9 +133,10 @@ const migrations = [
   require('./120'),
   require('./120.1'),
   require('./120.2'),
-  require('./120.3'),
+  // require('./120.3'), Renamed to 120.6, do not re-use this number
   require('./120.4'),
   require('./120.5'),
+  require('./120.6'),
 ];
 
 export default migrations;
