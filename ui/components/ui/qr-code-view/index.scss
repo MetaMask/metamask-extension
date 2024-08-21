@@ -16,6 +16,7 @@
     z-index: 1;
     border: 1px solid var(--color-border-muted);
     border-radius: 16px;
+    background-color: white;
   }
 
   &__logo {
@@ -38,7 +39,7 @@
     width: 35px;
   }
 
-  &__message-container > div:first-child {
+  &__message-container>div:first-child {
     @include design-system.Paragraph;
 
     margin-top: 18px;
