@@ -14,7 +14,7 @@ import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences';
 import { AppStateController } from '../../controllers/app-state';
 import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
-import { trace } from '../../../../shared/lib/trace';
+import { trace, TraceContext } from '../../../../shared/lib/trace';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -33,6 +33,7 @@ export type PPOMMiddlewareRequest<
   Params extends JsonRpcParams = JsonRpcParams,
 > = Required<JsonRpcRequest<Params>> & {
   securityAlertResponse?: SecurityAlertResponse | undefined;
+  traceContext?: TraceContext;
 };
 
 /**
