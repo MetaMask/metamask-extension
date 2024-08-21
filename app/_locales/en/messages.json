@@ -4837,6 +4837,12 @@
   "signingInWith": {
     "message": "Signing in with"
   },
+  "simulationApproveHeading": {
+    "message": "Withdraw"
+  },
+  "simulationDetailsApproveDesc": {
+    "message": "You're giving someone else permission to withdraw NFTs from your account."
+  },
   "simulationDetailsFailed": {
     "message": "There was an error loading your estimation."
   },
