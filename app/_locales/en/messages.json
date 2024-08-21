@@ -1793,6 +1793,9 @@
   "encryptionPublicKeyRequest": {
     "message": "Request encryption public key"
   },
+  "accountsPermissionsTitle": {
+    "message": "See your accounts and suggest transactions"
+  },
   "endpointReturnedDifferentChainId": {
     "message": "The RPC URL you have entered returned a different chain ID ($1). Please update the Chain ID to match the RPC URL of the network you are trying to add.",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"

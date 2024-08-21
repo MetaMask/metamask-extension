@@ -11,6 +11,7 @@ import {
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   PERMISSIONS,
+  REVIEW_PERMISSIONS,
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,
@@ -247,6 +248,24 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         disabled={hasUnapprovedTransactions}
       >
         {t('allPermissions')}
+      </MenuItem>
+      <MenuItem
+        iconName={IconName.SecurityTick}
+        onClick={() => {
+          history.push(REVIEW_PERMISSIONS);
+          trackEvent({
+            event: MetaMetricsEventName.NavPermissionsOpened,
+            category: MetaMetricsEventCategory.Navigation,
+            properties: {
+              location: METRICS_LOCATION,
+            },
+          });
+          closeMenu();
+        }}
+        data-testid="global-menu-connected-sites"
+        disabled={hasUnapprovedTransactions}
+      >
+        "nid"
       </MenuItem>
 
       {
