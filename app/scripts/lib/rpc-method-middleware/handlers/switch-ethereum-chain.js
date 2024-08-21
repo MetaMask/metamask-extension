@@ -69,9 +69,8 @@ async function switchEthereumChainHandler(
 
   const requestData = {
     toNetworkConfiguration: networkConfigurationForRequestedChainId,
-    fromNetworkConfiguration: findExistingNetwork(
+    fromNetworkConfiguration: getNetworkConfigurationByChainId(
       currentChainIdForOrigin,
-      findNetworkConfigurationBy,
     ),
   };
 
