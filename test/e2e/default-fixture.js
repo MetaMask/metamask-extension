@@ -176,7 +176,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         subjects: {},
       },
       PreferencesController: {
-        advancedGasFee: null,
+        advancedGasFee: {},
         currentLocale: 'en',
         useExternalServices: true,
         dismissSeedBackUpReminder: true,
