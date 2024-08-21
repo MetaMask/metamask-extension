@@ -22,6 +22,22 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+const mockNetwork = {
+  chainId: '0x539',
+  blockExplorerUrls: ['https://etherscan.io'],
+  defaultBlockExplorerUrlIndex: 0,
+  rpcEndpoints: [
+    {
+      networkClientId: '57193a28-8d10-476d-8d50-39fb9e1da6e6',
+      type: 'custom',
+      url: 'https://testrpc.com',
+    },
+  ],
+  defaultRpcEndpointIndex: 0,
+  name: 'Localhost 8545',
+  nativeCurrency: undefined,
+};
+
 const render = ({
   stateChanges = {},
   network = { chainId: '0x5', nickname: 'Chain 5', ticker: 'ETH' },
@@ -40,6 +56,7 @@ const render = ({
     },
     ...(stateChanges ?? {}),
   });
+  console.log('STORE: ', store);
   return renderWithProvider(<AppHeader location={location} />, store);
 };
 
@@ -181,31 +198,19 @@ describe('App Header', () => {
 
   describe('network picker', () => {
     it('shows custom rpc if it has the same chainId as a default network', () => {
-      const mockProviderConfig = {
-        chainId: '0x1',
-        rpcUrl: 'https://localhost:8545',
-        nickname: 'Localhost',
-      };
-
       const { getByText } = render({
-        network: mockProviderConfig,
+        network: mockNetwork,
         isUnlocked: true,
       });
-      expect(getByText(mockProviderConfig.nickname)).toBeInTheDocument();
+      expect(getByText(mockNetwork.name)).toBeInTheDocument();
     });
 
     it("shows rpc url as nickname if there isn't a nickname set", () => {
-      const mockProviderConfig = {
-        chainId: '0x1',
-        rpcUrl: 'https://localhost:8545',
-        nickname: null,
-      };
-
       const { getByText } = render({
-        network: mockProviderConfig,
+        network: mockNetwork,
         isUnlocked: true,
       });
-      expect(getByText(mockProviderConfig.rpcUrl)).toBeInTheDocument();
+      expect(getByText(mockNetwork.name)).toBeInTheDocument();
     });
   });
 });
