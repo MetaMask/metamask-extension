@@ -1873,6 +1873,7 @@
       }
     ],
     "addSnapAccountEnabled": false,
+    "watchEthereumAccountEnabled": false,
     "bitcoinSupportEnabled": false,
     "bitcoinTestnetSupportEnabled": false,
     "pendingApprovals": {
