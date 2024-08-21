@@ -174,14 +174,22 @@
         "crypto": true
       },
       "packages": {
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
         "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": true,
-        "@metamask/message-signing-snap>@noble/curves": true,
+        "@noble/hashes": true
+      }
+    },
+    "@ethereumjs/tx>ethereum-cryptography>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
         "@noble/hashes": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": {
       "packages": {
-        "@metamask/message-signing-snap>@noble/curves": true,
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
         "@metamask/utils>@scure/base": true,
         "@noble/hashes": true
       }
@@ -790,10 +798,10 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/accounts-controller>@metamask/base-controller": true,
+        "@metamask/accounts-controller>@metamask/keyring-api": true,
+        "@metamask/accounts-controller>@metamask/utils": true,
         "@metamask/eth-snap-keyring": true,
-        "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
-        "@metamask/utils": true,
         "uuid": true
       }
     },
@@ -803,6 +811,37 @@
       },
       "packages": {
         "immer": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/keyring-api": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/accounts-controller>@metamask/keyring-api>uuid": true,
+        "@metamask/accounts-controller>@metamask/utils": true,
+        "@metamask/keyring-api>bech32": true,
+        "@metamask/utils>@metamask/superstruct": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/keyring-api>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/address-book-controller": {
@@ -1277,9 +1316,9 @@
         "@metamask/eth-token-tracker>deep-equal>is-date-object": true,
         "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive": true,
         "@metamask/eth-token-tracker>deep-equal>which-collection": true,
+        "@metamask/eth-token-tracker>deep-equal>which-typed-array": true,
         "@ngraveio/bc-ur>assert>object-is": true,
         "browserify>util>is-arguments": true,
-        "browserify>util>which-typed-array": true,
         "gulp>vinyl-fs>object.assign": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>es-abstract>array-buffer-byte-length": true,
@@ -1355,6 +1394,25 @@
       "packages": {
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>get-intrinsic": true
+      }
+    },
+    "@metamask/eth-token-tracker>deep-equal>which-typed-array": {
+      "packages": {
+        "@metamask/eth-token-tracker>deep-equal>which-typed-array>available-typed-arrays": true,
+        "@metamask/eth-token-tracker>deep-equal>which-typed-array>is-typed-array": true,
+        "browserify>util>which-typed-array>for-each": true,
+        "koa>is-generator-function>has-tostringtag": true,
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>es-abstract>gopd": true
+      }
+    },
+    "@metamask/eth-token-tracker>deep-equal>which-typed-array>is-typed-array": {
+      "packages": {
+        "@metamask/eth-token-tracker>deep-equal>which-typed-array>available-typed-arrays": true,
+        "browserify>util>which-typed-array>for-each": true,
+        "koa>is-generator-function>has-tostringtag": true,
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>es-abstract>gopd": true
       }
     },
     "@metamask/eth-trezor-keyring": {
@@ -1794,14 +1852,6 @@
         "TextDecoder": true,
         "TextEncoder": true,
         "crypto": true
-      }
-    },
-    "@metamask/message-signing-snap>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "@noble/hashes": true
       }
     },
     "@metamask/name-controller": {
@@ -2596,9 +2646,9 @@
     },
     "@metamask/smart-transactions-controller>@ethereumjs/tx": {
       "packages": {
-        "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/common": true,
         "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/rlp": true,
+        "@metamask/smart-transactions-controller>@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/smart-transactions-controller>@ethereumjs/util": true
       }
     },
@@ -2613,20 +2663,65 @@
         "TextEncoder": true
       }
     },
+    "@metamask/smart-transactions-controller>@ethereumjs/tx>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "@metamask/smart-transactions-controller>@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@ethereumjs/tx>ethereum-cryptography>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/smart-transactions-controller>@ethereumjs/tx>ethereum-cryptography>@noble/curves>@noble/hashes": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@ethereumjs/tx>ethereum-cryptography>@noble/curves>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@ethereumjs/tx>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
     "@metamask/smart-transactions-controller>@ethereumjs/util": {
       "globals": {
         "console.warn": true,
         "fetch": true
       },
       "packages": {
-        "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/smart-transactions-controller>@ethereumjs/util>@ethereumjs/rlp": true,
+        "@metamask/smart-transactions-controller>@ethereumjs/util>ethereum-cryptography": true,
         "webpack>events": true
       }
     },
     "@metamask/smart-transactions-controller>@ethereumjs/util>@ethereumjs/rlp": {
       "globals": {
         "TextEncoder": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@ethereumjs/util>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "@metamask/smart-transactions-controller>@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
+        "@metamask/smart-transactions-controller>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@ethereumjs/util>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/base-controller": {
@@ -3182,9 +3277,9 @@
     },
     "@metamask/snaps-sdk>@metamask/key-tree": {
       "packages": {
-        "@metamask/message-signing-snap>@noble/curves": true,
         "@metamask/scure-bip39": true,
         "@metamask/snaps-sdk>@metamask/key-tree>@metamask/utils": true,
+        "@metamask/snaps-sdk>@metamask/key-tree>@noble/curves": true,
         "@metamask/utils>@scure/base": true,
         "@noble/hashes": true
       }
@@ -3202,6 +3297,14 @@
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true
+      }
+    },
+    "@metamask/snaps-sdk>@metamask/key-tree>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@noble/hashes": true
       }
     },
     "@metamask/snaps-sdk>@metamask/utils": {
@@ -3302,8 +3405,8 @@
     },
     "@metamask/snaps-utils>@metamask/snaps-registry": {
       "packages": {
-        "@metamask/message-signing-snap>@noble/curves": true,
         "@metamask/snaps-utils>@metamask/snaps-registry>@metamask/utils": true,
+        "@metamask/snaps-utils>@metamask/snaps-registry>@noble/curves": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@noble/hashes": true
       }
@@ -3321,6 +3424,14 @@
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/snaps-registry>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@noble/hashes": true
       }
     },
     "@metamask/snaps-utils>@metamask/utils": {
@@ -4208,21 +4319,31 @@
     },
     "browserify>util>is-typed-array": {
       "packages": {
-        "browserify>util>which-typed-array": true
+        "string.prototype.matchall>es-abstract>which-typed-array": true
       }
     },
     "browserify>util>which-typed-array": {
       "packages": {
+        "browserify>util>which-typed-array>available-typed-arrays": true,
         "browserify>util>which-typed-array>for-each": true,
+        "browserify>util>which-typed-array>is-typed-array": true,
         "koa>is-generator-function>has-tostringtag": true,
         "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>es-abstract>available-typed-arrays": true,
         "string.prototype.matchall>es-abstract>gopd": true
       }
     },
     "browserify>util>which-typed-array>for-each": {
       "packages": {
         "string.prototype.matchall>es-abstract>is-callable": true
+      }
+    },
+    "browserify>util>which-typed-array>is-typed-array": {
+      "packages": {
+        "browserify>util>which-typed-array>available-typed-arrays": true,
+        "browserify>util>which-typed-array>for-each": true,
+        "koa>is-generator-function>has-tostringtag": true,
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>es-abstract>gopd": true
       }
     },
     "browserify>vm-browserify": {
@@ -5865,6 +5986,15 @@
       },
       "packages": {
         "browserify>browser-resolve": true
+      }
+    },
+    "string.prototype.matchall>es-abstract>which-typed-array": {
+      "packages": {
+        "browserify>util>which-typed-array>for-each": true,
+        "koa>is-generator-function>has-tostringtag": true,
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>es-abstract>available-typed-arrays": true,
+        "string.prototype.matchall>es-abstract>gopd": true
       }
     },
     "string.prototype.matchall>get-intrinsic": {
