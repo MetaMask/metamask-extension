@@ -52,3 +52,5 @@ export const NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX =
 export const DECIMAL_REGEX = /\.(\d*)/u;
 
 export const MAX_SYMBOL_LENGTH = 100;
+
+export const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
