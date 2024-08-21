@@ -99,7 +99,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
       async ({ driver }: TestSuiteArguments) => {
-        await openDappAndTriggerSignature(driver, SignatureType.SIWE);
+        await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
 
         await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
         const alert = await driver.findElement('[data-testid="inline-alert"]');

@@ -17,6 +17,7 @@ export enum SignatureType {
   SignTypedDataV4 = '#signTypedDataV4',
   SignTypedData = '#signTypedData',
   SIWE = '#siwe',
+  SIWE_BadDomain = '#siweBadDomain',
 }
 
 export async function assertSignatureMetrics(
