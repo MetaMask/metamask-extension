@@ -145,7 +145,8 @@ describe('Contract Interaction Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks();
-    mock4byte();
+    const MINT_NFT_HEX_SIG = '0x3b4b1381';
+    mock4byte(MINT_NFT_HEX_SIG);
   });
 
   afterEach(() => {

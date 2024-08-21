@@ -14,7 +14,7 @@ import { selectPaymasterAddress } from '../../../../../../../selectors/account-a
 import { currentConfirmationSelector } from '../../../../../selectors';
 import { useFourByte } from '../../hooks/useFourByte';
 
-const OriginRow = () => {
+export const OriginRow = () => {
   const t = useI18nContext();
 
   const currentConfirmation = useSelector(
@@ -38,7 +38,7 @@ const OriginRow = () => {
   );
 };
 
-const RecipientRow = () => {
+export const RecipientRow = () => {
   const t = useI18nContext();
 
   const currentConfirmation = useSelector(
@@ -63,7 +63,7 @@ const RecipientRow = () => {
   );
 };
 
-const MethodDataRow = () => {
+export const MethodDataRow = () => {
   const t = useI18nContext();
 
   const currentConfirmation = useSelector(
