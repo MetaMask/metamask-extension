@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   ButtonBase,
+  HelpText,
+  HelpTextSeverity,
   IconName,
   IconSize,
+  Label,
   Modal,
   ModalBody,
   ModalContent,
@@ -21,11 +24,16 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 
 export type SnapUISelectorProps = {
+  name: string;
   title: string;
   options: string[];
   optionComponents: React.ReactNode[];
+  form?: string;
+  label?: string;
+  error?: string;
   disabled?: boolean;
 };
 
@@ -74,13 +82,27 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
 };
 
 export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
+  name,
   title,
   options,
   optionComponents,
+  form,
+  label,
+  error,
   disabled,
 }) => {
-  const [selectedOptionValue, setSelectedOption] = useState(options[0]);
+  const { handleInputChange, getValue } = useSnapInterfaceContext();
+
+  const initialValue = getValue(name, form) as string;
+
+  const [selectedOptionValue, setSelectedOption] = useState(initialValue);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (initialValue) {
+      setSelectedOption(initialValue);
+    }
+  }, [initialValue]);
 
   const handleModalOpen = () => setIsModalOpen(true);
 
@@ -88,6 +110,7 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
 
   const handleSelect = (value: string) => {
     setSelectedOption(value);
+    handleInputChange(name, value, form);
     handleModalClose();
   };
 
@@ -99,38 +122,46 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
 
   return (
     <>
-      <ButtonBase
-        className="snap-ui-renderer__selector"
-        backgroundColor={BackgroundColor.backgroundDefault}
-        borderRadius={BorderRadius.LG}
-        paddingTop={2}
-        paddingBottom={2}
-        paddingRight={4}
-        paddingLeft={4}
-        ellipsis
-        textProps={{
-          display: Display.Flex,
-          width: BlockSize.Full,
-        }}
-        disabled={disabled}
-        endIconName={IconName.ArrowDown}
-        endIconProps={{
-          color: IconColor.iconDefault,
-          size: IconSize.Sm,
-        }}
-        gap={2}
-        onClick={handleModalOpen}
-        // TODO: Decide on how to do this
-        style={{
-          justifyContent: 'inherit',
-          textAlign: 'inherit',
-          height: 'inherit',
-          minHeight: '32px',
-          maxHeight: '64px',
-        }}
-      >
-        {selectedOption}
-      </ButtonBase>
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+        {label && <Label htmlFor={name}>{label}</Label>}
+        <ButtonBase
+          className="snap-ui-renderer__selector"
+          backgroundColor={BackgroundColor.backgroundDefault}
+          borderRadius={BorderRadius.LG}
+          paddingTop={2}
+          paddingBottom={2}
+          paddingRight={4}
+          paddingLeft={4}
+          ellipsis
+          textProps={{
+            display: Display.Flex,
+            width: BlockSize.Full,
+          }}
+          disabled={disabled}
+          endIconName={IconName.ArrowDown}
+          endIconProps={{
+            color: IconColor.iconDefault,
+            size: IconSize.Sm,
+          }}
+          gap={2}
+          onClick={handleModalOpen}
+          // TODO: Decide on how to do this
+          style={{
+            justifyContent: 'inherit',
+            textAlign: 'inherit',
+            height: 'inherit',
+            minHeight: '32px',
+            maxHeight: '64px',
+          }}
+        >
+          {selectedOption}
+        </ButtonBase>
+        {error && (
+          <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
+            {error}
+          </HelpText>
+        )}
+      </Box>
       <Modal isOpen={isModalOpen} onClose={handleModalClose}>
         <ModalOverlay />
         <ModalContent>

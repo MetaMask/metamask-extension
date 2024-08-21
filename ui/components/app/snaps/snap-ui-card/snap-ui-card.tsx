@@ -1,6 +1,5 @@
 import React, { FunctionComponent } from 'react';
 import {
-  AlignItems,
   Display,
   FlexDirection,
   JustifyContent,
