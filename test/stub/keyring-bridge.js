@@ -1,5 +1,6 @@
 import { Transaction } from '@ethereumjs/tx';
-import { ecsign } from '@ethereumjs/util';
+import { ecsign, ecrecover, pubToAddress } from '@ethereumjs/util';
+import { bufferToHex } from 'ethereumjs-util';
 
 // BIP32 Public Key: xpub6ELgkkwgfoky9h9fFu4Auvx6oHvJ6XfwiS1NE616fe9Uf4H3JHtLGjCePVkb6RFcyDCqVvjXhNXbDNDqs6Kjoxw7pTAeP1GSEiLHmA5wYa9
 // BIP32 Private Key: xprvA1MLMFQnqSCfwD5C9sXAYo1NFG5oh4x6MD5mRhbV7JcVnFwtkka5ivtAYDYJsr9GS242p3QZMbsMZC1GZ2uskNeTj9VhYxrCqRG6U5UPXp5
@@ -16,22 +17,22 @@ export const KNOWN_PUBLIC_KEY_ADDRESSES = [
     index: 0,
   },
   {
-    address: '0x9ee70472c9d1b1679a33f2f0549ab5bffce118ef',
+    address: '0x9EE70472c9D1B1679A33f2f0549Ab5BFFCE118eF',
     balance: null,
     index: 1,
   },
   {
-    address: '0x3185ac9266d3df3d95dc847e2b88b52f12a34c21',
+    address: '0x3185aC9266D3DF3D95dC847e2B88b52F12A34C21',
     balance: null,
     index: 2,
   },
   {
-    address: '0x49eed7a86c1c404e2666ac12bf00af63804ac78d',
+    address: '0x49EED7a86c1C404e2666Ac12BF00Af63804AC78d',
     balance: null,
     index: 3,
   },
   {
-    address: '0x1d374341febd02c2f30929d2b4a767676799e1f2',
+    address: '0x1d374341feBd02C2F30929d2B4a767676799E1f2',
     balance: null,
     index: 4,
   },
@@ -92,7 +93,48 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
       message,
       Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'),
     );
-    return signature;
+
+    // Convert Uint8Array to hex strings
+    const r = `0x${Buffer.from(signature.r).toString('hex')}`;
+    const s = `0x${Buffer.from(signature.s).toString('hex')}`;
+    const v = `0x${signature.v.toString(16)}`;
+
+    // Serialize the transaction with the signature
+    const signedTransaction = Transaction.fromTxData({
+      ...txParams,
+      r: signature.r,
+      s: signature.s,
+      v: signature.v,
+    });
+
+    const serializedTx = `0x${signedTransaction.serialize().toString('hex')}`;
+
+    // Verify the signature
+    const expectedAddress = KNOWN_PUBLIC_KEY_ADDRESSES[0].address;
+    const recoveredPublicKey = ecrecover(
+      message,
+      signature.v,
+      signature.r,
+      signature.s,
+    );
+    const recoveredAddress = bufferToHex(pubToAddress(recoveredPublicKey));
+
+    console.log('Expected Address:', expectedAddress); //0xf68464152d7289d7ea9a2bec2e0035c45188223c
+    console.log('Recovered Address:', recoveredAddress); //0xf68464152d7289d7ea9a2bec2e0035c45188223c
+
+    const signedTx = {
+      id: 1,
+      success: true,
+      payload: {
+        v,
+        r,
+        s,
+        serializedTx,
+      },
+    };
+
+    console.log('Signed Transaction Response', signedTx);
+    return signedTx;
   }
 }
 
