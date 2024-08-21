@@ -1,5 +1,11 @@
 import { PermissionConstraint } from '@metamask/permission-controller';
-import { hasProperty, Hex, isObject, NonEmptyArray, Json } from '@metamask/utils';
+import {
+  hasProperty,
+  Hex,
+  isObject,
+  NonEmptyArray,
+  Json,
+} from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 
 type CaveatConstraint = {
@@ -8,13 +14,14 @@ type CaveatConstraint = {
 };
 
 type PermissionConstraint = {
-  caveats: null | NonEmptyArray<CaveatConstraint>
-}
+  parentCapability: string;
+  caveats: null | NonEmptyArray<CaveatConstraint>;
+};
 
 const PermissionNames = {
   eth_accounts: 'eth_accounts',
-  permittedChains: 'endowment:permitted-chains'
-}
+  permittedChains: 'endowment:permitted-chains',
+};
 
 const BUILT_IN_NETWORKS = {
   goerli: {
@@ -134,48 +141,52 @@ function transformState(state: Record<string, unknown>) {
     !hasProperty(state, 'PermissionController') ||
     !isObject(state.PermissionController) ||
     !hasProperty(state, 'NetworkController') ||
-    !isObject(state.NetworkController)
-    // !hasProperty(state, 'SelectedNetworkController') ||
-    // !isObject(state.SelectedNetworkController)
+    !isObject(state.NetworkController) ||
+    !hasProperty(state, 'SelectedNetworkController') ||
+    !isObject(state.SelectedNetworkController)
   ) {
     return state;
   }
   const {
     PermissionController: { subjects },
     NetworkController: { selectedNetworkClientId, networkConfigurations },
-    // SelectedNetworkController: { domains }
+    SelectedNetworkController: { domains },
   } = state;
   if (
     !isObject(subjects) ||
     !selectedNetworkClientId ||
     typeof selectedNetworkClientId !== 'string' ||
-    !isObject(networkConfigurations)
-    // !isObject(domains)
+    !isObject(networkConfigurations) ||
+    !isObject(domains)
   ) {
     return state;
   }
 
-  // do we actually want the chain for the origin, not the globally selected?
-  const networkConfiguration =
-    (networkConfigurations[selectedNetworkClientId] as { chainId: Hex }) ??
-    BUILT_IN_NETWORKS[
-      selectedNetworkClientId as unknown as keyof typeof BUILT_IN_NETWORKS
-    ];
-  const currentChainId = networkConfiguration?.chainId;
+  const getChainIdForNetworkClientId = (networkClientId: string) => {
+    const networkConfiguration =
+      (networkConfigurations[networkClientId] as { chainId: Hex }) ??
+      BUILT_IN_NETWORKS[
+        networkClientId as unknown as keyof typeof BUILT_IN_NETWORKS
+      ];
+    return networkConfiguration?.chainId;
+  };
+
+  const currentChainId = getChainIdForNetworkClientId(selectedNetworkClientId);
   if (!currentChainId || typeof currentChainId !== 'string') {
     return state;
   }
 
-  for (const subject of Object.values(subjects)) {
+  for (const [origin, subject] of Object.entries(subjects)) {
     if (!isObject(subject)) {
       return state;
     }
 
-    const { permissions } = subject as { permissions: Record<string, PermissionConstraint>};
+    const { permissions } = subject as {
+      permissions: Record<string, PermissionConstraint>;
+    };
     if (!isObject(permissions)) {
       return state;
     }
-
 
     let basePermission = {};
 
@@ -183,9 +194,10 @@ function transformState(state: Record<string, unknown>) {
     if (
       isObject(permissions[PermissionNames.eth_accounts]) &&
       Array.isArray(permissions[PermissionNames.eth_accounts].caveats)
-
     ) {
-      ethAccounts = permissions[PermissionNames.eth_accounts].caveats?.[0]?.value as string[] ?? [];
+      ethAccounts =
+        (permissions[PermissionNames.eth_accounts].caveats?.[0]
+          ?.value as string[]) ?? [];
       basePermission = permissions[PermissionNames.eth_accounts];
     }
     delete permissions[PermissionNames.eth_accounts];
@@ -195,7 +207,9 @@ function transformState(state: Record<string, unknown>) {
       isObject(permissions[PermissionNames.permittedChains]) &&
       Array.isArray(permissions[PermissionNames.permittedChains].caveats)
     ) {
-      chainIds = permissions[PermissionNames.permittedChains].caveats?.[0]?.value as string[] ?? [];
+      chainIds =
+        (permissions[PermissionNames.permittedChains].caveats?.[0]
+          ?.value as string[]) ?? [];
       basePermission ??= permissions[PermissionNames.permittedChains];
     }
     delete permissions[PermissionNames.permittedChains];
@@ -210,11 +224,20 @@ function transformState(state: Record<string, unknown>) {
     }
 
     if (ethAccounts.length > 0 && chainIds.length === 0) {
-      // should this resolve from domains?
       chainIds = [currentChainId];
+
+      const networkClientIdForOrigin = domains[origin];
+      if (networkClientIdForOrigin) {
+        const chainIdForOrigin = getChainIdForNetworkClientId(
+          selectedNetworkClientId,
+        );
+        if (chainIdForOrigin && typeof chainIdForOrigin === 'string') {
+          chainIds = [chainIdForOrigin];
+        }
+      }
     }
 
-    const scopes: Record<string, unknown> = {};
+    const scopes: Record<string, Json> = {};
 
     chainIds.forEach((chainId) => {
       const scopeString = `eip155:${parseInt(chainId, 16)}`;
