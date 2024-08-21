@@ -791,7 +791,7 @@ describe('Send Slice', () => {
       });
 
       // TODO: Expectation might change in the future
-      it('should error with an invalid network error when user input is not a valid hex string on a non default network', () => {
+      it('should error with an invalid network error when user input is not a valid hex string and not a domain', () => {
         const tokenAssetTypeState = {
           ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
           recipientInput: '0xValidateError',
@@ -811,7 +811,7 @@ describe('Send Slice', () => {
         const draftTransaction = getTestUUIDTx(result);
 
         expect(draftTransaction.recipient.error).toStrictEqual(
-          'invalidAddressRecipientNotEthNetwork',
+          'invalidAddressRecipient',
         );
       });
 
