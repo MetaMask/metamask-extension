@@ -214,11 +214,6 @@ function transformState(state: Record<string, unknown>) {
     }
     delete permissions[PermissionNames.permittedChains];
 
-    // this shouldn't be possible?
-    // if (permissions[Caip25EndowmentPermissionName]) {
-    //   continue;
-    // }
-
     if (ethAccounts.length === 0 && chainIds.length === 0) {
       continue;
     }
