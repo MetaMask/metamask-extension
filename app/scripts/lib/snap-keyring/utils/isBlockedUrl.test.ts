@@ -14,7 +14,7 @@ describe('isBlockedUrl', () => {
     state: {
       phishingLists: [
         {
-          blocklist: ['https://metamask.test'],
+          blocklist: ['metamask.test'],
           allowlist: [],
           fuzzylist: [],
           tolerance: 0,
