@@ -97,11 +97,10 @@ export function convertNetworkId(value: unknown): string {
  * Converting a hex chainId to decimal
  *
  * @param chainId - The chainId to be converted
- * @returns The chainId as decimal
+ * @returns The chainId passed as parameter if it is a non-hex value else the corresponding decimal value.
  */
 export const nonHexChainId = (chainId: string) => {
   if (chainId.startsWith('0x')) {
-    console.log(chainId);
     return hexToDecimal(chainId);
   }
   return chainId;
