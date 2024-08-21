@@ -212,8 +212,7 @@ export function AssetPicker({
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
-                #
-                {ellipsify(String(asset.details.tokenId))}
+                #{ellipsify(String(asset.details.tokenId))}
               </Text>
             )}
           </Tooltip>

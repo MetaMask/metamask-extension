@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
-import { ellipsify } from '../../../pages/confirmations/send/send.utils';
 import { zeroAddress } from 'ethereumjs-util';
+import { ellipsify } from '../../../pages/confirmations/send/send.utils';
 import {
   AlignItems,
   BackgroundColor,
@@ -123,7 +123,9 @@ export const TokenListItem = ({
 
   const tokenTitle = getTokenTitle();
   const tokenSymbolEllipsified = ellipsify(tokenSymbol);
-  let tokenMainTitleToDisplay = showPercentage ? ellipsify(tokenTitle) : tokenSymbolEllipsified;
+  const tokenMainTitleToDisplay = showPercentage
+    ? ellipsify(tokenTitle)
+    : tokenSymbolEllipsified;
 
   const stakeableTitle = (
     <Box

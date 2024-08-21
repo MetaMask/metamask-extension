@@ -132,8 +132,12 @@ export async function fetchToken(
     functionName: 'fetchToken',
   });
 
-  if (token?.symbol) token.symbol = ellipsify(token.symbol);
-  if (token.name) token.name = ellipsify(token.name);
+  if (token?.symbol) {
+    token.symbol = ellipsify(token.symbol);
+  }
+  if (token.name) {
+    token.name = ellipsify(token.name);
+  }
 
   return token;
 }

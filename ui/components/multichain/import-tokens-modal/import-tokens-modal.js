@@ -257,7 +257,10 @@ export const ImportTokensModal = ({ onClose }) => {
     let symbolError = null;
 
     if (symbolLength < 1 || symbolLength > MAX_VALID_SYMBOL_LENGTH) {
-      symbolError = t('invalidSymbolLength').replace('$1', MAX_VALID_SYMBOL_LENGTH);
+      symbolError = t('invalidSymbolLength').replace(
+        '$1',
+        MAX_VALID_SYMBOL_LENGTH,
+      );
     }
 
     setCustomSymbol(symbol);
