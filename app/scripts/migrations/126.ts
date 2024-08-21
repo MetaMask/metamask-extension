@@ -1,5 +1,20 @@
-import { hasProperty, Hex, isObject } from '@metamask/utils';
+import { PermissionConstraint } from '@metamask/permission-controller';
+import { hasProperty, Hex, isObject, NonEmptyArray, Json } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
+
+type CaveatConstraint = {
+  type: string;
+  value: Json;
+};
+
+type PermissionConstraint = {
+  caveats: null | NonEmptyArray<CaveatConstraint>
+}
+
+const PermissionNames = {
+  eth_accounts: 'eth_accounts',
+  permittedChains: 'endowment:permitted-chains'
+}
 
 const BUILT_IN_NETWORKS = {
   goerli: {
@@ -156,32 +171,34 @@ function transformState(state: Record<string, unknown>) {
       return state;
     }
 
-    const { permissions } = subject;
+    const { permissions } = subject as { permissions: Record<string, PermissionConstraint>};
     if (!isObject(permissions)) {
       return state;
     }
+
 
     let basePermission = {};
 
     let ethAccounts: string[] = [];
     if (
-      isObject(permissions.eth_accounts) &&
-      Array.isArray(permissions.eth_accounts.caveats)
+      isObject(permissions[PermissionNames.eth_accounts]) &&
+      Array.isArray(permissions[PermissionNames.eth_accounts].caveats)
+
     ) {
-      ethAccounts = permissions.eth_accounts.caveats[0]?.value ?? [];
-      basePermission = permissions.eth_accounts;
+      ethAccounts = permissions[PermissionNames.eth_accounts].caveats?.[0]?.value as string[] ?? [];
+      basePermission = permissions[PermissionNames.eth_accounts];
     }
-    delete permissions.eth_accounts;
+    delete permissions[PermissionNames.eth_accounts];
 
     let chainIds: string[] = [];
     if (
-      isObject(permissions.permittedChains) &&
-      Array.isArray(permissions.permittedChains.caveats)
+      isObject(permissions[PermissionNames.permittedChains]) &&
+      Array.isArray(permissions[PermissionNames.permittedChains].caveats)
     ) {
-      chainIds = permissions.permittedChains.caveats[0]?.value ?? [];
-      basePermission ??= permissions.permittedChains;
+      chainIds = permissions[PermissionNames.permittedChains].caveats?.[0]?.value as string[] ?? [];
+      basePermission ??= permissions[PermissionNames.permittedChains];
     }
-    delete permissions.permittedChains;
+    delete permissions[PermissionNames.permittedChains];
 
     // this shouldn't be possible?
     // if (permissions[Caip25EndowmentPermissionName]) {
