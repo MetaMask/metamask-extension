@@ -7,7 +7,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 120.3;
+export const version = 120.6;
 
 const MAX_TRANSACTION_HISTORY_LENGTH = 100;
 
@@ -52,9 +52,12 @@ function transformState(state: Record<string, unknown>): void {
     );
     return;
   } else if (!Array.isArray(transactionControllerState.transactions)) {
-    global.sentry?.captureException(
-      `Migration ${version}: Invalid TransactionController transactions state of type '${typeof transactionControllerState.transactions}'`,
+    log.error(
+      new Error(
+        `Migration ${version}: Invalid TransactionController transactions state of type '${typeof transactionControllerState.transactions}'`,
+      ),
     );
+    delete transactionControllerState.transactions;
     return;
   }
 
