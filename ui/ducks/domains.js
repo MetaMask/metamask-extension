@@ -30,7 +30,6 @@ const initialState = {
   error: null,
   warning: null,
   chainId: null,
-  domainType: null,
   domainName: null,
 };
 
@@ -50,10 +49,8 @@ const slice = createSlice({
       state.resolutions = null;
       state.error = null;
       state.warning = null;
-      state.domainType = null;
       state.domainName = null;
-      const { resolutions, domainType, domainName } = action.payload;
-      state.domainType = domainType;
+      const { resolutions, domainName } = action.payload;
       if (resolutions.length > 0) {
         state.resolutions = resolutions;
       } else if (domainName.length > 0) {
@@ -83,7 +80,6 @@ const slice = createSlice({
       state.resolutions = null;
       state.warning = null;
       state.error = null;
-      state.domainType = null;
     },
   },
   extraReducers: (builder) => {
@@ -241,7 +237,6 @@ export function lookupDomainName(domainName) {
           error,
           chainId,
           network: chainIdInt,
-          domainType: 'Other',
           domainName: trimmedDomainName,
         }),
       );
@@ -259,8 +254,4 @@ export function getDomainError(state) {
 
 export function getDomainWarning(state) {
   return state[name].warning;
-}
-
-export function getDomainType(state) {
-  return state[name].domainType;
 }
