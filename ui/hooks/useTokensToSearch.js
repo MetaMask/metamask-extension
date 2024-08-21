@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js';
 import { isEqual, uniqBy } from 'lodash';
 import { formatIconUrlWithProxy } from '@metamask/assets-controllers';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
+import { ellipsify } from '../pages/confirmations/send/send.utils';
 import {
   getTokenExchangeRates,
   getCurrentCurrency,
@@ -29,8 +30,9 @@ export function getRenderableTokenData(
   tokenList,
 ) {
   const { symbol, name, address, iconUrl, string, balance, decimals } = token;
+  const symbolEllipsified = ellipsify(symbol);
   let contractExchangeRate;
-  if (isSwapsDefaultTokenSymbol(symbol, chainId)) {
+  if (isSwapsDefaultTokenSymbol(symbolEllipsified, chainId)) {
     contractExchangeRate = 1;
   } else if (string && conversionRate > 0) {
     // This condition improves performance significantly, because it only gets a contract exchange rate
@@ -43,7 +45,7 @@ export function getRenderableTokenData(
       conversionRate,
       currentCurrency,
       string,
-      symbol,
+      symbolEllipsified,
       true,
     ) || '';
   const rawFiat = formattedFiat
@@ -52,7 +54,7 @@ export function getRenderableTokenData(
         conversionRate,
         currentCurrency,
         string,
-        symbol,
+        symbolEllipsified,
         false,
       )
     : '';
@@ -81,10 +83,10 @@ export function getRenderableTokenData(
 
   return {
     ...token,
-    primaryLabel: symbol,
+    primaryLabel: symbolEllipsified,
     secondaryLabel: name || tokenList[address?.toLowerCase()]?.name,
     rightPrimaryLabel:
-      string && `${new BigNumber(string).round(6).toString()} ${symbol}`,
+      string && `${new BigNumber(string).round(6).toString()} ${symbolEllipsified}`,
     rightSecondaryLabel: formattedFiat,
     iconUrl: usedIconUrl,
     identiconAddress: usedIconUrl ? null : address,

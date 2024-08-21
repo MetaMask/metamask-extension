@@ -44,6 +44,7 @@ import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
+import { ellipsify } from '../../confirmations/send/send.utils';
 
 /** Information about a native or token asset */
 export type Asset = (
@@ -149,9 +150,11 @@ const AssetPage = ({
             onClick={() => history.push(DEFAULT_ROUTE)}
           />
           <Text data-testid="asset-name" color={TextColor.textAlternative}>
-            {name && symbol && name !== symbol
-              ? `${name} (${symbol})`
-              : name ?? symbol}
+            {ellipsify(
+              name && symbol && name !== symbol
+                ? `${name} (${symbol})`
+                : name ?? symbol
+            )}
           </Text>
         </Box>
         {optionsButton}

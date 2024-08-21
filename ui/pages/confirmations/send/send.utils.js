@@ -8,7 +8,7 @@ import {
   NFT_TRANSFER_FROM_FUNCTION_SIGNATURE,
   NFT_SAFE_TRANSFER_FROM_FUNCTION_SIGNATURE,
 } from './send.constants';
-import { ELLIPSIFY_LENGTH } from '../../../../shared/constants/tokens';
+import { MAX_SYMBOL_DISPLAY_LENGTH } from '../../../../shared/constants/tokens';
 
 export {
   addGasBuffer,
@@ -191,5 +191,8 @@ function ellipsify(text, first = 6, last = 4) {
     return '';
   }
 
-  return (text.length < ELLIPSIFY_LENGTH) ? text : `${text.slice(0, first)}...${text.slice(-last)}`;
+  return (
+    text.length < MAX_SYMBOL_DISPLAY_LENGTH) ?
+    text :
+    `${text.slice(0, first)}...${text.slice(-last)}`;
 }

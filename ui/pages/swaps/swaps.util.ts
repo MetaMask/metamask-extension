@@ -44,6 +44,7 @@ import {
   sumHexes,
 } from '../../../shared/modules/conversion.utils';
 import { EtherDenomination } from '../../../shared/constants/common';
+import { ellipsify } from '../confirmations/send/send.utils';
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
 const USD_CURRENCY_CODE = 'usd';
@@ -124,12 +125,17 @@ export async function fetchToken(
   chainId: any,
 ): Promise<Json> {
   const tokenUrl = getBaseApi('token', chainId);
-  return await fetchWithCache({
+  const token = await fetchWithCache({
     url: `${tokenUrl}?address=${contractAddress}`,
     fetchOptions: { method: 'GET', headers: clientIdHeader },
     cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
     functionName: 'fetchToken',
   });
+
+  if (token?.symbol) token.symbol = ellipsify(token.symbol);
+  if (token.name) token.name = ellipsify(token.name);
+
+  return token;
 }
 
 export async function fetchBlockedTokens(

@@ -10,6 +10,7 @@ import {
 import { IconColor } from '../../../helpers/constants/design-system';
 import UrlIcon from '../../../components/ui/url-icon';
 import { I18nContext } from '../../../contexts/i18n';
+import { ellipsify } from '../../confirmations/send/send.utils';
 
 export default function SelectedToken({
   onClick,
@@ -45,7 +46,7 @@ export default function SelectedToken({
           <UrlIcon
             url={selectedToken.iconUrl}
             className="dropdown-search-list__selector-closed-icon"
-            name={selectedToken?.symbol}
+            name={ellipsify(selectedToken?.symbol)}
           />
         )}
         <div
@@ -64,7 +65,7 @@ export default function SelectedToken({
                 },
               )}
             >
-              {selectedToken?.symbol || t('swapSelectAToken')}
+              {ellipsify(selectedToken?.symbol) || t('swapSelectAToken')}
             </span>
           </div>
         </div>
