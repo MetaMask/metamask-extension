@@ -23,6 +23,7 @@ export const requestPermissionsHandler = {
     grantPermissions: true,
     requestPermissionApprovalForOrigin: true,
     getAccounts: true,
+    getNetworkConfigurationByNetworkClientId: true,
   },
 };
 
@@ -40,6 +41,7 @@ export const requestPermissionsHandler = {
  * @param options.grantPermissions
  * @param options.requestPermissionApprovalForOrigin
  * @param options.getAccounts
+ * @param options.getNetworkConfigurationByNetworkClientId
  * @returns A promise that resolves to nothing
  */
 async function requestPermissionsImplementation(
@@ -54,9 +56,10 @@ async function requestPermissionsImplementation(
     grantPermissions,
     requestPermissionApprovalForOrigin,
     getAccounts,
+    getNetworkConfigurationByNetworkClientId,
   },
 ) {
-  const { origin, params } = req;
+  const { origin, params, networkClientId } = req;
 
   if (!Array.isArray(params) || !isPlainObject(params[0])) {
     return end(invalidParams({ data: { request: req } }));
@@ -84,6 +87,23 @@ async function requestPermissionsImplementation(
           'cannot modify eth_accounts when CAIP-25 permission from multichain flow exists',
         ),
       ); // TODO: better error
+    }
+
+    if (!legacyRequestedPermissions[RestrictedMethods.eth_accounts]) {
+      legacyRequestedPermissions[RestrictedMethods.eth_accounts] = {};
+    }
+
+    if (!legacyRequestedPermissions[PermissionNames.permittedChains]) {
+      const { chainId } =
+        getNetworkConfigurationByNetworkClientId(networkClientId);
+      legacyRequestedPermissions[PermissionNames.permittedChains] = {
+        caveats: [
+          {
+            type: CaveatTypes.restrictNetworkSwitching,
+            value: [chainId],
+          },
+        ],
+      };
     }
 
     legacyApproval = await requestPermissionApprovalForOrigin(
@@ -154,13 +174,17 @@ async function requestPermissionsImplementation(
       })[Caip25EndowmentPermissionName];
     }
 
+    // We cannot derive ethAccounts directly from the CAIP-25 permission
+    // because the accounts will not be in order of lastSelected
+    const ethAccounts = await getAccounts();
+
     grantedPermissions[RestrictedMethods.eth_accounts] = {
       ...caip25Endowment,
       parentCapability: RestrictedMethods.eth_accounts,
       caveats: [
         {
           type: CaveatTypes.restrictReturnedAccounts,
-          value: await getAccounts(),
+          value: ethAccounts,
         },
       ],
     };
