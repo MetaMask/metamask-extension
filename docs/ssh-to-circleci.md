@@ -16,12 +16,13 @@ The other NEW option is to SSH into CircleCI and use VNC.
    ```
 
 4. Copy the command that CircleCI gives you and add `-L 5902:localhost:5901` (this will tunnel the VNC connection over SSH)
-5. When you login to SSH, it automatically executes `/.circleci/scripts/enable-vnc.sh` to set up the connection
-6. Use your favorite VNC viewer on your local machine to connect to `localhost:5902`
+5. Enter this in a terminal for example `ssh -p xxxxx xxx.xxx.xxx.xxx -L 5902:localhost:5901`
+6. When you login to SSH, it automatically executes `/.circleci/scripts/enable-vnc.sh` to set up the connection
+7. Use your favorite VNC viewer on your local machine to connect to `localhost:5902`
    - Mac: Finder menu > GO > Connect to server (or <Cmd> + K), then use `vnc://localhost:5902`
    - Linux: `tigervnc-viewer` is a good package to match the server
    - Windows: [RealVNC Viewer](https://www.realvnc.com/en/connect/download/viewer/windows/) or [TightVNC](https://www.tightvnc.com/download.php)
-7. Run your E2E tests as usual and watch the browser open in VNC
+8. Run your E2E tests as usual and watch the browser open in VNC
 
 ### Notes:
 
