@@ -4,6 +4,7 @@ const { FirstTimeFlowType } = require('../../shared/constants/onboarding');
 
 // TODO: Bumped this because migrations 92-94 mess with the network
 //       controller state, and we want to use the latest schema.
+//       See: https://github.com/MetaMask/metamask-extension/pull/26150#discussion_r1695431277
 //       But it might break things elsewhere. Determine if its easier to
 //       bump this, or specify network state in the old schema.
 const FIXTURE_STATE_METADATA_VERSION = 95;
