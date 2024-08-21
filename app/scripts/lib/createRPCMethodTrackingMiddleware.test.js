@@ -1,6 +1,8 @@
 import { errorCodes } from 'eth-rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
 
+import MetaMetricsController from '../controllers/metametrics';
+import { createSegmentMock } from '../lib/segment';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -15,9 +17,21 @@ import {
 import { permitSignatureMsg } from '../../../test/data/confirmations/typed_sign';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 
-const trackEvent = jest.fn();
+const MOCK_ID = '123';
+const expectedUniqueIdentifier = `signature-${MOCK_ID}`;
+
 const metricsState = { participateInMetaMetrics: null };
 const getMetricsState = () => metricsState;
+
+const expectedMetametricsEventUndefinedProps = {
+  actionId: undefined,
+  currency: undefined,
+  environmentType: undefined,
+  page: undefined,
+  revenue: undefined,
+  sensitiveProperties: undefined,
+  value: undefined,
+}
 
 const appStateController = {
   store: {
@@ -37,15 +51,42 @@ const appStateController = {
   },
 };
 
+const metaMetricsController = new MetaMetricsController({
+    segment: createSegmentMock(2, 10000),
+    getCurrentChainId: () => '0x1338',
+    onNetworkDidChange: () => {},
+    preferencesStore: {
+      subscribe: jest.fn(),
+      getState: jest.fn(() => ({
+        currentLocale: 'en_US',
+        preferences: {},
+      })),
+    },
+    version: '0.0.1',
+    environment: 'test',
+    initState: {
+      participateInMetaMetrics: true,
+      metaMetricsId: '0xabc',
+      fragments: {},
+      events: {},
+    },
+    extension: {
+      runtime: {
+        id: 'testid',
+        setUninstallURL: () => undefined,
+      },
+    },
+  });
+
 const createHandler = (opts) =>
   createRPCMethodTrackingMiddleware({
-    trackEvent,
     getMetricsState,
     rateLimitTimeout: 1000,
     rateLimitSamplePercent: 0.1,
     globalRateLimitTimeout: 0,
     globalRateLimitMaxAmount: 0,
     appStateController,
+    metaMetricsController,
     isConfirmationRedesignEnabled: () => false,
     ...opts,
   });
@@ -91,6 +132,11 @@ jest.mock('@metamask/controller-utils', () => {
 });
 
 describe('createRPCMethodTrackingMiddleware', () => {
+  let trackEventSpy;
+
+  beforeEach(() => {
+    trackEventSpy = jest.spyOn(MetaMetricsController.prototype, 'trackEvent').mockImplementation(() => {});
+  });
   afterEach(() => {
     jest.resetAllMocks();
     metricsState.participateInMetaMetrics = null;
@@ -99,6 +145,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
   describe('before participateInMetaMetrics is set', () => {
     it('should not track an event for a signature request', async () => {
       const req = {
+        id: MOCK_ID,
         method: MESSAGE_TYPE.PERSONAL_SIGN,
         origin: 'some.dapp',
       };
@@ -110,7 +157,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       const handler = createHandler();
       handler(req, res, next);
       await executeMiddlewareStack();
-      expect(trackEvent).not.toHaveBeenCalled();
+      expect(trackEventSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -121,6 +168,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     it('should not track an event for a signature request', async () => {
       const req = {
+        id: MOCK_ID,
         method: MESSAGE_TYPE.PERSONAL_SIGN,
         origin: 'some.dapp',
       };
@@ -132,7 +180,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       const handler = createHandler();
       handler(req, res, next);
       await executeMiddlewareStack();
-      expect(trackEvent).not.toHaveBeenCalled();
+      expect(trackEventSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -143,6 +191,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     it(`should immediately track a ${MetaMetricsEventName.SignatureRequested} event`, async () => {
       const req = {
+        id: MOCK_ID,
         method: MESSAGE_TYPE.PERSONAL_SIGN,
         origin: 'some.dapp',
         securityAlertResponse: {
@@ -158,8 +207,9 @@ describe('createRPCMethodTrackingMiddleware', () => {
       const { next } = getNext();
       const handler = createHandler();
       await handler(req, res, next);
-      expect(trackEvent).toHaveBeenCalledTimes(1);
-      expect(trackEvent.mock.calls[0][0]).toMatchObject({
+
+      expect(trackEventSpy).toHaveBeenCalledTimes(1);
+      expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRequested,
         properties: {
@@ -173,6 +223,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     it(`should track an event with correct blockaid parameters when providerRequestsCount is provided`, async () => {
       const req = {
+        id: MOCK_ID,
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         origin: 'some.dapp',
         securityAlertResponse: {
@@ -192,15 +243,9 @@ describe('createRPCMethodTrackingMiddleware', () => {
       const { next } = getNext();
       const handler = createHandler();
       await handler(req, res, next);
-      expect(trackEvent).toHaveBeenCalledTimes(1);
-      /**
-       * TODO:
-       * toMatchObject matches even if the matched object does not contain some of the properties of the expected object
-       * I'm not sure why toMatchObject is used but we should probably check the other tests in this file for correctness in
-       * another PR.
-       *
-       */
-      expect(trackEvent.mock.calls[0][0]).toStrictEqual({
+      expect(trackEventSpy).toHaveBeenCalledTimes(1);
+      expect(trackEventSpy.mock.calls[0][0]).toStrictEqual({
+        ...expectedMetametricsEventUndefinedProps,
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRequested,
         properties: {
@@ -211,11 +256,13 @@ describe('createRPCMethodTrackingMiddleware', () => {
           ppom_eth_getCode_count: 3,
         },
         referrer: { url: 'some.dapp' },
+        uniqueIdentifier: expectedUniqueIdentifier,
       });
     });
 
     it(`should track a ${MetaMetricsEventName.SignatureApproved} event if the user approves`, async () => {
       const req = {
+        id: MOCK_ID,
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         origin: 'some.dapp',
       };
@@ -227,8 +274,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
       const handler = createHandler();
       await handler(req, res, next);
       await executeMiddlewareStack();
-      expect(trackEvent).toHaveBeenCalledTimes(2);
-      expect(trackEvent.mock.calls[1][0]).toMatchObject({
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
+      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -240,6 +287,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     it(`should track a ${MetaMetricsEventName.SignatureRejected} event if the user approves`, async () => {
       const req = {
+        id: MOCK_ID,
         method: MESSAGE_TYPE.PERSONAL_SIGN,
         origin: 'some.dapp',
       };
@@ -251,8 +299,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
       const handler = createHandler();
       await handler(req, res, next);
       await executeMiddlewareStack();
-      expect(trackEvent).toHaveBeenCalledTimes(2);
-      expect(trackEvent.mock.calls[1][0]).toMatchObject({
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
+      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRejected,
         properties: {
@@ -264,6 +312,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     it(`should track a ${MetaMetricsEventName.PermissionsApproved} event if the user approves`, async () => {
       const req = {
+        id: MOCK_ID,
         method: MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS,
         origin: 'some.dapp',
       };
@@ -273,8 +322,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
       const handler = createHandler();
       await handler(req, res, next);
       await executeMiddlewareStack();
-      expect(trackEvent).toHaveBeenCalledTimes(2);
-      expect(trackEvent.mock.calls[1][0]).toMatchObject({
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
+      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.PermissionsApproved,
         properties: { method: MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS },
@@ -284,6 +333,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     it(`should never track blocked methods such as ${MESSAGE_TYPE.GET_PROVIDER_STATE}`, () => {
       const req = {
+        id: MOCK_ID,
         method: MESSAGE_TYPE.GET_PROVIDER_STATE,
         origin: 'www.notadapp.com',
       };
@@ -294,7 +344,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       const { next, executeMiddlewareStack } = getNext();
       const handler = createHandler();
       handler(req, res, next);
-      expect(trackEvent).not.toHaveBeenCalled();
+      expect(trackEventSpy).not.toHaveBeenCalled();
       executeMiddlewareStack();
     });
 
@@ -306,6 +356,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         `should only track '%s' events while the timeout rate limit is not active`,
         async (method, eventsTrackedPerRequest) => {
           const req = {
+          id: MOCK_ID,
             method,
             origin: 'some.dapp',
           };
@@ -328,8 +379,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
           }
 
           const expectedNumberOfCalls = 2 * eventsTrackedPerRequest;
-          expect(trackEvent).toHaveBeenCalledTimes(expectedNumberOfCalls);
-          trackEvent.mock.calls.forEach((call) => {
+          expect(trackEventSpy).toHaveBeenCalledTimes(expectedNumberOfCalls);
+          trackEventSpy.mock.calls.forEach((call) => {
             expect(call[0].properties.method).toBe(method);
           });
         },
@@ -356,6 +407,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         `should only track a random percentage of '%s' events`,
         async (method, eventsTrackedPerRequest) => {
           const req = {
+          id: MOCK_ID,
             method,
             origin: 'some.dapp',
           };
@@ -375,8 +427,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
           }
 
           const expectedNumberOfCalls = 2 * eventsTrackedPerRequest;
-          expect(trackEvent).toHaveBeenCalledTimes(expectedNumberOfCalls);
-          trackEvent.mock.calls.forEach((call) => {
+          expect(trackEventSpy).toHaveBeenCalledTimes(expectedNumberOfCalls);
+          trackEventSpy.mock.calls.forEach((call) => {
             expect(call[0].properties.method).toBe(method);
           });
         },
@@ -386,6 +438,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
     describe('events rated globally rate limited', () => {
       it('should only track events if the global rate limit has not been hit', async () => {
         const req = {
+          id: MOCK_ID,
           method: 'some_method_rate_limited_by_sample',
           origin: 'some.dapp',
         };
@@ -411,8 +464,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
           }
         }
 
-        expect(trackEvent).toHaveBeenCalledTimes(3);
-        trackEvent.mock.calls.forEach((call) => {
+        expect(trackEventSpy).toHaveBeenCalledTimes(3);
+        trackEventSpy.mock.calls.forEach((call) => {
           expect(call[0].properties.method).toBe(
             'some_method_rate_limited_by_sample',
           );
@@ -422,6 +475,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     it('should track Confirmation Redesign through ui_customizations prop if enabled', async () => {
       const req = {
+          id: MOCK_ID,
         method: MESSAGE_TYPE.PERSONAL_SIGN,
         origin: 'some.dapp',
       };
@@ -436,9 +490,9 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
       await executeMiddlewareStack();
 
-      expect(trackEvent).toHaveBeenCalledTimes(2);
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
 
-      expect(trackEvent.mock.calls[1][0]).toMatchObject({
+      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -453,6 +507,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     it('should not track Confirmation Redesign through ui_customizations prop if not enabled', async () => {
       const req = {
+          id: MOCK_ID,
         method: MESSAGE_TYPE.PERSONAL_SIGN,
         origin: 'some.dapp',
       };
@@ -465,9 +520,9 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
       await executeMiddlewareStack();
 
-      expect(trackEvent).toHaveBeenCalledTimes(2);
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
 
-      expect(trackEvent.mock.calls[1][0]).toMatchObject({
+      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -479,6 +534,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     it('should track Sign-in With Ethereum (SIWE) message if detected', async () => {
       const req = {
+          id: MOCK_ID,
         method: MESSAGE_TYPE.PERSONAL_SIGN,
         origin: 'some.dapp',
       };
@@ -495,9 +551,9 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
       await executeMiddlewareStack();
 
-      expect(trackEvent).toHaveBeenCalledTimes(2);
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
 
-      expect(trackEvent.mock.calls[1][0]).toMatchObject({
+      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -510,6 +566,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     it('should track typed-sign permit message if detected', async () => {
       const req = {
+          id: MOCK_ID,
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         origin: 'some.dapp',
         params: [undefined, permitSignatureMsg.msgParams.data],
@@ -523,9 +580,9 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
       await executeMiddlewareStack();
 
-      expect(trackEvent).toHaveBeenCalledTimes(2);
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
 
-      expect(trackEvent.mock.calls[1][0]).toMatchObject({
+      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -540,6 +597,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
     describe('when request is flagged as safe by security provider', () => {
       it(`should immediately track a ${MetaMetricsEventName.SignatureRequested} event`, async () => {
         const req = {
+          id: MOCK_ID,
           method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           origin: 'some.dapp',
         };
@@ -551,8 +609,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
         await handler(req, res, next);
 
-        expect(trackEvent).toHaveBeenCalledTimes(1);
-        expect(trackEvent.mock.calls[0][0]).toMatchObject({
+        expect(trackEventSpy).toHaveBeenCalledTimes(1);
+        expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
           category: MetaMetricsEventCategory.InpageProvider,
           event: MetaMetricsEventName.SignatureRequested,
           properties: {
@@ -613,6 +671,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       `should include %s in the '%s' tracked events params property`,
       async (_, method, params, expected) => {
         const req = {
+          id: MOCK_ID,
           method,
           origin: 'some.dapp',
           params,
@@ -627,8 +686,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
         await handler(req, res, next);
 
-        expect(trackEvent).toHaveBeenCalledTimes(1);
-        expect(trackEvent.mock.calls[0][0].properties.params).toStrictEqual(
+        expect(trackEventSpy).toHaveBeenCalledTimes(1);
+        expect(trackEventSpy.mock.calls[0][0].properties.params).toStrictEqual(
           expected,
         );
       },

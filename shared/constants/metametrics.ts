@@ -156,7 +156,7 @@ export type MetaMetricsEventFragment = {
   /**
    * The event name to fire when the fragment is closed in an affirmative action.
    */
-  successEvent: string;
+  successEvent?: string;
   /**
    * The event name to fire when the fragment is closed with a rejection.
    */
@@ -169,7 +169,7 @@ export type MetaMetricsEventFragment = {
   /**
    * The event category to use for both the success and failure events.
    */
-  category: string;
+  category?: string;
   /**
    * Should this fragment be persisted in state and progressed after the
    * extension is locked and unlocked.

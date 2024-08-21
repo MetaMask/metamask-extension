@@ -5451,9 +5451,6 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createRPCMethodTrackingMiddleware({
-        trackEvent: this.metaMetricsController.trackEvent.bind(
-          this.metaMetricsController,
-        ),
         getMetricsState: this.metaMetricsController.store.getState.bind(
           this.metaMetricsController.store,
         ),
@@ -5469,6 +5466,7 @@ export default class MetamaskController extends EventEmitter {
           ],
         }),
         appStateController: this.appStateController,
+        metaMetricsController: this.metaMetricsController,
       }),
     );
 

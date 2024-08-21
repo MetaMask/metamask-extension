@@ -129,8 +129,6 @@ let globalRateLimitCount = 0;
  * signature requests
  *
  * @param {object} opts - options for the rpc method tracking middleware
- * @param {Function} opts.trackEvent - trackEvent method from
- *  MetaMetricsController
  * @param {Function} opts.getMetricsState - get the state of
  *  MetaMetricsController
  * @param {number} [opts.rateLimitTimeout] - time, in milliseconds, to wait before
@@ -145,11 +143,12 @@ let globalRateLimitCount = 0;
  * time window that should limit the number of method calls tracked to globalRateLimitMaxAmount.
  * @param {number} [opts.globalRateLimitMaxAmount] - max number of method calls that should
  * tracked within the globalRateLimitTimeout time window.
+ * @param {AppStateController} [opts.appStateController]
+ * @param {MetaMetricsController} [opts.metaMetricsController]
  * @returns {Function}
  */
 
 export default function createRPCMethodTrackingMiddleware({
-  trackEvent,
   getMetricsState,
   rateLimitTimeout = 60 * 5 * 1000, // 5 minutes
   rateLimitSamplePercent = 0.001, // 0.1%
@@ -160,6 +159,7 @@ export default function createRPCMethodTrackingMiddleware({
   isConfirmationRedesignEnabled,
   snapAndHardwareMessenger,
   appStateController,
+  metaMetricsController,
 }) {
   return async function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,
@@ -215,6 +215,8 @@ export default function createRPCMethodTrackingMiddleware({
       !isGlobalRateLimited &&
       // Don't track if the user isn't participating in metametrics
       userParticipatingInMetaMetrics === true;
+
+    let signatureUniqueId;
 
     if (shouldTrackEvent) {
       // We track an initial "requested" event as soon as the dapp calls the
@@ -316,14 +318,31 @@ export default function createRPCMethodTrackingMiddleware({
         eventProperties.params = transformParams(params);
       }
 
-      trackEvent({
-        event,
-        category: MetaMetricsEventCategory.InpageProvider,
-        referrer: {
-          url: origin,
-        },
-        properties: eventProperties,
-      });
+      if (event === MetaMetricsEventName.SignatureRequested) {
+        signatureUniqueId = `signature-${req.id}`;
+
+        metaMetricsController.createEventFragment({
+          category: MetaMetricsEventCategory.InpageProvider,
+          initialEvent: event,
+          successEvent: 'Signature Approved',
+          failureEvent: 'Signature Rejected',
+          uniqueIdentifier: signatureUniqueId,
+          persist: true,
+          referrer: {
+            url: origin,
+          },
+          properties: eventProperties,
+        });
+      } else {
+        metaMetricsController.trackEvent({
+          event,
+          category: MetaMetricsEventCategory.InpageProvider,
+          referrer: {
+            url: origin,
+          },
+          properties: eventProperties,
+        });
+      }
 
       if (rateLimitType === RATE_LIMIT_TYPES.TIMEOUT) {
         rateLimitTimeoutsByMethod[method] = setTimeout(() => {
@@ -379,14 +398,27 @@ export default function createRPCMethodTrackingMiddleware({
             : blockaidMetricProps.security_alert_reason,
       };
 
-      trackEvent({
-        event,
-        category: MetaMetricsEventCategory.InpageProvider,
-        referrer: {
-          url: origin,
-        },
-        properties,
-      });
+      if (signatureUniqueId) {
+        metaMetricsController.updateEventFragment(signatureUniqueId, {
+          properties,
+        });
+
+        metaMetricsController.finalizeEventFragment(signatureUniqueId, {
+          abandoned: event === eventType.REJECTED,
+          referrer: {
+            url: origin,
+          },
+        });
+      } else {
+        metaMetricsController.trackEvent({
+          event,
+          category: MetaMetricsEventCategory.InpageProvider,
+          referrer: {
+            url: origin,
+          },
+          properties,
+        });
+      }
 
       return callback();
     });
