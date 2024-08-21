@@ -1,7 +1,5 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
-import {
-  RestrictedMethods,
-} from '../../../../../shared/constants/permissions';
+import { RestrictedMethods } from '../../../../../shared/constants/permissions';
 import {
   validateAndFlattenScopes,
   processScopedProperties,
