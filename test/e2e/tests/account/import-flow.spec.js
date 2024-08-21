@@ -7,6 +7,7 @@ const {
   regularDelayMs,
   largeDelayMs,
   completeImportSRPOnboardingFlow,
+  completeImportSRPOnboardingFlowWordByWord,
   openActionMenuAndStartSendFlow,
   unlockWallet,
   logInWithBalanceValidation,
@@ -157,6 +158,50 @@ describe('Import flow @no-mmi', function () {
         );
         assert.equal(txValues.length, 1);
         assert.ok(/-1\s*ETH/u.test(await txValues[0].getText()));
+      },
+    );
+  });
+
+  it('Import wallet using Secret Recovery Phrase with pasting word by word', async function () {
+    const testAddress = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        ganacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+
+        await completeImportSRPOnboardingFlowWordByWord(
+          driver,
+          TEST_SEED_PHRASE,
+          WALLET_PASSWORD,
+        );
+
+        // Show account information
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="account-list-item-menu-button"]',
+        );
+        await driver.clickElement('[data-testid="account-list-menu-details"');
+        await driver.findVisibleElement('.qr-code__wrapper');
+
+        // Extract address segments from the DOM
+        const outerSegment = await driver.findElement(
+          '.qr-code__address-segments',
+        );
+
+        // Get the text content of each segment
+        const displayedAddress = await outerSegment.getText();
+
+        // Assert that the displayed address matches the testAddress
+        assert.strictEqual(
+          displayedAddress.toLowerCase(),
+          testAddress.toLowerCase(),
+          'The displayed address does not match the test address',
+        );
       },
     );
   });
