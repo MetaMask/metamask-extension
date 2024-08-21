@@ -101,6 +101,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
       async ({ driver }: TestSuiteArguments) => {
         await openDappAndTriggerSignature(driver, SignatureType.SIWE);
 
+        await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
         const alert = await driver.findElement('[data-testid="inline-alert"]');
         assert.equal(await alert.getText(), 'Alert');
         await driver.clickElement('[data-testid="inline-alert"]');
