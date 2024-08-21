@@ -1,5 +1,3 @@
-import browser from 'webextension-polyfill';
-
 const runtimeManifest =
   global.chrome?.runtime.getManifest() || global.browser?.runtime.getManifest();
 
@@ -23,7 +21,7 @@ export const isManifestV3 = runtimeManifest
  * This is only available in when the manifest is version 3, and only in chromium
  * versions 109 and higher. As of June 7, 2024, it is not available in firefox.
  */
-export const isOffscreenAvailable = Boolean(browser.offscreen);
+export const isOffscreenAvailable = Boolean(global.chrome?.offscreen);
 
 /**
  * A boolean indicating whether the current extension's manifest is version 3
