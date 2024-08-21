@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { Mockttp } from 'mockttp';
+import { MockedEndpoint, Mockttp } from 'mockttp';
 import { Suite } from 'mocha';
 import {
   defaultGanacheOptions,
@@ -9,6 +9,7 @@ import {
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
+import { TestSuiteArguments } from '../confirmations/transactions/shared';
 
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
@@ -102,10 +103,7 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        mockedEndpoint: Mockttp;
-      }) => {
+      }: TestSuiteArguments) => {
         await unlockWallet(driver);
 
         await driver.clickElement(selectors.accountOptionsMenuButton);
@@ -133,7 +131,10 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
           'Delete MetaMetrics data button is disabled',
         );
 
-        const events = await getEventPayloads(driver, mockedEndpoints);
+        const events = await getEventPayloads(
+          driver,
+          mockedEndpoints as MockedEndpoint[],
+        );
         assert.equal(events.length, 3);
         assert.deepStrictEqual(events[0].properties, {
           category: 'Settings',
@@ -176,10 +177,7 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        mockedEndpoint: Mockttp;
-      }) => {
+      }: TestSuiteArguments) => {
         await unlockWallet(driver);
 
         await driver.clickElement(selectors.accountOptionsMenuButton);
@@ -207,7 +205,10 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
           'Delete MetaMetrics data button is disabled',
         );
 
-        const events = await getEventPayloads(driver, mockedEndpoints);
+        const events = await getEventPayloads(
+          driver,
+          mockedEndpoints as MockedEndpoint[],
+        );
         assert.equal(events.length, 2);
 
         await driver.clickElementAndWaitToDisappear(
