@@ -4,6 +4,7 @@ import { Ganache } from '../../seeder/ganache';
 import FixtureBuilder from '../../fixture-builder';
 import {
   defaultGanacheOptions,
+  locateAccountBalanceDOM,
   regularDelayMs,
   sendTransaction,
   unlockWallet,
@@ -60,6 +61,12 @@ describe('Trezor Hardware', function (this: Suite) {
         await driver.clickElement('.hw-account-list__item__checkbox');
         await driver.clickElement({ text: 'Unlock' });
 
+        // Ensure balance is loaded before Send to fix race condition
+        await locateAccountBalanceDOM(
+          driver,
+          ganacheServer,
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+        );
         await sendTransaction(driver, RECIPIENT, '1');
 
         // Wait for transaction to be confirmed
