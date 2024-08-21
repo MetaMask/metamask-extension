@@ -19,19 +19,16 @@ import {
 } from '../../../../shared/lib/ui-utils';
 import {
   Box,
-  PickerNetwork,
   Text,
   TextField,
   ButtonPrimary,
   ButtonPrimarySize,
-  ButtonSecondary,
-  ButtonSecondarySize,
-  Icon,
   IconName,
   ButtonLink,
   AvatarNetwork,
   ButtonIcon,
   IconSize,
+  Icon,
 } from '../../../components/component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -47,7 +44,6 @@ import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/route
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getAllNetworks,
-  getCurrentNetwork,
   getPetnamesEnabled,
   getExternalServicesOnboardingToggleState,
 } from '../../../selectors';
@@ -155,7 +151,6 @@ export default function PrivacySettings() {
   const [turnOnPetnames, setTurnOnPetnames] = useState(petnamesEnabled);
 
   const trackEvent = useContext(MetaMetricsContext);
-  const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getAllNetworks);
 
   const externalServicesOnboardingToggleState = useSelector(

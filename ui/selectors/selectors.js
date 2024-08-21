@@ -42,7 +42,6 @@ import {
   MOONBEAM_DISPLAY_NAME,
   MOONRIVER_DISPLAY_NAME,
   infuraProjectId,
-  BUILT_IN_NETWORKS,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -58,8 +57,6 @@ import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   ALLOWED_PROD_SWAPS_CHAIN_IDS,
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
-  MAINNET_DEFAULT_BLOCK_EXPLORER_URL,
-  LINEA_DEFAULT_BLOCK_EXPLORER_URL,
 } from '../../shared/constants/swaps';
 
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
@@ -2121,7 +2118,7 @@ export function getNetworkConfigurations(state) {
         chainId: network.chainId,
         rpcUrl,
         blockExplorerUrls: network.blockExplorerUrls,
-        providerType: type == RpcEndpointType.Infura ? networkClientId : 'rpc',
+        providerType: type === RpcEndpointType.Infura ? networkClientId : 'rpc',
         ...(network.name && { nickname: network.name }),
         ...(network.blockExplorerUrl && {
           rpcPrefs: {

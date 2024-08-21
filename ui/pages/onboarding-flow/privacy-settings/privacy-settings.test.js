@@ -2,12 +2,10 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { RpcEndpointType } from '@metamask/network-controller';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider } from '../../../../test/jest';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN } from '../../../store/actionConstants';
-import name from '../../../components/app/name';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import PrivacySettings from './privacy-settings';
 

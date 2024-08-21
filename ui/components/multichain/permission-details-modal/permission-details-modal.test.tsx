@@ -2,9 +2,9 @@ import React from 'react';
 import configureStore from 'redux-mock-store';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
-import { PermissionDetailsModal } from '.';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { PermissionDetailsModal } from '.';
 
 describe('PermissionDetailsModal', () => {
   const mockState = {

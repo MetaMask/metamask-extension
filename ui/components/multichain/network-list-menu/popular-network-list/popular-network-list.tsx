@@ -38,10 +38,7 @@ import {
   TextVariant,
   BorderColor,
 } from '../../../../helpers/constants/design-system';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  RPCDefinition,
-} from '../../../../../shared/constants/network';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 const PopularNetworkList = ({
@@ -182,11 +179,11 @@ const PopularNetworkList = ({
                         ticker: network.nativeCurrency,
                         rpcPrefs: {
                           blockExplorerUrl:
-                            network.defaultBlockExplorerUrlIndex !== undefined
-                              ? network.blockExplorerUrls[
+                            network.defaultBlockExplorerUrlIndex === undefined
+                              ? undefined
+                              : network.blockExplorerUrls[
                                   network.defaultBlockExplorerUrlIndex
-                                ]
-                              : undefined,
+                                ],
                         },
                         imageUrl:
                           CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],

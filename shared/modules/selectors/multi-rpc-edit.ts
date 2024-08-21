@@ -1,5 +1,3 @@
-import { getUseTokenDetection } from '../../../ui/selectors/selectors';
-
 type MultiRpcEditMetaMaskState = {
   metamask: {
     preferences: {

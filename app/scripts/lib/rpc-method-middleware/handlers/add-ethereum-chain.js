@@ -1,4 +1,3 @@
-import { ethErrors } from 'eth-rpc-errors';
 import { ApprovalType } from '@metamask/controller-utils';
 
 import { RpcEndpointType } from '@metamask/network-controller';
@@ -38,7 +37,6 @@ async function addEthereumChainHandler(
   {
     addNetwork,
     updateNetwork,
-    getCurrentRpcUrl,
     getNetworkConfigurationByChainId,
     setActiveNetwork,
     requestUserApproval,
@@ -97,6 +95,7 @@ async function addEthereumChainHandler(
 
   let updatedNetwork;
 
+  // eslint-disable-next-line no-constant-condition
   if (true) {
     ({ id: approvalFlowId } = await startApprovalFlow());
 

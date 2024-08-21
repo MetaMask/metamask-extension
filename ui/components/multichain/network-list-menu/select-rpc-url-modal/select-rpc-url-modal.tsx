@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import classnames from 'classnames';
 import { useDispatch } from 'react-redux';
@@ -16,10 +16,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  infuraProjectId,
-} from '../../../../../shared/constants/network';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import {
   setActiveNetwork,
   setEditedNetwork,
@@ -37,18 +34,6 @@ const SelectRpcUrlModal = ({
 
   const image = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[networkConfiguration.chainId];
 
-  const displayEndpoint = (endpoint: string) => {
-    endpoint = endpoint.endsWith('/v3/{infuraProjectId}')
-      ? endpoint.replace('/v3/{infuraProjectId}', '')
-      : endpoint.endsWith(`/v3/${infuraProjectId}`)
-      ? endpoint.replace(`/v3/${infuraProjectId}`, '')
-      : endpoint;
-
-    console.log(endpoint, 'endpoint');
-
-    const url = new URL(endpoint);
-    return `${url.host}${url.pathname === '/' ? '' : url.pathname}`;
-  };
   return (
     <Box>
       <Box display={Display.Flex}>

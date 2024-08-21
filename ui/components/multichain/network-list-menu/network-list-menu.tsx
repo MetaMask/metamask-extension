@@ -120,10 +120,10 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
       Object.entries(networkConfigurations).reduce(
-        ([nonTestNetworks, testNetworks], [chainId, network]) => {
+        ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
           const isTest = (TEST_CHAINS as string[]).includes(chainId);
-          (isTest ? testNetworks : nonTestNetworks)[chainId] = network;
-          return [nonTestNetworks, testNetworks];
+          (isTest ? testNetworksList : nonTestNetworksList)[chainId] = network;
+          return [nonTestNetworksList, testNetworksList];
         },
         [
           {} as Record<string, NetworkConfiguration>,
@@ -152,7 +152,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       : ACTION_MODES.LIST,
   );
 
-  console.log('actionMode ********', actionMode);
   const networkFormState = useNetworkFormState(editedNetwork);
   const { rpcUrls, setRpcUrls, blockExplorers, setBlockExplorers } =
     networkFormState;
@@ -161,10 +160,10 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     Object.values(networks).sort(
       (a, b) =>
         orderedNetworksList.findIndex(
-          ({ networkId }) => networkId == a.chainId,
+          ({ networkId }) => networkId === a.chainId,
         ) -
         orderedNetworksList.findIndex(
-          ({ networkId }) => networkId == b.chainId,
+          ({ networkId }) => networkId === b.chainId,
         ),
     );
 
@@ -199,8 +198,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const [focusSearch, setFocusSearch] = useState(false);
 
   const searchNetworks = <T,>(networks: T[], query: string) =>
-    searchQuery !== ''
-      ? new Fuse(networks, {
+    searchQuery === ''
+      ? networks
+      : new Fuse(networks, {
           threshold: 0.2,
           location: 0,
           distance: 100,
@@ -208,8 +208,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           minMatchCharLength: 1,
           shouldSort: false, // Maintain network order instead of ordering by search score
           keys: ['name', 'chainId', 'nativeCrrency'],
-        }).search(query)
-      : networks;
+        }).search(query);
 
   const searchedEnabledNetworks = searchNetworks(orderedNetworks, searchQuery);
   const searchedFeaturedNetworks = searchNetworks(

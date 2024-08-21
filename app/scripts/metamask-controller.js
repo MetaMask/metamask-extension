@@ -525,8 +525,8 @@ export default class MetamaskController extends EventEmitter {
                 }
               });
             }
-            return objValue;
           }
+          return objValue;
         },
       );
 
@@ -3165,7 +3165,6 @@ export default class MetamaskController extends EventEmitter {
       networkController,
       announcementController,
       onboardingController,
-      appMetadataController,
       permissionController,
       preferencesController,
       tokensController,

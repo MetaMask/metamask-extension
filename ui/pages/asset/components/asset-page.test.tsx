@@ -184,7 +184,6 @@ describe('AssetPage', () => {
   });
 
   it('should disable the buy button on unsupported chains', () => {
-    const chainId = CHAIN_IDS.SEPOLIA;
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
@@ -250,7 +249,6 @@ describe('AssetPage', () => {
   });
 
   it('should not show the Bridge button if chain id is not supported', async () => {
-    const chainId = CHAIN_IDS.SEPOLIA;
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({

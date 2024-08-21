@@ -8,7 +8,6 @@ import {
 } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
-import { chain } from 'lodash';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 
 // Unique name for the controller
@@ -122,6 +121,7 @@ export class NetworkOrderController extends BaseController<
             CHAIN_IDS.SEPOLIA,
             CHAIN_IDS.LINEA_SEPOLIA,
             CHAIN_IDS.GOERLI,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ].includes(chainId as any),
       ) as Hex[];
 

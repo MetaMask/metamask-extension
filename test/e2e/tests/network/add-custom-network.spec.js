@@ -521,13 +521,14 @@ describe('Custom network', function () {
           await driver.clickElement({ tag: 'button', text: 'Approve' });
 
           // verify network switched
-          await driver.waitForSelector('[aria-label="Network Menu Arbitrum One"]');
+          await driver.waitForSelector(
+            '[aria-label="Network Menu Arbitrum One"]',
+          );
         },
       );
     });
 
-
-    it.only('delete the Arbitrum network', async function () {
+    it('delete the Arbitrum network', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
@@ -551,21 +552,25 @@ describe('Custom network', function () {
 
           await driver.clickElement('[data-testid="network-display"]');
 
-          let arbitrumRow = await driver.findElement(
-            `[data-rbd-draggable-id="${toHex(chainID)}"]`);
+          const arbitrumRow = await driver.findElement(
+            `[data-rbd-draggable-id="${toHex(chainID)}"]`,
+          );
 
           const arbitrumMenu = await driver.findNestedElement(
-            arbitrumRow, '[data-testid="network-list-item-options-button"]');
+            arbitrumRow,
+            '[data-testid="network-list-item-options-button"]',
+          );
 
           await arbitrumMenu.click();
           await driver.clickElement(
             '[data-testid="network-list-item-options-delete"]',
           );
 
-          await driver.clickElement({tag: 'button', text: 'Delete'});
+          await driver.clickElement({ tag: 'button', text: 'Delete' });
           await driver.clickElement('[data-testid="network-display"]');
           await driver.assertElementNotPresent(
-            `[data-rbd-draggable-id="${toHex(chainID)}"]`);
+            `[data-rbd-draggable-id="${toHex(chainID)}"]`,
+          );
         },
       );
     });

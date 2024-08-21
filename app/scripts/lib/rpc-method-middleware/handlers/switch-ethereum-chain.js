@@ -1,7 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
-  findExistingNetwork,
   validateSwitchEthereumChainParams,
   switchChain,
 } from './ethereum-chain-utils';

@@ -62,11 +62,11 @@ import RpcListItem, {
   stripKeyFromInfuraUrl,
   stripProtocol,
 } from '../../../../components/multichain/network-list-menu/rpc-list-item';
-import DropdownEditor, { DropdownEditorStyle } from './dropdown-editor';
 import { useSafeChains } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
+import DropdownEditorDefault, { DropdownEditorStyle } from './dropdown-editor';
 
-const NetworksForm = ({
+export const NetworksForm = ({
   networkFormState,
   existingNetwork,
   onRpcAdd,
@@ -119,10 +119,12 @@ const NetworksForm = ({
   // Validate the network name when it changes
   useEffect(() => {
     const chainIdHex = toHex(chainId);
-    const expectedName = !chainIdHex
-      ? undefined
-      : NETWORK_TO_NAME_MAP[chainIdHex] ??
-        safeChains?.find(({ chainId }) => toHex(chainId) === chainIdHex)?.name;
+    const expectedName = chainIdHex
+      ? NETWORK_TO_NAME_MAP[chainIdHex] ??
+        safeChains?.find(
+          ({ chainId: networkId }) => toHex(networkId) === chainIdHex,
+        )?.name
+      : undefined;
 
     const mismatch = expectedName && expectedName !== name;
     setSuggestedName(mismatch ? expectedName : undefined);
@@ -140,10 +142,11 @@ const NetworksForm = ({
   // Validate the ticker when it changes
   useEffect(() => {
     const chainIdHex = toHex(chainId);
-    const expectedSymbol = !chainIdHex
-      ? undefined
-      : safeChains?.find(({ chainId }) => toHex(chainId) === chainIdHex)
-          ?.nativeCurrency?.symbol;
+    const expectedSymbol = chainIdHex
+      ? safeChains?.find(
+          ({ chainId: networkId }) => toHex(networkId) === chainIdHex,
+        )?.nativeCurrency?.symbol
+      : undefined;
 
     const mismatch = expectedSymbol && expectedSymbol !== ticker;
     setSuggestedTicker(mismatch ? expectedSymbol : undefined);
@@ -217,7 +220,7 @@ const NetworksForm = ({
     if (rpcUrl) {
       jsonRpcRequest(templateInfuraRpc(rpcUrl), 'eth_chainId')
         .then((response) => {
-          if (chainId === undefined || chainId == '') {
+          if (chainId === undefined || chainId === '') {
             setChainId(hexToDecimal(response));
           }
           setFetchedChainId(response);
@@ -253,9 +256,7 @@ const NetworksForm = ({
             blockExplorers?.defaultBlockExplorerUrlIndex,
         };
 
-        if (!existingNetwork) {
-          await dispatch(addNetwork(networkPayload));
-        } else {
+        if (existingNetwork) {
           const options = {
             replacementSelectedRpcEndpointIndex:
               chainIdHex === existingNetwork.chainId
@@ -263,6 +264,8 @@ const NetworksForm = ({
                 : undefined,
           };
           await dispatch(updateNetwork(networkPayload, options));
+        } else {
+          await dispatch(addNetwork(networkPayload));
         }
 
         trackEvent({
@@ -355,6 +358,7 @@ const NetworksForm = ({
               </>
             )
           }
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onChange={(e: any) => {
             setName(e.target?.value);
           }}
@@ -371,7 +375,7 @@ const NetworksForm = ({
           }}
           value={name}
         />
-        <DropdownEditor
+        <DropdownEditorDefault
           title={t('defaultRpcUrl')}
           placeholder={t('addAUrl')}
           style={DropdownEditorStyle.Popover}
@@ -380,7 +384,7 @@ const NetworksForm = ({
           selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
           error={Boolean(errors.rpcUrl)}
           renderItem={(item, isList) =>
-            isList || item?.name || item?.type == RpcEndpointType.Infura ? (
+            isList || item?.name || item?.type === RpcEndpointType.Infura ? (
               <RpcListItem rpcEndpoint={item} />
             ) : (
               <Text
@@ -515,6 +519,7 @@ const NetworksForm = ({
               </Text>
             ) : null
           }
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onChange={(e: any) => {
             setTicker(e.target?.value);
           }}
@@ -541,7 +546,7 @@ const NetworksForm = ({
           </HelpText>
         ) : null}
 
-        <DropdownEditor
+        <DropdownEditorDefault
           title={t('blockExplorerUrl')}
           placeholder={t('addAUrl')}
           style={DropdownEditorStyle.Box}

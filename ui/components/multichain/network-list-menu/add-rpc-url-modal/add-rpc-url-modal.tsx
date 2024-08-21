@@ -15,7 +15,6 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  Size,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';

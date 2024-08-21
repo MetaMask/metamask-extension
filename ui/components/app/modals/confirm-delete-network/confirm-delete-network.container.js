@@ -2,11 +2,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import { removeNetwork } from '../../../../store/actions';
-import {
-  getNetworkConfigurations,
-  getNetworkConfigurationsByChainId,
-} from '../../../../selectors';
-import { getNetworkDetailsByChainId } from '../../../../helpers/utils/notification.util';
+import { getNetworkConfigurationsByChainId } from '../../../../selectors';
 import ConfirmDeleteNetwork from './confirm-delete-network.component';
 
 const mapStateToProps = (state, ownProps) => {

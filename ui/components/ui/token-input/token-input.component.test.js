@@ -60,7 +60,7 @@ describe('TokenInput Component', () => {
       expect(queryByTitle('0 ETH')).toBeInTheDocument();
     });
 
-    it.only('should render conversionRate on polygon', () => {
+    it('should render conversionRate on polygon', () => {
       const showFiatState = {
         ...mockState,
         metamask: {

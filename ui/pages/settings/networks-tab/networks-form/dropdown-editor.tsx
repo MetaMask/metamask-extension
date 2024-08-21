@@ -1,7 +1,7 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
 import {
-  Box,
+  Box as BoxComponent,
   ButtonIcon,
   ButtonIconSize,
   Icon,
@@ -9,7 +9,7 @@ import {
   IconSize,
   Input,
   Label,
-  Popover,
+  Popover as PopoverComponent,
   PopoverPosition,
   Text,
 } from '../../../../components/component-library';
@@ -73,10 +73,10 @@ export const DropdownEditor = <Item,>({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const renderDropdownList = () => (
-    <Box>
+    <BoxComponent>
       {items?.map((item, index) => {
         const row = (
-          <Box
+          <BoxComponent
             alignItems={AlignItems.center}
             paddingLeft={4}
             paddingRight={4}
@@ -92,7 +92,7 @@ export const DropdownEditor = <Item,>({
             })}
           >
             {index === selectedItemIndex && (
-              <Box
+              <BoxComponent
                 className="networks-tab__item-selected-pill"
                 borderRadius={BorderRadius.pill}
                 backgroundColor={BackgroundColor.primaryDefault}
@@ -125,7 +125,7 @@ export const DropdownEditor = <Item,>({
                 }}
               />
             )}
-          </Box>
+          </BoxComponent>
         );
 
         const tooltip = renderTooltip(item, true);
@@ -138,7 +138,7 @@ export const DropdownEditor = <Item,>({
         );
       })}
 
-      <Box
+      <BoxComponent
         onClick={onItemAdd}
         padding={4}
         display={Display.Flex}
@@ -159,8 +159,8 @@ export const DropdownEditor = <Item,>({
         >
           {addButtonText}
         </Text>
-      </Box>
-    </Box>
+      </BoxComponent>
+    </BoxComponent>
   );
 
   let borderColor = BorderColor.borderDefault;
@@ -181,7 +181,7 @@ export const DropdownEditor = <Item,>({
   const tooltip = selectedItem ? renderTooltip(selectedItem, false) : undefined;
 
   const box = (
-    <Box
+    <BoxComponent
       onClick={() => {
         setIsDropdownOpen(!isDropdownOpen);
       }}
@@ -214,11 +214,11 @@ export const DropdownEditor = <Item,>({
         ariaLabel={title}
         size={ButtonIconSize.Md}
       />
-    </Box>
+    </BoxComponent>
   );
 
   return (
-    <Box paddingTop={4}>
+    <BoxComponent paddingTop={4}>
       <Label variant={TextVariant.bodyMdMedium}>{title}</Label>
       {tooltip ? (
         <Tooltip title={tooltip} position="bottom">
@@ -227,8 +227,8 @@ export const DropdownEditor = <Item,>({
       ) : (
         box
       )}
-      {style == DropdownEditorStyle.Popover ? (
-        <Popover
+      {style === DropdownEditorStyle.Popover ? (
+        <PopoverComponent
           paddingTop={items && items.length > 0 ? 2 : 0}
           paddingBottom={items && items.length > 0 ? 2 : 0}
           paddingLeft={0}
@@ -241,18 +241,18 @@ export const DropdownEditor = <Item,>({
           onClickOutside={() => setIsDropdownOpen(false)}
         >
           {renderDropdownList()}
-        </Popover>
+        </PopoverComponent>
       ) : (
-        <Box
+        <BoxComponent
           marginTop={2}
           display={isDropdownOpen ? Display.Block : Display.None}
           borderColor={BorderColor.borderMuted}
           borderRadius={BorderRadius.LG}
         >
           {renderDropdownList()}
-        </Box>
+        </BoxComponent>
       )}
-    </Box>
+    </BoxComponent>
   );
 };
 

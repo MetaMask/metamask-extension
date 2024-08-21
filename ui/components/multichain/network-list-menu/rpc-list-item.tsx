@@ -1,4 +1,4 @@
-import { RpcEndpointType } from '@metamask/network-controller';
+import { NetworkClientType } from '@metamask/network-controller';
 import React from 'react';
 import { infuraProjectId } from '../../../../shared/constants/network';
 import { Box, Text } from '../../component-library';
@@ -11,16 +11,20 @@ import {
   TextVariant,
   BackgroundColor,
   BlockSize,
-  TextAlign,
 } from '../../../helpers/constants/design-system';
 
-export const stripKeyFromInfuraUrl = (endpoint: string) =>
-  (endpoint = endpoint.endsWith('/v3/{infuraProjectId}')
-    ? endpoint.replace('/v3/{infuraProjectId}', '')
-    : endpoint.endsWith(`/v3/${infuraProjectId}`)
-    ? endpoint.replace(`/v3/${infuraProjectId}`, '')
-    : endpoint);
-9;
+export const stripKeyFromInfuraUrl = (endpoint: string) => {
+  let modifiedEndpoint = endpoint;
+
+  if (modifiedEndpoint.endsWith('/v3/{infuraProjectId}')) {
+    modifiedEndpoint = modifiedEndpoint.replace('/v3/{infuraProjectId}', '');
+  } else if (modifiedEndpoint.endsWith(`/v3/${infuraProjectId}`)) {
+    modifiedEndpoint = modifiedEndpoint.replace(`/v3/${infuraProjectId}`, '');
+  }
+
+  return modifiedEndpoint;
+};
+
 export const stripProtocol = (endpoint: string) => {
   const url = new URL(endpoint);
   return `${url.host}${url.pathname === '/' ? '' : url.pathname}`;
@@ -32,14 +36,14 @@ const RpcListItem = ({
   rpcEndpoint: {
     name?: string;
     url: string;
-    type: RpcEndpointType;
+    type: NetworkClientType;
   };
 }) => {
   const { url, type } = rpcEndpoint;
-  const name = type == RpcEndpointType.Infura ? 'Infura' : rpcEndpoint.name;
+  const name = type === NetworkClientType.Infura ? 'Infura' : rpcEndpoint.name;
 
   const displayEndpoint = (endpoint?: string) =>
-    !endpoint ? '\u00A0' : stripProtocol(stripKeyFromInfuraUrl(endpoint));
+    endpoint ? stripProtocol(stripKeyFromInfuraUrl(endpoint)) : '\u00A0';
 
   const padding = name ? 2 : 4;
 

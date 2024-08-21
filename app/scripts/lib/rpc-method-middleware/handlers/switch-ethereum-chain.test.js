@@ -13,17 +13,21 @@ const mockRequestUserApproval = ({ requestData }) => {
 const createMockMainnetConfiguration = () => ({
   chainId: CHAIN_IDS.MAINNET,
   defaultRpcEndpointIndex: 0,
-  rpcEndpoints: [{
-    networkClientId:  NETWORK_TYPES.MAINNET,
-  }]
+  rpcEndpoints: [
+    {
+      networkClientId: NETWORK_TYPES.MAINNET,
+    },
+  ],
 });
 
 const createMockLineaMainnetConfiguration = () => ({
   chainId: CHAIN_IDS.LINEA_MAINNET,
   defaultRpcEndpointIndex: 0,
-  rpcEndpoints: [{
-    networkClientId: NETWORK_TYPES.LINEA_MAINNET,
-  }]
+  rpcEndpoints: [
+    {
+      networkClientId: NETWORK_TYPES.LINEA_MAINNET,
+    },
+  ],
 });
 
 describe('switchEthereumChainHandler', () => {
@@ -142,7 +146,7 @@ describe('switchEthereumChainHandler', () => {
       );
     });
 
-// TODO: Fix below tests
+    // TODO: Fix below tests
 
     it('should call setActiveNetwork when switching to a custom network', async () => {
       const mocks = makeMocks({

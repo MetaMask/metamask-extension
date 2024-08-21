@@ -35,8 +35,6 @@ import {
   AddNetworkFields,
   NetworkClientId,
   NetworkConfiguration,
-  UpdateNetworkFields,
-  // RpcEndpointType,
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -64,7 +62,6 @@ import {
   getSelectedInternalAccount,
   getInternalAccounts,
   getSelectedNetworkClientId,
-  getNetworkConfigurationsByChainId,
 } from '../selectors';
 import {
   computeEstimatedGasLimit,
@@ -108,8 +105,7 @@ import {
 } from '../../shared/modules/i18n';
 import { decimalToHex } from '../../shared/modules/conversion.utils';
 import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
-import { NetworkType, RPCDefinition } from '../../shared/constants/network';
-import { EtherDenomination } from '../../shared/constants/common';
+import { NetworkType } from '../../shared/constants/network';
 import {
   isErrorWithMessage,
   logErrorWithMessage,
@@ -2391,21 +2387,25 @@ export function addNetwork(
   networkConfiguration: AddNetworkFields,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.addNetwork`, networkConfiguration);
     try {
       return await submitRequestToBackground('addNetwork', [
         networkConfiguration,
       ]);
     } catch (error) {
-      throw error; // todo err handling
+      logErrorWithMessage(error);
+      dispatch(displayWarning('Had a problem adding networks!'));
     }
+    return undefined;
   };
 }
 
 export function updateNetwork(
-  networkConfiguration: UpdateNetworkFields,
+  networkConfiguration: AddNetworkFields,
   options: { replacementSelectedRpcEndpointIndex?: number } = {},
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.addNetwork`, networkConfiguration);
     try {
       return await submitRequestToBackground('updateNetwork', [
         networkConfiguration.chainId,
@@ -2413,8 +2413,62 @@ export function updateNetwork(
         options,
       ]);
     } catch (error) {
-      throw error; // todo err handling
+      logErrorWithMessage(error);
+      dispatch(displayWarning('Had a problem updading networks!'));
     }
+    return undefined;
+  };
+}
+
+export function upsertNetworkConfiguration(
+  {
+    id,
+    rpcUrl,
+    chainId,
+    nickname,
+    rpcPrefs,
+    ticker = EtherDenomination.ETH,
+  }: {
+    id?: string;
+    rpcUrl: string;
+    chainId: string;
+    nickname: string;
+    rpcPrefs: RPCDefinition['rpcPrefs'];
+    ticker: string;
+  },
+  {
+    setActive,
+    source,
+  }: {
+    setActive: boolean;
+    source: string;
+  },
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch) => {
+    log.debug(
+      `background.upsertNetworkConfiguration: ${id} ${rpcUrl} ${chainId} ${ticker} ${nickname}`,
+    );
+    let networkConfigurationId;
+    try {
+      networkConfigurationId = await submitRequestToBackground(
+        'upsertNetworkConfiguration',
+        [
+          {
+            id,
+            rpcUrl,
+            chainId,
+            ticker,
+            nickname: nickname || rpcUrl,
+            rpcPrefs,
+          },
+          { setActive, source, referrer: ORIGIN_METAMASK },
+        ],
+      );
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning('Had a problem adding network!'));
+    }
+    return networkConfigurationId;
   };
 }
 
@@ -2471,6 +2525,31 @@ export function removeNetwork(
     } catch (error) {
       logErrorWithMessage(error);
     }
+  };
+}
+
+export function removeNetworkConfiguration(
+  networkConfigurationId: string,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch) => {
+    log.debug(
+      `background.removeNetworkConfiguration: ${networkConfigurationId}`,
+    );
+    return new Promise((resolve, reject) => {
+      callBackgroundMethod(
+        'removeNetworkConfiguration',
+        [networkConfigurationId],
+        (err) => {
+          if (err) {
+            logErrorWithMessage(err);
+            dispatch(displayWarning('Had a problem removing network!'));
+            reject(err);
+            return;
+          }
+          resolve();
+        },
+      );
+    });
   };
 }
 

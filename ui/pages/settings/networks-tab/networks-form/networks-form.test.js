@@ -9,7 +9,7 @@ import {
   getRpcUrl,
 } from '../../../../../shared/constants/network';
 import * as fetchWithCacheModule from '../../../../../shared/lib/fetch-with-cache';
-import NetworksForm from '.';
+import { NetworksForm } from '.';
 
 const renderComponent = (props) => {
   const store = configureMockStore([])({

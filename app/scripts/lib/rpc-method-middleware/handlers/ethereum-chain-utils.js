@@ -1,13 +1,5 @@
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import { ApprovalType } from '@metamask/controller-utils';
-
-import {
-  BUILT_IN_INFURA_NETWORKS,
-  CHAIN_ID_TO_RPC_URL_MAP,
-  CHAIN_ID_TO_TYPE_MAP,
-  CURRENCY_SYMBOLS,
-  NETWORK_TO_NAME_MAP,
-} from '../../../../../shared/constants/network';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,

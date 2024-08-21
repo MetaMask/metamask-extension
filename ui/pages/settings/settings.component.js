@@ -24,7 +24,6 @@ import {
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
-import AddNetwork from '../../components/app/add-network/add-network';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -45,7 +44,6 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
-import NetworksTab from './networks-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
 import SecurityTab from './security-tab';

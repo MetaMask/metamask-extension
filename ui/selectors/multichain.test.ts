@@ -4,7 +4,6 @@ import { Hex } from '@metamask/utils';
 import {
   getDefaultNetworkControllerState,
   NetworkConfiguration,
-  RpcEndpointType,
 } from '@metamask/network-controller';
 import {
   getNativeCurrency,
@@ -57,7 +56,6 @@ import {
 type TestState = MultichainState &
   AccountsState & {
     metamask: {
-      selectedNetworkClientId: string;
       preferences: { showFiatInTestnets: boolean };
       accountsByChainId: Record<string, Record<string, { balance: string }>>;
       networkConfigurationsByChainId: Record<Hex, NetworkConfiguration>;

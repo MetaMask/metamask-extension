@@ -2,23 +2,12 @@ import React from 'react';
 import { fireEvent, renderWithProvider, screen } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
-
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { mockNetworkState } from '../../../../test/stub/networks';
 import { DetectedTokensBanner } from '.';
 
 describe('DetectedTokensBanner', () => {
   let setShowDetectedTokensSpy;
 
   const args = {};
-
-  const mockStore = {
-    ...testData,
-    metamask: {
-      ...testData.metamask,
-      ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
-    },
-  };
 
   beforeEach(() => {
     setShowDetectedTokensSpy = jest.fn();

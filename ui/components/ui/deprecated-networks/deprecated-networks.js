@@ -17,8 +17,8 @@ import {
   DEPRECATED_NETWORKS,
   NEAR_AURORA_MAINNET_IMAGE_URL,
 } from '../../../../shared/constants/network';
-import { upsertNetworkConfiguration } from '../../../store/actions';
 import { MetaMetricsNetworkEventSource } from '../../../../shared/constants/metametrics';
+import { upsertNetworkConfiguration } from '../../../store/actions';
 
 export default function DeprecatedNetworks() {
   const { id, chainId, rpcUrl } = useSelector(getCurrentNetwork) ?? {};
