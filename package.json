@@ -299,7 +299,7 @@
     "@metamask-institutional/types": "^1.1.0",
     "@metamask/abi-utils": "^2.0.2",
     "@metamask/account-watcher": "^4.1.0",
-    "@metamask/accounts-controller": "^17.2.0",
+    "@metamask/accounts-controller": "^18.1.0",
     "@metamask/address-book-controller": "^4.0.1",
     "@metamask/announcement-controller": "^6.1.0",
     "@metamask/approval-controller": "^7.0.0",
