@@ -47,7 +47,7 @@ function revokePermissionsImplementation(
 
   // For now, this API revokes the entire permission key
   // even if caveats are specified.
-  let permissionKeys = Object.keys(param).filter(
+  const permissionKeys = Object.keys(param).filter(
     (name) => name !== Caip25EndowmentPermissionName,
   );
 
@@ -55,25 +55,19 @@ function revokePermissionsImplementation(
     return end(invalidParams({ data: { request: req } }));
   }
 
-  const shouldRevokeEthAccounts = permissionKeys.includes(
-    RestrictedMethods.eth_accounts,
-  );
-  const shouldRevokePermittedChains = permissionKeys.includes(
-    PermissionNames.permittedChains,
-  );
-  const shouldRevokeLegacyPermission =
-    shouldRevokeEthAccounts || shouldRevokePermittedChains;
-
-  permissionKeys = omit(permissionKeys, [
+  const relevantPermissionKeys = omit(permissionKeys, [
     RestrictedMethods.eth_accounts,
     PermissionNames.permittedChains,
   ]);
 
+  const shouldRevokeLegacyPermission =
+    relevantPermissionKeys.length !== permissionKeys.length;
+
   if (
-    (permissionKeys.length === 0 && !shouldRevokeLegacyPermission) ||
-    permissionKeys.length > 0
+    (relevantPermissionKeys.length === 0 && !shouldRevokeLegacyPermission) ||
+    relevantPermissionKeys.length > 0
   ) {
-    revokePermissionsForOrigin(permissionKeys);
+    revokePermissionsForOrigin(relevantPermissionKeys);
   }
 
   const permissions = getPermissionsForOrigin(origin) || {};
