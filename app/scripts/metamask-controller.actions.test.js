@@ -60,7 +60,10 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
   }
   next();
 };
-jest.mock('./lib/middleware/createLoggerMiddleware', () => createLoggerMiddlewareMock);
+jest.mock(
+  './lib/middleware/createLoggerMiddleware',
+  () => createLoggerMiddlewareMock,
+);
 
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
