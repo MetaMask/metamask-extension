@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/browser';
 import { Dedupe, ExtraErrorData } from '@sentry/integrations';
 import browser from 'webextension-polyfill';
+import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { FilterEvents } from './sentry-filter-events';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 
@@ -191,6 +192,7 @@ export default function setupSentry({ release, getState }) {
   Sentry.init({
     dsn: sentryTarget,
     debug: METAMASK_DEBUG,
+    dist: isManifestV3 ? 'mv3' : 'mv2',
     /**
      * autoSessionTracking defaults to true and operates by sending a session
      * packet to sentry. This session packet does not appear to be filtered out
