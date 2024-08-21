@@ -171,7 +171,7 @@ describe('add-ethereum-chain confirmation', () => {
     await waitFor(() => {
       expect(
         getByText(
-          "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue. Punycode version: https://iոfura.io/gnosis",
+          "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue. Punycode version: https://xn--ifura-dig.io/gnosis",
         ),
       ).toBeInTheDocument();
     });
