@@ -25,7 +25,9 @@ export function useTheme() {
       !settingTheme || settingTheme === ThemeType.os
         ? document.documentElement.getAttribute('data-theme')
         : settingTheme;
-    const isValidTheme = validThemes.includes(result as ThemeType);
+    const isValidTheme = validThemes.includes(
+      result as ThemeType.light | ThemeType.dark,
+    );
 
     if (!isValidTheme) {
       console.warn(
