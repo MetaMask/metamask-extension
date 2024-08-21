@@ -5757,9 +5757,6 @@ export default class MetamaskController extends EventEmitter {
 
           return undefined;
         },
-        // TODO remove this
-        getChainPermissionsFeatureFlag: () =>
-          Boolean(process.env.CHAIN_PERMISSIONS),
         // TODO remove this?
         getCurrentRpcUrl: () =>
           this.networkController.state.providerConfig.rpcUrl,
@@ -6105,9 +6102,6 @@ export default class MetamaskController extends EventEmitter {
 
           return undefined;
         },
-        // TODO refactor `add-ethereum-chain` handler so that this hook can be removed from multichain middleware
-        getChainPermissionsFeatureFlag: () =>
-          Boolean(process.env.CHAIN_PERMISSIONS),
         // TODO refactor `add-ethereum-chain` handler so that this hook can be removed from multichain middleware
         getCurrentRpcUrl: () =>
           this.networkController.state.providerConfig.rpcUrl,

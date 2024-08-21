@@ -21,7 +21,6 @@ const addEthereumChain = {
     endApprovalFlow: true,
     getCurrentChainIdForDomain: true,
     getCaveat: true,
-    getChainPermissionsFeatureFlag: true,
     requestPermissionApprovalForOrigin: true,
     updateCaveat: true,
   },
@@ -44,7 +43,6 @@ async function addEthereumChainHandler(
     endApprovalFlow,
     getCurrentChainIdForDomain,
     getCaveat,
-    getChainPermissionsFeatureFlag,
     requestPermissionApprovalForOrigin,
     updateCaveat,
   },
@@ -159,7 +157,6 @@ async function addEthereumChainHandler(
     networkClientId,
     approvalFlowId,
     {
-      getChainPermissionsFeatureFlag,
       setActiveNetwork,
       requestUserApproval,
       getCaveat,
