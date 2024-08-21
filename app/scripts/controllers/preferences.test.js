@@ -25,7 +25,7 @@ const NETWORK_CONFIGURATION_DATA = mockNetworkState(
     nativeCurrency: 'ETH',
     rpcEndpoints: [{ networkClientId: 'test-networkConfigurationId-2' }],
   },
-).networkConfigurations;
+);
 
 describe('preferences controller', () => {
   let controllerMessenger;
