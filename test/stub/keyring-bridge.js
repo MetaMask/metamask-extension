@@ -1,5 +1,6 @@
 import { Transaction } from '@ethereumjs/tx';
-import { ecsign, ecrecover, pubToAddress, toChecksumAddress, addHexPrefix } from '@ethereumjs/util';
+import { Common } from '@ethereumjs/common';
+import { ecsign, addHexPrefix } from '@ethereumjs/util';
 import { bufferToHex } from 'ethereumjs-util';
 
 // BIP32 Public Key: xpub6ELgkkwgfoky9h9fFu4Auvx6oHvJ6XfwiS1NE616fe9Uf4H3JHtLGjCePVkb6RFcyDCqVvjXhNXbDNDqs6Kjoxw7pTAeP1GSEiLHmA5wYa9
@@ -60,7 +61,6 @@ export class FakeKeyringBridge {
   async getPublicKey() {
     return this.#publicKeyPayload;
   }
-
 }
 
 export class FakeTrezorBridge extends FakeKeyringBridge {
@@ -81,61 +81,31 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
     return Promise.resolve();
   }
 
-  async ethereumSignTransaction(tx) {
-    const txParams = tx.transaction;
-    const transaction = Transaction.fromTxData(txParams);
-    const message = transaction.getMessageToSign();
-
-    const signature = ecsign(
-      message,
-      Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'),
-    );
-    // {r: Uint8Array(32), s: Uint8Array(32), v: 28n}
-
-    // Convert Uint8Array to hex strings
-    const r = `0x${Buffer.from(signature.r).toString('hex')}`;
-    const s = `0x${Buffer.from(signature.s).toString('hex')}`;
-    const v = `0x${signature.v.toString(16)}`;
-
-    // Serialize the transaction with the signature
-    const signedTransaction = Transaction.fromTxData({
-      ...txParams,
-      r: signature.r,
-      s: signature.s,
-      v: signature.v,
+  async ethereumSignTransaction({ transaction }) {
+    const common = Common.custom({
+      chain: {
+        name: 'localhost',
+        chainId: transaction.chainId,
+        networkId: transaction.chainId,
+      },
+      chainId: transaction.chainId,
+      hardfork: 'istanbul',
     });
 
-    const serializedTx = `0x${signedTransaction.serialize().toString('hex')}`;
+    const signedTransaction = Transaction.fromTxData(transaction, {
+      common,
+    }).sign(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
 
-    // Verify the signature
-    const rec = toChecksumAddress(
-      addHexPrefix(signedTransaction.getSenderAddress().toString('hex')),
-    );
-
-    console.log("Recoverd like trezor", rec)
-    const recoveredPublicKey = ecrecover(
-      message,
-      signature.v,
-      signature.r,
-      signature.s,
-    );
-    const recoveredAddress = bufferToHex(pubToAddress(recoveredPublicKey));
-
-   console.log('Recovered Address:', recoveredAddress); // 0xf68464152d7289d7ea9a2bec2e0035c45188223c
-
-    const signedTx = {
+    return {
       id: 1,
       success: true,
       payload: {
-        v,
-        r,
-        s,
-        serializedTx,
+        v: signedTransaction.v,
+        r: signedTransaction.r,
+        s: signedTransaction.s,
+        serializedTx: addHexPrefix(bufferToHex(signedTransaction.serialize())),
       },
     };
-
-    console.log('Signed Transaction Response', signedTx);
-    return signedTx;
   }
 }
 
