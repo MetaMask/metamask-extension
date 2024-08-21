@@ -47,6 +47,8 @@ async function getPermissionsImplementation(
   delete permissions[Caip25EndowmentPermissionName];
 
   if (caip25Caveat) {
+    // We cannot derive ethAccounts directly from the CAIP-25 permission
+    // because the accounts will not be in order of lastSelected
     const ethAccounts = await getAccounts();
 
     if (ethAccounts.length > 0) {
