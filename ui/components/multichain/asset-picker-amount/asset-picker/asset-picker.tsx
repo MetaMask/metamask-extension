@@ -46,8 +46,6 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { ellipsify } from '../../../../pages/confirmations/send/send.utils';
 
-const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
-
 export type AssetPickerProps = {
   asset: Asset;
   /**
@@ -214,10 +212,7 @@ export function AssetPicker({
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
-                #
-                {String(asset.details.tokenId).length < ELLIPSIFY_LENGTH
-                  ? asset.details.tokenId
-                  : ellipsify(String(asset.details.tokenId), 6, 4)}
+                #{ellipsify(String(asset.details.tokenId))}
               </Text>
             )}
           </Tooltip>

@@ -10,6 +10,7 @@ import {
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
+import { ellipsify } from '../send/send.utils';
 
 export function useAssetDetails(tokenAddress, userAddress, transactionData) {
   const dispatch = useDispatch();
@@ -85,7 +86,7 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
       tokenAmount,
       assetAddress: tokenAddress,
       assetStandard: standard,
-      tokenSymbol: symbol ?? '',
+      tokenSymbol: ellipsify(symbol) ?? '',
       tokenImage: image,
       userBalance: balance,
       assetName: name,
