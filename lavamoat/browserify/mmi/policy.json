@@ -400,6 +400,11 @@
         "@metamask/test-bundler>@ethersproject/networks": true
       }
     },
+    "@ethersproject/providers>@ethersproject/random": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
     "@ethersproject/providers>@ethersproject/rlp": {
       "packages": {
         "@ethersproject/abi>@ethersproject/logger": true,
@@ -921,6 +926,14 @@
         "@metamask/base-controller": true
       }
     },
+    "@metamask/announcement-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
+      }
+    },
     "@metamask/approval-controller": {
       "globals": {
         "console.info": true
@@ -1109,6 +1122,21 @@
     "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": {
       "packages": {
         "browserify>buffer": true
+      }
+    },
+    "@metamask/controllers>web3": {
+      "globals": {
+        "XMLHttpRequest": true
+      }
+    },
+    "@metamask/controllers>web3-provider-engine>cross-fetch>node-fetch": {
+      "globals": {
+        "fetch": true
+      }
+    },
+    "@metamask/controllers>web3-provider-engine>eth-json-rpc-middleware>node-fetch": {
+      "globals": {
+        "fetch": true
       }
     },
     "@metamask/ens-controller": {
@@ -2556,6 +2584,16 @@
         "semver": true
       }
     },
+    "@metamask/rpc-methods-flask>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/rpc-methods>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
     "@metamask/safe-event-emitter": {
       "globals": {
         "setTimeout": true
@@ -2737,6 +2775,11 @@
         "semver": true
       }
     },
+    "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
     "@metamask/smart-transactions-controller>@metamask/transaction-controller": {
       "globals": {
         "clearTimeout": true,
@@ -2900,6 +2943,11 @@
         "readable-stream": true
       }
     },
+    "@metamask/snaps-controllers-flask>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
     "@metamask/snaps-controllers>@metamask/base-controller": {
       "globals": {
         "setTimeout": true
@@ -3056,7 +3104,9 @@
       "packages": {
         "@metamask/post-message-stream": true,
         "@metamask/snaps-execution-environments>@metamask/snaps-utils": true,
-        "@metamask/snaps-execution-environments>@metamask/utils": true
+        "@metamask/snaps-execution-environments>@metamask/utils": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/snaps-execution-environments>@metamask/snaps-utils": {
@@ -4569,9 +4619,19 @@
         "stream-browserify": true
       }
     },
+    "depcheck>@vue/compiler-sfc>postcss>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
     "depcheck>is-core-module>hasown": {
       "packages": {
         "browserify>has>function-bind": true
+      }
+    },
+    "dependency-tree>precinct>detective-postcss>postcss>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
       }
     },
     "eslint-plugin-react>array-includes>is-string": {
@@ -4605,6 +4665,11 @@
       },
       "packages": {
         "browserify>punycode": true
+      }
+    },
+    "eth-keyring-controller>@metamask/browser-passworder": {
+      "globals": {
+        "crypto": true
       }
     },
     "eth-lattice-keyring": {
@@ -4964,6 +5029,11 @@
         "browserify>buffer": true
       }
     },
+    "ethereumjs-wallet>randombytes": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
     "extension-port-stream": {
       "packages": {
         "browserify>buffer": true,
@@ -5096,7 +5166,9 @@
     },
     "lodash": {
       "globals": {
-        "define": true
+        "clearTimeout": true,
+        "define": true,
+        "setTimeout": true
       }
     },
     "loglevel": {
@@ -5132,6 +5204,14 @@
       "packages": {
         "nock>debug>ms": true,
         "process": true
+      }
+    },
+    "node-fetch": {
+      "globals": {
+        "Headers": true,
+        "Request": true,
+        "Response": true,
+        "fetch": true
       }
     },
     "path-browserify": {
@@ -5200,6 +5280,7 @@
       "globals": {
         "Element.prototype": true,
         "__REDUX_DEVTOOLS_EXTENSION_COMPOSE__": true,
+        "addEventListener": true,
         "cancelAnimationFrame": true,
         "clearTimeout": true,
         "console": true,
@@ -5207,6 +5288,7 @@
         "getComputedStyle": true,
         "pageXOffset": true,
         "pageYOffset": true,
+        "removeEventListener": true,
         "requestAnimationFrame": true,
         "scrollBy": true,
         "setTimeout": true
@@ -5253,8 +5335,27 @@
         "react": true
       }
     },
+    "react-devtools": {
+      "packages": {
+        "react-devtools>react-devtools-core": true
+      }
+    },
+    "react-devtools>react-devtools-core": {
+      "globals": {
+        "WebSocket": true,
+        "setTimeout": true
+      }
+    },
+    "react-dnd-html5-backend": {
+      "globals": {
+        "addEventListener": true,
+        "clearTimeout": true,
+        "removeEventListener": true
+      }
+    },
     "react-dom": {
       "globals": {
+        "HTMLIFrameElement": true,
         "MSApp": true,
         "__REACT_DEVTOOLS_GLOBAL_HOOK__": true,
         "addEventListener": true,
@@ -5525,6 +5626,12 @@
     "react-redux>react-is": {
       "globals": {
         "console": true
+      }
+    },
+    "react-responsive-carousel": {
+      "globals": {
+        "addEventListener": true,
+        "removeEventListener": true
       }
     },
     "react-router-dom": {
@@ -5903,6 +6010,11 @@
       "globals": {
         "crypto": true,
         "msCrypto": true
+      }
+    },
+    "web3": {
+      "globals": {
+        "XMLHttpRequest": true
       }
     },
     "web3-stream-provider": {
