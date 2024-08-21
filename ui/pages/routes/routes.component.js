@@ -11,6 +11,7 @@ import Home from '../home';
 import {
   PermissionsPage,
   Connections,
+  ReviewPermissions,
 } from '../../components/multichain/pages';
 import Settings from '../settings';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
@@ -77,6 +78,7 @@ import {
   TOKEN_DETAILS,
   CONNECTIONS,
   PERMISSIONS,
+  REVIEW_PERMISSIONS,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
   CUSTODY_ACCOUNT_DONE_ROUTE,
@@ -438,6 +440,11 @@ export default class Routes extends Component {
           component={Connections}
         />
         <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
+        <Authenticated
+          path={REVIEW_PERMISSIONS}
+          component={ReviewPermissions}
+          exact
+        />
         <Authenticated path={DEFAULT_ROUTE} component={Home} />
       </Switch>
     );
