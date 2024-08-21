@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.0.6]
+### Changed
+- Improve error diagnostics ([#26482](https://github.com/MetaMask/metamask-extension/pull/26482))
+
+### Fixed
+- Fix errors in error diagnistics on Firefox ([#26467](https://github.com/MetaMask/metamask-extension/pull/26467))
+- Prevent pending transactions from causing excessive disk space usage ([#26485](https://github.com/MetaMask/metamask-extension/pull/26485))
+  - This is a repeat of the fix included in v12.0.1; it wasn't working for all users, but it should now.
+- Prevent UI crash while signature confirmation is closing ([#26248](https://github.com/MetaMask/metamask-extension/pull/26248))
 
 ## [12.0.5]
 ### Fixed
