@@ -97,7 +97,7 @@ describe('SelectedAccount Component', () => {
     );
   });
 
-  it.only('should render correctly if isCustodianSupportedChain to false', () => {
+  it('should render correctly if isCustodianSupportedChain to false', () => {
     getIsCustodianSupportedChain.mockReturnValue(false);
 
     const { container, queryByTestId } = renderWithProvider(
@@ -106,7 +106,7 @@ describe('SelectedAccount Component', () => {
     );
 
     const tooltipTitle = container.querySelector(
-      '[data-original-title="This account is not set up for use with Chain 5"]',
+      '[data-original-title="This account is not set up for use with goerli"]',
     );
 
     const button = queryByTestId('selected-account-click');

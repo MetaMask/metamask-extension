@@ -5,7 +5,6 @@ const EXPECTED_DEFAULT_STATE = {
   previousAppVersion: '',
   previousMigrationVersion: 0,
   currentMigrationVersion: 0,
-  showMultiRpcModalUpgrade: false,
 };
 
 describe('AppMetadataController', () => {
@@ -16,7 +15,6 @@ describe('AppMetadataController', () => {
         previousAppVersion: '1',
         previousMigrationVersion: 1,
         currentMigrationVersion: 1,
-        showMultiRpcModalUpgrade: false,
       };
       const appMetadataController = new AppMetadataController({
         state: initState,
