@@ -108,6 +108,12 @@
         "browserify>util": true
       }
     },
+    "@ethereumjs/common": {
+      "packages": {
+        "@ethereumjs/util": true,
+        "webpack>events": true
+      }
+    },
     "@ethereumjs/tx": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/common": true,
@@ -120,22 +126,9 @@
     },
     "@ethereumjs/tx>@ethereumjs/common": {
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/common>@ethereumjs/util": true,
         "@ethereumjs/tx>@ethereumjs/common>crc-32": true,
+        "@ethereumjs/tx>@ethereumjs/util": true,
         "browserify>buffer": true,
-        "webpack>events": true
-      }
-    },
-    "@ethereumjs/tx>@ethereumjs/common>@ethereumjs/util": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/rlp": true,
-        "@ethereumjs/tx>@ethereumjs/util>micro-ftch": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "browserify>buffer": true,
-        "browserify>insert-module-globals>is-buffer": true,
         "webpack>events": true
       }
     },
@@ -1322,6 +1315,7 @@
       "packages": {
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/abi-utils": true,
+        "@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/eth-sig-util>@metamask/utils": true,
         "@metamask/eth-sig-util>tweetnacl": true,
         "@metamask/utils>@scure/base": true,
@@ -1339,6 +1333,21 @@
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true,
         "webpack>events": true
+      }
+    },
+    "@metamask/eth-sig-util>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/eth-sig-util>tweetnacl": {
@@ -2869,16 +2878,10 @@
     },
     "@metamask/smart-transactions-controller>@ethereumjs/tx": {
       "packages": {
+        "@ethereumjs/common": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@ethereumjs/util": true,
-        "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/common": true,
         "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/rlp": true
-      }
-    },
-    "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/common": {
-      "packages": {
-        "@ethereumjs/util": true,
-        "webpack>events": true
       }
     },
     "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/rlp": {
@@ -2953,7 +2956,6 @@
         "setTimeout": true
       },
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/common": true,
         "@ethersproject/abi": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
@@ -2965,6 +2967,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/smart-transactions-controller>@metamask/base-controller": true,
         "@metamask/smart-transactions-controller>@metamask/controller-utils": true,
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/common": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/tx": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/util": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry": true,
@@ -2978,11 +2981,19 @@
         "webpack>events": true
       }
     },
+    "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/common": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/common>crc-32": true,
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/util": true,
+        "browserify>buffer": true,
+        "webpack>events": true
+      }
+    },
     "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/tx": {
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/common": true,
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/common": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/util": true,
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true
@@ -3746,7 +3757,6 @@
       },
       "packages": {
         "@ethereumjs/tx": true,
-        "@ethereumjs/tx>@ethereumjs/common": true,
         "@ethersproject/abi": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
@@ -3756,6 +3766,7 @@
         "@metamask/name-controller>async-mutex": true,
         "@metamask/network-controller": true,
         "@metamask/rpc-errors": true,
+        "@metamask/transaction-controller>@ethereumjs/common": true,
         "@metamask/transaction-controller>@ethereumjs/util": true,
         "@metamask/transaction-controller>@metamask/base-controller": true,
         "@metamask/transaction-controller>@metamask/controller-utils": true,
@@ -3767,6 +3778,14 @@
         "fast-json-patch": true,
         "lodash": true,
         "uuid": true,
+        "webpack>events": true
+      }
+    },
+    "@metamask/transaction-controller>@ethereumjs/common": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/common>crc-32": true,
+        "@metamask/transaction-controller>@ethereumjs/util": true,
+        "browserify>buffer": true,
         "webpack>events": true
       }
     },
@@ -4921,12 +4940,12 @@
     },
     "eth-lattice-keyring>@ethereumjs/tx": {
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/common": true,
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethersproject/providers": true,
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true,
         "eth-lattice-keyring>@ethereumjs/tx>@chainsafe/ssz": true,
+        "eth-lattice-keyring>@ethereumjs/tx>@ethereumjs/common": true,
         "eth-lattice-keyring>@ethereumjs/tx>ethereum-cryptography": true,
         "eth-lattice-keyring>@ethereumjs/util": true
       }
@@ -4945,6 +4964,14 @@
       },
       "packages": {
         "browserify": true
+      }
+    },
+    "eth-lattice-keyring>@ethereumjs/tx>@ethereumjs/common": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/common>crc-32": true,
+        "browserify>buffer": true,
+        "eth-lattice-keyring>@ethereumjs/util": true,
+        "webpack>events": true
       }
     },
     "eth-lattice-keyring>@ethereumjs/tx>ethereum-cryptography": {

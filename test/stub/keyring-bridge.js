@@ -1,6 +1,6 @@
-import { Transaction } from '@ethereumjs/tx';
 import { Common } from '@ethereumjs/common';
-import { ecsign, addHexPrefix } from '@ethereumjs/util';
+import { Transaction } from '@ethereumjs/tx';
+import { addHexPrefix, ecsign } from '@ethereumjs/util';
 import { bufferToHex } from 'ethereumjs-util';
 
 // BIP32 Public Key: xpub6ELgkkwgfoky9h9fFu4Auvx6oHvJ6XfwiS1NE616fe9Uf4H3JHtLGjCePVkb6RFcyDCqVvjXhNXbDNDqs6Kjoxw7pTAeP1GSEiLHmA5wYa9
