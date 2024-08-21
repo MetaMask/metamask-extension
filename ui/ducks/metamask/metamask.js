@@ -22,7 +22,10 @@ import {
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
-import { BUILT_IN_INFURA_NETWORKS } from '../../../shared/constants/network';
+import {
+  BUILT_IN_INFURA_NETWORKS,
+  NETWORK_TYPES,
+} from '../../../shared/constants/network';
 
 const initialState = {
   isInitialized: false,
@@ -287,7 +290,10 @@ export function getProviderConfig(state) {
         type: networkClientId,
         rpcPrefs: { blockExplorerUrl: builtInNetwork.blockExplorerUrl },
       }
-    : { ...getNetworkConfigurations(state)[networkClientId], type: 'rpc' };
+    : {
+        ...getNetworkConfigurations(state)[networkClientId],
+        type: NETWORK_TYPES.RPC,
+      };
 }
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>
