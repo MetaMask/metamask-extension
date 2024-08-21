@@ -90,7 +90,6 @@ const render = async (defaultGasParams, contextParams) => {
 describe('AdvancedGasFeeDefaults', () => {
   it('should renders correct message when the default is not set', async () => {
     await render({ advancedGasFee: {} });
-    screen.debug();
     expect(screen.queryByText(TEXT_SELECTOR)).toBeInTheDocument();
   });
   it('should renders correct message when the default values are set', async () => {
