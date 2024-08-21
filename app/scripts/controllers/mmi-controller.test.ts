@@ -99,9 +99,7 @@ describe('MMIController', function () {
           'NetworkController:infuraIsUnblocked',
         ],
       }),
-      state: {
-        ...mockNetworkState({chainId: CHAIN_IDS.SEPOLIA}),
-      },
+      state: mockNetworkState({chainId: CHAIN_IDS.SEPOLIA}),
       infuraProjectId: 'mock-infura-project-id',
     });
 

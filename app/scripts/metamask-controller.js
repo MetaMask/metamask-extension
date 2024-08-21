@@ -3238,6 +3238,10 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
+      setWatchEthereumAccountEnabled:
+        preferencesController.setWatchEthereumAccountEnabled.bind(
+          preferencesController,
+        ),
       setBitcoinSupportEnabled:
         preferencesController.setBitcoinSupportEnabled.bind(
           preferencesController,
@@ -4777,10 +4781,11 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Stops exposing the specified chain ID to all third parties.
-   * Exposed chain IDs are stored in caveats of the permittedChains permission. This
-   * method uses `PermissionController.updatePermissionsByCaveat` to
-   * remove the specified chain ID from every permittedChains permission. If a
-   * permission only included this chain ID, the permission is revoked entirely.
+   * Exposed chain IDs are stored in caveats of the `endowment:permitted-chains`
+   * permission. This method uses `PermissionController.updatePermissionsByCaveat`
+   * to remove the specified chain ID from every `endowment:permitted-chains`
+   * permission. If a permission only included this chain ID, the permission is
+   * revoked entirely.
    *
    * @param {string} targetChainId - The chain ID to stop exposing
    * to third parties.
@@ -6906,7 +6911,7 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  _publishSmartTransactionHook(transactionMeta) {
+  _publishSmartTransactionHook(transactionMeta, signedTransactionInHex) {
     const state = this._getMetaMaskState();
     const isSmartTransaction = getIsSmartTransaction(state);
     if (!isSmartTransaction) {
@@ -6916,6 +6921,7 @@ export default class MetamaskController extends EventEmitter {
     const featureFlags = getFeatureFlagsByChainId(state);
     return submitSmartTransactionHook({
       transactionMeta,
+      signedTransactionInHex,
       transactionController: this.txController,
       smartTransactionsController: this.smartTransactionsController,
       controllerMessenger: this.controllerMessenger,

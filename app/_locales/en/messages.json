@@ -267,6 +267,9 @@
   "addEthereumChainWarningModalTitle": {
     "message": "You are adding a new RPC provider for Ethereum Mainnet"
   },
+  "addEthereumWatchOnlyAccount": {
+    "message": "Watch an Ethereum account (Beta)"
+  },
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
   },
@@ -362,6 +365,17 @@
   "addressCopied": {
     "message": "Address copied!"
   },
+  "addressMismatch": {
+    "message": "Site address mismatch"
+  },
+  "addressMismatchOriginal": {
+    "message": "Current URL: $1",
+    "description": "$1 replaced by origin URL in confirmation request"
+  },
+  "addressMismatchPunycode": {
+    "message": "Punycode version: $1",
+    "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
   "advanced": {
     "message": "Advanced"
   },
@@ -426,6 +440,9 @@
   },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
+  },
+  "alertMessageAddressMismatchWarning": {
+    "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue."
   },
   "alertMessageGasEstimateFailed": {
     "message": "We’re unable to provide an accurate fee and this estimate might be high. We suggest you to input a custom gas limit, but there’s a risk the transaction will still fail."
@@ -1050,6 +1067,12 @@
   },
   "confirmRpcUrlDeletionMessage": {
     "message": "Are you sure you want to delete the RPC URL? Your information will not be saved for this network."
+  },
+  "confirmTitleApproveTransaction": {
+    "message": "Allowance request"
+  },
+  "confirmTitleDescApproveTransaction": {
+    "message": "This site wants permission to withdraw your NFTs"
   },
   "confirmTitleDescContractInteractionTransaction": {
     "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
@@ -4835,6 +4858,12 @@
   "signingInWith": {
     "message": "Signing in with"
   },
+  "simulationApproveHeading": {
+    "message": "Withdraw"
+  },
+  "simulationDetailsApproveDesc": {
+    "message": "You're giving someone else permission to withdraw NFTs from your account."
+  },
   "simulationDetailsFailed": {
     "message": "There was an error loading your estimation."
   },
@@ -5176,6 +5205,9 @@
   },
   "spender": {
     "message": "Spender"
+  },
+  "spenderTooltipDesc": {
+    "message": "This is the address that will be able to withdraw your NFTs."
   },
   "spendingCap": {
     "message": "Spending cap"
@@ -6456,6 +6488,13 @@
   "warningTooltipText": {
     "message": "$1 The third party could spend your entire token balance without further notice or consent. Protect yourself by customizing a lower spending cap.",
     "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
+  },
+  "watchEthereumAccountsDescription": {
+    "message": "Turning this option on will give you the ability to watch Ethereum accounts via a public address or ENS name. For feedback on this Beta feature please complete this $1.",
+    "description": "$1 is the link to a product feedback form"
+  },
+  "watchEthereumAccountsToggle": {
+    "message": "Watch Ethereum Accounts (Beta)"
   },
   "weak": {
     "message": "Weak"

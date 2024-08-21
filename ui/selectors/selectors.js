@@ -2364,6 +2364,10 @@ export function getIsAddSnapAccountEnabled(state) {
 }
 ///: END:ONLY_INCLUDE_IF
 
+export function getIsWatchEthereumAccountEnabled(state) {
+  return state.metamask.watchEthereumAccountEnabled;
+}
+
 /**
  * Get the state of the `bitcoinSupportEnabled` flag.
  *
