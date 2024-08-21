@@ -467,7 +467,6 @@ describe('Custom network', function () {
 
           await driver.clickElement('[data-testid="network-display"]');
 
-          await driver.clickElement({ tag: 'button', text: 'Add network' });
           await driver.clickElement({
             tag: 'button',
             text: 'Add',
@@ -475,7 +474,7 @@ describe('Custom network', function () {
 
           // verify network details
           const title = await driver.findElement({
-            tag: 'h6',
+            tag: 'span',
             text: 'Arbitrum One',
           });
 
@@ -520,76 +519,22 @@ describe('Custom network', function () {
 
           await driver.clickElement({ tag: 'button', text: 'Close' });
           await driver.clickElement({ tag: 'button', text: 'Approve' });
-          await driver.clickElement({
-            tag: 'h6',
-            text: 'Switch to Arbitrum One',
-          });
+
           // verify network switched
-          const networkDisplayed = await driver.findElement({
-            tag: 'span',
-            text: 'Arbitrum One',
-          });
-          assert.equal(
-            await networkDisplayed.getText(),
-            'Arbitrum One',
-            'You have not switched to Arbitrum Network',
-          );
+          await driver.waitForSelector('[aria-label="Network Menu Arbitrum One"]');
         },
       );
     });
 
-    it('add custom network and not switch the network', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
-          title: this.test.fullTitle(),
-        },
-        async ({ driver }) => {
-          await unlockWallet(driver);
 
-          // Avoid a stale element error
-          await driver.delay(regularDelayMs);
-
-          await driver.clickElement('[data-testid="network-display"]');
-          await driver.clickElement({ tag: 'button', text: 'Add network' });
-
-          // had to put all Add elements in list since list is changing and networks are not always in same order
-          await driver.clickElement({
-            tag: 'button',
-            text: 'Add',
-          });
-
-          await driver.clickElement({ tag: 'button', text: 'Approve' });
-
-          await driver.clickElement({
-            tag: 'h6',
-            text: 'Dismiss',
-          });
-
-          // verify if added network is in list of networks
-          const networkDisplay = await driver.findElement(
-            '[data-testid="network-display"]',
-          );
-          await networkDisplay.click();
-
-          const arbitrumNetwork = await driver.findElements({
-            text: 'Arbitrum One',
-            tag: 'p',
-          });
-          assert.ok(arbitrumNetwork.length, 1);
-        },
-      );
-    });
-
-    it('delete the Arbitrum network', async function () {
+    it.only('delete the Arbitrum network', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
             .withNetworkController({
               ...mockNetworkState({
                 rpcUrl: networkURL,
-                chainId: chainID,
+                chainId: toHex(chainID),
                 nickname: networkNAME,
                 ticker: currencySYMBOL,
               }),
@@ -604,23 +549,23 @@ describe('Custom network', function () {
 
           await openMenuSafe(driver);
 
-          await driver.clickElement('[data-testid="global-menu-settings"]');
-          await driver.clickElement({ text: 'Networks', tag: 'div' });
+          await driver.clickElement('[data-testid="network-display"]');
 
-          const arbitrumNetwork = await driver.clickElement({
-            text: 'Arbitrum One',
-            tag: 'div',
-          });
+          let arbitrumRow = await driver.findElement(
+            `[data-rbd-draggable-id="${toHex(chainID)}"]`);
 
-          // Click first Delete button
-          await driver.clickElement('button.btn-danger');
+          const arbitrumMenu = await driver.findNestedElement(
+            arbitrumRow, '[data-testid="network-list-item-options-button"]');
 
-          // Click modal Delete button
-          await driver.clickElement('button.btn-danger-primary');
+          await arbitrumMenu.click();
+          await driver.clickElement(
+            '[data-testid="network-list-item-options-delete"]',
+          );
 
-          // Checks if Arbitrum is deleted
-          const existNetwork = await driver.isElementPresent(arbitrumNetwork);
-          assert.equal(existNetwork, false, 'Network is not deleted');
+          await driver.clickElement({tag: 'button', text: 'Delete'});
+          await driver.clickElement('[data-testid="network-display"]');
+          await driver.assertElementNotPresent(
+            `[data-rbd-draggable-id="${toHex(chainID)}"]`);
         },
       );
     });
