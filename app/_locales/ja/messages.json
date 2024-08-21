@@ -4171,9 +4171,6 @@
   "recipientAddressPlaceholder": {
     "message": "パブリックアドレス (0x) またはENS名を入力してください"
   },
-  "recipientAddressPlaceholderFlask": {
-    "message": "パブリックアドレス (0x) またはドメイン名を入力してください"
-  },
   "recommendedGasLabel": {
     "message": "推奨"
   },

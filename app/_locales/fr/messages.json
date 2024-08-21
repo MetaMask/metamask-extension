@@ -4171,9 +4171,6 @@
   "recipientAddressPlaceholder": {
     "message": "Saisissez l’adresse publique (0x) ou le nom de domaine ENS"
   },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Saisissez l’adresse publique (0x) ou le nom de domaine"
-  },
   "recommendedGasLabel": {
     "message": "Recommandé"
   },

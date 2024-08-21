@@ -4171,9 +4171,6 @@
   "recipientAddressPlaceholder": {
     "message": "Введите публичный адрес (0x) или имя ENS"
   },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Введите публичный адрес (0x) или имя домена"
-  },
   "recommendedGasLabel": {
     "message": "Рекомендовано"
   },
