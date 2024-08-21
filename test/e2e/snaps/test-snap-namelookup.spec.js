@@ -72,9 +72,7 @@ describe('Test Snap Name Lookup', function () {
         });
 
         // ensure we are on Mainnet
-        await driver.waitForSelector(
-          '[data-testid="staking-entrypoint-0x1"]',
-        );
+        await driver.waitForSelector('[data-testid="staking-entrypoint-0x1"]');
 
         // click send
         await driver.clickElement('[data-testid="eth-overview-send"]');
