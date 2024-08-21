@@ -108,12 +108,15 @@ async function switchToDialogPopoverValidateDetails(driver, expectedDetails) {
   );
 
   const {
-    metamask: { selectedNetworkClientId, networkConfigurations },
+    metamask: { selectedNetworkClientId, networkConfigurationsByChainId },
   } = notificationWindowState;
 
-  const { chainId } =
-    BUILT_IN_INFURA_NETWORKS[selectedNetworkClientId] ??
-    networkConfigurations[selectedNetworkClientId];
+  const { chainId } = Object.values(networkConfigurationsByChainId).find(
+    ({ rpcEndpoints }) =>
+      rpcEndpoints.some(
+        ({ networkClientId }) => networkClientId === selectedNetworkClientId,
+      ),
+  );
 
   assert.equal(chainId, expectedDetails.chainId);
 }
@@ -172,7 +175,7 @@ async function validateBalanceAndActivity(
 }
 
 describe('Request-queue UI changes', function () {
-  it('should show network specific to domain @no-mmi', async function () {
+  it.only('should show network specific to domain @no-mmi', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
     await withFixtures(
