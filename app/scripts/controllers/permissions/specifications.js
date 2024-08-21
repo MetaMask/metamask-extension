@@ -30,7 +30,7 @@ import {
  */
 export const PermissionNames = Object.freeze({
   ...RestrictedMethods,
-  permittedChains: 'permittedChains',
+  permittedChains: 'endowment:permitted-chains',
 });
 
 /**
