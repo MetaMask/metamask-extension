@@ -1,13 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import {
-  DAPP_HOST_ADDRESS,
-  WINDOW_TITLES,
-  openDapp,
-  switchToNotificationWindow,
-  unlockWallet,
-} from '../../../helpers';
+import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
@@ -22,6 +16,8 @@ import {
   assertSignatureMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
+  openDappAndTriggerSignature,
+  SignatureType,
 } from './signature-helpers';
 
 describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: Suite) {
@@ -36,10 +32,10 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
         const addresses = await (ganacheServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
 
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#signTypedDataV4');
-        await switchToNotificationWindow(driver);
+        await openDappAndTriggerSignature(
+          driver,
+          SignatureType.SignTypedDataV4,
+        );
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
@@ -74,10 +70,10 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#signTypedDataV4');
-        await switchToNotificationWindow(driver);
+        await openDappAndTriggerSignature(
+          driver,
+          SignatureType.SignTypedDataV4,
+        );
 
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
