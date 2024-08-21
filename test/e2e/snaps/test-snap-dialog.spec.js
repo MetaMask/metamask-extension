@@ -48,7 +48,7 @@ describe('Test Snap Dialog', function () {
 
         await driver.waitForSelector({ text: 'OK' });
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -78,7 +78,7 @@ describe('Test Snap Dialog', function () {
         });
 
         // click ok button
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -100,7 +100,7 @@ describe('Test Snap Dialog', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // click reject
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Reject',
           tag: 'button',
         });
@@ -121,7 +121,7 @@ describe('Test Snap Dialog', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // click accept
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Approve',
           tag: 'button',
         });
@@ -143,7 +143,7 @@ describe('Test Snap Dialog', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // click cancel button
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Cancel',
           tag: 'button',
         });
@@ -167,7 +167,7 @@ describe('Test Snap Dialog', function () {
         await driver.pasteIntoField('.mm-input', '2323');
 
         // click submit button
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Submit',
           tag: 'button',
         });
@@ -189,7 +189,7 @@ describe('Test Snap Dialog', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // click cancel button
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Cancel',
           tag: 'span',
         });
@@ -213,7 +213,7 @@ describe('Test Snap Dialog', function () {
         await driver.pasteIntoField('#custom-input', '2323');
 
         // click confirm button
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Confirm',
           tag: 'span',
         });
