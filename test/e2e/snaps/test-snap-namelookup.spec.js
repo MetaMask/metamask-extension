@@ -50,7 +50,7 @@ describe('Test Snap Name Lookup', function () {
 
         await driver.waitForSelector({ text: 'OK' });
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -70,6 +70,11 @@ describe('Test Snap Name Lookup', function () {
           text: 'Ethereum Mainnet',
           tag: 'p',
         });
+
+        // ensure we are on Mainnet
+        await driver.waitForSelector(
+          '[data-testid="staking-entrypoint-0x1"]',
+        );
 
         // click send
         await driver.clickElement('[data-testid="eth-overview-send"]');
