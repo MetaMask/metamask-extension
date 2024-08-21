@@ -6147,6 +6147,29 @@ export default class MetamaskController extends EventEmitter {
           this.alertController.setWeb3ShimUsageRecorded.bind(
             this.alertController,
           ),
+
+        requestPermissionApprovalForOrigin: async (permissions) => {
+          const id = nanoid();
+          const result =
+            await this.approvalController.addAndShowApprovalRequest({
+              id,
+              origin,
+              requestData: {
+                metadata: {
+                  id,
+                  origin,
+                },
+                permissions,
+              },
+              type: MethodNames.requestPermissions,
+            });
+          // TODO: remove this log
+          console.log('requestPermissionApprovalForOrigin', result);
+          return result;
+        },
+        updateCaveat: this.permissionController.updateCaveat.bind(
+          this.permissionController,
+        ),
       }),
     );
 

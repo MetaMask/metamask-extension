@@ -10,15 +10,12 @@ import {
   Caip25EndowmentPermissionName,
 } from '../../multichain-api/caip25permissions';
 import {
-  validNotifications,
-  validRpcMethods,
-} from '../../multichain-api/scope';
-import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../../shared/constants/permissions';
 import { setEthAccounts } from '../../multichain-api/adapters/caip-permission-adapter-eth-accounts';
 import { PermissionNames } from '../../../controllers/permissions';
+import { setPermittedEthChainIds } from '../../multichain-api/adapters/caip-permission-adapter-permittedChains';
 
 /**
  * This method attempts to retrieve the Ethereum accounts available to the
