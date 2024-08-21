@@ -226,9 +226,6 @@
   "editContact": {
     "message": "Izmeni kontakt"
   },
-  "ensRegistrationError": {
-    "message": "Greška u registraciji ENS imena."
-  },
   "enterPasswordContinue": {
     "message": "Unesite lozinku kako biste nastavili"
   },
@@ -351,9 +348,6 @@
   "invalidAddressRecipient": {
     "message": "Adresa primaoca nije važeća"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Nije ETH mreža, podešeno na mala slova"
-  },
   "invalidBlockExplorerURL": {
     "message": "Nevažeći Block Explorer URL"
   },
@@ -449,9 +443,6 @@
   },
   "next": {
     "message": "Даље"
-  },
-  "noAddressForName": {
-    "message": "Za ovo ime nije podešena adresa."
   },
   "noConversionRateAvailable": {
     "message": "Nije dostupan kurs za konverziju"

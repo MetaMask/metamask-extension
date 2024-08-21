@@ -226,9 +226,6 @@
   "editContact": {
     "message": "Rediger kontakt"
   },
-  "ensRegistrationError": {
-    "message": "Feil i ENS-navneregistrering"
-  },
   "enterPasswordContinue": {
     "message": "Skriv inn passord for å fortsette"
   },
@@ -341,9 +338,6 @@
   "invalidAddressRecipient": {
     "message": "Mottaksadresse er ugyldig "
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Ikke ETH-nettverk, bruk små bokstaver"
-  },
   "invalidBlockExplorerURL": {
     "message": "Ugyldig Block Explorer URL"
   },
@@ -442,9 +436,6 @@
   },
   "next": {
     "message": "Neste"
-  },
-  "noAddressForName": {
-    "message": "Ingen adresse har blitt angitt for dette navnet. "
   },
   "noConversionRateAvailable": {
     "message": "Ingen konverteringsrate tilgjengelig "

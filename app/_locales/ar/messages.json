@@ -233,9 +233,6 @@
   "editContact": {
     "message": "تعديل جهة الاتصال"
   },
-  "ensRegistrationError": {
-    "message": "خطأ في تسجيل اسم ENS"
-  },
   "enterPasswordContinue": {
     "message": "أدخل كلمة المرور للمتابعة"
   },
@@ -354,9 +351,6 @@
   "invalidAddressRecipient": {
     "message": "عنوان المستلم غير صحيح"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "لا تجعلها شبكة ETH، قم بتعيين الأحرف صغيرة"
-  },
   "invalidBlockExplorerURL": {
     "message": "غير صحيح Block Explorer رابط"
   },
@@ -455,9 +449,6 @@
   },
   "next": {
     "message": "التالي"
-  },
-  "noAddressForName": {
-    "message": "لم يتم تعيين عنوان لهذا الاسم."
   },
   "noConversionRateAvailable": {
     "message": "لا يوجد معدل تحويل متاح"

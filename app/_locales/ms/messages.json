@@ -226,9 +226,6 @@
   "editContact": {
     "message": "Edit Kenalan"
   },
-  "ensRegistrationError": {
-    "message": "Ralat dalam pendaftaran nama ENS"
-  },
   "enterPasswordContinue": {
     "message": "Masukkan kata laluan untuk teruskan"
   },
@@ -343,9 +340,6 @@
   "invalidAddressRecipient": {
     "message": "Alamat penerima tidak sah"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Bukan rangkaian ETH, tetapkan kepada huruf kecil"
-  },
   "invalidBlockExplorerURL": {
     "message": "URL Block Explorer tidak sah"
   },
@@ -441,9 +435,6 @@
   },
   "next": {
     "message": "Seterusnya"
-  },
-  "noAddressForName": {
-    "message": "Tiada alamat yang ditetapkan untuk nama ini."
   },
   "noConversionRateAvailable": {
     "message": "Tiada Kadar Penukaran yang Tersedia"

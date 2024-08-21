@@ -223,9 +223,6 @@
   "editContact": {
     "message": "Hariri Mawasiliano"
   },
-  "ensRegistrationError": {
-    "message": "Hitilafu imetokea kwenye usajili wa jina la ENS"
-  },
   "enterPasswordContinue": {
     "message": "Ingiza nenosiri ili uendelee"
   },
@@ -341,9 +338,6 @@
   "invalidAddressRecipient": {
     "message": "Anwani ya mpokeaji si halali"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Kwa mtandao wa ETH, weka herufi ndogo"
-  },
   "invalidBlockExplorerURL": {
     "message": "Block Explorer URL batili"
   },
@@ -436,9 +430,6 @@
   },
   "next": {
     "message": "Inayofuata"
-  },
-  "noAddressForName": {
-    "message": "Hakuna anwani iliyoundwa kwa jina hili."
   },
   "noConversionRateAvailable": {
     "message": "Hakuna Kiwango cha Ubadilishaji"

@@ -226,9 +226,6 @@
   "editContact": {
     "message": "Editar Contacte"
   },
-  "ensRegistrationError": {
-    "message": "Error al registre de nom ENS"
-  },
   "enterPasswordContinue": {
     "message": "Introdueix la contrasenya per continuar"
   },
@@ -341,9 +338,6 @@
   "invalidAddressRecipient": {
     "message": "L'adreça del recipient no és vàlida"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "No hi ha xarxa ETH, posar en minúscules"
-  },
   "invalidBlockExplorerURL": {
     "message": "URL de Block Explorer"
   },
@@ -442,9 +436,6 @@
   },
   "next": {
     "message": "Següent"
-  },
-  "noAddressForName": {
-    "message": "No existeix cap adreça amb aquest nom."
   },
   "noConversionRateAvailable": {
     "message": "No hi ha cap tarifa de conversió disponible"
