@@ -23,10 +23,6 @@ import {
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
-import {
-  BUILT_IN_INFURA_NETWORKS,
-  NETWORK_TYPES,
-} from '../../../shared/constants/network';
 
 const initialState = {
   isInitialized: false,
@@ -284,34 +280,37 @@ export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
  * @param {object} state - Redux state object.
  */
 export function getProviderConfig(state) {
-  // todo consider whether built in infura should use the simpler providerConfig to match existing behavior
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
   const networkConfigurationsByChainId =
     getNetworkConfigurationsByChainId(state);
+
   for (const network of Object.values(networkConfigurationsByChainId)) {
     for (const rpcEndpoint of network.rpcEndpoints) {
       if (rpcEndpoint.networkClientId === selectedNetworkClientId) {
+        const blockExplorerUrl =
+          network.blockExplorerUrls?.[network.defaultBlockExplorerUrlIndex];
+
         return {
-          nickname: network.name,
           chainId: network.chainId,
           ticker: network.nativeCurrency,
+          rpcPrefs: { ...(blockExplorerUrl && { blockExplorerUrl }) },
           type:
             rpcEndpoint.type === RpcEndpointType.Custom
               ? 'rpc'
               : rpcEndpoint.networkClientId,
           ...(rpcEndpoint.type === RpcEndpointType.Custom && {
             id: rpcEndpoint.networkClientId,
+            nickname: network.name,
+            rpcUrl: rpcEndpoint.url,
           }),
-          rpcPrefs: {
-            ...(network.blockExplorerUrl && {
-              blockExplorerUrl: network.blockExplorerUrl,
-            }),
-          },
         };
       }
     }
   }
 
+  // For debugging reference
+
+  // Built in examples:
   // "providerConfig": {
   //   "chainId": "0x1",
   //   "rpcPrefs": {
@@ -330,6 +329,7 @@ export function getProviderConfig(state) {
   //   "type": "sepolia"
   // },
 
+  // Custom example:
   // "providerConfig": {
   //   "id": "ce5a63df-b859-4428-9ffd-9e1fc82b9a6c",
   //   "rpcUrl": "https://mainnet.base.org",
@@ -342,9 +342,6 @@ export function getProviderConfig(state) {
   //   },
   //   "type": "rpc"
   // },
-
-  // todo
-  // return state.metamask.providerConfig;
 }
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>
