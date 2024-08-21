@@ -92,7 +92,7 @@ export default function ListWithSearch({
         }
       } else {
         filteredItems = filter(itemsToSearch, function (item) {
-          return item.symbol.includes(trimmedNewSearchQueryUpperCase);
+          return item.symbol.toUpperCase().includes(trimmedNewSearchQueryUpperCase);
         });
       }
       const results = newSearchQuery === '' ? itemsToSearch : filteredItems;
