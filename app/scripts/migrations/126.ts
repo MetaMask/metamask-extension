@@ -214,11 +214,11 @@ function transformState(state: Record<string, unknown>) {
     }
     delete permissions[PermissionNames.permittedChains];
 
-    if (ethAccounts.length === 0 && chainIds.length === 0) {
+    if (ethAccounts.length === 0) {
       continue;
     }
 
-    if (ethAccounts.length > 0 && chainIds.length === 0) {
+    if (chainIds.length === 0) {
       chainIds = [currentChainId];
 
       const networkClientIdForOrigin = domains[origin];
