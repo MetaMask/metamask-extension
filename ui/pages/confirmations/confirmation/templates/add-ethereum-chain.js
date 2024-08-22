@@ -1,6 +1,5 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
-import punycode from 'punycode/punycode';
 
 import {
   infuraProjectId,
@@ -19,6 +18,7 @@ import {
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
+import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',
@@ -373,24 +373,18 @@ function getValues(pendingApproval, t, actions, history, data) {
             [t('blockExplorerUrl')]: t('blockExplorerUrlDefinition'),
           },
           warnings: {
-            [t('networkURL')]:
-              pendingApproval.requestData.rpcUrl ===
-              punycode.toASCII(pendingApproval.requestData.rpcUrl)
-                ? undefined
-                : t('networkUrlErrorWarning', [
-                    pendingApproval.requestData.rpcUrl,
-                  ]),
+            [t('networkURL')]: isValidASCIIURL(customRpcUrl)
+              ? undefined
+              : t('networkUrlErrorWarning', [toPunycodeURL(customRpcUrl)]),
             [t('currencySymbol')]: data.currencySymbolWarning,
           },
           dictionary: {
             [t('networkName')]: pendingApproval.requestData.chainName,
-            [t('networkURL')]: pendingApproval.requestData.rpcUrl
+            [t('networkURL')]: customRpcUrl
               .toLowerCase()
               ?.includes(`/v3/${infuraProjectId}`)
-              ? pendingApproval.requestData.rpcUrl
-                  .replace(`/v3/${infuraProjectId}`, '')
-                  .toLowerCase()
-              : pendingApproval.requestData.rpcUrl.toLowerCase(),
+              ? customRpcUrl.replace(`/v3/${infuraProjectId}`, '').toLowerCase()
+              : customRpcUrl.toLowerCase(),
             [t('chainId')]: parseInt(pendingApproval.requestData.chainId, 16),
             [t('currencySymbol')]: pendingApproval.requestData.ticker,
             [t('blockExplorerUrl')]:

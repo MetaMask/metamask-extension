@@ -12,14 +12,12 @@ import {
 import { NetworkListMenu } from '.';
 
 const mockSetShowTestNetworks = jest.fn();
-const mockSetProviderType = jest.fn();
 const mockToggleNetworkMenu = jest.fn();
 const mockSetNetworkClientIdForDomain = jest.fn();
 const mockSetActiveNetwork = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => mockSetShowTestNetworks,
-  setProviderType: () => mockSetProviderType,
   setActiveNetwork: () => mockSetActiveNetwork,
   toggleNetworkMenu: () => mockToggleNetworkMenu,
   setNetworkClientIdForDomain: (network, id) =>
@@ -34,6 +32,7 @@ const render = ({
   providerConfigId = 'chain5',
   isUnlocked = true,
   origin = MOCK_ORIGIN,
+  selectedTabOriginInDomainsState = true,
 } = {}) => {
   const state = {
     metamask: {
@@ -48,6 +47,11 @@ const render = ({
         showTestNetworks,
       },
       useRequestQueue: true,
+      domains: {
+        ...(selectedTabOriginInDomainsState
+          ? { [origin]: providerConfigId }
+          : {}),
+      },
     },
     activeTab: {
       origin,
@@ -61,6 +65,7 @@ const render = ({
 describe('NetworkListMenu', () => {
   beforeEach(() => {
     process.env.ENABLE_NETWORK_UI_REDESIGN = 'false';
+    jest.clearAllMocks();
   });
 
   it('renders properly', () => {
@@ -101,7 +106,7 @@ describe('NetworkListMenu', () => {
     const { getByText } = render();
     fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
     expect(mockToggleNetworkMenu).toHaveBeenCalled();
-    expect(mockSetProviderType).toHaveBeenCalled();
+    expect(mockSetActiveNetwork).toHaveBeenCalled();
   });
 
   it('shows the correct selected network when networks share the same chain ID', () => {
@@ -158,22 +163,32 @@ describe('NetworkListMenu', () => {
     ).toHaveLength(0);
   });
 
-  it('fires setNetworkClientIdForDomain when network item is clicked', () => {
-    const { getByText } = render();
-    fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
-    expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
-      MOCK_ORIGIN,
-      NETWORK_TYPES.MAINNET,
-    );
+  describe('selectedTabOrigin is connected to wallet', () => {
+    it('fires setNetworkClientIdForDomain when network item is clicked', () => {
+      const { getByText } = render();
+      fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
+      expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
+        MOCK_ORIGIN,
+        NETWORK_TYPES.MAINNET,
+      );
+    });
+
+    it('fires setNetworkClientIdForDomain when test network item is clicked', () => {
+      const { getByText } = render({ showTestNetworks: true });
+      fireEvent.click(getByText(SEPOLIA_DISPLAY_NAME));
+      expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
+        MOCK_ORIGIN,
+        NETWORK_TYPES.SEPOLIA,
+      );
+    });
   });
 
-  it('fires setNetworkClientIdForDomain when test network item is clicked', () => {
-    const { getByText } = render({ showTestNetworks: true });
-    fireEvent.click(getByText(SEPOLIA_DISPLAY_NAME));
-    expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
-      MOCK_ORIGIN,
-      NETWORK_TYPES.SEPOLIA,
-    );
+  describe('selectedTabOrigin is not connected to wallet', () => {
+    it('does not fire setNetworkClientIdForDomain when network item is clicked', () => {
+      const { getByText } = render({ selectedTabOriginInDomainsState: false });
+      fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
+      expect(mockSetNetworkClientIdForDomain).not.toHaveBeenCalled();
+    });
   });
 
   describe('NetworkListMenu with ENABLE_NETWORK_UI_REDESIGN', () => {
