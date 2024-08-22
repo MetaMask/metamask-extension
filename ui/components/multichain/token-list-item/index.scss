@@ -4,10 +4,6 @@
       &:hover,
       &:focus-within {
         background-color: var(--color-background-default-hover);
-
-        .mm-avatar-network {
-          outline-color: var(--color-background-default-hover);
-        }
       }
     }
   }

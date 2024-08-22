@@ -61,9 +61,7 @@
     }
 
     &__custom-image {
-      border: none;
-      outline: 2px solid;
-      outline-color: var(--color-background-default);
+      border: 1px solid var(--color-border-muted);
     }
 
     &__icon-with-fallback {
