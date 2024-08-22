@@ -162,14 +162,17 @@ export function AssetPicker({
         backgroundColor={BackgroundColor.transparent}
         onClick={() => {
           setShowAssetPickerModal(true);
-          trackEvent({
-            event: MetaMetricsEventName.sendTokenModalOpened,
-            category: MetaMetricsEventCategory.Send,
-            properties: {
-              ...sendAnalytics,
-              is_destination_asset_picker_modal: Boolean(sendingAsset),
+          trackEvent(
+            {
+              event: MetaMetricsEventName.sendTokenModalOpened,
+              category: MetaMetricsEventCategory.Send,
+              properties: {
+                ...sendAnalytics,
+                is_destination_asset_picker_modal: Boolean(sendingAsset),
+              },
             },
-          });
+            { excludeMetaMetricsId: false },
+          );
         }}
         endIconName={IconName.ArrowDown}
         endIconProps={{

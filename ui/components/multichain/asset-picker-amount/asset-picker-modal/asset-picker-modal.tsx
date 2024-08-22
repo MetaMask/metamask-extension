@@ -123,17 +123,20 @@ export function AssetPickerModal({
   const handleAssetChange = useCallback(
     (token: Token) => {
       onAssetChange(token);
-      trackEvent({
-        event: MetaMetricsEventName.sendAssetSelected,
-        category: MetaMetricsEventCategory.Send,
-        properties: {
-          ...sendAnalytics,
-          is_destination_asset_picker_modal: Boolean(isDest),
-          new_asset_symbol: token.symbol,
-          new_asset_address: token.address,
-          is_nft: false,
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendAssetSelected,
+          category: MetaMetricsEventCategory.Send,
+          properties: {
+            ...sendAnalytics,
+            is_destination_asset_picker_modal: Boolean(isDest),
+            new_asset_symbol: token.symbol,
+            new_asset_address: token.address,
+            is_nft: false,
+          },
         },
-      });
+        { excludeMetaMetricsId: false },
+      );
       onClose();
     },
     [onAssetChange],
