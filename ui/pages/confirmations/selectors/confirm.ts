@@ -41,6 +41,10 @@ export const latestPendingConfirmationSelector = createDeepEqualSelector(
 
 export const confirmSelector = (state: ConfirmMetamaskState) => state.confirm;
 
+/**
+ * @param state
+ * @deprecated get current confirmation using new hook useConfirmContext().
+ */
 export const currentConfirmationSelector = (state: ConfirmMetamaskState) =>
   state.confirm.currentConfirmation;
 
