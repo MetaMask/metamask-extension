@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<ContractInteractionInfo /> does not render if required data is not present in the transaction 1`] = `<div />`;
+exports[`<BaseTransactionInfo /> does not render if required data is not present in the transaction 1`] = `<div />`;
 
-exports[`<ContractInteractionInfo /> renders component for contract interaction request 1`] = `
+exports[`<BaseTransactionInfo /> renders component for contract interaction request 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-0 mm-box--background-color-background-default mm-box--rounded-md"
@@ -330,7 +330,7 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
 </div>
 `;
 
-exports[`<ContractInteractionInfo /> renders component for contract interaction request 2`] = `
+exports[`<BaseTransactionInfo /> renders component for contract interaction request 2`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-0 mm-box--background-color-background-default mm-box--rounded-md"
@@ -696,7 +696,7 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
 </div>
 `;
 
-exports[`<ContractInteractionInfo /> renders component for contract interaction request 3`] = `
+exports[`<BaseTransactionInfo /> renders component for contract interaction request 3`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-0 mm-box--background-color-background-default mm-box--rounded-md"
