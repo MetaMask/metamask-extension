@@ -140,7 +140,7 @@ describe('Test Snap Dialog', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // click cancel button
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Cancel',
           tag: 'button',
         });
