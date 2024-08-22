@@ -35,7 +35,7 @@ describe('switchEthereumChainHandler', () => {
     permissionedChainIds = [],
     permissionsFeatureFlagIsActive = false,
     overrides = {},
-    mockedFindNetworkConfigurationByReturnValue = createMockMainnetConfiguration(),
+    mockedGetNetworkConfigurationByChainIdReturnValue = createMockMainnetConfiguration(),
     mockedGetCurrentChainIdForDomainReturnValue = NON_INFURA_CHAIN_ID,
   } = {}) => {
     const mockGetCaveat = jest.fn();
@@ -47,16 +47,15 @@ describe('switchEthereumChainHandler', () => {
         .fn()
         .mockReturnValue(mockedGetCurrentChainIdForDomainReturnValue),
       setNetworkClientIdForDomain: jest.fn(),
-      findNetworkConfigurationBy: jest
-        .fn()
-        .mockReturnValue(mockedFindNetworkConfigurationByReturnValue),
       setActiveNetwork: jest.fn(),
       requestUserApproval: jest
         .fn()
         .mockImplementation(mockRequestUserApproval),
       requestPermittedChainsPermission: jest.fn(),
       getCaveat: mockGetCaveat,
-      getNetworkConfigurationByChainId: jest.fn(),
+      getNetworkConfigurationByChainId: jest
+        .fn()
+        .mockReturnValue(mockedGetNetworkConfigurationByChainIdReturnValue),
       ...overrides,
     };
   };
@@ -207,7 +206,7 @@ describe('switchEthereumChainHandler', () => {
       ]);
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        createMockMainnetConfiguration().type,
+        createMockMainnetConfiguration().rpcEndpoints[0].networkClientId,
       );
     });
 
@@ -231,7 +230,7 @@ describe('switchEthereumChainHandler', () => {
       expect(mocks.requestPermittedChainsPermission).not.toHaveBeenCalled();
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        createMockMainnetConfiguration().type,
+        createMockMainnetConfiguration().rpcEndpoints[0].networkClientId,
       );
     });
 
