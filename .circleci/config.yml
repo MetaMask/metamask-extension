@@ -1565,8 +1565,14 @@ jobs:
           name: Publish main release to Sentry
           command: yarn sentry:publish
       - run:
+          name: Publish main MV2 release to Sentry
+          command: yarn sentry:publish --dist mv2
+      - run:
           name: Publish Flask release to Sentry
           command: yarn sentry:publish --build-type flask
+      - run:
+          name: Publish Flask MV2 release to Sentry
+          command: yarn sentry:publish --build-type flask --dist mv2
       - run:
           name: Publish MMI release to Sentry
           command: yarn sentry:publish --build-type mmi
