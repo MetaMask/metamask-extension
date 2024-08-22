@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
-import ContractInteractionInfo from './contract-interaction';
+import BaseTransactionInfo from './base-transaction-info';
 
 jest.mock('../../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../../store/actions'),
@@ -24,7 +24,7 @@ jest.mock(
   }),
 );
 
-describe('<ContractInteractionInfo />', () => {
+describe('<BaseTransactionInfo />', () => {
   const middleware = [thunk];
 
   it('renders component for contract interaction request', async () => {
@@ -37,7 +37,7 @@ describe('<ContractInteractionInfo />', () => {
     const mockStore = configureMockStore(middleware)(state);
 
     const { container } = renderWithProvider(
-      <ContractInteractionInfo />,
+      <BaseTransactionInfo />,
       mockStore,
     );
 
@@ -60,7 +60,7 @@ describe('<ContractInteractionInfo />', () => {
     };
     const mockStore = configureMockStore(middleware)(state);
     const { container } = renderWithProvider(
-      <ContractInteractionInfo />,
+      <BaseTransactionInfo />,
       mockStore,
     );
     expect(container).toMatchSnapshot();

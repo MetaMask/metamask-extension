@@ -18,6 +18,7 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { SecurityAlertResponse } from '../ppom/types';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import {
   AddDappTransactionRequest,
   AddTransactionOptions,
@@ -40,6 +41,9 @@ jest.mock('uuid', () => {
 const SECURITY_ALERT_ID_MOCK = '123';
 
 const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
+const INTERNAL_ACCOUNT = createMockInternalAccount({
+  address: INTERNAL_ACCOUNT_ADDRESS,
+});
 
 const TRANSACTION_PARAMS_MOCK: TransactionParams = {
   from: '0x1',
@@ -484,7 +488,7 @@ describe('Transaction Utils', () => {
           ...sendRequest,
           securityAlertsEnabled: false,
           chainId: '0x1',
-          internalAccounts: [{ address: INTERNAL_ACCOUNT_ADDRESS }],
+          internalAccounts: [INTERNAL_ACCOUNT],
         });
 
         expect(

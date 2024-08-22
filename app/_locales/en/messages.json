@@ -1053,11 +1053,17 @@
   "confirmTitleApproveTransaction": {
     "message": "Allowance request"
   },
+  "confirmTitleDeployContract": {
+    "message": "Deploy a contract"
+  },
   "confirmTitleDescApproveTransaction": {
     "message": "This site wants permission to withdraw your NFTs"
   },
   "confirmTitleDescContractInteractionTransaction": {
     "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
+  },
+  "confirmTitleDescDeployContract": {
+    "message": "This site wants you to deploy a contract"
   },
   "confirmTitleDescPermitSignature": {
     "message": "This site wants permission to spend your tokens."
@@ -1272,6 +1278,9 @@
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
+  },
+  "copyAddressShort": {
+    "message": "Copy address"
   },
   "copyPrivateKey": {
     "message": "Copy private key"
@@ -4223,9 +4232,6 @@
   "receive": {
     "message": "Receive"
   },
-  "receiveTokensCamelCase": {
-    "message": "Receive tokens"
-  },
   "recipientAddressPlaceholder": {
     "message": "Enter public address (0x) or ENS name"
   },
@@ -5078,7 +5084,7 @@
     "message": "Snaps connected"
   },
   "snapsNoInsight": {
-    "message": "The snap didn't return any insight"
+    "message": "No insight to show"
   },
   "snapsPrivacyWarningFirstMessage": {
     "message": "You acknowledge that any Snap that you install is a Third Party Service, unless otherwise identified, as defined in the Consensys $1. Your use of Third Party Services is governed by separate terms and conditions set forth by the Third Party Service provider. Consensys does not recommend the use of any Snap by any particular person for any particular reason. You access, rely upon or use the Third Party Service at your own risk. Consensys disclaims all responsibility and liability for any losses on account of your use of Third Party Services.",

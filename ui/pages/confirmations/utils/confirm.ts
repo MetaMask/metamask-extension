@@ -19,6 +19,7 @@ export const REDESIGN_APPROVAL_TYPES = [
 export const REDESIGN_TRANSACTION_TYPES = [
   TransactionType.contractInteraction,
   TransactionType.tokenMethodApprove,
+  TransactionType.deployContract,
 ];
 
 const SIGNATURE_APPROVAL_TYPES = [
