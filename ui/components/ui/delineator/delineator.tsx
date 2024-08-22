@@ -97,7 +97,7 @@ const Content = ({
   contentBoxProps,
 }: {
   children: React.ReactNode;
-  contentBoxProps: DelineatorProps['wrapperBoxProps'];
+  contentBoxProps: DelineatorProps['contentBoxProps'];
 }) => {
   return (
     <Box
