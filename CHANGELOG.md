@@ -78,6 +78,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed decimal display for Permit values and added a reusable component for displaying token units ([#26105](https://github.com/MetaMask/metamask-extension/pull/26105))
 - Fixed precision loss for very large values in signature simulations ([#25968](https://github.com/MetaMask/metamask-extension/pull/25968))
 - Included decimals in fiat calculations for Permit simulations and added tooltips for shortened values ([#26523](https://github.com/MetaMask/metamask-extension/pull/26523))
+- Fixed the missing deadline timer on the swaps status screen ([#26544](https://github.com/MetaMask/metamask-extension/pull/26544))
+- Fixed an issue where account names were out of sync in the account list during the connect account flow ([#26542](https://github.com/MetaMask/metamask-extension/pull/26542))
 
 ## [12.0.0]
 ### Added
