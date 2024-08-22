@@ -510,32 +510,32 @@ export default class ConfirmTransactionBase extends Component {
 
     const nextNonceValue =
       typeof nextNonce === 'number' ? nextNonce.toString() : null;
+    const renderNonceField = useNonceField && !isSigningOrSubmitting;
 
-    if (!customNonceValue && nextNonceValue) {
+    if (renderNonceField && !customNonceValue && nextNonceValue) {
       updateCustomNonce(nextNonceValue);
     }
 
-    const nonceField =
-      useNonceField && !isSigningOrSubmitting ? (
-        <div>
-          <div className="confirm-detail-row">
-            <div className="confirm-detail-row__label">
-              {t('nonceFieldHeading')}
-            </div>
-            <div className="custom-nonce-input">
-              <TextField
-                type="number"
-                min={0}
-                placeholder={nextNonceValue}
-                onChange={handleNonceChange}
-                fullWidth
-                margin="dense"
-                value={customNonceValue ?? ''}
-              />
-            </div>
+    const nonceField = renderNonceField ? (
+      <div>
+        <div className="confirm-detail-row">
+          <div className="confirm-detail-row__label">
+            {t('nonceFieldHeading')}
+          </div>
+          <div className="custom-nonce-input">
+            <TextField
+              type="number"
+              min={0}
+              placeholder={nextNonceValue}
+              onChange={handleNonceChange}
+              fullWidth
+              margin="dense"
+              value={customNonceValue ?? ''}
+            />
           </div>
         </div>
-      ) : null;
+      </div>
+    ) : null;
 
     const { simulationData } = txData;
 
