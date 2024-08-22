@@ -180,17 +180,20 @@ export default function NftsItems({
   };
 
   const onSendNft = async (nft) => {
-    trackEvent({
-      event: MetaMetricsEventName.sendAssetSelected,
-      category: MetaMetricsEventCategory.Send,
-      properties: {
-        ...sendAnalytics,
-        is_destination_asset_picker_modal: false,
-        new_asset_symbol: nft.name,
-        new_asset_address: nft.address,
-        is_nft: true,
+    trackEvent(
+      {
+        event: MetaMetricsEventName.sendAssetSelected,
+        category: MetaMetricsEventCategory.Send,
+        properties: {
+          ...sendAnalytics,
+          is_destination_asset_picker_modal: false,
+          new_asset_symbol: nft.name,
+          new_asset_address: nft.address,
+          is_nft: true,
+        },
       },
-    });
+      { excludeMetaMetricsId: false },
+    );
     await dispatch(
       updateSendAsset({
         type: AssetType.NFT,

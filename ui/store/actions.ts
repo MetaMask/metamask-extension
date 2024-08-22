@@ -106,6 +106,8 @@ import {
 import { decimalToHex } from '../../shared/modules/conversion.utils';
 import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
 import { NetworkType } from '../../shared/constants/network';
+import { RPCDefinition } from '../../shared/constants/network';
+import { EtherDenomination } from '../../shared/constants/common';
 import {
   isErrorWithMessage,
   logErrorWithMessage,
@@ -115,6 +117,7 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
+import { EndTraceRequest } from '../../shared/lib/trace';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -2362,24 +2365,6 @@ export function createRetryTransaction(
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => newTx);
-  };
-}
-
-//
-// config
-//
-
-export function setProviderType(
-  type: NetworkType,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.setProviderType`, type);
-    try {
-      await submitRequestToBackground('setProviderType', [type]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem changing networks!'));
-    }
   };
 }
 
@@ -5596,4 +5581,16 @@ export async function setLastInteractedConfirmationInfo(
     'setLastInteractedConfirmationInfo',
     [info],
   );
+}
+
+export async function endBackgroundTrace(request: EndTraceRequest) {
+  // We want to record the timestamp immediately, not after the request reaches the background.
+  // Sentry uses the Performance interface for more accuracy, so we also must use it to align with
+  // other timings.
+  const timestamp =
+    request.timestamp || performance.timeOrigin + performance.now();
+
+  await submitRequestToBackground<void>('endTrace', [
+    { ...request, timestamp },
+  ]);
 }

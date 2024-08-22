@@ -85,14 +85,17 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
     }
 
     if (bestQuote) {
-      trackEvent({
-        event: MetaMetricsEventName.sendSwapQuoteFetched,
-        category: MetaMetricsEventCategory.Send,
-        properties: {
-          ...sendAnalytics,
-          is_first_fetch: isQuoteJustLoaded,
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendSwapQuoteFetched,
+          category: MetaMetricsEventCategory.Send,
+          properties: {
+            ...sendAnalytics,
+            is_first_fetch: isQuoteJustLoaded,
+          },
         },
-      });
+        { excludeMetaMetricsId: false },
+      );
       setTimeLeft(REFRESH_INTERVAL);
     } else {
       setTimeLeft(undefined);
