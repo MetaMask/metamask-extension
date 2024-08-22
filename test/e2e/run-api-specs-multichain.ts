@@ -1,13 +1,17 @@
 import testCoverage from '@open-rpc/test-coverage';
-import { parseOpenRPCDocument } from '@open-rpc/schema-utils-js';
+import {
+  parseOpenRPCDocument,
+  dereferenceDocument,
+} from '@open-rpc/schema-utils-js';
 import HtmlReporter from '@open-rpc/test-coverage/build/reporters/html-reporter';
-import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
-import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
-import { MultiChainOpenRPCDocument } from '@metamask/api-specs';
+import {
+  MultiChainOpenRPCDocument,
+  MetaMaskOpenRPCDocument,
+} from '@metamask/api-specs';
 
 import { Driver, PAGES } from './webdriver/driver';
 
-import { createMulichainDriverTransport } from './api-specs/helpers';
+import { createMultichainDriverTransport } from './api-specs/helpers';
 
 import FixtureBuilder from './fixture-builder';
 import {
@@ -17,17 +21,22 @@ import {
   DAPP_URL,
   ACCOUNT_1,
 } from './helpers';
+import { MultichainAuthorizationConfirmation } from './api-specs/MultichainAuthorizationConfirmation';
+import { MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
+import transformOpenRPCDocument from './api-specs/transform';
+import { parse } from 'path';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-// const mockServer = require('@open-rpc/mock-server/build/index').default;
+const mockServer = require('@open-rpc/mock-server/build/index').default;
 
 async function main() {
-  // const port = 8545;
-  // const chainId = 1337;
+  const port = 8545;
+  const chainId = 1337;
   await withFixtures(
     {
       dapp: true,
       fixtures: new FixtureBuilder().build(),
+      disableGanache: true,
       title: 'api-specs coverage',
     },
     async ({ driver }: { driver: Driver }) => {
@@ -38,31 +47,96 @@ async function main() {
 
       // Open Dapp
       await openDapp(driver, undefined, DAPP_URL);
+      const doc = await parseOpenRPCDocument(
+        MultiChainOpenRPCDocument as never,
+      );
+      const providerAuthorize = doc.methods.find(
+        (m) => (m as MethodObject).name === 'provider_authorize',
+      );
 
-      const transport = createMulichainDriverTransport(driver);
+      // fix the example for provider_authorize
+      (providerAuthorize as MethodObject).examples = [
+        {
+          name: 'provider_authorizeExample',
+          description: 'Example of a provider authorization request.',
+          params: [
+            {
+              name: 'requiredScopes',
+              value: {
+                eip155: {
+                  scopes: ['eip155:1337'],
+                  methods: [
+                    'eth_sendTransaction',
+                    'eth_getBalance',
+                    'personal_sign',
+                  ],
+                  notifications: [],
+                },
+              },
+            },
+            {
+              name: 'optionalScopes',
+              value: {
+                'eip155:1337': {
+                  methods: [
+                    'eth_sendTransaction',
+                    'eth_getBalance',
+                    'personal_sign',
+                  ],
+                  notifications: [],
+                },
+              },
+            },
+          ],
+          result: {
+            name: 'provider_authorizationResultExample',
+            value: {
+              sessionId: '0xdeadbeef',
+              sessionScopes: {
+                'eip155:1': {
+                  methods: ['eth_getBalance'],
+                  notifications: ['accountsChanged', 'chainChanged'],
+                  accounts: [],
+                },
+              },
+            },
+          },
+        },
+      ];
+
+      const transport = createMultichainDriverTransport(driver);
+      const parsedDoc = transformOpenRPCDocument(
+        MetaMaskOpenRPCDocument as OpenrpcDocument,
+        chainId,
+        ACCOUNT_1,
+      );
+
+      const server = mockServer(port, parsedDoc);
+      server.start();
+
+      await parseOpenRPCDocument(MetaMaskOpenRPCDocument as never);
 
       const testCoverageResults = await testCoverage({
-        openrpcDocument: (await parseOpenRPCDocument(
-          MultiChainOpenRPCDocument as never,
-        )) as never,
+        openrpcDocument: doc as any,
         transport,
         reporters: [
           'console-streaming',
           new HtmlReporter({ autoOpen: !process.env.CI }),
         ],
-        skip: [
-          'provider_request'
-        ],
+        skip: ['provider_request'],
         rules: [
-          new JsonSchemaFakerRule({
-            only: [],
-            skip: [],
-            numCalls: 2,
+          new MultichainAuthorizationConfirmation({
+            driver,
           }),
-          new ExamplesRule({
-            only: [],
-            skip: [],
-          }),
+          // new JsonSchemaFakerRule({
+          //   only: [],
+          //   skip: [],
+          //   numCalls: 2,
+          // }),
+          // new ExamplesRule({
+          //   only: [],
+          //   skip: [],
+          // }),
         ],
       });
 
@@ -77,5 +151,14 @@ async function main() {
     },
   );
 }
+process.on('unhandledRejection', (...args) => {
+  console.error('Unhandled Rejection:', args, JSON.stringify(args, null, 4));
+  process.exit(1);
+});
 
-main();
+try {
+  main();
+} catch (e: any) {
+  console.log('ERR', e.message);
+  console.log('stack', e.stack);
+}
