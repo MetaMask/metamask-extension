@@ -10,6 +10,7 @@ import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
+import { shortenString } from '../../../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../../selectors';
 import { Box, Text } from '../../../../../../../components/component-library';
@@ -87,17 +88,24 @@ const PermitSimulation: React.FC<{
                   backgroundColor={BackgroundColor.backgroundAlternative}
                   borderRadius={BorderRadius.XL}
                   paddingInline={2}
+                  style={{ paddingTop: '1px', paddingBottom: '1px' }}
                   textAlign={TextAlign.Center}
-                  ellipsis
                 >
-                  {tokenValue}
+                  {shortenString(tokenValue || '', {
+                    truncatedCharLimit: 15,
+                    truncatedStartChars: 15,
+                    truncatedEndChars: 0,
+                    skipCharacterInEnd: true,
+                  })}
                 </Text>
               </Tooltip>
             </Box>
             <Name value={verifyingContract} type={NameType.ETHEREUM_ADDRESS} />
           </Box>
           <Box>
-            {fiatValue && <IndividualFiatDisplay fiatAmount={fiatValue} />}
+            {fiatValue && (
+              <IndividualFiatDisplay fiatAmount={fiatValue} shorten />
+            )}
           </Box>
         </Box>
       </ConfirmInfoRow>
