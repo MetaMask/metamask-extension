@@ -170,12 +170,12 @@ export default function NftsItems({
         category: MetaMetricsEventCategory.Send,
         properties: {
           is_destination_asset_picker_modal: false,
-          new_asset_symbol: nft.name,
-          new_asset_address: nft.address,
           is_nft: true,
         },
         sensitiveProperties: {
           ...sendAnalytics,
+          new_asset_symbol: nft.name,
+          new_asset_address: nft.address,
         },
       },
       { excludeMetaMetricsId: false },
