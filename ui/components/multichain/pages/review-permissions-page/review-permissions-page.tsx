@@ -13,6 +13,7 @@ import {
   IconName,
 } from '../../../component-library';
 import { Content, Footer, Header, Page } from '../page';
+import { SiteCell } from './index';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -38,8 +39,10 @@ export const ReviewPermissions = () => {
           />
         }
       ></Header>
-      <Content padding={0}>Nidhi</Content>
-      <Footer></Footer>
+      <Content padding={0}>
+        <SiteCell />
+      </Content>
+
     </Page>
   );
 };

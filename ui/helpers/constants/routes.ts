@@ -40,7 +40,7 @@ const SRP_REMINDER = '/onboarding/remind-srp';
 ///: END:ONLY_INCLUDE_IF
 const SEND_ROUTE = '/send';
 const CONNECTIONS = '/connections';
-const REVIEW_PERMISSIONS = './review-permissions';
+const REVIEW_PERMISSIONS = '/review-permissions';
 const PERMISSIONS = '/permissions';
 const TOKEN_DETAILS = '/token-details';
 const CONNECT_ROUTE = '/connect';
