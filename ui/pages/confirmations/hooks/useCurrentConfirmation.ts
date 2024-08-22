@@ -1,31 +1,23 @@
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-///: END:ONLY_INCLUDE_IF
 import { ApprovalType } from '@metamask/controller-utils';
 import { useMemo } from 'react';
 import {
   ApprovalsMetaMaskState,
   getIsRedesignedConfirmationsDeveloperEnabled,
   getRedesignedConfirmationsEnabled,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getRedesignedTransactionsEnabled,
-  ///: END:ONLY_INCLUDE_IF
   getUnapprovedTransaction,
   latestPendingConfirmationSelector,
   selectPendingApproval,
 } from '../../../selectors';
-import {
-  REDESIGN_APPROVAL_TYPES,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  REDESIGN_TRANSACTION_TYPES,
-  ///: END:ONLY_INCLUDE_IF
-} from '../utils';
+import { REDESIGN_APPROVAL_TYPES, REDESIGN_TRANSACTION_TYPES } from '../utils';
 import { selectUnapprovedMessage } from '../../../selectors/signatures';
+import { isMMI } from '../../../helpers/utils/build-types';
 
 /**
  * Determine the current confirmation based on the pending approvals and controller state.
@@ -44,11 +36,9 @@ const useCurrentConfirmation = () => {
     getRedesignedConfirmationsEnabled,
   );
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isRedesignedTransactionsUserSettingEnabled = useSelector(
     getRedesignedTransactionsEnabled,
   );
-  ///: END:ONLY_INCLUDE_IF
 
   const isRedesignedConfirmationsDeveloperEnabled = useSelector(
     getIsRedesignedConfirmationsDeveloperEnabled,
@@ -62,20 +52,18 @@ const useCurrentConfirmation = () => {
     selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),
   );
 
-  const signatureMessage = useSelector((state) =>
-    selectUnapprovedMessage(state, confirmationId),
-  );
-
   const transactionMetadata = useSelector((state) =>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (getUnapprovedTransaction as any)(state, confirmationId),
   ) as TransactionMeta | undefined;
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  const signatureMessage = useSelector((state) =>
+    selectUnapprovedMessage(state, confirmationId),
+  );
+
   const isCorrectTransactionType = REDESIGN_TRANSACTION_TYPES.includes(
     transactionMetadata?.type as TransactionType,
   );
-  ///: END:ONLY_INCLUDE_IF
 
   const isCorrectApprovalType = REDESIGN_APPROVAL_TYPES.includes(
     pendingApproval?.type as ApprovalType,
@@ -85,28 +73,22 @@ const useCurrentConfirmation = () => {
     (isRedesignedSignaturesUserSettingEnabled && isCorrectApprovalType) ||
     (isRedesignedConfirmationsDeveloperSettingEnabled && isCorrectApprovalType);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  console.log(!isMMI());
+
   const shouldUseRedesignForTransactions =
-    (isRedesignedTransactionsUserSettingEnabled && isCorrectTransactionType) ||
+    (!isMMI() &&
+      isRedesignedTransactionsUserSettingEnabled &&
+      isCorrectTransactionType) ||
     (isRedesignedConfirmationsDeveloperSettingEnabled &&
       isCorrectTransactionType);
-  ///: END:ONLY_INCLUDE_IF
 
   // If the developer toggle or the build time environment variable are enabled,
   // all the signatures and transactions in development are shown. If the user
   // facing feature toggles for signature or transactions are enabled, we show
   // only confirmations that shipped (contained in `REDESIGN_APPROVAL_TYPES` and
   // `REDESIGN_TRANSACTION_TYPES` respectively).
-  let shouldUseRedesign;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  shouldUseRedesign = shouldUseRedesignForSignatures;
-  ///: END:ONLY_INCLUDE_IF
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  shouldUseRedesign =
+  const shouldUseRedesign =
     shouldUseRedesignForSignatures || shouldUseRedesignForTransactions;
-  ///: END:ONLY_INCLUDE_IF
 
   return useMemo(() => {
     if (!shouldUseRedesign) {
