@@ -25,8 +25,8 @@ import {
   SignatureRequestType,
 } from '../../types/confirm';
 import { useConfirmContext } from '../../context/confirm';
-import { normalizeProviderAlert } from './utils';
 import useCurrentSignatureSecurityAlertResponse from '../useCurrentSignatureSecurityAlertResponse';
+import { normalizeProviderAlert } from './utils';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const zlib = require('zlib');
