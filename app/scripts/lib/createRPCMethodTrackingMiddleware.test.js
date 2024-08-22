@@ -2,7 +2,6 @@ import { errorCodes } from 'eth-rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
 
 import MetaMetricsController from '../controllers/metametrics';
-import { createSegmentMock } from '../lib/segment';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -15,6 +14,7 @@ import {
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
 import { permitSignatureMsg } from '../../../test/data/confirmations/typed_sign';
+import { createSegmentMock } from './segment';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 
 const MOCK_ID = '123';
@@ -31,7 +31,7 @@ const expectedMetametricsEventUndefinedProps = {
   revenue: undefined,
   sensitiveProperties: undefined,
   value: undefined,
-}
+};
 
 const appStateController = {
   store: {
@@ -52,31 +52,31 @@ const appStateController = {
 };
 
 const metaMetricsController = new MetaMetricsController({
-    segment: createSegmentMock(2, 10000),
-    getCurrentChainId: () => '0x1338',
-    onNetworkDidChange: () => {},
-    preferencesStore: {
-      subscribe: jest.fn(),
-      getState: jest.fn(() => ({
-        currentLocale: 'en_US',
-        preferences: {},
-      })),
+  segment: createSegmentMock(2, 10000),
+  getCurrentChainId: () => '0x1338',
+  onNetworkDidChange: () => {},
+  preferencesStore: {
+    subscribe: jest.fn(),
+    getState: jest.fn(() => ({
+      currentLocale: 'en_US',
+      preferences: {},
+    })),
+  },
+  version: '0.0.1',
+  environment: 'test',
+  initState: {
+    participateInMetaMetrics: true,
+    metaMetricsId: '0xabc',
+    fragments: {},
+    events: {},
+  },
+  extension: {
+    runtime: {
+      id: 'testid',
+      setUninstallURL: () => undefined,
     },
-    version: '0.0.1',
-    environment: 'test',
-    initState: {
-      participateInMetaMetrics: true,
-      metaMetricsId: '0xabc',
-      fragments: {},
-      events: {},
-    },
-    extension: {
-      runtime: {
-        id: 'testid',
-        setUninstallURL: () => undefined,
-      },
-    },
-  });
+  },
+});
 
 const createHandler = (opts) =>
   createRPCMethodTrackingMiddleware({
@@ -135,7 +135,9 @@ describe('createRPCMethodTrackingMiddleware', () => {
   let trackEventSpy;
 
   beforeEach(() => {
-    trackEventSpy = jest.spyOn(MetaMetricsController.prototype, 'trackEvent').mockImplementation(() => {});
+    trackEventSpy = jest
+      .spyOn(MetaMetricsController.prototype, 'trackEvent')
+      .mockImplementation(() => {});
   });
   afterEach(() => {
     jest.resetAllMocks();
@@ -356,7 +358,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         `should only track '%s' events while the timeout rate limit is not active`,
         async (method, eventsTrackedPerRequest) => {
           const req = {
-          id: MOCK_ID,
+            id: MOCK_ID,
             method,
             origin: 'some.dapp',
           };
@@ -407,7 +409,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         `should only track a random percentage of '%s' events`,
         async (method, eventsTrackedPerRequest) => {
           const req = {
-          id: MOCK_ID,
+            id: MOCK_ID,
             method,
             origin: 'some.dapp',
           };
@@ -475,7 +477,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     it('should track Confirmation Redesign through ui_customizations prop if enabled', async () => {
       const req = {
-          id: MOCK_ID,
+        id: MOCK_ID,
         method: MESSAGE_TYPE.PERSONAL_SIGN,
         origin: 'some.dapp',
       };
@@ -507,7 +509,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     it('should not track Confirmation Redesign through ui_customizations prop if not enabled', async () => {
       const req = {
-          id: MOCK_ID,
+        id: MOCK_ID,
         method: MESSAGE_TYPE.PERSONAL_SIGN,
         origin: 'some.dapp',
       };
@@ -534,7 +536,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     it('should track Sign-in With Ethereum (SIWE) message if detected', async () => {
       const req = {
-          id: MOCK_ID,
+        id: MOCK_ID,
         method: MESSAGE_TYPE.PERSONAL_SIGN,
         origin: 'some.dapp',
       };
@@ -566,7 +568,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     it('should track typed-sign permit message if detected', async () => {
       const req = {
-          id: MOCK_ID,
+        id: MOCK_ID,
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         origin: 'some.dapp',
         params: [undefined, permitSignatureMsg.msgParams.data],
