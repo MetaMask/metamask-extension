@@ -38,7 +38,7 @@ const ExpandableIcon = ({ isExpanded }: { isExpanded: boolean }) => {
     <Icon
       name={isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
       size={IconSize.Sm}
-      color={IconColor.iconMuted}
+      color={IconColor.primaryDefault}
     />
   );
 };
@@ -53,7 +53,7 @@ const Header = ({
   type,
 }: {
   headerComponent: DelineatorProps['headerComponent'];
-  iconName: IconName;
+  iconName?: IconName;
   isCollapsible: boolean;
   isExpanded: boolean;
   isLoading: boolean;
@@ -73,12 +73,12 @@ const Header = ({
       justifyContent={JustifyContent.spaceBetween}
       paddingTop={2}
       paddingRight={4}
-      paddingBottom={2}
+      paddingBottom={isExpanded ? 0 : 2}
       paddingLeft={4}
       onClick={onHeaderClick}
     >
       <Box display={Display.Flex} alignItems={AlignItems.center}>
-        <AvatarIcon iconName={iconName} {...iconProps} />
+        {iconName && <AvatarIcon iconName={iconName} {...iconProps} />}
         {overrideTextComponentColorByType({
           component: headerComponent,
           type,
@@ -89,7 +89,13 @@ const Header = ({
     </Box>
   );
 };
-const Content = ({ children }: { children: React.ReactNode }) => {
+const Content = ({
+  children,
+  contentBoxProps,
+}: {
+  children: React.ReactNode;
+  contentBoxProps: DelineatorProps['wrapperBoxProps'];
+}) => {
   return (
     <Box
       paddingTop={2}
@@ -97,6 +103,7 @@ const Content = ({ children }: { children: React.ReactNode }) => {
       paddingBottom={4}
       paddingLeft={4}
       flexDirection={FlexDirection.Column}
+      {...contentBoxProps}
     >
       {children}
     </Box>
@@ -134,6 +141,7 @@ export const Delineator: React.FC<DelineatorProps> = ({
   onExpandChange,
   type,
   wrapperBoxProps,
+  contentBoxProps,
 }) => {
   const [isExpanded, setIsExpanded] = useState(isExpandedProp || false);
   const shouldShowContent = !isCollapsible || (isCollapsible && isExpanded);
@@ -158,7 +166,9 @@ export const Delineator: React.FC<DelineatorProps> = ({
         onHeaderClick={handleHeaderClick}
         type={type}
       />
-      {shouldShowContent && !isLoading && <Content>{children}</Content>}
+      {shouldShowContent && !isLoading && (
+        <Content contentBoxProps={contentBoxProps}>{children}</Content>
+      )}
     </Container>
   );
 };
