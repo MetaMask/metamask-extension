@@ -1,4 +1,7 @@
 .mm-avatar-network {
+  outline: solid 2px;
+  outline-color: var(--color-background-default);
+
   &--with-halo {
     position: relative;
   }

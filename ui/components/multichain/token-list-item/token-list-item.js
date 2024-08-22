@@ -8,7 +8,6 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderColor,
   Display,
   FlexDirection,
   FontWeight,
@@ -46,7 +45,6 @@ import {
   getMultichainCurrentChainId,
   getMultichainCurrentNetwork,
   getMultichainIsEvm,
-  getMultichainNativeCurrencyImage,
 } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -82,7 +80,6 @@ export const TokenListItem = ({
 }) => {
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
-  const primaryTokenImage = useSelector(getMultichainNativeCurrencyImage);
   const trackEvent = useContext(MetaMetricsContext);
   const chainId = useSelector(getMultichainCurrentChainId);
   const metaMetricsId = useSelector(getMetaMetricsId);
@@ -230,21 +227,12 @@ export const TokenListItem = ({
               name={currentNetwork?.nickname}
               src={currentNetwork?.rpcPrefs?.imageUrl}
               backgroundColor={testNetworkBackgroundColor}
-              borderColor={
-                primaryTokenImage
-                  ? BorderColor.borderMuted
-                  : BorderColor.borderDefault
-              }
             />
           }
           marginRight={4}
           className="multichain-token-list-item__badge"
         >
-          <AvatarToken
-            name={tokenSymbol}
-            src={tokenImage}
-            borderColor={tokenImage ? undefined : BorderColor.borderDefault}
-          />
+          <AvatarToken name={tokenSymbol} src={tokenImage} />
         </BadgeWrapper>
         <Box
           className="multichain-token-list-item__container-cell--text-container"

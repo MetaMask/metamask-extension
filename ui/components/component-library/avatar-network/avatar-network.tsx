@@ -55,7 +55,6 @@ export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
         {...{
           backgroundColor,
           borderColor,
-          borderWidth: 2,
           color,
           ...(props as AvatarBaseProps<C>),
         }}

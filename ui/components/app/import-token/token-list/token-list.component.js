@@ -72,6 +72,10 @@ export default class TokenList extends Component {
                     <Box
                       key={address}
                       display={Display.Flex}
+                      paddingLeft={4}
+                      paddingRight={4}
+                      paddingTop={2}
+                      paddingBottom={2}
                       className={classnames('token-list__token_component', {
                         'token-list__token_component--selected':
                           selectedTokens[address],
