@@ -1409,9 +1409,6 @@
   "data": {
     "message": "Data"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Can not restore your data. The file appears to be corrupt."
-  },
   "dataCollectionForMarketing": {
     "message": "Data collection for marketing"
   },
@@ -3496,6 +3493,9 @@
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Optional:"
   },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Learn how we protect your privacy while collecting usage data for your profile."
+  },
   "onboardingMetametricsTitle": {
     "message": "Help us improve MetaMask"
   },
@@ -4314,12 +4314,6 @@
   },
   "restore": {
     "message": "Restore"
-  },
-  "restoreFailed": {
-    "message": "Can not restore your data from the file provided"
-  },
-  "restoreSuccessful": {
-    "message": "Your data has been restored successfully"
   },
   "restoreUserData": {
     "message": "Restore user data"

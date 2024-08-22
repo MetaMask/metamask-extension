@@ -60,6 +60,7 @@ import {
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { Asset, Collection, Token } from './types';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
+
 import AssetList from './AssetList';
 
 type AssetPickerModalProps = {
