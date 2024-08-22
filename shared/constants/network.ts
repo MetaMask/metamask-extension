@@ -408,6 +408,7 @@ export const FLARE_MAINNET_IMAGE_URL = './images/flare-mainnet.svg';
 export const FUSE_GOLD_MAINNET_IMAGE_URL = './images/fuse-mainnet.jpg';
 export const HAQQ_NETWORK_IMAGE_URL = './images/haqq.svg';
 export const IOTEX_MAINNET_IMAGE_URL = './images/iotex.svg';
+export const IOTEX_TOKEN_IMAGE_URL = './images/iotex-token.svg';
 export const KCC_MAINNET_IMAGE_URL = './images/kcc-mainnet.svg';
 export const KLAYTN_MAINNET_IMAGE_URL = './images/klaytn.svg';
 export const KROMA_MAINNET_IMAGE_URL = './images/kroma.svg';
@@ -799,6 +800,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.SEI]: SEI_IMAGE_URL,
   [CHAIN_IDS.NEAR]: NEAR_IMAGE_URL,
   [CHAIN_IDS.NEAR_TESTNET]: NEAR_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.IOTEX_MAINNET]: IOTEX_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
