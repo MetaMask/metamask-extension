@@ -1050,8 +1050,20 @@
   "confirmRpcUrlDeletionMessage": {
     "message": "Are you sure you want to delete the RPC URL? Your information will not be saved for this network."
   },
+  "confirmTitleApproveTransaction": {
+    "message": "Allowance request"
+  },
+  "confirmTitleDeployContract": {
+    "message": "Deploy a contract"
+  },
+  "confirmTitleDescApproveTransaction": {
+    "message": "This site wants permission to withdraw your NFTs"
+  },
   "confirmTitleDescContractInteractionTransaction": {
     "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
+  },
+  "confirmTitleDescDeployContract": {
+    "message": "This site wants you to deploy a contract"
   },
   "confirmTitleDescPermitSignature": {
     "message": "This site wants permission to spend your tokens."
@@ -1266,6 +1278,9 @@
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
+  },
+  "copyAddressShort": {
+    "message": "Copy address"
   },
   "copyPrivateKey": {
     "message": "Copy private key"
@@ -4217,9 +4232,6 @@
   "receive": {
     "message": "Receive"
   },
-  "receiveTokensCamelCase": {
-    "message": "Receive tokens"
-  },
   "recipientAddressPlaceholder": {
     "message": "Enter public address (0x) or ENS name"
   },
@@ -4807,6 +4819,12 @@
   "signingInWith": {
     "message": "Signing in with"
   },
+  "simulationApproveHeading": {
+    "message": "Withdraw"
+  },
+  "simulationDetailsApproveDesc": {
+    "message": "You're giving someone else permission to withdraw NFTs from your account."
+  },
   "simulationDetailsFailed": {
     "message": "There was an error loading your estimation."
   },
@@ -5148,6 +5166,9 @@
   },
   "spender": {
     "message": "Spender"
+  },
+  "spenderTooltipDesc": {
+    "message": "This is the address that will be able to withdraw your NFTs."
   },
   "spendingCap": {
     "message": "Spending cap"

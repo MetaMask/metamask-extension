@@ -21,6 +21,8 @@ import {
   assertSignatureMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
+  openDappAndTriggerSignature,
+  SignatureType,
 } from './signature-helpers';
 
 describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
@@ -35,10 +37,7 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
         const addresses = await (ganacheServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
 
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#signPermit');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await openDappAndTriggerSignature(driver, SignatureType.Permit);
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
