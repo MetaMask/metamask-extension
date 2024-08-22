@@ -16,6 +16,8 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   AvatarFavicon,
+  AvatarIcon,
+  AvatarIconSize,
   AvatarNetwork,
   AvatarNetworkSize,
   BadgeWrapper,
@@ -28,9 +30,8 @@ import {
 import { getURLHost } from '../../../../../helpers/utils/util';
 import { ConnectionListTooltip } from '../../permissions-page/connection-list-tooltip/connection-list-tooltip';
 
-export const ConnectionListItem = ({ connection, onClick }) => {
+export const SiteCell = ({}) => {
   const t = useI18nContext();
-  const isSnap = connection.subjectType === SubjectType.Snap;
 
   return (
     <>
@@ -42,17 +43,19 @@ export const ConnectionListItem = ({ connection, onClick }) => {
         alignItems={AlignItems.baseline}
         width={BlockSize.Full}
         backgroundColor={BackgroundColor.backgroundDefault}
-        onClick={onClick}
+        // onClick={onClick}
         padding={4}
         gap={4}
         className="multichain-connection-list-item"
       >
-        <Icon
-          display={Display.Flex}
-          name={IconName.ArrowRight}
-          color={IconColor.iconDefault}
-          size={IconSize.Sm}
-          backgroundColor={BackgroundColor.backgroundDefault}
+        <AvatarIcon
+          iconName={IconName.Wallet}
+          size={AvatarIconSize.Md}
+          iconProps={{
+            size: IconSize.Sm,
+          }}
+          color={IconColor.iconAlternative}
+          backgroundColor={BackgroundColor.backgroundAlternative}
         />
         <Box
           display={Display.Flex}
@@ -82,7 +85,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
             >
               {t('connectedWith')}
             </Text>
-            <ConnectionListTooltip connection={connection} />
+            {/* <ConnectionListTooltip connection={connection} /> */}
           </Box>
         </Box>
         <Box
@@ -109,17 +112,19 @@ export const ConnectionListItem = ({ connection, onClick }) => {
         alignItems={AlignItems.baseline}
         width={BlockSize.Full}
         backgroundColor={BackgroundColor.backgroundDefault}
-        onClick={onClick}
+        // onClick={onClick}
         padding={4}
         gap={4}
         className="multichain-connection-list-item"
       >
-        <Icon
-          display={Display.Flex}
-          name={IconName.ArrowRight}
-          color={IconColor.iconDefault}
-          size={IconSize.Sm}
-          backgroundColor={BackgroundColor.backgroundDefault}
+        <AvatarIcon
+          iconName={IconName.Wallet}
+          size={AvatarIconSize.Md}
+          iconProps={{
+            size: IconSize.Sm,
+          }}
+          color={IconColor.iconAlternative}
+          backgroundColor={BackgroundColor.backgroundAlternative}
         />
         <Box
           display={Display.Flex}
@@ -149,7 +154,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
             >
               {t('connectedWith')}
             </Text>
-            <ConnectionListTooltip connection={connection} />
+            {/* <ConnectionListTooltip connection={connection} /> */}
           </Box>
         </Box>
         <Box
@@ -172,7 +177,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
   );
 };
 
-ConnectionListItem.propTypes = {
+SiteCell.propTypes = {
   /**
    * The connection data to display
    */
