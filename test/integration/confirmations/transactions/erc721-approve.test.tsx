@@ -7,6 +7,7 @@ import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
 import { getUnapprovedApproveTransaction } from './transactionDataHelpers';
+import { useIsNFT } from '../../../../ui/pages/confirmations/components/confirm/info/approve/hooks/use-is-nft';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
