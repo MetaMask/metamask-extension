@@ -1135,12 +1135,11 @@ describe('Actions', () => {
       setBackgroundConnection(background.getApi());
 
       const networkConfiguration = {
-        id: 'networkConfigurationId',
         rpcUrl: 'newRpc',
         chainId: '0x',
-        ticker: 'ETH',
-        nickname: 'nickname',
-        rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+        nativeCurrency: 'ETH',
+        name: 'nickname',
+        rpcEndpoints: [{ blockExplorerUrl: 'etherscan.io' }],
       };
 
       await store.dispatch(
@@ -1153,12 +1152,11 @@ describe('Actions', () => {
         updateNetworkStub.calledOnceWith(
           '0x',
           {
-            id: 'networkConfigurationId',
             rpcUrl: 'newRpc',
             chainId: '0x',
-            ticker: 'ETH',
-            nickname: 'nickname',
-            rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+            nativeCurrency: 'ETH',
+            name: 'nickname',
+            rpcEndpoints: [{ blockExplorerUrl: 'etherscan.io' }],
           },
           { source: MetaMetricsNetworkEventSource.CustomNetworkForm },
         ),
