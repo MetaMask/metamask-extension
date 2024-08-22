@@ -9,10 +9,10 @@ export const useIsNFT = (
   useEffect(() => {
     const fetchTokenDetails = async () => {
       const result = await getTokenStandardAndDetails(
-        transactionMeta.txParams.to as string,
+        transactionMeta?.txParams?.to as string,
       );
 
-      setDecimals(result.decimals as string);
+      setDecimals(result?.decimals as string);
     };
 
     fetchTokenDetails();

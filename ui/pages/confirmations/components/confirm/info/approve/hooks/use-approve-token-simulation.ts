@@ -25,8 +25,6 @@ export const useApproveTokenSimulation = (transactionMeta: TransactionMeta) => {
     ? tokenNum
     : new Intl.NumberFormat(locale).format(tokenNum);
 
-  console.log({ tokenPrefix, isNFT });
-
   let tokenAmount;
   if (!isNFT && tokenNum > UNLIMITED_THRESHOLD) {
     tokenAmount = t('unlimited');
