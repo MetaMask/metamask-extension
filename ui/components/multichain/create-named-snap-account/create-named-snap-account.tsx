@@ -42,17 +42,27 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   }, []);
 
   const getNextAccountName = useCallback(
-    async (_accounts: InternalAccount[]): Promise<string> => {
-      // if snapSuggestedAccountName exists, return it immediately
+    async (accounts: InternalAccount[]): Promise<string> => {
+      // If a snap-suggested account name exists, use it as a base
       if (snapSuggestedAccountName) {
-        return snapSuggestedAccountName;
+        let suffix = 1;
+        let candidateName = snapSuggestedAccountName;
+
+        // Check if the name is already taken
+        const isNameTaken = (name: string) =>
+          accounts.some((account) => account.metadata.name === name);
+
+        // Keep incrementing suffix until we find an available name
+        while (isNameTaken(candidateName)) {
+          suffix += 1;
+          candidateName = `${snapSuggestedAccountName} ${suffix}`;
+        }
+
+        return candidateName;
       }
 
-      const nextAccountName = await getNextAvailableAccountName(
-        KeyringTypes.snap,
-      );
-
-      return nextAccountName;
+      // If no snap-suggested name, use the next available account name
+      return getNextAvailableAccountName(KeyringTypes.snap);
     },
     [],
   );
@@ -63,7 +73,7 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   }, []);
 
   return (
-    <Box padding={4}>
+    <Box padding={4} className="name-snap-account-page">
       <ModalHeader padding={4} onClose={onClose}>
         {t('addAccountToMetaMask')}
       </ModalHeader>

@@ -34,10 +34,9 @@
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
-      "showTokenAutodetectModal": "boolean",
+      "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
-      "redesignedTransactionsEnabled": "boolean",
-      "isRedesignedConfirmationsDeveloperEnabled": "boolean"
+      "redesignedTransactionsEnabled": "boolean"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
@@ -96,7 +95,6 @@
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
-    "showTokenAutodetectModalOnUpgrade": "object",
     "balances": "object",
     "selectedNetworkClientId": "string",
     "networksMetadata": {
@@ -117,6 +115,7 @@
     "useRequestQueue": true,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
+    "watchEthereumAccountEnabled": "boolean",
     "bitcoinSupportEnabled": "boolean",
     "bitcoinTestnetSupportEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
@@ -195,6 +194,7 @@
     "databaseUnavailable": "boolean",
     "notifications": "object",
     "interfaces": "object",
+    "insights": "object",
     "names": "object",
     "nameSources": "object",
     "userOperations": "object",
@@ -203,7 +203,7 @@
     "isProfileSyncingUpdateLoading": "boolean",
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
-    "isMetamaskNotificationsEnabled": "boolean",
+    "isNotificationServicesEnabled": "boolean",
     "isFeatureAnnouncementsEnabled": "boolean",
     "metamaskNotificationsList": "object",
     "metamaskNotificationsReadList": "object",
@@ -247,6 +247,7 @@
       "swapsQuoteRefreshTime": 60000,
       "swapsQuotePrefetchingRefreshTime": 60000,
       "swapsStxBatchStatusRefreshTime": 10000,
+      "swapsStxStatusDeadline": 180,
       "swapsStxGetTransactionsRefreshTime": 10000,
       "swapsStxMaxFeeMultiplier": 2,
       "swapsFeatureFlags": {}

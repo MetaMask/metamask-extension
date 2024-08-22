@@ -5,7 +5,9 @@ const { get, has, set, unset, cloneDeep } = require('lodash');
 const { Browser } = require('selenium-webdriver');
 const { format } = require('prettier');
 const { isObject } = require('@metamask/utils');
-const { SENTRY_UI_STATE } = require('../../../../app/scripts/lib/setupSentry');
+const {
+  SENTRY_UI_STATE,
+} = require('../../../../app/scripts/constants/sentry-state');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   convertToHexValue,
@@ -54,6 +56,7 @@ const removedBackgroundFields = [
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
+  'AppStateController.lastInteractedConfirmationInfo',
   'PPOMController.chainStatus.0x539.lastVisited',
   'PPOMController.versionInfo',
 ];
@@ -307,7 +310,6 @@ describe('Sentry errors', function () {
         async ({ driver, mockedEndpoint }) => {
           // we don't wait for the controllers to be loaded
           await driver.navigate(PAGES.HOME, { waitForControllers: false });
-
           // Wait for Sentry request
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
@@ -678,6 +680,7 @@ describe('Sentry errors', function () {
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
+          const { extensionId, installType } = mockJsonBody.extra;
           assert.deepStrictEqual(Object.keys(appState), [
             'browser',
             'version',
@@ -693,6 +696,11 @@ describe('Sentry errors', function () {
               appState?.version.length > 0,
             'Invalid version state',
           );
+          assert.ok(
+            typeof extensionId === 'string' && extensionId.length > 0,
+            `${extensionId} is not a valid extension ID`,
+          );
+          assert.equal(installType, 'development');
           await matchesSnapshot({
             data: transformBackgroundState(appState.state),
             snapshot: 'errors-after-init-opt-in-background-state',
@@ -769,6 +777,7 @@ describe('Sentry errors', function () {
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
+          const { extensionId, installType } = mockJsonBody.extra;
           assert.deepStrictEqual(Object.keys(appState), [
             'browser',
             'version',
@@ -784,6 +793,11 @@ describe('Sentry errors', function () {
               appState?.version.length > 0,
             'Invalid version state',
           );
+          assert.ok(
+            typeof extensionId === 'string' && extensionId.length > 0,
+            `${extensionId} is not a valid extension ID`,
+          );
+          assert.equal(installType, 'development');
           await matchesSnapshot({
             data: transformUiState(appState.state),
             snapshot: 'errors-after-init-opt-in-ui-state',
@@ -791,30 +805,6 @@ describe('Sentry errors', function () {
         },
       );
     });
-  });
-
-  it('should have no policy gaps for UI controller state @no-mmi', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver }) => {
-        await driver.navigate();
-        await driver.findElement('#password');
-
-        const fullUiState = await driver.executeScript(() =>
-          window.stateHooks?.getCleanAppState?.(),
-        );
-
-        const missingState = getMissingProperties(
-          fullUiState.metamask,
-          SENTRY_UI_STATE.metamask,
-        );
-        assert.deepEqual(missingState, {});
-      },
-    );
   });
 
   it('should not have extra properties in UI state mask @no-mmi', async function () {
@@ -847,6 +837,7 @@ describe('Sentry errors', function () {
       opts: true,
       store: true,
       configurationClient: true,
+      lastInteractedConfirmationInfo: undefined,
     };
     await withFixtures(
       {

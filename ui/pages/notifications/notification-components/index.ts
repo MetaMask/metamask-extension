@@ -1,4 +1,4 @@
-import { TRIGGER_TYPES } from '../../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import type { NotificationComponent } from './types/notifications/notifications';
 import { components as ERC20SentReceivedComponents } from './erc20-sent-received/erc20-sent-received';
 import { components as ERC721SentReceivedComponents } from './erc721-sent-received/erc721-sent-received';
@@ -9,6 +9,9 @@ import { components as StakeComponents } from './stake/stake';
 import { components as SwapCompletedComponents } from './swap-completed/swap-completed';
 import { components as LidoWithdrawalRequestedComponents } from './lido-withdrawal-requested/lido-withdrawal-requested';
 import { components as LidoStakeReadyToBeWithdrawnComponents } from './lido-stake-ready-to-be-withdrawn/lido-stake-ready-to-be-withdrawn';
+
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
+type TRIGGER_TYPES = NotificationServicesController.Constants.TRIGGER_TYPES;
 
 /**
  * Each notification component has a specific shape it follows.

@@ -124,8 +124,8 @@ class Driver {
   /**
    * @param {!ThenableWebDriver} driver - A {@code WebDriver} instance
    * @param {string} browser - The type of browser this driver is controlling
-   * @param extensionUrl
-   * @param {number} timeout
+   * @param {string} extensionUrl
+   * @param {number} timeout - Defaults to 10000 milliseconds (10 seconds)
    */
   constructor(driver, browser, extensionUrl, timeout = 10 * 1000) {
     this.driver = driver;
@@ -860,6 +860,47 @@ class Driver {
    */
   async getAllWindowHandles() {
     return await this.windowHandles.getAllWindowHandles();
+  }
+
+  /**
+   * Function that aims to simulate a click action on a specified web element
+   * within a web page and waits for the current window to close.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @param {number} [retries] - The number of times to retry the click action if it fails
+   * @returns {Promise<void>} promise that resolves to the WebElement
+   */
+  async clickElementAndWaitForWindowToClose(rawLocator, retries = 3) {
+    const handle = await this.driver.getWindowHandle();
+    await this.clickElement(rawLocator, retries);
+    await this.waitForWindowToClose(handle);
+  }
+
+  /**
+   * Waits for the specified window handle to close before returning.
+   *
+   * @param {string} handle - The handle of the window or tab we'll wait for.
+   * @param {number} [timeout] - The amount of time in milliseconds to wait
+   * before timing out. Defaults to `this.timeout`.
+   * @throws {Error} throws an error if the window handle doesn't close within
+   * the timeout.
+   */
+  async waitForWindowToClose(handle, timeout = this.timeout) {
+    const start = Date.now();
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const handles = await this.getAllWindowHandles();
+      if (!handles.includes(handle)) {
+        return;
+      }
+
+      const timeElapsed = Date.now() - start;
+      if (timeElapsed > timeout) {
+        throw new Error(
+          `waitForWindowToClose timed out waiting for window handle '${handle}' to close.`,
+        );
+      }
+    }
   }
 
   /**

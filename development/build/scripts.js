@@ -929,7 +929,11 @@ function setupBundlerDefaults(
       [
         babelify,
         {
-          only: ['./**/node_modules/firebase', './**/node_modules/@firebase'],
+          only: [
+            './**/node_modules/firebase',
+            './**/node_modules/@firebase',
+            './**/node_modules/marked',
+          ],
           global: true,
         },
       ],
@@ -1212,11 +1216,18 @@ function renderHtmlFile({
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
 
   const eta = new Eta();
-  const htmlOutput = eta.renderString(htmlTemplate, {
-    isMMI,
-    isTest,
-    shouldIncludeSnow,
-  });
+  const htmlOutput = eta
+    .renderString(htmlTemplate, { isMMI, isTest, shouldIncludeSnow })
+    // these replacements are added to support the webpack build's automatic
+    // compilation of html files, which the gulp-based process doesn't support.
+    .replace('./scripts/load/background.ts', './load-background.js')
+    .replace(
+      '<script src="./load-background.js" defer></script>',
+      '<script src="./load-background.js" defer></script>\n    <script src="./chromereload.js" defer></script>',
+    )
+    .replace('./scripts/load/ui.ts', './load-app.js')
+    .replace('../ui/css/index.scss', './index.css')
+    .replace('@lavamoat/snow/snow.prod.js', './scripts/snow.js');
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

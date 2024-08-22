@@ -17,6 +17,7 @@ import { PluggableSection } from '../components/confirm/pluggable-section';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { Title } from '../components/confirm/title';
 import EditGasFeePopover from '../components/edit-gas-fee-popover';
+import { NetworkChangeToast } from '../components/confirm/network-change-toast';
 import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
 import syncConfirmPath from '../hooks/syncConfirmPath';
 
@@ -55,6 +56,7 @@ const Confirm = () => {
               <PluggableSection />
             </ScrollToBottom>
             <Footer />
+            <NetworkChangeToast />
           </Page>
         </ConfirmAlerts>
       </GasFeeContextProvider>

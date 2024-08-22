@@ -17,6 +17,8 @@ jest.mock('../../../../store/actions', () => ({
   resolvePendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
   rejectPendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
   completedTx: jest.fn().mockReturnValue({ type: 'test' }),
+  getLastInteractedConfirmationInfo: jest.fn(),
+  setLastInteractedConfirmationInfo: jest.fn(),
 }));
 
 const address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
