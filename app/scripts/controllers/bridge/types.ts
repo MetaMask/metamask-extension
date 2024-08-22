@@ -2,20 +2,26 @@ import {
   ControllerStateChangeEvent,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
+import { Hex } from '@metamask/utils';
 import BridgeController from './bridge-controller';
 import { BRIDGE_CONTROLLER_NAME } from './constants';
 
 export enum BridgeFeatureFlagsKey {
   EXTENSION_SUPPORT = 'extensionSupport',
+  NETWORK_SRC_ALLOWLIST = 'srcNetworkAllowlist',
+  NETWORK_DEST_ALLOWLIST = 'destNetworkAllowlist',
 }
 
 export type BridgeFeatureFlags = {
   [BridgeFeatureFlagsKey.EXTENSION_SUPPORT]: boolean;
+  [BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST]: Hex[];
+  [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: Hex[];
 };
 
 export type BridgeControllerState = {
   bridgeFeatureFlags: BridgeFeatureFlags;
 };
+
 export enum BridgeBackgroundAction {
   SET_FEATURE_FLAGS = 'setBridgeFeatureFlags',
 }
