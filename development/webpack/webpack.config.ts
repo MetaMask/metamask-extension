@@ -107,13 +107,15 @@ const cache = args.cache
 // #region plugins
 const commitHash = isDevelopment ? getLatestCommit().hash() : null;
 const plugins: WebpackPluginInstance[] = [
-  // @ts-expect-error: webpack plugin types differ when the plugin is loaded from a neighboring folder instead of the properly deduplicated dependencies of the project. Remove this when the plugin is properly installed.
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore: webpack plugin types might differ when the plugin is loaded from a neighboring folder instead of the properly deduplicated dependencies of the project. Remove this when the plugin is properly installed.
   new LavamoatPlugin({
     rootDir: projectRoot,
     diagnosticsVerbosity: 2,
     generatePolicy: true,
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
     readableResourceIds: true,
+    inlineLockdown: /^runtime/u,
   }),
   new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }),
   // HtmlBundlerPlugin treats HTML files as entry points
