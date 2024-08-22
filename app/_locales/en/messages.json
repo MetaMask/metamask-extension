@@ -1279,6 +1279,9 @@
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
+  "copyAddressShort": {
+    "message": "Copy address"
+  },
   "copyPrivateKey": {
     "message": "Copy private key"
   },
@@ -4228,9 +4231,6 @@
   },
   "receive": {
     "message": "Receive"
-  },
-  "receiveTokensCamelCase": {
-    "message": "Receive tokens"
   },
   "recipientAddressPlaceholder": {
     "message": "Enter public address (0x) or ENS name"
