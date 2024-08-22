@@ -7,6 +7,7 @@ type VersionedData = {
 };
 
 export type PPOMController = {
+  versionInfo?: Record<string, unknown>[];
   versionFileETag?: string;
 };
 

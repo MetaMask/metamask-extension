@@ -19,7 +19,8 @@ describe('migration #126', () => {
   it('should remove versionFileETag from PPOMController', async () => {
     const newStorage = await migrate(oldStorage);
 
-    const { versionFileETag } = newStorage.data.PPOMController as PPOMController;
+    const { versionFileETag } = newStorage.data
+      .PPOMController as PPOMController;
 
     expect(versionFileETag).toBeUndefined();
   });
