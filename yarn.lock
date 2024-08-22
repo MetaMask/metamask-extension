@@ -5086,13 +5086,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ens-resolver-snap@npm:^0.1.1":
-  version: 0.1.1
-  resolution: "@metamask/ens-resolver-snap@npm:0.1.1"
+"@metamask/ens-resolver-snap@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "@metamask/ens-resolver-snap@npm:0.1.2"
   dependencies:
     "@metamask/snaps-sdk": "npm:^6.2.0"
     ethers: "npm:^6.13.1"
-  checksum: 10/c77342f171dd0381cd04f9bcf9d5c8e65857b40b58dd251767711bbccb54b90786e62d68fa47c782b8208802cbbcaa2be0e2bee1b6d89f4f3c17cff1e20fb01f
+  checksum: 10/0dae3dff8815ad11805ec0c0d339a2fba9216ea8bd03a60ef9e3b7f330c45a15ae0136b8b735b20454ebe9183e4c2e15570ac2b22cf9fecfde00db853d7bcc23
   languageName: node
   linkType: hard
 
@@ -26631,7 +26631,7 @@ __metadata:
     "@metamask/controller-utils": "npm:^10.0.0"
     "@metamask/design-tokens": "npm:^4.0.0"
     "@metamask/ens-controller": "npm:^12.0.0"
-    "@metamask/ens-resolver-snap": "npm:^0.1.1"
+    "@metamask/ens-resolver-snap": "npm:^0.1.2"
     "@metamask/eslint-config": "npm:^9.0.0"
     "@metamask/eslint-config-jest": "npm:^9.0.0"
     "@metamask/eslint-config-mocha": "npm:^9.0.0"
