@@ -523,9 +523,6 @@
   "readdToken": {
     "message": "Unaweza kuongeza tena kianzio hiki hapo baadaye kwa kwenda kwenye \"Ongeza kianzio\" kwenye machaguo yako ya menyu ya akaunti."
   },
-  "recipientAddressPlaceholder": {
-    "message": "Tafuta, anwani za umma (0x), au ENS"
-  },
   "reject": {
     "message": "Kataa"
   },

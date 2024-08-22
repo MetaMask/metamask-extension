@@ -4168,9 +4168,6 @@
   "receiveTokensCamelCase": {
     "message": "Получить токены"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Введите публичный адрес (0x) или имя ENS"
-  },
   "recommendedGasLabel": {
     "message": "Рекомендовано"
   },

@@ -536,9 +536,6 @@
   "readdToken": {
     "message": "U budućnosti možete vratiti ovaj token tako što ćete otvoriti „Dodaj token“ u meniju opcija vašeg naloga."
   },
-  "recipientAddressPlaceholder": {
-    "message": "Pretraga, javna adresa (0x) ili ENS"
-  },
   "reject": {
     "message": "Одбиј"
   },

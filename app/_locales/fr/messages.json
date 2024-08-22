@@ -4168,9 +4168,6 @@
   "receiveTokensCamelCase": {
     "message": "Recevez des jetons"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Saisissez l’adresse publique (0x) ou le nom de domaine ENS"
-  },
   "recommendedGasLabel": {
     "message": "Recommandé"
   },

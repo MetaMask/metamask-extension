@@ -538,9 +538,6 @@
   "readdToken": {
     "message": "Ezt a tokent a jövőben is hozzáadhatja, ha a fiókbeállítások menü „Token hozzáadása” elemére lép."
   },
-  "recipientAddressPlaceholder": {
-    "message": "Keresés, nyilvános cím (0x) vagy ENS"
-  },
   "reject": {
     "message": "Elutasítás"
   },

@@ -4226,7 +4226,7 @@
   "receiveTokensCamelCase": {
     "message": "Receive tokens"
   },
-  "recipientAddressPlaceholder": {
+  "recipientAddressPlaceholderNew": {
     "message": "Enter public address (0x) or domain name"
   },
   "recommendedGasLabel": {

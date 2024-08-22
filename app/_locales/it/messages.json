@@ -1236,9 +1236,6 @@
   "receive": {
     "message": "Ricevi"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Ricerca, indirizzo pubblico (0x) o ENS"
-  },
   "reject": {
     "message": "Annulla"
   },

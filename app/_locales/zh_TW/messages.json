@@ -1005,9 +1005,6 @@
   "receive": {
     "message": "接收"
   },
-  "recipientAddressPlaceholder": {
-    "message": "搜尋、公開位址 (0x)、或 ENS"
-  },
   "reject": {
     "message": "拒絕"
   },

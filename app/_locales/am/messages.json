@@ -530,9 +530,6 @@
   "readdToken": {
     "message": "በመለያ አማራጮችዎ ምናሌ ውስጥ ወደ “ተለዋጭ ስም አክል” በመግባት ለወደፊቱ ይህን ተለዋጭ ስም መልሰው ማከል ይችላሉ።"
   },
-  "recipientAddressPlaceholder": {
-    "message": "ፍለጋ፣ ለሕዝብ ክፍት የሆነ አድራሻ (0x), ወይም ENS"
-  },
   "reject": {
     "message": "አይቀበሉ"
   },

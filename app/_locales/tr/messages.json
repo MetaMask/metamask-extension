@@ -4168,9 +4168,6 @@
   "receiveTokensCamelCase": {
     "message": "Token'leri al"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Genel adres (0x) veya ENS adı girin"
-  },
   "recommendedGasLabel": {
     "message": "Önerilen"
   },

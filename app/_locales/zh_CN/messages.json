@@ -4168,9 +4168,6 @@
   "receiveTokensCamelCase": {
     "message": "收取代币"
   },
-  "recipientAddressPlaceholder": {
-    "message": "输入公钥 (0x) 或 ENS 名称"
-  },
   "recommendedGasLabel": {
     "message": "建议"
   },

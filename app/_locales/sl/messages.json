@@ -533,9 +533,6 @@
   "readdToken": {
     "message": "Ta žeton lahko dodate tudi kasneje z uporabo gumba “Dodaj žeton” v možnostih vašega računa."
   },
-  "recipientAddressPlaceholder": {
-    "message": "Iskanje, javni naslov (0x) ali ENS"
-  },
   "reject": {
     "message": "Zavrni"
   },

@@ -4168,9 +4168,6 @@
   "receiveTokensCamelCase": {
     "message": "Λάβετε tokens"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Εισάγετε τη δημόσια διεύθυνση (0x) ή το όνομα ENS"
-  },
   "recommendedGasLabel": {
     "message": "Προτεινόμενο"
   },

@@ -163,7 +163,7 @@ export default class DomainInput extends Component {
                 className="ens-input__wrapper__input"
                 type="text"
                 dir="auto"
-                placeholder={t('recipientAddressPlaceholder')}
+                placeholder={t('recipientAddressPlaceholderNew')}
                 onChange={this.onChange}
                 onPaste={this.onPaste}
                 spellCheck="false"

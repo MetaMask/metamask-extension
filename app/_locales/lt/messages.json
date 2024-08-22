@@ -545,9 +545,6 @@
   "readdToken": {
     "message": "Šį žetoną galite bet kada galite įtraukti ir vėl, tiesiog savo paskyros parinkčių meniu nueikite  į „Įtraukti žetoną“."
   },
-  "recipientAddressPlaceholder": {
-    "message": "Ieška, viešieji adresai (0x) arba ENS"
-  },
   "reject": {
     "message": "Atmesti"
   },

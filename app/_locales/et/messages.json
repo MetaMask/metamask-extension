@@ -535,9 +535,6 @@
   "readdToken": {
     "message": "Saate selle loa tulevikus tagasi lisada, kui lähete oma kontovalikute menüüs vahelehele „Lisa luba“."
   },
-  "recipientAddressPlaceholder": {
-    "message": "Otsing, avalik aadress (0x) või ENS"
-  },
   "reject": {
     "message": "Lükka tagasi"
   },

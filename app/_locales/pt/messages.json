@@ -4168,9 +4168,6 @@
   "receiveTokensCamelCase": {
     "message": "Receber tokens"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Insira o endereço público (0x) ou o nome ENS"
-  },
   "recommendedGasLabel": {
     "message": "Recomendado"
   },

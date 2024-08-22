@@ -4168,9 +4168,6 @@
   "receiveTokensCamelCase": {
     "message": "Tumanggap ng mga token"
   },
-  "recipientAddressPlaceholder": {
-    "message": "Ilagay ang pampublikong address (0x) o ENS name"
-  },
   "recommendedGasLabel": {
     "message": "Nirekomenda"
   },
