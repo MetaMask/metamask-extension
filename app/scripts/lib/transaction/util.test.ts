@@ -17,6 +17,7 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { SecurityAlertResponse } from '../ppom/types';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import {
   AddDappTransactionRequest,
   AddTransactionOptions,
@@ -37,6 +38,11 @@ jest.mock('uuid', () => {
 });
 
 const SECURITY_ALERT_ID_MOCK = '123';
+
+const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
+const INTERNAL_ACCOUNT = createMockInternalAccount({
+  address: INTERNAL_ACCOUNT_ADDRESS,
+});
 
 const TRANSACTION_PARAMS_MOCK: TransactionParams = {
   from: '0x1',
@@ -460,6 +466,35 @@ describe('Transaction Utils', () => {
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(
           TRANSACTION_PARAMS_MOCK,
+          TRANSACTION_OPTIONS_MOCK,
+        );
+
+        expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
+      });
+
+      it('send to users own account', async () => {
+        const sendRequest = {
+          ...request,
+          transactionParams: {
+            ...request.transactionParams,
+            to: INTERNAL_ACCOUNT_ADDRESS,
+          },
+        };
+        await addTransaction({
+          ...sendRequest,
+          securityAlertsEnabled: false,
+          chainId: '0x1',
+          internalAccounts: [INTERNAL_ACCOUNT],
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(
+          sendRequest.transactionParams,
           TRANSACTION_OPTIONS_MOCK,
         );
 
