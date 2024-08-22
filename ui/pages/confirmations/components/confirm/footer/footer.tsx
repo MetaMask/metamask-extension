@@ -29,6 +29,12 @@ import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
 import { getConfirmationSender } from '../utils';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 
+export type OnCancelType = ({
+  location,
+}: {
+  location: MetaMetricsEventLocation;
+}) => void;
+
 const ConfirmButton = ({
   alertOwnerId = '',
   disabled,
@@ -38,7 +44,7 @@ const ConfirmButton = ({
   alertOwnerId?: string;
   disabled: boolean;
   onSubmit: () => void;
-  onCancel: ({ location }: { location: MetaMetricsEventLocation }) => void;
+  onCancel: OnCancelType;
 }) => {
   const t = useI18nContext();
 
@@ -159,7 +165,7 @@ const Footer = () => {
 
   const onFooterCancel = useCallback(() => {
     onCancel({ location: MetaMetricsEventLocation.Confirmation });
-  }, [currentConfirmation]);
+  }, [currentConfirmation, onCancel]);
 
   return (
     <PageFooter className="confirm-footer_page-footer">

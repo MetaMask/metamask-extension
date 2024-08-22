@@ -20,23 +20,13 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
         await driver.clickElement('#siweBadDomain');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const alert = await driver.findElement('[data-testid="inline-alert"]');
-        assert.equal(await alert.getText(), 'Alert');
-        await driver.clickElement('[data-testid="inline-alert"]');
+        await verifyAlertIsDisplayed(driver);
 
-        await driver.clickElement(
-          '[data-testid="alert-modal-acknowledge-checkbox"]',
-        );
-        await driver.clickElement('[data-testid="alert-modal-button"]');
+        await acknowledgeAlert(driver);
 
         await scrollAndConfirmAndAssertConfirm(driver);
 
-        await driver.clickElement(
-          '[data-testid="alert-modal-acknowledge-checkbox"]',
-        );
-        await driver.clickElement(
-          '[data-testid="confirm-alert-modal-submit-button"]',
-        );
+        await confirmFromAlertModal(driver);
 
         await assertVerifiedMessage(
           driver,
@@ -123,6 +113,24 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
     );
   });
 });
+
+async function confirmFromAlertModal(driver: Driver) {
+  await driver.clickElement('[data-testid="alert-modal-acknowledge-checkbox"]');
+  await driver.clickElement(
+    '[data-testid="confirm-alert-modal-submit-button"]',
+  );
+}
+
+async function acknowledgeAlert(driver: Driver) {
+  await driver.clickElement('[data-testid="alert-modal-acknowledge-checkbox"]');
+  await driver.clickElement('[data-testid="alert-modal-button"]');
+}
+
+async function verifyAlertIsDisplayed(driver: Driver) {
+  const alert = await driver.findElement('[data-testid="inline-alert"]');
+  assert.equal(await alert.getText(), 'Alert');
+  await driver.clickElement('[data-testid="inline-alert"]');
+}
 
 async function assertVerifiedMessage(driver: Driver, message: string) {
   await driver.waitUntilXWindowHandles(2);
