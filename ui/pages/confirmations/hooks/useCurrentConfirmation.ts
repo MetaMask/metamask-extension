@@ -73,8 +73,6 @@ const useCurrentConfirmation = () => {
     (isRedesignedSignaturesUserSettingEnabled && isCorrectApprovalType) ||
     (isRedesignedConfirmationsDeveloperSettingEnabled && isCorrectApprovalType);
 
-  console.log(!isMMI());
-
   const shouldUseRedesignForTransactions =
     (!isMMI() &&
       isRedesignedTransactionsUserSettingEnabled &&
