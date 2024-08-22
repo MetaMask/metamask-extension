@@ -7,6 +7,7 @@ export type DelineatorProps = {
   isCollapsible?: boolean;
   isExpanded?: boolean;
   isLoading?: boolean;
+  isDisabled?: boolean;
   onExpandChange?: (isExpanded: boolean) => void;
   type?: DelineatorType;
   wrapperBoxProps?: React.ComponentProps<typeof Box>;

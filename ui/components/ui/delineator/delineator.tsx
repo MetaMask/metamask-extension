@@ -49,6 +49,7 @@ const Header = ({
   isCollapsible,
   isExpanded,
   isLoading,
+  isDisabled,
   onHeaderClick,
   type,
 }: {
@@ -57,6 +58,7 @@ const Header = ({
   isCollapsible: boolean;
   isExpanded: boolean;
   isLoading: boolean;
+  isDisabled: boolean;
   onHeaderClick: () => void;
   type?: DelineatorType;
 }) => {
@@ -67,6 +69,7 @@ const Header = ({
         delineator__header: true,
         'delineator__header--expanded': isExpanded,
         'delineator__header--loading': isLoading,
+        'delineator__header--disabled': isDisabled,
       })}
       display={Display.Flex}
       alignItems={AlignItems.center}
@@ -138,6 +141,7 @@ export const Delineator: React.FC<DelineatorProps> = ({
   isCollapsible = true,
   isExpanded: isExpandedProp,
   isLoading = false,
+  isDisabled = false,
   onExpandChange,
   type,
   wrapperBoxProps,
@@ -147,13 +151,13 @@ export const Delineator: React.FC<DelineatorProps> = ({
   const shouldShowContent = !isCollapsible || (isCollapsible && isExpanded);
 
   const handleHeaderClick = useCallback(() => {
-    if (isLoading || !isCollapsible) {
+    if (isDisabled || isLoading || !isCollapsible) {
       return;
     }
     const newExpandedState = !isExpanded;
     onExpandChange?.(newExpandedState);
     setIsExpanded(newExpandedState);
-  }, [isLoading, isCollapsible, isExpanded, onExpandChange]);
+  }, [isLoading, isCollapsible, isExpanded, isDisabled, onExpandChange]);
 
   return (
     <Container wrapperBoxProps={wrapperBoxProps}>
@@ -163,6 +167,7 @@ export const Delineator: React.FC<DelineatorProps> = ({
         isCollapsible={isCollapsible}
         isExpanded={isExpanded}
         isLoading={isLoading}
+        isDisabled={isDisabled}
         onHeaderClick={handleHeaderClick}
         type={type}
       />

@@ -10,6 +10,7 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { getSnapMetadata } from '../../../../../../selectors';
+import Tooltip from '../../../../../../components/ui/tooltip';
 
 export type SnapInsightProps = {
   snapId: string;
@@ -41,6 +42,16 @@ export const SnapInsight: React.FunctionComponent<SnapInsightProps> = ({
       ])}
     </Text>
   );
+
+  const hasNoInsight = !loading && !interfaceId;
+
+  if (hasNoInsight) {
+    return (
+      <Tooltip position="top" title={t('snapsNoInsight')}>
+        <Delineator headerComponent={headerComponent} isDisabled={true} />
+      </Tooltip>
+    );
+  }
 
   return (
     <Delineator
