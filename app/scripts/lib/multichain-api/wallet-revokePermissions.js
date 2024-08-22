@@ -1,4 +1,3 @@
-import { omit } from 'lodash';
 import { invalidParams, MethodNames } from '@metamask/permission-controller';
 import { isNonEmptyArray } from '@metamask/utils';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
@@ -55,37 +54,33 @@ function revokePermissionsImplementation(
     return end(invalidParams({ data: { request: req } }));
   }
 
-  const relevantPermissionKeys = omit(permissionKeys, [
-    RestrictedMethods.eth_accounts,
-    PermissionNames.permittedChains,
-  ]);
+  const relevantPermissionKeys = permissionKeys.filter(
+    (name) =>
+      ![
+        RestrictedMethods.eth_accounts,
+        PermissionNames.permittedChains,
+      ].includes(name),
+  );
 
   const shouldRevokeLegacyPermission =
     relevantPermissionKeys.length !== permissionKeys.length;
 
-  if (
-    (relevantPermissionKeys.length === 0 && !shouldRevokeLegacyPermission) ||
-    relevantPermissionKeys.length > 0
-  ) {
-    revokePermissionsForOrigin(relevantPermissionKeys);
-  }
+  if (shouldRevokeLegacyPermission) {
+    const permissions = getPermissionsForOrigin(origin) || {};
+    const caip25Endowment = permissions?.[Caip25EndowmentPermissionName];
+    const caip25Caveat = caip25Endowment?.caveats.find(
+      ({ type }) => type === Caip25CaveatType,
+    );
 
-  const permissions = getPermissionsForOrigin(origin) || {};
-  const caip25Endowment = permissions?.[Caip25EndowmentPermissionName];
-  const caip25Caveat = caip25Endowment?.caveats.find(
-    ({ type }) => type === Caip25CaveatType,
-  );
-
-  // TODO: handle permittedChains
-  if (shouldRevokeLegacyPermission && caip25Caveat) {
-    if (caip25Caveat.value.isMultichainOrigin) {
+    if (caip25Caveat && caip25Caveat.value.isMultichainOrigin) {
       return end(
         new Error('cannot modify permission granted from multichain flow'),
       ); // TODO: better error
     }
-
-    revokePermissionsForOrigin([Caip25EndowmentPermissionName]);
+    relevantPermissionKeys.push(Caip25EndowmentPermissionName);
   }
+
+  revokePermissionsForOrigin(relevantPermissionKeys);
 
   res.result = null;
 
