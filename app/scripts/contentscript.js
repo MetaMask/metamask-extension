@@ -9,6 +9,11 @@ import {
   getIsBrowserPrerenderBroken,
 } from '../../shared/modules/browser-runtime.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+import {
+  initializeCookieHandlerSteam,
+  isDetectedCookieMarketingSite,
+} from './streams/cookie-handler-stream';
+import { logStreamDisconnectWarning } from './streams/shared';
 
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
@@ -432,19 +437,6 @@ function getNotificationTransformStream() {
 }
 
 /**
- * Error handler for page to extension stream disconnections
- *
- * @param {string} remoteLabel - Remote stream name
- * @param {Error} error - Stream connection error
- */
-function logStreamDisconnectWarning(remoteLabel, error) {
-  console.debug(
-    `MetaMask: Content script lost connection to "${remoteLabel}".`,
-    error,
-  );
-}
-
-/**
  * The function notifies inpage when the extension stream connection is ready. When the
  * 'metamask_chainChanged' method is received from the extension, it implies that the
  * background state is completely initialized and it is ready to process method calls.
@@ -523,6 +515,10 @@ const start = () => {
   if (isDetectedPhishingSite) {
     initPhishingStreams();
     return;
+  }
+
+  if (isDetectedCookieMarketingSite) {
+    initializeCookieHandlerSteam();
   }
 
   if (shouldInjectProvider()) {

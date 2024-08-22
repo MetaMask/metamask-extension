@@ -360,6 +360,7 @@ export const METAMASK_CONTROLLER_EVENTS = {
 
 // stream channels
 const PHISHING_SAFELIST = 'metamask-phishing-safelist';
+const METAMASK_COOKIE_HANDLER = 'metamask-cookie-handler';
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -5112,6 +5113,43 @@ export default class MetamaskController extends EventEmitter {
         phishingStream,
       ),
     );
+  }
+
+  setUpCookieHandlerCommunication({ connectionStream }) {
+    const {
+      metaMetricsId,
+      dataCollectionForMarketing,
+      participateInMetaMetrics,
+    } = this.metaMetricsController.store.getState();
+
+    if (
+      metaMetricsId &&
+      dataCollectionForMarketing &&
+      participateInMetaMetrics
+    ) {
+      // setup multiplexing
+      const mux = setupMultiplex(connectionStream);
+      const metamaskCookieHandlerStream = mux.createStream(
+        METAMASK_COOKIE_HANDLER,
+      );
+      // set up postStream transport
+      // TODO: Add handler here to modify trackEvents metrics context
+      // Ideally take ga_client_id here from page message
+      metamaskCookieHandlerStream.on(
+        'data',
+        createMetaRPCHandler(
+          {
+            getCookieFromMarketingPage: getCookieFromMarketingPage.bind(this),
+          },
+          metamaskCookieHandlerStream,
+        ),
+      );
+    }
+  }
+
+  getCookieFromMarketingPage(data) {
+    console.log('getCookieFromMarketingPage', data);
+    return data;
   }
 
   /**
