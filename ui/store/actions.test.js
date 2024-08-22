@@ -1976,12 +1976,6 @@ describe('Actions', () => {
           cb(null, {
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
             currentLocale: 'test',
-            networkConfigurationsByChainId: {
-              [CHAIN_IDS.MAINNET]: {
-                chainId: CHAIN_IDS.MAINNET,
-                rpcEndpoints: [{}],
-              },
-            },
             accounts: {
               '0xFirstAddress': {
                 balance: '0x0',
