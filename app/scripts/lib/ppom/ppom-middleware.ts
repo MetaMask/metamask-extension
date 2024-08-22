@@ -27,6 +27,12 @@ const CONFIRMATION_METHODS = Object.freeze([
   ...SIGNING_METHODS,
 ]);
 
+export type PPOMMiddlewareRequest<
+  Params extends JsonRpcParams = JsonRpcParams,
+> = Required<JsonRpcRequest<Params>> & {
+  securityAlertResponse?: SecurityAlertResponse | undefined;
+};
+
 /**
  * Middleware function that handles JSON RPC requests.
  * This function will be called for every JSON RPC request.
@@ -44,7 +50,7 @@ const CONFIRMATION_METHODS = Object.freeze([
  * @returns PPOMMiddleware function.
  */
 export function createPPOMMiddleware<
-  Params extends JsonRpcParams,
+  Params extends (string | { to: string })[],
   Result extends Json,
 >(
   ppomController: PPOMController,
@@ -58,7 +64,7 @@ export function createPPOMMiddleware<
   ) => void,
 ) {
   return async (
-    req: JsonRpcRequest<Params>,
+    req: PPOMMiddlewareRequest<Params>,
     _res: JsonRpcResponse<Result>,
     next: () => void,
   ) => {

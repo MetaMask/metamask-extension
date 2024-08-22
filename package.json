@@ -260,7 +260,8 @@
     "@metamask/snaps-utils@npm:^7.4.0": "patch:@metamask/snaps-utils@npm%3A7.7.0#~/.yarn/patches/@metamask-snaps-utils-npm-7.7.0-2cc1f044af.patch",
     "@metamask/snaps-utils@npm:^7.5.0": "patch:@metamask/snaps-utils@npm%3A7.7.0#~/.yarn/patches/@metamask-snaps-utils-npm-7.7.0-2cc1f044af.patch",
     "@metamask/keyring-controller@npm:^16.0.0": "patch:@metamask/keyring-controller@npm%3A16.1.0#~/.yarn/patches/@metamask-keyring-controller-npm-16.1.0-7043d2dc62.patch",
-    "@metamask/keyring-controller@npm:^17.1.0": "patch:@metamask/keyring-controller@npm%3A16.1.0#~/.yarn/patches/@metamask-keyring-controller-npm-16.1.0-7043d2dc62.patch"
+    "@metamask/keyring-controller@npm:^17.1.0": "patch:@metamask/keyring-controller@npm%3A16.1.0#~/.yarn/patches/@metamask-keyring-controller-npm-16.1.0-7043d2dc62.patch",
+    "@trezor/connect-web@npm:^9.1.11": "patch:@trezor/connect-web@npm%3A9.3.0#~/.yarn/patches/@trezor-connect-web-npm-9.3.0-040ab10d9a.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
@@ -302,7 +303,7 @@
     "@metamask/design-tokens": "^4.0.0",
     "@metamask/ens-controller": "^10.0.1",
     "@metamask/eth-json-rpc-filters": "^7.0.0",
-    "@metamask/eth-json-rpc-middleware": "^12.1.1",
+    "@metamask/eth-json-rpc-middleware": "^14.0.0",
     "@metamask/eth-ledger-bridge-keyring": "^2.0.1",
     "@metamask/eth-query": "^4.0.0",
     "@metamask/eth-sig-util": "^7.0.1",
@@ -359,7 +360,7 @@
     "@sentry/integrations": "^7.53.0",
     "@sentry/types": "^7.53.0",
     "@sentry/utils": "^7.53.0",
-    "@trezor/connect-web": "patch:@trezor/connect-web@npm%3A9.2.2#~/.yarn/patches/@trezor-connect-web-npm-9.2.2-a4de8e45fc.patch",
+    "@trezor/connect-web": "patch:@trezor/connect-web@npm%3A9.3.0#~/.yarn/patches/@trezor-connect-web-npm-9.3.0-040ab10d9a.patch",
     "@zxing/browser": "^0.1.4",
     "@zxing/library": "0.20.0",
     "await-semaphore": "^0.1.1",
@@ -711,7 +712,9 @@
       "tsx>esbuild": false,
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": false,
       "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false,
-      "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false
+      "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false,
+      "resolve-url-loader>es6-iterator>d>es5-ext": false,
+      "resolve-url-loader>es6-iterator>d>es5-ext>esniff>es5-ext": false
     }
   },
   "packageManager": "yarn@4.2.2"
