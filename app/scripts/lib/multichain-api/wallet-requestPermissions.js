@@ -66,7 +66,6 @@ async function requestPermissionsImplementation(
   }
 
   const [requestedPermissions] = params;
-  const caip25Permission = requestedPermissions[Caip25EndowmentPermissionName];
   delete requestedPermissions[Caip25EndowmentPermissionName];
 
   const legacyRequestedPermissions = pick(requestedPermissions, [
@@ -78,17 +77,6 @@ async function requestPermissionsImplementation(
 
   let legacyApproval;
   if (Object.keys(legacyRequestedPermissions).length > 0) {
-    if (
-      caip25Permission &&
-      caip25Permission.caveats[0].value.isMultichainOrigin
-    ) {
-      return end(
-        new Error(
-          'cannot modify eth_accounts when CAIP-25 permission from multichain flow exists',
-        ),
-      ); // TODO: better error
-    }
-
     if (!legacyRequestedPermissions[RestrictedMethods.eth_accounts]) {
       legacyRequestedPermissions[RestrictedMethods.eth_accounts] = {};
     }
