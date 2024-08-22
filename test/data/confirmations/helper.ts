@@ -37,8 +37,8 @@ export const getExampleMockSignatureConfirmState = (
         status: TransactionStatus.unapproved,
         txParams: { from: Object.keys(mockState.metamask.identities)[0] },
         msgParams: {
-          signatureMethod: 'eth_signTypedData_v4'
-        }
+          signatureMethod: 'eth_signTypedData_v4',
+        },
       },
     },
     ...args.metamask,
