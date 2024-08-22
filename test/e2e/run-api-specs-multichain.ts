@@ -1,10 +1,14 @@
 import testCoverage from '@open-rpc/test-coverage';
-import { parseOpenRPCDocument } from '@open-rpc/schema-utils-js';
+import {
+  parseOpenRPCDocument,
+} from '@open-rpc/schema-utils-js';
 import HtmlReporter from '@open-rpc/test-coverage/build/reporters/html-reporter';
-import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
-import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
-import { MultiChainOpenRPCDocument } from '@metamask/api-specs';
+import {
+  MultiChainOpenRPCDocument,
+  MetaMaskOpenRPCDocument,
+} from '@metamask/api-specs';
 
+import { MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
 import { Driver, PAGES } from './webdriver/driver';
 
 import { createMultichainDriverTransport } from './api-specs/helpers';
@@ -17,17 +21,20 @@ import {
   DAPP_URL,
   ACCOUNT_1,
 } from './helpers';
+import { MultichainAuthorizationConfirmation } from './api-specs/MultichainAuthorizationConfirmation';
+import transformOpenRPCDocument from './api-specs/transform';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-// const mockServer = require('@open-rpc/mock-server/build/index').default;
+const mockServer = require('@open-rpc/mock-server/build/index').default;
 
 async function main() {
-  // const port = 8545;
+  const port = 8545;
   const chainId = 1337;
   await withFixtures(
     {
       dapp: true,
       fixtures: new FixtureBuilder().build(),
+      disableGanache: true,
       title: 'api-specs coverage',
     },
     async ({ driver }: { driver: Driver }) => {
@@ -112,28 +119,26 @@ async function main() {
       await parseOpenRPCDocument(MetaMaskOpenRPCDocument as never);
 
       const testCoverageResults = await testCoverage({
-        openrpcDocument: (await parseOpenRPCDocument(
-          MultiChainOpenRPCDocument as never,
-        )) as never,
+        openrpcDocument: doc,
         transport,
         reporters: [
           'console-streaming',
           new HtmlReporter({ autoOpen: !process.env.CI }),
         ],
-        skip: [
-          'provider_request'
-        ],
         skip: ['wallet_invokeMethod'],
         rules: [
-          new JsonSchemaFakerRule({
-            only: [],
-            skip: [],
-            numCalls: 2,
+          new MultichainAuthorizationConfirmation({
+            driver,
           }),
-          new ExamplesRule({
-            only: [],
-            skip: [],
-          }),
+          // new JsonSchemaFakerRule({
+          //   only: [],
+          //   skip: [],
+          //   numCalls: 2,
+          // }),
+          // new ExamplesRule({
+          //   only: [],
+          //   skip: [],
+          // }),
         ],
       });
 
@@ -148,5 +153,14 @@ async function main() {
     },
   );
 }
+process.on('unhandledRejection', (...args) => {
+  console.error('Unhandled Rejection:', args, JSON.stringify(args, null, 4));
+  process.exit(1);
+});
 
-main();
+try {
+  main();
+} catch (e: any) {
+  console.log('ERR', e.message);
+  console.log('stack', e.stack);
+}

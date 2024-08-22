@@ -79,70 +79,67 @@ export const pollForResult = async (
 export const createMultichainDriverTransport = (driver: Driver) => {
   // use externally_connectable to communicate with the extension
   // https://developer.chrome.com/docs/extensions/mv3/messaging/
-
   return async (
     _: string,
     method: string,
     params: unknown[] | Record<string, unknown>,
   ) => {
     const generatedKey = uuid();
-    return new Promise((resolve, reject) => {
-      const execute = async () => {
-        await addToQueue({
-          name: 'transport',
-          resolve,
-          reject,
-          task: async () => {
-            console.log('about to call executeScript');
+    addToQueue({
+      name: 'transport',
+      resolve: () => {
+        // noop
+      },
+      reject: () => {
+        // noop
+      },
+      task: async () => {
+        // don't wait for executeScript to finish window.ethereum promise
+        // we need this because if we wait for the promise to resolve it
+        // will hang in selenium since it can only do one thing at a time.
+        // the workaround is to put the response on window.asyncResult and poll for it.
+        driver.executeScript(
+          ([m, p, g]: [
+            string,
+            unknown[] | Record<string, unknown>,
+            string,
+          ]) => {
+            const EXTENSION_ID = 'famgliladofnadeldnodcgnjhafnbnhj';
+            const extensionPort = chrome.runtime.connect(EXTENSION_ID);
 
-            // don't wait for executeScript to finish window.ethereum promise
-            // we need this because if we wait for the promise to resolve it
-            // will hang in selenium since it can only do one thing at a time.
-            // the workaround is to put the response on window.asyncResult and poll for it.
-            driver.executeScript(
-              ([m, p, g]: [
-                string,
-                unknown[] | Record<string, unknown>,
-                string,
-              ]) => {
-                window[g] = null;
-                const EXTENSION_ID = 'famgliladofnadeldnodcgnjhafnbnhj';
-                const extensionPort = chrome.runtime.connect(EXTENSION_ID);
-                console.log('got poart');
+            const listener = ({ type, data }: any) => {
+              if (type !== 'caip-x') {
+                return;
+              }
+              if (data?.id !== g) {
+                return;
+              }
 
-                extensionPort.onMessage.addListener(({ type, data }: any) => {
-                  console.log('got message', type, data);
-                  if (type !== 'caip-x') {
-                    return;
-                  }
-                  if (data.id || data.error) {
-                    window[g] = data;
-                  }
-                });
-                const msg = {
-                  type: 'caip-x',
-                  data: {
-                    jsonrpc: '2.0',
-                    method: m,
-                    params: p,
-                    id: g,
-                  },
-                };
-                console.log('sending postmessage', msg);
-                extensionPort.postMessage(msg);
+              if (data.id || data.error) {
+                window[g] = data;
+                extensionPort.onMessage.removeListener(listener);
+              }
+            };
+
+            extensionPort.onMessage.addListener(listener);
+            const msg = {
+              type: 'caip-x',
+              data: {
+                jsonrpc: '2.0',
+                method: m,
+                params: p,
+                id: g,
               },
-              method,
-              params,
-              generatedKey,
-            );
+            };
+            extensionPort.postMessage(msg);
           },
-        });
-      };
-      return execute();
-    }).then(async () => {
-      const response = await pollForResult(driver, generatedKey);
-      return response;
+          method,
+          params,
+          generatedKey,
+        );
+      },
     });
+    return pollForResult(driver, generatedKey);
   };
 };
 

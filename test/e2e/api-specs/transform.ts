@@ -1,15 +1,6 @@
-import {
-  ExampleObject,
-  ExamplePairingObject,
-  MethodObject,
-  OpenrpcDocument,
-} from '@open-rpc/meta-schema';
+import { ExampleObject, ExamplePairingObject, MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
 
-const transformOpenRPCDocument = (
-  openrpcDocument: OpenrpcDocument,
-  chainId: number,
-  account: string,
-) => {
+const transformOpenRPCDocument = (openrpcDocument: OpenrpcDocument, chainId: number, account: string) => {
   // transform the document here
 
   const transaction =
@@ -133,8 +124,9 @@ const transformOpenRPCDocument = (
   (signTypedData4Example.params[0] as ExampleObject).value = account;
 
   // update chainId for signTypedData
-  (signTypedData4Example.params[1] as ExampleObject).value.domain.chainId =
-    chainId;
+  (
+    signTypedData4Example.params[1] as ExampleObject
+  ).value.domain.chainId = chainId;
 
   // net_version missing from execution-apis. see here: https://github.com/ethereum/execution-apis/issues/540
   const netVersion: MethodObject = {

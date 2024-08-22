@@ -4,7 +4,11 @@ import HtmlReporter from '@open-rpc/test-coverage/build/reporters/html-reporter'
 import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
 import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
 
-import { MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
+import {
+  ExampleObject,
+  ExamplePairingObject,
+  MethodObject,
+} from '@open-rpc/meta-schema';
 import { MetaMaskOpenRPCDocument } from '@metamask/api-specs';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
 
@@ -45,8 +49,8 @@ async function main() {
       await openDapp(driver, undefined, DAPP_URL);
 
       const transport = createDriverTransport(driver);
-      const doc: OpenrpcDocument = transformOpenRPCDocument(
-        MetaMaskOpenRPCDocument as unknown as OpenrpcDocument,
+      const doc = transformOpenRPCDocument(
+        MetaMaskOpenRPCDocument as any,
         chainId,
         ACCOUNT_1,
       );
@@ -90,7 +94,7 @@ async function main() {
         .map((m) => (m as MethodObject).name);
 
       const testCoverageResults = await testCoverage({
-        openrpcDocument: await parseOpenRPCDocument(doc),
+        openrpcDocument: (await parseOpenRPCDocument(doc as never)) as never,
         transport,
         reporters: [
           'console-streaming',
