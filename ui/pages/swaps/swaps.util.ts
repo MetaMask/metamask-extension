@@ -216,14 +216,12 @@ export async function fetchTopAssetsList(
   return topAssetsList;
 }
 
-// TODO: Replace `any` with type
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function fetchTopAssets(chainId: any): Promise<any> {
+export async function fetchTopAssets(
+  chainId: string,
+): Promise<Record<string, { index: string }>> {
   const response = await fetchTopAssetsList(chainId);
   const topAssetsMap = response.reduce(
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (_topAssetsMap: any, asset: { address: string }, index: number) => {
+    (_topAssetsMap, asset: { address: string }, index: number) => {
       return { ..._topAssetsMap, [asset.address]: { index: String(index) } };
     },
     {},
