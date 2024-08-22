@@ -1,7 +1,6 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  defaultGanacheOptions,
   openDapp,
   sendTransaction,
   unlockWallet,
@@ -10,6 +9,7 @@ const {
   ACCOUNT_2,
   WINDOW_TITLES,
   clickNestedButton,
+  multipleGanacheOptions,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 
@@ -25,7 +25,7 @@ describe('Increase Token Allowance', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        ganacheOptions: multipleGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },

@@ -434,11 +434,11 @@ export default class ConfirmTransactionBase extends Component {
       const inputValue = Number(value);
 
       if (inputValue < 0 || isNaN(inputValue)) {
-        updateCustomNonce('');
+        updateCustomNonce(undefined);
         return;
       }
 
-      updateCustomNonce(String(inputValue));
+      updateCustomNonce(inputValue);
 
       getNextNonce();
     };
