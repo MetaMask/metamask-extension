@@ -1,5 +1,6 @@
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import { ApprovalType } from '@metamask/controller-utils';
+import { SnapIdPrefixes } from '@metamask/snaps-utils';
 
 import {
   BUILT_IN_INFURA_NETWORKS,
@@ -200,10 +201,27 @@ export async function switchChain(
     requestUserApproval,
     getCaveat,
     requestPermittedChainsPermission,
+    grantChainPermissions,
   },
 ) {
   try {
-    if (getChainPermissionsFeatureFlag()) {
+    if (
+      Object.values(SnapIdPrefixes).some((prefix) => origin.startsWith(prefix))
+    ) {
+      // TODO: maybe just call grantincremental since its idempotent?
+      const { value: permissionedChainIds } =
+        getCaveat({
+          target: PermissionNames.permittedChains,
+          caveatType: CaveatTypes.restrictNetworkSwitching,
+        }) ?? {};
+      if (!permissionedChainIds.includes(chainId)) {
+        await grantChainPermissions([chainId]);
+      }
+      await setActiveNetwork(networkClientId, {
+        originIsSnap: true,
+      });
+      res.result = null;
+    } else if (getChainPermissionsFeatureFlag()) {
       const { value: permissionedChainIds } =
         getCaveat({
           target: PermissionNames.permittedChains,
