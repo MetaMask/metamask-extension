@@ -1,52 +1,33 @@
 import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
+import { DefaultRootState } from 'react-redux';
+
 import {
-  DEPOSIT_METHOD_DATA,
-  genUnapprovedContractInteractionConfirmation,
-} from '../../../../../../test/data/confirmations/contract-interaction';
-import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
-import mockState from '../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../test/jest';
+  getExampleMockContractInteractionConfirmState,
+  getExampleMockSignatureConfirmState,
+} from '../../../../../../test/data/confirmations/helper';
+import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../store/store';
 import Header from './header';
 
-const render = (storeOverrides = {}) => {
-  const store = configureStore({
-    metamask: {
-      ...mockState.metamask,
-      useNonceField: true,
-    },
-    confirm: {
-      currentConfirmation: {
-        msgParams: {
-          from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        },
-      },
-    },
-    ...storeOverrides,
-  });
+const render = (
+  state: DefaultRootState = getExampleMockSignatureConfirmState(),
+) => {
+  const store = configureStore(state);
 
-  return renderWithProvider(<Header />, store);
+  return renderWithConfirmContextProvider(<Header />, store);
 };
 
 describe('Header', () => {
   it('should match snapshot with signature confirmation', () => {
-    const { container } = render({
-      confirm: { currentConfirmation: unapprovedPersonalSignMsg },
-    });
-
+    const { container } = render(getExampleMockSignatureConfirmState());
     expect(container).toMatchSnapshot();
   });
 
   it('should match snapshot with transaction confirmation', () => {
-    const { container } = render({
-      confirm: {
-        currentConfirmation: genUnapprovedContractInteractionConfirmation({
-          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-          txData: DEPOSIT_METHOD_DATA,
-        }),
-      },
-    });
+    const { container } = render(
+      getExampleMockContractInteractionConfirmState(),
+    );
 
     expect(container).toMatchSnapshot();
   });

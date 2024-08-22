@@ -39,10 +39,7 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  currentConfirmationSelector,
-  getUseBlockie,
-} from '../../../../../selectors';
+import { getUseBlockie } from '../../../../../selectors';
 import { setConfirmationAdvancedDetailsOpen } from '../../../../../store/actions';
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
@@ -50,6 +47,7 @@ import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/prefer
 import { SignatureRequestType } from '../../../types/confirm';
 import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
 import { isSignatureTransactionType } from '../../../utils/confirm';
+import { useConfirmContext } from '../../../context/confirm';
 
 const HeaderInfo = () => {
   const dispatch = useDispatch();
@@ -66,7 +64,8 @@ const HeaderInfo = () => {
     dispatch(setConfirmationAdvancedDetailsOpen(value));
   };
 
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { currentConfirmation } = useConfirmContext();
+
   const { senderAddress: fromAddress, senderName: fromName } =
     useConfirmationRecipientInfo();
 
