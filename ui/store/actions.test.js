@@ -1119,7 +1119,6 @@ describe('Actions', () => {
     });
   });
 
-  // TODO: This function no longer exists
   describe('updateNetwork', () => {
     afterEach(() => {
       sinon.restore();
