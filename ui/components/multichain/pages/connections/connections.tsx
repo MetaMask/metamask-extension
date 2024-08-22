@@ -177,19 +177,23 @@ export const Connections = () => {
         index ===
         mergedAccounts.reduce(
           (
-            acc: number,
-            cur: AccountType,
+            indexOfAccountWIthHighestLastSelected: number,
+            currentAccountToCompare: AccountType,
             // TODO: Replace `any` with type
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             i: any,
           ) => {
-            const currentLastSelected = cur.metadata.lastSelected ?? 0;
-            const accountAtIndexLastSelected = mergedAccounts[acc].metadata
-              .lastSelected
+            const currentLastSelected =
+              currentAccountToCompare.metadata.lastSelected ?? 0;
+            const accountAtIndexLastSelected = mergedAccounts[
+              indexOfAccountWIthHighestLastSelected
+            ].metadata.lastSelected
               ? i
-              : acc;
+              : indexOfAccountWIthHighestLastSelected;
 
-            return currentLastSelected > accountAtIndexLastSelected ? i : acc;
+            return currentLastSelected > accountAtIndexLastSelected
+              ? i
+              : indexOfAccountWIthHighestLastSelected;
           },
           0,
         )
