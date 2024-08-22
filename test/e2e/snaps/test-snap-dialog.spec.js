@@ -119,7 +119,7 @@ describe('Test Snap Dialog', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // click accept
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Approve',
           tag: 'button',
         });
