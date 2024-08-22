@@ -166,8 +166,10 @@ export function AssetPicker({
               event: MetaMetricsEventName.sendTokenModalOpened,
               category: MetaMetricsEventCategory.Send,
               properties: {
-                ...sendAnalytics,
                 is_destination_asset_picker_modal: Boolean(sendingAsset),
+              },
+              sensitiveProperties: {
+                ...sendAnalytics,
               },
             },
             { excludeMetaMetricsId: false },
