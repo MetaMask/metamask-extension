@@ -5,13 +5,12 @@ import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
 import { mockNetworkState } from '../../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import ConfirmApproveContent from '.';
 
 const renderComponent = (props) => {
   const store = configureMockStore([])({
     metamask: {
-      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      ...mockNetworkState({ chainId: '0x0' }),
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
