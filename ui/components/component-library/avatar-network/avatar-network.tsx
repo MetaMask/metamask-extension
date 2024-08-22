@@ -21,7 +21,7 @@ export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
       src,
       showHalo,
       color = TextColor.textDefault,
-      backgroundColor = BackgroundColor.backgroundDefault,
+      backgroundColor = BackgroundColor.backgroundAlternative,
       borderColor = BorderColor.transparent,
       className = '',
       ...props
