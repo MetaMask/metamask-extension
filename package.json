@@ -456,7 +456,6 @@
     "@babel/preset-typescript": "^7.23.2",
     "@babel/register": "^7.22.15",
     "@ethereumjs/common": "^4.4.0",
-    "@ethereumjs/util": "^9.0.3",
     "@lavamoat/allow-scripts": "^3.0.4",
     "@lavamoat/lavadome-core": "0.0.10",
     "@lavamoat/lavapack": "^6.1.0",

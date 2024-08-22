@@ -1,6 +1,5 @@
 import { Common } from '@ethereumjs/common';
 import { Transaction } from '@ethereumjs/tx';
-import { addHexPrefix, ecsign } from '@ethereumjs/util';
 import { bufferToHex } from 'ethereumjs-util';
 
 // BIP32 Public Key: xpub6ELgkkwgfoky9h9fFu4Auvx6oHvJ6XfwiS1NE616fe9Uf4H3JHtLGjCePVkb6RFcyDCqVvjXhNXbDNDqs6Kjoxw7pTAeP1GSEiLHmA5wYa9
@@ -46,6 +45,13 @@ export const KNOWN_PRIVATE_KEYS = [
   '841f90906439526b3771c0aa51f93f6aae5c5ee0fdc73d0d8ff7f8a9b28754d7',
   '7df6c85f059939631c05e72b6fc3c54423754a5162ae4a69b14b38219c430665',
 ];
+
+function addHexPrefix(hexString) {
+  if (hexString.startsWith('0x')) {
+    return hexString;
+  }
+  return `0x${hexString}`;
+}
 
 export class FakeKeyringBridge {
   #publicKeyPayload;
@@ -114,8 +120,6 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
     super({
       publicKeyPayload: {
         publicKey: KNOWN_PUBLIC_KEY,
-        chainCode: CHAIN_CODE,
-        address: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
       },
     });
   }
@@ -126,9 +130,5 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
 
   updateTransportMethod() {
     return true;
-  }
-
-  async deviceSignTransaction({ tx }) {
-    return ecsign(tx, Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
   }
 }
