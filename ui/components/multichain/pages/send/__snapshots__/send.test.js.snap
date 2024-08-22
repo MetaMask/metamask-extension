@@ -178,7 +178,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                   class="ens-input__wrapper__input"
                   data-testid="ens-input"
                   dir="auto"
-                  placeholder="Enter public address (0x) or ENS name"
+                  placeholder="Enter public address (0x) or domain name"
                   spellcheck="false"
                   type="text"
                   value=""

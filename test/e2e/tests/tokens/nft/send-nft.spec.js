@@ -30,7 +30,7 @@ describe('Send NFT', function () {
         // TODO: Update Test when Multichain Send Flow is added
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.fill(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          'input[placeholder="Enter public address (0x) or domain name"]',
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
         await driver.clickElement({
@@ -104,7 +104,7 @@ describe('Send NFT', function () {
 
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.fill(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          'input[placeholder="Enter public address (0x) or domain name"]',
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
 
@@ -171,7 +171,7 @@ describe('Send NFT', function () {
         await driver.clickElement({ text: 'Send', tag: 'button' });
 
         await driver.fill(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          'input[placeholder="Enter public address (0x) or domain name"]',
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
 

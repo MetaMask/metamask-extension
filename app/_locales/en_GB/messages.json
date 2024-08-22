@@ -4214,7 +4214,7 @@
     "message": "Receive tokens"
   },
   "recipientAddressPlaceholder": {
-    "message": "Enter public address (0x) or ENS name"
+    "message": "Enter public address (0x) or domain name"
   },
   "recommendedGasLabel": {
     "message": "Recommended"
