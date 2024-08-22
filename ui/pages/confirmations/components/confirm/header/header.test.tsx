@@ -14,13 +14,13 @@ const render = (
   state: DefaultRootState = getExampleMockSignatureConfirmState(),
 ) => {
   const store = configureStore(state);
-
   return renderWithConfirmContextProvider(<Header />, store);
 };
 
 describe('Header', () => {
   it('should match snapshot with signature confirmation', () => {
-    const { container } = render(getExampleMockSignatureConfirmState());
+    const { container } = render();
+
     expect(container).toMatchSnapshot();
   });
 

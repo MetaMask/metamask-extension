@@ -1,4 +1,5 @@
 import React from 'react';
+
 import Preloader from '../../../../../components/ui/icon/preloader';
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
 import { Box } from '../../../../../components/component-library';
