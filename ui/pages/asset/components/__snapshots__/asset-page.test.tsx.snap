@@ -143,20 +143,20 @@ exports[`AssetPage should render a native asset 1`] = `
         </button>
         <button
           class="icon-button coin-overview__button"
-          data-testid="coin-overview-portfolio"
+          data-testid="coin-overview-receive"
         >
           <div
             class="icon-button__circle"
           >
             <span
               class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/diagram.svg');"
+              style="mask-image: url('./images/icons/scan-barcode.svg');"
             />
           </div>
           <p
             class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
-            Portfolio
+            Receive
           </p>
         </button>
       </div>

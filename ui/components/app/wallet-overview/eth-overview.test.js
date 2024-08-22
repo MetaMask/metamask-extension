@@ -114,7 +114,7 @@ describe('EthOverview', () => {
   const store = configureMockStore([thunk])(mockStore);
   const ETH_OVERVIEW_BUY = 'eth-overview-buy';
   const ETH_OVERVIEW_BRIDGE = 'eth-overview-bridge';
-  const ETH_OVERVIEW_PORTFOLIO = 'eth-overview-portfolio';
+  const ETH_OVERVIEW_RECEIVE = 'eth-overview-receive';
   const ETH_OVERVIEW_SWAP = 'token-overview-button-swap';
   const ETH_OVERVIEW_SEND = 'eth-overview-send';
   const ETH_OVERVIEW_PRIMARY_CURRENCY = 'eth-overview__primary-currency';
@@ -295,26 +295,8 @@ describe('EthOverview', () => {
 
     it('should always show the Portfolio button', () => {
       const { queryByTestId } = renderWithProvider(<EthOverview />, store);
-      const portfolioButton = queryByTestId(ETH_OVERVIEW_PORTFOLIO);
+      const portfolioButton = queryByTestId(ETH_OVERVIEW_RECEIVE);
       expect(portfolioButton).toBeInTheDocument();
-    });
-
-    it('should open the Portfolio URI when clicking on Portfolio button', async () => {
-      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
-
-      const portfolioButton = queryByTestId(ETH_OVERVIEW_PORTFOLIO);
-
-      expect(portfolioButton).toBeInTheDocument();
-      expect(portfolioButton).not.toBeDisabled();
-
-      fireEvent.click(portfolioButton);
-      expect(openTabSpy).toHaveBeenCalledTimes(1);
-
-      await waitFor(() =>
-        expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(`?metamaskEntry=ext`),
-        }),
-      );
     });
 
     it('should always show the Buy button regardless of current chain Id', () => {
