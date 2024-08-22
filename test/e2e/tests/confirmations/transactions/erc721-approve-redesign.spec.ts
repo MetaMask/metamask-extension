@@ -20,8 +20,8 @@ const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 describe('Confirmation Redesign ERC721 Approve Component', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
 
-  describe.only('Submit an Approve transaction @no-mmi', function () {
-    it.only('Sends a type 0 transaction (Legacy)', async function () {
+  describe('Submit an Approve transaction @no-mmi', function () {
+    it('Sends a type 0 transaction (Legacy)', async function () {
       await withFixtures(
         {
           dapp: true,

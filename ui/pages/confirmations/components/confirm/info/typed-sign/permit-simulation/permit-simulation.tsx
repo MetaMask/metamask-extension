@@ -1,4 +1,4 @@
-import { default as React, default as React } from 'react';
+import React from 'react';
 import { PrimaryType } from '../../../../../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../../../../../shared/modules/transaction.utils';
 import { Box } from '../../../../../../../components/component-library';
