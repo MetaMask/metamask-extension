@@ -204,9 +204,11 @@ export default function GasTiming({
         {text}
       </Text>
 
-      <Text variant={TextVariant.bodySm} color={getColorFromAttitude()}>
-        <span data-testid="gas-timing-time">~{time}</span>
-      </Text>
+      {time && (
+        <Text variant={TextVariant.bodySm} color={getColorFromAttitude()}>
+          <span data-testid="gas-timing-time">~{time}</span>
+        </Text>
+      )}
     </Box>
   );
 }

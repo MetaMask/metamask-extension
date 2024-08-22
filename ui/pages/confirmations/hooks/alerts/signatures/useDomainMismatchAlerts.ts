@@ -6,6 +6,7 @@ import {
 } from '@metamask/controller-utils';
 
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../selectors';
@@ -32,7 +33,7 @@ export default function useDomainMismatchAlerts(): Alert[] {
 
     return [
       {
-        field: 'requestFrom',
+        field: RowAlertKey.RequestFrom,
         key: 'requestFrom',
         message: t('alertMessageSignInDomainMismatch'),
         reason: t('alertReasonSignIn'),

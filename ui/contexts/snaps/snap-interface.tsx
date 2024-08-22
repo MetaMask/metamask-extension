@@ -2,6 +2,7 @@ import {
   File as FileObject,
   FormState,
   InterfaceState,
+  State,
   UserInputEventType,
 } from '@metamask/snaps-sdk';
 import { encodeBase64 } from '@metamask/snaps-utils';
@@ -22,20 +23,20 @@ import {
 } from '../../store/actions';
 import { mergeValue } from './utils';
 
-export type HandleEvent = <Type>(args: {
+export type HandleEvent = <Type extends State>(args: {
   event: UserInputEventType;
   name?: string;
   value?: Type;
   flush?: boolean;
 }) => void;
 
-export type HandleInputChange = <Type>(
+export type HandleInputChange = <Type extends State>(
   name: string,
   value: Type | null,
   form?: string,
 ) => void;
 
-export type GetValue = <Type>(name: string, form?: string) => Type | undefined;
+export type GetValue = (name: string, form?: string) => State | undefined;
 
 export type HandleFileChange = (
   name: string,
@@ -48,6 +49,7 @@ export type SnapInterfaceContextType = {
   getValue: GetValue;
   handleInputChange: HandleInputChange;
   handleFileChange: HandleFileChange;
+  snapId: string;
 };
 
 export const SnapInterfaceContext =
@@ -56,7 +58,7 @@ export const SnapInterfaceContext =
 export type SnapInterfaceContextProviderProps = {
   interfaceId: string;
   snapId: string;
-  initialState: Record<string, string | Record<string, unknown> | unknown>;
+  initialState: InterfaceState;
   context: Json;
 };
 
@@ -100,7 +102,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     name?: string,
     value?: unknown,
   ) => {
-    handleSnapRequest({
+    handleSnapRequest<Parameters<HandleEvent>[0]>({
       snapId,
       origin: '',
       handler: 'onUserInput',
@@ -146,7 +148,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   const handleEvent: HandleEvent = ({
     event,
     name,
-    value = internalState.current[name],
+    value = name ? internalState.current[name] : undefined,
     flush = false,
   }) => {
     // We always flush the debounced request for updating the state.
@@ -192,8 +194,8 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     handleInputChangeDebounced(name, value);
   };
 
-  const uploadFile = (name: string, file: File | null) => {
-    handleSnapRequest({
+  const uploadFile = (name: string, file: FileObject | null) => {
+    handleSnapRequest<Parameters<HandleEvent>[0]>({
       snapId,
       origin: '',
       handler: 'onUserInput',
@@ -203,8 +205,8 @@ export const SnapInterfaceContextProvider: FunctionComponent<
         params: {
           event: {
             type: UserInputEventType.FileUploadEvent,
-            name,
-            file,
+            ...(name === undefined ? {} : { name }),
+            ...(file === undefined ? {} : { file }),
           },
           id: interfaceId,
           context,
@@ -231,7 +233,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
             name: file.name,
             size: file.size,
             contentType: file.type,
-            contents: base64,
+            contents: base64 as string,
           };
 
           const state = mergeValue(
@@ -280,7 +282,13 @@ export const SnapInterfaceContextProvider: FunctionComponent<
 
   return (
     <SnapInterfaceContext.Provider
-      value={{ handleEvent, getValue, handleInputChange, handleFileChange }}
+      value={{
+        handleEvent,
+        getValue,
+        handleInputChange,
+        handleFileChange,
+        snapId,
+      }}
     >
       {children}
     </SnapInterfaceContext.Provider>

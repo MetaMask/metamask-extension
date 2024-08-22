@@ -389,8 +389,7 @@ jobs:
           steps:
             - run:
                 name: Build beta prod
-                command: |
-                  .circleci/scripts/trigger-beta-build.sh
+                command: .circleci/scripts/trigger-beta-build.sh
             - run:
                 name: Move beta build to 'dist-beta' to avoid conflict with production build
                 command: mv ./dist ./dist-beta
@@ -463,8 +462,7 @@ jobs:
       - run: sudo corepack enable
       - run:
           name: Save Yarn version
-          command: |
-            yarn --version > /tmp/YARN_VERSION
+          command: yarn --version > /tmp/YARN_VERSION
       - restore_cache:
           keys:
             # First try to get the specific cache for the checksum of the yarn.lock file.
@@ -1086,7 +1084,7 @@ jobs:
           command: mv ./dist-test-webpack ./dist
       - run:
           name: test:e2e:chrome:webpack
-          command: timeout 20m yarn test:e2e:chrome:webpack --retries 1
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:webpack
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
@@ -1110,8 +1108,7 @@ jobs:
       - gh/install
       - run:
           name: test:api-specs
-          command: |
-            timeout 20m yarn test:api-specs --retries 2
+          command: .circleci/scripts/test-run-e2e.sh yarn test:api-specs
           no_output_timeout: 5m
       - run:
           name: Comment on PR
@@ -1142,11 +1139,7 @@ jobs:
           command: mv ./builds-test ./builds
       - run:
           name: test:e2e:chrome
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              timeout 20m yarn test:e2e:chrome --retries 1
-            fi
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
@@ -1170,11 +1163,7 @@ jobs:
           command: mv ./builds-test ./builds
       - run:
           name: test:e2e:chrome:rpc
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              timeout 20m yarn test:e2e:chrome:rpc --retries 1
-            fi
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:rpc
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
@@ -1198,11 +1187,7 @@ jobs:
           command: mv ./builds-test ./builds
       - run:
           name: test:e2e:chrome:multi-provider
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              yarn test:e2e:chrome:multi-provider --retries 1
-            fi
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:multi-provider
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
@@ -1225,11 +1210,7 @@ jobs:
           command: mv ./builds-test-mmi ./builds
       - run:
           name: test:e2e:chrome:rpc
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              timeout 20m yarn test:e2e:chrome:rpc --retries 1 --build-type=mmi
-            fi
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:rpc --build-type=mmi
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
@@ -1245,12 +1226,8 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: test:e2e:chrome:vault
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.js --browser chrome --retries 1
-            fi
+          name: test:e2e:single
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.js --browser chrome
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
@@ -1274,12 +1251,7 @@ jobs:
           command: mv ./builds-test-flask-mv2 ./builds
       - run:
           name: test:e2e:firefox:flask
-          command: |
-            export ENABLE_MV3=false
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              timeout 20m yarn test:e2e:firefox:flask --retries 1
-            fi
+          command: ENABLE_MV3=false .circleci/scripts/test-run-e2e.sh yarn test:e2e:firefox:flask
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
@@ -1303,11 +1275,7 @@ jobs:
           command: mv ./builds-test-flask ./builds
       - run:
           name: test:e2e:chrome:flask
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              timeout 20m yarn test:e2e:chrome:flask --retries 1
-            fi
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:flask
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
@@ -1331,11 +1299,7 @@ jobs:
           command: mv ./builds-test-mmi ./builds
       - run:
           name: test:e2e:chrome:mmi
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              timeout 20m yarn test:e2e:chrome:mmi --retries 1 --build-type=mmi
-            fi
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:mmi --build-type=mmi
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
@@ -1357,8 +1321,7 @@ jobs:
           command: mv ./dist-test-mmi-playwright ./dist
       - run:
           name: Install chromium
-          command: |
-            yarn playwright install chromium
+          command: yarn playwright install chromium
       - run:
           name: test:e2e:chrome:mmi
           command: |
@@ -1395,8 +1358,7 @@ jobs:
           at: .
       - run:
           name: Install chromium
-          command: |
-            yarn playwright install chromium
+          command: yarn playwright install chromium
       - run:
           name: test:e2e:chrome:swap
           command: |
@@ -1432,12 +1394,7 @@ jobs:
           command: mv ./builds-test-mv2 ./builds
       - run:
           name: test:e2e:firefox
-          command: |
-            export ENABLE_MV3=false
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              timeout 20m yarn test:e2e:firefox --retries 1
-            fi
+          command: ENABLE_MV3=false .circleci/scripts/test-run-e2e.sh yarn test:e2e:firefox
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
@@ -1608,15 +1565,20 @@ jobs:
           name: Publish main release to Sentry
           command: yarn sentry:publish
       - run:
+          name: Publish main MV2 release to Sentry
+          command: yarn sentry:publish --dist mv2
+      - run:
           name: Publish Flask release to Sentry
           command: yarn sentry:publish --build-type flask
+      - run:
+          name: Publish Flask MV2 release to Sentry
+          command: yarn sentry:publish --build-type flask --dist mv2
       - run:
           name: Publish MMI release to Sentry
           command: yarn sentry:publish --build-type mmi
       - run:
           name: Create GitHub release
-          command: |
-            .circleci/scripts/release-create-gh-release.sh
+          command: .circleci/scripts/release-create-gh-release.sh
 
   job-publish-storybook:
     executor: node-browsers-small
@@ -1672,8 +1634,7 @@ jobs:
           at: .
       - run:
           name: Validate source maps
-          command: |
-            .circleci/scripts/validate-source-maps-beta.sh
+          command: .circleci/scripts/validate-source-maps-beta.sh
 
   validate-source-maps-mmi:
     executor: node-browsers-small
