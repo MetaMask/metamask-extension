@@ -5,9 +5,9 @@ import {
 } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../../../../test/lib/render-helpers';
+import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { useApproveTokenSimulation } from './use-approve-token-simulation';
 import { useIsNFT } from './use-is-nft';
-import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 
 jest.mock('./use-is-nft', () => ({
   ...jest.requireActual('./use-is-nft'),

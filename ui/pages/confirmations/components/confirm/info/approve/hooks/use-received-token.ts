@@ -7,7 +7,7 @@ import {
   getSelectedAccount,
 } from '../../../../../../../selectors';
 
-interface TokenWithBalance {
+type TokenWithBalance = {
   address: string;
   balance: string;
   balanceError: unknown;
@@ -16,7 +16,7 @@ interface TokenWithBalance {
   isERC721: unknown;
   string: string;
   symbol: string;
-}
+};
 
 export const useReceivedToken = () => {
   const transactionMeta = useSelector(
@@ -31,12 +31,12 @@ export const useReceivedToken = () => {
   ) as { tokensWithBalances: TokenWithBalance[] };
 
   let receivedToken;
-  for (let i = 0; i < tokensWithBalances.length; i += 1) {
+  for (const token of tokensWithBalances) {
     if (
       normalizeSafeAddress(transactionMeta.txParams.to as string) ===
-      normalizeSafeAddress(tokensWithBalances[i].address)
+      normalizeSafeAddress(token.address)
     ) {
-      receivedToken = tokensWithBalances[i];
+      receivedToken = token;
     }
   }
 
