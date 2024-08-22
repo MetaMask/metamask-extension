@@ -165,8 +165,7 @@ async function validateBalanceAndActivity(
   }
 }
 
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Request-queue UI changes', function () {
+describe('Request-queue UI changes', function () {
   it('should show network specific to domain @no-mmi', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
@@ -233,76 +232,9 @@ describe.skip('Request-queue UI changes', function () {
     );
   });
 
-  it('should gracefully handle deleted network @no-mmi', async function () {
-    const port = 8546;
-    const chainId = 1338; // 0x53a
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
-          .withSelectedNetworkControllerPerDomain()
-          .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
-              port,
-              chainId,
-              ganacheOptions2: defaultGanacheOptions,
-            },
-          ],
-        },
-        dappOptions: { numberOfDapps: 2 },
-        title: this.test.fullTitle(),
-      },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
-        // Open the first dapp
-        await openDappAndSwitchChain(driver, DAPP_URL);
-
-        // Open the second dapp and switch chains
-        await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1', 4);
-
-        // Go to wallet fullscreen, ensure that the global network changed to Ethereum Mainnet
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-        await driver.findElement({
-          css: '[data-testid="network-display"]',
-          text: 'Localhost 8546',
-        });
-
-        // Go to the first dapp, ensure it uses localhost
-        await selectDappClickSend(driver, DAPP_URL);
-        await switchToNotificationPopoverValidateDetails(driver, {
-          chainId: '0x539',
-          networkText: 'Localhost 8545',
-          originText: DAPP_URL,
-        });
-        await rejectTransaction(driver);
-
-        // Go to the second dapp, ensure it uses Ethereum Mainnet
-        await selectDappClickSend(driver, DAPP_ONE_URL);
-        await switchToNotificationPopoverValidateDetails(driver, {
-          chainId: '0x53a',
-          networkText: 'Localhost 8546',
-          originText: DAPP_ONE_URL,
-        });
-        await rejectTransaction(driver);
-      },
-    );
-  });
-
   it('handles three confirmations on three confirmations concurrently @no-mmi', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
-
     await withFixtures(
       {
         dapp: true,
@@ -421,6 +353,83 @@ describe.skip('Request-queue UI changes', function () {
         // Switch to first network, whose send transaction was just confirmed
         await switchToNetworkByName(driver, 'Localhost 8545');
         await validateBalanceAndActivity(driver, '24.9998');
+      },
+    );
+  });
+
+  it('should gracefully handle deleted network @no-mmi', async function () {
+    const port = 8546;
+    const chainId = 1338;
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerDoubleGanache()
+          .withPreferencesControllerUseRequestQueueEnabled()
+          .withSelectedNetworkControllerPerDomain()
+          .build(),
+        ganacheOptions: {
+          ...defaultGanacheOptions,
+          concurrent: [
+            {
+              port,
+              chainId,
+              ganacheOptions2: defaultGanacheOptions,
+            },
+          ],
+        },
+        dappOptions: { numberOfDapps: 2 },
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
+        // Open the first dapp
+        await openDappAndSwitchChain(driver, DAPP_URL);
+
+        // Open the second dapp and switch chains
+        await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1', 4);
+
+        // Go to wallet fullscreen, ensure that the global network changed to Ethereum Mainnet
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await driver.findElement({
+          css: '[data-testid="network-display"]',
+          text: 'Ethereum Mainnet',
+        });
+
+        // Go to Settings, delete the first dapp's network
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement('[data-testid="global-menu-settings"]');
+        await driver.clickElement({
+          css: '.tab-bar__tab__content__title',
+          text: 'Networks',
+        });
+        await driver.clickElement({
+          css: '.networks-tab__networks-list-name',
+          text: 'Localhost 8545',
+        });
+        await driver.clickElement({ css: '.btn-danger', text: 'Delete' });
+        await driver.clickElement({
+          css: '.modal-container__footer-button',
+          text: 'Delete',
+        });
+
+        // Go back to first dapp, try an action, ensure deleted network doesn't block UI
+        // The current globally selected network, Ethereum Mainnet, should be used
+        await selectDappClickSend(driver, DAPP_URL);
+        await driver.delay(veryLargeDelayMs);
+        await switchToNotificationPopoverValidateDetails(driver, {
+          chainId: '0x1',
+          networkText: 'Ethereum Mainnet',
+          originText: DAPP_URL,
+        });
       },
     );
   });
