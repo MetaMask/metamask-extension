@@ -127,11 +127,13 @@ export function AssetPickerModal({
           event: MetaMetricsEventName.sendAssetSelected,
           category: MetaMetricsEventCategory.Send,
           properties: {
-            ...sendAnalytics,
             is_destination_asset_picker_modal: Boolean(isDest),
             new_asset_symbol: token.symbol,
             new_asset_address: token.address,
             is_nft: false,
+          },
+          sensitiveProperties: {
+            ...sendAnalytics,
           },
         },
         { excludeMetaMetricsId: false },
