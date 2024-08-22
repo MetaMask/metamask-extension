@@ -448,7 +448,6 @@
   "useTransactionSimulations": true,
   "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
   "userOperations": {},
-  "versionFileETag": "",
   "versionInfo": [],
   "web3ShimUsageOrigins": {},
   "welcomeScreenSeen": false
