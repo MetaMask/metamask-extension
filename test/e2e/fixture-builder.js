@@ -41,7 +41,7 @@ function onboardingFixture() {
       },
       NetworkController: {
         ...mockNetworkState({
-          // id: 'networkConfigurationId',
+          id: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
           rpcUrl: 'http://localhost:8545',

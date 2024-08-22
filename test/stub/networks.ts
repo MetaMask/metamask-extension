@@ -13,7 +13,7 @@ import {
 
 export const mockNetworkState = (
   ...networks: {
-    // id?: string;
+    id?: string;
     // type?: string;
     chainId: Hex;
     rpcUrl?: string;
@@ -26,7 +26,9 @@ export const mockNetworkState = (
   if (
     new Set(networks.map((network) => network.chainId)).size !== networks.length
   ) {
-    // todo support multiple rpc urls per chain ids by grouping them
+    // todo support multiple rpc urls per chain ids.
+    // either by allowing multiple networks and grouping them,
+    // or by making rpcUrls an array
     throw 'TODO: mockNetworkState doesnt yet support multiple rpc urls per chain id';
   }
 
@@ -47,7 +49,11 @@ export const mockNetworkState = (
       blockExplorerUrls: blockExplorer ? [blockExplorer] : [],
       defaultBlockExplorerUrlIndex: blockExplorer ? 0 : undefined,
       rpcEndpoints: [
-        { networkClientId: uuidv4(), type: RpcEndpointType.Custom, url: rpc },
+        {
+          networkClientId: network.id ?? uuidv4(),
+          type: RpcEndpointType.Custom,
+          url: rpc,
+        },
       ],
       defaultRpcEndpointIndex: 0,
       name:

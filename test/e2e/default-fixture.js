@@ -157,7 +157,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       },
       NetworkController: {
         ...mockNetworkState({
-          // id: 'networkConfigurationId',
+          id: 'networkConfigurationId',
           chainId: inputChainId,
           nickname: 'Localhost 8545',
           rpcUrl: 'http://localhost:8545',
