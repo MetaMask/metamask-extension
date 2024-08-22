@@ -1263,9 +1263,6 @@
   "data": {
     "message": "Dados"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Não é possível restaurar seus dados. O arquivo parece estar corrompido."
-  },
   "dataHex": {
     "message": "Hex"
   },
@@ -4038,12 +4035,6 @@
   },
   "restore": {
     "message": "Restaurar"
-  },
-  "restoreFailed": {
-    "message": "Não foi possível restaurar seus dados a partir do arquivo fornecido"
-  },
-  "restoreSuccessful": {
-    "message": "Seus dados foram restaurados com sucesso"
   },
   "restoreUserData": {
     "message": "Restaurar dados do usuário"

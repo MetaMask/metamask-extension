@@ -5,7 +5,9 @@ const { get, has, set, unset, cloneDeep } = require('lodash');
 const { Browser } = require('selenium-webdriver');
 const { format } = require('prettier');
 const { isObject } = require('@metamask/utils');
-const { SENTRY_UI_STATE } = require('../../../../app/scripts/lib/setupSentry');
+const {
+  SENTRY_UI_STATE,
+} = require('../../../../app/scripts/constants/sentry-state');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   convertToHexValue,
@@ -219,7 +221,7 @@ describe('Sentry errors', function () {
     ],
   };
 
-  describe('before initialization, after opting out of metrics', function () {
+  describe('before initialization, after opting out of metrics @no-mmi', function () {
     it('should NOT send error events in the background', async function () {
       await withFixtures(
         {
@@ -532,7 +534,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('after initialization, after opting out of metrics', function () {
+  describe('after initialization, after opting out of metrics @no-mmi', function () {
     it('should NOT send error events in the background', async function () {
       await withFixtures(
         {
@@ -670,6 +672,7 @@ describe('Sentry errors', function () {
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
+          const { extensionId, installType } = mockJsonBody.extra;
           assert.deepStrictEqual(Object.keys(appState), [
             'browser',
             'version',
@@ -685,6 +688,11 @@ describe('Sentry errors', function () {
               appState?.version.length > 0,
             'Invalid version state',
           );
+          assert.ok(
+            typeof extensionId === 'string' && extensionId.length > 0,
+            `${extensionId} is not a valid extension ID`,
+          );
+          assert.equal(installType, 'development');
           await matchesSnapshot({
             data: transformBackgroundState(appState.state),
             snapshot: 'errors-after-init-opt-in-background-state',
@@ -761,6 +769,7 @@ describe('Sentry errors', function () {
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
+          const { extensionId, installType } = mockJsonBody.extra;
           assert.deepStrictEqual(Object.keys(appState), [
             'browser',
             'version',
@@ -776,6 +785,11 @@ describe('Sentry errors', function () {
               appState?.version.length > 0,
             'Invalid version state',
           );
+          assert.ok(
+            typeof extensionId === 'string' && extensionId.length > 0,
+            `${extensionId} is not a valid extension ID`,
+          );
+          assert.equal(installType, 'development');
           await matchesSnapshot({
             data: transformUiState(appState.state),
             snapshot: 'errors-after-init-opt-in-ui-state',

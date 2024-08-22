@@ -1,73 +1,37 @@
-import {
-  Event as SentryEvent,
-  EventProcessor,
-  Hub,
-  Integration,
-} from '@sentry/types';
-import { logger } from '@sentry/utils';
+import { Event as SentryEvent, Integration } from '@sentry/types';
+
+const NAME = 'FilterEvents';
 
 /**
  * Filter events when MetaMetrics is disabled.
+ *
+ * @param options - Options bag.
+ * @param options.getMetaMetricsEnabled - Function that returns whether MetaMetrics is enabled.
+ * @param options.log - Function to log messages.
  */
-export class FilterEvents implements Integration {
-  /**
-   * Property that holds the integration name.
-   */
-  public static id = 'FilterEvents';
+export function filterEvents({
+  getMetaMetricsEnabled,
+  log,
+}: {
+  getMetaMetricsEnabled: () => Promise<boolean>;
+  log: (message: string) => void;
+}): Integration {
+  return {
+    name: NAME,
+    processEvent: async (event: SentryEvent) => {
+      // This integration is required in addition to the custom transport as it provides an
+      // asynchronous context which we may need in order to read the persisted state from the
+      // store, so it can later be added to the event via the `beforeSend` overload.
+      // It also provides a more native solution for discarding events, but any
+      // session requests will always be handled by the custom transport.
+      const metricsEnabled = await getMetaMetricsEnabled();
 
-  /**
-   * Another property that holds the integration name.
-   *
-   * I don't know why this exists, but the other Sentry integrations have it.
-   */
-  public name: string = FilterEvents.id;
-
-  /**
-   * A function that returns whether MetaMetrics is enabled. This should also
-   * return `false` if state has not yet been initialzed.
-   *
-   * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
-   * is enabled, `false` otherwise.
-   */
-  private getMetaMetricsEnabled: () => Promise<boolean>;
-
-  /**
-   * @param options - Constructor options.
-   * @param options.getMetaMetricsEnabled - A function that returns whether
-   * MetaMetrics is enabled. This should also return `false` if state has not
-   * yet been initialzed.
-   */
-  constructor({
-    getMetaMetricsEnabled,
-  }: {
-    getMetaMetricsEnabled: () => Promise<boolean>;
-  }) {
-    this.getMetaMetricsEnabled = getMetaMetricsEnabled;
-  }
-
-  /**
-   * Setup the integration.
-   *
-   * @param addGlobalEventProcessor - A function that allows adding a global
-   * event processor.
-   * @param getCurrentHub - A function that returns the current Sentry hub.
-   */
-  public setupOnce(
-    addGlobalEventProcessor: (callback: EventProcessor) => void,
-    getCurrentHub: () => Hub,
-  ): void {
-    addGlobalEventProcessor(async (currentEvent: SentryEvent) => {
-      // Sentry integrations use the Sentry hub to get "this" references, for
-      // reasons I don't fully understand.
-      // eslint-disable-next-line consistent-this
-      const self = getCurrentHub().getIntegration(FilterEvents);
-      if (self) {
-        if (!(await self.getMetaMetricsEnabled())) {
-          logger.warn(`Event dropped due to MetaMetrics setting.`);
-          return null;
-        }
+      if (!metricsEnabled) {
+        log('Event dropped as metrics disabled');
+        return null;
       }
-      return currentEvent;
-    });
-  }
+
+      return event;
+    },
+  };
 }
