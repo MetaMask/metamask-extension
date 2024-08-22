@@ -797,11 +797,10 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/accounts-controller>@metamask/base-controller": true,
+        "@metamask/accounts-controller>@metamask/utils": true,
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
-        "@metamask/snaps-utils": true,
-        "@metamask/utils": true,
         "uuid": true
       }
     },
@@ -811,6 +810,21 @@
       },
       "packages": {
         "immer": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/address-book-controller": {
@@ -1592,10 +1606,25 @@
         "URL": true
       },
       "packages": {
+        "@metamask/keyring-api>@metamask/utils": true,
         "@metamask/keyring-api>bech32": true,
         "@metamask/keyring-api>uuid": true,
-        "@metamask/utils": true,
-        "superstruct": true
+        "@metamask/utils>@metamask/superstruct": true
+      }
+    },
+    "@metamask/keyring-api>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/keyring-api>uuid": {
