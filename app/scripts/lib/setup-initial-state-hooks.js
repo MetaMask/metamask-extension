@@ -1,8 +1,8 @@
 import { maskObject } from '../../../shared/modules/object.utils';
 import ExtensionPlatform from '../platforms/extension';
+import { SENTRY_BACKGROUND_STATE } from '../constants/sentry-state';
 import LocalStore from './local-store';
 import ReadOnlyNetworkStore from './network-store';
-import { SENTRY_BACKGROUND_STATE } from './setupSentry';
 
 const platform = new ExtensionPlatform();
 
