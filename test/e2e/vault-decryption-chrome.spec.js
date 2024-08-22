@@ -38,7 +38,6 @@ async function getExtensionStorageFilePath(driver) {
   const logFiles = fs
     .readdirSync(extensionStoragePath)
     .filter((filename) => filename.endsWith('.log'));
-
   // Use the first of the `.log` files found
   return path.resolve(extensionStoragePath, logFiles[0]);
 }
@@ -121,6 +120,8 @@ describe('Vault Decryptor Page', function () {
         // fill the input field with storage recovered from filesystem
         await driver.clickElement('[name="vault-source"]');
         const inputField = await driver.findElement('#fileinput');
+
+        await driver.delay(5000);
         inputField.press(await getExtensionStorageFilePath(driver));
         // fill in the password
         await driver.fill('#passwordinput', WALLET_PASSWORD);
