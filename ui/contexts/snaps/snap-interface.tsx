@@ -102,7 +102,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     name?: string,
     value?: unknown,
   ) => {
-    handleSnapRequest({
+    handleSnapRequest<Parameters<HandleEvent>[0]>({
       snapId,
       origin: '',
       handler: 'onUserInput',
@@ -195,7 +195,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   };
 
   const uploadFile = (name: string, file: FileObject | null) => {
-    handleSnapRequest({
+    handleSnapRequest<Parameters<HandleEvent>[0]>({
       snapId,
       origin: '',
       handler: 'onUserInput',
@@ -205,8 +205,8 @@ export const SnapInterfaceContextProvider: FunctionComponent<
         params: {
           event: {
             type: UserInputEventType.FileUploadEvent,
-            name,
-            file,
+            ...(name === undefined ? {} : { name }),
+            ...(file === undefined ? {} : { file }),
           },
           id: interfaceId,
           context,
