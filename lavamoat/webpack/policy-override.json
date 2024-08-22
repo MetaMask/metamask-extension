@@ -1,0 +1,9 @@
+{
+  "resources": {
+    "node-fetch": {
+      "globals": {
+        "fetch": true
+      }
+    }
+  }
+}
