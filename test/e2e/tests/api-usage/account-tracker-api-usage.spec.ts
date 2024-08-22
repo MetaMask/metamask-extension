@@ -1,14 +1,13 @@
 import { strict as assert } from 'assert';
-import { MockedEndpoint } from 'mockttp';
 import { JsonRpcRequest } from '@metamask/utils';
+import { MockedEndpoint } from 'mockttp';
+import FixtureBuilder from '../../fixture-builder';
 import {
-  withFixtures,
   defaultGanacheOptions,
   unlockWallet,
   veryLargeDelayMs,
+  withFixtures,
 } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import { Driver } from '../../webdriver/driver';
 import { Mockttp } from '../../mock-e2e';
 
 async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
@@ -72,7 +71,7 @@ async function getAllInfuraJsonRpcRequests(
     );
 
     for (const r of seenProviderRequests) {
-      const json = await r.body.getJson();
+      const json = (await r.body.getJson()) as JsonRpcRequest | undefined;
       if (json !== undefined) {
         allInfuraJsonRpcRequests.push(json);
       }
@@ -106,13 +105,7 @@ describe('Account Tracker API Usage', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
-      async ({
-        driver,
-        mockedEndpoint,
-      }: {
-        driver: Driver;
-        mockedEndpoint: MockedEndpoint[];
-      }) => {
+      async ({ driver, mockedEndpoint }) => {
         await driver.delay(veryLargeDelayMs);
         let allInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
           mockedEndpoint,
@@ -164,13 +157,7 @@ describe('Account Tracker API Usage', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
-      async ({
-        driver,
-        mockedEndpoint,
-      }: {
-        driver: Driver;
-        mockedEndpoint: MockedEndpoint[];
-      }) => {
+      async ({ driver, mockedEndpoint }) => {
         await unlockWallet(driver);
         await driver.delay(veryLargeDelayMs);
         const initialInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(

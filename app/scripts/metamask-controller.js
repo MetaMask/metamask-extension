@@ -82,6 +82,7 @@ import {
   SnapController,
   IframeExecutionService,
   SnapInterfaceController,
+  SnapInsightsController,
   OffscreenExecutionService,
 } from '@metamask/snaps-controllers';
 import {
@@ -146,7 +147,10 @@ import {
   AuthenticationController,
   UserStorageController,
 } from '@metamask/profile-sync-controller';
-import { NotificationsServicesPushController } from '@metamask/notification-services-controller';
+import {
+  NotificationsServicesPushController,
+  NotificationServicesController,
+} from '@metamask/notification-services-controller';
 import {
   methodsRequiringNetworkSwitch,
   methodsWithConfirmation,
@@ -220,6 +224,7 @@ import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
+import { endTrace, trace } from '../../shared/lib/trace';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -324,7 +329,6 @@ import PREINSTALLED_SNAPS from './snaps/preinstalled-snaps';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 
 // Notification controllers
-import { MetamaskNotificationsController } from './controllers/metamask-notifications/metamask-notifications';
 import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
@@ -337,6 +341,7 @@ import {
   onPushNotificationClicked,
   onPushNotificationReceived,
 } from './controllers/push-notifications';
+import createTracingMiddleware from './lib/createTracingMiddleware';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -346,9 +351,9 @@ export const METAMASK_CONTROLLER_EVENTS = {
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
   QUEUED_REQUEST_STATE_CHANGE: 'QueuedRequestController:stateChange',
   METAMASK_NOTIFICATIONS_LIST_UPDATED:
-    'MetamaskNotificationsController:notificationsListUpdated',
+    'NotificationServicesController:notificationsListUpdated',
   METAMASK_NOTIFICATIONS_MARK_AS_READ:
-    'MetamaskNotificationsController:markNotificationsAsRead',
+    'NotificationServicesController:markNotificationsAsRead',
   NOTIFICATIONS_STATE_CHANGE: 'NotificationController:stateChange',
 };
 
@@ -1422,6 +1427,27 @@ export default class MetamaskController extends EventEmitter {
       messenger: snapInterfaceControllerMessenger,
     });
 
+    const snapInsightsControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'SnapInsightsController',
+        allowedActions: [
+          `${this.snapController.name}:handleRequest`,
+          `${this.snapController.name}:getAll`,
+          `${this.permissionController.name}:getPermissions`,
+          `${this.snapInterfaceController.name}:deleteInterface`,
+        ],
+        allowedEvents: [
+          `TransactionController:unapprovedTransactionAdded`,
+          `TransactionController:transactionStatusUpdated`,
+          `SignatureController:stateChange`,
+        ],
+      });
+
+    this.snapInsightsController = new SnapInsightsController({
+      state: initState.SnapInsightsController,
+      messenger: snapInsightsControllerMessenger,
+    });
+
     // Notification Controllers
     this.authenticationController = new AuthenticationController.Controller({
       state: initState.AuthenticationController,
@@ -1518,42 +1544,40 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    this.metamaskNotificationsController = new MetamaskNotificationsController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'MetamaskNotificationsController',
-        allowedActions: [
-          'KeyringController:getAccounts',
-          'KeyringController:getState',
-          'AuthenticationController:getBearerToken',
-          'AuthenticationController:isSignedIn',
-          'UserStorageController:enableProfileSyncing',
-          'UserStorageController:getStorageKey',
-          'UserStorageController:performGetStorage',
-          'UserStorageController:performSetStorage',
-          'NotificationServicesPushController:enablePushNotifications',
-          'NotificationServicesPushController:disablePushNotifications',
-          'NotificationServicesPushController:updateTriggerPushNotifications',
-        ],
-        allowedEvents: [
-          'KeyringController:stateChange',
-          'KeyringController:lock',
-          'KeyringController:unlock',
-          'NotificationServicesPushController:onNewNotifications',
-        ],
-      }),
-      state: initState.MetamaskNotificationsController,
-    });
-
-    // Temporary add missing methods (due to notification controller migration)
-    this.controllerMessenger.registerActionHandler(
-      'NotificationServicesController:disableNotificationServices',
-      () => this.metamaskNotificationsController.disableMetamaskNotifications(),
-    );
-    this.controllerMessenger.registerActionHandler(
-      'NotificationServicesController:selectIsNotificationServicesEnabled',
-      () =>
-        this.metamaskNotificationsController.selectIsMetamaskNotificationsEnabled(),
-    );
+    this.notificationServicesController =
+      new NotificationServicesController.Controller({
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'NotificationServicesController',
+          allowedActions: [
+            'KeyringController:getAccounts',
+            'KeyringController:getState',
+            'AuthenticationController:getBearerToken',
+            'AuthenticationController:isSignedIn',
+            'UserStorageController:enableProfileSyncing',
+            'UserStorageController:getStorageKey',
+            'UserStorageController:performGetStorage',
+            'UserStorageController:performSetStorage',
+            'NotificationServicesPushController:enablePushNotifications',
+            'NotificationServicesPushController:disablePushNotifications',
+            'NotificationServicesPushController:updateTriggerPushNotifications',
+          ],
+          allowedEvents: [
+            'KeyringController:stateChange',
+            'KeyringController:lock',
+            'KeyringController:unlock',
+            'NotificationServicesPushController:onNewNotifications',
+          ],
+        }),
+        state: initState.NotificationServicesController,
+        env: {
+          isPushIntegrated: isManifestV3,
+          featureAnnouncements: {
+            platform: 'extension',
+            spaceId: process.env.CONTENTFUL_ACCESS_SPACE_ID ?? '',
+            accessToken: process.env.CONTENTFUL_ACCESS_TOKEN ?? '',
+          },
+        },
+      });
 
     // account tracker watches balances, nonces, and any code at their address
     this.accountTracker = new AccountTracker({
@@ -1772,6 +1796,7 @@ export default class MetamaskController extends EventEmitter {
       },
       provider: this.provider,
       testGasFeeFlows: process.env.TEST_GAS_FEE_FLOWS,
+      trace,
       hooks: {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         afterSign: (txMeta, signedEthTx) =>
@@ -2258,6 +2283,7 @@ export default class MetamaskController extends EventEmitter {
       SnapsRegistry: this.snapsRegistry,
       NotificationController: this.notificationController,
       SnapInterfaceController: this.snapInterfaceController,
+      SnapInsightsController: this.snapInsightsController,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       CustodyController: this.custodyController.store,
       InstitutionalFeaturesController:
@@ -2270,7 +2296,7 @@ export default class MetamaskController extends EventEmitter {
       // Notification Controllers
       AuthenticationController: this.authenticationController,
       UserStorageController: this.userStorageController,
-      MetamaskNotificationsController: this.metamaskNotificationsController,
+      NotificationServicesController: this.notificationServicesController,
       NotificationServicesPushController:
         this.notificationServicesPushController,
       ...resetOnRestartStore,
@@ -2310,6 +2336,7 @@ export default class MetamaskController extends EventEmitter {
         SnapsRegistry: this.snapsRegistry,
         NotificationController: this.notificationController,
         SnapInterfaceController: this.snapInterfaceController,
+        SnapInsightsController: this.snapInsightsController,
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         CustodyController: this.custodyController.store,
         InstitutionalFeaturesController:
@@ -2321,7 +2348,7 @@ export default class MetamaskController extends EventEmitter {
         // Notification Controllers
         AuthenticationController: this.authenticationController,
         UserStorageController: this.userStorageController,
-        MetamaskNotificationsController: this.metamaskNotificationsController,
+        NotificationServicesController: this.notificationServicesController,
         QueuedRequestController: this.queuedRequestController,
         NotificationServicesPushController:
           this.notificationServicesPushController,
@@ -3059,7 +3086,6 @@ export default class MetamaskController extends EventEmitter {
       networkController,
       announcementController,
       onboardingController,
-      appMetadataController,
       permissionController,
       preferencesController,
       tokensController,
@@ -3072,7 +3098,7 @@ export default class MetamaskController extends EventEmitter {
       // Notification Controllers
       authenticationController,
       userStorageController,
-      metamaskNotificationsController,
+      notificationServicesController,
       notificationServicesPushController,
     } = this;
 
@@ -3129,6 +3155,10 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
+      setWatchEthereumAccountEnabled:
+        preferencesController.setWatchEthereumAccountEnabled.bind(
+          preferencesController,
+        ),
       setBitcoinSupportEnabled:
         preferencesController.setBitcoinSupportEnabled.bind(
           preferencesController,
@@ -3499,12 +3529,6 @@ export default class MetamaskController extends EventEmitter {
           this.encryptionPublicKeyController,
         ),
 
-      // AppMetadataController
-      setShowTokenAutodetectModalOnUpgrade:
-        appMetadataController.setShowTokenAutodetectModalOnUpgrade.bind(
-          appMetadataController,
-        ),
-
       // onboarding controller
       setSeedPhraseBackedUp:
         onboardingController.setSeedPhraseBackedUp.bind(onboardingController),
@@ -3855,34 +3879,34 @@ export default class MetamaskController extends EventEmitter {
           userStorageController,
         ),
 
-      // MetamaskNotificationsController
+      // NotificationServicesController
       checkAccountsPresence:
-        metamaskNotificationsController.checkAccountsPresence.bind(
-          metamaskNotificationsController,
+        notificationServicesController.checkAccountsPresence.bind(
+          notificationServicesController,
         ),
       createOnChainTriggers:
-        metamaskNotificationsController.createOnChainTriggers.bind(
-          metamaskNotificationsController,
+        notificationServicesController.createOnChainTriggers.bind(
+          notificationServicesController,
         ),
       deleteOnChainTriggersByAccount:
-        metamaskNotificationsController.deleteOnChainTriggersByAccount.bind(
-          metamaskNotificationsController,
+        notificationServicesController.deleteOnChainTriggersByAccount.bind(
+          notificationServicesController,
         ),
       updateOnChainTriggersByAccount:
-        metamaskNotificationsController.updateOnChainTriggersByAccount.bind(
-          metamaskNotificationsController,
+        notificationServicesController.updateOnChainTriggersByAccount.bind(
+          notificationServicesController,
         ),
       fetchAndUpdateMetamaskNotifications:
-        metamaskNotificationsController.fetchAndUpdateMetamaskNotifications.bind(
-          metamaskNotificationsController,
+        notificationServicesController.fetchAndUpdateMetamaskNotifications.bind(
+          notificationServicesController,
         ),
       markMetamaskNotificationsAsRead:
-        metamaskNotificationsController.markMetamaskNotificationsAsRead.bind(
-          metamaskNotificationsController,
+        notificationServicesController.markMetamaskNotificationsAsRead.bind(
+          notificationServicesController,
         ),
       setFeatureAnnouncementsEnabled:
-        metamaskNotificationsController.setFeatureAnnouncementsEnabled.bind(
-          metamaskNotificationsController,
+        notificationServicesController.setFeatureAnnouncementsEnabled.bind(
+          notificationServicesController,
         ),
       enablePushNotifications:
         notificationServicesPushController.enablePushNotifications.bind(
@@ -3897,12 +3921,12 @@ export default class MetamaskController extends EventEmitter {
           notificationServicesPushController,
         ),
       enableMetamaskNotifications:
-        metamaskNotificationsController.enableMetamaskNotifications.bind(
-          metamaskNotificationsController,
+        notificationServicesController.enableMetamaskNotifications.bind(
+          notificationServicesController,
         ),
       disableMetamaskNotifications:
-        metamaskNotificationsController.disableMetamaskNotifications.bind(
-          metamaskNotificationsController,
+        notificationServicesController.disableNotificationServices.bind(
+          notificationServicesController,
         ),
 
       // E2E testing
@@ -3927,6 +3951,9 @@ export default class MetamaskController extends EventEmitter {
           ...request,
           ethQuery: new EthQuery(this.provider),
         }),
+
+      // Trace
+      endTrace,
     };
   }
 
@@ -4666,10 +4693,11 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Stops exposing the specified chain ID to all third parties.
-   * Exposed chain IDs are stored in caveats of the permittedChains permission. This
-   * method uses `PermissionController.updatePermissionsByCaveat` to
-   * remove the specified chain ID from every permittedChains permission. If a
-   * permission only included this chain ID, the permission is revoked entirely.
+   * Exposed chain IDs are stored in caveats of the `endowment:permitted-chains`
+   * permission. This method uses `PermissionController.updatePermissionsByCaveat`
+   * to remove the specified chain ID from every `endowment:permitted-chains`
+   * permission. If a permission only included this chain ID, the permission is
+   * revoked entirely.
    *
    * @param {string} targetChainId - The chain ID to stop exposing
    * to third parties.
@@ -5395,6 +5423,8 @@ export default class MetamaskController extends EventEmitter {
     if (origin === BaseUrl.Portfolio) {
       engine.push(createTxVerificationMiddleware(this.networkController));
     }
+
+    engine.push(createTracingMiddleware());
 
     engine.push(
       createPPOMMiddleware(
@@ -6802,7 +6832,7 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  _publishSmartTransactionHook(transactionMeta) {
+  _publishSmartTransactionHook(transactionMeta, signedTransactionInHex) {
     const state = this._getMetaMaskState();
     const isSmartTransaction = getIsSmartTransaction(state);
     if (!isSmartTransaction) {
@@ -6812,6 +6842,7 @@ export default class MetamaskController extends EventEmitter {
     const featureFlags = getFeatureFlagsByChainId(state);
     return submitSmartTransactionHook({
       transactionMeta,
+      signedTransactionInHex,
       transactionController: this.txController,
       smartTransactionsController: this.smartTransactionsController,
       controllerMessenger: this.controllerMessenger,
