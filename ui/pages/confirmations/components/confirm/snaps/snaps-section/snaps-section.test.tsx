@@ -2,11 +2,11 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { Text } from '@metamask/snaps-sdk/jsx';
 
+import { fireEvent } from '@testing-library/react';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { unapprovedPersonalSignMsg } from '../../../../../../../test/data/confirmations/personal_sign';
 import { unapprovedTypedSignMsgV3 } from '../../../../../../../test/data/confirmations/typed_sign';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
-import { fireEvent } from '@testing-library/react';
 import { SnapsSection } from './snaps-section';
 
 const additionalMockState = {
