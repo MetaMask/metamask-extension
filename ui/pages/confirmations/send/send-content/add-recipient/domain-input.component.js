@@ -4,10 +4,7 @@ import classnames from 'classnames';
 
 import { isHexString } from '@metamask/utils';
 import { addHexPrefix } from '../../../../../../app/scripts/lib/util';
-import {
-  isValidDomainName,
-  shortenAddress,
-} from '../../../../../helpers/utils/util';
+import { shortenAddress } from '../../../../../helpers/utils/util';
 import {
   isBurnAddress,
   isValidHexAddress,
@@ -86,9 +83,7 @@ export default class DomainInput extends Component {
       return null;
     }
 
-    if (!isHexString(input) && isValidDomainName(input)) {
-      lookupDomainName(input);
-    } else {
+    if (isHexString(input)) {
       resetDomainResolution();
       if (
         onValidAddressTyped &&
@@ -97,6 +92,8 @@ export default class DomainInput extends Component {
       ) {
         onValidAddressTyped(addHexPrefix(input));
       }
+    } else {
+      lookupDomainName(input);
     }
 
     return null;

@@ -96,7 +96,6 @@ import {
 import {
   checkExistingAddresses,
   isOriginContractAddress,
-  isValidDomainName,
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
@@ -108,6 +107,7 @@ import {
 import { resetDomainResolution } from '../domains';
 import {
   isBurnAddress,
+  isPossibleAddress,
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../shared/modules/hexstring-utils';
@@ -1600,10 +1600,10 @@ const slice = createSlice({
 
           if (
             isBurnAddress(state.recipientInput) ||
-            (!isValidHexAddress(state.recipientInput, {
-              mixedCaseUseChecksum: true,
-            }) &&
-              !isValidDomainName(state.recipientInput))
+            (isPossibleAddress(state.recipientInput) &&
+              !isValidHexAddress(state.recipientInput, {
+                mixedCaseUseChecksum: true,
+              }))
           ) {
             draftTransaction.recipient.error = INVALID_RECIPIENT_ADDRESS_ERROR;
           } else if (
