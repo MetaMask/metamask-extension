@@ -1,4 +1,4 @@
-import { NetworkClientType } from '@metamask/network-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import React from 'react';
 import { infuraProjectId } from '../../../../shared/constants/network';
 import { Box, Text } from '../../component-library';
@@ -36,11 +36,11 @@ const RpcListItem = ({
   rpcEndpoint: {
     name?: string;
     url: string;
-    type: NetworkClientType;
+    type: RpcEndpointType;
   };
 }) => {
   const { url, type } = rpcEndpoint;
-  const name = type === NetworkClientType.Infura ? 'Infura' : rpcEndpoint.name;
+  const name = type === RpcEndpointType.Infura ? 'Infura' : rpcEndpoint.name;
 
   const displayEndpoint = (endpoint?: string) =>
     endpoint ? stripProtocol(stripKeyFromInfuraUrl(endpoint)) : '\u00A0';

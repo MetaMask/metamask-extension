@@ -504,7 +504,7 @@ export default class MetamaskController extends EventEmitter {
 
       const defaultState = getDefaultNetworkControllerState();
 
-      // todo why
+      // todo why is this here?
       initialNetworkControllerState = mergeWith(
         {},
         initState.NetworkController,
@@ -525,8 +525,9 @@ export default class MetamaskController extends EventEmitter {
                 }
               });
             }
+            return objValue;
           }
-          return objValue;
+          return undefined;
         },
       );
 
@@ -4799,7 +4800,7 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  // todo
+  // todo: what is this used for, can it be deleted or does it have to move to the new network controller function
   removeNetworkConfiguration(networkConfigurationId) {
     const { networkConfigurations } = this.networkController.state;
     const { chainId } = networkConfigurations[networkConfigurationId] ?? {};

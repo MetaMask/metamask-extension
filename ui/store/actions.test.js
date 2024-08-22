@@ -1119,6 +1119,7 @@ describe('Actions', () => {
     });
   });
 
+  // TODO: This function no longer exists
   describe('#upsertNetworkConfiguration', () => {
     afterEach(() => {
       sinon.restore();

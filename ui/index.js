@@ -170,7 +170,7 @@ export async function setupInitialStore(
         }
       }
     }
-    return networkControllerState;
+    return undefined;
   };
 
   console.log('ui index');
