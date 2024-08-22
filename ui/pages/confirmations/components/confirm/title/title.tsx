@@ -60,6 +60,10 @@ const getTitle = (t: IntlFunction, confirmation?: Confirmation) => {
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
       return t('confirmTitleTransaction');
+    case TransactionType.tokenMethodApprove:
+      return t('confirmTitleApproveTransaction');
+    case TransactionType.deployContract:
+      return t('confirmTitleDeployContract');
     case TransactionType.personalSign:
       if (isSIWESignatureRequest(confirmation as SignatureRequestType)) {
         return t('confirmTitleSIWESignature');
@@ -78,6 +82,10 @@ const getDescription = (t: IntlFunction, confirmation?: Confirmation) => {
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
       return t('confirmTitleDescContractInteractionTransaction');
+    case TransactionType.tokenMethodApprove:
+      return t('confirmTitleDescApproveTransaction');
+    case TransactionType.deployContract:
+      return t('confirmTitleDescDeployContract');
     case TransactionType.personalSign:
       if (isSIWESignatureRequest(confirmation as SignatureRequestType)) {
         return t('confirmTitleDescSIWESignature');

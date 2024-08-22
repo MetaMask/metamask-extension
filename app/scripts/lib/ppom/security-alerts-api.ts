@@ -1,13 +1,19 @@
-import { Hex } from '@metamask/utils';
+import { Hex, JsonRpcRequest } from '@metamask/utils';
 import { SecurityAlertResponse } from './types';
 
 const ENDPOINT_VALIDATE = 'validate';
 const ENDPOINT_SUPPORTED_CHAINS = 'supportedChains';
 
-export type SecurityAlertsAPIRequest = {
+type SecurityAlertsAPIRequestBody = {
   method: string;
   params: unknown[];
 };
+
+export type SecurityAlertsAPIRequest = Omit<
+  JsonRpcRequest,
+  'method' | 'params'
+> &
+  SecurityAlertsAPIRequestBody;
 
 export function isSecurityAlertsAPIEnabled() {
   const isEnabled = process.env.SECURITY_ALERTS_API_ENABLED;
@@ -16,7 +22,9 @@ export function isSecurityAlertsAPIEnabled() {
 
 export async function validateWithSecurityAlertsAPI(
   chainId: string,
-  body: SecurityAlertsAPIRequest,
+  body:
+    | SecurityAlertsAPIRequestBody
+    | Pick<JsonRpcRequest, 'method' | 'params'>,
 ): Promise<SecurityAlertResponse> {
   const endpoint = `${ENDPOINT_VALIDATE}/${chainId}`;
   return request(endpoint, {
