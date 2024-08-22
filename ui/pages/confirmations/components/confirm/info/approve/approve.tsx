@@ -127,7 +127,7 @@ const SpendingCap = () => {
 
   return (
     <ConfirmInfoSection>
-      <ConfirmInfoRow label={t('accountBalance')} tooltip={'Ask Barbara'}>
+      <ConfirmInfoRow label={t('accountBalance')}>
         <ConfirmInfoRowText
           text={`${receivedToken.string} ${receivedToken.symbol}`}
         />
@@ -137,7 +137,10 @@ const SpendingCap = () => {
         <>
           <ConfirmInfoRowDivider />
 
-          <ConfirmInfoRow label={t('spendingCap')} tooltip={'Ask Barbara'}>
+          <ConfirmInfoRow
+            label={t('spendingCap')}
+            tooltip={t('spendingCapTooltipDesc')}
+          >
             {tokenAmount === t('unlimited') ? (
               <Tooltip title={formattedTokenNum}>
                 <ConfirmInfoRowText
