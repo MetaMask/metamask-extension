@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import {
@@ -42,6 +42,18 @@ export const NetworkListItem = ({
   onRpcEndpointClick,
   startAccessory,
   showEndAccessory = true,
+}: {
+  name: string;
+  iconSrc?: string;
+  iconSize?: string;
+  selected?: boolean;
+  onClick: () => void;
+  onRpcEndpointClick?: () => void;
+  onDeleteClick?: () => void;
+  onEditClick?: () => void;
+  focus?: boolean;
+  startAccessory?: ReactNode;
+  showEndAccessory?: boolean;
 }) => {
   const t = useI18nContext();
   const networkRef = useRef<HTMLInputElement>(null);

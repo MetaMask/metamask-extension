@@ -62,7 +62,8 @@ const initialState = {
   },
 };
 
-const setup = (props) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const setup = (props: any) => {
   const store = mockStore(initialState);
   return render(
     <Provider store={store}>

@@ -111,7 +111,7 @@ export function AssetPicker({
       ? nativeCurrencySymbol
       : asset.details?.symbol;
 
-  const isSymbolLong = symbol?.length > LARGE_SYMBOL_LENGTH;
+  const isSymbolLong = symbol && symbol?.length > LARGE_SYMBOL_LENGTH;
   const isNFT = asset.type === AssetType.NFT;
 
   const formattedSymbol =

@@ -1,7 +1,8 @@
-import { CaipChainId } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import { isBtcMainnetAddress, isBtcTestnetAddress } from '../../lib/multichain';
 
 export type ProviderConfigWithImageUrl = {
+  chainId?: Hex;
   rpcUrl?: string;
   type: string;
   ticker: string;

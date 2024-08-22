@@ -96,6 +96,8 @@ function MultiRpcEditModal({ isOpen, onClose }: MultiRpcEditModalProps) {
                     item={item}
                     index={index}
                     rpcName={rpcName ?? ''}
+                    setSelectedNetwork={() => ({})}
+                    setActionMode={() => ({})}
                   />
                 );
               })}

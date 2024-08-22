@@ -868,7 +868,7 @@ export default class MMIController extends EventEmitter {
     } else if (selectedChainId !== chainId) {
       const networkConfigurations = getNetworkConfigurations({
         metamask: this.networkController.state,
-      });
+      }) as Record<string, { id: string; chainId: string }>;
 
       const foundNetworkConfiguration = Object.values(
         networkConfigurations,

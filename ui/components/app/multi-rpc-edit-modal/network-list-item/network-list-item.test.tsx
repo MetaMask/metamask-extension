@@ -8,7 +8,8 @@ import '@testing-library/jest-dom/extend-expect';
 
 const mockStore = configureMockStore([thunk]);
 
-const setup = (props) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const setup = (props: any) => {
   const store = mockStore({});
   return render(
     <Provider store={store}>

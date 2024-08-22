@@ -50,7 +50,8 @@ export default function KeyringRemovalSnapWarning({
   const [confirmedRemoval, setConfirmedRemoval] = useState(false);
   const [confirmationInput, setConfirmationInput] = useState('');
   const [error, setError] = useState(false);
-  const { chainId } = useSelector(getProviderConfig);
+  const providerConfig = useSelector(getProviderConfig);
+  const chainId = providerConfig?.chainId ?? '';
 
   useEffect(() => {
     setShowConfirmation(keyringAccounts.length === 0);

@@ -25,6 +25,7 @@ import { setEditedNetwork, toggleNetworkMenu } from '../../../../store/actions';
 
 type NetworkListItemProps = {
   item: {
+    chainId: string;
     rpcUrl: string;
     nickname: string;
     rpcPrefs: {
