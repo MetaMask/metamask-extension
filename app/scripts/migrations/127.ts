@@ -1,4 +1,3 @@
-import { PermissionConstraint } from '@metamask/permission-controller';
 import {
   hasProperty,
   Hex,
