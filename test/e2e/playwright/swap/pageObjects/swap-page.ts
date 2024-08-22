@@ -59,20 +59,18 @@ export class SwapPage {
   }
 
   async enterQuote(options: { from?: string; to: string; qty: string }) {
+    // Enter source token
+    if (options.from) {
+      this.swapFromDropDown.click();
+      await this.selectTokenFromList(options.from);
+    }
+
     // Enter Swap Quantity
     await this.tokenQty.fill(options.qty);
     this.swapQty = options.qty;
 
-    // Enter source token
-    if (options.from) {
-      this.swapFromDropDown.click();
-      await this.tokenSearch.fill(options.from);
-      await this.selectTokenFromList(options.from);
-    }
-
-    // Enter destionation token
+    // Enter destination token
     await this.swapToDropDown.click();
-    await this.tokenSearch.fill(options.to);
     await this.selectTokenFromList(options.to);
   }
 
@@ -134,6 +132,9 @@ export class SwapPage {
 
   async selectTokenFromList(symbol: string) {
     let searchItem;
+
+    await this.page.waitForTimeout(500);
+    await this.tokenSearch.fill(symbol);
     do {
       searchItem = await this.tokenList.first().textContent();
     } while (searchItem !== symbol);

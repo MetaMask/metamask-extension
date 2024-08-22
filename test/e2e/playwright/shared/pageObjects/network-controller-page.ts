@@ -64,6 +64,7 @@ export class NetworkController {
     await this.networkTicker.fill(options.symbol);
     await this.saveBtn.click();
     await this.switchToNetworkBtn.click();
+    await this.page.$(`text=/${options.name}/`);
   }
 
   async addPopularNetwork(options: { networkName: string }) {
