@@ -4165,9 +4165,6 @@
   "receive": {
     "message": "प्राप्त करें"
   },
-  "receiveTokensCamelCase": {
-    "message": "टोकन प्राप्त करें"
-  },
   "recipientAddressPlaceholder": {
     "message": "सार्वजनिक एड्रेस (0x) या ENS नाम डालें"
   },
