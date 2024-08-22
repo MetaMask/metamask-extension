@@ -1120,20 +1120,18 @@ describe('Actions', () => {
   });
 
   // TODO: This function no longer exists
-  describe('#upsertNetworkConfiguration', () => {
+  describe('updateNetwork', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls upsertNetworkConfiguration in the background with the correct arguments', async () => {
+    it('calls updateNetwork in the background with the correct arguments', async () => {
       const store = mockStore();
 
-      const upsertNetworkConfigurationStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
+      const updateNetworkStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
-        upsertNetworkConfiguration: upsertNetworkConfigurationStub,
+        updateNetwork: updateNetworkStub,
       });
       setBackgroundConnection(background.getApi());
 
@@ -1147,36 +1145,64 @@ describe('Actions', () => {
       };
 
       await store.dispatch(
-        actions.upsertNetworkConfiguration(networkConfiguration, {
+        actions.updateNetwork(networkConfiguration, {
           source: MetaMetricsNetworkEventSource.CustomNetworkForm,
         }),
       );
 
       expect(
-        upsertNetworkConfigurationStub.calledOnceWith(networkConfiguration, {
-          referrer: ORIGIN_METAMASK,
-          source: MetaMetricsNetworkEventSource.CustomNetworkForm,
-          setActive: undefined,
-        }),
-      ).toBe(true);
-    });
-
-    it('throws when no options object is passed as a second argument', async () => {
-      const store = mockStore();
-      await expect(() =>
-        store.dispatch(
-          actions.upsertNetworkConfiguration({
+        updateNetworkStub.calledOnceWith(
+          '0x',
+          {
             id: 'networkConfigurationId',
             rpcUrl: 'newRpc',
             chainId: '0x',
             ticker: 'ETH',
             nickname: 'nickname',
             rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
-          }),
+          },
+          { source: MetaMetricsNetworkEventSource.CustomNetworkForm },
         ),
-      ).toThrow(
-        "Cannot destructure property 'setActive' of 'undefined' as it is undefined.",
+      ).toBe(true);
+    });
+
+    it('updateNetwork has empty object for default options', async () => {
+      const store = mockStore();
+
+      const updateNetworkStub = sinon.stub().callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        updateNetwork: updateNetworkStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const networkConfiguration = {
+        id: 'networkConfigurationId',
+        rpcUrl: 'newRpc',
+        chainId: '0x',
+        ticker: 'ETH',
+        nickname: 'nickname',
+        rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+      };
+
+      await store.dispatch(
+        actions.updateNetwork(networkConfiguration, undefined),
       );
+
+      expect(
+        updateNetworkStub.calledOnceWith(
+          '0x',
+          {
+            id: 'networkConfigurationId',
+            rpcUrl: 'newRpc',
+            chainId: '0x',
+            ticker: 'ETH',
+            nickname: 'nickname',
+            rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+          },
+          {},
+        ),
+      ).toBe(true);
     });
   });
 
@@ -1221,31 +1247,25 @@ describe('Actions', () => {
     });
   });
 
-  describe('#removeNetworkConfiguration', () => {
+  describe('removeNetwork', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls removeNetworkConfiguration in the background with the correct arguments', async () => {
+    it('calls removeNetwork in the background with the correct arguments', async () => {
       const store = mockStore();
 
-      const removeNetworkConfigurationStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
+      const removeNetworkStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
-        removeNetworkConfiguration: removeNetworkConfigurationStub,
+        removeNetwork: removeNetworkStub,
       });
       setBackgroundConnection(background.getApi());
 
-      await store.dispatch(
-        actions.removeNetworkConfiguration('testNetworkConfigurationId'),
-      );
+      await store.dispatch(actions.removeNetwork('testNetworkConfigurationId'));
 
       expect(
-        removeNetworkConfigurationStub.calledOnceWith(
-          'testNetworkConfigurationId',
-        ),
+        removeNetworkStub.calledOnceWith('testNetworkConfigurationId'),
       ).toBe(true);
     });
   });

@@ -2405,7 +2405,7 @@ export function updateNetwork(
   options: { replacementSelectedRpcEndpointIndex?: number } = {},
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.addNetwork`, networkConfiguration);
+    log.debug(`background.updateNetwork`, networkConfiguration);
     try {
       return await submitRequestToBackground('updateNetwork', [
         networkConfiguration.chainId,
