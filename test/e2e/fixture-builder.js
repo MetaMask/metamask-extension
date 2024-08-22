@@ -240,16 +240,16 @@ class FixtureBuilder {
 
   withNetworkControllerTripleGanache() {
     this.withNetworkControllerDoubleGanache();
-    merge(
-      this.fixture.data.NetworkController,
-      mockNetworkState({
-        rpcUrl: 'http://localhost:7777',
-        chainId: '0x3e8',
-        ticker: 'ETH',
-        nickname: 'Localhost 7777',
-        blockExplorerUrl: undefined,
-      }),
-    );
+    const thirdGanache = mockNetworkState({
+      rpcUrl: 'http://localhost:7777',
+      chainId: '0x3e8',
+      ticker: 'ETH',
+      nickname: 'Localhost 7777',
+      blockExplorerUrl: undefined,
+    });
+
+    delete thirdGanache.selectedNetworkClientId;
+    merge(this.fixture.data.NetworkController, thirdGanache);
     return this;
   }
 
