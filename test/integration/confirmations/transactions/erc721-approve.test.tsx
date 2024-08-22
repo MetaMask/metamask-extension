@@ -8,7 +8,6 @@ import { createMockImplementation, mock4byte } from '../../helpers';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { createTestProviderTools } from '../../../stub/provider';
 import { getUnapprovedApproveTransaction } from './transactionDataHelpers';
-import { useIsNFT } from '../../../../ui/pages/confirmations/components/confirm/info/approve/hooks/use-is-nft';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
