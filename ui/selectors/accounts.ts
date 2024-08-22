@@ -14,7 +14,7 @@ export type AccountsState = {
   metamask: AccountsControllerState;
 };
 
-function isBtcAccount(account: InternalAccount) {
+export function isBtcAccount(account: InternalAccount) {
   const { P2wpkh } = BtcAccountType;
 
   return Boolean(account && account.type === P2wpkh);
