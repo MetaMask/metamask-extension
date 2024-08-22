@@ -1,9 +1,10 @@
-import { TransactionType } from '@metamask/transaction-controller';
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { validate as isUuid } from 'uuid';
 import useAlerts from '../../../hooks/useAlerts';
-import { REDESIGN_TRANSACTION_TYPES } from '../utils';
+import { updateEventFragment } from '../../../store/actions';
+import { SignatureRequestType } from '../types/confirm';
+import { isSignatureTransactionType } from '../utils';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { confirmSelector } from '../../../selectors';
 import { AlertsName } from './alerts/constants';
@@ -56,13 +57,8 @@ export function useConfirmationAlertMetrics() {
       alert_action_clicked: [],
     });
 
-  // Temporary measure to track metrics only for redesign transaction types
-  const isValidType = REDESIGN_TRANSACTION_TYPES.includes(
-    currentConfirmation?.type as TransactionType,
-  );
-
   const properties =
-    isValidType && alerts.length > 0
+    alerts.length > 0
       ? {
           alert_triggered_count: alerts.length,
           alert_triggered: getAlertNames(alerts),
@@ -117,7 +113,17 @@ export function useConfirmationAlertMetrics() {
     if (!properties) {
       return;
     }
-    updateTransactionEventFragment({ properties }, ownerId);
+
+    if (isSignatureTransactionType(currentConfirmation)) {
+      const requestId = (currentConfirmation as SignatureRequestType)?.msgParams
+        ?.requestId;
+      const fragmentUniqueId = `signature-${requestId}`;
+      updateEventFragment(fragmentUniqueId, {
+        properties,
+      });
+    } else {
+      updateTransactionEventFragment({ properties }, ownerId);
+    }
   }, [JSON.stringify(properties), updateTransactionEventFragment, ownerId]);
 
   useEffect(() => {
