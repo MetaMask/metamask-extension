@@ -1,16 +1,12 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { CreateAccount, CreateBtcAccount } from '..';
+import { CreateAccount } from '..';
 import { Box, ModalHeader } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import {
-  isBtcMainnetAddress,
-  isBtcTestnetAddress,
-} from '../../../../shared/lib/multichain';
 import { getNextAvailableAccountName } from '../../../store/actions';
 
 export type CreateNamedSnapAccountProps = {
@@ -23,11 +19,6 @@ export type CreateNamedSnapAccountProps = {
   ) => Promise<void>;
 
   /**
-   * Address of the account to create
-   */
-  address: string;
-
-  /**
    * Suggested account name from the snap
    */
   snapSuggestedAccountName?: string;
@@ -35,17 +26,12 @@ export type CreateNamedSnapAccountProps = {
 
 export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   onActionComplete,
-  address,
   snapSuggestedAccountName,
 }) => {
   const t = useI18nContext();
   const history = useHistory();
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
-  const isBtcAccount = useMemo(
-    () => isBtcMainnetAddress(address) || isBtcTestnetAddress(address),
-    [address],
-  );
 
   const rejectAction = useCallback(async (completed: boolean) => {
     await onActionComplete({ success: completed });
@@ -56,17 +42,27 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   }, []);
 
   const getNextAccountName = useCallback(
-    async (_accounts: InternalAccount[]): Promise<string> => {
-      // if snapSuggestedAccountName exists, return it immediately
+    async (accounts: InternalAccount[]): Promise<string> => {
+      // If a snap-suggested account name exists, use it as a base
       if (snapSuggestedAccountName) {
-        return snapSuggestedAccountName;
+        let suffix = 1;
+        let candidateName = snapSuggestedAccountName;
+
+        // Check if the name is already taken
+        const isNameTaken = (name: string) =>
+          accounts.some((account) => account.metadata.name === name);
+
+        // Keep incrementing suffix until we find an available name
+        while (isNameTaken(candidateName)) {
+          suffix += 1;
+          candidateName = `${snapSuggestedAccountName} ${suffix}`;
+        }
+
+        return candidateName;
       }
 
-      const nextAccountName = await getNextAvailableAccountName(
-        KeyringTypes.snap,
-      );
-
-      return nextAccountName;
+      // If no snap-suggested name, use the next available account name
+      return getNextAvailableAccountName(KeyringTypes.snap);
     },
     [],
   );
@@ -77,27 +73,17 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   }, []);
 
   return (
-    <Box padding={4}>
+    <Box padding={4} className="name-snap-account-page">
       <ModalHeader padding={4} onClose={onClose}>
         {t('addAccountToMetaMask')}
       </ModalHeader>
-      {isBtcAccount ? (
-        <CreateBtcAccount
-          // onActionComplete is called when a user rejects the action
-          // onCreateAccount will call onActionComplete if a user confirms the action
-          onActionComplete={rejectAction}
-          onCreateAccount={onCreateAccount}
-          address={address}
-        />
-      ) : (
-        <CreateAccount
-          // onActionComplete is called when a user rejects the action
-          // onCreateAccount will call onActionComplete if a user confirms the action
-          onActionComplete={rejectAction}
-          onCreateAccount={onCreateAccount}
-          getNextAvailableAccountName={getNextAccountName}
-        />
-      )}
+      <CreateAccount
+        // onActionComplete is called when a user rejects the action
+        // onCreateAccount will call onActionComplete if a user confirms the action
+        onActionComplete={rejectAction}
+        onCreateAccount={onCreateAccount}
+        getNextAvailableAccountName={getNextAccountName}
+      />
     </Box>
   );
 };

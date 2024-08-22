@@ -55,6 +55,7 @@ function buildState({
   message,
   pendingApprovals,
   redesignedConfirmationsEnabled,
+  redesignedTransactionsEnabled,
   transaction,
   isRedesignedConfirmationsDeveloperEnabled,
 }: {
@@ -62,6 +63,7 @@ function buildState({
   message?: Partial<AbstractMessage & { msgParams: any }>;
   pendingApprovals?: Partial<ApprovalRequest<Record<string, Json>>>[];
   redesignedConfirmationsEnabled?: boolean;
+  redesignedTransactionsEnabled?: boolean;
   transaction?: Partial<TransactionMeta>;
   isRedesignedConfirmationsDeveloperEnabled?: boolean;
 }) {
@@ -71,6 +73,7 @@ function buildState({
       ...mockState.metamask,
       pendingApprovals: pendingApprovals ? arrayToIdMap(pendingApprovals) : {},
       preferences: {
+        redesignedTransactionsEnabled,
         redesignedConfirmationsEnabled,
         isRedesignedConfirmationsDeveloperEnabled:
           isRedesignedConfirmationsDeveloperEnabled || false,
@@ -97,8 +100,14 @@ function mockParamId(id: string) {
 }
 
 describe('useCurrentConfirmation', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    process.env.ENABLE_CONFIRMATION_REDESIGN = 'false';
+  });
+
   afterEach(() => {
     jest.resetAllMocks();
+    process.env.ENABLE_CONFIRMATION_REDESIGN = 'true';
   });
 
   it('return message matching latest pending approval ID', () => {
@@ -157,6 +166,7 @@ describe('useCurrentConfirmation', () => {
       message: MESSAGE_MOCK,
       pendingApprovals: [APPROVAL_MOCK],
       redesignedConfirmationsEnabled: false,
+      redesignedTransactionsEnabled: false,
       isRedesignedConfirmationsDeveloperEnabled: false,
     });
 
@@ -166,7 +176,7 @@ describe('useCurrentConfirmation', () => {
   it('returns undefined if approval for message has incorrect type', () => {
     const currentConfirmation = runHook({
       message: MESSAGE_MOCK,
-      pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.EthSign }],
+      pendingApprovals: [{ ...APPROVAL_MOCK, type: 'invalid_type' }],
       redesignedConfirmationsEnabled: true,
     });
 

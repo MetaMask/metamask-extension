@@ -989,6 +989,10 @@ const slice = createSlice({
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
 
+      if (!draftTransaction) {
+        return;
+      }
+
       // use maxFeePerGas as the multiplier if working with a FEE_MARKET transaction
       // otherwise use gasPrice
       if (
@@ -1080,7 +1084,7 @@ const slice = createSlice({
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
       let amount = '0x0';
-      if (draftTransaction.sendAsset.type === AssetType.token) {
+      if (draftTransaction?.sendAsset.type === AssetType.token) {
         const decimals = draftTransaction.sendAsset.details?.decimals ?? 0;
 
         const multiplier = Math.pow(10, Number(decimals));
@@ -1292,7 +1296,7 @@ const slice = createSlice({
       state.gasTotalForLayer1 = action.payload;
       if (
         state.amountMode === AMOUNT_MODES.MAX &&
-        draftTransaction.sendAsset.type === AssetType.native
+        draftTransaction?.sendAsset.type === AssetType.native
       ) {
         slice.caseReducers.updateAmountToMax(state);
       }
@@ -1456,6 +1460,10 @@ const slice = createSlice({
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
 
+      if (!draftTransaction) {
+        return;
+      }
+
       const amountValue = new Numeric(draftTransaction.amount.value, 16);
 
       switch (true) {
@@ -1557,6 +1565,11 @@ const slice = createSlice({
     validateGasField: (state) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
+
+      if (!draftTransaction) {
+        return;
+      }
+
       const insufficientFunds = !isBalanceSufficient({
         amount:
           draftTransaction.sendAsset.type === AssetType.native

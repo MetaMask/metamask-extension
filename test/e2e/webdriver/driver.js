@@ -10,7 +10,9 @@ const {
 } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
+const { debounce } = require('lodash');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
+const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 const { WindowHandles } = require('../background-socket/window-handles');
 
 const PAGES = {
@@ -122,8 +124,8 @@ class Driver {
   /**
    * @param {!ThenableWebDriver} driver - A {@code WebDriver} instance
    * @param {string} browser - The type of browser this driver is controlling
-   * @param extensionUrl
-   * @param {number} timeout
+   * @param {string} extensionUrl
+   * @param {number} timeout - Defaults to 10000 milliseconds (10 seconds)
    */
   constructor(driver, browser, extensionUrl, timeout = 10 * 1000) {
     this.driver = driver;
@@ -132,6 +134,7 @@ class Driver {
     this.timeout = timeout;
     this.exceptions = [];
     this.errors = [];
+    this.eventProcessingStack = [];
     this.windowHandles = new WindowHandles(this.driver);
 
     // The following values are found in
@@ -860,6 +863,47 @@ class Driver {
   }
 
   /**
+   * Function that aims to simulate a click action on a specified web element
+   * within a web page and waits for the current window to close.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @param {number} [retries] - The number of times to retry the click action if it fails
+   * @returns {Promise<void>} promise that resolves to the WebElement
+   */
+  async clickElementAndWaitForWindowToClose(rawLocator, retries = 3) {
+    const handle = await this.driver.getWindowHandle();
+    await this.clickElement(rawLocator, retries);
+    await this.waitForWindowToClose(handle);
+  }
+
+  /**
+   * Waits for the specified window handle to close before returning.
+   *
+   * @param {string} handle - The handle of the window or tab we'll wait for.
+   * @param {number} [timeout] - The amount of time in milliseconds to wait
+   * before timing out. Defaults to `this.timeout`.
+   * @throws {Error} throws an error if the window handle doesn't close within
+   * the timeout.
+   */
+  async waitForWindowToClose(handle, timeout = this.timeout) {
+    const start = Date.now();
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const handles = await this.getAllWindowHandles();
+      if (!handles.includes(handle)) {
+        return;
+      }
+
+      const timeElapsed = Date.now() - start;
+      if (timeElapsed > timeout) {
+        throw new Error(
+          `waitForWindowToClose timed out waiting for window handle '${handle}' to close.`,
+        );
+      }
+    }
+  }
+
+  /**
    * Waits until the specified number of window handles are present.
    *
    * @param {number} _x - The number of window handles to wait for
@@ -871,10 +915,7 @@ class Driver {
   async waitUntilXWindowHandles(_x, delayStep = 1000, timeout = this.timeout) {
     // In the MV3 build, there is an extra windowHandle with a title of "MetaMask Offscreen Page"
     // So we add 1 to the expected number of window handles
-    const x =
-      process.env.ENABLE_MV3 === 'true' || process.env.ENABLE_MV3 === undefined
-        ? _x + 1
-        : _x;
+    const x = isManifestV3 ? _x + 1 : _x;
 
     let timeElapsed = 0;
     let windowHandles = [];
@@ -1127,8 +1168,6 @@ class Driver {
   }
 
   async checkBrowserForConsoleErrors(_ignoredConsoleErrors) {
-    const ignoreAllErrors = _ignoredConsoleErrors.includes('ignore-all');
-
     const ignoredConsoleErrors = _ignoredConsoleErrors.concat([
       // Third-party Favicon 404s show up as errors
       'favicon.ico - Failed to load resource: the server responded with a status of 404',
@@ -1136,23 +1175,51 @@ class Driver {
       'Failed to load resource: the server responded with a status of 429',
       // 4Byte
       'Failed to load resource: the server responded with a status of 502 (Bad Gateway)',
+      // Sentry error that is not actually a problem
+      'Event fragment with id transaction-added-',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');
 
+    // Flush the event processing stack 50ms after the last event is added
+    const debounceEventProcessingStack = debounce(
+      this.#flushEventProcessingStack.bind(this),
+      50,
+    );
+
     this.driver.onLogEvent(cdpConnection, (event) => {
       if (event.type === 'error') {
         if (event.args.length !== 0) {
-          const newError = this.#getErrorFromEvent(event);
+          event.ignoredConsoleErrors = ignoredConsoleErrors;
 
-          const ignored = logBrowserError(ignoredConsoleErrors, newError);
+          this.eventProcessingStack.push(event);
 
-          if (!ignored && !ignoreAllErrors) {
-            this.errors.push(newError);
-          }
+          debounceEventProcessingStack();
         }
       }
     });
+  }
+
+  #flushEventProcessingStack() {
+    let completeErrorText = '';
+
+    // Combine all events together that have arrived in the last 50ms, because they are actually just one error
+    this.eventProcessingStack.forEach((event) => {
+      completeErrorText += `${this.#getErrorFromEvent(event)}\n`;
+    });
+    completeErrorText = completeErrorText.trim();
+
+    const { ignoredConsoleErrors } = this.eventProcessingStack[0];
+
+    const ignored = logBrowserError(ignoredConsoleErrors, completeErrorText);
+
+    const ignoreAllErrors = ignoredConsoleErrors.includes('ignore-all');
+
+    if (!ignored && !ignoreAllErrors) {
+      this.errors.push(completeErrorText);
+    }
+
+    this.eventProcessingStack = [];
   }
 
   #getErrorFromEvent(event) {

@@ -42,7 +42,7 @@
     "message": "QR donanım cüzdanınızı bağlayın"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave (çok yakında)"
+    "message": "Ngrave Zero"
   },
   "SIWEAddressInvalid": {
     "message": "Giriş talebindeki adres, giriş yapmak için kullandığınız hesapla uyumlu değil."
@@ -278,7 +278,13 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "Yeni bir hesap ekleyin"
+    "message": "Yeni bir Ethereum hesabı ekle"
+  },
+  "addNewBitcoinAccount": {
+    "message": "Yeni bir Bitcoin hesabı ekle (Beta)"
+  },
+  "addNewBitcoinTestnetAccount": {
+    "message": "Yeni bir Bitcoin hesabı ekle (Test Ağı)"
   },
   "addNewToken": {
     "message": "Yeni token ekleyin"
@@ -507,12 +513,6 @@
   "allow": {
     "message": "İzin Ver"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "MetaMask'in otomatik algılama ile NFT'lerinizi algılamasına ve göstermesine izin verin. Şunları yapabileceksiniz:"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "MetaMask'in otomatik algılama ile token'lerinizi algılamasına ve göstermesine izin verin. Şunları yapabileceksiniz:"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "MMI'nin hesaplarınızı içe aktarmak için $1 ile bağlantı kurmasına izin verir."
   },
@@ -543,9 +543,6 @@
   "andForTwoItems": {
     "message": "$1 ve $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
-  },
-  "announcements": {
-    "message": "Duyurular"
   },
   "appDescription": {
     "message": "Tarayıcında bir Ethereum Cüzdanı",
@@ -631,6 +628,9 @@
   },
   "attemptToCancelSwapForFree": {
     "message": "Swap işlemini ücretsiz iptal etme girişimi"
+  },
+  "attributes": {
+    "message": "Özellikler"
   },
   "attributions": {
     "message": "Özellikler"
@@ -756,6 +756,22 @@
   "bitcoinActivityNotSupported": {
     "message": "Bitcoin aktivitesi desteklenmiyor"
   },
+  "bitcoinSupportSectionTitle": {
+    "message": "Bitcoin"
+  },
+  "bitcoinSupportToggleDescription": {
+    "message": "Bu özelliği açtığınızda mevcut Gizli Kurtarma İfadenizden türetilen MetaMask Uzantınıza bir Bitcoin Hesabı ekleme seçeneğiniz olacaktır. Bu, deneysel bir Beta özelliğidir, bu yüzden riski kendinize ait olarak kullanmalısınız. Bu yeni Bitcoin deneyimi hakkında bize geri bildirim göndermek için lütfen bu $1 bölümünü doldurun.",
+    "description": "$1 is the link to a product feedback form"
+  },
+  "bitcoinSupportToggleTitle": {
+    "message": "\"Yeni bir Bitcoin hesabı ekle (Beta)\" seçeneğini etkinleştir"
+  },
+  "bitcoinTestnetSupportToggleDescription": {
+    "message": "Bu özelliği açtığınızda test ağı için bir Bitcoin Hesabı ekleme seçeneğiniz olacak."
+  },
+  "bitcoinTestnetSupportToggleTitle": {
+    "message": "\"Yeni bir Bitcoin hesabı ekle (Test Ağı)\" seçeneğini etkinleştir"
+  },
   "blockExplorerAccountAction": {
     "message": "Hesap",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -822,6 +838,9 @@
   },
   "blockies": {
     "message": "Blockies"
+  },
+  "boughtFor": {
+    "message": "Satın alma amacı"
   },
   "bridge": {
     "message": "Köprü"
@@ -943,6 +962,9 @@
   },
   "coingecko": {
     "message": "CoinGecko"
+  },
+  "collectionName": {
+    "message": "Koleksiyon adı"
   },
   "comboNoOptions": {
     "message": "Hiçbir seçenek bulunamadı",
@@ -1249,6 +1271,9 @@
   "createSnapAccountTitle": {
     "message": "Hesap oluştur"
   },
+  "creatorAddress": {
+    "message": "Oluşturucu adresi"
+  },
   "crossChainSwapsLink": {
     "message": "MetaMask Portfolio ile ağlar arasında swap gerçekleştirin"
   },
@@ -1418,9 +1443,6 @@
   "data": {
     "message": "Veri"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Verileriniz geri yüklenemiyor. Dosya bozuk gibi görünüyor."
-  },
   "dataCollectionForMarketing": {
     "message": "Pazarlama amacıyla veri toplama"
   },
@@ -1435,6 +1457,12 @@
   },
   "dataHex": {
     "message": "On Altılı"
+  },
+  "dataUnavailable": {
+    "message": "veri mevcut değil"
+  },
+  "dateCreated": {
+    "message": "Oluşturulma tarihi"
   },
   "dcent": {
     "message": "D'Cent"
@@ -1512,24 +1540,6 @@
   "details": {
     "message": "Ayrıntılar"
   },
-  "developerOptions": {
-    "message": "Geliştirici Seçenekleri"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Ağlar menüsünün yeni tasarımını açar ve kapatır"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Ağ Menüsünün Yeni Tasarımı"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Tüm duyurular için isShown boolean değerini false olarak sıfırlar. Duyurular, Yenilikler açılır penceresi modalında gösterilen bildirimlerdir."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Katılım ile ilgili çeşitli durumları sıfırlar ve \"Cüzdanınızı Koruyun\" katılım sayfasına yeniden yönlendirir."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Zaman damgasının sürekli olarak oturum depolama alanına kaydedilmesine neden olur"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "Orijinal gaz ücretinden minimum %10'luk bir artışı karşılamadığı için \"$1\" devre dışı bırakıldı.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1589,12 +1599,6 @@
   },
   "displayNftMediaDescription": {
     "message": "NFT medyasının ve verilerin gösterilmesi IP adresinizin OpenSea veya diğer üçüncü taraflarla paylaşılmasına neden olur. Bu durum, saldırganların IP adresinizi Ethereum adresinizle ilişkilendirmesini sağlayabilir. NFT otomatik algılama bu ayara dayalıdır ve bu ayar kapatıldığında kullanılamaz olur."
-  },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "Doğrudan NFT'lerinizi kullanmaya başlayın"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "Doğrudan token'lerinizi kullanmaya başlayın"
   },
   "doNotShare": {
     "message": "Bunu hiç kimseyle paylaşmayın"
@@ -1712,6 +1716,9 @@
   "editGasTooLow": {
     "message": "Bilinmeyen işlem süresi"
   },
+  "editNetworkLink": {
+    "message": "orijinal ağı düzenle"
+  },
   "editNonceField": {
     "message": "Nonce'u düzenle"
   },
@@ -1724,9 +1731,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Hızlandırma gaz ücretini düzenle"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "Dijital varlıklarınızda zahmetsizce gezinin"
-  },
   "enable": {
     "message": "Etkinleştir"
   },
@@ -1736,18 +1740,12 @@
   "enableFromSettings": {
     "message": " Ayarlardan etkinleştir."
   },
-  "enableNftAutoDetection": {
-    "message": "NFT otomatik algılamayı etkinleştir"
-  },
   "enableSnap": {
     "message": "Etkinleştir"
   },
   "enableToken": {
     "message": "şunu etkinleştir: $1",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "Otomatik token algılamayı etkinleştir"
   },
   "enabled": {
     "message": "Etkinleştirildi"
@@ -1881,6 +1879,12 @@
   "etherscanViewOn": {
     "message": "Etherscan'de görüntüle"
   },
+  "existingChainId": {
+    "message": "Girdiğiniz bilgiler mevcut bir zincir kimliği ile ilişkilidir."
+  },
+  "existingRpcUrl": {
+    "message": "Bu URL adresi başka bir zincir kimliği ile ilişkilidir."
+  },
   "expandView": {
     "message": "Görünümü genişlet"
   },
@@ -1935,6 +1939,9 @@
     "message": "Dosya içe aktarma çalışmıyor mu? Buraya tıklayın!",
     "description": "Helps user import their account from a JSON file"
   },
+  "findTheRightChainId": {
+    "message": "Doğrusunu şurada bulabilirsiniz:"
+  },
   "flaskWelcomeUninstall": {
     "message": "bu uzantıyı kaldırmalısın",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -1973,6 +1980,9 @@
   },
   "forgotPassword": {
     "message": "Şifrenizi mi unuttunuz?"
+  },
+  "form": {
+    "message": "form"
   },
   "from": {
     "message": "Kimden"
@@ -2182,6 +2192,12 @@
   "highLowercase": {
     "message": "yüksek"
   },
+  "highestCurrentBid": {
+    "message": "Mevcut en yüksek teklif"
+  },
+  "highestFloorPrice": {
+    "message": "En yüksek taban fiyat"
+  },
   "history": {
     "message": "Geçmiş"
   },
@@ -2242,12 +2258,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "NFT'lerinize anında erişin"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "Token'lerinize derhal erişim"
   },
   "import": {
     "message": "İçe Aktar",
@@ -3195,6 +3205,9 @@
   "nonceField": {
     "message": "İşlem nonce'unu özelleştir"
   },
+  "nonceFieldDesc": {
+    "message": "Varlık gönderirken nonce'u (işlem numarasını) değiştirmek için bunu açın. Bu gelişmiş bir özelliktir, dikkatli kullanın."
+  },
   "nonceFieldHeading": {
     "message": "Özel nonce"
   },
@@ -3209,9 +3222,6 @@
   },
   "notEnoughGas": {
     "message": "Yeterli gaz yok"
-  },
-  "notRightNow": {
-    "message": "Şimdi değil"
   },
   "note": {
     "message": "Not"
@@ -3398,6 +3408,9 @@
   "numberOfNewTokensDetectedSingular": {
     "message": "Bu hesapta 1 yeni token bulundu"
   },
+  "numberOfTokens": {
+    "message": "Token sayısı"
+  },
   "ofTextNofM": {
     "message": "/"
   },
@@ -3443,9 +3456,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "Deneyiminizi iyileştirmemize yardımcı olun"
-  },
-  "onboarding": {
-    "message": "Katılım"
   },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "IPFS ağ geçidi üçüncü tarafların barındırdığı veriler için erişim ve görüntülemeyi mümkün kılar. Özel bir IPFS ağ geçidi ekleyebilir veya varsayılanı kullanmaya devam edebilirsiniz."
@@ -3982,6 +3992,12 @@
   "prev": {
     "message": "Önceki"
   },
+  "price": {
+    "message": "Fiyat"
+  },
+  "priceUnavailable": {
+    "message": "fiyat mevcut değil"
+  },
   "primaryCurrencySetting": {
     "message": "Öncelikli para birimi"
   },
@@ -4134,6 +4150,9 @@
   "quoteRate": {
     "message": "Kota oranı"
   },
+  "rank": {
+    "message": "Sıralama"
+  },
   "reAddAccounts": {
     "message": "diğer hesapları yeniden ekle"
   },
@@ -4145,9 +4164,6 @@
   },
   "receive": {
     "message": "Al"
-  },
-  "receiveTokensCamelCase": {
-    "message": "Token'leri al"
   },
   "recipientAddressPlaceholder": {
     "message": "Genel adres (0x) veya ENS adı girin"
@@ -4303,9 +4319,6 @@
   "reset": {
     "message": "Sıfırla"
   },
-  "resetStates": {
-    "message": "Durumları Sıfırla"
-  },
   "resetWallet": {
     "message": "Cüzdanı sıfırla"
   },
@@ -4323,12 +4336,6 @@
   },
   "restore": {
     "message": "Geri Yükle"
-  },
-  "restoreFailed": {
-    "message": "Sunulan dosyadan verileriniz geri yüklenemiyor"
-  },
-  "restoreSuccessful": {
-    "message": "Verileriniz başarılı bir şekilde geri yüklendi"
   },
   "restoreUserData": {
     "message": "Kullanıcı verilerini geri yükle"
@@ -4494,13 +4501,10 @@
   "seedPhraseIntroRecommendedButtonCopy": {
     "message": "Cüzdanımı koru (önerilir)"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "Birden fazla gizli yerde not ederek saklayın."
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Bir şifre yöneticisine kaydedin"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "Bir kasada saklayın."
   },
   "seedPhraseIntroSidebarCopyOne": {
@@ -4634,9 +4638,6 @@
   "sepolia": {
     "message": "Sepolia test ağı"
   },
-  "serviceWorkerKeepAlive": {
-    "message": "Service Worker'ı Canlı Tut"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask, ürünün kullanılabilirliğini ve güvenliğini iyileştirmek amacıyla bu güvenilir üçüncü taraf hizmetlerini kullanır."
   },
@@ -4693,6 +4694,9 @@
   "showIncomingTransactionsExplainer": {
     "message": "Ethereum adresinizi ve IP adresinizi açığa çıkaran her ağ için farklı üçüncü taraf API'lerine güvenir."
   },
+  "showLess": {
+    "message": "Daha az göster"
+  },
   "showMore": {
     "message": "Daha fazlasını göster"
   },
@@ -4722,9 +4726,6 @@
   },
   "signatureRequestGuidance": {
     "message": "Bumesajı sadece içeriği tam olarak anlıyorsanız ve talepte bulunan siteye güveniyorsanız imzalayın."
-  },
-  "signatureRequestWarning": {
-    "message": "Bu mesajın imzalanması tehlikeli olabilir. Hesabınızın ve varlıklarınızın tüm kontrolünü bu mesajın diğer ucundaki tarafa veriyor olabilirsiniz. Başka bir deyişle istedikleri zaman hesabınızı boşaltabilirler. Dikkatle ilerleyin. $1."
   },
   "signed": {
     "message": "İmzalandı"
@@ -4914,6 +4915,9 @@
   },
   "snapDetailWebsite": {
     "message": "Web Sitesi"
+  },
+  "snapHomeMenu": {
+    "message": "Snap Ana Menüsü"
   },
   "snapInstallRequest": {
     "message": "$1 adlı snap'i yüklemek ona aşağıdaki izinleri verir.",
@@ -5196,9 +5200,6 @@
   },
   "stateLogsDescription": {
     "message": "Durum günlükleri genel hesap adreslerinizi ve gönderilen işlemleri içerir."
-  },
-  "states": {
-    "message": "Durumlar"
   },
   "status": {
     "message": "Durum"
@@ -5838,45 +5839,6 @@
     "message": "Alıcı: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "Kimlik avı saldırıları bakımından risk altındasınız. eth_sign özelliğini kapatarak kendinizi koruyun."
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "Bu ayarı etkinleştirirseniz okunabilir olmayan imza talepleri alabilirsiniz. Anlamadığınız bir mesajı imzaladığınızda paranızı ve NFT'lerinizi vermeyi kabul ediyor olabilirsiniz."
-  },
-  "toggleEthSignField": {
-    "message": "Eth_sign talepleri"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " dolandırılıyor olabilirsiniz"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "Bu ayarı açmanız istendi ise"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "eth_sign taleplerini etkinleştirirsem tüm paramı ve NFT'lerimi kaybedebileceğimi anlıyorum. "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "eth_sign taleplerine izin vermeniz sizi kimlik avı saldırılarına karşı hassas hale getirebilir. Her zaman URL adresini inceleyin ve kod içeren mesajları imzalarken dikkat edin."
-  },
-  "toggleEthSignModalFormError": {
-    "message": "Metin yanlış"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "Devam etmek için \"Sadece anladığım şeyleri imzalıyorum\" girin"
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "Sadece anladığım şeyleri imzalıyorum"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "Kullanım riski size aittir"
-  },
-  "toggleEthSignOff": {
-    "message": "Kapalı (Önerilir)"
-  },
-  "toggleEthSignOn": {
-    "message": "Açık (Önerilmez)"
-  },
   "toggleRequestQueueDescription": {
     "message": "Bu, tüm siteler için tek bir seçili ağ yerine her bir site için bir ağ seçebilmenize olanak sağlar. Bu özellik, manuel olarak ağ değiştirmenizi önleyebilir ve bu da belirli sitelerde kullanıcı deneyiminizi bozabilir."
   },
@@ -5931,6 +5893,9 @@
   "tokenShowUp": {
     "message": "Tokenleriniz cüzdanınızda otomatik olarak görünmeyebilir. "
   },
+  "tokenStandard": {
+    "message": "Token standardı"
+  },
   "tokenSymbol": {
     "message": "Token sembolü"
   },
@@ -5940,6 +5905,9 @@
   "tokensFoundTitle": {
     "message": "$1 yeni token bulundu",
     "description": "$1 is the number of new tokens detected"
+  },
+  "tokensInCollection": {
+    "message": "Koleksiyondaki tokenler"
   },
   "tooltipApproveButton": {
     "message": "Anladım"
@@ -5973,6 +5941,9 @@
   },
   "transactionCreated": {
     "message": "İşlem $2 itibariyle $1 değeriyle oluşturuldu."
+  },
+  "transactionDataFunction": {
+    "message": "İşlev"
   },
   "transactionDetailDappGasMoreInfo": {
     "message": "Site önerisi"
@@ -6146,6 +6117,9 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
+  "unMatchedChain": {
+    "message": "Kayıtlarımıza göre bu URL adresi bu zincir kimliğinin bilinen bir sağlayıcısı ile uyumlu değil."
+  },
   "unapproved": {
     "message": "Onaylanmadı"
   },
@@ -6197,6 +6171,9 @@
   "update": {
     "message": "Güncelle"
   },
+  "updateOrEditNetworkInformations": {
+    "message": "Bilgilerinizi güncelleyin veya"
+  },
   "updateRequest": {
     "message": "Talebi güncelle"
   },
@@ -6229,6 +6206,9 @@
   },
   "useNftDetection": {
     "message": "NFT'leri otomatik algıla"
+  },
+  "useNftDetectionDescriptionText": {
+    "message": "MetaMask'in üçüncü taraf hizmetleri kullanarak size ait olan NFT'leri eklemesine izin verin. NFT'leri otomatik algılama, IP adresinizi ve hesap adresinizi bu hizmetlerle paylaşır. Bu özelliğin etkinleştirilmesi IP adresinizi Ethereum adresinizle ilişkilendirebilir ve dolandırıcılar tarafından airdrop'u gerçekleştirilen sahte NFT'leri gösterebilir. Bu riski önlemek için tokenleri elle ekleyebilirsiniz."
   },
   "usePhishingDetection": {
     "message": "Kimlik avı algılama kullan"
@@ -6421,6 +6401,9 @@
   "whatsThis": {
     "message": "Bu nedir?"
   },
+  "wrongChainId": {
+    "message": "Bu zincir kimliği ağ adı ile uyumlu değil."
+  },
   "wrongNetworkName": {
     "message": "Kayıtlarımıza göre ağ adı bu zincir kimliği ile doğru şekilde eşleşmiyor olabilir."
   },
@@ -6452,9 +6435,6 @@
   },
   "yourBalance": {
     "message": "Bakiyeniz"
-  },
-  "yourFundsMayBeAtRisk": {
-    "message": "Paranız tehlikede olabilir"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT'niz tehlikede olabilir"
