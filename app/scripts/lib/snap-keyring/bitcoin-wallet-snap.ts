@@ -20,7 +20,7 @@ export class BitcoinWalletSnapSender implements Sender {
     // the `handleSnapRequest` action.
     return (await handleSnapRequest({
       origin: 'metamask',
-      snapId: BITCOIN_WALLET_SNAP_ID,
+      snapId: 'local:http://localhost:8080', //BITCOIN_WALLET_SNAP_ID,
       handler: HandlerType.OnKeyringRequest,
       request,
     })) as Json;
