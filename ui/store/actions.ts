@@ -115,6 +115,7 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
+import { EndTraceRequest } from '../../shared/lib/trace';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -5614,4 +5615,16 @@ export async function setLastInteractedConfirmationInfo(
     'setLastInteractedConfirmationInfo',
     [info],
   );
+}
+
+export async function endBackgroundTrace(request: EndTraceRequest) {
+  // We want to record the timestamp immediately, not after the request reaches the background.
+  // Sentry uses the Performance interface for more accuracy, so we also must use it to align with
+  // other timings.
+  const timestamp =
+    request.timestamp || performance.timeOrigin + performance.now();
+
+  await submitRequestToBackground<void>('endTrace', [
+    { ...request, timestamp },
+  ]);
 }

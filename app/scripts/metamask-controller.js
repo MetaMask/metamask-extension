@@ -224,6 +224,7 @@ import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
+import { endTrace, trace } from '../../shared/lib/trace';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -340,6 +341,7 @@ import {
   onPushNotificationClicked,
   onPushNotificationReceived,
 } from './controllers/push-notifications';
+import createTracingMiddleware from './lib/createTracingMiddleware';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1794,6 +1796,7 @@ export default class MetamaskController extends EventEmitter {
       },
       provider: this.provider,
       testGasFeeFlows: process.env.TEST_GAS_FEE_FLOWS,
+      trace,
       hooks: {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         afterSign: (txMeta, signedEthTx) =>
@@ -3948,6 +3951,9 @@ export default class MetamaskController extends EventEmitter {
           ...request,
           ethQuery: new EthQuery(this.provider),
         }),
+
+      // Trace
+      endTrace,
     };
   }
 
@@ -5417,6 +5423,8 @@ export default class MetamaskController extends EventEmitter {
     if (origin === BaseUrl.Portfolio) {
       engine.push(createTxVerificationMiddleware(this.networkController));
     }
+
+    engine.push(createTracingMiddleware());
 
     engine.push(
       createPPOMMiddleware(
