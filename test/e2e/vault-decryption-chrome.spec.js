@@ -38,6 +38,7 @@ async function getExtensionStorageFilePath(driver) {
   const logFiles = fs
     .readdirSync(extensionStoragePath)
     .filter((filename) => filename.endsWith('.log'));
+
   // Use the first of the `.log` files found
   return path.resolve(extensionStoragePath, logFiles[0]);
 }
@@ -70,6 +71,21 @@ async function closePopoverIfPresent(driver) {
     text: 'Not right now',
   };
   await driver.clickElementSafe(nftAutodetection);
+}
+
+/**
+ * Logs the size of a file.
+ *
+ * @param {string} filePath - The path to the file to be read.
+ * @returns {Promise<void>}
+ */
+async function logFileSize(filePath) {
+  try {
+    const stats = await fs.promises.stat(filePath);
+    console.log(`File Size =========================: ${stats.size} bytes`);
+  } catch (err) {
+    console.error(`Error reading file from disk: ${err}`);
+  }
 }
 
 /**
@@ -121,8 +137,22 @@ describe('Vault Decryptor Page', function () {
         await driver.clickElement('[name="vault-source"]');
         const inputField = await driver.findElement('#fileinput');
 
-        await driver.delay(5000);
-        inputField.press(await getExtensionStorageFilePath(driver));
+        const filePath = await getExtensionStorageFilePath(driver);
+
+        // Log the file size for debugging purposes
+        await logFileSize(filePath);
+        await inputField.press(filePath);
+
+        const fileLoaded = await driver.isElementPresent({
+          tag: 'span',
+          text: '❌ Can not read vault from file',
+        });
+
+        // Retry-logic if file upload fails
+        if (!fileLoaded) {
+          await inputField.press(filePath);
+        }
+
         // fill in the password
         await driver.fill('#passwordinput', WALLET_PASSWORD);
         // decrypt
