@@ -2,10 +2,10 @@ import { waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
+import { genUnapprovedApproveConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
-import ContractInteractionInfo from './contract-interaction';
+import ApproveInfo from './approve';
 
 jest.mock('../../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../../store/actions'),
@@ -24,22 +24,19 @@ jest.mock(
   }),
 );
 
-describe('<ContractInteractionInfo />', () => {
+describe('<ApproveInfo />', () => {
   const middleware = [thunk];
 
-  it('renders component for contract interaction request', async () => {
+  it('renders component for approve request', async () => {
     const state = {
       ...mockState,
       confirm: {
-        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
+        currentConfirmation: genUnapprovedApproveConfirmation(),
       },
     };
     const mockStore = configureMockStore(middleware)(state);
 
-    const { container } = renderWithProvider(
-      <ContractInteractionInfo />,
-      mockStore,
-    );
+    const { container } = renderWithProvider(<ApproveInfo />, mockStore);
 
     await waitFor(() => {
       expect(container).toMatchSnapshot();
@@ -59,10 +56,7 @@ describe('<ContractInteractionInfo />', () => {
       },
     };
     const mockStore = configureMockStore(middleware)(state);
-    const { container } = renderWithProvider(
-      <ContractInteractionInfo />,
-      mockStore,
-    );
+    const { container } = renderWithProvider(<ApproveInfo />, mockStore);
     expect(container).toMatchSnapshot();
   });
 });

@@ -9,7 +9,7 @@ import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import { TransactionDetails } from '../shared/transaction-details/transaction-details';
 
-const ContractInteractionInfo = () => {
+const BaseTransactionInfo = () => {
   const transactionMeta = useSelector(
     currentConfirmationSelector,
   ) as TransactionMeta;
@@ -38,4 +38,4 @@ const ContractInteractionInfo = () => {
   );
 };
 
-export default ContractInteractionInfo;
+export default BaseTransactionInfo;

@@ -73,11 +73,10 @@ describe('Incremental Security', function () {
         );
         await driver.clickElement('[data-testid="account-list-menu-details"');
 
-        // gets the current accounts address
-        const address = await driver.findElement(
-          '.qr-code .multichain-address-copy-button',
+        const outerSegment = await driver.findElement(
+          '.qr-code__address-segments',
         );
-        const publicAddress = await address.getText();
+        const publicAddress = await outerSegment.getText();
 
         // wait for account modal to be visible
         await driver.findVisibleElement(

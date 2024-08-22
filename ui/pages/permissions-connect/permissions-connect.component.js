@@ -14,6 +14,7 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../shared/constants/permissions';
+import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 import SnapsConnect from './snaps/snaps-connect';
@@ -143,7 +144,11 @@ export default class PermissionConnect extends Component {
       return;
     }
     // if this is an incremental permission request for permitted chains, skip the account selection
-    if (permissionsRequest?.diff?.permissionDiffMap?.permittedChains) {
+    if (
+      permissionsRequest?.diff?.permissionDiffMap?.[
+        PermissionNames.permittedChains
+      ]
+    ) {
       history.replace(confirmPermissionPath);
     }
 

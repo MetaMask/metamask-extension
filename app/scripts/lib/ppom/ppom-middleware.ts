@@ -14,6 +14,7 @@ import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences';
 import { AppStateController } from '../../controllers/app-state';
 import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
+import { trace, TraceContext } from '../../../../shared/lib/trace';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -27,6 +28,13 @@ const CONFIRMATION_METHODS = Object.freeze([
   'eth_sendTransaction',
   ...SIGNING_METHODS,
 ]);
+
+export type PPOMMiddlewareRequest<
+  Params extends JsonRpcParams = JsonRpcParams,
+> = Required<JsonRpcRequest<Params>> & {
+  securityAlertResponse?: SecurityAlertResponse | undefined;
+  traceContext?: TraceContext;
+};
 
 /**
  * Middleware function that handles JSON RPC requests.
@@ -46,7 +54,7 @@ const CONFIRMATION_METHODS = Object.freeze([
  * @returns PPOMMiddleware function.
  */
 export function createPPOMMiddleware<
-  Params extends JsonRpcParams,
+  Params extends (string | { to: string })[],
   Result extends Json,
 >(
   ppomController: PPOMController,
@@ -61,7 +69,7 @@ export function createPPOMMiddleware<
   ) => void,
 ) {
   return async (
-    req: JsonRpcRequest<Params>,
+    req: PPOMMiddlewareRequest<Params>,
     _res: JsonRpcResponse<Result>,
     next: () => void,
   ) => {
@@ -80,13 +88,14 @@ export function createPPOMMiddleware<
         return;
       }
 
-      const { isSIWEMessage } = detectSIWE({ data: req?.params?.[0] });
-      if (isSIWEMessage) {
-        return;
-      }
-
-      if (req.method === MESSAGE_TYPE.ETH_SEND_TRANSACTION) {
-        const { to: toAddress } = req?.params?.[0] ?? {};
+      const data = req.params[0];
+      if (typeof data === 'string') {
+        const { isSIWEMessage } = detectSIWE({ data });
+        if (isSIWEMessage) {
+          return;
+        }
+      } else if (req.method === MESSAGE_TYPE.ETH_SEND_TRANSACTION) {
+        const { to: toAddress } = data ?? {};
         const internalAccounts = accountsController.listAccounts();
         const isToInternalAccount = internalAccounts.some(
           ({ address }) => address?.toLowerCase() === toAddress?.toLowerCase(),
@@ -98,18 +107,20 @@ export function createPPOMMiddleware<
 
       const securityAlertId = generateSecurityAlertId();
 
-      validateRequestWithPPOM({
-        ppomController,
-        request: req,
-        securityAlertId,
-        chainId,
-      }).then((securityAlertResponse) => {
-        updateSecurityAlertResponse(
-          req.method,
+      trace({ name: 'PPOM Validation', parentContext: req.traceContext }, () =>
+        validateRequestWithPPOM({
+          ppomController,
+          request: req,
           securityAlertId,
-          securityAlertResponse,
-        );
-      });
+          chainId,
+        }).then((securityAlertResponse) => {
+          updateSecurityAlertResponse(
+            req.method,
+            securityAlertId,
+            securityAlertResponse,
+          );
+        }),
+      );
 
       const loadingSecurityAlertResponse: SecurityAlertResponse = {
         ...LOADING_SECURITY_ALERT_RESPONSE,
