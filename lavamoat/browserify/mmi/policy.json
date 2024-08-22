@@ -3192,55 +3192,6 @@
         "@sentry/utils": true
       }
     },
-    "@sentry/browser>@sentry/replay": {
-      "globals": {
-        "Blob": true,
-        "CSSConditionRule": true,
-        "CSSGroupingRule": true,
-        "CSSMediaRule": true,
-        "CSSSupportsRule": true,
-        "DragEvent": true,
-        "Element": true,
-        "FormData": true,
-        "HTMLCanvasElement": true,
-        "HTMLElement.prototype": true,
-        "HTMLFormElement": true,
-        "HTMLImageElement": true,
-        "HTMLInputElement.prototype": true,
-        "HTMLOptionElement.prototype": true,
-        "HTMLSelectElement.prototype": true,
-        "HTMLTextAreaElement.prototype": true,
-        "Headers": true,
-        "ImageData": true,
-        "MouseEvent": true,
-        "MutationObserver": true,
-        "Node.prototype.contains": true,
-        "PerformanceObserver": true,
-        "TextEncoder": true,
-        "URL": true,
-        "URLSearchParams": true,
-        "Worker": true,
-        "Zone": true,
-        "__SENTRY_DEBUG__": true,
-        "__rrMutationObserver": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.warn": true,
-        "document": true,
-        "innerHeight": true,
-        "innerWidth": true,
-        "location.href": true,
-        "pageXOffset": true,
-        "pageYOffset": true,
-        "requestAnimationFrame": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@sentry/browser>@sentry/core": true,
-        "@sentry/utils": true,
-        "browserify>process": true
-      }
-    },
     "@sentry/utils": {
       "globals": {
         "CustomEvent": true,
