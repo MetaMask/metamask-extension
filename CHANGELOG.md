@@ -7,15 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.1.0]
-## [12.0.6]
-### Changed
-- Improve error diagnostics ([#26482](https://github.com/MetaMask/metamask-extension/pull/26482))
-
-### Fixed
-- Fix errors in error diagnistics on Firefox ([#26467](https://github.com/MetaMask/metamask-extension/pull/26467))
-- Prevent pending transactions from causing excessive disk space usage ([#26485](https://github.com/MetaMask/metamask-extension/pull/26485))
-  - This is a repeat of the fix included in v12.0.1; it wasn't working for all users, but it should now.
-- Prevent UI crash while signature confirmation is closing ([#26248](https://github.com/MetaMask/metamask-extension/pull/26248))
 ### Added
 - Introduced a new UI for managing multiple RPC URLs, including adding and deleting options ([#25452](https://github.com/MetaMask/metamask-extension/pull/25452))
 - Launched a feature displaying the percentage increase or decrease for tokens within the UI ([#24223](https://github.com/MetaMask/metamask-extension/pull/24223))
@@ -89,6 +80,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Included decimals in fiat calculations for Permit simulations and added tooltips for shortened values ([#26523](https://github.com/MetaMask/metamask-extension/pull/26523))
 - Fixed the missing deadline timer on the swaps status screen ([#26544](https://github.com/MetaMask/metamask-extension/pull/26544))
 - Fixed an issue where account names were out of sync in the account list during the connect account flow ([#26542](https://github.com/MetaMask/metamask-extension/pull/26542))
+
+## [12.0.6]
+### Changed
+- Improve error diagnostics ([#26482](https://github.com/MetaMask/metamask-extension/pull/26482))
+
+### Fixed
+- Fix errors in error diagnistics on Firefox ([#26467](https://github.com/MetaMask/metamask-extension/pull/26467))
+- Prevent pending transactions from causing excessive disk space usage ([#26485](https://github.com/MetaMask/metamask-extension/pull/26485))
+  - This is a repeat of the fix included in v12.0.1; it wasn't working for all users, but it should now.
+- Prevent UI crash while signature confirmation is closing ([#26248](https://github.com/MetaMask/metamask-extension/pull/26248))
 
 ## [12.0.5]
 ### Fixed
@@ -5003,8 +5004,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.1.0...HEAD
-[12.1.0]: https://github.com/MetaMask/metamask-extension/compare/v12.0.5...v12.1.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.0.6...HEAD
+[12.1.0]: https://github.com/MetaMask/metamask-extension/compare/v12.0.6...v12.1.0
 [12.0.6]: https://github.com/MetaMask/metamask-extension/compare/v12.0.5...v12.0.6
 [12.0.5]: https://github.com/MetaMask/metamask-extension/compare/v12.0.4...v12.0.5
 [12.0.4]: https://github.com/MetaMask/metamask-extension/compare/v12.0.3...v12.0.4
