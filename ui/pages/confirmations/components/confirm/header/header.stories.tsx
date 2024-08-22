@@ -7,7 +7,7 @@ import configureStore from '../../../../../store/store';
 import Header from './header';
 import { ConfirmContextProvider } from '../../../context/confirm';
 
-const store = configureStore(getExampleMockSignatureConfirmState);
+const store = configureStore(getExampleMockSignatureConfirmState());
 
 const Story = {
   title: 'Confirmations/Components/Confirm/Header',
