@@ -54,14 +54,12 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
 
           await assertApproveDetails(driver);
 
-          await driver.delay(1000 ** 2);
-
           await confirmApproveTransaction(driver);
         },
       );
     });
 
-    it.skip('Sends a type 2 transaction (EIP1559)', async function () {
+    it('Sends a type 2 transaction (EIP1559)', async function () {
       await withFixtures(
         {
           dapp: true,

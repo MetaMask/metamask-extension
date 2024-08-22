@@ -3,10 +3,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
-<<<<<<< HEAD
-=======
 import { Numeric } from '../../../../../../../../shared/modules/Numeric';
->>>>>>> ce050e907f (feat: Add approval static simulation)
 import { parseTypedDataMessage } from '../../../../../../../../shared/modules/transaction.utils';
 import useTokenExchangeRate from '../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import Name from '../../../../../../../components/app/name/name';

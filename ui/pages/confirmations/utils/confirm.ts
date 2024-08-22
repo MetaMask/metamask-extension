@@ -19,8 +19,6 @@ export const REDESIGN_APPROVAL_TYPES = [
 export const REDESIGN_USER_TRANSACTION_TYPES = [
   TransactionType.contractInteraction,
   TransactionType.deployContract,
-  // reenable when complete
-  // TransactionType.tokenMethodIncreaseAllowance,
 ];
 
 export const REDESIGN_DEV_TRANSACTION_TYPES = [
