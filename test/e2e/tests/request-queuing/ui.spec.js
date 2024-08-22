@@ -1,8 +1,5 @@
 const { strict: assert } = require('assert');
 const { Browser, until } = require('selenium-webdriver');
-const {
-  BUILT_IN_INFURA_NETWORKS,
-} = require('../../../../shared/constants/network');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -175,7 +172,7 @@ async function validateBalanceAndActivity(
 }
 
 describe('Request-queue UI changes', function () {
-  it.only('should show network specific to domain @no-mmi', async function () {
+  it('should show network specific to domain @no-mmi', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
     await withFixtures(
@@ -374,6 +371,9 @@ describe('Request-queue UI changes', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
+          .withPreferencesController({
+            preferences: { showTestNetworks: true },
+          })
           .withPreferencesControllerUseRequestQueueEnabled()
           .withSelectedNetworkControllerPerDomain()
           .build(),
@@ -411,24 +411,26 @@ describe('Request-queue UI changes', function () {
           text: 'Ethereum Mainnet',
         });
 
-        // Go to Settings, delete the first dapp's network
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement('[data-testid="global-menu-settings"]');
-        await driver.clickElement({
-          css: '.tab-bar__tab__content__title',
-          text: 'Networks',
-        });
-        await driver.clickElement({
-          css: '.networks-tab__networks-list-name',
+        await driver.clickElement('[data-testid="network-display"]');
+
+        const networkRow = await driver.findElement({
+          css: '.multichain-network-list-item',
           text: 'Localhost 8545',
         });
-        await driver.clickElement({ css: '.btn-danger', text: 'Delete' });
-        await driver.clickElement({
-          css: '.modal-container__footer-button',
-          text: 'Delete',
-        });
+
+        const networkMenu = await driver.findNestedElement(
+          networkRow,
+          '[data-testid="network-list-item-options-button"]',
+        );
+
+        await networkMenu.click();
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-delete"]',
+        );
+
+        await driver.clickElement({ tag: 'button', text: 'Delete' });
+
+        // TODO: I'm failing below
 
         // Go back to first dapp, try an action, ensure deleted network doesn't block UI
         // The current globally selected network, Ethereum Mainnet, should be used
