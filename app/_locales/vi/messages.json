@@ -4156,9 +4156,6 @@
   "receive": {
     "message": "Nhận"
   },
-  "receiveTokensCamelCase": {
-    "message": "Nhận token"
-  },
   "recipientAddressPlaceholder": {
     "message": "Nhập địa chỉ công khai (0x) hoặc tên ENS"
   },

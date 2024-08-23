@@ -4156,9 +4156,6 @@
   "receive": {
     "message": "Получить"
   },
-  "receiveTokensCamelCase": {
-    "message": "Получить токены"
-  },
   "recipientAddressPlaceholder": {
     "message": "Введите публичный адрес (0x) или имя ENS"
   },

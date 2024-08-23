@@ -4156,9 +4156,6 @@
   "receive": {
     "message": "收款"
   },
-  "receiveTokensCamelCase": {
-    "message": "收取代币"
-  },
   "recipientAddressPlaceholder": {
     "message": "输入公钥 (0x) 或 ENS 名称"
   },
