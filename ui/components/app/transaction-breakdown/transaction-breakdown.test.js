@@ -26,12 +26,6 @@ describe('TransactionBreakdown', () => {
       preferences: {},
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
-      // networkConfigurationsByChainId: {
-      //   [CHAIN_IDS.MAINNET]: {
-      //     chainId: CHAIN_IDS.MAINNET,
-      //     rpcEndpoints: [{}],
-      //   },
-      // },
       internalAccounts: mockState.metamask.internalAccounts,
       completedOnboarding: true,
     },

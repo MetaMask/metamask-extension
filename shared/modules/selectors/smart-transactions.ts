@@ -29,9 +29,6 @@ type SmartTransactionsMetaMaskState = {
         };
       };
     };
-    // providerConfig: {
-    //   chainId: Hex;
-    // };
     swapsState: {
       swapsFeatureFlags: {
         ethereum: {
@@ -52,13 +49,14 @@ type SmartTransactionsMetaMaskState = {
     smartTransactionsState: {
       liveness: boolean;
     };
-    // todo?
-    // networkConfigurations: {
-    //   [key: string]: {
-    //     chainId: Hex;
-    //     rpcUrl: string;
-    //   };
-    // };
+    selectedNetworkClientId: string;
+    // todo
+    networkConfigurations?: {
+      [key: string]: {
+        chainId: Hex;
+        rpcUrl: string;
+      };
+    };
   };
 };
 

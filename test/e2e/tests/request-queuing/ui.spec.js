@@ -1,5 +1,8 @@
 const { strict: assert } = require('assert');
 const { Browser, until } = require('selenium-webdriver');
+const {
+  BUILT_IN_INFURA_NETWORKS,
+} = require('../../../../shared/constants/network');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,

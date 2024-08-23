@@ -106,7 +106,7 @@ describe('SelectedAccount Component', () => {
     );
 
     const tooltipTitle = container.querySelector(
-      '[data-original-title="This account is not set up for use with goerli"]',
+      '[data-original-title="This account is not set up for use with Chain 5"]',
     );
 
     const button = queryByTestId('selected-account-click');

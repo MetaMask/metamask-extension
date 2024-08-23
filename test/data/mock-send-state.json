@@ -144,12 +144,6 @@
       "0x539": true
     },
     "showTestnetMessageInDropdown": true,
-    "networkConfigurations": {
-      "goerli": {
-        "id": "goerli",
-        "chainId": "0x5"
-      }
-    },
     "alertEnabledness": {
       "unconnectedAccount": true
     },

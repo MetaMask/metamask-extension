@@ -39,6 +39,7 @@ const render = ({
   const state = {
     metamask: {
       ...mockState.metamask,
+      // this could use the network controllers default state instead
       networkConfigurationsByChainId: {
         '0x1': {
           nativeCurrency: 'ETH',

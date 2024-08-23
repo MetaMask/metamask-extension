@@ -17,6 +17,7 @@ const defaultState = {
   metamask: {
     currentLocale: 'test',
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
     accounts: {
       '0xFirstAddress': {
         balance: '0x0',

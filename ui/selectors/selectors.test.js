@@ -363,8 +363,8 @@ describe('Selectors', () => {
         queuedRequestCount: 0,
         transactions: [],
         selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
-        networkConfigurations:
-          mockState.metamask.networkConfigurationsByChainId,
+        // networkConfigurations:
+        //   mockState.metamask.networkConfigurationsByChainId,
       },
     };
 
