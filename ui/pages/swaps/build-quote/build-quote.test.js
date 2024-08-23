@@ -135,7 +135,7 @@ describe('BuildQuote', () => {
     const { getByText } = renderWithProvider(<BuildQuote {...props} />, store);
     expect(getByText('Swap from')).toBeInTheDocument();
     expect(getByText('Only verified on 1 source.')).toBeInTheDocument();
-    expect(getByText('Etherscan')).toBeInTheDocument();
+    expect(getByText('etherscan.io')).toBeInTheDocument();
   });
 
   it('renders the block explorer link, 0 verified sources', () => {
@@ -148,7 +148,7 @@ describe('BuildQuote', () => {
     expect(
       getByText('This token has been added manually.'),
     ).toBeInTheDocument();
-    expect(getByText('Etherscan')).toBeInTheDocument();
+    expect(getByText('etherscan.io')).toBeInTheDocument();
   });
 
   it('clicks on a block explorer link', () => {
@@ -158,7 +158,7 @@ describe('BuildQuote', () => {
     const store = configureMockStore(middleware)(mockStore);
     const props = createProps();
     const { getByText } = renderWithProvider(<BuildQuote {...props} />, store);
-    const blockExplorer = getByText('Etherscan');
+    const blockExplorer = getByText('etherscan.io');
     expect(blockExplorer).toBeInTheDocument();
     fireEvent.click(blockExplorer);
     expect(global.platform.openTab).toHaveBeenCalledWith({

@@ -4,6 +4,8 @@ import { Provider } from 'react-redux';
 
 import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
+import { mockNetworkState } from '../../test/stub/networks';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
 
 const tests = [
@@ -120,11 +122,11 @@ const renderUseUserPreferencedCurrency = (state, value, restProps) => {
     metamask: {
       ...mockState.metamask,
       completedOnboarding: true,
-      currentCurrency: state.currentCurrency,
-      providerConfig: {
-        chainId: state.showFiat ? '0x1' : '0x539',
+      ...mockNetworkState({
+        chainId: state.showFiat ? CHAIN_IDS.MAINNET : CHAIN_IDS.LOCALHOST,
         ticker: state?.nativeCurrency,
-      },
+      }),
+      currentCurrency: state.currentCurrency,
       currencyRates: { ETH: { conversionRate: 280.45 } },
       preferences: {
         useNativeCurrencyAsPrimaryCurrency:
