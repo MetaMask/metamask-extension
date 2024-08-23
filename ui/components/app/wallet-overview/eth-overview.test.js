@@ -3,12 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import {
-  CHAIN_IDS,
-  GOERLI_DISPLAY_NAME,
-  MAINNET_DISPLAY_NAME,
-  NETWORK_TYPES,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
@@ -16,6 +11,7 @@ import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import EthOverview from './eth-overview';
 
 jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
@@ -38,21 +34,7 @@ describe('EthOverview', () => {
 
   const mockStore = {
     metamask: {
-      providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
-        nickname: MAINNET_DISPLAY_NAME,
-        type: NETWORK_TYPES.MAINNET,
-        ticker: 'ETH',
-      },
-      networkConfigurations: {
-        testNetworkConfigurationId: {
-          rpcUrl: 'https://testrpc.com',
-          chainId: '0x89',
-          nickname: 'Custom Mainnet RPC',
-          type: 'rpc',
-          id: 'custom-mainnet',
-        },
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
           '0x1': { address: '0x1', balance: '0x1F4' },
@@ -206,19 +188,7 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          providerConfig: {
-            ...mockStore.metamask.providerConfig,
-            chainId: '0xa86a',
-          },
-          networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x89',
-              nickname: 'Custom Mainnet RPC',
-              type: 'rpc',
-              id: 'custom-mainnet',
-            },
-          },
+          ...mockNetworkState({ chainId: '0xa86a' }),
         },
       };
       const mockedStore = configureMockStore([thunk])(mockedAvalancheStore);
@@ -305,19 +275,7 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          providerConfig: {
-            ...mockStore.metamask.providerConfig,
-            chainId: '0xfa',
-          },
-          networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x89',
-              nickname: 'Custom Mainnet RPC',
-              type: 'rpc',
-              id: 'custom-mainnet',
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
         },
       };
       const mockedStore = configureMockStore([thunk])(mockedFantomStore);
@@ -352,11 +310,7 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          providerConfig: {
-            type: 'test',
-            chainId: CHAIN_IDS.GOERLI,
-            nickname: GOERLI_DISPLAY_NAME,
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -377,20 +331,7 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          providerConfig: {
-            chainId: '0x89',
-            type: 'rpc',
-            id: 'custom-mainnet',
-          },
-          networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x89',
-              nickname: 'Custom Mainnet RPC',
-              type: 'rpc',
-              id: 'custom-mainnet',
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -411,20 +352,7 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          providerConfig: {
-            chainId: '0x89',
-            type: 'rpc',
-            id: 'custom-mainnet',
-          },
-          networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x89',
-              nickname: 'Custom Mainnet RPC',
-              type: 'rpc',
-              id: 'custom-mainnet',
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
         },
       };
       const mockedStore = configureMockStore([thunk])(
