@@ -78,5 +78,4 @@ licenseInfos.json
 # API Spec tests
 html-report/
 
-# images
-app/images/branding
+/app/images/branding
