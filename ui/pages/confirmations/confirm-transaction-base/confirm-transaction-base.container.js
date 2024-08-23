@@ -6,6 +6,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { captureException } from '@sentry/browser';
+import { ethErrors } from 'eth-rpc-errors';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
@@ -29,6 +30,10 @@ import {
   updateEditableParams,
   setSwapsFeatureFlags,
   fetchSmartTransactionsLiveness,
+  signAndSendSmartTransaction,
+  addTransactionAndWaitForPublish,
+  rejectPendingApproval,
+  updateSmartTransaction,
 } from '../../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../../helpers/utils/util';
@@ -63,6 +68,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getSmartTransactionsEnabled,
   ///: END:ONLY_INCLUDE_IF
+  getIsSmartTransaction,
 } from '../../../../shared/modules/selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
@@ -107,8 +113,12 @@ import {
 import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
 ///: END:ONLY_INCLUDE_IF
 import { calcGasTotal } from '../../../../shared/lib/transactions-controller-utils';
-import { subtractHexes } from '../../../../shared/modules/conversion.utils';
+import {
+  decimalToHex,
+  subtractHexes,
+} from '../../../../shared/modules/conversion.utils';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
@@ -318,6 +328,8 @@ const mapStateToProps = (state, ownProps) => {
     hexMaximumTransactionFee,
     hexMinimumTransactionFee,
     txData: fullTxData,
+    isSmartTransaction: getIsSmartTransaction(state),
+    transaction,
     tokenData,
     methodData,
     tokenProps,
@@ -382,7 +394,106 @@ export const mapDispatchToProps = (dispatch) => {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiActions = mmiActionsFactory();
   ///: END:ONLY_INCLUDE_IF
+
+  const submitSwapAndSendApprovalAndTrade = async (
+    isSmartTransaction,
+    transaction,
+    sourceTokenSymbol,
+  ) => {
+    // only submit both if the approval already exists
+    if (!transaction.approvalTx) {
+      return undefined;
+    }
+
+    const {
+      approvalTx,
+      txParams,
+      origin,
+      swapAndSendRecipient,
+      type,
+      destinationTokenSymbol,
+      destinationTokenDecimals,
+      destinationTokenAddress,
+      swapTokenValue,
+      destinationTokenAmount,
+      sourceTokenAddress,
+      sourceTokenAmount,
+      sourceTokenDecimals,
+    } = transaction;
+
+    const { params, data } = approvalTx;
+
+    if (isSmartTransaction) {
+      const feeResponse = await submitRequestToBackground(
+        'fetchSmartTransactionFees',
+        [{ ...txParams, to: String(txParams.to).toLowerCase() }, data],
+      );
+
+      const { approvalTxFees, tradeTxFees } = feeResponse;
+
+      data.gas = `0x${decimalToHex(approvalTxFees?.gasLimit || 0)}`;
+      data.chainId = transaction.chainId;
+      data.gasPrice = null;
+      data.to = String(data.to).toLowerCase();
+
+      if (!data.value) {
+        data.value = '0x0';
+      }
+
+      const approvalTxId = await dispatch(
+        signAndSendSmartTransaction({
+          unsignedTransaction: data,
+          smartTransactionFees: approvalTxFees,
+        }),
+      );
+
+      if (approvalTxId) {
+        await dispatch(updateSmartTransaction(approvalTxId, approvalTx.params));
+      }
+
+      // return function to submit trade if STX
+      return async (txId) => {
+        const submittedTxId = await dispatch(
+          signAndSendSmartTransaction({
+            unsignedTransaction: { ...txParams, chainId: transaction.chainId },
+            smartTransactionFees: tradeTxFees,
+          }),
+        );
+
+        await dispatch(
+          updateSmartTransaction(submittedTxId, {
+            origin,
+            swapAndSendRecipient,
+            type,
+            sourceTokenSymbol,
+            destinationTokenSymbol,
+            destinationTokenDecimals,
+            destinationTokenAddress,
+            swapTokenValue,
+            destinationTokenAmount,
+            sourceTokenAddress,
+            sourceTokenAmount,
+            sourceTokenDecimals,
+          }),
+        );
+
+        await dispatch(
+          rejectPendingApproval(
+            txId,
+            ethErrors.provider.userRejectedRequest().serialize(),
+          ),
+        );
+      };
+    }
+
+    // submit approval w/o STX if STX is disabled
+    await addTransactionAndWaitForPublish(data, params);
+
+    // do not return function to submit if not STX (ie use confirmations flow)
+    return undefined;
+  };
   return {
+    submitSwapAndSendApprovalAndTrade,
     tryReverseResolveAddress: (address) => {
       return dispatch(tryReverseResolveAddress(address));
     },
