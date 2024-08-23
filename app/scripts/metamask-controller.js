@@ -5695,17 +5695,6 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
-        // hasPermission: this.permissionController.hasPermission.bind(
-        //   this.permissionController,
-        //   origin,
-        // ),
-        // this can be changed to hit the approval controller instead
-        // requestAccountsApproval:
-        //   this.permissionController.requestPermissions.bind(
-        //     this.permissionController,
-        //     { origin },
-        //     { eth_accounts: {} },
-        //   ),
         requestPermissionApprovalForOrigin: async (permissions) => {
           const id = nanoid();
           return this.approvalController.addAndShowApprovalRequest({
@@ -5758,7 +5747,6 @@ export default class MetamaskController extends EventEmitter {
 
           return undefined;
         },
-        // TODO remove this?
         getCurrentRpcUrl: () =>
           this.networkController.state.providerConfig.rpcUrl,
         // network configuration-related
@@ -6099,7 +6087,6 @@ export default class MetamaskController extends EventEmitter {
 
           return undefined;
         },
-        // TODO refactor `add-ethereum-chain` handler so that this hook can be removed from multichain middleware
         getCurrentRpcUrl: () =>
           this.networkController.state.providerConfig.rpcUrl,
         // network configuration-related
