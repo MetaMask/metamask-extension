@@ -161,14 +161,19 @@ export function AssetPicker({
         backgroundColor={BackgroundColor.transparent}
         onClick={() => {
           setShowAssetPickerModal(true);
-          trackEvent({
-            event: MetaMetricsEventName.sendTokenModalOpened,
-            category: MetaMetricsEventCategory.Send,
-            properties: {
-              ...sendAnalytics,
-              is_destination_asset_picker_modal: Boolean(sendingAsset),
+          trackEvent(
+            {
+              event: MetaMetricsEventName.sendTokenModalOpened,
+              category: MetaMetricsEventCategory.Send,
+              properties: {
+                is_destination_asset_picker_modal: Boolean(sendingAsset),
+              },
+              sensitiveProperties: {
+                ...sendAnalytics,
+              },
             },
-          });
+            { excludeMetaMetricsId: false },
+          );
         }}
         endIconName={IconName.ArrowDown}
         endIconProps={{
@@ -199,7 +204,6 @@ export function AssetPicker({
                 borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
                 src={primaryTokenImage}
                 size={AvatarTokenSize.Md}
-                showHalo={!isNFT}
                 name={symbol}
                 {...(isNFT && { backgroundColor: BackgroundColor.transparent })}
               />

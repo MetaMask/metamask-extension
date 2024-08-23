@@ -3,6 +3,7 @@ const {
   withFixtures,
   unlockWallet,
 } = require('../../../helpers');
+
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
 
@@ -37,26 +38,22 @@ describe('View ERC1155 NFT details', function () {
 
         await driver.clickElement('.nft-item__container');
 
-        await driver.findElement({
-          css: '.asset-breadcrumb span:nth-of-type(2)',
-          text: 'Account 1',
-        });
+        await driver.findElement('[data-testid="nft__back"]');
 
-        // Check the displayed ERC1155 NFT details
         await driver.findElement({
-          css: '.nft-details__info h4',
+          css: '[data-testid="nft-details__name"]',
           text: 'Rocks',
         });
 
         await driver.findElement({
-          css: '.nft-details__info h6:nth-of-type(2)',
+          css: '[data-testid="nft-details__description"]',
           text: 'This is a collection of Rock NFTs.',
         });
 
         await driver.findVisibleElement('.nft-item__container');
 
         await driver.findElement({
-          css: '.nft-details__contract-wrapper',
+          css: '.nft-details__addressButton',
           text: '0x581c3...45947',
         });
       },

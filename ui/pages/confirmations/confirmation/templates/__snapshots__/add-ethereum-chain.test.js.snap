@@ -51,7 +51,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
            
           Learn about 
           <a
-            href="https://metamask.zendesk.com/hc/en-us/articles/4404424659995"
+            href="https://support.metamask.io/networks-and-sidechains/managing-networks/user-guide-custom-networks-and-sidechains/"
             target="__blank"
           >
             scams and network security risks
@@ -67,7 +67,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
           class="definition-list"
         >
           <dt
-            class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+            class="mm-box mm-text definition-list__term mm-text--body-sm-bold mm-box--margin-top-0 mm-box--margin-bottom-1 mm-box--color-text-default"
           >
             Network name
             <div>
@@ -87,12 +87,12 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
             </div>
           </dt>
           <dd
-            class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+            class="mm-box mm-text definition-list__definition mm-text--body-sm mm-text--overflow-wrap-break-word mm-box--margin-top-0 mm-box--margin-bottom-2 mm-box--color-text-alternative"
           >
             Test chain
           </dd>
           <dt
-            class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+            class="mm-box mm-text definition-list__term mm-text--body-sm-bold mm-box--margin-top-0 mm-box--margin-bottom-1 mm-box--color-text-default"
           >
             Network URL
             <div>
@@ -112,12 +112,12 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
             </div>
           </dt>
           <dd
-            class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+            class="mm-box mm-text definition-list__definition mm-text--body-sm mm-text--overflow-wrap-break-word mm-box--margin-top-0 mm-box--margin-bottom-2 mm-box--color-text-alternative"
           >
             https://rpcurl.test.chain
           </dd>
           <dt
-            class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+            class="mm-box mm-text definition-list__term mm-text--body-sm-bold mm-box--margin-top-0 mm-box--margin-bottom-1 mm-box--color-text-default"
           >
             Chain ID
             <div>
@@ -137,12 +137,12 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
             </div>
           </dt>
           <dd
-            class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+            class="mm-box mm-text definition-list__definition mm-text--body-sm mm-text--overflow-wrap-break-word mm-box--margin-top-0 mm-box--margin-bottom-2 mm-box--color-text-alternative"
           >
             39321
           </dd>
           <dt
-            class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+            class="mm-box mm-text definition-list__term mm-text--body-sm-bold mm-box--margin-top-0 mm-box--margin-bottom-1 mm-box--color-text-default"
           >
             Currency symbol
             <div>
@@ -162,7 +162,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
             </div>
           </dt>
           <dd
-            class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+            class="mm-box mm-text definition-list__definition mm-text--body-sm mm-text--overflow-wrap-break-word mm-box--margin-top-0 mm-box--margin-bottom-2 mm-box--color-text-alternative"
           >
             TST
           </dd>

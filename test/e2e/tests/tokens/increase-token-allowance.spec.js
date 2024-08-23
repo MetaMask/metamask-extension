@@ -30,10 +30,6 @@ describe('Increase Token Allowance', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
-        if (process.env.MULTICHAIN) {
-          return;
-        }
-
         const ACCOUNT_1_NAME = 'Account 1';
         const ACCOUNT_2_NAME = '2nd Account';
 
@@ -108,7 +104,7 @@ describe('Increase Token Allowance', function () {
       tag: 'button',
       text: 'Next',
     });
-    driver.waitForSelector({
+    await driver.waitForSelector({
       css: '.box--display-flex > h6',
       text: `10 TST`,
     });
@@ -137,7 +133,7 @@ describe('Increase Token Allowance', function () {
     );
 
     await driver.fill('[placeholder="Account 2"]', newAccountName);
-    await driver.clickElement({ text: 'Create', tag: 'button' });
+    await driver.clickElement({ text: 'Add account', tag: 'button' });
     await driver.findElement({
       css: '[data-testid="account-menu-icon"]',
       text: newAccountName,
@@ -236,6 +232,8 @@ describe('Increase Token Allowance', function () {
     });
     await driver.delay(2000);
 
+    // Windows: MetaMask, Test Dapp and Dialog
+    await driver.waitUntilXWindowHandles(3);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     let spendingCapElement = await driver.findElement(
       '[data-testid="custom-spending-cap-input"]',
@@ -301,6 +299,8 @@ describe('Increase Token Allowance', function () {
   }
 
   async function confirmTransferFromTokensSuccess(driver) {
+    // Windows: MetaMask, Test Dapp and Dialog
+    await driver.waitUntilXWindowHandles(3, 1000, 10000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await driver.waitForSelector({ text: '1.5 TST', tag: 'h1' });
     await driver.clickElement({ text: 'Confirm', tag: 'button' });

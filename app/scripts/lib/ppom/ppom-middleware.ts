@@ -1,3 +1,4 @@
+import { AccountsController } from '@metamask/accounts-controller';
 import { PPOMController } from '@metamask/ppom-validator';
 import { NetworkController } from '@metamask/network-controller';
 import {
@@ -6,17 +7,19 @@ import {
   JsonRpcRequest,
   JsonRpcResponse,
 } from '@metamask/utils';
+import { detectSIWE } from '@metamask/controller-utils';
 
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences';
 import { AppStateController } from '../../controllers/app-state';
-import {
-  LOADING_SECURITY_ALERT_RESPONSE,
-  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
-} from '../../../../shared/constants/security-provider';
+import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
+import { getProviderConfig } from '../../../../ui/ducks/metamask/metamask';
+import { trace, TraceContext } from '../../../../shared/lib/trace';
 import {
   generateSecurityAlertId,
   handlePPOMError,
+  isChainSupported,
   validateRequestWithPPOM,
 } from './ppom-util';
 import { SecurityAlertResponse } from './types';
@@ -26,6 +29,13 @@ const CONFIRMATION_METHODS = Object.freeze([
   'eth_sendTransaction',
   ...SIGNING_METHODS,
 ]);
+
+export type PPOMMiddlewareRequest<
+  Params extends JsonRpcParams = JsonRpcParams,
+> = Required<JsonRpcRequest<Params>> & {
+  securityAlertResponse?: SecurityAlertResponse | undefined;
+  traceContext?: TraceContext;
+};
 
 /**
  * Middleware function that handles JSON RPC requests.
@@ -40,17 +50,19 @@ const CONFIRMATION_METHODS = Object.freeze([
  * @param preferencesController - Instance of PreferenceController.
  * @param networkController - Instance of NetworkController.
  * @param appStateController
+ * @param accountsController - Instance of AccountsController.
  * @param updateSecurityAlertResponse
  * @returns PPOMMiddleware function.
  */
 export function createPPOMMiddleware<
-  Params extends JsonRpcParams,
+  Params extends (string | { to: string })[],
   Result extends Json,
 >(
   ppomController: PPOMController,
   preferencesController: PreferencesController,
   networkController: NetworkController,
   appStateController: AppStateController,
+  accountsController: AccountsController,
   updateSecurityAlertResponse: (
     method: string,
     signatureAlertId: string,
@@ -58,7 +70,7 @@ export function createPPOMMiddleware<
   ) => void,
 ) {
   return async (
-    req: JsonRpcRequest<Params>,
+    req: PPOMMiddlewareRequest<Params>,
     _res: JsonRpcResponse<Result>,
     next: () => void,
   ) => {
@@ -66,29 +78,52 @@ export function createPPOMMiddleware<
       const securityAlertsEnabled =
         preferencesController.store.getState()?.securityAlertsEnabled;
 
-      const { chainId } = networkController.state.providerConfig;
+      const { chainId } = getProviderConfig({
+        metamask: networkController.state,
+      });
+      const isSupportedChain = await isChainSupported(chainId);
 
       if (
         !securityAlertsEnabled ||
         !CONFIRMATION_METHODS.includes(req.method) ||
-        !SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS.includes(chainId)
+        !isSupportedChain
       ) {
         return;
       }
 
+      const data = req.params[0];
+      if (typeof data === 'string') {
+        const { isSIWEMessage } = detectSIWE({ data });
+        if (isSIWEMessage) {
+          return;
+        }
+      } else if (req.method === MESSAGE_TYPE.ETH_SEND_TRANSACTION) {
+        const { to: toAddress } = data ?? {};
+        const internalAccounts = accountsController.listAccounts();
+        const isToInternalAccount = internalAccounts.some(
+          ({ address }) => address?.toLowerCase() === toAddress?.toLowerCase(),
+        );
+        if (isToInternalAccount) {
+          return;
+        }
+      }
+
       const securityAlertId = generateSecurityAlertId();
 
-      validateRequestWithPPOM({
-        ppomController,
-        request: req,
-        securityAlertId,
-      }).then((securityAlertResponse) => {
-        updateSecurityAlertResponse(
-          req.method,
+      trace({ name: 'PPOM Validation', parentContext: req.traceContext }, () =>
+        validateRequestWithPPOM({
+          ppomController,
+          request: req,
           securityAlertId,
-          securityAlertResponse,
-        );
-      });
+          chainId,
+        }).then((securityAlertResponse) => {
+          updateSecurityAlertResponse(
+            req.method,
+            securityAlertId,
+            securityAlertResponse,
+          );
+        }),
+      );
 
       const loadingSecurityAlertResponse: SecurityAlertResponse = {
         ...LOADING_SECURITY_ALERT_RESPONSE,

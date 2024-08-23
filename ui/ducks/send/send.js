@@ -2822,11 +2822,11 @@ export function resetRecipientInput() {
     const state = getState();
     const chainId = getCurrentChainId(state);
     showLoadingIndication();
-    await dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
-    await dispatch(updateRecipientUserInput(''));
+    dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
+    dispatch(resetDomainResolution());
+    dispatch(updateRecipientUserInput(''));
     await dispatch(updateRecipient({ address: '', nickname: '' }));
-    await dispatch(resetDomainResolution());
-    await dispatch(validateRecipientUserInput({ chainId }));
+    dispatch(validateRecipientUserInput({ chainId }));
     hideLoadingIndication();
   };
 }
@@ -3548,15 +3548,15 @@ export function getSwapsBlockedTokens(state) {
 }
 
 export const getIsSwapAndSendDisabledForNetwork = createSelector(
-  (state) => state.metamask.providerConfig,
+  (state) => getCurrentChainId(state),
   (state) => state[name]?.disabledSwapAndSendNetworks ?? [],
-  ({ chainId }, disabledSwapAndSendNetworks) => {
+  (chainId, disabledSwapAndSendNetworks) => {
     return disabledSwapAndSendNetworks.includes(chainId);
   },
 );
 
 export const getSendAnalyticProperties = createSelector(
-  (state) => state.metamask.providerConfig,
+  getProviderConfig,
   getCurrentDraftTransaction,
   getBestQuote,
   ({ chainId, ticker: nativeCurrencySymbol }, draftTransaction, bestQuote) => {

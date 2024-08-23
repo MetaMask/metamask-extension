@@ -11,21 +11,20 @@ import {
 } from '@metamask/user-operation-controller';
 import type { Hex } from '@metamask/utils';
 import { addHexPrefix } from 'ethereumjs-util';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { PPOMController } from '@metamask/ppom-validator';
 
 import {
   generateSecurityAlertId,
   handlePPOMError,
+  isChainSupported,
   validateRequestWithPPOM,
 } from '../ppom/ppom-util';
 import { SecurityAlertResponse } from '../ppom/types';
 import {
   LOADING_SECURITY_ALERT_RESPONSE,
   SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES,
-  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
 } from '../../../../shared/constants/security-provider';
-///: END:ONLY_INCLUDE_IF
+import { endTrace } from '../../../../shared/lib/trace';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -45,6 +44,7 @@ type BaseAddTransactionRequest = {
     securityAlertResponse: SecurityAlertResponse,
   ) => void;
   userOperationController: UserOperationController;
+  internalAccounts: InternalAccount[];
 };
 
 type FinalAddTransactionRequest = BaseAddTransactionRequest & {
@@ -66,10 +66,7 @@ export async function addDappTransaction(
 ): Promise<string> {
   const { dappRequest } = request;
   const { id: actionId, method, origin } = dappRequest;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  const { securityAlertResponse } = dappRequest;
-  ///: END:ONLY_INCLUDE_IF
+  const { securityAlertResponse, traceContext } = dappRequest;
 
   const transactionOptions: AddTransactionOptions = {
     actionId,
@@ -77,23 +74,30 @@ export async function addDappTransaction(
     origin,
     // This is the default behaviour but specified here for clarity
     requireApproval: true,
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     securityAlertResponse,
-    ///: END:ONLY_INCLUDE_IF
   };
+
+  endTrace({ name: 'Middleware', id: actionId });
 
   const { waitForHash } = await addTransactionOrUserOperation({
     ...request,
-    transactionOptions,
+    transactionOptions: {
+      ...transactionOptions,
+      traceContext,
+    },
   });
 
-  return (await waitForHash()) as string;
+  const hash = (await waitForHash()) as string;
+
+  endTrace({ name: 'Transaction', id: actionId });
+
+  return hash;
 }
 
 export async function addTransaction(
   request: AddTransactionRequest,
 ): Promise<TransactionMeta> {
-  validateSecurity(request);
+  await validateSecurity(request);
 
   const { transactionMeta, waitForHash } = await addTransactionOrUserOperation(
     request,
@@ -222,8 +226,7 @@ function getTransactionByHash(
   );
 }
 
-function validateSecurity(request: AddTransactionRequest) {
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+async function validateSecurity(request: AddTransactionRequest) {
   const {
     chainId,
     ppomController,
@@ -231,9 +234,12 @@ function validateSecurity(request: AddTransactionRequest) {
     transactionOptions,
     transactionParams,
     updateSecurityAlertResponse,
+    internalAccounts,
   } = request;
 
   const { type } = transactionOptions;
+
+  const isCurrentChainSupported = await isChainSupported(chainId);
 
   const typeIsExcludedFromPPOM =
     SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES.includes(
@@ -242,8 +248,17 @@ function validateSecurity(request: AddTransactionRequest) {
 
   if (
     !securityAlertsEnabled ||
-    !SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS.includes(chainId) ||
+    !isCurrentChainSupported ||
     typeIsExcludedFromPPOM
+  ) {
+    return;
+  }
+
+  if (
+    internalAccounts.some(
+      ({ address }) =>
+        address.toLowerCase() === transactionParams.to?.toLowerCase(),
+    )
   ) {
     return;
   }
@@ -259,19 +274,22 @@ function validateSecurity(request: AddTransactionRequest) {
       params: [
         {
           from,
-          to,
-          value,
-          data,
+          to: to ?? '',
+          value: value ?? '',
+          data: data ?? '',
         },
       ],
+      jsonrpc: '2.0' as const,
     };
 
     const securityAlertId = generateSecurityAlertId();
 
+    // Intentionally not awaited to avoid blocking the confirmation process while the validation occurs.
     validateRequestWithPPOM({
       ppomController,
       request: ppomRequest,
       securityAlertId,
+      chainId,
     }).then((securityAlertResponse) => {
       updateSecurityAlertResponse(
         ppomRequest.method,
@@ -290,5 +308,4 @@ function validateSecurity(request: AddTransactionRequest) {
   } catch (error) {
     handlePPOMError(error, 'Error validating JSON RPC using PPOM: ');
   }
-  ///: END:ONLY_INCLUDE_IF
 }

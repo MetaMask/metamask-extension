@@ -82,6 +82,8 @@ export const AddressListItem = ({
           textAlign={TextAlign.Left}
           className="address-list-item__label"
           data-testid="address-list-item-label"
+          style={{ overflow: 'hidden' }}
+          ellipsis
         >
           {displayName}
         </Text>
@@ -91,6 +93,7 @@ export const AddressListItem = ({
           ellipsis
           data-testid="address-list-item-address"
           as="div"
+          display={Display.Flex}
         >
           <Tooltip title={address} position="bottom">
             {shortenAddress(address)}

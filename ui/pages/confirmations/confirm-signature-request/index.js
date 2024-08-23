@@ -9,8 +9,8 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import * as actions from '../../../store/actions';
 import txHelper from '../../../helpers/utils/tx-helper';
 import SignatureRequest from '../components/signature-request';
-import SignatureRequestSIWE from '../components/signature-request-siwe';
 import SignatureRequestOriginal from '../components/signature-request-original';
+import SignatureRequestSIWE from '../components/signature-request-siwe';
 import Loading from '../../../components/ui/loading-screen';
 import { useRouting } from '../hooks/useRouting';
 import {
@@ -22,15 +22,12 @@ import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
   getInternalAccounts,
-  getMemoizedUnapprovedMessages,
   getMemoizedUnapprovedPersonalMessages,
   getMemoizedUnapprovedTypedMessages,
   getMemoizedCurrentChainId,
   getMemoizedTxId,
 } from '../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { useSignatureInsights } from '../../../hooks/snaps/useSignatureInsights';
-///: END:ONLY_INCLUDE_IF
+import { useInsightSnaps } from '../../../hooks/snaps/useInsightSnaps';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { getSendTo } from '../../../ducks/send';
 
@@ -66,7 +63,6 @@ const ConfirmTxScreen = ({ match }) => {
 
   const { currentCurrency, blockGasLimit, signatureSecurityAlertResponses } =
     useSelector((state) => state.metamask);
-  const unapprovedMsgs = useSelector(getMemoizedUnapprovedMessages);
   const unapprovedPersonalMsgs = useSelector(
     getMemoizedUnapprovedPersonalMessages,
   );
@@ -176,7 +172,6 @@ const ConfirmTxScreen = ({ match }) => {
   const txData = useMemo(() => {
     const unconfTxList = txHelper(
       unapprovedTxs || {},
-      unapprovedMsgs,
       unapprovedPersonalMsgs,
       {},
       {},
@@ -194,15 +189,12 @@ const ConfirmTxScreen = ({ match }) => {
     chainId,
     index,
     txIdFromPath,
-    unapprovedMsgs,
     unapprovedPersonalMsgs,
     unapprovedTxs,
     unapprovedTypedMessages,
   ]);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  const { warnings } = useSignatureInsights({ txData });
-  ///: END:ONLY_INCLUDE_IF
+  const { warnings } = useInsightSnaps(txData.id);
   const resolvedSecurityAlertResponse =
     signatureSecurityAlertResponses?.[
       txData.securityAlertResponse?.securityAlertId
@@ -233,9 +225,7 @@ const ConfirmTxScreen = ({ match }) => {
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       selectedAccount={selectedAccount}
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       warnings={warnings}
-      ///: END:ONLY_INCLUDE_IF
     />
   );
 };

@@ -7,7 +7,9 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Text } from '../../../../components/component-library';
 import { SizeNumber } from '../../../../components/component-library/box/box.types';
+import Tooltip from '../../../../components/ui/tooltip';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
+import { useHideFiatForTestnet } from '../../../../hooks/useHideFiatForTestnet';
 import { FIAT_UNAVAILABLE, FiatAmount } from './types';
 
 const textStyle = {
@@ -31,19 +33,38 @@ export function calculateTotalFiat(fiatAmounts: FiatAmount[]): number {
 /**
  * Displays the fiat value of a single balance change.
  *
- * @param props
- * @param props.fiatAmount
+ * @param props - The props object.
+ * @param props.fiatAmount - The fiat amount to display.
+ * @param props.shorten - Whether to shorten the fiat amount.
  */
-export const IndividualFiatDisplay: React.FC<{ fiatAmount: FiatAmount }> = ({
-  fiatAmount,
-}) => {
+export const IndividualFiatDisplay: React.FC<{
+  fiatAmount: FiatAmount;
+  shorten?: boolean;
+}> = ({ fiatAmount, shorten = false }) => {
+  const hideFiatForTestnet = useHideFiatForTestnet();
   const fiatFormatter = useFiatFormatter();
+
+  if (hideFiatForTestnet) {
+    return null;
+  }
+
   if (fiatAmount === FIAT_UNAVAILABLE) {
     return <FiatNotAvailableDisplay />;
   }
   const absFiat = Math.abs(fiatAmount);
+  const fiatDisplayValue = fiatFormatter(absFiat, { shorten });
 
-  return <Text {...textStyle}>{fiatFormatter(absFiat)}</Text>;
+  return shorten ? (
+    <Tooltip position="bottom" title={fiatDisplayValue} interactive>
+      <Text {...textStyle} data-testid="individual-fiat-display">
+        {fiatDisplayValue}
+      </Text>
+    </Tooltip>
+  ) : (
+    <Text {...textStyle} data-testid="individual-fiat-display">
+      {fiatDisplayValue}
+    </Text>
+  );
 };
 
 /**
@@ -55,9 +76,14 @@ export const IndividualFiatDisplay: React.FC<{ fiatAmount: FiatAmount }> = ({
 export const TotalFiatDisplay: React.FC<{
   fiatAmounts: FiatAmount[];
 }> = ({ fiatAmounts }) => {
+  const hideFiatForTestnet = useHideFiatForTestnet();
   const t = useI18nContext();
   const fiatFormatter = useFiatFormatter();
   const totalFiat = calculateTotalFiat(fiatAmounts);
+
+  if (hideFiatForTestnet) {
+    return null;
+  }
 
   return totalFiat === 0 ? (
     <FiatNotAvailableDisplay />

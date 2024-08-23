@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { ButtonVariant } from '@metamask/snaps-sdk';
 
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';
@@ -36,6 +36,7 @@ import useAlerts from '../../../../hooks/useAlerts';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { useAlertActionHandler } from '../contexts/alertActionHandler';
 import { AlertProvider } from '../alert-provider';
+import { useAlertMetrics } from '../contexts/alertMetricsContext';
 
 export type AlertModalProps = {
   /**
@@ -74,7 +75,7 @@ export type AlertModalProps = {
   /**
    * The function to be executed when the modal needs to be closed.
    */
-  onClose: () => void;
+  onClose: (request?: { recursive?: boolean }) => void;
   /**
    * The owner ID of the relevant alert from the `confirmAlerts` reducer.
    */
@@ -165,7 +166,12 @@ function AlertDetails({
     >
       {customDetails ?? (
         <Box>
-          <Text variant={TextVariant.bodyMd}>{selectedAlert.message}</Text>
+          <Text
+            variant={TextVariant.bodyMd}
+            data-testid="alert-modal__selected-alert"
+          >
+            {selectedAlert.message}
+          </Text>
           {selectedAlert.alertDetails?.length ? (
             <Text variant={TextVariant.bodyMdBold} marginTop={1}>
               {t('alertModalDetails')}
@@ -254,8 +260,27 @@ function AcknowledgeButton({
   );
 }
 
-function ActionButton({ action }: { action?: { key: string; label: string } }) {
+function ActionButton({
+  action,
+  onClose,
+  alertKey,
+}: {
+  action?: { key: string; label: string };
+  onClose: (request: { recursive?: boolean } | void) => void;
+  alertKey: string;
+}) {
   const { processAction } = useAlertActionHandler();
+  const { trackAlertActionClicked } = useAlertMetrics();
+
+  const handleClick = useCallback(() => {
+    if (!action) {
+      return;
+    }
+    trackAlertActionClicked(alertKey);
+
+    processAction(action.key);
+    onClose({ recursive: true });
+  }, [action, onClose, processAction, trackAlertActionClicked, alertKey]);
 
   if (!action) {
     return null;
@@ -269,7 +294,7 @@ function ActionButton({ action }: { action?: { key: string; label: string } }) {
       variant={ButtonVariant.Primary}
       width={BlockSize.Full}
       size={ButtonSize.Lg}
-      onClick={() => processAction(key)}
+      onClick={handleClick}
     >
       {label}
     </Button>
@@ -289,12 +314,22 @@ export function AlertModal({
   enableProvider = true,
 }: AlertModalProps) {
   const { isAlertConfirmed, setAlertConfirmed, alerts } = useAlerts(ownerId);
+  const { trackAlertRender } = useAlertMetrics();
 
-  const handleClose = useCallback(() => {
-    onClose();
-  }, [onClose]);
+  const handleClose = useCallback(
+    (...args) => {
+      onClose(...args);
+    },
+    [onClose],
+  );
 
   const selectedAlert = alerts.find((alert: Alert) => alert.key === alertKey);
+
+  useEffect(() => {
+    if (selectedAlert) {
+      trackAlertRender(selectedAlert.key);
+    }
+  }, [selectedAlert, trackAlertRender]);
 
   if (!selectedAlert) {
     return null;
@@ -304,7 +339,7 @@ export function AlertModal({
 
   const handleCheckboxClick = useCallback(() => {
     return setAlertConfirmed(selectedAlert.key, !isConfirmed);
-  }, [isConfirmed, selectedAlert.key]);
+  }, [isConfirmed, selectedAlert.key, setAlertConfirmed]);
 
   return (
     <Modal isOpen onClose={handleClose}>
@@ -315,6 +350,9 @@ export function AlertModal({
           startAccessory={headerStartAccessory}
           paddingBottom={0}
           display={headerStartAccessory ? Display.InlineFlex : Display.Block}
+          closeButtonProps={{
+            'data-testid': 'alert-modal-close-button',
+          }}
         />
         <AlertHeader selectedAlert={selectedAlert} customTitle={customTitle} />
         <ModalBody>
@@ -358,7 +396,12 @@ export function AlertModal({
                 />
                 {(selectedAlert.actions ?? []).map(
                   (action: { key: string; label: string }) => (
-                    <ActionButton key={action.key} action={action} />
+                    <ActionButton
+                      key={action.key}
+                      action={action}
+                      onClose={handleClose}
+                      alertKey={selectedAlert.key}
+                    />
                   ),
                 )}
               </>

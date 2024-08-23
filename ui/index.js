@@ -23,6 +23,7 @@ import {
   getNetworkToAutomaticallySwitchTo,
   getSwitchedNetworkDetails,
   getUseRequestQueue,
+  getCurrentChainId,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -59,17 +60,6 @@ export const updateBackgroundConnection = (backgroundConnection) => {
 
 export default function launchMetamaskUi(opts, cb) {
   const { backgroundConnection } = opts;
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-  let desktopEnabled = false;
-
-  backgroundConnection.getDesktopEnabled(function (err, result) {
-    if (err) {
-      return;
-    }
-
-    desktopEnabled = result;
-  });
-  ///: END:ONLY_INCLUDE_IF
 
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
@@ -78,9 +68,6 @@ export default function launchMetamaskUi(opts, cb) {
         err,
         {
           ...metamaskState,
-          ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-          desktopEnabled,
-          ///: END:ONLY_INCLUDE_IF
         },
         backgroundConnection,
       );
@@ -88,18 +75,24 @@ export default function launchMetamaskUi(opts, cb) {
     }
     startApp(metamaskState, backgroundConnection, opts).then((store) => {
       setupStateHooks(store);
-      cb(
-        null,
-        store,
-        ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-        backgroundConnection,
-        ///: END:ONLY_INCLUDE_IF
-      );
+      cb(null, store);
     });
   });
 }
 
-async function startApp(metamaskState, backgroundConnection, opts) {
+/**
+ * Method to setup initial redux store for the ui application
+ *
+ * @param {*} metamaskState - flatten background state
+ * @param {*} backgroundConnection - rpc client connecting to the background process
+ * @param {*} activeTab - active browser tab
+ * @returns redux store
+ */
+export async function setupInitialStore(
+  metamaskState,
+  backgroundConnection,
+  activeTab,
+) {
   // parse opts
   if (!metamaskState.featureFlags) {
     metamaskState.featureFlags = {};
@@ -114,7 +107,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   }
 
   const draftInitialState = {
-    activeTab: opts.activeTab,
+    activeTab,
 
     // metamaskState represents the cross-tab state
     metamask: metamaskState,
@@ -164,13 +157,12 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   // if unconfirmed txs, start on txConf page
   const unapprovedTxsAll = txHelper(
     unapprovedTxs,
-    metamaskState.unapprovedMsgs,
     metamaskState.unapprovedPersonalMsgs,
     metamaskState.unapprovedDecryptMsgs,
     metamaskState.unapprovedEncryptionPublicKeyMsgs,
     metamaskState.unapprovedTypedMessages,
     metamaskState.networkId,
-    metamaskState.providerConfig.chainId,
+    getCurrentChainId({ metamask: metamaskState }),
   );
   const numberOfUnapprovedTx = unapprovedTxsAll.length;
   if (numberOfUnapprovedTx > 0) {
@@ -181,13 +173,20 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     );
   }
 
+  return store;
+}
+
+async function startApp(metamaskState, backgroundConnection, opts) {
+  const store = await setupInitialStore(
+    metamaskState,
+    backgroundConnection,
+    opts.activeTab,
+  );
+
   // global metamask api - used by tooling
   global.metamask = {
     updateCurrentLocale: (code) => {
       store.dispatch(actions.updateCurrentLocale(code));
-    },
-    setProviderType: (type) => {
-      store.dispatch(actions.setProviderType(type));
     },
     setFeatureFlag: (key, value) => {
       store.dispatch(actions.setFeatureFlag(key, value));
@@ -239,7 +238,11 @@ async function startApp(metamaskState, backgroundConnection, opts) {
  * @param {object} store - The Redux store.
  */
 function setupStateHooks(store) {
-  if (process.env.METAMASK_DEBUG || process.env.IN_TEST) {
+  if (
+    process.env.METAMASK_DEBUG ||
+    process.env.IN_TEST ||
+    process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS
+  ) {
     /**
      * The following stateHook is a method intended to throw an error, used in
      * our E2E test to ensure that errors are attempted to be sent to sentry.
@@ -261,12 +264,15 @@ function setupStateHooks(store) {
     window.stateHooks.throwTestBackgroundError = async function (
       msg = 'Test Error',
     ) {
-      store.dispatch(actions.throwTestBackgroundError(msg));
+      await actions.throwTestBackgroundError(msg);
     };
   }
 
   window.stateHooks.getCleanAppState = async function () {
     const state = clone(store.getState());
+    // we use the manifest.json version from getVersion and not
+    // `process.env.METAMASK_VERSION` as they can be different (see `getVersion`
+    // for more info)
     state.version = global.platform.getVersion();
     state.browser = window.navigator.userAgent;
     state.completeTxList = await actions.getTransactions({
@@ -290,6 +296,12 @@ function setupStateHooks(store) {
     return logsArray;
   };
 }
+
+// Check for local feature flags and represent them so they're avialable
+// to the front-end of the app
+window.metamaskFeatureFlags = {
+  networkMenuRedesign: Boolean(process.env.ENABLE_NETWORK_UI_REDESIGN),
+};
 
 window.logStateString = async function (cb) {
   const state = await window.stateHooks.getCleanAppState();

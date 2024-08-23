@@ -251,9 +251,7 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
                 display: isReady === READY_STATE.READY ? 'block' : 'none',
               }}
             />
-            {isReady !== READY_STATE.READY && (
-              <Spinner color="var(--color-warning-default)" />
-            )}
+            {isReady !== READY_STATE.READY && <Spinner />}
           </div>
         </div>
         <div className="qr-scanner__status">{getQRScanMessage(isReady)}</div>

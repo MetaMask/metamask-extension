@@ -1,6 +1,10 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
-import { infuraProjectId } from '../../../../../shared/constants/network';
+
+import {
+  infuraProjectId,
+  DEPRECATED_NETWORKS,
+} from '../../../../../shared/constants/network';
 import {
   Severity,
   TypographyVariant,
@@ -14,6 +18,7 @@ import {
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
+import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',
@@ -69,6 +74,20 @@ const MISMATCHED_CHAIN_RECOMMENDATION = {
             },
           },
         ],
+      },
+    },
+  },
+};
+
+const DEPRECATED_CHAIN_ALERT = {
+  id: 'DEPRECATED_CHAIN_ALERT',
+  severity: Severity.Warning,
+  content: {
+    element: 'span',
+    children: {
+      element: 'MetaMaskTranslation',
+      props: {
+        translationKey: 'deprecatedNetwork',
       },
     },
   },
@@ -171,6 +190,9 @@ async function getAlerts(pendingApproval, data) {
       !data.matchedChain.rpc?.map((rpc) => new URL(rpc).origin).includes(origin)
     ) {
       alerts.push(MISMATCHED_NETWORK_RPC);
+    }
+    if (DEPRECATED_NETWORKS.includes(pendingApproval.requestData.chainId)) {
+      alerts.push(DEPRECATED_CHAIN_ALERT);
     }
   }
 
@@ -351,17 +373,18 @@ function getValues(pendingApproval, t, actions, history, data) {
             [t('blockExplorerUrl')]: t('blockExplorerUrlDefinition'),
           },
           warnings: {
+            [t('networkURL')]: isValidASCIIURL(customRpcUrl)
+              ? undefined
+              : t('networkUrlErrorWarning', [toPunycodeURL(customRpcUrl)]),
             [t('currencySymbol')]: data.currencySymbolWarning,
           },
           dictionary: {
             [t('networkName')]: pendingApproval.requestData.chainName,
-            [t('networkURL')]: pendingApproval.requestData.rpcUrl
+            [t('networkURL')]: customRpcUrl
               .toLowerCase()
               ?.includes(`/v3/${infuraProjectId}`)
-              ? pendingApproval.requestData.rpcUrl
-                  .replace(`/v3/${infuraProjectId}`, '')
-                  .toLowerCase()
-              : pendingApproval.requestData.rpcUrl.toLowerCase(),
+              ? customRpcUrl.replace(`/v3/${infuraProjectId}`, '').toLowerCase()
+              : customRpcUrl.toLowerCase(),
             [t('chainId')]: parseInt(pendingApproval.requestData.chainId, 16),
             [t('currencySymbol')]: pendingApproval.requestData.ticker,
             [t('blockExplorerUrl')]:

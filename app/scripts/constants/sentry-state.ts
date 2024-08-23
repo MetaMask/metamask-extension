@@ -55,7 +55,6 @@ export const SENTRY_BACKGROUND_STATE = {
     currentMigrationVersion: true,
     previousAppVersion: true,
     previousMigrationVersion: true,
-    showTokenAutodetectModalOnUpgrade: false,
   },
   ApprovalController: {
     approvalFlows: false,
@@ -93,6 +92,18 @@ export const SENTRY_BACKGROUND_STATE = {
     trezorModel: true,
     usedNetworks: true,
   },
+  MultichainBalancesController: {
+    balances: false,
+  },
+  BridgeController: {
+    bridgeState: {
+      bridgeFeatureFlags: {
+        extensionSupport: false,
+        destNetworkAllowlist: [],
+        srcNetworkAllowlist: [],
+      },
+    },
+  },
   CronjobController: {
     jobs: false,
   },
@@ -126,10 +137,10 @@ export const SENTRY_BACKGROUND_STATE = {
   LoggingController: {
     logs: false,
   },
-  MetamaskNotificationsController: {
+  NotificationServicesController: {
     subscriptionAccountsSeen: false,
     isMetamaskNotificationsFeatureSeen: false,
-    isMetamaskNotificationsEnabled: false,
+    isNotificationServicesEnabled: false,
     isFeatureAnnouncementsEnabled: false,
     metamaskNotificationsList: false,
     metamaskNotificationsReadList: false,
@@ -156,15 +167,6 @@ export const SENTRY_BACKGROUND_STATE = {
   NetworkController: {
     networkConfigurations: false,
     networksMetadata: true,
-    providerConfig: {
-      chainId: true,
-      id: true,
-      nickname: true,
-      rpcPrefs: false,
-      rpcUrl: false,
-      ticker: true,
-      type: true,
-    },
     selectedNetworkClientId: false,
   },
   NftController: {
@@ -184,7 +186,6 @@ export const SENTRY_BACKGROUND_STATE = {
   PPOMController: {
     securityAlertsEnabled: false,
     storageMetadata: [],
-    versionFileETag: false,
     versionInfo: [],
   },
   PermissionController: {
@@ -198,7 +199,6 @@ export const SENTRY_BACKGROUND_STATE = {
   PreferencesController: {
     advancedGasFee: true,
     currentLocale: true,
-    disabledRpcMethodPreferences: true,
     dismissSeedBackUpReminder: true,
     featureFlags: true,
     forgottenPassword: true,
@@ -213,13 +213,16 @@ export const SENTRY_BACKGROUND_STATE = {
     preferences: {
       autoLockTimeLimit: true,
       hideZeroBalanceTokens: true,
+      redesignedConfirmationsEnabled: true,
+      redesignedTransactionsEnabled: false,
+      isRedesignedConfirmationsDeveloperEnabled: false,
       showExtensionInFullSizeView: true,
       showFiatInTestnets: true,
       showTestNetworks: true,
       smartTransactionsOptInStatus: true,
       useNativeCurrencyAsPrimaryCurrency: true,
       petnamesEnabled: true,
-      showTokenAutodetectModal: false,
+      showConfirmationAdvancedDetails: true,
     },
     useExternalServices: false,
     selectedAddress: false,
@@ -238,18 +241,20 @@ export const SENTRY_BACKGROUND_STATE = {
     useRequestQueue: true,
     useTransactionSimulations: true,
     enableMV3TimestampSave: true,
-    hasDismissedOpenSeaToBlockaidBanner: true,
   },
-  PushPlatformNotificationsController: {
+  NotificationServicesPushController: {
     fcmToken: false,
+  },
+  MultichainRatesController: {
+    fiatCurrency: true,
+    rates: true,
+    cryptocurrencies: true,
   },
   QueuedRequestController: {
     queuedRequestCount: true,
   },
   SelectedNetworkController: { domains: false },
   SignatureController: {
-    unapprovedMsgCount: true,
-    unapprovedMsgs: false,
     unapprovedPersonalMsgCount: true,
     unapprovedPersonalMsgs: false,
     unapprovedTypedMessages: false,
@@ -272,8 +277,11 @@ export const SENTRY_BACKGROUND_STATE = {
     snapStates: false,
     snaps: false,
   },
-  SnapInterface: {
+  SnapInterfaceController: {
     interfaces: false,
+  },
+  SnapInsightsController: {
+    insights: false,
   },
   SnapsRegistry: {
     database: false,
@@ -304,6 +312,7 @@ export const SENTRY_BACKGROUND_STATE = {
       swapsQuotePrefetchingRefreshTime: true,
       swapsQuoteRefreshTime: true,
       swapsStxBatchStatusRefreshTime: true,
+      swapsStxStatusDeadline: true,
       swapsStxGetTransactionsRefreshTime: true,
       swapsStxMaxFeeMultiplier: true,
       swapsUserFeeLevel: true,
@@ -387,6 +396,9 @@ export const SENTRY_UI_STATE = {
     welcomeScreenSeen: true,
     confirmationExchangeRates: true,
     useSafeChainsListValidation: true,
+    watchEthereumAccountEnabled: false,
+    bitcoinSupportEnabled: false,
+    bitcoinTestnetSupportEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,

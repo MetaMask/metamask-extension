@@ -14,6 +14,7 @@ const render = (storeOverrides = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+      useNonceField: true,
     },
     confirm: {
       currentConfirmation: {
@@ -55,10 +56,12 @@ describe('Header', () => {
     expect(getByText('Test Account')).toBeInTheDocument();
     expect(getByText('Chain 5')).toBeInTheDocument();
   });
+
   it('contains account info icon', async () => {
     const { getByLabelText } = render();
     expect(getByLabelText('Account details')).toBeInTheDocument();
   });
+
   it('shows modal when account info icon is clicked', async () => {
     const { getByLabelText, queryByTestId } = render();
     expect(queryByTestId('account-details-modal')).not.toBeInTheDocument();

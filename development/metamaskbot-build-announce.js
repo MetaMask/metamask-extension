@@ -38,12 +38,6 @@ function getPercentageChange(from, to) {
   return parseFloat(((to - from) / Math.abs(from)) * 100).toFixed(2);
 }
 
-function getBetaVersion(commitMsg, defaultVersion = VERSION) {
-  const versionPattern = /Version\s(v\d+\.\d+\.\d+-beta\.\d+)/u;
-
-  return commitMsg.match(versionPattern)?.[1] ?? defaultVersion;
-}
-
 async function start() {
   const {
     GITHUB_COMMENT_TOKEN,
@@ -52,7 +46,6 @@ async function start() {
     CIRCLE_BUILD_NUM,
     CIRCLE_WORKFLOW_JOB_ID,
     PARENT_COMMIT,
-    SHA1_COMMIT_TITLE,
   } = process.env;
 
   console.log('CIRCLE_PULL_REQUEST', CIRCLE_PULL_REQUEST);
@@ -82,9 +75,7 @@ async function start() {
       return `<a href="${url}">${platform}</a>`;
     })
     .join(', ');
-
-  const betaVersion = getBetaVersion(SHA1_COMMIT_TITLE, VERSION);
-  const betaBuildLinks = `<a href="${BUILD_LINK_BASE}/builds-beta/metamask-beta-chrome-${betaVersion}.zip">chrome</a>`;
+  const betaBuildLinks = `<a href="${BUILD_LINK_BASE}/builds-beta/metamask-beta-chrome-${VERSION}.zip">chrome</a>`;
   const flaskBuildLinks = platforms
     .map((platform) => {
       const url =

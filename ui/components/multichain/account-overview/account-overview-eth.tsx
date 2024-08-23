@@ -15,7 +15,7 @@ export const AccountOverviewEth = (props: AccountOverviewEthProps) => {
     >
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask,build-mmi)
-        <EthOverview showAddress />
+        <EthOverview />
         ///: END:ONLY_INCLUDE_IF
       }
     </AccountOverviewLayout>

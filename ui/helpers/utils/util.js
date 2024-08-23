@@ -10,14 +10,9 @@ import {
 } from '@metamask/assets-controllers';
 import * as lodash from 'lodash';
 import bowser from 'bowser';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { stripSnapPrefix } from '@metamask/snaps-utils';
-// eslint-disable-next-line import/no-duplicates
-import { isObject } from '@metamask/utils';
-///: END:ONLY_INCLUDE_IF
-// eslint-disable-next-line import/no-duplicates
-import { isStrictHexString } from '@metamask/utils';
+import { isObject, isStrictHexString } from '@metamask/utils';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import { logErrorWithMessage } from '../../../shared/modules/error';
 import {
@@ -35,6 +30,7 @@ import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
+import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 
 export function formatDate(date, format = "M/d/y 'at' T") {
   if (!date) {
@@ -42,6 +38,16 @@ export function formatDate(date, format = "M/d/y 'at' T") {
   }
   return DateTime.fromMillis(date).toFormat(format);
 }
+
+export const formatUTCDate = (dateInMillis) => {
+  if (!dateInMillis) {
+    return dateInMillis;
+  }
+
+  return DateTime.fromMillis(dateInMillis)
+    .setZone('utc')
+    .toFormat('dd LLLL yyyy, HH:mm');
+};
 
 export function formatDateWithYearContext(
   date,
@@ -56,6 +62,30 @@ export function formatDateWithYearContext(
   return dateTime.toFormat(
     now.year === dateTime.year ? formatThisYear : fallback,
   );
+}
+
+export function formatDateWithSuffix(timestamp) {
+  const date = DateTime.fromMillis(timestamp * 1000); // Convert to milliseconds
+  const { day } = date;
+  const suffix = getOrdinalSuffix(day);
+
+  return date.toFormat(`MMM d'${suffix}', yyyy`);
+}
+
+function getOrdinalSuffix(day) {
+  if (day > 3 && day < 21) {
+    return 'th';
+  } // because 11th, 12th, 13th
+  switch (day % 10) {
+    case 1:
+      return 'st';
+    case 2:
+      return 'nd';
+    case 3:
+      return 'rd';
+    default:
+      return 'th';
+  }
 }
 /**
  * Determines if the provided chainId is a default MetaMask chain
@@ -97,7 +127,7 @@ export function addressSummary(
   if (!address) {
     return '';
   }
-  let checked = toChecksumHexAddress(address);
+  let checked = normalizeSafeAddress(address);
   if (!includeHex) {
     checked = stripHexPrefix(checked);
   }
@@ -209,6 +239,41 @@ export function getRandomFileName() {
 }
 
 /**
+ * Shortens the given string, preserving the beginning and end.
+ * Returns the string it is no longer than truncatedCharLimit.
+ *
+ * @param {string} stringToShorten - The string to shorten.
+ * @param {object} options - The options to use when shortening the string.
+ * @param {number} options.truncatedCharLimit - The maximum length of the string.
+ * @param {number} options.truncatedStartChars - The number of characters to preserve at the beginning.
+ * @param {number} options.truncatedEndChars - The number of characters to preserve at the end.
+ * @param {boolean} options.skipCharacterInEnd - Skip the character at the end.
+ * @returns {string} The shortened string.
+ */
+export function shortenString(
+  stringToShorten = '',
+  {
+    truncatedCharLimit,
+    truncatedStartChars,
+    truncatedEndChars,
+    skipCharacterInEnd,
+  } = {
+    truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
+    truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
+    truncatedEndChars: TRUNCATED_ADDRESS_END_CHARS,
+    skipCharacterInEnd: false,
+  },
+) {
+  if (stringToShorten.length < truncatedCharLimit) {
+    return stringToShorten;
+  }
+
+  return `${stringToShorten.slice(0, truncatedStartChars)}...${
+    skipCharacterInEnd ? '' : stringToShorten.slice(-truncatedEndChars)
+  }`;
+}
+
+/**
  * Shortens an Ethereum address for display, preserving the beginning and end.
  * Returns the given address if it is no longer than 10 characters.
  * Shortened addresses are 13 characters long.
@@ -220,13 +285,12 @@ export function getRandomFileName() {
  * than 10 characters.
  */
 export function shortenAddress(address = '') {
-  if (address.length < TRUNCATED_NAME_CHAR_LIMIT) {
-    return address;
-  }
-
-  return `${address.slice(0, TRUNCATED_ADDRESS_START_CHARS)}...${address.slice(
-    -TRUNCATED_ADDRESS_END_CHARS,
-  )}`;
+  return shortenString(address, {
+    truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
+    truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
+    truncatedEndChars: TRUNCATED_ADDRESS_END_CHARS,
+    skipCharacterInEnd: false,
+  });
 }
 
 export function getAccountByAddress(accounts = [], targetAddress) {
@@ -562,7 +626,6 @@ export function isNullish(value) {
   return value === null || value === undefined;
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export const getSnapName = (snapsMetadata) => {
   return (snapId) => {
     return snapsMetadata[snapId]?.name ?? stripSnapPrefix(snapId);
@@ -591,8 +654,6 @@ export const getDedupedSnaps = (request, permissions) => {
 
   return dedupedSnaps.length > 0 ? dedupedSnaps : requestedSnapKeys;
 };
-
-///: END:ONLY_INCLUDE_IF
 
 export const IS_FLASK = process.env.METAMASK_BUILD_TYPE === 'flask';
 
@@ -719,4 +780,40 @@ export const hexToText = (hex) => {
  */
 export const getAvatarFallbackLetter = (subjectName) => {
   return subjectName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
+};
+
+/**
+ * Get abstracted Snap permissions filtered by weight.
+ *
+ * @param weightedPermissions - Set of Snap permissions that have 'weight' property assigned.
+ * @param weightThreshold - Number that represents weight threshold for filtering.
+ * @param minPermissionCount - Minimum number of permissions to show,
+ * if filtered permissions count are less than the value specified.
+ * @returns Subset of permissions passing weight criteria.
+ */
+export const getFilteredSnapPermissions = (
+  weightedPermissions,
+  weightThreshold = Infinity,
+  minPermissionCount = 3,
+) => {
+  const filteredPermissions = weightedPermissions.filter(
+    (permission) => permission.weight <= weightThreshold,
+  );
+
+  // If there are not enough permissions that fall into desired set filtered by weight,
+  // then fill the gap, no matter what the weight is
+  if (minPermissionCount && filteredPermissions.length < minPermissionCount) {
+    const remainingPermissions = weightedPermissions.filter(
+      (permission) => permission.weight > weightThreshold,
+    );
+    // Add permissions until desired count is reached
+    return filteredPermissions.concat(
+      remainingPermissions.slice(
+        0,
+        minPermissionCount - filteredPermissions.length,
+      ),
+    );
+  }
+
+  return filteredPermissions;
 };

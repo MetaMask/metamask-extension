@@ -42,7 +42,7 @@
     "message": "Portafoglio HW basato su QR"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave (in arrivo)"
+    "message": "Ngrave Zero"
   },
   "SIWEAddressInvalid": {
     "message": "L'indirizzo nella richiesta di accesso non corrisponde all'indirizzo dell'account che stai utilizzando per accedere."
@@ -1137,9 +1137,6 @@
   },
   "nonceField": {
     "message": "Personalizza il numero della transazione"
-  },
-  "nonceFieldDescription": {
-    "message": "Attiva per cambiare il numero della transazione nelle schermate di conferma. Questa è una funzionalità avanzata, usala con cautela."
   },
   "nonceFieldHeading": {
     "message": "Numero Transazione Personalizzato"
