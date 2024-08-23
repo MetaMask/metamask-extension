@@ -365,7 +365,9 @@ export const createSwapsMockStore = () => {
         ticker: CURRENCY_SYMBOLS.ETH,
         rpcUrl: 'https://mainnet.infura.io/v3/',
         blockExplorerUrl: 'https://etherscan.io',
+        id: 'mainnet',
       }),
+      selectedNetworkClientId: 'mainnet',
       tokens: [
         {
           erc20: true,
