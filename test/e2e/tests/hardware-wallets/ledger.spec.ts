@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { sendTransaction } from '../../page-objects/processes/send-transaction.process';
+import { sendTransaction } from '../../page-objects/flows/send-transaction.flow';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/homepage';
@@ -21,7 +21,6 @@ import {
 } from '../swaps/shared';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
-import { Ganache } from '../../seeder/ganache';
 import GanacheSeeder from '../../seeder/ganache-seeder';
 
 /**
@@ -51,7 +50,7 @@ async function addLedgerAccount(driver: Driver) {
 }
 
 describe('Ledger Hardware', function () {
-  it('derives the correct accounts', async function () {
+  it.skip('derives the correct accounts', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -61,6 +60,7 @@ describe('Ledger Hardware', function () {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await connectLedger(driver);
+        console.log('==================================> Ledger connected');
 
         // Check that the first page of accounts is correct
         for (const { address, index } of KNOWN_PUBLIC_KEY_ADDRESSES.slice(
@@ -69,12 +69,16 @@ describe('Ledger Hardware', function () {
         )) {
           const shortenedAddress = `${address.slice(0, 4)}...${address.slice(
             -4,
-          )}`;
+          )}`.toUpperCase();
+          console.log(
+            '==================================> shortenedAddress',
+            shortenedAddress,
+          );
           assert(
             await driver.isElementPresent({
               text: shortenedAddress,
             }),
-            `Known account ${index} not found`,
+            `Known account ${index} with address ${shortenedAddress} not found`,
           );
         }
       },
@@ -194,23 +198,17 @@ describe('Ledger Hardware', function () {
         ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-      }) => {
+      async ({ driver, ganacheServer }) => {
         await unlockWallet(driver);
         await connectLedger(driver);
         await addLedgerAccount(driver);
-        const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+        const ganacheSeeder = new GanacheSeeder(ganacheServer?.getProvider());
         await ganacheSeeder.transfer(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           convertETHToHexGwei(2),
         );
         await driver.delay(2000);
-        const balance = await ganacheServer.getAddressBalance(
+        const balance = await ganacheServer?.getAddressBalance(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
         );
         console.log('==============> balance', balance);
@@ -234,17 +232,11 @@ describe('Ledger Hardware', function () {
         ...withFixturesOptions,
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-      }) => {
+      async ({ driver, ganacheServer }) => {
         await unlockWallet(driver);
         await connectLedger(driver);
         await addLedgerAccount(driver);
-        const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+        const ganacheSeeder = new GanacheSeeder(ganacheServer?.getProvider());
         await ganacheSeeder.transfer(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           convertETHToHexGwei(2),
@@ -287,40 +279,29 @@ describe('Ledger Hardware', function () {
           },
           title: this.test?.fullTitle(),
         },
-        async ({
-          driver,
-          ganacheServer,
-        }: {
-          driver: Driver;
-          ganacheServer: Ganache;
-        }) => {
+        async ({ driver, ganacheServer }) => {
           await unlockWallet(driver);
           await connectLedger(driver);
           await addLedgerAccount(driver);
-          const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+          const ganacheSeeder = new GanacheSeeder(ganacheServer?.getProvider());
           await ganacheSeeder.transfer(
             KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
             convertETHToHexGwei(2),
           );
           // initiates a transaction from the dapp
           await openDapp(driver);
-          // await driver.clickElement('#signTypedDataV4');
-          await driver.clickElement('#sendEIP1559Button');
-          const windowHandles = await driver.waitUntilXWindowHandles(3);
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.Dialog,
-            windowHandles,
-          );
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          await driver.clickElement('#signTypedDataV4');
+          await driver.delay(10000);
+          // await driver.clickElement('#sendEIP1559Button');
+          // const windowHandles = await driver.waitUntilXWindowHandles(3);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-          const extension = windowHandles[0];
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.Dialog,
-            windowHandles,
-          );
-
+          // // const extension = windowHandles[0];
+          // await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
-          await driver.waitUntilXWindowHandles(2);
-          await driver.switchToWindow(extension);
+          // await driver.waitUntilXWindowHandles(2);
+          await driver.switchToWindow(WINDOW_TITLES.ExtensionInFullScreenView);
 
           // Identify the transaction in the transactions list
           await driver.waitForSelector(

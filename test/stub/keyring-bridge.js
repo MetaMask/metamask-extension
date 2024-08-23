@@ -101,4 +101,10 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
   async deviceSignTransaction({ tx }) {
     return ecsign(tx, Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
   }
+
+  async deviceSignTypedData(params) {
+    console.log('=============> params', params);
+    const { tx } = params;
+    return ecsign(tx, Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
+  }
 }

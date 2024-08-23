@@ -118,6 +118,10 @@ async function withFixtures(options, testSuite) {
     if (ganacheOptions?.concurrent) {
       ganacheOptions.concurrent.forEach(async (ganacheSettings) => {
         const { port, chainId, ganacheOptions2 } = ganacheSettings;
+        console.log(
+          '=========================> chainId ==================>',
+          chainId,
+        );
         const server = new Ganache();
         secondaryGanacheServer.push(server);
         await server.start({
