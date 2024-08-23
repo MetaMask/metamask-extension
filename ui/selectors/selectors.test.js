@@ -335,15 +335,20 @@ describe('Selectors', () => {
         networkConfigurationsByChainId: {
           [CHAIN_IDS.MAINNET]: {
             chainId: CHAIN_IDS.MAINNET,
-            rpcEndpoints: [{}],
+            defaultRpcEndpointIndex: 0,
+            rpcEndpoints: [
+              {
+                url: 'https://testrpc.com',
+                networkClientId: mockState.metamask.selectedNetworkClientId,
+              },
+            ],
           },
         },
         queuedRequestCount: 0,
         transactions: [],
-        selectedNetworkClientId:
-          mockState.metamask.networkConfigurations.testNetworkConfigurationId
-            .id,
-        networkConfigurations: mockState.metamask.networkConfigurations,
+        selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
+        networkConfigurations:
+          mockState.metamask.networkConfigurationsByChainId,
       },
     };
 
@@ -358,11 +363,18 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          selectedNetworkClientId: 'mainnet',
+          selectedNetworkClientId: 'linea-sepolia',
           networkConfigurationsByChainId: {
-            [CHAIN_IDS.MAINNET]: {
-              chainId: CHAIN_IDS.MAINNET,
-              rpcEndpoints: [{}],
+            [CHAIN_IDS.LINEA_SEPOLIA]: {
+              chainId: CHAIN_IDS.LINEA_SEPOLIA,
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'linea-sepolia',
+                  type: 'custom',
+                },
+              ],
             },
           },
         },
@@ -376,6 +388,19 @@ describe('Selectors', () => {
         metamask: {
           ...state.metamask,
           selectedNetworkClientId: NETWORK_TYPES.LINEA_SEPOLIA,
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.LINEA_SEPOLIA]: {
+              chainId: CHAIN_IDS.LINEA_SEPOLIA,
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'linea-sepolia',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
           transactions: [
             {
               id: 0,
@@ -659,6 +684,7 @@ describe('Selectors', () => {
           chainId: '0xtest',
           nativeCurrency: 'TEST',
           defaultRpcEndpointUrl: 'https://mock-rpc-url-1',
+          defaultRpcEndpointIndex: 0,
           rpcEndpoints: [
             {
               networkClientId: 'testNetworkConfigurationId1',
@@ -670,6 +696,7 @@ describe('Selectors', () => {
           chainId: '0x1337',
           nativeCurrency: 'RPC',
           defaultRpcEndpointUrl: 'https://mock-rpc-url-2',
+          defaultRpcEndpointIndex: 0,
           rpcEndpoints: [
             {
               networkClientId: 'testNetworkConfigurationId2',
@@ -685,12 +712,16 @@ describe('Selectors', () => {
           chainId: '0xtest',
           ticker: 'TEST',
           id: 'testNetworkConfigurationId1',
+          blockExplorerUrls: undefined,
+          providerType: 'rpc',
         },
         testNetworkConfigurationId2: {
           rpcUrl: 'https://mock-rpc-url-2',
           chainId: '0x1337',
           ticker: 'RPC',
           id: 'testNetworkConfigurationId2',
+          blockExplorerUrls: undefined,
+          providerType: 'rpc',
         },
       };
       expect(
@@ -706,7 +737,34 @@ describe('Selectors', () => {
   describe('#getNonTestNetworks', () => {
     it('returns nonTestNetworks', () => {
       const nonTestNetworks = selectors.getNonTestNetworks({
-        metamask: {},
+        metamask: {
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'mainnet',
+                  type: 'custom',
+                },
+              ],
+            },
+            '0x5': {
+              chainId: '0x5',
+              name: 'Chain 5',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  networkClientId: 'goerli',
+                },
+              ],
+            },
+          },
+        },
       });
 
       // Assert that the `nonTestNetworks` array returned by the selector matches a specific structure.
@@ -757,22 +815,52 @@ describe('Selectors', () => {
           preferences: {
             showTestNetworks: true,
           },
-          ...mockNetworkState({
-            chainId: CHAIN_IDS.LOCALHOST,
-            nickname: LOCALHOST_DISPLAY_NAME,
-            id: 'some-config-name',
-          }),
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              name: 'Ethereum Mainnet',
+              blockExplorerUrls: ['https://localhost/blockExplorer/0x539'],
+              defaultBlockExplorerUrlIndex: 0,
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  networkClientId: NETWORK_TYPES.MAINNET,
+                  type: 'custom',
+                  url: 'https://localhost/rpc/0x1',
+                },
+              ],
+            },
+            [CHAIN_IDS.LOCALHOST]: {
+              chainId: CHAIN_IDS.LOCALHOST,
+              name: 'Localhost 8545',
+              blockExplorerUrls: ['https://localhost/blockExplorer/0x539'],
+              defaultBlockExplorerUrlIndex: 0,
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  networkClientId: 'some-config-name',
+                  type: 'custom',
+                  url: 'https://localhost/rpc/0x539',
+                },
+              ],
+            },
+          },
+          selectedNetworkClientId: 'some-config-name',
         },
       });
 
       const mainnet = networks.find(
         (network) => network.id === NETWORK_TYPES.MAINNET,
       );
+
       expect(mainnet.removable).toBe(false);
 
       const customNetwork = networks.find(
         (network) => network.id === 'some-config-name',
       );
+
       expect(customNetwork.removable).toBe(true);
     });
 
@@ -803,17 +891,34 @@ describe('Selectors', () => {
         metamask: {
           ...mockState.metamask,
           selectedNetworkClientId: NETWORK_TYPES.SEPOLIA,
+          blockExplorerUrls: [],
+          networkConfigurationsByChainId: {
+            '0xaa36a7': {
+              chainId: '0xaa36a7',
+              defaultBlockExplorerUrlIndex: 0,
+              rpcEndpoints: [
+                {
+                  networkClientId: NETWORK_TYPES.SEPOLIA,
+                  type: 'rpc',
+                  url: 'https://sepolia.infura.io/v3/undefined',
+                },
+              ],
+              defaultRpcEndpointIndex: 0,
+              name: 'Sepolia',
+              nativeCurrency: 'SepoliaETH',
+            },
+          },
         },
       };
       const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
 
       expect(currentNetwork).toMatchInlineSnapshot(`
         {
+          "blockExplorerUrls": undefined,
           "chainId": "0xaa36a7",
           "id": "sepolia",
           "nickname": "Sepolia",
-          "providerType": "sepolia",
-          "removable": false,
+          "providerType": "rpc",
           "rpcUrl": "https://sepolia.infura.io/v3/undefined",
           "ticker": "SepoliaETH",
         }
@@ -841,9 +946,10 @@ describe('Selectors', () => {
       expect(currentNetwork).toMatchInlineSnapshot(`
         {
           "blockExplorerUrl": undefined,
+          "blockExplorerUrls": [],
           "chainId": "0x9999",
           "id": "mock-network-config-id",
-          "nickname": undefined,
+          "providerType": "rpc",
           "removable": true,
           "rpcPrefs": {
             "imageUrl": undefined,
@@ -859,9 +965,7 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          selectedNetworkClientId:
-            mockState.metamask.networkConfigurations.testNetworkConfigurationId
-              .id,
+          selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
         },
       };
 
@@ -887,18 +991,22 @@ describe('Selectors', () => {
     const networkConfigurationsByChainId = {
       [CHAIN_IDS.MAINNET]: {
         chainId: CHAIN_IDS.MAINNET,
+        defaultRpcEndpointIndex: 0,
         rpcEndpoints: [{ networkClientId: 'mainnet' }],
       },
       [CHAIN_IDS.LINEA_MAINNET]: {
         chainId: CHAIN_IDS.LINEA_MAINNET,
+        defaultRpcEndpointIndex: 0,
         rpcEndpoints: [{ networkClientId: 'linea-mainnet' }],
       },
       [CHAIN_IDS.SEPOLIA]: {
         chainId: CHAIN_IDS.SEPOLIA,
+        defaultRpcEndpointIndex: 0,
         rpcEndpoints: [{ networkClientId: 'sepolia' }],
       },
       [CHAIN_IDS.LINEA_SEPOLIA]: {
         chainId: CHAIN_IDS.LINEA_SEPOLIA,
+        defaultRpcEndpointIndex: 0,
         rpcEndpoints: [{ networkClientId: 'linea-sepolia' }],
       },
     };
@@ -1058,6 +1166,10 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.GOERLI,
+            metadata: { EIPS: { 1559: true } },
+          }),
           keyrings: [
             {
               type: KeyringType.ledger,
@@ -1089,7 +1201,7 @@ describe('Selectors', () => {
       expect(selectors.getAddressBook(mockState)).toStrictEqual([
         {
           address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-          chainId: '0x5',
+          chainId: '0x1',
           isEns: false,
           memo: '',
           name: 'Address Book Account 1',

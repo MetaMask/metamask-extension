@@ -285,29 +285,47 @@ export function getProviderConfig(state) {
   const networkConfigurationsByChainId =
     getNetworkConfigurationsByChainId(state);
 
-  for (const network of Object.values(networkConfigurationsByChainId)) {
-    for (const rpcEndpoint of network.rpcEndpoints) {
-      if (rpcEndpoint.networkClientId === selectedNetworkClientId) {
-        const blockExplorerUrl =
-          network.blockExplorerUrls?.[network.defaultBlockExplorerUrlIndex];
+  // Find the network configuration that contains the matching rpcEndpoint
+  const networkConfig = Object.values(networkConfigurationsByChainId).find(
+    (network) =>
+      network.rpcEndpoints.some(
+        (rpcEndpoint) =>
+          rpcEndpoint.networkClientId === selectedNetworkClientId,
+      ),
+  );
 
-        return {
-          chainId: network.chainId,
-          ticker: network.nativeCurrency,
-          rpcPrefs: { ...(blockExplorerUrl && { blockExplorerUrl }) },
-          type:
-            rpcEndpoint.type === RpcEndpointType.Custom
-              ? 'rpc'
-              : rpcEndpoint.networkClientId,
-          ...(rpcEndpoint.type === RpcEndpointType.Custom && {
-            id: rpcEndpoint.networkClientId,
-            nickname: network.name,
-            rpcUrl: rpcEndpoint.url,
-          }),
-        };
-      }
-    }
+  if (!networkConfig) {
+    return null;
   }
+
+  // Find the specific rpcEndpoint within the found network configuration
+  const matchingEndpoint = networkConfig.rpcEndpoints.find(
+    (rpcEndpoint) => rpcEndpoint.networkClientId === selectedNetworkClientId,
+  );
+
+  if (!matchingEndpoint) {
+    return null;
+  }
+
+  const blockExplorerUrl =
+    networkConfig.blockExplorerUrls?.[
+      networkConfig.defaultBlockExplorerUrlIndex
+    ];
+
+  return {
+    chainId: networkConfig.chainId,
+    ticker: networkConfig.nativeCurrency,
+    rpcPrefs: { ...(blockExplorerUrl && { blockExplorerUrl }) },
+    type:
+      matchingEndpoint.type === RpcEndpointType.Custom
+        ? 'rpc'
+        : matchingEndpoint.networkClientId,
+    ...(matchingEndpoint.type === RpcEndpointType.Custom && {
+      id: matchingEndpoint.networkClientId,
+      rpcUrl: matchingEndpoint.url,
+      nickname: networkConfig.name,
+    }),
+  };
 
   // For debugging reference
 
