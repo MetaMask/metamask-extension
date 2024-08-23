@@ -227,6 +227,7 @@ export const TokenListItem = ({
               name={currentNetwork?.nickname}
               src={currentNetwork?.rpcPrefs?.imageUrl}
               backgroundColor={testNetworkBackgroundColor}
+              className="multichain-token-list-item__badge__avatar-network"
             />
           }
           marginRight={4}
