@@ -296,6 +296,8 @@ describe('Increase Token Allowance', function () {
       css: '.transaction-list__completed-transactions .activity-list-item [data-testid="activity-list-item-action"]',
       text: 'Increase TST spending cap',
     });
+
+    await driver.delay(2000);
   }
 
   async function confirmTransferFromTokensSuccess(driver) {
