@@ -29,7 +29,7 @@ import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
 import { getConfirmationSender } from '../utils';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 
-export type OnCancelType = ({
+export type OnCancelHandler = ({
   location,
 }: {
   location: MetaMetricsEventLocation;
@@ -44,7 +44,7 @@ const ConfirmButton = ({
   alertOwnerId?: string;
   disabled: boolean;
   onSubmit: () => void;
-  onCancel: OnCancelType;
+  onCancel: OnCancelHandler;
 }) => {
   const t = useI18nContext();
 
