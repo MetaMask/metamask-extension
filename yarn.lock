@@ -6297,20 +6297,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/selected-network-controller@npm:^15.0.2":
-  version: 15.0.2
-  resolution: "@metamask/selected-network-controller@npm:15.0.2"
+"@metamask/selected-network-controller@npm:@metamask-previews/selected-network-controller@17.0.0-preview-55328a6":
+  version: 17.0.0-preview-55328a6
+  resolution: "@metamask-previews/selected-network-controller@npm:17.0.0-preview-55328a6"
   dependencies:
-    "@metamask/base-controller": "npm:^6.0.0"
-    "@metamask/json-rpc-engine": "npm:^9.0.0"
-    "@metamask/network-controller": "npm:^19.0.0"
-    "@metamask/permission-controller": "npm:^10.0.0"
+    "@metamask/base-controller": "npm:^6.0.2"
+    "@metamask/json-rpc-engine": "npm:^9.0.2"
     "@metamask/swappable-obj-proxy": "npm:^2.2.0"
-    "@metamask/utils": "npm:^8.3.0"
+    "@metamask/utils": "npm:^9.1.0"
   peerDependencies:
-    "@metamask/network-controller": ^19.0.0
-    "@metamask/permission-controller": ^10.0.0
-  checksum: 10/8acf158801cb7657f4a01f0f5cdad67fbafc627f07b1c4728b403e1bd805684e13e478ac6e70ce4f772b5e08b049d895354ab2fa78eb5f2ee6a5c27bdc151298
+    "@metamask/network-controller": ^20.0.0
+    "@metamask/permission-controller": ^11.0.0
+  checksum: 10/86bceb136c702d624adf5379c8cade935ee0335d032890ca1a2934bb0dc589172260b61bc5b209c65c84a82de14e449ddcb3cbb4893e90d57149c877a06bb91d
   languageName: node
   linkType: hard
 
