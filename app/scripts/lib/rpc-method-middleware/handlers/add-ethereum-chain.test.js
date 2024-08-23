@@ -562,139 +562,6 @@ describe('addEthereumChainHandler', () => {
     });
   });
 
-  describe('with an existing CAIP-25 permission granted from the legacy flow (isMultichainOrigin: false) and the chainId is already permissioned', () => {
-    const nonInfuraScopeString = `eip155:${parseInt(
-      createMockNonInfuraConfiguration().chainId,
-      16,
-    )}`;
-
-    it('does not request permittedChains approval but does switch to it', async () => {
-      const { mocks, handler } = createMockedHandler();
-      mocks.getCaveat.mockReturnValue({
-        value: {
-          requiredScopes: {
-            [nonInfuraScopeString]: {
-              methods: [],
-              notifications: [],
-            },
-          },
-          optionalScopes: {},
-          isMultichainOrigin: false,
-        },
-      });
-      await handler({
-        origin: 'example.com',
-        params: [
-          {
-            chainId: createMockNonInfuraConfiguration().chainId,
-            chainName: createMockNonInfuraConfiguration().nickname,
-            rpcUrls: [createMockNonInfuraConfiguration().rpcUrl],
-            nativeCurrency: {
-              symbol: createMockNonInfuraConfiguration().ticker,
-              decimals: 18,
-            },
-            blockExplorerUrls: [
-              createMockNonInfuraConfiguration().rpcPrefs.blockExplorerUrl,
-            ],
-          },
-        ],
-      });
-
-      expect(mocks.requestPermissionApprovalForOrigin).not.toHaveBeenCalled();
-      expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
-      expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123);
-    });
-
-    it('does not request permittedChain approval but does switch to it if a networkConfiguration for the given chainId but with a different rpcUrl exists', async () => {
-      const { mocks, handler } = createMockedHandler();
-      mocks.getCaveat.mockReturnValue({
-        value: {
-          requiredScopes: {
-            [nonInfuraScopeString]: {
-              methods: [],
-              notifications: [],
-            },
-          },
-          optionalScopes: {},
-          isMultichainOrigin: false,
-        },
-      });
-      mocks.findNetworkConfigurationBy.mockReturnValue(
-        createMockNonInfuraConfiguration(),
-      );
-      mocks.getCurrentChainIdForDomain.mockReturnValue(CHAIN_IDS.MAINNET);
-
-      await handler({
-        origin: 'example.com',
-        params: [
-          {
-            chainId: NON_INFURA_CHAIN_ID,
-            chainName: 'Custom Network',
-            rpcUrls: ['https://new-custom.network'],
-            nativeCurrency: {
-              symbol: 'CUST',
-              decimals: 18,
-            },
-            blockExplorerUrls: ['https://custom.blockexplorer'],
-          },
-        ],
-      });
-
-      expect(mocks.requestPermissionApprovalForOrigin).not.toHaveBeenCalled();
-      expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not request permittedChain approval but should should switch to the existing networkConfiguration if a networkConfiguration with the same chainId and rpcUrl exists', async () => {
-      const optimismScopeString = `eip155:${parseInt(
-        createMockOptimismConfiguration().chainId,
-        16,
-      )}`;
-      const { mocks, handler } = createMockedHandler();
-      mocks.getCaveat.mockReturnValue({
-        value: {
-          requiredScopes: {
-            [optimismScopeString]: {
-              methods: [],
-              notifications: [],
-            },
-          },
-          optionalScopes: {},
-          isMultichainOrigin: false,
-        },
-      });
-      mocks.getCurrentRpcUrl.mockReturnValue('https://eth.llamarpc.com');
-      mocks.findNetworkConfigurationBy.mockReturnValue(
-        createMockOptimismConfiguration(),
-      );
-
-      await handler({
-        origin: 'example.com',
-        params: [
-          {
-            chainId: createMockOptimismConfiguration().chainId,
-            chainName: createMockOptimismConfiguration().nickname,
-            rpcUrls: [createMockOptimismConfiguration().rpcUrl],
-            nativeCurrency: {
-              symbol: createMockOptimismConfiguration().ticker,
-              decimals: 18,
-            },
-            blockExplorerUrls: [
-              createMockOptimismConfiguration().rpcPrefs.blockExplorerUrl,
-            ],
-          },
-        ],
-      });
-
-      expect(mocks.requestUserApproval).not.toHaveBeenCalled();
-
-      expect(mocks.requestPermissionApprovalForOrigin).not.toHaveBeenCalled();
-      expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
-      expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        createMockOptimismConfiguration().id,
-      );
-    });
-  });
-
   describe('with an existing CAIP-25 permission granted from the multichain flow (isMultichainOrigin: true) and the chainId is not already permissioned', () => {
     it('does not request permittedChains approval', async () => {
       const { mocks, handler } = createMockedHandler();
@@ -791,136 +658,142 @@ describe('addEthereumChainHandler', () => {
     });
   });
 
-  describe('with an existing CAIP-25 permission granted from the multichain flow (isMultichainOrigin: true) and the chainId is already permissioned', () => {
-    const nonInfuraScopeString = `eip155:${parseInt(
-      createMockNonInfuraConfiguration().chainId,
-      16,
-    )}`;
-
-    it('does not request permittedChains approval but does switch to it', async () => {
-      const { mocks, handler } = createMockedHandler();
-      mocks.getCaveat.mockReturnValue({
-        value: {
-          requiredScopes: {
-            [nonInfuraScopeString]: {
-              methods: [],
-              notifications: [],
-            },
-          },
-          optionalScopes: {},
-          isMultichainOrigin: true,
-        },
-      });
-      await handler({
-        origin: 'example.com',
-        params: [
-          {
-            chainId: createMockNonInfuraConfiguration().chainId,
-            chainName: createMockNonInfuraConfiguration().nickname,
-            rpcUrls: [createMockNonInfuraConfiguration().rpcUrl],
-            nativeCurrency: {
-              symbol: createMockNonInfuraConfiguration().ticker,
-              decimals: 18,
-            },
-            blockExplorerUrls: [
-              createMockNonInfuraConfiguration().rpcPrefs.blockExplorerUrl,
-            ],
-          },
-        ],
-      });
-
-      expect(mocks.requestPermissionApprovalForOrigin).not.toHaveBeenCalled();
-      expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
-      expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123);
-    });
-
-    it('does not request permittedChain approval but does switch to it if a networkConfiguration for the given chainId but with a different rpcUrl exists', async () => {
-      const { mocks, handler } = createMockedHandler();
-      mocks.getCaveat.mockReturnValue({
-        value: {
-          requiredScopes: {
-            [nonInfuraScopeString]: {
-              methods: [],
-              notifications: [],
-            },
-          },
-          optionalScopes: {},
-          isMultichainOrigin: true,
-        },
-      });
-      mocks.findNetworkConfigurationBy.mockReturnValue(
-        createMockNonInfuraConfiguration(),
-      );
-      mocks.getCurrentChainIdForDomain.mockReturnValue(CHAIN_IDS.MAINNET);
-
-      await handler({
-        origin: 'example.com',
-        params: [
-          {
-            chainId: NON_INFURA_CHAIN_ID,
-            chainName: 'Custom Network',
-            rpcUrls: ['https://new-custom.network'],
-            nativeCurrency: {
-              symbol: 'CUST',
-              decimals: 18,
-            },
-            blockExplorerUrls: ['https://custom.blockexplorer'],
-          },
-        ],
-      });
-
-      expect(mocks.requestPermissionApprovalForOrigin).not.toHaveBeenCalled();
-      expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not request permittedChain approval but should should switch to the existing networkConfiguration if a networkConfiguration with the same chainId and rpcUrl exists', async () => {
-      const optimismScopeString = `eip155:${parseInt(
-        createMockOptimismConfiguration().chainId,
+  describe.each([
+    ['legacy', false],
+    ['multichain', true],
+  ])(
+    'with an existing CAIP-25 permission granted from the %s flow (isMultichainOrigin: %s) and the chainId is already permissioned',
+    (_, isMultichainOrigin) => {
+      const nonInfuraScopeString = `eip155:${parseInt(
+        createMockNonInfuraConfiguration().chainId,
         16,
       )}`;
-      const { mocks, handler } = createMockedHandler();
-      mocks.getCaveat.mockReturnValue({
-        value: {
-          requiredScopes: {
-            [optimismScopeString]: {
-              methods: [],
-              notifications: [],
+
+      it('does not request permittedChains approval but does switch to it', async () => {
+        const { mocks, handler } = createMockedHandler();
+        mocks.getCaveat.mockReturnValue({
+          value: {
+            requiredScopes: {
+              [nonInfuraScopeString]: {
+                methods: [],
+                notifications: [],
+              },
             },
+            optionalScopes: {},
+            isMultichainOrigin,
           },
-          optionalScopes: {},
-          isMultichainOrigin: true,
-        },
-      });
-      mocks.getCurrentRpcUrl.mockReturnValue('https://eth.llamarpc.com');
-      mocks.findNetworkConfigurationBy.mockReturnValue(
-        createMockOptimismConfiguration(),
-      );
-
-      await handler({
-        origin: 'example.com',
-        params: [
-          {
-            chainId: createMockOptimismConfiguration().chainId,
-            chainName: createMockOptimismConfiguration().nickname,
-            rpcUrls: [createMockOptimismConfiguration().rpcUrl],
-            nativeCurrency: {
-              symbol: createMockOptimismConfiguration().ticker,
-              decimals: 18,
+        });
+        await handler({
+          origin: 'example.com',
+          params: [
+            {
+              chainId: createMockNonInfuraConfiguration().chainId,
+              chainName: createMockNonInfuraConfiguration().nickname,
+              rpcUrls: [createMockNonInfuraConfiguration().rpcUrl],
+              nativeCurrency: {
+                symbol: createMockNonInfuraConfiguration().ticker,
+                decimals: 18,
+              },
+              blockExplorerUrls: [
+                createMockNonInfuraConfiguration().rpcPrefs.blockExplorerUrl,
+              ],
             },
-            blockExplorerUrls: [
-              createMockOptimismConfiguration().rpcPrefs.blockExplorerUrl,
-            ],
-          },
-        ],
+          ],
+        });
+
+        expect(mocks.requestPermissionApprovalForOrigin).not.toHaveBeenCalled();
+        expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
+        expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123);
       });
 
-      expect(mocks.requestUserApproval).not.toHaveBeenCalled();
+      it('does not request permittedChain approval but does switch to it if a networkConfiguration for the given chainId but with a different rpcUrl exists', async () => {
+        const { mocks, handler } = createMockedHandler();
+        mocks.getCaveat.mockReturnValue({
+          value: {
+            requiredScopes: {
+              [nonInfuraScopeString]: {
+                methods: [],
+                notifications: [],
+              },
+            },
+            optionalScopes: {},
+            isMultichainOrigin,
+          },
+        });
+        mocks.findNetworkConfigurationBy.mockReturnValue(
+          createMockNonInfuraConfiguration(),
+        );
+        mocks.getCurrentChainIdForDomain.mockReturnValue(CHAIN_IDS.MAINNET);
 
-      expect(mocks.requestPermissionApprovalForOrigin).not.toHaveBeenCalled();
-      expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
-      expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        createMockOptimismConfiguration().id,
-      );
-    });
-  });
+        await handler({
+          origin: 'example.com',
+          params: [
+            {
+              chainId: NON_INFURA_CHAIN_ID,
+              chainName: 'Custom Network',
+              rpcUrls: ['https://new-custom.network'],
+              nativeCurrency: {
+                symbol: 'CUST',
+                decimals: 18,
+              },
+              blockExplorerUrls: ['https://custom.blockexplorer'],
+            },
+          ],
+        });
+
+        expect(mocks.requestPermissionApprovalForOrigin).not.toHaveBeenCalled();
+        expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
+      });
+
+      it('does not request permittedChain approval but should should switch to the existing networkConfiguration if a networkConfiguration with the same chainId and rpcUrl exists', async () => {
+        const optimismScopeString = `eip155:${parseInt(
+          createMockOptimismConfiguration().chainId,
+          16,
+        )}`;
+        const { mocks, handler } = createMockedHandler();
+        mocks.getCaveat.mockReturnValue({
+          value: {
+            requiredScopes: {
+              [optimismScopeString]: {
+                methods: [],
+                notifications: [],
+              },
+            },
+            optionalScopes: {},
+            isMultichainOrigin,
+          },
+        });
+        mocks.getCurrentRpcUrl.mockReturnValue('https://eth.llamarpc.com');
+        mocks.findNetworkConfigurationBy.mockReturnValue(
+          createMockOptimismConfiguration(),
+        );
+
+        await handler({
+          origin: 'example.com',
+          params: [
+            {
+              chainId: createMockOptimismConfiguration().chainId,
+              chainName: createMockOptimismConfiguration().nickname,
+              rpcUrls: [createMockOptimismConfiguration().rpcUrl],
+              nativeCurrency: {
+                symbol: createMockOptimismConfiguration().ticker,
+                decimals: 18,
+              },
+              blockExplorerUrls: [
+                createMockOptimismConfiguration().rpcPrefs.blockExplorerUrl,
+              ],
+            },
+          ],
+        });
+
+        expect(mocks.requestUserApproval).not.toHaveBeenCalled();
+
+        expect(mocks.requestPermissionApprovalForOrigin).not.toHaveBeenCalled();
+        expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
+        expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
+          createMockOptimismConfiguration().id,
+        );
+      });
+    },
+  );
 });
