@@ -2779,15 +2779,6 @@ export default class MetamaskController extends EventEmitter {
     );
 
     this.controllerMessenger.subscribe(
-      `${this.networkController.name}:stateChange`,
-      async (currentValue, previousValue) => {
-        // TODO
-        // check if a network has been added,
-        // and if so, add permittedChains permission to all(?) snaps in permissions?
-      },
-    );
-
-    this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapInstallStarted`,
       (snapId, origin, isUpdate) => {
         const snapCategory = this._getSnapMetadata(snapId)?.category;
