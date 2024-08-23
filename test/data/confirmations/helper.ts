@@ -11,7 +11,7 @@ type RootState = { metamask: Record<string, unknown> } & Record<
   unknown
 >;
 
-export const getExampleMockSignatureConfirmState = (
+export const getMockTypedSignConfirmState = (
   args: RootState = { metamask: {} },
 ) => ({
   ...mockState,
@@ -37,15 +37,15 @@ export const getExampleMockSignatureConfirmState = (
         status: TransactionStatus.unapproved,
         txParams: { from: Object.keys(mockState.metamask.identities)[0] },
         msgParams: {
-          signatureMethod: 'eth_signTypedData_v4',
-        },
+          signatureMethod: 'eth_signTypedData_v4'
+        }
       },
     },
     ...args.metamask,
   },
 });
 
-export const getExampleMockContractInteractionConfirmState = (
+export const getMockContractInteractionConfirmState = (
   args: RootState = { metamask: {} },
 ) => ({
   ...mockState,

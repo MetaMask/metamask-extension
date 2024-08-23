@@ -1,5 +1,5 @@
 import {
-  getExampleMockSignatureConfirmState,
+  getMockTypedSignConfirmState,
   getMockConfirmState,
 } from '../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
@@ -11,7 +11,7 @@ const SenderAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 describe('useConfirmationRecipientInfo', () => {
   describe('when the current confirmation is a signature', () => {
     it('returns the account name of the from address as the recipient name', () => {
-      const mockState = getExampleMockSignatureConfirmState();
+      const mockState = getMockTypedSignConfirmState();
       const { result } = renderHookWithConfirmContextProvider(
         () => useConfirmationRecipientInfo(),
         mockState,

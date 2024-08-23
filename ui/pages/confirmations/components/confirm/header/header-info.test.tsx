@@ -8,15 +8,15 @@ import {
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
 import {
-  getExampleMockContractInteractionConfirmState,
-  getExampleMockSignatureConfirmState,
+  getMockContractInteractionConfirmState,
+  getMockTypedSignConfirmState,
 } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import configureStore from '../../../../../store/store';
 import HeaderInfo from './header-info';
 
-const mockStore = getExampleMockSignatureConfirmState();
+const mockStore = getMockTypedSignConfirmState();
 
 const cases = [
   {
@@ -34,7 +34,7 @@ const cases = [
   },
   {
     description: 'for a transaction',
-    store: getExampleMockContractInteractionConfirmState(),
+    store: getMockContractInteractionConfirmState(),
     expectedEvent: {
       category: MetaMetricsEventCategory.Confirmations,
       event: MetaMetricsEventName.AccountDetailsOpened,

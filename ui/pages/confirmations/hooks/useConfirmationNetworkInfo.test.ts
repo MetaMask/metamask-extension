@@ -3,7 +3,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 
 import mockState from '../../../../test/data/mock-state.json';
 import {
-  getExampleMockSignatureConfirmState,
+  getMockTypedSignConfirmState,
   getMockConfirmState,
 } from '../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
@@ -46,7 +46,7 @@ describe('useConfirmationNetworkInfo', () => {
   it('returns display name and image for custom network', () => {
     const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationNetworkInfo(),
-      getExampleMockSignatureConfirmState({
+      getMockTypedSignConfirmState({
         metamask: {
           providerConfig: {
             chainId: '0x7',
@@ -90,7 +90,7 @@ describe('useConfirmationNetworkInfo', () => {
   it('should return empty strings if no matching network is found', () => {
     const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationNetworkInfo(),
-      getExampleMockSignatureConfirmState({
+      getMockTypedSignConfirmState({
         metamask: {
           providerConfig: {
             chainId: '0x7',

@@ -1,13 +1,13 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 
-import { getExampleMockSignatureConfirmState } from '../../../../../../test/data/confirmations/helper';
+import { getMockTypedSignConfirmState } from '../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../store/store';
 
 import Header from './header';
 import { ConfirmContextProvider } from '../../../context/confirm';
 
-const store = configureStore(getExampleMockSignatureConfirmState());
+const store = configureStore(getMockTypedSignConfirmState());
 
 const Story = {
   title: 'Confirmations/Components/Confirm/Header',

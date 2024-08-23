@@ -3,15 +3,15 @@ import React from 'react';
 import { DefaultRootState } from 'react-redux';
 
 import {
-  getExampleMockContractInteractionConfirmState,
-  getExampleMockSignatureConfirmState,
+  getMockContractInteractionConfirmState,
+  getMockTypedSignConfirmState,
 } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../store/store';
 import Header from './header';
 
 const render = (
-  state: DefaultRootState = getExampleMockSignatureConfirmState(),
+  state: DefaultRootState = getMockTypedSignConfirmState(),
 ) => {
   const store = configureStore(state);
   return renderWithConfirmContextProvider(<Header />, store);
@@ -26,7 +26,7 @@ describe('Header', () => {
 
   it('should match snapshot with transaction confirmation', () => {
     const { container } = render(
-      getExampleMockContractInteractionConfirmState(),
+      getMockContractInteractionConfirmState(),
     );
 
     expect(container).toMatchSnapshot();
