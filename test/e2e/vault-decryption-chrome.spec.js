@@ -143,7 +143,7 @@ describe('Vault Decryptor Page', function () {
         await logFileSize(filePath);
         await inputField.press(filePath);
 
-        const fileLoaded = await driver.isElementPresent({
+        const isFileLoadedError = await driver.isElementPresent({
           tag: 'span',
           text: '❌ Can not read vault from file',
         });
