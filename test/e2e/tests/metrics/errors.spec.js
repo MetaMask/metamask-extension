@@ -174,13 +174,15 @@ function getMissingProperties(complete, object) {
 }
 
 describe('Sentry errors', function () {
+  const sentryRegEx = /https:\/\/sentry.io\/api\/\d+\/envelope/gu;
+
   const migrationError =
     process.env.SELENIUM_BROWSER === Browser.CHROME
       ? `"type":"TypeError","value":"Cannot read properties of undefined (reading 'version')`
       : 'meta is undefined';
   async function mockSentryMigratorError(mockServer) {
     return await mockServer
-      .forPost('https://sentry.io/api/0000000/envelope/')
+      .forPost(sentryRegEx)
       .withBodyIncluding(migrationError)
       .thenCallback(() => {
         return {
@@ -192,7 +194,7 @@ describe('Sentry errors', function () {
 
   async function mockSentryInvariantMigrationError(mockServer) {
     return await mockServer
-      .forPost('https://sentry.io/api/0000000/envelope/')
+      .forPost(sentryRegEx)
       .withBodyIncluding('typeof state.PreferencesController is number')
       .thenCallback(() => {
         return {
@@ -204,7 +206,7 @@ describe('Sentry errors', function () {
 
   async function mockSentryTestError(mockServer) {
     return await mockServer
-      .forPost('https://sentry.io/api/0000000/envelope/')
+      .forPost(sentryRegEx)
       .withBodyIncluding('Test Error')
       .thenCallback(() => {
         return {

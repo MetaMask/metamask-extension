@@ -93,9 +93,21 @@ function getClientOptions() {
     // we can safely turn them off by setting the `sendClientReports` option to
     // `false`.
     sendClientReports: false,
-    tracesSampleRate: METAMASK_DEBUG ? 1.0 : 0.01,
+    tracesSampleRate: METAMASK_DEBUG || process.env.CIRCLECI ? 1.0 : 0.01,
     transport: makeTransport,
   };
+}
+
+function setCircleCiTags() {
+  Sentry.setTag('circleci.enabled', Boolean(process.env.CIRCLECI));
+
+  if (process.env.CIRCLECI) {
+    Sentry.setTag('circleci.branch', process.env.CIRCLE_BRANCH);
+    Sentry.setTag('circleci.buildNum', process.env.CIRCLE_BUILD_NUM);
+    Sentry.setTag('circleci.job', process.env.CIRCLE_JOB);
+    Sentry.setTag('circleci.nodeIndex', process.env.CIRCLE_NODE_INDEX);
+    Sentry.setTag('circleci.prNumber', process.env.CIRCLE_PR_NUMBER);
+  }
 }
 
 /**
@@ -205,7 +217,7 @@ function getSentryTarget() {
  * @returns `true` if MetaMetrics is enabled, `false` otherwise.
  */
 async function getMetaMetricsEnabled() {
-  if (METAMASK_BUILD_TYPE === 'mmi') {
+  if (METAMASK_BUILD_TYPE === 'mmi' || process.env.CIRCLECI) {
     return true;
   }
 
@@ -252,6 +264,8 @@ function setSentryClient() {
 
   Sentry.registerSpanErrorInstrumentation();
   Sentry.init(clientOptions);
+
+  setCircleCiTags();
 
   addDebugListeners();
 
