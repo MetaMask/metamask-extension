@@ -149,7 +149,7 @@ describe('Vault Decryptor Page', function () {
         });
 
         // Retry-logic if file upload fails
-        if (!fileLoaded) {
+        if (isFileLoadedError) {
           await inputField.press(filePath);
         }
 
