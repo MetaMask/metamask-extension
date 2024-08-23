@@ -184,6 +184,9 @@ export default class ConfirmTransactionBase extends Component {
     isSmartTransactionsEnabled: PropTypes.bool,
     hasPriorityApprovalRequest: PropTypes.bool,
     chainId: PropTypes.string,
+    submitSwapAndSendApprovalAndTrade: PropTypes.func,
+    isSmartTransaction: PropTypes.bool,
+    transaction: PropTypes.object,
   };
 
   state = {
@@ -398,6 +401,7 @@ export default class ConfirmTransactionBase extends Component {
       nextNonce,
       getNextNonce,
       txData,
+      transaction,
       useNativeCurrencyAsPrimaryCurrency,
       primaryTotalTextOverrideMaxAmount,
       showLedgerSteps,
@@ -527,11 +531,11 @@ export default class ConfirmTransactionBase extends Component {
         </div>
       ) : null;
 
-    const { simulationData, approvalTxId } = txData;
+    const { simulationData } = txData;
 
     // if transaction reverts in simulation and there's an approval transaction, we don't want to show the simulation details
     const isUnsimulable =
-      approvalTxId &&
+      transaction?.approvalTx &&
       simulationData?.error.code === SimulationErrorCode.Reverted;
 
     const simulationDetails = isUnsimulable ? undefined : (
@@ -711,16 +715,34 @@ export default class ConfirmTransactionBase extends Component {
   handleSubmit() {
     const { submitting } = this.state;
 
+    const {
+      submitSwapAndSendApprovalAndTrade,
+      isSmartTransaction,
+      transaction,
+      txData,
+    } = this.props;
+
     if (submitting) {
       return;
     }
 
-    this.props.isMainBetaFlask
-      ? this.handleMainSubmit()
-      : this.handleMMISubmit();
+    submitSwapAndSendApprovalAndTrade(
+      isSmartTransaction,
+      transaction,
+      transaction.sourceTokenSymbol,
+    ).then((submitApprovalAndTrade) => {
+      this.props.isMainBetaFlask
+        ? this.handleMainSubmit(
+            // no function must be represented as undefined so fallback works correctly
+            submitApprovalAndTrade
+              ? async () => await submitApprovalAndTrade(txData.id)
+              : undefined,
+          )
+        : this.handleMMISubmit();
+    });
   }
 
-  handleMainSubmit() {
+  handleMainSubmit(sendApprovalAndTrade) {
     const {
       sendTransaction,
       txData,
@@ -788,7 +810,11 @@ export default class ConfirmTransactionBase extends Component {
       () => {
         this._removeBeforeUnload();
 
-        sendTransaction(txData, false, loadingIndicatorMessage)
+        // FIXME: rename/refactor and ensure this does not affect normal transactions
+        const sendSingleTransaction = () =>
+          sendTransaction(txData, true, loadingIndicatorMessage);
+
+        (sendApprovalAndTrade ?? sendSingleTransaction)()
           .then(() => {
             if (!this._isMounted) {
               return;

@@ -3019,7 +3019,8 @@ export function signTransaction(history) {
           destinationTokenDecimals,
           destinationTokenAddress,
           swapTokenValue,
-          approvalTxId: undefined,
+          // for approval bundling
+          approvalTx: undefined,
           destinationTokenAmount,
           sourceTokenAddress,
           sourceTokenAmount,
@@ -3027,24 +3028,16 @@ export function signTransaction(history) {
         };
 
         if (bestQuote?.approvalNeeded) {
-          const { id } = await dispatch(
-            addTransactionAndRouteToConfirmationPage(
-              { ...bestQuote.approvalNeeded, amount: '0x0' },
-              {
-                requireApproval: true,
-                // TODO: create new type for swap+send approvals; works as stopgap bc swaps doesn't use this type for STXs in `submitSmartTransactionHook` (via `TransactionController`)
-                type: TransactionType.swapAndSendApproval,
-                swaps: {
-                  hasApproveTx: true,
-                  meta: {
-                    type: TransactionType.swapAndSendApproval,
-                    sourceTokenSymbol,
-                  },
-                },
-              },
-            ),
-          );
-          meta.approvalTxId = id;
+          meta.approvalTx = {
+            data: {
+              ...bestQuote.approvalNeeded,
+            },
+            params: {
+              requireApproval: false,
+              type: TransactionType.swapAndSendApproval,
+              sourceTokenSymbol,
+            },
+          };
         }
 
         const { id: swapAndSendTxId } = await dispatch(
