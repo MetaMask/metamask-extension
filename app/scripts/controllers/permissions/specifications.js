@@ -212,6 +212,11 @@ export const getPermissionSpecifications = ({
       subjectTypes: [SubjectType.Website],
 
       factory: (permissionOptions, requestData) => {
+        if (requestData === undefined) {
+          return constructPermission({
+            ...permissionOptions,
+          });
+        }
         if (!requestData.approvedChainIds) {
           throw new Error(
             `${PermissionNames.permittedChains}: No approved networks specified.`,

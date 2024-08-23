@@ -130,6 +130,8 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { CaveatFactories, PermissionNames } from '../../app/scripts/controllers/permissions/specifications';
+import { CaveatTypes } from '../../shared/constants/permissions';
 
 type CustomGasSettings = {
   gas?: string;
@@ -5578,6 +5580,26 @@ export async function getNextAvailableAccountName(
     'getNextAvailableAccountName',
     [keyring],
   );
+}
+
+export async function grantPermittedChain(
+  selectedTabOrigin: string,
+  chainId?: [],
+): Promise<string> {
+  return await submitRequestToBackground<void>('grantPermissionsIncremental', [
+    {
+      subject: { origin: selectedTabOrigin },
+      approvedPermissions: {
+      [PermissionNames.permittedChains]: {
+        caveats: [
+          CaveatFactories[CaveatTypes.restrictNetworkSwitching](
+          [chainId],
+          ),
+        ],
+      },
+      },
+    }
+  ]);
 }
 
 export async function decodeTransactionData({

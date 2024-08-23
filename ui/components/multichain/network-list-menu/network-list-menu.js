@@ -15,6 +15,7 @@ import {
   updateNetworksList,
   setNetworkClientIdForDomain,
   setEditedNetwork,
+  grantPermittedChain,
 } from '../../../store/actions';
 import {
   FEATURED_RPCS,
@@ -34,6 +35,7 @@ import {
   getNetworkConfigurations,
   getEditedNetwork,
   getAllDomains,
+  getPermittedChainsByOrigin,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -101,7 +103,8 @@ export const NetworkListMenu = ({ onClose }) => {
   const useRequestQueue = useSelector(getUseRequestQueue);
   const networkConfigurations = useSelector(getNetworkConfigurations);
   const domains = useSelector(getAllDomains);
-
+  const chains = useSelector(getPermittedChainsByOrigin);
+console.log(chains, "hh")
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
@@ -171,6 +174,7 @@ export const NetworkListMenu = ({ onClose }) => {
     return sortedNonTestNetworks;
   };
 
+  //check if not granted chain is clicked, then show the toast and grant permission
   const networksList = newOrderNetworks();
   const [items, setItems] = useState([...networksList]);
 
@@ -303,6 +307,7 @@ export const NetworkListMenu = ({ onClose }) => {
         onClick={() => {
           dispatch(toggleNetworkMenu());
           dispatch(setActiveNetwork(network.providerType || network.id));
+            grantPermittedChain(selectedTabOrigin, network.chainId);
 
           // If presently on and connected to a dapp, communicate a change to
           // the dapp via silent switchEthereumChain that the network has

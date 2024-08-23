@@ -83,10 +83,23 @@ export function getPermittedAccountsForSelectedTab(state, activeTab) {
  */
 export function getPermittedAccountsByOrigin(state) {
   const subjects = getPermissionSubjects(state);
+  console.log(subjects, "nidhi")
   return Object.keys(subjects).reduce((acc, subjectKey) => {
     const accounts = getAccountsFromSubject(subjects[subjectKey]);
     if (accounts.length > 0) {
       acc[subjectKey] = accounts;
+    }
+    return acc;
+  }, {});
+}
+
+export function getPermittedChainsByOrigin(state) {
+  const subjects = getPermissionSubjects(state);
+  console.log(subjects, 'nidhi');
+  return Object.keys(subjects).reduce((acc, subjectKey) => {
+    const chains = getChainsFromSubject(subjects[subjectKey]);
+    if (chains.length > 0) {
+      acc[subjectKey] = chains;
     }
     return acc;
   }, {});
@@ -256,11 +269,35 @@ function getAccountsPermissionFromSubject(subject = {}) {
   return subject.permissions?.eth_accounts || {};
 }
 
+function getChainsFromSubject(subject) {
+  return getChainsFromPermission(getChainsPermissionFromSubject(subject));
+}
+
+function getChainsPermissionFromSubject(subject = {}) {
+  return subject.permissions?.['endowment:permitted-chains'] || {};
+}
+
 function getAccountsFromPermission(accountsPermission) {
   const accountsCaveat = getAccountsCaveatFromPermission(accountsPermission);
   return accountsCaveat && Array.isArray(accountsCaveat.value)
     ? accountsCaveat.value
     : [];
+}
+
+function getChainsFromPermission(chainsPermission) {
+  const chainsCaveat = getChainsCaveatFromPermission(chainsPermission);
+  return chainsCaveat && Array.isArray(chainsCaveat.value)
+    ? chainsCaveat.value
+    : [];
+}
+
+function getChainsCaveatFromPermission(chainsPermission = {}) {
+  return (
+    Array.isArray(chainsPermission.caveats) &&
+    chainsPermission.caveats.find(
+      (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+    )
+  );
 }
 
 function getAccountsCaveatFromPermission(accountsPermission = {}) {
