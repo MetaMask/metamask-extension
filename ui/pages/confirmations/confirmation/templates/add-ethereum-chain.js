@@ -48,6 +48,7 @@ const SAFE_CHAIN_LIST_PROVIDER_ERROR = {
   },
 };
 
+
 const MISMATCHED_CHAIN_RECOMMENDATION = {
   id: 'MISMATCHED_CHAIN_RECOMMENDATION',
   severity: Severity.Warning,
@@ -221,6 +222,9 @@ function getState(pendingApproval) {
 function getValues(pendingApproval, t, actions, history, data) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
+  const childrenTitleText = process.env.CHAIN_PERMISSIONS
+    ? t('addNetworkConfirmationTitle', [pendingApproval.requestData.chainName])
+    : t('addEthereumChainConfirmationTitle');
   return {
     content: [
       {
@@ -252,11 +256,7 @@ function getValues(pendingApproval, t, actions, history, data) {
         key: 'title',
         children: originIsMetaMask
           ? t('wantToAddThisNetwork')
-          : process.env.CHAIN_PERMISSIONS
-          ? t('addNetworkConfirmationTitle', [
-              pendingApproval.requestData.chainName,
-            ])
-          : t('addEthereumChainConfirmationTitle'),
+          : childrenTitleText,
         props: {
           variant: TypographyVariant.H3,
           align: 'center',
