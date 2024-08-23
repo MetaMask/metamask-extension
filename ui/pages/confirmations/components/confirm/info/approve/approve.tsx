@@ -36,7 +36,6 @@ import {
 } from './hooks/use-approve-token-simulation';
 import { useIsNFT } from './hooks/use-is-nft';
 import { TokenWithBalance, useReceivedToken } from './hooks/use-received-token';
-import { DecodedTransactionDataResponse } from '../../../../../../../shared/types/transaction-decode';
 
 const ApproveStaticSimulation = () => {
   const t = useI18nContext();
