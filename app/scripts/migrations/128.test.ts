@@ -1,4 +1,4 @@
-import { migrate, version } from './127';
+import { migrate, version } from './128';
 
 const PermissionNames = {
   eth_accounts: 'eth_accounts',
