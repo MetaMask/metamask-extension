@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { WINDOW_TITLES, openDapp, unlockWallet } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
   scrollAndConfirmAndAssertConfirm,
@@ -19,7 +19,7 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
       async ({ driver }: TestSuiteArguments) => {
-        await openDappAndTriggerSignature(driver, SignatureType.SIWE);
+        await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
 
         await verifyAlertIsDisplayed(driver);
 
@@ -44,7 +44,7 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await openDappAndTriggerSignature(driver, SignatureType.SIWE);
+        await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
 
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
@@ -79,10 +79,7 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#siweBadDomain');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
 
         await scrollAndConfirmAndAssertConfirm(driver);
 
