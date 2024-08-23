@@ -30,15 +30,11 @@ export const useReceivedToken = () => {
     true,
   ) as { tokensWithBalances: TokenWithBalance[] };
 
-  let receivedToken;
-  for (const token of tokensWithBalances) {
-    if (
+  const receivedToken = tokensWithBalances.find(
+    (token) =>
       normalizeSafeAddress(transactionMeta.txParams.to as string) ===
-      normalizeSafeAddress(token.address)
-    ) {
-      receivedToken = token;
-    }
-  }
+      normalizeSafeAddress(token.address),
+  );
 
   return { receivedToken };
 };

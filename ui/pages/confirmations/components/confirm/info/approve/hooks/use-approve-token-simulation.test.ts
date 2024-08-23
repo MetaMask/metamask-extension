@@ -20,8 +20,14 @@ jest.mock('../../hooks/useDecodedTransactionData', () => ({
 }));
 
 describe('useApproveTokenSimulation', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('returns the token id for NFT', async () => {
-    const useIsNFTMock = jest.fn().mockImplementation(() => ({ isNFT: true }));
+    const useIsNFTMock = jest
+      .fn()
+      .mockImplementation(() => ({ isNFT: true, decimals: '18' }));
 
     const useDecodedTransactionDataMock = jest.fn().mockImplementation(() => ({
       pending: false,
@@ -62,7 +68,7 @@ describe('useApproveTokenSimulation', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "formattedTokenNum": 70000,
-        "pending": false,
+        "pending": undefined,
         "tokenAmount": "#70000",
         "value": {
           "data": [
@@ -86,8 +92,10 @@ describe('useApproveTokenSimulation', () => {
     `);
   });
 
-  it('returns "Unlimited" token amount for 10 ** 16 fungible tokens', async () => {
-    const useIsNFTMock = jest.fn().mockResolvedValue({ isNFT: false });
+  it('returns "UNLIMITED MESSAGE" token amount for fungible tokens approvals equal or over the total number of tokens in circulation', async () => {
+    const useIsNFTMock = jest
+      .fn()
+      .mockImplementation(() => ({ isNFT: false, decimals: '18' }));
 
     const useDecodedTransactionDataMock = jest.fn().mockImplementation(() => ({
       pending: false,
@@ -102,7 +110,7 @@ describe('useApproveTokenSimulation', () => {
               },
               {
                 type: 'uint256',
-                value: 10 ** 16,
+                value: 10 ** 18,
               },
             ],
           },
@@ -127,9 +135,9 @@ describe('useApproveTokenSimulation', () => {
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "formattedTokenNum": "10,000,000,000,000,000",
-        "pending": false,
-        "tokenAmount": "Unlimited",
+        "formattedTokenNum": "1,000,000,000,000,000,000",
+        "pending": undefined,
+        "tokenAmount": "UNLIMITED MESSAGE",
         "value": {
           "data": [
             {
@@ -141,7 +149,7 @@ describe('useApproveTokenSimulation', () => {
                 },
                 {
                   "type": "uint256",
-                  "value": 10000000000000000,
+                  "value": 1000000000000000000,
                 },
               ],
             },

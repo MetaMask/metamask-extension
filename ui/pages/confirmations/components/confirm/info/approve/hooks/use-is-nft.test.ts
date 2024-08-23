@@ -7,6 +7,7 @@ import mockState from '../../../../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../../../../test/lib/render-helpers';
 import { getTokenStandardAndDetails } from '../../../../../../../store/actions';
 import { useIsNFT } from './use-is-nft';
+import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
 
 jest.mock('../../../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../../../store/actions'),
@@ -17,7 +18,7 @@ describe('useIsNFT', () => {
   it('identifies NFT in token with 0 decimals', async () => {
     const getTokenStandardAndDetailsMock = jest
       .fn()
-      .mockImplementation(() => ({ decimals: '0' }));
+      .mockImplementation(() => ({ standard: TokenStandard.ERC721 }));
 
     (getTokenStandardAndDetails as jest.Mock).mockImplementation(
       getTokenStandardAndDetailsMock,
@@ -40,7 +41,7 @@ describe('useIsNFT', () => {
   it('identifies fungible in token with greater than 0 decimals', async () => {
     const getTokenStandardAndDetailsMock = jest
       .fn()
-      .mockImplementation(() => ({ decimals: '100' }));
+      .mockImplementation(() => ({ standard: TokenStandard.ERC20 }));
 
     (getTokenStandardAndDetails as jest.Mock).mockImplementation(
       getTokenStandardAndDetailsMock,

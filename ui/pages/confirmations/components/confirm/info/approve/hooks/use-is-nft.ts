@@ -1,23 +1,19 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useEffect, useState } from 'react';
+import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
+import { useAsyncResult } from '../../../../../../../hooks/useAsyncResult';
 import { getTokenStandardAndDetails } from '../../../../../../../store/actions';
 
 export const useIsNFT = (
   transactionMeta: TransactionMeta,
-): { isNFT: boolean } => {
-  const [decimals, setDecimals] = useState('');
-  useEffect(() => {
-    const fetchTokenDetails = async () => {
-      const result = await getTokenStandardAndDetails(
-        transactionMeta?.txParams?.to as string,
-      );
-
-      setDecimals(result?.decimals as string);
-    };
-
-    fetchTokenDetails();
+): { isNFT: boolean; pending: boolean; decimals: string | undefined } => {
+  const { value, pending } = useAsyncResult(async () => {
+    return await getTokenStandardAndDetails(
+      transactionMeta?.txParams?.to as string,
+    );
   }, [transactionMeta]);
-  const isNFT = decimals === '0';
 
-  return { isNFT };
+  const isNFT = value?.standard !== TokenStandard.ERC20;
+  const decimals = value?.decimals;
+
+  return { pending, isNFT, decimals };
 };

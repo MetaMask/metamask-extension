@@ -1,36 +1,59 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { useIsNFT } from './use-is-nft';
 
-const UNLIMITED_THRESHOLD = 10 ** 15;
+export const UNLIMITED_MSG = 'UNLIMITED MESSAGE';
+
+function isSpendingCapUnlimited(
+  tokenDecimals: string,
+  decodedSpendingCap: number,
+) {
+  const totalCirculatingSupplyBigNumber = new BigNumber(10).pow(
+    Number(tokenDecimals),
+  );
+
+  // convert `decodedSpendingCap` to Big Number because numbers lose precision above
+  // `Number.MAX_SAFE_INTEGER`
+  const spendingCapBigNumber = new BigNumber(decodedSpendingCap);
+
+  return spendingCapBigNumber.greaterThanOrEqualTo(
+    totalCirculatingSupplyBigNumber,
+  );
+}
 
 export const useApproveTokenSimulation = (transactionMeta: TransactionMeta) => {
-  const t = useI18nContext();
-
   const locale = useSelector(getIntlLocale);
 
-  const { isNFT } = useIsNFT(transactionMeta);
+  const { isNFT, pending: isNFTPending, decimals } = useIsNFT(transactionMeta);
 
   const decodedResponse = useDecodedTransactionData();
 
   const { value, pending } = decodedResponse;
 
-  const tokenNum = value ? value.data[0].params[1].value : 0;
+  const decodedSpendingCap = value ? value.data[0].params[1].value : 0;
 
   const tokenPrefix = isNFT ? '#' : '';
   const formattedTokenNum = isNFT
-    ? tokenNum
-    : new Intl.NumberFormat(locale).format(tokenNum);
+    ? decodedSpendingCap
+    : new Intl.NumberFormat(locale).format(decodedSpendingCap);
 
   let tokenAmount;
-  if (!isNFT && tokenNum > UNLIMITED_THRESHOLD) {
-    tokenAmount = t('unlimited');
+  if (
+    !isNFT &&
+    isSpendingCapUnlimited(decimals as string, decodedSpendingCap)
+  ) {
+    tokenAmount = UNLIMITED_MSG;
   } else {
     tokenAmount = `${tokenPrefix}${formattedTokenNum}`;
   }
 
-  return { tokenAmount, formattedTokenNum, value, pending };
+  return {
+    tokenAmount,
+    formattedTokenNum,
+    value,
+    pending: pending || isNFTPending,
+  };
 };

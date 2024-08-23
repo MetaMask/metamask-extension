@@ -30,9 +30,13 @@ import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import StaticSimulation from '../shared/static-simulation/static-simulation';
 import { Container } from '../shared/transaction-data/transaction-data';
 import { ApproveDetails } from './approve-details/approve-details';
-import { useApproveTokenSimulation } from './hooks/use-approve-token-simulation';
+import {
+  UNLIMITED_MSG,
+  useApproveTokenSimulation,
+} from './hooks/use-approve-token-simulation';
 import { useIsNFT } from './hooks/use-is-nft';
 import { useReceivedToken } from './hooks/use-received-token';
+import { DecodedTransactionDataResponse } from '../../../../../../../shared/types/transaction-decode';
 
 const ApproveStaticSimulation = () => {
   const t = useI18nContext();
@@ -52,6 +56,19 @@ const ApproveStaticSimulation = () => {
     return null;
   }
 
+  const formattedTokenText = (
+    <Text
+      data-testid="simulation-token-value"
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      borderRadius={BorderRadius.XL}
+      paddingInline={2}
+      textAlign={TextAlign.Center}
+      alignItems={AlignItems.center}
+    >
+      {tokenAmount === UNLIMITED_MSG ? t('unlimited') : formattedTokenNum}
+    </Text>
+  );
+
   const simulationElements = (
     <>
       <Box display={Display.Flex}>
@@ -60,30 +77,10 @@ const ApproveStaticSimulation = () => {
           marginInlineEnd={1}
           minWidth={BlockSize.Zero}
         >
-          {tokenAmount === t('unlimited') ? (
-            <Tooltip title={formattedTokenNum}>
-              <Text
-                data-testid="simulation-token-value"
-                backgroundColor={BackgroundColor.backgroundAlternative}
-                borderRadius={BorderRadius.XL}
-                paddingInline={2}
-                textAlign={TextAlign.Center}
-                alignItems={AlignItems.center}
-              >
-                {tokenAmount}
-              </Text>
-            </Tooltip>
+          {tokenAmount === UNLIMITED_MSG ? (
+            <Tooltip title={formattedTokenNum}>{formattedTokenText}</Tooltip>
           ) : (
-            <Text
-              data-testid="simulation-token-value"
-              backgroundColor={BackgroundColor.backgroundAlternative}
-              borderRadius={BorderRadius.XL}
-              paddingInline={2}
-              textAlign={TextAlign.Center}
-              alignItems={AlignItems.center}
-            >
-              {formattedTokenNum}
-            </Text>
+            formattedTokenText
           )}
         </Box>
         <Name
@@ -125,6 +122,49 @@ const SpendingCap = () => {
     return null;
   }
 
+  const SpendingCapGroup = ({
+    value,
+  }: {
+    value: DecodedTransactionDataResponse | undefined;
+  }) => {
+    const SpendingCapElement = (
+      <ConfirmInfoRowText
+        text={
+          tokenAmount === UNLIMITED_MSG
+            ? `${t('unlimited')} ${receivedToken.symbol}`
+            : `${formattedTokenNum} ${receivedToken.symbol}`
+        }
+        onEditClick={
+          transactionMeta.type === TransactionType.tokenMethodIncreaseAllowance
+            ? () => console.log('TODO on a following ticket')
+            : undefined
+        }
+        editIconClassName="edit-spending-cap"
+      />
+    );
+
+    if (!value) {
+      return null;
+    }
+
+    return (
+      <>
+        <ConfirmInfoRowDivider />
+
+        <ConfirmInfoRow
+          label={t('spendingCap')}
+          tooltip={t('spendingCapTooltipDesc')}
+        >
+          {tokenAmount === UNLIMITED_MSG ? (
+            <Tooltip title={formattedTokenNum}>{SpendingCapElement}</Tooltip>
+          ) : (
+            SpendingCapElement
+          )}
+        </ConfirmInfoRow>
+      </>
+    );
+  };
+
   return (
     <ConfirmInfoSection>
       <ConfirmInfoRow label={t('accountBalance')}>
@@ -133,42 +173,7 @@ const SpendingCap = () => {
         />
       </ConfirmInfoRow>
 
-      {value ? (
-        <>
-          <ConfirmInfoRowDivider />
-
-          <ConfirmInfoRow
-            label={t('spendingCap')}
-            tooltip={t('spendingCapTooltipDesc')}
-          >
-            {tokenAmount === t('unlimited') ? (
-              <Tooltip title={formattedTokenNum}>
-                <ConfirmInfoRowText
-                  text={`${tokenAmount} ${receivedToken.symbol}`}
-                  onEditClick={
-                    transactionMeta.type ===
-                    TransactionType.tokenMethodIncreaseAllowance
-                      ? () => console.log('TODO on a following ticket')
-                      : undefined
-                  }
-                  editIconClassName="edit-spending-cap"
-                />
-              </Tooltip>
-            ) : (
-              <ConfirmInfoRowText
-                text={`${formattedTokenNum} ${receivedToken.symbol}`}
-                onEditClick={
-                  transactionMeta.type ===
-                  TransactionType.tokenMethodIncreaseAllowance
-                    ? () => console.log('TODO on a following ticket')
-                    : undefined
-                }
-                editIconClassName="edit-spending-cap"
-              />
-            )}
-          </ConfirmInfoRow>
-        </>
-      ) : null}
+      <SpendingCapGroup value={value} />
     </ConfirmInfoSection>
   );
 };
