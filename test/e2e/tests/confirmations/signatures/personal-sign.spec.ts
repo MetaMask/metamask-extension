@@ -4,7 +4,6 @@ import { MockedEndpoint } from 'mockttp';
 import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
-  switchToNotificationWindow,
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
