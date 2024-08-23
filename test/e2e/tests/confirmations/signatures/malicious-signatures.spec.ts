@@ -8,17 +8,15 @@ import {
   withRedesignConfirmationFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
-import { assertSignatureRejectedMetrics } from './signature-helpers';
+import { assertSignatureRejectedMetrics, openDappAndTriggerSignature, SignatureType } from './signature-helpers';
 
 describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this: Suite) {
   it('displays alert for domain binding and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
       async ({ driver }: TestSuiteArguments) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#siweBadDomain');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await openDappAndTriggerSignature(driver, SignatureType.SIWE);
 
         await verifyAlertIsDisplayed(driver);
 
@@ -43,10 +41,7 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#siweBadDomain');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await openDappAndTriggerSignature(driver, SignatureType.SIWE);
 
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
