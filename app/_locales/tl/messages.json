@@ -4334,9 +4334,6 @@
   "restoreUserData": {
     "message": "Ibalik ang data ng user"
   },
-  "restoreUserDataDescription": {
-    "message": "Maaari mong ibalik ang mga setting ng user na naglalaman ng mga kagustuhan at mga address ng account mula sa isang dating na-back up na file na JSON."
-  },
   "resultPageError": {
     "message": "Error"
   },

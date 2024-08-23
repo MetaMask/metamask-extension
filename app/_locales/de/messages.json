@@ -4334,9 +4334,6 @@
   "restoreUserData": {
     "message": "Benutzerdaten wiederherstellen"
   },
-  "restoreUserDataDescription": {
-    "message": "Sie können Daten wie Kontakte und Einstellungen aus einer Sicherungsdatei wiederherstellen."
-  },
   "resultPageError": {
     "message": "Fehler"
   },

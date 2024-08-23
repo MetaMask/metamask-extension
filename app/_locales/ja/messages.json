@@ -4334,9 +4334,6 @@
   "restoreUserData": {
     "message": "ユーザーデータの復元"
   },
-  "restoreUserDataDescription": {
-    "message": "以前バックアップされたJSONファイルから、設定とアカウントアドレスを含むユーザー設定を復元できます。"
-  },
   "resultPageError": {
     "message": "エラー"
   },

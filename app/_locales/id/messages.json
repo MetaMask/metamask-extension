@@ -4334,9 +4334,6 @@
   "restoreUserData": {
     "message": "Pulihkan data pengguna"
   },
-  "restoreUserDataDescription": {
-    "message": "Anda dapat memulihkan data seperti kontak dan preferensi dari file cadangan."
-  },
   "resultPageError": {
     "message": "Kesalahan"
   },

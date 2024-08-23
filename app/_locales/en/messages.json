@@ -4407,9 +4407,6 @@
   "restoreUserData": {
     "message": "Restore user data"
   },
-  "restoreUserDataDescription": {
-    "message": "You can restore data like contacts and preferences from a backup file."
-  },
   "resultPageError": {
     "message": "Error"
   },

@@ -4334,9 +4334,6 @@
   "restoreUserData": {
     "message": "사용자 데이터 복구"
   },
-  "restoreUserDataDescription": {
-    "message": "이전에 백업한 JSON 파일에서 기본 설정과 계정 주소가 포함된 사용자 설정을 복구할 수 있습니다."
-  },
   "resultPageError": {
     "message": "오류"
   },

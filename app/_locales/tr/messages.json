@@ -4334,9 +4334,6 @@
   "restoreUserData": {
     "message": "Kullanıcı verilerini geri yükle"
   },
-  "restoreUserDataDescription": {
-    "message": "Kişiler ve tercihler gibi verileri yedek bir dosyadan geri yükleyebilirsiniz."
-  },
   "resultPageError": {
     "message": "Hata"
   },

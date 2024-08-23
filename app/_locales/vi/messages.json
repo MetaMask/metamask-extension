@@ -4334,9 +4334,6 @@
   "restoreUserData": {
     "message": "Khôi phục dữ liệu người dùng"
   },
-  "restoreUserDataDescription": {
-    "message": "Bạn có thể khôi phục các dữ liệu như địa chỉ liên hệ và tùy chọn từ tập tin sao lưu."
-  },
   "resultPageError": {
     "message": "Lỗi"
   },

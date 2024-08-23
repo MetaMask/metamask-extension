@@ -4334,9 +4334,6 @@
   "restoreUserData": {
     "message": "Restaurar dados do usuário"
   },
-  "restoreUserDataDescription": {
-    "message": "Você pode restaurar dados como contatos e preferências a partir de um arquivo de backup."
-  },
   "resultPageError": {
     "message": "Erro"
   },

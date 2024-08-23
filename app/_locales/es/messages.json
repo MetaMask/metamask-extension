@@ -4331,9 +4331,6 @@
   "restoreUserData": {
     "message": "Restaure sus datos de usuario"
   },
-  "restoreUserDataDescription": {
-    "message": "Puede restaurar datos tal y como contactos y preferencias desde un archivo de copia de seguridad."
-  },
   "resultPageError": {
     "message": "Error"
   },

@@ -4334,9 +4334,6 @@
   "restoreUserData": {
     "message": "यूज़र डेटा रीस्टोर करें"
   },
-  "restoreUserDataDescription": {
-    "message": "एक बैकअप फाइल की मदद से आप अपने डेटा, जैसे कि अपने कॉन्टेक्ट्स और अपनी प्रेफेरेंस, को रिस्टोर कर सकते हैं।"
-  },
   "resultPageError": {
     "message": "गड़बड़ी"
   },

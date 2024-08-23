@@ -4334,9 +4334,6 @@
   "restoreUserData": {
     "message": "恢复用户数据"
   },
-  "restoreUserDataDescription": {
-    "message": "您可以从备份文件中恢复联系人和首选项等数据。"
-  },
   "resultPageError": {
     "message": "错误"
   },
