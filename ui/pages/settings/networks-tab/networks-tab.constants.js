@@ -4,6 +4,10 @@ import {
   CURRENCY_SYMBOLS,
   CHAIN_IDS,
   NETWORK_TYPES,
+  MAINNET_DISPLAY_NAME,
+  SEPOLIA_DISPLAY_NAME,
+  LINEA_SEPOLIA_DISPLAY_NAME,
+  LINEA_MAINNET_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
 
 const defaultNetworksData = [
@@ -16,9 +20,21 @@ const defaultNetworksData = [
       network: NETWORK_TYPES.MAINNET,
       excludeProjectId: true,
     }),
+    name: MAINNET_DISPLAY_NAME,
     chainId: CHAIN_IDS.MAINNET,
     ticker: CURRENCY_SYMBOLS.ETH,
     blockExplorerUrl: 'https://etherscan.io',
+    rpcUrls: {
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          url: getRpcUrl({
+            network: NETWORK_TYPES.MAINNET,
+            excludeProjectId: true,
+          }),
+        },
+      ],
+    },
   },
   {
     labelKey: NETWORK_TYPES.SEPOLIA,
@@ -30,8 +46,20 @@ const defaultNetworksData = [
       excludeProjectId: true,
     }),
     chainId: CHAIN_IDS.SEPOLIA,
+    name: SEPOLIA_DISPLAY_NAME,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
     blockExplorerUrl: 'https://sepolia.etherscan.io',
+    rpcUrls: {
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          url: getRpcUrl({
+            network: NETWORK_TYPES.SEPOLIA,
+            excludeProjectId: true,
+          }),
+        },
+      ],
+    },
   },
   {
     labelKey: NETWORK_TYPES.LINEA_SEPOLIA,
@@ -42,9 +70,21 @@ const defaultNetworksData = [
       network: NETWORK_TYPES.LINEA_SEPOLIA,
       excludeProjectId: true,
     }),
+    name: LINEA_SEPOLIA_DISPLAY_NAME,
     chainId: CHAIN_IDS.LINEA_SEPOLIA,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
     blockExplorerUrl: 'https://sepolia.lineascan.build',
+    rpcUrls: {
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          url: getRpcUrl({
+            network: NETWORK_TYPES.LINEA_SEPOLIA,
+            excludeProjectId: true,
+          }),
+        },
+      ],
+    },
   },
   {
     labelKey: NETWORK_TYPES.LINEA_MAINNET,
@@ -55,9 +95,21 @@ const defaultNetworksData = [
       network: NETWORK_TYPES.LINEA_MAINNET,
       excludeProjectId: true,
     }),
+    name: LINEA_MAINNET_DISPLAY_NAME,
     chainId: CHAIN_IDS.LINEA_MAINNET,
     ticker: CURRENCY_SYMBOLS.ETH,
     blockExplorerUrl: 'https://lineascan.build',
+    rpcUrls: {
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          url: getRpcUrl({
+            network: NETWORK_TYPES.LINEA_MAINNET,
+            excludeProjectId: true,
+          }),
+        },
+      ],
+    },
   },
 ];
 

@@ -46,7 +46,6 @@ import {
   HelpTextSeverity,
   Text,
 } from '../../../../components/component-library';
-// import { FormTextField } from '../../../../components/component-library/form-text-field/deprecated';
 import {
   AlignItems,
   BackgroundColor,
@@ -118,7 +117,7 @@ export const NetworksForm = ({
 
   // Validate the network name when it changes
   useEffect(() => {
-    const chainIdHex = toHex(chainId);
+    const chainIdHex = chainId ? toHex(chainId) : undefined;
     const expectedName = chainIdHex
       ? NETWORK_TO_NAME_MAP[chainIdHex] ??
         safeChains?.find(
@@ -141,7 +140,7 @@ export const NetworksForm = ({
 
   // Validate the ticker when it changes
   useEffect(() => {
-    const chainIdHex = toHex(chainId);
+    const chainIdHex = chainId ? toHex(chainId) : undefined;
     const expectedSymbol = chainIdHex
       ? safeChains?.find(
           ({ chainId: networkId }) => toHex(networkId) === chainIdHex,
@@ -198,7 +197,7 @@ export const NetworksForm = ({
     }
 
     let rpcError;
-    if (fetchedChainId && fetchedChainId !== toHex(chainId)) {
+    if (fetchedChainId && chainId && fetchedChainId !== toHex(chainId)) {
       rpcError = [
         'endpointReturnedDifferentChainId',
         t('endpointReturnedDifferentChainId', [hexToDecimal(fetchedChainId)]),
@@ -220,9 +219,6 @@ export const NetworksForm = ({
     if (rpcUrl) {
       jsonRpcRequest(templateInfuraRpc(rpcUrl), 'eth_chainId')
         .then((response) => {
-          if (chainId === undefined || chainId === '') {
-            setChainId(hexToDecimal(response));
-          }
           setFetchedChainId(response);
         })
         .catch((err) => {
@@ -241,7 +237,7 @@ export const NetworksForm = ({
 
   const onSubmit = async () => {
     try {
-      const chainIdHex = toHex(chainId);
+      const chainIdHex = chainId ? toHex(chainId) : undefined;
       if (chainIdHex === CHAIN_IDS.GOERLI) {
         dispatch(showDeprecatedNetworkModal());
       } else {
@@ -477,11 +473,13 @@ export const NetworksForm = ({
                 variant={TextVariant.bodySm}
                 color={TextColor.primaryDefault}
                 onClick={() => {
-                  dispatch(
-                    setEditedNetwork({
-                      chainId: toHex(chainId),
-                    }),
-                  );
+                  if (chainId) {
+                    dispatch(
+                      setEditedNetwork({
+                        chainId: toHex(chainId),
+                      }),
+                    );
+                  }
                 }}
               >
                 {t('editNetworkLink')}

@@ -2,6 +2,8 @@ import React from 'react';
 import { fireEvent, renderWithProvider, screen } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { DetectedTokensBanner } from '.';
 
 describe('DetectedTokensBanner', () => {
@@ -17,7 +19,11 @@ describe('DetectedTokensBanner', () => {
   it('should render correctly', () => {
     const store = configureStore({
       ...testData,
-      metamask: { ...testData.metamask, selectedNetworkClientId: 'sepolia' },
+      metamask: {
+        ...testData.metamask,
+        selectedNetworkClientId: 'sepolia',
+        ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
+      },
     });
     const { getByTestId, container } = renderWithProvider(
       <DetectedTokensBanner {...args} />,
@@ -30,7 +36,11 @@ describe('DetectedTokensBanner', () => {
   it('should render number of tokens detected link', () => {
     const store = configureStore({
       ...testData,
-      metamask: { ...testData.metamask, selectedNetworkClientId: 'sepolia' },
+      metamask: {
+        ...testData.metamask,
+        selectedNetworkClientId: 'sepolia',
+        ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
+      },
     });
     renderWithProvider(<DetectedTokensBanner {...args} />, store);
 
