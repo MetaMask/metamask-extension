@@ -54,7 +54,7 @@ const appStateController = {
 const metaMetricsController = new MetaMetricsController({
   segment: createSegmentMock(2, 10000),
   getCurrentChainId: () => '0x1338',
-  onNetworkDidChange: () => {},
+  onNetworkDidChange: jest.fn(),
   preferencesStore: {
     subscribe: jest.fn(),
     getState: jest.fn(() => ({
@@ -137,7 +137,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
   beforeEach(() => {
     trackEventSpy = jest
       .spyOn(MetaMetricsController.prototype, 'trackEvent')
-      .mockImplementation(() => {});
+      .mockImplementation(() => undefined);
   });
   afterEach(() => {
     jest.resetAllMocks();
