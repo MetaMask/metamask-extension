@@ -547,7 +547,7 @@ export default class AdvancedTab extends PureComponent {
     const { t } = this.context;
     return (
       <Box
-        ref={this.settingsRefs[11]}
+        ref={this.settingsRefs[10]}
         className="settings-page__content-row"
         data-testid="advanced-setting-data-backup"
         display={Display.Flex}
@@ -577,7 +577,7 @@ export default class AdvancedTab extends PureComponent {
 
   render() {
     const { warning } = this.props;
-
+    // When adding/removing/editing the order of renders, double-check the order of the settingsRefs. This affects settings-search.js
     return (
       <div className="settings-page__body">
         {warning ? <div className="settings-tab__error">{warning}</div> : null}
