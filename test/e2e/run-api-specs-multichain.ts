@@ -89,10 +89,16 @@ async function main() {
             value: {
               sessionId: '0xdeadbeef',
               sessionScopes: {
-                'eip155:1': {
-                  methods: ['eth_getBalance'],
-                  notifications: ['accountsChanged', 'chainChanged'],
-                  accounts: [],
+                'eip155:1337': {
+                  accounts: [
+                    `eip155:${chainId}:${ACCOUNT_1}`,
+                  ],
+                  methods: [
+                    'eth_sendTransaction',
+                    'eth_getBalance',
+                    'personal_sign',
+                  ],
+                  notifications: [],
                 },
               },
             },
@@ -101,13 +107,13 @@ async function main() {
       ];
 
       const transport = createMultichainDriverTransport(driver);
-      const parsedDoc = transformOpenRPCDocument(
+      const transformedDoc = transformOpenRPCDocument(
         MetaMaskOpenRPCDocument as OpenrpcDocument,
         chainId,
         ACCOUNT_1,
       );
 
-      const server = mockServer(port, parsedDoc);
+      const server = mockServer(port, transformedDoc);
       server.start();
 
       await parseOpenRPCDocument(MetaMaskOpenRPCDocument as never);

@@ -10,14 +10,13 @@ import paramsToObj from '@open-rpc/test-coverage/build/utils/params-to-obj';
 import { Driver } from '../webdriver/driver';
 import { WINDOW_TITLES, switchToOrOpenDapp } from '../helpers';
 import { addToQueue } from './helpers';
+import _ from 'lodash';
 
 type MultichainAuthorizationConfirmationOptions = {
   driver: Driver;
   only?: string[];
 };
-// this rule makes sure that all confirmation requests are rejected.
-// it also validates that the JSON-RPC response is an error with
-// error code 4001 (user rejected request)
+// this rule makes sure that a multichain authorization confirmation dialog is shown and confirmed
 export class MultichainAuthorizationConfirmation implements Rule {
   private driver: Driver;
 
@@ -121,12 +120,12 @@ export class MultichainAuthorizationConfirmation implements Rule {
   validateCall(call: Call) {
     if (call.error) {
       call.valid = false;
-      if (!call.valid) {
-        call.reason = `Expected a result but got error \ncode: ${call.error.code}\n message: ${call.error.message}`;
-      }
+      call.reason = `Expected a result but got error \ncode: ${call.error.code}\n message: ${call.error.message}`;
     } else {
-      // TODO: change this to check if the result matches the expected result
-      call.valid = true;
+      call.valid = _.isEqual(call.result, call.expectedResult);
+      if (!call.valid) {
+        call.reason = `Expected:\n${JSON.stringify(call.expectedResult, null, 4)} but got\n${JSON.stringify(call.result, null, 4)}`;
+      }
     }
     return call;
   }
