@@ -151,6 +151,21 @@ async function assertApproveDetails(driver: Driver) {
     text: 'This site wants permission to withdraw your NFTs',
   });
 
+  await driver.waitForSelector({
+    css: 'p',
+    text: 'Estimated changes',
+  });
+
+  await driver.waitForSelector({
+    css: 'p',
+    text: 'Withdraw',
+  });
+
+  await driver.waitForSelector({
+    css: 'p',
+    text: '#1',
+  });
+
   await toggleAdvancedDetails(driver);
 
   await driver.waitForSelector({

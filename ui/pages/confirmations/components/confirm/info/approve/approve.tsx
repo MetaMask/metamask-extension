@@ -65,7 +65,7 @@ const ApproveStaticSimulation = () => {
       textAlign={TextAlign.Center}
       alignItems={AlignItems.center}
     >
-      {tokenAmount === UNLIMITED_MSG ? t('unlimited') : formattedTokenNum}
+      {tokenAmount === UNLIMITED_MSG ? t('unlimited') : tokenAmount}
     </Text>
   );
 
