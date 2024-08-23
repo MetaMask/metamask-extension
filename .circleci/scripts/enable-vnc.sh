@@ -21,5 +21,5 @@ fi
 
 # Start VNC server
 if ! pgrep x11vnc > /dev/null; then
-  x11vnc -display $DISPLAY -bg -forever -nopw -quiet -listen localhost -xkb -rfbport 5901 -passwd password
+  x11vnc -display "$DISPLAY" -bg -forever -nopw -quiet -listen localhost -xkb -rfbport 5901 -passwd password
 fi
