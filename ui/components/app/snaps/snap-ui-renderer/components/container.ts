@@ -80,6 +80,9 @@ export const container: UIComponentFactory<BoxElement> = ({
       flexDirection: FlexDirection.Column,
       height: BlockSize.Full,
       className: 'snap-ui-renderer__container',
+      style: {
+        overflow: 'auto',
+      },
     },
   };
 };
