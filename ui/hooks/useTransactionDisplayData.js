@@ -293,7 +293,12 @@ export function useTransactionDisplayData(transactionGroup) {
     } else {
       prefix = '-';
     }
-  } else if (type === TransactionType.swapApproval) {
+  } else if (
+    [
+      TransactionType.swapApproval,
+      TransactionType.swapAndSendApproval,
+    ].includes(type)
+  ) {
     category = TransactionGroupCategory.approval;
     title = t('swapApproval', [primaryTransaction.sourceTokenSymbol]);
     subtitle = origin;

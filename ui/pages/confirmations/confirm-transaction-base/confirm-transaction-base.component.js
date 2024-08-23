@@ -1144,7 +1144,7 @@ export default class ConfirmTransactionBase extends Component {
     // but we should replace this with a specific swap+send approval type in a follow up
     const isSwapAndSendTransaction = [
       TransactionType.swapAndSend,
-      TransactionType.swapApproval,
+      TransactionType.swapAndSendApproval,
     ].includes(txData.type);
 
     let functionType;

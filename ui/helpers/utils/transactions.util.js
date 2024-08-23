@@ -152,6 +152,7 @@ export function getTransactionTypeTitle(
     case TransactionType.swapAndSend: {
       return t('swapAndSend');
     }
+    case TransactionType.swapAndSendApproval:
     case TransactionType.swapApproval: {
       return t('swapApproval', [sourceToken]);
     }

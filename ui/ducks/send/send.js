@@ -3033,11 +3033,11 @@ export function signTransaction(history) {
               {
                 requireApproval: true,
                 // TODO: create new type for swap+send approvals; works as stopgap bc swaps doesn't use this type for STXs in `submitSmartTransactionHook` (via `TransactionController`)
-                type: TransactionType.swapApproval,
+                type: TransactionType.swapAndSendApproval,
                 swaps: {
                   hasApproveTx: true,
                   meta: {
-                    type: TransactionType.swapApproval,
+                    type: TransactionType.swapAndSendApproval,
                     sourceTokenSymbol,
                   },
                 },

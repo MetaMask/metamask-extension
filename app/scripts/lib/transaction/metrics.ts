@@ -896,6 +896,7 @@ async function buildEventFragmentProperties({
       TransactionType.swap,
       TransactionType.swapAndSend,
       TransactionType.swapApproval,
+      TransactionType.swapAndSendApproval,
     ].includes(type);
 
   const contractMethodNames = {
