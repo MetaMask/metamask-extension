@@ -121,7 +121,10 @@ async function main() {
         transport,
         reporters: [
           'console-streaming',
-          new HtmlReporter({ autoOpen: !process.env.CI, destination: process.cwd() + "/html-report-multichain" }),
+          new HtmlReporter({
+            autoOpen: !process.env.CI,
+            destination: `${process.cwd()}/html-report-multichain`,
+          }),
         ],
         skip: ['wallet_invokeMethod'],
         rules: [

@@ -7,10 +7,10 @@ import {
   MethodObject,
 } from '@open-rpc/meta-schema';
 import paramsToObj from '@open-rpc/test-coverage/build/utils/params-to-obj';
+import _ from 'lodash';
 import { Driver } from '../webdriver/driver';
 import { WINDOW_TITLES, switchToOrOpenDapp } from '../helpers';
 import { addToQueue } from './helpers';
-import _ from 'lodash';
 
 type MultichainAuthorizationConfirmationOptions = {
   driver: Driver;
@@ -31,7 +31,7 @@ export class MultichainAuthorizationConfirmation implements Rule {
     return 'Multichain Authorization Confirmation Rule';
   }
 
-  async afterRequest(_: unknown, call: Call) {
+  async afterRequest(__: unknown, call: Call) {
     await new Promise((resolve, reject) => {
       addToQueue({
         name: 'afterRequest',
@@ -78,7 +78,7 @@ export class MultichainAuthorizationConfirmation implements Rule {
   }
 
   // get all the confirmation calls to make and expect to pass
-  getCalls(_: unknown, method: MethodObject) {
+  getCalls(__: unknown, method: MethodObject) {
     const calls: Call[] = [];
     const isMethodAllowed = this.only ? this.only.includes(method.name) : true;
     if (isMethodAllowed) {
@@ -124,7 +124,11 @@ export class MultichainAuthorizationConfirmation implements Rule {
     } else {
       call.valid = _.isEqual(call.result, call.expectedResult);
       if (!call.valid) {
-        call.reason = `Expected:\n${JSON.stringify(call.expectedResult, null, 4)} but got\n${JSON.stringify(call.result, null, 4)}`;
+        call.reason = `Expected:\n${JSON.stringify(
+          call.expectedResult,
+          null,
+          4,
+        )} but got\n${JSON.stringify(call.result, null, 4)}`;
       }
     }
     return call;
