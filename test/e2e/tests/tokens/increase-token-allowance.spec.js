@@ -280,7 +280,7 @@ describe('Increase Token Allowance', function () {
       text: `${finalSpendingCap} TST`,
       css: '.mm-box > h6',
     });
-    await driver.clickElement({
+    await driver.clickElementAndWaitForWindowToClose({
       tag: 'button',
       text: 'Approve',
     });
