@@ -1,8 +1,8 @@
-import { ProviderConfig } from '@metamask/network-controller';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { getProviderConfig } from '../metamask/metamask';
+import { mockNetworkState } from '../../../test/stub/networks';
 import {
   getAllBridgeableNetworks,
   getFromChain,
@@ -16,20 +16,10 @@ describe('Bridge selectors', () => {
   describe('getFromChain', () => {
     it('returns the fromChain from the state', () => {
       const state = {
-        metamask: {
-          providerConfig: { chainId: '0x1', type: 'test-id' },
-          networkConfigurations: [{ chainId: '0x1', id: 'test-id' }],
-        },
+        metamask: { ...mockNetworkState({ chainId: '0x1' }) },
       };
-
       const result = getFromChain(state as never);
-      expect(result).toStrictEqual({
-        chainId: '0x1',
-        type: 'test-id',
-      });
-
-      const providerConfig = getProviderConfig(state);
-      expect(result).toStrictEqual(providerConfig);
+      expect(result).toStrictEqual(getProviderConfig(state));
     });
   });
 
@@ -37,7 +27,7 @@ describe('Bridge selectors', () => {
     it('returns the toChain from the state', () => {
       const state = {
         bridge: {
-          toChain: { chainId: '0x1' } as unknown as ProviderConfig,
+          toChain: { chainId: '0x1' } as unknown,
         },
       };
 
@@ -197,11 +187,11 @@ describe('Bridge selectors', () => {
     it('returns false if bridge is not enabled', () => {
       const state = {
         metamask: {
-          providerConfig: { chainId: '0x1' },
+          ...mockNetworkState({ chainId: '0x1' }),
           useExternalServices: true,
           bridgeState: { bridgeFeatureFlags: { extensionSupport: false } },
         },
-        bridge: { toChain: { chainId: '0x38' } as unknown as ProviderConfig },
+        bridge: { toChain: { chainId: '0x38' } as unknown },
       };
 
       const result = getIsBridgeTx(state as never);
@@ -212,7 +202,7 @@ describe('Bridge selectors', () => {
     it('returns false if toChain is null', () => {
       const state = {
         metamask: {
-          providerConfig: { chainId: '0x1' },
+          ...mockNetworkState({ chainId: '0x1' }),
           useExternalServices: true,
           bridgeState: { bridgeFeatureFlags: { extensionSupport: true } },
         },
@@ -227,10 +217,9 @@ describe('Bridge selectors', () => {
     it('returns false if fromChain and toChain have the same chainId', () => {
       const state = {
         metamask: {
-          providerConfig: { chainId: '0x1', id: 'test-id', type: 'rpc' },
+          ...mockNetworkState({ chainId: '0x1' }),
           useExternalServices: true,
           bridgeState: { bridgeFeatureFlags: { extensionSupport: true } },
-          networkConfigurations: [{ chainId: '0x1', id: 'test-id' }],
         },
         bridge: { toChain: { chainId: '0x1' } },
       };
@@ -243,7 +232,7 @@ describe('Bridge selectors', () => {
     it('returns false if useExternalServices is not enabled', () => {
       const state = {
         metamask: {
-          providerConfig: { chainId: '0x1' },
+          ...mockNetworkState({ chainId: '0x1' }),
           useExternalServices: false,
           bridgeState: { bridgeFeatureFlags: { extensionSupport: true } },
         },
@@ -258,10 +247,9 @@ describe('Bridge selectors', () => {
     it('returns true if bridge is enabled and fromChain and toChain have different chainIds', () => {
       const state = {
         metamask: {
-          providerConfig: { chainId: '0x1', id: 'test-id', type: 'rpc' },
+          ...mockNetworkState({ chainId: '0x1' }),
           useExternalServices: true,
           bridgeState: { bridgeFeatureFlags: { extensionSupport: true } },
-          networkConfigurations: [{ chainId: '0x1', id: 'test-id' }],
         },
         bridge: { toChain: { chainId: '0x38' } },
       };

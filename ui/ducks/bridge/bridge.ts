@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ProviderConfig } from '@metamask/network-controller';
 
 import { swapsSlice } from '../swaps/swaps';
+import { RPCDefinition } from '../../../shared/constants/network';
 
 // Only states that are not in swaps slice
 export type BridgeState = {
-  toChain: ProviderConfig | null;
+  toChain: RPCDefinition | null;
 };
 
 const initialState: BridgeState = {
