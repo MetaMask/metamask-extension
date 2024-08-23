@@ -4165,9 +4165,6 @@
   "receive": {
     "message": "Al"
   },
-  "receiveTokensCamelCase": {
-    "message": "Token'leri al"
-  },
   "recommendedGasLabel": {
     "message": "Önerilen"
   },

@@ -4165,9 +4165,6 @@
   "receive": {
     "message": "받기"
   },
-  "receiveTokensCamelCase": {
-    "message": "토큰 받기"
-  },
   "recommendedGasLabel": {
     "message": "권장됨"
   },

@@ -4165,9 +4165,6 @@
   "receive": {
     "message": "Nhận"
   },
-  "receiveTokensCamelCase": {
-    "message": "Nhận token"
-  },
   "recommendedGasLabel": {
     "message": "Được đề xuất"
   },
