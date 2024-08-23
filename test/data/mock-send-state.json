@@ -12,6 +12,8 @@
   "appState": {
     "networkDropdownOpen": false,
     "importNftsModal": { "open": false },
+    "showEditAccountsModalOpen": false,
+    "showEditNetworksModalOpen": false,
     "gasIsLoading": false,
     "isLoading": false,
     "importTokensModalOpen": false,

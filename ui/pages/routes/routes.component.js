@@ -34,6 +34,8 @@ import {
   NetworkListMenu,
   AccountDetails,
   ImportNftsModal,
+  EditAccountsModal,
+  EditNetworksModal,
   ImportTokensModal,
   ToastContainer,
   Toast,
@@ -189,6 +191,10 @@ export default class Routes extends Component {
     accountDetailsAddress: PropTypes.string,
     isImportNftsModalOpen: PropTypes.bool.isRequired,
     hideImportNftsModal: PropTypes.func.isRequired,
+    isEditNetworksModalOpen: PropTypes.bool.isRequired,
+    hideEditNetworksModal: PropTypes.func.isRequired,
+    isEditAccountsModalOpen: PropTypes.bool.isRequired,
+    hideEditAccountsModal: PropTypes.func.isRequired,
     isIpfsModalOpen: PropTypes.bool.isRequired,
     isBasicConfigurationModalOpen: PropTypes.bool.isRequired,
     hideIpfsModal: PropTypes.func.isRequired,
@@ -768,7 +774,7 @@ export default class Routes extends Component {
           />
         ) : null}
 
-        {process.env.CHAIN_PERMISSIONS ?
+        {process.env.CHAIN_PERMISSIONS ? (
           <Toast
             key="switched-network-toast"
             startAdornment={
@@ -781,9 +787,10 @@ export default class Routes extends Component {
             }
             text="app.uniswap.org has been given access to Optimism."
             actionText={this.context.t('editPermissions')}
-            onActionClick={() => console.log('Yo')}
+            onActionClick={() => this.props.history.push(REVIEW_PERMISSIONS)}
             onClose={() => console.log('lo')}
-          /> : null}
+          />
+        ) : null}
       </ToastContainer>
     );
   }
@@ -848,6 +855,10 @@ export default class Routes extends Component {
       location,
       isImportNftsModalOpen,
       hideImportNftsModal,
+      isEditAccountsModalOpen,
+      hideEditAccountsModal,
+      isEditNetworksModalOpen,
+      hideEditNetworksModal,
       isIpfsModalOpen,
       isBasicConfigurationModalOpen,
       hideIpfsModal,
@@ -953,6 +964,13 @@ export default class Routes extends Component {
         {isImportNftsModalOpen ? (
           <ImportNftsModal onClose={() => hideImportNftsModal()} />
         ) : null}
+        {isEditAccountsModalOpen ? (
+          <EditAccountsModal onClose={() => hideEditAccountsModal()} />
+        ) : null}
+        {isEditNetworksModalOpen ? (
+          <EditNetworksModal onClose={() => hideEditNetworksModal()} />
+        ) : null}
+
         {isIpfsModalOpen ? (
           <ToggleIpfsModal onClose={() => hideIpfsModal()} />
         ) : null}

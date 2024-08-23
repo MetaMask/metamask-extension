@@ -29,9 +29,15 @@ import {
 } from '../../../../component-library';
 import { getURLHost } from '../../../../../helpers/utils/util';
 import { ConnectionListTooltip } from '../../permissions-page/connection-list-tooltip/connection-list-tooltip';
+import {
+  showEditAccountsModal,
+  showEditNetworksModal,
+} from '../../../../../store/actions';
+import { useDispatch } from 'react-redux';
 
 export const SiteCell = ({}) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
 
   return (
     <>
@@ -94,6 +100,9 @@ export const SiteCell = ({}) => {
           alignItems={AlignItems.center}
           style={{ flex: '1', alignSelf: 'center' }}
           gap={2}
+          onClick={() => {
+            dispatch(showEditAccountsModal());
+          }}
         >
           <Icon
             display={Display.Flex}
@@ -118,7 +127,7 @@ export const SiteCell = ({}) => {
         className="multichain-connection-list-item"
       >
         <AvatarIcon
-          iconName={IconName.Wallet}
+          iconName={IconName.Data}
           size={AvatarIconSize.Md}
           iconProps={{
             size: IconSize.Sm,
@@ -137,7 +146,7 @@ export const SiteCell = ({}) => {
             textAlign={TextAlign.Left}
             ellipsis
           >
-            {t('accountsPermissionsTitle')}
+            {t('permission_walletSwitchEthereumChain')}
           </Text>
 
           <Box
@@ -163,6 +172,9 @@ export const SiteCell = ({}) => {
           alignItems={AlignItems.center}
           style={{ flex: '1', alignSelf: 'center' }}
           gap={2}
+          onClick={() => {
+            dispatch(showEditNetworksModal());
+          }}
         >
           <Icon
             display={Display.Flex}

@@ -2599,6 +2599,30 @@ export function hideImportNftsModal(): Action {
   };
 }
 
+export function showEditAccountsModal(): Action {
+  return {
+    type: actionConstants.SHOW_EDIT_ACCOUNTS_MODAL_OPEN,
+  };
+}
+
+export function hideEditAccountsModal(): Action {
+  return {
+    type: actionConstants.SHOW_EDIT_ACCOUNTS_MODAL_CLOSE,
+  };
+}
+
+export function hideEditNetworksModal(): Action {
+  return {
+    type: actionConstants.SHOW_EDIT_NETWORKS_MODAL_CLOSE,
+  };
+}
+
+export function showEditNetworksModal(): Action {
+  return {
+    type: actionConstants.SHOW_EDIT_NETWORKS_MODAL_OPEN,
+  };
+}
+
 // TODO: Replace `any` with type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function setConfirmationExchangeRates(value: Record<string, any>) {
