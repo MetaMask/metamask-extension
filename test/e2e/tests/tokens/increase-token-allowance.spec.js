@@ -158,10 +158,7 @@ describe('Increase Token Allowance', function () {
     await transferFromRecipientInputEl.clear();
     await transferFromRecipientInputEl.fill(recipientAccount);
 
-    await driver.clickElement({
-      text: 'Transfer From Tokens',
-      tag: 'button',
-    });
+    await driver.clickElement('#transferFromTokens');
     await driver.delay(2000);
   }
 
