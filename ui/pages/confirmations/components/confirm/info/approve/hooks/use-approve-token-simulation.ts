@@ -43,7 +43,8 @@ export const useApproveTokenSimulation = (transactionMeta: TransactionMeta) => {
   let tokenAmount;
   if (
     !isNFT &&
-    isSpendingCapUnlimited(decimals as string, decodedSpendingCap)
+    decimals !== undefined &&
+    isSpendingCapUnlimited(decimals, decodedSpendingCap)
   ) {
     tokenAmount = UNLIMITED_MSG;
   } else {

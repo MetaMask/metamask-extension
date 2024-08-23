@@ -35,7 +35,7 @@ import {
   useApproveTokenSimulation,
 } from './hooks/use-approve-token-simulation';
 import { useIsNFT } from './hooks/use-is-nft';
-import { useReceivedToken } from './hooks/use-received-token';
+import { TokenWithBalance, useReceivedToken } from './hooks/use-received-token';
 import { DecodedTransactionDataResponse } from '../../../../../../../shared/types/transaction-decode';
 
 const ApproveStaticSimulation = () => {
@@ -102,6 +102,58 @@ const ApproveStaticSimulation = () => {
   );
 };
 
+const SpendingCapGroup = ({
+  receivedToken,
+}: {
+  receivedToken: TokenWithBalance;
+}) => {
+  const t = useI18nContext();
+
+  const transactionMeta = useSelector(
+    currentConfirmationSelector,
+  ) as TransactionMeta;
+
+  const { tokenAmount, formattedTokenNum, value } =
+    useApproveTokenSimulation(transactionMeta);
+
+  const SpendingCapElement = (
+    <ConfirmInfoRowText
+      text={
+        tokenAmount === UNLIMITED_MSG
+          ? `${t('unlimited')} ${receivedToken.symbol}`
+          : `${formattedTokenNum} ${receivedToken.symbol}`
+      }
+      onEditClick={
+        transactionMeta.type === TransactionType.tokenMethodIncreaseAllowance
+          ? () => console.log('TODO on a following ticket')
+          : undefined
+      }
+      editIconClassName="edit-spending-cap"
+    />
+  );
+
+  if (!value) {
+    return null;
+  }
+
+  return (
+    <>
+      <ConfirmInfoRowDivider />
+
+      <ConfirmInfoRow
+        label={t('spendingCap')}
+        tooltip={t('spendingCapTooltipDesc')}
+      >
+        {tokenAmount === UNLIMITED_MSG ? (
+          <Tooltip title={formattedTokenNum}>{SpendingCapElement}</Tooltip>
+        ) : (
+          SpendingCapElement
+        )}
+      </ConfirmInfoRow>
+    </>
+  );
+};
+
 const SpendingCap = () => {
   const t = useI18nContext();
 
@@ -111,8 +163,7 @@ const SpendingCap = () => {
 
   const { receivedToken } = useReceivedToken();
 
-  const { tokenAmount, formattedTokenNum, value, pending } =
-    useApproveTokenSimulation(transactionMeta);
+  const { pending } = useApproveTokenSimulation(transactionMeta);
 
   if (pending) {
     return <Container isLoading />;
@@ -122,49 +173,6 @@ const SpendingCap = () => {
     return null;
   }
 
-  const SpendingCapGroup = ({
-    value,
-  }: {
-    value: DecodedTransactionDataResponse | undefined;
-  }) => {
-    const SpendingCapElement = (
-      <ConfirmInfoRowText
-        text={
-          tokenAmount === UNLIMITED_MSG
-            ? `${t('unlimited')} ${receivedToken.symbol}`
-            : `${formattedTokenNum} ${receivedToken.symbol}`
-        }
-        onEditClick={
-          transactionMeta.type === TransactionType.tokenMethodIncreaseAllowance
-            ? () => console.log('TODO on a following ticket')
-            : undefined
-        }
-        editIconClassName="edit-spending-cap"
-      />
-    );
-
-    if (!value) {
-      return null;
-    }
-
-    return (
-      <>
-        <ConfirmInfoRowDivider />
-
-        <ConfirmInfoRow
-          label={t('spendingCap')}
-          tooltip={t('spendingCapTooltipDesc')}
-        >
-          {tokenAmount === UNLIMITED_MSG ? (
-            <Tooltip title={formattedTokenNum}>{SpendingCapElement}</Tooltip>
-          ) : (
-            SpendingCapElement
-          )}
-        </ConfirmInfoRow>
-      </>
-    );
-  };
-
   return (
     <ConfirmInfoSection>
       <ConfirmInfoRow label={t('accountBalance')}>
@@ -173,7 +181,7 @@ const SpendingCap = () => {
         />
       </ConfirmInfoRow>
 
-      <SpendingCapGroup value={value} />
+      <SpendingCapGroup receivedToken={receivedToken} />
     </ConfirmInfoSection>
   );
 };

@@ -7,7 +7,7 @@ import {
   getSelectedAccount,
 } from '../../../../../../../selectors';
 
-type TokenWithBalance = {
+export type TokenWithBalance = {
   address: string;
   balance: string;
   balanceError: unknown;
