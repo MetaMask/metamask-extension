@@ -125,6 +125,7 @@ async function acknowledgeAlert(driver: Driver) {
 }
 
 async function verifyAlertIsDisplayed(driver: Driver) {
+  await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
   const alert = await driver.findElement('[data-testid="inline-alert"]');
   assert.equal(await alert.getText(), 'Alert');
   await driver.clickElement('[data-testid="inline-alert"]');
