@@ -6705,7 +6705,7 @@
         "tty.isatty": true
       },
       "globals": {
-        "process.argv.includes": true,
+        "process.argv": true,
         "process.env": true,
         "process.platform": true
       }

@@ -1159,7 +1159,7 @@
         "@ethersproject/providers": true,
         "@metamask/ens-controller>@metamask/base-controller": true,
         "@metamask/ens-controller>@metamask/controller-utils": true,
-        "@metamask/utils": true,
+        "@metamask/ens-controller>@metamask/utils": true,
         "punycode": true
       }
     },
@@ -1181,7 +1181,7 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/ens-controller>@metamask/controller-utils>@metamask/utils": true,
+        "@metamask/ens-controller>@metamask/utils": true,
         "@metamask/ethjs>@metamask/ethjs-unit": true,
         "bn.js": true,
         "browserify>buffer": true,
@@ -1189,7 +1189,7 @@
         "eth-ens-namehash": true
       }
     },
-    "@metamask/ens-controller>@metamask/controller-utils>@metamask/utils": {
+    "@metamask/ens-controller>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
