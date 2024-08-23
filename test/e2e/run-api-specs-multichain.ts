@@ -90,9 +90,7 @@ async function main() {
               sessionId: '0xdeadbeef',
               sessionScopes: {
                 'eip155:1337': {
-                  accounts: [
-                    `eip155:${chainId}:${ACCOUNT_1}`,
-                  ],
+                  accounts: [`eip155:${chainId}:${ACCOUNT_1}`],
                   methods: [
                     'eth_sendTransaction',
                     'eth_getBalance',
@@ -123,7 +121,10 @@ async function main() {
         transport,
         reporters: [
           'console-streaming',
-          new HtmlReporter({ autoOpen: !process.env.CI, destination: process.cwd() + "/html-report-multichain" }),
+          new HtmlReporter({
+            autoOpen: !process.env.CI,
+            destination: `${process.cwd()}/html-report-multichain`,
+          }),
         ],
         skip: ['provider_request'],
         rules: [
