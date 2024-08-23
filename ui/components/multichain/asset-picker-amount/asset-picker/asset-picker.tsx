@@ -184,72 +184,80 @@ export function AssetPicker({
         }}
         title={handleAssetPickerTitle()}
       >
-        <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
-          <Box display={Display.Flex}>
-            <BadgeWrapper
-              badge={
-                <AvatarNetwork
-                  size={AvatarNetworkSize.Xs}
-                  name={selectedNetwork?.nickname ?? ''}
-                  src={
-                    selectedNetwork?.rpcPrefs?.imageUrl ??
-                    (selectedNetwork?.chainId &&
-                      CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                        selectedNetwork.chainId
-                      ])
-                  }
-                  backgroundColor={
-                    Object.entries({
-                      [GOERLI_DISPLAY_NAME]: BackgroundColor.goerli,
-                      [SEPOLIA_DISPLAY_NAME]: BackgroundColor.sepolia,
-                    }).find(([tickerSubstring]) =>
-                      selectedNetwork?.ticker?.includes(tickerSubstring),
-                    )?.[1]
-                  }
-                  borderColor={
-                    primaryTokenImage
-                      ? BorderColor.borderMuted
-                      : BorderColor.borderDefault
-                  }
-                />
-              }
-            >
-              <AvatarToken
-                borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
-                src={primaryTokenImage ?? undefined}
-                size={AvatarTokenSize.Md}
-                name={symbol}
-                {...(isNFT && { backgroundColor: BackgroundColor.transparent })}
-              />
-            </BadgeWrapper>
-          </Box>
-
-          <Tooltip
-            disabled={!isSymbolLong}
-            title={symbol}
-            position="bottom"
-            wrapperClassName="mm-box"
-          >
-            <Text
-              className="asset-picker__symbol"
-              variant={TextVariant.bodyMd}
-              color={TextColor.textDefault}
-            >
-              {formattedSymbol}
-            </Text>
-            {isNFT && asset?.tokenId && (
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
+        {asset ? (
+          <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
+            <Box display={Display.Flex}>
+              <BadgeWrapper
+                badge={
+                  <AvatarNetwork
+                    size={AvatarNetworkSize.Xs}
+                    name={selectedNetwork?.nickname ?? ''}
+                    src={
+                      selectedNetwork?.rpcPrefs?.imageUrl ??
+                      (selectedNetwork?.chainId &&
+                        CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                          selectedNetwork.chainId
+                        ])
+                    }
+                    backgroundColor={
+                      Object.entries({
+                        [GOERLI_DISPLAY_NAME]: BackgroundColor.goerli,
+                        [SEPOLIA_DISPLAY_NAME]: BackgroundColor.sepolia,
+                      }).find(([tickerSubstring]) =>
+                        selectedNetwork?.ticker?.includes(tickerSubstring),
+                      )?.[1]
+                    }
+                    borderColor={
+                      primaryTokenImage
+                        ? BorderColor.borderMuted
+                        : BorderColor.borderDefault
+                    }
+                  />
+                }
               >
-                #
-                {String(asset.tokenId).length < ELLIPSIFY_LENGTH
-                  ? asset.tokenId
-                  : ellipsify(String(asset.tokenId), 6, 4)}
+                <AvatarToken
+                  borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
+                  src={primaryTokenImage ?? undefined}
+                  size={AvatarTokenSize.Md}
+                  name={symbol}
+                  {...(isNFT && {
+                    backgroundColor: BackgroundColor.transparent,
+                  })}
+                />
+              </BadgeWrapper>
+            </Box>
+
+            <Tooltip
+              disabled={!isSymbolLong}
+              title={symbol}
+              position="bottom"
+              wrapperClassName="mm-box"
+            >
+              <Text
+                className="asset-picker__symbol"
+                variant={TextVariant.bodyMd}
+                color={TextColor.textDefault}
+              >
+                {formattedSymbol}
               </Text>
-            )}
-          </Tooltip>
-        </Box>
+              {isNFT && asset?.tokenId && (
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
+                  #
+                  {String(asset.tokenId).length < ELLIPSIFY_LENGTH
+                    ? asset.tokenId
+                    : ellipsify(String(asset.tokenId), 6, 4)}
+                </Text>
+              )}
+            </Tooltip>
+          </Box>
+        ) : (
+          <Text className="asset-picker__fallback" variant={TextVariant.bodyMd}>
+            {t('swapSelectToken')}
+          </Text>
+        )}
       </ButtonBase>
     </>
   );

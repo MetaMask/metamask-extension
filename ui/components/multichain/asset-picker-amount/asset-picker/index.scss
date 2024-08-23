@@ -25,4 +25,9 @@
     opacity: 1;
     cursor: not-allowed;
   }
+
+  &__fallback{
+    text-wrap: nowrap;
+    padding-left: 8px;
+  }
 }
