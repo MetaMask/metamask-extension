@@ -1,7 +1,5 @@
 import testCoverage from '@open-rpc/test-coverage';
-import {
-  parseOpenRPCDocument,
-} from '@open-rpc/schema-utils-js';
+import { parseOpenRPCDocument } from '@open-rpc/schema-utils-js';
 import HtmlReporter from '@open-rpc/test-coverage/build/reporters/html-reporter';
 import {
   MultiChainOpenRPCDocument,
@@ -123,22 +121,13 @@ async function main() {
         transport,
         reporters: [
           'console-streaming',
-          new HtmlReporter({ autoOpen: !process.env.CI }),
+          new HtmlReporter({ autoOpen: !process.env.CI, destination: process.cwd() + "/html-report-multichain" }),
         ],
         skip: ['wallet_invokeMethod'],
         rules: [
           new MultichainAuthorizationConfirmation({
             driver,
           }),
-          // new JsonSchemaFakerRule({
-          //   only: [],
-          //   skip: [],
-          //   numCalls: 2,
-          // }),
-          // new ExamplesRule({
-          //   only: [],
-          //   skip: [],
-          // }),
         ],
       });
 
@@ -153,14 +142,5 @@ async function main() {
     },
   );
 }
-process.on('unhandledRejection', (...args) => {
-  console.error('Unhandled Rejection:', args, JSON.stringify(args, null, 4));
-  process.exit(1);
-});
 
-try {
-  main();
-} catch (e: any) {
-  console.log('ERR', e.message);
-  console.log('stack', e.stack);
-}
+main();
