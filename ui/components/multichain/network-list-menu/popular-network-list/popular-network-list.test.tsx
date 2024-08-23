@@ -57,26 +57,36 @@ describe('PopularNetworkList', () => {
       ...defaultProps,
       searchAddNetworkResults: [
         {
+          blockExplorerUrls: [],
           chainId: CHAIN_IDS.MAINNET,
-          nickname: 'Network 1',
-          rpcPrefs: {
-            blockExplorerUrl: 'https://etherscan.com/',
-            imageUrl: 'https://example.com/image1.png',
-          },
-          ticker: 'ETH',
-          rpcUrl: 'https://exampleEth.org/',
+          defaultBlockExplorerUrlIndex: 0,
+          defaultRpcEndpointIndex: 0,
+          name: 'Network 1',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              url: 'https://exampleEth.org/',
+              type: 'custom',
+              networkClientId: 'network1',
+            },
+          ],
         },
         {
+          blockExplorerUrls: [],
           chainId: CHAIN_IDS.BSC_TESTNET,
-          nickname: 'Network 2',
-          rpcPrefs: {
-            blockExplorerUrl: 'https://examplescan.com/',
-            imageUrl: 'https://example.com/image2.png',
-          },
-          ticker: 'TST',
-          rpcUrl: 'https://example.org/',
+          defaultBlockExplorerUrlIndex: 0,
+          defaultRpcEndpointIndex: 0,
+          name: 'Network 2',
+          nativeCurrency: 'TST',
+          rpcEndpoints: [
+            {
+              url: 'https://example.org/',
+              type: 'custom',
+              networkClientId: 'network2',
+            },
+          ],
         },
-      ] as RPCDefinition[],
+      ],
     };
 
     render(<PopularNetworkList {...props} />);
@@ -88,16 +98,21 @@ describe('PopularNetworkList', () => {
       ...defaultProps,
       searchAddNetworkResults: [
         {
+          blockExplorerUrls: [],
           chainId: CHAIN_IDS.BSC_TESTNET,
-          nickname: 'Network 2',
-          rpcPrefs: {
-            blockExplorerUrl: 'https://examplescan.com/',
-            imageUrl: 'https://example.com/image2.png',
-          },
-          ticker: 'TST',
-          rpcUrl: 'https://example.org/',
+          defaultBlockExplorerUrlIndex: 0,
+          defaultRpcEndpointIndex: 0,
+          name: 'Network 2',
+          nativeCurrency: 'TST',
+          rpcEndpoints: [
+            {
+              url: 'https://example.org/',
+              type: 'custom',
+              networkClientId: 'network2',
+            },
+          ],
         },
-      ] as RPCDefinition[],
+      ],
     };
 
     render(<PopularNetworkList {...props} />);
