@@ -10,23 +10,17 @@ set -x
 
 cd "${HOME}/project"
 
-# Required to target the main X display
-export DISPLAY=:1.0
 
 readonly LOCK_FILE="installed.lock"
 if [ ! -f "${LOCK_FILE}" ]; then
   sudo apt update
-  # Install a WM + VNC server
-  # NOTE: `gxmessage` is required for `fbsetbg`
-  sudo apt install -y gxmessage fluxbox tigervnc-standalone-server
+  # Install a VNC server
+  sudo apt install -y x11vnc
 
   touch "${LOCK_FILE}"
 fi
 
 # Start VNC server
-if ! pgrep tigervncserver > /dev/null; then
-  tigervncserver -SecurityTypes none -desktop fluxbox
+if ! pgrep x11vnc > /dev/null; then
+  x11vnc -display $DISPLAY -bg -forever -nopw -quiet -listen localhost -xkb -rfbport 5901 -passwd password
 fi
-
-# Background
-fbsetbg -c "${HOME}/project/app/images/icon-512.png"
