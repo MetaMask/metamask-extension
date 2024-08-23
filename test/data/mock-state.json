@@ -390,8 +390,7 @@
         "rpcEndpoints": [
           {
             "url": "https://testrpc.com",
-            "networkClientId": "mainnet",
-            "type": "custom"
+            "networkClientId": "testNetworkConfigurationId"
           }
         ]
       },
@@ -578,9 +577,9 @@
         "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"
       }
     },
-    "selectedNetworkClientId": "mainnet",
+    "selectedNetworkClientId": "goerli",
     "networksMetadata": {
-      "mainnet": {
+      "goerli": {
         "EIPS": {
           "1559": true
         },
@@ -769,10 +768,10 @@
       }
     },
     "addressBook": {
-      "0x1": {
+      "0x5": {
         "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
           "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
-          "chainId": "0x1",
+          "chainId": "0x5",
           "isEns": false,
           "memo": "",
           "name": "Address Book Account 1"
@@ -795,7 +794,7 @@
     "pinnedAccountList": [],
     "hiddenAccountList": [],
     "advancedGasFee": {
-      "0x1": {
+      "0x5": {
         "maxBaseFee": "75",
         "priorityFee": "2"
       }

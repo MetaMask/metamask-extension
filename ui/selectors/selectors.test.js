@@ -201,9 +201,25 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          selectedNetworkClientId: 'mainnet',
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'testNetworkConfigurationId',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
           switchedNetworkDetails: {
-            networkClientId: 'mainnet',
+            networkClientId: 'testNetworkConfigurationId',
             origin,
           },
         },
@@ -965,7 +981,22 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'testNetworkConfigurationId',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
         },
       };
 
@@ -1201,7 +1232,7 @@ describe('Selectors', () => {
       expect(selectors.getAddressBook(mockState)).toStrictEqual([
         {
           address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-          chainId: '0x1',
+          chainId: '0x5',
           isEns: false,
           memo: '',
           name: 'Address Book Account 1',
