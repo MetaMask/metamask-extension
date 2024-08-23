@@ -1,10 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import {
-  DAPP_HOST_ADDRESS,
-  WINDOW_TITLES,
-} from '../../../helpers';
+import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
   scrollAndConfirmAndAssertConfirm,

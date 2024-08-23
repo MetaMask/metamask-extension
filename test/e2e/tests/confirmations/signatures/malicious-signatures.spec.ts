@@ -8,14 +8,17 @@ import {
   withRedesignConfirmationFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
-import { assertSignatureRejectedMetrics, openDappAndTriggerSignature, SignatureType } from './signature-helpers';
+import {
+  assertSignatureRejectedMetrics,
+  openDappAndTriggerSignature,
+  SignatureType,
+} from './signature-helpers';
 
 describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this: Suite) {
   it('displays alert for domain binding and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
       async ({ driver }: TestSuiteArguments) => {
-
         await openDappAndTriggerSignature(driver, SignatureType.SIWE);
 
         await verifyAlertIsDisplayed(driver);
