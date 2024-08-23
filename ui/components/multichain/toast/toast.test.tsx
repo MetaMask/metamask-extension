@@ -4,8 +4,8 @@ import { fireEvent, render } from '@testing-library/react';
 import { AvatarAccount, AvatarAccountSize } from '../../component-library';
 import { BorderColor } from '../../../helpers/constants/design-system';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
-import { Toast } from '.';
 import { AccountType } from '../connect-accounts-modal/connect-account-modal.types';
+import { Toast } from '.';
 
 const mockInternalAccount = createMockInternalAccount();
 
