@@ -69,15 +69,14 @@ export default function TruncatedDefinitionList({
           {renderButton()}
         </>
       );
-    } else {
-      return (
-        <>
-          {renderDefinitionList(false)}
-          {renderButton()}
-          {renderPopover()}
-        </>
-      );
     }
+    return (
+      <>
+        {renderDefinitionList(false)}
+        {renderButton()}
+        {renderPopover()}
+      </>
+    );
   };
 
   return (
