@@ -483,7 +483,7 @@
     "@open-rpc/meta-schema": "^1.14.6",
     "@open-rpc/mock-server": "^1.7.5",
     "@open-rpc/schema-utils-js": "^2.0.3",
-    "@open-rpc/test-coverage": "^2.2.2",
+    "@open-rpc/test-coverage": "^2.2.4",
     "@playwright/test": "^1.39.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
     "@sentry/cli": "^2.19.4",

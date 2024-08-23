@@ -1,14 +1,12 @@
 import testCoverage from '@open-rpc/test-coverage';
-import {
-  parseOpenRPCDocument,
-  dereferenceDocument,
-} from '@open-rpc/schema-utils-js';
+import { parseOpenRPCDocument } from '@open-rpc/schema-utils-js';
 import HtmlReporter from '@open-rpc/test-coverage/build/reporters/html-reporter';
 import {
   MultiChainOpenRPCDocument,
   MetaMaskOpenRPCDocument,
 } from '@metamask/api-specs';
 
+import { MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
 import { Driver, PAGES } from './webdriver/driver';
 
 import { createMultichainDriverTransport } from './api-specs/helpers';
@@ -22,9 +20,7 @@ import {
   ACCOUNT_1,
 } from './helpers';
 import { MultichainAuthorizationConfirmation } from './api-specs/MultichainAuthorizationConfirmation';
-import { MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
 import transformOpenRPCDocument from './api-specs/transform';
-import { parse } from 'path';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -48,7 +44,7 @@ async function main() {
       // Open Dapp
       await openDapp(driver, undefined, DAPP_URL);
       const doc = await parseOpenRPCDocument(
-        MultiChainOpenRPCDocument as never,
+        MultiChainOpenRPCDocument as OpenrpcDocument,
       );
       const providerAuthorize = doc.methods.find(
         (m) => (m as MethodObject).name === 'provider_authorize',
@@ -117,26 +113,17 @@ async function main() {
       await parseOpenRPCDocument(MetaMaskOpenRPCDocument as never);
 
       const testCoverageResults = await testCoverage({
-        openrpcDocument: doc as any,
+        openrpcDocument: doc,
         transport,
         reporters: [
           'console-streaming',
-          new HtmlReporter({ autoOpen: !process.env.CI }),
+          new HtmlReporter({ autoOpen: !process.env.CI, destination: process.cwd() + "/html-report-multichain" }),
         ],
         skip: ['provider_request'],
         rules: [
           new MultichainAuthorizationConfirmation({
             driver,
           }),
-          // new JsonSchemaFakerRule({
-          //   only: [],
-          //   skip: [],
-          //   numCalls: 2,
-          // }),
-          // new ExamplesRule({
-          //   only: [],
-          //   skip: [],
-          // }),
         ],
       });
 
@@ -151,14 +138,5 @@ async function main() {
     },
   );
 }
-process.on('unhandledRejection', (...args) => {
-  console.error('Unhandled Rejection:', args, JSON.stringify(args, null, 4));
-  process.exit(1);
-});
 
-try {
-  main();
-} catch (e: any) {
-  console.log('ERR', e.message);
-  console.log('stack', e.stack);
-}
+main();

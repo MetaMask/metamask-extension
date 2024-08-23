@@ -57,10 +57,10 @@ export class MultichainAuthorizationConfirmation implements Rule {
             });
             await this.driver.clickElement({ text, tag: 'button' });
 
-            const screenshot_confirm = await this.driver.driver.takeScreenshot();
+            const screenshotConfirm = await this.driver.driver.takeScreenshot();
             call.attachments.push({
               type: 'image',
-              data: `data:image/png;base64,${screenshot_confirm}`,
+              data: `data:image/png;base64,${screenshotConfirm}`,
             });
 
             await this.driver.findClickableElements({
@@ -116,22 +116,6 @@ export class MultichainAuthorizationConfirmation implements Rule {
       }
     }
     return calls;
-  }
-
-  async afterResponse(_: unknown, call: Call) {
-    await new Promise((resolve, reject) => {
-      addToQueue({
-        name: 'afterResponse',
-        resolve,
-        reject,
-        task: async () => {
-          try {
-          } catch (e) {
-            console.log(e);
-          }
-        },
-      });
-    });
   }
 
   validateCall(call: Call) {

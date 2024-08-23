@@ -1,5 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { ErrorObject } from '@open-rpc/meta-schema';
+import { JsonRpcResponse } from 'json-rpc-engine';
+import { JsonRpcFailure } from '@metamask/utils';
 import { Driver } from '../webdriver/driver';
 
 // eslint-disable-next-line @typescript-eslint/no-shadow, @typescript-eslint/no-explicit-any
@@ -105,7 +107,13 @@ export const createMultichainDriverTransport = (driver: Driver) => {
             const EXTENSION_ID = 'famgliladofnadeldnodcgnjhafnbnhj';
             const extensionPort = chrome.runtime.connect(EXTENSION_ID);
 
-            const listener = ({ type, data }: any) => {
+            const listener = ({
+              type,
+              data,
+            }: {
+              type: string;
+              data: JsonRpcResponse<unknown>;
+            }) => {
               if (type !== 'caip-x') {
                 return;
               }
@@ -113,7 +121,7 @@ export const createMultichainDriverTransport = (driver: Driver) => {
                 return;
               }
 
-              if (data.id || data.error) {
+              if (data.id || (data as JsonRpcFailure).error) {
                 window[g] = data;
                 extensionPort.onMessage.removeListener(listener);
               }
