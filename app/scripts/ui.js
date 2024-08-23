@@ -25,6 +25,7 @@ import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import { getErrorHtml } from '../../shared/lib/error-utils';
+import { endTrace, trace } from '../../shared/lib/trace';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -40,10 +41,32 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
 
 let extensionPort;
+let traceContext;
 
 start().catch(log.error);
 
 async function start() {
+  const startTime = performance.now();
+
+  traceContext = trace({
+    name: 'UI Startup',
+    id: 'root',
+    startTime: performance.timeOrigin,
+  });
+
+  trace({
+    name: 'Load Scripts',
+    id: 'root',
+    startTime: performance.timeOrigin,
+    parentContext: traceContext,
+  });
+
+  endTrace({
+    name: 'Load Scripts',
+    id: 'root',
+    timestamp: performance.timeOrigin + startTime,
+  });
+
   // create platform global
   global.platform = new ExtensionPlatform();
 
@@ -75,6 +98,7 @@ async function start() {
           // in later version we might try to improve it by reviving same streams.
           updateUiStreams();
         } else {
+          endTrace({ name: 'Background Connect', id: 'root' });
           initializeUiWithTab(activeTab);
         }
         await loadPhishingWarningPage();
@@ -190,14 +214,28 @@ async function start() {
 
     extensionPort.onMessage.addListener(messageListener);
     extensionPort.onDisconnect.addListener(resetExtensionStreamAndListeners);
+
+    trace({
+      name: 'Background Connect',
+      id: 'root',
+      parentContext: traceContext,
+    });
   } else {
     const messageListener = async (message) => {
       if (message?.data?.method === 'startUISync') {
+        endTrace({ name: 'Background Connect', id: 'root' });
         initializeUiWithTab(activeTab);
         extensionPort.onMessage.removeListener(messageListener);
       }
     };
+
     extensionPort.onMessage.addListener(messageListener);
+
+    trace({
+      name: 'Background Connect',
+      id: 'root',
+      parentContext: traceContext,
+    });
   }
 
   function initializeUiWithTab(tab) {
@@ -289,6 +327,7 @@ function initializeUi(activeTab, connectionStream, cb) {
         activeTab,
         container,
         backgroundConnection,
+        traceContext,
       },
       cb,
     );

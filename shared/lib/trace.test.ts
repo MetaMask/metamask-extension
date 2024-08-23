@@ -28,12 +28,6 @@ const DATA_MOCK = {
   data3: 123,
 };
 
-function mockGetMetaMetricsEnabled(enabled: boolean) {
-  global.sentry = {
-    getMetaMetricsEnabled: () => Promise.resolve(enabled),
-  };
-}
-
 describe('Trace', () => {
   const startSpanMock = jest.mocked(startSpan);
   const startSpanManualMock = jest.mocked(startSpanManual);
@@ -52,53 +46,30 @@ describe('Trace', () => {
   });
 
   describe('trace', () => {
-    // @ts-expect-error This function is missing from the Mocha type definitions
-    it.each([
-      ['enabled', true],
-      ['disabled', false],
-    ])(
-      'executes callback if Sentry is %s',
-      async (_: string, sentryEnabled: boolean) => {
-        let callbackExecuted = false;
+    it('executes callback', () => {
+      let callbackExecuted = false;
 
-        mockGetMetaMetricsEnabled(sentryEnabled);
+      trace({ name: NAME_MOCK }, () => {
+        callbackExecuted = true;
+      });
 
-        await trace({ name: NAME_MOCK }, async () => {
-          callbackExecuted = true;
-        });
+      expect(callbackExecuted).toBe(true);
+    });
 
-        expect(callbackExecuted).toBe(true);
-      },
-    );
+    it('returns value from callback', () => {
+      const result = trace({ name: NAME_MOCK }, () => true);
+      expect(result).toBe(true);
+    });
 
-    // @ts-expect-error This function is missing from the Mocha type definitions
-    it.each([
-      ['enabled', true],
-      ['disabled', false],
-    ])(
-      'returns value from callback if Sentry is %s',
-      async (_: string, sentryEnabled: boolean) => {
-        mockGetMetaMetricsEnabled(sentryEnabled);
-
-        const result = await trace({ name: NAME_MOCK }, async () => {
-          return true;
-        });
-
-        expect(result).toBe(true);
-      },
-    );
-
-    it('invokes Sentry if callback provided and metrics enabled', async () => {
-      mockGetMetaMetricsEnabled(true);
-
-      await trace(
+    it('invokes Sentry if callback provided', () => {
+      trace(
         {
           name: NAME_MOCK,
           tags: TAGS_MOCK,
           data: DATA_MOCK,
           parentContext: PARENT_CONTEXT_MOCK,
         },
-        async () => Promise.resolve(),
+        () => true,
       );
 
       expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
@@ -117,10 +88,8 @@ describe('Trace', () => {
       expect(setTagsMock).toHaveBeenCalledWith(TAGS_MOCK);
     });
 
-    it('invokes Sentry if no callback provided and metrics enabled', async () => {
-      mockGetMetaMetricsEnabled(true);
-
-      await trace({
+    it('invokes Sentry if no callback provided', () => {
+      trace({
         id: ID_MOCK,
         name: NAME_MOCK,
         tags: TAGS_MOCK,
@@ -144,10 +113,8 @@ describe('Trace', () => {
       expect(setTagsMock).toHaveBeenCalledWith(TAGS_MOCK);
     });
 
-    it('does not invoke Sentry if no callback provided and no ID', async () => {
-      mockGetMetaMetricsEnabled(true);
-
-      await trace({
+    it('does not invoke Sentry if no callback provided and no ID', () => {
+      trace({
         name: NAME_MOCK,
         tags: TAGS_MOCK,
         data: DATA_MOCK,
@@ -161,7 +128,7 @@ describe('Trace', () => {
   });
 
   describe('endTrace', () => {
-    it('ends Sentry span matching name and ID', async () => {
+    it('ends Sentry span matching name and ID', () => {
       const spanEndMock = jest.fn();
       const spanMock = { end: spanEndMock } as unknown as Span;
 
@@ -171,7 +138,7 @@ describe('Trace', () => {
         }),
       );
 
-      await trace({
+      trace({
         name: NAME_MOCK,
         id: ID_MOCK,
         tags: TAGS_MOCK,
@@ -184,7 +151,7 @@ describe('Trace', () => {
       expect(spanEndMock).toHaveBeenCalledTimes(1);
     });
 
-    it('does not end Sentry span if name and ID does not match', async () => {
+    it('does not end Sentry span if name and ID does not match', () => {
       const spanEndMock = jest.fn();
       const spanMock = { end: spanEndMock } as unknown as Span;
 
@@ -194,7 +161,7 @@ describe('Trace', () => {
         }),
       );
 
-      await trace({
+      trace({
         name: NAME_MOCK,
         id: ID_MOCK,
         tags: TAGS_MOCK,
