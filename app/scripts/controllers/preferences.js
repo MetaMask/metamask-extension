@@ -58,6 +58,7 @@ export default class PreferencesController {
       useRequestQueue: true,
       openSeaEnabled: true, // todo set this to true
       securityAlertsEnabled: true,
+      watchEthereumAccountEnabled: false,
       bitcoinSupportEnabled: false,
       bitcoinTestnetSupportEnabled: false,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -289,6 +290,18 @@ export default class PreferencesController {
     });
   }
   ///: END:ONLY_INCLUDE_IF
+
+  /**
+   * Setter for the `watchEthereumAccountEnabled` property.
+   *
+   * @param {boolean} watchEthereumAccountEnabled - Whether or not the user wants to
+   * enable the "Watch Ethereum account (Beta)" button.
+   */
+  setWatchEthereumAccountEnabled(watchEthereumAccountEnabled) {
+    this.store.updateState({
+      watchEthereumAccountEnabled,
+    });
+  }
 
   /**
    * Setter for the `bitcoinSupportEnabled` property.

@@ -72,6 +72,7 @@ function expectedInternalAccount(
         type: 'HD Key Tree',
       },
       lastSelected: lastSelected ? expect.any(Number) : undefined,
+      importTime: 0,
     },
     options: {},
     methods: ETH_EOA_METHODS,

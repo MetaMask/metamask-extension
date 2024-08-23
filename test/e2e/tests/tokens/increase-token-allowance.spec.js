@@ -104,7 +104,7 @@ describe('Increase Token Allowance', function () {
       tag: 'button',
       text: 'Next',
     });
-    driver.waitForSelector({
+    await driver.waitForSelector({
       css: '.box--display-flex > h6',
       text: `10 TST`,
     });
