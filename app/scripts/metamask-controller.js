@@ -6746,15 +6746,19 @@ export default class MetamaskController extends EventEmitter {
       return { transactionHash: undefined };
     }
     const featureFlags = getFeatureFlagsByChainId(state);
-    return submitSmartTransactionHook({
-      transactionMeta,
-      transactionController: this.txController,
-      smartTransactionsController: this.smartTransactionsController,
-      controllerMessenger: this.controllerMessenger,
-      isSmartTransaction,
-      isHardwareWallet: isHardwareWallet(state),
-      featureFlags,
-    });
+
+    return submitSmartTransactionHook(
+      {
+        transactionMeta,
+        transactionController: this.txController,
+        smartTransactionsController: this.smartTransactionsController,
+        controllerMessenger: this.controllerMessenger,
+        isSmartTransaction,
+        isHardwareWallet: isHardwareWallet(state),
+        featureFlags,
+      },
+      transactionMeta?.approvalTx?.data,
+    );
   }
 
   _getMetaMaskState() {

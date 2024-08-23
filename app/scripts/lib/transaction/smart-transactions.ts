@@ -124,7 +124,7 @@ class SmartTransactionHook {
     this.#txParams = transactionMeta.txParams;
   }
 
-  async submit() {
+  async submit(approvalParams?: TransactionParams) {
     // Will cause TransactionController to publish to the RPC provider as normal.
     const useRegularTransactionSubmit = { transactionHash: undefined };
     if (!this.#isSmartTransaction || this.#isHardwareWallet) {
@@ -138,7 +138,7 @@ class SmartTransactionHook {
     try {
       getFeesResponse = await this.#smartTransactionsController.getFees(
         { ...this.#txParams, chainId: this.#chainId },
-        undefined,
+        approvalParams,
       );
     } catch (error) {
       log.error(
@@ -337,7 +337,8 @@ class SmartTransactionHook {
 
 export const submitSmartTransactionHook = (
   request: SubmitSmartTransactionRequest,
+  approvalParams?: TransactionParams,
 ) => {
   const smartTransactionHook = new SmartTransactionHook(request);
-  return smartTransactionHook.submit();
+  return smartTransactionHook.submit(approvalParams);
 };
