@@ -53,8 +53,8 @@ export class Common {
 
   /**
    * Checks if the current hardfork is greater than or equal to a specified hardfork.
-   * Note: we return true to simplify the logic. This activates all EIPs by default.
-   * @returns {boolean} True if the current hardfork is greater than or equal to the specified hardfork.
+   *
+   * @returns {boolean} We return true by default to simplify the logic.
    */
   gteHardfork() {
     return true;
