@@ -1,7 +1,9 @@
 import React from 'react';
+import { EthAccountType } from '@metamask/keyring-api';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest/rendering';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { ConnectAccountsModalList } from './connect-accounts-modal-list';
 
 const render = () => {
@@ -21,12 +23,20 @@ const render = () => {
         id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         metadata: {
           name: 'Custody Account A',
+          importTime: 1631610000000,
+          lastSelected: 1631610000000,
           keyring: {
             type: 'Custody',
           },
         },
-        type: 'eip155:eoa',
+        methods: ETH_EOA_METHODS,
+        type: EthAccountType.Eoa,
         options: {},
+        name: 'Custody Account A',
+        balance: '0x0',
+        keyring: {
+          type: 'Custody',
+        },
       },
     ],
     selectedAccounts: [],

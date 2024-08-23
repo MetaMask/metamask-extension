@@ -4754,6 +4754,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/accounts-controller@npm:^18.1.0":
+  version: 18.1.0
+  resolution: "@metamask/accounts-controller@npm:18.1.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@metamask/base-controller": "npm:^6.0.3"
+    "@metamask/eth-snap-keyring": "npm:^4.3.1"
+    "@metamask/keyring-api": "npm:^8.1.0"
+    "@metamask/snaps-sdk": "npm:^6.1.1"
+    "@metamask/snaps-utils": "npm:^7.8.1"
+    "@metamask/utils": "npm:^9.1.0"
+    deepmerge: "npm:^4.2.2"
+    ethereum-cryptography: "npm:^2.1.2"
+    immer: "npm:^9.0.6"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/keyring-controller": ^17.0.0
+    "@metamask/snaps-controllers": ^9.3.0
+  checksum: 10/31885a06f394a36e90a941ab15ed96fae8a39f2c650ce7523489114af0df1acf522bb8b5275e5e572354cdb42b286be805c336718b721105a2888c8be695c616
+  languageName: node
+  linkType: hard
+
 "@metamask/address-book-controller@npm:^4.0.1":
   version: 4.0.1
   resolution: "@metamask/address-book-controller@npm:4.0.1"
@@ -5618,19 +5640,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/keyring-api@npm:8.0.0"
+"@metamask/keyring-api@npm:^8.0.0, @metamask/keyring-api@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "@metamask/keyring-api@npm:8.1.0"
   dependencies:
-    "@metamask/snaps-sdk": "npm:^4.2.0"
-    "@metamask/utils": "npm:^8.4.0"
+    "@metamask/snaps-sdk": "npm:^6.1.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^9.1.0"
     "@types/uuid": "npm:^9.0.8"
     bech32: "npm:^2.0.0"
-    superstruct: "npm:^1.0.3"
     uuid: "npm:^9.0.1"
   peerDependencies:
     "@metamask/providers": ">=15 <18"
-  checksum: 10/0c8546a4e980c70a7d4a6dcc470fa4968ca36d3e05f8fa8974e980c2b02616ada8ed416aa49f2801f883c08455453b2386d393e3b41c853d2dd45c226f8c360f
+  checksum: 10/15711ddaa0007794cc23f9c02f6cfbee85aa1cf79a46468a0398404c295eef1511555ce6bd60a691081d33864d288ea8b309ee9ac9c4d6f277ab22e4d97cb76e
   languageName: node
   linkType: hard
 
@@ -26518,7 +26540,7 @@ __metadata:
     "@metamask-institutional/types": "npm:^1.1.0"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/account-watcher": "npm:^4.1.0"
-    "@metamask/accounts-controller": "npm:^17.2.0"
+    "@metamask/accounts-controller": "npm:^18.1.0"
     "@metamask/address-book-controller": "npm:^4.0.1"
     "@metamask/announcement-controller": "npm:^6.1.0"
     "@metamask/api-specs": "npm:^0.9.3"
