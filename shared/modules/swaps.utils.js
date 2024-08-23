@@ -22,7 +22,7 @@ export function isSwapsDefaultTokenAddress(address, chainId) {
  *
  * @param {string} symbol - The string to compare to the default token symbol
  * @param {string} chainId - The hex encoded chain ID of the default swaps token to check
- * @returns {boolean} Whether the symbl is the provided chain's default token symbol
+ * @returns {boolean} Whether the symbol is the provided chain's default token symbol
  */
 export function isSwapsDefaultTokenSymbol(symbol, chainId) {
   if (!symbol || !chainId) {

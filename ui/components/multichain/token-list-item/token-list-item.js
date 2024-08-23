@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import { zeroAddress } from 'ethereumjs-util';
+import { ellipsify } from '../../../pages/confirmations/send/send.utils';
 import {
   AlignItems,
   BackgroundColor,
@@ -121,7 +122,10 @@ export const TokenListItem = ({
     tokensMarketData?.[address]?.pricePercentChange1d;
 
   const tokenTitle = getTokenTitle();
-  const tokenMainTitleToDisplay = showPercentage ? tokenTitle : tokenSymbol;
+  const tokenSymbolEllipsified = ellipsify(tokenSymbol);
+  const tokenMainTitleToDisplay = showPercentage
+    ? ellipsify(tokenTitle)
+    : tokenSymbolEllipsified;
 
   const stakeableTitle = (
     <Box
@@ -153,7 +157,7 @@ export const TokenListItem = ({
             text: 'Stake',
             // FIXME: This might not be a number for non-EVM accounts
             chain_id: chainId,
-            token_symbol: tokenSymbol,
+            token_symbol: tokenSymbolEllipsified,
           },
         });
       }}
@@ -209,7 +213,7 @@ export const TokenListItem = ({
                 location: 'Home',
                 // FIXME: This might not be a number for non-EVM accounts
                 chain_id: chainId,
-                token_symbol: tokenSymbol,
+                token_symbol: tokenSymbolEllipsified,
               },
             });
           },
@@ -233,7 +237,7 @@ export const TokenListItem = ({
           className="multichain-token-list-item__badge"
         >
           <AvatarToken
-            name={tokenSymbol}
+            name={tokenSymbolEllipsified}
             src={tokenImage}
             borderColor={tokenImage ? undefined : BorderColor.borderDefault}
           />
@@ -341,7 +345,7 @@ export const TokenListItem = ({
                   variant={TextVariant.bodyMd}
                   textAlign={TextAlign.End}
                 >
-                  {primary} {isNativeCurrency ? '' : tokenSymbol}
+                  {primary} {isNativeCurrency ? '' : tokenSymbolEllipsified}
                 </Text>
               </Box>
             ) : (
@@ -367,7 +371,7 @@ export const TokenListItem = ({
                   variant={TextVariant.bodyMd}
                   textAlign={TextAlign.End}
                 >
-                  {primary} {isNativeCurrency ? '' : tokenSymbol}
+                  {primary} {isNativeCurrency ? '' : tokenSymbolEllipsified}
                 </Text>
               </Box>
             )}
@@ -388,7 +392,7 @@ export const TokenListItem = ({
               {t('nativeTokenScamWarningTitle')}
             </ModalHeader>
             <Box marginTop={4} marginBottom={4}>
-              {t('nativeTokenScamWarningDescription', [tokenSymbol])}
+              {t('nativeTokenScamWarningDescription', [tokenSymbolEllipsified])}
             </Box>
             <Box>
               <ButtonSecondary

@@ -366,6 +366,9 @@
   "invalidSeedPhrase": {
     "message": "Недійсна seed-фраза"
   },
+  "invalidSymbolLength": {
+    "message": "Символ повинен містити $1 символів або менше."
+  },
   "jsonFile": {
     "message": "Файл JSON",
     "description": "format for importing an account"
@@ -686,9 +689,6 @@
   },
   "symbol": {
     "message": "Символ"
-  },
-  "symbolBetweenZeroTwelve": {
-    "message": "Символ повинен містити 11 символів або менше."
   },
   "terms": {
     "message": "Умови використання"

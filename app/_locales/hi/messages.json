@@ -2478,6 +2478,9 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "ग़लत निवेश! गुप्त पुनर्प्राप्ति वाक्यांश केस संवेदी है।"
   },
+  "invalidSymbolLength": {
+    "message": "प्रतीक $1 करैक्टर या उससे कम का होना चाहिए।"
+  },
   "ipfsGateway": {
     "message": "IPFS गेटवे"
   },
@@ -5781,9 +5784,6 @@
   },
   "symbol": {
     "message": "प्रतीक"
-  },
-  "symbolBetweenZeroTwelve": {
-    "message": "प्रतीक 11 करैक्टर या उससे कम का होना चाहिए।"
   },
   "tenPercentIncreased": {
     "message": "10% बढ़ोत्तरी"

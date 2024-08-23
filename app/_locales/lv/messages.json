@@ -362,6 +362,9 @@
   "invalidSeedPhrase": {
     "message": "Nederīga atkopšanas frāze"
   },
+  "invalidSymbolLength": {
+    "message": "Simbolā nedrīkst būt vairāk par $1 rakstzīmēm."
+  },
   "jsonFile": {
     "message": "JSON datne",
     "description": "format for importing an account"
@@ -682,9 +685,6 @@
   },
   "symbol": {
     "message": "Simbols"
-  },
-  "symbolBetweenZeroTwelve": {
-    "message": "Simbolā nedrīkst būt vairāk par 11 rakstzīmēm."
   },
   "terms": {
     "message": "Lietošanas noteikumi"

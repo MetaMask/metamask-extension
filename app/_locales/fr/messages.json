@@ -2478,6 +2478,9 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Entrée invalide ! La phrase secrète de récupération est sensible à la casse."
   },
+  "invalidSymbolLength": {
+    "message": "Le symbole doit comporter $1 caractères ou moins."
+  },
   "ipfsGateway": {
     "message": "Passerelle IPFS"
   },
@@ -5781,9 +5784,6 @@
   },
   "symbol": {
     "message": "Symbole"
-  },
-  "symbolBetweenZeroTwelve": {
-    "message": "Le symbole doit comporter 11 caractères ou moins."
   },
   "tenPercentIncreased": {
     "message": "Augmentation de 10 %"

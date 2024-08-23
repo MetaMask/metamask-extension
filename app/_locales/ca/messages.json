@@ -353,6 +353,9 @@
   "invalidSeedPhrase": {
     "message": "Frase de recuperació no vàlida"
   },
+  "invalidSymbolLength": {
+    "message": "El símbol ha de tenir com a mínim $1 caràcters."
+  },
   "jsonFile": {
     "message": "Arxiu JSON",
     "description": "format for importing an account"
@@ -667,9 +670,6 @@
   },
   "symbol": {
     "message": "Símbol"
-  },
-  "symbolBetweenZeroTwelve": {
-    "message": "El símbol ha de tenir com a mínim 11 caràcters."
   },
   "terms": {
     "message": "Condicions d'ús"

@@ -3,6 +3,7 @@ import { encode } from '@metamask/abi-utils';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { Numeric } from '../../../../shared/modules/Numeric';
+import { MAX_SYMBOL_DISPLAY_LENGTH } from '../../../../shared/constants/tokens';
 import {
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
   NFT_TRANSFER_FROM_FUNCTION_SIGNATURE,
@@ -177,10 +178,21 @@ function getAssetTransferData({ sendToken, fromAddress, toAddress, amount }) {
   }
 }
 
+/**
+ * Truncates a given string to a specified length by displaying start and end parts with ellipsis ('...').
+ *  Returns full string if under ELLIPSIFY_LENGTH.
+ *
+ * @param {Token Name or Symbol} text - The input string to be truncated.
+ * @param {number} first - The number of characters to display at the beginning of the string (default is 6).
+ * @param {number} last - The number of characters to display at the end of the string (default is 4).
+ * @returns {string} A truncated version of the input string.
+ */
 function ellipsify(text, first = 6, last = 4) {
   if (!text) {
     return '';
   }
 
-  return `${text.slice(0, first)}...${text.slice(-last)}`;
+  return text.length < MAX_SYMBOL_DISPLAY_LENGTH
+    ? text
+    : `${text.slice(0, first)}...${text.slice(-last)}`;
 }
