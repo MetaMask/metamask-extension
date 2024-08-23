@@ -666,6 +666,7 @@ describe('Sentry errors', function () {
         async ({ driver, ganacheServer, mockedEndpoint }) => {
           await logInWithBalanceValidation(driver, ganacheServer);
 
+          await driver.delay(2000);
           // Trigger error
           await driver.executeScript(
             'window.stateHooks.throwTestBackgroundError()',
@@ -764,6 +765,8 @@ describe('Sentry errors', function () {
         },
         async ({ driver, ganacheServer, mockedEndpoint }) => {
           await logInWithBalanceValidation(driver, ganacheServer);
+
+          await driver.delay(2000);
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');

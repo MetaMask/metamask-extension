@@ -13,10 +13,11 @@ import configureStore from '../store/store';
 import transactions from '../../test/data/transaction-data.json';
 import messages from '../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
-import { CHAIN_IDS } from '../../shared/constants/network';
 import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import { formatDateWithYearContext } from '../helpers/utils/util';
 import { getMessage } from '../helpers/utils/i18n-helper';
+import { mockNetworkState } from '../../test/stub/networks';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import * as i18nhooks from './useI18nContext';
 import * as useTokenFiatAmountHooks from './useTokenFiatAmount';
 import { useTransactionDisplayData } from './useTransactionDisplayData';
@@ -204,7 +205,7 @@ const renderHookWithRouter = (cb, tokenAddress) => {
     metamask: {
       ...mockState.metamask,
       completeOnboarding: true,
-      providerConfig: { chainId: CHAIN_IDS.MAINNET, ticker: 'ETH' },
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       currentCurrency: 'ETH',
       useCurrencyRateCheck: false, // to force getShouldShowFiat to return false
       preferences: {

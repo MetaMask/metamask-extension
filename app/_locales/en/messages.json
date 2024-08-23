@@ -5087,7 +5087,7 @@
     "message": "Snaps connected"
   },
   "snapsNoInsight": {
-    "message": "The snap didn't return any insight"
+    "message": "No insight to show"
   },
   "snapsPrivacyWarningFirstMessage": {
     "message": "You acknowledge that any Snap that you install is a Third Party Service, unless otherwise identified, as defined in the Consensys $1. Your use of Third Party Services is governed by separate terms and conditions set forth by the Third Party Service provider. Consensys does not recommend the use of any Snap by any particular person for any particular reason. You access, rely upon or use the Third Party Service at your own risk. Consensys disclaims all responsibility and liability for any losses on account of your use of Third Party Services.",
