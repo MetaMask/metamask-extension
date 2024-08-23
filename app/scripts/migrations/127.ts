@@ -223,7 +223,7 @@ function transformState(state: Record<string, unknown>) {
       const networkClientIdForOrigin = domains[origin];
       if (networkClientIdForOrigin) {
         const chainIdForOrigin = getChainIdForNetworkClientId(
-          selectedNetworkClientId,
+          networkClientIdForOrigin as string,
         );
         if (chainIdForOrigin && typeof chainIdForOrigin === 'string') {
           chainIds = [chainIdForOrigin];
