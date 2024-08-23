@@ -4,8 +4,7 @@ import { MockedEndpoint } from 'mockttp';
 import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
-  openDapp,
-  unlockWallet,
+  switchToNotificationWindow,
 } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
@@ -21,6 +20,8 @@ import {
   assertSignatureRejectedMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
+  openDappAndTriggerSignature,
+  SignatureType,
 } from './signature-helpers';
 
 describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
@@ -31,10 +32,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#siwe');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await openDappAndTriggerSignature(driver, SignatureType.SIWE);
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
@@ -75,10 +73,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#siwe');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await openDappAndTriggerSignature(driver, SignatureType.SIWE);
 
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',

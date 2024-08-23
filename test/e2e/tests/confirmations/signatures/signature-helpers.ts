@@ -1,10 +1,24 @@
 import { strict as assert } from 'assert';
 import { MockedEndpoint } from 'mockttp';
-import { WINDOW_TITLES, getEventPayloads } from '../../../helpers';
+import {
+  WINDOW_TITLES,
+  getEventPayloads,
+  openDapp,
+  unlockWallet,
+} from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 
 export const WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 export const WALLET_ETH_BALANCE = '25';
+export enum SignatureType {
+  PersonalSign = '#personalSign',
+  Permit = '#signPermit',
+  SignTypedDataV3 = '#signTypedDataV3',
+  SignTypedDataV4 = '#signTypedDataV4',
+  SignTypedData = '#signTypedData',
+  SIWE = '#siwe',
+  SIWE_BadDomain = '#siweBadDomain',
+}
 
 type AssertSignatureMetricsOptions = {
   driver: Driver;
@@ -169,4 +183,14 @@ export async function copyAddressAndPasteWalletAddress(driver: Driver) {
 export async function assertPastedAddress(driver: Driver) {
   const formFieldEl = await driver.findElement('#eip747ContractAddress');
   assert.equal(await formFieldEl.getAttribute('value'), WALLET_ADDRESS);
+}
+
+export async function openDappAndTriggerSignature(
+  driver: Driver,
+  type: string,
+) {
+  await unlockWallet(driver);
+  await openDapp(driver);
+  await driver.clickElement(type);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }
