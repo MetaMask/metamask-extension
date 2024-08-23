@@ -144,20 +144,28 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
 
     if (shouldShowEnableModal) {
       trackEvent({
-        category: MetaMetricsEventCategory.EnableNotifications,
-        event: MetaMetricsEventName.NotificationsEnablingFlowHandled,
+        category: MetaMetricsEventCategory.NotificationInteraction,
+        event: MetaMetricsEventName.NotificationMenuOpened,
         properties: {
           is_profile_syncing_enabled: isProfileSyncingEnabled,
           is_notifications_enabled: isMetamaskNotificationsEnabled,
-          action_type: 'started',
         },
       });
       dispatch(showConfirmTurnOnMetamaskNotifications());
+
       closeMenu();
       return;
     }
 
     // Otherwise we can navigate to the notifications page
+    trackEvent({
+      category: MetaMetricsEventCategory.NotificationInteraction,
+      event: MetaMetricsEventName.NotificationMenuOpened,
+      properties: {
+        is_profile_syncing_enabled: isProfileSyncingEnabled,
+        is_notifications_enabled: isMetamaskNotificationsEnabled,
+      },
+    });
     history.push(NOTIFICATIONS_ROUTE);
     closeMenu();
   };

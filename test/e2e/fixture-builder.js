@@ -87,7 +87,6 @@ function onboardingFixture() {
           smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
-          showTokenAutodetectModal: false,
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
         },
@@ -364,6 +363,19 @@ class FixtureBuilder {
 
   withPermissionController(data) {
     merge(this.fixture.data.PermissionController, data);
+    return this;
+  }
+
+  withBridgeControllerDefaultState() {
+    this.fixture.data.BridgeController = {
+      bridgeState: {
+        bridgeFeatureFlags: {
+          destNetworkAllowlist: [],
+          extensionSupport: false,
+          srcNetworkAllowlist: [],
+        },
+      },
+    };
     return this;
   }
 

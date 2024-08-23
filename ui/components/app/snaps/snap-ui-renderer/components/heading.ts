@@ -1,11 +1,11 @@
-import { Heading } from '@metamask/snaps-sdk';
+import { HeadingElement } from '@metamask/snaps-sdk/jsx';
 import {
   OverflowWrap,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { UIComponentFactory } from './types';
 
-export const heading: UIComponentFactory<Heading> = ({ element }) => ({
+export const heading: UIComponentFactory<HeadingElement> = ({ element }) => ({
   element: 'Text',
   children: element.props.children,
   props: {

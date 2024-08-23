@@ -152,7 +152,6 @@ export const createSwapsMockStore = () => {
       preferences: {
         showFiatInTestnets: true,
         smartTransactionsOptInStatus: true,
-        showTokenAutodetectModal: false,
       },
       transactions: [
         {
@@ -668,12 +667,16 @@ export const createSwapsMockStore = () => {
   };
 };
 
-export const createBridgeMockStore = () => {
+export const createBridgeMockStore = (
+  featureFlagOverrides = {},
+  bridgeSliceOverrides = {},
+) => {
   const swapsStore = createSwapsMockStore();
   return {
     ...swapsStore,
     bridge: {
       toChain: null,
+      ...bridgeSliceOverrides,
     },
     metamask: {
       ...swapsStore.metamask,
@@ -681,6 +684,9 @@ export const createBridgeMockStore = () => {
         ...(swapsStore.metamask.bridgeState ?? {}),
         bridgeFeatureFlags: {
           extensionSupport: false,
+          srcNetworkAllowlist: [],
+          destNetworkAllowlist: [],
+          ...featureFlagOverrides,
         },
       },
     },

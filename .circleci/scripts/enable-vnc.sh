@@ -10,11 +10,10 @@ set -x
 
 cd "${HOME}/project"
 
-
+# Install a VNC server
 readonly LOCK_FILE="installed.lock"
 if [ ! -f "${LOCK_FILE}" ]; then
   sudo apt update
-  # Install a VNC server
   sudo apt install -y x11vnc
 
   touch "${LOCK_FILE}"
