@@ -50,20 +50,17 @@ async function start() {
 
   traceContext = trace({
     name: 'UI Startup',
-    id: 'root',
     startTime: performance.timeOrigin,
   });
 
   trace({
     name: 'Load Scripts',
-    id: 'root',
     startTime: performance.timeOrigin,
     parentContext: traceContext,
   });
 
   endTrace({
     name: 'Load Scripts',
-    id: 'root',
     timestamp: performance.timeOrigin + startTime,
   });
 
@@ -98,7 +95,7 @@ async function start() {
           // in later version we might try to improve it by reviving same streams.
           updateUiStreams();
         } else {
-          endTrace({ name: 'Background Connect', id: 'root' });
+          endTrace({ name: 'Background Connect' });
           initializeUiWithTab(activeTab);
         }
         await loadPhishingWarningPage();
@@ -217,13 +214,12 @@ async function start() {
 
     trace({
       name: 'Background Connect',
-      id: 'root',
       parentContext: traceContext,
     });
   } else {
     const messageListener = async (message) => {
       if (message?.data?.method === 'startUISync') {
-        endTrace({ name: 'Background Connect', id: 'root' });
+        endTrace({ name: 'Background Connect' });
         initializeUiWithTab(activeTab);
         extensionPort.onMessage.removeListener(messageListener);
       }
@@ -233,7 +229,6 @@ async function start() {
 
     trace({
       name: 'Background Connect',
-      id: 'root',
       parentContext: traceContext,
     });
   }

@@ -80,6 +80,7 @@ describe('Trace', () => {
           name: NAME_MOCK,
           parentSpan: PARENT_CONTEXT_MOCK,
           attributes: DATA_MOCK,
+          op: 'custom',
         },
         expect.any(Function),
       );
@@ -105,6 +106,7 @@ describe('Trace', () => {
           name: NAME_MOCK,
           parentSpan: PARENT_CONTEXT_MOCK,
           attributes: DATA_MOCK,
+          op: 'custom',
         },
         expect.any(Function),
       );
@@ -113,22 +115,37 @@ describe('Trace', () => {
       expect(setTagsMock).toHaveBeenCalledWith(TAGS_MOCK);
     });
 
-    it('does not invoke Sentry if no callback provided and no ID', () => {
+    it('invokes Sentry if no callback provided with custom start time', () => {
       trace({
+        id: ID_MOCK,
         name: NAME_MOCK,
         tags: TAGS_MOCK,
         data: DATA_MOCK,
         parentContext: PARENT_CONTEXT_MOCK,
+        startTime: 123,
       });
 
-      expect(withIsolationScopeMock).toHaveBeenCalledTimes(0);
-      expect(startSpanManualMock).toHaveBeenCalledTimes(0);
-      expect(setTagsMock).toHaveBeenCalledTimes(0);
+      expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
+
+      expect(startSpanManualMock).toHaveBeenCalledTimes(1);
+      expect(startSpanManualMock).toHaveBeenCalledWith(
+        {
+          name: NAME_MOCK,
+          parentSpan: PARENT_CONTEXT_MOCK,
+          attributes: DATA_MOCK,
+          op: 'custom',
+          startTime: 123,
+        },
+        expect.any(Function),
+      );
+
+      expect(setTagsMock).toHaveBeenCalledTimes(1);
+      expect(setTagsMock).toHaveBeenCalledWith(TAGS_MOCK);
     });
   });
 
   describe('endTrace', () => {
-    it('ends Sentry span matching name and ID', () => {
+    it('ends Sentry span matching name and specified ID', () => {
       const spanEndMock = jest.fn();
       const spanMock = { end: spanEndMock } as unknown as Span;
 
@@ -149,6 +166,52 @@ describe('Trace', () => {
       endTrace({ name: NAME_MOCK, id: ID_MOCK });
 
       expect(spanEndMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('ends Sentry span matching name and default ID', () => {
+      const spanEndMock = jest.fn();
+      const spanMock = { end: spanEndMock } as unknown as Span;
+
+      startSpanManualMock.mockImplementationOnce((_, fn) =>
+        fn(spanMock, () => {
+          // Intentionally empty
+        }),
+      );
+
+      trace({
+        name: NAME_MOCK,
+        tags: TAGS_MOCK,
+        data: DATA_MOCK,
+        parentContext: PARENT_CONTEXT_MOCK,
+      });
+
+      endTrace({ name: NAME_MOCK });
+
+      expect(spanEndMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('ends Sentry span with custom timestamp', () => {
+      const spanEndMock = jest.fn();
+      const spanMock = { end: spanEndMock } as unknown as Span;
+
+      startSpanManualMock.mockImplementationOnce((_, fn) =>
+        fn(spanMock, () => {
+          // Intentionally empty
+        }),
+      );
+
+      trace({
+        name: NAME_MOCK,
+        id: ID_MOCK,
+        tags: TAGS_MOCK,
+        data: DATA_MOCK,
+        parentContext: PARENT_CONTEXT_MOCK,
+      });
+
+      endTrace({ name: NAME_MOCK, id: ID_MOCK, timestamp: 123 });
+
+      expect(spanEndMock).toHaveBeenCalledTimes(1);
+      expect(spanEndMock).toHaveBeenCalledWith(123);
     });
 
     it('does not end Sentry span if name and ID does not match', () => {

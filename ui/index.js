@@ -63,7 +63,6 @@ export default function launchMetamaskUi(opts, cb) {
 
   trace({
     name: 'Get State',
-    id: 'root',
     parentContext: traceContext,
   });
 
@@ -80,7 +79,7 @@ export default function launchMetamaskUi(opts, cb) {
       return;
     }
 
-    endTrace({ name: 'Get State', id: 'root' });
+    endTrace({ name: 'Get State' });
 
     startApp(metamaskState, backgroundConnection, opts).then((store) => {
       setupStateHooks(store);
@@ -248,7 +247,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     render(<Root store={store} />, opts.container),
   );
 
-  endTrace({ name: 'UI Startup', id: 'root' });
+  endTrace({ name: 'UI Startup' });
 
   return store;
 }

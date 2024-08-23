@@ -5,6 +5,9 @@ import { log as sentryLogger } from '../../app/scripts/lib/setupSentry';
 
 const log = createModuleLogger(sentryLogger, 'trace');
 
+const ID_DEFAULT = 'default';
+const OP_DEFAULT = 'custom';
+
 const tracesByKey: Map<string, PendingTrace> = new Map();
 
 type PendingTrace = {
@@ -27,7 +30,7 @@ export type TraceRequest = {
 };
 
 export type EndTraceRequest = {
-  id: string;
+  id?: string;
   name: string;
   timestamp?: number;
 };
@@ -48,7 +51,8 @@ export function trace<T>(
 }
 
 export function endTrace(request: EndTraceRequest) {
-  const { id, name, timestamp } = request;
+  const { name, timestamp } = request;
+  const id = getTraceId(request);
   const key = getTraceKey(request);
   const pendingTrace = tracesByKey.get(key);
 
@@ -98,13 +102,9 @@ function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
 }
 
 function startTrace(request: TraceRequest): TraceContext {
-  const { id, name, startTime: requestStartTime } = request;
+  const { name, startTime: requestStartTime } = request;
   const startTime = requestStartTime ?? getPerformanceTimestamp();
-
-  if (!id) {
-    log('No trace ID provided', name, request);
-    return undefined;
-  }
+  const id = getTraceId(request);
 
   const callback = (span: Sentry.Span | null) => {
     const end = (timestamp?: number) => {
@@ -135,6 +135,7 @@ function startSpan<T>(
   const spanOptions: StartSpanOptions = {
     attributes,
     name,
+    op: OP_DEFAULT,
     parentSpan,
     startTime,
   };
@@ -146,8 +147,14 @@ function startSpan<T>(
   });
 }
 
+function getTraceId(request: TraceRequest) {
+  return request.id ?? ID_DEFAULT;
+}
+
 function getTraceKey(request: TraceRequest) {
-  const { id, name } = request;
+  const { name } = request;
+  const id = getTraceId(request);
+
   return [name, id].join(':');
 }
 
