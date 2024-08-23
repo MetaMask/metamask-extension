@@ -113,7 +113,7 @@ export function getPermissionBackgroundApiMethods({
       }
     },
 
-    requestAccountsPermissionWithId: async (origin) => {
+    requestAccountsPermissionWithId: (origin) => {
       const { chainId } =
         networkController.getNetworkConfigurationByNetworkClientId(
           networkController.state.selectedNetworkClientId,
