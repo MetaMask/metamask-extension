@@ -112,7 +112,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 127;
+export const version = 128;
 
 /**
  * This migration transforms `eth_accounts` and `permittedChains` permissions into
