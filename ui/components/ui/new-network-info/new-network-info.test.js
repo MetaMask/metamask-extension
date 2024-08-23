@@ -3,6 +3,8 @@ import { waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import nock from 'nock';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { mockNetworkState } from '../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import NewNetworkInfo from './new-network-info';
 
 const fetchWithCache =
@@ -39,12 +41,7 @@ describe('NewNetworkInfo', () => {
   describe('fetch token successfully', () => {
     const state = {
       metamask: {
-        providerConfig: {
-          ticker: 'ETH',
-          nickname: '',
-          chainId: '0x1',
-          type: 'mainnet',
-        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         useExternalServices: true,
         useTokenDetection: false,
         currencyRates: {},
@@ -111,8 +108,6 @@ describe('NewNetworkInfo', () => {
         .get('/tokens/0x3?occurrenceFloor=100&includeNativeAssets=false')
         .reply(200, '{"error":"ChainId 0x3 is not supported"}');
 
-      state.metamask.providerConfig.ticker = null;
-
       const store = configureMockStore()(state);
       const { container, getByTestId } = renderWithProvider(
         <NewNetworkInfo />,
@@ -133,12 +128,8 @@ describe('NewNetworkInfo', () => {
     describe('add token link', () => {
       const newState = {
         metamask: {
-          providerConfig: {
-            ticker: 'ETH',
-            nickname: '',
-            chainId: '0x1',
-            type: 'mainnet',
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
           useExternalServices: true,
           useTokenDetection: true,
           currencyRates: {},
