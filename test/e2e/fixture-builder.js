@@ -146,6 +146,11 @@ class FixtureBuilder {
       onboarding === true ? onboardingFixture() : defaultFixture(inputChainId);
   }
 
+  withAccountTracker(data) {
+    merge(this.fixture.data.AccountTracker, data);
+    return this;
+  }
+
   withAddressBookController(data) {
     merge(
       this.fixture.data.AddressBookController
@@ -163,11 +168,6 @@ class FixtureBuilder {
 
   withAnnouncementController(data) {
     merge(this.fixture.data.AnnouncementController, data);
-    return this;
-  }
-
-  withAccountTracker(data) {
-    merge(this.fixture.data.AccountTracker, data);
     return this;
   }
 
@@ -368,6 +368,19 @@ class FixtureBuilder {
 
   withPermissionController(data) {
     merge(this.fixture.data.PermissionController, data);
+    return this;
+  }
+
+  withBridgeControllerDefaultState() {
+    this.fixture.data.BridgeController = {
+      bridgeState: {
+        bridgeFeatureFlags: {
+          destNetworkAllowlist: [],
+          extensionSupport: false,
+          srcNetworkAllowlist: [],
+        },
+      },
+    };
     return this;
   }
 
