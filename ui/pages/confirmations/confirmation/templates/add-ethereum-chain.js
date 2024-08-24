@@ -48,7 +48,6 @@ const SAFE_CHAIN_LIST_PROVIDER_ERROR = {
   },
 };
 
-
 const MISMATCHED_CHAIN_RECOMMENDATION = {
   id: 'MISMATCHED_CHAIN_RECOMMENDATION',
   severity: Severity.Warning,
