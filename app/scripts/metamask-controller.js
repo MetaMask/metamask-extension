@@ -18,7 +18,7 @@ import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, throttle, memoize, wrap, mergeWith, isArray } from 'lodash';
+import { debounce, throttle, memoize, wrap } from 'lodash';
 import {
   KeyringController,
   keyringBuilderFactory,
@@ -500,106 +500,45 @@ export default class MetamaskController extends EventEmitter {
       name: 'NetworkController',
     });
 
-    let initialNetworkControllerState = {};
-    if (initState.NetworkController) {
-      // initialNetworkControllerState = initState.NetworkController;
+    let initialNetworkControllerState = initState.NetworkController;
+    if (!initialNetworkControllerState) {
+      initialNetworkControllerState = getDefaultNetworkControllerState();
 
-      const defaultState = getDefaultNetworkControllerState();
+      const networks =
+        initialNetworkControllerState.networkConfigurationsByChainId;
 
-      // todo why is this here?
-      initialNetworkControllerState = mergeWith(
-        {},
-        initState.NetworkController,
-        defaultState,
-        (objValue, srcValue, key) => {
-          if (isArray(objValue)) {
-            if (key === 'rpcEndpoints') {
-              const urls = objValue.map((endpoint) => endpoint.url);
-              srcValue.forEach((endpoint) => {
-                if (!urls.includes(endpoint.url)) {
-                  objValue.push(endpoint);
-                }
-              });
-            } else if (key === 'blockExplorerUrls') {
-              srcValue.forEach((url) => {
-                if (!objValue.includes(url)) {
-                  objValue.push(url);
-                }
-              });
-            }
-            return objValue;
-          }
-          return undefined;
-        },
-      );
+      networks[CHAIN_IDS.MAINNET].name = MAINNET_DISPLAY_NAME;
+      delete networks[CHAIN_IDS.GOERLI];
+      delete networks[CHAIN_IDS.LINEA_GOERLI];
+
+      let network;
+      if (process.env.IN_TEST) {
+        network = {
+          chainId: CHAIN_IDS.LOCALHOST,
+          name: 'Localhost 8545',
+          nativeCurrency: 'ETH',
+          blockExplorerUrls: [],
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'networkConfigurationId',
+              url: 'http://localhost:8545',
+              type: 'custom',
+            },
+          ],
+        };
+        networks[CHAIN_IDS.LOCALHOST] = network;
+      } else if (
+        process.env.METAMASK_DEBUG ||
+        process.env.METAMASK_ENVIRONMENT === 'test'
+      ) {
+        network = networks[CHAIN_IDS.SEPOLIA];
+      } else {
+        network = networks[CHAIN_IDS.MAINNET];
+      }
 
       initialNetworkControllerState.selectedNetworkClientId =
-        initState.NetworkController.selectedNetworkClientId ??
-        NetworkType.mainnet;
-
-      initialNetworkControllerState.networkConfigurationsByChainId[
-        CHAIN_IDS.MAINNET
-      ].name = MAINNET_DISPLAY_NAME;
-      delete initialNetworkControllerState.networkConfigurationsByChainId[
-        CHAIN_IDS.GOERLI
-      ];
-      delete initialNetworkControllerState.networkConfigurationsByChainId[
-        CHAIN_IDS.LINEA_GOERLI
-      ];
-
-      console.log('HERE +++++++++++', initialNetworkControllerState);
-    }
-    // TODO: Craft these with new state format
-    //
-    // } else if (process.env.IN_TEST) {
-    //   // todo
-    //   const networkConfig = {
-    //     chainId: CHAIN_IDS.LOCALHOST,
-    //     nickname: 'Localhost 8545',
-    //     rpcPrefs: {},
-    //     rpcUrl: 'http://localhost:8545',
-    //     ticker: 'ETH',
-    //     id: 'networkConfigurationId',
-    //   };
-    //   initialNetworkControllerState = {
-    //     providerConfig: {
-    //       ...networkConfig,
-    //       type: 'rpc',
-    //     },
-    //     networkConfigurations: {
-    //       networkConfigurationId: {
-    //         ...networkConfig,
-    //       },
-    //     },
-    //   };
-    // } else if (
-    //   process.env.METAMASK_DEBUG ||
-    //   process.env.METAMASK_ENVIRONMENT === 'test'
-    // ) {
-    //   // todo
-    //   initialNetworkControllerState = {
-    //     // providerConfig: {
-    //     //   type: NETWORK_TYPES.SEPOLIA,
-    //     //   chainId: CHAIN_IDS.SEPOLIA,
-    //     //   ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
-    //     // },
-    //   };
-    // }
-    else {
-      initialNetworkControllerState = getDefaultNetworkControllerState();
-      console.log(
-        'initialNetworkControllerState *****',
-        initialNetworkControllerState,
-      );
-      initialNetworkControllerState.networkConfigurationsByChainId[
-        CHAIN_IDS.MAINNET
-      ].name = MAINNET_DISPLAY_NAME;
-      delete initialNetworkControllerState.networkConfigurationsByChainId[
-        CHAIN_IDS.GOERLI
-      ];
-      delete initialNetworkControllerState.networkConfigurationsByChainId[
-        CHAIN_IDS.LINEA_GOERLI
-      ];
+        network.rpcEndpoints[network.defaultRpcEndpointIndex].networkClientId;
     }
 
     this.networkController = new NetworkController({
