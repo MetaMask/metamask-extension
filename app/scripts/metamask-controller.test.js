@@ -1311,7 +1311,7 @@ describe('MetaMaskController', () => {
                 );
                 expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
                   'networkClientId',
-                  'mainnet',
+                  'networkConfigurationId1',
                 );
                 resolve();
               });

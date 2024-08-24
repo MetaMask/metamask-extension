@@ -1,6 +1,5 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import React, { memo, useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { Box, Text } from '../../../../../components/component-library';
 import {
   TextAlign,
@@ -8,7 +7,6 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../../selectors';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { getHighestSeverity } from '../../../../../components/app/alert-system/utils';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
@@ -17,6 +15,7 @@ import {
   isPermitSignatureRequest,
   isSIWESignatureRequest,
 } from '../../../utils';
+import { useConfirmContext } from '../../../context/confirm';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const t = useI18nContext();
@@ -102,7 +101,7 @@ const getDescription = (t: IntlFunction, confirmation?: Confirmation) => {
 
 const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { currentConfirmation } = useConfirmContext();
 
   const title = useMemo(
     () => getTitle(t as IntlFunction, currentConfirmation),

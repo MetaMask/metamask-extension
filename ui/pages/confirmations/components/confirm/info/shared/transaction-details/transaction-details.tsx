@@ -14,15 +14,15 @@ import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { selectPaymasterAddress } from '../../../../../../../selectors/account-abstraction';
-import { currentConfirmationSelector } from '../../../../../selectors';
+import { useConfirmContext } from '../../../../../context/confirm';
 import { useFourByte } from '../../hooks/useFourByte';
 
 export const OriginRow = () => {
   const t = useI18nContext();
 
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation } = useConfirmContext() as unknown as {
+    currentConfirmation: TransactionMeta | undefined;
+  };
 
   const origin = currentConfirmation?.origin;
 
@@ -46,9 +46,9 @@ export const OriginRow = () => {
 export const RecipientRow = () => {
   const t = useI18nContext();
 
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation } = useConfirmContext() as unknown as {
+    currentConfirmation: TransactionMeta | undefined;
+  };
 
   if (
     !currentConfirmation?.txParams?.to ||
@@ -71,9 +71,9 @@ export const RecipientRow = () => {
 export const MethodDataRow = () => {
   const t = useI18nContext();
 
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation } = useConfirmContext() as unknown as {
+    currentConfirmation: TransactionMeta;
+  };
 
   const methodData = useFourByte(currentConfirmation);
 
@@ -95,9 +95,9 @@ export const MethodDataRow = () => {
 const PaymasterRow = () => {
   const t = useI18nContext();
 
-  const currentConfirmation = useSelector(currentConfirmationSelector) as
-    | TransactionMeta
-    | undefined;
+  const { currentConfirmation } = useConfirmContext() as unknown as {
+    currentConfirmation: TransactionMeta | undefined;
+  };
 
   const { id: userOperationId } = currentConfirmation ?? {};
   const isUserOperation = Boolean(currentConfirmation?.isUserOperation);

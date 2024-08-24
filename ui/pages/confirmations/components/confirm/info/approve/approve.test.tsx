@@ -1,10 +1,16 @@
-import { waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { waitFor } from '@testing-library/react';
 
-import { getMockApproveConfirmState } from '../../../../../../../test/data/confirmations/helper';
-import mockState from '../../../../../../../test/data/mock-state.json';
+import {
+  getMockApproveConfirmState,
+  getMockConfirmStateForTransaction,
+} from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import ApproveInfo from './approve';
 
@@ -43,17 +49,12 @@ describe('<ApproveInfo />', () => {
   });
 
   it('does not render if required data is not present in the transaction', () => {
-    const state = {
-      ...mockState,
-      confirm: {
-        currentConfirmation: {
-          id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
-          status: 'unapproved',
-          time: new Date().getTime(),
-          type: 'json_request',
-        },
-      },
-    };
+    const state = getMockConfirmStateForTransaction({
+      id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
+      status: TransactionStatus.unapproved,
+      time: new Date().getTime(),
+      type: TransactionType.tokenMethodApprove,
+    });
     const mockStore = configureMockStore(middleware)(state);
     const { container } = renderWithConfirmContextProvider(
       <ApproveInfo />,

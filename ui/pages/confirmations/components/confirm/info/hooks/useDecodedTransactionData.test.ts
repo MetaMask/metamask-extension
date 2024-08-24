@@ -1,4 +1,5 @@
 import { act } from 'react-dom/test-utils';
+import { DefaultRootState } from 'react-redux';
 import {
   TransactionParams,
   TransactionStatus,
