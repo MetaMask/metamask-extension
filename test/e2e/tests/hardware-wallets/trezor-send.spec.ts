@@ -4,8 +4,8 @@ import { Ganache } from '../../seeder/ganache';
 import FixtureBuilder from '../../fixture-builder';
 import {
   defaultGanacheOptions,
+  logInWithBalanceValidation,
   sendTransaction,
-  unlockWallet,
   withFixtures,
 } from '../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
@@ -32,7 +32,7 @@ describe('Trezor Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         );
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver);
 
         await sendTransaction(driver, RECIPIENT, '1');
 
