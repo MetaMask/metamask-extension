@@ -156,6 +156,30 @@ class FixtureBuilder {
     return this;
   }
 
+  withTrezorAddressBookController() {
+    return this.withAddressBookController({
+      addressBook: {
+        "*": {
+          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
+              address: "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+              chainId: "*",
+              isEns: false,
+              memo: "",
+              name: "Account 1",
+          },
+          "0xF68464152d7289D7eA9a2bEC2E0035c45188223c": {
+              address: "0xF68464152d7289D7eA9a2bEC2E0035c45188223c",
+              chainId: "*",
+              isEns: false,
+              memo: "",
+              name: "Trezor 1",
+          }
+        }
+      }
+    })
+  }
+
+
   withAlertController(data) {
     merge(this.fixture.data.AlertController, data);
     return this;
@@ -163,6 +187,11 @@ class FixtureBuilder {
 
   withAnnouncementController(data) {
     merge(this.fixture.data.AnnouncementController, data);
+    return this;
+  }
+
+  withAccountTracker(data) {
+    merge(this.fixture.data.AccountTracker, data);
     return this;
   }
 
@@ -366,19 +395,6 @@ class FixtureBuilder {
     return this;
   }
 
-  withBridgeControllerDefaultState() {
-    this.fixture.data.BridgeController = {
-      bridgeState: {
-        bridgeFeatureFlags: {
-          destNetworkAllowlist: [],
-          extensionSupport: false,
-          srcNetworkAllowlist: [],
-        },
-      },
-    };
-    return this;
-  }
-
   withPermissionControllerConnectedToTestDapp(restrictReturnedAccounts = true) {
     return this.withPermissionController({
       subjects: {
@@ -544,6 +560,36 @@ class FixtureBuilder {
     });
   }
 
+  withPreferencesControllerTrezorIdentities() {
+    return this.withPreferencesController({
+      identities: {
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+          address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          lastSelected: 1665507600000,
+          name: 'Account 1',
+        },
+        '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
+          address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+          lastSelected: 1665507800000,
+          name: 'Trezor 1',
+        },
+      },
+      lostIdentities: {
+        "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
+            "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
+            "name": "Account 1",
+            "lastSelected": 1665507600000
+        },
+        "0xf68464152d7289d7ea9a2bec2e0035c45188223c": {
+            address: "0xf68464152d7289d7ea9a2bec2e0035c45188223c",
+            name: "Trezor 1",
+            lastSelected: 1665507800000
+        }
+      },
+      selectedAddress: "0xf68464152d7289d7ea9a2bec2e0035c45188223c"
+    });
+  }
+
   withPreferencesControllerImportedAccountIdentities() {
     return this.withPreferencesController({
       identities: {
@@ -705,6 +751,117 @@ class FixtureBuilder {
       },
       selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
     });
+  }
+
+  withNameControllerTrezor() {
+    return this.withNameController({
+      "names": {
+        "ethereumAddress": {
+            "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
+                "*": {
+                    "name": "Account 1",
+                    "sourceId": null,
+                    "proposedNames": {},
+                    "origin": "account-identity"
+                }
+            },
+            "0xf68464152d7289d7ea9a2bec2e0035c45188223c": {
+                "*": {
+                    "proposedNames": {},
+                    "name": "Trezor 1",
+                    "sourceId": null,
+                    "origin": "account-identity"
+                }
+            }
+        }
+      }
+    })
+  }
+
+  withTrezorAccountTracker() {
+    return this.withAccountTracker({
+      accounts: {
+        "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
+            address: "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
+            balance: "0x15af1d78b58c40000"
+        },
+        "0xf68464152d7289d7ea9a2bec2e0035c45188223c": {
+            address: "0xf68464152d7289d7ea9a2bec2e0035c45188223c",
+            balance: "0x100000000000000000000"
+        }
+      },
+      currentBlockGasLimit: "0x1c9c380",
+      accountsByChainId: {
+          "0x539": {
+              "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
+                  address: "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
+                  balance: "0x15af1d78b58c40000"
+              },
+              "0xf68464152d7289d7ea9a2bec2e0035c45188223c": {
+                  address: "0xf68464152d7289d7ea9a2bec2e0035c45188223c",
+                  balance: "0x100000000000000000000"
+              }
+          }
+      },
+      currentBlockGasLimitByChainId: {
+          "0x539": "0x1c9c380"
+      }
+    })
+  }
+
+  withAccountsControllerTrezorAccount() {
+    return this.withAccountsController({
+      internalAccounts: {
+        accounts: {
+          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+            id: "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4",
+            address: "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
+            options: {},
+            methods: [
+                "personal_sign",
+                "eth_sign",
+                "eth_signTransaction",
+                "eth_signTypedData_v1",
+                "eth_signTypedData_v3",
+                "eth_signTypedData_v4"
+            ],
+            type: "eip155:eoa",
+            metadata: {
+                name: "Account 1",
+                importTime: 1724486724986,
+                lastSelected: 1665507600000,
+                keyring: {
+                    "type": "HD Key Tree"
+                }
+            }
+        },
+        "221ecb67-0d29-4c04-83b2-dff07c263634": {
+            id: "221ecb67-0d29-4c04-83b2-dff07c263634",
+            address: "0xf68464152d7289d7ea9a2bec2e0035c45188223c",
+            options: {},
+            methods: [
+                "personal_sign",
+                "eth_sign",
+                "eth_signTransaction",
+                "eth_signTypedData_v1",
+                "eth_signTypedData_v3",
+                "eth_signTypedData_v4"
+            ],
+            type: "eip155:eoa",
+            metadata: {
+                name: "Trezor 1",
+                importTime: 1724486729079,
+                keyring: {
+                    type: "Trezor Hardware"
+                },
+                lastSelected: 1724486729083
+            }
+        },
+      },
+      selectedAccount: '221ecb67-0d29-4c04-83b2-dff07c263634',
+
+      }
+    })
   }
 
   withPreferencesControllerNftDetectionEnabled() {

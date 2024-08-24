@@ -12,33 +12,19 @@ import {
 } from '../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
 
-/**
- * Connect Trezor hardware wallet without selecting an account
- *
- * @param driver - Selenium driver
- */
-async function connectTrezor(driver: Driver) {
-  // Open add hardware wallet modal
-  await driver.clickElement('[data-testid="account-menu-icon"]');
-  await driver.clickElement(
-    '[data-testid="multichain-account-menu-popover-action-button"]',
-  );
-  await driver.clickElement({ text: 'Add hardware wallet' });
-  // This delay is needed to mitigate an existing bug in FF
-  // See https://github.com/metamask/metamask-extension/issues/25851
-  await driver.delay(regularDelayMs);
-  // Select Trezor
-  await driver.clickElement('[data-testid="connect-trezor-btn"]');
-  await driver.clickElement({ text: 'Continue' });
-}
-
 const RECIPIENT = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
 describe('Trezor Hardware', function (this: Suite) {
   it('send ETH', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withPreferencesControllerTrezorIdentities()
+          .withNameControllerTrezor()
+          .withTrezorAccountTracker()
+          .withAccountsControllerTrezorAccount()
+          .withTrezorAddressBookController()
+          .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
@@ -55,18 +41,7 @@ describe('Trezor Hardware', function (this: Suite) {
           '0x100000000000000000000',
         );
         await unlockWallet(driver);
-        await connectTrezor(driver);
 
-        // Select first account of first page and unlock
-        await driver.clickElement('.hw-account-list__item__checkbox');
-        await driver.clickElement({ text: 'Unlock' });
-
-        // Ensure balance is loaded before Send to fix race condition
-        await locateAccountBalanceDOM(
-          driver,
-          ganacheServer,
-          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-        );
         await sendTransaction(driver, RECIPIENT, '1');
 
         // Wait for transaction to be confirmed
