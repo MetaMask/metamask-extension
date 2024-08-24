@@ -4,8 +4,6 @@ import { Ganache } from '../../seeder/ganache';
 import FixtureBuilder from '../../fixture-builder';
 import {
   defaultGanacheOptions,
-  locateAccountBalanceDOM,
-  regularDelayMs,
   sendTransaction,
   unlockWallet,
   withFixtures,
@@ -18,13 +16,7 @@ describe('Trezor Hardware', function (this: Suite) {
   it('send ETH', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerTrezorIdentities()
-          .withNameControllerTrezor()
-          .withTrezorAccountTracker()
-          .withAccountsControllerTrezorAccount()
-          .withTrezorAddressBookController()
-          .build(),
+        fixtures: new FixtureBuilder().withTrezorAccount().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
