@@ -1937,7 +1937,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                               class="mm-avatar-account__jazzicon"
                             >
                               <div
-                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(3, 73, 94);"
+                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 58, 0);"
                               >
                                 <svg
                                   height="16"
@@ -1946,25 +1946,25 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                                   y="0"
                                 >
                                   <rect
-                                    fill="#FB184D"
+                                    fill="#18CDF2"
                                     height="16"
-                                    transform="translate(-0.0051164334074633696 -1.2339806806032374) rotate(274.3 8 8)"
+                                    transform="translate(-0.52419675189697 -1.6521420347302493) rotate(328.9 8 8)"
                                     width="16"
                                     x="0"
                                     y="0"
                                   />
                                   <rect
-                                    fill="#1888F2"
+                                    fill="#035E56"
                                     height="16"
-                                    transform="translate(0.3509585668376149 6.879587514330292) rotate(203.5 8 8)"
+                                    transform="translate(-9.149230854416022 5.2962309358743) rotate(176.2 8 8)"
                                     width="16"
                                     x="0"
                                     y="0"
                                   />
                                   <rect
-                                    fill="#FA8900"
+                                    fill="#F26602"
                                     height="16"
-                                    transform="translate(14.410109501783603 5.915067639782006) rotate(192.7 8 8)"
+                                    transform="translate(8.333921009111961 -7.102569861498541) rotate(468.9 8 8)"
                                     width="16"
                                     x="0"
                                     y="0"
@@ -1977,7 +1977,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                             class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
                             data-testid="confirm-info-row-display-name"
                           >
-                            0x8Eeee...73D12
+                            Test Account
                           </p>
                         </div>
                       </div>
