@@ -10,7 +10,6 @@ import semver from 'semver';
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { RpcEndpointType } from '@metamask/network-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
@@ -41,7 +40,6 @@ import {
   POLYGON_ZKEVM_DISPLAY_NAME,
   MOONBEAM_DISPLAY_NAME,
   MOONRIVER_DISPLAY_NAME,
-  infuraProjectId,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -144,6 +142,12 @@ export function getNetworkIdentifier(state) {
   return nickname || rpcUrl || type;
 }
 
+/**
+ * Returns the chain id for the currently selected network.
+ *
+ * @param {object} state
+ * @returns {import('@metamask/utils').Hex}
+ */
 export function getCurrentChainId(state) {
   const { chainId } = getProviderConfig(state);
   return chainId;
@@ -651,67 +655,6 @@ export function getNeverShowSwitchedNetworkMessage(state) {
   return state.metamask.switchedNetworkNeverShowMessage;
 }
 
-export const getNonTestNetworks = createDeepEqualSelector(
-  getNetworkConfigurations,
-  (networkConfigurations = {}) => {
-    return [
-      // Custom networks added by the user
-      ...Object.values(networkConfigurations)
-        .filter(
-          ({ chainId }) =>
-            ![
-              CHAIN_IDS.LOCALHOST,
-              CHAIN_IDS.SEPOLIA,
-              CHAIN_IDS.LINEA_SEPOLIA,
-            ].includes(chainId),
-        )
-        .map((network) => ({
-          ...network,
-          blockExplorerUrl: network.rpcPrefs?.blockExplorerUrl,
-          rpcPrefs: {
-            ...network.rpcPrefs,
-            // Provide an image based on chainID if a network
-            // has been added without an image
-            imageUrl:
-              network?.rpcPrefs?.imageUrl ??
-              CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
-          },
-          removable: ![CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET].includes(
-            network.chainId,
-          ),
-        })),
-    ];
-  },
-);
-
-export const getTestNetworks = createDeepEqualSelector(
-  getNetworkConfigurations,
-  (networkConfigurations = {}) => {
-    return [
-      ...Object.values(networkConfigurations).filter(({ chainId }) =>
-        [CHAIN_IDS.SEPOLIA, CHAIN_IDS.LINEA_SEPOLIA].includes(chainId),
-      ),
-      // Localhosts
-      ...Object.values(networkConfigurations)
-        .filter(({ chainId }) => chainId === CHAIN_IDS.LOCALHOST)
-        .map((network) => ({ ...network, removable: true })),
-    ];
-  },
-);
-
-export const getAllNetworks = createDeepEqualSelector(
-  getNonTestNetworks,
-  getTestNetworks,
-  (nonTestNetworks, testNetworks) => {
-    return [
-      // Mainnet and custom networks
-      ...nonTestNetworks,
-      // Test networks
-      ...testNetworks,
-    ];
-  },
-);
-
 export function getRequestingNetworkInfo(state, chainIds) {
   // If chainIds is undefined, set it to an empty array
   let processedChainIds = chainIds === undefined ? [] : chainIds;
@@ -724,12 +667,11 @@ export function getRequestingNetworkInfo(state, chainIds) {
   // Ensure chainIds is flattened if it contains nested arrays
   const flattenedChainIds = processedChainIds.flat();
 
-  // Get the non-test networks from the state
-  const nonTestNetworks = getNonTestNetworks(state);
-
   // Filter the non-test networks to include only those with chainId in flattenedChainIds
-  return nonTestNetworks.filter((network) =>
-    flattenedChainIds.includes(network.chainId),
+  return Object.values(getNetworkConfigurationsByChainId(state)).filter(
+    (network) =>
+      !TEST_CHAINS.includes(network.chainId) &&
+      flattenedChainIds.includes(network.chainId),
   );
 }
 
@@ -741,15 +683,20 @@ export function getRequestingNetworkInfo(state, chainIds) {
  */
 export function getSwitchedNetworkDetails(state) {
   const { switchedNetworkDetails } = state.metamask;
-  const allNetworks = getAllNetworks(state);
+  const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
   if (switchedNetworkDetails) {
-    const switchedNetwork = allNetworks.find(
-      ({ id }) => switchedNetworkDetails.networkClientId === id,
+    const switchedNetwork = Object.values(networkConfigurations).find(
+      (network) =>
+        network.rpcEndpoints.some(
+          (rpcEndpoint) =>
+            rpcEndpoint.networkClientId ==
+            switchedNetworkDetails.networkClientId,
+        ),
     );
     return {
-      nickname: switchedNetwork?.nickname,
-      imageUrl: switchedNetwork?.rpcPrefs?.imageUrl,
+      nickname: switchedNetwork?.name,
+      imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[switchedNetwork?.chainId],
       origin: switchedNetworkDetails?.origin,
     };
   }
@@ -1810,7 +1757,6 @@ export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
 }
 
 export const getCurrentNetwork = createDeepEqualSelector(
-  getAllNetworks,
   getProviderConfig,
   /**
    * Get the current network configuration.
@@ -1827,43 +1773,43 @@ export const getCurrentNetwork = createDeepEqualSelector(
    *   ticker: string;
    * }} networkConfiguration - Configuration for the current network.
    */
-  (allNetworks, providerConfig) => {
-    console.log('allNetworks -----', allNetworks);
-    console.log('providerConfig -----', providerConfig);
-
-    const filter =
-      providerConfig.type === 'rpc'
-        ? (network) => network.id === providerConfig.id
-        : (network) => network.chainId === providerConfig.chainId;
-    return (
-      allNetworks.find(filter) ?? {
-        chainId: providerConfig.chainId,
-        nickname: providerConfig.nickname,
-        rpcPrefs: providerConfig.rpcPrefs,
-        rpcUrl: providerConfig.rpcUrl,
-        ticker: providerConfig.ticker,
-      }
-    );
+  (providerConfig) => {
+    return {
+      chainId: providerConfig.chainId,
+      nickname: providerConfig.nickname,
+      rpcPrefs: {
+        ...providerConfig.rpcPrefs,
+        imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[providerConfig.chainId],
+      },
+      id: providerConfig.id,
+      // TODO: We could keep providerType, which was previously
+      // only defined on Infura networks. But is anyone still using it?
+      //
+      // TODO: This used to have a top level blockExplorerUrl, even
+      // though the return type doesn't mention it.  but is anyone using it?
+      rpcUrl: providerConfig.rpcUrl,
+      ticker: providerConfig.ticker,
+    };
   },
 );
 
 export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
   getConnectedSitesList,
   getAllDomains,
-  getAllNetworks,
+  getNetworkConfigurationsByChainId,
   getCurrentNetwork,
   (sitesList, domains, networks, currentNetwork) => {
     Object.keys(sitesList).forEach((siteKey) => {
-      const connectedNetwork = networks.find(
-        (network) => network.id === domains[siteKey],
+      const connectedNetwork = Object.values(networks).find((network) =>
+        network.rpcEndpoints.some(
+          (rpcEndpoint) => rpcEndpoint.networkClientId === domains[siteKey],
+        ),
       );
       // For the testnets, if we do not have an image, we will have a fallback string
       sitesList[siteKey].networkIconUrl =
-        connectedNetwork?.rpcPrefs?.imageUrl ||
-        currentNetwork?.rpcPrefs?.imageUrl ||
-        '';
+        CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[connectedNetwork?.chainId] || '';
       sitesList[siteKey].networkName =
-        connectedNetwork?.nickname || currentNetwork?.nickname || '';
+        connectedNetwork?.name || currentNetwork?.nickname || '';
     });
     return sitesList;
   },
@@ -2093,46 +2039,6 @@ export function getNetworksTabSelectedNetworkConfigurationId(state) {
   return state.appState.selectedNetworkConfigurationId;
 }
 
-// TODO: note about this being for backcompat.
-// Prefer getNetworkConfigurationsByChainId
-export function getNetworkConfigurations(state) {
-  const networkConfigurationsByChainId =
-    getNetworkConfigurationsByChainId(state);
-
-  return Object.values(networkConfigurationsByChainId).reduce(
-    (networks, network) => {
-      const { networkClientId, type } =
-        network.rpcEndpoints[network.defaultRpcEndpointIndex];
-
-      // const { networkClientId, type } =
-      //   network.blockExplorerEndpoints[network.defaultRpcEndpointIndex];
-
-      let rpcUrl = network.rpcEndpoints[network.defaultRpcEndpointIndex].url;
-      if (rpcUrl?.endsWith('{infuraProjectId}')) {
-        rpcUrl = rpcUrl.replace('{infuraProjectId}', infuraProjectId);
-      }
-
-      networks[networkClientId] = {
-        id: networkClientId,
-        ticker: network.nativeCurrency,
-        chainId: network.chainId,
-        rpcUrl,
-        blockExplorerUrls: network.blockExplorerUrls,
-        providerType: type === RpcEndpointType.Infura ? networkClientId : 'rpc',
-        ...(network.name && { nickname: network.name }),
-        ...(network.blockExplorerUrl && {
-          rpcPrefs: {
-            blockExplorerUrl:
-              network.blockExplorerUrls[network.defaultRpcEndpointIndex],
-          },
-        }),
-      };
-      return networks;
-    },
-    {},
-  );
-}
-
 /**
  * Returns an object mapping chain IDs to network configurations.
  *
@@ -2140,18 +2046,21 @@ export function getNetworkConfigurations(state) {
  * @returns { import('@metamask/network-controller').NetworkState['networkConfigurationsByChainId']}
  */
 export function getNetworkConfigurationsByChainId(state) {
-  // TODO: Should we template the {infuraProjectId} in the URLs here?
-  // Any place can convert both ways, just a question of which is more convenient
   return state.metamask.networkConfigurationsByChainId;
 }
 
 export const getAllEnabledNetworks = createDeepEqualSelector(
-  getNonTestNetworks,
-  getAllNetworks,
+  getNetworkConfigurationsByChainId,
   getShowTestNetworks,
-  (nonTestNetworks, allNetworks, showTestnetNetworks) => {
-    return showTestnetNetworks ? allNetworks : nonTestNetworks;
-  },
+  (networkConfigurationsByChainId, showTestNetworks) =>
+    Object.entries(networkConfigurationsByChainId).reduce(
+      (acc, [chainId, network]) => {
+        if (showTestNetworks || !TEST_CHAINS.includes(chainId)) {
+          acc[chainId] = network;
+        }
+        return acc;
+      },
+    ),
 );
 
 /**

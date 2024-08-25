@@ -31,7 +31,7 @@ function useConfirmationNetworkInfo() {
     const networkConfiguration = networkConfigurations[chainId];
 
     networkDisplayName =
-      networkConfiguration.name ??
+      networkConfiguration?.name ??
       NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP] ??
       t('privateNetwork');
 
