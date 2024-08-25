@@ -97,7 +97,6 @@ export function getPermittedChainsForSelectedTab(state, activeTab) {
  */
 export function getPermittedAccountsByOrigin(state) {
   const subjects = getPermissionSubjects(state);
-  console.log(subjects, "nidhi")
   return Object.keys(subjects).reduce((acc, subjectKey) => {
     const accounts = getAccountsFromSubject(subjects[subjectKey]);
     if (accounts.length > 0) {
@@ -109,7 +108,6 @@ export function getPermittedAccountsByOrigin(state) {
 
 export function getPermittedChainsByOrigin(state) {
   const subjects = getPermissionSubjects(state);
-  console.log(subjects, 'nidhi');
   return Object.keys(subjects).reduce((acc, subjectKey) => {
     const chains = getChainsFromSubject(subjects[subjectKey]);
     if (chains.length > 0) {
