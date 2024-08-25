@@ -43,9 +43,9 @@ import {
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getAllNetworks,
   getPetnamesEnabled,
   getExternalServicesOnboardingToggleState,
+  getNetworkConfigurationsByChainId,
 } from '../../../selectors';
 import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
 import { selectParticipateInMetaMetrics } from '../../../selectors/metamask-notifications/authentication';
@@ -151,7 +151,7 @@ export default function PrivacySettings() {
   const [turnOnPetnames, setTurnOnPetnames] = useState(petnamesEnabled);
 
   const trackEvent = useContext(MetaMetricsContext);
-  const allNetworks = useSelector(getAllNetworks);
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
@@ -299,7 +299,7 @@ export default function PrivacySettings() {
           />
 
           <IncomingTransactionToggle
-            allNetworks={allNetworks}
+            networkConfigurations={networkConfigurations}
             setIncomingTransactionsPreferences={(chainId, value) =>
               dispatch(setIncomingTransactionsPreferences(chainId, value))
             }
@@ -429,9 +429,11 @@ export default function PrivacySettings() {
                                 {
                                   // Get just the protocol + domain, not the infura key in path
                                   new URL(
-                                    allNetworks.find(
-                                      (network) => network.chainId === chainId,
-                                    )?.rpcUrl,
+                                    networkConfigurations[chainId].rpcEndpoints[
+                                      networkConfigurations[
+                                        chainId
+                                      ].defaultRpcEndpointIndex
+                                    ].url,
                                   )?.origin
                                 }
                               </Text>
