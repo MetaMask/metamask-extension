@@ -164,23 +164,32 @@ function transformState(
     // Calculate the unique set of rpc endpoints
     const rpcEndpoints = networks.reduce(
       (endpoints: RuntimeObject[], network) => {
-        if (
-          network.id &&
-          network.rpcUrl &&
-          !endpoints.some(
-            (endpoint) =>
-              endpoint.url === network.rpcUrl ||
-              endpoint.networkClientId === network.id,
-          )
-        ) {
-          endpoints.push({
-            networkClientId: network.id,
-            url: network.rpcUrl,
-            type: network.type === 'infura' ? 'infura' : 'custom',
-            ...(network.type !== 'infura' &&
-              typeof network.nickname === 'string' &&
-              network.nickname && { name: network.nickname }),
-          });
+        if (network.id && network.rpcUrl) {
+          const dupe = endpoints.find(
+            (endpoint) => endpoint.url === network.rpcUrl,
+          );
+
+          // If there's a duplicated RPC url, and one of the networks is the
+          // globally selected network, prefer to use its network client id
+          // so that `selectedNetworkClientId` can remain unchanged.
+          if (dupe && network.id === networkState.selectedNetworkClientId) {
+            dupe.networkClientId = network.id;
+          } else if (
+            !dupe &&
+            !endpoints.some(
+              (endpoint) => endpoint.networkClientId === network.id,
+            )
+          ) {
+            // The URL and id are not duplicated, so add a new endpoint
+            endpoints.push({
+              networkClientId: network.id,
+              url: network.rpcUrl,
+              type: network.type === 'infura' ? 'infura' : 'custom',
+              ...(network.type !== 'infura' &&
+                typeof network.nickname === 'string' &&
+                network.nickname && { name: network.nickname }),
+            });
+          }
         }
         return endpoints;
       },
@@ -195,6 +204,13 @@ function transformState(
       // Or arbitrarily default to the first endpoint if we don't have a tie breaker
       0,
     );
+
+    // TODO: Check what validations the network controller performs.
+    // I think it enforces:
+    //    - Uniqueness of RPC URLs *across all chains*, not just within a chain like this migration currently guarantees
+    //    - Well formedness of RPC URLs
+    //
+    // If we don't pass all validations, MM will not start up
 
     // Calculate the unique array of non-empty block explorer urls
     const blockExplorerUrls = [
