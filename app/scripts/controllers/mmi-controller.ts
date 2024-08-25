@@ -859,10 +859,13 @@ export default class MMIController extends EventEmitter {
         ];
 
       const { networkClientId } =
-        networkConfiguration.rpcEndpoints[
+        networkConfiguration?.rpcEndpoints?.[
           networkConfiguration.defaultRpcEndpointIndex
-        ];
-      await this.networkController.setActiveNetwork(networkClientId);
+        ] ?? {};
+
+      if (networkClientId) {
+        await this.networkController.setActiveNetwork(networkClientId);
+      }
     }
 
     getPermissionBackgroundApiMethods(
