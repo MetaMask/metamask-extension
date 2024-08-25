@@ -37,6 +37,9 @@ function MultiRpcEditModal({ isOpen, onClose }: MultiRpcEditModalProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+
+  // TODO: getNonTestNetworks is a deprecated selector based on old state.
+  // Should get everything from getNetworkConfigurationsByChainId instead.
   const nonTestNetworks = useSelector(getNonTestNetworks);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
