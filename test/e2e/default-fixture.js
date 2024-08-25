@@ -1,13 +1,12 @@
-const { mockNetworkState } = require('../stub/networks');
+const { mockNetworkStateOld } = require('../stub/networks');
 const { CHAIN_IDS } = require('../../shared/constants/network');
 const { FirstTimeFlowType } = require('../../shared/constants/onboarding');
 
-// TODO: Bumped this because migrations 92-94 mess with the network
-//       controller state, and we want to use the latest schema.
-//       See: https://github.com/MetaMask/metamask-extension/pull/26150#discussion_r1695431277
-//       But it might break things elsewhere. Determine if its easier to
-//       bump this, or specify network state in the old schema.
-const FIXTURE_STATE_METADATA_VERSION = 95;
+// TODO: Should we bump this?
+// The e2e tests currently configure state in the schema of migration 74.
+// This requires us to specify network state in the old schema, so it can run through the migrations.
+// We could bump this to latest, but it breaks other state that would need to be updated too.
+const FIXTURE_STATE_METADATA_VERSION = 74;
 
 const E2E_SRP =
   'spread raise short crane omit tent fringe mandate neglect detail suspect cradle';
@@ -158,7 +157,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         traits: {},
       },
       NetworkController: {
-        ...mockNetworkState({
+        ...mockNetworkStateOld({
           id: 'networkConfigurationId',
           chainId: inputChainId,
           nickname: 'Localhost 8545',
@@ -166,7 +165,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           ticker: 'ETH',
           blockExplorerUrl: undefined,
         }),
-        // providerConfig: { id: 'networkConfigurationId' },
+        providerConfig: { id: 'networkConfigurationId' },
       },
       OnboardingController: {
         completedOnboarding: true,

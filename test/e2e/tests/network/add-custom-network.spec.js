@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const { toHex } = require('@metamask/controller-utils');
-const { mockNetworkState } = require('../../../stub/networks');
+const { mockNetworkStateOld } = require('../../../stub/networks');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   defaultGanacheOptions,
@@ -533,7 +533,7 @@ describe('Custom network', function () {
         {
           fixtures: new FixtureBuilder()
             .withNetworkController({
-              ...mockNetworkState({
+              ...mockNetworkStateOld({
                 rpcUrl: networkURL,
                 chainId: toHex(chainID),
                 nickname: networkNAME,

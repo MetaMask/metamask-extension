@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { mockNetworkState } = require('../../../stub/networks');
+const { mockNetworkStateOld } = require('../../../stub/networks');
 
 const {
   defaultGanacheOptions,
@@ -184,7 +184,7 @@ describe('Custom RPC history', function () {
   });
 
   it('finds all recent RPCs in history', async function () {
-    const networkState = mockNetworkState(
+    const networkState = mockNetworkStateOld(
       {
         rpcUrl: 'http://127.0.0.1:8545/1',
         chainId: '0x539',
@@ -233,7 +233,7 @@ describe('Custom RPC history', function () {
   });
 
   it('deletes a custom RPC', async function () {
-    const networkState = mockNetworkState(
+    const networkState = mockNetworkStateOld(
       {
         rpcUrl: 'http://127.0.0.1:8545/1',
         chainId: '0x539',

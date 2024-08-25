@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { mockNetworkState } = require('../../../stub/networks');
+const { mockNetworkStateOld } = require('../../../stub/networks');
 
 const {
   defaultGanacheOptions,
@@ -15,7 +15,7 @@ describe('Block Explorer', function () {
       {
         fixtures: new FixtureBuilder()
           .withNetworkController(
-            mockNetworkState({
+            mockNetworkStateOld({
               chainId: '0x539',
               nickname: 'Localhost 8545',
               rpcUrl: 'http://localhost:8545',
@@ -61,7 +61,7 @@ describe('Block Explorer', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkController(
-            mockNetworkState({
+            mockNetworkStateOld({
               chainId: '0x539',
               nickname: 'Localhost 8545',
               rpcUrl: 'http://localhost:8545',
@@ -115,7 +115,7 @@ describe('Block Explorer', function () {
       {
         fixtures: new FixtureBuilder()
           .withNetworkController(
-            mockNetworkState({
+            mockNetworkStateOld({
               id: 'localhost-client-id',
               chainId: '0x539',
               nickname: 'Localhost 8545',

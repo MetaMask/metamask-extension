@@ -4,7 +4,7 @@ const {
 } = require('@metamask/snaps-utils');
 const { merge } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
-const { mockNetworkState } = require('../stub/networks');
+const { mockNetworkStateOld } = require('../stub/networks');
 
 const { CHAIN_IDS } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
@@ -40,7 +40,7 @@ function onboardingFixture() {
         },
       },
       NetworkController: {
-        ...mockNetworkState({
+        ...mockNetworkStateOld({
           id: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
@@ -48,7 +48,7 @@ function onboardingFixture() {
           ticker: 'ETH',
           blockExplorerUrl: undefined,
         }),
-        // providerConfig: { id: 'networkConfigurationId' },
+        providerConfig: { id: 'networkConfigurationId' },
       },
       PreferencesController: {
         advancedGasFee: {},
@@ -219,7 +219,7 @@ class FixtureBuilder {
   }
 
   withNetworkControllerDoubleGanache() {
-    const ganacheNetworks = mockNetworkState(
+    const ganacheNetworks = mockNetworkStateOld(
       // {
       //   chainId: CHAIN_IDS.LOCALHOST,
       //   nickname: 'Localhost 8545',
@@ -240,7 +240,7 @@ class FixtureBuilder {
 
   withNetworkControllerTripleGanache() {
     this.withNetworkControllerDoubleGanache();
-    const thirdGanache = mockNetworkState({
+    const thirdGanache = mockNetworkStateOld({
       rpcUrl: 'http://localhost:7777',
       chainId: '0x3e8',
       ticker: 'ETH',
