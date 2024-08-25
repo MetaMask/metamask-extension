@@ -139,6 +139,7 @@ import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/mu
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import NftFullImage from '../../components/app/assets/nfts/nft-details/nft-full-image';
 import CrossChainSwap from '../bridge';
+import { hidePermittedNetworkToast } from '../../store/actions';
 
 const isConfirmTransactionRoute = (pathname) =>
   Boolean(
@@ -192,7 +193,9 @@ export default class Routes extends Component {
     isImportNftsModalOpen: PropTypes.bool.isRequired,
     hideImportNftsModal: PropTypes.func.isRequired,
     isEditNetworksModalOpen: PropTypes.bool.isRequired,
+    isPermittedNetworkToastOpen: PropTypes.bool.isRequired,
     hideEditNetworksModal: PropTypes.func.isRequired,
+    hidePermittedNetworkToast: PropTypes.func.isRequired,
     isEditAccountsModalOpen: PropTypes.bool.isRequired,
     hideEditAccountsModal: PropTypes.func.isRequired,
     isIpfsModalOpen: PropTypes.bool.isRequired,
@@ -205,6 +208,7 @@ export default class Routes extends Component {
     addPermittedAccount: PropTypes.func.isRequired,
     switchedNetworkDetails: PropTypes.object,
     useNftDetection: PropTypes.bool,
+    currentNetwork: PropTypes.object,
     showNftEnablementToast: PropTypes.bool,
     setHideNftEnablementToast: PropTypes.func.isRequired,
     clearSwitchedNetworkDetails: PropTypes.func.isRequired,
@@ -447,7 +451,7 @@ export default class Routes extends Component {
         />
         <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
         <Authenticated
-          path={REVIEW_PERMISSIONS}
+          path={`${REVIEW_PERMISSIONS}/:origin`}
           component={ReviewPermissions}
           exact
         />
@@ -647,14 +651,16 @@ export default class Routes extends Component {
       useNftDetection,
       showNftEnablementToast,
       setHideNftEnablementToast,
+      isPermittedNetworkToastOpen,
+      currentNetwork,
     } = this.props;
 
     const showAutoNetworkSwitchToast = this.getShowAutoNetworkSwitchTest();
     const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
     const isPrivacyToastNotShown = !newPrivacyPolicyToastShownDate;
     const isEvmAccount = isEvmAccountType(account?.type);
-
     const autoHideToastDelay = 5 * SECOND;
+    const safeEncodedHost = encodeURIComponent(activeTabOrigin);
 
     const onAutoHideToast = () => {
       setHideNftEnablementToast(false);
@@ -774,21 +780,28 @@ export default class Routes extends Component {
           />
         ) : null}
 
-        {process.env.CHAIN_PERMISSIONS ? (
+        {process.env.CHAIN_PERMISSIONS && isPermittedNetworkToastOpen ? (
           <Toast
             key="switched-network-toast"
             startAdornment={
               <AvatarNetwork
                 size={AvatarAccountSize.Md}
                 borderColor={BorderColor.transparent}
-                src=""
-                name="hhhh"
+                src={currentNetwork?.rpcPrefs.imageUrl}
+                name={currentNetwork?.nickname}
               />
             }
-            text="app.uniswap.org has been given access to Optimism."
+            text={this.context.t('permittedChainToastUpdate', [
+              getURLHost(activeTabOrigin),
+              currentNetwork?.nickname,
+            ])}
             actionText={this.context.t('editPermissions')}
-            onActionClick={() => this.props.history.push(REVIEW_PERMISSIONS)}
-            onClose={() => console.log('lo')}
+            onActionClick={() =>
+              this.props.history.push(
+                `${REVIEW_PERMISSIONS}/${safeEncodedHost}`,
+              )
+            }
+            onClose={hidePermittedNetworkToast}
           />
         ) : null}
       </ToastContainer>

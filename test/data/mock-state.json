@@ -16,6 +16,7 @@
     },
     "showEditAccountsModalOpen": false,
     "showEditNetworksModalOpen": false,
+    "showPermittedNetworkToastOpen": false,
     "gasIsLoading": false,
     "isLoading": false,
     "modal": {

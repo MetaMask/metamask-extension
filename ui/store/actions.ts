@@ -130,7 +130,10 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
-import { CaveatFactories, PermissionNames } from '../../app/scripts/controllers/permissions/specifications';
+import {
+  CaveatFactories,
+  PermissionNames,
+} from '../../app/scripts/controllers/permissions/specifications';
 import { CaveatTypes } from '../../shared/constants/permissions';
 
 type CustomGasSettings = {
@@ -2622,6 +2625,18 @@ export function hideEditNetworksModal(): Action {
 export function showEditNetworksModal(): Action {
   return {
     type: actionConstants.SHOW_EDIT_NETWORKS_MODAL_OPEN,
+  };
+}
+
+export function hidePermittedNetworkToast(): Action {
+  return {
+    type: actionConstants.SHOW_PERMITTED_NETWORK_TOAST_CLOSE,
+  };
+}
+
+export function showPermittedNetworkToast(): Action {
+  return {
+    type: actionConstants.SHOW_PERMITTED_NETWORK_TOAST_OPEN,
   };
 }
 
@@ -5590,15 +5605,13 @@ export async function grantPermittedChain(
     {
       subject: { origin: selectedTabOrigin },
       approvedPermissions: {
-      [PermissionNames.permittedChains]: {
-        caveats: [
-          CaveatFactories[CaveatTypes.restrictNetworkSwitching](
-          [chainId],
-          ),
-        ],
+        [PermissionNames.permittedChains]: {
+          caveats: [
+            CaveatFactories[CaveatTypes.restrictNetworkSwitching]([chainId]),
+          ],
+        },
       },
-      },
-    }
+    },
   ]);
 }
 

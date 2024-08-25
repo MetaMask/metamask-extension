@@ -36,6 +36,7 @@ type AppState = {
   };
   showEditAccountsModalOpen: boolean;
   showEditNetworksModalOpen: boolean;
+  showPermittedNetworkToastOpen: boolean;
   showIpfsModalOpen: boolean;
   keyringRemovalSnapModal: {
     snapName: string;
@@ -128,6 +129,7 @@ const initialState: AppState = {
   importNftsModal: { open: false },
   showEditAccountsModalOpen: false,
   showEditNetworksModalOpen: false,
+  showPermittedNetworkToastOpen: false,
   showIpfsModalOpen: false,
   showBasicFunctionalityModal: false,
   externalServicesOnboardingToggleState: true,
@@ -262,10 +264,22 @@ export default function reduceApp(
         showIpfsModalOpen: false,
       };
 
-  case actionConstants.SHOW_EDIT_NETWORKS_MODAL_OPEN:
+    case actionConstants.SHOW_EDIT_NETWORKS_MODAL_OPEN:
       return {
         ...appState,
         showEditNetworksModalOpen: true,
+      };
+
+    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_OPEN:
+      return {
+        ...appState,
+        showPermittedNetworkToastOpen: true,
+      };
+
+    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_CLOSE:
+      return {
+        ...appState,
+        showPermittedNetworkToastOpen: false,
       };
 
     case actionConstants.SHOW_EDIT_NETWORKS_MODAL_CLOSE:

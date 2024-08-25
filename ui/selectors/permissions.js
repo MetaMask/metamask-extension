@@ -60,6 +60,12 @@ export function getPermittedAccounts(state, origin) {
   );
 }
 
+export function getPermittedChains(state, origin) {
+    return getChainsFromPermission(
+    getChainsPermissionFromSubject(subjectSelector(state, origin)),
+  );
+}
+
 /**
  * Selects the permitted accounts from the eth_accounts permission for the
  * origin of the current tab.
@@ -73,6 +79,14 @@ export function getPermittedAccountsForCurrentTab(state) {
 
 export function getPermittedAccountsForSelectedTab(state, activeTab) {
   return getPermittedAccounts(state, activeTab);
+}
+
+export function getPermittedChainsForCurrentTab(state) {
+  return getPermittedAccounts(state, getOriginOfCurrentTab(state));
+}
+
+export function getPermittedChainsForSelectedTab(state, activeTab) {
+  return getPermittedChains(state, activeTab);
 }
 
 /**

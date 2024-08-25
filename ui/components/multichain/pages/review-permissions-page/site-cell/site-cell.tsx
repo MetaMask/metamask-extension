@@ -34,11 +34,19 @@ import {
   showEditNetworksModal,
 } from '../../../../../store/actions';
 import { useDispatch } from 'react-redux';
+import { AvatarGroup } from '../../../index';
+import { AvatarType } from '../../../avatar-group/avatar-group.types';
 
-export const SiteCell = ({}) => {
+export const SiteCell = ({ networks, accounts }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-
+  const avatarNetworksData = networks.map((network) => ({
+    avatarValue: network.rpcPrefs.imageUrl,
+    symbol: network.nickname,
+  }));
+  const avatarAccountsData = accounts.map((account) => ({
+    avatarValue: account.address,
+  }));
   return (
     <>
       <Box
@@ -91,7 +99,11 @@ export const SiteCell = ({}) => {
             >
               {t('connectedWith')}
             </Text>
-            {/* <ConnectionListTooltip connection={connection} /> */}
+            <AvatarGroup
+              avatarType={AvatarType.ACCOUNT}
+              members={avatarAccountsData}
+              limit={4}
+            />
           </Box>
         </Box>
         <Box
@@ -163,7 +175,11 @@ export const SiteCell = ({}) => {
             >
               {t('connectedWith')}
             </Text>
-            {/* <ConnectionListTooltip connection={connection} /> */}
+            <AvatarGroup
+              avatarType={AvatarType.TOKEN}
+              members={avatarNetworksData}
+              limit={4}
+            />
           </Box>
         </Box>
         <Box

@@ -16,6 +16,7 @@ import {
   setNetworkClientIdForDomain,
   setEditedNetwork,
   grantPermittedChain,
+  showPermittedNetworkToast,
 } from '../../../store/actions';
 import {
   FEATURED_RPCS,
@@ -104,7 +105,8 @@ export const NetworkListMenu = ({ onClose }) => {
   const networkConfigurations = useSelector(getNetworkConfigurations);
   const domains = useSelector(getAllDomains);
   const chains = useSelector(getPermittedChainsByOrigin);
-console.log(chains, "hh")
+  const permittedChains = Object.values(chains);
+  console.log(permittedChains, 'hhh');
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
@@ -176,6 +178,7 @@ console.log(chains, "hh")
 
   //check if not granted chain is clicked, then show the toast and grant permission
   const networksList = newOrderNetworks();
+
   const [items, setItems] = useState([...networksList]);
 
   useEffect(() => {
@@ -307,16 +310,18 @@ console.log(chains, "hh")
         onClick={() => {
           dispatch(toggleNetworkMenu());
           dispatch(setActiveNetwork(network.providerType || network.id));
-            grantPermittedChain(selectedTabOrigin, network.chainId);
-
-          // If presently on and connected to a dapp, communicate a change to
-          // the dapp via silent switchEthereumChain that the network has
-          // changed due to user action
+          grantPermittedChain(selectedTabOrigin, network.chainId);
+          if (!permittedChains.includes(network.chainId)) {
+            dispatch(showPermittedNetworkToast());
+          }
           if (
             useRequestQueue &&
             selectedTabOrigin &&
             domains[selectedTabOrigin]
           ) {
+            // If presently on and connected to a dapp, communicate a change to
+            // the dapp via silent switchEthereumChain that the network has
+            // changed due to user action
             setNetworkClientIdForDomain(selectedTabOrigin, network.id);
           }
 
