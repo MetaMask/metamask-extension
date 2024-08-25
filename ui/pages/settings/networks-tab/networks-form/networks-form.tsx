@@ -63,7 +63,7 @@ import RpcListItem, {
 } from '../../../../components/multichain/network-list-menu/rpc-list-item';
 import { useSafeChains } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
-import DropdownEditorDefault, { DropdownEditorStyle } from './dropdown-editor';
+import { DropdownEditor, DropdownEditorStyle } from './dropdown-editor';
 
 export const NetworksForm = ({
   networkFormState,
@@ -371,10 +371,10 @@ export const NetworksForm = ({
           }}
           value={name}
         />
-        <DropdownEditorDefault
+        <DropdownEditor
           title={t('defaultRpcUrl')}
           placeholder={t('addAUrl')}
-          style={DropdownEditorStyle.Popover}
+          style={DropdownEditorStyle.PopoverStyle}
           items={rpcUrls.rpcEndpoints}
           itemKey={(endpoint) => endpoint.url}
           selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
@@ -544,10 +544,10 @@ export const NetworksForm = ({
           </HelpText>
         ) : null}
 
-        <DropdownEditorDefault
+        <DropdownEditor
           title={t('blockExplorerUrl')}
           placeholder={t('addAUrl')}
-          style={DropdownEditorStyle.Box}
+          style={DropdownEditorStyle.BoxStyle}
           items={blockExplorers.blockExplorerUrls}
           itemKey={(item) => `${item}`}
           selectedItemIndex={blockExplorers.defaultBlockExplorerUrlIndex}
