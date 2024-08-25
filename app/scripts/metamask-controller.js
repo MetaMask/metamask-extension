@@ -94,11 +94,11 @@ import {
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-rpc-methods';
 import {
-  NetworkType,
   ApprovalType,
   ERC1155,
   ERC20,
   ERC721,
+  BlockExplorerUrl,
 } from '@metamask/controller-utils';
 
 import { AccountsController } from '@metamask/accounts-controller';
@@ -507,9 +507,17 @@ export default class MetamaskController extends EventEmitter {
       const networks =
         initialNetworkControllerState.networkConfigurationsByChainId;
 
+      // Note: Consider changing `getDefaultNetworkControllerState`
+      // on the controller side to include some of these tweaks.
       networks[CHAIN_IDS.MAINNET].name = MAINNET_DISPLAY_NAME;
       delete networks[CHAIN_IDS.GOERLI];
       delete networks[CHAIN_IDS.LINEA_GOERLI];
+
+      Object.values(networks).forEach((network) => {
+        const id = network.rpcEndpoints[0].networkClientId;
+        network.blockExplorerUrls = [BlockExplorerUrl[id]];
+        network.defaultBlockExplorerUrlIndex = 0;
+      });
 
       let network;
       if (process.env.IN_TEST) {
