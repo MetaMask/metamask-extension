@@ -177,7 +177,7 @@ export const DropdownEditor = <Item,>({
     }
   }, [isDropdownOpen]);
 
-  const selectedItem = items?.[selectedItemIndex];
+  const selectedItem = items?.[selectedItemIndex ?? -1];
   const tooltip = selectedItem ? renderTooltip(selectedItem, false) : undefined;
 
   const box = (
