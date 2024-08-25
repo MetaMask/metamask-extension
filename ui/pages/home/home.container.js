@@ -47,7 +47,6 @@ import {
   getQueuedRequestCount,
   getEditedNetwork,
   getPrioritizedUnapprovedTemplatedConfirmations,
-  getNetworkConfigurations,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
@@ -195,7 +194,6 @@ const mapStateToProps = (state) => {
     shouldShowWeb3ShimUsageNotification,
     pendingConfirmations,
     pendingConfirmationsPrioritized,
-    networkConfigurations: getNetworkConfigurations(state),
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
     showWhatsNewPopup,
