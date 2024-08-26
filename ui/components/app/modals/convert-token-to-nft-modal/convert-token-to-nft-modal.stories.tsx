@@ -3,6 +3,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Provider, useSelector } from 'react-redux';
 import configureStore from '../../../../store/store';
 import ConvertTokenToNFTModal from './convert-token-to-nft-modal';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 
 const storeMock = configureStore({
   metamask: {
@@ -49,19 +51,7 @@ const storeMock = configureStore({
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
-    selectedNetworkClientId: 'mainnet',
-    networksMetadata: {
-      mainnet: {
-        EIPS: {
-          1559: false,
-        },
-        status: 'Available',
-      },
-    },
-    providerConfig: {
-      chainId: '1',
-      ticker: 'ETH',
-    },
+    ...mockNetworkState({chainId:CHAIN_IDS.MAINNET}),
     preferences: {
       useCurrencyRateCheck: true,
       currentCurrency: 'ETH',

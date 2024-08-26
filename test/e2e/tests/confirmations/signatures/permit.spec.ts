@@ -5,7 +5,6 @@ import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
   openDapp,
-  switchToNotificationWindow,
   unlockWallet,
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
@@ -22,6 +21,8 @@ import {
   assertSignatureMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
+  openDappAndTriggerSignature,
+  SignatureType,
 } from './signature-helpers';
 
 describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
@@ -36,10 +37,7 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
         const addresses = await (ganacheServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
 
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#signPermit');
-        await switchToNotificationWindow(driver);
+        await openDappAndTriggerSignature(driver, SignatureType.Permit);
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
@@ -51,7 +49,7 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
@@ -80,14 +78,12 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signPermit');
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElement(
+        await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirm-footer-cancel-button"]',
         );
-        await driver.delay(1000);
 
-        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         const rejectionResult = await driver.findElement('#signPermitResult');
