@@ -181,31 +181,18 @@ export default function GasTiming({
     time = toHumanReadableTime(low.maxWaitTimeEstimate, t);
   }
 
-  const getColorFromAttitude = () => {
-    switch (attitude) {
-      case 'positive':
-        return TextColor.successDefault;
-      case 'warning':
-        return TextColor.warningDefault;
-      case 'negative':
-        return TextColor.errorDefault;
-      default:
-        return TextColor.successDefault;
-    }
-  };
-
   return (
     <Box display={Display.Flex} flexWrap={FlexWrap.Wrap}>
       <Text
-        color={TextColor.textMuted}
-        variant={TextVariant.bodySm}
+        color={TextColor.textAlternative}
+        variant={TextVariant.bodyMd}
         paddingInlineEnd={1}
       >
         {text}
       </Text>
 
       {time && (
-        <Text variant={TextVariant.bodySm} color={getColorFromAttitude()}>
+        <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
           <span data-testid="gas-timing-time">~{time}</span>
         </Text>
       )}
