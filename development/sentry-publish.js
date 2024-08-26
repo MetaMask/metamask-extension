@@ -37,10 +37,15 @@ async function start() {
           default: 0,
           description: 'The MetaMask extension build version',
           type: 'number',
+        })
+        .option('dist', {
+          description:
+            'The MetaMask extension build distribution (typically for MV2 builds, omit for MV3)',
+          type: 'string',
         }),
   );
 
-  const { buildType, buildVersion, org, project } = argv;
+  const { buildType, buildVersion, dist, org, project } = argv;
 
   process.env.SENTRY_ORG = org;
   process.env.SENTRY_PROJECT = project;
@@ -75,19 +80,17 @@ async function start() {
     ]);
   }
 
-  // check if version has artifacts or not
-  const versionHasArtifacts =
-    versionAlreadyExists && (await checkIfVersionHasArtifacts(version));
-  if (versionHasArtifacts) {
-    console.log(
-      `Version "${version}" already has artifacts on Sentry, skipping sourcemap upload`,
-    );
-    return;
-  }
-
   const additionalUploadArgs = [];
+  if (dist) {
+    additionalUploadArgs.push('--dist', dist);
+  }
   if (buildType !== loadBuildTypesConfig().default) {
-    additionalUploadArgs.push('--dist-directory', `dist-${buildType}`);
+    additionalUploadArgs.push(
+      '--dist-directory',
+      dist ? `dist-${buildType}-${dist}` : `dist-${buildType}`,
+    );
+  } else if (dist) {
+    additionalUploadArgs.push('--dist-directory', `dist-${dist}`);
   }
   // upload sentry source and sourcemaps
   await runInShell('./development/sentry-upload-artifacts.sh', [
@@ -107,17 +110,6 @@ async function checkIfVersionExists(version) {
   return await doesNotFail(() =>
     runCommand('sentry-cli', ['releases', 'info', version]),
   );
-}
-
-async function checkIfVersionHasArtifacts(version) {
-  const [artifact] = await runCommand('sentry-cli', [
-    'releases',
-    'files',
-    version,
-    'list',
-  ]);
-  // When there's no artifacts, we get a response from the shell like this ['', '']
-  return artifact?.length > 0;
 }
 
 async function doesNotFail(asyncFn) {

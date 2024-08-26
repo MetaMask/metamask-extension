@@ -10,8 +10,6 @@
   }
 
   &__tokens-container {
-    display: flex;
-    flex-direction: column;
     overflow: auto;
     max-height: 214.5px;
 
@@ -21,14 +19,10 @@
   }
 
   &__token_component {
-    display: flex;
-    flex-flow: row nowrap;
-    padding: 16px;
-    align-items: center;
     cursor: pointer;
 
-    &--selected {
-      background-color: var(--color-primary-muted);
+    &__network-badge {
+      box-sizing: content-box; // Prevents border effecting size of badge image
     }
 
     &--disabled {

@@ -15,6 +15,16 @@ exports[`Confirm Detail Row Component should match snapshot 1`] = `
         class="mm-box currency-display-component confirm-detail-row__primary mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
         title="0"
       >
+        <div
+          class="mm-box currency-display-component__prefix mm-box--margin-inline-end-1"
+          variant="inherit"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          >
+            G
+          </div>
+        </div>
         <span
           class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
         >
@@ -25,6 +35,16 @@ exports[`Confirm Detail Row Component should match snapshot 1`] = `
         class="mm-box currency-display-component confirm-detail-row__secondary mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
         title="0"
       >
+        <div
+          class="mm-box currency-display-component__prefix mm-box--margin-inline-end-1"
+          variant="inherit"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          >
+            G
+          </div>
+        </div>
         <span
           class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
         >
