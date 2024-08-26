@@ -37,6 +37,7 @@ import {
   IconSize,
   Text,
 } from '../../../component-library';
+import { NoConnectionContent } from '../connections/components/no-connection';
 import { Content, Footer, Header, Page } from '../page';
 import { SiteCell } from './index';
 
@@ -89,6 +90,7 @@ export const ReviewPermissions = () => {
       data-testid="connections-page"
       className="main-container connections-page"
     >
+      {connectedAccounts.length > 0 ? <>
       <Header
         backgroundColor={BackgroundColor.backgroundDefault}
         startAccessory={
@@ -145,7 +147,8 @@ export const ReviewPermissions = () => {
         >
           {t('disconnectAllAccounts')}
         </Button>
-      </Footer>
+      </Footer> </> : <NoConnectionContent />
+}
     </Page>
   );
 };
