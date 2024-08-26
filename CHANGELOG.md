@@ -8,18 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.1.0]
 ### Added
-- Introduced a new UI for managing multiple RPC URLs, including adding and deleting options ([#25452](https://github.com/MetaMask/metamask-extension/pull/25452))
 - Launched a feature displaying the percentage increase or decrease for tokens within the UI ([#24223](https://github.com/MetaMask/metamask-extension/pull/24223))
-- Implemented a modal form for adding custom networks ([#25213](https://github.com/MetaMask/metamask-extension/pull/25213))
-- Introduced a new UI for selecting network RPCs during the advanced onboarding process ([#25276](https://github.com/MetaMask/metamask-extension/pull/25276))
 - Added a search feature to easily filter through the popular network list ([#25170](https://github.com/MetaMask/metamask-extension/pull/25170))
-- Introduced a Popular Networks list within the Add Network modal ([#25160](https://github.com/MetaMask/metamask-extension/pull/25160))
 - Launched a new asset details page ([#24522](https://github.com/MetaMask/metamask-extension/pull/24522))
-- Integrated contract interaction transaction alerts into the new alert system ([#25174](https://github.com/MetaMask/metamask-extension/pull/25174))
-- Enhanced the Sign-In With Ethereum (SIWE) experience by adding an alert for domain binding ([#25281](https://github.com/MetaMask/metamask-extension/pull/25281))
 - Implemented a loader on the confirmation page during Blockaid validation ([#25477](https://github.com/MetaMask/metamask-extension/pull/25477))
 - Introduced an advanced details component for transactions ([#24833](https://github.com/MetaMask/metamask-extension/pull/24833))
-- Updated the message section on SIWE signature pages ([#24997](https://github.com/MetaMask/metamask-extension/pull/24997))
 - Enhanced permit signatures with a simulation section ([#24862](https://github.com/MetaMask/metamask-extension/pull/24862))
 - Introduced dynamic support for identifying 'buyable' networks through the Ramps API ([#24041](https://github.com/MetaMask/metamask-extension/pull/24041))
 - Introduced a new notification counter over the Fox icon to display unread notifications ([#25093](https://github.com/MetaMask/metamask-extension/pull/25093))
