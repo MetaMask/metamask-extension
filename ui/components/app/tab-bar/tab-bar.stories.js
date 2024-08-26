@@ -34,7 +34,7 @@ export default {
         key: 'snaps',
       },
       {
-        icon: <i className="fa fa-lock" />,
+        icon: <Icon name={IconName.Lock} />,
         content: 'SecurityAndPrivacy',
         key: 'securityAndPrivacy',
       },
