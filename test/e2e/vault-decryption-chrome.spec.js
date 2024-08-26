@@ -39,7 +39,7 @@ async function getExtensionStorageFilePath(driver) {
     .readdirSync(extensionStoragePath)
     .filter((filename) => filename.endsWith('.log'));
 
-    // Use the first of the `.log` files found
+  // Use the first of the `.log` files found
   return path.resolve(extensionStoragePath, logFiles[0]);
 }
 
