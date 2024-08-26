@@ -22,14 +22,11 @@ const useCurrentSignatureSecurityAlertResponse = ():
 
   const signatureSecurityAlertResponse = useSelector(
     (state: SecurityAlertResponsesState) => {
-      const signatureSecurityAlertId = (
-        currentConfirmation?.securityAlertResponse as SecurityAlertResponse
-      )?.securityAlertId;
       if (securityAlertId === undefined) {
         return undefined;
       }
       return state.metamask.signatureSecurityAlertResponses?.[
-        signatureSecurityAlertId as string
+        securityAlertId as string
       ];
     },
   );
