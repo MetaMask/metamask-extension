@@ -353,6 +353,7 @@ describe('migration #128', () => {
     });
   });
 
+  // @ts-expect-error This function is missing from the Mocha type definitions
   describe.each([
     [
       'built-in',
@@ -376,7 +377,11 @@ describe('migration #128', () => {
     ],
   ])(
     'the currently selected network client is %s',
-    (_type: string, NetworkController: unknown, chainId: string) => {
+    (
+      _type: string,
+      NetworkController: Record<string, unknown>,
+      chainId: string,
+    ) => {
       const baseData = () => ({
         PermissionController: {
           subjects: {},
