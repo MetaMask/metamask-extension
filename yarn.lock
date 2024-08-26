@@ -6297,9 +6297,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:11.0.0":
-  version: 11.0.0
-  resolution: "@metamask/smart-transactions-controller@npm:11.0.0"
+"@metamask/smart-transactions-controller@npm:12.0.1":
+  version: 12.0.1
+  resolution: "@metamask/smart-transactions-controller@npm:12.0.1"
   dependencies:
     "@babel/runtime": "npm:^7.24.1"
     "@ethereumjs/tx": "npm:^5.2.1"
@@ -6309,37 +6309,14 @@ __metadata:
     "@metamask/controller-utils": "npm:^11.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.0"
     "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/network-controller": "npm:^19.0.0"
+    "@metamask/network-controller": "npm:^20.0.0"
     "@metamask/polling-controller": "npm:^8.0.0"
     "@metamask/transaction-controller": "npm:^34.0.0"
     bignumber.js: "npm:^9.0.1"
     events: "npm:^3.3.0"
     fast-json-patch: "npm:^3.1.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/741536fe1524c8c1acfad421e4d17c61500de9f64d7ef97ddccac6e16e830f3e9bbfb5c2b9281082fb2121cec077f3470ce8c40711f3c9524e88275c02e8b821
-  languageName: node
-  linkType: hard
-
-"@metamask/smart-transactions-controller@patch:@metamask/smart-transactions-controller@npm%3A11.0.0#~/.yarn/patches/@metamask-smart-transactions-controller-npm-11.0.0-83133fb677.patch":
-  version: 11.0.0
-  resolution: "@metamask/smart-transactions-controller@patch:@metamask/smart-transactions-controller@npm%3A11.0.0#~/.yarn/patches/@metamask-smart-transactions-controller-npm-11.0.0-83133fb677.patch::version=11.0.0&hash=3f8184"
-  dependencies:
-    "@babel/runtime": "npm:^7.24.1"
-    "@ethereumjs/tx": "npm:^5.2.1"
-    "@ethereumjs/util": "npm:^9.0.2"
-    "@ethersproject/bytes": "npm:^5.7.0"
-    "@metamask/base-controller": "npm:^6.0.0"
-    "@metamask/controller-utils": "npm:^11.0.0"
-    "@metamask/eth-json-rpc-provider": "npm:^4.1.0"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/network-controller": "npm:^19.0.0"
-    "@metamask/polling-controller": "npm:^8.0.0"
-    "@metamask/transaction-controller": "npm:^34.0.0"
-    bignumber.js: "npm:^9.0.1"
-    events: "npm:^3.3.0"
-    fast-json-patch: "npm:^3.1.0"
-    lodash: "npm:^4.17.21"
-  checksum: 10/a64957866f642801ff3eceefdd50c5c8162d581a53af14196f46c8888cc239ba019de61b420e8f6f8ebb98b734c609b76ef1d5e139c5db951b148fd06f7c27f9
+  checksum: 10/c03da6f35430414ceceae3429414cbcefc356a0c6d7eecd5765cf13c8eac6548fbb5928556694c18d4b1c8643ef10be8386b4b44cb0a8376c1b0651e7350f263
   languageName: node
   linkType: hard
 
@@ -26575,7 +26552,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^15.0.2"
     "@metamask/signature-controller": "npm:^17.0.0"
-    "@metamask/smart-transactions-controller": "patch:@metamask/smart-transactions-controller@npm%3A11.0.0#~/.yarn/patches/@metamask-smart-transactions-controller-npm-11.0.0-83133fb677.patch"
+    "@metamask/smart-transactions-controller": "npm:12.0.1"
     "@metamask/snaps-controllers": "npm:^9.4.0"
     "@metamask/snaps-execution-environments": "npm:^6.6.2"
     "@metamask/snaps-rpc-methods": "npm:^11.0.0"
