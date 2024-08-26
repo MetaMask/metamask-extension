@@ -12,6 +12,11 @@ jest.mock('../../../ui/store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
 
+jest.mock('../../../ui/ducks/bridge/actions', () => ({
+  ...jest.requireActual('../../../ui/ducks/bridge/actions'),
+  setBridgeFeatureFlags: jest.fn().mockResolvedValueOnce(undefined),
+}));
+
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 
 const backgroundConnectionMocked = {

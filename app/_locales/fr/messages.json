@@ -42,7 +42,7 @@
     "message": "Connectez votre portefeuille électronique QR"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave (bientôt disponible)"
+    "message": "Ngrave Zero"
   },
   "SIWEAddressInvalid": {
     "message": "L’adresse figurant dans la demande de connexion ne correspond pas à l’adresse du compte que vous utilisez pour vous connecter."
@@ -513,12 +513,6 @@
   "allow": {
     "message": "Autoriser"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "Autorisez MetaMask à détecter et à afficher vos NFT grâce à la détection automatique des NFT. Vous pourrez ainsi :"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "Autorisez MetaMask à détecter et à afficher vos jetons grâce à la détection automatique des jetons. Vous pourrez ainsi :"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "Cela permettra à MMI de se connecter à $1 pour importer vos comptes."
   },
@@ -549,9 +543,6 @@
   "andForTwoItems": {
     "message": "$1 et $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
-  },
-  "announcements": {
-    "message": "Annonces"
   },
   "appDescription": {
     "message": "Extension Ethereum pour navigateur",
@@ -1452,9 +1443,6 @@
   "data": {
     "message": "Données"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Impossible de restaurer vos données. Le fichier semble corrompu."
-  },
   "dataCollectionForMarketing": {
     "message": "Collecte de données à des fins de marketing"
   },
@@ -1552,30 +1540,6 @@
   "details": {
     "message": "Détails"
   },
-  "developerOptions": {
-    "message": "Options pour les développeurs"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Active ou désactive la fonction de restructuration des confirmations actuellement en phase de développement"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Restructuration des confirmations"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Permet de changer le design du menu « Réseaux »"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Refonte du menu « Réseaux »"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Règle la valeur de « isShown boolean » sur faux (false) pour toutes les annonces. Les annonces sont les notifications affichées dans la fenêtre contextuelle « Nouveautés »."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Réinitialise divers états liés au processus d’intégration et redirige vers la page d’accueil « Sécuriser votre portefeuille »."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Les résultats d’un horodatage sont continuellement sauvegardés dans « session.storage »"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "« $1 » est désactivé parce qu’il ne correspond pas au minimum d’augmentation de 10 % par rapport aux gas fees initiaux.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1635,12 +1599,6 @@
   },
   "displayNftMediaDescription": {
     "message": "L’affichage des médias et des données NFT expose votre adresse IP à OpenSea ou à d’autres fournisseurs de services tiers. Cela permet à des hackers d’associer votre adresse IP à votre adresse Ethereum. La détection automatique des NFT dépend de ce paramètre et ne sera pas disponible lorsque celui-ci est désactivé."
-  },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "Commencer à utiliser vos NFT"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "Commencez à utiliser vos jetons"
   },
   "doNotShare": {
     "message": "Ne partagez ceci avec personne"
@@ -1773,9 +1731,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Modifier les gas fees d’accélération"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "Gérez facilement à vos actifs numériques"
-  },
   "enable": {
     "message": "Activer"
   },
@@ -1785,21 +1740,12 @@
   "enableFromSettings": {
     "message": " Activez-la depuis les Paramètres."
   },
-  "enableNftAutoDetection": {
-    "message": "Activer la détection automatique des NFT"
-  },
   "enableSnap": {
     "message": "Activer"
   },
   "enableToken": {
     "message": "activer $1",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "Activer la détection automatique des jetons"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "Cette option sera automatiquement activée dans l’extension Metamask v12.3.0 si l’option « Fonctionnalité de base » est déjà activée"
   },
   "enabled": {
     "message": "Activé"
@@ -2312,12 +2258,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "Accéder immédiatement à vos NFT"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "Accès immédiat à vos jetons"
   },
   "import": {
     "message": "Importer",
@@ -3283,9 +3223,6 @@
   "notEnoughGas": {
     "message": "Pas assez de gaz"
   },
-  "notRightNow": {
-    "message": "Pas maintenant"
-  },
   "note": {
     "message": "Note"
   },
@@ -3519,9 +3456,6 @@
   },
   "onboardedMetametricsTitle": {
     "message": "Aidez-nous à améliorer votre expérience utilisateur"
-  },
-  "onboarding": {
-    "message": "Intégration"
   },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "La passerelle IPFS vous permet d’accéder aux données hébergées par des tiers et de les visualiser. Vous pouvez ajouter une passerelle IPFS personnalisée ou continuer à utiliser la passerelle par défaut."
@@ -4231,9 +4165,6 @@
   "receive": {
     "message": "Recevoir"
   },
-  "receiveTokensCamelCase": {
-    "message": "Recevez des jetons"
-  },
   "recipientAddressPlaceholder": {
     "message": "Saisissez l’adresse publique (0x) ou le nom de domaine ENS"
   },
@@ -4388,9 +4319,6 @@
   "reset": {
     "message": "Reinitialiser"
   },
-  "resetStates": {
-    "message": "Réinitialiser les états"
-  },
   "resetWallet": {
     "message": "Réinitialiser le portefeuille"
   },
@@ -4408,12 +4336,6 @@
   },
   "restore": {
     "message": "Restaurer"
-  },
-  "restoreFailed": {
-    "message": "Impossible de restaurer vos données à partir du fichier fourni"
-  },
-  "restoreSuccessful": {
-    "message": "Vos données ont été restaurées avec succès"
   },
   "restoreUserData": {
     "message": "Restaurer les données de l’utilisateur"
@@ -4716,9 +4638,6 @@
   "sepolia": {
     "message": "Réseau de test Sepolia"
   },
-  "serviceWorkerKeepAlive": {
-    "message": "Garder le « Service Worker » activé"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask utilise ces services tiers de confiance pour améliorer la convivialité et la sécurité des produits."
   },
@@ -4807,9 +4726,6 @@
   },
   "signatureRequestGuidance": {
     "message": "Ne signez ce message que si vous comprenez parfaitement son contenu et si le site demandeur vous inspire confiance."
-  },
-  "signatureRequestWarning": {
-    "message": "Signer ce message peut être dangereux. Vous risquez de céder le contrôle de tous vos actifs et de votre compte à la personne qui vous a envoyé ce message et si cette personne est malintentionnée, elle pourra vider votre compte à tout moment, alors agissez avec prudence. $1."
   },
   "signed": {
     "message": "Signé"
@@ -5284,9 +5200,6 @@
   },
   "stateLogsDescription": {
     "message": "Les journaux d’état contiennent les adresses publiques de vos comptes et vos transactions envoyées."
-  },
-  "states": {
-    "message": "États"
   },
   "status": {
     "message": "État"
@@ -5926,45 +5839,6 @@
     "message": "Vers : $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "Vous êtes vulnérable aux attaques par hameçonnage. Protégez-vous en désactivant eth_sign."
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "Si vous activez ce paramètre, vous risquez de recevoir des demandes de signature illisibles. En signant un message que vous ne comprenez pas, vous pourriez accepter de céder vos fonds et vos NFTs."
-  },
-  "toggleEthSignField": {
-    "message": "Requêtes Eth_sign"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " il se peut qu’il essaie de vous arnaquer"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "Si quelqu’un vous a demandé d’activer ce paramètre,"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "Je sais que je peux perdre tous mes fonds et mes NFT si j’active les demandes eth_sign. "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "L’autorisation des demandes eth_sign peut vous rendre vulnérable aux attaques par hameçonnage. Assurez-vous de l’adresse URL et faites preuve de vigilance avant de signer des messages qui contiennent du code."
-  },
-  "toggleEthSignModalFormError": {
-    "message": "Le texte est incorrect"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "Tapez « Je ne signe que ce que je comprends » pour continuer"
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "Je ne signe que ce que je comprends"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "Utilisez cette fonctionnalité à vos risques et périls"
-  },
-  "toggleEthSignOff": {
-    "message": "Désactiver (recommandé)"
-  },
-  "toggleEthSignOn": {
-    "message": "Activer (recommandé)"
-  },
   "toggleRequestQueueDescription": {
     "message": "Cette fonction vous permet de sélectionner un réseau pour chaque site au lieu d’un seul réseau pour tous les sites. Vous n’aurez donc pas à changer manuellement de réseau, ce qui pourrait nuire à l’expérience utilisateur sur certains sites."
   },
@@ -6561,9 +6435,6 @@
   },
   "yourBalance": {
     "message": "Votre solde"
-  },
-  "yourFundsMayBeAtRisk": {
-    "message": "Vous risquez de perdre une partie ou la totalité du capital investi"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Il peut y avoir des risques associés à votre NFT"

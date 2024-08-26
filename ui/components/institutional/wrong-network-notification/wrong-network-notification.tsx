@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { ProviderConfig } from '@metamask/network-controller';
 import {
   Display,
   AlignItems,
@@ -17,12 +16,13 @@ import { Icon, IconName, IconSize, Box, Text } from '../../component-library';
 
 const WrongNetworkNotification: React.FC = () => {
   const t = useI18nContext();
-  const providerConfig = useSelector<object, ProviderConfig>(getProviderConfig);
+  const providerConfig = useSelector<
+    object,
+    { nickname: string; type: string }
+  >(getProviderConfig);
   const balance = useSelector<string | null>(getSelectedAccountCachedBalance);
 
-  const isCustodianSupportedChain = useSelector<boolean>(
-    getIsCustodianSupportedChain,
-  );
+  const isCustodianSupportedChain = useSelector(getIsCustodianSupportedChain);
 
   const network = providerConfig.nickname || providerConfig.type;
 

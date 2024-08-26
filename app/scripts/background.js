@@ -19,6 +19,9 @@ import { ApprovalType } from '@metamask/controller-utils';
 import PortStream from 'extension-port-stream';
 
 import { ethErrors } from 'eth-rpc-errors';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
+
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -50,12 +53,13 @@ import {
   FakeLedgerBridge,
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
+import { getCurrentChainId } from '../../ui/selectors';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
 import LocalStore from './lib/local-store';
 import ReadOnlyNetworkStore from './lib/network-store';
-import { SENTRY_BACKGROUND_STATE } from './lib/setupSentry';
+import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
 import createStreamSink from './lib/createStreamSink';
 import NotificationManager, {
@@ -78,14 +82,11 @@ import { createOffscreen } from './offscreen';
 
 /* eslint-enable import/first */
 
-import { TRIGGER_TYPES } from './controllers/metamask-notifications/constants/notification-schema';
-
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_NOTIFICATION = '#D73847';
-const BADGE_LABEL_APPROVAL = '\u22EF'; // unicode ellipsis
-const BADGE_MAX_NOTIFICATION_COUNT = 9;
+const BADGE_MAX_COUNT = 9;
 
 // Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
@@ -354,24 +355,19 @@ function saveTimestamp() {
  * @property {object} featureFlags - An object for optional feature flags.
  * @property {boolean} welcomeScreen - True if welcome screen should be shown.
  * @property {string} currentLocale - A locale string matching the user's preferred display language.
- * @property {object} providerConfig - The current selected network provider.
- * @property {string} providerConfig.rpcUrl - The address for the RPC API, if using an RPC API.
- * @property {string} providerConfig.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
  * @property {string} networkStatus - Either "unknown", "available", "unavailable", or "blocked", depending on the status of the currently selected network.
  * @property {object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
  * @property {object} accountsByChainId - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values keyed by chain id.
  * @property {hex} currentBlockGasLimit - The most recently seen block gas limit, in a lower case hex prefixed string.
  * @property {object} currentBlockGasLimitByChainId - The most recently seen block gas limit, in a lower case hex prefixed string keyed by chain id.
- * @property {object} unapprovedMsgs - An object of messages pending approval, mapping a unique ID to the options.
- * @property {number} unapprovedMsgCount - The number of messages in unapprovedMsgs.
  * @property {object} unapprovedPersonalMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedPersonalMsgCount - The number of messages in unapprovedPersonalMsgs.
  * @property {object} unapprovedEncryptionPublicKeyMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedEncryptionPublicKeyMsgCount - The number of messages in EncryptionPublicKeyMsgs.
  * @property {object} unapprovedDecryptMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedDecryptMsgCount - The number of messages in unapprovedDecryptMsgs.
- * @property {object} unapprovedTypedMsgs - An object of messages pending approval, mapping a unique ID to the options.
- * @property {number} unapprovedTypedMsgCount - The number of messages in unapprovedTypedMsgs.
+ * @property {object} unapprovedTypedMessages - An object of messages pending approval, mapping a unique ID to the options.
+ * @property {number} unapprovedTypedMessagesCount - The number of messages in unapprovedTypedMessages.
  * @property {number} pendingApprovalCount - The number of pending request in the approval controller.
  * @property {Keyring[]} keyrings - An array of keyring descriptions, summarizing the accounts that are available for use, and what keyrings they belong to.
  * @property {string} selectedAddress - A lower case hex string of the currently selected address.
@@ -732,7 +728,7 @@ export function setupController(
 
   setupEnsIpfsResolver({
     getCurrentChainId: () =>
-      controller.networkController.state.providerConfig.chainId,
+      getCurrentChainId({ metamask: controller.networkController.state }),
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
       controller.preferencesController,
     ),
@@ -977,6 +973,17 @@ export function setupController(
   controller.txController.initApprovals();
 
   /**
+   * Formats a count for display as a badge label.
+   *
+   * @param {number} count - The count to be formatted.
+   * @param {number} maxCount - The maximum count to display before using the '+' suffix.
+   * @returns {string} The formatted badge label.
+   */
+  function getBadgeLabel(count, maxCount) {
+    return count > maxCount ? `${maxCount}+` : String(count);
+  }
+
+  /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
    * The number reflects the current number of pending transactions or message signatures needing user approval.
    */
@@ -988,12 +995,9 @@ export function setupController(
     let badgeColor = BADGE_COLOR_APPROVAL;
 
     if (pendingApprovalCount) {
-      label = BADGE_LABEL_APPROVAL;
+      label = getBadgeLabel(pendingApprovalCount, BADGE_MAX_COUNT);
     } else if (unreadNotificationsCount > 0) {
-      label =
-        unreadNotificationsCount > BADGE_MAX_NOTIFICATION_COUNT
-          ? `${BADGE_MAX_NOTIFICATION_COUNT}+`
-          : String(unreadNotificationsCount);
+      label = getBadgeLabel(unreadNotificationsCount, BADGE_MAX_COUNT);
       badgeColor = BADGE_COLOR_NOTIFICATION;
     }
 
@@ -1032,26 +1036,30 @@ export function setupController(
 
   function getUnreadNotificationsCount() {
     try {
-      const { isMetamaskNotificationsEnabled, isFeatureAnnouncementsEnabled } =
-        controller.metamaskNotificationsController.state;
+      const { isNotificationServicesEnabled, isFeatureAnnouncementsEnabled } =
+        controller.notificationServicesController.state;
 
       const snapNotificationCount = Object.values(
         controller.notificationController.state.notifications,
       ).filter((notification) => notification.readDate === null).length;
 
       const featureAnnouncementCount = isFeatureAnnouncementsEnabled
-        ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
+        ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
             (notification) =>
               !notification.isRead &&
-              notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+              notification.type ===
+                NotificationServicesController.Constants.TRIGGER_TYPES
+                  .FEATURES_ANNOUNCEMENT,
           ).length
         : 0;
 
-      const walletNotificationCount = isMetamaskNotificationsEnabled
-        ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
+      const walletNotificationCount = isNotificationServicesEnabled
+        ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
             (notification) =>
               !notification.isRead &&
-              notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+              notification.type !==
+                NotificationServicesController.Constants.TRIGGER_TYPES
+                  .FEATURES_ANNOUNCEMENT,
           ).length
         : 0;
 
@@ -1097,6 +1105,7 @@ export function setupController(
         switch (type) {
           case ApprovalType.SnapDialogAlert:
           case ApprovalType.SnapDialogPrompt:
+          case DIALOG_APPROVAL_TYPES.default:
             controller.approvalController.accept(id, null);
             break;
           case ApprovalType.SnapDialogConfirmation:
@@ -1244,6 +1253,7 @@ async function initBackground() {
         window.document?.documentElement?.classList.add('controller-loaded');
       }
     }
+    localStore.cleanUpMostRecentRetrievedState();
   } catch (error) {
     log.error(error);
   }

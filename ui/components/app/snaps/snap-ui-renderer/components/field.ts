@@ -4,11 +4,13 @@ import {
   ButtonElement,
   JSXElement,
   DropdownElement,
+  RadioGroupElement,
   CheckboxElement,
 } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import { button as buttonFn } from './button';
 import { dropdown as dropdownFn } from './dropdown';
+import { radioGroup as radioGroupFn } from './radioGroup';
 import { checkbox as checkboxFn } from './checkbox';
 import { UIComponentFactory, UIComponentParams } from './types';
 
@@ -78,6 +80,24 @@ export const field: UIComponentFactory<FieldElement> = ({ element, form }) => {
           id: dropdown.props.name,
           label: element.props.label,
           name: dropdown.props.name,
+          form,
+          error: element.props.error,
+        },
+      };
+    }
+
+    case 'RadioGroup': {
+      const radioGroup = child as RadioGroupElement;
+      const radioGroupMapped = radioGroupFn({
+        element: radioGroup,
+      } as UIComponentParams<RadioGroupElement>);
+      return {
+        element: 'SnapUIRadioGroup',
+        props: {
+          ...radioGroupMapped.props,
+          id: radioGroup.props.name,
+          label: element.props.label,
+          name: radioGroup.props.name,
           form,
           error: element.props.error,
         },
