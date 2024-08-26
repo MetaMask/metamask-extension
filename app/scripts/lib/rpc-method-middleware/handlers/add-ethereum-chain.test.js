@@ -205,8 +205,7 @@ describe('addEthereumChainHandler', () => {
       // TODO: Fix below tests, and update to consider new logic
       // TODO: Fix below tests, and update to consider new logic
 
-      // eslint-disable-next-line jest/no-disabled-tests
-      it.skip('switches to the existing networkConfiguration if the proposed networkConfiguration has the same rpcUrl as an existing networkConfiguration and the currently selected network doesnt match the requested one', async () => {
+      it('switches to the existing networkConfiguration if the proposed networkConfiguration has the same rpcUrl as an existing networkConfiguration and the currently selected network doesnt match the requested one', async () => {
         const mocks = makeMocks({
           permissionsFeatureFlagIsActive: false,
           overrides: {
@@ -306,8 +305,7 @@ describe('addEthereumChainHandler', () => {
   });
 
   describe('with `endowment:permitted-chains` permissioning active', () => {
-    // eslint-disable-next-line jest/no-disabled-tests
-    it.skip('creates a new network configuration for the given chainid, requests `endowment:permitted-chains` permission and switches to it if no networkConfigurations with the same chainId exist', async () => {
+    it('creates a new network configuration for the given chainid, requests `endowment:permitted-chains` permission and switches to it if no networkConfigurations with the same chainId exist', async () => {
       const mocks = makeMocks({
         permissionedChainIds: [],
         permissionsFeatureFlagIsActive: true,
@@ -384,8 +382,7 @@ describe('addEthereumChainHandler', () => {
           expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123);
         });
 
-        // eslint-disable-next-line jest/no-disabled-tests
-        it.skip('create a new networkConfiguration, requests permissions and switches to it, if the requested chainId does not have permittedChains permission granted for requesting origin', async () => {
+        it('create a new networkConfiguration, requests permissions and switches to it, if the requested chainId does not have permittedChains permission granted for requesting origin', async () => {
           const mocks = makeMocks({
             permissionsFeatureFlagIsActive: true,
             permissionedChainIds: [],
@@ -432,8 +429,7 @@ describe('addEthereumChainHandler', () => {
         });
       });
 
-      // eslint-disable-next-line jest/no-disabled-tests
-      it.skip('should switch to the existing networkConfiguration if the proposed networkConfiguration has the same rpcUrl as the one already in state (and is not currently selected)', async () => {
+      it('should switch to the existing networkConfiguration if the proposed networkConfiguration has the same rpcUrl as the one already in state (and is not currently selected)', async () => {
         const mocks = makeMocks({
           permissionedChainIds: [createMockOptimismConfiguration().chainId],
           permissionsFeatureFlagIsActive: true,
@@ -561,9 +557,7 @@ describe('addEthereumChainHandler', () => {
     expect(mocks.setActiveNetwork).not.toHaveBeenCalled();
   });
 
-  // TODO: execute once the todo on add-ethereum-chain.js will be fixed
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('should return an error if nativeCurrency.symbol does not match an existing network with the same chainId', async () => {
+  it('should return an error if nativeCurrency.symbol does not match an existing network with the same chainId', async () => {
     const mocks = makeMocks({
       permissionedChainIds: [CHAIN_IDS.MAINNET],
       permissionsFeatureFlagIsActive: true,
