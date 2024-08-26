@@ -3,6 +3,8 @@ import { act } from '@testing-library/react';
 import configureStore from '../../../../../store/store';
 import { renderWithProvider } from '../../../../../../test/jest';
 import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import EditGasToolTip from './edit-gas-tooltip';
 
 jest.mock('../../../../../store/actions', () => ({
@@ -36,7 +38,7 @@ const HIGH_GAS_OPTION = {
 const render = async (componentProps) => {
   const mockStore = {
     metamask: {
-      providerConfig: {},
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       accountsByChainId: {
         '0x1': {
           '0xAddress': {

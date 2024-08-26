@@ -3,6 +3,7 @@
  */
 import { EthAccountType } from '@metamask/keyring-api';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../test/stub/networks';
 import Backup from './backup';
 
 function getMockPreferencesController() {
@@ -105,15 +106,17 @@ const jsonData = JSON.stringify({
     },
   },
   network: {
-    networkConfigurations: {
-      'network-configuration-id-1': {
+    ...mockNetworkState(
+      {
+        id: 'network-configuration-id-1',
         chainId: '0x539',
         nickname: 'Localhost 8545',
         rpcPrefs: {},
         rpcUrl: 'http://localhost:8545',
         ticker: 'ETH',
       },
-      'network-configuration-id-2': {
+      {
+        id: 'network-configuration-id-2',
         chainId: '0x38',
         nickname: 'Binance Smart Chain Mainnet',
         rpcPrefs: {
@@ -122,7 +125,8 @@ const jsonData = JSON.stringify({
         rpcUrl: 'https://bsc-dataseed1.binance.org',
         ticker: 'BNB',
       },
-      'network-configuration-id-3': {
+      {
+        id: 'network-configuration-id-3',
         chainId: '0x61',
         nickname: 'Binance Smart Chain Testnet',
         rpcPrefs: {
@@ -131,7 +135,8 @@ const jsonData = JSON.stringify({
         rpcUrl: 'https://data-seed-prebsc-1-s1.binance.org:8545',
         ticker: 'tBNB',
       },
-      'network-configuration-id-4': {
+      {
+        id: 'network-configuration-id-4',
         chainId: '0x89',
         nickname: 'Polygon Mainnet',
         rpcPrefs: {
@@ -140,7 +145,7 @@ const jsonData = JSON.stringify({
         rpcUrl: 'https://polygon-rpc.com',
         ticker: 'MATIC',
       },
-    },
+    ),
   },
   preferences: {
     useBlockie: false,
@@ -164,7 +169,6 @@ const jsonData = JSON.stringify({
       showTestNetworks: true,
       smartTransactionsOptInStatus: false,
       useNativeCurrencyAsPrimaryCurrency: true,
-      showTokenAutodetectModal: false,
     },
     ipfsGateway: 'dweb.link',
     ledgerTransportType: 'webhid',
