@@ -6,6 +6,10 @@ import {
 } from '../../multichain-api/caip25permissions';
 import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
+import {
+  validNotifications,
+  validRpcMethods,
+} from '../../multichain-api/scope';
 import * as EthChainUtils from './ethereum-chain-utils';
 
 describe('Ethereum Chain Utils', () => {
@@ -194,6 +198,41 @@ describe('Ethereum Chain Utils', () => {
           },
         });
         expect(mocks.setActiveNetwork).toHaveBeenCalledWith('mainnet');
+      });
+
+      it('updates the CAIP-25 caveat with the chain added', async () => {
+        const { mocks, switchChain } = createMockedSwitchChain();
+        mocks.getCaveat.mockReturnValue({
+          value: {
+            requiredScopes: {},
+            optionalScopes: {},
+            isMultichainOrigin: false,
+          },
+        });
+        await switchChain(
+          'example.com',
+          '0x1',
+          { foo: 'bar' },
+          'mainnet',
+          'approvalFlowId',
+        );
+
+        expect(mocks.updateCaveat).toHaveBeenCalledWith(
+          'example.com',
+          Caip25EndowmentPermissionName,
+          Caip25CaveatType,
+          {
+            requiredScopes: {},
+            optionalScopes: {
+              'eip155:1': {
+                methods: validRpcMethods,
+                notifications: validNotifications,
+                accounts: [],
+              },
+            },
+            isMultichainOrigin: false,
+          },
+        );
       });
 
       it('should handle errors if the permittedChains approval is rejected', async () => {
