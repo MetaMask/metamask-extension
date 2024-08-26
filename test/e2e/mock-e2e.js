@@ -681,6 +681,13 @@ async function setupMocking(
     }
   });
 
+  // Catch-all mock for any request not covered by the above mocks
+  await server.forAnyRequest().thenCallback(() => {
+    return {
+      statusCode: 200,
+    };
+  });
+
   return { mockedEndpoint, getPrivacyReport };
 }
 
