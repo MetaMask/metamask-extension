@@ -25,9 +25,7 @@ describe('useApproveTokenSimulation', () => {
   });
 
   it('returns the token id for NFT', async () => {
-    const useIsNFTMock = jest
-      .fn()
-      .mockImplementation(() => ({ isNFT: true, decimals: '18' }));
+    const useIsNFTMock = jest.fn().mockImplementation(() => ({ isNFT: true }));
 
     const useDecodedTransactionDataMock = jest.fn().mockImplementation(() => ({
       pending: false,
