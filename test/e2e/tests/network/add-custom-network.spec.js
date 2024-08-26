@@ -537,7 +537,7 @@ describe('Custom network', function () {
       );
     });
 
-    it.only('delete the Arbitrum network', async function () {
+    it('delete the Arbitrum network', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
@@ -605,7 +605,7 @@ describe('Custom network', function () {
       );
     });
 
-    it("when the network details validation toggle is turned on, validate user inserted details against data from 'chainid.network'", async function () {
+    it.only("when the network details validation toggle is turned on, validate user inserted details against data from 'chainid.network'", async function () {
       async function mockRPCURLAndChainId(mockServer) {
         return [
           await mockServer

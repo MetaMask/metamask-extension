@@ -143,6 +143,7 @@ const PopularNetworkList = ({
             paddingBottom={4}
             paddingTop={4}
             className="new-network-list__list-of-networks"
+            data-testid={`popular-network-${network.chainId}`}
             onMouseEnter={handleMouseLeave}
           >
             <Box display={Display.Flex} alignItems={AlignItems.center}>

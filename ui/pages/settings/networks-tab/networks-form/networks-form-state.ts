@@ -11,26 +11,30 @@ import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
  * @param existingNetwork
  */
 export const useNetworkFormState = (existingNetwork?: UpdateNetworkFields) => {
-  const [name, setName] = useState<string>();
-  const [chainId, setChainId] = useState<string>();
-  const [ticker, setTicker] = useState<string>();
+  const [name, setName] = useState<string>('');
+  const [chainId, setChainId] = useState<string>('');
+  const [ticker, setTicker] = useState<string>('');
 
   const [rpcUrls, setRpcUrls] = useState<{
-    rpcEndpoints?: { name?: string; url: string; type: RpcEndpointType }[];
+    rpcEndpoints: { name?: string; url: string; type: RpcEndpointType }[];
     defaultRpcEndpointIndex?: number;
-  }>({});
+  }>({
+    rpcEndpoints: [],
+    defaultRpcEndpointIndex: undefined,
+  });
 
   const [blockExplorers, setBlockExplorers] = useState<{
-    blockExplorerUrls?: string[];
+    blockExplorerUrls: string[];
     defaultBlockExplorerUrlIndex?: number;
-  }>({});
+  }>({
+    blockExplorerUrls: [],
+    defaultBlockExplorerUrlIndex: undefined,
+  });
 
   useEffect(() => {
-    setName(existingNetwork?.name);
-    setChainId(
-      existingNetwork ? hexToDecimal(existingNetwork.chainId) : undefined,
-    );
-    setTicker(existingNetwork?.nativeCurrency);
+    setName(existingNetwork?.name ?? '');
+    setChainId(existingNetwork ? hexToDecimal(existingNetwork.chainId) : '');
+    setTicker(existingNetwork?.nativeCurrency ?? '');
     setRpcUrls({
       rpcEndpoints: existingNetwork?.rpcEndpoints ?? [],
       defaultRpcEndpointIndex: existingNetwork?.defaultRpcEndpointIndex,
@@ -41,7 +45,6 @@ export const useNetworkFormState = (existingNetwork?: UpdateNetworkFields) => {
       defaultBlockExplorerUrlIndex:
         existingNetwork?.defaultBlockExplorerUrlIndex,
     });
-    // Set initial state only chain switch only
   }, [existingNetwork?.chainId]);
 
   return {
@@ -56,11 +59,17 @@ export const useNetworkFormState = (existingNetwork?: UpdateNetworkFields) => {
     blockExplorers,
     setBlockExplorers,
     clear: () => {
-      setName(undefined);
-      setChainId(undefined);
-      setTicker(undefined);
-      setRpcUrls({});
-      setBlockExplorers({});
+      setName('');
+      setChainId('');
+      setTicker('');
+      setRpcUrls({
+        rpcEndpoints: [],
+        defaultRpcEndpointIndex: undefined,
+      });
+      setBlockExplorers({
+        blockExplorerUrls: [],
+        defaultBlockExplorerUrlIndex: undefined,
+      });
     },
   };
 };
