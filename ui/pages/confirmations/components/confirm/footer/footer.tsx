@@ -45,6 +45,13 @@ import {
   AccountType,
   CustodyStatus,
 } from '../../../../../../shared/constants/custody';
+
+type MMITransactionMeta = TransactionMeta & {
+  txParams: { from: string };
+  custodyStatus: CustodyStatus;
+  metadata: Record<string, any>;
+};
+
 ///: END:ONLY_INCLUDE_IF
 
 const ConfirmButton = ({
@@ -131,20 +138,20 @@ const Footer = () => {
   const mmiActions = mmiActionsFactory();
 
   const mmiApprovalFlow = () => {
-    if (currentConfirmation && accountType === AccountType.CUSTODY) {
-      // @ts-expect-error
-      currentConfirmation.custodyStatus = CustodyStatus.CREATED;
-      // @ts-expect-error
-      currentConfirmation.metadata = currentConfirmation.metadata || {};
+    const confirmation = currentConfirmation as MMITransactionMeta;
+
+    if (confirmation && accountType === AccountType.CUSTODY) {
+      confirmation.custodyStatus = CustodyStatus.CREATED;
+      confirmation.metadata = confirmation.metadata || {};
 
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
 
-      const txId = currentConfirmation.id;
-      // @ts-expect-error
-      const fromAddress = currentConfirmation.txParams.from;
+      const txId = confirmation.id;
+      const fromAddress = confirmation.txParams.from;
       const closeNotification = false;
+
       // @ts-expect-error
-      dispatch(updateAndApproveTx(currentConfirmation, true, '')).then(() => {
+      dispatch(updateAndApproveTx(confirmation, true, '')).then(() => {
         showCustodianDeepLink({
           dispatch,
           mmiActions,
@@ -156,11 +163,9 @@ const Footer = () => {
           onDeepLinkFetched: () => undefined,
           onDeepLinkShown: () => {
             dispatch(clearConfirmTransaction());
-            // history.push(mostRecentOverviewPage);
           },
           showCustodyConfirmLink,
         });
-        // history.push(mostRecentOverviewPage);
       });
     } else {
       // Non Custody accounts follow normal flow

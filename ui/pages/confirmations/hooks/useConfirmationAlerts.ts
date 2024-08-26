@@ -32,7 +32,9 @@ function useTransactionAlerts(): Alert[] {
   const networkBusyAlerts = useNetworkBusyAlerts();
   const noGasPriceAlerts = useNoGasPriceAlerts();
   const pendingTransactionAlerts = usePendingTransactionAlerts();
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
+  ///: END:ONLY_INCLUDE_IF
   const queuedConfirmationsAlerts = useQueuedConfirmationsAlerts();
 
   return useMemo(
@@ -44,7 +46,9 @@ function useTransactionAlerts(): Alert[] {
       ...networkBusyAlerts,
       ...noGasPriceAlerts,
       ...pendingTransactionAlerts,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       ...signingOrSubmittingAlerts,
+      ///: END:ONLY_INCLUDE_IF
       ...queuedConfirmationsAlerts,
     ],
     [
@@ -55,7 +59,9 @@ function useTransactionAlerts(): Alert[] {
       networkBusyAlerts,
       noGasPriceAlerts,
       pendingTransactionAlerts,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       signingOrSubmittingAlerts,
+      ///: END:ONLY_INCLUDE_IF
       queuedConfirmationsAlerts,
     ],
   );
