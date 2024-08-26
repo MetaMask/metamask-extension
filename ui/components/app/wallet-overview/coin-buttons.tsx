@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   useHistory,
@@ -6,9 +6,20 @@ import {
   useLocation,
   ///: END:ONLY_INCLUDE_IF
 } from 'react-router-dom';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { toHex } from '@metamask/controller-utils';
+///: END:ONLY_INCLUDE_IF
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  isCaipChainId,
+  ///: END:ONLY_INCLUDE_IF
+  CaipChainId,
+} from '@metamask/utils';
 
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { ChainId } from '../../../../shared/constants/network';
+///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { CaipChainId } from '@metamask/utils';
 import {
   getMmiPortfolioEnabled,
   getMmiPortfolioUrl,
@@ -22,14 +33,12 @@ import {
   SEND_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
-  SwapsEthToken,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  SwapsEthToken,
   getCurrentKeyring,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  getMetaMetricsId,
-  ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
+  getSelectedAccount,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -54,8 +63,9 @@ import {
 import { Box, Icon, IconName } from '../../component-library';
 import IconButton from '../../ui/icon-button';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
-import useRamps from '../../../hooks/experiences/useRamps';
+import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+import useBridging from '../../../hooks/bridge/useBridging';
+import { ReceiveModal } from '../../multichain/receive-modal';
 ///: END:ONLY_INCLUDE_IF
 
 const CoinButtons = ({
@@ -69,22 +79,26 @@ const CoinButtons = ({
   ///: END:ONLY_INCLUDE_IF
   classPrefix = 'coin',
 }: {
-  classPrefix?: string;
-  isBuyableChain: boolean;
-  isSigningEnabled: boolean;
-  isSwapsChain: boolean;
-  isBridgeChain: boolean;
   chainId: `0x${string}` | CaipChainId | number;
+  isSwapsChain: boolean;
+  isSigningEnabled: boolean;
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  isBridgeChain: boolean;
+  isBuyableChain: boolean;
   defaultSwapsToken?: SwapsEthToken;
+  ///: END:ONLY_INCLUDE_IF
+  classPrefix?: string;
 }) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
 
   const trackEvent = useContext(MetaMetricsContext);
+  const [showReceiveModal, setShowReceiveModal] = useState(false);
+
+  const { address: selectedAddress } = useSelector(getSelectedAccount);
   const history = useHistory();
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
-  const metaMetricsId = useSelector(getMetaMetricsId);
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   ///: END:ONLY_INCLUDE_IF
@@ -96,7 +110,6 @@ const CoinButtons = ({
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       { condition: !isBuyableChain, message: '' },
       ///: END:ONLY_INCLUDE_IF
-      { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
     sendButton: [
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
@@ -128,6 +141,16 @@ const CoinButtons = ({
     }
     return contents;
   };
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  const getChainId = (): CaipChainId | ChainId => {
+    if (isCaipChainId(chainId)) {
+      return chainId as CaipChainId;
+    }
+    // Otherwise we assume that's an EVM chain ID, so use the usual 0x prefix
+    return toHex(chainId) as ChainId;
+  };
+  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
@@ -187,19 +210,24 @@ const CoinButtons = ({
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const { openBuyCryptoInPdapp } = useRamps();
+
+  const { openBridgeExperience } = useBridging();
   ///: END:ONLY_INCLUDE_IF
 
   const handleSendOnClick = useCallback(async () => {
-    trackEvent({
-      event: MetaMetricsEventName.NavSendButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        token_symbol: 'ETH',
-        location: 'Home',
-        text: 'Send',
-        chain_id: chainId,
+    trackEvent(
+      {
+        event: MetaMetricsEventName.NavSendButtonClicked,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          token_symbol: 'ETH',
+          location: 'Home',
+          text: 'Send',
+          chain_id: chainId,
+        },
       },
-    });
+      { excludeMetaMetricsId: false },
+    );
     await dispatch(startNewDraftTransaction({ type: AssetType.native }));
     history.push(SEND_ROUTE);
   }, [chainId]);
@@ -247,7 +275,7 @@ const CoinButtons = ({
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const handleBuyAndSellOnClick = useCallback(() => {
-    openBuyCryptoInPdapp();
+    openBuyCryptoInPdapp(getChainId());
     trackEvent({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
@@ -261,44 +289,15 @@ const CoinButtons = ({
   }, [chainId, defaultSwapsToken]);
 
   const handleBridgeOnClick = useCallback(() => {
-    if (isBridgeChain) {
-      const portfolioUrl = getPortfolioUrl(
-        'bridge',
-        'ext_bridge_button',
-        metaMetricsId,
-      );
-      global.platform.openTab({
-        url: `${portfolioUrl}${
-          location.pathname.includes('asset') ? '&token=native' : ''
-        }`,
-      });
-      trackEvent({
-        category: MetaMetricsEventCategory.Navigation,
-        event: MetaMetricsEventName.BridgeLinkClicked,
-        properties: {
-          location: 'Home',
-          text: 'Bridge',
-          chain_id: chainId,
-          token_symbol: 'ETH',
-        },
-      });
+    if (!defaultSwapsToken) {
+      return;
     }
-  }, [isBridgeChain, chainId, metaMetricsId]);
-
-  const handlePortfolioOnClick = useCallback(() => {
-    const url = getPortfolioUrl('', 'ext_portfolio_button', metaMetricsId);
-    global.platform.openTab({ url });
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.PortfolioLinkClicked,
-      properties: {
-        location: 'Home',
-        text: 'Portfolio',
-        chain_id: chainId,
-        token_symbol: 'ETH',
-      },
-    });
-  }, [chainId, metaMetricsId]);
+    openBridgeExperience(
+      'Home',
+      defaultSwapsToken,
+      location.pathname.includes('asset') ? '&token=native' : '',
+    );
+  }, [defaultSwapsToken, location, openBridgeExperience]);
   ///: END:ONLY_INCLUDE_IF
 
   return (
@@ -310,7 +309,7 @@ const CoinButtons = ({
           Icon={
             <Icon name={IconName.PlusMinus} color={IconColor.primaryInverse} />
           }
-          disabled={!isBuyableChain || !isSigningEnabled}
+          disabled={!isBuyableChain}
           data-testid={`${classPrefix}-overview-buy`}
           label={t('buyAndSell')}
           onClick={handleBuyAndSellOnClick}
@@ -379,17 +378,28 @@ const CoinButtons = ({
         ///: END:ONLY_INCLUDE_IF
       }
       {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        <IconButton
-          className={`${classPrefix}-overview__button`}
-          data-testid={`${classPrefix}-overview-portfolio`}
-          Icon={
-            <Icon name={IconName.Diagram} color={IconColor.primaryInverse} />
-          }
-          label={t('portfolio')}
-          onClick={handlePortfolioOnClick}
-        />
-        ///: END:ONLY_INCLUDE_IF
+        <>
+          {showReceiveModal && (
+            <ReceiveModal
+              address={selectedAddress}
+              onClose={() => setShowReceiveModal(false)}
+            />
+          )}
+          <IconButton
+            className={`${classPrefix}-overview__button`}
+            data-testid={`${classPrefix}-overview-receive`}
+            Icon={
+              <Icon
+                name={IconName.ScanBarcode}
+                color={IconColor.primaryInverse}
+              />
+            }
+            label={t('receive')}
+            onClick={() => {
+              setShowReceiveModal(true);
+            }}
+          />
+        </>
       }
     </Box>
   );

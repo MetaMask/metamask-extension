@@ -11,6 +11,7 @@ import {
   SEPOLIA_DISPLAY_NAME,
   CHAIN_IDS,
 } from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { AccountListItem, AccountListItemMenuTypes } from '.';
 
 const mockAccount = {
@@ -26,12 +27,13 @@ const mockAccount = {
 const mockNonEvmAccount = {
   ...mockAccount,
   id: 'b7893c59-e376-4cc0-93ad-05ddaab574a6',
-  addres: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
+  address: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
   type: 'bip122:p2wpkh',
 };
 
 const DEFAULT_PROPS = {
   account: mockAccount,
+  selected: false,
   onClick: jest.fn(),
 };
 
@@ -95,9 +97,7 @@ describe('AccountListItem', () => {
     const { container } = render({ account: mockNonEvmAccount });
     expect(screen.getByText(mockAccount.metadata.name)).toBeInTheDocument();
     expect(
-      screen.getByText(
-        shortenAddress(toChecksumHexAddress(mockAccount.address)),
-      ),
+      screen.getByText(shortenAddress(mockNonEvmAccount.address)),
     ).toBeInTheDocument();
     expect(
       document.querySelector('[title="$100,000.00 USD"]'),
@@ -208,9 +208,9 @@ describe('AccountListItem', () => {
           },
           {
             metamask: {
-              providerConfig: {
-                chainId: CHAIN_IDS.SEPOLIA,
-                nickname: SEPOLIA_DISPLAY_NAME,
+              ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
+              preferences: {
+                showFiatInTestnets: false,
               },
             },
           },
@@ -244,10 +244,11 @@ describe('AccountListItem', () => {
           },
           {
             metamask: {
-              providerConfig: {
+              ...mockNetworkState({
                 chainId: CHAIN_IDS.SEPOLIA,
                 nickname: SEPOLIA_DISPLAY_NAME,
-              },
+                ticker: 'ETH',
+              }),
               preferences: {
                 showFiatInTestnets: true,
               },
@@ -265,7 +266,7 @@ describe('AccountListItem', () => {
           '[data-testid="avatar-group"]',
         );
 
-        const expectedBalance = '$0.00';
+        const expectedBalance = '$3.31';
 
         expect(firstCurrencyDisplay).toBeInTheDocument();
         expect(firstCurrencyDisplay.firstChild.textContent).toContain(
@@ -277,9 +278,18 @@ describe('AccountListItem', () => {
       });
 
       it('renders fiat for non-EVM account', () => {
-        const { container } = render({
-          account: mockNonEvmAccount,
-        });
+        const { container } = render(
+          {
+            account: mockNonEvmAccount,
+          },
+          {
+            metamask: {
+              preferences: {
+                showFiatInTestnets: true,
+              },
+            },
+          },
+        );
 
         const firstCurrencyDisplay = container.querySelector(
           '[data-testid="first-currency-display"]',

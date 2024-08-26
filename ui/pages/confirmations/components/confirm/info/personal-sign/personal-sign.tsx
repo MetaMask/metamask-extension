@@ -7,6 +7,7 @@ import {
   ConfirmInfoRowText,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../selectors';
 import {
@@ -50,7 +51,7 @@ const PersonalSignInfo: React.FC = () => {
       )}
       <ConfirmInfoSection>
         <ConfirmInfoAlertRow
-          alertKey="requestFrom"
+          alertKey={RowAlertKey.RequestFrom}
           ownerId={currentConfirmation.id}
           label={t('requestFrom')}
           tooltip={isSIWE ? undefined : t('requestFromInfo')}
@@ -58,9 +59,13 @@ const PersonalSignInfo: React.FC = () => {
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoAlertRow>
         {isSIWE && (
-          <ConfirmInfoRow label={t('signingInWith')}>
+          <ConfirmInfoAlertRow
+            alertKey={RowAlertKey.SigningInWith}
+            label={t('signingInWith')}
+            ownerId={currentConfirmation.id}
+          >
             <ConfirmInfoRowAddress address={from} />
-          </ConfirmInfoRow>
+          </ConfirmInfoAlertRow>
         )}
       </ConfirmInfoSection>
       <ConfirmInfoSection>

@@ -126,7 +126,10 @@ export default class DomainInput extends Component {
         >
           {hasSelectedAddress ? (
             <>
-              <div className="ens-input__wrapper__input ens-input__wrapper__input--selected">
+              <div
+                className="ens-input__wrapper__input ens-input__wrapper__input--selected"
+                data-testid="ens-input-selected"
+              >
                 <AvatarAccount
                   variant={
                     useBlockie
@@ -179,7 +182,7 @@ export default class DomainInput extends Component {
               <ButtonIcon
                 className="ens-input__wrapper__action-icon-button"
                 onClick={() => {
-                  if (userInput.length > 0) {
+                  if (userInput?.length > 0) {
                     this.props.onReset();
                   } else {
                     this.props.scanQrCode();

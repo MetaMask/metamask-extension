@@ -141,7 +141,7 @@ import {
 import { GAS_FEES_LEARN_MORE_URL } from '../../../../shared/lib/ui-utils';
 import ExchangeRateDisplay from '../exchange-rate-display';
 import InfoTooltip from '../../../components/ui/info-tooltip';
-import useRamps from '../../../hooks/experiences/useRamps';
+import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 import SlippageNotificationModal from './slippage-notification-modal';
 
@@ -963,17 +963,19 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   }, [dispatch, trackViewQuotePageLoadedEvent, reviewSwapClickedTimestamp]);
 
   useEffect(() => {
-    // if smart transaction error is turned off, reset submit clicked boolean
     if (
-      !currentSmartTransactionsEnabled &&
-      currentSmartTransactionsError &&
-      submitClicked
+      (!currentSmartTransactionsEnabled &&
+        currentSmartTransactionsError &&
+        submitClicked) ||
+      (isSmartTransaction && !swapsSTXLoading && submitClicked)
     ) {
       setSubmitClicked(false);
     }
   }, [
     currentSmartTransactionsEnabled,
     currentSmartTransactionsError,
+    isSmartTransaction,
+    swapsSTXLoading,
     submitClicked,
   ]);
 

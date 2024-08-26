@@ -3,35 +3,16 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import {
-  CHAIN_IDS,
-  GOERLI_DISPLAY_NAME,
-  MAINNET_DISPLAY_NAME,
-  NETWORK_TYPES,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { getIntlLocale } from '../../../ducks/locale/locale';
+import { setBackgroundConnection } from '../../../store/background-connection';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import EthOverview from './eth-overview';
-
-// Mock BUYABLE_CHAINS_MAP
-jest.mock('../../../../shared/constants/network', () => ({
-  ...jest.requireActual('../../../../shared/constants/network'),
-  BUYABLE_CHAINS_MAP: {
-    // MAINNET
-    '0x1': {
-      nativeCurrency: 'ETH',
-      network: 'ethereum',
-    },
-    // POLYGON
-    '0x89': {
-      nativeCurrency: 'MATIC',
-      network: 'polygon',
-    },
-  },
-}));
 
 jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
   return {
@@ -53,21 +34,7 @@ describe('EthOverview', () => {
 
   const mockStore = {
     metamask: {
-      providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
-        nickname: MAINNET_DISPLAY_NAME,
-        type: NETWORK_TYPES.MAINNET,
-        ticker: 'ETH',
-      },
-      networkConfigurations: {
-        testNetworkConfigurationId: {
-          rpcUrl: 'https://testrpc.com',
-          chainId: '0x89',
-          nickname: 'Custom Mainnet RPC',
-          type: 'rpc',
-          id: 'custom-mainnet',
-        },
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
           '0x1': { address: '0x1', balance: '0x1F4' },
@@ -137,13 +104,17 @@ describe('EthOverview', () => {
           accounts: [],
         },
       ],
+      balances: {},
+    },
+    ramps: {
+      buyableChains: defaultBuyableChains,
     },
   };
 
   const store = configureMockStore([thunk])(mockStore);
   const ETH_OVERVIEW_BUY = 'eth-overview-buy';
   const ETH_OVERVIEW_BRIDGE = 'eth-overview-bridge';
-  const ETH_OVERVIEW_PORTFOLIO = 'eth-overview-portfolio';
+  const ETH_OVERVIEW_RECEIVE = 'eth-overview-receive';
   const ETH_OVERVIEW_SWAP = 'token-overview-button-swap';
   const ETH_OVERVIEW_SEND = 'eth-overview-send';
   const ETH_OVERVIEW_PRIMARY_CURRENCY = 'eth-overview__primary-currency';
@@ -161,6 +132,7 @@ describe('EthOverview', () => {
         },
       });
       openTabSpy = jest.spyOn(global.platform, 'openTab');
+      setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() });
     });
 
     beforeEach(() => {
@@ -181,6 +153,7 @@ describe('EthOverview', () => {
 
     it('should show the cached primary balance', async () => {
       const mockedStoreWithCachedBalance = {
+        ...mockStore,
         metamask: {
           ...mockStore.metamask,
           accounts: {
@@ -215,19 +188,7 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          providerConfig: {
-            ...mockStore.metamask.providerConfig,
-            chainId: '0xa86a',
-          },
-          networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x89',
-              nickname: 'Custom Mainnet RPC',
-              type: 'rpc',
-              id: 'custom-mainnet',
-            },
-          },
+          ...mockNetworkState({ chainId: '0xa86a' }),
         },
       };
       const mockedStore = configureMockStore([thunk])(mockedAvalancheStore);
@@ -267,6 +228,7 @@ describe('EthOverview', () => {
 
     it('should open the MMI PD Swaps URI when clicking on Swap button with a Custody account', async () => {
       const mockedStoreWithCustodyKeyring = {
+        ...mockStore,
         metamask: {
           ...mockStore.metamask,
           mmiConfiguration: {
@@ -313,19 +275,7 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          providerConfig: {
-            ...mockStore.metamask.providerConfig,
-            chainId: '0xfa',
-          },
-          networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x89',
-              nickname: 'Custom Mainnet RPC',
-              type: 'rpc',
-              id: 'custom-mainnet',
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
         },
       };
       const mockedStore = configureMockStore([thunk])(mockedFantomStore);
@@ -345,26 +295,8 @@ describe('EthOverview', () => {
 
     it('should always show the Portfolio button', () => {
       const { queryByTestId } = renderWithProvider(<EthOverview />, store);
-      const portfolioButton = queryByTestId(ETH_OVERVIEW_PORTFOLIO);
+      const portfolioButton = queryByTestId(ETH_OVERVIEW_RECEIVE);
       expect(portfolioButton).toBeInTheDocument();
-    });
-
-    it('should open the Portfolio URI when clicking on Portfolio button', async () => {
-      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
-
-      const portfolioButton = queryByTestId(ETH_OVERVIEW_PORTFOLIO);
-
-      expect(portfolioButton).toBeInTheDocument();
-      expect(portfolioButton).not.toBeDisabled();
-
-      fireEvent.click(portfolioButton);
-      expect(openTabSpy).toHaveBeenCalledTimes(1);
-
-      await waitFor(() =>
-        expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(`?metamaskEntry=ext`),
-        }),
-      );
     });
 
     it('should always show the Buy button regardless of current chain Id', () => {
@@ -375,13 +307,10 @@ describe('EthOverview', () => {
 
     it('should have the Buy native token button disabled if chain id is not part of supported buyable chains', () => {
       const mockedStoreWithUnbuyableChainId = {
+        ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          providerConfig: {
-            type: 'test',
-            chainId: CHAIN_IDS.GOERLI,
-            nickname: GOERLI_DISPLAY_NAME,
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -399,22 +328,10 @@ describe('EthOverview', () => {
 
     it('should have the Buy native token enabled if chain id is part of supported buyable chains', () => {
       const mockedStoreWithUnbuyableChainId = {
+        ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          providerConfig: {
-            chainId: '0x89',
-            type: 'rpc',
-            id: 'custom-mainnet',
-          },
-          networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x89',
-              nickname: 'Custom Mainnet RPC',
-              type: 'rpc',
-              id: 'custom-mainnet',
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -432,22 +349,10 @@ describe('EthOverview', () => {
 
     it('should open the Buy native token URI when clicking on Buy button for a buyable chain ID', async () => {
       const mockedStoreWithBuyableChainId = {
+        ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          providerConfig: {
-            chainId: '0x89',
-            type: 'rpc',
-            id: 'custom-mainnet',
-          },
-          networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x89',
-              nickname: 'Custom Mainnet RPC',
-              type: 'rpc',
-              id: 'custom-mainnet',
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -478,7 +383,6 @@ describe('EthOverview', () => {
 
   describe('Disabled buttons when an account cannot sign transactions', () => {
     const buttonTestCases = [
-      { testId: ETH_OVERVIEW_BUY, buttonText: 'Buy & Sell' },
       { testId: ETH_OVERVIEW_SEND, buttonText: 'Send' },
       { testId: ETH_OVERVIEW_SWAP, buttonText: 'Swap' },
       { testId: ETH_OVERVIEW_BRIDGE, buttonText: 'Bridge' },

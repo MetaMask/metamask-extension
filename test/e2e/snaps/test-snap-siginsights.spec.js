@@ -4,7 +4,7 @@ const {
   defaultGanacheOptions,
   openDapp,
   unlockWallet,
-  switchToNotificationWindow,
+  tempToggleSettingRedesignedConfirmations,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -17,11 +17,6 @@ describe('Test Snap Signature Insights', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            disabledRpcMethodPreferences: {
-              eth_sign: true,
-            },
-          })
           .build(),
         ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
@@ -29,6 +24,7 @@ describe('Test Snap Signature Insights', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await tempToggleSettingRedesignedConfirmations(driver);
 
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
@@ -43,7 +39,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#connectsignature-insights');
 
         // switch to metamask extension and click connect
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -58,7 +54,7 @@ describe('Test Snap Signature Insights', function () {
 
         await driver.waitForSelector({ text: 'OK' });
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -69,8 +65,6 @@ describe('Test Snap Signature Insights', function () {
         // open the test-dapp page
         await openDapp(driver);
 
-        // poll windowHandles and switch to test-dapp
-
         // TEST ONE: personal sign
         // find and scroll to personal sign and click sign
         const personalSignButton1 = await driver.findElement('#personalSign');
@@ -78,7 +72,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#personalSign');
 
         // switch back to MetaMask window and switch to tx insights pane
-        await switchToNotificationWindow(driver, 4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // wait for and click sign
         await clickSignOnSignatureConfirmation({
@@ -96,7 +90,9 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
         // click sign button
-        await driver.clickElement('[data-testid="snapInsightsButtonConfirm"]');
+        await driver.clickElementAndWaitForWindowToClose(
+          '[data-testid="snapInsightsButtonConfirm"]',
+        );
 
         // switch back to test-dapp window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -114,7 +110,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedData');
 
         // switch back to MetaMask window and switch to tx insights pane
-        await switchToNotificationWindow(driver, 4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // wait for and click sign
         await clickSignOnSignatureConfirmation({
@@ -132,7 +128,9 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
         // click sign button
-        await driver.clickElement('[data-testid="snapInsightsButtonConfirm"]');
+        await driver.clickElementAndWaitForWindowToClose(
+          '[data-testid="snapInsightsButtonConfirm"]',
+        );
 
         // switch back to test-dapp window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -150,7 +148,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedDataV3');
 
         // switch back to MetaMask window and switch to tx insights pane
-        await switchToNotificationWindow(driver, 4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // click down arrow
         await driver.waitForSelector('.fa-arrow-down');
@@ -172,7 +170,9 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
         // click sign button
-        await driver.clickElement('[data-testid="snapInsightsButtonConfirm"]');
+        await driver.clickElementAndWaitForWindowToClose(
+          '[data-testid="snapInsightsButtonConfirm"]',
+        );
 
         // switch back to test-dapp window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -190,7 +190,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedDataV4');
 
         // switch back to MetaMask window and switch to tx insights pane
-        await switchToNotificationWindow(driver, 4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // click down arrow
         await driver.waitForSelector('.fa-arrow-down');
@@ -212,7 +212,9 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
         // click sign button
-        await driver.clickElement('[data-testid="snapInsightsButtonConfirm"]');
+        await driver.clickElementAndWaitForWindowToClose(
+          '[data-testid="snapInsightsButtonConfirm"]',
+        );
 
         // switch back to test-dapp window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -220,39 +222,6 @@ describe('Test Snap Signature Insights', function () {
         // check results of test
         await driver.waitForSelector({
           text: '0xcd2f9c55840f5e1bcf61812e93c1932485b524ca673b36355482a4fbdf52f692684f92b4f4ab6f6c8572dacce46bd107da154be1c06939b855ecce57a1616ba71b',
-          tag: 'span',
-        });
-
-        // TEST FIVE: eth_sign
-
-        // scroll to and click eth sign button
-        const ethSignButton1 = await driver.findElement('#ethSign');
-        await driver.scrollToElement(ethSignButton1);
-        await driver.clickElement('#ethSign');
-
-        // switch back to MetaMask window and switch to tx insights pane
-        await switchToNotificationWindow(driver, 4);
-
-        // wait for and click sign
-        await clickSignOnSignatureConfirmation({
-          driver,
-          snapSigInsights: true,
-          locatorID: '#ethSign',
-        });
-
-        // wait for and click signature warning sign button
-        // click checkbox to authorize signing
-        await driver.clickElement('.mm-checkbox__input-wrapper');
-
-        // click sign button
-        await driver.clickElement('[data-testid="snapInsightsButtonConfirm"]');
-
-        // switch back to test-dapp window
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-
-        // check results of test
-        await driver.waitForSelector({
-          text: '"0x816ab6c5d5356548cc4e004ef35a37fdfab916742a2bbeda756cd064c3d3789a6557d41d49549be1de249e1937a8d048996dfcc70d0552111605dc7cc471e8531b"',
           tag: 'span',
         });
       },

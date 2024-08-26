@@ -104,7 +104,7 @@ describe('Increase Token Allowance', function () {
       tag: 'button',
       text: 'Next',
     });
-    driver.waitForSelector({
+    await driver.waitForSelector({
       css: '.box--display-flex > h6',
       text: `10 TST`,
     });
@@ -133,7 +133,7 @@ describe('Increase Token Allowance', function () {
     );
 
     await driver.fill('[placeholder="Account 2"]', newAccountName);
-    await driver.clickElement({ text: 'Create', tag: 'button' });
+    await driver.clickElement({ text: 'Add account', tag: 'button' });
     await driver.findElement({
       css: '[data-testid="account-menu-icon"]',
       text: newAccountName,

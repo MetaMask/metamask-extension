@@ -9,6 +9,7 @@ const {
   switchToNotificationWindow,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 
 describe('Switch Ethereum Chain for two dapps', function () {
   it('switches the chainId of two dapps when switchEthereumChain of one dapp is confirmed', async function () {
@@ -50,7 +51,9 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement(experimentalTabRawLocator);
 
         // Toggle off request queue setting (on by default now)
-        await driver.clickElement('.request-queue-toggle');
+        await driver.clickElement(
+          '[data-testid="experimental-setting-toggle-request-queue"]',
+        );
 
         // open two dapps
         const dappOne = await openDapp(driver, undefined, DAPP_URL);
@@ -99,7 +102,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
     );
   });
 
-  it('should queue switchEthereumChain request from second dapp after send tx request', async function () {
+  it('queues switchEthereumChain request from second dapp after send tx request', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -137,7 +140,9 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement(experimentalTabRawLocator);
 
         // Toggle off request queue setting (on by default now)
-        await driver.clickElement('.request-queue-toggle');
+        await driver.clickElement(
+          '[data-testid="experimental-setting-toggle-request-queue"]',
+        );
 
         // open two dapps
         const dappOne = await openDapp(driver, undefined, DAPP_URL);
@@ -189,7 +194,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
     );
   });
 
-  it('should queue send tx after switchEthereum request with a warning, confirming removes pending tx', async function () {
+  it('queues send tx after switchEthereum request with a warning, confirming removes pending tx', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -227,7 +232,9 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement(experimentalTabRawLocator);
 
         // Toggle off request queue setting (on by default now)
-        await driver.clickElement('.request-queue-toggle');
+        await driver.clickElement(
+          '[data-testid="experimental-setting-toggle-request-queue"]',
+        );
 
         // open two dapps
         const dappOne = await openDapp(driver, undefined, DAPP_URL);
@@ -275,18 +282,14 @@ describe('Switch Ethereum Chain for two dapps', function () {
         // if this is an MV3 build(3 or 4 total)
         await driver.wait(async () => {
           const windowHandles = await driver.getAllWindowHandles();
-          const numberOfWindowHandlesToExpect =
-            process.env.ENABLE_MV3 === 'true' ||
-            process.env.ENABLE_MV3 === undefined
-              ? 4
-              : 3;
+          const numberOfWindowHandlesToExpect = isManifestV3 ? 4 : 3;
           return windowHandles.length === numberOfWindowHandlesToExpect;
         });
       },
     );
   });
 
-  it('should queue send tx after switchEthereum request with a warning, if switchEthereum request is cancelled should show pending tx', async function () {
+  it('queues send tx after switchEthereum request with a warning, if switchEthereum request is cancelled should show pending tx', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -324,7 +327,9 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement(experimentalTabRawLocator);
 
         // Toggle off request queue setting (on by default now)
-        await driver.clickElement('.request-queue-toggle');
+        await driver.clickElement(
+          '[data-testid="experimental-setting-toggle-request-queue"]',
+        );
 
         // open two dapps
         const dappOne = await openDapp(driver, undefined, DAPP_URL);

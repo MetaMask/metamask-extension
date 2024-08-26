@@ -1,10 +1,17 @@
 const fs = require('fs');
 
 const {
+  BRIDGE_DEV_API_BASE_URL,
+  BRIDGE_PROD_API_BASE_URL,
+} = require('../../shared/constants/bridge');
+const {
   GAS_API_BASE_URL,
   SWAPS_API_V2_BASE_URL,
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
+const {
+  DEFAULT_FEATURE_FLAGS_RESPONSE: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
+} = require('./tests/bridge/constants');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -70,11 +77,11 @@ const browserAPIRequestDomains =
  * Setup E2E network mocks.
  *
  * @param {Mockttp} server - The mock server used for network mocks.
- * @param {(server: Mockttp) => MockedEndpoint} testSpecificMock - A function for setting up test-specific network mocks
+ * @param {(server: Mockttp) => Promise<MockedEndpoint[]>} testSpecificMock - A function for setting up test-specific network mocks
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
  * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH.
- * @returns {SetupMockReturn}
+ * @returns {Promise<SetupMockReturn>}
  */
 async function setupMocking(
   server,
@@ -292,6 +299,19 @@ async function setupMocking(
         ],
       };
     });
+
+  [
+    `${BRIDGE_DEV_API_BASE_URL}/getAllFeatureFlags`,
+    `${BRIDGE_PROD_API_BASE_URL}/getAllFeatureFlags`,
+  ].forEach(
+    async (url) =>
+      await server.forGet(url).thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
+        };
+      }),
+  );
 
   await server
     .forGet(`https://token.api.cx.metamask.io/tokens/${chainId}`)
@@ -619,6 +639,12 @@ async function setupMocking(
   // Notification APIs
   mockNotificationServices(server);
 
+  await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
+    return {
+      statusCode: 404,
+    };
+  });
+
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested
    * during the current test suite.
@@ -630,6 +656,15 @@ async function setupMocking(
   }
 
   /**
+   * Excludes hosts from the privacyReport if they are refered to by the MetaMask Portfolio
+   * in a different tab. This is because the Portfolio is a separate application
+   *
+   * @param request
+   */
+  const portfolioRequestsMatcher = (request) =>
+    request.headers.referer === 'https://portfolio.metamask.io/';
+
+  /**
    * Listen for requests and add the hostname to the privacy report if it did
    * not previously exist. This is used to track which hosts are requested
    * during the current test suite and used to ask for extra scrutiny when new
@@ -638,7 +673,10 @@ async function setupMocking(
    * operation. See the browserAPIRequestDomains regex above.
    */
   server.on('request-initiated', (request) => {
-    if (request.headers.host.match(browserAPIRequestDomains) === null) {
+    if (
+      request.headers.host.match(browserAPIRequestDomains) === null &&
+      !portfolioRequestsMatcher(request)
+    ) {
       privacyReport.add(request.headers.host);
     }
   });
