@@ -1,4 +1,4 @@
-const { NetworkStatus } = require('@metamask/network-controller');
+const { mockNetworkState } = require('../stub/networks');
 const { CHAIN_IDS } = require('../../shared/constants/network');
 const { FirstTimeFlowType } = require('../../shared/constants/onboarding');
 
@@ -16,10 +16,10 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       UserStorageController: {
         isProfileSyncingEnabled: true,
       },
-      MetamaskNotificationsController: {
+      NotificationServicesController: {
         subscriptionAccountsSeen: [],
         isFeatureAnnouncementsEnabled: false,
-        isMetamaskNotificationsEnabled: false,
+        isNotificationServicesEnabled: false,
         isMetamaskNotificationsFeatureSeen: false,
         metamaskNotificationsList: [],
         metamaskNotificationsReadList: [],
@@ -116,6 +116,15 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         },
         snapsInstallPrivacyWarningShown: true,
       },
+      BridgeController: {
+        bridgeState: {
+          bridgeFeatureFlags: {
+            extensionSupport: false,
+            srcNetworkAllowlist: ['0x1', '0xa', '0xe708'],
+            destNetworkAllowlist: ['0x1', '0xa', '0xe708'],
+          },
+        },
+      },
       CurrencyController: {
         currentCurrency: 'usd',
         currencyRates: {
@@ -144,32 +153,15 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         traits: {},
       },
       NetworkController: {
-        selectedNetworkClientId: 'networkConfigurationId',
-        networksMetadata: {
-          networkConfigurationId: {
-            EIPS: {},
-            status: NetworkStatus.Available,
-          },
-        },
-        providerConfig: {
+        ...mockNetworkState({
+          id: 'networkConfigurationId',
           chainId: inputChainId,
           nickname: 'Localhost 8545',
-          rpcPrefs: {},
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
-          type: 'rpc',
-          id: 'networkConfigurationId',
-        },
-        networkConfigurations: {
-          networkConfigurationId: {
-            chainId: inputChainId,
-            nickname: 'Localhost 8545',
-            rpcPrefs: {},
-            rpcUrl: 'http://localhost:8545',
-            ticker: 'ETH',
-            networkConfigurationId: 'networkConfigurationId',
-          },
-        },
+          blockExplorerUrl: undefined,
+        }),
+        providerConfig: { id: 'networkConfigurationId' },
       },
       OnboardingController: {
         completedOnboarding: true,
@@ -207,7 +199,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
-          showTokenAutodetectModal: false,
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
         },

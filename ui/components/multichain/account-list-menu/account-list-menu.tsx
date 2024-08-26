@@ -1,4 +1,4 @@
-import React, { useContext, useState, useMemo } from 'react';
+import React, { useContext, useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
@@ -64,6 +64,7 @@ import {
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
+  getIsWatchEthereumAccountEnabled,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -92,6 +93,10 @@ import {
   AccountConnections,
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
+import {
+  ACCOUNT_WATCHER_NAME,
+  ACCOUNT_WATCHER_SNAP_ID,
+} from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -101,6 +106,8 @@ const ACTION_MODES = {
   MENU: 'menu',
   // Displays the add account form controls
   ADD: 'add',
+  // Displays the add account form controls (for watch-only account)
+  ADD_WATCH_ONLY: 'add-watch-only',
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // Displays the add account form controls (for bitcoin account)
   ADD_BITCOIN: 'add-bitcoin',
@@ -124,6 +131,8 @@ export const getActionTitle = (
 ) => {
   switch (actionMode) {
     case ACTION_MODES.ADD:
+    case ACTION_MODES.MENU:
+    case ACTION_MODES.ADD_WATCH_ONLY:
       return t('addAccount');
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     case ACTION_MODES.ADD_BITCOIN:
@@ -131,8 +140,6 @@ export const getActionTitle = (
     case ACTION_MODES.ADD_BITCOIN_TESTNET:
       return t('addAccount');
     ///: END:ONLY_INCLUDE_IF
-    case ACTION_MODES.MENU:
-      return t('addAccount');
     case ACTION_MODES.IMPORT:
       return t('importAccount');
     default:
@@ -180,7 +187,7 @@ type AccountListMenuProps = {
 export const AccountListMenu = ({
   onClose,
   showAccountCreation = true,
-  accountListItemProps = {},
+  accountListItemProps,
   allowedAccountTypes = [
     EthAccountType.Eoa,
     EthAccountType.Erc4337,
@@ -218,6 +225,23 @@ export const AccountListMenu = ({
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
+  const isAddWatchEthereumAccountEnabled = useSelector(
+    getIsWatchEthereumAccountEnabled,
+  );
+  const handleAddWatchAccount = useCallback(async () => {
+    await trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.AccountAddSelected,
+      properties: {
+        account_type: MetaMetricsEventAccountType.Snap,
+        snap_id: ACCOUNT_WATCHER_SNAP_ID,
+        snap_name: ACCOUNT_WATCHER_NAME,
+        location: 'Main Menu',
+      },
+    });
+    onClose();
+    history.push(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
+  }, [trackEvent, onClose, history]);
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
   const bitcoinTestnetSupportEnabled = useSelector(
@@ -259,7 +283,10 @@ export const AccountListMenu = ({
   }
   searchResults = mergeAccounts(searchResults, filteredAccounts);
 
-  const title = getActionTitle(t as (text: string) => string, actionMode);
+  const title = useMemo(
+    () => getActionTitle(t as (text: string) => string, actionMode),
+    [actionMode, t],
+  );
 
   // eslint-disable-next-line no-empty-function
   let onBack = () => {};
@@ -270,6 +297,23 @@ export const AccountListMenu = ({
       onBack = () => setActionMode(ACTION_MODES.MENU);
     }
   }
+
+  const onAccountListItemItemClicked = useCallback(
+    (account) => {
+      return () => {
+        onClose();
+        trackEvent({
+          category: MetaMetricsEventCategory.Navigation,
+          event: MetaMetricsEventName.NavAccountSwitched,
+          properties: {
+            location: 'Main Menu',
+          },
+        });
+        dispatch(setSelectedAccount(account.address));
+      };
+    },
+    [dispatch, onClose, trackEvent],
+  );
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -500,6 +544,19 @@ export const AccountListMenu = ({
               </Box>
               ///: END:ONLY_INCLUDE_IF
             }
+            {isAddWatchEthereumAccountEnabled && (
+              <Box marginTop={4}>
+                <ButtonLink
+                  disabled={!isAddWatchEthereumAccountEnabled}
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Eye}
+                  onClick={handleAddWatchAccount}
+                  data-testid="multichain-account-menu-popover-add-watch-only-account"
+                >
+                  {t('addEthereumWatchOnlyAccount')}
+                </ButtonLink>
+              </Box>
+            )}
           </Box>
         ) : null}
         {actionMode === ACTION_MODES.LIST ? (
@@ -564,17 +621,7 @@ export const AccountListMenu = ({
                     key={account.address}
                   >
                     <AccountListItem
-                      onClick={() => {
-                        onClose();
-                        trackEvent({
-                          category: MetaMetricsEventCategory.Navigation,
-                          event: MetaMetricsEventName.NavAccountSwitched,
-                          properties: {
-                            location: 'Main Menu',
-                          },
-                        });
-                        dispatch(setSelectedAccount(account.address));
-                      }}
+                      onClick={onAccountListItemItemClicked(account)}
                       account={account}
                       key={account.address}
                       selected={selectedAccount.address === account.address}

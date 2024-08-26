@@ -2,6 +2,8 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { isValidAddress } from 'ethereumjs-util';
 import React from 'react';
 import { useSelector } from 'react-redux';
+
+import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -9,12 +11,13 @@ import {
   ConfirmInfoRowUrl,
 } from '../../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { selectPaymasterAddress } from '../../../../../../../selectors/account-abstraction';
 import { currentConfirmationSelector } from '../../../../../selectors';
 import { useFourByte } from '../../hooks/useFourByte';
 
-const OriginRow = () => {
+export const OriginRow = () => {
   const t = useI18nContext();
 
   const currentConfirmation = useSelector(
@@ -28,16 +31,19 @@ const OriginRow = () => {
   }
 
   return (
-    <ConfirmInfoRow
+    <ConfirmInfoAlertRow
+      alertKey={RowAlertKey.RequestFrom}
+      ownerId={currentConfirmation.id}
+      data-testid="transaction-details-origin-row"
       label={t('requestFrom')}
       tooltip={t('requestFromTransactionDescription')}
     >
       <ConfirmInfoRowUrl url={origin} />
-    </ConfirmInfoRow>
+    </ConfirmInfoAlertRow>
   );
 };
 
-const RecipientRow = () => {
+export const RecipientRow = () => {
   const t = useI18nContext();
 
   const currentConfirmation = useSelector(
@@ -53,6 +59,7 @@ const RecipientRow = () => {
 
   return (
     <ConfirmInfoRow
+      data-testid="transaction-details-recipient-row"
       label={t('interactingWith')}
       tooltip={t('interactingWithTransactionDescription')}
     >
@@ -61,7 +68,7 @@ const RecipientRow = () => {
   );
 };
 
-const MethodDataRow = () => {
+export const MethodDataRow = () => {
   const t = useI18nContext();
 
   const currentConfirmation = useSelector(
@@ -76,6 +83,7 @@ const MethodDataRow = () => {
 
   return (
     <ConfirmInfoRow
+      data-testid="transaction-details-method-data-row"
       label={t('methodData')}
       tooltip={t('methodDataTransactionDesc')}
     >
@@ -106,6 +114,7 @@ const PaymasterRow = () => {
   return (
     <ConfirmInfoSection>
       <ConfirmInfoRow
+        data-testid="transaction-details-paymaster-row"
         label={t('confirmFieldPaymaster')}
         tooltip={t('confirmFieldTooltipPaymaster')}
       >
@@ -118,7 +127,7 @@ const PaymasterRow = () => {
 export const TransactionDetails = () => {
   return (
     <>
-      <ConfirmInfoSection>
+      <ConfirmInfoSection data-testid="transaction-details-section">
         <OriginRow />
         <RecipientRow />
         <MethodDataRow />

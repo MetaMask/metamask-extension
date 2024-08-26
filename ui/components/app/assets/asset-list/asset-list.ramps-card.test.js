@@ -2,12 +2,10 @@ import React from 'react';
 import { renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import {
-  CHAIN_IDS,
-  NETWORK_TYPES,
-} from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import AssetList from './asset-list';
 
 // Specific to just the ETH FIAT conversion
@@ -31,7 +29,7 @@ const render = (
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      providerConfig: { chainId, ticker: 'ETH', type: NETWORK_TYPES.MAINNET },
+      ...mockNetworkState({ chainId }),
       accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
           [selectedInternalAccount.address]: { balance },

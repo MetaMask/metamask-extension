@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isValidAddress } from 'ethereumjs-util';
 
+import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { parseTypedDataMessage } from '../../../../../../../shared/modules/transaction.utils';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -49,9 +51,9 @@ const TypedSignInfo: React.FC = () => {
       if (!isPermit && !isOrder) {
         return;
       }
-      const { decimals: tokenDecimals } = await getTokenStandardAndDetails(
-        verifyingContract,
-      );
+      const tokenDetails = await getTokenStandardAndDetails(verifyingContract);
+      const tokenDecimals = tokenDetails?.decimals;
+
       setDecimals(parseInt(tokenDecimals ?? '0', 10));
     })();
   }, [verifyingContract]);
@@ -70,9 +72,14 @@ const TypedSignInfo: React.FC = () => {
             <ConfirmInfoRowDivider />
           </>
         )}
-        <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
+        <ConfirmInfoAlertRow
+          alertKey={RowAlertKey.RequestFrom}
+          ownerId={currentConfirmation.id}
+          label={t('requestFrom')}
+          tooltip={t('requestFromInfo')}
+        >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
-        </ConfirmInfoRow>
+        </ConfirmInfoAlertRow>
         {isValidAddress(verifyingContract) && (
           <ConfirmInfoRow label={t('interactingWith')}>
             <ConfirmInfoRowAddress address={verifyingContract} />

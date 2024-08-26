@@ -1,17 +1,11 @@
+import { NameType } from '@metamask/name-controller';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { NameType } from '@metamask/name-controller';
 
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { parseTypedDataMessage } from '../../../../../../../../shared/modules/transaction.utils';
-import { Numeric } from '../../../../../../../../shared/modules/Numeric';
+import useTokenExchangeRate from '../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import Name from '../../../../../../../components/app/name/name';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowText,
-} from '../../../../../../../components/app/confirm/info/row';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../../../../selectors';
 import { Box, Text } from '../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
@@ -21,15 +15,16 @@ import {
   Display,
   TextAlign,
 } from '../../../../../../../helpers/constants/design-system';
+import { shortenString } from '../../../../../../../helpers/utils/util';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { currentConfirmationSelector } from '../../../../../../../selectors';
 import { SignatureRequestType } from '../../../../../types/confirm';
-import useTokenExchangeRate from '../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { IndividualFiatDisplay } from '../../../../simulation-details/fiat-display';
 import {
-  ellipsisAmountText,
   formatAmount,
   formatAmountMaxPrecision,
 } from '../../../../simulation-details/formatAmount';
-import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+import StaticSimulation from '../../shared/static-simulation/static-simulation';
 
 const PermitSimulation: React.FC<{
   tokenDecimals: number;
@@ -48,7 +43,8 @@ const PermitSimulation: React.FC<{
 
   const fiatValue = useMemo(() => {
     if (exchangeRate && value) {
-      return exchangeRate.times(new Numeric(value, 10)).toNumber();
+      const tokenAmount = calcTokenAmount(value, tokenDecimals);
+      return exchangeRate.times(tokenAmount).toNumber();
     }
     return undefined;
   }, [exchangeRate, value]);
@@ -67,15 +63,13 @@ const PermitSimulation: React.FC<{
   }, [tokenDecimals, value]);
 
   return (
-    <ConfirmInfoSection data-testid="confirmation__simulation_section">
-      <ConfirmInfoRow
-        label={t('simulationDetailsTitle')}
-        tooltip={t('simulationDetailsTitleTooltip')}
-      >
-        <ConfirmInfoRowText text={t('permitSimulationDetailInfo')} />
-      </ConfirmInfoRow>
-      <ConfirmInfoRow label={t('spendingCap')}>
-        <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
+    <StaticSimulation
+      title={t('simulationDetailsTitle')}
+      titleTooltip={t('simulationDetailsTitleTooltip')}
+      description={t('permitSimulationDetailInfo')}
+      simulationHeading={t('spendingCap')}
+      simulationElements={
+        <>
           <Box display={Display.Flex}>
             <Box
               display={Display.Inline}
@@ -93,9 +87,15 @@ const PermitSimulation: React.FC<{
                   backgroundColor={BackgroundColor.backgroundAlternative}
                   borderRadius={BorderRadius.XL}
                   paddingInline={2}
+                  style={{ paddingTop: '1px', paddingBottom: '1px' }}
                   textAlign={TextAlign.Center}
                 >
-                  {ellipsisAmountText(tokenValue || '')}
+                  {shortenString(tokenValue || '', {
+                    truncatedCharLimit: 15,
+                    truncatedStartChars: 15,
+                    truncatedEndChars: 0,
+                    skipCharacterInEnd: true,
+                  })}
                 </Text>
               </Tooltip>
             </Box>
@@ -106,9 +106,9 @@ const PermitSimulation: React.FC<{
               <IndividualFiatDisplay fiatAmount={fiatValue} shorten />
             )}
           </Box>
-        </Box>
-      </ConfirmInfoRow>
-    </ConfirmInfoSection>
+        </>
+      }
+    />
   );
 };
 
