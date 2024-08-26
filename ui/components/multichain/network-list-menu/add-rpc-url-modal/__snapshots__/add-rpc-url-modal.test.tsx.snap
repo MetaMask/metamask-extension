@@ -22,6 +22,7 @@ exports[`AddRpcUrlModal should render correctly 1`] = `
           <input
             autocomplete="off"
             class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            data-testid="rpc-url-input-test"
             focused="false"
             placeholder="enterRpcUrl"
             type="text"
@@ -43,6 +44,7 @@ exports[`AddRpcUrlModal should render correctly 1`] = `
           <input
             autocomplete="off"
             class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-sm mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            data-testid="rpc-name-input-test"
             focused="false"
             placeholder="enterANameToIdentifyTheUrl"
             type="text"

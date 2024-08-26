@@ -43,6 +43,7 @@ export const DropdownEditor = <Item,>({
   addButtonText,
   error,
   style,
+  isRpc,
   onItemSelected,
   onItemDeleted,
   onItemAdd,
@@ -58,6 +59,7 @@ export const DropdownEditor = <Item,>({
   selectedItemIndex?: number;
   addButtonText: string;
   error?: boolean;
+  isRpc?: boolean;
   style: DropdownEditorStyle;
   onItemSelected: (index: number) => void;
   onItemDeleted: (deletedIndex: number, newSelectedIndex?: number) => void;
@@ -213,6 +215,9 @@ export const DropdownEditor = <Item,>({
         iconName={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
         ariaLabel={title}
         size={ButtonIconSize.Md}
+        data-testid={
+          isRpc ? 'test-add-rpc-drop-down' : 'test-explorer-drop-down'
+        }
       />
     </Box>
   );

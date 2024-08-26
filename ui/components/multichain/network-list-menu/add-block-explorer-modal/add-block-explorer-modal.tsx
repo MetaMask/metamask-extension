@@ -54,6 +54,7 @@ const AddBlockExplorerModal = ({
           label={t('blockExplorerUrl')}
           inputProps={{
             variant: TextVariant.bodySm,
+            'data-testid': 'explorer-url-input',
           }}
           labelProps={{
             children: undefined,

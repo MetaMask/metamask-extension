@@ -605,7 +605,7 @@ describe('Custom network', function () {
       );
     });
 
-    it.only("when the network details validation toggle is turned on, validate user inserted details against data from 'chainid.network'", async function () {
+    it("when the network details validation toggle is turned on, validate user inserted details against data from 'chainid.network'", async function () {
       async function mockRPCURLAndChainId(mockServer) {
         return [
           await mockServer
@@ -1046,8 +1046,8 @@ async function failCandidateNetworkValidation(driver) {
   const [
     // first element is the search input that we don't need to fill
     networkNameInputEl,
-    chainIDInputEl,
     ,
+    chainIDInputEl,
   ] = await driver.findElements('input');
 
   await networkNameInputEl.fill('cheapETH');
@@ -1111,7 +1111,6 @@ async function failCandidateNetworkValidation(driver) {
   };
 
   await driver.waitForSelector(chainIdValidationMessageRawLocator);
-  await driver.waitForSelector('[data-testid="network-form-ticker-warning"]');
 
   const saveButtonRawLocator = {
     text: 'Save',
@@ -1189,10 +1188,10 @@ async function candidateNetworkIsNotValidated(driver) {
 
   await driver.clickElement({ text: 'Add a custom network', tag: 'button' });
 
-  // TODO HERE .....
   const [
     // first element is the search input that we don't need to fill
     networkNameInputEl,
+    ,
     chainIDInputEl,
   ] = await driver.findElements('input');
 

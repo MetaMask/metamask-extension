@@ -379,6 +379,7 @@ export const NetworksForm = ({
           itemKey={(endpoint) => endpoint.url}
           selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
           error={Boolean(errors.rpcUrl)}
+          isRpc
           renderItem={(item, isList) =>
             isList || item?.name || item?.type === RpcEndpointType.Infura ? (
               <RpcListItem rpcEndpoint={item} />
@@ -553,6 +554,7 @@ export const NetworksForm = ({
           selectedItemIndex={blockExplorers.defaultBlockExplorerUrlIndex}
           addButtonText={t('addBlockExplorerUrl')}
           onItemAdd={onBlockExplorerAdd}
+          isRpc={false}
           onItemSelected={(index) =>
             setBlockExplorers((state) => ({
               ...state,

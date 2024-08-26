@@ -59,6 +59,9 @@ const AddRpcUrlModal = ({
             children: undefined,
             variant: TextVariant.bodyMdMedium,
           }}
+          inputProps={{
+            'data-testid': 'rpc-url-input-test',
+          }}
           onChange={(e) => setUrl(e.target.value)}
         />
         {error && (
@@ -68,6 +71,7 @@ const AddRpcUrlModal = ({
           size={FormTextFieldSize.Lg}
           inputProps={{
             variant: TextVariant.bodySm,
+            'data-testid': 'rpc-name-input-test',
           }}
           placeholder={t('enterANameToIdentifyTheUrl')}
           paddingTop={4}
