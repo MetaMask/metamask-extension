@@ -70,7 +70,7 @@ function onboardingFixture() {
           smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
-          showMultiRpcModal: false,
+          showMultiRpcModal: true,
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
         },

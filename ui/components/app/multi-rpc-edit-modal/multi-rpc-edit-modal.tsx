@@ -28,10 +28,9 @@ import NetworkListItem from './network-list-item/network-list-item';
 
 type MultiRpcEditModalProps = {
   isOpen: boolean;
-  onClose: (arg: boolean) => void;
 };
 
-function MultiRpcEditModal({ isOpen, onClose }: MultiRpcEditModalProps) {
+function MultiRpcEditModal({ isOpen }: MultiRpcEditModalProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
@@ -43,7 +42,7 @@ function MultiRpcEditModal({ isOpen, onClose }: MultiRpcEditModalProps) {
   return (
     <Modal
       isOpen={isOpen}
-      onClose={() => onClose(true)}
+      onClose={() => dispatch(setShowMultiRpcModal(true))}
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
       className="mm-modal__custom-scrollbar auto-detect-in-modal"
