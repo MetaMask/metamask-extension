@@ -22,6 +22,7 @@ import {
   TRUSTED_SIGNERS,
 } from '../../../../shared/constants/verification';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { getCurrentChainId } from '../../../../ui/selectors';
 
 export type TxParams = {
   chainId?: `0x${string}`;
@@ -62,7 +63,7 @@ export function createTxVerificationMiddleware(
     const chainId =
       typeof params.chainId === 'string'
         ? (params.chainId.toLowerCase() as Hex)
-        : networkController.state.providerConfig.chainId;
+        : getCurrentChainId({ metamask: networkController.state });
 
     const experienceType = getExperience(
       params.to.toLowerCase() as Hex,
