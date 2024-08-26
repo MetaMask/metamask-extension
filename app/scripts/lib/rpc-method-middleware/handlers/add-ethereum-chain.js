@@ -72,7 +72,7 @@ async function addEthereumChainHandler(
   );
   const existingNetwork = getNetworkConfigurationByChainId(chainId);
 
-  // todo: consider if this is still necessary
+  // todo: consider maintaining this logic
   // if (
   //   existingNetwork &&
   //   existingNetwork.chainId === chainId &&
@@ -85,120 +85,102 @@ async function addEthereumChainHandler(
   //   );
   // }
 
-  let networkClientId;
-  let requestData;
-  let approvalFlowId;
-
   // TODO: consider checking if the rpc url already exists for the network.
   // in that case, we can just lookup its network client id and switch to it
   // No need to add or update any networks
+  //
+  // Additionally we may need to check if it exists *across all chain ids*,
+  // since the network controller won't let duplicates be added
 
   let updatedNetwork;
 
   // eslint-disable-next-line no-constant-condition
-  if (true) {
-    ({ id: approvalFlowId } = await startApprovalFlow());
+  const { id: approvalFlowId } = await startApprovalFlow();
 
-    try {
-      await requestUserApproval({
-        origin,
-        type: ApprovalType.AddEthereumChain,
-        requestData: {
-          chainId,
-          rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
-          chainName,
-          rpcUrl: firstValidRPCUrl,
-          ticker,
-        },
-      });
+  try {
+    await requestUserApproval({
+      origin,
+      type: ApprovalType.AddEthereumChain,
+      requestData: {
+        chainId,
+        rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
+        chainName,
+        rpcUrl: firstValidRPCUrl,
+        ticker,
+      },
+    });
 
-      // eslint-disable-next-line no-negated-condition
-      if (!existingNetwork) {
-        updatedNetwork = await addNetwork({
-          blockExplorerUrls: firstValidBlockExplorerUrl
-            ? [firstValidBlockExplorerUrl]
-            : [],
-          defaultBlockExplorerUrlIndex: firstValidBlockExplorerUrl
-            ? 0
-            : undefined,
-          chainId,
-          defaultRpcEndpointIndex: 0,
-          name: chainName, // todo: consider using the canonical chain name here,
-          //  and put this as rpc endpoint name instead???
-          nativeCurrency: ticker,
-          rpcEndpoints: [
-            {
-              url: firstValidRPCUrl,
-              // name:
-              type: RpcEndpointType.Custom,
-            },
-          ],
-        });
-      } else {
-        const clonedNetwork = { ...existingNetwork };
-        clonedNetwork.rpcEndpoints = [
-          ...clonedNetwork.rpcEndpoints,
+    // eslint-disable-next-line no-negated-condition
+    if (!existingNetwork) {
+      updatedNetwork = await addNetwork({
+        blockExplorerUrls: firstValidBlockExplorerUrl
+          ? [firstValidBlockExplorerUrl]
+          : [],
+        defaultBlockExplorerUrlIndex: firstValidBlockExplorerUrl
+          ? 0
+          : undefined,
+        chainId,
+        defaultRpcEndpointIndex: 0,
+        name: chainName, // todo: consider using the canonical chain name here,
+        //  and put this as rpc endpoint name instead???
+        nativeCurrency: ticker,
+        rpcEndpoints: [
           {
             url: firstValidRPCUrl,
+            // name:
             type: RpcEndpointType.Custom,
           },
-        ];
-        clonedNetwork.defaultRpcEndpointIndex =
-          clonedNetwork.rpcEndpoints.length - 1;
+        ],
+      });
+    } else {
+      const clonedNetwork = { ...existingNetwork };
+      clonedNetwork.rpcEndpoints = [
+        ...clonedNetwork.rpcEndpoints,
+        {
+          url: firstValidRPCUrl,
+          type: RpcEndpointType.Custom,
+          name: chainName,
+        },
+      ];
+      clonedNetwork.defaultRpcEndpointIndex =
+        clonedNetwork.rpcEndpoints.length - 1;
 
-        const options =
-          currentChainId === chainId
-            ? {
-                replacementSelectedRpcEndpointIndex:
-                  clonedNetwork.defaultRpcEndpointIndex,
-              }
-            : undefined;
+      const options =
+        currentChainId === chainId
+          ? {
+              replacementSelectedRpcEndpointIndex:
+                clonedNetwork.defaultRpcEndpointIndex,
+            }
+          : undefined;
 
-        // TODO: Merge logic - new data should probably take precedence, or use a cononical name for chain/ticker if conflicting
+      // TODO: Merge logic - should new or old data take precedence?
+      // Or use a cononical network name/ticker if conflicting
 
-        updatedNetwork = await updateNetwork(
-          clonedNetwork.chainId,
-          clonedNetwork,
-          options,
-        );
-      }
-    } catch (error) {
-      endApprovalFlow({ id: approvalFlowId });
-      return end(error);
+      updatedNetwork = await updateNetwork(
+        clonedNetwork.chainId,
+        clonedNetwork,
+        options,
+      );
     }
-
-    networkClientId =
-      updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex]
-        .networkClientId;
-
-    requestData = {
-      toNetworkConfiguration: {
-        rpcUrl: firstValidRPCUrl,
-        chainId,
-        nickname: chainName,
-        ticker,
-        networkClientId,
-      },
-      fromNetworkConfiguration: currentNetworkConfiguration,
-    };
-  } else {
-    // TODO implement me
-    // networkClientId = existingNetwork.id ?? existingNetwork.type;
-    // const currentRpcUrl = getCurrentRpcUrl();
-    // if (
-    //   currentChainIdForDomain === chainId &&
-    //   currentRpcUrl === firstValidRPCUrl
-    // ) {
-    //   return end();
-    // }
-    // requestData = {
-    //   toNetworkConfiguration: existingNetwork,
-    //   fromNetworkConfiguration: currentNetworkConfiguration,
-    // };
+  } catch (error) {
+    endApprovalFlow({ id: approvalFlowId });
+    return end(error);
   }
 
-  // TODO: `requestData` is using the net network configuration format, not expected by
-  // `switchChain`. Consider whether easier to move it to new format, or transform here
+  const { networkClientId } =
+    updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
+
+  const requestData = {
+    toNetworkConfiguration: {
+      rpcUrl: firstValidRPCUrl,
+      chainId,
+      nickname: chainName,
+      ticker,
+      networkClientId,
+    },
+    fromNetworkConfiguration: currentNetworkConfiguration,
+  };
+
   return switchChain(
     res,
     end,

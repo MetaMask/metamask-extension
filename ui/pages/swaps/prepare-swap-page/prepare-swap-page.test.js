@@ -13,9 +13,9 @@ import {
   setSwapToToken,
   setFromTokenInputValue,
 } from '../../../ducks/swaps/swaps';
-import PrepareSwapPage from './prepare-swap-page';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import PrepareSwapPage from './prepare-swap-page';
 
 const middleware = [thunk];
 const createProps = (customProps = {}) => {

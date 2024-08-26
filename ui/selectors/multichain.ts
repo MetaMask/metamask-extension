@@ -144,7 +144,7 @@ export function getMultichainNetwork(
 
     const networkConfigurations = getNetworkConfigurationsByChainId(state);
     return {
-      nickname: networkConfigurations[evmChainId].name,
+      nickname: networkConfigurations[evmChainId]?.name ?? evmNetwork.rpcUrl,
       isEvmNetwork: true,
       // We assume the chain ID is `string` or `number`, so we convert it to a
       // `Number` to be compliant with EIP155 CAIP chain ID

@@ -1,80 +1,89 @@
-export const ALL_NETWORKS_DATA = [
-  {
+export const ALL_NETWORKS_DATA = {
+  '0x1': {
     chainId: '0x1',
-    nickname: 'Ethereum Mainnet',
-    rpcUrl: 'https://mainnet.infura.io/v3/6c21df2a8dcb4a77b9bbcc1b65ee9ded',
-    rpcPrefs: {
-      imageUrl: './images/eth_logo.svg',
-    },
-    providerType: 'mainnet',
-    ticker: 'ETH',
-    id: 'mainnet',
-    removable: false,
+    name: 'Ethereum Mainnet',
+    nativeCurrency: 'ETH',
+    rpcEndpoints: [
+      {
+        url: 'https://mainnet.infura.io/v3/6c21df2a8dcb4a77b9bbcc1b65ee9ded',
+        type: 'infura',
+        networkClientId: 'mainnet',
+      },
+    ],
   },
-  {
+  '0xe708': {
     chainId: '0xe708',
-    nickname: 'Linea Mainnet',
-    rpcUrl:
-      'https://linea-mainnet.infura.io/v3/6c21df2a8dcb4a77b9bbcc1b65ee9ded',
-    rpcPrefs: {
-      imageUrl: './images/linea-logo-mainnet.svg',
-    },
-    providerType: 'linea-mainnet',
-    id: 'linea-mainnet',
-    removable: false,
+    name: 'Linea Mainnet',
+    nativeCurrency: 'ETH',
+    rpcEndpoints: [
+      {
+        url: 'https://linea-mainnet.infura.io/v3/6c21df2a8dcb4a77b9bbcc1b65ee9ded',
+        type: 'infura',
+        networkClientId: 'linea-mainnet',
+      },
+    ],
   },
-  {
+  '0xfa': {
     chainId: '0xfa',
-    nickname: 'FANTOM',
-    rpcPrefs: {},
-    rpcUrl: 'http://ftmscan.com5',
-    ticker: 'FTM',
+    name: 'FANTOM',
+    nativeCurrency: 'FTM',
+    rpcEndpoints: [
+      {
+        url: 'http://ftmscan.com5',
+        type: 'custom',
+        networkClientId: 'fantom-network-client-id',
+      },
+    ],
   },
-  {
+  '0x5': {
     chainId: '0x5',
-    nickname: 'Goerli',
-    rpcUrl: 'https://goerli.infura.io/v3/6c21df2a8dcb4a77b9bbcc1b65ee9ded',
-    providerType: 'goerli',
-    ticker: 'GoerliETH',
-    id: 'goerli',
-    removable: false,
+    name: 'Goerli',
+    nativeCurrency: 'GoerliETH',
+    rpcEndpoints: [
+      {
+        url: 'https://goerli.infura.io/v3/6c21df2a8dcb4a77b9bbcc1b65ee9ded',
+        type: 'infura',
+        networkClientId: 'goerli',
+      },
+    ],
   },
-  {
+  '0xaa36a7': {
     chainId: '0xaa36a7',
-    nickname: 'Sepolia',
-    rpcUrl: 'https://sepolia.infura.io/v3/6c21df2a8dcb4a77b9bbcc1b65ee9ded',
-    providerType: 'sepolia',
-    ticker: 'SepoliaETH',
-    id: 'sepolia',
-    removable: false,
+    name: 'Sepolia',
+    nativeCurrency: 'SepoliaETH',
+    rpcEndpoints: [
+      {
+        url: 'https://sepolia.infura.io/v3/6c21df2a8dcb4a77b9bbcc1b65ee9ded',
+        type: 'infura',
+        networkClientId: 'sepolia',
+      },
+    ],
   },
-  {
+  '0xe704': {
     chainId: '0xe704',
-    nickname: 'Linea Goerli',
-    rpcUrl:
-      'https://linea-goerli.infura.io/v3/6c21df2a8dcb4a77b9bbcc1b65ee9ded',
-    rpcPrefs: {
-      imageUrl: './images/linea-logo-testnet.png',
-    },
-    providerType: 'linea-goerli',
-    ticker: 'LineaETH',
-    id: 'linea-goerli',
-    removable: false,
+    name: 'Linea Goerli',
+    nativeCurrency: 'LineaETH',
+    rpcEndpoints: [
+      {
+        url: 'https://linea-goerli.infura.io/v3/6c21df2a8dcb4a77b9bbcc1b65ee9ded',
+        type: 'infura',
+        networkClientId: 'linea-goerli',
+      },
+    ],
   },
-  {
+  '0xe705': {
     chainId: '0xe705',
-    nickname: 'Linea Sepolia',
-    rpcUrl:
-      'https://linea-sepolia.infura.io/v3/6c21df2a8dcb4a77b9bbcc1b65ee9ded',
-    rpcPrefs: {
-      imageUrl: './images/linea-logo-testnet.png',
-    },
-    providerType: 'linea-sepolia',
-    ticker: 'LineaETH',
-    id: 'linea-sepolia',
-    removable: false,
+    name: 'Linea Sepolia',
+    nativeCurrency: 'LineaETH',
+    rpcEndpoints: [
+      {
+        url: 'https://linea-sepolia.infura.io/v3/6c21df2a8dcb4a77b9bbcc1b65ee9ded',
+        type: 'infura',
+        networkClientId: 'linea-sepolia',
+      },
+    ],
   },
-];
+};
 
 export const INCOMING_DATA = {
   '0x1': true,

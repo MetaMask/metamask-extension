@@ -105,9 +105,6 @@ import {
 } from '../../shared/modules/i18n';
 import { decimalToHex } from '../../shared/modules/conversion.utils';
 import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
-import { NetworkType } from '../../shared/constants/network';
-import { RPCDefinition } from '../../shared/constants/network';
-import { EtherDenomination } from '../../shared/constants/common';
 import {
   isErrorWithMessage,
   logErrorWithMessage,

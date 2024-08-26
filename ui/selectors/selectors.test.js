@@ -4,12 +4,7 @@ import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
-import {
-  CHAIN_IDS,
-  LOCALHOST_DISPLAY_NAME,
-  NETWORK_TYPES,
-  OPTIMISM_DISPLAY_NAME,
-} from '../../shared/constants/network';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
 import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { createMockInternalAccount } from '../../test/jest/mocks';
@@ -684,17 +679,8 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getNetworkConfigurations', () => {
-    // not possible
-    // it('returns undefined if state.metamask.networkConfigurations is undefined', () => {
-    //   expect(
-    //     selectors.getNetworkConfigurations({
-    //       metamask: {},
-    //     }),
-    //   ).toBeUndefined();
-    // });
-
-    it('returns networkConfigurations', () => {
+  describe('#getNetworkConfigurationsByChainId', () => {
+    it('returns networkConfigurationsByChainId', () => {
       const networkConfigurationsByChainId = {
         '0xtest': {
           chainId: '0xtest',
@@ -722,181 +708,13 @@ describe('Selectors', () => {
         },
       };
 
-      const networkConfigurations = {
-        testNetworkConfigurationId1: {
-          rpcUrl: 'https://mock-rpc-url-1',
-          chainId: '0xtest',
-          ticker: 'TEST',
-          id: 'testNetworkConfigurationId1',
-          blockExplorerUrls: undefined,
-          providerType: 'rpc',
-        },
-        testNetworkConfigurationId2: {
-          rpcUrl: 'https://mock-rpc-url-2',
-          chainId: '0x1337',
-          ticker: 'RPC',
-          id: 'testNetworkConfigurationId2',
-          blockExplorerUrls: undefined,
-          providerType: 'rpc',
-        },
-      };
       expect(
-        selectors.getNetworkConfigurations({
+        selectors.getNetworkConfigurationsByChainId({
           metamask: {
             networkConfigurationsByChainId,
           },
         }),
-      ).toStrictEqual(networkConfigurations);
-    });
-  });
-
-  describe('#getNonTestNetworks', () => {
-    it('returns nonTestNetworks', () => {
-      const nonTestNetworks = selectors.getNonTestNetworks({
-        metamask: {
-          networkConfigurationsByChainId: {
-            '0x1': {
-              chainId: '0x1',
-              name: 'Custom Mainnet RPC',
-              nativeCurrency: 'ETH',
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  url: 'https://testrpc.com',
-                  networkClientId: 'mainnet',
-                  type: 'custom',
-                },
-              ],
-            },
-            '0x5': {
-              chainId: '0x5',
-              name: 'Chain 5',
-              nativeCurrency: 'ETH',
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  networkClientId: 'goerli',
-                },
-              ],
-            },
-          },
-        },
-      });
-
-      // Assert that the `nonTestNetworks` array returned by the selector matches a specific structure.
-      expect(nonTestNetworks).toStrictEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            chainId: expect.any(String),
-            nickname: expect.any(String),
-            rpcUrl: expect.any(String),
-            rpcPrefs: expect.objectContaining({
-              imageUrl: expect.any(String),
-            }),
-            // todo cant do provider type cuz it could change
-            // providerType: expect.any(String),
-            ticker: expect.any(String),
-            id: expect.any(String),
-            removable: expect.any(Boolean),
-          }),
-        ]),
-      );
-
-      // Verify that each network object has a 'ticker' property that is not undefined
-      nonTestNetworks.forEach((network) => {
-        expect(network.ticker).toBeDefined();
-      });
-    });
-  });
-  describe('#getAllNetworks', () => {
-    it('sorts Localhost to the bottom of the test lists', () => {
-      const networks = selectors.getAllNetworks({
-        metamask: {
-          preferences: {
-            showTestNetworks: true,
-          },
-          ...mockNetworkState({
-            chainId: CHAIN_IDS.LOCALHOST,
-            nickname: LOCALHOST_DISPLAY_NAME,
-          }),
-        },
-      });
-      const lastItem = networks.pop();
-      expect(lastItem.nickname.toLowerCase()).toContain('localhost');
-    });
-
-    it('properly assigns a network as removable', () => {
-      const networks = selectors.getAllNetworks({
-        metamask: {
-          preferences: {
-            showTestNetworks: true,
-          },
-          networkConfigurationsByChainId: {
-            [CHAIN_IDS.MAINNET]: {
-              chainId: CHAIN_IDS.MAINNET,
-              name: 'Ethereum Mainnet',
-              blockExplorerUrls: ['https://localhost/blockExplorer/0x539'],
-              defaultBlockExplorerUrlIndex: 0,
-              nativeCurrency: 'ETH',
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  networkClientId: NETWORK_TYPES.MAINNET,
-                  type: 'custom',
-                  url: 'https://localhost/rpc/0x1',
-                },
-              ],
-            },
-            [CHAIN_IDS.LOCALHOST]: {
-              chainId: CHAIN_IDS.LOCALHOST,
-              name: 'Localhost 8545',
-              blockExplorerUrls: ['https://localhost/blockExplorer/0x539'],
-              defaultBlockExplorerUrlIndex: 0,
-              nativeCurrency: 'ETH',
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  networkClientId: 'some-config-name',
-                  type: 'custom',
-                  url: 'https://localhost/rpc/0x539',
-                },
-              ],
-            },
-          },
-          selectedNetworkClientId: 'some-config-name',
-        },
-      });
-
-      const mainnet = networks.find(
-        (network) => network.id === NETWORK_TYPES.MAINNET,
-      );
-
-      expect(mainnet.removable).toBe(false);
-
-      const customNetwork = networks.find(
-        (network) => network.id === 'some-config-name',
-      );
-
-      expect(customNetwork.removable).toBe(true);
-    });
-
-    it('properly proposes a known network image when not provided by adding function', () => {
-      const networks = selectors.getAllNetworks({
-        metamask: {
-          preferences: {
-            showTestNetworks: true,
-          },
-          ...mockNetworkState({
-            chainId: CHAIN_IDS.OPTIMISM,
-            nickname: OPTIMISM_DISPLAY_NAME,
-          }),
-        },
-      });
-
-      const optimismConfig = networks.find(
-        ({ chainId }) => chainId === CHAIN_IDS.OPTIMISM,
-      );
-      expect(optimismConfig.rpcPrefs.imageUrl).toBe('./images/optimism.svg');
+      ).toStrictEqual(networkConfigurationsByChainId);
     });
   });
 
@@ -915,7 +733,7 @@ describe('Selectors', () => {
               rpcEndpoints: [
                 {
                   networkClientId: NETWORK_TYPES.SEPOLIA,
-                  type: 'rpc',
+                  type: 'infura',
                   url: 'https://sepolia.infura.io/v3/undefined',
                 },
               ],
@@ -930,11 +748,11 @@ describe('Selectors', () => {
 
       expect(currentNetwork).toMatchInlineSnapshot(`
         {
-          "blockExplorerUrls": undefined,
           "chainId": "0xaa36a7",
           "id": "sepolia",
           "nickname": "Sepolia",
-          "providerType": "rpc",
+          "providerType": "sepolia",
+          "removable": false,
           "rpcUrl": "https://sepolia.infura.io/v3/undefined",
           "ticker": "SepoliaETH",
         }
@@ -962,10 +780,9 @@ describe('Selectors', () => {
       expect(currentNetwork).toMatchInlineSnapshot(`
         {
           "blockExplorerUrl": undefined,
-          "blockExplorerUrls": [],
           "chainId": "0x9999",
           "id": "mock-network-config-id",
-          "providerType": "rpc",
+          "nickname": undefined,
           "removable": true,
           "rpcPrefs": {
             "imageUrl": undefined,

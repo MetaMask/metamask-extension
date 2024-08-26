@@ -92,7 +92,7 @@ let store = configureStore({
   ...mockState,
   metamask: {
     ...mockState.metamask,
-    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET, id: 'mainnet' }),
   },
 });
 

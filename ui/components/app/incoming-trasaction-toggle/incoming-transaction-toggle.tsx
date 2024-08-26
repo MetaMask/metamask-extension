@@ -1,10 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 
 import PropTypes from 'prop-types';
-import {
-  NetworkConfiguration,
-  NetworkState,
-} from '@metamask/network-controller';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
 import { I18nContext } from '../../../contexts/i18n';
 

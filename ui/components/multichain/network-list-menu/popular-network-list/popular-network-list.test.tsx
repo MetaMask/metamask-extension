@@ -5,10 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { getUnapprovedConfirmations } from '../../../../selectors';
-import {
-  CHAIN_IDS,
-  RPCDefinition,
-} from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import PopularNetworkList from './popular-network-list';
 
 jest.mock('react-redux', () => ({

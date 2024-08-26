@@ -20,8 +20,7 @@ import { getSelectedInternalAccountFromMockState } from '../../../../../../test/
 import { mockNetworkState } from '../../../../../../test/stub/networks';
 import AdvancedGasFeeDefaults from './advanced-gas-fee-defaults';
 
-const TEXT_SELECTOR =
-  'Save these values as my default for the Chain 5 network.';
+const TEXT_SELECTOR = 'Save these values as my default for the Goerli network.';
 
 jest.mock('../../../../../store/actions', () => ({
   gasFeeStartPollingByNetworkClientId: jest

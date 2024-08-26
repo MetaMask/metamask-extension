@@ -13,9 +13,9 @@ import {
   setSwapToToken,
   setFromTokenInputValue,
 } from '../../../ducks/swaps/swaps';
-import BuildQuote from '.';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import BuildQuote from '.';
 
 const middleware = [thunk];
 const createProps = (customProps = {}) => {

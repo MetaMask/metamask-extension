@@ -34,7 +34,7 @@ export const NotificationDetailBlockExplorerButton = ({
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const networkConfiguration = networkConfigurations[chainIdHex];
   const configuredBlockExplorer =
-    networkConfiguration.blockExplorerUrls[
+    networkConfiguration?.blockExplorerUrls?.[
       networkConfiguration.defaultBlockExplorerUrlIndex ?? -1
     ];
 

@@ -1,10 +1,7 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
-import {
-  getDefaultNetworkControllerState,
-  NetworkConfiguration,
-} from '@metamask/network-controller';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import {
   getNativeCurrency,
   getProviderConfig,
@@ -24,7 +21,6 @@ import {
   CHAIN_IDS,
   ETH_TOKEN_IMAGE_URL,
   MAINNET_DISPLAY_NAME,
-  NETWORK_TYPES,
 } from '../../shared/constants/network';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import { mockNetworkState } from '../../test/stub/networks';
@@ -66,14 +62,13 @@ type TestState = MultichainState &
     };
   };
 
-function getEvmState(): TestState {
+function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
   return {
     metamask: {
       preferences: {
         showFiatInTestnets: false,
       },
-      // ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-      ...getDefaultNetworkControllerState(),
+      ...mockNetworkState({ chainId }),
       currentCurrency: 'ETH',
       currencyRates: {
         ETH: {
@@ -330,9 +325,7 @@ describe('Multichain Selectors', () => {
     });
 
     it('returns current chain ID if account is EVM (other)', () => {
-      const state = getEvmState();
-
-      state.metamask.selectedNetworkClientId = 'sepolia';
+      const state = getEvmState(CHAIN_IDS.SEPOLIA);
       expect(getMultichainCurrentChainId(state)).toEqual(CHAIN_IDS.SEPOLIA);
     });
 
@@ -355,9 +348,7 @@ describe('Multichain Selectors', () => {
     });
 
     it('returns false if account is EVM (testnet)', () => {
-      const state = getEvmState();
-
-      state.metamask.selectedNetworkClientId = 'sepolia';
+      const state = getEvmState(CHAIN_IDS.SEPOLIA);
       expect(getMultichainIsMainnet(state)).toBe(false);
     });
 
@@ -389,11 +380,10 @@ describe('Multichain Selectors', () => {
     });
 
     // @ts-expect-error This is missing from the Mocha type definitions
-    it.each([NETWORK_TYPES.SEPOLIA, NETWORK_TYPES.LINEA_SEPOLIA])(
+    it.each([CHAIN_IDS.SEPOLIA, CHAIN_IDS.LINEA_SEPOLIA])(
       'returns true if account is EVM (testnet): %s',
-      (network: string) => {
-        const state = getEvmState();
-        state.metamask.selectedNetworkClientId = network;
+      (chainId: Hex) => {
+        const state = getEvmState(chainId);
         expect(getMultichainIsTestnet(state)).toBe(true);
       },
     );

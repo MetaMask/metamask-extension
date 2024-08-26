@@ -27,7 +27,12 @@ import {
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
+import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
+
+// TODO: Consider increasing this. This tooltip is
+// rendering when it has enough room to see everything
+const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 
 export const NetworkListItem = ({
   name,
@@ -153,8 +158,8 @@ export const NetworkListItem = ({
             onKeyDown={handleKeyPress}
             tabIndex={0} // Enable keyboard focus
           >
-            {name}
-            {/* {name?.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
+            {/* {name} */}
+            {name?.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
               <Tooltip
                 title={name}
                 position="bottom"
@@ -164,7 +169,7 @@ export const NetworkListItem = ({
               </Tooltip>
             ) : (
               name
-            )} */}
+            )}
           </Text>
         </Box>
         {rpcEndpoint && (

@@ -26,14 +26,7 @@ describe('DetectedTokensBanner', () => {
   });
 
   it('should render correctly', () => {
-    const store = configureStore({
-      ...testData,
-      metamask: {
-        ...testData.metamask,
-        selectedNetworkClientId: 'sepolia',
-        ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
-      },
-    });
+    const store = configureStore(mockStore);
     const { getByTestId, container } = renderWithProvider(
       <DetectedTokensBanner {...args} />,
       store,
@@ -43,14 +36,7 @@ describe('DetectedTokensBanner', () => {
     expect(container).toMatchSnapshot();
   });
   it('should render number of tokens detected link', () => {
-    const store = configureStore({
-      ...testData,
-      metamask: {
-        ...testData.metamask,
-        selectedNetworkClientId: 'sepolia',
-        ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
-      },
-    });
+    const store = configureStore(mockStore);
     renderWithProvider(<DetectedTokensBanner {...args} />, store);
 
     expect(

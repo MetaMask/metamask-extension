@@ -396,12 +396,13 @@
       },
       "0x5": {
         "chainId": "0x5",
-        "name": "Chain 5",
+        "name": "Goerli",
         "nativeCurrency": "ETH",
         "defaultRpcEndpointIndex": 0,
         "rpcEndpoints": [
           {
-            "networkClientId": "goerli"
+            "networkClientId": "goerli",
+            "type": "custom"
           }
         ]
       }

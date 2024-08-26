@@ -301,6 +301,8 @@ export function getProviderConfig(state) {
               : rpcEndpoint.networkClientId,
           ...(rpcEndpoint.type === RpcEndpointType.Custom && {
             id: rpcEndpoint.networkClientId,
+            // TODO: `nickname` used to only be present for custom networks, but consider
+            // whether its safe or easier to include it for built-in infura networks too
             nickname: network.name,
             rpcUrl: rpcEndpoint.url,
           }),
@@ -308,42 +310,7 @@ export function getProviderConfig(state) {
       }
     }
   }
-  return undefined;
-
-  // For debugging reference
-
-  // Built in examples:
-  // "providerConfig": {
-  //   "chainId": "0x1",
-  //   "rpcPrefs": {
-  //     "blockExplorerUrl": "https://etherscan.io"
-  //   },
-  //   "ticker": "ETH",
-  //   "type": "mainnet"
-  // },
-
-  // "providerConfig": {
-  //   "chainId": "0xaa36a7",
-  //   "rpcPrefs": {
-  //     "blockExplorerUrl": "https://sepolia.etherscan.io"
-  //   },
-  //   "ticker": "SepoliaETH",
-  //   "type": "sepolia"
-  // },
-
-  // Custom example:
-  // "providerConfig": {
-  //   "id": "ce5a63df-b859-4428-9ffd-9e1fc82b9a6c",
-  //   "rpcUrl": "https://mainnet.base.org",
-  //   "chainId": "0x2105",
-  //   "ticker": "ETH",
-  //   "nickname": "Base Mainnet",
-  //   "rpcPrefs": {
-  //     "blockExplorerUrl": "https://basescan.org",
-  //     "imageUrl": "./images/base.svg"
-  //   },
-  //   "type": "rpc"
-  // },
+  return undefined; // Shouldn't be possible
 }
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>

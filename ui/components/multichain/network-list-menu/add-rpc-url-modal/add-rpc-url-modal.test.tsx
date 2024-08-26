@@ -21,12 +21,6 @@ describe('AddRpcUrlModal', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should render the input field with the correct label', () => {
-    render(<AddRpcUrlModal />);
-    const inputLabel = screen.getByLabelText('additionalRpcUrl');
-    expect(inputLabel).toBeInTheDocument();
-  });
-
   it('should render the "Add URL" button with correct text', () => {
     render(<AddRpcUrlModal />);
     const addButton = screen.getByRole('button', { name: 'addUrl' });

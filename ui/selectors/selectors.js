@@ -690,7 +690,7 @@ export function getSwitchedNetworkDetails(state) {
       (network) =>
         network.rpcEndpoints.some(
           (rpcEndpoint) =>
-            rpcEndpoint.networkClientId ==
+            rpcEndpoint.networkClientId ===
             switchedNetworkDetails.networkClientId,
         ),
     );
@@ -1761,7 +1761,6 @@ export const getCurrentNetwork = createDeepEqualSelector(
   /**
    * Get the current network configuration.
    *
-   * @param {Record<string, unknown>[]} allNetworks - All network configurations.
    * @param {Record<string, unknown>} providerConfig - The configuration for the current network's provider.
    * @returns {{
    *   chainId: `0x${string}`;
@@ -1782,11 +1781,10 @@ export const getCurrentNetwork = createDeepEqualSelector(
         imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[providerConfig.chainId],
       },
       id: providerConfig.id,
-      // TODO: We could keep providerType, which was previously
-      // only defined on Infura networks. But is anyone still using it?
-      //
-      // TODO: This used to have a top level blockExplorerUrl, even
-      // though the return type doesn't mention it.  but is anyone using it?
+      blockExplorerUrl: providerConfig.rpcPrefs.blockExplorerUrl,
+      ...(providerConfig.type !== 'rpc' && {
+        providerType: providerConfig.type,
+      }),
       rpcUrl: providerConfig.rpcUrl,
       ticker: providerConfig.ticker,
     };

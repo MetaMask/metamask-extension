@@ -75,7 +75,6 @@ const renderComponent = (pendingNfts = {}) => {
       pendingApprovals: pendingNfts,
       ...mockNetworkState({
         chainId: CHAIN_IDS.MAINNET,
-        blockExplorerUrl: undefined,
       }),
     },
     history: {

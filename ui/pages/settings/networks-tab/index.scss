@@ -34,7 +34,7 @@
 
   &__item-placeholder {
     cursor: pointer;
-    pointer-events:none;
+    pointer-events: none;
     user-select: none;
   }
 
@@ -119,7 +119,6 @@
   }
 
   &__network-form {
-
     &__footer {
       position: sticky;
       bottom: 0;
@@ -231,5 +230,4 @@
       color: var(--color-text-default);
     }
   }
-
 }
