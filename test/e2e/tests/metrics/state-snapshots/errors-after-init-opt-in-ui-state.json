@@ -52,15 +52,6 @@
         "usdConversionRate": 1700
       }
     },
-    "providerConfig": {
-      "chainId": "0x539",
-      "nickname": "Localhost 8545",
-      "rpcPrefs": "object",
-      "rpcUrl": "string",
-      "ticker": "ETH",
-      "type": "rpc",
-      "id": "networkConfigurationId"
-    },
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
     "browserEnvironment": { "os": "string", "browser": "string" },
@@ -252,7 +243,21 @@
       "swapsStxMaxFeeMultiplier": 2,
       "swapsFeatureFlags": {}
     },
-    "bridgeState": { "bridgeFeatureFlags": { "extensionSupport": "boolean" } },
+    "bridgeState": {
+      "bridgeFeatureFlags": {
+        "extensionSupport": "boolean",
+        "srcNetworkAllowlist": {
+          "0": "string",
+          "1": "string",
+          "2": "string"
+        },
+        "destNetworkAllowlist": {
+          "0": "string",
+          "1": "string",
+          "2": "string"
+        }
+      }
+    },
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",

@@ -1,4 +1,6 @@
 const { strict: assert } = require('assert');
+const { mockNetworkState } = require('../../../stub/networks');
+
 const {
   defaultGanacheOptions,
   generateGanacheOptions,
@@ -182,29 +184,26 @@ describe('Custom RPC history', function () {
   });
 
   it('finds all recent RPCs in history', async function () {
+    const networkState = mockNetworkState(
+      {
+        rpcUrl: 'http://127.0.0.1:8545/1',
+        chainId: '0x539',
+        ticker: 'ETH',
+        nickname: 'http://127.0.0.1:8545/1',
+      },
+      {
+        rpcUrl: 'http://127.0.0.1:8545/2',
+        chainId: '0x539',
+        ticker: 'ETH',
+        nickname: 'http://127.0.0.1:8545/2',
+      },
+    );
+    delete networkState.selectedNetworkClientId;
+
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withNetworkController({
-            networkConfigurations: {
-              networkConfigurationIdOne: {
-                rpcUrl: 'http://127.0.0.1:8545/1',
-                chainId: '0x539',
-                ticker: 'ETH',
-                nickname: 'http://127.0.0.1:8545/1',
-                rpcPrefs: {},
-                type: 'rpc',
-              },
-              networkConfigurationIdTwo: {
-                rpcUrl: 'http://127.0.0.1:8545/2',
-                chainId: '0x539',
-                ticker: 'ETH',
-                nickname: 'http://127.0.0.1:8545/2',
-                rpcPrefs: {},
-                type: 'rpc',
-              },
-            },
-          })
+          .withNetworkController(networkState)
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
@@ -234,27 +233,26 @@ describe('Custom RPC history', function () {
   });
 
   it('deletes a custom RPC', async function () {
+    const networkState = mockNetworkState(
+      {
+        rpcUrl: 'http://127.0.0.1:8545/1',
+        chainId: '0x539',
+        ticker: 'ETH',
+        nickname: 'http://127.0.0.1:8545/1',
+      },
+      {
+        rpcUrl: 'http://127.0.0.1:8545/2',
+        chainId: '0x539',
+        ticker: 'ETH',
+        nickname: 'http://127.0.0.1:8545/2',
+      },
+    );
+    delete networkState.selectedNetworkClientId;
+
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withNetworkController({
-            networkConfigurations: {
-              networkConfigurationIdOne: {
-                rpcUrl: 'http://127.0.0.1:8545/1',
-                chainId: '0x539',
-                ticker: 'ETH',
-                nickname: 'http://127.0.0.1:8545/1',
-                rpcPrefs: {},
-              },
-              networkConfigurationIdTwo: {
-                rpcUrl: 'http://127.0.0.1:8545/2',
-                chainId: '0x539',
-                ticker: 'ETH',
-                nickname: 'http://127.0.0.1:8545/2',
-                rpcPrefs: {},
-              },
-            },
-          })
+          .withNetworkController(networkState)
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
