@@ -677,6 +677,10 @@ export const createBridgeMockStore = (
           ...featureFlagOverrides,
         },
       },
+      ...mockNetworkState(
+        { chainId: CHAIN_IDS.MAINNET },
+        { chainId: CHAIN_IDS.LINEA_MAINNET },
+      ),
     },
   };
 };
