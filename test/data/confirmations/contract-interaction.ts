@@ -178,7 +178,6 @@ export const genUnapprovedApproveConfirmation = ({
     value: '0x0',
     maxFeePerGas: '0x5b06b0c0d',
     maxPriorityFeePerGas: '0x59682f00',
-    origin: 'metamask.github.io',
   },
   type: TransactionType.tokenMethodApprove,
 });
