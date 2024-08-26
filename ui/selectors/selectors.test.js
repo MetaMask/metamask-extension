@@ -1896,29 +1896,35 @@ describe('#getConnectedSitesListWithNetworkInfo', () => {
     const networks = [
       {
         id: 'network1',
-        rpcPrefs: {
-          imageUrl: 'network1-icon.png',
-        },
-        nickname: 'Network 1',
+        chainId: '0x1',
+        name: 'Network 1',
+        rpcEndpoints: [
+          {
+            networkClientId: 'network1',
+          },
+        ],
       },
       {
         id: 'network2',
-        rpcPrefs: {
-          imageUrl: 'network2-icon.png',
-        },
-        nickname: 'Network 2',
+        chainId: '0x38',
+        name: 'Network 2',
+        rpcEndpoints: [
+          {
+            networkClientId: 'network2',
+          },
+        ],
       },
     ];
 
     const expectedSitesList = {
       site1: {
         id: 'site1',
-        networkIconUrl: 'network1-icon.png',
+        networkIconUrl: './images/eth_logo.svg',
         networkName: 'Network 1',
       },
       site2: {
         id: 'site2',
-        networkIconUrl: 'network2-icon.png',
+        networkIconUrl: './images/bnb.svg',
         networkName: 'Network 2',
       },
     };
