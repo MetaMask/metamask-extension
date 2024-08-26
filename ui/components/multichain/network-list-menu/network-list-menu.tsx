@@ -11,6 +11,7 @@ import {
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
+import { Hex } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NetworkListItem } from '../network-list-item';
 import {
@@ -115,7 +116,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const { chainId: editingChainId, editCompleted } =
     useSelector(getEditedNetwork) ?? {};
 
-  const currentlyOnTestNetwork = TEST_CHAINS.includes(currentChainId);
+  const currentlyOnTestNetwork = (TEST_CHAINS as Hex[]).includes(
+    currentChainId,
+  );
 
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
@@ -289,7 +292,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                   }),
                 );
               }
-            : null
+            : undefined
         }
         onEditClick={() => {
           dispatch(
