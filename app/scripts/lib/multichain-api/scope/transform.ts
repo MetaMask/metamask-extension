@@ -1,5 +1,5 @@
 import { CaipChainId, isCaipChainId } from '@metamask/utils';
-import { ScopeObject, ScopesObject } from './scope';
+import { ExternalScopeObject, ExternalScopesObject, InternalScopeObject, InternalScopesObject, ScopeObject, ScopesObject } from './scope';
 
 // DRY THIS
 function unique<T>(list: T[]): T[] {
@@ -18,17 +18,18 @@ function unique<T>(list: T[]): T[] {
  */
 export const flattenScope = (
   scopeString: string,
-  scopeObject: ScopeObject,
-): ScopesObject => {
+  scopeObject: ExternalScopeObject,
+): InternalScopesObject => {
   const { scopes, ...restScopeObject } = scopeObject;
   const isChainScoped = isCaipChainId(scopeString);
 
-  if (isChainScoped || !scopes) {
+  if (isChainScoped) {
     return { [scopeString]: scopeObject };
   }
 
-  // TODO: Either change `scopes` to `references` or do a namespace check here?
-  // Do we need to handle the case where chain scoped is passed in with `scopes` defined too?
+  if (!scopes) {
+    throw new Error('what') // this should have been filtered out after isValidScope
+  }
 
   const scopeMap: Record<CaipChainId, ScopeObject> = {};
   scopes.forEach((scope) => {
@@ -124,7 +125,7 @@ export const mergeScopes = (
   return scope;
 };
 
-export const flattenMergeScopes = (scopes: ScopesObject) => {
+export const flattenMergeScopes = (scopes: ExternalScopesObject): InternalScopesObject => {
   let flattenedScopes = {};
   Object.keys(scopes).forEach((scopeString) => {
     const flattenedScopeMap = flattenScope(scopeString, scopes[scopeString]);
