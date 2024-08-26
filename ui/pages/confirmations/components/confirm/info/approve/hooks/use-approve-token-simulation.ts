@@ -7,27 +7,16 @@ import { useIsNFT } from './use-is-nft';
 
 export const UNLIMITED_MSG = 'UNLIMITED MESSAGE';
 
-function isSpendingCapUnlimited(
-  tokenDecimals: string,
-  decodedSpendingCap: number,
-) {
-  const totalCirculatingSupplyBigNumber = new BigNumber(10).pow(
-    Number(tokenDecimals),
-  );
+const UNLIMITED_THRESHOLD = 10 ** 15;
 
-  // convert `decodedSpendingCap` to Big Number because numbers lose precision above
-  // `Number.MAX_SAFE_INTEGER`
-  const spendingCapBigNumber = new BigNumber(decodedSpendingCap);
-
-  return spendingCapBigNumber.greaterThanOrEqualTo(
-    totalCirculatingSupplyBigNumber,
-  );
+function isSpendingCapUnlimited(decodedSpendingCap: number) {
+  return decodedSpendingCap >= UNLIMITED_THRESHOLD;
 }
 
 export const useApproveTokenSimulation = (transactionMeta: TransactionMeta) => {
   const locale = useSelector(getIntlLocale);
 
-  const { isNFT, pending: isNFTPending, decimals } = useIsNFT(transactionMeta);
+  const { isNFT, pending: isNFTPending } = useIsNFT(transactionMeta);
 
   const decodedResponse = useDecodedTransactionData();
 
@@ -41,11 +30,7 @@ export const useApproveTokenSimulation = (transactionMeta: TransactionMeta) => {
     : new Intl.NumberFormat(locale).format(decodedSpendingCap);
 
   let tokenAmount;
-  if (
-    !isNFT &&
-    decimals !== undefined &&
-    isSpendingCapUnlimited(decimals, decodedSpendingCap)
-  ) {
+  if (!isNFT && isSpendingCapUnlimited(decodedSpendingCap)) {
     tokenAmount = UNLIMITED_MSG;
   } else {
     tokenAmount = `${tokenPrefix}${formattedTokenNum}`;

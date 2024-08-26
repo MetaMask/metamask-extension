@@ -1,4 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
 import {
   CONTRACT_INTERACTION_SENDER_ADDRESS,
   genUnapprovedContractInteractionConfirmation,
@@ -7,7 +8,6 @@ import mockState from '../../../../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../../../../test/lib/render-helpers';
 import { getTokenStandardAndDetails } from '../../../../../../../store/actions';
 import { useIsNFT } from './use-is-nft';
-import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
 
 jest.mock('../../../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../../../store/actions'),

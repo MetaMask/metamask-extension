@@ -25,9 +25,7 @@ describe('useApproveTokenSimulation', () => {
   });
 
   it('returns the token id for NFT', async () => {
-    const useIsNFTMock = jest
-      .fn()
-      .mockImplementation(() => ({ isNFT: true, decimals: '18' }));
+    const useIsNFTMock = jest.fn().mockImplementation(() => ({ isNFT: true }));
 
     const useDecodedTransactionDataMock = jest.fn().mockImplementation(() => ({
       pending: false,
@@ -93,9 +91,7 @@ describe('useApproveTokenSimulation', () => {
   });
 
   it('returns "UNLIMITED MESSAGE" token amount for fungible tokens approvals equal or over the total number of tokens in circulation', async () => {
-    const useIsNFTMock = jest
-      .fn()
-      .mockImplementation(() => ({ isNFT: false, decimals: '18' }));
+    const useIsNFTMock = jest.fn().mockImplementation(() => ({ isNFT: false }));
 
     const useDecodedTransactionDataMock = jest.fn().mockImplementation(() => ({
       pending: false,
@@ -110,7 +106,7 @@ describe('useApproveTokenSimulation', () => {
               },
               {
                 type: 'uint256',
-                value: 10 ** 18,
+                value: 10 ** 15,
               },
             ],
           },
@@ -135,7 +131,7 @@ describe('useApproveTokenSimulation', () => {
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "formattedTokenNum": "1,000,000,000,000,000,000",
+        "formattedTokenNum": "1,000,000,000,000,000",
         "pending": undefined,
         "tokenAmount": "UNLIMITED MESSAGE",
         "value": {
@@ -149,7 +145,7 @@ describe('useApproveTokenSimulation', () => {
                 },
                 {
                   "type": "uint256",
-                  "value": 1000000000000000000,
+                  "value": 1000000000000000,
                 },
               ],
             },

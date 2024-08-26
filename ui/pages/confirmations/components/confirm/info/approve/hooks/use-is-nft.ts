@@ -5,7 +5,7 @@ import { getTokenStandardAndDetails } from '../../../../../../../store/actions';
 
 export const useIsNFT = (
   transactionMeta: TransactionMeta,
-): { isNFT: boolean; pending: boolean; decimals: string | undefined } => {
+): { isNFT: boolean; pending: boolean } => {
   const { value, pending } = useAsyncResult(async () => {
     return await getTokenStandardAndDetails(
       transactionMeta?.txParams?.to as string,
@@ -13,7 +13,6 @@ export const useIsNFT = (
   }, [transactionMeta]);
 
   const isNFT = value?.standard !== TokenStandard.ERC20;
-  const decimals = value?.decimals;
 
-  return { pending, isNFT, decimals };
+  return { pending, isNFT };
 };
