@@ -10,9 +10,7 @@ import { renderWithConfirmContextProvider } from '../../../../../../test/lib/con
 import configureStore from '../../../../../store/store';
 import Header from './header';
 
-const render = (
-  state: DefaultRootState = getMockTypedSignConfirmState(),
-) => {
+const render = (state: DefaultRootState = getMockTypedSignConfirmState()) => {
   const store = configureStore(state);
   return renderWithConfirmContextProvider(<Header />, store);
 };
@@ -25,9 +23,7 @@ describe('Header', () => {
   });
 
   it('should match snapshot with transaction confirmation', () => {
-    const { container } = render(
-      getMockContractInteractionConfirmState(),
-    );
+    const { container } = render(getMockContractInteractionConfirmState());
 
     expect(container).toMatchSnapshot();
   });
