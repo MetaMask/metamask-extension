@@ -801,7 +801,7 @@ export default class Routes extends Component {
                 `${REVIEW_PERMISSIONS}/${safeEncodedHost}`,
               )
             }
-            onClose={hidePermittedNetworkToast}
+            onClose={() => hidePermittedNetworkToast()}
           />
         ) : null}
       </ToastContainer>

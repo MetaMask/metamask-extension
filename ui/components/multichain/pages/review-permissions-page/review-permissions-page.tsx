@@ -18,15 +18,20 @@ import {
   getNonTestNetworks,
   getOrderedConnectedAccountsForConnectedDapp,
   getOrderedNetworksList,
+  getPermissionSubjects,
   getPermittedChainsByOrigin,
   getPermittedChainsForSelectedTab,
 } from '../../../../selectors/index';
+import { removePermissionsFor } from '../../../../store/actions';
 import {
   AvatarFavicon,
   AvatarFaviconSize,
   Box,
+  Button,
   ButtonIcon,
   ButtonIconSize,
+  ButtonSize,
+  ButtonVariant,
   Icon,
   IconName,
   IconSize,
@@ -52,11 +57,33 @@ export const ReviewPermissions = () => {
   const connectedAccounts = useSelector((state) =>
     getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin),
   );
-
+  const subjects = useSelector(getPermissionSubjects);
   const grantedNetworks = networksList.filter(
     (net: { chainId: any }) => connectedNetworks.indexOf(net.chainId) !== -1,
   );
+  const disconnectAllAccounts = () => {
+    const subject = (subjects as SubjectsType)[activeTabOrigin];
 
+    if (subject) {
+      const permissionMethodNames = Object.values(subject.permissions).map(
+        ({ parentCapability }: { parentCapability: string }) =>
+          parentCapability,
+      ) as string[];
+      if (permissionMethodNames.length > 0) {
+        const permissionsRecord: Record<string, string[]> = {
+          [activeTabOrigin]: permissionMethodNames,
+        };
+
+        dispatch(
+          removePermissionsFor(
+            permissionsRecord as Record<string, NonEmptyArray<string>>,
+          ),
+        );
+      }
+
+      console.log('all disconnected');
+    }
+  };
   return (
     <Page
       data-testid="connections-page"
@@ -107,6 +134,18 @@ export const ReviewPermissions = () => {
       <Content padding={0}>
         <SiteCell networks={grantedNetworks} accounts={connectedAccounts} />
       </Content>
+      <Footer>
+        <Button
+          size={ButtonSize.Lg}
+          block
+          variant={ButtonVariant.Secondary}
+          startIconName={IconName.Logout}
+          danger
+          onClick={() => disconnectAllAccounts()}
+        >
+          {t('disconnectAllAccounts')}
+        </Button>
+      </Footer>
     </Page>
   );
 };
