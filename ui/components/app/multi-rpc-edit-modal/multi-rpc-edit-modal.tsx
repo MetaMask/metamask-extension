@@ -21,11 +21,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import { setShowMultiRpcModal } from '../../../store/actions';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import {
-  getNonTestNetworks,
-  getNetworkConfigurationsByChainId,
-} from '../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../selectors';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import NetworkListItem from './network-list-item/network-list-item';
 
 type MultiRpcEditModalProps = {
@@ -38,12 +36,9 @@ function MultiRpcEditModal({ isOpen, onClose }: MultiRpcEditModalProps) {
   const dispatch = useDispatch();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
-  // TODO: getNonTestNetworks is a deprecated selector based on old state.
-  // Should get everything from getNetworkConfigurationsByChainId instead.
-  const nonTestNetworks = useSelector(getNonTestNetworks);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
-  const listNetworks = [...nonTestNetworks];
+  const listNetworks = [...Object.values(networkConfigurations)];
 
   return (
     <Modal
@@ -90,15 +85,27 @@ function MultiRpcEditModal({ isOpen, onClose }: MultiRpcEditModalProps) {
                   return null;
                 }
 
-                const rpcName = networkRpcEndpoints.find(
-                  (network) => network.networkClientId === item.id,
-                )?.name;
+                const selectedRpc =
+                  networkRpcEndpoints?.[item.defaultRpcEndpointIndex];
+
+                const networkToUse = {
+                  nickname: item.name,
+                  chainId: item.chainId,
+                  rpcPrefs: {
+                    imageUrl:
+                      CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                        item.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                      ],
+                  },
+                  rpcUrl: selectedRpc.url,
+                };
+
                 return (
                   <NetworkListItem
                     key={index}
-                    item={item}
+                    item={networkToUse}
                     index={index}
-                    rpcName={rpcName ?? ''}
+                    rpcName={selectedRpc?.name ?? ''}
                     setSelectedNetwork={() => ({})}
                     setActionMode={() => ({})}
                   />
@@ -109,7 +116,6 @@ function MultiRpcEditModal({ isOpen, onClose }: MultiRpcEditModalProps) {
         </ModalBody>
         <ModalFooter
           onSubmit={() => {
-            // TODO: Configure the RPC used by the network according to the user's selection
             dispatch(setShowMultiRpcModal(true));
           }}
           submitButtonProps={{
