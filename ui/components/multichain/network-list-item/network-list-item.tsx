@@ -51,8 +51,8 @@ export const NetworkListItem = ({
 }: {
   name: string;
   iconSrc?: string;
-  iconSize?: string;
-  rpcEndpoint?: string;
+  iconSize?: AvatarNetworkSize;
+  rpcEndpoint?: { name?: string; url: string };
   chainId?: string;
   selected?: boolean;
   onClick: () => void;
@@ -80,7 +80,7 @@ export const NetworkListItem = ({
         ref={setNetworkListItemMenuRef}
         data-testid={`network-list-item-options-button-${chainId}`}
         ariaLabel={t('networkOptions')}
-        onClick={(e) => {
+        onClick={(e: React.MouseEvent) => {
           e.stopPropagation();
           setNetworkOptionsMenuOpen(true);
         }}
@@ -94,7 +94,7 @@ export const NetworkListItem = ({
     }
   }, [networkRef, focus]);
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.stopPropagation(); // Prevent the event from reaching the parent container
       onClick();
@@ -180,7 +180,7 @@ export const NetworkListItem = ({
             className="multichain-network-list-item__rpc-endpoint"
             display={Display.Flex}
             alignItems={AlignItems.center}
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent) => {
               e.stopPropagation();
               onRpcEndpointClick?.();
             }}
