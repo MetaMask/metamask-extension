@@ -5,6 +5,7 @@ import type {
   ValidPermissionSpecification,
   PermissionValidatorConstraint,
   PermissionConstraint,
+  Caveat,
 } from '@metamask/permission-controller';
 import {
   CaveatMutatorOperation,
@@ -13,6 +14,7 @@ import {
 } from '@metamask/permission-controller';
 import {
   CaipAccountId,
+  Json,
   parseCaipAccountId,
   type Hex,
   type NonEmptyArray,
@@ -30,7 +32,7 @@ import { assertScopesSupported } from './scope/assert';
 export type Caip25CaveatValue = {
   requiredScopes: ScopesObject;
   optionalScopes: ScopesObject;
-  sessionProperties?: Record<string, unknown>;
+  sessionProperties?: Record<string, Json>;
   isMultichainOrigin: boolean;
 };
 
@@ -45,6 +47,10 @@ export const Caip25CaveatFactoryFn = (value: Caip25CaveatValue) => {
 
 export const Caip25EndowmentPermissionName = 'endowment:caip25';
 
+type Caip25EndowmentMethodHooks = {
+  findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId;
+};
+
 type Caip25EndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetName: typeof Caip25EndowmentPermissionName;
@@ -53,24 +59,25 @@ type Caip25EndowmentSpecification = ValidPermissionSpecification<{
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 }>;
 
+type Caip25EndowmentSpecificationBuilderOptions = {
+  methodHooks: Caip25EndowmentMethodHooks;
+};
+
 /**
  * `endowment:caip25` returns nothing atm;
  *
  * @param builderOptions - The specification builder options.
- * @param builderOptions.findNetworkClientIdByChainId
+ * @param builderOptions.methodHooks
+ * @param builderOptions.methodHooks.findNetworkClientIdByChainId
  * @returns The specification for the `caip25` endowment.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.Endowment,
-  // TODO: FIX THIS
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  any,
+  Caip25EndowmentSpecificationBuilderOptions,
   Caip25EndowmentSpecification
 > = ({
-  findNetworkClientIdByChainId,
-}: {
-  findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId;
-}) => {
+  methodHooks: { findNetworkClientIdByChainId },
+}: Caip25EndowmentSpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.Endowment,
     targetName: Caip25EndowmentPermissionName,
@@ -78,7 +85,10 @@ const specificationBuilder: PermissionSpecificationBuilder<
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     subjectTypes: [SubjectType.Website],
     validator: (permission: PermissionConstraint) => {
-      const caip25Caveat = permission.caveats?.[0];
+      const caip25Caveat = permission.caveats?.[0] as Caveat<
+        typeof Caip25CaveatType,
+        Caip25CaveatValue
+      >;
       if (
         permission.caveats?.length !== 1 ||
         caip25Caveat?.type !== Caip25CaveatType
@@ -86,10 +96,8 @@ const specificationBuilder: PermissionSpecificationBuilder<
         throw new Error('missing required caveat'); // TODO: throw better error here
       }
 
-      // TODO: FIX THIS TYPE
-      const { requiredScopes, optionalScopes, isMultichainOrigin } = (
-        caip25Caveat as unknown as { value: Caip25CaveatValue }
-      ).value;
+      const { requiredScopes, optionalScopes, isMultichainOrigin } =
+        caip25Caveat.value;
 
       if (
         !requiredScopes ||
