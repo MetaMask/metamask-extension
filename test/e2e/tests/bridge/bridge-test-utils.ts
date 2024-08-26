@@ -63,6 +63,7 @@ export class BridgePage {
       text: symbol,
     });
 
+    await this.driver.delay(2000);
     assert.ok((await this.driver.getCurrentUrl()).includes('asset'));
   };
 
