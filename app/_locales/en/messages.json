@@ -1059,9 +1059,6 @@
   "confirmTitleDescApproveTransaction": {
     "message": "This site wants permission to withdraw your NFTs"
   },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
-  },
   "confirmTitleDescDeployContract": {
     "message": "This site wants you to deploy a contract"
   },

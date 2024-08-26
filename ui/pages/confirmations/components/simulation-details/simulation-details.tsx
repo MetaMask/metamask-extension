@@ -1,9 +1,9 @@
-import React from 'react';
 import {
   SimulationData,
   SimulationError,
   SimulationErrorCode,
 } from '@metamask/transaction-controller';
+import React from 'react';
 import {
   Box,
   Icon,
@@ -11,11 +11,12 @@ import {
   IconSize,
   Text,
 } from '../../../../components/component-library';
+import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
+import Tooltip from '../../../../components/ui/tooltip';
 import {
   AlignItems,
   BorderColor,
   BorderRadius,
-  Color,
   Display,
   FlexDirection,
   IconColor,
@@ -23,15 +24,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import InfoTooltip from '../../../../components/ui/info-tooltip/info-tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
 import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
-import { ConfirmInfoRowVariant } from '../../../../components/app/confirm/info/row';
-import Tooltip from '../../../../components/ui/tooltip';
-import { background } from '@storybook/theming';
 
 export type SimulationDetailsProps = {
   simulationData?: SimulationData;
