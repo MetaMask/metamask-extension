@@ -68,11 +68,9 @@ describe('SelectedAccount Component', () => {
 
   it('should match snapshot', () => {
     const { container } = renderWithProvider(<SelectedAccount />, mockStore);
-
     expect(container).toMatchSnapshot();
   });
 
-  // TODO HERE ::::
   it('should render correctly', async () => {
     const { container, getByText, getByTestId } = renderWithProvider(
       <SelectedAccount />,

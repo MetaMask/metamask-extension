@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import copyToClipboard from 'copy-to-clipboard';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
@@ -34,6 +34,14 @@ describe('AccountListItem', () => {
 
   afterEach(() => {
     jest.clearAllMocks(); // Clear mocks to ensure no test interference
+  });
+
+  it('should match snapshot', () => {
+    const { container } = renderWithProvider(
+      <AddressCopyButton address={SAMPLE_ADDRESS} />,
+      mockStore,
+    );
+    expect(container).toMatchSnapshot();
   });
 
   it('renders the full address by default', () => {
@@ -69,7 +77,7 @@ describe('AccountListItem', () => {
     );
   });
 
-  it('should render correctly', () => {
+  it('should render correctly', async () => {
     const { container } = renderWithProvider(
       <AddressCopyButton address={SAMPLE_ADDRESS} />,
       mockStore,
@@ -107,7 +115,7 @@ describe('AccountListItem', () => {
     );
 
     const tooltipTitle = container.querySelector(
-      '[data-original-title="This account is not set up for use with Chain 5"]',
+      '[data-original-title="This account is not set up for use with Goerli"]',
     );
 
     const button = queryByTestId('address-copy-button-text');
