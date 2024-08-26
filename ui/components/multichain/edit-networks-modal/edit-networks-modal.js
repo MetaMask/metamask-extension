@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+<<<<<<< HEAD
 import { useDispatch, useSelector } from 'react-redux';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -9,6 +10,12 @@ import {
   getPermittedChainsByOrigin,
   getTestNetworks,
 } from '../../../selectors';
+=======
+import { useSelector } from 'react-redux';
+import { TextVariant } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getNonTestNetworks, getPermittedChainsByOrigin, getTestNetworks } from '../../../selectors';
+>>>>>>> 66a729057d (added edit accounts functionality)
 import {
   Modal,
   ModalOverlay,
@@ -34,12 +41,19 @@ export const EditNetworksModal = ({ onClose, onClick }) => {
   const testNetworks = useSelector(getTestNetworks);
   const chains = useSelector(getPermittedChainsByOrigin);
   const permittedChains = Object.values(chains);
+<<<<<<< HEAD
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
+=======
+>>>>>>> 66a729057d (added edit accounts functionality)
   const flattenedPermittedChains = permittedChains.flat();
   const [selectedChains, setSelectedChains] = useState(
     flattenedPermittedChains,
   );
+<<<<<<< HEAD
 
+=======
+  console.log(chains, selectedChains);
+>>>>>>> 66a729057d (added edit accounts functionality)
   const handleAccountClick = (chainId) => {
     const index = selectedChains.indexOf(chainId);
     let newSelectedChains = [];
@@ -49,6 +63,7 @@ export const EditNetworksModal = ({ onClose, onClick }) => {
       newSelectedChains = [...selectedChains, chainId];
     } else {
       // If chainId is already selected, remove it from the selectedChains array
+<<<<<<< HEAD
       newSelectedChains = selectedChains.filter((_item, idx) => idx !== index);
     }
     setSelectedChains(newSelectedChains);
@@ -74,6 +89,15 @@ export const EditNetworksModal = ({ onClose, onClick }) => {
       dispatch(removePermittedChain(activeTabOrigin, selectedChain));
     });
   };
+=======
+      newSelectedChains = selectedChains.filter(
+        (_item, idx) => idx !== index,
+      );
+    }
+    console.log(newSelectedChains, 'ggg');
+    setSelectedChains(newSelectedChains);
+  };
+>>>>>>> 66a729057d (added edit accounts functionality)
   return (
     <Modal
       isOpen

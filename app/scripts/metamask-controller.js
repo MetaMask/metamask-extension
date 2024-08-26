@@ -3153,7 +3153,6 @@ export default class MetamaskController extends EventEmitter {
         this.permissionController.grantPermissionsIncremental.bind(
           this.permissionController,
         ),
-
       setSecurityAlertsEnabled:
         preferencesController.setSecurityAlertsEnabled.bind(
           preferencesController,

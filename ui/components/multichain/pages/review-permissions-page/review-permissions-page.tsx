@@ -56,13 +56,7 @@ export const ReviewPermissions = () => {
   const grantedNetworks = networksList.filter(
     (net: { chainId: any }) => connectedNetworks.indexOf(net.chainId) !== -1,
   );
-  console.log(
-    networksList,
-    connectedNetworks,
-    grantedNetworks,
-    connectedAccounts,
-    'sitesConnectionsList',
-  );
+
   return (
     <Page
       data-testid="connections-page"
