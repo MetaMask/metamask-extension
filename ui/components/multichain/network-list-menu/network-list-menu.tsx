@@ -238,7 +238,11 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     return (
       <NetworkListItem
         name={network.name}
-        iconSrc={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
+        iconSrc={
+          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+            network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+          ]
+        }
         iconSize={AvatarNetworkSize.Sm}
         rpcEndpoint={
           showMultiRpcSelectors
@@ -246,6 +250,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
             : undefined
         }
         key={network.chainId}
+        chainId={network.chainId}
         selected={isCurrentNetwork && !focusSearch}
         focus={isCurrentNetwork && !focusSearch}
         onClick={() => {

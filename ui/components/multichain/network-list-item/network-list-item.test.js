@@ -10,6 +10,7 @@ import { NetworkListItem } from '.';
 const DEFAULT_PROPS = {
   name: POLYGON_DISPLAY_NAME,
   iconSrc: MATIC_TOKEN_IMAGE_URL,
+  chainId: '0x1',
   selected: false,
   onClick: () => undefined,
   onDeleteClick: () => undefined,
@@ -79,7 +80,7 @@ describe('NetworkListItem', () => {
       />,
     );
 
-    fireEvent.click(getByTestId('network-list-item-options-button'));
+    fireEvent.click(getByTestId('network-list-item-options-button-0x1'));
 
     fireEvent.click(getByTestId('network-list-item-options-delete'));
     expect(onDeleteClick).toHaveBeenCalledTimes(1);

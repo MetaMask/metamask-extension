@@ -39,6 +39,7 @@ export const NetworkListItem = ({
   iconSrc,
   iconSize = AvatarNetworkSize.Md,
   rpcEndpoint,
+  chainId,
   selected = false,
   focus = true,
   onClick,
@@ -51,6 +52,8 @@ export const NetworkListItem = ({
   name: string;
   iconSrc?: string;
   iconSize?: string;
+  rpcEndpoint?: string;
+  chainId?: string;
   selected?: boolean;
   onClick: () => void;
   onRpcEndpointClick?: () => void;
@@ -75,7 +78,7 @@ export const NetworkListItem = ({
       <ButtonIcon
         iconName={IconName.MoreVertical}
         ref={setNetworkListItemMenuRef}
-        data-testid="network-list-item-options-button"
+        data-testid={`network-list-item-options-button-${chainId}`}
         ariaLabel={t('networkOptions')}
         onClick={(e) => {
           e.stopPropagation();

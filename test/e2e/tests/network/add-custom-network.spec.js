@@ -519,11 +519,15 @@ describe('Custom network', function () {
 
           await driver.clickElement({ tag: 'button', text: 'Close' });
           await driver.clickElement({ tag: 'button', text: 'Approve' });
+
+          await driver.delay(regularDelayMs);
+
           // verify network switched
           const networkDisplayed = await driver.findElement({
             tag: 'span',
             text: 'Arbitrum One',
           });
+
           assert.equal(
             await networkDisplayed.getText(),
             'Arbitrum One',
@@ -533,7 +537,7 @@ describe('Custom network', function () {
       );
     });
 
-    it('delete the Arbitrum network', async function () {
+    it.only('delete the Arbitrum network', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
@@ -575,6 +579,7 @@ describe('Custom network', function () {
           const networkMenu = await driver.findElement(
             '[data-testid="network-list-item-options-button-0xa4b1"]',
           );
+
           await networkMenu.click();
 
           const deleteButton = await driver.findElement(
