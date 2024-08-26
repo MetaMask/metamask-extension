@@ -39,8 +39,19 @@ async function getExtensionStorageFilePath(driver) {
     .readdirSync(extensionStoragePath)
     .filter((filename) => filename.endsWith('.log'));
 
-  // Use the first of the `.log` files found
   return path.resolve(extensionStoragePath, logFiles[0]);
+}
+
+/**
+ * Gets the size of a file in bytes.
+ *
+ * @param {string} filePath - The path to the file.
+ * @returns {Promise<number>} A promise that resolves to the size of the file in bytes.
+ */
+async function getFileSize(filePath) {
+  const stats = await fs.promises.stat(filePath);
+  console.log(`File Size =========================: ${stats.size} bytes`);
+  return stats.size;
 }
 
 /**
@@ -71,21 +82,6 @@ async function closePopoverIfPresent(driver) {
     text: 'Not right now',
   };
   await driver.clickElementSafe(nftAutodetection);
-}
-
-/**
- * Logs the size of a file.
- *
- * @param {string} filePath - The path to the file to be read.
- * @returns {Promise<void>}
- */
-async function logFileSize(filePath) {
-  try {
-    const stats = await fs.promises.stat(filePath);
-    console.log(`File Size =========================: ${stats.size} bytes`);
-  } catch (err) {
-    console.error(`Error reading file from disk: ${err}`);
-  }
 }
 
 /**
@@ -139,19 +135,25 @@ describe('Vault Decryptor Page', function () {
 
         const filePath = await getExtensionStorageFilePath(driver);
 
-        // Log the file size for debugging purposes
-        await logFileSize(filePath);
-        await inputField.press(filePath);
+        // Retry-logic to ensure the file is ready before uploading it
+        // to mitigate flakiness when Chrome hasn't finished writing
+        const MAX_RETRIES = 3;
+        const MIN_FILE_SIZE = 1000000; // bytes
 
-        const isFileLoadedError = await driver.isElementPresent({
-          tag: 'span',
-          text: '❌ Can not read vault from file',
-        });
-
-        // Retry-logic if file upload fails
-        if (isFileLoadedError) {
-          await inputField.press(filePath);
+        for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+          const fileSize = await getFileSize(filePath);
+          if (fileSize > MIN_FILE_SIZE) {
+            break;
+          } else {
+            console.log(`File size is too small (${fileSize} bytes)`);
+            if (attempt < MAX_RETRIES - 1) {
+              console.log(`Waiting for 2 seconds before retrying...`);
+              await driver.delay(2000);
+            }
+          }
         }
+
+        await inputField.press(filePath);
 
         // fill in the password
         await driver.fill('#passwordinput', WALLET_PASSWORD);
