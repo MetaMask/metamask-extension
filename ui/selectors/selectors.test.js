@@ -726,34 +726,22 @@ describe('Selectors', () => {
           ...mockState.metamask,
           selectedNetworkClientId: NETWORK_TYPES.SEPOLIA,
           blockExplorerUrls: [],
-          networkConfigurationsByChainId: {
-            '0xaa36a7': {
-              chainId: '0xaa36a7',
-              defaultBlockExplorerUrlIndex: 0,
-              rpcEndpoints: [
-                {
-                  networkClientId: NETWORK_TYPES.SEPOLIA,
-                  type: 'infura',
-                  url: 'https://sepolia.infura.io/v3/undefined',
-                },
-              ],
-              defaultRpcEndpointIndex: 0,
-              name: 'Sepolia',
-              nativeCurrency: 'SepoliaETH',
-            },
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA, id: 'sepolia' }),
         },
       };
       const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
 
       expect(currentNetwork).toMatchInlineSnapshot(`
         {
+          "blockExplorerUrl": "https://localhost/blockExplorer/0xaa36a7",
           "chainId": "0xaa36a7",
           "id": "sepolia",
           "nickname": "Sepolia",
-          "providerType": "sepolia",
-          "removable": false,
-          "rpcUrl": "https://sepolia.infura.io/v3/undefined",
+          "rpcPrefs": {
+            "blockExplorerUrl": "https://localhost/blockExplorer/0xaa36a7",
+            "imageUrl": undefined,
+          },
+          "rpcUrl": "https://localhost/rpc/0xaa36a7",
           "ticker": "SepoliaETH",
         }
       `);
@@ -783,7 +771,6 @@ describe('Selectors', () => {
           "chainId": "0x9999",
           "id": "mock-network-config-id",
           "nickname": undefined,
-          "removable": true,
           "rpcPrefs": {
             "imageUrl": undefined,
           },
@@ -878,7 +865,8 @@ describe('Selectors', () => {
           networkConfigurationsByChainId,
         },
       });
-      expect(networks.length).toBeGreaterThan(2);
+
+      expect(Object.values(networks).length).toBeGreaterThan(2);
     });
   });
 
