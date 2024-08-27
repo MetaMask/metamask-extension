@@ -23,8 +23,7 @@ export function useMMICustodySendTransaction() {
   const accountType = useSelector(getAccountType);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
-  // @ts-expect-error
-  const custodyTransactionFn = async (_transactionData) => {
+  const custodyTransactionFn = async (_transactionData: TransactionMeta) => {
     const confirmation = _transactionData as MMITransactionMeta;
 
     if (confirmation && accountType === AccountType.CUSTODY) {
@@ -37,8 +36,7 @@ export function useMMICustodySendTransaction() {
       const fromAddress = confirmation.txParams.from;
       const closeNotification = false;
 
-      // @ts-expect-error
-      dispatch(updateAndApproveTx(confirmation, true, '')).then(() => {
+      await dispatch(updateAndApproveTx(confirmation, true, ''));
         showCustodianDeepLink({
           dispatch,
           mmiActions,
@@ -53,14 +51,12 @@ export function useMMICustodySendTransaction() {
           },
           showCustodyConfirmLink,
         });
-      });
+
     } else {
       // Non Custody accounts follow normal flow
-      // @ts-expect-error
-      dispatch(updateAndApproveTx(currentConfirmation, true, '')).then(() => {
-        dispatch(clearConfirmTransaction());
-        history.push(mostRecentOverviewPage);
-      });
+      await dispatch(updateAndApproveTx(_transactionData, true, ''))
+      dispatch(clearConfirmTransaction());
+      history.push(mostRecentOverviewPage);
     }
   };
 
