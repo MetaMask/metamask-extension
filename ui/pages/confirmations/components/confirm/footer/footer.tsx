@@ -25,7 +25,7 @@ import {
   updateAndApproveTx,
 } from '../../../../../store/actions';
 import { confirmSelector } from '../../../selectors';
-import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
+import { REDESIGN_DEV_TRANSACTION_TYPES } from '../../../utils';
 import { getConfirmationSender } from '../utils';
 
 const ConfirmButton = ({
@@ -130,7 +130,7 @@ const Footer = () => {
       return;
     }
 
-    const isTransactionConfirmation = REDESIGN_TRANSACTION_TYPES.find(
+    const isTransactionConfirmation = REDESIGN_DEV_TRANSACTION_TYPES.find(
       (type) => type === currentConfirmation?.type,
     );
     if (isTransactionConfirmation) {
