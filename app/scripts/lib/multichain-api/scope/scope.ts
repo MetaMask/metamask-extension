@@ -16,11 +16,8 @@ export enum KnownCaipNamespace {
 
 export type Scope = CaipChainId | CaipReference;
 
-export type ExternalScopeObject = InternalScopeObject & {
+export type ScopeObject = {
   scopes?: CaipChainId[];
-};
-
-export type InternalScopeObject = {
   methods: string[];
   notifications: string[];
   accounts?: CaipAccountId[];
@@ -28,9 +25,7 @@ export type InternalScopeObject = {
   rpcEndpoints?: string[];
 };
 
-export type ExternalScopesObject = Record<Scope, ExternalScopeObject>;
-
-export type InternalScopesObject = Record<CaipChainId, InternalScopeObject>;
+export type ScopesObject = Record<Scope, ScopeObject>;
 
 export const parseScopeString = (
   scopeString: string,
@@ -50,6 +45,4 @@ export const parseScopeString = (
   return {};
 };
 
-export type ExternalScopedProperties = Record<Scope, Record<string, unknown>>;
-
-export type InteralScopedProperties = Record<CaipChainId, Record<string, unknown>>;
+export type ScopedProperties = Record<Scope, Record<string, unknown>>;

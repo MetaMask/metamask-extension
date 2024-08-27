@@ -7,14 +7,12 @@ import {
   parseScopeString,
   ScopesObject,
   KnownCaipNamespace,
-  ExternalScopesObject,
-  ExternalScopeObject,
 } from './scope';
 
 // Make this an assert
 export const isValidScope = (
   scopeString: Scope,
-  scopeObject: ExternalScopeObject,
+  scopeObject: ScopeObject,
 ): boolean => {
   const { namespace, reference } = parseScopeString(scopeString);
 
@@ -86,10 +84,10 @@ export const isValidScope = (
 };
 
 export const validateScopes = (
-  requiredScopes?: ExternalScopesObject,
-  optionalScopes?: ExternalScopesObject,
+  requiredScopes?: ScopesObject,
+  optionalScopes?: ScopesObject,
 ) => {
-  const validRequiredScopes: ExternalScopesObject = {};
+  const validRequiredScopes: ScopesObject = {};
   for (const [scopeString, scopeObject] of Object.entries(
     requiredScopes || {},
   )) {

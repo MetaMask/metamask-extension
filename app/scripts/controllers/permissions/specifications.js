@@ -125,10 +125,8 @@ export const getPermissionSpecifications = ({
   return {
     [caip25EndowmentBuilder.targetName]:
       caip25EndowmentBuilder.specificationBuilder({
-        methodHooks: {
-          findNetworkClientIdByChainId,
-          getInternalAccounts,
-        },
+        findNetworkClientIdByChainId,
+        getInternalAccounts,
       }),
     [PermissionNames.eth_accounts]: {
       permissionType: PermissionType.RestrictedMethod,
