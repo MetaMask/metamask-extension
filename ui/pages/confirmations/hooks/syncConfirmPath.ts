@@ -1,15 +1,14 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
-import { currentConfirmationSelector } from '../selectors/confirm';
+import { useConfirmContext } from '../context/confirm';
 
 const syncConfirmPath = () => {
   const history = useHistory();
   const { id: paramsTransactionId } = useParams<{ id: string }>();
 
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { currentConfirmation } = useConfirmContext();
 
   // Redirect below is done to keep the confirmation routes backward compatible
   useEffect(() => {

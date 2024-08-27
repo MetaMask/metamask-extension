@@ -115,7 +115,6 @@ const Footer = () => {
   });
 
   const onCancel = useCallback(() => {
-    console.log('currentConfirmation = ', currentConfirmation);
     if (!currentConfirmation) {
       return;
     }
