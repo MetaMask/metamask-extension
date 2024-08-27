@@ -881,20 +881,12 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/accounts-controller>@metamask/base-controller": true,
         "@metamask/accounts-controller>@metamask/utils": true,
+        "@metamask/base-controller": true,
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "uuid": true
-      }
-    },
-    "@metamask/accounts-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/accounts-controller>@metamask/utils": {
@@ -1120,36 +1112,10 @@
     "@metamask/ens-controller": {
       "packages": {
         "@ethersproject/providers": true,
-        "@metamask/ens-controller>@metamask/base-controller": true,
-        "@metamask/ens-controller>@metamask/controller-utils": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/ens-controller>@metamask/utils": true,
         "punycode": true
-      }
-    },
-    "@metamask/ens-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/ens-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/ens-controller>@metamask/utils": true,
-        "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true
       }
     },
     "@metamask/ens-controller>@metamask/utils": {
@@ -1862,32 +1828,6 @@
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "browserify>assert": true,
         "uuid": true
-      }
-    },
-    "@metamask/network-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/network-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/network-controller>@metamask/utils": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true
       }
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-infura": {
