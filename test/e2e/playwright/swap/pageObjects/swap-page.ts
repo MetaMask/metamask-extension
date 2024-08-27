@@ -131,15 +131,17 @@ export class SwapPage {
   }
 
   async selectTokenFromList(symbol: string) {
-    let searchItem;
-
-    await this.page.waitForTimeout(500);
-    await this.tokenSearch.fill(symbol);
+    let count;
+    // wait for the list to populate
     do {
-      searchItem = await this.tokenList.first().textContent();
-    } while (searchItem !== symbol);
+      count = await this.tokenList.count();
+      await this.page.waitForTimeout(500);
+    } while (count !== (await this.tokenList.count()));
 
-    await this.tokenList.first().click();
+    await this.tokenSearch.fill(symbol);
+    const regex = new RegExp(`^${symbol}$`, 'u');
+    const searchItem = await this.tokenList.filter({ hasText: regex });
+    await searchItem.click({ timeout: 5000 });
   }
 
   async waitForSearchListToPopulate(symbol: string): Promise<void> {

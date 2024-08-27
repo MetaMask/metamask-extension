@@ -64,7 +64,7 @@ export class NetworkController {
     await this.networkTicker.fill(options.symbol);
     await this.saveBtn.click();
     await this.switchToNetworkBtn.click();
-    await this.page.$(`text=/${options.name}/`);
+    await this.waitForNetworkToSwitch(options.name);
   }
 
   async addPopularNetwork(options: { networkName: string }) {
@@ -75,11 +75,17 @@ export class NetworkController {
     await this.approveBtn.click();
     await this.switchToNetworkBtn.click();
     await this.gotItBtn.click();
+    await this.waitForNetworkToSwitch(options.networkName);
   }
 
   async selectNetwork(options: { networkName: string }) {
     await this.networkDisplay.click();
     await this.networkSearch.fill(options.networkName);
     await this.page.getByText(options.networkName).click();
+    await this.waitForNetworkToSwitch(options.networkName);
+  }
+
+  async waitForNetworkToSwitch(networkName: string) {
+    await this.page.waitForSelector(`button:has-text("${networkName}")`);
   }
 }
