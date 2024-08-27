@@ -55,6 +55,8 @@ const ApproveStaticSimulation = () => {
 
   const { isNFT } = useIsNFT(transactionMeta);
 
+  const { isNFT } = useIsNFT(transactionMeta);
+
   if (pending) {
     return <Container isLoading />;
   }
