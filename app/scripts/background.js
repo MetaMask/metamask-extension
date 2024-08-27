@@ -261,8 +261,9 @@ function maybeDetectPhishing(theController) {
       }
 
       theController.phishingController.maybeUpdateState();
-      const phishingTestResponse =
-        theController.phishingController.test(hostname);
+      const phishingTestResponse = theController.phishingController.test(
+        details.url,
+      );
       if (!phishingTestResponse?.result) {
         return {};
       }
