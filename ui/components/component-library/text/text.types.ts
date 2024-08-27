@@ -137,7 +137,7 @@ export interface TextStyleUtilityProps extends StyleUtilityProps {
   /**
    * Enable Brand Evolution Typography
    */
-  brandEvolution?: boolean;
+  isBrandEvolution?: boolean;
 }
 
 export type TextProps<C extends React.ElementType> =

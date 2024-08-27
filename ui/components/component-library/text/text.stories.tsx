@@ -298,5 +298,5 @@ export const BrandEvolution = (args) => (
 );
 
 BrandEvolution.args = {
-  brandEvolution: true,
+  isBrandEvolution: true,
 };
