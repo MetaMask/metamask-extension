@@ -1,3 +1,4 @@
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 
@@ -31,8 +32,15 @@ function transformState(state: Record<string, unknown>) {
     hasProperty(state, 'NetworkController') &&
     isObject(state.NetworkController)
   ) {
+    // type NetworkConfiguration and NetworkConfigurationId not exported from NetworkConroller.d.ts
+    // need for reverse lookup. typing to string
     const existingNetworkConfigsCopy = state.NetworkController
-      .networkConfigurations as Record<string, any>;
+      .networkConfigurations as Record<
+      string,
+      NetworkConfiguration & {
+        id: string;
+      }
+    >;
 
     Object.values(existingNetworkConfigsCopy).forEach((networkConfig) => {
       if (networkConfig.ticker === 'MATIC') {
