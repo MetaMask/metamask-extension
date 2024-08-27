@@ -5498,10 +5498,10 @@
     },
     "react-markdown>unified": {
       "packages": {
+        "level>abstract-level>is-buffer": true,
         "mocha>yargs-unparser>is-plain-obj": true,
         "react-markdown>unified>bail": true,
         "react-markdown>unified>extend": true,
-        "react-markdown>unified>is-buffer": true,
         "react-markdown>unified>trough": true,
         "react-markdown>vfile": true
       }
@@ -5518,9 +5518,9 @@
     },
     "react-markdown>vfile": {
       "packages": {
+        "level>abstract-level>is-buffer": true,
         "path-browserify": true,
         "process": true,
-        "react-markdown>vfile>is-buffer": true,
         "react-markdown>vfile>replace-ext": true,
         "react-markdown>vfile>vfile-message": true
       }
