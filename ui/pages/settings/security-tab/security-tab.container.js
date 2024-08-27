@@ -22,10 +22,10 @@ import {
   setSecurityAlertsEnabled,
 } from '../../../store/actions';
 import {
-  getAllNetworks,
   getIsSecurityAlertsEnabled,
   getPetnamesEnabled,
 } from '../../../selectors';
+import { getAllNetworks } from '../../../selectors/selectors';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 import SecurityTab from './security-tab.component';
 
