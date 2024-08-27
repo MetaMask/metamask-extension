@@ -69,13 +69,6 @@ export const SelectRpcUrlModal = ({
           display={Display.Flex}
           key={rpcEndpoint.url}
           onClick={() => {
-            console.log(
-              'HERE .....',
-              updateNetwork({
-                ...networkConfiguration,
-                defaultRpcEndpointIndex: index,
-              }),
-            );
             dispatch(
               updateNetwork({
                 ...networkConfiguration,
