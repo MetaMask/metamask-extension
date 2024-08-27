@@ -4319,7 +4319,7 @@
     },
     "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>is-number>kind-of": {
       "packages": {
-        "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>is-number>kind-of>is-buffer": true
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>isobject": {
@@ -4356,7 +4356,7 @@
     },
     "gulp-watch>anymatch>micromatch>kind-of": {
       "packages": {
-        "gulp-watch>anymatch>micromatch>kind-of>is-buffer": true
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "gulp-watch>anymatch>micromatch>object.omit": {
@@ -4915,7 +4915,7 @@
     },
     "gulp>glob-watcher>anymatch>micromatch>braces>fill-range>is-number>kind-of": {
       "packages": {
-        "gulp>glob-watcher>anymatch>micromatch>braces>fill-range>is-number>kind-of>is-buffer": true
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "gulp>glob-watcher>anymatch>micromatch>braces>fill-range>to-regex-range": {
@@ -5000,7 +5000,7 @@
     },
     "gulp>glob-watcher>anymatch>micromatch>extglob>expand-brackets>define-property>is-descriptor>is-accessor-descriptor>kind-of": {
       "packages": {
-        "gulp>glob-watcher>anymatch>micromatch>braces>fill-range>is-number>kind-of>is-buffer": true
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "gulp>glob-watcher>anymatch>micromatch>extglob>expand-brackets>define-property>is-descriptor>is-data-descriptor": {
@@ -5010,7 +5010,7 @@
     },
     "gulp>glob-watcher>anymatch>micromatch>extglob>expand-brackets>define-property>is-descriptor>is-data-descriptor>kind-of": {
       "packages": {
-        "gulp>glob-watcher>anymatch>micromatch>braces>fill-range>is-number>kind-of>is-buffer": true
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "gulp>glob-watcher>anymatch>micromatch>extglob>expand-brackets>extend-shallow": {
@@ -5096,7 +5096,7 @@
     },
     "gulp>gulp-cli>matchdep>micromatch>braces>snapdragon-node>snapdragon-util>kind-of": {
       "packages": {
-        "gulp>gulp-cli>matchdep>micromatch>braces>snapdragon-node>snapdragon-util>kind-of>is-buffer": true
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "gulp>gulp-cli>matchdep>micromatch>braces>split-string": {
@@ -5244,12 +5244,12 @@
     },
     "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>cache-base>has-value>has-values>is-number>kind-of": {
       "packages": {
-        "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>cache-base>has-value>has-values>kind-of>is-buffer": true
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>cache-base>has-value>has-values>kind-of": {
       "packages": {
-        "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>cache-base>has-value>has-values>kind-of>is-buffer": true
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>cache-base>set-value": {
@@ -5272,7 +5272,7 @@
     },
     "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>cache-base>to-object-path>kind-of": {
       "packages": {
-        "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>cache-base>to-object-path>kind-of>is-buffer": true
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>cache-base>union-value": {
@@ -5330,7 +5330,7 @@
     },
     "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>class-utils>static-extend>object-copy>kind-of": {
       "packages": {
-        "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>class-utils>static-extend>object-copy>kind-of>is-buffer": true
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>define-property": {
@@ -5393,7 +5393,7 @@
     },
     "gulp>gulp-cli>matchdep>micromatch>snapdragon>define-property>is-descriptor>is-data-descriptor>kind-of": {
       "packages": {
-        "gulp>gulp-cli>matchdep>micromatch>snapdragon>define-property>is-descriptor>is-data-descriptor>kind-of>is-buffer": true
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "gulp>gulp-cli>matchdep>micromatch>snapdragon>extend-shallow": {
@@ -6013,7 +6013,7 @@
     },
     "gulp>vinyl-fs>remove-bom-buffer": {
       "packages": {
-        "gulp>vinyl-fs>remove-bom-buffer>is-buffer": true,
+        "browserify>insert-module-globals>is-buffer": true,
         "gulp>vinyl-fs>remove-bom-buffer>is-utf8": true
       }
     },
@@ -6400,7 +6400,7 @@
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>kind-of": {
       "packages": {
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>kind-of>is-buffer": true
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": {
@@ -6422,7 +6422,7 @@
         "Buffer": true
       },
       "packages": {
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of>is-buffer": true
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": {
@@ -6438,7 +6438,7 @@
     },
     "lavamoat>lavamoat-core>merge-deep>kind-of": {
       "packages": {
-        "lavamoat>lavamoat-core>merge-deep>kind-of>is-buffer": true
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "lodash": {
@@ -7556,10 +7556,10 @@
     },
     "react-markdown>unified": {
       "packages": {
-        "level>abstract-level>is-buffer": true,
         "mocha>yargs-unparser>is-plain-obj": true,
         "react-markdown>unified>bail": true,
         "react-markdown>unified>extend": true,
+        "react-markdown>unified>is-buffer": true,
         "react-markdown>unified>trough": true,
         "react-markdown>vfile": true
       }
@@ -7586,7 +7586,7 @@
         "process.cwd": true
       },
       "packages": {
-        "level>abstract-level>is-buffer": true,
+        "react-markdown>vfile>is-buffer": true,
         "react-markdown>vfile>replace-ext": true,
         "react-markdown>vfile>vfile-message": true
       }

@@ -12376,22 +12376,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"abstract-level@npm:1.0.3":
-  version: 1.0.3
-  resolution: "abstract-level@npm:1.0.3"
-  dependencies:
-    buffer: "npm:^6.0.3"
-    catering: "npm:^2.1.0"
-    is-buffer: "npm:^2.0.5"
-    level-supports: "npm:^4.0.0"
-    level-transcoder: "npm:^1.0.1"
-    module-error: "npm:^1.0.1"
-    queue-microtask: "npm:^1.2.3"
-  checksum: 10/a6872010a7be78240e1e5bf24b202950adbbd2a382970e17cc661ac8a73663327c241dc25f2863e599f3f5b24d0c3c357b5af4092c4ce34511bae1c09283a278
-  languageName: node
-  linkType: hard
-
-"abstract-level@npm:^1.0.2, abstract-level@npm:^1.0.4":
+"abstract-level@npm:1.0.4, abstract-level@npm:^1.0.2, abstract-level@npm:^1.0.4":
   version: 1.0.4
   resolution: "abstract-level@npm:1.0.4"
   dependencies:
