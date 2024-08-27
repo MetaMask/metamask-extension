@@ -6,6 +6,7 @@ import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { SPENDING_CAP_UNLIMITED_MSG } from '../../../../../constants';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { useIsNFT } from './use-is-nft';
+import BigNumber from 'bignumber.js';
 
 const UNLIMITED_THRESHOLD = 10 ** 15;
 
