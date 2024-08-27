@@ -129,6 +129,17 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
     }
   };
 
+  const connectedTitle = () => {
+    const hasSnap = (subject) =>
+      subject.origin.startsWith('local:') || subject.origin.startsWith('npm:');
+    if (connectedSubjects.every((subject) => hasSnap(subject))) {
+      return t('connectedSnaps');
+    } else if (connectedSubjects.some((subject) => hasSnap(subject))) {
+      return t('connectedSitesAndSnaps');
+    }
+    return t('connectedSites');
+  };
+
   useEffect(() => {
     if (initRemove) {
       setIsShowingRemoveWarning(true);
@@ -167,7 +178,7 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
       </Box>
       <Box className="snap-view__content__connected-sites" marginTop={12}>
         <Text variant={TextVariant.bodyLgMedium} marginBottom={2}>
-          {t('connectedSites')}
+          {connectedTitle()}
         </Text>
         <ConnectedSitesList
           connectedSubjects={connectedSubjects}

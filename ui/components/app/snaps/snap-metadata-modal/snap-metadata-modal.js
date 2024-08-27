@@ -60,6 +60,9 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
     : undefined;
 
   const installOrigin = useOriginMetadata(installInfo?.origin);
+  const isSnapRequesting =
+    installInfo?.origin?.startsWith('local:') ||
+    installInfo?.origin?.startsWith('npm:');
 
   const snapPrefix = getSnapPrefix(snapId);
   const packageName = stripSnapPrefix(snapId);
@@ -161,7 +164,11 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
                   </Tooltip>
                 )}
               </Box>
-              <Text ellipsis>{installOrigin.host}</Text>
+              <Text ellipsis>
+                {isSnapRequesting
+                  ? stripSnapPrefix(installInfo.origin)
+                  : installOrigin.host}
+              </Text>
             </Box>
           )}
           <Box

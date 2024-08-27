@@ -1158,6 +1158,12 @@
   "connectedSites": {
     "message": "Connected sites"
   },
+  "connectedSnaps": {
+    "message": "Connected Snaps"
+  },
+  "connectedSitesAndSnaps": {
+    "message": "Connected sites and Snaps"
+  },
   "connectedSitesDescription": {
     "message": "$1 is connected to these sites. They can view your account address.",
     "description": "$1 is the account name"

@@ -69,6 +69,11 @@ export default function SnapInstall({
   const hasError = !requestState.loading && requestState.error;
   const isLoading = requestState.loading;
 
+  // we already have access to the requesting snap's metadata
+  const isOriginSnap =
+    request?.metadata?.dappOrigin?.startsWith('local:') ||
+    request?.metadata?.dappOrigin?.startsWith('npm:');
+
   const warnings = getSnapInstallWarnings(
     requestState?.permissions ?? {},
     t,
@@ -111,16 +116,20 @@ export default function SnapInstall({
       flexDirection={FlexDirection.Column}
       backgroundColor={BackgroundColor.backgroundAlternative}
     >
-      {isLoading || hasError ? (
+      {(isLoading || hasError) && !isOriginSnap ? (
         <PermissionConnectHeader origin={origin} iconUrl={iconUrl} />
       ) : (
         <SnapAuthorshipHeader
-          snapId={targetSubjectMetadata.origin}
+          snapId={
+            isLoading && isOriginSnap
+              ? request?.metadata?.dappOrigin
+              : targetSubjectMetadata.origin
+          }
           onCancel={onCancel}
         />
       )}
       <Box
-        ref={!isLoading && !hasError ? ref : undefined}
+        ref={!isLoading && !hasError ?   ref : undefined}
         onScroll={onScroll}
         className="snap-install__content"
         style={{
