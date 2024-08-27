@@ -202,13 +202,16 @@ export const SendPage = () => {
     }
     dispatch(resetSendState());
 
-    trackEvent({
-      event: MetaMetricsEventName.sendFlowExited,
-      category: MetaMetricsEventCategory.Send,
-      properties: {
-        ...sendAnalytics,
+    trackEvent(
+      {
+        event: MetaMetricsEventName.sendFlowExited,
+        category: MetaMetricsEventCategory.Send,
+        sensitiveProperties: {
+          ...sendAnalytics,
+        },
       },
-    });
+      { excludeMetaMetricsId: false },
+    );
 
     const nextRoute =
       sendStage === SEND_STAGES.EDIT ? DEFAULT_ROUTE : mostRecentOverviewPage;
@@ -217,13 +220,16 @@ export const SendPage = () => {
 
   useEffect(() => {
     if (swapQuotesError) {
-      trackEvent({
-        event: MetaMetricsEventName.sendSwapQuoteError,
-        category: MetaMetricsEventCategory.Send,
-        properties: {
-          ...sendAnalytics,
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendSwapQuoteError,
+          category: MetaMetricsEventCategory.Send,
+          sensitiveProperties: {
+            ...sendAnalytics,
+          },
         },
-      });
+        { excludeMetaMetricsId: false },
+      );
     }
     // sendAnalytics should not result in the event refiring
     // eslint-disable-next-line react-hooks/exhaustive-deps
