@@ -499,7 +499,10 @@ export default function ConfirmationPage({
           </button>
         </div>
       )}
-      <Box className="confirmation-page__content" paddingTop={process.env.CHAIN_PERMISSIONS ? 4 : 0}>
+      <Box
+        className="confirmation-page__content"
+        paddingTop={process.env.CHAIN_PERMISSIONS ? 4 : 0}
+      >
         {isSnapCustomUIDialog && (
           <Box width={BlockSize.Screen}>
             <SnapAuthorshipHeader
