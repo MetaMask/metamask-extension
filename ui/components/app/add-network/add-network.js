@@ -50,6 +50,8 @@ const AddNetwork = () => {
   const history = useHistory();
   const networkConfigurations = useSelector(getNetworkConfigurations);
 
+  console.log('networkConfigurations', networkConfigurations);
+
   const networkConfigurationChainIds = Object.values(networkConfigurations).map(
     (net) => net.chainId,
   );
