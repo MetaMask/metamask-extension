@@ -6,6 +6,10 @@ import {
 } from '../../../../shared/constants/permissions';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '../../lib/multichain-api/caip25permissions';
+import {
   CaveatFactories,
   getCaveatSpecifications,
   getPermissionSpecifications,
@@ -18,16 +22,18 @@ jest.useFakeTimers('modern').setSystemTime(1);
 
 describe('PermissionController specifications', () => {
   describe('caveat specifications', () => {
-    // TODO FIX THIS
-    it.skip('getCaveatSpecifications returns the expected specifications object', () => {
+    it('getCaveatSpecifications returns the expected specifications object', () => {
       const caveatSpecifications = getCaveatSpecifications({});
-      expect(Object.keys(caveatSpecifications)).toHaveLength(13);
+      expect(Object.keys(caveatSpecifications)).toHaveLength(14);
       expect(
         caveatSpecifications[CaveatTypes.restrictReturnedAccounts].type,
       ).toStrictEqual(CaveatTypes.restrictReturnedAccounts);
       expect(
         caveatSpecifications[CaveatTypes.restrictNetworkSwitching].type,
       ).toStrictEqual(CaveatTypes.restrictNetworkSwitching);
+      expect(caveatSpecifications[Caip25CaveatType].type).toStrictEqual(
+        Caip25CaveatType,
+      );
 
       expect(caveatSpecifications.permittedDerivationPaths.type).toStrictEqual(
         SnapCaveatType.PermittedDerivationPaths,
@@ -235,16 +241,18 @@ describe('PermissionController specifications', () => {
   });
 
   describe('permission specifications', () => {
-    // TODO FIX THIS
-    it.skip('getPermissionSpecifications returns the expected specifications object', () => {
+    it('getPermissionSpecifications returns the expected specifications object', () => {
       const permissionSpecifications = getPermissionSpecifications({});
-      expect(Object.keys(permissionSpecifications)).toHaveLength(2);
+      expect(Object.keys(permissionSpecifications)).toHaveLength(3);
       expect(
         permissionSpecifications[RestrictedMethods.eth_accounts].targetName,
       ).toStrictEqual(RestrictedMethods.eth_accounts);
       expect(
         permissionSpecifications[PermissionNames.permittedChains].targetName,
       ).toStrictEqual('endowment:permitted-chains');
+      expect(
+        permissionSpecifications[Caip25EndowmentPermissionName].targetName,
+      ).toStrictEqual('endowment:caip25');
     });
 
     describe('eth_accounts', () => {
