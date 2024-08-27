@@ -9,9 +9,9 @@ const AlertMetricsContext = createContext<{
 type AlertMetricsProps = {
   children: ReactNode;
   metrics: {
-    trackAlertActionClicked: () => void;
-    trackAlertRender: () => void;
-    trackInlineAlertClicked: () => void;
+    trackAlertActionClicked: (alertKey: string) => void;
+    trackAlertRender: (alertKey: string) => void;
+    trackInlineAlertClicked: (alertKey: string) => void;
   };
 };
 
