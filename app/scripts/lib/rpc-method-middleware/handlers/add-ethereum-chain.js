@@ -1,6 +1,7 @@
 import { ApprovalType } from '@metamask/controller-utils';
 
 import { RpcEndpointType } from '@metamask/network-controller';
+import { ethErrors } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   validateAddEthereumChainParams,
@@ -72,30 +73,31 @@ async function addEthereumChainHandler(
   );
   const existingNetwork = getNetworkConfigurationByChainId(chainId);
 
-  // todo: consider maintaining this logic
-  // if (
-  //   existingNetwork &&
-  //   existingNetwork.chainId === chainId &&
-  //   existingNetwork.ticker !== ticker
-  // ) {
-  //   return end(
-  //     ethErrors.rpc.invalidParams({
-  //       message: `nativeCurrency.symbol does not match currency symbol for a network the user already has added with the same chainId. Received:\n${ticker}`,
-  //     }),
-  //   );
-  // }
+  if (
+    existingNetwork &&
+    existingNetwork.chainId === chainId &&
+    existingNetwork.nativeCurrency !== ticker
+  ) {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `nativeCurrency.symbol does not match currency symbol for a network the user already has added with the same chainId. Received:\n${ticker}`,
+      }),
+    );
+  }
 
-  // TODO: consider checking if the rpc url already exists for the network.
-  // in that case, we can just lookup its network client id and switch to it
-  // No need to add or update any networks
-  //
-  // Additionally we may need to check if it exists *across all chain ids*,
-  // since the network controller won't let duplicates be added
+  if (
+    existingNetwork?.rpcEndpoints?.some(({ url }) => url === firstValidRPCUrl)
+  ) {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `The RPC URL ${firstValidRPCUrl} is already defined on the network with chainId ${chainId}`,
+      }),
+    );
+  }
+
+  const { id: approvalFlowId } = await startApprovalFlow();
 
   let updatedNetwork;
-
-  // eslint-disable-next-line no-constant-condition
-  const { id: approvalFlowId } = await startApprovalFlow();
 
   try {
     await requestUserApproval({
@@ -110,29 +112,10 @@ async function addEthereumChainHandler(
       },
     });
 
-    // eslint-disable-next-line no-negated-condition
-    if (!existingNetwork) {
-      updatedNetwork = await addNetwork({
-        blockExplorerUrls: firstValidBlockExplorerUrl
-          ? [firstValidBlockExplorerUrl]
-          : [],
-        defaultBlockExplorerUrlIndex: firstValidBlockExplorerUrl
-          ? 0
-          : undefined,
-        chainId,
-        defaultRpcEndpointIndex: 0,
-        name: chainName, // todo: consider using the canonical chain name here,
-        //  and put this as rpc endpoint name instead???
-        nativeCurrency: ticker,
-        rpcEndpoints: [
-          {
-            url: firstValidRPCUrl,
-            // name:
-            type: RpcEndpointType.Custom,
-          },
-        ],
-      });
-    } else {
+    if (existingNetwork) {
+      // A network for this chain id already exists.
+      // Update it with the new RPC endpoint and/or block explorer.
+
       const clonedNetwork = { ...existingNetwork };
       clonedNetwork.rpcEndpoints = [
         ...clonedNetwork.rpcEndpoints,
@@ -142,60 +125,93 @@ async function addEthereumChainHandler(
           name: chainName,
         },
       ];
+
       clonedNetwork.defaultRpcEndpointIndex =
         clonedNetwork.rpcEndpoints.length - 1;
 
-      const options =
+      if (
+        !clonedNetwork.blockExplorerUrls.includes(firstValidBlockExplorerUrl)
+      ) {
+        clonedNetwork.blockExplorerUrls = [
+          ...clonedNetwork.blockExplorerUrls,
+          firstValidBlockExplorerUrl,
+        ];
+      }
+
+      clonedNetwork.defaultBlockExplorerUrlIndex =
+        clonedNetwork.blockExplorerUrls.length - 1;
+
+      updatedNetwork = await updateNetwork(
+        clonedNetwork.chainId,
+        clonedNetwork,
         currentChainId === chainId
           ? {
               replacementSelectedRpcEndpointIndex:
                 clonedNetwork.defaultRpcEndpointIndex,
             }
-          : undefined;
-
-      // TODO: Merge logic - should new or old data take precedence?
-      // Or use a cononical network name/ticker if conflicting
-
-      updatedNetwork = await updateNetwork(
-        clonedNetwork.chainId,
-        clonedNetwork,
-        options,
+          : undefined,
       );
+    } else {
+      // A network for this chain id does not exist, so add a new network
+      updatedNetwork = await addNetwork({
+        blockExplorerUrls: firstValidBlockExplorerUrl
+          ? [firstValidBlockExplorerUrl]
+          : [],
+        defaultBlockExplorerUrlIndex: firstValidBlockExplorerUrl
+          ? 0
+          : undefined,
+        chainId,
+        defaultRpcEndpointIndex: 0,
+        name: chainName,
+        nativeCurrency: ticker,
+        rpcEndpoints: [
+          {
+            url: firstValidRPCUrl,
+            name: chainName,
+            type: RpcEndpointType.Custom,
+          },
+        ],
+      });
     }
   } catch (error) {
     endApprovalFlow({ id: approvalFlowId });
     return end(error);
   }
 
-  const { networkClientId } =
-    updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
+  // If the added or updated network is not the current chain, prompt the user to switch
+  if (chainId !== currentChainId) {
+    const { networkClientId } =
+      updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
 
-  const requestData = {
-    toNetworkConfiguration: {
-      rpcUrl: firstValidRPCUrl,
+    const requestData = {
+      toNetworkConfiguration: {
+        rpcUrl: firstValidRPCUrl,
+        chainId,
+        nickname: chainName,
+        ticker,
+        networkClientId,
+      },
+      fromNetworkConfiguration: currentNetworkConfiguration,
+    };
+
+    return switchChain(
+      res,
+      end,
+      origin,
       chainId,
-      nickname: chainName,
-      ticker,
+      requestData,
       networkClientId,
-    },
-    fromNetworkConfiguration: currentNetworkConfiguration,
-  };
-
-  return switchChain(
-    res,
-    end,
-    origin,
-    chainId,
-    requestData,
-    networkClientId,
-    approvalFlowId,
-    {
-      getChainPermissionsFeatureFlag,
-      setActiveNetwork,
-      requestUserApproval,
-      getCaveat,
-      requestPermittedChainsPermission,
-      endApprovalFlow,
-    },
-  );
+      approvalFlowId,
+      {
+        getChainPermissionsFeatureFlag,
+        setActiveNetwork,
+        requestUserApproval,
+        getCaveat,
+        requestPermittedChainsPermission,
+        endApprovalFlow,
+      },
+    );
+  }
+  endApprovalFlow({ id: approvalFlowId });
+  return end();
 }
