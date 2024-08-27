@@ -3,7 +3,6 @@ import { TransactionType } from '@metamask/transaction-controller';
 
 import { ConfirmMetamaskState } from '../types/confirm';
 import {
-  currentConfirmationSelector,
   getIsRedesignedConfirmationsDeveloperEnabled,
   latestPendingConfirmationSelector,
   pendingConfirmationsSelector,
@@ -67,14 +66,6 @@ describe('confirm selectors', () => {
       const result = latestPendingConfirmationSelector(mockedState);
 
       expect(result).toStrictEqual(mockedState.metamask.pendingApprovals[2]);
-    });
-  });
-
-  describe('currentConfirmationSelector', () => {
-    it('should return curently active confirmation from state', () => {
-      const result = currentConfirmationSelector(mockedState);
-
-      expect(result).toStrictEqual(mockedState.confirm.currentConfirmation);
     });
   });
 
