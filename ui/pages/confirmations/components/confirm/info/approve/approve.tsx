@@ -47,6 +47,8 @@ const ApproveStaticSimulation = () => {
   const { tokenAmount, formattedTokenNum, value, pending } =
     useApproveTokenSimulation(transactionMeta);
 
+  const { isNFT } = useIsNFT(transactionMeta);
+
   if (pending) {
     return <Container isLoading />;
   }
@@ -95,7 +97,9 @@ const ApproveStaticSimulation = () => {
       title={t('simulationDetailsTitle')}
       titleTooltip={t('simulationDetailsTitleTooltip')}
       description={t('simulationDetailsApproveDesc')}
-      simulationHeading={t('simulationApproveHeading')}
+      simulationHeading={
+        isNFT ? t('simulationApproveHeading') : t('spendingCap')
+      }
       simulationElements={simulationElements}
     />
   );
