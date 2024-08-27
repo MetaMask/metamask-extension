@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.2.0]
+
 ## [12.1.0]
 ### Added
 - Launched a feature displaying the percentage increase or decrease for tokens within the UI ([#24223](https://github.com/MetaMask/metamask-extension/pull/24223))
@@ -4998,8 +4999,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.2.0...HEAD
-[12.2.0]: https://github.com/MetaMask/metamask-extension/compare/v11.16.7...v12.2.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.1.0...HEAD
+[12.2.0]: https://github.com/MetaMask/metamask-extension/compare/v12.1.0...v12.2.0
 [12.1.0]: https://github.com/MetaMask/metamask-extension/compare/v12.0.6...v12.1.0
 [12.0.6]: https://github.com/MetaMask/metamask-extension/compare/v12.0.5...v12.0.6
 [12.0.5]: https://github.com/MetaMask/metamask-extension/compare/v12.0.4...v12.0.5
