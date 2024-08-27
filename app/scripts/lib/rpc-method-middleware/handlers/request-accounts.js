@@ -31,7 +31,6 @@ const requestEthereumAccounts = {
     hasPermission: true,
     requestAccountsPermission: true,
     sendMetrics: true,
-    getPermissionsForOrigin: true,
     metamaskState: true,
     grantPermissions: true,
     getNetworkConfigurationByNetworkClientId: true,
@@ -74,7 +73,6 @@ async function requestEthereumAccountsHandler(
     hasPermission,
     requestAccountsPermission,
     sendMetrics,
-    getPermissionsForOrigin,
     metamaskState,
     grantPermissions,
     getNetworkConfigurationByNetworkClientId,
@@ -116,12 +114,9 @@ async function requestEthereumAccountsHandler(
   // Get the approved accounts
   const accounts = await getAccounts();
   /* istanbul ignore else: too hard to induce, see below comment */
-  const permissions = getPermissionsForOrigin(origin);
   if (accounts.length > 0) {
     res.result = accounts;
 
-    const numberOfConnectedAccounts =
-      permissions.eth_accounts.caveats[0].value.length;
     // first time connection to dapp will lead to no log in the permissionHistory
     // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
     // we will leverage that to identify `is_first_visit` for metrics
@@ -138,7 +133,7 @@ async function requestEthereumAccountsHandler(
         properties: {
           is_first_visit: isFirstVisit,
           number_of_accounts: Object.keys(metamaskState.accounts).length,
-          number_of_accounts_connected: numberOfConnectedAccounts,
+          number_of_accounts_connected: accounts,
         },
       });
     }
