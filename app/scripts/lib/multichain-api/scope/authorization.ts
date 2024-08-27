@@ -1,6 +1,6 @@
 import { Hex } from '@metamask/utils';
 import { validateScopedPropertyEip3085, validateScopes } from './validation';
-import { ExternalScopesObject, InternalScopesObject, ScopedProperties, ScopesObject } from './scope';
+import { ScopedProperties, ScopesObject } from './scope';
 import { flattenMergeScopes } from './transform';
 import { bucketScopesBySupport } from './filter';
 
@@ -18,12 +18,9 @@ export type Caip25Authorization =
     });
 
 export const validateAndFlattenScopes = (
-  requiredScopes: ExternalScopesObject,
-  optionalScopes: ExternalScopesObject,
-): {
-  flattenedRequiredScopes: InternalScopesObject
-  flattenedOptionalScopes: InternalScopesObject
-} => {
+  requiredScopes: ScopesObject,
+  optionalScopes: ScopesObject,
+) => {
   const { validRequiredScopes, validOptionalScopes } = validateScopes(
     requiredScopes,
     optionalScopes,
