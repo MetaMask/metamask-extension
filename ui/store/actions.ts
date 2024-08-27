@@ -104,7 +104,7 @@ import {
 } from '../../shared/modules/i18n';
 import { decimalToHex } from '../../shared/modules/conversion.utils';
 import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
-import { NetworkType, RPCDefinition } from '../../shared/constants/network';
+import { RPCDefinition } from '../../shared/constants/network';
 import { EtherDenomination } from '../../shared/constants/common';
 import {
   isErrorWithMessage,
@@ -1570,8 +1570,8 @@ export function updateMetamaskState(
     const { currentLocale } = currentState;
     const currentInternalAccount = getSelectedInternalAccount(state);
     const selectedAddress = currentInternalAccount?.address;
-    const { currentLocale: newLocale, providerConfig: newProviderConfig } =
-      newState;
+    const { currentLocale: newLocale } = newState;
+    const newProviderConfig = getProviderConfig({ metamask: newState });
     const newInternalAccount = getSelectedInternalAccount({
       metamask: newState,
     });
@@ -2369,20 +2369,6 @@ export function createRetryTransaction(
 //
 // config
 //
-
-export function setProviderType(
-  type: NetworkType,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.setProviderType`, type);
-    try {
-      await submitRequestToBackground('setProviderType', [type]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem changing networks!'));
-    }
-  };
-}
 
 export function upsertNetworkConfiguration(
   {

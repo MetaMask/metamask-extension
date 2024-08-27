@@ -1,5 +1,8 @@
 const { strict: assert } = require('assert');
 const { Browser, until } = require('selenium-webdriver');
+const {
+  BUILT_IN_INFURA_NETWORKS,
+} = require('../../../../shared/constants/network');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -104,7 +107,14 @@ async function switchToDialogPopoverValidateDetails(driver, expectedDetails) {
     window.stateHooks?.getCleanAppState?.(),
   );
 
-  const { chainId } = notificationWindowState.metamask.providerConfig;
+  const {
+    metamask: { selectedNetworkClientId, networkConfigurations },
+  } = notificationWindowState;
+
+  const { chainId } =
+    BUILT_IN_INFURA_NETWORKS[selectedNetworkClientId] ??
+    networkConfigurations[selectedNetworkClientId];
+
   assert.equal(chainId, expectedDetails.chainId);
 }
 
