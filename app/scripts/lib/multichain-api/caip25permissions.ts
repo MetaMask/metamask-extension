@@ -24,14 +24,14 @@ import { cloneDeep, isEqual } from 'lodash';
 import {
   Scope,
   validateAndFlattenScopes,
-  ScopesObject,
-  ScopeObject,
+  InternalScopesObject,
+  InternalScopeObject,
 } from './scope';
 import { assertScopesSupported } from './scope/assert';
 
 export type Caip25CaveatValue = {
-  requiredScopes: ScopesObject;
-  optionalScopes: ScopesObject;
+  requiredScopes: InternalScopesObject;
+  optionalScopes: InternalScopesObject;
   sessionProperties?: Record<string, Json>;
   isMultichainOrigin: boolean;
 };
@@ -165,7 +165,8 @@ function removeAccountFilterFn(targetAddress: string) {
   };
 }
 
-function removeAccountOnScope(targetAddress: string, scopeObject: ScopeObject) {
+function removeAccountOnScope(
+  targetAddress: string, scopeObject: InternalScopeObject) {
   if (scopeObject.accounts) {
     scopeObject.accounts = scopeObject.accounts.filter(
       removeAccountFilterFn(targetAddress),

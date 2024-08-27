@@ -1,5 +1,10 @@
 import { CaipChainId, isCaipChainId } from '@metamask/utils';
-import { ExternalScopeObject, ExternalScopesObject, InternalScopeObject, InternalScopesObject, ScopeObject, ScopesObject } from './scope';
+import {
+  ExternalScopeObject,
+  ExternalScopesObject,
+  InternalScopeObject,
+  InternalScopesObject,
+} from './scope';
 
 // DRY THIS
 function unique<T>(list: T[]): T[] {
@@ -28,10 +33,10 @@ export const flattenScope = (
   }
 
   if (!scopes) {
-    throw new Error('what') // this should have been filtered out after isValidScope
+    throw new Error('what'); // this should have been filtered out after isValidScope
   }
 
-  const scopeMap: Record<CaipChainId, ScopeObject> = {};
+  const scopeMap: ExternalScopesObject = {};
   scopes.forEach((scope) => {
     scopeMap[scope] = restScopeObject;
   });
@@ -39,18 +44,10 @@ export const flattenScope = (
 };
 
 export const mergeScopeObject = (
-  // scopeStringA: CaipChainId,
-  scopeObjectA: ScopeObject,
-  // scopeStringB: CaipChainId,
-  scopeObjectB: ScopeObject,
+  scopeObjectA: InternalScopeObject,
+  scopeObjectB: InternalScopeObject,
 ) => {
-  // if (scopeStringA !== scopeStringB) {
-  //   throw new Error('cannot merge ScopeObjects for different ScopeStrings')
-  // }
-
-  // TODO: Should we be verifying that these scopeStrings are flattened / the scopeObjects do not contain `scopes` array?
-
-  const mergedScopeObject: ScopeObject = {
+  const mergedScopeObject: InternalScopeObject = {
     methods: unique([...scopeObjectA.methods, ...scopeObjectB.methods]),
     notifications: unique([
       ...scopeObjectA.notifications,
@@ -83,22 +80,10 @@ export const mergeScopeObject = (
 };
 
 export const mergeScopes = (
-  scopeA: Record<CaipChainId, ScopeObject>,
-  scopeB: Record<CaipChainId, ScopeObject>,
-): Record<CaipChainId, ScopeObject> => {
-  const scope: Record<CaipChainId, ScopeObject> = {};
-
-  Object.entries(scopeA).forEach(([_, { scopes }]) => {
-    if (scopes) {
-      throw new Error('unexpected `scopes` property');
-    }
-  });
-
-  Object.entries(scopeB).forEach(([_, { scopes }]) => {
-    if (scopes) {
-      throw new Error('unexpected `scopes` property');
-    }
-  });
+  scopeA: InternalScopesObject,
+  scopeB: InternalScopesObject,
+): InternalScopesObject => {
+  const scope: InternalScopesObject = {};
 
   Object.keys(scopeA).forEach((_scopeString: string) => {
     const scopeString = _scopeString as CaipChainId;
@@ -125,7 +110,9 @@ export const mergeScopes = (
   return scope;
 };
 
-export const flattenMergeScopes = (scopes: ExternalScopesObject): InternalScopesObject => {
+export const flattenMergeScopes = (
+  scopes: ExternalScopesObject,
+): InternalScopesObject => {
   let flattenedScopes = {};
   Object.keys(scopes).forEach((scopeString) => {
     const flattenedScopeMap = flattenScope(scopeString, scopes[scopeString]);

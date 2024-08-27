@@ -3,11 +3,11 @@ import {
   NetworkClientId,
   NetworkController,
 } from '@metamask/network-controller';
-import { ScopesObject } from '../scope';
+import { InternalScopesObject } from '../scope';
 import { validateAddEthereumChainParams } from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
 
 export const assignAccountsToScopes = (
-  scopes: ScopesObject,
+  scopes: InternalScopesObject,
   accounts: Hex[],
 ) => {
   Object.keys(scopes).forEach((scope) => {

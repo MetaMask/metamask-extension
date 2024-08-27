@@ -50,6 +50,4 @@ export const parseScopeString = (
   return {};
 };
 
-export type ExternalScopedProperties = Record<Scope, Record<string, unknown>>;
-
-export type InteralScopedProperties = Record<CaipChainId, Record<string, unknown>>;
+export type ScopedProperties = Record<Scope, Record<string, unknown>>;

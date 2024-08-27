@@ -6,7 +6,7 @@ import {
   processScopedProperties,
   validateAndFlattenScopes,
 } from './authorization';
-import { ScopeObject } from './scope';
+import { ExternalScopeObject } from './scope';
 
 jest.mock('./validation', () => ({
   validateScopedPropertyEip3085: jest.fn(),
@@ -24,7 +24,7 @@ jest.mock('./filter', () => ({
 }));
 const MockFilter = jest.mocked(Filter);
 
-const validScopeObject: ScopeObject = {
+const validScopeObject: ExternalScopeObject = {
   methods: [],
   notifications: [],
 };

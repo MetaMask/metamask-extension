@@ -1,4 +1,4 @@
-import { ScopeObject } from './scope';
+import { ExternalScopeObject } from './scope';
 import {
   flattenScope,
   mergeScopes,
@@ -6,7 +6,7 @@ import {
   flattenMergeScopes,
 } from './transform';
 
-const validScopeObject: ScopeObject = {
+const validScopeObject: ExternalScopeObject = {
   methods: [],
   notifications: [],
 };

@@ -1,18 +1,18 @@
-import { Hex } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import { validateScopedPropertyEip3085, validateScopes } from './validation';
-import { ExternalScopesObject, InternalScopesObject, ScopedProperties, ScopesObject } from './scope';
+import { ExternalScopesObject, InternalScopesObject, ScopedProperties } from './scope';
 import { flattenMergeScopes } from './transform';
 import { bucketScopesBySupport } from './filter';
 
 export type Caip25Authorization =
   | {
-      requiredScopes: ScopesObject;
-      optionalScopes?: ScopesObject;
+      requiredScopes: ExternalScopesObject;
+      optionalScopes?: ExternalScopesObject;
       sessionProperties?: Record<string, unknown>;
     }
   | ({
-      requiredScopes?: ScopesObject;
-      optionalScopes: ScopesObject;
+      requiredScopes?: ExternalScopesObject;
+      optionalScopes: ExternalScopesObject;
     } & {
       sessionProperties?: Record<string, unknown>;
     });
@@ -21,8 +21,8 @@ export const validateAndFlattenScopes = (
   requiredScopes: ExternalScopesObject,
   optionalScopes: ExternalScopesObject,
 ): {
-  flattenedRequiredScopes: InternalScopesObject
-  flattenedOptionalScopes: InternalScopesObject
+  flattenedRequiredScopes: InternalScopesObject;
+  flattenedOptionalScopes: InternalScopesObject;
 } => {
   const { validRequiredScopes, validOptionalScopes } = validateScopes(
     requiredScopes,
@@ -40,7 +40,7 @@ export const validateAndFlattenScopes = (
 };
 
 export const bucketScopes = (
-  scopes: ScopesObject,
+  scopes: InternalScopesObject,
   {
     isChainIdSupported,
     isChainIdSupportable,
@@ -49,9 +49,9 @@ export const bucketScopes = (
     isChainIdSupportable: (chainId: Hex) => boolean;
   },
 ): {
-  supportedScopes: ScopesObject;
-  supportableScopes: ScopesObject;
-  unsupportableScopes: ScopesObject;
+  supportedScopes: InternalScopesObject;
+  supportableScopes: InternalScopesObject;
+  unsupportableScopes: InternalScopesObject;
 } => {
   const { supportedScopes, unsupportedScopes: maybeSupportableScopes } =
     bucketScopesBySupport(scopes, {
@@ -69,8 +69,8 @@ export const bucketScopes = (
 };
 
 export const processScopedProperties = (
-  requiredScopes: ScopesObject,
-  optionalScopes: ScopesObject,
+  requiredScopes: InternalScopesObject,
+  optionalScopes: InternalScopesObject,
   scopedProperties?: ScopedProperties,
 ): ScopedProperties => {
   if (!scopedProperties) {
@@ -81,7 +81,7 @@ export const processScopedProperties = (
   for (const [scopeString, scopedProperty] of Object.entries(
     scopedProperties,
   )) {
-    const scope = requiredScopes[scopeString] || optionalScopes[scopeString];
+    const scope = requiredScopes[scopeString as CaipChainId] || optionalScopes[scopeString as CaipChainId];
     if (!scope) {
       continue;
     }
