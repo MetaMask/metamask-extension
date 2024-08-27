@@ -4996,11 +4996,11 @@ export default class MetamaskController extends EventEmitter {
     if (sender.url) {
       if (this.onboardingController.store.getState().completedOnboarding) {
         if (this.preferencesController.store.getState().usePhishDetect) {
-          const { hostname } = new URL(sender.url);
           this.phishingController.maybeUpdateState();
           // Check if new connection is blocked if phishing detection is on
-          const phishingTestResponse = this.phishingController.test(hostname);
+          const phishingTestResponse = this.phishingController.test(sender.url);
           if (phishingTestResponse?.result) {
+            const { hostname } = new URL(sender.url);
             this.sendPhishingWarning(connectionStream, hostname);
             this.metaMetricsController.trackEvent({
               event: MetaMetricsEventName.PhishingPageDisplayed,
