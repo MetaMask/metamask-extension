@@ -32,7 +32,7 @@ export const flattenScope = (
     return { [scopeString]: scopeObject };
   }
 
-  const scopeMap: ExternalScopesObject = {};
+  const scopeMap: InternalScopesObject = {};
   scopes.forEach((scope) => {
     scopeMap[scope] = restScopeObject;
   });

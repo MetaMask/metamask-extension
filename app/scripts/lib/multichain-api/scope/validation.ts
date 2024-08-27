@@ -5,8 +5,8 @@ import {
   Scope,
   parseScopeString,
   KnownCaipNamespace,
-  ExternalScopesObject,
   ExternalScopeObject,
+  ExternalScopesObject,
 } from './scope';
 
 // Make this an assert

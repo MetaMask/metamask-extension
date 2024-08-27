@@ -152,7 +152,7 @@ describe('Scope Validation', () => {
         expected: boolean,
         _scenario: string,
         scopeString: string,
-        scopeObject: ScopeObjectExternalScopeObject,
+        scopeObject: ExternalScopeObject,
       ) => {
         expect(isValidScope(scopeString, scopeObject)).toStrictEqual(expected);
       },
