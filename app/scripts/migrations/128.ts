@@ -10,7 +10,7 @@ type VersionedData = {
 };
 
 /**
- * Explain the purpose of the migration here.
+ * Migrates MATIC ticker in Network Configuration to POL ticker as per the direction in https://polygon.technology/blog/save-the-date-matic-pol-migration-coming-september-4th-everything-you-need-to-know
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
@@ -30,27 +30,26 @@ export async function migrate(
 function transformState(state: Record<string, unknown>) {
   if (
     hasProperty(state, 'NetworkController') &&
-    isObject(state.NetworkController)
+    isObject(state.NetworkController) &&
+    hasProperty(state.NetworkController, 'networkConfigurations') &&
+    isObject(state.NetworkController.networkConfigurations)
   ) {
-    // type NetworkConfiguration and NetworkConfigurationId not exported from NetworkConroller.d.ts
-    // need for reverse lookup. typing to string
-    const existingNetworkConfigsCopy = state.NetworkController
-      .networkConfigurations as Record<
-      string,
-      NetworkConfiguration & {
-        id: string;
+    for (const networkConfiguration of Object.values(
+      state.NetworkController.networkConfigurations as Record<
+        string,
+        {
+          chainId: string;
+          ticker: string;
+        }
+      >,
+    )) {
+      if (
+        networkConfiguration.chainId === '0x89' &&
+        networkConfiguration.ticker === 'MATIC'
+      ) {
+        networkConfiguration.ticker = 'POL';
       }
-    >;
-
-    Object.values(existingNetworkConfigsCopy).forEach((networkConfig) => {
-      if (networkConfig.ticker === 'MATIC') {
-        existingNetworkConfigsCopy[networkConfig.id].ticker = 'POL';
-      }
-    });
-
-    state.NetworkController.networkConfigurations = existingNetworkConfigsCopy;
+    }
   }
-  const newState = state;
-  // transform state here
-  return newState;
+  return state;
 }
