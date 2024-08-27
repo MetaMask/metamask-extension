@@ -950,7 +950,7 @@ export function getShowExtensionInFullSizeView(state) {
 }
 
 export function getTestNetworkBackgroundColor(state) {
-  const currentNetwork = state.metamask.providerConfig.ticker;
+  const currentNetwork = getProviderConfig(state).ticker;
   switch (true) {
     case currentNetwork?.includes(GOERLI_DISPLAY_NAME):
       return BackgroundColor.goerli;

@@ -1,10 +1,10 @@
 import React from 'react';
 import configureStore from 'redux-mock-store';
-import { NetworkStatus } from '@metamask/network-controller';
-import { NetworkType } from '@metamask/controller-utils';
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 import ConfirmPageContainerHeader from '.';
 
 jest.mock('../../../../../../app/scripts/lib/util', () => ({
@@ -15,17 +15,7 @@ jest.mock('../../../../../../app/scripts/lib/util', () => ({
 describe('Confirm Detail Row Component', () => {
   const mockState = {
     metamask: {
-      providerConfig: {
-        type: 'rpc',
-        chainId: '0x5',
-      },
-      selectedNetworkClientId: NetworkType.goerli,
-      networksMetadata: {
-        [NetworkType.goerli]: {
-          EIPS: {},
-          status: NetworkStatus.Available,
-        },
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
     },
   };
 
