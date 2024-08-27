@@ -7,5 +7,10 @@ type MultiRpcEditMetaMaskState = {
 };
 
 export const getIsShowMultiRpcModal = (state: MultiRpcEditMetaMaskState) => {
-  return state.metamask.preferences?.showMultiRpcModal === null;
+  const { preferences } = state.metamask;
+
+  return (
+    preferences?.showMultiRpcModal === null ||
+    preferences?.showMultiRpcModal === undefined
+  );
 };
