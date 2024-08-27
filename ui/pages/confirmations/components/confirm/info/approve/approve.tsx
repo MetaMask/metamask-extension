@@ -3,6 +3,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import BigNumber from 'bignumber.js';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -24,6 +25,7 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../selectors';
+import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
@@ -35,7 +37,6 @@ import {
   useApproveTokenSimulation,
 } from './hooks/use-approve-token-simulation';
 import { useIsNFT } from './hooks/use-is-nft';
-import { TokenWithBalance, useReceivedToken } from './hooks/use-received-token';
 
 const ApproveStaticSimulation = () => {
   const t = useI18nContext();
@@ -44,8 +45,14 @@ const ApproveStaticSimulation = () => {
     currentConfirmationSelector,
   ) as TransactionMeta;
 
+  const { decimals } = useAssetDetails(
+    transactionMeta.txParams.to,
+    transactionMeta.txParams.from,
+    transactionMeta.txParams.data,
+  );
+
   const { tokenAmount, formattedTokenNum, value, pending } =
-    useApproveTokenSimulation(transactionMeta);
+    useApproveTokenSimulation(transactionMeta, decimals || '0');
 
   const { isNFT } = useIsNFT(transactionMeta);
 
@@ -106,9 +113,11 @@ const ApproveStaticSimulation = () => {
 };
 
 const SpendingCapGroup = ({
-  receivedToken,
+  tokenSymbol,
+  decimals,
 }: {
-  receivedToken: TokenWithBalance;
+  tokenSymbol: string;
+  decimals: string;
 }) => {
   const t = useI18nContext();
 
@@ -116,15 +125,17 @@ const SpendingCapGroup = ({
     currentConfirmationSelector,
   ) as TransactionMeta;
 
-  const { tokenAmount, formattedTokenNum, value } =
-    useApproveTokenSimulation(transactionMeta);
+  const { tokenAmount, formattedTokenNum, value } = useApproveTokenSimulation(
+    transactionMeta,
+    decimals,
+  );
 
   const SpendingCapElement = (
     <ConfirmInfoRowText
       text={
         tokenAmount === UNLIMITED_MSG
-          ? `${t('unlimited')} ${receivedToken.symbol}`
-          : `${formattedTokenNum} ${receivedToken.symbol}`
+          ? `${t('unlimited')} ${tokenSymbol}`
+          : `${formattedTokenNum} ${tokenSymbol}`
       }
       onEditClick={
         transactionMeta.type === TransactionType.tokenMethodIncreaseAllowance
@@ -164,27 +175,35 @@ const SpendingCap = () => {
     currentConfirmationSelector,
   ) as TransactionMeta;
 
-  const { receivedToken } = useReceivedToken();
+  const { userBalance, tokenSymbol, decimals } = useAssetDetails(
+    transactionMeta.txParams.to,
+    transactionMeta.txParams.from,
+    transactionMeta.txParams.data,
+  );
 
-  const { pending } = useApproveTokenSimulation(transactionMeta);
+  const accountBalance = new BigNumber(userBalance || '0')
+    .dividedBy(new BigNumber(10).pow(Number(decimals || '0')))
+    .toNumber();
+
+  const { pending } = useApproveTokenSimulation(
+    transactionMeta,
+    decimals || '0',
+  );
 
   if (pending) {
     return <Container isLoading />;
   }
 
-  if (!receivedToken) {
-    return null;
-  }
-
   return (
     <ConfirmInfoSection>
       <ConfirmInfoRow label={t('accountBalance')}>
-        <ConfirmInfoRowText
-          text={`${receivedToken.string} ${receivedToken.symbol}`}
-        />
+        <ConfirmInfoRowText text={`${accountBalance} ${tokenSymbol || ''}`} />
       </ConfirmInfoRow>
 
-      <SpendingCapGroup receivedToken={receivedToken} />
+      <SpendingCapGroup
+        tokenSymbol={tokenSymbol || ''}
+        decimals={decimals || '0'}
+      />
     </ConfirmInfoSection>
   );
 };

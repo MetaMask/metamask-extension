@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { useIsNFT } from './use-is-nft';
+import BigNumber from 'bignumber.js';
 
 export const UNLIMITED_MSG = 'UNLIMITED MESSAGE';
 
@@ -12,7 +13,10 @@ function isSpendingCapUnlimited(decodedSpendingCap: number) {
   return decodedSpendingCap >= UNLIMITED_THRESHOLD;
 }
 
-export const useApproveTokenSimulation = (transactionMeta: TransactionMeta) => {
+export const useApproveTokenSimulation = (
+  transactionMeta: TransactionMeta,
+  decimals: string,
+) => {
   const locale = useSelector(getIntlLocale);
 
   const { isNFT, pending: isNFTPending } = useIsNFT(transactionMeta);
@@ -21,7 +25,11 @@ export const useApproveTokenSimulation = (transactionMeta: TransactionMeta) => {
 
   const { value, pending } = decodedResponse;
 
-  const decodedSpendingCap = value ? value.data[0].params[1].value : 0;
+  const decodedSpendingCap = value
+    ? new BigNumber(value.data[0].params[1].value)
+        .dividedBy(new BigNumber(10).pow(Number(decimals)))
+        .toNumber()
+    : 0;
 
   const tokenPrefix = isNFT ? '#' : '';
   const formattedTokenNum = isNFT

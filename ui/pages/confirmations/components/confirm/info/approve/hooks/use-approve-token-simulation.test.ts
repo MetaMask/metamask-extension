@@ -59,15 +59,15 @@ describe('useApproveTokenSimulation', () => {
     }) as TransactionMeta;
 
     const { result } = renderHookWithProvider(
-      () => useApproveTokenSimulation(transactionMeta),
+      () => useApproveTokenSimulation(transactionMeta, '4'),
       mockState,
     );
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "formattedTokenNum": 70000,
+        "formattedTokenNum": 7,
         "pending": undefined,
-        "tokenAmount": "#70000",
+        "tokenAmount": "#7",
         "value": {
           "data": [
             {
@@ -125,7 +125,7 @@ describe('useApproveTokenSimulation', () => {
     }) as TransactionMeta;
 
     const { result } = renderHookWithProvider(
-      () => useApproveTokenSimulation(transactionMeta),
+      () => useApproveTokenSimulation(transactionMeta, '0'),
       mockState,
     );
 
