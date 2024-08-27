@@ -67,7 +67,6 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
         width: BlockSize.Full,
       }}
       onClick={handleClick}
-      // TODO: Decide on how to do this
       style={{
         justifyContent: 'inherit',
         textAlign: 'inherit',
@@ -145,7 +144,6 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
           }}
           gap={2}
           onClick={handleModalOpen}
-          // TODO: Decide on how to do this
           style={{
             justifyContent: 'inherit',
             textAlign: 'inherit',

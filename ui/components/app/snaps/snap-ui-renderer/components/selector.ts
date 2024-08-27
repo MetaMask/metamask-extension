@@ -1,7 +1,7 @@
 import {
   JSXElement,
-  OptionElement,
   SelectorElement,
+  SelectorOptionElement,
 } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 
@@ -13,7 +13,7 @@ export const selector: UIComponentFactory<SelectorElement> = ({
   form,
   ...params
 }) => {
-  const children = getJsxChildren(element) as OptionElement[];
+  const children = getJsxChildren(element) as SelectorOptionElement[];
 
   const options = children.map((child) => child.props.value);
 
