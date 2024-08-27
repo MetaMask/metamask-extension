@@ -148,12 +148,12 @@ describe('Contract Interaction Confirmation', () => {
     const transactions = {
       ...mockedMetaMaskState.transactions[0],
       simulationFails: {
-        reason: "Internal JSON-RPC error.",
+        reason: 'Internal JSON-RPC error.',
         debug: {
-          blockNumber: "0x3a3c20d",
-          blockGasLimit: "0x1c9c380"
-        }
-      }
+          blockNumber: '0x3a3c20d',
+          blockGasLimit: '0x1c9c380',
+        },
+      },
     };
 
     const { findByTestId, getByTestId, queryByTestId } =
