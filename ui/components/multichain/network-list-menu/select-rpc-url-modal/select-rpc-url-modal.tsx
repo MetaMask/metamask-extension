@@ -25,14 +25,17 @@ import {
 } from '../../../../store/actions';
 import RpcListItem from '../rpc-list-item';
 
-const SelectRpcUrlModal = ({
+export const SelectRpcUrlModal = ({
   networkConfiguration,
 }: {
   networkConfiguration: NetworkConfiguration;
 }) => {
   const dispatch = useDispatch();
 
-  const image = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[networkConfiguration.chainId];
+  const image =
+    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+      networkConfiguration.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+    ];
 
   return (
     <Box>
@@ -66,6 +69,13 @@ const SelectRpcUrlModal = ({
           display={Display.Flex}
           key={rpcEndpoint.url}
           onClick={() => {
+            console.log(
+              'HERE .....',
+              updateNetwork({
+                ...networkConfiguration,
+                defaultRpcEndpointIndex: index,
+              }),
+            );
             dispatch(
               updateNetwork({
                 ...networkConfiguration,
