@@ -7,6 +7,7 @@ const detectPort = require('detect-port');
 const { difference } = require('lodash');
 const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
+const { getDriver, setDriver } = require('./e2e-global-setup');
 const { setupMocking } = require('./mock-e2e');
 const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixture-server');
@@ -95,8 +96,18 @@ async function withFixtures(options, testSuite) {
   }
 
   let webDriver;
-  let driver;
+  let driver = getDriver();
   let failed = false;
+
+  // Restart the driver if custom driverOptions are provided
+  if (driverOptions) {
+    if (driver) {
+      await driver.quit();
+    }
+    driver = (await buildWebDriver(driverOptions)).driver;
+    setDriver(driver); // Update the global driver
+  }
+
   try {
     if (!disableGanache) {
       await ganacheServer.start(ganacheOptions);
@@ -179,8 +190,10 @@ async function withFixtures(options, testSuite) {
     }
     await mockServer.start(8000);
 
-    driver = (await buildWebDriver(driverOptions)).driver;
-    webDriver = driver.driver;
+    if (!driver) {
+      driver = (await buildWebDriver(driverOptions)).driver;
+      webDriver = driver.driver;
+    }
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       await driver.checkBrowserForExceptions(ignoredConsoleErrors);
@@ -310,9 +323,6 @@ async function withFixtures(options, testSuite) {
         await bundlerServer.stop();
       }
 
-      if (webDriver) {
-        await driver.quit();
-      }
       if (dapp) {
         for (let i = 0; i < numberOfDapps; i++) {
           if (dappServer[i] && dappServer[i].listening) {
@@ -329,6 +339,12 @@ async function withFixtures(options, testSuite) {
       }
       if (phishingPageServer.isRunning()) {
         await phishingPageServer.quit();
+      }
+
+      // Quit the driver if it was restarted for custom driverOptions
+      if (driverOptions) {
+        await driver.quit();
+        setDriver(null); // Reset the global driver
       }
 
       // Since mockServer could be stop'd at another location,
