@@ -1,6 +1,7 @@
 import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 import { ProxySnapExecutor } from '@metamask/snaps-execution-environments';
 import {
+  OFFSCREEN_LEDGER_INIT_TIMEOUT,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
@@ -37,7 +38,7 @@ async function init(): Promise<void> {
     const ledgerInitTimeout = new Promise((_, reject) => {
       setTimeout(() => {
         reject(new Error('Ledger initialization timed out'));
-      }, 5000);
+      }, OFFSCREEN_LEDGER_INIT_TIMEOUT);
     });
     await Promise.race([initLedger(), ledgerInitTimeout]);
   } catch (error) {
