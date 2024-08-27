@@ -1,10 +1,9 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { EditGasModes } from '../../../../../../../../shared/constants/gas';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import { currentConfirmationSelector } from '../../../../../../../selectors';
 import EditGasPopover from '../../../../edit-gas-popover';
+import { useConfirmContext } from '../../../../../context/confirm';
 import { useSupportsEIP1559 } from '../../hooks/useSupportsEIP1559';
 import { GasFeesDetails } from '../gas-fees-details/gas-fees-details';
 
@@ -25,9 +24,9 @@ const LegacyTransactionGasModal = ({
 };
 
 export const GasFeesSection = () => {
-  const transactionMeta = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
+    currentConfirmation: TransactionMeta;
+  };
 
   const [showCustomizeGasPopover, setShowCustomizeGasPopover] = useState(false);
   const closeCustomizeGasPopover = useCallback(

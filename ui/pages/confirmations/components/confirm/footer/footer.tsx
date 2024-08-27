@@ -26,6 +26,7 @@ import {
 } from '../../../../../store/actions';
 import { confirmSelector } from '../../../selectors';
 import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
+import { useConfirmContext } from '../../../context/confirm';
 import { getConfirmationSender } from '../utils';
 
 const ConfirmButton = ({
@@ -98,7 +99,8 @@ const Footer = () => {
   const confirm = useSelector(confirmSelector);
   const customNonceValue = useSelector(getCustomNonceValue);
 
-  const { currentConfirmation, isScrollToBottomNeeded } = confirm;
+  const { currentConfirmation } = useConfirmContext();
+  const { isScrollToBottomNeeded } = confirm;
   const { from } = getConfirmationSender(currentConfirmation);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -113,6 +115,7 @@ const Footer = () => {
   });
 
   const onCancel = useCallback(() => {
+    console.log('currentConfirmation = ', currentConfirmation);
     if (!currentConfirmation) {
       return;
     }

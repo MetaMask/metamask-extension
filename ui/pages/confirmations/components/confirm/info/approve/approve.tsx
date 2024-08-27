@@ -13,8 +13,8 @@ import {
   TextAlign,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../../../selectors';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
+import { useConfirmContext } from '../../../../context/confirm';
 import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
@@ -25,9 +25,9 @@ import { ApproveDetails } from './approve-details/approve-details';
 const ApproveStaticSimulation = () => {
   const t = useI18nContext();
 
-  const transactionMeta = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
+    currentConfirmation: TransactionMeta;
+  };
 
   const decodedResponse = useDecodedTransactionData();
 
@@ -82,9 +82,9 @@ const ApproveStaticSimulation = () => {
 };
 
 const ApproveInfo = () => {
-  const transactionMeta = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
+    currentConfirmation: TransactionMeta;
+  };
 
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
