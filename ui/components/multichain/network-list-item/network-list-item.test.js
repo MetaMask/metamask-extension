@@ -3,7 +3,7 @@ import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import {
-  POL_TOKEN_IMAGE_URLL,
+  POL_TOKEN_IMAGE_URL,
   POLYGON_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
 import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../helpers/utils/feature-flags';
@@ -11,7 +11,7 @@ import { NetworkListItem } from '.';
 
 const DEFAULT_PROPS = {
   name: POLYGON_DISPLAY_NAME,
-  iconSrc: POL_TOKEN_IMAGE_URLL,
+  iconSrc: POL_TOKEN_IMAGE_URL,
   selected: false,
   onClick: () => undefined,
   onDeleteClick: () => undefined,
