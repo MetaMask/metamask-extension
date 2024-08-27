@@ -1,10 +1,7 @@
 import { NameType } from '@metamask/name-controller';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   ConfirmInfoRow,
@@ -13,7 +10,16 @@ import {
 } from '../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import Name from '../../../../../../components/app/name';
-import { Box, Text } from '../../../../../../components/component-library';
+import {
+  Box,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+} from '../../../../../../components/component-library';
 import Tooltip from '../../../../../../components/ui/tooltip';
 import {
   AlignItems,
@@ -21,7 +27,10 @@ import {
   BlockSize,
   BorderRadius,
   Display,
+  FlexDirection,
+  JustifyContent,
   TextAlign,
+  TextVariant,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
@@ -37,6 +46,53 @@ import {
   useApproveTokenSimulation,
 } from './hooks/use-approve-token-simulation';
 import { useIsNFT } from './hooks/use-is-nft';
+
+const EditSpendingCapModal = ({
+  isOpenEditSpendingCapModal,
+  setIsOpenEditSpendingCapModal,
+}: {
+  isOpenEditSpendingCapModal: boolean;
+  setIsOpenEditSpendingCapModal: (newValue: boolean) => void;
+}) => {
+  return (
+    <Modal
+      isOpen={isOpenEditSpendingCapModal}
+      onClose={() => setIsOpenEditSpendingCapModal(false)}
+      isClosedOnEscapeKey
+      isClosedOnOutsideClick
+      className="edit-spending-cap-modal"
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader
+          justifyContent={JustifyContent.center}
+          childrenWrapperProps={{
+            alignItems: AlignItems.center,
+            display: Display.Flex,
+            flexDirection: FlexDirection.Column,
+          }}
+        >
+          <Text
+            variant={TextVariant.headingMd}
+            paddingTop={4}
+            paddingBottom={4}
+          >
+            asdf
+          </Text>
+        </ModalHeader>
+        <ModalBody>
+          <Text variant={TextVariant.bodyMd} paddingTop={4} paddingBottom={4}>
+            asdf
+          </Text>
+        </ModalBody>
+        <ModalFooter
+          onSubmit={() => console.log('adf')}
+          onCancel={() => setIsOpenEditSpendingCapModal(false)}
+        />
+      </ModalContent>
+    </Modal>
+  );
+};
 
 const ApproveStaticSimulation = () => {
   const t = useI18nContext();
@@ -116,9 +172,11 @@ const ApproveStaticSimulation = () => {
 const SpendingCapGroup = ({
   tokenSymbol,
   decimals,
+  setIsOpenEditSpendingCapModal,
 }: {
   tokenSymbol: string;
   decimals: string;
+  setIsOpenEditSpendingCapModal: (newValue: boolean) => void;
 }) => {
   const t = useI18nContext();
 
@@ -137,12 +195,8 @@ const SpendingCapGroup = ({
           ? `${t('unlimited')} ${tokenSymbol}`
           : `${formattedTokenNum} ${tokenSymbol}`
       }
-      onEditClick={
-        transactionMeta.type === TransactionType.tokenMethodIncreaseAllowance
-          ? () => console.log('TODO on a following ticket')
-          : undefined
-      }
-      editIconClassName="edit-spending-cap"
+      onEditClick={() => setIsOpenEditSpendingCapModal(true)}
+      editIconClassName="edit-spending-cap-icon"
     />
   );
 
@@ -168,7 +222,11 @@ const SpendingCapGroup = ({
   );
 };
 
-const SpendingCap = () => {
+const SpendingCap = ({
+  setIsOpenEditSpendingCapModal,
+}: {
+  setIsOpenEditSpendingCapModal: (newValue: boolean) => void;
+}) => {
   const t = useI18nContext();
 
   const { currentConfirmation: transactionMeta } =
@@ -202,6 +260,7 @@ const SpendingCap = () => {
       <SpendingCapGroup
         tokenSymbol={tokenSymbol || ''}
         decimals={decimals || '0'}
+        setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
       />
     </ConfirmInfoSection>
   );
@@ -217,6 +276,9 @@ const ApproveInfo = () => {
 
   const { isNFT } = useIsNFT(transactionMeta);
 
+  const [isOpenEditSpendingCapModal, setIsOpenEditSpendingCapModal] =
+    useState(false);
+
   if (!transactionMeta?.txParams) {
     return null;
   }
@@ -225,9 +287,17 @@ const ApproveInfo = () => {
     <>
       <ApproveStaticSimulation />
       <ApproveDetails />
-      {!isNFT && <SpendingCap />}
+      {!isNFT && (
+        <SpendingCap
+          setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
+        />
+      )}
       <GasFeesSection />
       {showAdvancedDetails && <AdvancedDetails />}
+      <EditSpendingCapModal
+        isOpenEditSpendingCapModal={isOpenEditSpendingCapModal}
+        setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
+      />
     </>
   );
 };
