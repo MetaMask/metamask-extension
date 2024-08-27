@@ -21,7 +21,6 @@ import { DocsContainer } from '@storybook/addon-docs';
 import { useDarkMode } from 'storybook-dark-mode';
 import { themes } from '@storybook/theming';
 import { AlertMetricsProvider } from '../ui/components/app/alert-system/contexts/alertMetricsContext';
-import { ConfirmContextProvider } from '../ui/pages/confirmations/context/confirm/index.js';
 
 // eslint-disable-next-line
 /* @ts-expect-error: Avoids error from window property not existing */
