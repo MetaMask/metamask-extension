@@ -22,8 +22,7 @@ export const REDESIGN_USER_TRANSACTION_TYPES = [
 ];
 
 export const REDESIGN_DEV_TRANSACTION_TYPES = [
-  TransactionType.contractInteraction,
-  TransactionType.deployContract,
+  ...REDESIGN_USER_TRANSACTION_TYPES,
   TransactionType.tokenMethodApprove,
 ];
 
