@@ -1,6 +1,5 @@
 import { omit, pick } from 'lodash';
 import { ApprovalType } from '@metamask/controller-utils';
-import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import {
   deleteInterface,
   rejectPendingApproval,
