@@ -287,7 +287,7 @@ export const Strong: StoryFn<typeof Text> = (args) => (
   </>
 );
 
-export const BrandEvolution = (args) => (
+export const IsBrandEvolution = (args) => (
   <>
     {Object.values(TextVariant).map((variant) => (
       <Text {...args} variant={variant} key={variant}>
@@ -297,6 +297,6 @@ export const BrandEvolution = (args) => (
   </>
 );
 
-BrandEvolution.args = {
+IsBrandEvolution.args = {
   isBrandEvolution: true,
 };
