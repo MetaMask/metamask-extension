@@ -1,5 +1,4 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
