@@ -23,6 +23,7 @@ import { tooltip } from './tooltip';
 import { card } from './card';
 import { footer } from './footer';
 import { container } from './container';
+import { selector } from './selector';
 
 export const COMPONENT_MAPPING = {
   Box: box,
@@ -50,4 +51,5 @@ export const COMPONENT_MAPPING = {
   Card: card,
   Footer: footer,
   Container: container,
+  Selector: selector,
 };
