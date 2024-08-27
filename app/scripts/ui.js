@@ -48,12 +48,12 @@ async function start() {
   const startTime = performance.now();
 
   const traceContext = trace({
-    name: 'UI Startup',
+    name: TraceName.UIStartup,
     startTime: performance.timeOrigin,
   });
 
   trace({
-    name: 'Load Scripts',
+    name: TraceName.LoadScripts,
     startTime: performance.timeOrigin,
     parentContext: traceContext,
   });
@@ -212,7 +212,7 @@ async function start() {
     extensionPort.onDisconnect.addListener(resetExtensionStreamAndListeners);
 
     trace({
-      name: 'Background Connect',
+      name: TraceName.BackgroundConnect,
       parentContext: traceContext,
     });
   } else {
@@ -227,7 +227,7 @@ async function start() {
     extensionPort.onMessage.addListener(messageListener);
 
     trace({
-      name: 'Background Connect',
+      name: TraceName.BackgroundConnect,
       parentContext: traceContext,
     });
   }

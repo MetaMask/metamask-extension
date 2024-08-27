@@ -63,7 +63,7 @@ export default function launchMetamaskUi(opts, cb) {
   const { backgroundConnection, traceContext } = opts;
 
   trace({
-    name: 'Get State',
+    name: TraceName.GetState,
     parentContext: traceContext,
   });
 
@@ -189,7 +189,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   const { traceContext } = opts;
 
   const store = await trace(
-    { name: 'Setup Store', parentContext: traceContext },
+    { name: TraceName.SetupStore, parentContext: traceContext },
     () =>
       setupInitialStore(metamaskState, backgroundConnection, opts.activeTab),
   );
@@ -205,7 +205,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   };
 
   await trace(
-    { name: 'Initial Actions', parentContext: traceContext },
+    { name: TraceName.InitialActions, parentContext: traceContext },
     async () => {
       // This block autoswitches chains based on the last chain used
       // for a given dapp, when there are no pending confimrations
