@@ -4,14 +4,20 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
 import { pipeline } from 'readable-stream';
-import { logStreamDisconnectWarning } from './shared';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
 import PortStream from 'extension-port-stream';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from '../constants/marketing-site-whitelist';
-
-const CONTENT_SCRIPT = 'metamask-contentscript';
-const METAMASK_COOKIE_HANDLER = 'metamask-cookie-handler';
+import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
+import {
+  METAMASK_COOKIE_HANDLER,
+  CONTENT_SCRIPT,
+  LEGACY_PUBLIC_CONFIG,
+  METAMASK_PROVIDER,
+  PHISHING_SAFELIST,
+  LEGACY_PROVIDER,
+} from './stream-constants';
+import { logStreamDisconnectWarning } from './shared';
 
 export const isDetectedCookieMarketingSite: boolean =
   COOKIE_ID_MARKETING_WHITELIST_ORIGINS.some(
@@ -33,10 +39,6 @@ function setupCookieHandlerStreamsFromOrigin(origin: string): void {
     targetOrigin: origin,
   });
 
-  cookieHandlerPageStream.on('data', (data) => {
-    console.log('Received setupCookieHandlerStreamsFromOrigin:', data);
-  });
-
   // create and connect channel muxers
   // so we can handle the channels individually
   cookieHandlerPageMux = new ObjectMultiplex();
@@ -53,16 +55,16 @@ function setupCookieHandlerStreamsFromOrigin(origin: string): void {
   cookieHandlerPageChannel = cookieHandlerPageMux.createStream(
     METAMASK_COOKIE_HANDLER,
   );
-
-  cookieHandlerPageChannel.on('data', (data) => {
-    console.log('Received cookieHandlerPageChannel:', data);
-  });
+  cookieHandlerPageMux.ignoreStream(LEGACY_PUBLIC_CONFIG);
+  cookieHandlerPageMux.ignoreStream(LEGACY_PROVIDER);
+  cookieHandlerPageMux.ignoreStream(METAMASK_PROVIDER);
+  cookieHandlerPageMux.ignoreStream(PHISHING_SAFELIST);
 }
 
 /**
- *  establishes a communication stream between the content script and background.js
+ * establishes a communication stream between the content script and background.js
  */
-export const setupCookieHandlerExtStreams = (origin): void => {
+export const setupCookieHandlerExtStreams = (): void => {
   cookieHandlerExtPort = browser.runtime.connect({
     name: CONTENT_SCRIPT,
   });
@@ -72,6 +74,7 @@ export const setupCookieHandlerExtStreams = (origin): void => {
   // so we can handle the channels individually
   cookieHandlerMux = new ObjectMultiplex();
   cookieHandlerMux.setMaxListeners(25);
+
   pipeline(
     cookieHandlerMux,
     cookieHandlerExtStream,
@@ -99,6 +102,10 @@ export const setupCookieHandlerExtStreams = (origin): void => {
   cookieHandlerExtChannel = cookieHandlerMux.createStream(
     METAMASK_COOKIE_HANDLER,
   );
+  cookieHandlerMux.ignoreStream(LEGACY_PUBLIC_CONFIG);
+  cookieHandlerMux.ignoreStream(LEGACY_PROVIDER);
+  cookieHandlerMux.ignoreStream(METAMASK_PROVIDER);
+  cookieHandlerMux.ignoreStream(PHISHING_SAFELIST);
   pipeline(
     cookieHandlerPageChannel,
     cookieHandlerExtChannel,
@@ -110,12 +117,49 @@ export const setupCookieHandlerExtStreams = (origin): void => {
       ),
   );
 
-  cookieHandlerExtChannel.on('data', (data) => {
-    console.log('cookieHandlerExtChannel to content script:', data);
-  });
+  cookieHandlerExtPort.onDisconnect.addListener(
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    onDisconnectDestroyCookieStreams,
+  );
+};
 
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  // cookieHandlerExtPort.onDisconnect.addListener(onDisconnectDestroyPhishingStreams);
+/** Destroys all of the cookie handler extension streams */
+const destroyCookieExtStreams = () => {
+  cookieHandlerPageChannel.removeAllListeners();
+
+  cookieHandlerMux.removeAllListeners();
+  cookieHandlerMux.destroy();
+
+  cookieHandlerExtChannel.removeAllListeners();
+  cookieHandlerExtChannel.destroy();
+
+  cookieHandlerExtStream = null;
+};
+
+/**
+ * This listener destroys the phishing extension streams when the extension port is disconnected,
+ * so that streams may be re-established later the phishing extension port is reconnected.
+ */
+const onDisconnectDestroyCookieStreams = () => {
+  const err = checkForLastError();
+
+  cookieHandlerExtPort.onDisconnect.removeListener(
+    onDisconnectDestroyCookieStreams,
+  );
+
+  destroyCookieExtStreams();
+
+  /**
+   * If an error is found, reset the streams. When running two or more dapps, resetting the service
+   * worker may cause the error, "Error: Could not establish connection. Receiving end does not
+   * exist.", due to a race-condition. The disconnect event may be called by runtime.connect which
+   * may cause issues. We suspect that this is a chromium bug as this event should only be called
+   * once the port and connections are ready. Delay time is arbitrary.
+   */
+  if (err) {
+    console.warn(`${err} Resetting the phishing streams.`);
+    setTimeout(setupCookieHandlerExtStreams, 1000);
+  }
 };
 
 const onMessageSetUpCookieHandlerStreams = (msg: {
@@ -124,7 +168,7 @@ const onMessageSetUpCookieHandlerStreams = (msg: {
 }): Promise<string | undefined> | undefined => {
   if (msg.name === EXTENSION_MESSAGES.READY) {
     if (!cookieHandlerExtStream) {
-      setupCookieHandlerExtStreams(origin);
+      setupCookieHandlerExtStreams();
     }
     return Promise.resolve(
       `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for phishing streams`,
@@ -139,8 +183,8 @@ const onMessageSetUpCookieHandlerStreams = (msg: {
  * reset the streams if the service worker resets.
  */
 export const initializeCookieHandlerSteam = (): void => {
-  const origin = window.location.origin;
+  const { origin } = window.location;
   setupCookieHandlerStreamsFromOrigin(origin);
-  setupCookieHandlerExtStreams(origin);
+  setupCookieHandlerExtStreams();
   browser.runtime.onMessage.addListener(onMessageSetUpCookieHandlerStreams);
 };

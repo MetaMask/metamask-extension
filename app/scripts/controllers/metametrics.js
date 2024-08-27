@@ -155,6 +155,7 @@ export default class MetaMetricsController {
       participateInMetaMetrics: null,
       metaMetricsId: null,
       dataCollectionForMarketing: null,
+      marketingCampaignCookieId: null,
       eventsBeforeMetricsOptIn: [],
       traits: {},
       previousUserTraits: {},
@@ -481,6 +482,10 @@ export default class MetaMetricsController {
     return metaMetricsId;
   }
 
+  setMarketingCampaignCookieId(marketingCampaignCookieId) {
+    this.store.updateState({ marketingCampaignCookieId });
+  }
+
   get state() {
     return this.store.getState();
   }
@@ -704,6 +709,7 @@ export default class MetaMetricsController {
       userAgent: window.navigator.userAgent,
       page,
       referrer,
+      marketingCampaignCookieId: this.state.marketingCampaignCookieId,
     };
   }
 

@@ -18,6 +18,7 @@ const VERSION = '0.0.1-test';
 const FAKE_CHAIN_ID = '0x1338';
 const LOCALE = 'en_US';
 const TEST_META_METRICS_ID = '0xabc';
+const TEST_GA_COOKIE_ID = '123456.123455';
 const DUMMY_ACTION_ID = 'DUMMY_ACTION_ID';
 const MOCK_EXTENSION_ID = 'testid';
 
@@ -51,6 +52,7 @@ const DEFAULT_TEST_CONTEXT = {
   page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
   referrer: undefined,
   userAgent: window.navigator.userAgent,
+  marketingCampaignCookieId: TEST_GA_COOKIE_ID,
 };
 
 const DEFAULT_SHARED_PROPERTIES = {
@@ -114,6 +116,7 @@ const SAMPLE_NON_PERSISTED_EVENT = {
 function getMetaMetricsController({
   participateInMetaMetrics = true,
   metaMetricsId = TEST_META_METRICS_ID,
+  marketingCampaignCookieId = TEST_GA_COOKIE_ID,
   preferencesStore = getMockPreferencesStore(),
   getCurrentChainId = () => FAKE_CHAIN_ID,
   onNetworkDidChange = () => {
@@ -131,6 +134,7 @@ function getMetaMetricsController({
     initState: {
       participateInMetaMetrics,
       metaMetricsId,
+      marketingCampaignCookieId,
       fragments: {
         testid: SAMPLE_PERSISTED_EVENT,
         testid2: SAMPLE_NON_PERSISTED_EVENT,

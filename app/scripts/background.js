@@ -891,18 +891,6 @@ export function setupController(
       controller.setupPhishingCommunication({
         connectionStream: portStreamForPhishingPage,
       });
-    } else if (
-      senderUrl &&
-      COOKIE_ID_MARKETING_WHITELIST_ORIGINS.some(
-        (origin) => origin === senderUrl.origin,
-      )
-    ) {
-      console.log('----inside----');
-      const portStreamForCookieHandlerPage =
-        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-      controller.setUpCookieHandlerCommunication({
-        connectionStream: portStreamForCookieHandlerPage,
-      });
     } else {
       // this is triggered when a new tab is opened, or origin(url) is changed
       if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
@@ -919,6 +907,18 @@ export function setupController(
           ) {
             requestAccountTabIds[origin] = tabId;
           }
+        });
+      }
+      if (
+        senderUrl &&
+        COOKIE_ID_MARKETING_WHITELIST_ORIGINS.some(
+          (origin) => origin === senderUrl.origin,
+        )
+      ) {
+        const portStreamForCookieHandlerPage =
+          overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        controller.setUpCookieHandlerCommunication({
+          connectionStream: portStreamForCookieHandlerPage,
         });
       }
       connectExternalExtension(remotePort);

@@ -328,6 +328,7 @@ import { addDappTransaction, addTransaction } from './lib/transaction/util';
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
 import PREINSTALLED_SNAPS from './snaps/preinstalled-snaps';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
+import { METAMASK_COOKIE_HANDLER } from './streams/stream-constants';
 
 // Notification controllers
 import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
@@ -360,7 +361,6 @@ export const METAMASK_CONTROLLER_EVENTS = {
 
 // stream channels
 const PHISHING_SAFELIST = 'metamask-phishing-safelist';
-const METAMASK_COOKIE_HANDLER = 'metamask-cookie-handler';
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -3198,6 +3198,10 @@ export default class MetamaskController extends EventEmitter {
         metaMetricsController.setDataCollectionForMarketing.bind(
           metaMetricsController,
         ),
+      setMarketingCampaignCookieId:
+        metaMetricsController.setMarketingCampaignCookieId.bind(
+          metaMetricsController,
+        ),
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),
@@ -5127,6 +5131,7 @@ export default class MetamaskController extends EventEmitter {
       dataCollectionForMarketing &&
       participateInMetaMetrics
     ) {
+      console.log('metrics enabled');
       // setup multiplexing
       const mux = setupMultiplex(connectionStream);
       const metamaskCookieHandlerStream = mux.createStream(
@@ -5139,7 +5144,8 @@ export default class MetamaskController extends EventEmitter {
         'data',
         createMetaRPCHandler(
           {
-            getCookieFromMarketingPage: getCookieFromMarketingPage.bind(this),
+            getCookieFromMarketingPage:
+              this.getCookieFromMarketingPage.bind(this),
           },
           metamaskCookieHandlerStream,
         ),
@@ -5148,8 +5154,8 @@ export default class MetamaskController extends EventEmitter {
   }
 
   getCookieFromMarketingPage(data) {
-    console.log('getCookieFromMarketingPage', data);
-    return data;
+    const { ga_client_id: cookieId } = data;
+    this.metaMetricsController.setMarketingCampaignCookieId(cookieId);
   }
 
   /**
