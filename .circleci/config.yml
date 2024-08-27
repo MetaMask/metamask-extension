@@ -49,7 +49,7 @@ develop_master_rc_only: &develop_master_rc_only
   filters:
     branches:
       only:
-        - develop
+        - merge-queue
         - master
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 
@@ -57,7 +57,7 @@ exclude_develop_master_rc: &exclude_develop_master_rc
   filters:
     branches:
       ignore:
-        - develop
+        - merge-queue
         - master
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 aliases:
@@ -242,7 +242,7 @@ workflows:
           filters:
             branches:
               only:
-                - develop
+                - merge-queue
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
@@ -341,13 +341,13 @@ workflows:
       - job-publish-storybook:
           filters:
             branches:
-              only: develop
+              only: merge-queue
           requires:
             - prep-build-storybook
       - job-publish-ts-migration-dashboard:
           filters:
             branches:
-              only: develop
+              only: merge-queue
           requires:
             - prep-build-ts-migration-dashboard
 
@@ -491,7 +491,7 @@ jobs:
 
   # This job is used for the e2e quality gate.
   # It must be run before any job which uses the run-all.js script.
-  # The job is skipped in develop, master or RC branches.
+  # The job is skipped in merge-queue, master or RC branches.
   get-changed-files-with-git-diff:
     executor: node-browsers-small
     steps:
@@ -1336,7 +1336,7 @@ jobs:
           template: basic_fail_1
           channel: C01LUJL3T98
       - slack/notify:
-          branch_pattern: develop
+          branch_pattern: merge-queue
           event: fail
           mentions: <@antonio.regadas>, @ramon.acitores134
           template: basic_fail_1

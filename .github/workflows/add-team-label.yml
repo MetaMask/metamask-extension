@@ -4,6 +4,7 @@ on:
   pull_request:
     types:
       - opened
+  merge_group:
 
 jobs:
   add-team-label:

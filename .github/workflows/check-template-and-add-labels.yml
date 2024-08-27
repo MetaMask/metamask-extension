@@ -5,6 +5,7 @@ on:
     types: [opened, edited]
   pull_request_target:
     types: [opened, edited]
+  merge_group:
 
 jobs:
   check-template-and-add-labels:

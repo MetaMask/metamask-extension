@@ -2,9 +2,10 @@ name: Run integration tests
 
 on:
   push:
-    branches: [develop, master]
+    branches: [merge-queue, master]
   pull_request:
     types: [opened,reopened,synchronize]
+  merge_group:
 
 jobs:
   test-integration:

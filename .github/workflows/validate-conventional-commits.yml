@@ -2,8 +2,9 @@ name: Validate Conventional Commit Title
 on:
   pull_request:
     branches:
-      - develop
+      - merge-queue
     types: [opened, edited, reopened, synchronize]
+  merge_group:
 
 jobs:
   pr-title-linter:

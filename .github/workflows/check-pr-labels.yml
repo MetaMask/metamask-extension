@@ -1,14 +1,16 @@
 name: Check PR has required labels
+
 on:
   pull_request:
     branches:
-      - develop
+      - merge-queue
     types:
       - opened
       - reopened
       - synchronize
       - labeled
       - unlabeled
+  merge_group:
 
 jobs:
   check-pr-labels:
