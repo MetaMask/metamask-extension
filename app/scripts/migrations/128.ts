@@ -1,4 +1,3 @@
-import { NetworkConfiguration } from '@metamask/network-controller';
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 
