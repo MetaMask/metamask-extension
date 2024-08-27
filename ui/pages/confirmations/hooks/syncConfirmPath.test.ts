@@ -1,4 +1,5 @@
-import { getMockPersonalSignConfirmState } from '../../../../test/data/confirmations/helper';
+import mockState from '../../../../test/data/mock-state.json';
+import { unapprovedPersonalSignMsg } from '../../../../test/data/confirmations/personal_sign';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import syncConfirmPath from './syncConfirmPath';
 
@@ -9,12 +10,10 @@ jest.mock('react-router-dom', () => ({
   useHistory: () => ({ replace: mockHistoryReplace }),
 }));
 
-const mockState = getMockPersonalSignConfirmState();
-
 describe('syncConfirmPath', () => {
   it('should execute correctly', () => {
     const result = renderHookWithConfirmContextProvider(
-      () => syncConfirmPath(),
+      () => syncConfirmPath(unapprovedPersonalSignMsg),
       mockState,
     );
     expect(result).toBeDefined();
@@ -22,7 +21,10 @@ describe('syncConfirmPath', () => {
 
   it('should replace history route', () => {
     mockHistoryReplace.mockClear();
-    renderHookWithConfirmContextProvider(() => syncConfirmPath(), mockState);
+    renderHookWithConfirmContextProvider(
+      () => syncConfirmPath(unapprovedPersonalSignMsg),
+      mockState,
+    );
     expect(mockHistoryReplace).toHaveBeenCalled();
   });
 });

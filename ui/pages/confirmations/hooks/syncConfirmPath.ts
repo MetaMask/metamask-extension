@@ -2,13 +2,11 @@ import { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
-import { useConfirmContext } from '../context/confirm';
+import { Confirmation } from '../types/confirm';
 
-const syncConfirmPath = () => {
+const syncConfirmPath = (currentConfirmation?: Confirmation) => {
   const history = useHistory();
   const { id: paramsTransactionId } = useParams<{ id: string }>();
-
-  const { currentConfirmation } = useConfirmContext();
 
   // Redirect below is done to keep the confirmation routes backward compatible
   useEffect(() => {
@@ -17,8 +15,6 @@ const syncConfirmPath = () => {
     }
     if (!paramsTransactionId) {
       history.replace(`${CONFIRM_TRANSACTION_ROUTE}/${currentConfirmation.id}`);
-
-      // todo: logic to replace url for rest of transactions to be added here
     }
   }, [currentConfirmation, paramsTransactionId]);
 };

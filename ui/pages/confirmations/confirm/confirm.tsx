@@ -18,7 +18,6 @@ import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { Title } from '../components/confirm/title';
 import EditGasFeePopover from '../components/edit-gas-fee-popover';
 import { NetworkChangeToast } from '../components/confirm/network-change-toast';
-import syncConfirmPath from '../hooks/syncConfirmPath';
 import { ConfirmContextProvider } from '../context/confirm';
 import useCurrentConfirmation from '../hooks/useCurrentConfirmation';
 
@@ -34,7 +33,6 @@ const EIP1559TransactionGasModal = () => {
 const Confirm = () => {
   /* This is needed for GasFeeContextProvider, should be removed once we implement the new edit gas fees popovers */
   const { currentConfirmation } = useCurrentConfirmation();
-  syncConfirmPath();
 
   return (
     <ConfirmContextProvider>

@@ -125,17 +125,21 @@ const metamaskDecorator = (story, context) => {
     <Provider store={store}>
       <Router history={history}>
         <MetaMetricsProviderStorybook>
-          <ConfirmContextProvider>
-            <AlertMetricsProvider>
-              <I18nProvider
-                currentLocale={currentLocale}
-                current={current}
-                en={allLocales.en}
-              >
-                <LegacyI18nProvider>{story()}</LegacyI18nProvider>
-              </I18nProvider>
-            </AlertMetricsProvider>
-          </ConfirmContextProvider>
+          <AlertMetricsProvider
+            metrics={{
+              trackAlertActionClicked: () => undefined,
+              trackAlertRender: () => undefined,
+              trackInlineAlertClicked: () => undefined,
+            }}
+          >
+            <I18nProvider
+              currentLocale={currentLocale}
+              current={current}
+              en={allLocales.en}
+            >
+              <LegacyI18nProvider>{story()}</LegacyI18nProvider>
+            </I18nProvider>
+          </AlertMetricsProvider>
         </MetaMetricsProviderStorybook>
       </Router>
     </Provider>

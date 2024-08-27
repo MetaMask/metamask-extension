@@ -1,5 +1,4 @@
 import React, { createContext, useContext, ReactNode, useMemo } from 'react';
-import { useConfirmationAlertMetrics } from '../../../../pages/confirmations/hooks/useConfirmationAlertMetrics';
 
 const AlertMetricsContext = createContext<{
   trackAlertActionClicked: (alertKey: string) => void;
@@ -7,11 +6,21 @@ const AlertMetricsContext = createContext<{
   trackInlineAlertClicked: (alertKey: string) => void;
 } | null>(null);
 
-export const AlertMetricsProvider: React.FC<{ children: ReactNode }> = ({
+type AlertMetricsProps = {
+  children: ReactNode;
+  metrics: {
+    trackAlertActionClicked: (alertKey: string) => void;
+    trackAlertRender: (alertKey: string) => void;
+    trackInlineAlertClicked: (alertKey: string) => void;
+  };
+};
+
+export const AlertMetricsProvider: React.FC<AlertMetricsProps> = ({
   children,
+  metrics,
 }) => {
   const { trackAlertActionClicked, trackAlertRender, trackInlineAlertClicked } =
-    useConfirmationAlertMetrics();
+    metrics;
 
   const value = useMemo(
     () => ({
