@@ -17,6 +17,7 @@ import {
 } from '../../../selectors';
 import { REDESIGN_APPROVAL_TYPES, REDESIGN_TRANSACTION_TYPES } from '../utils';
 import { selectUnapprovedMessage } from '../../../selectors/signatures';
+import { isMMI } from '../../../helpers/utils/build-types';
 
 /**
  * Determine the current confirmation based on the pending approvals and controller state.
@@ -73,7 +74,9 @@ const useCurrentConfirmation = () => {
     (isRedesignedConfirmationsDeveloperSettingEnabled && isCorrectApprovalType);
 
   const shouldUseRedesignForTransactions =
-    (isRedesignedTransactionsUserSettingEnabled && isCorrectTransactionType) ||
+    (!isMMI() &&
+      isRedesignedTransactionsUserSettingEnabled &&
+      isCorrectTransactionType) ||
     (isRedesignedConfirmationsDeveloperSettingEnabled &&
       isCorrectTransactionType);
 
