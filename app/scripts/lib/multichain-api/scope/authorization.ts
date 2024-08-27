@@ -1,6 +1,10 @@
 import { CaipChainId, Hex } from '@metamask/utils';
 import { validateScopedPropertyEip3085, validateScopes } from './validation';
-import { ExternalScopesObject, InternalScopesObject, ScopedProperties } from './scope';
+import {
+  ExternalScopesObject,
+  InternalScopesObject,
+  ScopedProperties,
+} from './scope';
 import { flattenMergeScopes } from './transform';
 import { bucketScopesBySupport } from './filter';
 
@@ -81,7 +85,9 @@ export const processScopedProperties = (
   for (const [scopeString, scopedProperty] of Object.entries(
     scopedProperties,
   )) {
-    const scope = requiredScopes[scopeString as CaipChainId] || optionalScopes[scopeString as CaipChainId];
+    const scope =
+      requiredScopes[scopeString as CaipChainId] ||
+      optionalScopes[scopeString as CaipChainId];
     if (!scope) {
       continue;
     }

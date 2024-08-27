@@ -17,7 +17,11 @@ const { removeAccount } = Caip25CaveatMutatorFactories[Caip25CaveatType];
 
 describe('endowment:caip25', () => {
   it('builds the expected permission specification', () => {
-    const specification = caip25EndowmentBuilder.specificationBuilder({});
+    const specification = caip25EndowmentBuilder.specificationBuilder({
+      methodHooks: {
+        findNetworkClientIdByChainId: jest.fn(),
+      },
+    });
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
       targetName: Caip25EndowmentPermissionName,

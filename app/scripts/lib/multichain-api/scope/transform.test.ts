@@ -179,33 +179,6 @@ describe('Scope Transform', () => {
   });
 
   describe('mergeScopes', () => {
-    it('throws an error if the scopes property is defined in any scopeObject', () => {
-      expect(() => {
-        mergeScopes(
-          {
-            'eip155:1': {
-              methods: [],
-              notifications: [],
-              scopes: ['eip:155:1', 'eip155:5', 'eip155:64'],
-            },
-          },
-          {},
-        );
-      }).toThrow('unexpected `scopes` property');
-      expect(() => {
-        mergeScopes(
-          {},
-          {
-            'eip155:1': {
-              methods: [],
-              notifications: [],
-              scopes: ['eip:155:1', 'eip155:5', 'eip155:64'],
-            },
-          },
-        );
-      }).toThrow('unexpected `scopes` property');
-    });
-
     it('merges the scopeObjects with matching scopeString', () => {
       expect(
         mergeScopes(

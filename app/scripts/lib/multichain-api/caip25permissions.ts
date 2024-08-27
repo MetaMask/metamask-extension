@@ -166,7 +166,9 @@ function removeAccountFilterFn(targetAddress: string) {
 }
 
 function removeAccountOnScope(
-  targetAddress: string, scopeObject: InternalScopeObject) {
+  targetAddress: string,
+  scopeObject: InternalScopeObject,
+) {
   if (scopeObject.accounts) {
     scopeObject.accounts = scopeObject.accounts.filter(
       removeAccountFilterFn(targetAddress),

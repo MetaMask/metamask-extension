@@ -28,12 +28,8 @@ export const flattenScope = (
   const { scopes, ...restScopeObject } = scopeObject;
   const isChainScoped = isCaipChainId(scopeString);
 
-  if (isChainScoped) {
+  if (isChainScoped || !scopes) {
     return { [scopeString]: scopeObject };
-  }
-
-  if (!scopes) {
-    throw new Error('what'); // this should have been filtered out after isValidScope
   }
 
   const scopeMap: ExternalScopesObject = {};
