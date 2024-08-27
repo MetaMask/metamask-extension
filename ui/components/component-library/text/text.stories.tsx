@@ -289,11 +289,23 @@ export const Strong: StoryFn<typeof Text> = (args) => (
 
 export const IsBrandEvolution = (args) => (
   <>
-    {Object.values(TextVariant).map((variant) => (
-      <Text {...args} variant={variant} key={variant}>
-        {args.children || variant}
-      </Text>
-    ))}
+    {Object.values(TextVariant).map((variant) => {
+      // Wrap TextVariant.inherit in a span to show it's inherited styles
+      if (variant === TextVariant.inherit) {
+        return (
+          <Text as="span" {...args}>
+            <Text {...args} variant={variant} key={variant}>
+              {args.children || variant}
+            </Text>
+          </Text>
+        );
+      }
+      return (
+        <Text {...args} variant={variant} key={variant}>
+          {args.children || variant}
+        </Text>
+      );
+    })}
   </>
 );
 
