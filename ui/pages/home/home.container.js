@@ -73,11 +73,11 @@ import {
   setNewTokensImported,
   setActiveNetwork,
   setNewTokensImportedError,
-  setDataCollectionForMarketing,
   setShowTokenAutodetectModal,
   setShowTokenAutodetectModalOnUpgrade,
   setShowNftAutodetectModal,
   setEditedNetwork,
+  setDataCollectionForMarketing,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,

@@ -275,7 +275,7 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "Tambahkan akun baru"
+    "message": "Tambahkan akun Ethereum baru"
   },
   "addNewToken": {
     "message": "Tambahkan token baru"
@@ -1263,9 +1263,6 @@
   "data": {
     "message": "Data"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Tidak dapat memulihkan data Anda. File tampaknya rusak."
-  },
   "dataHex": {
     "message": "Hex"
   },
@@ -1554,6 +1551,9 @@
   "enableToken": {
     "message": "aktifkan $1",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "enableTokenAutoDetection": {
+    "message": "Aktifkan autodeteksi token"
   },
   "enabled": {
     "message": "Diaktifkan"
@@ -2498,9 +2498,6 @@
     "message": "Pastikan tidak ada yang melihat layar Anda",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Kelola di pengaturan"
-  },
   "max": {
     "message": "Maks"
   },
@@ -2931,6 +2928,9 @@
   "noSnaps": {
     "message": "Belum ada snap yang diinstal."
   },
+  "noThanks": {
+    "message": "Tidak, terima kasih"
+  },
   "noTransactions": {
     "message": "Anda tidak memiliki transaksi"
   },
@@ -3100,7 +3100,7 @@
   },
   "notificationTransactionSuccessView": {
     "message": "Lihat di $1",
-    "description": "Additional content in browser notification that appears when a transaction is confirmed and has a block explorer URL"
+    "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
   "notifications": {
     "message": "Notifikasi"
@@ -4023,12 +4023,6 @@
   },
   "restore": {
     "message": "Pulihkan"
-  },
-  "restoreFailed": {
-    "message": "Tidak dapat memulihkan data Anda dari berkas yang disediakan"
-  },
-  "restoreSuccessful": {
-    "message": "Data Anda telah berhasil dipulihkan"
   },
   "restoreUserData": {
     "message": "Pulihkan data pengguna"
@@ -5869,7 +5863,7 @@
     "message": "Deteksi otomatis NFT"
   },
   "useNftDetectionDescriptionText": {
-    "message": "Izinkan MetaMask menambahkan NFT yang Anda miliki menggunakan layanan pihak ketiga (seperti OpenSea). Autodeteksi NFT mengekspos alamat IP dan akun Anda ke layanan ini. Mengaktifkan fitur ini dapat mengaitkan alamat IP dengan alamat Ethereum Anda dan menampilkan NFT palsu yang di-airdrop oleh penipu. Anda dapat menambahkan token secara manual untuk menghindari risiko ini."
+    "message": "Izinkan MetaMask menambahkan NFT yang Anda miliki menggunakan layanan pihak ketiga. Autodeteksi NFT mengekspos alamat IP dan akun Anda ke layanan ini. Mengaktifkan fitur ini dapat mengaitkan alamat IP dengan alamat Ethereum Anda dan menampilkan NFT palsu yang di-airdrop oleh penipu. Anda dapat menambahkan token secara manual untuk menghindari risiko ini."
   },
   "usePhishingDetection": {
     "message": "Gunakan deteksi phishing"

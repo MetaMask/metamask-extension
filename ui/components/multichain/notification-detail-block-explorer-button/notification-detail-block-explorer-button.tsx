@@ -26,7 +26,8 @@ export const NotificationDetailBlockExplorerButton = ({
   const t = useI18nContext();
 
   const chainIdHex = decimalToHex(chainId);
-  const { nativeBlockExplorerUrl } = getNetworkDetailsByChainId(
+
+  const { blockExplorerConfig } = getNetworkDetailsByChainId(
     `0x${chainIdHex}` as keyof typeof CHAIN_IDS,
   );
 
@@ -36,7 +37,21 @@ export const NotificationDetailBlockExplorerButton = ({
   }, [defaultNetworks]);
 
   const blockExplorerUrl =
-    defaultNetwork?.rpcPrefs?.blockExplorerUrl ?? nativeBlockExplorerUrl;
+    defaultNetwork?.rpcPrefs?.blockExplorerUrl ?? blockExplorerConfig?.url;
+
+  const getBlockExplorerButtonText = () => {
+    if (defaultNetwork?.rpcPrefs?.blockExplorerUrl) {
+      return t('notificationItemCheckBlockExplorer');
+    }
+    if (blockExplorerConfig?.name) {
+      return t('notificationTransactionSuccessView', [
+        blockExplorerConfig.name,
+      ]);
+    }
+    return t('notificationItemCheckBlockExplorer');
+  };
+
+  const blockExplorerButtonText = getBlockExplorerButtonText();
 
   if (!blockExplorerUrl) {
     return null;
@@ -46,7 +61,7 @@ export const NotificationDetailBlockExplorerButton = ({
     <NotificationDetailButton
       notification={notification}
       variant={ButtonVariant.Secondary}
-      text={t('notificationItemCheckBlockExplorer') || ''}
+      text={blockExplorerButtonText}
       href={`${blockExplorerUrl}/tx/${txHash}`}
       id={id}
       isExternal={true}

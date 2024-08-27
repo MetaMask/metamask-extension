@@ -58,6 +58,7 @@ import { AssetPickerAmount } from '../..';
 import useUpdateSwapsState from '../../../../hooks/useUpdateSwapsState';
 import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
 import { smartTransactionsListSelector } from '../../../../selectors';
+import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -91,6 +92,7 @@ export const SendPage = () => {
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(undefined);
 
   const handleSelectToken = useCallback(
     (token, isReceived) => {
@@ -151,6 +153,7 @@ export const SendPage = () => {
   const cleanup = useCallback(() => {
     dispatch(resetSendState());
     setIsSubmitting(false);
+    setError(undefined);
   }, [dispatch]);
 
   /**
@@ -198,13 +201,16 @@ export const SendPage = () => {
     }
     dispatch(resetSendState());
 
-    trackEvent({
-      event: MetaMetricsEventName.sendFlowExited,
-      category: MetaMetricsEventCategory.Send,
-      properties: {
-        ...sendAnalytics,
+    trackEvent(
+      {
+        event: MetaMetricsEventName.sendFlowExited,
+        category: MetaMetricsEventCategory.Send,
+        sensitiveProperties: {
+          ...sendAnalytics,
+        },
       },
-    });
+      { excludeMetaMetricsId: false },
+    );
 
     const nextRoute =
       sendStage === SEND_STAGES.EDIT ? DEFAULT_ROUTE : mostRecentOverviewPage;
@@ -213,13 +219,16 @@ export const SendPage = () => {
 
   useEffect(() => {
     if (swapQuotesError) {
-      trackEvent({
-        event: MetaMetricsEventName.sendSwapQuoteError,
-        category: MetaMetricsEventCategory.Send,
-        properties: {
-          ...sendAnalytics,
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendSwapQuoteError,
+          category: MetaMetricsEventCategory.Send,
+          sensitiveProperties: {
+            ...sendAnalytics,
+          },
         },
-      });
+        { excludeMetaMetricsId: false },
+      );
     }
     // sendAnalytics should not result in the event refiring
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -229,20 +238,28 @@ export const SendPage = () => {
     event.preventDefault();
 
     setIsSubmitting(true);
-    await dispatch(signTransaction(history));
-    // prevents state update on unmounted component error
-    if (isSubmitting) {
-      setIsSubmitting(false);
+    setError(undefined);
+
+    try {
+      await dispatch(signTransaction(history));
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Transactions,
+        event: 'Complete',
+        properties: {
+          ...sendAnalytics,
+          action: isSwapAndSend ? 'Submit Immediately' : 'Edit Screen',
+          legacy_event: true,
+        },
+      });
+    } catch {
+      setError(TRANSACTION_ERRORED_EVENT);
+    } finally {
+      // prevents state update on unmounted component error
+      if (isSubmitting) {
+        setIsSubmitting(false);
+      }
     }
-    trackEvent({
-      category: MetaMetricsEventCategory.Transactions,
-      event: 'Complete',
-      properties: {
-        ...sendAnalytics,
-        action: isSwapAndSend ? 'Submit Immediately' : 'Edit Screen',
-        legacy_event: true,
-      },
-    });
   };
 
   // Submit button
@@ -285,8 +302,10 @@ export const SendPage = () => {
   useUpdateSwapsState();
 
   const onAmountChange = useCallback(
-    (newAmountRaw, newAmountFormatted) =>
-      dispatch(updateSendAmount(newAmountRaw, newAmountFormatted)),
+    (newAmountRaw, newAmountFormatted) => {
+      dispatch(updateSendAmount(newAmountRaw, newAmountFormatted));
+      setError(undefined);
+    },
     [dispatch],
   );
 
@@ -316,6 +335,7 @@ export const SendPage = () => {
         <SendPageAccountPicker />
         {isSendFormShown && (
           <AssetPickerAmount
+            error={error}
             asset={transactionAsset}
             amount={amount}
             onAssetChange={handleSelectSendToken}

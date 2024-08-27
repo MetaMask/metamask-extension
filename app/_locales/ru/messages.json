@@ -275,7 +275,7 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "Добавить новый счет"
+    "message": "Добавить новый счет Ethereum"
   },
   "addNewToken": {
     "message": "Добавить новый токен"
@@ -1263,9 +1263,6 @@
   "data": {
     "message": "Данные"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Не удается восстановить ваши данные. Файл, по-видимому, поврежден."
-  },
   "dataHex": {
     "message": "Шестнадцатиричные"
   },
@@ -1554,6 +1551,9 @@
   "enableToken": {
     "message": "активирует для $1",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "enableTokenAutoDetection": {
+    "message": "Включите автоопределение токена"
   },
   "enabled": {
     "message": "Включено"
@@ -2498,9 +2498,6 @@
     "message": "Убедитесь, что никто не смотрит",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Управляйте в настройках"
-  },
   "max": {
     "message": "Макс."
   },
@@ -2931,6 +2928,9 @@
   "noSnaps": {
     "message": "Snaps не установлены."
   },
+  "noThanks": {
+    "message": "Нет, спасибо"
+  },
   "noTransactions": {
     "message": "У вас нет транзакций"
   },
@@ -3100,7 +3100,7 @@
   },
   "notificationTransactionSuccessView": {
     "message": "Смотреть на $1",
-    "description": "Additional content in browser notification that appears when a transaction is confirmed and has a block explorer URL"
+    "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
   "notifications": {
     "message": "Уведомления"
@@ -4023,12 +4023,6 @@
   },
   "restore": {
     "message": "Восстановить"
-  },
-  "restoreFailed": {
-    "message": "Не удается восстановить ваши данные из предоставленного файла"
-  },
-  "restoreSuccessful": {
-    "message": "Ваши данные успешно восстановлены"
   },
   "restoreUserData": {
     "message": "Восстановить пользовательские данные"
@@ -5869,7 +5863,7 @@
     "message": "Автоопределение NFT"
   },
   "useNftDetectionDescriptionText": {
-    "message": "Разрешает MetaMask добавлять ваши собственные NFT с помощью сторонних сервисов (например, OpenSea). Автоопределение NFT раскрывает ваш IP-адрес и адрес счета этим сервисам. Включение этой функции может связать ваш IP-адрес с вашим адресом Ethereum и отобразить поддельные NFT-файлы, аирдропнутые мошенниками. Вы можете добавлять токены вручную, чтобы избежать этой угрозы."
+    "message": "Разрешает MetaMask добавлять ваши собственные NFT с помощью сторонних сервисов. Автоопределение NFT раскрывает ваш IP-адрес и адрес счета этим сервисам. Включение этой функции может связать ваш IP-адрес с вашим адресом Ethereum и отобразить поддельные NFT-файлы, аирдропнутые мошенниками. Вы можете добавлять токены вручную, чтобы избежать этой угрозы."
   },
   "usePhishingDetection": {
     "message": "Использовать обнаружение фишинга"

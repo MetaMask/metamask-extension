@@ -36,7 +36,10 @@ import {
   getSwapsTokensReceivedFromTxMeta,
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
-import { getBlockaidMetricsProps } from '../../../../ui/helpers/utils/metrics';
+import {
+  getBlockaidMetricsProps,
+  getSwapAndSendMetricsProps,
+} from '../../../../ui/helpers/utils/metrics';
 import { getSmartTransactionMetricsProperties } from '../../../../shared/modules/metametrics';
 import {
   getSnapAndHardwareInfoForMetrics,
@@ -898,7 +901,9 @@ async function buildEventFragmentProperties({
   let transactionApprovalAmountVsProposedRatio;
   let transactionApprovalAmountVsBalanceRatio;
   let transactionType = TransactionType.simpleSend;
-  if (type === TransactionType.cancel) {
+  if (type === TransactionType.swapAndSend) {
+    transactionType = TransactionType.swapAndSend;
+  } else if (type === TransactionType.cancel) {
     transactionType = TransactionType.cancel;
   } else if (type === TransactionType.retry && originalType) {
     transactionType = originalType;
@@ -1002,6 +1007,9 @@ async function buildEventFragmentProperties({
       transactionMeta,
     );
 
+  const swapAndSendMetricsProperties =
+    getSwapAndSendMetricsProps(transactionMeta);
+
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
     chain_id: chainId,
@@ -1027,6 +1035,7 @@ async function buildEventFragmentProperties({
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
     ...smartTransactionMetricsProperties,
+    ...swapAndSendMetricsProperties,
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>;

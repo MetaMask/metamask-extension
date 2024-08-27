@@ -211,16 +211,19 @@ const CoinButtons = ({
   ///: END:ONLY_INCLUDE_IF
 
   const handleSendOnClick = useCallback(async () => {
-    trackEvent({
-      event: MetaMetricsEventName.NavSendButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        token_symbol: 'ETH',
-        location: 'Home',
-        text: 'Send',
-        chain_id: chainId,
+    trackEvent(
+      {
+        event: MetaMetricsEventName.NavSendButtonClicked,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          token_symbol: 'ETH',
+          location: 'Home',
+          text: 'Send',
+          chain_id: chainId,
+        },
       },
-    });
+      { excludeMetaMetricsId: false },
+    );
     await dispatch(startNewDraftTransaction({ type: AssetType.native }));
     history.push(SEND_ROUTE);
   }, [chainId]);
