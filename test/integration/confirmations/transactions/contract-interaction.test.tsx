@@ -61,7 +61,7 @@ const getMetaMaskStateWithUnapprovedContractInteraction = ({
     pendingApprovals: {
       [pendingTransactionId]: {
         id: pendingTransactionId,
-        origin: 'origin',
+        origin: 'local:http://localhost:8086/',
         time: pendingTransactionTime,
         type: ApprovalType.Transaction,
         requestData: {
