@@ -303,7 +303,7 @@ describe('Send ETH', function () {
             });
 
             // the transaction has the expected gas price
-            driver.clickElement(
+            await driver.clickElement(
               '[data-testid="transaction-list-item-primary-currency"]',
             );
             await driver.waitForSelector({

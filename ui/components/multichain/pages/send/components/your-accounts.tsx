@@ -63,14 +63,17 @@ export const SendPageYourAccounts = ({
                 `sendFlow - User clicked recipient from my accounts. address: ${account.address}, nickname ${account.name}`,
               ),
             );
-            trackEvent({
-              event: MetaMetricsEventName.sendRecipientSelected,
-              category: MetaMetricsEventCategory.Send,
-              properties: {
-                location: 'my accounts',
-                inputType: 'click',
+            trackEvent(
+              {
+                event: MetaMetricsEventName.sendRecipientSelected,
+                category: MetaMetricsEventCategory.Send,
+                properties: {
+                  location: 'my accounts',
+                  inputType: 'click',
+                },
               },
-            });
+              { excludeMetaMetricsId: false },
+            );
             dispatch(
               updateRecipient({
                 address: account.address,
