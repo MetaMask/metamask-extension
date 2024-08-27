@@ -1,11 +1,13 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import {
+  EthAccountType,
+  InternalAccount,
+  KeyringAccountType,
+} from '@metamask/keyring-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getInternalAccounts,
-  getNonTestNetworks,
-  getTestNetworks,
   getUpdatedAndSortedAccounts,
 } from '../../../selectors';
 import {
@@ -14,73 +16,64 @@ import {
   ModalContent,
   ModalHeader,
   Checkbox,
-  Text,
   Box,
 } from '../../component-library';
 import { AccountListItem } from '..';
-import {
-  EthAccountType,
-  InternalAccount,
-  KeyringAccountType,
-} from '@metamask/keyring-api';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { mergeAccounts } from '../account-list-menu/account-list-menu';
 
-type SendPageYourAccountsProps = {
-  allowedAccountTypes?: KeyringAccountType[];
+type EditAccountsModalProps = {
+  onClose: () => void;
+  allowedAccountTypes?: KeyringAccountType[]; // Made optional to match default
 };
 
-const defaultAllowedAccountTypes = [EthAccountType.Eoa, EthAccountType.Erc4337];
+const defaultAllowedAccountTypes: KeyringAccountType[] = [
+  EthAccountType.Eoa,
+  EthAccountType.Erc4337,
+];
 
 export const EditAccountsModal = ({
   onClose,
   allowedAccountTypes = defaultAllowedAccountTypes,
-}: {
-  onClose: () => void;
-  allowedAccountTypes: SendPageYourAccountsProps;
-}) => {
+}: EditAccountsModalProps) => {
   const t = useI18nContext();
   const accounts = useSelector(getUpdatedAndSortedAccounts);
   const internalAccounts = useSelector(getInternalAccounts);
+
   const mergedAccounts: MergedInternalAccount[] = useMemo(() => {
     return mergeAccounts(accounts, internalAccounts).filter(
       (account: InternalAccount) => allowedAccountTypes.includes(account.type),
     );
-  }, [accounts, internalAccounts]);
+  }, [accounts, internalAccounts, allowedAccountTypes]); // Add allowedAccountTypes to dependency array
+
   return (
     <Modal
       isOpen
-      onClose={() => {
-        onClose();
-      }}
+      onClose={onClose} // Simplified inline function
       data-testid="edit-accounts-modal"
       className="edit-accounts-modal"
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader
-          onClose={() => {
-            onClose();
-          }}
-        >
-          {t('editAccounts')}
-        </ModalHeader>
+        <ModalHeader onClose={onClose}>{t('editAccounts')}</ModalHeader>
         <Box padding={4}>
           <Checkbox
             label={t('selectAll')}
             isChecked
             gap={4}
+            // Uncomment and implement these if needed:
             // onClick={() => (allAreSelected() ? deselectAll() : selectAll())}
             // isIndeterminate={isIndeterminate}
           />
         </Box>
-        {mergedAccounts.map((account: any) => (
+        {mergedAccounts.map((account) => (
           <AccountListItem
             account={account}
             key={account.address}
             isPinned={Boolean(account.pinned)}
             startAccessory={<Checkbox isChecked />}
-            onClick={() => console.log('jj')}
+            onClick={() => console.log(null)}
+            selected={false}
           />
         ))}
       </ModalContent>

@@ -1,9 +1,9 @@
 import React from 'react';
+import { EthAccountType, KeyringAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/jest/rendering';
-import { EditAccountsModal } from '.';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
-import { EthAccountType, KeyringAccountType } from '@metamask/keyring-api';
+import { EditAccountsModal } from '.';
 
 const render = (
   props: {
