@@ -50,6 +50,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../components/component-library';
+import MultiRpcEditModal from '../../components/app/multi-rpc-edit-modal/multi-rpc-edit-modal';
 import {
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
@@ -154,6 +155,7 @@ export default class Home extends PureComponent {
     announcementsToShow: PropTypes.bool.isRequired,
     onboardedInThisUISession: PropTypes.bool,
     isSmartTransactionsOptInModalAvailable: PropTypes.bool.isRequired,
+    showMultiRpcModal: PropTypes.bool.isRequired,
     ///: END:ONLY_INCLUDE_IF
     newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
@@ -934,6 +936,7 @@ export default class Home extends PureComponent {
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
       isSmartTransactionsOptInModalAvailable,
+      showMultiRpcModal,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
@@ -960,6 +963,12 @@ export default class Home extends PureComponent {
       showWhatsNewPopup &&
       !showSmartTransactionsOptInModal;
 
+    const showMultiRpcEditModal =
+      canSeeModals &&
+      showMultiRpcModal &&
+      !showSmartTransactionsOptInModal &&
+      !showWhatsNew;
+
     const showTermsOfUse =
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
     ///: END:ONLY_INCLUDE_IF
@@ -984,6 +993,8 @@ export default class Home extends PureComponent {
             isOpen={showSmartTransactionsOptInModal}
             hideWhatsNewPopup={hideWhatsNewPopup}
           />
+
+          <MultiRpcEditModal isOpen={showMultiRpcEditModal} />
 
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (

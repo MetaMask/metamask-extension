@@ -2,7 +2,6 @@ type MultiRpcEditMetaMaskState = {
   metamask: {
     preferences: {
       showMultiRpcModal: boolean | null;
-      showMultiRpcModalUpgrade: boolean | null;
     };
   };
 };
