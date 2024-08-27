@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Modal,
@@ -37,7 +37,26 @@ function MultiRpcEditModal({ isOpen }: MultiRpcEditModalProps) {
 
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
-  const listNetworks = [...Object.values(networkConfigurations)];
+  const listNetworks = useMemo(() => {
+    return [...Object.values(networkConfigurations)];
+  }, [networkConfigurations]);
+
+  // Use a ref to ensure the effect runs only once
+  const effectRan = useRef(false);
+
+  useEffect(() => {
+    if (effectRan.current) return;
+
+    const hasMultipleRpcEndpoints = listNetworks.some(
+      (network) => network.rpcEndpoints.length > 1,
+    );
+
+    if (!hasMultipleRpcEndpoints) {
+      dispatch(setShowMultiRpcModal(true));
+    }
+
+    effectRan.current = true; // Set the ref to true after the effect runs once
+  }, [listNetworks, dispatch]);
 
   return (
     <Modal
