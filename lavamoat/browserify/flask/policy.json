@@ -1727,9 +1727,9 @@
         "@metamask/eth-sig-util": true,
         "@metamask/message-manager>@metamask/base-controller": true,
         "@metamask/message-manager>@metamask/controller-utils": true,
-        "@metamask/message-manager>jsonschema": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
+        "jsonschema": true,
         "uuid": true,
         "webpack>events": true
       }
@@ -1758,11 +1758,6 @@
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true
-      }
-    },
-    "@metamask/message-manager>jsonschema": {
-      "packages": {
-        "browserify>url": true
       }
     },
     "@metamask/message-signing-snap>@noble/ciphers": {
@@ -2467,10 +2462,10 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/message-manager>jsonschema": true,
         "@metamask/signature-controller>@metamask/controller-utils": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
+        "jsonschema": true,
         "uuid": true,
         "webpack>events": true
       }
@@ -4768,6 +4763,11 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "readable-stream": true
+      }
+    },
+    "jsonschema": {
+      "packages": {
+        "browserify>url": true
       }
     },
     "koa>content-disposition>safe-buffer": {
