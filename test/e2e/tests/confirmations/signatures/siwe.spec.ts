@@ -4,9 +4,7 @@ import { MockedEndpoint } from 'mockttp';
 import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
-  openDapp,
   switchToNotificationWindow,
-  unlockWallet,
 } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
@@ -21,6 +19,8 @@ import {
   assertSignatureMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
+  openDappAndTriggerSignature,
+  SignatureType,
 } from './signature-helpers';
 
 describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
@@ -31,10 +31,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#siwe');
-        await switchToNotificationWindow(driver);
+        await openDappAndTriggerSignature(driver, SignatureType.SIWE);
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
@@ -73,10 +70,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#siwe');
-        await switchToNotificationWindow(driver);
+        await openDappAndTriggerSignature(driver, SignatureType.SIWE);
 
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
@@ -105,11 +99,9 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
       async ({ driver }: TestSuiteArguments) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#siweBadDomain');
-        await switchToNotificationWindow(driver);
+        await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
 
+        await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
         const alert = await driver.findElement('[data-testid="inline-alert"]');
         assert.equal(await alert.getText(), 'Alert');
         await driver.clickElement('[data-testid="inline-alert"]');

@@ -33,7 +33,11 @@ exports[`AssetPicker matches snapshot 1`] = `
               <div
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
               >
-                ?
+                <img
+                  alt="Ethereum Mainnet logo"
+                  class="mm-avatar-network__network-image"
+                  src="./images/eth_logo.svg"
+                />
               </div>
             </div>
           </div>
