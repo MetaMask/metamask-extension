@@ -90,3 +90,40 @@ $font-path: './fonts';
   font-weight: 700;
   src: url('#{$font-path}/Euclid/EuclidCircularB-Bold-WebXL.ttf') format('truetype');
 }
+
+// Brand Evolution Font Families
+
+@font-face {
+  font-family: 'CentraNo1';
+  src: url('#{$font-path}/CentraNo1/CentraNo1-Book.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CentraNo1';
+  src: url('#{$font-path}/CentraNo1/CentraNo1-BookItalic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'CentraNo1';
+  src: url('#{$font-path}/CentraNo1/CentraNo1-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CentraNo1';
+  src: url('#{$font-path}/CentraNo1/CentraNo1-MediumItalic.woff2') format('woff2');
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MM Sans';
+  src: url('#{$font-path}/MMSans/MM_Sans-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}

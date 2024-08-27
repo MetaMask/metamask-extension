@@ -286,3 +286,17 @@ export const Strong: StoryFn<typeof Text> = (args) => (
     </Text>
   </>
 );
+
+export const BrandEvolution = (args) => (
+  <>
+    {Object.values(TextVariant).map((variant) => (
+      <Text {...args} variant={variant} key={variant}>
+        {args.children || variant}
+      </Text>
+    ))}
+  </>
+);
+
+BrandEvolution.args = {
+  brandEvolution: true,
+};

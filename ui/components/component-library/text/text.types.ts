@@ -134,6 +134,10 @@ export interface TextStyleUtilityProps extends StyleUtilityProps {
    * Used for long strings that can be cut off...
    */
   ellipsis?: boolean;
+  /**
+   * Enable Brand Evolution Typography
+   */
+  brandEvolution?: boolean;
 }
 
 export type TextProps<C extends React.ElementType> =
