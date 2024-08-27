@@ -125,8 +125,8 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // click down arrow
-        await driver.waitForSelector('[aria-label="Scroll down"]');
-        await driver.clickElement('[aria-label="Scroll down"]');
+        // await driver.waitForSelector('[aria-label="Scroll down"]');
+        await driver.clickElementSafe('[aria-label="Scroll down"]');
 
         // required: delay for scroll to render
         await driver.delay(500);
@@ -171,8 +171,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // click down arrow
-        await driver.waitForSelector('[aria-label="Scroll down"]');
-        await driver.clickElement('[aria-label="Scroll down"]');
+        await driver.clickElementSafe('[aria-label="Scroll down"]');
 
         // required: delay for scroll to render
         await driver.delay(500);
@@ -184,6 +183,12 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // click down arrow
+        await driver.clickElementSafe('[aria-label="Scroll down"]');
+
+        // required: delay for scroll to render
+        await driver.delay(500);
+
+        // click signature insights
         await driver.waitForSelector({
           text: 'Signature Insights Example Snap',
           tag: 'span',
@@ -223,8 +228,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // click down arrow
-        await driver.waitForSelector('[aria-label="Scroll down"]');
-        await driver.clickElement('[aria-label="Scroll down"]');
+        await driver.clickElementSafe('[aria-label="Scroll down"]');
 
         // required: delay for scroll to render
         await driver.delay(500);
@@ -236,6 +240,12 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // click down arrow
+        await driver.clickElementSafe('[aria-label="Scroll down"]');
+
+        // required: delay for scroll to render
+        await driver.delay(500);
+
+        // click signature insights
         await driver.waitForSelector({
           text: 'Signature Insights Example Snap',
           tag: 'span',
