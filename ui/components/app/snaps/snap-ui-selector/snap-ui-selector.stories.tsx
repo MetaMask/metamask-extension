@@ -1,4 +1,5 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import { SnapUISelector } from './snap-ui-selector';
 import { Box, Text } from '../../../component-library';
 import {
@@ -8,14 +9,33 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { SnapUICard } from '../snap-ui-card/snap-ui-card';
+import configureStore from '../../../../store/store';
+import testData from '../../../../../.storybook/test-data';
+import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
+
+const store = configureStore(testData);
 
 export default {
   title: 'Components/App/Snaps/SnapUISelector',
   component: SnapUISelector,
   argTypes: {},
+  decorators: [
+    (story) => (
+      <Provider store={store}>
+        <SnapInterfaceContextProvider
+          snapId={'npm:fooSnap'}
+          interfaceId={'foo'}
+          initialState={{ 'selector': 'foo' }}
+          context={{}}
+        >
+          {story()}
+        </SnapInterfaceContextProvider>
+      </Provider>
+    ),
+  ],
 };
 
-export const DefaultStory = (args) => <SnapUISelector {...args} />;
+export const DefaultStory = (args) => <SnapUISelector name='selector' {...args} />;
 
 DefaultStory.storyName = 'Default';
 
@@ -31,7 +51,7 @@ DefaultStory.args = {
   ],
 };
 
-export const AdvancedStory = (args) => <SnapUISelector {...args} />;
+export const AdvancedStory = (args) => <SnapUISelector name='selector' {...args} />;
 
 AdvancedStory.storyName = 'Advanced';
 
@@ -65,7 +85,7 @@ AdvancedStory.args = {
   ],
 };
 
-export const CardStory = (args) => <SnapUISelector {...args} />;
+export const CardStory = (args) => <SnapUISelector name='selector' {...args} />;
 
 CardStory.storyName = 'Card';
 
