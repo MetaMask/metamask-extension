@@ -139,7 +139,7 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
           disabled={disabled}
           endIconName={IconName.ArrowDown}
           endIconProps={{
-            color: IconColor.iconDefault,
+            color: IconColor.primaryDefault,
             size: IconSize.Sm,
           }}
           gap={2}
