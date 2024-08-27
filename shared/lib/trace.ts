@@ -3,6 +3,17 @@ import { Primitive, StartSpanOptions } from '@sentry/types';
 import { createModuleLogger } from '@metamask/utils';
 import { log as sentryLogger } from '../../app/scripts/lib/setupSentry';
 
+export enum TraceName {
+  BackgroundConnect = 'Background Connect',
+  FirstRender = 'First Render',
+  GetState = 'Get State',
+  Middleware = 'Middleware',
+  NotificationDisplay = 'Notification Display',
+  PPOMValidation = 'PPOM Validation',
+  Transaction = 'Transaction',
+  UIStartup = 'UI Startup',
+}
+
 const log = createModuleLogger(sentryLogger, 'trace');
 
 const ID_DEFAULT = 'default';
@@ -23,7 +34,7 @@ export type TraceCallback<T> = (context?: TraceContext) => T;
 export type TraceRequest = {
   data?: Record<string, number | string | boolean>;
   id?: string;
-  name: string;
+  name: TraceName;
   parentContext?: TraceContext;
   startTime?: number;
   tags?: Record<string, number | string | boolean>;
@@ -31,7 +42,7 @@ export type TraceRequest = {
 
 export type EndTraceRequest = {
   id?: string;
-  name: string;
+  name: TraceName;
   timestamp?: number;
 };
 

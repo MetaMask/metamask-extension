@@ -4,7 +4,7 @@ import {
   startSpanManual,
   withIsolationScope,
 } from '@sentry/browser';
-import { endTrace, trace } from './trace';
+import { endTrace, trace, TraceName } from './trace';
 
 jest.mock('@sentry/browser', () => ({
   withIsolationScope: jest.fn(),
@@ -12,7 +12,7 @@ jest.mock('@sentry/browser', () => ({
   startSpanManual: jest.fn(),
 }));
 
-const NAME_MOCK = 'testName';
+const NAME_MOCK = TraceName.Transaction;
 const ID_MOCK = 'testId';
 const PARENT_CONTEXT_MOCK = {} as Span;
 

@@ -13,7 +13,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
 import { COPY_OPTIONS } from '../shared/constants/copy';
 import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
-import { endTrace, trace } from '../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../shared/lib/trace';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -68,6 +68,8 @@ export default function launchMetamaskUi(opts, cb) {
 
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
+    endTrace({ name: TraceName.GetState });
+
     if (err) {
       cb(
         err,
@@ -78,8 +80,6 @@ export default function launchMetamaskUi(opts, cb) {
       );
       return;
     }
-
-    endTrace({ name: 'Get State' });
 
     startApp(metamaskState, backgroundConnection, opts).then((store) => {
       setupStateHooks(store);
@@ -243,11 +243,11 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     },
   );
 
-  trace({ name: 'First Render', parentContext: traceContext }, () =>
+  trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
     render(<Root store={store} />, opts.container),
   );
 
-  endTrace({ name: 'UI Startup' });
+  endTrace({ name: TraceName.UIStartup });
 
   return store;
 }

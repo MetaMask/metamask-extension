@@ -25,7 +25,7 @@ import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import { getErrorHtml } from '../../shared/lib/error-utils';
-import { endTrace, trace } from '../../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -41,14 +41,13 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
 
 let extensionPort;
-let traceContext;
 
 start().catch(log.error);
 
 async function start() {
   const startTime = performance.now();
 
-  traceContext = trace({
+  const traceContext = trace({
     name: 'UI Startup',
     startTime: performance.timeOrigin,
   });
@@ -95,7 +94,7 @@ async function start() {
           // in later version we might try to improve it by reviving same streams.
           updateUiStreams();
         } else {
-          endTrace({ name: 'Background Connect' });
+          endTrace({ name: TraceName.BackgroundConnect });
           initializeUiWithTab(activeTab);
         }
         await loadPhishingWarningPage();
@@ -219,7 +218,7 @@ async function start() {
   } else {
     const messageListener = async (message) => {
       if (message?.data?.method === 'startUISync') {
-        endTrace({ name: 'Background Connect' });
+        endTrace({ name: TraceName.BackgroundConnect });
         initializeUiWithTab(activeTab);
         extensionPort.onMessage.removeListener(messageListener);
       }
@@ -234,7 +233,7 @@ async function start() {
   }
 
   function initializeUiWithTab(tab) {
-    initializeUi(tab, connectionStream, (err, store) => {
+    initializeUi(tab, connectionStream, traceContext, (err, store) => {
       if (err) {
         // if there's an error, store will be = metamaskState
         displayCriticalError('troubleStarting', err, store);
@@ -310,7 +309,7 @@ async function queryCurrentActiveTab(windowType) {
   return { id, title, origin, protocol, url };
 }
 
-function initializeUi(activeTab, connectionStream, cb) {
+function initializeUi(activeTab, connectionStream, traceContext, cb) {
   connectToAccountManager(connectionStream, (err, backgroundConnection) => {
     if (err) {
       cb(err, null);
