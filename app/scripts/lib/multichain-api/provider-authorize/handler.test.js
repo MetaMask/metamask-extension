@@ -13,8 +13,14 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '../caip25permissions';
+import { shouldEmitDappViewedEvent } from '../../util';
 import { providerAuthorizeHandler } from './handler';
 import { assignAccountsToScopes, validateAndUpsertEip3085 } from './helpers';
+
+jest.mock('../../util', () => ({
+  ...jest.requireActual('../../util'),
+  shouldEmitDappViewedEvent: jest.fn(),
+}));
 
 jest.mock('../scope', () => ({
   ...jest.requireActual('../scope'),
@@ -85,6 +91,16 @@ const createMockedHandler = () => {
     unsubscribeDomain: jest.fn(),
     unsubscribeScope: jest.fn(),
   };
+  const sendMetrics = jest.fn();
+  const metamaskState = {
+    permissionHistory: {},
+    metaMetricsId: 'metaMetricsId',
+    accounts: {
+      '0x1': {},
+      '0x2': {},
+      '0x3': {},
+    },
+  };
   const response = {};
   const handler = (request) =>
     providerAuthorizeHandler(request, response, next, end, {
@@ -95,6 +111,8 @@ const createMockedHandler = () => {
       removeNetworkConfiguration,
       multichainMiddlewareManager,
       multichainSubscriptionManager,
+      metamaskState,
+      sendMetrics,
     });
 
   return {
@@ -108,6 +126,8 @@ const createMockedHandler = () => {
     removeNetworkConfiguration,
     multichainMiddlewareManager,
     multichainSubscriptionManager,
+    metamaskState,
+    sendMetrics,
     handler,
   };
 };
@@ -669,6 +689,36 @@ describe('provider_authorize', () => {
     expect(end).toHaveBeenCalledWith(
       new Error('failed to grant CAIP-25 permissions'),
     );
+  });
+
+  it('emits the dapp viewed metrics event', async () => {
+    shouldEmitDappViewedEvent.mockResolvedValue(true);
+    const { handler, sendMetrics } = createMockedHandler();
+    bucketScopes
+      .mockReturnValueOnce({
+        supportedScopes: {},
+        supportableScopes: {},
+        unsupportableScopes: {},
+      })
+      .mockReturnValueOnce({
+        supportedScopes: {},
+        supportableScopes: {},
+        unsupportableScopes: {},
+      });
+    await handler(baseRequest);
+
+    expect(sendMetrics).toHaveBeenCalledWith({
+      category: 'inpage_provider',
+      event: 'Dapp Viewed',
+      properties: {
+        is_first_visit: true,
+        number_of_accounts: 3,
+        number_of_accounts_connected: 4,
+      },
+      referrer: {
+        url: 'http://test.com',
+      },
+    });
   });
 
   it('returns the session ID, properties, and merged scopes', async () => {
