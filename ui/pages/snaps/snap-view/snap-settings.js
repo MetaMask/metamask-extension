@@ -1,9 +1,4 @@
-import React, {
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  useEffect,
-  ///: END:ONLY_INCLUDE_IF
-  useState,
-} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
@@ -60,7 +55,7 @@ import { ShowMore } from '../../../components/app/snaps/show-more';
 import { KeyringSnapRemovalResultStatus } from './constants';
 ///: END:ONLY_INCLUDE_IF
 
-function SnapSettings({ snapId }) {
+function SnapSettings({ snapId, initRemove, resetInitRemove }) {
   const history = useHistory();
   const t = useI18nContext();
   const snaps = useSelector(getSnaps);
@@ -134,6 +129,13 @@ function SnapSettings({ snapId }) {
     }
   };
 
+  useEffect(() => {
+    if (initRemove) {
+      setIsShowingRemoveWarning(true);
+      resetInitRemove();
+    }
+  }, [initRemove, resetInitRemove]);
+
   return (
     <Box>
       {isUpdateAvailable && (
@@ -160,6 +162,7 @@ function SnapSettings({ snapId }) {
           snapName={snapName}
           permissions={permissions ?? {}}
           showOptions
+          showAllPermissions
         />
       </Box>
       <Box className="snap-view__content__connected-sites" marginTop={12}>
@@ -269,6 +272,8 @@ function SnapSettings({ snapId }) {
 
 SnapSettings.propTypes = {
   snapId: PropTypes.string.isRequired,
+  initRemove: PropTypes.bool,
+  resetInitRemove: PropTypes.func,
 };
 
 export default SnapSettings;

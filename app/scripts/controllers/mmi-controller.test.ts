@@ -23,6 +23,7 @@ import { ControllerMessenger } from '@metamask/base-controller';
 import { mmiKeyringBuilderFactory } from '../mmi-keyring-builder-factory';
 import MetaMetricsController from './metametrics';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../test/stub/networks';
 
 jest.mock('@metamask-institutional/portfolio-dashboard', () => ({
   handleMmiPortfolio: jest.fn(),
@@ -98,13 +99,7 @@ describe('MMIController', function () {
           'NetworkController:infuraIsUnblocked',
         ],
       }),
-      state: {
-        providerConfig: {
-          type: NETWORK_TYPES.SEPOLIA,
-          chainId: CHAIN_IDS.SEPOLIA,
-          ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
-        },
-      },
+      state: mockNetworkState({chainId: CHAIN_IDS.SEPOLIA}),
       infuraProjectId: 'mock-infura-project-id',
     });
 
@@ -450,26 +445,6 @@ describe('MMIController', function () {
       const result = await mmiController.getCustodianAccounts(
         'token',
         'neptune-custody',
-      );
-
-      expect(result).toEqual(['account1']);
-    });
-  });
-
-  describe('getCustodianAccountsByAddress', () => {
-    it('should return custodian accounts by address', async () => {
-      CUSTODIAN_TYPES['MOCK-CUSTODIAN-TYPE'] = {
-        keyringClass: { type: 'mock-keyring-class' },
-      };
-      mmiController.addKeyringIfNotExists = jest.fn().mockResolvedValue({
-        getCustodianAccounts: jest.fn().mockResolvedValue(['account1']),
-      });
-
-      const result = await mmiController.getCustodianAccountsByAddress(
-        'token',
-        'envName',
-        'address',
-        'mock-custodian-type',
       );
 
       expect(result).toEqual(['account1']);

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Confirm matches snapshot for personal signature type 1`] = `
+exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
 <div>
   <div
     class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
@@ -92,7 +92,7 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-2"
+                aria-describedby="tippy-tooltip-5"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -137,10 +137,10 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px; background: transparent;"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -149,7 +149,7 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
                 </p>
                 <div>
                   <div
-                    aria-describedby="tippy-tooltip-3"
+                    aria-describedby="tippy-tooltip-6"
                     class=""
                     data-original-title="This is the site asking for your signature."
                     data-tooltipped=""
@@ -179,10 +179,10 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px; background: transparent;"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -191,7 +191,7 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
                 </p>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -225,7 +225,7 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
 </div>
 `;
 
-exports[`Confirm should match snapshot for typed sign signature 1`] = `
+exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
 <div>
   <div
     class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
@@ -317,7 +317,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-4"
+                aria-describedby="tippy-tooltip-9"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -362,10 +362,10 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px;"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -374,7 +374,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                 </p>
                 <div>
                   <div
-                    aria-describedby="tippy-tooltip-5"
+                    aria-describedby="tippy-tooltip-10"
                     class=""
                     data-original-title="This is the site asking for your signature."
                     data-tooltipped=""
@@ -400,10 +400,10 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
             </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px;"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -475,10 +475,10 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px;"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -491,10 +491,10 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
               >
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                  style="overflow-wrap: anywhere; min-height: 24px; padding-left: 0px; padding-right: 0px;"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -503,7 +503,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                     </p>
                   </div>
                   <div
-                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -522,10 +522,10 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                   >
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -534,7 +534,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                         </p>
                       </div>
                       <div
-                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -546,10 +546,10 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -562,10 +562,10 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                       >
                         <div
                           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                          style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
                           >
                             <p
                               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -574,7 +574,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                             </p>
                           </div>
                           <div
-                            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
                           >
                             <p
                               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -586,10 +586,10 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                         </div>
                         <div
                           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                          style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
                           >
                             <p
                               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -602,10 +602,10 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                           >
                             <div
                               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                              style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
                               >
                                 <p
                                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -673,10 +673,10 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                             </div>
                             <div
                               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                              style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
                               >
                                 <p
                                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -744,10 +744,10 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                             </div>
                             <div
                               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                              style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
                               >
                                 <p
                                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -819,10 +819,10 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -835,10 +835,10 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                       >
                         <div
                           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                          style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
                           >
                             <p
                               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -851,10 +851,10 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                           >
                             <div
                               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                              style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
                               >
                                 <p
                                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -863,7 +863,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                                 </p>
                               </div>
                               <div
-                                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
                               >
                                 <p
                                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -875,10 +875,10 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                             </div>
                             <div
                               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                              style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
                               >
                                 <p
                                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -891,10 +891,10 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                               >
                                 <div
                                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                                  style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                                 >
                                   <div
-                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
                                   >
                                     <p
                                       class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -962,10 +962,10 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                                 </div>
                                 <div
                                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                                  style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                                 >
                                   <div
-                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
                                   >
                                     <p
                                       class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1033,10 +1033,10 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                                 </div>
                                 <div
                                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                                  style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                                 >
                                   <div
-                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
                                   >
                                     <p
                                       class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1107,6 +1107,1391 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                           </div>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box multichain-page-footer confirm-footer_page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
+      >
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+          data-testid="confirm-footer-cancel-button"
+        >
+          Cancel
+        </button>
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          data-testid="confirm-footer-button"
+        >
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Confirm should match snapshot for signature - typed sign - permit 1`] = `
+<div>
+  <div
+    class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+  >
+    <div
+      class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+    >
+      <div
+        class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+        data-testid="confirm-header"
+      >
+        <div
+          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-start"
+        >
+          <div
+            class="mm-box mm-box--margin-top-2 mm-box--display-flex"
+          >
+            <div
+              class=""
+            >
+              <div
+                class="identicon"
+                style="height: 32px; width: 32px; border-radius: 16px;"
+              >
+                <div
+                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 59);"
+                >
+                  <svg
+                    height="32"
+                    width="32"
+                    x="0"
+                    y="0"
+                  >
+                    <rect
+                      fill="#017B8E"
+                      height="32"
+                      transform="translate(0.7994460693567097 -0.8216011156969824) rotate(317.9 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#F2B602"
+                      height="32"
+                      transform="translate(-7.493396036912253 11.409935428284795) rotate(134.1 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#FA8E00"
+                      height="32"
+                      transform="translate(-25.712272690754798 -11.558881043268883) rotate(364.0 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            >
+              C
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--margin-inline-start-4"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+              data-testid="header-account-name"
+            />
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+              data-testid="header-network-display-name"
+            >
+              Chain 5
+            </p>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+            style="align-self: flex-end;"
+          >
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-2"
+                class=""
+                data-original-title="Account details"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <button
+                  aria-label="Account details"
+                  class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                  data-testid="header-info__account-details-button"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/info.svg');"
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+        style="min-height: 0; overflow: hidden; position: relative;"
+      >
+        <div
+          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+          style="overflow: auto;"
+        >
+          <h2
+            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+          >
+            Spending cap request
+          </h2>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+          >
+            This site wants permission to spend your tokens.
+          </p>
+          <div
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+          >
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Spender
+                </p>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  >
+                    <div
+                      class="mm-avatar-account__jazzicon"
+                    >
+                      <div
+                        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 65);"
+                      >
+                        <svg
+                          height="16"
+                          width="16"
+                          x="0"
+                          y="0"
+                        >
+                          <rect
+                            fill="#FB1851"
+                            height="16"
+                            transform="translate(4.039516030164602 1.5782203519382538) rotate(112.1 8 8)"
+                            width="16"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#188CF2"
+                            height="16"
+                            transform="translate(5.66194575958382 -1.2306431953956085) rotate(470.0 8 8)"
+                            width="16"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#F2AE02"
+                            height="16"
+                            transform="translate(2.167526701566883 -11.265379840592708) rotate(458.4 8 8)"
+                            width="16"
+                            x="0"
+                            y="0"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                    data-testid="confirm-info-row-display-name"
+                  >
+                    0x5B38D...eddC4
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              style="height: 1px; margin-left: -8px; margin-right: -8px;"
+            />
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Request from
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-3"
+                    class=""
+                    data-original-title="This is the site asking for your signature."
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                >
+                  metamask.github.io
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Interacting with
+                </p>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  >
+                    <div
+                      class="mm-avatar-account__jazzicon"
+                    >
+                      <div
+                        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 116);"
+                      >
+                        <svg
+                          height="16"
+                          width="16"
+                          x="0"
+                          y="0"
+                        >
+                          <rect
+                            fill="#FB1891"
+                            height="16"
+                            transform="translate(0.6335263099240563 1.7352552986765108) rotate(129.9 8 8)"
+                            width="16"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#F90901"
+                            height="16"
+                            transform="translate(-5.227286615169763 8.640359200885621) rotate(141.5 8 8)"
+                            width="16"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#F26A02"
+                            height="16"
+                            transform="translate(10.585940898259892 -4.814122444807073) rotate(339.2 8 8)"
+                            width="16"
+                            x="0"
+                            y="0"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                    data-testid="confirm-info-row-display-name"
+                  >
+                    0xCcCCc...ccccC
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+          >
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Message
+                </p>
+              </div>
+              <div
+                class="mm-box mm-box--width-full"
+              >
+                <div
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                  >
+                    <p
+                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                    >
+                      Primary type:
+                    </p>
+                  </div>
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                  >
+                    <p
+                      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                      style="white-space: pre-wrap;"
+                    >
+                      Permit
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="mm-box"
+                  style="margin-left: -8px;"
+                >
+                  <div
+                    class="mm-box mm-box--width-full"
+                  >
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        >
+                          Owner:
+                        </p>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                        >
+                          <div
+                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                          >
+                            <div
+                              class="mm-avatar-account__jazzicon"
+                            >
+                              <div
+                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 59);"
+                              >
+                                <svg
+                                  height="16"
+                                  width="16"
+                                  x="0"
+                                  y="0"
+                                >
+                                  <rect
+                                    fill="#017B8E"
+                                    height="16"
+                                    transform="translate(0.39972303467835485 -0.4108005578484912) rotate(317.9 8 8)"
+                                    width="16"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#F2B602"
+                                    height="16"
+                                    transform="translate(-3.7466980184561267 5.704967714142398) rotate(134.1 8 8)"
+                                    width="16"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#FA8E00"
+                                    height="16"
+                                    transform="translate(-12.856136345377399 -5.7794405216344416) rotate(364.0 8 8)"
+                                    width="16"
+                                    x="0"
+                                    y="0"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                          </div>
+                          <p
+                            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                            data-testid="confirm-info-row-display-name"
+                          >
+                            0x935E7...05477
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        >
+                          Spender:
+                        </p>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                        >
+                          <div
+                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                          >
+                            <div
+                              class="mm-avatar-account__jazzicon"
+                            >
+                              <div
+                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 65);"
+                              >
+                                <svg
+                                  height="16"
+                                  width="16"
+                                  x="0"
+                                  y="0"
+                                >
+                                  <rect
+                                    fill="#FB1851"
+                                    height="16"
+                                    transform="translate(4.039516030164602 1.5782203519382538) rotate(112.1 8 8)"
+                                    width="16"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#188CF2"
+                                    height="16"
+                                    transform="translate(5.66194575958382 -1.2306431953956085) rotate(470.0 8 8)"
+                                    width="16"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#F2AE02"
+                                    height="16"
+                                    transform="translate(2.167526701566883 -11.265379840592708) rotate(458.4 8 8)"
+                                    width="16"
+                                    x="0"
+                                    y="0"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                          </div>
+                          <p
+                            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                            data-testid="confirm-info-row-display-name"
+                          >
+                            0x5B38D...eddC4
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        >
+                          Value:
+                        </p>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                      >
+                        <div
+                          style="min-width: 0;"
+                        >
+                          <div
+                            aria-describedby="tippy-tooltip-4"
+                            class=""
+                            data-original-title="30"
+                            data-tooltipped=""
+                            style="display: inline;"
+                            tabindex="0"
+                          >
+                            <p
+                              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                              style="white-space: pre-wrap;"
+                            >
+                              30
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        >
+                          Nonce:
+                        </p>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                          style="white-space: pre-wrap;"
+                        >
+                          0
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        >
+                          Deadline:
+                        </p>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                          style="white-space: pre-wrap;"
+                        >
+                          02 August 1971, 16:53
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box multichain-page-footer confirm-footer_page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
+      >
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+          data-testid="confirm-footer-cancel-button"
+        >
+          Cancel
+        </button>
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          data-testid="confirm-footer-button"
+        >
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
+<div>
+  <div
+    class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+  >
+    <div
+      class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+    >
+      <div
+        class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+        data-testid="confirm-header"
+      >
+        <div
+          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-start"
+        >
+          <div
+            class="mm-box mm-box--margin-top-2 mm-box--display-flex"
+          >
+            <div
+              class=""
+            >
+              <div
+                class="identicon"
+                style="height: 32px; width: 32px; border-radius: 16px;"
+              >
+                <div
+                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 59);"
+                >
+                  <svg
+                    height="32"
+                    width="32"
+                    x="0"
+                    y="0"
+                  >
+                    <rect
+                      fill="#017B8E"
+                      height="32"
+                      transform="translate(0.7994460693567097 -0.8216011156969824) rotate(317.9 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#F2B602"
+                      height="32"
+                      transform="translate(-7.493396036912253 11.409935428284795) rotate(134.1 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#FA8E00"
+                      height="32"
+                      transform="translate(-25.712272690754798 -11.558881043268883) rotate(364.0 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            >
+              C
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--margin-inline-start-4"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+              data-testid="header-account-name"
+            />
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+              data-testid="header-network-display-name"
+            >
+              Chain 5
+            </p>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+            style="align-self: flex-end;"
+          >
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-7"
+                class=""
+                data-original-title="Account details"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <button
+                  aria-label="Account details"
+                  class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                  data-testid="header-info__account-details-button"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/info.svg');"
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+        style="min-height: 0; overflow: hidden; position: relative;"
+      >
+        <div
+          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+          style="overflow: auto;"
+        >
+          <h2
+            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+          >
+            Signature request
+          </h2>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+          >
+            Only confirm this message if you approve the content and trust the requesting site.
+          </p>
+          <div
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+          >
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Request from
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-8"
+                    class=""
+                    data-original-title="This is the site asking for your signature."
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                >
+                  metamask.github.io
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Interacting with
+                </p>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  >
+                    <div
+                      class="mm-avatar-account__jazzicon"
+                    >
+                      <div
+                        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 101);"
+                      >
+                        <svg
+                          height="16"
+                          width="16"
+                          x="0"
+                          y="0"
+                        >
+                          <rect
+                            fill="#FB187E"
+                            height="16"
+                            transform="translate(-1.2955504496676395 -0.8170626079763443) rotate(237.3 8 8)"
+                            width="16"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#FA5300"
+                            height="16"
+                            transform="translate(-5.484332110687836 7.36135383449693) rotate(193.6 8 8)"
+                            width="16"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#18B7F2"
+                            height="16"
+                            transform="translate(4.937001208758155 12.249363126011785) rotate(135.3 8 8)"
+                            width="16"
+                            x="0"
+                            y="0"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                    data-testid="confirm-info-row-display-name"
+                  >
+                    0xDef1C...25EfF
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+          >
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Message
+                </p>
+              </div>
+              <div
+                class="mm-box mm-box--width-full"
+              >
+                <div
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                  >
+                    <p
+                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                    >
+                      Primary type:
+                    </p>
+                  </div>
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                  >
+                    <p
+                      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                      style="white-space: pre-wrap;"
+                    >
+                      Order
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="mm-box"
+                  style="margin-left: -8px;"
+                >
+                  <div
+                    class="mm-box mm-box--width-full"
+                  >
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        >
+                          Direction:
+                        </p>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                          style="white-space: pre-wrap;"
+                        >
+                          0
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        >
+                          Maker:
+                        </p>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                        >
+                          <div
+                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                          >
+                            <div
+                              class="mm-avatar-account__jazzicon"
+                            >
+                              <div
+                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(3, 73, 94);"
+                              >
+                                <svg
+                                  height="16"
+                                  width="16"
+                                  x="0"
+                                  y="0"
+                                >
+                                  <rect
+                                    fill="#FB184D"
+                                    height="16"
+                                    transform="translate(-0.0051164334074633696 -1.2339806806032374) rotate(274.3 8 8)"
+                                    width="16"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#1888F2"
+                                    height="16"
+                                    transform="translate(0.3509585668376149 6.879587514330292) rotate(203.5 8 8)"
+                                    width="16"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#FA8900"
+                                    height="16"
+                                    transform="translate(14.410109501783603 5.915067639782006) rotate(192.7 8 8)"
+                                    width="16"
+                                    x="0"
+                                    y="0"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                          </div>
+                          <p
+                            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                            data-testid="confirm-info-row-display-name"
+                          >
+                            0x8Eeee...73D12
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        >
+                          Taker:
+                        </p>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                        >
+                          <div
+                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                          >
+                            <div
+                              class="mm-avatar-account__jazzicon"
+                            >
+                              <div
+                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(35, 98, 225);"
+                              >
+                                <svg
+                                  height="16"
+                                  width="16"
+                                  x="0"
+                                  y="0"
+                                >
+                                  <rect
+                                    fill="#FA7900"
+                                    height="16"
+                                    transform="translate(-0.1251869550000172 -0.18581992328639055) rotate(237.8 8 8)"
+                                    width="16"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#034F5E"
+                                    height="16"
+                                    transform="translate(5.484089776243406 -5.806818790918918) rotate(321.2 8 8)"
+                                    width="16"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#FB185C"
+                                    height="16"
+                                    transform="translate(4.337646399293827 10.83159092527544) rotate(190.8 8 8)"
+                                    width="16"
+                                    x="0"
+                                    y="0"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                          </div>
+                          <p
+                            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                            data-testid="confirm-info-row-display-name"
+                          >
+                            0xCD2a3...DD826
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        >
+                          Expiry:
+                        </p>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                          style="white-space: pre-wrap;"
+                        >
+                          2524604400
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        >
+                          Nonce:
+                        </p>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                          style="white-space: pre-wrap;"
+                        >
+                          100131415900000000000000000000000000000083840314483690155566137712510085002484
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        >
+                          Erc20Token:
+                        </p>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                        >
+                          <div
+                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                          >
+                            <div
+                              class="mm-avatar-account__jazzicon"
+                            >
+                              <div
+                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 113);"
+                              >
+                                <svg
+                                  height="16"
+                                  width="16"
+                                  x="0"
+                                  y="0"
+                                >
+                                  <rect
+                                    fill="#FB188D"
+                                    height="16"
+                                    transform="translate(-0.5718658349361242 0.6325282033920115) rotate(171.4 8 8)"
+                                    width="16"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#F90E01"
+                                    height="16"
+                                    transform="translate(9.239301921390972 -5.108575986414316) rotate(425.7 8 8)"
+                                    width="16"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#FA4300"
+                                    height="16"
+                                    transform="translate(-0.2987784804398177 11.491788010372222) rotate(108.3 8 8)"
+                                    width="16"
+                                    x="0"
+                                    y="0"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                          </div>
+                          <p
+                            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                            data-testid="confirm-info-row-display-name"
+                          >
+                            0xC02aa...56Cc2
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        >
+                          Erc20TokenAmount:
+                        </p>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                          style="white-space: pre-wrap;"
+                        >
+                          42000000000000
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        >
+                          Fees:
+                        </p>
+                      </div>
+                      <div
+                        class="mm-box mm-box--width-full"
+                      />
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        >
+                          Erc721Token:
+                        </p>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                        >
+                          <div
+                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                          >
+                            <div
+                              class="mm-avatar-account__jazzicon"
+                            >
+                              <div
+                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 62, 0);"
+                              >
+                                <svg
+                                  height="16"
+                                  width="16"
+                                  x="0"
+                                  y="0"
+                                >
+                                  <rect
+                                    fill="#FB1891"
+                                    height="16"
+                                    transform="translate(-0.16425836889987294 -2.8017142160373063) rotate(283.4 8 8)"
+                                    width="16"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#F26A02"
+                                    height="16"
+                                    transform="translate(-8.04953373141703 4.491965891780149) rotate(269.3 8 8)"
+                                    width="16"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#F58F00"
+                                    height="16"
+                                    transform="translate(5.562845604644261 -14.49835226663298) rotate(363.8 8 8)"
+                                    width="16"
+                                    x="0"
+                                    y="0"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                          </div>
+                          <p
+                            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                            data-testid="confirm-info-row-display-name"
+                          >
+                            0x8a90C...8992e
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        >
+                          Erc721TokenId:
+                        </p>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                          style="white-space: pre-wrap;"
+                        >
+                          2516
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        >
+                          Erc721TokenProperties:
+                        </p>
+                      </div>
+                      <div
+                        class="mm-box mm-box--width-full"
+                      />
                     </div>
                   </div>
                 </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  Box,
   IconName,
   ModalFocus,
   Popover,
@@ -36,7 +37,7 @@ export const NetworkListItemMenu = ({
       flip
     >
       <ModalFocus restoreFocus initialFocusRef={anchorElement}>
-        <div>
+        <Box>
           {onEditClick ? (
             <MenuItem
               iconName={IconName.Edit}
@@ -48,7 +49,7 @@ export const NetworkListItemMenu = ({
               }}
               data-testid="network-list-item-options-edit"
             >
-              {t('edit')}
+              <Text> {t('edit')}</Text>
             </MenuItem>
           ) : null}
           {onDeleteClick ? (
@@ -66,7 +67,7 @@ export const NetworkListItemMenu = ({
               <Text color={TextColor.errorDefault}>{t('delete')}</Text>
             </MenuItem>
           ) : null}
-        </div>
+        </Box>
       </ModalFocus>
     </Popover>
   );
