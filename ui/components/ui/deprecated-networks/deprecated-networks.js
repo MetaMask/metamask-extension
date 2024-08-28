@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BackgroundColor,
@@ -7,20 +7,25 @@ import {
   Severity,
 } from '../../../helpers/constants/design-system';
 
-import { getCurrentNetwork } from '../../../selectors';
+import {
+  getCurrentNetwork,
+  getNetworkConfigurationsByChainId,
+} from '../../../selectors';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { BannerAlert, Box } from '../../component-library';
 import {
   CHAIN_IDS,
   DEPRECATED_NETWORKS,
 } from '../../../../shared/constants/network';
+import { updateNetwork } from '../../../store/actions';
 
 export default function DeprecatedNetworks() {
-  const { /* id,*/ chainId, rpcUrl } = useSelector(getCurrentNetwork) ?? {};
+  const { chainId, rpcUrl } = useSelector(getCurrentNetwork) ?? {};
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const [isClosed, setIsClosed] = useState(false);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const t = useI18nContext();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   if (!completedOnboarding || isClosed) {
     return null;
@@ -53,26 +58,13 @@ export default function DeprecatedNetworks() {
       actionButtonLabel: t('switchToNetwork', ['mainnet.aurora.dev']),
       actionButtonOnClick: async () => {
         setIsClosed(true);
-        // TODO: Move me to new network controller API `updateNetwork`
-        // await dispatch(
-        //   upsertNetworkConfiguration(
-        //     {
-        //       id,
-        //       chainId: CHAIN_IDS.AURORA,
-        //       nickname: AURORA_DISPLAY_NAME,
-        //       rpcUrl: 'https://mainnet.aurora.dev',
-        //       ticker: CURRENCY_SYMBOLS.ETH,
-        //       rpcPrefs: {
-        //         imageUrl: NEAR_AURORA_MAINNET_IMAGE_URL,
-        //         blockExplorerUrl: 'https://aurorascan.dev',
-        //       },
-        //     },
-        //     {
-        //       source: MetaMetricsNetworkEventSource.DeprecatedNetworkModal,
-        //       setActive: true,
-        //     },
-        //   ),
-        // );
+
+        const networkConfiguration = networkConfigurations[chainId];
+        networkConfiguration.rpcEndpoints[
+          networkConfiguration.defaultRpcEndpointIndex
+        ].url = 'https://mainnet.aurora.dev';
+
+        await dispatch(updateNetwork(networkConfiguration));
       },
     };
   }
