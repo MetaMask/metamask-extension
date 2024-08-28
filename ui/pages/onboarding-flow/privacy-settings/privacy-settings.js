@@ -429,11 +429,13 @@ export default function PrivacySettings() {
                                 {
                                   // Get just the protocol + domain, not the infura key in path
                                   new URL(
-                                    networkConfigurations[chainId].rpcEndpoints[
+                                    networkConfigurations[
+                                      chainId
+                                    ]?.rpcEndpoints[
                                       networkConfigurations[
                                         chainId
-                                      ].defaultRpcEndpointIndex
-                                    ].url,
+                                      ]?.defaultRpcEndpointIndex
+                                    ]?.url,
                                   )?.origin
                                 }
                               </Text>
