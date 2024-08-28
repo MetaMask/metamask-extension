@@ -1549,9 +1549,6 @@
     "message": "paganahin ang $1",
     "description": "$1 is a token symbol, e.g. ETH"
   },
-  "enableTokenAutoDetection": {
-    "message": "Paganahin ang autodetection ng token"
-  },
   "enabled": {
     "message": "Pinagana"
   },

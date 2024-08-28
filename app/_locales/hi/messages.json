@@ -1549,9 +1549,6 @@
     "message": "$1 इनेबल करें",
     "description": "$1 is a token symbol, e.g. ETH"
   },
-  "enableTokenAutoDetection": {
-    "message": "टोकन ऑटोडिटेक्शन चालू करें"
-  },
   "enabled": {
     "message": "इनेबल किया गया"
   },

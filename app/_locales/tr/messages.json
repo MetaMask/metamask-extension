@@ -1552,9 +1552,6 @@
     "message": "şunu etkinleştir: $1",
     "description": "$1 is a token symbol, e.g. ETH"
   },
-  "enableTokenAutoDetection": {
-    "message": "Otomatik token algılamayı etkinleştir"
-  },
   "enabled": {
     "message": "Etkinleştirildi"
   },

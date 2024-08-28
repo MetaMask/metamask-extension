@@ -93,8 +93,6 @@ export default class PreferencesController {
         petnamesEnabled: true,
         redesignedConfirmationsEnabled: true,
         featureNotificationsEnabled: false,
-        showTokenAutodetectModal: null,
-        showNftAutodetectModal: null, // null because we want to show the modal only the first time
         isRedesignedConfirmationsDeveloperEnabled: false,
       },
       // ENS decentralized website resolution

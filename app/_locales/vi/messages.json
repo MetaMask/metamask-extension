@@ -1549,9 +1549,6 @@
     "message": "bật $1",
     "description": "$1 is a token symbol, e.g. ETH"
   },
-  "enableTokenAutoDetection": {
-    "message": "Bật tính năng tự động phát hiện token"
-  },
   "enabled": {
     "message": "Đã bật"
   },
