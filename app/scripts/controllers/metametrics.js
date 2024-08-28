@@ -454,16 +454,15 @@ export default class MetaMetricsController {
    *  if not set
    */
   async setParticipateInMetaMetrics(participateInMetaMetrics) {
-    let { metaMetricsId } = this.state;
-    if (participateInMetaMetrics && !metaMetricsId) {
-      // We also need to start sentry automatic session tracking at this point
-      await globalThis.sentry?.startSession();
-      metaMetricsId = this.generateMetaMetricsId();
-    } else if (participateInMetaMetrics === false) {
-      // We also need to stop sentry automatic session tracking at this point
-      await globalThis.sentry?.endSession();
-    }
+    const { metaMetricsId: existingMetaMetricsId } = this.state;
+
+    const metaMetricsId =
+      participateInMetaMetrics && !existingMetaMetricsId
+        ? this.generateMetaMetricsId()
+        : existingMetaMetricsId;
+
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });
+
     if (participateInMetaMetrics) {
       this.trackEventsAfterMetricsOptIn();
       this.clearEventsAfterMetricsOptIn();
@@ -1017,7 +1016,8 @@ export default class MetaMetricsController {
     // to be updated to work with the new tracking plan. I think we should use
     // a config setting for this instead of trying to match the event name
     const isSendFlow = Boolean(payload.event.match(/^send|^confirm/iu));
-    if (isSendFlow) {
+    // do not filter if excludeMetaMetricsId is explicitly set to false
+    if (options?.excludeMetaMetricsId !== false && isSendFlow) {
       excludeMetaMetricsId = true;
     }
     // If we are tracking sensitive data we will always use the anonymousId

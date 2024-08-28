@@ -196,7 +196,7 @@
     "nameSources": "object",
     "userOperations": "object",
     "isSignedIn": "boolean",
-    "isProfileSyncingEnabled": true,
+    "isProfileSyncingEnabled": null,
     "isProfileSyncingUpdateLoading": "boolean",
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
@@ -246,6 +246,7 @@
       "swapsQuoteRefreshTime": 60000,
       "swapsQuotePrefetchingRefreshTime": 60000,
       "swapsStxBatchStatusRefreshTime": 10000,
+      "swapsStxStatusDeadline": 180,
       "swapsStxGetTransactionsRefreshTime": 10000,
       "swapsStxMaxFeeMultiplier": 2
     },

@@ -231,7 +231,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         class="settings-page__content-item-col"
       >
         <label
-          class="toggle-button toggle-button--off"
+          class="toggle-button toggle-button--off show-fiat-on-testnets-toggle"
           tabindex="0"
         >
           <div
@@ -554,44 +554,6 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
           >
             Back up
           </button>
-        </div>
-      </div>
-    </div>
-    <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-column"
-      data-testid="advanced-setting-data-restore"
-    >
-      <div
-        class="settings-page__content-item"
-      >
-        <span>
-          Restore user data
-        </span>
-        <span
-          class="settings-page__content-description"
-        >
-          You can restore data like contacts and preferences from a backup file.
-        </span>
-      </div>
-      <div
-        class="settings-page__content-item"
-      >
-        <div
-          class="settings-page__content-item-col"
-        >
-          <label
-            class="button btn btn--rounded btn-secondary btn--large settings-page__button"
-            for="restore-file"
-          >
-            Restore
-          </label>
-          <input
-            accept=".json"
-            data-testid="restore-file"
-            id="restore-file"
-            style="visibility: hidden;"
-            type="file"
-          />
         </div>
       </div>
     </div>

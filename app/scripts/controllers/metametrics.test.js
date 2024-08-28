@@ -143,10 +143,7 @@ function getMetaMetricsController({
 describe('MetaMetricsController', function () {
   const now = new Date();
   beforeEach(function () {
-    globalThis.sentry = {
-      startSession: jest.fn(),
-      endSession: jest.fn(),
-    };
+    globalThis.sentry = {};
     jest.useFakeTimers().setSystemTime(now.getTime());
     jest.spyOn(Utils, 'generateRandomId').mockReturnValue('DUMMY_RANDOM_ID');
   });
@@ -316,7 +313,6 @@ describe('MetaMetricsController', function () {
         metaMetricsController.state.participateInMetaMetrics,
       ).toStrictEqual(null);
       await metaMetricsController.setParticipateInMetaMetrics(true);
-      expect(globalThis.sentry.startSession).toHaveBeenCalledTimes(1);
       expect(
         metaMetricsController.state.participateInMetaMetrics,
       ).toStrictEqual(true);
@@ -339,7 +335,6 @@ describe('MetaMetricsController', function () {
     it('should not nullify the metaMetricsId when set to false', async function () {
       const metaMetricsController = getMetaMetricsController();
       await metaMetricsController.setParticipateInMetaMetrics(false);
-      expect(globalThis.sentry.endSession).toHaveBeenCalledTimes(1);
       expect(metaMetricsController.state.metaMetricsId).toStrictEqual(
         TEST_META_METRICS_ID,
       );
