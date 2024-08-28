@@ -245,7 +245,10 @@ describe('createRPCMethodTrackingMiddleware', () => {
       };
 
       const res = {
-        error: { code: errorCodes.provider.userRejectedRequest },
+        error: {
+          code: errorCodes.provider.userRejectedRequest,
+          data: { location: 'some_location' },
+        },
       };
       const { next, executeMiddlewareStack } = getNext();
       const handler = createHandler();
@@ -257,6 +260,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         event: MetaMetricsEventName.SignatureRejected,
         properties: {
           signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
+          location: 'some_location',
         },
         referrer: { url: 'some.dapp' },
       });

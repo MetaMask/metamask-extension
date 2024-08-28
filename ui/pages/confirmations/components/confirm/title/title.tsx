@@ -81,7 +81,7 @@ const getTitle = (t: IntlFunction, confirmation?: Confirmation) => {
 const getDescription = (t: IntlFunction, confirmation?: Confirmation) => {
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
-      return t('confirmTitleDescContractInteractionTransaction');
+      return '';
     case TransactionType.tokenMethodApprove:
       return t('confirmTitleDescApproveTransaction');
     case TransactionType.deployContract:
