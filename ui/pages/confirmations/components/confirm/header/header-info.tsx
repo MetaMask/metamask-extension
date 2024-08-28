@@ -134,6 +134,7 @@ const HeaderInfo = () => {
                 : BackgroundColor.transparent
             }
             borderRadius={BorderRadius.MD}
+            marginLeft={4}
           >
             <ButtonIcon
               ariaLabel={'Advanced tx details'}
