@@ -7,7 +7,10 @@ const detectPort = require('detect-port');
 const { difference } = require('lodash');
 const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
-const { getDriver, setDriver } = require('./e2e-global-setup');
+const {
+  createDriver,
+  quitDriver,
+} = require('./global-hooks-setup/webdriver-lifecycle');
 const { setupMocking } = require('./mock-e2e');
 const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixture-server');
@@ -96,17 +99,10 @@ async function withFixtures(options, testSuite) {
   }
 
   let webDriver;
-  let driver = getDriver();
+  let driver;
   let failed = false;
 
-  // Restart the driver if custom driverOptions are provided
-  if (driverOptions) {
-    if (driver) {
-      await driver.quit();
-    }
-    driver = (await buildWebDriver(driverOptions)).driver;
-    setDriver(driver); // Update the global driver
-  }
+  driver = await createDriver(driverOptions);
 
   try {
     if (!disableGanache) {
@@ -323,6 +319,8 @@ async function withFixtures(options, testSuite) {
         await bundlerServer.stop();
       }
 
+      await quitDriver();
+
       if (dapp) {
         for (let i = 0; i < numberOfDapps; i++) {
           if (dappServer[i] && dappServer[i].listening) {
@@ -339,12 +337,6 @@ async function withFixtures(options, testSuite) {
       }
       if (phishingPageServer.isRunning()) {
         await phishingPageServer.quit();
-      }
-
-      // Quit the driver if it was restarted for custom driverOptions
-      if (driverOptions) {
-        await driver.quit();
-        setDriver(null); // Reset the global driver
       }
 
       // Since mockServer could be stop'd at another location,
