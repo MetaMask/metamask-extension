@@ -2,19 +2,19 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { isValidAddress } from 'ethereumjs-util';
 import React from 'react';
 import { useSelector } from 'react-redux';
-
-import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
   ConfirmInfoRowText,
   ConfirmInfoRowUrl,
 } from '../../../../../../../components/app/confirm/info/row';
-import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
+import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { selectPaymasterAddress } from '../../../../../../../selectors/account-abstraction';
 import { currentConfirmationSelector } from '../../../../../selectors';
+import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useFourByte } from '../../hooks/useFourByte';
 
 export const OriginRow = () => {
@@ -125,12 +125,16 @@ const PaymasterRow = () => {
 };
 
 export const TransactionDetails = () => {
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
+  );
+
   return (
     <>
       <ConfirmInfoSection data-testid="transaction-details-section">
         <OriginRow />
         <RecipientRow />
-        <MethodDataRow />
+        {showAdvancedDetails && <MethodDataRow />}
       </ConfirmInfoSection>
       <PaymasterRow />
     </>
