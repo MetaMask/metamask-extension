@@ -47,7 +47,6 @@ class FirefoxDriver {
    * @param options.port
    * @param options.constrainWindowSize
    * @param options.proxyPort
-   * @param options.constrainWindowSize
    * @returns {Promise<{driver: !ThenableWebDriver, extensionUrl: string, extensionId: string}>}
    */
   static async build({ responsive, port, constrainWindowSize, proxyPort }) {
