@@ -129,7 +129,7 @@ export default function SnapInstall({
         />
       )}
       <Box
-        ref={!isLoading && !hasError ?   ref : undefined}
+        ref={!isLoading && !hasError ? ref : undefined}
         onScroll={onScroll}
         className="snap-install__content"
         style={{
