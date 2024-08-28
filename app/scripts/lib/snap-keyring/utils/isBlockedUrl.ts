@@ -31,3 +31,31 @@ export const isBlockedUrl = async (
     return false;
   }
 };
+
+/**
+ * Checks weather a given URL is blocked due to making a network request to a
+ * known C2 domain.
+ *
+ * @param url - The URL to check.
+ * @param maybeUpdateState - A function that updates the phishing controller state.
+ * @param testC2Domain - A function that tests if a URL is a known malicious C2 domain.
+ * @returns Returns a promise which resolves to `true` if the URL is blocked
+ * due to making a network request to a known malicious C2 domain. Otherwise,
+ * resolves to `false`.
+ */
+export const isC2DomainBlocked = async (
+  url: string,
+  maybeUpdateState: () => ReturnType<PhishingController['maybeUpdateState']>,
+  testC2Domain: (
+    url: string,
+  ) => ReturnType<PhishingController['isBlockedRequest']>,
+): Promise<boolean> => {
+  try {
+    // check if the url is in the phishing list
+    await maybeUpdateState();
+    return testC2Domain(url).result;
+  } catch (error) {
+    console.error('Invalid URL passed into snap-keyring:', error);
+    return false;
+  }
+};
