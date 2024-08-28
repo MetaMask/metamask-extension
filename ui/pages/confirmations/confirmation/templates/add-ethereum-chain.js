@@ -439,7 +439,6 @@ function getValues(pendingApproval, t, actions, history, data) {
         const blockExplorer =
           pendingApproval.requestData.rpcPrefs.blockExplorerUrl;
 
-        let networkConfigurationId;
         const addedNetwork = await actions.addNetwork({
           chainId: pendingApproval.requestData.chainId,
           name: pendingApproval.requestData.chainName,
@@ -454,10 +453,9 @@ function getValues(pendingApproval, t, actions, history, data) {
             },
           ],
         });
-        networkConfigurationId = addedNetwork.rpcEndpoints[0].networkClientId;
 
         await actions.setNewNetworkAdded({
-          networkConfigurationId,
+          networkConfigurationId: addedNetwork.rpcEndpoints[0].networkClientId,
           nickname: pendingApproval.requestData.chainName,
         });
 

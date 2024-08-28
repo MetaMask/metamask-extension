@@ -12,7 +12,6 @@ const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
   implementation: addEthereumChainHandler,
   hookNames: {
-    getCurrentRpcUrl: true,
     addNetwork: true,
     updateNetwork: true,
     getNetworkConfigurationByChainId: true,
@@ -85,16 +84,6 @@ async function addEthereumChainHandler(
     );
   }
 
-  if (
-    existingNetwork?.rpcEndpoints?.some(({ url }) => url === firstValidRPCUrl)
-  ) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `The RPC URL ${firstValidRPCUrl} is already defined on the network with chainId ${chainId}`,
-      }),
-    );
-  }
-
   const { id: approvalFlowId } = await startApprovalFlow();
 
   let updatedNetwork;
@@ -114,32 +103,47 @@ async function addEthereumChainHandler(
 
     if (existingNetwork) {
       // A network for this chain id already exists.
-      // Update it with the new RPC endpoint and/or block explorer.
+      // Update it with any new information.
 
       const clonedNetwork = { ...existingNetwork };
-      clonedNetwork.rpcEndpoints = [
-        ...clonedNetwork.rpcEndpoints,
-        {
-          url: firstValidRPCUrl,
-          type: RpcEndpointType.Custom,
-          name: chainName,
-        },
-      ];
 
-      clonedNetwork.defaultRpcEndpointIndex =
-        clonedNetwork.rpcEndpoints.length - 1;
+      // Check if the rpc url already exists
+      let rpcIndex = clonedNetwork.rpcEndpoints.findIndex(
+        ({ url }) => url === firstValidRPCUrl,
+      );
 
-      if (
-        !clonedNetwork.blockExplorerUrls.includes(firstValidBlockExplorerUrl)
-      ) {
+      // If it doesn't exist, add a new one
+      if (rpcIndex === -1) {
+        clonedNetwork.rpcEndpoints = [
+          ...clonedNetwork.rpcEndpoints,
+          {
+            url: firstValidRPCUrl,
+            type: RpcEndpointType.Custom,
+            name: chainName,
+          },
+        ];
+        rpcIndex = clonedNetwork.rpcEndpoints.length - 1;
+      }
+
+      // The provided rpc endpoint becomes the default
+      clonedNetwork.defaultRpcEndpointIndex = rpcIndex;
+
+      // Check if the block explorer already exists
+      let blockExplorerIndex = clonedNetwork.blockExplorerUrls.findIndex(
+        (url) => url === firstValidBlockExplorerUrl,
+      );
+
+      // If it doesn't exist, add a new one
+      if (blockExplorerIndex === -1) {
         clonedNetwork.blockExplorerUrls = [
           ...clonedNetwork.blockExplorerUrls,
           firstValidBlockExplorerUrl,
         ];
+        blockExplorerIndex = clonedNetwork.blockExplorerUrls.length - 1;
       }
 
-      clonedNetwork.defaultBlockExplorerUrlIndex =
-        clonedNetwork.blockExplorerUrls.length - 1;
+      // The provided block explorer becomes the default
+      clonedNetwork.defaultBlockExplorerUrlIndex = blockExplorerIndex;
 
       updatedNetwork = await updateNetwork(
         clonedNetwork.chainId,
