@@ -26,7 +26,6 @@ export const validateAndFlattenScopes = (
     optionalScopes,
   );
 
-  // TODO: determine is merging is a valid strategy
   const flattenedRequiredScopes = flattenMergeScopes(validRequiredScopes);
   const flattenedOptionalScopes = flattenMergeScopes(validOptionalScopes);
 
