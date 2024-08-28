@@ -66,7 +66,6 @@ export function NotificationsListItem({
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       width={BlockSize.Full}
-      onClick={handleNotificationClick}
     >
       <ncs.item notification={notification} onClick={handleNotificationClick} />
     </Box>
