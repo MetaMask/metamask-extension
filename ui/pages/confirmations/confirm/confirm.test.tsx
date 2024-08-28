@@ -138,6 +138,11 @@ describe('Confirm', () => {
     };
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
 
+    jest.spyOn(actions, 'getTokenStandardAndDetails').mockResolvedValue({
+      decimals: '2',
+      standard: 'erc20',
+    });
+
     await act(async () => {
       const { container, findByText } = await renderWithProvider(
         <Confirm />,
@@ -158,6 +163,11 @@ describe('Confirm', () => {
       confirm: { currentConfirmation: permitBatchSignatureMsg },
     };
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
+
+    jest.spyOn(actions, 'getTokenStandardAndDetails').mockResolvedValue({
+      decimals: '2',
+      standard: 'erc20',
+    });
 
     await act(async () => {
       const { container, findByText } = await renderWithProvider(
