@@ -38,17 +38,9 @@ export const flattenScope = (
 };
 
 export const mergeScopeObject = (
-  // scopeStringA: CaipChainId,
   scopeObjectA: ScopeObject,
-  // scopeStringB: CaipChainId,
   scopeObjectB: ScopeObject,
 ) => {
-  // if (scopeStringA !== scopeStringB) {
-  //   throw new Error('cannot merge ScopeObjects for different ScopeStrings')
-  // }
-
-  // TODO: Should we be verifying that these scopeStrings are flattened / the scopeObjects do not contain `scopes` array?
-
   const mergedScopeObject: ScopeObject = {
     methods: unique([...scopeObjectA.methods, ...scopeObjectB.methods]),
     notifications: unique([
