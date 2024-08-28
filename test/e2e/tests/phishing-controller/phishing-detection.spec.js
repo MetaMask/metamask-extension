@@ -274,14 +274,9 @@ describe('Phishing Detection', function () {
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         await driver.clickElement({ text: 'report a detection problem.' });
 
-        // wait for page to load before checking URL.
-        await driver.findElement({
-          text: `Empty page by ${BlockProvider.PhishFort}`,
+        await driver.waitForUrl({
+          url: `https://github.com/phishfort/phishfort-lists/issues/new?title=[Legitimate%20Site%20Blocked]%20127.0.0.1&body=http%3A%2F%2F127.0.0.1%2F`,
         });
-        assert.equal(
-          await driver.getCurrentUrl(),
-          `https://github.com/phishfort/phishfort-lists/issues/new?title=[Legitimate%20Site%20Blocked]%20127.0.0.1&body=http%3A%2F%2F127.0.0.1%2F`,
-        );
       },
     );
   });

@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useContext } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { setBridgeFeatureFlags } from '../../ducks/bridge/actions';
@@ -61,6 +61,7 @@ const useBridging = () => {
       if (!isBridgeChain) {
         return;
       }
+
       if (isBridgeSupported) {
         trackEvent({
           event: MetaMetricsEventName.BridgeLinkClicked,

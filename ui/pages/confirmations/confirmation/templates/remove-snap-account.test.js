@@ -14,11 +14,6 @@ const mockApprovalId = 1;
 const mockSnapOrigin = 'npm:@metamask/snap-test';
 const mockSnapName = 'Test Snap Account Name';
 const mockPublicAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
-const providerConfig = {
-  chainId: '0x5',
-  nickname: '',
-  ticker: 'ETH',
-};
 const mockApproval = {
   id: mockApprovalId,
   origin: mockSnapOrigin,
@@ -44,7 +39,6 @@ const mockBaseStore = {
     },
     approvalFlows: [],
     subjectMetadata: {},
-    providerConfig,
   },
 };
 
