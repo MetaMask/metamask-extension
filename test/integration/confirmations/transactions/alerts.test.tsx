@@ -134,4 +134,53 @@ describe('Contract Interaction Confirmation', () => {
 
     expect(queryByTestId('alert-modal')).not.toBeInTheDocument();
   });
+
+  it('displays the alert for insufficient gas', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedApproveTransaction(account.address);
+    const transaction = mockedMetaMaskState.transactions[0];
+    transaction.txParams.gas = '0x0';
+
+    const { findByTestId, getByTestId } = await integrationTestRender({
+      preloadedState: {
+        ...mockedMetaMaskState,
+        gasFeeEstimatesByChainId: {
+          '0x5': {
+            gasFeeEstimates: {
+              networkCongestion: 0.0005,
+            },
+          },
+        },
+        transactions: [transaction],
+      },
+      backgroundConnection: backgroundConnectionMocked,
+    });
+
+    act(() => {
+      fireEvent.click(getByTestId('inline-alert'));
+    });
+
+    expect(await findByTestId('alert-modal')).toBeInTheDocument();
+
+    expect(
+      await findByTestId('alert-modal__selected-alert'),
+    ).toBeInTheDocument();
+
+    expect(await findByTestId('alert-modal__selected-alert')).toHaveTextContent(
+      'To continue with this transaction, you’ll need to increase the gas limit to 21000 or higher.',
+    );
+
+    expect(
+      await findByTestId('alert-modal-action-showAdvancedGasModal'),
+    ).toBeInTheDocument();
+    expect(
+      await findByTestId('alert-modal-action-showAdvancedGasModal'),
+    ).toHaveTextContent('Update gas limit');
+  });
 });
