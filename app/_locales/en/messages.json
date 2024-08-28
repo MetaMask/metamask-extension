@@ -279,6 +279,10 @@
   "addNetwork": {
     "message": "Add network"
   },
+  "addNetworkConfirmationTitle": {
+    "message": "Add $1",
+    "description": "$1 represents network name"
+  },
   "addNetworkTooltipWarning": {
     "message": "This network connection relies on third parties. This connection may be less reliable or enable third-parties to track activity. $1",
     "description": "$1 is Learn more link"
@@ -1059,9 +1063,6 @@
   "confirmTitleDescApproveTransaction": {
     "message": "This site wants permission to withdraw your NFTs"
   },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
-  },
   "confirmTitleDescDeployContract": {
     "message": "This site wants you to deploy a contract"
   },
@@ -1759,6 +1760,9 @@
   },
   "editNetworkLink": {
     "message": "edit the original network"
+  },
+  "editNetworksTitle": {
+    "message": "Edit networks"
   },
   "editNonceField": {
     "message": "Edit nonce"
@@ -2885,6 +2889,9 @@
   },
   "more": {
     "message": "more"
+  },
+  "multichainAddEthereumChainConfirmationDescription": {
+    "message": "You're adding this network to MetaMask and giving this site permission to use it."
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 wants to use $2 Snaps",
@@ -5894,6 +5901,9 @@
   },
   "testNetworks": {
     "message": "Test networks"
+  },
+  "testnets": {
+    "message": "Testnets"
   },
   "theme": {
     "message": "Theme"
