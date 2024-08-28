@@ -412,6 +412,8 @@ export const MANTA_PACIFIC_MAINNET_IMAGE_URL = './images/manta.svg';
 export const MANTLE_MAINNET_IMAGE_URL = './images/mantle.svg';
 export const MOONBEAM_IMAGE_URL = './images/moonbeam.svg';
 export const MOONRIVER_IMAGE_URL = './images/moonriver.svg';
+export const MOONBEAM_TOKEN_IMAGE_URL = './images/moonbeam-token.svg';
+export const MOONRIVER_TOKEN_IMAGE_URL = './images/moonriver-token.svg';
 export const NEAR_AURORA_MAINNET_IMAGE_URL = './images/near-aurora.svg';
 export const NEBULA_MAINNET_IMAGE_URL = './images/nebula.svg';
 export const OASYS_MAINNET_IMAGE_URL = './images/oasys.svg';
@@ -794,6 +796,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.SEI]: SEI_IMAGE_URL,
   [CHAIN_IDS.NEAR]: NEAR_IMAGE_URL,
   [CHAIN_IDS.NEAR_TESTNET]: NEAR_IMAGE_URL,
+  [CHAIN_IDS.MOONRIVER]: MOONRIVER_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.MOONBEAM]: MOONBEAM_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
