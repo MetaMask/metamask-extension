@@ -10,6 +10,7 @@ describe('isBlockedUrl', () => {
     allowedEvents: [],
   });
   const phishingController = new PhishingController({
+    // @ts-expect-error TODO: Resolve/patch mismatch between messenger types
     messenger: phishingControllerMessenger,
     state: {
       phishingLists: [
@@ -21,7 +22,7 @@ describe('isBlockedUrl', () => {
           version: 1,
           lastUpdated: 0,
           name: ListNames.MetaMask,
-          requestBlocklist: [],
+          c2DomainBlocklist: [],
         },
       ],
     },
