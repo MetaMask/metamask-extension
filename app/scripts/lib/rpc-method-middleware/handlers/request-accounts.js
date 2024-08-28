@@ -133,7 +133,7 @@ async function requestEthereumAccountsHandler(
         properties: {
           is_first_visit: isFirstVisit,
           number_of_accounts: Object.keys(metamaskState.accounts).length,
-          number_of_accounts_connected: accounts,
+          number_of_accounts_connected: accounts.length,
         },
       });
     }

@@ -177,7 +177,7 @@ describe('requestEthereumAccountsHandler', () => {
         properties: {
           is_first_visit: true,
           number_of_accounts: 3,
-          number_of_accounts_connected: ['0xdead', '0xbeef'],
+          number_of_accounts_connected: 2,
         },
         referrer: {
           url: 'http://test.com',
