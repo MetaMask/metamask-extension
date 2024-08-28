@@ -18,8 +18,13 @@ import {
 } from '../../components/component-library';
 import { getIsBridgeEnabled } from '../../selectors';
 import useBridging from '../../hooks/bridge/useBridging';
-import { Content, Header } from '../../components/multichain/pages/page';
+import {
+  Content,
+  Footer,
+  Header,
+} from '../../components/multichain/pages/page';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
+import { BridgeCTAButton } from './prepare/bridge-cta-button';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
@@ -76,6 +81,9 @@ const CrossChainSwap = () => {
             />
           </Switch>
         </Content>
+        <Footer>
+          <BridgeCTAButton />
+        </Footer>
       </div>
     </div>
   );
