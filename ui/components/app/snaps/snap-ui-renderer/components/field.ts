@@ -46,7 +46,10 @@ export const field: UIComponentFactory<FieldElement> = ({
       const button = children[1] as ButtonElement;
       const buttonMapped =
         button &&
-        buttonFn({ element: button } as UIComponentParams<ButtonElement>);
+        buttonFn({
+          ...params,
+          element: button,
+        } as UIComponentParams<ButtonElement>);
 
       return {
         element: 'SnapUIInput',
