@@ -37,7 +37,7 @@ $brand-evolution-font-families: (
 @mixin brand-evolution-font($type) {
   $font-family: map-get($brand-evolution-font-families, $type);
 
-    font-family: $font-family, var(--font-family-sans);
+  font-family: $font-family, var(--font-family-sans);
 }
 
 .mm-text {
