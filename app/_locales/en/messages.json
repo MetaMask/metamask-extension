@@ -1159,9 +1159,6 @@
   "connectedSites": {
     "message": "Connected sites"
   },
-  "connectedSnaps": {
-    "message": "Connected Snaps"
-  },
   "connectedSitesAndSnaps": {
     "message": "Connected sites and Snaps"
   },
@@ -1175,6 +1172,9 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask is connected to this site, but no accounts are connected yet"
+  },
+  "connectedSnaps": {
+    "message": "Connected Snaps"
   },
   "connectedWith": {
     "message": "Connected with"
