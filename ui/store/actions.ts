@@ -5639,7 +5639,7 @@ export async function grantPermittedChain(
 
 export async function grantPermittedChains(
   selectedTabOrigin: string,
-  chainId?: [],
+  chainIds: [],
 ): Promise<string> {
   return await submitRequestToBackground<void>('grantPermissions', [
     {
@@ -5647,7 +5647,7 @@ export async function grantPermittedChains(
       approvedPermissions: {
         [PermissionNames.permittedChains]: {
           caveats: [
-            CaveatFactories[CaveatTypes.restrictNetworkSwitching]([chainId]),
+            CaveatFactories[CaveatTypes.restrictNetworkSwitching](chainIds),
           ],
         },
       },
