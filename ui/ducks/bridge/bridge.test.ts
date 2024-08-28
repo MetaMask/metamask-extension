@@ -36,7 +36,7 @@ describe('Ducks - Bridge', () => {
       const actions = store.getActions();
       expect(actions[0].type).toBe('bridge/setToChain');
       const newState = bridgeReducer(state, actions[0]);
-      expect(newState.toChain).toBe(actionPayload);
+      expect(newState.toChainId).toBe(actionPayload);
       // Check background state
       expect(mockSelectDestNetwork).toHaveBeenCalledTimes(1);
       expect(mockSelectDestNetwork).toHaveBeenCalledWith(

@@ -58,7 +58,7 @@ const useBridging = () => {
   useEffect(() => {
     isBridgeChain &&
       isBridgeSupported &&
-      dispatch(setFromChain(providerConfig));
+      dispatch(setFromChain(providerConfig.chainId));
   }, []);
 
   const openBridgeExperience = useCallback(
