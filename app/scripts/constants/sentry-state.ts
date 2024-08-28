@@ -319,6 +319,7 @@ export const SENTRY_BACKGROUND_STATE = {
       swapsQuotePrefetchingRefreshTime: true,
       swapsQuoteRefreshTime: true,
       swapsStxBatchStatusRefreshTime: true,
+      swapsStxStatusDeadline: true,
       swapsStxGetTransactionsRefreshTime: true,
       swapsStxMaxFeeMultiplier: true,
       swapsUserFeeLevel: true,
