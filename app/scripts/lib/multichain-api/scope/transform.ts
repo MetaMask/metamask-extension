@@ -41,8 +41,6 @@ export const mergeScopeObject = (
   scopeObjectA: ScopeObject,
   scopeObjectB: ScopeObject,
 ) => {
-  // TODO: Should we be verifying that these scopeStrings are flattened / the scopeObjects do not contain `scopes` array?
-
   const mergedScopeObject: ScopeObject = {
     methods: unique([...scopeObjectA.methods, ...scopeObjectB.methods]),
     notifications: unique([
