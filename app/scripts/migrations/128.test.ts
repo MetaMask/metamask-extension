@@ -142,4 +142,67 @@ describe(`migration #${version}`, () => {
 
     expect(transformedState.data).toStrictEqual(oldState);
   });
+
+  it('Updates Polygon ChainId (0x89) in ProviderConfig if exists, and ticker is set to MATIC', async () => {
+    const oldState = {
+      NetworkController: {
+        providerConfig: {
+          chainId: '0x89',
+          ticker: 'MATIC',
+        },
+      },
+    };
+
+    const expectedState = {
+      NetworkController: {
+        providerConfig: {
+          chainId: '0x89',
+          ticker: 'POL',
+        },
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toStrictEqual(expectedState);
+  });
+
+  it('Does nothing if Polygon ChainId (0x89) is not in providerConfig', async () => {
+    const oldState = {
+      NetworkController: {
+        providerConfig: {
+          chainId: '0x1',
+          ticker: 'ETH',
+        },
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toStrictEqual(oldState);
+  });
+
+  it('Does nothing if Polygon ChainId (0x89) is in providerConfig, but ticker is not MATIC', async () => {
+    const oldState = {
+      NetworkController: {
+        providerConfig: {
+          chainId: '0x89',
+          ticker: 'NOT_MATIC',
+        },
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toStrictEqual(oldState);
+  });
 });

@@ -1,7 +1,8 @@
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 
-export const version = 128;
+export const version = 130;
 
 type VersionedData = {
   meta: { version: number };
@@ -27,28 +28,39 @@ export async function migrate(
 }
 
 function transformState(state: Record<string, unknown>) {
+  const networkControllerState = state.NetworkController;
   if (
     hasProperty(state, 'NetworkController') &&
-    isObject(state.NetworkController) &&
-    hasProperty(state.NetworkController, 'networkConfigurations') &&
-    isObject(state.NetworkController.networkConfigurations)
+    isObject(networkControllerState) &&
+    hasProperty(networkControllerState, 'networkConfigurations') &&
+    isObject(networkControllerState.networkConfigurations)
   ) {
     for (const networkConfiguration of Object.values(
-      state.NetworkController.networkConfigurations as Record<
-        string,
-        {
-          chainId: string;
-          ticker: string;
-        }
-      >,
+      networkControllerState.networkConfigurations,
     )) {
       if (
-        networkConfiguration.chainId === '0x89' &&
+        isObject(networkConfiguration) &&
+        networkConfiguration.chainId === CHAIN_IDS.POLYGON &&
         networkConfiguration.ticker === 'MATIC'
       ) {
         networkConfiguration.ticker = 'POL';
       }
     }
   }
-  return state;
+
+  if (
+    hasProperty(state, 'NetworkController') &&
+    isObject(networkControllerState) &&
+    hasProperty(networkControllerState, 'providerConfig') &&
+    isObject(networkControllerState.providerConfig) &&
+    hasProperty(networkControllerState.providerConfig, 'chainId') &&
+    networkControllerState.providerConfig.chainId === CHAIN_IDS.POLYGON &&
+    networkControllerState.providerConfig.ticker === 'MATIC'
+  ) {
+    networkControllerState.providerConfig.ticker = 'POL';
+  }
+  return {
+    ...state,
+    NetworkController: networkControllerState,
+  };
 }
