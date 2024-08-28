@@ -219,7 +219,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
         properties: {
           is_first_visit: isFirstVisit,
           number_of_accounts: Object.keys(hooks.metamaskState.accounts).length,
-          number_of_accounts_connected: permittedAccounts,
+          number_of_accounts_connected: permittedAccounts.length,
         },
       });
     }

@@ -713,7 +713,7 @@ describe('provider_authorize', () => {
       properties: {
         is_first_visit: true,
         number_of_accounts: 3,
-        number_of_accounts_connected: ['0x1', '0x2', '0x3', '0x4'],
+        number_of_accounts_connected: 4,
       },
       referrer: {
         url: 'http://test.com',
