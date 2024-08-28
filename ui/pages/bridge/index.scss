@@ -1,1 +1,13 @@
 @use "design-system";
+
+@import 'prepare/index';
+
+.bridge {
+  max-height: 100vh;
+  width: 360px;
+  position: relative;
+
+  &__container {
+    width: 100%;
+  }
+}
