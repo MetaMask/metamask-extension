@@ -1844,6 +1844,28 @@ export function removePermittedAccount(
   };
 }
 
+export function removePermittedChain(
+  origin: string,
+  chain: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await new Promise<void>((resolve, reject) => {
+      callBackgroundMethod(
+        'removePermittedChain',
+        [origin, chain],
+        (error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          resolve();
+        },
+      );
+    });
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function showAccountsPage() {
   return {
     type: actionConstants.SHOW_ACCOUNTS_PAGE,
@@ -5602,6 +5624,24 @@ export async function grantPermittedChain(
   chainId?: [],
 ): Promise<string> {
   return await submitRequestToBackground<void>('grantPermissionsIncremental', [
+    {
+      subject: { origin: selectedTabOrigin },
+      approvedPermissions: {
+        [PermissionNames.permittedChains]: {
+          caveats: [
+            CaveatFactories[CaveatTypes.restrictNetworkSwitching]([chainId]),
+          ],
+        },
+      },
+    },
+  ]);
+}
+
+export async function grantPermittedChains(
+  selectedTabOrigin: string,
+  chainId?: [],
+): Promise<string> {
+  return await submitRequestToBackground<void>('grantPermissions', [
     {
       subject: { origin: selectedTabOrigin },
       approvedPermissions: {

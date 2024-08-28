@@ -26,7 +26,6 @@ export function getPermissionBackgroundApiMethods(permissionController) {
     // To add more than one account when already connected to the dapp
     addMorePermittedAccounts: (origin, accounts) =>
       addMoreAccounts(origin, accounts),
-
     removePermittedAccount: (origin, account) => {
       const { value: existingAccounts } = permissionController.getCaveat(
         origin,
@@ -53,6 +52,36 @@ export function getPermissionBackgroundApiMethods(permissionController) {
           RestrictedMethods.eth_accounts,
           CaveatTypes.restrictReturnedAccounts,
           remainingAccounts,
+        );
+      }
+    },
+
+    removePermittedChain: (origin, chain) => {
+      const { value: existingChains } = permissionController.getCaveat(
+        origin,
+        RestrictedMethods.permittedChains,
+        CaveatTypes.restrictNetworkSwitching,
+      );
+
+      const remainingChains = existingChains.filter(
+        (existingChain) => existingChain !== chain,
+      );
+
+      if (remainingChains.length === existingChains.length) {
+        return;
+      }
+
+      if (remainingChains.length === 0) {
+        permissionController.revokePermission(
+          origin,
+          RestrictedMethods.permittedChains,
+        );
+      } else {
+        permissionController.updateCaveat(
+          origin,
+          RestrictedMethods.permittedChains,
+          CaveatTypes.restrictNetworkSwitching,
+          remainingChains,
         );
       }
     },
