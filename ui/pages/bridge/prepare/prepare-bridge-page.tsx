@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import classnames from 'classnames';
 import {
   setFromChain,
   setFromToken,
   setFromTokenInputValue,
   setToChain,
   setToToken,
+  switchToAndFromTokens,
 } from '../../../ducks/bridge/actions';
 import {
   getFromAmount,
@@ -21,11 +23,16 @@ import {
   getToTokens,
   getToTopAssets,
 } from '../../../ducks/bridge/selectors';
-import { Box } from '../../../components/component-library';
+import {
+  Box,
+  ButtonIcon,
+  IconName,
+} from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TokenBucketPriority } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/useTokensWithFiltering';
 import { setActiveNetwork } from '../../../store/actions';
+import { BlockSize } from '../../../helpers/constants/design-system';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const PrepareBridgePage = () => {
@@ -62,6 +69,8 @@ const PrepareBridgePage = () => {
     toChain?.chainId,
   );
 
+  const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
+
   return (
     <div className="prepare-bridge-page">
       <Box className="prepare-bridge-page__content">
@@ -97,6 +106,31 @@ const PrepareBridgePage = () => {
             value: fromAmount || undefined,
           }}
         />
+
+        <Box className="prepare-bridge-page__switch-tokens">
+          <ButtonIcon
+            iconProps={{
+              className: classnames({
+                rotate: rotateSwitchTokens,
+              }),
+            }}
+            width={BlockSize.Full}
+            data-testid="switch-tokens"
+            ariaLabel="switch-tokens"
+            iconName={IconName.Arrow2Down}
+            disabled={!toChain}
+            onClick={() => {
+              setRotateSwitchTokens(!rotateSwitchTokens);
+              const toChainClientId =
+                toChain?.defaultRpcEndpointIndex && toChain?.rpcEndpoints
+                  ? toChain.rpcEndpoints?.[toChain.defaultRpcEndpointIndex]
+                      .networkClientId
+                  : undefined;
+              toChainClientId && dispatch(setActiveNetwork(toChainClientId));
+              dispatch(switchToAndFromTokens({ fromChain }));
+            }}
+          />
+        </Box>
 
         <BridgeInputGroup
           className="prepare-bridge-page__to"
