@@ -425,7 +425,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                     {t('showTestnetNetworks')}
                   </Text>
                   <ToggleButton
-                    value={showTestNetworks}
+                    value={showTestNetworks || currentlyOnTestNetwork}
                     disabled={currentlyOnTestNetwork}
                     onToggle={(value: boolean) => {
                       dispatch(setShowTestNetworks(!value));
