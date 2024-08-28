@@ -7,6 +7,7 @@ import { unapprovedPersonalSignMsg } from '../../../../test/data/confirmations/p
 import {
   orderSignatureMsg,
   permitSignatureMsg,
+  permitBatchSignatureMsg,
   unapprovedTypedSignMsgV4,
 } from '../../../../test/data/confirmations/typed_sign';
 import mockState from '../../../../test/data/mock-state.json';
@@ -111,6 +112,32 @@ describe('Confirm', () => {
         ...mockState.metamask,
       },
       confirm: { currentConfirmation: unapprovedTypedSignMsgV4 },
+    };
+    const mockStore = configureMockStore(middleware)(mockStateTypedSign);
+    const { container } = renderWithProvider(<Confirm />, mockStore);
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match snapshot for signature - typed sign - V4 - PermitSingle', async () => {
+    const mockStateTypedSign = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+      },
+      confirm: { currentConfirmation: permitBatchSignatureMsg },
+    };
+    const mockStore = configureMockStore(middleware)(mockStateTypedSign);
+    const { container } = renderWithProvider(<Confirm />, mockStore);
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match snapshot for signature - typed sign - V4 - PermitBatch', async () => {
+    const mockStateTypedSign = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+      },
+      confirm: { currentConfirmation: permitBatchSignatureMsg },
     };
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
     const { container } = renderWithProvider(<Confirm />, mockStore);
