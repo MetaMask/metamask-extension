@@ -2,25 +2,66 @@ import {
   isSupportedMethod,
   isSupportedNotification,
   isSupportedScopeString,
-  validNotifications,
-  validRpcMethods,
 } from './supported';
+import {
+  KnownNotifications,
+  KnownRpcMethods,
+  KnownWalletNamespaceRpcMethods,
+  KnownWalletRpcMethods,
+} from './scope';
 
 describe('Scope Support', () => {
-  it('isSupportedNotification', () => {
-    validNotifications.forEach((notification) => {
-      expect(isSupportedNotification(notification)).toStrictEqual(true);
+  describe('isSupportedNotification', () => {
+    it.each(Object.entries(KnownNotifications))(
+      'returns true for each %s scope method',
+      (scope: string, notifications: string[]) => {
+        notifications.forEach((notification) => {
+          expect(isSupportedNotification(scope, notification)).toStrictEqual(
+            true,
+          );
+        });
+      },
+    );
+
+    it('returns false otherwise', () => {
+      expect(isSupportedNotification('eip155', 'anything else')).toStrictEqual(
+        false,
+      );
+      expect(isSupportedNotification('', '')).toStrictEqual(false);
     });
-    expect(isSupportedNotification('anything else')).toStrictEqual(false);
-    expect(isSupportedNotification('')).toStrictEqual(false);
   });
 
-  it('isSupportedMethod', () => {
-    validRpcMethods.forEach((method) => {
-      expect(isSupportedMethod(method)).toStrictEqual(true);
+  describe('isSupportedMethod', () => {
+    it.each(Object.entries(KnownRpcMethods))(
+      'returns true for each %s scoped method',
+      (scope: string, methods: string[]) => {
+        methods.forEach((method) => {
+          expect(isSupportedMethod(scope, method)).toStrictEqual(true);
+        });
+      },
+    );
+
+    it('returns true for each wallet scoped method', () => {
+      KnownWalletRpcMethods.forEach((method) => {
+        expect(isSupportedMethod('wallet', method)).toStrictEqual(true);
+      });
     });
-    expect(isSupportedMethod('anything else')).toStrictEqual(false);
-    expect(isSupportedMethod('')).toStrictEqual(false);
+
+    it.each(Object.entries(KnownWalletNamespaceRpcMethods))(
+      'returns true for each wallet:%s scoped method',
+      (scope: string, methods: string[]) => {
+        methods.forEach((method) => {
+          expect(isSupportedMethod(`wallet:${scope}`, method)).toStrictEqual(
+            true,
+          );
+        });
+      },
+    );
+
+    it('returns false otherwise', () => {
+      expect(isSupportedMethod('eip155', 'anything else')).toStrictEqual(false);
+      expect(isSupportedMethod('', '')).toStrictEqual(false);
+    });
   });
 
   describe('isSupportedScopeString', () => {

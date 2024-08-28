@@ -8,20 +8,17 @@ import {
 } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { InternalAccount } from '@metamask/keyring-api';
-import MetaMaskOpenRPCDocument from '@metamask/api-specs';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { KnownCaipNamespace } from './scope';
-
-export const validRpcMethods = MetaMaskOpenRPCDocument.methods.map(
-  ({ name }) => name,
-);
-
-// TODO: remove invalid notifications
-export const validNotifications = [
-  'accountsChanged',
-  'chainChanged',
-  'eth_subscription',
-];
+import {
+  KnownCaipNamespace,
+  KnownNotifications,
+  KnownRpcMethods,
+  KnownWalletNamespaceRpcMethods,
+  KnownWalletRpcMethods,
+  NonWalletKnownCaipNamespace,
+  parseScopeString,
+  Scope,
+} from './scope';
 
 export const isSupportedScopeString = (
   scopeString: string,
@@ -79,10 +76,33 @@ export const isSupportedAccount = (
   }
 };
 
-export const isSupportedMethod = (method: string): boolean =>
-  validRpcMethods.includes(method);
+export const isSupportedMethod = (scope: Scope, method: string): boolean => {
+  const { namespace, reference } = parseScopeString(scope);
 
-// TODO: Needs to go into a capabilties/routing controller
-// TODO: These make no sense in a multichain world. accountsChange becomes authorization/permissionChanged?
-export const isSupportedNotification = (notification: string): boolean =>
-  validNotifications.includes(notification);
+  if (namespace === KnownCaipNamespace.Wallet) {
+    if (reference) {
+      return (
+        KnownWalletNamespaceRpcMethods[
+          reference as NonWalletKnownCaipNamespace
+        ] || []
+      ).includes(method);
+    }
+
+    return KnownWalletRpcMethods.includes(method);
+  }
+
+  return (
+    KnownRpcMethods[namespace as NonWalletKnownCaipNamespace] || []
+  ).includes(method);
+};
+
+export const isSupportedNotification = (
+  scope: Scope,
+  notification: string,
+): boolean => {
+  const { namespace } = parseScopeString(scope);
+
+  return (
+    KnownNotifications[namespace as NonWalletKnownCaipNamespace] || []
+  ).includes(notification);
+};
