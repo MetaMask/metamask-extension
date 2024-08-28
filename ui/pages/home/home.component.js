@@ -391,7 +391,10 @@ export default class Home extends PureComponent {
     } = _prevProps;
     const { notificationClosing } = this.state;
 
-    if (prevNewNetworkAddedConfigurationId !== newNetworkAddedConfigurationId) {
+    if (
+      newNetworkAddedConfigurationId &&
+      prevNewNetworkAddedConfigurationId !== newNetworkAddedConfigurationId
+    ) {
       setActiveNetwork(newNetworkAddedConfigurationId);
       clearNewNetworkAdded();
     }
