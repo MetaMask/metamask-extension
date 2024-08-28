@@ -232,8 +232,6 @@ function getValues(pendingApproval, t, actions, history, data) {
     title = t('addEthereumChainConfirmationTitle');
   }
 
-  // todo what about name and ticker conflicts
-
   return {
     content: [
       {
@@ -416,11 +414,6 @@ function getValues(pendingApproval, t, actions, history, data) {
     submitText: t('approveButtonText'),
     loadingText: t('addingCustomNetwork'),
     onSubmit: async () => {
-      console.log(
-        'HERE ON SUBMIT **************',
-        pendingApproval,
-        pendingApproval,
-      );
       let endpointChainId;
       try {
         endpointChainId = await jsonRpcRequest(customRpcUrl, 'eth_chainId');
@@ -447,27 +440,21 @@ function getValues(pendingApproval, t, actions, history, data) {
           pendingApproval.requestData.rpcPrefs.blockExplorerUrl;
 
         let networkConfigurationId;
-        try {
-          // todo do we need to support updating or only adding here?
-          const addedNetwork = await actions.addNetwork({
-            blockExplorerUrls: blockExplorer ? [blockExplorer] : [],
-            // defaultBlockExplorerUrlIndex: blockExplorer ? 0 : undefined,
-            chainId: pendingApproval.requestData.chainId,
-            defaultRpcEndpointIndex: 0,
-            defaultBlockExplorerUrlIndex: 0,
-            name: pendingApproval.requestData.chainName,
-            nativeCurrency: pendingApproval.requestData.ticker,
-            rpcEndpoints: [
-              {
-                url: pendingApproval.requestData.rpcUrl,
-                type: RpcEndpointType.Custom,
-              },
-            ],
-          });
-          networkConfigurationId = addedNetwork.rpcEndpoints[0].networkClientId;
-        } catch (err) {
-          console.log('ERROR ----', err);
-        }
+        const addedNetwork = await actions.addNetwork({
+          chainId: pendingApproval.requestData.chainId,
+          name: pendingApproval.requestData.chainName,
+          nativeCurrency: pendingApproval.requestData.ticker,
+          blockExplorerUrls: blockExplorer ? [blockExplorer] : [],
+          defaultBlockExplorerUrlIndex: blockExplorer ? 0 : undefined,
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: pendingApproval.requestData.rpcUrl,
+              type: RpcEndpointType.Custom,
+            },
+          ],
+        });
+        networkConfigurationId = addedNetwork.rpcEndpoints[0].networkClientId;
 
         await actions.setNewNetworkAdded({
           networkConfigurationId,

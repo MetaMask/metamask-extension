@@ -115,19 +115,6 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setPreferenceStub).toHaveBeenCalledTimes(0);
 
     const toggles = container.querySelectorAll('input[type=checkbox]');
-    console.log(toggles.length);
-    console.log(toggles.length);
-    console.log(toggles.length);
-    console.log(toggles.length);
-    console.log(toggles.length);
-    console.log(toggles.length);
-    console.log(toggles.length);
-    console.log(toggles.length);
-    console.log(toggles.length);
-    console.log(toggles.length);
-    console.log(toggles.length);
-    console.log(toggles.length);
-    console.log(toggles.length);
     const submitButton = getByText('Done');
     // TODO: refactor this toggle array, not very readable
     // toggle to false

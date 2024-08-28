@@ -69,7 +69,6 @@ describe('ReviewQuote', () => {
         status: 'available',
       },
     };
-
     const store = configureMockStore(middleware)(state);
     const props = createProps();
     const { getByText } = renderWithProvider(<ReviewQuote {...props} />, store);

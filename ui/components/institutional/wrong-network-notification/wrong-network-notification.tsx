@@ -18,13 +18,7 @@ const WrongNetworkNotification: React.FC = () => {
   const t = useI18nContext();
   const providerConfig = useSelector<
     object,
-    | {
-        nickname?: string;
-        type: string;
-        chainId: `0x${string}`;
-        ticker: string;
-      }
-    | undefined
+    { nickname?: string; type: string } | undefined
   >(getProviderConfig);
   const balance = useSelector(getSelectedAccountCachedBalance);
 

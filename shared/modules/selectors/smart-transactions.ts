@@ -49,14 +49,6 @@ type SmartTransactionsMetaMaskState = {
     smartTransactionsState: {
       liveness: boolean;
     };
-    selectedNetworkClientId: string;
-    // todo
-    networkConfigurations?: {
-      [key: string]: {
-        chainId: Hex;
-        rpcUrl: string;
-      };
-    };
   };
 };
 
@@ -70,7 +62,6 @@ export const getCurrentChainSupportsSmartTransactions = (
   state: SmartTransactionsMetaMaskState,
 ): boolean => {
   const chainId = getCurrentChainId(state);
-  console.log(getAllowedSmartTransactionsChainIds().includes(chainId));
   return getAllowedSmartTransactionsChainIds().includes(chainId);
 };
 

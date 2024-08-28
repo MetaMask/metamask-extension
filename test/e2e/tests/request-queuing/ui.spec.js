@@ -430,9 +430,6 @@ describe('Request-queue UI changes', function () {
 
         await driver.clickElement({ tag: 'button', text: 'Delete' });
 
-        // TODO: I'm failing below
-        // Brian has a fix on the controller side
-
         // Go back to first dapp, try an action, ensure deleted network doesn't block UI
         // The current globally selected network, Ethereum Mainnet, should be used
         await selectDappClickSend(driver, DAPP_URL);

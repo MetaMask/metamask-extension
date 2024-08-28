@@ -161,7 +161,6 @@ export const NetworkListItem = ({
             onKeyDown={handleKeyPress}
             tabIndex={0} // Enable keyboard focus
           >
-            {/* {name} */}
             {name?.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
               <Tooltip
                 title={name}

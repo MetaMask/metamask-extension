@@ -21,8 +21,8 @@ const NETWORK_CONFIGURATION_DATA = mockNetworkState(
     id: 'test-networkConfigurationId-2',
     rpcUrl: 'http://localhost:8545',
     chainId: '0x539',
-    name: 'Localhost 8545',
     nativeCurrency: 'ETH',
+    name: 'Localhost 8545',
     rpcEndpoints: [{ networkClientId: 'test-networkConfigurationId-2' }],
   },
 ).networkConfigurationsByChainId;

@@ -11,8 +11,8 @@ import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
 } from '../../shared/constants/network';
 
-// TODO: This is the old network state, and could be removed
-// if the e2e tests bump `FIXTURE_STATE_METADATA_VERSION`
+// TODO: This is intentionally the old network state, and could be
+// removed if the e2e tests bump `FIXTURE_STATE_METADATA_VERSION` to latest
 export const mockNetworkStateOld = (
   ...networks: {
     id?: string;
@@ -87,10 +87,7 @@ export const mockNetworkState = (
   if (
     new Set(networks.map((network) => network.chainId)).size !== networks.length
   ) {
-    // todo support multiple rpc urls per chain ids.
-    // either by allowing multiple networks and grouping them,
-    // or by making rpcUrls an array
-    throw 'TODO: mockNetworkState doesnt yet support multiple rpc urls per chain id';
+    throw 'mockNetworkState currently support multiple rpc urls per chain id';
   }
 
   const networkConfigurations = networks.map((network) => {
@@ -142,7 +139,7 @@ export const mockNetworkState = (
     {},
   );
 
-  const z = {
+  return {
     selectedNetworkClientId:
       networkConfigurations[0].rpcEndpoints[0].networkClientId,
     networkConfigurationsByChainId: networkConfigurations.reduce(
@@ -151,7 +148,4 @@ export const mockNetworkState = (
     ),
     networksMetadata,
   };
-
-  // console.dir(z, { depth: null });
-  return z;
 };

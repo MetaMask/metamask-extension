@@ -85,11 +85,6 @@ const custodyConfirmModalStyle = {
 ///: END:ONLY_INCLUDE_IF
 
 const MODALS = {
-  // ONBOARDING_ADD_NETWORK: {
-  //   contents: <AddNetworkModal />,
-  //   testId: 'add-network-modal',
-  //   ...accountModalStyle,
-  // },
   NEW_ACCOUNT: {
     contents: <NewAccountModal />,
     mobileModalStyle: {

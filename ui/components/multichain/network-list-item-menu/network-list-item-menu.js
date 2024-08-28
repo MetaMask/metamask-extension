@@ -43,8 +43,6 @@ export const NetworkListItemMenu = ({
               iconName={IconName.Edit}
               onClick={(e) => {
                 e.stopPropagation();
-
-                // Pass network info?
                 onEditClick();
               }}
               data-testid="network-list-item-options-edit"
@@ -58,8 +56,6 @@ export const NetworkListItemMenu = ({
               iconColor={IconColor.errorDefault}
               onClick={(e) => {
                 e.stopPropagation();
-
-                // Pass network info?
                 onDeleteClick();
               }}
               data-testid="network-list-item-options-delete"

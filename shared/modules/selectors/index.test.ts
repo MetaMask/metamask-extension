@@ -94,7 +94,6 @@ describe('Selectors', () => {
     });
   });
 
-  // depends on rpc stuff in networkConfigurations
   describe('getSmartTransactionsEnabled', () => {
     it('returns true if feature flag is enabled, not a HW and is Ethereum network', () => {
       const state = createSwapsMockStore();
@@ -182,7 +181,6 @@ describe('Selectors', () => {
     });
   });
 
-  // depends on rpc stuff in networkConfigurations??
   describe('getIsSmartTransaction', () => {
     it('should return true if smart transactions are opt-in and enabled', () => {
       const state = createMockState();

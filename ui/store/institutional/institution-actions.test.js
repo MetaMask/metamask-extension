@@ -200,12 +200,6 @@ describe('#updateCustodyState', () => {
     const newState = {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
-      // networkConfigurationsByChainId: {
-      //   [CHAIN_IDS.MAINNET]: {
-      //     chainId: CHAIN_IDS.MAINNET,
-      //     rpcEndpoints: [{}],
-      //   },
-      // },
       featureFlags: {},
     };
 
@@ -227,12 +221,6 @@ describe('#updateCustodyState', () => {
     const newState = {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
-      // networkConfigurationsByChainId: {
-      //   [CHAIN_IDS.MAINNET]: {
-      //     chainId: CHAIN_IDS.MAINNET,
-      //     rpcEndpoints: [{}],
-      //   },
-      // },
       featureFlags: {},
       transactions: [
         {
@@ -285,12 +273,6 @@ describe('#updateCustodyState', () => {
     const newState = {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
-      // networkConfigurationsByChainId: {
-      //   [CHAIN_IDS.MAINNET]: {
-      //     chainId: CHAIN_IDS.MAINNET,
-      //     rpcEndpoints: [{}],
-      //   },
-      // },
       featureFlags: {},
       transactions: [
         {

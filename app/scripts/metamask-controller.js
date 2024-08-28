@@ -4750,29 +4750,6 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  // todo: what is this used for, can it be deleted or does it have to move to the new network controller function
-  removeNetworkConfiguration(networkConfigurationId) {
-    const { networkConfigurations } = this.networkController.state;
-    const { chainId } = networkConfigurations[networkConfigurationId] ?? {};
-    if (!chainId) {
-      throw new Error('Network configuration not found');
-    }
-    const hasOtherConfigsForChainId = Object.values(networkConfigurations).some(
-      (config) =>
-        config.chainId === chainId &&
-        config.id !== networkConfigurationId &&
-        config.type !== networkConfigurationId,
-    );
-
-    // if this network configuration is only one for a given chainId
-    // remove all permissions for that chainId
-    if (!hasOtherConfigsForChainId) {
-      this.removeAllChainIdPermissions(chainId);
-    }
-
-    this.networkController.removeNetworkConfiguration(networkConfigurationId);
-  }
-
   /**
    * Stops exposing the account with the specified address to all third parties.
    * Exposed accounts are stored in caveats of the eth_accounts permission. This
@@ -5642,10 +5619,6 @@ export default class MetamaskController extends EventEmitter {
         },
         getChainPermissionsFeatureFlag: () =>
           Boolean(process.env.CHAIN_PERMISSIONS),
-        getCurrentRpcUrl: () =>
-          getProviderConfig({
-            metamask: this.networkController.state,
-          }).rpcUrl,
         // network configuration-related
         setActiveNetwork: async (networkClientId) => {
           await this.networkController.setActiveNetwork(networkClientId);

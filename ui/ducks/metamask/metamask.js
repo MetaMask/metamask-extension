@@ -301,8 +301,6 @@ export function getProviderConfig(state) {
               : rpcEndpoint.networkClientId,
           ...(rpcEndpoint.type === RpcEndpointType.Custom && {
             id: rpcEndpoint.networkClientId,
-            // TODO: `nickname` used to only be present for custom networks, but consider
-            // whether its safe or easier to include it for built-in infura networks too
             nickname: network.name,
             rpcUrl: rpcEndpoint.url,
           }),
@@ -310,7 +308,6 @@ export function getProviderConfig(state) {
       }
     }
   }
-  return undefined; // Shouldn't be possible
 }
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>
