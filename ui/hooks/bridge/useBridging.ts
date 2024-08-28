@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
+  resetInputFields,
   setBridgeFeatureFlags,
   setFromChain,
 } from '../../ducks/bridge/actions';
@@ -60,6 +61,10 @@ const useBridging = () => {
       isBridgeSupported &&
       providerConfig &&
       dispatch(setFromChain(providerConfig.chainId));
+
+    return () => {
+      dispatch(resetInputFields());
+    };
   }, []);
 
   const openBridgeExperience = useCallback(

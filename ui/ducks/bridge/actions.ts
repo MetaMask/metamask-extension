@@ -18,6 +18,7 @@ const {
   setFromToken,
   setToToken,
   setFromTokenInputValue,
+  resetInputFields,
   switchToAndFromTokens,
 } = bridgeSlice.actions;
 
@@ -25,6 +26,7 @@ export {
   setFromToken,
   setToToken,
   setFromTokenInputValue,
+  resetInputFields,
   switchToAndFromTokens,
 };
 
