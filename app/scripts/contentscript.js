@@ -38,6 +38,7 @@ const PROVIDER = 'metamask-provider';
 const LEGACY_CONTENT_SCRIPT = 'contentscript';
 const LEGACY_INPAGE = 'inpage';
 const LEGACY_PROVIDER = 'provider';
+const LEGACY_PUBLIC_CONFIG = 'publicConfig';
 
 let legacyExtMux,
   legacyExtChannel,
@@ -224,6 +225,25 @@ const destroyLegacyExtensionStreams = () => {
 
   legacyExtPublicConfigChannel.removeAllListeners();
   legacyExtPublicConfigChannel.destroy();
+};
+
+/**
+ * When the extension background is loaded it sends the EXTENSION_MESSAGES.READY message to the browser tabs.
+ * This listener/callback receives the message to set up the streams after service worker in-activity.
+ *
+ * @param {object} msg
+ * @param {string} msg.name - custom property and name to identify the message received
+ * @returns {Promise|undefined}
+ */
+const onMessageSetUpExtensionStreams = (msg) => {
+  if (msg.name === EXTENSION_MESSAGES.READY) {
+    if (!extensionStream) {
+      setupExtensionStreams();
+      setupLegacyExtensionStreams();
+    }
+    return Promise.resolve(`MetaMask: handled ${EXTENSION_MESSAGES.READY}`);
+  }
+  return undefined;
 };
 
 /**
