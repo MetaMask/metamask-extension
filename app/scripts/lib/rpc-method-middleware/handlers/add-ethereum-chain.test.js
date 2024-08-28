@@ -3,7 +3,6 @@ import {
   CHAIN_IDS,
   NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
-import * as chainUtils from './ethereum-chain-utils';
 import addEthereumChain from './add-ethereum-chain';
 
 const NON_INFURA_CHAIN_ID = '0x123456789';
@@ -543,33 +542,36 @@ describe('addEthereumChainHandler', () => {
     );
   });
 
-  it('should add result set to null to response object if the requested rpcUrl (and chainId) is currently selected', async () => {
-    jest.spyOn(chainUtils, 'findExistingNetwork').mockReturnValue({
-      chainId: '0x1',
-      rpcUrl: 'https://mainnet.infura.io/v3/',
-      ticker: 'ETH',
-    });
+  it.only('should add result set to null to response object if the requested rpcUrl (and chainId) is currently selected', async () => {
+    const CURRENT_RPC_CONFIG = createMockNonInfuraConfiguration();
 
     const mocks = makeMocks({
       permissionsFeatureFlagIsActive: false,
       overrides: {
-        getCurrentChainIdForDomain: jest.fn().mockReturnValue('0x1'),
+        getCurrentChainIdForDomain: jest
+          .fn()
+          .mockReturnValue(CURRENT_RPC_CONFIG.chainId),
+        findNetworkConfigurationBy: jest
+          .fn()
+          .mockReturnValue(CURRENT_RPC_CONFIG),
+        getCurrentRpcUrl: jest.fn().mockReturnValue(CURRENT_RPC_CONFIG.rpcUrl),
       },
     });
     const res = {};
+
     await addEthereumChainHandler(
       {
         origin: 'example.com',
         params: [
           {
-            chainId: CHAIN_IDS.MAINNET,
-            chainName: 'Ethereum Mainnet',
-            rpcUrls: ['https://mainnet.infura.io/v3/'],
+            chainId: CURRENT_RPC_CONFIG.chainId,
+            chainName: 'Custom Network',
+            rpcUrls: [CURRENT_RPC_CONFIG.rpcUrl],
             nativeCurrency: {
-              symbol: 'ETH',
+              symbol: CURRENT_RPC_CONFIG.ticker,
               decimals: 18,
             },
-            blockExplorerUrls: ['https://etherscan.io'],
+            blockExplorerUrls: ['https://custom.blockexplorer'],
           },
         ],
       },
