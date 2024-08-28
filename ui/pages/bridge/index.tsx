@@ -1,9 +1,7 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Switch, useHistory } from 'react-router-dom';
-import classnames from 'classnames';
 import { I18nContext } from '../../contexts/i18n';
-
 import { clearSwapsState } from '../../ducks/swaps/swaps';
 import {
   DEFAULT_ROUTE,
@@ -11,30 +9,24 @@ import {
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
-
 import { resetBackgroundSwapsState } from '../../store/actions';
-
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import {
-  Box,
-  Icon,
+  ButtonIcon,
+  ButtonIconSize,
   IconName,
-  IconSize,
 } from '../../components/component-library';
-import {
-  JustifyContent,
-  IconColor,
-  Display,
-  BlockSize,
-} from '../../helpers/constants/design-system';
 import { getIsBridgeEnabled } from '../../selectors';
 import useBridging from '../../hooks/bridge/useBridging';
-import { PrepareBridgePage } from './prepare/prepare-bridge-page';
+import useUpdateSwapsState from '../swaps/hooks/useUpdateSwapsState';
+import { Content, Header } from '../../components/multichain/pages/page';
+import PrepareBridgePage from './prepare/prepare-bridge-page';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
 
   useBridging();
+  useUpdateSwapsState();
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -54,37 +46,28 @@ const CrossChainSwap = () => {
   return (
     <div className="bridge">
       <div className="bridge__container">
-        <div className="bridge__header">
-          <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.center}
-            marginLeft={4}
-            width={BlockSize.OneTwelfth}
-            tabIndex={0}
-            onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
-              if (e.key === 'Enter') {
-                redirectToDefaultRoute();
-              }
-            }}
-          >
-            <Icon
-              name={IconName.Arrow2Left}
-              size={IconSize.Lg}
-              color={IconColor.iconAlternative}
+        <Header
+          className="bridge__header"
+          startAccessory={
+            <ButtonIcon
+              iconName={IconName.ArrowLeft}
+              size={ButtonIconSize.Sm}
+              ariaLabel={t('back')}
               onClick={redirectToDefaultRoute}
-              style={{ cursor: 'pointer' }}
-              title={t('cancel')}
             />
-          </Box>
-
-          <div className="bridge__title">{t('bridge')}</div>
-        </div>
-        <div
-          className={classnames(
-            'bridge__content',
-            'bridge__content--redesign-enabled',
-          )}
+          }
+          endAccessory={
+            <ButtonIcon
+              iconName={IconName.Setting}
+              size={ButtonIconSize.Sm}
+              ariaLabel={t('settings')}
+              // onClick={redirectToDefaultRoute}
+            />
+          }
         >
+          {t('bridge')}
+        </Header>
+        <Content className="bridge__content">
           <Switch>
             <FeatureToggledRoute
               redirectRoute={SWAPS_MAINTENANCE_ROUTE}
@@ -95,7 +78,7 @@ const CrossChainSwap = () => {
               }}
             />
           </Switch>
-        </div>
+        </Content>
       </div>
     </div>
   );
