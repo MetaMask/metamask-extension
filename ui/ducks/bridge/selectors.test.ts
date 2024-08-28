@@ -109,16 +109,6 @@ describe('Bridge selectors', () => {
     });
 
     it('returns network if included in ALLOWED_BRIDGE_CHAIN_IDS', () => {
-      const addedFeaturedNetwork = {
-        chainId: '0x11212131241523151',
-        nickname: 'scroll',
-        rpcUrl: 'https://a',
-        ticker: 'ETH',
-        rpcPrefs: {
-          blockExplorerUrl: 'https://a',
-          imageUrl: 'https://a',
-        },
-      };
       const state = {
         ...createBridgeMockStore(),
         metamask: {
