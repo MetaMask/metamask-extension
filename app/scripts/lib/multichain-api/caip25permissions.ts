@@ -13,6 +13,7 @@ import {
 } from '@metamask/permission-controller';
 import {
   CaipAccountId,
+  Json,
   parseCaipAccountId,
   type Hex,
   type NonEmptyArray,

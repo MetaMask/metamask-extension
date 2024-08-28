@@ -2,6 +2,7 @@ import { CaipChainId, isCaipChainId } from '@metamask/utils';
 import {
   ExternalScopeObject,
   ExternalScopesObject,
+  InternalScope,
   InternalScopeObject,
   InternalScopesObject,
 } from './scope';
@@ -33,7 +34,7 @@ export const flattenScope = (
   }
 
   const scopeMap: InternalScopesObject = {};
-  scopes.forEach((scope) => {
+  scopes.forEach((scope: CaipChainId) => {
     scopeMap[scope] = restScopeObject;
   });
   return scopeMap;
@@ -81,24 +82,20 @@ export const mergeScopes = (
 ): InternalScopesObject => {
   const scope: InternalScopesObject = {};
 
-  Object.keys(scopeA).forEach((_scopeString: string) => {
-    const scopeString = _scopeString as CaipChainId;
-    const scopeObjectA = scopeA[scopeString];
+  Object.entries(scopeA).forEach(([_scopeString, scopeObjectA]) => {
+    const scopeString = _scopeString as InternalScope;
     const scopeObjectB = scopeB[scopeString];
 
-    if (scopeObjectA && scopeObjectB) {
-      scope[scopeString] = mergeScopeObject(scopeObjectA, scopeObjectB);
-    } else {
-      scope[scopeString] = scopeObjectA;
-    }
+    scope[scopeString] = scopeObjectB
+      ? mergeScopeObject(scopeObjectA, scopeObjectB)
+      : scopeObjectA;
   });
 
-  Object.keys(scopeB).forEach((_scopeString: string) => {
-    const scopeString = _scopeString as CaipChainId;
+  Object.entries(scopeB).forEach(([_scopeString, scopeObjectB]) => {
+    const scopeString = _scopeString as InternalScope;
     const scopeObjectA = scopeA[scopeString];
-    const scopeObjectB = scopeB[scopeString];
 
-    if (!scopeObjectA && scopeObjectB) {
+    if (!scopeObjectA) {
       scope[scopeString] = scopeObjectB;
     }
   });
@@ -109,7 +106,7 @@ export const mergeScopes = (
 export const flattenMergeScopes = (
   scopes: ExternalScopesObject,
 ): InternalScopesObject => {
-  let flattenedScopes = {};
+  let flattenedScopes: InternalScopesObject = {};
   Object.keys(scopes).forEach((scopeString) => {
     const flattenedScopeMap = flattenScope(scopeString, scopes[scopeString]);
     flattenedScopes = mergeScopes(flattenedScopes, flattenedScopeMap);

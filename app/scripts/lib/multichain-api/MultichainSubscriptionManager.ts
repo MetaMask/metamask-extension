@@ -3,7 +3,7 @@ import { NetworkController } from '@metamask/network-controller';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
 import { parseCaipChainId } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
-import { Scope } from './scope';
+import { InternalScope, Scope } from './scope';
 
 export type SubscriptionManager = {
   events: EventEmitter;
@@ -52,7 +52,7 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
     });
   }
 
-  subscribe(scope: Scope, domain: string) {
+  subscribe(scope: InternalScope, domain: string) {
     let subscriptionManager;
     if (this.subscriptionManagerByChain[scope]) {
       subscriptionManager = this.subscriptionManagerByChain[scope];
