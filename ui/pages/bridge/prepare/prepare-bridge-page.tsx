@@ -6,6 +6,7 @@ import {
   setFromTokenInputValue,
   setToChain,
   setToToken,
+  switchToAndFromTokens,
 } from '../../../ducks/bridge/actions';
 import {
   getFromAmount,
@@ -21,11 +22,16 @@ import {
   getToTokens,
   getToTopAssets,
 } from '../../../ducks/bridge/selectors';
-import { Box } from '../../../components/component-library';
+import {
+  Box,
+  ButtonIcon,
+  IconName,
+} from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TokenBucketPriority } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/useTokensWithFiltering';
 import { setActiveNetwork } from '../../../store/actions';
+import { BlockSize } from '../../../helpers/constants/design-system';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const PrepareBridgePage = () => {
@@ -97,6 +103,26 @@ const PrepareBridgePage = () => {
             value: fromAmount || undefined,
           }}
         />
+
+        <Box className="prepare-bridge-page__switch-tokens">
+          <ButtonIcon
+            width={BlockSize.Full}
+            data-testid="switch-tokens"
+            ariaLabel="switch-tokens"
+            iconName={IconName.Arrow2Down}
+            disabled={toChain === null}
+            onClick={() => {
+              // TODO rotate animation
+              const toChainClientId =
+                toChain?.defaultRpcEndpointIndex && toChain?.rpcEndpoints
+                  ? toChain.rpcEndpoints?.[toChain.defaultRpcEndpointIndex]
+                      .networkClientId
+                  : undefined;
+              toChainClientId && dispatch(setActiveNetwork(toChainClientId));
+              dispatch(switchToAndFromTokens({ fromChain }));
+            }}
+          />
+        </Box>
 
         <BridgeInputGroup
           className="prepare-bridge-page__to"
