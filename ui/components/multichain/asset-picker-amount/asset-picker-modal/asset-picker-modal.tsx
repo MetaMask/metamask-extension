@@ -332,9 +332,11 @@ export function AssetPickerModal({
             <PickerNetwork
               label={network.nickname ?? 'Select network'}
               src={
-                CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                  network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                ]
+                network?.rpcPrefs && 'imageUrl' in network.rpcPrefs
+                  ? (network.rpcPrefs.imageUrl as string)
+                  : CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                      network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                    ]
               }
               onClick={onNetworkPickerClick}
               data-testid="multichain-asset-picker__network"

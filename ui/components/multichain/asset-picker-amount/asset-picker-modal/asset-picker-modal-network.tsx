@@ -14,7 +14,10 @@ import {
   Modal,
   Box,
 } from '../../../component-library';
-import { RPCDefinition } from '../../../../../shared/constants/network';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  RPCDefinition,
+} from '../../../../../shared/constants/network';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: END:ONLY_INCLUDE_IF
@@ -61,7 +64,11 @@ export const AssetPickerModalNetwork = ({
   const networksList = networks ?? allNetworks ?? [];
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      className="multichain-asset-picker__network-modal"
+    >
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
         <ModalHeader onBack={onBack} onClose={onClose}>
@@ -88,6 +95,15 @@ export const AssetPickerModalNetwork = ({
                     onNetworkChange(networkConfig);
                     onBack();
                   }}
+                  iconSrc={
+                    networkConfig?.rpcPrefs &&
+                    'imageUrl' in networkConfig.rpcPrefs
+                      ? networkConfig.rpcPrefs.imageUrl
+                      : CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                          networkConfig.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                        ]
+                  }
+                  focus={false}
                 />
               );
             })}
