@@ -116,6 +116,20 @@ exports[`PrepareBridgePage should render the component 1`] = `
         </div>
       </div>
       <div
+        class="mm-box prepare-bridge-page__switch-tokens"
+      >
+        <button
+          aria-label="switch-tokens"
+          class="mm-box mm-button-icon mm-button-icon--size-lg mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+          data-testid="switch-tokens"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-2-down.svg');"
+          />
+        </button>
+      </div>
+      <div
         class="mm-box prepare-bridge-page__to"
       >
         <div
