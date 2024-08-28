@@ -242,6 +242,9 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
+          manifestFlags: {
+            doNotForceSentryForThisTest: true,
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           // we don't wait for the controllers to be loaded
@@ -270,6 +273,9 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          manifestFlags: {
+            doNotForceSentryForThisTest: true,
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
@@ -308,6 +314,9 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
+          manifestFlags: {
+            doNotForceSentryForThisTest: true,
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           // we don't wait for the controllers to be loaded
@@ -351,6 +360,9 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
+          manifestFlags: {
+            doNotForceSentryForThisTest: true,
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           // we don't wait for the controllers to be loaded
@@ -409,6 +421,9 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryInvariantMigrationError,
+          manifestFlags: {
+            doNotForceSentryForThisTest: true,
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
@@ -454,6 +469,9 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          manifestFlags: {
+            doNotForceSentryForThisTest: true,
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
@@ -496,6 +514,9 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          manifestFlags: {
+            doNotForceSentryForThisTest: true,
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
@@ -557,6 +578,9 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          manifestFlags: {
+            doNotForceSentryForThisTest: true,
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
@@ -589,6 +613,9 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          manifestFlags: {
+            doNotForceSentryForThisTest: true,
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
@@ -621,6 +648,9 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          manifestFlags: {
+            doNotForceSentryForThisTest: true,
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
@@ -664,6 +694,9 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          manifestFlags: {
+            doNotForceSentryForThisTest: true,
+          },
         },
         async ({ driver, ganacheServer, mockedEndpoint }) => {
           await logInWithBalanceValidation(driver, ganacheServer);
@@ -724,6 +757,9 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          manifestFlags: {
+            doNotForceSentryForThisTest: true,
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
@@ -764,6 +800,9 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          manifestFlags: {
+            doNotForceSentryForThisTest: true,
+          },
         },
         async ({ driver, ganacheServer, mockedEndpoint }) => {
           await logInWithBalanceValidation(driver, ganacheServer);
@@ -849,6 +888,9 @@ describe('Sentry errors', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.fullTitle(),
+        manifestFlags: {
+          doNotForceSentryForThisTest: true,
+        },
       },
       async ({ driver }) => {
         await driver.navigate();
