@@ -13,9 +13,15 @@ const {
   setFromToken,
   setToToken,
   setFromTokenInputValue,
+  switchToAndFromTokens,
 } = bridgeSlice.actions;
 
-export { setFromToken, setToToken, setFromTokenInputValue };
+export {
+  setFromToken,
+  setToToken,
+  setFromTokenInputValue,
+  switchToAndFromTokens,
+};
 
 const callBridgeControllerMethod = <T>(
   bridgeAction: BridgeUserAction | BridgeBackgroundAction,

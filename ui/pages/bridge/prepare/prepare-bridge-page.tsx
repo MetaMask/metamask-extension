@@ -103,6 +103,21 @@ const PrepareBridgePage = () => {
           }}
         />
 
+        <Box className="prepare-bridge-page__switch-tokens">
+          <ButtonIcon
+            width={BlockSize.Full}
+            data-testid="switch-tokens"
+            ariaLabel="switch-tokens"
+            iconName={IconName.Arrow2Down}
+            disabled={toChain === null}
+            onClick={() => {
+              // TODO rotate animation
+              toChain?.id && dispatch(setActiveNetwork(toChain.id));
+              dispatch(switchToAndFromTokens({ fromChain }));
+            }}
+          />
+        </Box>
+
         <BridgeInputGroup
           className="prepare-bridge-page__to"
           header={t('bridgeTo')}
