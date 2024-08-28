@@ -12,6 +12,7 @@ import { ConfirmInfoSection } from '../../../../../../components/app/confirm/inf
 import Name from '../../../../../../components/app/name';
 import {
   Box,
+  Input,
   Modal,
   ModalBody,
   ModalContent,
@@ -30,6 +31,7 @@ import {
   FlexDirection,
   JustifyContent,
   TextAlign,
+  TextColor,
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
@@ -77,12 +79,35 @@ const EditSpendingCapModal = ({
             paddingTop={4}
             paddingBottom={4}
           >
-            asdf
+            Edit spending cap
           </Text>
         </ModalHeader>
         <ModalBody>
-          <Text variant={TextVariant.bodyMd} paddingTop={4} paddingBottom={4}>
-            asdf
+          <Text
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternative}
+            paddingTop={4}
+            paddingBottom={4}
+          >
+            Enter the amount that you feel comfortable being spent on your
+            behalf.
+          </Text>
+          <Input
+            placeholder="950,123.123 DAI"
+            padding={4}
+            style={{
+              border: '1px solid black',
+              borderRadius: '4px',
+              width: 'calc(100% - 32px)',
+            }}
+          />
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+            paddingTop={4}
+            paddingBottom={4}
+          >
+            Account balance: 67 DAI
           </Text>
         </ModalBody>
         <ModalFooter
