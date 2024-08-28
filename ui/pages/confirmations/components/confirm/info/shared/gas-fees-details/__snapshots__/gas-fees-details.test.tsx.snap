@@ -9,6 +9,7 @@ exports[`<GasFeesDetails /> renders component for gas fees section 1`] = `
   >
     <div
       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      style="align-items: center;"
     >
       <p
         class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -68,6 +69,7 @@ exports[`<GasFeesDetails /> renders component for gas fees section 1`] = `
   >
     <div
       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      style="align-items: center;"
     >
       <p
         class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -82,12 +84,12 @@ exports[`<GasFeesDetails /> renders component for gas fees section 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
       >
         <p
-          class="mm-box mm-text mm-text--body-sm mm-box--padding-inline-end-1 mm-box--color-text-muted"
+          class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-1 mm-box--color-text-alternative"
         >
           🦊 Market
         </p>
         <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-success-default"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           <span
             data-testid="gas-timing-time"

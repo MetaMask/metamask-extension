@@ -342,7 +342,7 @@ export function AlertModal({
   }, [isConfirmed, selectedAlert.key, setAlertConfirmed]);
 
   return (
-    <Modal isOpen onClose={handleClose}>
+    <Modal isOpen onClose={handleClose} data-testid="alert-modal">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader

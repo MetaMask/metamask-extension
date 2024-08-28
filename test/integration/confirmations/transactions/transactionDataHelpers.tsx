@@ -12,7 +12,7 @@ export const getUnapprovedTransaction = (
       gas: '0x16a92',
     },
     id: pendingTransactionId,
-    origin: 'origin',
+    origin: 'local:http://localhost:8086/',
     securityAlertResponse: {},
     status: 'unapproved',
     time: pendingTransactionTime,
