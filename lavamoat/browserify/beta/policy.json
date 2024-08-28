@@ -2436,43 +2436,47 @@
         "console.info": true
       },
       "packages": {
-        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/logging-controller": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/signature-controller>@metamask/controller-utils": true,
+        "@metamask/signature-controller>@metamask/base-controller": true,
         "@metamask/signature-controller>@metamask/message-manager": true,
         "lodash": true,
         "webpack>events": true
       }
     },
-    "@metamask/signature-controller>@metamask/controller-utils": {
+    "@metamask/signature-controller>@metamask/base-controller": {
       "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
         "setTimeout": true
       },
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true
+        "immer": true
       }
     },
     "@metamask/signature-controller>@metamask/message-manager": {
       "packages": {
-        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/eth-sig-util": true,
         "@metamask/message-manager>jsonschema": true,
-        "@metamask/signature-controller>@metamask/controller-utils": true,
-        "@metamask/utils": true,
+        "@metamask/signature-controller>@metamask/base-controller": true,
+        "@metamask/signature-controller>@metamask/utils": true,
         "browserify>buffer": true,
         "uuid": true,
         "webpack>events": true
+      }
+    },
+    "@metamask/signature-controller>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/smart-transactions-controller": {

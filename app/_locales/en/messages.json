@@ -1761,6 +1761,9 @@
   "editNetworkLink": {
     "message": "edit the original network"
   },
+  "editNetworksTitle": {
+    "message": "Edit networks"
+  },
   "editNonceField": {
     "message": "Edit nonce"
   },
@@ -5898,6 +5901,9 @@
   },
   "testNetworks": {
     "message": "Test networks"
+  },
+  "testnets": {
+    "message": "Testnets"
   },
   "theme": {
     "message": "Theme"
