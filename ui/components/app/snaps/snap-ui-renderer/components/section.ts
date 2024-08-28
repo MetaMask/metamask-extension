@@ -6,11 +6,32 @@ import {
   FlexDirection,
   BackgroundColor,
   BorderRadius,
+  JustifyContent,
 } from '../../../../../helpers/constants/design-system';
 import { mapToTemplate } from '../utils';
 import { UIComponent, UIComponentFactory } from './types';
 
-export const box: UIComponentFactory<SectionElement> = ({
+function generateJustifyContent(alignment?: SectionProps['alignment']) {
+  switch (alignment) {
+    default:
+    case 'start':
+      return JustifyContent.flexStart;
+
+    case 'center':
+      return JustifyContent.center;
+
+    case 'end':
+      return JustifyContent.flexEnd;
+
+    case 'space-between':
+      return JustifyContent.spaceBetween;
+
+    case 'space-around':
+      return JustifyContent.spaceAround;
+  }
+}
+
+export const section: UIComponentFactory<SectionElement> = ({
   element,
   ...params
 }) => ({
@@ -20,10 +41,14 @@ export const box: UIComponentFactory<SectionElement> = ({
   ) as NonEmptyArray<UIComponent>,
   props: {
     display: Display.Flex,
-    flexDirection: FlexDirection.Column,
+    flexDirection:
+      element.props.direction === 'horizontal'
+        ? FlexDirection.Row
+        : FlexDirection.Column,
     className: 'snap-ui-renderer__section',
     padding: 4,
     backgroundColor: BackgroundColor.backgroundDefault,
     borderRadius: BorderRadius.LG,
+    justifyContent: generateJustifyContent(element.props.alignment)
   },
 });
