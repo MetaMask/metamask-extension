@@ -14,15 +14,12 @@ import {
   Modal,
   Box,
 } from '../../../component-library';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  RPCDefinition,
-} from '../../../../../shared/constants/network';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: END:ONLY_INCLUDE_IF
 import { NetworkListItem } from '../../network-list-item';
-import { getAllNetworks } from '../../../../selectors';
+import { getNetworkConfigurations } from '../../../../selectors';
 import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 
 /**
@@ -47,8 +44,8 @@ export const AssetPickerModalNetwork = ({
 }: {
   isOpen: boolean;
   network?: ProviderConfig;
-  networks?: (ProviderConfig | RPCDefinition)[];
-  onNetworkChange: (network: ProviderConfig | RPCDefinition) => void;
+  networks?: ProviderConfig[];
+  onNetworkChange: (network: ProviderConfig) => void;
   onClose: () => void;
   onBack: () => void;
 }) => {
@@ -57,8 +54,7 @@ export const AssetPickerModalNetwork = ({
   ///: END:ONLY_INCLUDE_IF
 
   const currentNetwork = useSelector(getProviderConfig);
-  const allNetworks: (ProviderConfig | RPCDefinition)[] =
-    useSelector(getAllNetworks);
+  const allNetworks: ProviderConfig[] = useSelector(getNetworkConfigurations);
 
   const selectedNetwork: ProviderConfig = network ?? currentNetwork;
   const networksList = networks ?? allNetworks ?? [];
@@ -98,7 +94,7 @@ export const AssetPickerModalNetwork = ({
                   iconSrc={
                     networkConfig?.rpcPrefs &&
                     'imageUrl' in networkConfig.rpcPrefs
-                      ? networkConfig.rpcPrefs.imageUrl
+                      ? (networkConfig.rpcPrefs.imageUrl as string)
                       : CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
                           networkConfig.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
                         ]

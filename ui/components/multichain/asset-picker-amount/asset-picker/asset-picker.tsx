@@ -149,7 +149,7 @@ export function AssetPicker({
           setShowAssetPickerModal(false);
         }}
         sendingAsset={sendingAsset}
-        network={networkProps ? networkProps.network : undefined}
+        network={networkProps?.network ? networkProps.network : undefined}
         onNetworkPickerClick={() => {
           setShowAssetPickerModal(false);
           setIsSelectingNetwork(true);

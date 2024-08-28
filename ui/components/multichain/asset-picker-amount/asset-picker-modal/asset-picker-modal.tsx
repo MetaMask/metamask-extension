@@ -50,7 +50,6 @@ import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import {
   ERC20Asset,
   NativeAsset,
@@ -327,16 +326,14 @@ export function AssetPickerModal({
             </Text>
           </Box>
         )}
-        {network && onNetworkPickerClick && (
+        {onNetworkPickerClick && (
           <Box className="network-picker">
             <PickerNetwork
-              label={network.nickname ?? 'Select network'}
+              label={network?.nickname ?? 'Select network'}
               src={
                 network?.rpcPrefs && 'imageUrl' in network.rpcPrefs
                   ? (network.rpcPrefs.imageUrl as string)
-                  : CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                      network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                    ]
+                  : undefined
               }
               onClick={onNetworkPickerClick}
               data-testid="multichain-asset-picker__network"
