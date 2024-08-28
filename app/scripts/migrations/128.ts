@@ -1,5 +1,8 @@
 import { hasProperty, isObject, RuntimeObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
+// Note: This is the library the network controller uses for URL
+// validity / equality. Using here to ensure we match its validations.
+import * as URI from 'uri-js';
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   LINEA_MAINNET_DISPLAY_NAME,
@@ -161,26 +164,23 @@ function transformState(
       tieBreaker = networks.find((network) => network.type === 'infura');
     }
 
-    // Calculate the unique set of rpc endpoints
+    // Calculate the unique set of valid rpc endpoints
     const rpcEndpoints = networks.reduce(
       (endpoints: RuntimeObject[], network) => {
         if (network.id && network.rpcUrl) {
-          const dupe = endpoints.find(
-            (endpoint) => endpoint.url === network.rpcUrl,
+          // Check if the endpoint is a duplicate. Each endpoint must
+          // be unique across all chains, not just within each chain.
+          const isDuplicate = [
+            ...Object.values(acc).flatMap(({ rpcEndpoints: eps }) => eps),
+            endpoints,
+          ].some(
+            (endpoint) =>
+              URI.equal(endpoint.url, network.rpcUrl) ||
+              // This should not be possible, but protect against duplicate network client ids
+              endpoint.networkClientId === network.id,
           );
 
-          // If there's a duplicated RPC url, and one of the networks is the
-          // globally selected network, prefer to use its network client id
-          // so that `selectedNetworkClientId` can remain unchanged.
-          if (dupe && network.id === networkState.selectedNetworkClientId) {
-            dupe.networkClientId = network.id;
-          } else if (
-            !dupe &&
-            !endpoints.some(
-              (endpoint) => endpoint.networkClientId === network.id,
-            )
-          ) {
-            // The URL and id are not duplicated, so add a new endpoint
+          if (isValidUrl(network.rpcUrl) && !isDuplicate) {
             endpoints.push({
               networkClientId: network.id,
               url: network.rpcUrl,
@@ -195,6 +195,13 @@ function transformState(
       },
       [],
     );
+
+    // If there were no valid unique endpoints, then omit the network
+    // configuration for this chain id. The network controller requires
+    // configurations to have at least 1 endpoint.
+    if (rpcEndpoints.length === 0) {
+      return acc;
+    }
 
     // Use the tie breaker network as the default rpc endpoint
     const defaultRpcEndpointIndex = Math.max(
@@ -269,9 +276,19 @@ function transformState(
     return acc;
   }, {});
 
+  // Ensure that selectedNetworkClientId points to some endpoint of
+  // some network configuration. It may not, if its endpoint was not
+  // well formed or a duplicate.  In that case, fallback to mainnet.
+  const selectedNetworkClientId =
+    Object.values(networkConfigurationsByChainId)
+      .flatMap(({ rpcEndpoints }) => rpcEndpoints)
+      .find(
+        ({ networkClientId }) =>
+          networkClientId === networkState.selectedNetworkClientId,
+      )?.networkClientId ?? 'mainnet';
+
   state.NetworkController = {
-    // This should already be defined, but default to mainnet just in case
-    selectedNetworkClientId: networkState.selectedNetworkClientId ?? 'mainnet',
+    selectedNetworkClientId,
     networkConfigurationsByChainId,
     networksMetadata: networkState.networksMetadata ?? {},
   };
@@ -294,4 +311,12 @@ function transformState(
   }
 
   return state;
+}
+
+// Matches network controller validation
+function isValidUrl(url: string) {
+  const uri = URI.parse(url);
+  return (
+    uri.error === undefined && (uri.scheme === 'http' || uri.scheme === 'https')
+  );
 }

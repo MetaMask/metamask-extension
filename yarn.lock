@@ -26768,6 +26768,7 @@ __metadata:
     ttest: "npm:^2.1.1"
     typescript: "npm:~5.4.5"
     unicode-confusables: "npm:^0.1.1"
+    uri-js: "npm:^4.4.1"
     uuid: "npm:^8.3.2"
     vinyl: "npm:^2.2.1"
     vinyl-buffer: "npm:^1.0.1"

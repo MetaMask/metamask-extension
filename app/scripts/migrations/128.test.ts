@@ -237,9 +237,311 @@ it('tie breaks with the most recently transacted network', async () => {
   expect(newState.data.NetworkController).toStrictEqual(expectedState);
 });
 
-// TODO: more tests
-// - dedupe logic for rpc/block explorers
-// - NetworkOrderController migration
+it('dedupes if there are multiple block explorers within a chain id', async () => {
+  const randomChainId = '0x123456';
+
+  const oldState = {
+    meta: { version: oldVersion },
+    data: {
+      NetworkController: {
+        selectedNetworkClientId: 'other-chain-network-client',
+        networkConfigurations: {
+          'network-id-1': {
+            id: 'network-id-1',
+            chainId: randomChainId,
+            nickname: 'Random Network',
+            ticker: 'FOO',
+            rpcUrl: 'https://localhost/rpc/1',
+            rpcPrefs: {
+              blockExplorerUrl: 'https://localhost/explorer',
+            },
+          },
+          'network-id-2': {
+            id: 'network-id-2',
+            chainId: randomChainId,
+            nickname: 'Random Network',
+            ticker: 'FOO',
+            rpcUrl: 'https://localhost/rpc/2',
+            rpcPrefs: {
+              blockExplorerUrl: 'https://localhost/explorer',
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const newState = await migrate(oldState);
+
+  const { networkConfigurationsByChainId } = newState.data
+    .NetworkController as Record<string, object>;
+
+  const networkConfiguration = networkConfigurationsByChainId[randomChainId];
+  expect(networkConfiguration.defaultBlockExplorerUrlIndex).toStrictEqual(0);
+  expect(networkConfiguration.blockExplorerUrls).toStrictEqual([
+    'https://localhost/explorer',
+  ]);
+});
+
+it('dedupes if there are duplicate rpc urls within a chain id', async () => {
+  for (const [url1, url2] of [
+    ['http://test.endpoint/bar', 'http://test.endpoint/bar'],
+    // Check case insensitivity (network controller requires this)
+    ['http://test.endpoint/bar', 'HTTP://TEST.ENDPOINT/bar'],
+  ]) {
+    const randomChainId = '0x123456';
+
+    const oldState = {
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          selectedNetworkClientId: 'other-chain-network-client',
+          networkConfigurations: {
+            'network-id-1': {
+              id: 'network-id-1',
+              chainId: randomChainId,
+              nickname: 'Random Network',
+              ticker: 'FOO',
+              rpcUrl: url1,
+            },
+            'network-id-2': {
+              id: 'network-id-2',
+              chainId: randomChainId,
+              nickname: 'Random Network',
+              ticker: 'FOO',
+              rpcUrl: url2,
+            },
+          },
+        },
+      },
+    };
+
+    const newState = await migrate(oldState);
+
+    const { networkConfigurationsByChainId } = newState.data
+      .NetworkController as Record<string, object>;
+
+    const networkConfiguration = networkConfigurationsByChainId[randomChainId];
+    expect(networkConfiguration.defaultRpcEndpointIndex).toStrictEqual(0);
+    expect(networkConfiguration.rpcEndpoints).toStrictEqual([
+      {
+        url: url1,
+        type: 'custom',
+        name: 'Random Network',
+        networkClientId: 'network-id-1',
+      },
+    ]);
+  }
+});
+
+it('dedupes if there are duplicate rpc urls across chain ids', async () => {
+  const randomChainId1 = '0x123456';
+  const randomChainId2 = '0x123456789';
+
+  const oldState = {
+    meta: { version: oldVersion },
+    data: {
+      NetworkController: {
+        selectedNetworkClientId: 'other-chain-network-client',
+        networkConfigurations: {
+          'network-id-1': {
+            id: 'network-id-1',
+            chainId: randomChainId1,
+            nickname: 'Random Network',
+            ticker: 'FOO',
+            rpcUrl: 'http://localhost/rpc',
+            rpcPrefs: {
+              blockExplorerUrl: 'https://localhost/explorer',
+            },
+          },
+          // This endpoint is duplicated and should be omitted
+          'network-id-2': {
+            id: 'network-id-2',
+            chainId: randomChainId2,
+            nickname: 'Random Network',
+            ticker: 'FOO',
+            rpcUrl: 'http://localhost/rpc',
+            rpcPrefs: {
+              blockExplorerUrl: 'https://localhost/explorer',
+            },
+          },
+          'network-id-3': {
+            id: 'network-id-3',
+            chainId: randomChainId2,
+            nickname: 'Random Network',
+            ticker: 'FOO',
+            rpcUrl: 'http://localhost/rpc/different',
+            rpcPrefs: {
+              blockExplorerUrl: 'https://localhost/explorer',
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const newState = await migrate(oldState);
+  const expectedState = defaultPostMigrationState();
+  expectedState.networkConfigurationsByChainId[randomChainId1] = {
+    chainId: randomChainId1,
+    rpcEndpoints: [
+      {
+        networkClientId: 'network-id-1',
+        url: 'http://localhost/rpc',
+        type: 'custom',
+        name: 'Random Network',
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://localhost/explorer'],
+    defaultBlockExplorerUrlIndex: 0,
+    name: 'Random Network',
+    nativeCurrency: 'FOO',
+  };
+
+  expectedState.networkConfigurationsByChainId[randomChainId2] = {
+    blockExplorerUrls: ['https://localhost/explorer'],
+    defaultBlockExplorerUrlIndex: 0,
+    chainId: '0x123456789',
+    defaultRpcEndpointIndex: 0,
+    name: 'Random Network',
+    nativeCurrency: 'FOO',
+    rpcEndpoints: [
+      {
+        name: 'Random Network',
+        networkClientId: 'network-id-3',
+        type: 'custom',
+        url: 'http://localhost/rpc/different',
+      },
+    ],
+  };
+
+  expect(newState.data.NetworkController).toStrictEqual(expectedState);
+});
+
+it('handles not well formed rpc urls', async () => {
+  const randomChainId = '0x123456';
+
+  const oldState = {
+    meta: { version: oldVersion },
+    data: {
+      NetworkController: {
+        selectedNetworkClientId: 'other-chain-network-client',
+        networkConfigurations: {
+          'network-id-1': {
+            id: 'network-id-1',
+            chainId: randomChainId,
+            nickname: 'Random Network',
+            ticker: 'FOO',
+            rpcUrl: 'http://test.endpoint/bar',
+          },
+          // This RPC url is not well formed and should be omitted
+          'network-id-2': {
+            id: 'network-id-2',
+            chainId: randomChainId,
+            nickname: 'Random Network',
+            ticker: 'FOO',
+            rpcUrl: 'not_well_formed',
+          },
+        },
+      },
+    },
+  };
+
+  const newState = await migrate(oldState);
+
+  const { networkConfigurationsByChainId } = newState.data
+    .NetworkController as Record<string, object>;
+
+  const networkConfiguration = networkConfigurationsByChainId[randomChainId];
+  expect(networkConfiguration.defaultRpcEndpointIndex).toStrictEqual(0);
+  expect(networkConfiguration.rpcEndpoints).toStrictEqual([
+    {
+      url: 'http://test.endpoint/bar',
+      type: 'custom',
+      name: 'Random Network',
+      networkClientId: 'network-id-1',
+    },
+  ]);
+});
+
+it('handles the case where no rpc url is well formed', async () => {
+  const randomChainId = '0x123456';
+
+  const oldState = {
+    meta: { version: oldVersion },
+    data: {
+      NetworkController: {
+        selectedNetworkClientId: 'other-chain-network-client',
+        networkConfigurations: {
+          'network-id-1': {
+            id: 'network-id-1',
+            chainId: randomChainId,
+            nickname: 'Random Network',
+            ticker: 'FOO',
+            rpcUrl: 'not_well_formed',
+          },
+          'network-id-2': {
+            id: 'network-id-2',
+            chainId: randomChainId,
+            nickname: 'Random Network',
+            ticker: 'FOO',
+            rpcUrl: 'also_not_well_formed',
+          },
+        },
+      },
+    },
+  };
+
+  const newState = await migrate(oldState);
+
+  // `randomChainId` had no well formed urls, so it should be omitted
+  expect(newState.data.NetworkController).toStrictEqual(
+    defaultPostMigrationState(),
+  );
+});
+
+it('migrates the netork order controller', async () => {
+  const oldState = {
+    meta: { version: oldVersion },
+    data: {
+      NetworkOrderController: {
+        orderedNetworkList: [
+          {
+            networkId: '0x1',
+            networkRpcUrl: 'http://localhost/a',
+          },
+          {
+            networkId: '0x2',
+            networkRpcUrl: 'http://localhost/b',
+          },
+          {
+            networkId: '0x3',
+            networkRpcUrl: 'http://localhost/c',
+          },
+          {
+            networkId: '0x2',
+            networkRpcUrl: 'http://localhost/d',
+          },
+          {
+            networkId: '0x1',
+            networkRpcUrl: 'http://localhost/e',
+          },
+        ],
+      },
+    },
+  };
+
+  // Expect chain IDs to maintain order, but deduped and with `networkRpcUrl` removed
+  const newState = await migrate(oldState);
+  expect(newState.data.NetworkOrderController).toStrictEqual({
+    orderedNetworkList: [
+      { networkId: '0x1' },
+      { networkId: '0x2' },
+      { networkId: '0x3' },
+    ],
+  });
+});
 
 // The state of the network controller post migration for just the
 // built-in networks. As if there were no custom networks defined.
