@@ -18,6 +18,7 @@ const {
   setFromToken,
   setToToken,
   setFromTokenInputValue,
+  resetInputFields,
   switchToAndFromTokens,
 } = bridgeSlice.actions;
 
@@ -26,6 +27,7 @@ export {
   setToToken,
   setFromTokenInputValue,
   switchToAndFromTokens,
+  resetInputFields,
 };
 
 const callBridgeControllerMethod = <T>(
