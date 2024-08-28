@@ -7,6 +7,12 @@ import {
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 
+type AccountIdentityEntry = {
+  address: string;
+  name: string;
+  lastSelected: number | undefined;
+};
+
 const mainNetworks = {
   [CHAIN_IDS.MAINNET]: true,
   [CHAIN_IDS.LINEA_MAINNET]: true,
@@ -51,7 +57,7 @@ type Preferences = {
   showConfirmationAdvancedDetails: boolean;
 };
 
-type PreferencesState = {
+export type PreferencesState = {
   selectedAddress: string;
   useBlockie: boolean;
   useNonceField: boolean;
@@ -75,7 +81,7 @@ type PreferencesState = {
   incomingTransactionsPreferences: Record<number, boolean>;
   knownMethodData: Record<string, string>;
   currentLocale: string;
-  identities: Record<string, object>;
+  identities: Record<string, AccountIdentityEntry>;
   lostIdentities: Record<string, object>;
   forgottenPassword: boolean;
   preferences: Preferences;
@@ -94,7 +100,7 @@ type PreferencesState = {
 };
 
 export default class PreferencesController {
-  private store: ObservableStore<PreferencesState>;
+  store: ObservableStore<PreferencesState>;
 
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -730,7 +736,7 @@ export default class PreferencesController {
     });
 
     const updatedIdentities = Object.values(accounts).reduce(
-      (identitiesMap: Record<string, object>, account) => {
+      (identitiesMap: Record<string, AccountIdentityEntry>, account) => {
         identitiesMap[account.address] = {
           address: account.address,
           name: account.metadata.name,
