@@ -84,6 +84,9 @@ const CrossChainSwap = () => {
             />
           </Switch>
         </Content>
+        <Footer>
+          <BridgeCTAButton />
+        </Footer>
       </div>
     </div>
   );
