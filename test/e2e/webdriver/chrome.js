@@ -24,9 +24,9 @@ function getProxyServer(proxyPort) {
 class ChromeDriver {
   static async build({
     openDevToolsForTabs,
+    constrainWindowSize,
     port,
     proxyPort,
-    constrainWindowSize,
   }) {
     const args = [
       `--proxy-server=${getProxyServer(proxyPort)}`, // Set proxy in the way that doesn't interfere with Selenium Manager

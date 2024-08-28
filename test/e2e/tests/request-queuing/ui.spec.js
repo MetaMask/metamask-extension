@@ -125,7 +125,7 @@ async function confirmTransaction(driver) {
 }
 
 async function switchToNetworkByName(driver, networkName) {
-  await driver.clickElement('[data-testid="network-display"]');
+  await driver.clickElement('.mm-picker-network');
   await driver.clickElement(`[data-testid="${networkName}"]`);
 }
 
