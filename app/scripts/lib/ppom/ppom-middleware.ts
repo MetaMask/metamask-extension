@@ -14,7 +14,8 @@ import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences';
 import { AppStateController } from '../../controllers/app-state';
 import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
-import { trace, TraceContext } from '../../../../shared/lib/trace';
+import { getProviderConfig } from '../../../../ui/ducks/metamask/metamask';
+import { trace, TraceContext, TraceName } from '../../../../shared/lib/trace';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -77,7 +78,9 @@ export function createPPOMMiddleware<
       const securityAlertsEnabled =
         preferencesController.store.getState()?.securityAlertsEnabled;
 
-      const { chainId } = networkController.state.providerConfig;
+      const { chainId } = getProviderConfig({
+        metamask: networkController.state,
+      });
       const isSupportedChain = await isChainSupported(chainId);
 
       if (
@@ -107,19 +110,21 @@ export function createPPOMMiddleware<
 
       const securityAlertId = generateSecurityAlertId();
 
-      trace({ name: 'PPOM Validation', parentContext: req.traceContext }, () =>
-        validateRequestWithPPOM({
-          ppomController,
-          request: req,
-          securityAlertId,
-          chainId,
-        }).then((securityAlertResponse) => {
-          updateSecurityAlertResponse(
-            req.method,
+      trace(
+        { name: TraceName.PPOMValidation, parentContext: req.traceContext },
+        () =>
+          validateRequestWithPPOM({
+            ppomController,
+            request: req,
             securityAlertId,
-            securityAlertResponse,
-          );
-        }),
+            chainId,
+          }).then((securityAlertResponse) => {
+            updateSecurityAlertResponse(
+              req.method,
+              securityAlertId,
+              securityAlertResponse,
+            );
+          }),
       );
 
       const loadingSecurityAlertResponse: SecurityAlertResponse = {

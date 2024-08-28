@@ -206,7 +206,7 @@ export const SendPage = () => {
       {
         event: MetaMetricsEventName.sendFlowExited,
         category: MetaMetricsEventCategory.Send,
-        properties: {
+        sensitiveProperties: {
           ...sendAnalytics,
         },
       },
@@ -224,7 +224,7 @@ export const SendPage = () => {
         {
           event: MetaMetricsEventName.sendSwapQuoteError,
           category: MetaMetricsEventCategory.Send,
-          properties: {
+          sensitiveProperties: {
             ...sendAnalytics,
           },
         },
