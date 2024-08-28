@@ -45,7 +45,9 @@ function MultiRpcEditModal({ isOpen }: MultiRpcEditModalProps) {
   const effectRan = useRef(false);
 
   useEffect(() => {
-    if (effectRan.current) return;
+    if (effectRan.current) {
+      return;
+    }
 
     const hasMultipleRpcEndpoints = listNetworks.some(
       (network) => network.rpcEndpoints.length > 1,

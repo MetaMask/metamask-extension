@@ -80,7 +80,7 @@ import { useNetworkFormState } from '../../../pages/settings/networks-tab/networ
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
-import SelectRpcUrlModal from './select-rpc-url-modal/select-rpc-url-modal';
+import { SelectRpcUrlModal } from './select-rpc-url-modal/select-rpc-url-modal';
 import AddBlockExplorerModal from './add-block-explorer-modal/add-block-explorer-modal';
 
 export enum ACTION_MODES {

@@ -1,8 +1,8 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { SelectRpcUrlModal } from './select-rpc-url-modal'; // Adjust the path as needed
 import {
   updateNetwork,
   setActiveNetwork,
@@ -10,8 +10,8 @@ import {
   toggleNetworkMenu,
 } from '../../../../store/actions';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
-import { NetworkConfiguration } from '@metamask/network-controller';
 import { stripProtocol } from '../rpc-list-item';
+import { SelectRpcUrlModal } from './select-rpc-url-modal'; // Adjust the path as needed
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => ({
