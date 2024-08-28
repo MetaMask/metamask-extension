@@ -4,6 +4,7 @@ import {
   getAllNetworks,
   getIsBridgeEnabled,
   getSwapsDefaultToken,
+  SwapsEthToken,
 } from '../../selectors';
 import * as swapsSlice from '../swaps/swaps';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
@@ -17,9 +18,9 @@ import {
 } from '../../../shared/constants/network';
 import { createDeepEqualSelector } from '../../selectors/util';
 import { getProviderConfig } from '../metamask/metamask';
+import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { BridgeState } from './bridge';
 
-// TODO add swaps state
 type BridgeAppState = {
   metamask: NetworkState & { bridgeState: BridgeControllerState } & {
     useExternalServices: boolean;
@@ -71,12 +72,10 @@ export const getToChains = createDeepEqualSelector(
     ),
 );
 
-export const getFromToken = (state: BridgeAppState) => {
-  const swapsFromToken = swapsSlice.getFromToken(state);
-  if (!swapsFromToken?.address) {
-    return getSwapsDefaultToken(state);
-  }
-  return swapsFromToken;
+export const getFromToken = (
+  state: BridgeAppState,
+): SwapsTokenObject | SwapsEthToken => {
+  return state.bridge.fromToken || getSwapsDefaultToken(state);
 };
 export const getFromTokens = (state: BridgeAppState) => {
   return state.metamask.bridgeState.srcTokens;
@@ -85,8 +84,10 @@ export const getFromTopAssets = (state: BridgeAppState) => {
   return state.metamask.bridgeState.srcTopAssets;
 };
 
-export const getToToken = (state: BridgeAppState) => {
-  return swapsSlice.getToToken(state);
+export const getToToken = (
+  state: BridgeAppState,
+): SwapsTokenObject | SwapsEthToken | undefined => {
+  return state.bridge.toToken;
 };
 export const getToTokens = (state: BridgeAppState) => {
   return state.bridge.toChain ? state.metamask.bridgeState.destTokens : {};
@@ -95,8 +96,8 @@ export const getToTopAssets = (state: BridgeAppState) => {
   return state.bridge.toChain ? state.metamask.bridgeState.destTopAssets : [];
 };
 
-export const getFromAmount = (state: BridgeAppState) =>
-  swapsSlice.getFromTokenInputValue(state);
+export const getFromAmount = (state: BridgeAppState): string | undefined =>
+  state.bridge.fromTokenInputValue;
 export const getToAmount = (_state: BridgeAppState) => {
   return '0';
 };

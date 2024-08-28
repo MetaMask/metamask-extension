@@ -9,16 +9,18 @@ import {
   setActiveNetwork,
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { swapsSlice } from '../swaps/swaps';
 import { RPCDefinition } from '../../../shared/constants/network';
 import { MetaMaskReduxDispatch } from '../../store/store';
 import { bridgeSlice } from './bridge';
 
-// Proxied swaps actions
-export const { setFromToken, setToToken, setFromTokenInputValue } =
-  swapsSlice.actions;
+const {
+  setToChain: setToChain_,
+  setFromToken,
+  setToToken,
+  setFromTokenInputValue,
+} = bridgeSlice.actions;
 
-const { setToChain: setToChain_ } = bridgeSlice.actions;
+export { setFromToken, setToToken, setFromTokenInputValue };
 
 const callBridgeControllerMethod = <T>(
   bridgeAction: BridgeUserAction | BridgeBackgroundAction,
