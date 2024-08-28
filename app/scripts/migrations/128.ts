@@ -2,7 +2,7 @@ import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 
-export const version = 130;
+export const version = 128;
 
 type VersionedData = {
   meta: { version: number };
