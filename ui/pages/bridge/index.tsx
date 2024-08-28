@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Switch, useHistory } from 'react-router-dom';
 import { I18nContext } from '../../contexts/i18n';
@@ -16,13 +16,15 @@ import {
   ButtonIconSize,
   IconName,
 } from '../../components/component-library';
-import { getIsBridgeEnabled } from '../../selectors';
+import { getIsBridgeChain, getIsBridgeEnabled } from '../../selectors';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
   Footer,
   Header,
 } from '../../components/multichain/pages/page';
+import { getProviderConfig } from '../../ducks/metamask/metamask';
+import { resetInputFields, setFromChain } from '../../ducks/bridge/actions';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import { BridgeCTAButton } from './prepare/bridge-cta-button';
 
@@ -35,6 +37,19 @@ const CrossChainSwap = () => {
   const dispatch = useDispatch();
 
   const isBridgeEnabled = useSelector(getIsBridgeEnabled);
+  const providerConfig = useSelector(getProviderConfig);
+  const isBridgeChain = useSelector(getIsBridgeChain);
+
+  useEffect(() => {
+    isBridgeChain &&
+      isBridgeEnabled &&
+      providerConfig &&
+      dispatch(setFromChain(providerConfig.chainId));
+
+    return () => {
+      dispatch(resetInputFields());
+    };
+  }, [isBridgeChain, isBridgeEnabled, providerConfig]);
 
   const redirectToDefaultRoute = async () => {
     history.push({
