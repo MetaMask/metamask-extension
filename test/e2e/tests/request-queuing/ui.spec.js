@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { Browser, until } = require('selenium-webdriver');
+const { CHAIN_IDS } = require('../../../../shared/constants/network');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -420,7 +421,7 @@ describe('Request-queue UI changes', function () {
 
         const networkMenu = await driver.findNestedElement(
           networkRow,
-          '[data-testid="network-list-item-options-button"]',
+          `[data-testid="network-list-item-options-button-${CHAIN_IDS.LOCALHOST}"]`,
         );
 
         await networkMenu.click();
