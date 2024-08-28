@@ -662,10 +662,9 @@ describe('addEthereumChainHandler', () => {
         getCurrentChainIdForDomain: jest
           .fn()
           .mockReturnValue(CURRENT_RPC_CONFIG.chainId),
-        findNetworkConfigurationBy: jest
+        getNetworkConfigurationByChainId: jest
           .fn()
           .mockReturnValue(CURRENT_RPC_CONFIG),
-        getCurrentRpcUrl: jest.fn().mockReturnValue(CURRENT_RPC_CONFIG.rpcUrl),
       },
     });
     const res = {};
@@ -677,9 +676,9 @@ describe('addEthereumChainHandler', () => {
           {
             chainId: CURRENT_RPC_CONFIG.chainId,
             chainName: 'Custom Network',
-            rpcUrls: [CURRENT_RPC_CONFIG.rpcUrl],
+            rpcUrls: [CURRENT_RPC_CONFIG.rpcEndpoints[0].url],
             nativeCurrency: {
-              symbol: CURRENT_RPC_CONFIG.ticker,
+              symbol: CURRENT_RPC_CONFIG.nativeCurrency,
               decimals: 18,
             },
             blockExplorerUrls: ['https://custom.blockexplorer'],
