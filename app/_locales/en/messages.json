@@ -1430,9 +1430,6 @@
   "data": {
     "message": "Data"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Can not restore your data. The file appears to be corrupt."
-  },
   "dataCollectionForMarketing": {
     "message": "Data collection for marketing"
   },
@@ -1544,6 +1541,24 @@
   },
   "developerOptionsResetStatesOnboarding": {
     "message": "Resets various states related to onboarding and redirects to the \"Secure Your Wallet\" onboarding page."
+  },
+  "developerOptionsSentryButtonGenerateBackgroundError": {
+    "message": "Generate Background Error"
+  },
+  "developerOptionsSentryButtonGenerateTrace": {
+    "message": "Generate Trace"
+  },
+  "developerOptionsSentryButtonGenerateUIError": {
+    "message": "Generate UI Error"
+  },
+  "developerOptionsSentryDescriptionGenerateBackgroundError": {
+    "message": "Generate an unhandled $1 in the service worker."
+  },
+  "developerOptionsSentryDescriptionGenerateTrace": {
+    "message": " Generate a $1 Sentry trace."
+  },
+  "developerOptionsSentryDescriptionGenerateUIError": {
+    "message": "Generate an unhandled $1 in this window."
   },
   "developerOptionsServiceWorkerKeepAlive": {
     "message": "Results in a timestamp being continuously saved to session.storage"
@@ -2737,9 +2752,6 @@
     "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Manage in settings"
-  },
   "marketCap": {
     "message": "Market cap"
   },
@@ -3201,6 +3213,9 @@
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
+  "noThanks": {
+    "message": "No thanks"
+  },
   "noTransactions": {
     "message": "You have no transactions"
   },
@@ -3373,7 +3388,7 @@
   },
   "notificationTransactionSuccessView": {
     "message": "View on $1",
-    "description": "Additional content in browser notification that appears when a transaction is confirmed and has a block explorer URL"
+    "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
   "notifications": {
     "message": "Notifications"
@@ -3543,6 +3558,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Optional:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Learn how we protect your privacy while collecting usage data for your profile."
   },
   "onboardingMetametricsTitle": {
     "message": "Help us improve MetaMask"
@@ -4353,12 +4371,6 @@
   },
   "restore": {
     "message": "Restore"
-  },
-  "restoreFailed": {
-    "message": "Can not restore your data from the file provided"
-  },
-  "restoreSuccessful": {
-    "message": "Your data has been restored successfully"
   },
   "restoreUserData": {
     "message": "Restore user data"
@@ -6155,7 +6167,7 @@
     "message": "Stay in the loop on what's happening in your wallet with notifications."
   },
   "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "Settings > Notifications."
+    "message": "notifications settings."
   },
   "turnOnMetamaskNotificationsMessagePrivacyLink": {
     "message": "Learn how we protect your privacy while using this feature."
@@ -6164,7 +6176,7 @@
     "message": "To use wallet notifications, we use a profile to sync some settings across your devices. $1"
   },
   "turnOnMetamaskNotificationsMessageThird": {
-    "message": "You can turn off notifications at any time in $1"
+    "message": "You can turn off notifications at any time in the $1"
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
@@ -6267,7 +6279,7 @@
     "message": "Autodetect NFTs"
   },
   "useNftDetectionDescriptionText": {
-    "message": "Let MetaMask add NFTs you own using third-party services (like OpenSea). Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk."
+    "message": "Let MetaMask add NFTs you own using third-party services. Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk."
   },
   "usePhishingDetection": {
     "message": "Use phishing detection"

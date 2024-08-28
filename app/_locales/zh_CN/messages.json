@@ -1260,9 +1260,6 @@
   "data": {
     "message": "数据"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "无法还原数据。文件似乎已损坏。"
-  },
   "dataHex": {
     "message": "十六进制"
   },
@@ -1551,6 +1548,9 @@
   "enableToken": {
     "message": "启用 $1",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "enableTokenAutoDetection": {
+    "message": "启用代币自动检测"
   },
   "enabled": {
     "message": "已启用"
@@ -2495,9 +2495,6 @@
     "message": "请确保没有人在看您的屏幕",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "在设置中管理"
-  },
   "max": {
     "message": "最大"
   },
@@ -2928,6 +2925,9 @@
   "noSnaps": {
     "message": "您没有安装 snap。"
   },
+  "noThanks": {
+    "message": "不，谢谢"
+  },
   "noTransactions": {
     "message": "您没有任何交易"
   },
@@ -3097,7 +3097,7 @@
   },
   "notificationTransactionSuccessView": {
     "message": "在 $1 上查看",
-    "description": "Additional content in browser notification that appears when a transaction is confirmed and has a block explorer URL"
+    "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
   "notifications": {
     "message": "通知"
@@ -4020,12 +4020,6 @@
   },
   "restore": {
     "message": "恢复"
-  },
-  "restoreFailed": {
-    "message": "无法使用所提供的文件恢复数据"
-  },
-  "restoreSuccessful": {
-    "message": "您的数据已成功恢复"
   },
   "restoreUserData": {
     "message": "恢复用户数据"
@@ -5866,7 +5860,7 @@
     "message": "自动检测NFT"
   },
   "useNftDetectionDescriptionText": {
-    "message": "让 MetaMask 使用第三方服务（如 OpenSea）来添加您所拥有的 NFT。打开自动检测 NFT 功能后，这些服务就可以看到您的 IP 地址和账户地址。启用此功能可能会将您的 IP 地址与以太坊地址关联起来，并显示骗子空投的虚假 NFT。您可以手动添加代币以避免此风险。"
+    "message": "让 MetaMask 使用第三方服务来添加您所拥有的 NFT。打开自动检测 NFT 功能后，这些服务就可以看到您的 IP 地址和账户地址。启用此功能可能会将您的 IP 地址与以太坊地址关联起来，并显示骗子空投的虚假 NFT。您可以手动添加代币以避免此风险。"
   },
   "usePhishingDetection": {
     "message": "使用网络钓鱼检测"

@@ -8,7 +8,7 @@ import browser from 'webextension-polyfill';
 import { getEnvironmentType } from '../app/scripts/lib/util';
 import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
-import { SENTRY_UI_STATE } from '../app/scripts/lib/setupSentry';
+import { SENTRY_UI_STATE } from '../app/scripts/constants/sentry-state';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
 import { COPY_OPTIONS } from '../shared/constants/copy';
 import switchDirection from '../shared/lib/switch-direction';
@@ -241,7 +241,11 @@ async function startApp(metamaskState, backgroundConnection, opts) {
  * @param {object} store - The Redux store.
  */
 function setupStateHooks(store) {
-  if (process.env.METAMASK_DEBUG || process.env.IN_TEST) {
+  if (
+    process.env.METAMASK_DEBUG ||
+    process.env.IN_TEST ||
+    process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS
+  ) {
     /**
      * The following stateHook is a method intended to throw an error, used in
      * our E2E test to ensure that errors are attempted to be sent to sentry.
@@ -263,7 +267,7 @@ function setupStateHooks(store) {
     window.stateHooks.throwTestBackgroundError = async function (
       msg = 'Test Error',
     ) {
-      store.dispatch(actions.throwTestBackgroundError(msg));
+      await actions.throwTestBackgroundError(msg);
     };
   }
 

@@ -131,6 +131,12 @@ const migrations = [
   require('./118'),
   require('./119'),
   require('./120'),
+  require('./120.1'),
+  require('./120.2'),
+  // require('./120.3'), Renamed to 120.6, do not re-use this number
+  require('./120.4'),
+  require('./120.5'),
+  require('./120.6'),
   require('./121'),
   require('./122'),
 ];

@@ -16,6 +16,18 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
     >
       We’d like to gather basic usage and diagnostics data to improve MetaMask. Know that we never sell the data you provide here.
     </p>
+    <div
+      class="mm-box mm-box--padding-top-2 mm-box--padding-bottom-2"
+    >
+      <a
+        class="mm-box mm-text mm-text--body-md mm-box--color-primary-default"
+        href="https://support.metamask.io/privacy-and-security/profile-privacy#how-is-the-profile-created"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        Learn how we protect your privacy while collecting usage data for your profile.
+      </a>
+    </div>
     <p
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography onboarding-metametrics__desc typography--p typography--weight-normal typography--style-normal typography--align-left typography--color-text-default"
     >
@@ -123,19 +135,19 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
       </span>
     </h6>
     <div
-      class="onboarding-metametrics__buttons"
+      class="mm-box onboarding-metametrics__buttons mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
     >
-      <button
-        class="button btn--rounded btn-primary btn--large"
-        data-testid="metametrics-i-agree"
-      >
-        I agree
-      </button>
       <button
         class="button btn--rounded btn-secondary btn--large"
         data-testid="metametrics-no-thanks"
       >
         No thanks
+      </button>
+      <button
+        class="button btn--rounded btn-primary btn--large"
+        data-testid="metametrics-i-agree"
+      >
+        I agree
       </button>
     </div>
   </div>
@@ -158,6 +170,18 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
     >
       We’d like to gather basic usage and diagnostics data to improve MetaMask. Know that we never sell the data you provide here.
     </p>
+    <div
+      class="mm-box mm-box--padding-top-2 mm-box--padding-bottom-2"
+    >
+      <a
+        class="mm-box mm-text mm-text--body-md mm-box--color-primary-default"
+        href="https://support.metamask.io/privacy-and-security/profile-privacy#how-is-the-profile-created"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        Learn how we protect your privacy while collecting usage data for your profile.
+      </a>
+    </div>
     <p
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography onboarding-metametrics__desc typography--p typography--weight-normal typography--style-normal typography--align-left typography--color-text-default"
     >
@@ -265,19 +289,19 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
       </span>
     </h6>
     <div
-      class="onboarding-metametrics__buttons"
+      class="mm-box onboarding-metametrics__buttons mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
     >
-      <button
-        class="button btn--rounded btn-primary btn--large"
-        data-testid="metametrics-i-agree"
-      >
-        I agree
-      </button>
       <button
         class="button btn--rounded btn-secondary btn--large"
         data-testid="metametrics-no-thanks"
       >
         No thanks
+      </button>
+      <button
+        class="button btn--rounded btn-primary btn--large"
+        data-testid="metametrics-i-agree"
+      >
+        I agree
       </button>
     </div>
   </div>

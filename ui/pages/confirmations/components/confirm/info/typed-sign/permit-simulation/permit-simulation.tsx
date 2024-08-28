@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { NameType } from '@metamask/name-controller';
-import { BigNumber } from 'bignumber.js';
 
+import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { parseTypedDataMessage } from '../../../../../../../../shared/modules/transaction.utils';
 import { Numeric } from '../../../../../../../../shared/modules/Numeric';
 import Name from '../../../../../../../components/app/name/name';
@@ -10,6 +10,7 @@ import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
+import { shortenString } from '../../../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../../selectors';
 import { Box, Text } from '../../../../../../../components/component-library';
@@ -53,15 +54,11 @@ const PermitSimulation: React.FC<{
   }, [exchangeRate, value]);
 
   const { tokenValue, tokenValueMaxPrecision } = useMemo(() => {
-    const valueBN = new BigNumber(value);
-    const diviserBN = new BigNumber(10).pow(tokenDecimals);
-    const resultBn = valueBN.div(diviserBN);
+    const tokenAmount = calcTokenAmount(value, tokenDecimals);
 
-    // FIXME - Precision may be lost for large values when using formatAmount
-    /** @see {@link https://github.com/MetaMask/metamask-extension/issues/25755} */
     return {
-      tokenValue: formatAmount('en-US', resultBn),
-      tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', resultBn),
+      tokenValue: formatAmount('en-US', tokenAmount),
+      tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', tokenAmount),
     };
   }, [tokenDecimals, value]);
 
@@ -91,17 +88,24 @@ const PermitSimulation: React.FC<{
                   backgroundColor={BackgroundColor.backgroundAlternative}
                   borderRadius={BorderRadius.XL}
                   paddingInline={2}
+                  style={{ paddingTop: '1px', paddingBottom: '1px' }}
                   textAlign={TextAlign.Center}
-                  ellipsis
                 >
-                  {tokenValue}
+                  {shortenString(tokenValue || '', {
+                    truncatedCharLimit: 15,
+                    truncatedStartChars: 15,
+                    truncatedEndChars: 0,
+                    skipCharacterInEnd: true,
+                  })}
                 </Text>
               </Tooltip>
             </Box>
             <Name value={verifyingContract} type={NameType.ETHEREUM_ADDRESS} />
           </Box>
           <Box>
-            {fiatValue && <IndividualFiatDisplay fiatAmount={fiatValue} />}
+            {fiatValue && (
+              <IndividualFiatDisplay fiatAmount={fiatValue} shorten />
+            )}
           </Box>
         </Box>
       </ConfirmInfoRow>

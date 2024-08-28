@@ -1263,9 +1263,6 @@
   "data": {
     "message": "Daten"
   },
-  "dataBackupSeemsCorrupt": {
-    "message": "Ihre Daten konnten nicht wiederhergestellt werden. Die Datei scheint beschädigt zu sein."
-  },
   "dataHex": {
     "message": "Hexadezimal"
   },
@@ -1554,6 +1551,9 @@
   "enableToken": {
     "message": "$1 aktivieren",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "enableTokenAutoDetection": {
+    "message": "Automatische Token-Erkennung aktivieren"
   },
   "enabled": {
     "message": "Aktiviert"
@@ -2498,9 +2498,6 @@
     "message": "Stellen Sie sicher, dass niemand zuschaut.",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "In Einstellungen verwalten"
-  },
   "max": {
     "message": "Max."
   },
@@ -2931,6 +2928,9 @@
   "noSnaps": {
     "message": "Keine Snaps installiert"
   },
+  "noThanks": {
+    "message": "Nein, danke!"
+  },
   "noTransactions": {
     "message": "Keine Transaktionen"
   },
@@ -3100,7 +3100,7 @@
   },
   "notificationTransactionSuccessView": {
     "message": "Auf $1 ansehen",
-    "description": "Additional content in browser notification that appears when a transaction is confirmed and has a block explorer URL"
+    "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
   "notifications": {
     "message": "Benachrichtigungen"
@@ -4023,12 +4023,6 @@
   },
   "restore": {
     "message": "Wiederherstellen"
-  },
-  "restoreFailed": {
-    "message": "Wiederherstellung Ihrer Daten aus der bereitgestellten Datei nicht möglich"
-  },
-  "restoreSuccessful": {
-    "message": "Ihre Daten wurden erfolgreich wiederhergestellt."
   },
   "restoreUserData": {
     "message": "Benutzerdaten wiederherstellen"
@@ -5869,7 +5863,7 @@
     "message": "NFTs automatisch erkennen"
   },
   "useNftDetectionDescriptionText": {
-    "message": "Lassen Sie MetaMask NFTs, die Sie besitzen, anhand von Drittanbieterdiensten (wie OpenSea) hinzufügen. Durch die automatische Erkennung von NFTs werden Ihre IP- und Kontoadresse für diese Dienste offengelegt. Durch die Aktivierung dieser Funktion können eventuell Ihre IP- und Ethereum-Adresse miteinander in Verbindung gebracht und gefälschte, von Betrügern per Airdropping abgesetzte NFTs anzeigt werden. Es ist möglich, Tokens manuell hinzufügen, um dieses Risiko zu vermeiden."
+    "message": "Lassen Sie MetaMask NFTs, die Sie besitzen, anhand von Drittanbieterdiensten hinzufügen. Durch die automatische Erkennung von NFTs werden Ihre IP- und Kontoadresse für diese Dienste offengelegt. Durch die Aktivierung dieser Funktion können eventuell Ihre IP- und Ethereum-Adresse miteinander in Verbindung gebracht und gefälschte, von Betrügern per Airdropping abgesetzte NFTs anzeigt werden. Es ist möglich, Tokens manuell hinzufügen, um dieses Risiko zu vermeiden."
   },
   "usePhishingDetection": {
     "message": "Phishing-Erkennung verwenden"

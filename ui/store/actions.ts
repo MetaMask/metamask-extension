@@ -1011,6 +1011,7 @@ export function addTransactionAndRouteToConfirmationPage(
     } catch (error) {
       dispatch(hideLoadingIndication());
       dispatch(displayWarning(error));
+      throw error;
     }
     return null;
   };
@@ -2382,12 +2383,14 @@ export function setProviderType(
 
 export function upsertNetworkConfiguration(
   {
+    id,
     rpcUrl,
     chainId,
     nickname,
     rpcPrefs,
     ticker = EtherDenomination.ETH,
   }: {
+    id?: string;
     rpcUrl: string;
     chainId: string;
     nickname: string;
@@ -2404,14 +2407,21 @@ export function upsertNetworkConfiguration(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     log.debug(
-      `background.upsertNetworkConfiguration: ${rpcUrl} ${chainId} ${ticker} ${nickname}`,
+      `background.upsertNetworkConfiguration: ${id} ${rpcUrl} ${chainId} ${ticker} ${nickname}`,
     );
     let networkConfigurationId;
     try {
       networkConfigurationId = await submitRequestToBackground(
         'upsertNetworkConfiguration',
         [
-          { rpcUrl, chainId, ticker, nickname: nickname || rpcUrl, rpcPrefs },
+          {
+            id,
+            rpcUrl,
+            chainId,
+            ticker,
+            nickname: nickname || rpcUrl,
+            rpcPrefs,
+          },
           { setActive, source, referrer: ORIGIN_METAMASK },
         ],
       );
@@ -2420,56 +2430,6 @@ export function upsertNetworkConfiguration(
       dispatch(displayWarning('Had a problem adding network!'));
     }
     return networkConfigurationId;
-  };
-}
-
-export function editAndSetNetworkConfiguration(
-  {
-    networkConfigurationId,
-    rpcUrl,
-    chainId,
-    nickname,
-    rpcPrefs,
-    ticker = EtherDenomination.ETH,
-  }: {
-    networkConfigurationId: string;
-    rpcUrl: string;
-    chainId: string;
-    nickname: string;
-    rpcPrefs: RPCDefinition['rpcPrefs'];
-    ticker: string;
-  },
-  { source }: { source: string },
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch) => {
-    log.debug(
-      `background.removeNetworkConfiguration: ${networkConfigurationId}`,
-    );
-    try {
-      await submitRequestToBackground('removeNetworkConfiguration', [
-        networkConfigurationId,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem removing network!'));
-      return;
-    }
-
-    try {
-      await submitRequestToBackground('upsertNetworkConfiguration', [
-        {
-          rpcUrl,
-          chainId,
-          ticker,
-          nickname: nickname || rpcUrl,
-          rpcPrefs,
-        },
-        { setActive: true, referrer: ORIGIN_METAMASK, source },
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem changing networks!'));
-    }
   };
 }
 
@@ -3263,17 +3223,12 @@ export function setParticipateInMetaMetrics(
             reject(err);
             return;
           }
-          /**
-           * We need to inform sentry that the user's optin preference may have
-           * changed. The logic to determine which way to toggle is in the
-           * toggleSession handler in setupSentry.js.
-           */
-          window.sentry?.toggleSession();
 
           dispatch({
             type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
             value: participationPreference,
           });
+
           resolve([participationPreference, metaMetricsId as string]);
         },
       );
@@ -5167,7 +5122,7 @@ export function setName(
  * Throw an error in the background for testing purposes.
  *
  * @param message - The error message.
- * @deprecated This is only mean to facilitiate E2E testing. We should not use
+ * @deprecated This is only meant to facilitiate E2E testing. We should not use
  * this for handling errors.
  */
 export async function throwTestBackgroundError(message: string): Promise<void> {
