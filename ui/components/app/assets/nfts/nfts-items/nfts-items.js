@@ -4,16 +4,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import Box from '../../../../ui/box';
-import Typography from '../../../../ui/typography/typography';
 import {
   Color,
-  TypographyVariant,
   JustifyContent,
   FLEX_DIRECTION,
   AlignItems,
   DISPLAY,
   BLOCK_SIZES,
   FLEX_WRAP,
+  TextVariant,
+  FontWeight,
+  FontStyle,
+  OverflowWrap,
+  TextAlign,
 } from '../../../../../helpers/constants/design-system';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
@@ -121,16 +124,16 @@ export default function NftsItems({
   const renderCollectionImage = (collectionImage, collectionName) => {
     if (collectionImage?.startsWith('ipfs') && !ipfsGateway) {
       return (
-        <div className="nfts-items__collection-image-alt">
+        <Text className="nfts-items__collection-image-alt" variant={TextVariant.bodyMd}>
           {collectionName?.[0]?.toUpperCase() ?? null}
-        </div>
+        </Text>
       );
     }
     if (!openSeaEnabled && !collectionImage?.startsWith('ipfs')) {
       return (
-        <div className="nfts-items__collection-image-alt">
+        <Text className="nfts-items__collection-image-alt" variant={TextVariant.bodyMd}>
           {collectionName?.[0]?.toUpperCase() ?? null}
-        </div>
+        </Text>
       );
     }
 
@@ -144,9 +147,13 @@ export default function NftsItems({
       );
     }
     return (
-      <div className="nfts-items__collection-image-alt">
+      <Text
+        className="nfts-items__collection-image-alt"
+        variant={TextVariant.bodyMd}
+        as="div"
+      >
         {collectionName?.[0]?.toUpperCase() ?? null}
-      </div>
+      </Text>
     );
   };
 
@@ -195,18 +202,24 @@ export default function NftsItems({
   };
 
   const renderCollection = ({ nfts, collectionName, collectionImage, key }) => {
-    if (!nfts.length) {
+    if (!nfts || !nfts.length) {
       return null;
     }
 
-    const isExpanded = nftsDropdownState[selectedAddress]?.[chainId]?.[key];
+    // Check if nftsDropdownState, selectedAddress, and chainId are defined
+    const isExpanded = nftsDropdownState && selectedAddress && chainId
+      ? nftsDropdownState[selectedAddress]?.[chainId]?.[key]
+      : false;
+
     return (
       <div className="nfts-items__collection" key={`collection-${key}`}>
         <button
           className="nfts-items__collection-wrapper"
           data-testid="collection-expander-button"
           onClick={() => {
-            updateNftDropDownStateKey(key, isExpanded);
+            if (nftsDropdownState && selectedAddress && chainId) {
+              updateNftDropDownStateKey(key, isExpanded);
+            }
           }}
         >
           <Box
@@ -221,13 +234,13 @@ export default function NftsItems({
               className="nfts-items__collection-header"
             >
               {renderCollectionImage(collectionImage, collectionName)}
-              <Typography
+              <Text
                 color={Color.textDefault}
-                variant={TypographyVariant.H5}
+                variant={TextVariant.headingMd}
                 margin={2}
               >
                 {`${collectionName ?? t('unknownCollection')} (${nfts.length})`}
-              </Typography>
+              </Text>
             </Box>
             <Box alignItems={AlignItems.flexEnd}>
               <Icon
@@ -282,7 +295,9 @@ export default function NftsItems({
                     isIpfsURL={isIpfsURL}
                     clickable
                   />
-                  {showTokenId ? <Text>{`${t('id')}: ${tokenId}`}</Text> : null}
+                  {showTokenId ? (
+                    <Text variant={TextVariant.bodySm}>{`${t('id')}: ${tokenId}`}</Text>
+                  ) : null}
                 </Box>
               );
             })}
