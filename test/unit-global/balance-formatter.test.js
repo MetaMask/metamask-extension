@@ -6,6 +6,8 @@ describe('currencyFormatting', function () {
   it('be able to format any infura currency', function () {
     const number = 10000;
 
+    expect(availableCurrencies).toHaveLength(58);
+
     availableCurrencies.forEach((conversion) => {
       const code = conversion.code.toUpperCase();
       const result = currencyFormatter.format(number, { code });
