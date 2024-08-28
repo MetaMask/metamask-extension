@@ -253,7 +253,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-15"
+                aria-describedby="tippy-tooltip-14"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -348,7 +348,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                 </p>
                 <div>
                   <div
-                    aria-describedby="tippy-tooltip-16"
+                    aria-describedby="tippy-tooltip-15"
                     class=""
                     data-original-title="This is the site asking for your signature."
                     data-tooltipped=""
@@ -545,7 +545,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                                   style="min-width: 0;"
                                 >
                                   <div
-                                    aria-describedby="tippy-tooltip-17"
+                                    aria-describedby="tippy-tooltip-16"
                                     class=""
                                     data-original-title="1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
                                     data-tooltipped=""
@@ -683,7 +683,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                                   style="min-width: 0;"
                                 >
                                   <div
-                                    aria-describedby="tippy-tooltip-18"
+                                    aria-describedby="tippy-tooltip-17"
                                     class=""
                                     data-original-title="2,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
                                     data-tooltipped=""
@@ -1093,7 +1093,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                       style="white-space: pre-wrap;"
                     >
-                      PermitBatch
+                      PermitSingle
                     </p>
                   </div>
                 </div>
@@ -1130,129 +1130,63 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                             <p
                               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                             >
-                              0:
+                              Token:
                             </p>
                           </div>
                           <div
-                            class="mm-box mm-box--width-full"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                           >
                             <div
-                              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                              >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-                                >
-                                  Token:
-                                </p>
-                              </div>
-                              <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                               >
                                 <div
-                                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-                                >
-                                  <div
-                                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-                                  >
-                                    <div
-                                      class="mm-avatar-account__jazzicon"
-                                    />
-                                  </div>
-                                  <p
-                                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                                    data-testid="confirm-info-row-display-name"
-                                  >
-                                    0xA0b86...6eB48
-                                  </p>
-                                </div>
+                                  class="mm-avatar-account__jazzicon"
+                                />
                               </div>
+                              <p
+                                class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                                data-testid="confirm-info-row-display-name"
+                              >
+                                0xA0b86...6eB48
+                              </p>
                             </div>
+                          </div>
+                        </div>
+                        <div
+                          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                        >
+                          <div
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                          >
+                            <p
+                              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                            >
+                              Amount:
+                            </p>
+                          </div>
+                          <div
+                            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                          >
                             <div
-                              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                              style="min-width: 0;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                              >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-                                >
-                                  Amount:
-                                </p>
-                              </div>
-                              <div
-                                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-                              >
-                                <div
-                                  style="min-width: 0;"
-                                >
-                                  <div
-                                    aria-describedby="tippy-tooltip-13"
-                                    class=""
-                                    data-original-title="1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
-                                    data-tooltipped=""
-                                    style="display: inline;"
-                                    tabindex="0"
-                                  >
-                                    <p
-                                      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                                      style="white-space: pre-wrap;"
-                                    >
-                                      1,461,501,637,3...
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div
-                              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
-                            >
-                              <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                              >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-                                >
-                                  Expiration:
-                                </p>
-                              </div>
-                              <div
-                                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                                aria-describedby="tippy-tooltip-13"
+                                class=""
+                                data-original-title="1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
+                                data-tooltipped=""
+                                style="display: inline;"
+                                tabindex="0"
                               >
                                 <p
                                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                                   style="white-space: pre-wrap;"
                                 >
-                                  20 January 1970, 22:34
-                                </p>
-                              </div>
-                            </div>
-                            <div
-                              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
-                            >
-                              <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                              >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-                                >
-                                  Nonce:
-                                </p>
-                              </div>
-                              <div
-                                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-                              >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                                  style="white-space: pre-wrap;"
-                                >
-                                  5
+                                  1,461,501,637,3...
                                 </p>
                               </div>
                             </div>
@@ -1268,132 +1202,42 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                             <p
                               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                             >
-                              1:
+                              Expiration:
                             </p>
                           </div>
                           <div
-                            class="mm-box mm-box--width-full"
+                            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
                           >
-                            <div
-                              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                            <p
+                              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                              style="white-space: pre-wrap;"
                             >
-                              <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                              >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-                                >
-                                  Token:
-                                </p>
-                              </div>
-                              <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-                              >
-                                <div
-                                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-                                >
-                                  <div
-                                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-                                  >
-                                    <div
-                                      class="mm-avatar-account__jazzicon"
-                                    />
-                                  </div>
-                                  <p
-                                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                                    data-testid="confirm-info-row-display-name"
-                                  >
-                                    0xb0B86...6EB48
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                            <div
-                              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                              20 January 1970, 22:34
+                            </p>
+                          </div>
+                        </div>
+                        <div
+                          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                        >
+                          <div
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                          >
+                            <p
+                              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                             >
-                              <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                              >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-                                >
-                                  Amount:
-                                </p>
-                              </div>
-                              <div
-                                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-                              >
-                                <div
-                                  style="min-width: 0;"
-                                >
-                                  <div
-                                    aria-describedby="tippy-tooltip-14"
-                                    class=""
-                                    data-original-title="2,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
-                                    data-tooltipped=""
-                                    style="display: inline;"
-                                    tabindex="0"
-                                  >
-                                    <p
-                                      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                                      style="white-space: pre-wrap;"
-                                    >
-                                      2,461,501,637,3...
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div
-                              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                              Nonce:
+                            </p>
+                          </div>
+                          <div
+                            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                          >
+                            <p
+                              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                              style="white-space: pre-wrap;"
                             >
-                              <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                              >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-                                >
-                                  Expiration:
-                                </p>
-                              </div>
-                              <div
-                                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
-                              >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                                  style="white-space: pre-wrap;"
-                                >
-                                  20 January 1970, 22:34
-                                </p>
-                              </div>
-                            </div>
-                            <div
-                              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
-                            >
-                              <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                              >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-                                >
-                                  Nonce:
-                                </p>
-                              </div>
-                              <div
-                                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-                              >
-                                <p
-                                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                                  style="white-space: pre-wrap;"
-                                >
-                                  6
-                                </p>
-                              </div>
-                            </div>
+                              5
+                            </p>
                           </div>
                         </div>
                       </div>

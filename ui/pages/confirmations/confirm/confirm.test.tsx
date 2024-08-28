@@ -7,6 +7,7 @@ import { unapprovedPersonalSignMsg } from '../../../../test/data/confirmations/p
 import {
   orderSignatureMsg,
   permitSignatureMsg,
+  permitSingleSignatureMsg,
   permitBatchSignatureMsg,
   unapprovedTypedSignMsgV4,
 } from '../../../../test/data/confirmations/typed_sign';
@@ -133,12 +134,17 @@ describe('Confirm', () => {
       metamask: {
         ...mockState.metamask,
       },
-      confirm: { currentConfirmation: permitBatchSignatureMsg },
+      confirm: { currentConfirmation: permitSingleSignatureMsg },
     };
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
 
     await act(async () => {
-      const { container } = await renderWithProvider(<Confirm />, mockStore);
+      const { container, findByText } = await renderWithProvider(
+        <Confirm />,
+        mockStore,
+      );
+
+      expect(await findByText('1,461,501,637,3...')).toBeInTheDocument();
       expect(container).toMatchSnapshot();
     });
   });
@@ -154,7 +160,12 @@ describe('Confirm', () => {
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
 
     await act(async () => {
-      const { container } = await renderWithProvider(<Confirm />, mockStore);
+      const { container, findByText } = await renderWithProvider(
+        <Confirm />,
+        mockStore,
+      );
+
+      expect(await findByText('1,461,501,637,3...')).toBeInTheDocument();
       expect(container).toMatchSnapshot();
     });
   });
