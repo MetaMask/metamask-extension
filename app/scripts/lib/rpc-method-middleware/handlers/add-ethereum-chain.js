@@ -139,6 +139,7 @@ async function addEthereumChainHandler(
       currentChainIdForDomain === chainId &&
       currentRpcUrl === firstValidRPCUrl
     ) {
+      res.result = null;
       return end();
     }
 
