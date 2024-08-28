@@ -261,14 +261,12 @@ function maybeDetectPhishing(theController) {
       }
 
       theController.phishingController.maybeUpdateState();
-      const phishingTestResponse =
-        theController.phishingController.test(hostname);
+      const phishingTestResponse = theController.phishingController.test(
+        details.url,
+      );
 
       const blockedRequestResponse =
         theController.phishingController.isBlockedRequest(details.url);
-
-      console.log('blockedRequestResponse', blockedRequestResponse);
-      console.log('details', details);
 
       // if the request is not blocked, and the phishing test is not blocked, return and don't show the phishing screen
       if (!phishingTestResponse?.result && !blockedRequestResponse.result) {

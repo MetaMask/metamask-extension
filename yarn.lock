@@ -6136,8 +6136,8 @@ __metadata:
   linkType: hard
 
 "@metamask/phishing-controller@file:./../core/packages/phishing-controller::locator=metamask-crx%40workspace%3A.":
-  version: 11.0.0
-  resolution: "@metamask/phishing-controller@file:./../core/packages/phishing-controller#./../core/packages/phishing-controller::hash=6fbf9b&locator=metamask-crx%40workspace%3A."
+  version: 12.0.0
+  resolution: "@metamask/phishing-controller@file:./../core/packages/phishing-controller#./../core/packages/phishing-controller::hash=0d2ffd&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^6.0.3"
     "@metamask/controller-utils": "npm:^11.1.0"
@@ -6147,7 +6147,7 @@ __metadata:
     ethereum-cryptography: "npm:^2.1.2"
     fastest-levenshtein: "npm:^1.0.16"
     punycode: "npm:^2.1.1"
-  checksum: 10/e86635cf637e0ea23fe5113c67a0d6b383d8d37f36a76299b7452e7e5c9355da6931025fb62d19ad01b19fc87ab3ed4acbb6c50aa114fe0de4e310cf3d034230
+  checksum: 10/02e76d86b28dbdb9e96d7be4a5ccb63142d1ea3bee7012265b7a637e78f5994d650021c76a7159447bb9e9289cb50540ed76b547ff4f7217741faf06c33f27f5
   languageName: node
   linkType: hard
 
