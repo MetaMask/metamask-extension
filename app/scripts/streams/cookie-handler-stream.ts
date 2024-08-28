@@ -16,7 +16,7 @@ import {
   METAMASK_PROVIDER,
   PHISHING_SAFELIST,
   LEGACY_PROVIDER,
-} from './stream-constants';
+} from '../constants/stream-constant';
 import { logStreamDisconnectWarning } from './shared';
 
 export const isDetectedCookieMarketingSite: boolean =

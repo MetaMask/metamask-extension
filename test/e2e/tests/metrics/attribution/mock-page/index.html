@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>Mock E2E Cookie Handler</title>
+</head>
+<script>
+	function fireCookieIdEvent() {
+    console.log('postmessage');
+		window.postMessage(
+      {
+        target: 'metamask-contentscript',
+        data: {
+          name: 'metamask-cookie-handler',
+          data: {
+            jsonrpc: '2.0',
+            method: 'getCookieFromMarketingPage',
+            params: [{ ga_client_id: 154, origin: 'http://127.0.0.1:8080' }],
+            id: '154',
+            origin: 'http://127.0.0.1:8080',
+          },
+        },
+      },
+      'http://127.0.0.1:8080',
+    );
+	}
+	window.onload = fireCookieIdEvent;
+</script>
+<body>
+	<div>Hello</div>
+	<iframe id="frame" width=900 height=900>
+</body>
+
+</html>
