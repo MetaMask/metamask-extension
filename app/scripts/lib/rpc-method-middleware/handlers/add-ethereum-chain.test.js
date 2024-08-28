@@ -542,7 +542,7 @@ describe('addEthereumChainHandler', () => {
     );
   });
 
-  it.only('should add result set to null to response object if the requested rpcUrl (and chainId) is currently selected', async () => {
+  it('should add result set to null to response object if the requested rpcUrl (and chainId) is currently selected', async () => {
     const CURRENT_RPC_CONFIG = createMockNonInfuraConfiguration();
 
     const mocks = makeMocks({
