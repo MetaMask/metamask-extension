@@ -1,0 +1,122 @@
+@use "design-system";
+
+.tokens-main-view-modal {
+  .multichain-asset-picker-list-item .mm-badge-wrapper__badge-container {
+    display: none;
+  }
+}
+
+.prepare-bridge-page {
+  display: flex;
+  flex-flow: column;
+  flex: 1;
+  width: 100%;
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 0 16px 0;
+    border-radius: 8px;
+    border: 1px solid var(--color-border-muted);
+  }
+
+  &__from,
+  &__to {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    justify-content: center;
+    padding: 8px 16px 8px 16px;
+  }
+
+  &__input-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 298px;
+    gap: 16px;
+
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      display: none;
+    }
+
+    input[type="number"]:hover::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      display: none;
+    }
+
+    .mm-text-field {
+      background-color: inherit;
+
+      &--focused {
+        outline: none;
+      }
+    }
+
+    .amount-tooltip {
+
+    }
+  }
+
+  &__amounts-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 298px;
+    height: 22px;
+
+    p,
+    span {
+      color: var(--color-text-alternative);
+      font-size: 12px;
+    }
+  }
+
+  .asset-picker {
+    border: 1px solid var(--color-border-muted);
+    height: 40px;
+    min-width: fit-content;
+    max-width: fit-content;
+    background-color: inherit;
+
+    p {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .mm-avatar-token {
+      height: 24px;
+      width: 24px;
+      border: 1px solid var(--color-border-muted);
+    }
+
+    .mm-badge-wrapper__badge-container .mm-avatar-base {
+      height: 10px;
+      width: 10px;
+      border: none;
+    }
+  }
+
+  .amount-input {
+    border: none;
+
+    input {
+      text-align: right;
+      padding-right: 0;
+      font-size: 24px;
+      font-weight: 700;
+
+      &:focus,
+      &:focus-visible {
+        outline: none;
+      }
+    }
+
+    .mm-text-field--focused {
+      outline: none;
+    }
+  }
+}

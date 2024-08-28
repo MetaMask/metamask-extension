@@ -1,0 +1,192 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PrepareBridgePage should render the component 1`] = `
+<div>
+  <div
+    class="prepare-bridge-page"
+  >
+    <div
+      class="mm-box prepare-bridge-page__content"
+    >
+      <div
+        class="mm-box prepare-bridge-page__from"
+      >
+        <div
+          class="mm-box prepare-bridge-page__input-row"
+        >
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-md asset-picker mm-text--body-md-medium mm-box--padding-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-pill"
+            data-testid="asset-picker-button"
+          >
+            <span
+              class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-3 mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-box--display-flex"
+                >
+                  <div
+                    class="mm-box mm-badge-wrapper mm-box--display-inline-block"
+                  >
+                    <div
+                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+                    >
+                      <img
+                        alt="ETH logo"
+                        class="mm-avatar-token__token-image"
+                        src="./images/eth_logo.svg"
+                      />
+                    </div>
+                    <div
+                      class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right"
+                    >
+                      <div
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+                      >
+                        <img
+                          alt="Ethereum Mainnet logo"
+                          class="mm-avatar-network__network-image"
+                          src="./images/eth_logo.svg"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="mm-box"
+                >
+                  <div
+                    class=""
+                    style="display: inline;"
+                    tabindex="0"
+                    title=""
+                  >
+                    <p
+                      class="mm-box mm-text asset-picker__symbol mm-text--body-md mm-box--color-text-default"
+                    >
+                      ETH
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </span>
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-0 mm-box--display-inline-block mm-box--color-icon-default"
+              style="mask-image: url('./images/icons/arrow-down.svg');"
+            />
+          </button>
+          <div>
+            <div
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+            >
+              <input
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                data-testid="from-amount"
+                focused="true"
+                placeholder="0"
+                type="number"
+                value=""
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box prepare-bridge-page__amounts-row"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            Balance
+            : 
+            "0"
+          </p>
+          <div
+            class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+            title="$0.00"
+          >
+            <span
+              class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            >
+              $0.00
+            </span>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box prepare-bridge-page__to"
+      >
+        <div
+          class="mm-box prepare-bridge-page__input-row"
+        >
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-md asset-picker mm-text--body-md-medium mm-box--padding-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-pill"
+            data-testid="asset-picker-button"
+          >
+            <span
+              class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+            >
+              <p
+                class="mm-box mm-text asset-picker__fallback mm-text--body-md mm-box--color-text-default"
+              >
+                Select token
+              </p>
+            </span>
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-0 mm-box--display-inline-block mm-box--color-icon-default"
+              style="mask-image: url('./images/icons/arrow-down.svg');"
+            />
+          </button>
+          <div>
+            <div
+              class="amount-tooltip"
+              style="display: inherit;"
+              tabindex="0"
+              title=""
+            >
+              <div
+                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+              >
+                <input
+                  autocomplete="off"
+                  class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                  data-testid="to-amount"
+                  disabled=""
+                  focused="false"
+                  placeholder="0"
+                  readonly=""
+                  type="number"
+                  value="0"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box prepare-bridge-page__amounts-row"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            Balance
+            : 
+            "0"
+          </p>
+          <div
+            class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+            title="$0.00"
+          >
+            <span
+              class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            >
+              $0.00
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
