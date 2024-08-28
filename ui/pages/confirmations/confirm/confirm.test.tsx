@@ -32,8 +32,11 @@ describe('Confirm', () => {
 
   it('should render', () => {
     const mockStore = configureMockStore(middleware)(mockState);
-    const { container } = renderWithProvider(<Confirm />, mockStore);
-    expect(container).toBeDefined();
+
+    act(() => {
+      const { container } = renderWithProvider(<Confirm />, mockStore);
+      expect(container).toBeDefined();
+    });
   });
 
   it('should match snapshot for signature - typed sign - permit', async () => {
@@ -64,7 +67,7 @@ describe('Confirm', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('matches snapshot for signature - personal sign type', () => {
+  it('matches snapshot for signature - personal sign type', async () => {
     const mockStatePersonalSign = {
       ...mockState,
       metamask: {
@@ -73,8 +76,11 @@ describe('Confirm', () => {
       confirm: { currentConfirmation: unapprovedPersonalSignMsg },
     };
     const mockStore = configureMockStore(middleware)(mockStatePersonalSign);
-    const { container } = renderWithProvider(<Confirm />, mockStore);
-    expect(container).toMatchSnapshot();
+
+    await act(async () => {
+      const { container } = await renderWithProvider(<Confirm />, mockStore);
+      expect(container).toMatchSnapshot();
+    });
   });
 
   it('should match snapshot signature - typed sign - order', async () => {
@@ -114,8 +120,11 @@ describe('Confirm', () => {
       confirm: { currentConfirmation: unapprovedTypedSignMsgV4 },
     };
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
-    const { container } = renderWithProvider(<Confirm />, mockStore);
-    expect(container).toMatchSnapshot();
+
+    await act(async () => {
+      const { container } = await renderWithProvider(<Confirm />, mockStore);
+      expect(container).toMatchSnapshot();
+    });
   });
 
   it('should match snapshot for signature - typed sign - V4 - PermitSingle', async () => {
@@ -127,8 +136,11 @@ describe('Confirm', () => {
       confirm: { currentConfirmation: permitBatchSignatureMsg },
     };
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
-    const { container } = renderWithProvider(<Confirm />, mockStore);
-    expect(container).toMatchSnapshot();
+
+    await act(async () => {
+      const { container } = await renderWithProvider(<Confirm />, mockStore);
+      expect(container).toMatchSnapshot();
+    });
   });
 
   it('should match snapshot for signature - typed sign - V4 - PermitBatch', async () => {
@@ -140,7 +152,10 @@ describe('Confirm', () => {
       confirm: { currentConfirmation: permitBatchSignatureMsg },
     };
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
-    const { container } = renderWithProvider(<Confirm />, mockStore);
-    expect(container).toMatchSnapshot();
+
+    await act(async () => {
+      const { container } = await renderWithProvider(<Confirm />, mockStore);
+      expect(container).toMatchSnapshot();
+    });
   });
 });
