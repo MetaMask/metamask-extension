@@ -15,7 +15,7 @@ import {
   LOADING_SECURITY_ALERT_RESPONSE,
   SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
 } from '../../../../shared/constants/security-provider';
-import { trace, TraceContext } from '../../../../shared/lib/trace';
+import { trace, TraceContext, TraceName } from '../../../../shared/lib/trace';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -92,19 +92,21 @@ export function createPPOMMiddleware<
 
       const securityAlertId = generateSecurityAlertId();
 
-      trace({ name: 'PPOM Validation', parentContext: req.traceContext }, () =>
-        validateRequestWithPPOM({
-          ppomController,
-          request: req,
-          securityAlertId,
-          chainId,
-        }).then((securityAlertResponse) => {
-          updateSecurityAlertResponse(
-            req.method,
+      trace(
+        { name: TraceName.PPOMValidation, parentContext: req.traceContext },
+        () =>
+          validateRequestWithPPOM({
+            ppomController,
+            request: req,
             securityAlertId,
-            securityAlertResponse,
-          );
-        }),
+            chainId,
+          }).then((securityAlertResponse) => {
+            updateSecurityAlertResponse(
+              req.method,
+              securityAlertId,
+              securityAlertResponse,
+            );
+          }),
       );
 
       const loadingSecurityAlertResponse: SecurityAlertResponse = {
