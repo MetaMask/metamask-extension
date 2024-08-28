@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -18,7 +18,13 @@ import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInf
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 import HeaderInfo from './header-info';
 
-const Header = () => {
+const Header = ({
+  showAdvancedDetails,
+  setShowAdvancedDetails,
+}: {
+  showAdvancedDetails: boolean;
+  setShowAdvancedDetails: Dispatch<SetStateAction<boolean>>;
+}) => {
   const { networkImageUrl, networkDisplayName } = useConfirmationNetworkInfo();
   const { senderAddress: fromAddress, senderName: fromName } =
     useConfirmationRecipientInfo();
@@ -52,7 +58,10 @@ const Header = () => {
         </Box>
       </Box>
       <Box alignItems={AlignItems.flexEnd} display={Display.Flex} padding={4}>
-        <HeaderInfo />
+        <HeaderInfo
+          showAdvancedDetails={showAdvancedDetails}
+          setShowAdvancedDetails={setShowAdvancedDetails}
+        />
       </Box>
     </Box>
   );

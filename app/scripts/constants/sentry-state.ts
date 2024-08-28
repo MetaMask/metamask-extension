@@ -93,6 +93,9 @@ export const SENTRY_BACKGROUND_STATE = {
     trezorModel: true,
     usedNetworks: true,
   },
+  MultichainBalancesController: {
+    balances: false,
+  },
   CronjobController: {
     jobs: false,
   },
@@ -184,7 +187,6 @@ export const SENTRY_BACKGROUND_STATE = {
   PPOMController: {
     securityAlertsEnabled: false,
     storageMetadata: [],
-    versionFileETag: false,
     versionInfo: [],
   },
   PermissionController: {
@@ -242,6 +244,11 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   PushPlatformNotificationsController: {
     fcmToken: false,
+  },
+  MultichainRatesController: {
+    fiatCurrency: true,
+    rates: true,
+    cryptocurrencies: true,
   },
   QueuedRequestController: {
     queuedRequestCount: true,
@@ -304,6 +311,7 @@ export const SENTRY_BACKGROUND_STATE = {
       swapsQuotePrefetchingRefreshTime: true,
       swapsQuoteRefreshTime: true,
       swapsStxBatchStatusRefreshTime: true,
+      swapsStxStatusDeadline: true,
       swapsStxGetTransactionsRefreshTime: true,
       swapsStxMaxFeeMultiplier: true,
       swapsUserFeeLevel: true,

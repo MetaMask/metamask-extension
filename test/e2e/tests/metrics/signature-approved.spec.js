@@ -80,6 +80,7 @@ describe('Signature Approved Event @no-mmi', function () {
           category: 'inpage_provider',
           locale: 'en',
           chain_id: '0x539',
+          eip712_primary_type: 'Mail',
           environment_type: 'background',
           security_alert_reason: 'NotApplicable',
           security_alert_response: 'NotApplicable',
@@ -91,6 +92,7 @@ describe('Signature Approved Event @no-mmi', function () {
           category: 'inpage_provider',
           locale: 'en',
           chain_id: '0x539',
+          eip712_primary_type: 'Mail',
           environment_type: 'background',
           security_alert_response: 'NotApplicable',
         });

@@ -26,6 +26,7 @@ export const NotificationDetailBlockExplorerButton = ({
   const t = useI18nContext();
 
   const chainIdHex = decimalToHex(chainId);
+
   const { blockExplorerConfig } = getNetworkDetailsByChainId(
     `0x${chainIdHex}` as keyof typeof CHAIN_IDS,
   );

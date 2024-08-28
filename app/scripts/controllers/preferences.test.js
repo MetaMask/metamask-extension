@@ -374,10 +374,10 @@ describe('preferences controller', () => {
   });
 
   describe('setUseNftDetection', () => {
-    it('should default to false', () => {
+    it('should default to true', () => {
       expect(
         preferencesController.store.getState().useNftDetection,
-      ).toStrictEqual(false);
+      ).toStrictEqual(true);
     });
 
     it('should set the useNftDetection property in state', () => {
@@ -405,10 +405,10 @@ describe('preferences controller', () => {
   });
 
   describe('setOpenSeaEnabled', () => {
-    it('should default to false', () => {
+    it('should default to true', () => {
       expect(
         preferencesController.store.getState().openSeaEnabled,
-      ).toStrictEqual(false);
+      ).toStrictEqual(true);
     });
 
     it('should set the openSeaEnabled property in state', () => {
@@ -485,7 +485,6 @@ describe('preferences controller', () => {
         [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1]].chainId]: true,
         [CHAIN_IDS.GOERLI]: true,
         [CHAIN_IDS.SEPOLIA]: true,
-        [CHAIN_IDS.LINEA_GOERLI]: true,
         [CHAIN_IDS.LINEA_SEPOLIA]: true,
       });
     });
@@ -503,7 +502,6 @@ describe('preferences controller', () => {
         [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1]].chainId]: true,
         [CHAIN_IDS.GOERLI]: true,
         [CHAIN_IDS.SEPOLIA]: true,
-        [CHAIN_IDS.LINEA_GOERLI]: true,
         [CHAIN_IDS.LINEA_SEPOLIA]: true,
       });
     });

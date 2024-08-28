@@ -11,7 +11,6 @@ import {
 } from '@metamask/user-operation-controller';
 import type { Hex } from '@metamask/utils';
 import { addHexPrefix } from 'ethereumjs-util';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { PPOMController } from '@metamask/ppom-validator';
 
 import {
@@ -25,7 +24,6 @@ import {
   SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES,
   SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
 } from '../../../../shared/constants/security-provider';
-///: END:ONLY_INCLUDE_IF
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -66,10 +64,7 @@ export async function addDappTransaction(
 ): Promise<string> {
   const { dappRequest } = request;
   const { id: actionId, method, origin } = dappRequest;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   const { securityAlertResponse } = dappRequest;
-  ///: END:ONLY_INCLUDE_IF
 
   const transactionOptions: AddTransactionOptions = {
     actionId,
@@ -77,9 +72,7 @@ export async function addDappTransaction(
     origin,
     // This is the default behaviour but specified here for clarity
     requireApproval: true,
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     securityAlertResponse,
-    ///: END:ONLY_INCLUDE_IF
   };
 
   const { waitForHash } = await addTransactionOrUserOperation({
@@ -223,7 +216,6 @@ function getTransactionByHash(
 }
 
 function validateSecurity(request: AddTransactionRequest) {
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   const {
     chainId,
     ppomController,
@@ -290,5 +282,4 @@ function validateSecurity(request: AddTransactionRequest) {
   } catch (error) {
     handlePPOMError(error, 'Error validating JSON RPC using PPOM: ');
   }
-  ///: END:ONLY_INCLUDE_IF
 }

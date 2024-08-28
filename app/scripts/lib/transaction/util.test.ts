@@ -95,10 +95,8 @@ describe('Transaction Utils', () => {
   let dappRequest: AddDappTransactionRequest;
   let transactionController: jest.Mocked<TransactionController>;
   let userOperationController: jest.Mocked<UserOperationController>;
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
-  ///: END:ONLY_INCLUDE_IF
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -106,10 +104,8 @@ describe('Transaction Utils', () => {
     request = cloneDeep(TRANSACTION_REQUEST_MOCK);
     transactionController = createTransactionControllerMock();
     userOperationController = createUserOperationControllerMock();
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     request.ppomController = {} as any;
-    ///: END:ONLY_INCLUDE_IF
 
     transactionController.addTransaction.mockResolvedValue({
       result: Promise.resolve('testHash'),

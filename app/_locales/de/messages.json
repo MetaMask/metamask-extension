@@ -838,7 +838,7 @@
   "confirm": {
     "message": "Bestätigen"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Ich habe die Benachrichtigungen zur Kenntnis genommen und möchte trotzdem fortfahren"
   },
   "confirmAlertModalDetails": {
@@ -1332,108 +1332,6 @@
   "descriptionFromSnap": {
     "message": "Beschreibung von $1",
     "description": "$1 represents the name of the snap"
-  },
-  "desktopApp": {
-    "message": "Desktop-App"
-  },
-  "desktopConnectionCriticalErrorDescription": {
-    "message": "Dieser Fehler könnte unregelmäßig auftreten, also versuchen Sie, Ihr die Erweiterung neu zu starten oder MetaMask Desktop zu deaktivieren."
-  },
-  "desktopConnectionCriticalErrorTitle": {
-    "message": "MetaMask hat Probleme beim Starten."
-  },
-  "desktopConnectionLostErrorDescription": {
-    "message": "Bitte stellen Sie sicher, dass die Desktop-App ausgeführt wird oder deaktivieren Sie MetaMask Desktop."
-  },
-  "desktopConnectionLostErrorTitle": {
-    "message": "MetaMask Desktop-Verbindung wurde unterbrochen"
-  },
-  "desktopDisableButton": {
-    "message": "Desktop-App deaktivieren"
-  },
-  "desktopDisableErrorCTA": {
-    "message": "MetaMask Desktop deaktivieren"
-  },
-  "desktopEnableButton": {
-    "message": "Desktop-App aktivieren"
-  },
-  "desktopEnableButtonDescription": {
-    "message": "Klicken Sie, um alle Hintergrundprozesse in der Desktop-App auszuführen."
-  },
-  "desktopErrorNavigateSettingsCTA": {
-    "message": "Zurück zur Seite „Einstellungen“"
-  },
-  "desktopErrorRestartMMCTA": {
-    "message": "MetaMask neu starten"
-  },
-  "desktopNotFoundErrorCTA": {
-    "message": "MetaMask Desktop herunterladen"
-  },
-  "desktopNotFoundErrorDescription1": {
-    "message": "Bitte stellen Sie sicher, dass die MetaMask Desktop-App ausgeführt wird."
-  },
-  "desktopNotFoundErrorDescription2": {
-    "message": "Sollten Sie keine Desktop-App installiert haben, laden Sie diese bitte von der MetaMask-Webseite herunter."
-  },
-  "desktopNotFoundErrorTitle": {
-    "message": "MetaMask Desktop wurde nicht gefunden"
-  },
-  "desktopOpenOrDownloadCTA": {
-    "message": "MetaMask Desktop öffnen"
-  },
-  "desktopOutdatedErrorCTA": {
-    "message": "MetaMask Desktop aktualisieren"
-  },
-  "desktopOutdatedErrorDescription": {
-    "message": "Ihre MetaMask Desktop-App muss aktualisiert werden."
-  },
-  "desktopOutdatedErrorTitle": {
-    "message": "MetaMask Desktop-App ist veraltet"
-  },
-  "desktopOutdatedExtensionErrorCTA": {
-    "message": "MetaMask-Erweiterung aktualisieren"
-  },
-  "desktopOutdatedExtensionErrorDescription": {
-    "message": "Ihre MetaMask-Erweiterung muss aktualisiert werden."
-  },
-  "desktopOutdatedExtensionErrorTitle": {
-    "message": "MetaMask-Erweiterung ist veraltet"
-  },
-  "desktopPageDescription": {
-    "message": "Bei erfolgreicher Kopplung wird die Erweiterung neu gestartet und Sie müssen Ihr Passwort erneut eingeben."
-  },
-  "desktopPageSubTitle": {
-    "message": "Öffnen Sie MetaMask Desktop und geben Sie diesen Code ein."
-  },
-  "desktopPageTitle": {
-    "message": "Mit Desktop koppeln"
-  },
-  "desktopPairedWarningDeepLink": {
-    "message": "Gehen Sie zu den Einstellungen in MetaMask Desktop."
-  },
-  "desktopPairedWarningDescription": {
-    "message": "Wenn Sie eine neue Kopplung starten möchten, entfernen Sie bitte die aktuelle Verbindung."
-  },
-  "desktopPairedWarningTitle": {
-    "message": "MM Desktop ist bereits gekoppelt"
-  },
-  "desktopPairingExpireMessage": {
-    "message": "Code läuft in $1 Sekunden ab"
-  },
-  "desktopRouteNotFoundErrorDescription": {
-    "message": "desktopRouteNotFoundErrorDescription"
-  },
-  "desktopRouteNotFoundErrorTitle": {
-    "message": "desktopRouteNotFoundErrorTitle"
-  },
-  "desktopUnexpectedErrorCTA": {
-    "message": "Zur MetaMask-Startseite zurückkehren"
-  },
-  "desktopUnexpectedErrorDescription": {
-    "message": "Prüfen Sie MetaMask Desktop, um die Verbindung wiederherzustellen."
-  },
-  "desktopUnexpectedErrorTitle": {
-    "message": "Etwas ist schiefgelaufen ..."
   },
   "details": {
     "message": "Details"
@@ -2224,9 +2122,6 @@
   "initialTransactionConfirmed": {
     "message": "Ihre erste Transaktion wurde vom Netzwerk bestätigt. Klicken Sie auf „OK“, um zurückzukehren."
   },
-  "inlineAlert": {
-    "message": "Warnung"
-  },
   "inputLogicEmptyState": {
     "message": "Geben Sie nur eine Nummer ein, die Sie den Drittanbieter jetzt oder in Zukunft ausgeben lassen möchten. Sie können die Ausgabenobergrenze später jederzeit ändern."
   },
@@ -2551,9 +2446,6 @@
   },
   "loading": {
     "message": "Wird geladen ..."
-  },
-  "loadingNFTs": {
-    "message": "NFTs werden geladen ..."
   },
   "loadingScreenHardwareWalletMessage": {
     "message": "Bitte schließen Sie die Transaktion im Hardware-Wallet ab."
@@ -3311,40 +3203,21 @@
   "onboardingMetametricsAgree": {
     "message": "Ich stimme zu"
   },
-  "onboardingMetametricsAllowOptOutLegacy": {
-    "message": "Erlaubt Ihnen immer die Abmeldung über Einstellungen"
-  },
-  "onboardingMetametricsDataTermsLegacy": {
-    "message": "Diese Daten werden gesammelt und sind daher im Rahmen der Datenschutz-Grundverordnung (EU) 2016/679 anonym."
-  },
   "onboardingMetametricsDescription": {
     "message": "Wir würden gerne grundlegende Nutzungs- und Diagnosedaten sammeln, um MetaMask zu verbessern. Sie sollten wissen, dass wir die Daten, die Sie uns hier zur Verfügung stellen, niemals verkaufen."
   },
   "onboardingMetametricsDescription2": {
     "message": "Wenn wir Metriken sammeln, wird es immer wie folgt sein ..."
   },
-  "onboardingMetametricsDescription2Legacy": {
-    "message": "MetaMask wird ..."
-  },
-  "onboardingMetametricsDescriptionLegacy": {
-    "message": "MetaMask möchte Nutzungsdaten sammeln, um ein besseres Verständnis zu erhalten, wie unsere Nutzer mit MetaMask interagieren. Diese Daten werden verwendet, um Dienste anzubieten, was auf Ihrer Nutzung basierte Dienstverbesserungen einschließt."
+  "onboardingMetametricsDisagree": {
+    "message": "Nein, danke!"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Wir werden Sie informieren, wenn wir beschließen, diese Daten für andere Zwecke zu verwenden. Für weitere Informationen können Sie unsere $1 einsehen. Vergessen Sie nicht, dass Sie jederzeit zu Einstellungen gehen und sich abmelden können.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsLegacy": {
-    "message": "*Wenn Sie Infura als Standard-RPC-Anbieter in MetaMask vewenden, speichert Infura Ihre IP-Adresse und Ihre Etherum-Wallet-Adresse, wenn Sie eine Transaktion senden. Wir speichern diese Daten in keinster Weise in unserem System, um sie miteinander in Verbindung zu bringen. Für weitere Informationen darüber, wie MetaMask und Infura in Hinischt auf Datenspeicherung zusammenarbeiten, sehen Sie sich bitte unser Update $1 an. Für mehr Informationen bezüglich unseren allgemeinen Datenschutzpraktiken, sehen Sie sich bitte unsere $2 an.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Datenschutzrichtlinie"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLegacy": {
-    "message": "Datenschutzerklärung hier"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
-    "message": "hier"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Benutzerdefiniertes Netzwerk hinzufügen"
@@ -3363,30 +3236,12 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Allgemein:"
   },
-  "onboardingMetametricsNeverCollectIPLegacy": {
-    "message": "$1 speichert Ihre vollständige IP-Adresse*",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectLegacy": {
-    "message": "$1 speichert Daten, die wir nicht benötigen, um die Dienstleistung zur Verfügung zu stellen (wie zum Beispiel Schlüssel, Adresse, Transaktions-Hashs oder Guthaben)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverEmphasisLegacy": {
-    "message": "Nie"
-  },
   "onboardingMetametricsNeverSellData": {
     "message": "$1 Sie können jederzeit über die Einstellungen entscheiden, ob Sie Ihre Nutzungsdaten freigeben oder löschen möchten.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Optional:"
-  },
-  "onboardingMetametricsNeverSellDataLegacy": {
-    "message": "$1 Daten verkaufen. Niemals!",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsSendAnonymizeLegacy": {
-    "message": "Anonymisierte Ereignisse für Klicks und Seitenaufrufe senden"
   },
   "onboardingMetametricsTitle": {
     "message": "Helfen Sie uns, MetaMask zu verbessern."

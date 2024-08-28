@@ -359,10 +359,6 @@ export type MetaMetricsUserTraits = {
    */
   use_native_as_primary_currency?: boolean;
   /**
-   * Does the user have desktop enabled?
-   */
-  desktop_enabled?: boolean;
-  /**
    * Whether the security provider feature has been enabled.
    */
   security_providers?: string[];
@@ -453,10 +449,6 @@ export enum MetaMetricsUserTrait {
    * Identified when the user enables native currency.
    */
   UseNativeCurrencyAsPrimaryCurrency = 'use_native_currency_as_primary_currency',
-  /**
-   * Identified when the user enables desktop.
-   */
-  DesktopEnabled = 'desktop_enabled',
   /**
    * Identified when the security provider feature is enabled.
    */
@@ -576,6 +568,7 @@ export enum MetaMetricsEventName {
   OnboardingWalletCreationComplete = 'Wallet Created',
   OnboardingWalletSetupComplete = 'Application Opened',
   OnboardingWalletAdvancedSettings = 'Settings Updated',
+  OnboardingWalletAdvancedSettingsTurnOnProfileSyncing = 'Turn On Profile Syncing',
   OnboardingWalletImportAttempted = 'Wallet Import Attempted',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingTwitterClick = 'External Link Clicked',
@@ -676,7 +669,6 @@ export enum MetaMetricsEventName {
   TransactionFinalized = 'Transaction Finalized',
   ExitedSwaps = 'Exited Swaps',
   SwapError = 'Swap Error',
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   SnapInstallStarted = 'Snap Install Started',
   SnapInstallFailed = 'Snap Install Failed',
   SnapInstallRejected = 'Snap Install Rejected',
@@ -688,7 +680,6 @@ export enum MetaMetricsEventName {
   SnapUpdated = 'Snap Updated',
   SnapExportUsed = 'Snap Export Used',
   InsightSnapViewed = 'Insight Snap Viewed',
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   AddSnapAccountEnabled = 'Add Snap Account Enabled',
   AddSnapAccountViewed = 'Add Snap Account Viewed',
@@ -748,7 +739,6 @@ export enum MetaMetricsEventCategory {
   App = 'App',
   Auth = 'Auth',
   Background = 'Background',
-  Desktop = 'Desktop',
   // The TypeScript ESLint rule is incorrectly marking this line.
   /* eslint-disable-next-line @typescript-eslint/no-shadow */
   Error = 'Error',
@@ -773,6 +763,7 @@ export enum MetaMetricsEventCategory {
   Tokens = 'Tokens',
   Transactions = 'Transactions',
   Wallet = 'Wallet',
+  Confirmations = 'Confirmations',
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   MMI = 'Institutional',
   ///: END:ONLY_INCLUDE_IF
@@ -800,6 +791,7 @@ export enum MetaMetricsNetworkEventSource {
   PopularNetworkList = 'popular_network_list',
   Dapp = 'dapp',
   DeprecatedNetworkModal = 'deprecated_network_modal',
+  NewAddNetworkFlow = 'new_add_network_flow',
 }
 
 export enum MetaMetricsSwapsEventSource {
@@ -824,6 +816,7 @@ export enum MetaMetricsEventLocation {
   TokenDetails = 'token_details',
   TokenDetection = 'token_detection',
   TokenMenu = 'token_menu',
+  Transaction = 'transaction',
 }
 
 export enum MetaMetricsEventUiCustomization {
@@ -834,6 +827,7 @@ export enum MetaMetricsEventUiCustomization {
   RedesignedConfirmation = 'redesigned_confirmation',
   SecurityAlertError = 'security_alert_error',
   Siwe = 'sign_in_with_ethereum',
+  Permit = 'permit',
 }
 
 /**

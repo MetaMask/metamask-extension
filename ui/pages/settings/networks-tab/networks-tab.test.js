@@ -20,6 +20,11 @@ const mockState = {
   },
 };
 
+jest.mock('../../../helpers/utils/feature-flags', () => ({
+  ...jest.requireActual('../../../helpers/utils/feature-flags'),
+  getLocalNetworkMenuRedesignFeatureFlag: () => false,
+}));
+
 const renderComponent = (props) => {
   const store = configureMockStore([])(mockState);
   return renderWithProvider(<NetworksTab {...props} />, store);

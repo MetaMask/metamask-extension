@@ -1,7 +1,6 @@
 import { ApprovalType } from '@metamask/controller-utils';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
-///: END:ONLY_INCLUDE_IF
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { CaveatTypes } from '../../shared/constants/permissions';
 import { getApprovalRequestsByType } from './approvals';
 import { createDeepEqualSelector } from './util';
@@ -177,7 +176,6 @@ export function getSubjectsWithPermission(state, permissionName) {
   return connectedSubjects;
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export function getSubjectsWithSnapPermission(state, snapId) {
   const subjects = getPermissionSubjects(state);
 
@@ -197,7 +195,6 @@ export function getSubjectsWithSnapPermission(state, snapId) {
       };
     });
 }
-///: END:ONLY_INCLUDE_IF
 
 /**
  * Returns an object mapping addresses to objects mapping origins to connected
@@ -311,6 +308,7 @@ export function getOrderedConnectedAccountsForActiveTab(state) {
 
   return orderedAccounts
     .filter((account) => connectedAccounts.includes(account.address))
+    .filter((account) => isEvmAccountType(account.type))
     .map((account) => ({
       ...account,
       metadata: {
@@ -349,6 +347,7 @@ export function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {
 
   return orderedAccounts
     .filter((account) => connectedAccounts.includes(account.address))
+    .filter((account) => isEvmAccountType(account.type))
     .map((account) => ({
       ...account,
       metadata: {
@@ -413,7 +412,6 @@ export function getLastConnectedInfo(state) {
   }, {});
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export function getSnapInstallOrUpdateRequests(state) {
   return Object.values(state.metamask.pendingApprovals)
     .filter(
@@ -428,7 +426,6 @@ export function getSnapInstallOrUpdateRequests(state) {
 export function getFirstSnapInstallOrUpdateRequest(state) {
   return getSnapInstallOrUpdateRequests(state)?.[0] ?? null;
 }
-///: END:ONLY_INCLUDE_IF
 
 export function getPermissionsRequests(state) {
   return getApprovalRequestsByType(

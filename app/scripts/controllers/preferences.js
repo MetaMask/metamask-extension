@@ -14,7 +14,6 @@ const mainNetworks = {
 const testNetworks = {
   [CHAIN_IDS.GOERLI]: true,
   [CHAIN_IDS.SEPOLIA]: true,
-  [CHAIN_IDS.LINEA_GOERLI]: true,
   [CHAIN_IDS.LINEA_SEPOLIA]: true,
 };
 
@@ -57,14 +56,12 @@ export default class PreferencesController {
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
       useTokenDetection: opts?.initState?.useTokenDetection ?? true,
-      useNftDetection: false,
+      useNftDetection: opts?.initState?.useTokenDetection ?? true,
       use4ByteResolution: true,
       useCurrencyRateCheck: true,
       useRequestQueue: true,
-      openSeaEnabled: false,
-      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+      openSeaEnabled: true, // todo set this to true
       securityAlertsEnabled: true,
-      ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       addSnapAccountEnabled: false,
       ///: END:ONLY_INCLUDE_IF
@@ -97,6 +94,7 @@ export default class PreferencesController {
         redesignedConfirmationsEnabled: true,
         featureNotificationsEnabled: false,
         showTokenAutodetectModal: null,
+        showNftAutodetectModal: null, // null because we want to show the modal only the first time
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -276,7 +274,6 @@ export default class PreferencesController {
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   /**
    * Setter for the `securityAlertsEnabled` property
    *
@@ -287,7 +284,6 @@ export default class PreferencesController {
       securityAlertsEnabled,
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   /**

@@ -1,9 +1,10 @@
-FROM mcr.microsoft.com/playwright:v1.42.1-focal AS build
+FROM mcr.microsoft.com/playwright:v1.44.1-focal AS build
 
 WORKDIR '/usr/src/app'
 
 # Copy test files
 COPY playwright.config.ts .
+COPY env.ts test/helpers/env.ts
 COPY . ./test/e2e/mmi/
 # Copy extension for test
 COPY ./dist/chrome ./dist/chrome

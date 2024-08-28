@@ -9,6 +9,7 @@ export type mockJsonRpcResultType = {
 export const mockJsonRpcResult: mockJsonRpcResultType = {
   eth_blockNumber: {
     default: MOCK_BLOCK_NUMBER,
+    custom: '0x130E45F',
   },
 
   eth_estimateGas: {
@@ -386,5 +387,8 @@ export const mockJsonRpcResult: mockJsonRpcResultType = {
       '0x0000000000000000000000002a3f1a37c04f82aa274f5353834b2d002db91015',
     BUSD_STORAGE_2:
       '0x000000000000000000000000137dcd97872de27a4d3bf36a4643c5e18fa40713',
+  },
+  net_version: {
+    default: '1',
   },
 };

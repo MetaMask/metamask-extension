@@ -46,7 +46,11 @@ describe('MetametricsToggle', () => {
     mockUseSelectorReturnValue = false;
     const { getByTestId } = render(
       <Provider store={store}>
-        <MetametricsToggle />
+        <MetametricsToggle
+          dataCollectionForMarketing={false}
+          // eslint-disable-next-line no-empty-function
+          setDataCollectionForMarketing={() => {}}
+        />
       </Provider>,
     );
     expect(getByTestId('profileSyncToggle')).toBeInTheDocument();
@@ -56,7 +60,11 @@ describe('MetametricsToggle', () => {
     mockUseSelectorReturnValue = false;
     const { getByTestId } = render(
       <Provider store={store}>
-        <MetametricsToggle />
+        <MetametricsToggle
+          dataCollectionForMarketing={false}
+          // eslint-disable-next-line no-empty-function
+          setDataCollectionForMarketing={() => {}}
+        />
       </Provider>,
     );
     fireEvent.click(getByTestId('toggleButton'));
@@ -67,7 +75,11 @@ describe('MetametricsToggle', () => {
     mockUseSelectorReturnValue = true;
     const { getByTestId } = render(
       <Provider store={store}>
-        <MetametricsToggle />
+        <MetametricsToggle
+          dataCollectionForMarketing={false}
+          // eslint-disable-next-line no-empty-function
+          setDataCollectionForMarketing={() => {}}
+        />
       </Provider>,
     );
     fireEvent.click(getByTestId('toggleButton'));

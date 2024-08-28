@@ -1,19 +1,22 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import CurrencyDisplay from '../../ui/currency-display';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import { AvatarNetwork, AvatarNetworkSize } from '../../component-library';
-import { getCurrentNetwork } from '../../../selectors';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import {
+  getMultichainNativeCurrency,
+  getMultichainCurrentNetwork,
+} from '../../../selectors/multichain';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 /* eslint-disable jsdoc/require-param-name */
 // eslint-disable-next-line jsdoc/require-param
 /** @param {PropTypes.InferProps<typeof UserPreferencedCurrencyDisplayPropTypes>>} */
 export default function UserPreferencedCurrencyDisplay({
   'data-testid': dataTestId,
+  account,
   ethNumberOfDecimals,
   fiatNumberOfDecimals,
   numberOfDecimals: propsNumberOfDecimals,
@@ -24,9 +27,16 @@ export default function UserPreferencedCurrencyDisplay({
   showCurrencySuffix,
   ...restProps
 }) {
-  const currentNetwork = useSelector(getCurrentNetwork);
-  const nativeCurrency = useSelector(getNativeCurrency);
+  const currentNetwork = useMultichainSelector(
+    getMultichainCurrentNetwork,
+    account,
+  );
+  const nativeCurrency = useMultichainSelector(
+    getMultichainNativeCurrency,
+    account,
+  );
   const { currency, numberOfDecimals } = useUserPreferencedCurrency(type, {
+    account,
     ethNumberOfDecimals,
     fiatNumberOfDecimals,
     numberOfDecimals: propsNumberOfDecimals,
@@ -54,6 +64,7 @@ export default function UserPreferencedCurrencyDisplay({
   return (
     <CurrencyDisplay
       {...restProps}
+      account={account}
       currency={currency}
       data-testid={dataTestId}
       numberOfDecimals={numberOfDecimals}
@@ -65,6 +76,7 @@ export default function UserPreferencedCurrencyDisplay({
 
 const UserPreferencedCurrencyDisplayPropTypes = {
   className: PropTypes.string,
+  account: PropTypes.object,
   'data-testid': PropTypes.string,
   prefix: PropTypes.string,
   value: PropTypes.string,

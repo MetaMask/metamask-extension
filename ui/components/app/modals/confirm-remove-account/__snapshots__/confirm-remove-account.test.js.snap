@@ -122,7 +122,7 @@ exports[`Confirm Remove Account should match snapshot 1`] = `
           This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. 
           <a
             class="confirm-remove-account__link"
-            href="https://metamask.zendesk.com/hc/en-us/articles/360015289932"
+            href="https://support.metamask.io/managing-my-wallet/accounts-and-addresses/what-are-imported-accounts-/"
             rel="noopener noreferrer"
             target="_blank"
           >

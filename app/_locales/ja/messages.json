@@ -835,7 +835,7 @@
   "confirm": {
     "message": "確認"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "アラートを確認したうえで続行します"
   },
   "confirmAlertModalDetails": {
@@ -1329,108 +1329,6 @@
   "descriptionFromSnap": {
     "message": "$1からの説明",
     "description": "$1 represents the name of the snap"
-  },
-  "desktopApp": {
-    "message": "デスクトップアプリ"
-  },
-  "desktopConnectionCriticalErrorDescription": {
-    "message": "このエラーは一時的なものかもしれないので、拡張機能を再起動するか、MetaMask Desktopを無効にしてみてください。"
-  },
-  "desktopConnectionCriticalErrorTitle": {
-    "message": "MetaMaskがうまく起動できませんでした"
-  },
-  "desktopConnectionLostErrorDescription": {
-    "message": "デスクトップアプリが正常に動作していることを確認するか、MetaMask Desktopを無効にしてください。"
-  },
-  "desktopConnectionLostErrorTitle": {
-    "message": "MetaMask Desktopの接続が失われました"
-  },
-  "desktopDisableButton": {
-    "message": "デスクトップアプリを無効にする"
-  },
-  "desktopDisableErrorCTA": {
-    "message": "MetaMask Desktopを無効にする"
-  },
-  "desktopEnableButton": {
-    "message": "MetaMask Desktopを有効にする"
-  },
-  "desktopEnableButtonDescription": {
-    "message": "クリックして、デスクトップアプリのすべてのバックグラウンドプロセスを実行します。"
-  },
-  "desktopErrorNavigateSettingsCTA": {
-    "message": "設定ページに戻る"
-  },
-  "desktopErrorRestartMMCTA": {
-    "message": "MetaMaskを再起動"
-  },
-  "desktopNotFoundErrorCTA": {
-    "message": "MetaMask Desktopをダウンロード"
-  },
-  "desktopNotFoundErrorDescription1": {
-    "message": "デスクトップアプリが正常に動作していることを確認してください。"
-  },
-  "desktopNotFoundErrorDescription2": {
-    "message": "デスクトップアプリがインストールされていない場合は、MetaMaskのWebサイトでダウンロードしてください。"
-  },
-  "desktopNotFoundErrorTitle": {
-    "message": "MetaMask Desktopが見つかりませんでした"
-  },
-  "desktopOpenOrDownloadCTA": {
-    "message": "MetaMask Desktopを開く"
-  },
-  "desktopOutdatedErrorCTA": {
-    "message": "MetaMask Desktopを更新"
-  },
-  "desktopOutdatedErrorDescription": {
-    "message": "ご使用のMetaMaskデスクトップアプリはアップグレードが必要です。"
-  },
-  "desktopOutdatedErrorTitle": {
-    "message": "MetaMask Desktopが古くなっています"
-  },
-  "desktopOutdatedExtensionErrorCTA": {
-    "message": "MetaMask拡張機能を更新"
-  },
-  "desktopOutdatedExtensionErrorDescription": {
-    "message": "ご使用のMetaMask拡張機能はアップグレードが必要です。"
-  },
-  "desktopOutdatedExtensionErrorTitle": {
-    "message": "MetaMask拡張機能が古くなっています"
-  },
-  "desktopPageDescription": {
-    "message": "ペアリングが成功したら、拡張機能が再起動し、パスワードの再入力が必要になります。"
-  },
-  "desktopPageSubTitle": {
-    "message": "MetaMask Desktopを開いてこのコードを入力してください"
-  },
-  "desktopPageTitle": {
-    "message": "Desktopとのペアリング"
-  },
-  "desktopPairedWarningDeepLink": {
-    "message": "MetaMask Desktopの設定に移動"
-  },
-  "desktopPairedWarningDescription": {
-    "message": "新しいペアリングを開始するには、現在の接続を削除してください。"
-  },
-  "desktopPairedWarningTitle": {
-    "message": "MM Desktopがすでにペアリングされています"
-  },
-  "desktopPairingExpireMessage": {
-    "message": "コードはあと$1秒で期限切れになります"
-  },
-  "desktopRouteNotFoundErrorDescription": {
-    "message": "desktopRouteNotFoundErrorDescription"
-  },
-  "desktopRouteNotFoundErrorTitle": {
-    "message": "desktopRouteNotFoundErrorTitle"
-  },
-  "desktopUnexpectedErrorCTA": {
-    "message": "MetaMaskのホームに戻る"
-  },
-  "desktopUnexpectedErrorDescription": {
-    "message": "MetaMask Desktopを確認して接続を復元してください"
-  },
-  "desktopUnexpectedErrorTitle": {
-    "message": "何か問題が発生しました..."
   },
   "details": {
     "message": "詳細"
@@ -2221,9 +2119,6 @@
   "initialTransactionConfirmed": {
     "message": "最初のトランザクションはネットワークによって承認されました。戻るには「OK」をクリックします。"
   },
-  "inlineAlert": {
-    "message": "アラート"
-  },
   "inputLogicEmptyState": {
     "message": "現在または今後サードパーティが使用しても構わない額のみを入力してください。使用上限は後でいつでも増額できます。"
   },
@@ -2548,9 +2443,6 @@
   },
   "loading": {
     "message": "ロードしています..."
-  },
-  "loadingNFTs": {
-    "message": "NFTをロードしています..."
   },
   "loadingScreenHardwareWalletMessage": {
     "message": "ハードウェアウォレットでトランザクションを完了させてください。"
@@ -3308,40 +3200,21 @@
   "onboardingMetametricsAgree": {
     "message": "同意します"
   },
-  "onboardingMetametricsAllowOptOutLegacy": {
-    "message": "いつでも設定からオプトアウトできるようにします"
-  },
-  "onboardingMetametricsDataTermsLegacy": {
-    "message": "一般データ保護規則 (EU) 2016/679 の目的に従い、このデータは集約され匿名化されます。"
-  },
   "onboardingMetametricsDescription": {
     "message": "MetaMaskの改善を目的に、基本的な使用状況および診断データを収集したいと思います。ここで提供されるデータが販売されることはありません。"
   },
   "onboardingMetametricsDescription2": {
     "message": "指標を収集する際、常に次の条件が適用されます..."
   },
-  "onboardingMetametricsDescription2Legacy": {
-    "message": "MetaMaskは..."
-  },
-  "onboardingMetametricsDescriptionLegacy": {
-    "message": "MetaMaskは、ユーザーによるMetaMaskの使用状況をより詳細に把握するため、使用データを収集したいと考えています。このデータは、使用状況に基づくサービスの改善を含め、サービスの提供を目的に使用されます。"
+  "onboardingMetametricsDisagree": {
+    "message": "結構です"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "このデータを他の目的に使用する際は、お知らせします。詳細は当社の$1をご覧ください。設定でいつでもオプトアウトできます。",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsLegacy": {
-    "message": "* MetaMaskでInfuraをデフォルトのRPCプロバイダーとして使用する場合、Infuraはトランザクションの送信時にユーザーのIPアドレスおよびイーサリアムウォレットアドレスを収集します。当社がこれらの情報を、システムによりこれら2つのデータが関連付けられる形で保管することはありません。データ収集の観点から見たMetaMaskとInfuraとのやり取りに関する詳細は、当社の最新の$1をご覧ください。当社のプライバシー慣行全般に関する詳細は、$2をご覧ください。",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "プライバシー ポリシー"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLegacy": {
-    "message": "こちらのプライバシーポリシー"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
-    "message": "こちら"
   },
   "onboardingMetametricsModalTitle": {
     "message": "カスタムネットワークを追加"
@@ -3360,30 +3233,12 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "一般:"
   },
-  "onboardingMetametricsNeverCollectIPLegacy": {
-    "message": "ユーザーの完全なIPアドレスを収集することは、$1*",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectLegacy": {
-    "message": "サービスの提供に不要な情報 (キー、アドレス、トランザクションハッシュ、残高) を収集することは、$1",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverEmphasisLegacy": {
-    "message": "一切ありません"
-  },
   "onboardingMetametricsNeverSellData": {
     "message": "$1 使用状況データを共有するか削除するかは、設定でいつでも指定できます。",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "任意:"
-  },
-  "onboardingMetametricsNeverSellDataLegacy": {
-    "message": "データを販売することは$1。絶対です！",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsSendAnonymizeLegacy": {
-    "message": "匿名のクリックおよびページ閲覧イベントを送信"
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMaskの改善にご協力ください"

@@ -195,3 +195,5 @@ export enum TokenStandard {
   /** Not a token, but rather the base asset of the selected chain. */
   none = 'NONE',
 }
+
+export const EIP712_PRIMARY_TYPE_PERMIT = 'Permit';

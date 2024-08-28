@@ -39,6 +39,7 @@ import { getAssetImageURL } from '../../../../helpers/utils/util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: END:ONLY_INCLUDE_IF
+
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -161,14 +162,19 @@ export function AssetPicker({
         backgroundColor={BackgroundColor.transparent}
         onClick={() => {
           setShowAssetPickerModal(true);
-          trackEvent({
-            event: MetaMetricsEventName.sendTokenModalOpened,
-            category: MetaMetricsEventCategory.Send,
-            properties: {
-              ...sendAnalytics,
-              is_destination_asset_picker_modal: Boolean(sendingAsset),
+          trackEvent(
+            {
+              event: MetaMetricsEventName.sendTokenModalOpened,
+              category: MetaMetricsEventCategory.Send,
+              properties: {
+                is_destination_asset_picker_modal: Boolean(sendingAsset),
+              },
+              sensitiveProperties: {
+                ...sendAnalytics,
+              },
             },
-          });
+            { excludeMetaMetricsId: false },
+          );
         }}
         endIconName={IconName.ArrowDown}
         endIconProps={{
@@ -179,32 +185,30 @@ export function AssetPicker({
         title={handleAssetPickerTitle()}
       >
         <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
-          <Box display={Display.Flex}>
-            <BadgeWrapper
-              badge={
-                <AvatarNetwork
-                  size={AvatarNetworkSize.Xs}
-                  name={currentNetwork?.nickname ?? ''}
-                  src={currentNetwork?.rpcPrefs?.imageUrl}
-                  backgroundColor={testNetworkBackgroundColor}
-                  borderColor={
-                    primaryTokenImage
-                      ? BorderColor.borderMuted
-                      : BorderColor.borderDefault
-                  }
-                />
-              }
-            >
-              <AvatarToken
-                borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
-                src={primaryTokenImage}
-                size={AvatarTokenSize.Md}
-                showHalo={!isNFT}
-                name={symbol}
-                {...(isNFT && { backgroundColor: BackgroundColor.transparent })}
+          <BadgeWrapper
+            badge={
+              <AvatarNetwork
+                size={AvatarNetworkSize.Xs}
+                name={currentNetwork?.nickname ?? ''}
+                src={currentNetwork?.rpcPrefs?.imageUrl}
+                backgroundColor={testNetworkBackgroundColor}
+                borderColor={
+                  primaryTokenImage
+                    ? BorderColor.borderMuted
+                    : BorderColor.borderDefault
+                }
               />
-            </BadgeWrapper>
-          </Box>
+            }
+          >
+            <AvatarToken
+              borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
+              src={primaryTokenImage}
+              size={AvatarTokenSize.Md}
+              showHalo={!isNFT}
+              name={symbol}
+              {...(isNFT && { backgroundColor: BackgroundColor.transparent })}
+            />
+          </BadgeWrapper>
 
           <Tooltip disabled={!isSymbolLong} title={symbol} position="bottom">
             <Text className="asset-picker__symbol" variant={TextVariant.bodyMd}>

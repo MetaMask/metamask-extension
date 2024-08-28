@@ -8,12 +8,15 @@ import AdvancedTab from '.';
 
 const mockSetAutoLockTimeLimit = jest.fn().mockReturnValue({ type: 'TYPE' });
 const mockSetShowTestNetworks = jest.fn();
+const mockSetShowFiatConversionOnTestnetsPreference = jest.fn();
 const mockSetStxOptIn = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => {
   return {
     setAutoLockTimeLimit: (...args) => mockSetAutoLockTimeLimit(...args),
     setShowTestNetworks: () => mockSetShowTestNetworks,
+    setShowFiatConversionOnTestnetsPreference: () =>
+      mockSetShowFiatConversionOnTestnetsPreference,
     setSmartTransactionsOptInStatus: () => mockSetStxOptIn,
   };
 });
@@ -68,6 +71,16 @@ describe('AdvancedTab Component', () => {
     expect(mockSetAutoLockTimeLimit).toHaveBeenCalledWith(0);
   });
 
+  it('should toggle show fiat on test networks', () => {
+    const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
+
+    const testShowFiatOnTestnets = queryAllByRole('checkbox')[2];
+
+    fireEvent.click(testShowFiatOnTestnets);
+
+    expect(mockSetShowFiatConversionOnTestnetsPreference).toHaveBeenCalled();
+  });
+
   it('should toggle show test networks', () => {
     const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
 
@@ -76,23 +89,6 @@ describe('AdvancedTab Component', () => {
     fireEvent.click(testNetworkToggle);
 
     expect(mockSetShowTestNetworks).toHaveBeenCalled();
-  });
-
-  it('should not render ledger live control with desktop pairing enabled', () => {
-    const mockStoreWithDesktopEnabled = configureMockStore([thunk])({
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        desktopEnabled: true,
-      },
-    });
-
-    const { queryByTestId } = renderWithProvider(
-      <AdvancedTab />,
-      mockStoreWithDesktopEnabled,
-    );
-
-    expect(queryByTestId('ledger-live-control')).not.toBeInTheDocument();
   });
 
   describe('renderToggleStxOptIn', () => {

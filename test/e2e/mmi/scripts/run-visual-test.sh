@@ -13,7 +13,7 @@ mkdir -p test/e2e/mmi/dist
 cp -r dist/chrome test/e2e/mmi/dist/chrome
 
 # copy playwright config to the docker context
-cp playwright.config.ts test/e2e/mmi/
+cp playwright.config.ts test/helpers/env.ts test/e2e/mmi/
 
 # Build the Docker image
 echo "Building the Docker image..."

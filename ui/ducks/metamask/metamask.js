@@ -234,15 +234,6 @@ export default function reduceMetamask(state = initialState, action) {
         confirmationExchangeRates: action.value,
       };
 
-    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-    case actionConstants.FORCE_DISABLE_DESKTOP: {
-      return {
-        ...metamaskState,
-        desktopEnabled: false,
-      };
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     default:
       return metamaskState;
   }

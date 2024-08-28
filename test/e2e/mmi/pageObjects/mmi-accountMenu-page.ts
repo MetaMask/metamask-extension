@@ -120,7 +120,7 @@ export class MMIAccountMenuPage {
 
   async selectCustodyAccount(account: string) {
     await this.accountsMenu();
-    await this.dialog.getByText(`${account}`).first().click();
+    await this.dialog.getByText(`${account}`).click();
   }
 
   async accountMenuScreenshot(screenshotName: string) {
@@ -159,7 +159,7 @@ export class MMIAccountMenuPage {
       .click();
     await this.page.getByTestId('account-options-menu__remove-jwt').click();
     await expect(this.page.getByText('Remove custodian token')).toBeVisible();
-    await this.page.getByRole('button', { name: /remove/iu }).click();
+    await this.page.getByTestId('remove-jwt-confirm-btn').click();
   }
 
   async getAccountNames() {

@@ -1,8 +1,10 @@
 .multichain-token-list-item {
   &__container-cell {
-    &:hover,
-    &:focus-within {
-      background-color: var(--color-background-default-hover);
+    &--clickable {
+      &:hover,
+      &:focus-within {
+        background-color: var(--color-background-default-hover);
+      }
     }
   }
 }

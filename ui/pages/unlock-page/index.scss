@@ -23,9 +23,8 @@
     position: relative;
 
     &__beta {
-      /* these colors should be used on both light and dark mode */
-      background: var(--brand-colors-blue-blue500);
-      color: var(--brand-colors-white-white000);
+      background: var(--color-primary-default);
+      color: var(--color-primary-inverse);
       padding: 3px 6px;
       font-size: 16px;
       position: absolute;

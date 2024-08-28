@@ -489,7 +489,7 @@ class FixtureBuilder {
 
   withPreferencesControllerAdditionalAccountIdentities() {
     return this.withPreferencesController({
-      identites: {
+      identities: {
         '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
           address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
           lastSelected: 1665507600000,
@@ -497,7 +497,7 @@ class FixtureBuilder {
         },
         '0x09781764c08de8ca82e156bbf156a3ca217c7950': {
           address: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-          lastSelected: 1665507500000,
+          lastSelected: 1665507800000,
           name: 'Account 2',
         },
       },
@@ -530,6 +530,12 @@ class FixtureBuilder {
       preferences: {
         petnamesEnabled: false,
       },
+    });
+  }
+
+  withPreferencesControllerTxSimulationsDisabled() {
+    return this.withPreferencesController({
+      useTransactionSimulations: false,
     });
   }
 
@@ -612,10 +618,9 @@ class FixtureBuilder {
   withAccountsControllerAdditionalAccountIdentities() {
     return this.withAccountsController({
       internalAccounts: {
-        selectedAccount: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
         accounts: {
-          '2fdb2de6-80c7-4d2f-9f95-cb6895389843': {
-            id: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
+          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+            id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
             address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
             options: {},
             methods: [
@@ -635,8 +640,8 @@ class FixtureBuilder {
               },
             },
           },
-          'dd658aab-abf2-4f53-b735-c8a57151d447': {
-            id: 'dd658aab-abf2-4f53-b735-c8a57151d447',
+          'e9976a84-110e-46c3-9811-e2da7b5528d3': {
+            id: 'e9976a84-110e-46c3-9811-e2da7b5528d3',
             address: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
             options: {},
             methods: [
@@ -650,7 +655,7 @@ class FixtureBuilder {
             type: 'eip155:eoa',
             metadata: {
               name: 'Account 2',
-              lastSelected: 1665507500000,
+              lastSelected: 1665507800000,
               keyring: {
                 type: 'HD Key Tree',
               },
@@ -658,6 +663,7 @@ class FixtureBuilder {
           },
         },
       },
+      selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
     });
   }
 
@@ -817,8 +823,28 @@ class FixtureBuilder {
                 timestamp: 1631545992244,
                 value: false,
               },
+              {
+                op: 'add',
+                path: '/simulationData',
+                value: {
+                  error: {
+                    code: 'disabled',
+                    message: 'Simulation disabled',
+                  },
+                  tokenBalanceChanges: [],
+                },
+                note: 'TransactionController#updateSimulationData - Update simulation data',
+                timestamp: 1631545992244,
+              },
             ],
           ],
+          simulationData: {
+            error: {
+              code: 'disabled',
+              message: 'Simulation disabled',
+            },
+            tokenBalanceChanges: [],
+          },
           id: '7087d1d7-f0e8-4c0f-a903-6d9daa392baf',
           loadingDefaults: false,
           origin: 'https://metamask.github.io',
@@ -872,8 +898,28 @@ class FixtureBuilder {
                 timestamp: 1631545994695,
                 value: false,
               },
+              {
+                op: 'add',
+                path: '/simulationData',
+                value: {
+                  error: {
+                    code: 'disabled',
+                    message: 'Simulation disabled',
+                  },
+                  tokenBalanceChanges: [],
+                },
+                note: 'TransactionController#updateSimulationData - Update simulation data',
+                timestamp: 1631545992244,
+              },
             ],
           ],
+          simulationData: {
+            error: {
+              code: 'disabled',
+              message: 'Simulation disabled',
+            },
+            tokenBalanceChanges: [],
+          },
           id: '6eab4240-3762-4581-abc5-cd91eab6964e',
           loadingDefaults: false,
           origin: 'https://metamask.github.io',
@@ -927,8 +973,28 @@ class FixtureBuilder {
                 timestamp: 1631545996678,
                 value: false,
               },
+              {
+                op: 'add',
+                path: '/simulationData',
+                value: {
+                  error: {
+                    code: 'disabled',
+                    message: 'Simulation disabled',
+                  },
+                  tokenBalanceChanges: [],
+                },
+                note: 'TransactionController#updateSimulationData - Update simulation data',
+                timestamp: 1631545992244,
+              },
             ],
           ],
+          simulationData: {
+            error: {
+              code: 'disabled',
+              message: 'Simulation disabled',
+            },
+            tokenBalanceChanges: [],
+          },
           id: 'c15eee26-11d6-4914-a70e-36ef9a3bcacb',
           loadingDefaults: false,
           origin: 'https://metamask.github.io',
@@ -982,8 +1048,28 @@ class FixtureBuilder {
                 timestamp: 1631545998677,
                 value: false,
               },
+              {
+                op: 'add',
+                path: '/simulationData',
+                value: {
+                  error: {
+                    code: 'disabled',
+                    message: 'Simulation disabled',
+                  },
+                  tokenBalanceChanges: [],
+                },
+                note: 'TransactionController#updateSimulationData - Update simulation data',
+                timestamp: 1631545992244,
+              },
             ],
           ],
+          simulationData: {
+            error: {
+              code: 'disabled',
+              message: 'Simulation disabled',
+            },
+            tokenBalanceChanges: [],
+          },
           id: 'dfa9e5ad-d069-46b1-976e-a23734971d87',
           loadingDefaults: false,
           origin: 'https://metamask.github.io',

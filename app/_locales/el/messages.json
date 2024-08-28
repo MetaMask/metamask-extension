@@ -838,7 +838,7 @@
   "confirm": {
     "message": "Επιβεβαίωση"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Έχω ενημερωθεί για τις ειδοποιήσεις και εξακολουθώ να θέλω να συνεχίσω"
   },
   "confirmAlertModalDetails": {
@@ -1332,108 +1332,6 @@
   "descriptionFromSnap": {
     "message": "Περιγραφή από $1",
     "description": "$1 represents the name of the snap"
-  },
-  "desktopApp": {
-    "message": "Εφαρμογή για υπολογιστές"
-  },
-  "desktopConnectionCriticalErrorDescription": {
-    "message": "Αυτό το σφάλμα μπορεί να είναι περιστασιακό, οπότε δοκιμάστε να επανεκκινήσετε την επέκταση ή απενεργοποιήστε το MetaMask Desktop."
-  },
-  "desktopConnectionCriticalErrorTitle": {
-    "message": "Το MetaMask είχε πρόβλημα κατά την εκκίνηση"
-  },
-  "desktopConnectionLostErrorDescription": {
-    "message": "Βεβαιωθείτε ότι έχετε την εφαρμογή για την επιφάνεια εργασίας σε λειτουργία ή απενεργοποιήστε το MetaMask Desktop."
-  },
-  "desktopConnectionLostErrorTitle": {
-    "message": "Η σύνδεση με το MetaMask Desktop χάθηκε"
-  },
-  "desktopDisableButton": {
-    "message": "Απενεργοποιήστε την εφαρμογή για την επιφάνεια εργασίας"
-  },
-  "desktopDisableErrorCTA": {
-    "message": "Απενεργοποιήστε το MetaMask Desktop"
-  },
-  "desktopEnableButton": {
-    "message": "Ενεργοποιήστε την εφαρμογή για την επιφάνεια εργασίας"
-  },
-  "desktopEnableButtonDescription": {
-    "message": "Κάντε κλικ για να εκτελέσετε όλες τις διεργασίες παρασκηνίου στην εφαρμογή επιφάνειας εργασίας."
-  },
-  "desktopErrorNavigateSettingsCTA": {
-    "message": "Επιστροφή στη σελίδα Ρυθμίσεις"
-  },
-  "desktopErrorRestartMMCTA": {
-    "message": "Επανεκκίνηση του MetaMask"
-  },
-  "desktopNotFoundErrorCTA": {
-    "message": "Λήψη του MetaMask Desktop"
-  },
-  "desktopNotFoundErrorDescription1": {
-    "message": "Βεβαιωθείτε ότι έχετε ενεργοποιήσει και εκτελείτε την εφαρμογή για την επιφάνεια εργασίας."
-  },
-  "desktopNotFoundErrorDescription2": {
-    "message": "Αν δεν έχετε εγκαταστήσει την εφαρμογή για την επιφάνεια εργασίας, κατεβάστε την από τον ιστότοπο του MetaMask."
-  },
-  "desktopNotFoundErrorTitle": {
-    "message": "Το MetaMask Desktop δεν βρέθηκε"
-  },
-  "desktopOpenOrDownloadCTA": {
-    "message": "Άνοιγμα του MetaMask Desktop"
-  },
-  "desktopOutdatedErrorCTA": {
-    "message": "Ενημέρωση του MetaMask Desktop"
-  },
-  "desktopOutdatedErrorDescription": {
-    "message": "Η εφαρμογή MetaMask Desktop πρέπει να αναβαθμιστεί."
-  },
-  "desktopOutdatedErrorTitle": {
-    "message": "Το MetaMask Desktop είναι ξεπερασμένο"
-  },
-  "desktopOutdatedExtensionErrorCTA": {
-    "message": "Ενημέρωση της επέκτασης MetaMask"
-  },
-  "desktopOutdatedExtensionErrorDescription": {
-    "message": "Η επέκταση του MetaMask πρέπει να αναβαθμιστεί."
-  },
-  "desktopOutdatedExtensionErrorTitle": {
-    "message": "Η επέκταση του MetaMask είναι ξεπερασμένη"
-  },
-  "desktopPageDescription": {
-    "message": "Εάν η ζεύξη είναι επιτυχής, η επέκταση θα επανεκκινηθεί και θα πρέπει να εισαγάγετε εκ νέου τον κωδικό πρόσβασής σας."
-  },
-  "desktopPageSubTitle": {
-    "message": "Ανοίξτε το MetaMask Desktop και πληκτρολογήστε αυτόν τον κωδικό"
-  },
-  "desktopPageTitle": {
-    "message": "Ζεύξη με το Desktop"
-  },
-  "desktopPairedWarningDeepLink": {
-    "message": "Μεταβείτε στις Ρυθμίσεις στο MetaMask Desktop"
-  },
-  "desktopPairedWarningDescription": {
-    "message": "Αν θέλετε να ξεκινήσετε μια νέα ζεύξη, αφαιρέστε την τρέχουσα σύνδεση."
-  },
-  "desktopPairedWarningTitle": {
-    "message": "Το MM Desktop είναι ήδη συνδεδεμένο"
-  },
-  "desktopPairingExpireMessage": {
-    "message": "Ο κωδικός λήγει σε $1 δευτερόλεπτα"
-  },
-  "desktopRouteNotFoundErrorDescription": {
-    "message": "desktopRouteNotFoundErrorDescription"
-  },
-  "desktopRouteNotFoundErrorTitle": {
-    "message": "desktopRouteNotFoundErrorTitle"
-  },
-  "desktopUnexpectedErrorCTA": {
-    "message": "Επιστροφή στην αρχική σελίδα του MetaMask"
-  },
-  "desktopUnexpectedErrorDescription": {
-    "message": "Ελέγξτε το MetaMask Desktop για να επαναφέρετε τη σύνδεση"
-  },
-  "desktopUnexpectedErrorTitle": {
-    "message": "Κάτι πήγε στραβά..."
   },
   "details": {
     "message": "Λεπτομέρειες"
@@ -2224,9 +2122,6 @@
   "initialTransactionConfirmed": {
     "message": "Η αρχική σας συναλλαγή επιβεβαιώθηκε από το δίκτυο. Κάντε κλικ στο OK για να επιστρέψετε."
   },
-  "inlineAlert": {
-    "message": "Ειδοποίηση"
-  },
   "inputLogicEmptyState": {
     "message": "Πληκτρολογήστε μόνο έναν αριθμό που σας βολεύει να ξοδέψει ο τρίτος τώρα ή στο μέλλον. Μπορείτε πάντα να αυξήσετε το ανώτατο όριο δαπανών αργότερα."
   },
@@ -2551,9 +2446,6 @@
   },
   "loading": {
     "message": "Φόρτωση..."
-  },
-  "loadingNFTs": {
-    "message": "Φόρτωση των NFT..."
   },
   "loadingScreenHardwareWalletMessage": {
     "message": "Ολοκληρώστε τη συναλλαγή στο πορτοφόλι υλικού."
@@ -3311,40 +3203,21 @@
   "onboardingMetametricsAgree": {
     "message": "Συμφωνώ"
   },
-  "onboardingMetametricsAllowOptOutLegacy": {
-    "message": "Σας επιτρέπεται πάντα να εξαιρεθείτε μέσω των Ρυθμίσεων"
-  },
-  "onboardingMetametricsDataTermsLegacy": {
-    "message": "Τα δεδομένα αυτά είναι συγκεντρωτικά και συνεπώς ανώνυμα για τους σκοπούς του Γενικού Κανονισμού για την Προστασία Δεδομένων (ΕΕ) 2016/679."
-  },
   "onboardingMetametricsDescription": {
     "message": "Θέλουμε να συλλέξουμε βασικά δεδομένα χρήσης και διάγνωσης για να βελτιώσουμε το MetaMask. Λάβετε υπόψη ότι δεν πουλάμε ποτέ τα δεδομένα που μας παρέχετε εδώ."
   },
   "onboardingMetametricsDescription2": {
     "message": "Όταν συγκεντρώνουμε μετρήσεις, θα είναι πάντα..."
   },
-  "onboardingMetametricsDescription2Legacy": {
-    "message": "Το MetaMask θα..."
-  },
-  "onboardingMetametricsDescriptionLegacy": {
-    "message": "Το MetaMask θα ήθελε να συλλέγει δεδομένα χρήσης για να κατανοήσει καλύτερα τον τρόπο με τον οποίο οι χρήστες μας αλληλεπιδρούν με το MetaMask. Τα δεδομένα αυτά θα χρησιμοποιηθούν για την παροχή της υπηρεσίας, η οποία περιλαμβάνει τη βελτίωση της υπηρεσίας με βάση τη χρήση σας."
+  "onboardingMetametricsDisagree": {
+    "message": "Όχι, ευχαριστώ"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Θα σας ενημερώσουμε εάν αποφασίσουμε να χρησιμοποιήσουμε αυτά τα δεδομένα για άλλους σκοπούς. Για περισσότερες πληροφορίες, μπορείτε να ανατρέξετε στην $1. Να θυμάστε ότι μπορείτε να μεταβείτε στις ρυθμίσεις και να εξαιρεθείτε ανά πάσα στιγμή.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsLegacy": {
-    "message": "* Όταν χρησιμοποιείτε την Infura ως τον προεπιλεγμένο πάροχο RPC στο MetaMask, η Infura θα συλλέγει τη διεύθυνση IP σας και τη διεύθυνση του πορτοφολιού σας στο Ethereum όταν αποστέλλετε μια συναλλαγή. Δεν αποθηκεύουμε αυτές τις πληροφορίες με τρόπο που να επιτρέπει στα συστήματά μας να συσχετίζουν αυτά τα δύο δεδομένα. Για περισσότερες πληροφορίες σχετικά με τον τρόπο με τον οποίο αλληλεπιδρούν το MetaMask και η Infura από την πλευρά της συλλογής δεδομένων, δείτε την ενημέρωσή μας $1. Για περισσότερες πληροφορίες σχετικά με τις πρακτικές απορρήτου μας γενικά, δείτε την ενημέρωσή μας $2.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Πολιτική Απορρήτου"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLegacy": {
-    "message": "Πολιτική Απορρήτου εδώ"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
-    "message": "εδώ"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Προσθήκη προσαρμοσμένου δικτύου"
@@ -3363,30 +3236,12 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Γενικές:"
   },
-  "onboardingMetametricsNeverCollectIPLegacy": {
-    "message": "To $1 συλλέγει την πλήρη διεύθυνση IP σας*",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectLegacy": {
-    "message": "To $1 συλλέγει πληροφορίες που δεν χρειαζόμαστε για την παροχή της υπηρεσίας (όπως κλειδιά, διευθύνσεις, αναλύσεις συναλλαγών ή υπόλοιπα)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverEmphasisLegacy": {
-    "message": "Ποτέ"
-  },
   "onboardingMetametricsNeverSellData": {
     "message": "$1 εσείς αποφασίζετε αν θέλετε να κοινοποιήσετε ή να διαγράψετε τα δεδομένα χρήσης σας μέσω των ρυθμίσεων ανά πάσα στιγμή.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Προαιρετικές:"
-  },
-  "onboardingMetametricsNeverSellDataLegacy": {
-    "message": "To $1 πουλάει δεδομένα.  Ποτέ!",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsSendAnonymizeLegacy": {
-    "message": "Αποστολή ανώνυμων συμβάντων κλικ και προβολής ιστοσελίδων"
   },
   "onboardingMetametricsTitle": {
     "message": "Βοηθήστε μας να βελτιώσουμε το MetaMask"

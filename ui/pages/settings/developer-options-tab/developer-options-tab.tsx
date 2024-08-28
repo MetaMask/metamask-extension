@@ -34,6 +34,7 @@ import {
 } from '../../../store/actions';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { SentryTest } from './sentry-test';
 
 const DeveloperOptionsTab = () => {
   const t = useI18nContext();
@@ -44,6 +45,11 @@ const DeveloperOptionsTab = () => {
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
   const [isServiceWorkerKeptAlive, setIsServiceWorkerKeptAlive] =
     useState(true);
+  const [enableNetworkRedesign, setEnableNetworkRedesign] = useState(
+    // eslint-disable-next-line
+    /* @ts-expect-error: Avoids error from window property not existing */
+    window.metamaskFeatureFlags.networkMenuRedesign,
+  );
 
   const settingsRefs = Array(
     getNumberOfSettingRoutesInTab(t, t('developerOptions')),
@@ -212,6 +218,44 @@ const DeveloperOptionsTab = () => {
       </Box>
     );
   };
+
+  const renderNetworkMenuRedesign = () => {
+    return (
+      <Box
+        ref={settingsRefs[4] as React.RefObject<HTMLDivElement>}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-description">
+            <span>{t('developerOptionsNetworkMenuRedesignTitle')}</span>
+            <div className="settings-page__content-description">
+              {t('developerOptionsNetworkMenuRedesignDescription')}
+            </div>
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={enableNetworkRedesign}
+            onToggle={(value) => {
+              setEnableNetworkRedesign(!value);
+              // eslint-disable-next-line
+              /* @ts-expect-error: Avoids error from window property not existing */
+              window.metamaskFeatureFlags.networkMenuRedesign = !value;
+            }}
+            offLabel={t('off')}
+            onLabel={t('on')}
+            dataTestId="developer-options-network-redesign"
+          />
+        </div>
+      </Box>
+    );
+  };
+
   return (
     <div className="settings-page__body">
       <Text className="settings-page__security-tab-sub-header__bold">
@@ -230,7 +274,9 @@ const DeveloperOptionsTab = () => {
         {renderAnnouncementReset()}
         {renderOnboardingReset()}
         {renderServiceWorkerKeepAliveToggle()}
+        {renderNetworkMenuRedesign()}
       </div>
+      <SentryTest />
     </div>
   );
 };

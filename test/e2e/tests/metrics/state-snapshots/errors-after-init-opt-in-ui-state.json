@@ -11,14 +11,13 @@
   "localeMessages": "object",
   "metamask": {
     "isInitialized": true,
-    "isUnlocked": false,
+    "isUnlocked": true,
     "isAccountMenuOpen": false,
     "isNetworkMenuOpen": false,
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "transactions": "object",
     "networkConfigurations": "object",
     "addressBook": "object",
-    "marketData": "object",
     "confirmationExchangeRates": {},
     "pendingTokens": "object",
     "customNonceValue": "",
@@ -67,7 +66,7 @@
     "fullScreenGasPollTokens": "object",
     "recoveryPhraseReminderHasBeenShown": true,
     "recoveryPhraseReminderLastShown": "number",
-    "outdatedBrowserWarningLastShown": "number",
+    "outdatedBrowserWarningLastShown": "object",
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
@@ -94,8 +93,9 @@
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
-    "selectedNetworkClientId": "string",
     "showTokenAutodetectModalOnUpgrade": "object",
+    "balances": "object",
+    "selectedNetworkClientId": "string",
     "networksMetadata": {
       "networkConfigurationId": {
         "EIPS": { "1559": false },
@@ -180,6 +180,9 @@
     "logs": "object",
     "methodData": "object",
     "lastFetchedBlockNumbers": "object",
+    "fiatCurrency": "usd",
+    "rates": { "btc": { "conversionDate": 0, "conversionRate": "0" } },
+    "cryptocurrencies": ["btc"],
     "snaps": "object",
     "snapStates": "object",
     "unencryptedSnapStates": "object",
@@ -208,6 +211,7 @@
     "fcmToken": "string",
     "accounts": "object",
     "accountsByChainId": "object",
+    "marketData": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object",
@@ -241,6 +245,7 @@
       "swapsQuoteRefreshTime": 60000,
       "swapsQuotePrefetchingRefreshTime": 60000,
       "swapsStxBatchStatusRefreshTime": 10000,
+      "swapsStxStatusDeadline": 180,
       "swapsStxGetTransactionsRefreshTime": 10000,
       "swapsStxMaxFeeMultiplier": 2
     },
@@ -250,8 +255,10 @@
     "pendingApprovalCount": "number",
     "approvalFlows": "object",
     "storageMetadata": {},
-    "versionFileETag": "string"
+    "encryptionKey": "string",
+    "encryptionSalt": "string"
   },
+  "ramps": "object",
   "send": "object",
   "swaps": "object",
   "unconnectedAccount": { "state": "CLOSED" }

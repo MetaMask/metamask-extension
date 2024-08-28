@@ -24,6 +24,7 @@ describe('PersonalSignInfo', () => {
 
   it('does not render if required data is not present in the transaction', () => {
     const state = {
+      ...mockState,
       confirm: {
         currentConfirmation: {
           id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
@@ -74,9 +75,13 @@ describe('PersonalSignInfo', () => {
     expect(getByText('Signing in with')).toBeDefined();
   });
 
-  it('display simulation for SIWE request', () => {
+  it('display simulation for SIWE request if preference useTransactionSimulations is enabled', () => {
     const state = {
       ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        useTransactionSimulations: true,
+      },
       confirm: {
         currentConfirmation: signatureRequestSIWE,
       },

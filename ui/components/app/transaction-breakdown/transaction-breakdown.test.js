@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { within } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
+import mockState from '../../../../test/data/mock-state.json';
 import {
   MAINNET_DISPLAY_NAME,
   NETWORK_TYPES,
@@ -31,6 +32,8 @@ describe('TransactionBreakdown', () => {
         nickname: MAINNET_DISPLAY_NAME,
         type: NETWORK_TYPES.MAINNET,
       },
+      internalAccounts: mockState.metamask.internalAccounts,
+      completedOnboarding: true,
     },
   });
 

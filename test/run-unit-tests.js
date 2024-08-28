@@ -64,45 +64,14 @@ async function runJest(
   }
 }
 
-/**
- * Run mocha tests on the app directory. Mocha tests do not yet support
- * parallelism / test-splitting.
- *
- * @param {boolean} coverage - Use nyc to collect coverage
- */
-async function runMocha({ coverage }) {
-  const options = ['mocha', './app/**/*.test.js'];
-  // If coverage is true, then we need to run nyc as the first command
-  // and mocha after, so we use unshift to add three options to the beginning
-  // of the options array.
-  if (coverage) {
-    options.unshift('nyc', '--reporter=json', 'yarn');
-  }
-  await runInShell('yarn', options);
-  if (coverage) {
-    // Once done we rename the coverage file so that it is unique among test
-    // runners
-    await runCommand('mv', [
-      './coverage/coverage-final.json',
-      `./coverage/coverage-final-mocha.json`,
-    ]);
-  }
-}
-
 async function start() {
   const {
-    argv: { mocha, jestGlobal, jestDev, coverage, fakeParallelism, maxWorkers },
+    argv: { jestGlobal, jestDev, coverage, fakeParallelism, maxWorkers },
   } = yargs(hideBin(process.argv)).usage(
     '$0 [options]',
     'Run unit tests on the application code.',
     (yargsInstance) =>
       yargsInstance
-        .option('mocha', {
-          alias: ['m'],
-          default: false,
-          description: 'Run Mocha tests',
-          type: 'boolean',
-        })
         .option('jestDev', {
           alias: ['d'],
           default: false,
@@ -156,8 +125,6 @@ async function start() {
       throw new Error(
         'Do not try to run both jest test configs with fakeParallelism, bad things could happen.',
       );
-    } else if (mocha) {
-      throw new Error('Test splitting is not supported for mocha yet.');
     } else {
       const processes = [];
       for (let x = 0; x < fakeParallelism; x++) {
@@ -179,9 +146,6 @@ async function start() {
       totalShards: maxProcesses,
       maxWorkers,
     };
-    if (mocha) {
-      await runMocha(options);
-    }
     if (jestDev) {
       await runJest({ target: 'dev', ...options });
     }

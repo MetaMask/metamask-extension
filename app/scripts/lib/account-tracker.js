@@ -96,7 +96,7 @@ export default class AccountTracker {
     );
 
     this.controllerMessenger.subscribe(
-      'AccountsController:selectedAccountChange',
+      'AccountsController:selectedEvmAccountChange',
       (newAccount) => {
         const { useMultiAccountBalanceChecker } =
           this.preferencesController.store.getState();
