@@ -217,5 +217,6 @@ async function addEthereumChainHandler(
     );
   }
   endApprovalFlow({ id: approvalFlowId });
+  res.result = null;
   return end();
 }
