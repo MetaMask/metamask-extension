@@ -1549,9 +1549,6 @@
     "message": "$1を有効にする",
     "description": "$1 is a token symbol, e.g. ETH"
   },
-  "enableTokenAutoDetection": {
-    "message": "トークンの自動検出を有効にする"
-  },
   "enabled": {
     "message": "有効"
   },

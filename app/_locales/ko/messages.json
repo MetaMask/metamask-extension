@@ -1549,9 +1549,6 @@
     "message": "$1 활성화",
     "description": "$1 is a token symbol, e.g. ETH"
   },
-  "enableTokenAutoDetection": {
-    "message": "토큰 자동 감지 활성화"
-  },
   "enabled": {
     "message": "활성화됨"
   },

@@ -1549,9 +1549,6 @@
     "message": "activar $1",
     "description": "$1 is a token symbol, e.g. ETH"
   },
-  "enableTokenAutoDetection": {
-    "message": "Activar la autodetección de tokens"
-  },
   "enabled": {
     "message": "Activado"
   },
