@@ -1880,11 +1880,11 @@
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
         "@metamask/network-controller>@metamask/utils": true,
-        "@metamask/network-controller>uri-js": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "browserify>assert": true,
         "browserify>util": true,
+        "uri-js": true,
         "uuid": true
       }
     },
@@ -1987,11 +1987,6 @@
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true
-      }
-    },
-    "@metamask/network-controller>uri-js": {
-      "globals": {
-        "define": true
       }
     },
     "@metamask/notification-controller": {
@@ -5690,6 +5685,11 @@
     "terser>source-map-support>buffer-from": {
       "packages": {
         "browserify>buffer": true
+      }
+    },
+    "uri-js": {
+      "globals": {
+        "define": true
       }
     },
     "uuid": {
