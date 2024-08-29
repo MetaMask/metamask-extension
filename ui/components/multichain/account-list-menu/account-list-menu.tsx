@@ -273,7 +273,7 @@ export const AccountListMenu = ({
           bitcoinSupportEnabled && actionMode === ACTION_MODES.ADD_BITCOIN ? (
             <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
               <CreateBtcAccount
-                onActionComplete={(confirmed) => {
+                onActionComplete={async (confirmed) => {
                   if (confirmed) {
                     onClose();
                   } else {
