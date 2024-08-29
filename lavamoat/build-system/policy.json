@@ -1208,11 +1208,6 @@
         "Buffer": true
       }
     },
-    "@metamask/network-controller>uri-js": {
-      "globals": {
-        "define": true
-      }
-    },
     "@metamask/object-multiplex>once": {
       "packages": {
         "@metamask/object-multiplex>once>wrappy": true
@@ -3118,10 +3113,10 @@
         "console": true
       },
       "packages": {
-        "@metamask/network-controller>uri-js": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "eslint>@eslint/eslintrc>ajv>json-schema-traverse": true,
-        "eslint>fast-deep-equal": true
+        "eslint>fast-deep-equal": true,
+        "uri-js": true
       }
     },
     "eslint>@eslint/eslintrc>import-fresh": {
@@ -3215,10 +3210,10 @@
         "console": true
       },
       "packages": {
-        "@metamask/network-controller>uri-js": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "eslint>ajv>json-schema-traverse": true,
-        "eslint>fast-deep-equal": true
+        "eslint>fast-deep-equal": true,
+        "uri-js": true
       }
     },
     "eslint>doctrine": {
@@ -8934,6 +8929,11 @@
       },
       "packages": {
         "terser>source-map-support": true
+      }
+    },
+    "uri-js": {
+      "globals": {
+        "define": true
       }
     },
     "vinyl": {
