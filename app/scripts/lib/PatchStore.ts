@@ -25,13 +25,7 @@ export class PatchStore {
 
     this.#observableStore.on('stateChange', this.#listener);
 
-    const [, initialPatches] = produceWithPatches({}, (_draft) =>
-      this.#observableStore.getFlatState(),
-    );
-
-    this.#pendingPatches.push(...initialPatches);
-
-    log('Created', this.#id, { initialPatches });
+    log('Created', this.#id);
   }
 
   flushPendingPatches() {
