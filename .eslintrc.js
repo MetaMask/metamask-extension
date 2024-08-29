@@ -257,7 +257,7 @@ module.exports = {
      * Mocha library.
      */
     {
-      files: ['test/e2e/**/*.spec.js', 'test/unit-global/*.test.js'],
+      files: ['test/e2e/**/*.spec.js'],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
         // In Mocha tests, it is common to use `this` to store values or do
@@ -281,7 +281,9 @@ module.exports = {
         'app/scripts/controllers/mmi-controller.test.ts',
         'app/scripts/metamask-controller.actions.test.js',
         'app/scripts/detect-multiple-instances.test.js',
-        'app/scripts/controllers/swaps.test.js',
+        'app/scripts/controllers/bridge.test.ts',
+        'app/scripts/controllers/swaps/**/*.test.js',
+        'app/scripts/controllers/swaps/**/*.test.ts',
         'app/scripts/controllers/metametrics.test.js',
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/controllers/preferences.test.js',
@@ -297,6 +299,7 @@ module.exports = {
         'test/jest/*.js',
         'test/lib/timer-helpers.js',
         'test/e2e/helpers.test.js',
+        'test/unit-global/*.test.js',
         'ui/**/*.test.js',
         'ui/__mocks__/*.js',
         'shared/lib/error-utils.test.js',
@@ -365,7 +368,6 @@ module.exports = {
         'development/**/*.js',
         'test/e2e/benchmark.js',
         'test/helpers/setup-helper.js',
-        'test/run-unit-tests.js',
       ],
       rules: {
         'node/no-process-exit': 'off',

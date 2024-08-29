@@ -75,9 +75,6 @@
   "asset": {
     "message": "Aset"
   },
-  "attemptingConnect": {
-    "message": "Sedang cuba menyambungkan kepada rantaian blok."
-  },
   "attributions": {
     "message": "Atribusi"
   },

@@ -1,17 +1,25 @@
-import React, { useContext } from 'react';
+import React, { useContext, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { zeroAddress } from 'ethereumjs-util';
-
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { CaipChainId } from '@metamask/utils';
-///: END:ONLY_INCLUDE_IF
+import type { Hex } from '@metamask/utils';
+import { Icon, IconName } from '../../component-library';
+import { IconColor } from '../../../helpers/constants/design-system';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { I18nContext } from '../../../contexts/i18n';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
-  getShouldShowFiat,
+  getDataCollectionForMarketing,
+  getMetaMetricsId,
+  getParticipateInMetaMetrics,
   getPreferences,
   getTokensMarketData,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -20,19 +28,22 @@ import {
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { showPrimaryCurrency } from '../../../../shared/modules/currency-display.utils';
 import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
+import {
+  getMultichainIsEvm,
+  getMultichainProviderConfig,
+  getMultichainShouldShowFiat,
+} from '../../../selectors/multichain';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 
 export type CoinOverviewProps = {
   balance: string;
   balanceIsCached: boolean;
-  className: string;
-  classPrefix: string;
-  chainId: CaipChainId | number;
-  showAddress: boolean;
+  className?: string;
+  classPrefix?: string;
+  chainId: CaipChainId | Hex;
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   // FIXME: This seems to be for Ethereum only
   defaultSwapsToken?: SwapsEthToken;
@@ -65,9 +76,16 @@ export const CoinOverview = ({
   ///: END:ONLY_INCLUDE_IF
 
   const t = useContext(I18nContext);
-  const showFiat = useSelector(getShouldShowFiat);
+  const trackEvent = useContext(MetaMetricsContext);
+
+  const metaMetricsId = useSelector(getMetaMetricsId);
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
+
+  const isEvm = useSelector(getMultichainIsEvm);
+  const showFiat = useSelector(getMultichainShouldShowFiat);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  const { ticker, type, rpcUrl } = useSelector(getProviderConfig);
+  const { ticker, type, rpcUrl } = useSelector(getMultichainProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     ticker,
@@ -75,6 +93,25 @@ export const CoinOverview = ({
     rpcUrl,
   );
   const tokensMarketData = useSelector(getTokensMarketData);
+
+  const handlePortfolioOnClick = useCallback(() => {
+    const url = getPortfolioUrl(
+      '',
+      'ext_portfolio_button',
+      metaMetricsId,
+      isMetaMetricsEnabled,
+      isMarketingEnabled,
+    );
+    global.platform.openTab({ url });
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PortfolioLinkClicked,
+      properties: {
+        location: 'Home',
+        text: 'Portfolio',
+      },
+    });
+  }, [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, trackEvent]);
 
   return (
     <WalletOverview
@@ -85,6 +122,14 @@ export const CoinOverview = ({
           disabled={!balanceIsCached}
         >
           <div className={`${classPrefix}-overview__balance`}>
+            <div
+              onClick={handlePortfolioOnClick}
+              className="wallet-overview__portfolio_button"
+              data-testid="portfolio-link"
+            >
+              {t('portfolio')}
+              <Icon name={IconName.Diagram} color={IconColor.primaryDefault} />
+            </div>
             <div className={`${classPrefix}-overview__primary-container`}>
               {balance ? (
                 <UserPreferencedCurrencyDisplay
@@ -131,9 +176,11 @@ export const CoinOverview = ({
                 hideTitle
               />
             )}
-            <PercentageAndAmountChange
-              value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
-            />
+            {isEvm && (
+              <PercentageAndAmountChange
+                value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
+              />
+            )}
           </div>
         </Tooltip>
       }

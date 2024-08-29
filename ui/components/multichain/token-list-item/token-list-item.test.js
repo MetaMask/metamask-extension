@@ -3,22 +3,14 @@ import configureMockStore from 'redux-mock-store';
 
 import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import {
-  CHAIN_IDS,
-  CURRENCY_SYMBOLS,
-  NETWORK_TYPES,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getIntlLocale } from '../../../ducks/locale/locale';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { TokenListItem } from '.';
 
 const state = {
   metamask: {
-    providerConfig: {
-      ticker: CURRENCY_SYMBOLS.ETH,
-      nickname: '',
-      chainId: CHAIN_IDS.MAINNET,
-      type: NETWORK_TYPES.MAINNET,
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     useTokenDetection: false,
     currencyRates: {},
     preferences: {
@@ -102,6 +94,7 @@ describe('TokenListItem', () => {
       primary: '11.9751 ETH',
       isNativeCurrency: true,
       isOriginalTokenSymbol: false,
+      showPercentage: true,
     };
     const { getByTestId, getByText } = renderWithProvider(
       <TokenListItem {...propsToUse} />,

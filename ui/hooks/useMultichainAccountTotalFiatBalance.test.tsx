@@ -6,6 +6,7 @@ import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import { mockNetworkState } from '../../test/stub/networks';
 import { useMultichainAccountTotalFiatBalance } from './useMultichainAccountTotalFiatBalance';
 
 const mockTokenBalances = [
@@ -42,12 +43,11 @@ jest.mock('./useTokenTracker', () => {
 const mockAccount = createMockInternalAccount({
   name: 'Account 1',
   address: '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da',
-  snapOptions: null,
 });
 const mockNonEvmAccount = {
   ...mockAccount,
   id: 'b7893c59-e376-4cc0-93ad-05ddaab574a6',
-  addres: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
+  address: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
   type: BtcAccountType.P2wpkh,
 };
 
@@ -102,10 +102,8 @@ const renderUseMultichainAccountTotalFiatBalance = (
           },
         },
       },
-      providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
-        ticker: 'ETH',
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
       detectedTokens: {
         '0x1': {
           '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da': [
@@ -199,7 +197,7 @@ describe('useMultichainAccountTotalFiatBalance', () => {
       ],
       tokensWithBalances: [],
       totalFiatBalance: '100000',
-      totalWeiBalance: '',
+      totalBalance: '1.00000000',
     });
   });
 });

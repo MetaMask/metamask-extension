@@ -366,6 +366,7 @@
     },
     "preferences": {
       "hideZeroBalanceTokens": false,
+      "isRedesignedConfirmationsDeveloperEnabled": false,
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": true,
@@ -380,13 +381,6 @@
       "unconnectedAccount": true
     },
     "featureFlags": {},
-    "providerConfig": {
-      "type": "rpc",
-      "nickname": "goerli",
-      "chainId": "0x5",
-      "ticker": "ETH",
-      "id": "chain5"
-    },
     "networkConfigurations": {
       "testNetworkConfigurationId": {
         "rpcUrl": "https://testrpc.com",
@@ -395,12 +389,12 @@
         "type": "rpc",
         "id": "testNetworkConfigurationId"
       },
-      "chain5": {
+      "goerli": {
         "type": "rpc",
         "chainId": "0x5",
         "ticker": "ETH",
         "nickname": "Chain 5",
-        "id": "chain5"
+        "id": "goerli"
       }
     },
     "internalAccounts": {
@@ -417,7 +411,6 @@
           "options": {},
           "methods": [
             "personal_sign",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v3",
@@ -437,7 +430,6 @@
           "options": {},
           "methods": [
             "personal_sign",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v3",
@@ -457,7 +449,6 @@
           "options": {},
           "methods": [
             "personal_sign",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v3",
@@ -477,7 +468,6 @@
           "options": {},
           "methods": [
             "personal_sign",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v3",
@@ -497,7 +487,6 @@
           "options": {},
           "methods": [
             "personal_sign",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v3",
@@ -521,7 +510,6 @@
           "options": {},
           "methods": [
             "personal_sign",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v3",
@@ -532,6 +520,7 @@
       },
       "selectedAccount": "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3"
     },
+    "balances": {},
     "keyrings": [
       {
         "type": "HD Key Tree",
@@ -780,8 +769,6 @@
         }
       }
     },
-    "unapprovedMsgs": {},
-    "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgs": {},
     "unapprovedPersonalMsgCount": 0,
     "unapprovedDecryptMsgs": {},
@@ -1879,6 +1866,9 @@
       }
     ],
     "addSnapAccountEnabled": false,
+    "watchEthereumAccountEnabled": false,
+    "bitcoinSupportEnabled": false,
+    "bitcoinTestnetSupportEnabled": false,
     "pendingApprovals": {
       "testApprovalId": {
         "id": "testApprovalId",
@@ -1941,7 +1931,192 @@
           }
         }
       }
+    },
+    "subjects": {
+      "npm:@metamask/test-snap-bip44": {
+        "origin": "npm:@metamask/test-snap-bip44",
+        "permissions": {
+          "endowment:rpc": {
+            "caveats": [
+              {
+                "type": "rpcOrigin",
+                "value": {
+                  "allowedOrigins": ["npm:@metamask/json-rpc-example-snap"],
+                  "dapps": true
+                }
+              }
+            ],
+            "date": 1718117256761,
+            "id": "MhjpHKQFfGpMzI6YzkPGU",
+            "invoker": "npm:@metamask/test-snap-bip44",
+            "parentCapability": "endowment:rpc"
+          },
+          "snap_dialog": {
+            "caveats": null,
+            "date": 1718117256761,
+            "id": "sBxmdvnow7QiN9aS4uSdn",
+            "invoker": "npm:@metamask/test-snap-bip44",
+            "parentCapability": "snap_dialog"
+          },
+          "snap_getBip44Entropy": {
+            "caveats": [
+              {
+                "type": "permittedCoinTypes",
+                "value": [
+                  {
+                    "coinType": 1
+                  },
+                  {
+                    "coinType": 3
+                  }
+                ]
+              }
+            ],
+            "date": 1718117256762,
+            "id": "R9tggB2pDzyCcbt6dIebN",
+            "invoker": "npm:@metamask/test-snap-bip44",
+            "parentCapability": "snap_getBip44Entropy"
+          }
+        }
+      }
     }
+  },
+  "ramps": {
+    "buyableChains": [
+      {
+        "active": true,
+        "chainId": 1,
+        "chainName": "Ethereum Mainnet",
+        "shortName": "Ethereum",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 10,
+        "chainName": "Optimism Mainnet",
+        "shortName": "Optimism",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 25,
+        "chainName": "Cronos Mainnet",
+        "shortName": "Cronos",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 56,
+        "chainName": "BNB Chain Mainnet",
+        "shortName": "BNB Chain",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 100,
+        "chainName": "Gnosis Mainnet",
+        "shortName": "Gnosis",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 137,
+        "chainName": "Polygon Mainnet",
+        "shortName": "Polygon",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 250,
+        "chainName": "Fantom Mainnet",
+        "shortName": "Fantom",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 324,
+        "chainName": "zkSync Era Mainnet",
+        "shortName": "zkSync Era",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 1101,
+        "chainName": "Polygon zkEVM",
+        "shortName": "Polygon zkEVM",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 1284,
+        "chainName": "Moonbeam Mainnet",
+        "shortName": "Moonbeam",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 1285,
+        "chainName": "Moonriver Mainnet",
+        "shortName": "Moonriver",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 8453,
+        "chainName": "Base Mainnet",
+        "shortName": "Base",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 42161,
+        "chainName": "Arbitrum Mainnet",
+        "shortName": "Arbitrum",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 42220,
+        "chainName": "Celo Mainnet",
+        "shortName": "Celo",
+        "nativeTokenSupported": false
+      },
+      {
+        "active": true,
+        "chainId": 43114,
+        "chainName": "Avalanche C-Chain Mainnet",
+        "shortName": "Avalanche C-Chain",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 59144,
+        "chainName": "Linea",
+        "shortName": "Linea",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 1313161554,
+        "chainName": "Aurora Mainnet",
+        "shortName": "Aurora",
+        "nativeTokenSupported": false
+      },
+      {
+        "active": true,
+        "chainId": 1666600000,
+        "chainName": "Harmony Mainnet (Shard 0)",
+        "shortName": "Harmony (Shard 0)",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 11297108109,
+        "chainName": "Palm Mainnet",
+        "shortName": "Palm",
+        "nativeTokenSupported": false
+      }
+    ]
   },
   "send": {
     "amountMode": "INPUT",

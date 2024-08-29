@@ -25,8 +25,15 @@ import {
   updateAndApproveTx,
 } from '../../../../../store/actions';
 import { confirmSelector } from '../../../selectors';
-import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
+import { REDESIGN_DEV_TRANSACTION_TYPES } from '../../../utils';
 import { getConfirmationSender } from '../utils';
+import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
+
+export type OnCancelHandler = ({
+  location,
+}: {
+  location: MetaMetricsEventLocation;
+}) => void;
 
 const ConfirmButton = ({
   alertOwnerId = '',
@@ -37,7 +44,7 @@ const ConfirmButton = ({
   alertOwnerId?: string;
   disabled: boolean;
   onSubmit: () => void;
-  onCancel: () => void;
+  onCancel: OnCancelHandler;
 }) => {
   const t = useI18nContext();
 
@@ -65,17 +72,29 @@ const ConfirmButton = ({
           onSubmit={onSubmit}
         />
       )}
-      <Button
-        block
-        data-testid="confirm-footer-button"
-        startIconName={hasDangerAlerts ? IconName.Danger : undefined}
-        onClick={hasDangerAlerts ? handleOpenConfirmModal : onSubmit}
-        danger={hasDangerAlerts}
-        size={ButtonSize.Lg}
-        disabled={hasUnconfirmedDangerAlerts ? false : disabled}
-      >
-        {dangerAlerts?.length > 1 ? t('reviewAlerts') : t('confirm')}
-      </Button>
+      {hasDangerAlerts ? (
+        <Button
+          block
+          danger
+          data-testid="confirm-footer-button"
+          disabled={hasUnconfirmedDangerAlerts ? false : disabled}
+          onClick={handleOpenConfirmModal}
+          size={ButtonSize.Lg}
+          startIconName={IconName.Danger}
+        >
+          {dangerAlerts?.length > 1 ? t('reviewAlerts') : t('confirm')}
+        </Button>
+      ) : (
+        <Button
+          block
+          data-testid="confirm-footer-button"
+          disabled={disabled}
+          onClick={onSubmit}
+          size={ButtonSize.Lg}
+        >
+          {t('confirm')}
+        </Button>
+      )}
     </>
   );
 };
@@ -100,25 +119,28 @@ const Footer = () => {
     return false;
   });
 
-  const onCancel = useCallback(() => {
-    if (!currentConfirmation) {
-      return;
-    }
+  const onCancel = useCallback(
+    ({ location }: { location?: MetaMetricsEventLocation }) => {
+      if (!currentConfirmation) {
+        return;
+      }
 
-    dispatch(
-      rejectPendingApproval(
-        currentConfirmation.id,
-        serializeError(ethErrors.provider.userRejectedRequest()),
-      ),
-    );
-  }, [currentConfirmation]);
+      const error = ethErrors.provider.userRejectedRequest();
+      error.data = { location };
+
+      dispatch(
+        rejectPendingApproval(currentConfirmation.id, serializeError(error)),
+      );
+    },
+    [currentConfirmation],
+  );
 
   const onSubmit = useCallback(() => {
     if (!currentConfirmation) {
       return;
     }
 
-    const isTransactionConfirmation = REDESIGN_TRANSACTION_TYPES.find(
+    const isTransactionConfirmation = REDESIGN_DEV_TRANSACTION_TYPES.find(
       (type) => type === currentConfirmation?.type,
     );
     if (isTransactionConfirmation) {
@@ -141,12 +163,16 @@ const Footer = () => {
     }
   }, [currentConfirmation, customNonceValue]);
 
+  const onFooterCancel = useCallback(() => {
+    onCancel({ location: MetaMetricsEventLocation.Confirmation });
+  }, [currentConfirmation, onCancel]);
+
   return (
     <PageFooter className="confirm-footer_page-footer">
       <Button
         block
         data-testid="confirm-footer-cancel-button"
-        onClick={onCancel}
+        onClick={onFooterCancel}
         size={ButtonSize.Lg}
         variant={ButtonVariant.Secondary}
       >

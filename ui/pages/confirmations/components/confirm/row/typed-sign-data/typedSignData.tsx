@@ -7,16 +7,16 @@ import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
 } from '../../../../../../components/app/confirm/info/row';
-
-import { DataTree } from '../dataTree';
 import { parseSanitizeTypedDataMessage } from '../../../../utils';
+import { DataTree } from '../dataTree';
 
 export const ConfirmInfoRowTypedSignData = ({
   data,
-  isPermit,
+  tokenDecimals,
 }: {
   data: string;
   isPermit?: boolean;
+  tokenDecimals?: number;
 }) => {
   const t = useI18nContext();
 
@@ -35,7 +35,11 @@ export const ConfirmInfoRowTypedSignData = ({
         <ConfirmInfoRowText text={primaryType} />
       </ConfirmInfoRow>
       <Box style={{ marginLeft: -8 }}>
-        <DataTree data={sanitizedMessage.value} isPermit={isPermit} />
+        <DataTree
+          data={sanitizedMessage.value}
+          primaryType={primaryType}
+          tokenDecimals={tokenDecimals}
+        />
       </Box>
     </Box>
   );

@@ -42,10 +42,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../components/component-library';
 
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-///: END:ONLY_INCLUDE_IF
-
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 
@@ -53,8 +50,8 @@ import SignatureRequestHeader from '../signature-request-header';
 import SnapLegacyAuthorshipHeader from '../../../../components/app/snaps/snap-legacy-authorship-header';
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
-import { BlockaidUnavailableBannerAlert } from '../blockaid-unavailable-banner-alert/blockaid-unavailable-banner-alert';
-import SignatureRequestOriginalWarning from './signature-request-original-warning';
+import { NetworkChangeToastLegacy } from '../confirm/network-change-toast';
+import { QueuedRequestsBannerAlert } from '../../confirmation/components/queued-requests-banner-alert';
 
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {
@@ -90,7 +87,6 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   state = {
-    showSignatureRequestWarning: false,
     showSignatureInsights: false,
   };
 
@@ -133,8 +129,6 @@ export default class SignatureRequestOriginal extends Component {
       rows = [{ name: this.context.t('message'), value: hexToText(data) }];
     } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
       rows = data;
-    } else if (type === MESSAGE_TYPE.ETH_SIGN) {
-      rows = [{ name: this.context.t('message'), value: data }];
     }
 
     const targetSubjectMetadata = txData.msgParams.origin
@@ -143,22 +137,18 @@ export default class SignatureRequestOriginal extends Component {
 
     return (
       <div className="request-signature__body">
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-          <BlockaidBannerAlert
-            txData={txData}
-            marginTop={4}
-            marginLeft={4}
-            marginRight={4}
-          />
-          ///: END:ONLY_INCLUDE_IF
-        }
+        <BlockaidBannerAlert
+          txData={txData}
+          marginTop={4}
+          marginLeft={4}
+          marginRight={4}
+        />
         {isSuspiciousResponse(txData?.securityProviderResponse) && (
           <SecurityProviderBannerMessage
             securityProviderResponse={txData.securityProviderResponse}
           />
         )}
-        <BlockaidUnavailableBannerAlert />
+        <QueuedRequestsBannerAlert />
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           this.props.selectedAccount.address ===
@@ -320,10 +310,6 @@ export default class SignatureRequestOriginal extends Component {
           history.push(mostRecentOverviewPage);
         }}
         onSubmit={async () => {
-          if (txData.type === MESSAGE_TYPE.ETH_SIGN) {
-            return this.setState({ showSignatureRequestWarning: true });
-          }
-
           if (warnings?.length >= 1) {
             return this.setState({ showSignatureInsights: true });
           }
@@ -363,13 +349,7 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   render = () => {
-    const {
-      messagesCount,
-      fromAccount: { address, name },
-      txData,
-      warnings,
-    } = this.props;
-    const { showSignatureRequestWarning } = this.state;
+    const { messagesCount, txData, warnings } = this.props;
     const { t } = this.context;
 
     const rejectNText = t('rejectRequestsN', [messagesCount]);
@@ -388,23 +368,7 @@ export default class SignatureRequestOriginal extends Component {
             <LedgerInstructionField showDataInstruction />
           </div>
         ) : null}
-        {showSignatureRequestWarning && (
-          <SignatureRequestOriginalWarning
-            senderAddress={address}
-            name={name}
-            onSubmit={async () => {
-              if (warnings?.length >= 1) {
-                return this.setState({
-                  showSignatureInsights: true,
-                  showSignatureRequestWarning: false,
-                });
-              }
 
-              return await this.onSubmit();
-            }}
-            onCancel={async (event) => await this.onCancel(event)}
-          />
-        )}
         {this.state.showSignatureInsights && (
           <InsightWarnings
             warnings={warnings}
@@ -429,6 +393,7 @@ export default class SignatureRequestOriginal extends Component {
             {rejectNText}
           </ButtonLink>
         ) : null}
+        <NetworkChangeToastLegacy confirmation={txData} />
       </div>
     );
   };

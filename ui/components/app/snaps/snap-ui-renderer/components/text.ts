@@ -23,5 +23,6 @@ export const text: UIComponentFactory<TextElement> = ({
     overflowWrap: OverflowWrap.Anywhere,
     color: TextColor.inherit,
     className: 'snap-ui-renderer__text',
+    textAlign: element.props.alignment,
   },
 });

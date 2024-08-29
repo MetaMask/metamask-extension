@@ -89,4 +89,13 @@ describe('PercentageChange Component', () => {
     expect(percentageElement).toBeInTheDocument();
     expect(numberElement).toBeInTheDocument();
   });
+
+  it('displays zero percentage with number in default color if balance is zero', () => {
+    mockGetSelectedAccountCachedBalance.mockReturnValue('0x0');
+    render(<PercentageAndAmountChange value={-1.234} />);
+    const percentageElement = screen.getByText('(+0.00%)');
+    const numberElement = screen.getByText('+$0.00');
+    expect(percentageElement).toBeInTheDocument();
+    expect(numberElement).toBeInTheDocument();
+  });
 });

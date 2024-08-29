@@ -41,6 +41,7 @@ type AssetPickerAmountProps = OverridingUnion<
     asset: Asset;
     amount: Amount;
     isAmountLoading?: boolean;
+    error?: string;
     /**
      * Callback for when the amount changes; disables the input when undefined
      */
@@ -57,12 +58,15 @@ export const AssetPickerAmount = ({
   amount,
   onAmountChange,
   isAmountLoading,
+  error: passedError,
   ...assetPickerProps
 }: AssetPickerAmountProps) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const t = useI18nContext();
 
-  const { swapQuotesError } = useSelector(getCurrentDraftTransaction);
+  const { swapQuotesError, sendAsset, receiveAsset } = useSelector(
+    getCurrentDraftTransaction,
+  );
   const isDisabled = !onAmountChange;
   const isSwapsErrorShown = isDisabled && swapQuotesError;
 
@@ -135,6 +139,10 @@ export const AssetPickerAmount = ({
     borderColor = BorderColor.primaryDefault;
   }
 
+  const isSwapAndSendFromNative =
+    sendAsset.type === AssetType.native &&
+    receiveAsset.type !== AssetType.native;
+
   return (
     <Box className="asset-picker-amount">
       <Box
@@ -164,14 +172,16 @@ export const AssetPickerAmount = ({
       </Box>
       <Box display={Display.Flex}>
         {/* Only show balance if mutable */}
-        {onAmountChange && <AssetBalance asset={asset} error={error} />}
+        {onAmountChange && (
+          <AssetBalance asset={asset} error={passedError || error} />
+        )}
         {isSwapsErrorShown && (
           <Text variant={TextVariant.bodySm} color={TextColor.errorDefault}>
             {t(swapQuotesError)}
           </Text>
         )}
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        {onAmountChange && isNativeSendPossible && (
+        {onAmountChange && isNativeSendPossible && !isSwapAndSendFromNative && (
           <MaxClearButton asset={asset} />
         )}
       </Box>

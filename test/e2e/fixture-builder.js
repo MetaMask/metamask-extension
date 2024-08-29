@@ -4,11 +4,11 @@ const {
 } = require('@metamask/snaps-utils');
 const { merge } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
-const { NetworkStatus } = require('@metamask/network-controller');
+const { mockNetworkState } = require('../stub/networks');
 
-const { CHAIN_IDS, NETWORK_TYPES } = require('../../shared/constants/network');
+const { CHAIN_IDS } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
-const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
+const { DAPP_URL, DAPP_ONE_URL, ACCOUNT_1 } = require('./helpers');
 const { DEFAULT_FIXTURE_ACCOUNT, ERC_4337_ACCOUNT } = require('./constants');
 const {
   defaultFixture,
@@ -40,32 +40,15 @@ function onboardingFixture() {
         },
       },
       NetworkController: {
-        selectedNetworkClientId: 'networkConfigurationId',
-        networksMetadata: {
-          networkConfigurationId: {
-            EIPS: {},
-            status: NetworkStatus.Available,
-          },
-        },
-        providerConfig: {
-          ticker: 'ETH',
-          type: 'rpc',
-          rpcUrl: 'http://localhost:8545',
+        ...mockNetworkState({
+          id: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
-          id: 'networkConfigurationId',
-        },
-        networkConfigurations: {
-          networkConfigurationId: {
-            chainId: CHAIN_IDS.LOCALHOST,
-            nickname: 'Localhost 8545',
-            rpcPrefs: {},
-            rpcUrl: 'http://localhost:8545',
-            ticker: 'ETH',
-            networkConfigurationId: 'networkConfigurationId',
-            type: 'rpc',
-          },
-        },
+          rpcUrl: 'http://localhost:8545',
+          ticker: 'ETH',
+          blockExplorerUrl: undefined,
+        }),
+        providerConfig: { id: 'networkConfigurationId' },
       },
       PreferencesController: {
         advancedGasFee: null,
@@ -87,7 +70,8 @@ function onboardingFixture() {
           smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
-          showTokenAutodetectModal: false,
+          isRedesignedConfirmationsDeveloperEnabled: false,
+          showConfirmationAdvancedDetails: false,
         },
         useExternalServices: true,
         theme: 'light',
@@ -223,59 +207,48 @@ class FixtureBuilder {
 
   withNetworkController(data) {
     merge(this.fixture.data.NetworkController, data);
+    this.fixture.data.NetworkController.providerConfig = {
+      id: this.fixture.data.NetworkController.selectedNetworkClientId,
+    };
     return this;
   }
 
   withNetworkControllerOnMainnet() {
-    merge(this.fixture.data.NetworkController, {
-      providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
-        nickname: '',
-        rpcUrl: '',
-        type: NETWORK_TYPES.MAINNET,
-      },
-    });
-    return this;
+    return this.withNetworkController({ selectedNetworkClientId: 'mainnet' });
   }
 
   withNetworkControllerDoubleGanache() {
-    return this.withNetworkController({
-      networkConfigurations: {
-        networkConfigurationId: {
-          chainId: CHAIN_IDS.LOCALHOST,
-          nickname: 'Localhost 8545',
-          rpcPrefs: {},
-          rpcUrl: 'http://localhost:8545',
-          ticker: 'ETH',
-          networkConfigurationId: 'networkConfigurationId',
-          id: 'networkConfigurationId',
-        },
-        '76e9cd59-d8e2-47e7-b369-9c205ccb602c': {
-          id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
-          rpcUrl: 'http://localhost:8546',
-          chainId: '0x53a',
-          ticker: 'ETH',
-          nickname: 'Localhost 8546',
-          rpcPrefs: {},
-        },
+    const ganacheNetworks = mockNetworkState(
+      {
+        chainId: CHAIN_IDS.LOCALHOST,
+        nickname: 'Localhost 8545',
+        rpcUrl: 'http://localhost:8545',
+        ticker: 'ETH',
       },
-    });
+      {
+        id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
+        rpcUrl: 'http://localhost:8546',
+        chainId: '0x53a',
+        ticker: 'ETH',
+        nickname: 'Localhost 8546',
+      },
+    );
+    delete ganacheNetworks.selectedNetworkClientId;
+    return this.withNetworkController(ganacheNetworks);
   }
 
   withNetworkControllerTripleGanache() {
     this.withNetworkControllerDoubleGanache();
-    merge(this.fixture.data.NetworkController, {
-      networkConfigurations: {
-        '243ad4c2-10a6-4621-9536-e3a67f4dd4c9': {
-          id: '243ad4c2-10a6-4621-9536-e3a67f4dd4c9',
-          rpcUrl: 'http://localhost:7777',
-          chainId: '0x3e8',
-          ticker: 'ETH',
-          nickname: 'Localhost 7777',
-          rpcPrefs: {},
-        },
-      },
-    });
+    merge(
+      this.fixture.data.NetworkController,
+      mockNetworkState({
+        rpcUrl: 'http://localhost:7777',
+        chainId: '0x3e8',
+        ticker: 'ETH',
+        nickname: 'Localhost 7777',
+        blockExplorerUrl: undefined,
+      }),
+    );
     return this;
   }
 
@@ -365,6 +338,19 @@ class FixtureBuilder {
     return this;
   }
 
+  withBridgeControllerDefaultState() {
+    this.fixture.data.BridgeController = {
+      bridgeState: {
+        bridgeFeatureFlags: {
+          destNetworkAllowlist: [],
+          extensionSupport: false,
+          srcNetworkAllowlist: [],
+        },
+      },
+    };
+    return this;
+  }
+
   withPermissionControllerConnectedToTestDapp(restrictReturnedAccounts = true) {
     return this.withPermissionController({
       subjects: {
@@ -383,6 +369,32 @@ class FixtureBuilder {
                     '0x09781764c08de8ca82e156bbf156a3ca217c7950',
                     ERC_4337_ACCOUNT.toLowerCase(),
                   ],
+                },
+              ],
+              date: 1664388714636,
+            },
+          },
+        },
+      },
+    });
+  }
+
+  withPermissionControllerSnapAccountConnectedToTestDapp(
+    restrictReturnedAccounts = true,
+  ) {
+    return this.withPermissionController({
+      subjects: {
+        [DAPP_URL]: {
+          origin: DAPP_URL,
+          permissions: {
+            eth_accounts: {
+              id: 'ZaqPEWxyhNCJYACFw93jE',
+              parentCapability: 'eth_accounts',
+              invoker: DAPP_URL,
+              caveats: restrictReturnedAccounts && [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: ['0x09781764c08de8ca82e156bbf156a3ca217c7950'],
                 },
               ],
               date: 1664388714636,
@@ -539,6 +551,11 @@ class FixtureBuilder {
     });
   }
 
+  withPreferencesControllerAndFeatureFlag(flags) {
+    merge(this.fixture.data.PreferencesController, flags);
+    return this;
+  }
+
   withAccountsController(data) {
     merge(this.fixture.data.AccountsController, data);
     return this;
@@ -555,7 +572,6 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -576,7 +592,6 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -596,7 +611,6 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -625,7 +639,6 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -646,7 +659,6 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -736,7 +748,7 @@ class FixtureBuilder {
     return this;
   }
 
-  withTokensControllerERC20() {
+  withTokensControllerERC20({ chainId = 1337 } = {}) {
     merge(this.fixture.data.TokensController, {
       tokens: [
         {
@@ -752,7 +764,7 @@ class FixtureBuilder {
       ignoredTokens: [],
       detectedTokens: [],
       allTokens: {
-        [toHex(1337)]: {
+        [toHex(chainId)]: {
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
@@ -1222,6 +1234,142 @@ class FixtureBuilder {
             value: '0xde0b6b3a7640000',
           },
           type: 'simpleSend',
+        },
+      },
+    });
+  }
+
+  withTransactionControllerOPLayer2Transaction() {
+    const FROM_ADDRESS = ACCOUNT_1;
+    const TRANSACTION_ID = 'f0fc75d0-181d-11ef-9546-8b2366f13afd';
+    const TRANSACTION_TYPE = 'contractInteraction';
+    const TEST_NETWORK_CLIENT_ID = 'networkConfigurationId';
+
+    return this.withTransactionController({
+      transactions: {
+        [TRANSACTION_ID]: {
+          actionId: 3577139671,
+          chainId: '0xa',
+          dappSuggestedGasFees: { gas: '0x31f10' },
+          defaultGasEstimates: {
+            estimateType: 'dappSuggested',
+            gas: '0x31f10',
+            maxFeePerGas: '0x3b014b3',
+            maxPriorityFeePerGas: '0x3b014b3',
+          },
+          gasFeeEstimates: { gasPrice: '0x3b202d0', type: 'eth_gasPrice' },
+          gasFeeEstimatesLoaded: true,
+          history: [
+            {
+              actionId: 3577139671,
+              chainId: '0xa',
+              dappSuggestedGasFees: { gas: '0x31f10' },
+              defaultGasEstimates: {
+                estimateType: 'dappSuggested',
+                gas: '0x31f10',
+                maxFeePerGas: '0x3b014b3',
+                maxPriorityFeePerGas: '0x3b014b3',
+              },
+              id: TRANSACTION_ID,
+              layer1GasFee: '0x175283ae57',
+              networkClientId: TEST_NETWORK_CLIENT_ID,
+              origin: 'https://metamask.github.io',
+              securityAlertResponse: {
+                reason: 'loading',
+                result_type: 'validation_in_progress',
+                securityAlertId: '30626504-0069-4278-9e2e-3d7fba2e6aef',
+              },
+              sendFlowHistory: [],
+              status: 'unapproved',
+              time: 1716370234797,
+              txParams: {
+                data: '0x608060405234801561001057600080fd5b5033600160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506000808190555061023b806100686000396000f300608060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680632e1a7d4d1461005c5780638da5cb5b1461009d578063d0e30db0146100f4575b600080fd5b34801561006857600080fd5b5061008760048036038101908080359060200190929190505050610112565b6040518082815260200191505060405180910390f35b3480156100a957600080fd5b506100b26101d0565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6100fc6101f6565b6040518082815260200191505060405180910390f35b6000600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561017057600080fd5b8160008082825403925050819055503373ffffffffffffffffffffffffffffffffffffffff166108fc839081150290604051600060405180830381858888f193505050501580156101c5573d6000803e3d6000fd5b506000549050919050565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b60003460008082825401925050819055506000549050905600a165627a7a72305820f237db3ec816a52589d82512117bc85bc08d3537683ffeff9059108caf3e5d400029',
+                from: FROM_ADDRESS,
+                gas: '0x31f10',
+                maxFeePerGas: '0x3b014b3',
+                maxPriorityFeePerGas: '0x3b014b3',
+                value: '0x0',
+              },
+              type: TRANSACTION_TYPE,
+              userEditedGasLimit: false,
+              userFeeLevel: 'dappSuggested',
+              verifiedOnBlockchain: false,
+            },
+            [
+              {
+                note: 'TransactionController#updateSimulationData - Update simulation data',
+                op: 'add',
+                path: '/simulationData',
+                timestamp: 1716370235743,
+                value: {
+                  error: { code: 'disabled', message: 'Simulation disabled' },
+                  tokenBalanceChanges: [],
+                },
+              },
+            ],
+            [
+              {
+                note: 'TransactionController:updatesecurityAlertResponse - securityAlertResponse updated',
+                op: 'replace',
+                path: '/securityAlertResponse/result_type',
+                timestamp: 1716370236091,
+                value: 'Benign',
+              },
+              {
+                op: 'replace',
+                path: '/securityAlertResponse/reason',
+                value: '',
+              },
+              {
+                op: 'add',
+                path: '/securityAlertResponse/description',
+                value: '',
+              },
+              { op: 'add', path: '/securityAlertResponse/features', value: [] },
+              {
+                op: 'add',
+                path: '/securityAlertResponse/block',
+                value: 120385722,
+              },
+              {
+                op: 'add',
+                path: '/gasFeeEstimates',
+                value: { gasPrice: '0x3b014b3', type: 'eth_gasPrice' },
+              },
+              { op: 'add', path: '/gasFeeEstimatesLoaded', value: true },
+            ],
+          ],
+          id: TRANSACTION_ID,
+          layer1GasFee: '0x19fdabf615',
+          networkClientId: TEST_NETWORK_CLIENT_ID,
+          origin: 'https://metamask.github.io',
+          securityAlertResponse: {
+            block: 120385722,
+            description: '',
+            features: [],
+            reason: '',
+            result_type: 'Benign',
+            securityAlertId: '30626504-0069-4278-9e2e-3d7fba2e6aef',
+          },
+          sendFlowHistory: [],
+          simulationData: {
+            error: { code: 'disabled', message: 'Simulation disabled' },
+            tokenBalanceChanges: [],
+          },
+          status: 'unapproved',
+          time: 1716370234797,
+          txParams: {
+            data: '0x608060405234801561001057600080fd5b5033600160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506000808190555061023b806100686000396000f300608060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680632e1a7d4d1461005c5780638da5cb5b1461009d578063d0e30db0146100f4575b600080fd5b34801561006857600080fd5b5061008760048036038101908080359060200190929190505050610112565b6040518082815260200191505060405180910390f35b3480156100a957600080fd5b506100b26101d0565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6100fc6101f6565b6040518082815260200191505060405180910390f35b6000600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561017057600080fd5b8160008082825403925050819055503373ffffffffffffffffffffffffffffffffffffffff166108fc839081150290604051600060405180830381858888f193505050501580156101c5573d6000803e3d6000fd5b506000549050919050565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b60003460008082825401925050819055506000549050905600a165627a7a72305820f237db3ec816a52589d82512117bc85bc08d3537683ffeff9059108caf3e5d400029',
+            from: FROM_ADDRESS,
+            gas: '0x31f10',
+            maxFeePerGas: '0x3b014b3',
+            maxPriorityFeePerGas: '0x3b014b3',
+            value: '0x0',
+          },
+          type: TRANSACTION_TYPE,
+          userEditedGasLimit: false,
+          userFeeLevel: 'dappSuggested',
+          verifiedOnBlockchain: false,
         },
       },
     });
