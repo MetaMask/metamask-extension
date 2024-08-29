@@ -89,7 +89,7 @@ export default function reduceMetamask(state = initialState, action) {
   const metamaskState = { ...initialState, ...state };
   switch (action.type) {
     case actionConstants.UPDATE_METAMASK_STATE:
-      return { ...metamaskState, ...action.value };
+      return action.value;
 
     case actionConstants.LOCK_METAMASK:
       return {

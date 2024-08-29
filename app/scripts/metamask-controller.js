@@ -343,6 +343,7 @@ import {
   onPushNotificationReceived,
 } from './controllers/push-notifications';
 import createTracingMiddleware from './lib/createTracingMiddleware';
+import { PatchStore } from './lib/PatchStore';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -5139,7 +5140,12 @@ export default class MetamaskController extends EventEmitter {
    * @param {*} outStream - The stream to provide our API over.
    */
   setupControllerConnection(outStream) {
-    const api = this.getApi();
+    const patchStore = new PatchStore(this.memStore);
+
+    const api = {
+      ...this.getApi(),
+      getStatePatches: patchStore.flushPendingPatches.bind(patchStore),
+    };
 
     // report new active controller connection
     this.activeControllerConnections += 1;
@@ -5147,15 +5153,16 @@ export default class MetamaskController extends EventEmitter {
 
     // set up postStream transport
     outStream.on('data', createMetaRPCHandler(api, outStream));
-    const handleUpdate = (update) => {
+    const handleUpdate = (_state) => {
       if (!isStreamWritable(outStream)) {
         return;
       }
+      const patches = patchStore.flushPendingPatches();
       // send notification to client-side
       outStream.write({
         jsonrpc: '2.0',
         method: 'sendUpdate',
-        params: [update],
+        params: [patches],
       });
     };
     this.on('update', handleUpdate);
@@ -5185,6 +5192,7 @@ export default class MetamaskController extends EventEmitter {
         );
         outStream.mmFinished = true;
         this.removeListener('update', handleUpdate);
+        patchStore.destroy();
       }
     };
 
