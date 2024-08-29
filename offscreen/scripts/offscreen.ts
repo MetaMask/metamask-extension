@@ -1,5 +1,6 @@
 import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 import { ProxySnapExecutor } from '@metamask/snaps-execution-environments';
+import { isObject } from '@metamask/utils';
 import {
   OFFSCREEN_LEDGER_INIT_TIMEOUT,
   OffscreenCommunicationEvents,
@@ -51,7 +52,7 @@ init().then(() => {
     chrome.runtime.onMessage.addListener((message) => {
       if (
         message &&
-        typeof message === 'object' &&
+        isObject(message) &&
         message.event ===
           OffscreenCommunicationEvents.metamaskBackgroundReady &&
         message.target === OffscreenCommunicationTarget.extension
