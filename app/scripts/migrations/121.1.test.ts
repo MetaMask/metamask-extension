@@ -36,7 +36,9 @@ describe(`migration #${version}`, () => {
           '0x89': {
             chainId: '0x89',
             ticker: 'MATIC',
-            imageUrl: './images/matic-token.svg',
+            rpcPrefs: {
+              imageUrl: './images/matic-token.svg',
+            },
           },
         },
       },
@@ -48,7 +50,9 @@ describe(`migration #${version}`, () => {
           '0x89': {
             chainId: '0x89',
             ticker: 'POL',
-            imageUrl: './images/pol-token.svg',
+            rpcPrefs: {
+              imageUrl: './images/pol-token.svg',
+            },
           },
         },
       },
@@ -69,12 +73,16 @@ describe(`migration #${version}`, () => {
           '0x89': {
             chainId: '0x89',
             ticker: 'MATIC',
-            imageUrl: './images/old-image.svg',
+            rpcPrefs: {
+              imageUrl: './images/old-image.svg',
+            },
           },
           '0x1': {
             chainId: '0x1',
             ticker: 'ETH',
-            imageUrl: './images/eth-token.svg',
+            rpcPrefs: {
+              imageUrl: './images/eth-token.svg',
+            },
           },
         },
       },
@@ -86,12 +94,16 @@ describe(`migration #${version}`, () => {
           '0x89': {
             chainId: '0x89',
             ticker: 'POL',
-            imageUrl: './images/pol-token.svg',
+            rpcPrefs: {
+              imageUrl: './images/pol-token.svg',
+            },
           },
           '0x1': {
             chainId: '0x1',
             ticker: 'ETH',
-            imageUrl: './images/eth-token.svg',
+            rpcPrefs: {
+              imageUrl: './images/eth-token.svg',
+            },
           },
         },
       },
@@ -112,12 +124,16 @@ describe(`migration #${version}`, () => {
           '0x1': {
             chainId: '0x1',
             ticker: 'ETH',
-            imageUrl: './images/eth-token.svg',
+            rpcPrefs: {
+              imageUrl: './images/eth-token.svg',
+            },
           },
           '0x2a': {
             chainId: '0x2a',
             ticker: 'KOVAN',
-            imageUrl: './images/kovan-token.svg',
+            rpcPrefs: {
+              imageUrl: './images/kovan-token.svg',
+            },
           },
         },
       },
@@ -149,7 +165,9 @@ describe(`migration #${version}`, () => {
         providerConfig: {
           chainId: '0x89',
           ticker: 'POL',
-          rpcPrefs: './images/pol-token.svg',
+          rpcPrefs: {
+            imageUrl: './images/pol-token.svg',
+          },
         },
       },
     };
@@ -201,7 +219,9 @@ describe(`migration #${version}`, () => {
         providerConfig: {
           chainId: '0x89',
           ticker: 'NOT_MATIC',
-          rpcPrefs: './images/pol-token.svg',
+          rpcPrefs: {
+            imageUrl: './images/pol-token.svg',
+          },
         },
       },
     };

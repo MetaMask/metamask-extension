@@ -43,8 +43,12 @@ function transformState(state: Record<string, unknown>): void {
         networkConfiguration.chainId === CHAIN_IDS.POLYGON
       ) {
         // update image path regardless of ticker
-        if (hasProperty(networkConfiguration, 'imageUrl')) {
-          networkConfiguration.imageUrl = './images/pol-token.svg';
+        if (
+          hasProperty(networkConfiguration, 'rpcPrefs') &&
+          isObject(networkConfiguration.rpcPrefs) &&
+          hasProperty(networkConfiguration.rpcPrefs, 'imageUrl')
+        ) {
+          networkConfiguration.rpcPrefs.imageUrl = './images/pol-token.svg';
         }
         // update ticker only if MATIC
         if (
@@ -76,7 +80,8 @@ function transformState(state: Record<string, unknown>): void {
       isObject(networkControllerState.providerConfig.rpcPrefs) &&
       hasProperty(networkControllerState.providerConfig.rpcPrefs, 'imageUrl')
     ) {
-      networkControllerState.providerConfig.rpcPrefs = './images/pol-token.svg';
+      networkControllerState.providerConfig.rpcPrefs.imageUrl =
+        './images/pol-token.svg';
     }
   }
 }
