@@ -97,8 +97,11 @@ function getClientOptions() {
     // we can safely turn them off by setting the `sendClientReports` option to
     // `false`.
     sendClientReports: false,
-    tracesSampleRate:
-      METAMASK_DEBUG || getManifestFlags().circleci ? 1.0 : 0.01,
+    tracesSampleRate: getManifestFlags().circleci
+      ? 0.001
+      : METAMASK_DEBUG
+      ? 1.0
+      : 0.01,
     transport: makeTransport,
   };
 }
@@ -106,9 +109,9 @@ function getClientOptions() {
 function setCircleCiTags() {
   const { circleci } = getManifestFlags();
 
-  Sentry.setTag('circleci.enabled', circleci.enabled);
+  Sentry.setTag('circleci.enabled', Boolean(circleci?.enabled));
 
-  if (circleci.enabled) {
+  if (circleci?.enabled) {
     Sentry.setTag('circleci.branch', circleci.branch);
     Sentry.setTag('circleci.buildNum', circleci.buildNum);
     Sentry.setTag('circleci.job', circleci.job);

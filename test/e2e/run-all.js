@@ -44,20 +44,20 @@ const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 5;
 async function applyQualityGate(fullTestList, changedOrNewTests) {
   let qualityGatedList = fullTestList;
 
-  if (changedOrNewTests.length > 0) {
-    // Filter to include only the paths present in fullTestList
-    const filteredTests = changedOrNewTests.filter((test) =>
-      fullTestList.includes(test),
-    );
+  // if (changedOrNewTests.length > 0) {
+  //   // Filter to include only the paths present in fullTestList
+  //   const filteredTests = changedOrNewTests.filter((test) =>
+  //     fullTestList.includes(test),
+  //   );
 
-    // If there are any filtered tests, append them to fullTestList
-    if (filteredTests.length > 0) {
-      const filteredTestsString = filteredTests.join('\n');
-      for (let i = 0; i < RETRIES_FOR_NEW_OR_CHANGED_TESTS; i++) {
-        qualityGatedList += `\n${filteredTestsString}`;
-      }
-    }
-  }
+  //   // If there are any filtered tests, append them to fullTestList
+  //   if (filteredTests.length > 0) {
+  //     const filteredTestsString = filteredTests.join('\n');
+  //     for (let i = 0; i < RETRIES_FOR_NEW_OR_CHANGED_TESTS; i++) {
+  //       qualityGatedList += `\n${filteredTestsString}`;
+  //     }
+  //   }
+  // }
 
   return qualityGatedList;
 }

@@ -1,10 +1,12 @@
 import fs from 'fs';
 
+const folder = `dist/${process.env.SELENIUM_BROWSER}`;
+
 if (typeof beforeEach === 'function') {
   beforeEach(() => {
     restoreBackupManifest();
 
-    fs.cpSync('dist/chrome/manifest.json', 'dist/chrome/manifest.backup.json', {
+    fs.cpSync(`${folder}/manifest.json`, `${folder}/manifest.backup.json`, {
       preserveTimestamps: true,
     });
   });
@@ -17,8 +19,8 @@ if (typeof afterEach === 'function') {
 }
 
 function restoreBackupManifest() {
-  if (fs.existsSync('dist/chrome/manifest.backup.json')) {
-    fs.cpSync('dist/chrome/manifest.backup.json', 'dist/chrome/manifest.json', {
+  if (fs.existsSync(`${folder}/manifest.backup.json`)) {
+    fs.cpSync(`${folder}/manifest.backup.json`, `${folder}/manifest.json`, {
       preserveTimestamps: true,
     });
   }
@@ -37,10 +39,10 @@ export function setManifestFlags(flags: { circleci?: object } = {}) {
   }
 
   const manifest = JSON.parse(
-    fs.readFileSync('dist/chrome/manifest.json').toString(),
+    fs.readFileSync(`${folder}/manifest.json`).toString(),
   );
 
   manifest._flags = flags;
 
-  fs.writeFileSync('dist/chrome/manifest.json', JSON.stringify(manifest));
+  fs.writeFileSync(`${folder}/manifest.json`, JSON.stringify(manifest));
 }
