@@ -105,6 +105,9 @@ describe('Phishing Detection', function () {
         await driver.clickElement({
           text: 'continue to the site.',
         });
+
+        // Windows: MetaMask, Test Dapp to load
+        await driver.waitUntilXWindowHandles(2);
         const header = await driver.findElement('h1');
         assert.equal(await header.getText(), 'E2E Test Dapp');
       };
