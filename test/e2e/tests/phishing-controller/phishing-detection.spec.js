@@ -109,8 +109,8 @@ describe('Phishing Detection', function () {
         await driver.delay(2000);
 
         await driver.switchToWindowWithTitle('E2E Test Dapp');
-        //const header = await driver.findElement('h1');
-        //assert.equal(await header.getText(), 'E2E Test Dapp');
+        // const header = await driver.findElement('h1');
+        // assert.equal(await header.getText(), 'E2E Test Dapp');
       };
     }
 
