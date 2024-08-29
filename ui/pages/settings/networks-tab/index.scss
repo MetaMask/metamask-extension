@@ -113,8 +113,13 @@
     color: var(--color-text-muted);
   }
 
+  &__scrollable {
+    overflow-y: auto;
+  }
+
   &__network-form {
-    padding: 16px 24px;
+    padding: 16px 16px;
+    width: 100%;
 
     @include design-system.screen-sm-min {
       padding: 16px;
@@ -262,23 +267,25 @@
   }
 
   &__add-network-form {
-    margin-left: 16px;
-    margin-right: 16px;
     grid-column: span 2; // spread both columns of grid layout
 
     @include design-system.screen-sm-min {
       max-width: 400px; // but only expand to 400px
-      padding: 16px;
+      padding-left: 16px;
+      padding-right: 16px;
+      padding-bottom: 16px;
     }
 
     &__alert {
-      margin-top: 0;
+      margin-top: 4;
+      padding: 4;
     }
   }
 
   &__restrict-height {
     max-height: 578px;
     overflow-y: auto;
+    width: 100%;
   }
 
   &__add-network-form-footer {

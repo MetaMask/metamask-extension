@@ -34,7 +34,7 @@ import {
   setNewNftAddedMessage,
   updateNftDropDownState,
 } from '../../../store/actions';
-import NftsDetectionNoticeImportNFTs from '../../app/nfts-detection-notice-import-nfts/nfts-detection-notice-import-nfts';
+import NftsDetectionNoticeImportNFTs from '../../app/assets/nfts/nfts-detection-notice-import-nfts/nfts-detection-notice-import-nfts';
 import {
   BannerAlert,
   Box,
@@ -114,7 +114,7 @@ export const ImportNftsModal = ({ onClose }) => {
       nftAddress,
       null,
       tokenId.toString(),
-    );
+    ).catch(() => ({}));
 
     trackEvent({
       event: MetaMetricsEventName.TokenAdded,

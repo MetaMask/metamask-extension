@@ -60,6 +60,7 @@ export const getBlockaidMetricsProps = ({ securityAlertResponse }) => {
     reason,
     result_type: resultType,
     description,
+    source,
   } = securityAlertResponse;
 
   const uiCustomization = getBlockaidMetricUiCustomization(resultType);
@@ -77,6 +78,8 @@ export const getBlockaidMetricsProps = ({ securityAlertResponse }) => {
 
   params.security_alert_response =
     resultType ?? BlockaidResultType.NotApplicable;
+
+  params.security_alert_source = source;
 
   // add counts of each RPC call
   if (providerRequestsCount) {

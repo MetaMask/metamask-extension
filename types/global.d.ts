@@ -232,6 +232,11 @@ type SentryObject = Sentry & {
   getMetaMetricsEnabled: () => Promise<boolean>;
 };
 
+type HttpProvider = {
+  host: string;
+  timeout: number;
+};
+
 type StateHooks = {
   getCleanAppState?: () => Promise<any>;
   getLogs?: () => any[];
@@ -255,6 +260,8 @@ export declare global {
   var sentry: SentryObject | undefined;
 
   var chrome: Chrome;
+
+  var ethereumProvider: HttpProvider;
 
   var stateHooks: StateHooks;
 

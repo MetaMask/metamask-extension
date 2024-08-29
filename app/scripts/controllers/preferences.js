@@ -47,11 +47,7 @@ export default class PreferencesController {
       useNonceField: false,
       usePhishDetect: true,
       dismissSeedBackUpReminder: false,
-      disabledRpcMethodPreferences: {
-        eth_sign: false,
-      },
       useMultiAccountBalanceChecker: true,
-      hasDismissedOpenSeaToBlockaidBanner: false,
       useSafeChainsListValidation: true,
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
@@ -62,6 +58,9 @@ export default class PreferencesController {
       useRequestQueue: true,
       openSeaEnabled: true, // todo set this to true
       securityAlertsEnabled: true,
+      watchEthereumAccountEnabled: false,
+      bitcoinSupportEnabled: false,
+      bitcoinTestnetSupportEnabled: false,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       addSnapAccountEnabled: false,
       ///: END:ONLY_INCLUDE_IF
@@ -92,9 +91,10 @@ export default class PreferencesController {
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         redesignedConfirmationsEnabled: true,
+        redesignedTransactionsEnabled: true,
         featureNotificationsEnabled: false,
-        showTokenAutodetectModal: null,
-        showNftAutodetectModal: null, // null because we want to show the modal only the first time
+        isRedesignedConfirmationsDeveloperEnabled: false,
+        showConfirmationAdvancedDetails: false,
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -189,14 +189,6 @@ export default class PreferencesController {
    */
   setUseMultiAccountBalanceChecker(val) {
     this.store.updateState({ useMultiAccountBalanceChecker: val });
-  }
-
-  /**
-   * Setter for the `dismissOpenSeaToBlockaidBanner` property
-   *
-   */
-  dismissOpenSeaToBlockaidBanner() {
-    this.store.updateState({ hasDismissedOpenSeaToBlockaidBanner: true });
   }
 
   /**
@@ -298,6 +290,42 @@ export default class PreferencesController {
     });
   }
   ///: END:ONLY_INCLUDE_IF
+
+  /**
+   * Setter for the `watchEthereumAccountEnabled` property.
+   *
+   * @param {boolean} watchEthereumAccountEnabled - Whether or not the user wants to
+   * enable the "Watch Ethereum account (Beta)" button.
+   */
+  setWatchEthereumAccountEnabled(watchEthereumAccountEnabled) {
+    this.store.updateState({
+      watchEthereumAccountEnabled,
+    });
+  }
+
+  /**
+   * Setter for the `bitcoinSupportEnabled` property.
+   *
+   * @param {boolean} bitcoinSupportEnabled - Whether or not the user wants to
+   * enable the "Add a new Bitcoin account (Beta)" button.
+   */
+  setBitcoinSupportEnabled(bitcoinSupportEnabled) {
+    this.store.updateState({
+      bitcoinSupportEnabled,
+    });
+  }
+
+  /**
+   * Setter for the `bitcoinTestnetSupportEnabled` property.
+   *
+   * @param {boolean} bitcoinTestnetSupportEnabled - Whether or not the user wants to
+   * enable the "Add a new Bitcoin account (Testnet)" button.
+   */
+  setBitcoinTestnetSupportEnabled(bitcoinTestnetSupportEnabled) {
+    this.store.updateState({
+      bitcoinTestnetSupportEnabled,
+    });
+  }
 
   /**
    * Setter for the `useExternalNameSources` property
@@ -557,25 +585,6 @@ export default class PreferencesController {
   }
 
   /**
-   * A setter for the user preference to enable/disable rpc methods
-   *
-   * @param {string} methodName - The RPC method name to change the setting of
-   * @param {bool} isEnabled - true to enable the rpc method
-   */
-  async setDisabledRpcMethodPreference(methodName, isEnabled) {
-    const currentRpcMethodPreferences =
-      this.store.getState().disabledRpcMethodPreferences;
-    const updatedRpcMethodPreferences = {
-      ...currentRpcMethodPreferences,
-      [methodName]: isEnabled,
-    };
-
-    this.store.updateState({
-      disabledRpcMethodPreferences: updatedRpcMethodPreferences,
-    });
-  }
-
-  /**
    * A setter for the incomingTransactions in preference to be updated
    *
    * @param {string} chainId - chainId of the network
@@ -589,10 +598,6 @@ export default class PreferencesController {
 
   setServiceWorkerKeepAlivePreference(value) {
     this.store.updateState({ enableMV3TimestampSave: value });
-  }
-
-  getRpcMethodPreferences() {
-    return this.store.getState().disabledRpcMethodPreferences;
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

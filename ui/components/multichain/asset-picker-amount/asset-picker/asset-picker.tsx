@@ -39,7 +39,6 @@ import { getAssetImageURL } from '../../../../helpers/utils/util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: END:ONLY_INCLUDE_IF
-
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -185,30 +184,31 @@ export function AssetPicker({
         title={handleAssetPickerTitle()}
       >
         <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
-          <BadgeWrapper
-            badge={
-              <AvatarNetwork
-                size={AvatarNetworkSize.Xs}
-                name={currentNetwork?.nickname ?? ''}
-                src={currentNetwork?.rpcPrefs?.imageUrl}
-                backgroundColor={testNetworkBackgroundColor}
-                borderColor={
-                  primaryTokenImage
-                    ? BorderColor.borderMuted
-                    : BorderColor.borderDefault
-                }
+          <Box display={Display.Flex}>
+            <BadgeWrapper
+              badge={
+                <AvatarNetwork
+                  size={AvatarNetworkSize.Xs}
+                  name={currentNetwork?.nickname ?? ''}
+                  src={currentNetwork?.rpcPrefs?.imageUrl}
+                  backgroundColor={testNetworkBackgroundColor}
+                  borderColor={
+                    primaryTokenImage
+                      ? BorderColor.borderMuted
+                      : BorderColor.borderDefault
+                  }
+                />
+              }
+            >
+              <AvatarToken
+                borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
+                src={primaryTokenImage}
+                size={AvatarTokenSize.Md}
+                name={symbol}
+                {...(isNFT && { backgroundColor: BackgroundColor.transparent })}
               />
-            }
-          >
-            <AvatarToken
-              borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
-              src={primaryTokenImage}
-              size={AvatarTokenSize.Md}
-              showHalo={!isNFT}
-              name={symbol}
-              {...(isNFT && { backgroundColor: BackgroundColor.transparent })}
-            />
-          </BadgeWrapper>
+            </BadgeWrapper>
+          </Box>
 
           <Tooltip disabled={!isSymbolLong} title={symbol} position="bottom">
             <Text className="asset-picker__symbol" variant={TextVariant.bodyMd}>

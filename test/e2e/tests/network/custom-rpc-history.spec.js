@@ -1,4 +1,6 @@
 const { strict: assert } = require('assert');
+const { mockNetworkState } = require('../../../stub/networks');
+
 const {
   defaultGanacheOptions,
   generateGanacheOptions,
@@ -102,7 +104,6 @@ describe('Custom RPC history', function () {
         await rpcUrlInput.sendKeys(duplicateRpcUrl);
         await driver.findElement({
           text: 'This URL is currently used by the mainnet network.',
-          tag: 'h6',
         });
       },
     );
@@ -144,7 +145,6 @@ describe('Custom RPC history', function () {
         await chainIdInput.sendKeys(duplicateChainId);
         await driver.findElement({
           text: 'This Chain ID is currently used by the mainnet network.',
-          tag: 'h6',
         });
 
         await rpcUrlInput.clear();
@@ -160,7 +160,6 @@ describe('Custom RPC history', function () {
 
         await driver.findElement({
           text: 'Could not fetch chain ID. Is your RPC URL correct?',
-          tag: 'h6',
         });
       },
     );
@@ -185,29 +184,26 @@ describe('Custom RPC history', function () {
   });
 
   it('finds all recent RPCs in history', async function () {
+    const networkState = mockNetworkState(
+      {
+        rpcUrl: 'http://127.0.0.1:8545/1',
+        chainId: '0x539',
+        ticker: 'ETH',
+        nickname: 'http://127.0.0.1:8545/1',
+      },
+      {
+        rpcUrl: 'http://127.0.0.1:8545/2',
+        chainId: '0x539',
+        ticker: 'ETH',
+        nickname: 'http://127.0.0.1:8545/2',
+      },
+    );
+    delete networkState.selectedNetworkClientId;
+
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withNetworkController({
-            networkConfigurations: {
-              networkConfigurationIdOne: {
-                rpcUrl: 'http://127.0.0.1:8545/1',
-                chainId: '0x539',
-                ticker: 'ETH',
-                nickname: 'http://127.0.0.1:8545/1',
-                rpcPrefs: {},
-                type: 'rpc',
-              },
-              networkConfigurationIdTwo: {
-                rpcUrl: 'http://127.0.0.1:8545/2',
-                chainId: '0x539',
-                ticker: 'ETH',
-                nickname: 'http://127.0.0.1:8545/2',
-                rpcPrefs: {},
-                type: 'rpc',
-              },
-            },
-          })
+          .withNetworkController(networkState)
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
@@ -237,27 +233,26 @@ describe('Custom RPC history', function () {
   });
 
   it('deletes a custom RPC', async function () {
+    const networkState = mockNetworkState(
+      {
+        rpcUrl: 'http://127.0.0.1:8545/1',
+        chainId: '0x539',
+        ticker: 'ETH',
+        nickname: 'http://127.0.0.1:8545/1',
+      },
+      {
+        rpcUrl: 'http://127.0.0.1:8545/2',
+        chainId: '0x539',
+        ticker: 'ETH',
+        nickname: 'http://127.0.0.1:8545/2',
+      },
+    );
+    delete networkState.selectedNetworkClientId;
+
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withNetworkController({
-            networkConfigurations: {
-              networkConfigurationIdOne: {
-                rpcUrl: 'http://127.0.0.1:8545/1',
-                chainId: '0x539',
-                ticker: 'ETH',
-                nickname: 'http://127.0.0.1:8545/1',
-                rpcPrefs: {},
-              },
-              networkConfigurationIdTwo: {
-                rpcUrl: 'http://127.0.0.1:8545/2',
-                chainId: '0x539',
-                ticker: 'ETH',
-                nickname: 'http://127.0.0.1:8545/2',
-                rpcPrefs: {},
-              },
-            },
-          })
+          .withNetworkController(networkState)
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
@@ -294,7 +289,9 @@ describe('Custom RPC history', function () {
           value: customNetworkName,
         });
         // delete custom network in a modal
-        await driver.clickElement('.networks-tab__network-form .btn-danger');
+        await driver.clickElement(
+          '.networks-tab__network-form-footer .btn-danger',
+        );
         await driver.findVisibleElement(
           '[data-testid="confirm-delete-network-modal"]',
         );

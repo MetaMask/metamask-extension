@@ -19,6 +19,9 @@ import { ApprovalType } from '@metamask/controller-utils';
 import PortStream from 'extension-port-stream';
 
 import { ethErrors } from 'eth-rpc-errors';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
+
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -41,6 +44,16 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
 import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
+import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/socket-background-to-mocha';
+import {
+  OffscreenCommunicationTarget,
+  OffscreenCommunicationEvents,
+} from '../../shared/constants/offscreen-communication';
+import {
+  FakeLedgerBridge,
+  FakeTrezorBridge,
+} from '../../test/stub/keyring-bridge';
+import { getCurrentChainId } from '../../ui/selectors';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -68,8 +81,6 @@ import { generateSkipOnboardingState } from './skip-onboarding';
 import { createOffscreen } from './offscreen';
 
 /* eslint-enable import/first */
-
-import { TRIGGER_TYPES } from './controllers/metamask-notifications/constants/notification-schema';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -113,6 +124,9 @@ if (inTest || process.env.METAMASK_DEBUG) {
 }
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
+// normalized (adds a trailing slash to the end of the domain if it's missing)
+// the URL once and reuse it:
+const phishingPageHref = phishingPageUrl.toString();
 
 const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
@@ -183,6 +197,111 @@ const sendReadyMessageToTabs = async () => {
   }
 };
 
+/**
+ * Detects known phishing pages as soon as the browser begins to load the
+ * page. If the page is a known phishing page, the user is redirected to the
+ * phishing warning page.
+ *
+ * This detection works even if the phishing page is now a redirect to a new
+ * domain that our phishing detection system is not aware of.
+ *
+ * @param {MetamaskController} theController
+ */
+function maybeDetectPhishing(theController) {
+  async function redirectTab(tabId, url) {
+    try {
+      return await browser.tabs.update(tabId, {
+        url,
+      });
+    } catch (error) {
+      return sentry?.captureException(error);
+    }
+  }
+  // we can use the blocking API in MV2, but not in MV3
+  const isManifestV2 = !isManifestV3;
+  browser.webRequest.onBeforeRequest.addListener(
+    (details) => {
+      if (details.tabId === browser.tabs.TAB_ID_NONE) {
+        return {};
+      }
+
+      const onboardState = theController.onboardingController.store.getState();
+      if (!onboardState.completedOnboarding) {
+        return {};
+      }
+
+      const prefState = theController.preferencesController.store.getState();
+      if (!prefState.usePhishDetect) {
+        return {};
+      }
+
+      // ignore requests that come from our phishing warning page, as
+      // the requests may come from the "continue to site" link, so we'll
+      // actually _want_ to bypass the phishing detection. We shouldn't have to
+      // do this, because the phishing site does tell the extension that the
+      // domain it blocked it now "safe", but it does this _after_ the request
+      // begins (which would get blocked by this listener). So we have to bail
+      // on detection here.
+      // This check can be removed once  https://github.com/MetaMask/phishing-warning/issues/160
+      // is shipped.
+      if (
+        details.initiator &&
+        // compare normalized URLs
+        new URL(details.initiator).host === phishingPageUrl.host
+      ) {
+        return {};
+      }
+
+      const { hostname, href, searchParams } = new URL(details.url);
+      if (inTest) {
+        if (searchParams.has('IN_TEST_BYPASS_EARLY_PHISHING_DETECTION')) {
+          // this is a test page that needs to bypass early phishing detection
+          return {};
+        }
+      }
+
+      theController.phishingController.maybeUpdateState();
+      const phishingTestResponse =
+        theController.phishingController.test(hostname);
+      if (!phishingTestResponse?.result) {
+        return {};
+      }
+
+      theController.metaMetricsController.trackEvent({
+        // should we differentiate between background redirection and content script redirection?
+        event: MetaMetricsEventName.PhishingPageDisplayed,
+        category: MetaMetricsEventCategory.Phishing,
+        properties: {
+          url: hostname,
+        },
+      });
+      const querystring = new URLSearchParams({ hostname, href });
+      const redirectUrl = new URL(phishingPageHref);
+      redirectUrl.hash = querystring.toString();
+      const redirectHref = redirectUrl.toString();
+
+      // blocking is better than tab redirection, as blocking will prevent
+      // the browser from loading the page at all
+      if (isManifestV2) {
+        if (details.type === 'sub_frame') {
+          // redirect the entire tab to the
+          // phishing warning page instead.
+          redirectTab(details.tabId, redirectHref);
+          // don't let the sub_frame load at all
+          return { cancel: true };
+        }
+        // redirect the whole tab
+        return { redirectUrl: redirectHref };
+      }
+      // redirect the whole tab (even if it's a sub_frame request)
+      redirectTab(details.tabId, redirectHref);
+      return {};
+    },
+    { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },
+    isManifestV2 ? ['blocking'] : [],
+  );
+}
+
 // These are set after initialization
 let connectRemote;
 let connectExternalExtension;
@@ -236,24 +355,19 @@ function saveTimestamp() {
  * @property {object} featureFlags - An object for optional feature flags.
  * @property {boolean} welcomeScreen - True if welcome screen should be shown.
  * @property {string} currentLocale - A locale string matching the user's preferred display language.
- * @property {object} providerConfig - The current selected network provider.
- * @property {string} providerConfig.rpcUrl - The address for the RPC API, if using an RPC API.
- * @property {string} providerConfig.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
  * @property {string} networkStatus - Either "unknown", "available", "unavailable", or "blocked", depending on the status of the currently selected network.
  * @property {object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
  * @property {object} accountsByChainId - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values keyed by chain id.
  * @property {hex} currentBlockGasLimit - The most recently seen block gas limit, in a lower case hex prefixed string.
  * @property {object} currentBlockGasLimitByChainId - The most recently seen block gas limit, in a lower case hex prefixed string keyed by chain id.
- * @property {object} unapprovedMsgs - An object of messages pending approval, mapping a unique ID to the options.
- * @property {number} unapprovedMsgCount - The number of messages in unapprovedMsgs.
  * @property {object} unapprovedPersonalMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedPersonalMsgCount - The number of messages in unapprovedPersonalMsgs.
  * @property {object} unapprovedEncryptionPublicKeyMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedEncryptionPublicKeyMsgCount - The number of messages in EncryptionPublicKeyMsgs.
  * @property {object} unapprovedDecryptMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedDecryptMsgCount - The number of messages in unapprovedDecryptMsgs.
- * @property {object} unapprovedTypedMsgs - An object of messages pending approval, mapping a unique ID to the options.
- * @property {number} unapprovedTypedMsgCount - The number of messages in unapprovedTypedMsgs.
+ * @property {object} unapprovedTypedMessages - An object of messages pending approval, mapping a unique ID to the options.
+ * @property {number} unapprovedTypedMessagesCount - The number of messages in unapprovedTypedMessages.
  * @property {number} pendingApprovalCount - The number of pending request in the approval controller.
  * @property {Keyring[]} keyrings - An array of keyring descriptions, summarizing the accounts that are available for use, and what keyrings they belong to.
  * @property {string} selectedAddress - A lower case hex string of the currently selected address.
@@ -284,6 +398,14 @@ async function initialize() {
 
     let isFirstMetaMaskControllerSetup;
 
+    // We only want to start this if we are running a test build, not for the release build.
+    // `navigator.webdriver` is true if Selenium, Puppeteer, or Playwright are running.
+    // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
+    // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
+    if (process.env.IN_TEST && window.navigator?.webdriver) {
+      getSocketBackgroundToMocha();
+    }
+
     if (isManifestV3) {
       // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
       // miliseconds. This keeps the service worker alive.
@@ -303,14 +425,27 @@ async function initialize() {
       await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
     }
 
+    const overrides = inTest
+      ? {
+          keyrings: {
+            trezorBridge: FakeTrezorBridge,
+            ledgerBridge: FakeLedgerBridge,
+          },
+        }
+      : {};
+
     setupController(
       initState,
       initLangCode,
-      {},
+      overrides,
       isFirstMetaMaskControllerSetup,
       initData.meta,
       offscreenPromise,
     );
+
+    // `setupController` sets up the `controller` object, so we can use it now:
+    maybeDetectPhishing(controller);
+
     if (!isManifestV3) {
       await loadPhishingWarningPage();
     }
@@ -339,9 +474,7 @@ class PhishingWarningPageTimeoutError extends Error {
 async function loadPhishingWarningPage() {
   let iframe;
   try {
-    const extensionStartupPhishingPageUrl = new URL(
-      process.env.PHISHING_WARNING_PAGE_URL,
-    );
+    const extensionStartupPhishingPageUrl = new URL(phishingPageHref);
     // The `extensionStartup` hash signals to the phishing warning page that it should not bother
     // setting up streams for user interaction. Otherwise this page load would cause a console
     // error.
@@ -595,7 +728,7 @@ export function setupController(
 
   setupEnsIpfsResolver({
     getCurrentChainId: () =>
-      controller.networkController.state.providerConfig.chainId,
+      getCurrentChainId({ metamask: controller.networkController.state }),
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
       controller.preferencesController,
     ),
@@ -903,26 +1036,30 @@ export function setupController(
 
   function getUnreadNotificationsCount() {
     try {
-      const { isMetamaskNotificationsEnabled, isFeatureAnnouncementsEnabled } =
-        controller.metamaskNotificationsController.state;
+      const { isNotificationServicesEnabled, isFeatureAnnouncementsEnabled } =
+        controller.notificationServicesController.state;
 
       const snapNotificationCount = Object.values(
         controller.notificationController.state.notifications,
       ).filter((notification) => notification.readDate === null).length;
 
       const featureAnnouncementCount = isFeatureAnnouncementsEnabled
-        ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
+        ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
             (notification) =>
               !notification.isRead &&
-              notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+              notification.type ===
+                NotificationServicesController.Constants.TRIGGER_TYPES
+                  .FEATURES_ANNOUNCEMENT,
           ).length
         : 0;
 
-      const walletNotificationCount = isMetamaskNotificationsEnabled
-        ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
+      const walletNotificationCount = isNotificationServicesEnabled
+        ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
             (notification) =>
               !notification.isRead &&
-              notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+              notification.type !==
+                NotificationServicesController.Constants.TRIGGER_TYPES
+                  .FEATURES_ANNOUNCEMENT,
           ).length
         : 0;
 
@@ -968,6 +1105,7 @@ export function setupController(
         switch (type) {
           case ApprovalType.SnapDialogAlert:
           case ApprovalType.SnapDialogPrompt:
+          case DIALOG_APPROVAL_TYPES.default:
             controller.approvalController.accept(id, null);
             break;
           case ApprovalType.SnapDialogConfirmation:
@@ -1102,9 +1240,24 @@ function setupSentryGetStateGlobal(store) {
 
 async function initBackground() {
   await onInstall();
-  initialize().catch(log.error);
+  try {
+    await initialize();
+    if (process.env.IN_TEST) {
+      // Send message to offscreen document
+      if (browser.offscreen) {
+        browser.runtime.sendMessage({
+          target: OffscreenCommunicationTarget.extension,
+          event: OffscreenCommunicationEvents.metamaskBackgroundReady,
+        });
+      } else {
+        window.document?.documentElement?.classList.add('controller-loaded');
+      }
+    }
+    localStore.cleanUpMostRecentRetrievedState();
+  } catch (error) {
+    log.error(error);
+  }
 }
-
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
   initBackground();
 }

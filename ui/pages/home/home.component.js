@@ -14,7 +14,6 @@ import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminde
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import SmartTransactionsOptInModal from '../../components/app/smart-transactions/smart-transactions-opt-in-modal';
-import AutoDetectTokenModal from '../../components/app/auto-detect-token/auto-detect-token-modal';
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
@@ -24,7 +23,6 @@ import Popover from '../../components/ui/popover';
 import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
-
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 
 import {
@@ -81,6 +79,9 @@ import {
 } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain/account-overview';
 import { setEditedNetwork } from '../../store/actions';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import { AccountType } from '../../../shared/constants/custody';
+///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -153,7 +154,6 @@ export default class Home extends PureComponent {
     announcementsToShow: PropTypes.bool.isRequired,
     onboardedInThisUISession: PropTypes.bool,
     isSmartTransactionsOptInModalAvailable: PropTypes.bool.isRequired,
-    isShowTokenAutodetectModal: PropTypes.bool.isRequired,
     ///: END:ONLY_INCLUDE_IF
     newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
@@ -177,6 +177,7 @@ export default class Home extends PureComponent {
     pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
     pendingConfirmationsPrioritized: PropTypes.arrayOf(PropTypes.object)
       .isRequired,
+    networkMenuRedesign: PropTypes.bool,
     hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
@@ -201,12 +202,6 @@ export default class Home extends PureComponent {
     clearNewNetworkAdded: PropTypes.func,
     clearEditedNetwork: PropTypes.func,
     setActiveNetwork: PropTypes.func,
-    // eslint-disable-next-line react/no-unused-prop-types
-    setTokenAutodetectModal: PropTypes.func,
-    // eslint-disable-next-line react/no-unused-prop-types
-    setShowTokenAutodetectModalOnUpgrade: PropTypes.func,
-    // eslint-disable-next-line react/no-unused-prop-types
-    setNftAutodetectModal: PropTypes.func,
     hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
@@ -379,6 +374,10 @@ export default class Home extends PureComponent {
       closeNotificationPopup,
       isNotification,
       hasAllowedPopupRedirectApprovals,
+      networkMenuRedesign,
+      newNetworkAddedConfigurationId,
+      setActiveNetwork,
+      clearNewNetworkAdded,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       custodianDeepLink,
       showCustodianDeepLink,
@@ -387,7 +386,18 @@ export default class Home extends PureComponent {
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
+    const {
+      newNetworkAddedConfigurationId: prevNewNetworkAddedConfigurationId,
+    } = _prevProps;
     const { notificationClosing } = this.state;
+
+    if (
+      prevNewNetworkAddedConfigurationId !== newNetworkAddedConfigurationId &&
+      networkMenuRedesign
+    ) {
+      setActiveNetwork(newNetworkAddedConfigurationId);
+      clearNewNetworkAdded();
+    }
 
     if (notificationClosing && !prevState.notificationClosing) {
       closeNotificationPopup();
@@ -397,7 +407,7 @@ export default class Home extends PureComponent {
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     if (
-      accountType === 'custody' &&
+      accountType === AccountType.CUSTODY &&
       custodianDeepLink &&
       Object.keys(custodianDeepLink).length
     ) {
@@ -489,6 +499,7 @@ export default class Home extends PureComponent {
       setNewTokensImported,
       setNewTokensImportedError,
       newNetworkAddedConfigurationId,
+      networkMenuRedesign,
       clearNewNetworkAdded,
       clearEditedNetwork,
       setActiveNetwork,
@@ -763,7 +774,7 @@ export default class Home extends PureComponent {
             key="home-outdatedBrowserNotification"
           />
         ) : null}
-        {newNetworkAddedConfigurationId && (
+        {newNetworkAddedConfigurationId && !networkMenuRedesign && (
           <Popover
             className="home__new-network-added"
             onClose={() => clearNewNetworkAdded()}
@@ -975,9 +986,6 @@ export default class Home extends PureComponent {
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
       isSmartTransactionsOptInModalAvailable,
-      isShowTokenAutodetectModal,
-      setTokenAutodetectModal,
-      setShowTokenAutodetectModalOnUpgrade,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
@@ -1004,12 +1012,6 @@ export default class Home extends PureComponent {
       showWhatsNewPopup &&
       !showSmartTransactionsOptInModal;
 
-    const showAutoDetectionModal =
-      canSeeModals &&
-      isShowTokenAutodetectModal &&
-      !showSmartTransactionsOptInModal &&
-      !showWhatsNew;
-
     const showTermsOfUse =
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
     ///: END:ONLY_INCLUDE_IF
@@ -1034,15 +1036,6 @@ export default class Home extends PureComponent {
             isOpen={showSmartTransactionsOptInModal}
             hideWhatsNewPopup={hideWhatsNewPopup}
           />
-
-          <AutoDetectTokenModal
-            isOpen={showAutoDetectionModal}
-            onClose={setTokenAutodetectModal}
-            setShowTokenAutodetectModalOnUpgrade={
-              setShowTokenAutodetectModalOnUpgrade
-            }
-          />
-
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder

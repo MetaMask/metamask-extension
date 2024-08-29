@@ -512,6 +512,8 @@ export enum MetaMetricsEventName {
   AppLocked = 'App Locked',
   AppWindowExpanded = 'App Window Expanded',
   BridgeLinkClicked = 'Bridge Link Clicked',
+  BitcoinSupportToggled = 'Bitcoin Support Toggled',
+  BitcoinTestnetSupportToggled = 'Bitcoin Testnet Support Toggled',
   DappViewed = 'Dapp Viewed',
   DecryptionApproved = 'Decryption Approved',
   DecryptionRejected = 'Decryption Rejected',
@@ -568,7 +570,6 @@ export enum MetaMetricsEventName {
   OnboardingWalletCreationComplete = 'Wallet Created',
   OnboardingWalletSetupComplete = 'Application Opened',
   OnboardingWalletAdvancedSettings = 'Settings Updated',
-  OnboardingWalletAdvancedSettingsTurnOnProfileSyncing = 'Turn On Profile Syncing',
   OnboardingWalletImportAttempted = 'Wallet Import Attempted',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingTwitterClick = 'External Link Clicked',
@@ -626,6 +627,7 @@ export enum MetaMetricsEventName {
   WalletSetupCanceled = 'Wallet Setup Canceled',
   WalletSetupFailed = 'Wallet Setup Failed',
   WalletCreated = 'Wallet Created',
+  WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   DeeplinkClicked = 'Deeplink Clicked',
   ConnectCustodialAccountClicked = 'Connect Custodial Account Clicked',
@@ -667,6 +669,7 @@ export enum MetaMetricsEventName {
   TransactionApproved = 'Transaction Approved',
   SwapCompleted = 'Swap Completed',
   TransactionFinalized = 'Transaction Finalized',
+  ConfirmationQueued = 'Confirmation Queued',
   ExitedSwaps = 'Exited Swaps',
   SwapError = 'Swap Error',
   SnapInstallStarted = 'Snap Install Started',
@@ -697,8 +700,6 @@ export enum MetaMetricsEventName {
   SnapAccountTransactionFinalizeRedirectGoToSiteClicked = 'Snap Account Transaction Finalize Redirect "Go To Site" Clicked',
   SnapAccountTransactionFinalizeRedirectSnapUrlClicked = 'Snap Account Transaction Finalize Redirect "Snap URL" Clicked',
   SnapAccountTransactionFinalizeClosed = 'Snap Account Transaction Finalize Closed',
-  TokenAutoDetectionEnableModal = 'Token Autodetection Enabled from modal',
-  TokenAutoDetectionDisableModal = 'Token Autodetection Disabled from modal',
   ///: END:ONLY_INCLUDE_IF
   TurnOnMetaMetrics = 'MetaMetrics Turned On',
   TurnOffMetaMetrics = 'MetaMetrics Turned Off',
@@ -708,8 +709,6 @@ export enum MetaMetricsEventName {
   NotificationClicked = 'Notification Clicked',
   NotificationMenuOpened = 'Notification Menu Opened',
 
-  NftAutoDetectionEnableModal = 'Nft Autodetection Enabled from modal',
-  NftAutoDetectionDisableModal = 'Nft Autodetection Disabled from modal',
   // Send
   sendAssetSelected = 'Send Asset Selected',
   sendFlowExited = 'Send Flow Exited',
@@ -726,6 +725,11 @@ export enum MetaMetricsEventAccountType {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   Snap = 'snap',
   ///: END:ONLY_INCLUDE_IF
+}
+
+export enum QueueType {
+  NavigationHeader = 'navigation_header',
+  QueueController = 'queue_controller',
 }
 
 export enum MetaMetricsEventAccountImportType {
@@ -812,6 +816,8 @@ export enum MetaMetricsTransactionEventSource {
 }
 
 export enum MetaMetricsEventLocation {
+  AlertFrictionModal = 'alert_friction_modal',
+  Confirmation = 'confirmation',
   SignatureConfirmation = 'signature_confirmation',
   TokenDetails = 'token_details',
   TokenDetection = 'token_detection',
@@ -824,6 +830,7 @@ export enum MetaMetricsEventUiCustomization {
   FlaggedAsSafetyUnknown = 'flagged_as_safety_unknown',
   FlaggedAsWarning = 'flagged_as_warning',
   GasEstimationFailed = 'gas_estimation_failed',
+  Order = 'order',
   RedesignedConfirmation = 'redesigned_confirmation',
   SecurityAlertError = 'security_alert_error',
   Siwe = 'sign_in_with_ethereum',

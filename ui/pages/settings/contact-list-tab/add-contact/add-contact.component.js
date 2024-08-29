@@ -144,8 +144,8 @@ export default class AddContact extends PureComponent {
                   resolvingSnap,
                   addressBookEntryName,
                   protocol,
+                  domainName,
                 } = resolution;
-                const domainName = addressBookEntryName || this.state.input;
                 return (
                   <DomainInputResolutionCell
                     key={`${resolvedAddress}${resolvingSnap}${protocol}`}
@@ -153,7 +153,7 @@ export default class AddContact extends PureComponent {
                       protocol === 'Ethereum Name Service' ? 'ENS' : 'Other'
                     }
                     address={resolvedAddress}
-                    domainName={domainName}
+                    domainName={addressBookEntryName ?? domainName}
                     onClick={() => {
                       this.setState({
                         input: resolvedAddress,

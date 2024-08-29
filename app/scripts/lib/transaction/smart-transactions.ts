@@ -60,6 +60,7 @@ export type FeatureFlags = {
 
 export type SubmitSmartTransactionRequest = {
   transactionMeta: TransactionMeta;
+  signedTransactionInHex?: string;
   smartTransactionsController: SmartTransactionsController;
   transactionController: TransactionController;
   isSmartTransaction: boolean;
@@ -96,11 +97,14 @@ class SmartTransactionHook {
 
   #transactionMeta: TransactionMeta;
 
+  #signedTransactionInHex?: string;
+
   #txParams: TransactionParams;
 
   constructor(request: SubmitSmartTransactionRequest) {
     const {
       transactionMeta,
+      signedTransactionInHex,
       smartTransactionsController,
       transactionController,
       isSmartTransaction,
@@ -110,6 +114,7 @@ class SmartTransactionHook {
     this.#approvalFlowId = '';
     this.#approvalFlowEnded = false;
     this.#transactionMeta = transactionMeta;
+    this.#signedTransactionInHex = signedTransactionInHex;
     this.#smartTransactionsController = smartTransactionsController;
     this.#transactionController = transactionController;
     this.#isSmartTransaction = isSmartTransaction;
@@ -291,17 +296,18 @@ class SmartTransactionHook {
   }: {
     getFeesResponse: Fees;
   }) {
-    const signedTransactions = await this.#createSignedTransactions(
-      getFeesResponse.tradeTxFees?.fees ?? [],
-      false,
-    );
-    const signedCanceledTransactions = await this.#createSignedTransactions(
-      getFeesResponse.tradeTxFees?.cancelFees || [],
-      true,
-    );
+    let signedTransactions;
+    if (this.#signedTransactionInHex) {
+      signedTransactions = [this.#signedTransactionInHex];
+    } else {
+      signedTransactions = await this.#createSignedTransactions(
+        getFeesResponse.tradeTxFees?.fees ?? [],
+        false,
+      );
+    }
     return await this.#smartTransactionsController.submitSignedTransactions({
       signedTransactions,
-      signedCanceledTransactions,
+      signedCanceledTransactions: [],
       txParams: this.#txParams,
       transactionMeta: this.#transactionMeta,
     });

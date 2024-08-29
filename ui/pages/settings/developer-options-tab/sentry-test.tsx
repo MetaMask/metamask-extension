@@ -15,8 +15,7 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { trace } from '../../../../shared/lib/trace';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { trace, TraceName } from '../../../../shared/lib/trace';
 
 export function SentryTest() {
   return (
@@ -34,18 +33,18 @@ export function SentryTest() {
 }
 
 function GenerateUIError() {
-  const t = useI18nContext();
-
   const handleClick = useCallback(async () => {
     await window.stateHooks.throwTestError?.('Developer Options');
   }, []);
 
   return (
     <TestButton
-      name={t('developerOptionsSentryButtonGenerateUIError')}
-      description={t('developerOptionsSentryDescriptionGenerateUIError', [
-        <b>TestError</b>,
-      ])}
+      name="Generate UI Error"
+      description={
+        <span>
+          Generate an unhandled <b>TestError</b> in this window.
+        </span>
+      }
       onClick={handleClick}
       expectError
     />
@@ -53,19 +52,18 @@ function GenerateUIError() {
 }
 
 function GenerateBackgroundError() {
-  const t = useI18nContext();
-
   const handleClick = useCallback(async () => {
     await window.stateHooks.throwTestBackgroundError?.('Developer Options');
   }, []);
 
   return (
     <TestButton
-      name={t('developerOptionsSentryButtonGenerateBackgroundError')}
-      description={t(
-        'developerOptionsSentryDescriptionGenerateBackgroundError',
-        [<b>TestError</b>],
-      )}
+      name="Generate Background Error"
+      description={
+        <span>
+          Generate an unhandled <b>TestError</b> in the service worker.
+        </span>
+      }
       onClick={handleClick}
       expectError
     />
@@ -73,19 +71,17 @@ function GenerateBackgroundError() {
 }
 
 function GenerateTrace() {
-  const t = useI18nContext();
-
   const handleClick = useCallback(async () => {
     await trace(
       {
-        name: 'Developer Test',
+        name: TraceName.DeveloperTest,
         data: { 'test.data.number': 123 },
         tags: { 'test.tag.number': 123 },
       },
       async (context) => {
         await trace(
           {
-            name: 'Nested Test 1',
+            name: TraceName.NestedTest1,
             data: { 'test.data.boolean': true },
             tags: { 'test.tag.boolean': true },
             parentContext: context,
@@ -95,7 +91,7 @@ function GenerateTrace() {
 
         await trace(
           {
-            name: 'Nested Test 2',
+            name: TraceName.NestedTest2,
             data: { 'test.data.string': 'test' },
             tags: { 'test.tag.string': 'test' },
             parentContext: context,
@@ -108,10 +104,12 @@ function GenerateTrace() {
 
   return (
     <TestButton
-      name={t('developerOptionsSentryButtonGenerateTrace')}
-      description={t('developerOptionsSentryDescriptionGenerateTrace', [
-        <b>Developer Test</b>,
-      ])}
+      name="Generate Trace"
+      description={
+        <span>
+          Generate a <b>Developer Test</b> Sentry trace.
+        </span>
+      }
       onClick={handleClick}
     />
   );

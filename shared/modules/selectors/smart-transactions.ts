@@ -11,6 +11,8 @@ import {
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
 import { isProduction } from '../environment';
 
+import { MultichainState } from '../../../ui/selectors/multichain';
+
 type SmartTransactionsMetaMaskState = {
   metamask: {
     preferences: {
@@ -27,9 +29,6 @@ type SmartTransactionsMetaMaskState = {
           };
         };
       };
-    };
-    providerConfig: {
-      chainId: Hex;
     };
     swapsState: {
       swapsFeatureFlags: {
@@ -51,7 +50,8 @@ type SmartTransactionsMetaMaskState = {
     smartTransactionsState: {
       liveness: boolean;
     };
-    networkConfigurations: {
+    selectedNetworkClientId: string;
+    networkConfigurations?: {
       [key: string]: {
         chainId: Hex;
         rpcUrl: string;
@@ -97,7 +97,9 @@ const getIsAllowedRpcUrlForSmartTransactions = (
  * @returns true if the selected account has a non-zero balance, otherwise false.
  */
 const hasNonZeroBalance = (state: SmartTransactionsMetaMaskState) => {
-  const selectedAccount = getSelectedAccount(state);
+  const selectedAccount = getSelectedAccount(
+    state as unknown as MultichainState,
+  );
   return BigInt(selectedAccount?.balance || '0x0') > 0n;
 };
 

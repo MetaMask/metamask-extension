@@ -9,13 +9,15 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { RampsMetaMaskEntry } from '../../../hooks/ramps/useRamps/useRamps';
+import { defaultBuyableChains } from '../../../ducks/ramps/constants';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import BtcOverview from './btc-overview';
 
 const PORTOFOLIO_URL = 'https://portfolio.test';
 
 const BTC_OVERVIEW_BUY = 'coin-overview-buy';
 const BTC_OVERVIEW_BRIDGE = 'coin-overview-bridge';
-const BTC_OVERVIEW_PORTFOLIO = 'coin-overview-portfolio';
+const BTC_OVERVIEW_RECEIVE = 'coin-overview-receive';
 const BTC_OVERVIEW_SWAP = 'token-overview-button-swap';
 const BTC_OVERVIEW_SEND = 'coin-overview-send';
 const BTC_OVERVIEW_PRIMARY_CURRENCY = 'coin-overview__primary-currency';
@@ -40,43 +42,63 @@ const mockNonEvmAccount = {
   type: BtcAccountType.P2wpkh,
 };
 
+const mockBtcChain = {
+  active: true,
+  chainId: MultichainNetworks.BITCOIN,
+  chainName: 'Bitcoin',
+  shortName: 'Bitcoin',
+  nativeTokenSupported: true,
+  isEvm: false,
+};
+// default chains do not include BTC
+const mockBuyableChainsWithoutBtc = defaultBuyableChains.filter(
+  (chain) => chain.chainId !== MultichainNetworks.BITCOIN,
+);
+const mockBuyableChainsWithBtc = [...mockBuyableChainsWithoutBtc, mockBtcChain];
+
+const mockMetamaskStore = {
+  ...mockState.metamask,
+  internalAccounts: {
+    accounts: {
+      [mockNonEvmAccount.id]: mockNonEvmAccount,
+    },
+    selectedAccount: mockNonEvmAccount.id,
+  },
+  // (Multichain) BalancesController
+  balances: {
+    [mockNonEvmAccount.id]: {
+      [MultichainNativeAssets.BITCOIN]: {
+        amount: mockNonEvmBalance,
+        unit: 'BTC',
+      },
+    },
+  },
+  // (Multichain) RatesController
+  fiatCurrency: 'usd',
+  rates: {
+    [Cryptocurrency.Btc]: {
+      conversionRate: '1.000',
+      conversionDate: 0,
+    },
+  },
+  cryptocurrencies: [Cryptocurrency.Btc],
+  // Required, during onboarding, the extension will assume we're in an "EVM context", meaning
+  // most multichain selectors will not use non-EVM logic despite having a non-EVM
+  // selected account
+  completedOnboarding: true,
+  // Used when clicking on some buttons
+  metaMetricsId: mockMetaMetricsId,
+  // Override state if provided
+};
+const mockRampsStore = {
+  buyableChains: mockBuyableChainsWithoutBtc,
+};
+
 function getStore(state?: Record<string, unknown>) {
   return configureMockStore([thunk])({
-    metamask: {
-      ...mockState.metamask,
-      internalAccounts: {
-        accounts: {
-          [mockNonEvmAccount.id]: mockNonEvmAccount,
-        },
-        selectedAccount: mockNonEvmAccount.id,
-      },
-      // (Multichain) BalancesController
-      balances: {
-        [mockNonEvmAccount.id]: {
-          [MultichainNativeAssets.BITCOIN]: {
-            amount: mockNonEvmBalance,
-            unit: 'BTC',
-          },
-        },
-      },
-      // (Multichain) RatesController
-      fiatCurrency: 'usd',
-      rates: {
-        [Cryptocurrency.Btc]: {
-          conversionRate: '1.000',
-          conversionDate: 0,
-        },
-      },
-      cryptocurrencies: [Cryptocurrency.Btc],
-      // Required, during onboarding, the extension will assume we're in an "EVM context", meaning
-      // most multichain selectors will not use non-EVM logic despite having a non-EVM
-      // selected account
-      completedOnboarding: true,
-      // Used when clicking on some buttons
-      metaMetricsId: mockMetaMetricsId,
-      // Override state if provided
-      ...state,
-    },
+    metamask: mockMetamaskStore,
+    ramps: mockRampsStore,
+    ...state,
   });
 }
 
@@ -86,6 +108,10 @@ function makePortfolioUrl(path: string, getParams: Record<string, string>) {
 }
 
 describe('BtcOverview', () => {
+  beforeEach(() => {
+    setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() } as never);
+  });
+
   it('shows the primary balance', async () => {
     const { queryByTestId, queryByText } = renderWithProvider(
       <BtcOverview />,
@@ -103,8 +129,11 @@ describe('BtcOverview', () => {
     const { container } = renderWithProvider(
       <BtcOverview />,
       getStore({
-        // The balances won't be available
-        balances: {},
+        metamask: {
+          ...mockMetamaskStore,
+          // The balances won't be available
+          balances: {},
+        },
       }),
     );
 
@@ -134,8 +163,44 @@ describe('BtcOverview', () => {
     expect(buyButton).toBeInTheDocument();
   });
 
-  it('opens the Portfolio "Buy & Sell" URI when clicking on "Buy & Sell" button', async () => {
+  it('"Buy & Sell" button is disabled if BTC is not buyable', () => {
     const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
+    const buyButton = queryByTestId(BTC_OVERVIEW_BUY);
+
+    expect(buyButton).toBeInTheDocument();
+    expect(buyButton).toBeDisabled();
+  });
+
+  it('"Buy & Sell" button is enabled if BTC is buyable', () => {
+    const storeWithBtcBuyable = getStore({
+      ramps: {
+        buyableChains: mockBuyableChainsWithBtc,
+      },
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <BtcOverview />,
+      storeWithBtcBuyable,
+    );
+
+    const buyButton = queryByTestId(BTC_OVERVIEW_BUY);
+
+    expect(buyButton).toBeInTheDocument();
+    expect(buyButton).not.toBeDisabled();
+  });
+
+  it('opens the Portfolio "Buy & Sell" URI when clicking on "Buy & Sell" button', async () => {
+    const storeWithBtcBuyable = getStore({
+      ramps: {
+        buyableChains: mockBuyableChainsWithBtc,
+      },
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <BtcOverview />,
+      storeWithBtcBuyable,
+    );
+
     const openTabSpy = jest.spyOn(global.platform, 'openTab');
 
     const buyButton = queryByTestId(BTC_OVERVIEW_BUY);
@@ -148,30 +213,14 @@ describe('BtcOverview', () => {
         metamaskEntry: RampsMetaMaskEntry.BuySellButton,
         chainId: MultichainNetworks.BITCOIN,
         metametricsId: mockMetaMetricsId,
+        metricsEnabled: String(false),
       }),
     });
   });
 
-  it('always show the Portfolio button', () => {
+  it('always show the Receive button', () => {
     const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
-    const portfolioButton = queryByTestId(BTC_OVERVIEW_PORTFOLIO);
-    expect(portfolioButton).toBeInTheDocument();
-  });
-
-  it('open the Portfolio URI when clicking on Portfolio button', async () => {
-    const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
-    const openTabSpy = jest.spyOn(global.platform, 'openTab');
-
-    const portfolioButton = queryByTestId(BTC_OVERVIEW_PORTFOLIO);
-    expect(portfolioButton).toBeInTheDocument();
-    fireEvent.click(portfolioButton as HTMLElement);
-
-    expect(openTabSpy).toHaveBeenCalledTimes(1);
-    expect(openTabSpy).toHaveBeenCalledWith({
-      url: makePortfolioUrl('', {
-        metamaskEntry: 'ext_portfolio_button',
-        metametricsId: mockMetaMetricsId,
-      }),
-    });
+    const receiveButton = queryByTestId(BTC_OVERVIEW_RECEIVE);
+    expect(receiveButton).toBeInTheDocument();
   });
 });

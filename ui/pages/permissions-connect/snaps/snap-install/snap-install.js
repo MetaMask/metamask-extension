@@ -47,8 +47,9 @@ export default function SnapInstall({
   const { origin, iconUrl } = siteMetadata;
   const [isShowingWarning, setIsShowingWarning] = useState(false);
   const snapsMetadata = useSelector(getSnapsMetadata);
+  const [showAllPermissions, setShowAllPermissions] = useState(false);
 
-  const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =
+  const { isScrollable, hasScrolledToBottom, scrollToBottom, ref, onScroll } =
     useScrollRequired([requestState]);
 
   const onCancel = useCallback(
@@ -96,6 +97,10 @@ export default function SnapInstall({
     return 'confirm';
   };
 
+  const onShowAllPermissionsHandler = () => {
+    setShowAllPermissions(true);
+  };
+
   return (
     <Box
       className="snap-install"
@@ -109,7 +114,10 @@ export default function SnapInstall({
       {isLoading || hasError ? (
         <PermissionConnectHeader origin={origin} iconUrl={iconUrl} />
       ) : (
-        <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
+        <SnapAuthorshipHeader
+          snapId={targetSubjectMetadata.origin}
+          onCancel={onCancel}
+        />
       )}
       <Box
         ref={!isLoading && !hasError ? ref : undefined}
@@ -187,10 +195,12 @@ export default function SnapInstall({
                 snapName={snapName}
                 permissions={requestState.permissions || {}}
                 connections={requestState.connections || {}}
+                onShowAllPermissions={onShowAllPermissionsHandler}
               />
             </Box>
-            {isScrollable && !isScrolledToBottom ? (
-              <Box className="snap-install__scroll-button-area">
+
+            <Box className="snap-install__scroll-button-area">
+              {isScrollable && !hasScrolledToBottom && !showAllPermissions ? (
                 <AvatarIcon
                   className="snap-install__scroll-button"
                   data-testid="snap-install-scroll"
@@ -200,8 +210,8 @@ export default function SnapInstall({
                   onClick={scrollToBottom}
                   style={{ cursor: 'pointer' }}
                 />
-              </Box>
-            ) : null}
+              ) : null}
+            </Box>
           </>
         )}
       </Box>
@@ -216,7 +226,7 @@ export default function SnapInstall({
           cancelButtonType="default"
           hideCancel={hasError}
           disabled={
-            isLoading || (!hasError && isScrollable && !isScrolledToBottom)
+            isLoading || (!hasError && isScrollable && !hasScrolledToBottom)
           }
           onCancel={onCancel}
           cancelText={t('cancel')}

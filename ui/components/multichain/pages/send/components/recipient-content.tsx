@@ -17,11 +17,11 @@ import {
   acknowledgeRecipientWarning,
   getBestQuote,
   getCurrentDraftTransaction,
-  getSendAsset,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getIsSwapAndSendDisabledForNetwork,
   getSwapsBlockedTokens,
   ///: END:ONLY_INCLUDE_IF
+  getSendAsset,
 } from '../../../../../ducks/send';
 import { AssetType } from '../../../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../../../helpers/constants/common';

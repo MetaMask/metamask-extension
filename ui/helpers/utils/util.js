@@ -30,6 +30,7 @@ import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
+import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 
 export function formatDate(date, format = "M/d/y 'at' T") {
   if (!date) {
@@ -61,6 +62,30 @@ export function formatDateWithYearContext(
   return dateTime.toFormat(
     now.year === dateTime.year ? formatThisYear : fallback,
   );
+}
+
+export function formatDateWithSuffix(timestamp) {
+  const date = DateTime.fromMillis(timestamp * 1000); // Convert to milliseconds
+  const { day } = date;
+  const suffix = getOrdinalSuffix(day);
+
+  return date.toFormat(`MMM d'${suffix}', yyyy`);
+}
+
+function getOrdinalSuffix(day) {
+  if (day > 3 && day < 21) {
+    return 'th';
+  } // because 11th, 12th, 13th
+  switch (day % 10) {
+    case 1:
+      return 'st';
+    case 2:
+      return 'nd';
+    case 3:
+      return 'rd';
+    default:
+      return 'th';
+  }
 }
 /**
  * Determines if the provided chainId is a default MetaMask chain
@@ -102,7 +127,7 @@ export function addressSummary(
   if (!address) {
     return '';
   }
-  let checked = toChecksumHexAddress(address);
+  let checked = normalizeSafeAddress(address);
   if (!includeHex) {
     checked = stripHexPrefix(checked);
   }
@@ -755,4 +780,40 @@ export const hexToText = (hex) => {
  */
 export const getAvatarFallbackLetter = (subjectName) => {
   return subjectName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
+};
+
+/**
+ * Get abstracted Snap permissions filtered by weight.
+ *
+ * @param weightedPermissions - Set of Snap permissions that have 'weight' property assigned.
+ * @param weightThreshold - Number that represents weight threshold for filtering.
+ * @param minPermissionCount - Minimum number of permissions to show,
+ * if filtered permissions count are less than the value specified.
+ * @returns Subset of permissions passing weight criteria.
+ */
+export const getFilteredSnapPermissions = (
+  weightedPermissions,
+  weightThreshold = Infinity,
+  minPermissionCount = 3,
+) => {
+  const filteredPermissions = weightedPermissions.filter(
+    (permission) => permission.weight <= weightThreshold,
+  );
+
+  // If there are not enough permissions that fall into desired set filtered by weight,
+  // then fill the gap, no matter what the weight is
+  if (minPermissionCount && filteredPermissions.length < minPermissionCount) {
+    const remainingPermissions = weightedPermissions.filter(
+      (permission) => permission.weight > weightThreshold,
+    );
+    // Add permissions until desired count is reached
+    return filteredPermissions.concat(
+      remainingPermissions.slice(
+        0,
+        minPermissionCount - filteredPermissions.length,
+      ),
+    );
+  }
+
+  return filteredPermissions;
 };

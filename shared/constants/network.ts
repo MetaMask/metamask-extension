@@ -1,7 +1,6 @@
 import { capitalize, pick } from 'lodash';
 /**
- * A type representing any valid value for 'type' for setProviderType and other
- * methods that add or manipulate networks in MetaMask state.
+ * A type representing built-in network types, used as an identifier.
  */
 export type NetworkType = (typeof NETWORK_TYPES)[keyof typeof NETWORK_TYPES];
 
@@ -142,6 +141,10 @@ export const CHAIN_IDS = {
   CHZ: '0x15b38',
   NUMBERS: '0x290b',
   SEI: '0x531',
+  BERACHAIN: '0x138d5',
+  METACHAIN_ONE: '0x1b6e6',
+  NEAR: '0x18d',
+  NEAR_TESTNET: '0x18e',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -172,6 +175,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   FLARE_MAINNET: '0xe',
   FUSE_GOLD_MAINNET: '0x7a',
   HAQQ_NETWORK: '0x2be3',
+  IOTEX_MAINNET: '0x1251',
   KCC_MAINNET: '0x141',
   KLAYTN_MAINNET_CYPRESS: '0x2019',
   KROMA_MAINNET: '0xff',
@@ -243,6 +247,8 @@ export const MOONRIVER_DISPLAY_NAME = 'Moonriver';
 export const SCROLL_DISPLAY_NAME = 'Scroll';
 export const SCROLL_SEPOLIA_DISPLAY_NAME = 'Scroll Sepolia';
 export const OP_BNB_DISPLAY_NAME = 'opBNB';
+export const BERACHAIN_DISPLAY_NAME = 'Berachain Artio';
+export const METACHAIN_ONE_DISPLAY_NAME = 'Metachain One Mainnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -356,6 +362,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   OASYS_MAINNET: 'OAS',
   HUOBI_ECO_CHAIN_MAINNET: 'HT',
   ACALA_NETWORK: 'ACA',
+  IOTEX_MAINNET: 'IOTX',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -399,6 +406,8 @@ export const EVMOS_IMAGE_URL = './images/evmos.svg';
 export const FLARE_MAINNET_IMAGE_URL = './images/flare-mainnet.svg';
 export const FUSE_GOLD_MAINNET_IMAGE_URL = './images/fuse-mainnet.jpg';
 export const HAQQ_NETWORK_IMAGE_URL = './images/haqq.svg';
+export const IOTEX_MAINNET_IMAGE_URL = './images/iotex.svg';
+export const IOTEX_TOKEN_IMAGE_URL = './images/iotex-token.svg';
 export const KCC_MAINNET_IMAGE_URL = './images/kcc-mainnet.svg';
 export const KLAYTN_MAINNET_IMAGE_URL = './images/klaytn.svg';
 export const KROMA_MAINNET_IMAGE_URL = './images/kroma.svg';
@@ -407,6 +416,8 @@ export const MANTA_PACIFIC_MAINNET_IMAGE_URL = './images/manta.svg';
 export const MANTLE_MAINNET_IMAGE_URL = './images/mantle.svg';
 export const MOONBEAM_IMAGE_URL = './images/moonbeam.svg';
 export const MOONRIVER_IMAGE_URL = './images/moonriver.svg';
+export const MOONBEAM_TOKEN_IMAGE_URL = './images/moonbeam-token.svg';
+export const MOONRIVER_TOKEN_IMAGE_URL = './images/moonriver-token.svg';
 export const NEAR_AURORA_MAINNET_IMAGE_URL = './images/near-aurora.svg';
 export const NEBULA_MAINNET_IMAGE_URL = './images/nebula.svg';
 export const OASYS_MAINNET_IMAGE_URL = './images/oasys.svg';
@@ -429,6 +440,7 @@ export const SCROLL_IMAGE_URL = './images/scroll.svg';
 export const NUMBERS_MAINNET_IMAGE_URL = './images/numbers-mainnet.svg';
 export const NUMBERS_TOKEN_IMAGE_URL = './images/numbers-token.png';
 export const SEI_IMAGE_URL = './images/sei.svg';
+export const NEAR_IMAGE_URL = './images/near.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -484,10 +496,12 @@ export const BUILT_IN_NETWORKS = {
   [NETWORK_TYPES.MAINNET]: {
     chainId: CHAIN_IDS.MAINNET,
     blockExplorerUrl: `https://etherscan.io`,
+    ticker: CURRENCY_SYMBOLS.ETH,
   },
   [NETWORK_TYPES.LINEA_MAINNET]: {
     chainId: CHAIN_IDS.LINEA_MAINNET,
     blockExplorerUrl: 'https://lineascan.build',
+    ticker: CURRENCY_SYMBOLS.ETH,
   },
   [NETWORK_TYPES.LOCALHOST]: {
     chainId: CHAIN_IDS.LOCALHOST,
@@ -534,6 +548,9 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.OPBNB]: OP_BNB_DISPLAY_NAME,
+  [CHAIN_IDS.ZKSYNC_ERA]: ZK_SYNC_ERA_DISPLAY_NAME,
+  [CHAIN_IDS.BERACHAIN]: BERACHAIN_DISPLAY_NAME,
+  [CHAIN_IDS.METACHAIN_ONE]: METACHAIN_ONE_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -648,6 +665,8 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.HUOBI_ECO_CHAIN_MAINNET,
   [CHAINLIST_CHAIN_IDS_MAP.ACALA_NETWORK]:
     CHAINLIST_CURRENCY_SYMBOLS_MAP.ACALA_NETWORK,
+  [CHAINLIST_CHAIN_IDS_MAP.IOTEX_MAINNET]:
+    CHAINLIST_CURRENCY_SYMBOLS_MAP.IOTEX_MAINNET,
 } as const;
 
 /**
@@ -702,6 +721,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.PALM]: PALM_TOKEN_IMAGE_URL,
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.NEAR]: NEAR_IMAGE_URL,
+  [CHAIN_IDS.NEAR_TESTNET]: NEAR_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ACALA_NETWORK]: ACALA_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ARBITRUM_NOVA]: ARBITRUM_NOVA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ASTAR]: ASTAR_IMAGE_URL,
@@ -722,6 +743,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.EVMOS]: EVMOS_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.FLARE_MAINNET]: FLARE_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.FUSE_GOLD_MAINNET]: FUSE_GOLD_MAINNET_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.IOTEX_MAINNET]: IOTEX_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.HAQQ_NETWORK]: HAQQ_NETWORK_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.KCC_MAINNET]: KCC_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.KLAYTN_MAINNET_CYPRESS]: KLAYTN_MAINNET_IMAGE_URL,
@@ -779,6 +801,11 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_IMAGE_URL,
   [CHAIN_IDS.NUMBERS]: NUMBERS_TOKEN_IMAGE_URL,
   [CHAIN_IDS.SEI]: SEI_IMAGE_URL,
+  [CHAIN_IDS.NEAR]: NEAR_IMAGE_URL,
+  [CHAIN_IDS.NEAR_TESTNET]: NEAR_IMAGE_URL,
+  [CHAIN_IDS.MOONRIVER]: MOONRIVER_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.MOONBEAM]: MOONBEAM_TOKEN_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.IOTEX_MAINNET]: IOTEX_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';

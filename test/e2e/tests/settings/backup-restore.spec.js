@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { promises: fs } = require('fs');
+
 const {
   defaultGanacheOptions,
   withFixtures,
