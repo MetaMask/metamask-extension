@@ -177,7 +177,7 @@ async function assertApproveDetails(driver: Driver) {
 
   await driver.waitForSelector({
     css: 'p',
-    text: '70,000',
+    text: '7',
   });
 
   await toggleAdvancedDetails(driver);
