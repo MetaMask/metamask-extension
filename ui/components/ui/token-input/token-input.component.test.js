@@ -77,7 +77,7 @@ describe('TokenInput Component', () => {
           providerConfig: {
             chainId: CHAIN_IDS.POLYGON,
             type: NETWORK_TYPES.MAINNET,
-            ticker: CURRENCY_SYMBOLS.MATIC,
+            ticker: CURRENCY_SYMBOLS.POL,
           },
         },
       };
