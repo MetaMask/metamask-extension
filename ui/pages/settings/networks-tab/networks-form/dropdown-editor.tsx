@@ -34,7 +34,8 @@ export enum DropdownEditorStyle {
   BoxStyle,
 }
 
-// A dropdown for selecting, adding, and deleting items
+// A dropdown for selecting, adding, and deleting items.
+// Currently used for managing RPC endpoints and block explorers for a network.
 export const DropdownEditor = <Item,>({
   title,
   placeholder,

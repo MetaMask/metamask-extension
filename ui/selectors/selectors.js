@@ -1798,14 +1798,12 @@ export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
   getCurrentNetwork,
   (sitesList, domains, networks, currentNetwork) => {
     Object.keys(sitesList).forEach((siteKey) => {
-      console.log('networks ++++++', networks);
       const connectedNetwork = Object.values(networks).find((network) =>
         network.rpcEndpoints.some(
           (rpcEndpoint) => rpcEndpoint.networkClientId === domains[siteKey],
         ),
       );
 
-      console.log('connectedNetwork ----', connectedNetwork);
       // For the testnets, if we do not have an image, we will have a fallback string
       sitesList[siteKey].networkIconUrl =
         CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[connectedNetwork?.chainId] || '';

@@ -30,6 +30,8 @@ export const stripProtocol = (endpoint: string) => {
   return `${url.host}${url.pathname === '/' ? '' : url.pathname}`;
 };
 
+// This components represents an RPC endpoint in a list,
+// currently when selecting or editing endpoints for a network.
 const RpcListItem = ({
   rpcEndpoint,
 }: {
