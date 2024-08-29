@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import {
   Modal,
   ModalContent,
@@ -23,47 +24,18 @@ import { setShowMultiRpcModal } from '../../../store/actions';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { getNetworkConfigurationsByChainId } from '../../../selectors';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import NetworkListItem from './network-list-item/network-list-item';
 
-type MultiRpcEditModalProps = {
-  isOpen: boolean;
-};
-
-function MultiRpcEditModal({ isOpen }: MultiRpcEditModalProps) {
+function MultiRpcEditModal() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
-
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
-
-  const listNetworks = useMemo(() => {
-    return [...Object.values(networkConfigurations)];
-  }, [networkConfigurations]);
-
-  // Use a ref to ensure the effect runs only once
-  const effectRan = useRef(false);
-
-  useEffect(() => {
-    if (effectRan.current) {
-      return;
-    }
-
-    const hasMultipleRpcEndpoints = listNetworks.some(
-      (network) => network.rpcEndpoints.length > 1,
-    );
-
-    if (!hasMultipleRpcEndpoints) {
-      dispatch(setShowMultiRpcModal(true));
-    }
-
-    effectRan.current = true; // Set the ref to true after the effect runs once
-  }, [listNetworks, dispatch]);
 
   return (
     <Modal
-      isOpen={isOpen}
-      onClose={() => dispatch(setShowMultiRpcModal(true))}
+      isOpen={true}
+      onClose={() => dispatch(setShowMultiRpcModal(false))}
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
       className="mm-modal__custom-scrollbar auto-detect-in-modal"
@@ -97,46 +69,21 @@ function MultiRpcEditModal({ isOpen }: MultiRpcEditModalProps) {
 
           <Box className="new-network-list__networks-container">
             <Box marginTop={isPopUp ? 0 : 4} marginBottom={1}>
-              {listNetworks.map((item, index) => {
-                const networkRpcEndpoints =
-                  networkConfigurations?.[item.chainId]?.rpcEndpoints;
-
-                if (networkRpcEndpoints.length < 2) {
-                  return null;
-                }
-
-                const selectedRpc =
-                  networkRpcEndpoints?.[item.defaultRpcEndpointIndex];
-
-                const networkToUse = {
-                  nickname: item.name,
-                  chainId: item.chainId,
-                  rpcPrefs: {
-                    imageUrl:
-                      CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                        item.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                      ],
-                  },
-                  rpcUrl: selectedRpc.url,
-                };
-
-                return (
-                  <NetworkListItem
-                    key={index}
-                    item={networkToUse}
-                    index={index}
-                    rpcName={selectedRpc?.name ?? ''}
-                    setSelectedNetwork={() => ({})}
-                    setActionMode={() => ({})}
-                  />
-                );
-              })}
+              {Object.values(networkConfigurations).map(
+                (networkConfiguration: NetworkConfiguration) =>
+                  networkConfiguration.rpcEndpoints.length > 0 ? (
+                    <NetworkListItem
+                      networkConfiguration={networkConfiguration}
+                      key={networkConfiguration.chainId}
+                    />
+                  ) : null,
+              )}
             </Box>
           </Box>
         </ModalBody>
         <ModalFooter
           onSubmit={() => {
-            dispatch(setShowMultiRpcModal(true));
+            dispatch(setShowMultiRpcModal(false));
           }}
           submitButtonProps={{
             children: t('accept'),

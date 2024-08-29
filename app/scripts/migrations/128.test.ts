@@ -562,6 +562,69 @@ describe(`migration #${version}`, () => {
   });
 });
 
+it('sets `preferences.showMultiRpcModal` to false when there are no networks with multiple endpoints', async () => {
+  const randomChainId = '0x123456';
+
+  const oldState = {
+    meta: { version: oldVersion },
+    data: {
+      PreferencesController: { preferences: {} },
+      NetworkController: {
+        selectedNetworkClientId: 'mainnet',
+        networkConfigurations: {
+          'network-id-1': {
+            id: 'network-id-1',
+            chainId: randomChainId,
+            nickname: 'Random Network',
+            ticker: 'FOO',
+            rpcUrl: 'https://localhost/rpc',
+          },
+        },
+      },
+    },
+  };
+
+  const newState = await migrate(oldState);
+  expect(newState.data.PreferencesController).toStrictEqual({
+    preferences: { showMultiRpcModal: false },
+  });
+});
+
+it('sets `preferences.showMultiRpcModal` to true when there are networks with multiple endpoints', async () => {
+  const randomChainId = '0x123456';
+
+  const oldState = {
+    meta: { version: oldVersion },
+    data: {
+      PreferencesController: { preferences: {} },
+      NetworkController: {
+        selectedNetworkClientId: 'mainnet',
+        networkConfigurations: {
+          'network-id-1': {
+            id: 'network-id-1',
+            chainId: randomChainId,
+            nickname: 'Ethereum Network',
+            ticker: 'ETH',
+            rpcUrl: 'https://localhost/rpc/1',
+          },
+          'network-id-2': {
+            id: 'network-id-2',
+            chainId: randomChainId,
+            nickname: 'Random Network',
+            ticker: 'FOO',
+            rpcUrl: 'https://localhost/rpc/2',
+          },
+        },
+      },
+    },
+  };
+
+  const newState = await migrate(oldState);
+  expect(newState.data.PreferencesController).toStrictEqual({
+    preferences: { showMultiRpcModal: true },
+  });
+});
+
 // The state of the network controller post migration for just the
 // built-in networks. As if there were no custom networks defined.
 function defaultPostMigrationState() {

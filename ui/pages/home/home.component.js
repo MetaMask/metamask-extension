@@ -997,8 +997,7 @@ export default class Home extends PureComponent {
             hideWhatsNewPopup={hideWhatsNewPopup}
           />
 
-          <MultiRpcEditModal isOpen={showMultiRpcEditModal} />
-
+          {showMultiRpcEditModal && <MultiRpcEditModal />}
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder

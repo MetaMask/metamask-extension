@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import {
   Box,
   Text,
@@ -22,33 +23,19 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { setEditedNetwork, toggleNetworkMenu } from '../../../../store/actions';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import { stripKeyFromInfuraUrl } from '../../../multichain/network-list-menu/rpc-list-item';
 
-type NetworkListItemProps = {
-  item: {
-    chainId: string;
-    rpcUrl: string;
-    nickname: string;
-    rpcPrefs: {
-      imageUrl: string;
-    };
-  };
-  index: number;
-  setSelectedNetwork: (network: {
-    rpcUrl: string;
-    nickname: string;
-    rpcPrefs: {
-      imageUrl: string;
-    };
-  }) => void;
-  setActionMode: (mode: string) => void;
-  rpcName: string;
-};
-
-const NetworkListItem: React.FC<NetworkListItemProps> = ({
-  item,
-  index,
-  rpcName,
+const NetworkListItem = ({
+  networkConfiguration,
+}: {
+  networkConfiguration: NetworkConfiguration;
 }) => {
+  const rpcEndpoint =
+    networkConfiguration.rpcEndpoints[
+      networkConfiguration.defaultRpcEndpointIndex
+    ];
+
   const t = useI18nContext();
   const [isOpenTooltip, setIsOpenTooltip] = useState(false);
   const dispatch = useDispatch();
@@ -69,7 +56,6 @@ const NetworkListItem: React.FC<NetworkListItemProps> = ({
 
   return (
     <Box
-      key={index}
       display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
@@ -80,8 +66,12 @@ const NetworkListItem: React.FC<NetworkListItemProps> = ({
       <Box display={Display.Flex} alignItems={AlignItems.center}>
         <AvatarNetwork
           size={AvatarNetworkSize.Md}
-          src={item.rpcPrefs?.imageUrl}
-          name={item.nickname}
+          src={
+            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+              networkConfiguration.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+            ]
+          }
+          name={networkConfiguration.name}
         />
         <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
           <Box marginLeft={4}>
@@ -90,7 +80,7 @@ const NetworkListItem: React.FC<NetworkListItemProps> = ({
               backgroundColor={BackgroundColor.transparent}
               ellipsis
             >
-              {item.nickname}
+              {networkConfiguration.name}
             </Text>
           </Box>
           <Box
@@ -111,7 +101,7 @@ const NetworkListItem: React.FC<NetworkListItemProps> = ({
               onMouseLeave={handleMouseLeave}
               onMouseOver={handleMouseEnter}
             >
-              {rpcName ?? new URL(item.rpcUrl).host}
+              {rpcEndpoint.name ?? new URL(rpcEndpoint.url).host}
             </Text>
             <Popover
               referenceElement={referenceElement}
@@ -125,7 +115,7 @@ const NetworkListItem: React.FC<NetworkListItemProps> = ({
               paddingBottom={2}
             >
               <Text variant={TextVariant.bodyXsMedium} ellipsis>
-                {item.rpcUrl}
+                {stripKeyFromInfuraUrl(rpcEndpoint.url)}
               </Text>
             </Popover>
           </Box>
@@ -147,8 +137,8 @@ const NetworkListItem: React.FC<NetworkListItemProps> = ({
             );
             dispatch(
               setEditedNetwork({
-                chainId: item.chainId,
-                nickname: item.nickname,
+                chainId: networkConfiguration.chainId,
+                nickname: networkConfiguration.name,
               }),
             );
           }}

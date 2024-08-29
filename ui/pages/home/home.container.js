@@ -93,7 +93,6 @@ import {
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
 import { hasTransactionPendingApprovals } from '../../selectors/transactions';
-import { getIsShowMultiRpcModal } from '../../../shared/modules/selectors/multi-rpc-edit';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -224,7 +223,7 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IF
     isSmartTransactionsOptInModalAvailable:
       getIsSmartTransactionsOptInModalAvailable(state),
-    showMultiRpcModal: getIsShowMultiRpcModal(state),
+    showMultiRpcModal: state.metamask.preferences.showMultiRpcModal,
   };
 };
 

@@ -286,6 +286,23 @@ function transformState(
     networksMetadata: networkState.networksMetadata ?? {},
   };
 
+  // Set `showMultiRpcModal` based on whether there are any networks with multiple rpc endpoints
+  if (
+    hasProperty(state, 'PreferencesController') &&
+    isObject(state.PreferencesController) &&
+    hasProperty(state.PreferencesController, 'preferences') &&
+    isObject(state.PreferencesController.preferences)
+  ) {
+    state.PreferencesController.preferences.showMultiRpcModal = Object.values(
+      networkConfigurationsByChainId,
+    ).some(
+      (networkConfiguration) =>
+        isObject(networkConfiguration) &&
+        Array.isArray(networkConfiguration.rpcEndpoints) &&
+        networkConfiguration.rpcEndpoints.length > 1,
+    );
+  }
+
   // Migrate the user's drag + drop preference order for the network menu
   if (
     hasProperty(state, 'NetworkOrderController') &&

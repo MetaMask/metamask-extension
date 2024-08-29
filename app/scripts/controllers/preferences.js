@@ -93,7 +93,7 @@ export default class PreferencesController {
         redesignedConfirmationsEnabled: true,
         redesignedTransactionsEnabled: true,
         featureNotificationsEnabled: false,
-        showMultiRpcModal: null, // null means we will show the rpc migration modal to a user
+        showMultiRpcModal: false,
         isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: false,
       },
