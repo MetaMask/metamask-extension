@@ -4953,9 +4953,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:@metamask-previews/controller-utils@11.0.2-preview-276db038":
-  version: 11.0.2-preview-276db038
-  resolution: "@metamask-previews/controller-utils@npm:11.0.2-preview-276db038"
+"@metamask/controller-utils@npm:@metamask-previews/controller-utils@11.0.2-preview-02e7ff99":
+  version: 11.0.2-preview-02e7ff99
+  resolution: "@metamask-previews/controller-utils@npm:11.0.2-preview-02e7ff99"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/eth-query": "npm:^4.0.0"
@@ -4966,7 +4966,7 @@ __metadata:
     bn.js: "npm:^5.2.1"
     eth-ens-namehash: "npm:^2.0.8"
     fast-deep-equal: "npm:^3.1.3"
-  checksum: 10/62b33a42fbce3d9affdab721034a86f91dcfc5f4bc8a441a53e831bf91b36fb8e89a0ab13ca572d25d834cd3d3e517283750318698b231051e8f1b6f54e29b87
+  checksum: 10/a072540f9601bd1cc6fdce05fc62904c7fbb180a92810a089b1b60461a58501af72ca74eb769efb0dd70aea0f1e91b9976f966efc72ebc87d91a6b67766768da
   languageName: node
   linkType: hard
 
@@ -5730,9 +5730,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:@metamask-previews/network-controller@20.2.0-preview-b59ee0c8":
-  version: 20.2.0-preview-b59ee0c8
-  resolution: "@metamask-previews/network-controller@npm:20.2.0-preview-b59ee0c8"
+"@metamask/network-controller@npm:@metamask-previews/network-controller@20.2.0-preview-02e7ff99":
+  version: 20.2.0-preview-02e7ff99
+  resolution: "@metamask-previews/network-controller@npm:20.2.0-preview-02e7ff99"
   dependencies:
     "@metamask/base-controller": "npm:^6.0.3"
     "@metamask/controller-utils": "npm:^11.0.2"
@@ -5750,7 +5750,7 @@ __metadata:
     loglevel: "npm:^1.8.1"
     uri-js: "npm:^4.4.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/08b161a3cf808774abb544bcf59d53c91e03bdcc72f94c83f863f379e8afc55f052b78532f32dc808e9070bd9602b85bff4a82c4445a9d0d0f86f6563d1c3521
+  checksum: 10/3012ad8949494fd41859e8c44d6f1acc55379bb186361726c0dcf6a86db1284d7383ddbe39afc4add67714ce1bbd4df9333c99535e38d5f25ee83f750d3add14
   languageName: node
   linkType: hard
 
@@ -6197,9 +6197,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/selected-network-controller@npm:@metamask-previews/selected-network-controller@17.0.0-preview-b59ee0c8":
-  version: 17.0.0-preview-b59ee0c8
-  resolution: "@metamask-previews/selected-network-controller@npm:17.0.0-preview-b59ee0c8"
+"@metamask/selected-network-controller@npm:@metamask-previews/selected-network-controller@17.0.0-preview-02e7ff99":
+  version: 17.0.0-preview-02e7ff99
+  resolution: "@metamask-previews/selected-network-controller@npm:17.0.0-preview-02e7ff99"
   dependencies:
     "@metamask/base-controller": "npm:^6.0.3"
     "@metamask/json-rpc-engine": "npm:^9.0.2"
@@ -6208,7 +6208,7 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^20.0.0
     "@metamask/permission-controller": ^11.0.0
-  checksum: 10/e029995bb842fd621b7cf176fc17599cfe02dc87e8ea97f7ab7f2764174895660be577ece52f90b0dc1dce92d295b5dab13ec1570afaeacc0cff3302f2c64542
+  checksum: 10/52a9f4422ef4e641e003366eccb1ec01a927f0b9333e71fa786c5524f3d0061183d05c9dde0317f0a0ab612f3e85976ae9e7988c8d932a40af925679d7a22070
   languageName: node
   linkType: hard
 
