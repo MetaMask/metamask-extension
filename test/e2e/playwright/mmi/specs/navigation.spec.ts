@@ -7,11 +7,10 @@ import {
   getPageAndCloseRepeated,
 } from '../helpers/utils';
 import { MMIMainMenuPage } from '../pageObjects/mmi-mainMenu-page';
-import { Auth0Page } from '../pageObjects/mmi-auth0-page';
 import { MMIMainPage } from '../pageObjects/mmi-main-page';
 
-const portfolio = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}/portfolio`;
-const stake = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}/stake`;
+const portfolio = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}`;
+const stake = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}`;
 const support = 'https://mmi-support.metamask.io/hc/en-us';
 const supportContactUs =
   'https://mmi-support.metamask.io/hc/en-us/requests/new';
@@ -50,12 +49,6 @@ test.describe('MMI Navigation', () => {
     await mainMenuPage.switchTestNetwork();
     // await mainMenuPage.showIncomingTransactionsOff()
     await mainMenuPage.closeSettings();
-
-    // This is removed to improve test performance
-    // Signin auth0
-    const auth0 = new Auth0Page(await context.newPage());
-    await auth0.signIn();
-    await auth0.page.close();
 
     // // Close pages not used to remove data from logs
     await closePages(context, ['metamask-institutional.io']);

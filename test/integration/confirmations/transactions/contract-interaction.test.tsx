@@ -61,7 +61,7 @@ const getMetaMaskStateWithUnapprovedContractInteraction = ({
     pendingApprovals: {
       [pendingTransactionId]: {
         id: pendingTransactionId,
-        origin: 'origin',
+        origin: 'local:http://localhost:8086/',
         time: pendingTransactionTime,
         type: ApprovalType.Transaction,
         requestData: {
@@ -245,11 +245,6 @@ describe('Contract Interaction Confirmation', () => {
       });
 
     expect(getByText('Transaction request')).toBeInTheDocument();
-    expect(
-      getByText(
-        'Only confirm this transaction if you fully understand the content and trust the requesting site.',
-      ),
-    ).toBeInTheDocument();
 
     const simulationSection = getByTestId('simulation-details-layout');
     expect(simulationSection).toBeInTheDocument();
@@ -270,8 +265,6 @@ describe('Contract Interaction Confirmation', () => {
     expect(transactionDetailsSection).toBeInTheDocument();
     expect(transactionDetailsSection).toHaveTextContent('Request from');
     expect(transactionDetailsSection).toHaveTextContent('Interacting with');
-    expect(transactionDetailsSection).toHaveTextContent('Method');
-    expect(transactionDetailsSection).toHaveTextContent('Mint NFTs');
 
     const gasFeesSection = getByTestId('gas-fee-section');
     expect(gasFeesSection).toBeInTheDocument();

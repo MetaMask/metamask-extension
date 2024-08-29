@@ -18,7 +18,8 @@ import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
-  assertSignatureMetrics,
+  assertSignatureConfirmedMetrics,
+  assertSignatureRejectedMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
   openDappAndTriggerSignature,
@@ -55,13 +56,13 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
         await scrollAndConfirmAndAssertConfirm(driver);
         await driver.delay(1000);
 
-        await assertSignatureMetrics(
+        await assertSignatureConfirmedMetrics({
           driver,
-          mockedEndpoints as MockedEndpoint[],
-          'eth_signTypedData_v4',
-          'Permit',
-          ['redesigned_confirmation', 'permit'],
-        );
+          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
+          signatureType: 'eth_signTypedData_v4',
+          primaryType: 'Permit',
+          uiCustomizations: ['redesigned_confirmation', 'permit'],
+        });
 
         await assertVerifiedResults(driver, publicAddress);
       },
@@ -92,13 +93,14 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
           'Error: User rejected the request.',
         );
 
-        await assertSignatureMetrics(
+        await assertSignatureRejectedMetrics({
           driver,
-          mockedEndpoints as MockedEndpoint[],
-          'eth_signTypedData_v4',
-          'Permit',
-          ['redesigned_confirmation', 'permit'],
-        );
+          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
+          signatureType: 'eth_signTypedData_v4',
+          primaryType: 'Permit',
+          uiCustomizations: ['redesigned_confirmation', 'permit'],
+          location: 'confirmation',
+        });
       },
     );
   });
