@@ -32,20 +32,20 @@ export const useApproveTokenSimulation = (
     : 0;
 
   const tokenPrefix = isNFT ? '#' : '';
-  const formattedTokenNum = isNFT
+  const formattedSpendingCap = isNFT
     ? decodedSpendingCap
     : new Intl.NumberFormat(locale).format(decodedSpendingCap);
 
-  let tokenAmount;
+  let spendingCap;
   if (!isNFT && isSpendingCapUnlimited(decodedSpendingCap)) {
-    tokenAmount = UNLIMITED_MSG;
+    spendingCap = UNLIMITED_MSG;
   } else {
-    tokenAmount = `${tokenPrefix}${formattedTokenNum}`;
+    spendingCap = `${tokenPrefix}${formattedSpendingCap}`;
   }
 
   return {
-    tokenAmount,
-    formattedTokenNum,
+    spendingCap,
+    formattedSpendingCap,
     value,
     pending: pending || isNFTPending,
   };

@@ -2,7 +2,7 @@ import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowDivider,
@@ -12,7 +12,6 @@ import { ConfirmInfoSection } from '../../../../../../components/app/confirm/inf
 import Name from '../../../../../../components/app/name';
 import {
   Box,
-  Input,
   Modal,
   ModalBody,
   ModalContent,
@@ -20,8 +19,11 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
+  TextField,
+  TextFieldType,
 } from '../../../../../../components/component-library';
 import Tooltip from '../../../../../../components/ui/tooltip';
+import { updateCurrentConfirmation } from '../../../../../../ducks/confirm/confirm';
 import {
   AlignItems,
   BackgroundColor,
@@ -52,10 +54,48 @@ import { useIsNFT } from './hooks/use-is-nft';
 const EditSpendingCapModal = ({
   isOpenEditSpendingCapModal,
   setIsOpenEditSpendingCapModal,
+  customSpendingCap,
+  setCustomSpendingCap,
 }: {
   isOpenEditSpendingCapModal: boolean;
   setIsOpenEditSpendingCapModal: (newValue: boolean) => void;
+  customSpendingCap: string;
+  setCustomSpendingCap: (newValue: string) => void;
 }) => {
+  const t = useI18nContext();
+
+  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
+    currentConfirmation: TransactionMeta;
+  };
+
+  const { userBalance, tokenSymbol, decimals } = useAssetDetails(
+    transactionMeta.txParams.to,
+    transactionMeta.txParams.from,
+    transactionMeta.txParams.data,
+  );
+
+  const accountBalance = getAccountBalance(userBalance || '0', decimals || '0');
+
+  const { formattedSpendingCap } = useApproveTokenSimulation(
+    transactionMeta,
+    decimals || '0',
+  );
+
+  const [customSpendingCapCandidate, setCustomSpendingCapCandidate] =
+    useState('');
+
+  const onCancelHandler = () => {
+    setIsOpenEditSpendingCapModal(false);
+    setCustomSpendingCapCandidate('');
+    setCustomSpendingCap('');
+  };
+
+  function submitEditSpendingCap() {
+    setIsOpenEditSpendingCapModal(false);
+    setCustomSpendingCapCandidate('');
+    setCustomSpendingCap(customSpendingCapCandidate);
+  }
+
   return (
     <Modal
       isOpen={isOpenEditSpendingCapModal}
@@ -74,45 +114,41 @@ const EditSpendingCapModal = ({
             flexDirection: FlexDirection.Column,
           }}
         >
-          <Text
-            variant={TextVariant.headingMd}
-            paddingTop={4}
-            paddingBottom={4}
-          >
-            Edit spending cap
-          </Text>
+          <Text variant={TextVariant.headingMd}>{t('editSpendingCap')}</Text>
         </ModalHeader>
         <ModalBody>
           <Text
             variant={TextVariant.bodyMd}
             color={TextColor.textAlternative}
-            paddingTop={4}
             paddingBottom={4}
           >
-            Enter the amount that you feel comfortable being spent on your
-            behalf.
+            {t('editSpendingCapDesc')}
           </Text>
-          <Input
-            placeholder="950,123.123 DAI"
-            padding={4}
-            style={{
-              border: '1px solid black',
-              borderRadius: '4px',
-              width: 'calc(100% - 32px)',
-            }}
+          <TextField
+            type={TextFieldType.Number}
+            value={customSpendingCapCandidate}
+            onChange={(event) =>
+              setCustomSpendingCapCandidate(event.target.value)
+            }
+            placeholder={`${
+              customSpendingCap === ''
+                ? formattedSpendingCap
+                : customSpendingCap
+            } ${tokenSymbol}`}
+            style={{ width: '100%' }}
           />
           <Text
             variant={TextVariant.bodySm}
             color={TextColor.textAlternative}
-            paddingTop={4}
-            paddingBottom={4}
+            paddingTop={1}
           >
-            Account balance: 67 DAI
+            {t('editSpendingCapAccountBalance', [accountBalance, tokenSymbol])}
           </Text>
         </ModalBody>
         <ModalFooter
-          onSubmit={() => console.log('adf')}
-          onCancel={() => setIsOpenEditSpendingCapModal(false)}
+          onSubmit={() => submitEditSpendingCap()}
+          onCancel={() => onCancelHandler()}
+          submitButtonProps={{ children: t('save') }}
         />
       </ModalContent>
     </Modal>
@@ -131,10 +167,8 @@ const ApproveStaticSimulation = () => {
     transactionMeta.txParams.data,
   );
 
-  const { tokenAmount, formattedTokenNum, value, pending } =
+  const { spendingCap, formattedSpendingCap, value, pending } =
     useApproveTokenSimulation(transactionMeta, decimals || '0');
-
-  const { isNFT } = useIsNFT(transactionMeta);
 
   const { isNFT } = useIsNFT(transactionMeta);
 
@@ -155,7 +189,7 @@ const ApproveStaticSimulation = () => {
       textAlign={TextAlign.Center}
       alignItems={AlignItems.center}
     >
-      {tokenAmount === UNLIMITED_MSG ? t('unlimited') : tokenAmount}
+      {spendingCap === UNLIMITED_MSG ? t('unlimited') : spendingCap}
     </Text>
   );
 
@@ -167,8 +201,8 @@ const ApproveStaticSimulation = () => {
           marginInlineEnd={1}
           minWidth={BlockSize.Zero}
         >
-          {tokenAmount === UNLIMITED_MSG ? (
-            <Tooltip title={formattedTokenNum}>{formattedTokenText}</Tooltip>
+          {spendingCap === UNLIMITED_MSG ? (
+            <Tooltip title={formattedSpendingCap}>{formattedTokenText}</Tooltip>
           ) : (
             formattedTokenText
           )}
@@ -198,27 +232,31 @@ const SpendingCapGroup = ({
   tokenSymbol,
   decimals,
   setIsOpenEditSpendingCapModal,
+  customSpendingCap,
 }: {
   tokenSymbol: string;
   decimals: string;
   setIsOpenEditSpendingCapModal: (newValue: boolean) => void;
+  customSpendingCap: string;
 }) => {
   const t = useI18nContext();
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { tokenAmount, formattedTokenNum, value } = useApproveTokenSimulation(
-    transactionMeta,
-    decimals,
-  );
+  const { spendingCap, formattedSpendingCap, value } =
+    useApproveTokenSimulation(transactionMeta, decimals);
 
   const SpendingCapElement = (
     <ConfirmInfoRowText
       text={
-        tokenAmount === UNLIMITED_MSG
+        spendingCap === UNLIMITED_MSG
           ? `${t('unlimited')} ${tokenSymbol}`
-          : `${formattedTokenNum} ${tokenSymbol}`
+          : `${
+              customSpendingCap === ''
+                ? formattedSpendingCap
+                : customSpendingCap
+            } ${tokenSymbol}`
       }
       onEditClick={() => setIsOpenEditSpendingCapModal(true)}
       editIconClassName="edit-spending-cap-icon"
@@ -237,8 +275,8 @@ const SpendingCapGroup = ({
         label={t('spendingCap')}
         tooltip={t('spendingCapTooltipDesc')}
       >
-        {tokenAmount === UNLIMITED_MSG ? (
-          <Tooltip title={formattedTokenNum}>{SpendingCapElement}</Tooltip>
+        {spendingCap === UNLIMITED_MSG ? (
+          <Tooltip title={formattedSpendingCap}>{SpendingCapElement}</Tooltip>
         ) : (
           SpendingCapElement
         )}
@@ -247,10 +285,17 @@ const SpendingCapGroup = ({
   );
 };
 
+const getAccountBalance = (userBalance: string, decimals: string) =>
+  new BigNumber(userBalance)
+    .dividedBy(new BigNumber(10).pow(Number(decimals)))
+    .toNumber();
+
 const SpendingCap = ({
   setIsOpenEditSpendingCapModal,
+  customSpendingCap,
 }: {
   setIsOpenEditSpendingCapModal: (newValue: boolean) => void;
+  customSpendingCap: string;
 }) => {
   const t = useI18nContext();
 
@@ -263,9 +308,7 @@ const SpendingCap = ({
     transactionMeta.txParams.data,
   );
 
-  const accountBalance = new BigNumber(userBalance || '0')
-    .dividedBy(new BigNumber(10).pow(Number(decimals || '0')))
-    .toNumber();
+  const accountBalance = getAccountBalance(userBalance || '0', decimals || '0');
 
   const { pending } = useApproveTokenSimulation(
     transactionMeta,
@@ -286,12 +329,15 @@ const SpendingCap = ({
         tokenSymbol={tokenSymbol || ''}
         decimals={decimals || '0'}
         setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
+        customSpendingCap={customSpendingCap}
       />
     </ConfirmInfoSection>
   );
 };
 
 const ApproveInfo = () => {
+  const dispatch = useDispatch();
+
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
@@ -303,6 +349,20 @@ const ApproveInfo = () => {
 
   const [isOpenEditSpendingCapModal, setIsOpenEditSpendingCapModal] =
     useState(false);
+  const [customSpendingCap, _setCustomSpendingCap] = useState('');
+
+  const setCustomSpendingCap = (newValue: string) => {
+    if (newValue === '') {
+      delete transactionMeta.customTokenAmount;
+      delete transactionMeta.finalApprovalAmount;
+    } else {
+      transactionMeta.customTokenAmount = newValue;
+      transactionMeta.finalApprovalAmount = newValue;
+    }
+
+    _setCustomSpendingCap(newValue);
+    dispatch(updateCurrentConfirmation(transactionMeta));
+  };
 
   if (!transactionMeta?.txParams) {
     return null;
@@ -315,6 +375,7 @@ const ApproveInfo = () => {
       {!isNFT && (
         <SpendingCap
           setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
+          customSpendingCap={customSpendingCap}
         />
       )}
       <GasFeesSection />
@@ -322,6 +383,8 @@ const ApproveInfo = () => {
       <EditSpendingCapModal
         isOpenEditSpendingCapModal={isOpenEditSpendingCapModal}
         setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
+        customSpendingCap={customSpendingCap}
+        setCustomSpendingCap={setCustomSpendingCap}
       />
     </>
   );
