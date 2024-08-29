@@ -91,7 +91,7 @@ export type PreferencesState = {
   useTransactionSimulations: boolean;
   enableMV3TimestampSave: boolean;
   useExternalServices: boolean;
-  textDirection: string | undefined;
+  // textDirection: string | undefined;
 };
 
 export default class PreferencesController {
@@ -204,7 +204,7 @@ export default class PreferencesController {
       // Whenever useExternalServices is false, certain features will be disabled.
       // The flag is true by Default, meaning the toggle is ON by default.
       useExternalServices: true,
-      textDirection: undefined,
+      // textDirection: undefined,
       ...opts.initState,
     };
 
@@ -491,7 +491,7 @@ export default class PreferencesController {
       : 'auto';
     this.store.updateState({
       currentLocale: key,
-      textDirection,
+      // textDirection,
     });
     return textDirection;
   }
