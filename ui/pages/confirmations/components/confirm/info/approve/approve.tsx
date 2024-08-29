@@ -24,6 +24,20 @@ const ApproveInfo = () => {
 
   const [isOpenEditSpendingCapModal, setIsOpenEditSpendingCapModal] =
     useState(false);
+  const [customSpendingCap, _setCustomSpendingCap] = useState('');
+
+  const setCustomSpendingCap = (newValue: string) => {
+    if (newValue === '') {
+      delete transactionMeta.customTokenAmount;
+      delete transactionMeta.finalApprovalAmount;
+    } else {
+      transactionMeta.customTokenAmount = newValue;
+      transactionMeta.finalApprovalAmount = newValue;
+    }
+
+    _setCustomSpendingCap(newValue);
+    dispatch(updateCurrentConfirmation(transactionMeta));
+  };
 
   if (!transactionMeta?.txParams) {
     return null;
@@ -36,6 +50,7 @@ const ApproveInfo = () => {
       {!isNFT && (
         <SpendingCap
           setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
+          customSpendingCap={customSpendingCap}
         />
       )}
       <GasFeesSection />
@@ -43,6 +58,8 @@ const ApproveInfo = () => {
       <EditSpendingCapModal
         isOpenEditSpendingCapModal={isOpenEditSpendingCapModal}
         setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
+        customSpendingCap={customSpendingCap}
+        setCustomSpendingCap={setCustomSpendingCap}
       />
     </>
   );
