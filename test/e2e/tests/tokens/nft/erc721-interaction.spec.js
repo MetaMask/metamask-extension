@@ -58,6 +58,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         assert.equal(await transactionItem.isDisplayed(), true);
 
         // verify the mint transaction has finished
+        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         const nftsMintStatus = await driver.findElement({
           css: '#nftsStatus',
@@ -65,6 +66,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         });
         assert.equal(await nftsMintStatus.isDisplayed(), true);
 
+        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
