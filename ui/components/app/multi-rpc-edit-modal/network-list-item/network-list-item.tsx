@@ -20,6 +20,7 @@ import {
   TextVariant,
   TextAlign,
   JustifyContent,
+  BlockSize,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { setEditedNetwork, toggleNetworkMenu } from '../../../../store/actions';
@@ -58,12 +59,16 @@ const NetworkListItem = ({
     <Box
       display={Display.Flex}
       alignItems={AlignItems.center}
+      flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.spaceBetween}
       paddingBottom={4}
       paddingTop={4}
-      className="new-network-list__list-of-networks"
     >
-      <Box display={Display.Flex} alignItems={AlignItems.center}>
+      <Box
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        width={BlockSize.EightTwelfths}
+      >
         <AvatarNetwork
           size={AvatarNetworkSize.Md}
           src={
@@ -73,7 +78,11 @@ const NetworkListItem = ({
           }
           name={networkConfiguration.name}
         />
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          width={BlockSize.ElevenTwelfths}
+        >
           <Box marginLeft={4}>
             <Text
               color={TextColor.textDefault}
@@ -100,6 +109,7 @@ const NetworkListItem = ({
               textAlign={TextAlign.Left}
               onMouseLeave={handleMouseLeave}
               onMouseOver={handleMouseEnter}
+              ellipsis
             >
               {rpcEndpoint.name ?? new URL(rpcEndpoint.url).host}
             </Text>

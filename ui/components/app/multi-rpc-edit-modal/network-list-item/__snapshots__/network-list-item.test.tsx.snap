@@ -3,10 +3,10 @@
 exports[`NetworkListItem renders correctly with required props 1`] = `
 <div>
   <div
-    class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+    class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-8/12"
     >
       <div
         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
@@ -18,7 +18,7 @@ exports[`NetworkListItem renders correctly with required props 1`] = `
         />
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-11/12"
       >
         <div
           class="mm-box mm-box--margin-left-4"
@@ -33,7 +33,7 @@ exports[`NetworkListItem renders correctly with required props 1`] = `
           class="mm-box multichain-network-list-item__rpc-endpoint mm-box--margin-left-4 mm-box--display-flex mm-box--align-items-center"
         >
           <button
-            class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-left mm-box--padding-0 mm-box--color-text-alternative mm-box--background-color-transparent"
+            class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--color-text-alternative mm-box--background-color-transparent"
             style="width: 220px;"
           >
             Infura Mainnet
