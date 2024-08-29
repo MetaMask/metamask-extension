@@ -16,10 +16,14 @@ export const REDESIGN_APPROVAL_TYPES = [
   ApprovalType.PersonalSign,
 ];
 
-export const REDESIGN_TRANSACTION_TYPES = [
+export const REDESIGN_USER_TRANSACTION_TYPES = [
   TransactionType.contractInteraction,
-  TransactionType.tokenMethodApprove,
   TransactionType.deployContract,
+];
+
+export const REDESIGN_DEV_TRANSACTION_TYPES = [
+  ...REDESIGN_USER_TRANSACTION_TYPES,
+  TransactionType.tokenMethodApprove,
 ];
 
 const SIGNATURE_APPROVAL_TYPES = [

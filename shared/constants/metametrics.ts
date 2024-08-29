@@ -816,6 +816,8 @@ export enum MetaMetricsTransactionEventSource {
 }
 
 export enum MetaMetricsEventLocation {
+  AlertFrictionModal = 'alert_friction_modal',
+  Confirmation = 'confirmation',
   SignatureConfirmation = 'signature_confirmation',
   TokenDetails = 'token_details',
   TokenDetection = 'token_detection',

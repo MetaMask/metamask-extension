@@ -166,10 +166,6 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       dest: 'scripts/init-globals.js',
     },
     {
-      src: './app/scripts/load-app.js',
-      dest: 'scripts/load-app.js',
-    },
-    {
       src: shouldIncludeLockdown
         ? `./app/scripts/lockdown-run.js`
         : EMPTY_JS_FILE,
@@ -190,11 +186,6 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       src: getPathInsideNodeModules('@lavamoat/lavapack', 'src/runtime.js'),
       dest: `scripts/runtime-lavamoat.js`,
       pattern: '',
-    },
-    {
-      src: `./offscreen/`,
-      pattern: `*.html`,
-      dest: '',
     },
     {
       src: getPathInsideNodeModules('@blockaid/ppom_release', '/'),
