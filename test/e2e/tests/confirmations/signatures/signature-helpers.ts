@@ -89,6 +89,7 @@ export async function assertSignatureConfirmedMetrics({
   uiCustomizations = ['redesigned_confirmation'],
 }: AssertSignatureMetricsOptions) {
   const events = await getEventPayloads(driver, mockedEndpoints);
+  console.log({ events });
   const signatureEventProperty = getSignatureEventProperty(
     signatureType,
     primaryType,
@@ -113,6 +114,7 @@ export async function assertSignatureRejectedMetrics({
   location,
 }: AssertSignatureMetricsOptions) {
   const events = await getEventPayloads(driver, mockedEndpoints);
+  console.log({ events });
   const signatureEventProperty = getSignatureEventProperty(
     signatureType,
     primaryType,

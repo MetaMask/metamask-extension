@@ -4,7 +4,7 @@ import { MockedEndpoint } from 'mockttp';
 import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
-import { withRedesignConfirmationFixtures } from '../helpers';
+import { mockSignatureApproved, mockSignatureRejected, withRedesignConfirmationFixtures } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import {
   assertAccountDetailsMetrics,
@@ -56,6 +56,7 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
 
         await assertVerifiedResults(driver, publicAddress);
       },
+      mockSignatureApproved,
     );
   });
 
@@ -89,6 +90,7 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
         });
         assert.ok(rejectionResult);
       },
+      mockSignatureRejected,
     );
   });
 });

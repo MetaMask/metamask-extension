@@ -4,6 +4,7 @@ import { MockedEndpoint } from 'mockttp';
 import { WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
+  mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
   withRedesignConfirmationFixtures,
 } from '../helpers';
@@ -69,6 +70,7 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
           location: 'confirmation',
         });
       },
+      mockSignatureRejected,
     );
   });
 
