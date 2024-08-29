@@ -59,7 +59,7 @@ function transformState(state: Record<string, unknown>): void {
   ) {
     networkControllerState.providerConfig.ticker = 'POL';
   }
-  return {
+  state = {
     ...state,
     NetworkController: networkControllerState,
   };
