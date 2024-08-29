@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { migrate, version } from './121.2';
 
 const oldVersion = 121.1;
@@ -23,7 +24,7 @@ describe(`migration #${version}`, () => {
 
     const transformedState = await migrate({
       meta: { version: oldVersion },
-      data: oldState,
+      data: cloneDeep(oldState),
     });
 
     expect(transformedState.data).toStrictEqual(oldState);
@@ -60,7 +61,7 @@ describe(`migration #${version}`, () => {
 
     const transformedState = await migrate({
       meta: { version: oldVersion },
-      data: oldState,
+      data: cloneDeep(oldState),
     });
 
     expect(transformedState.data).toStrictEqual(expectedState);
@@ -97,7 +98,7 @@ describe(`migration #${version}`, () => {
 
     const transformedState = await migrate({
       meta: { version: oldVersion },
-      data: oldState,
+      data: cloneDeep(oldState),
     });
 
     expect(transformedState.data).toStrictEqual(expectedState);
@@ -148,7 +149,7 @@ describe(`migration #${version}`, () => {
 
     const transformedState = await migrate({
       meta: { version: oldVersion },
-      data: oldState,
+      data: cloneDeep(oldState),
     });
 
     expect(transformedState.data).toStrictEqual(expectedState);
@@ -178,7 +179,7 @@ describe(`migration #${version}`, () => {
 
     const transformedState = await migrate({
       meta: { version: oldVersion },
-      data: oldState,
+      data: cloneDeep(oldState),
     });
 
     expect(transformedState.data).toStrictEqual(oldState);
@@ -211,7 +212,7 @@ describe(`migration #${version}`, () => {
 
     const transformedState = await migrate({
       meta: { version: oldVersion },
-      data: oldState,
+      data: cloneDeep(oldState),
     });
 
     expect(transformedState.data).toStrictEqual(expectedState);
@@ -232,7 +233,7 @@ describe(`migration #${version}`, () => {
 
     const transformedState = await migrate({
       meta: { version: oldVersion },
-      data: oldState,
+      data: cloneDeep(oldState),
     });
 
     expect(transformedState.data).toStrictEqual(oldState);
@@ -265,7 +266,7 @@ describe(`migration #${version}`, () => {
 
     const transformedState = await migrate({
       meta: { version: oldVersion },
-      data: oldState,
+      data: cloneDeep(oldState),
     });
 
     expect(transformedState.data).toStrictEqual(expectedState);
