@@ -27,7 +27,7 @@ export async function migrate(
   return versionedData;
 }
 
-function transformState(state: Record<string, unknown>) {
+function transformState(state: Record<string, unknown>): void {
   const networkControllerState = state.NetworkController;
   if (
     hasProperty(state, 'NetworkController') &&
