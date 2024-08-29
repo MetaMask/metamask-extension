@@ -1,6 +1,6 @@
 import { ListNames, PhishingController } from '@metamask/phishing-controller';
 import { ControllerMessenger } from '@metamask/base-controller';
-import { isBlockedUrl, isC2DomainBlocked } from './isBlockedUrl';
+import { isBlockedUrl } from './isBlockedUrl';
 
 describe('isBlockedUrl', () => {
   const messenger = new ControllerMessenger();
@@ -27,9 +27,7 @@ describe('isBlockedUrl', () => {
           version: 1,
           lastUpdated: 0,
           name: ListNames.MetaMask,
-          c2DomainBlocklist: [
-            'a379a6f6eeafb9a55e378c118034e2751e682fab9f2d30ab13d2125586ce1947',
-          ],
+          c2DomainBlocklist: [],
         },
       ],
     },
@@ -68,25 +66,6 @@ describe('isBlockedUrl', () => {
       },
       (origin: string) => {
         return phishingController.test(origin);
-      },
-    );
-    expect(result).toEqual(expected);
-  });
-
-  // @ts-expect-error This is missing from the Mocha type definitions
-  it.each([
-    ['https://example.com', true],
-    ['https://metamask.io', false],
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ])('"%s" is blocked: %s', async (url: any, expected: boolean) => {
-    const result = await isC2DomainBlocked(
-      url,
-      async () => {
-        return await phishingController.maybeUpdateState();
-      },
-      (origin: string) => {
-        return phishingController.isBlockedRequest(origin);
       },
     );
     expect(result).toEqual(expected);

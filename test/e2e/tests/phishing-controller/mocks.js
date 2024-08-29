@@ -96,7 +96,7 @@ async function setupPhishingDetectionMocks(
     });
 
   await mockServer
-    .forGet(`${C2_DOMAIN_BLOCKLIST_URL}`)
+    .forGet(C2_DOMAIN_BLOCKLIST_URL)
     .withQuery({ timestamp: '2024-08-27T15:30:45Z' })
     .thenCallback(() => {
       return {
@@ -164,12 +164,10 @@ async function mockEmptyStalelistAndHotlist(mockServer) {
  * @returns {string} The name of the phishing config in the response.
  */
 function resolveProviderConfigName(providerName) {
-  switch (providerName.toLowerCase()) {
-    case BlockProvider.MetaMask:
-      return 'eth_phishing_detect_config';
-    default:
-      throw new Error('Provider name must be metamask');
+  if (providerName.toLowerCase() === BlockProvider.MetaMask) {
+    return 'eth_phishing_detect_config';
   }
+  throw new Error(`Unknown provider: ${providerName}`);
 }
 
 module.exports = {
