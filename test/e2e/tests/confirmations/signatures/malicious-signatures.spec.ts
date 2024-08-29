@@ -107,6 +107,7 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
           location: 'alert_friction_modal',
         });
       },
+      mockSignatureRejected,
     );
   });
 });
