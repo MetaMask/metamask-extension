@@ -96,7 +96,8 @@ async function setupPhishingDetectionMocks(
     });
 
   await mockServer
-    .forGet(`${C2_DOMAIN_BLOCKLIST_URL}?timestamp=2024-08-27T15:30:45Z`)
+    .forGet(`${C2_DOMAIN_BLOCKLIST_URL}`)
+    .withQuery({ timestamp: '2024-08-27T15:30:45Z' })
     .thenCallback(() => {
       return {
         statusCode: 200,
