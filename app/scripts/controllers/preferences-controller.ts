@@ -24,11 +24,6 @@ const testNetworks = {
   [CHAIN_IDS.LINEA_SEPOLIA]: true,
 };
 
-enum TextDirection {
-  rtl = 'rtl',
-  auto = 'auto',
-}
-
 type PreferencesControllerOptions = {
   networkConfigurations?: Record<string, { chainId: number }>;
   initState?: Partial<PreferencesState>;
@@ -96,7 +91,7 @@ export type PreferencesState = {
   useTransactionSimulations: boolean;
   enableMV3TimestampSave: boolean;
   useExternalServices: boolean;
-  textDirection: TextDirection;
+  textDirection: string | undefined;
 };
 
 export default class PreferencesController {
@@ -209,7 +204,7 @@ export default class PreferencesController {
       // Whenever useExternalServices is false, certain features will be disabled.
       // The flag is true by Default, meaning the toggle is ON by default.
       useExternalServices: true,
-      textDirection: TextDirection.auto,
+      textDirection: undefined,
       ...opts.initState,
     };
 
@@ -492,8 +487,8 @@ export default class PreferencesController {
    */
   setCurrentLocale(key: string): string {
     const textDirection = ['ar', 'dv', 'fa', 'he', 'ku'].includes(key)
-      ? TextDirection.rtl
-      : TextDirection.auto;
+      ? 'rtl'
+      : 'auto';
     this.store.updateState({
       currentLocale: key,
       textDirection,
