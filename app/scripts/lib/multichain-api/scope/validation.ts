@@ -1,13 +1,7 @@
-import { parseCaipChainId } from '@metamask/utils';
+import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { validateAddEthereumChainParams } from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
-import {
-  ScopeObject,
-  Scope,
-  parseScopeString,
-  ScopesObject,
-  KnownCaipNamespace,
-} from './scope';
+import { ScopeObject, Scope, parseScopeString, ScopesObject } from './scope';
 
 // Make this an assert
 export const isValidScope = (

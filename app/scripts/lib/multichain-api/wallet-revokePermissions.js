@@ -1,11 +1,11 @@
 import { invalidParams, MethodNames } from '@metamask/permission-controller';
-import { isNonEmptyArray } from '@metamask/utils';
+import { isNonEmptyArray, KnownCaipNamespace } from '@metamask/utils';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
-import { KnownCaipNamespace, parseScopeString } from './scope';
+import { parseScopeString } from './scope';
 
 export const revokePermissionsHandler = {
   methodNames: [MethodNames.revokePermissions],
