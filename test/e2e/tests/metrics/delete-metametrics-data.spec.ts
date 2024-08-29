@@ -135,7 +135,7 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
           driver,
           mockedEndpoints as MockedEndpoint[],
         );
-        assert.equal(events.length, 3);
+        assert.equal(events.length, 1);
         assert.deepStrictEqual(events[0].properties, {
           category: 'Settings',
           locale: 'en',
@@ -209,7 +209,7 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
           driver,
           mockedEndpoints as MockedEndpoint[],
         );
-        assert.equal(events.length, 2);
+        assert.equal(events.length, 0);
 
         await driver.clickElementAndWaitToDisappear(
           '.mm-box button[aria-label="Close"]',
