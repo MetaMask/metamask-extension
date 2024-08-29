@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
 import FixtureBuilder from '../../fixture-builder';
-import { clickNestedButton, generateGanacheOptions } from '../../helpers';
+import { generateGanacheOptions } from '../../helpers';
 import {
   BRIDGE_CLIENT_ID,
   BRIDGE_DEV_API_BASE_URL,
@@ -10,14 +10,12 @@ import {
 } from '../../../../shared/constants/bridge';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import GanacheContractAddressRegistry from '../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../webdriver/driver';
 import { FeatureFlagResponse } from '../../../../ui/pages/bridge/bridge.util';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 import {
   DEFAULT_FEATURE_FLAGS_RESPONSE,
   ETH_CONVERSION_RATE_USD,
-  LOCATOR,
   MOCK_CURRENCY_RATES,
 } from './constants';
 
@@ -59,43 +57,12 @@ export class BridgePage {
     );
   };
 
-  navigateToAssetPage = async (
-    contractRegistry: GanacheContractAddressRegistry,
-    symbol: string,
-    shouldImportToken = true,
-  ) => {
-    if (shouldImportToken) {
-      // Import token
-      const contractAddress = await contractRegistry.getContractAddress(
-        SMART_CONTRACTS.HST,
-      );
-      await clickNestedButton(this.driver, 'Import tokens');
-      await clickNestedButton(this.driver, 'Custom token');
-      await this.driver.fill(
-        LOCATOR.MM_IMPORT_TOKENS_MODAL('custom-address'),
-        contractAddress,
-      );
-      await this.driver.fill(
-        LOCATOR.MM_IMPORT_TOKENS_MODAL('custom-symbol'),
-        symbol,
-      );
-      await this.driver.waitForSelector(
-        LOCATOR.MM_IMPORT_TOKENS_MODAL('custom-decimals'),
-      );
-      await clickNestedButton(this.driver, 'Next');
-      await this.driver.clickElement(
-        LOCATOR.MM_IMPORT_TOKENS_MODAL('import-button'),
-      );
-      await this.driver.assertElementNotPresent(
-        '[data-testid="import-tokens-modal-import-button"]',
-      );
-      await this.driver.clickElement({ text: symbol });
-    } else {
-      await this.driver.clickElement({
-        css: '[data-testid="multichain-token-list-button"]',
-        text: symbol,
-      });
-    }
+  navigateToAssetPage = async (symbol: string) => {
+    await this.driver.clickElement({
+      css: '[data-testid="multichain-token-list-button"]',
+      text: symbol,
+    });
+
     await this.driver.delay(2000);
     assert.ok((await this.driver.getCurrentUrl()).includes('asset'));
   };
@@ -169,7 +136,7 @@ export const getBridgeFixtures = (
     .withBridgeControllerDefaultState();
 
   if (withErc20) {
-    fixtureBuilder.withTokensControllerERC20();
+    fixtureBuilder.withTokensControllerERC20({ chainId: 1 });
   }
 
   return {
