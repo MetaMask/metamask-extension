@@ -1,5 +1,5 @@
 import { ethErrors } from 'eth-rpc-errors';
-import { deferredPromise } from '../../util';
+import { deferredPromise, shouldEmitDappViewedEvent } from '../../util';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -27,20 +27,14 @@ const createMockedHandler = () => {
   const hasPermission = jest.fn();
   const requestAccountsPermission = jest.fn();
   const sendMetrics = jest.fn();
-  const getPermissionsForOrigin = jest.fn().mockReturnValue(
-    Object.freeze({
-      eth_accounts: {
-        caveats: [
-          {
-            value: ['0xdead', '0xbeef'],
-          },
-        ],
-      },
-    }),
-  );
   const metamaskState = {
     permissionHistory: {},
     metaMetricsId: 'metaMetricsId',
+    accounts: {
+      '0x1': {},
+      '0x2': {},
+      '0x3': {},
+    },
   };
   const grantPermissions = jest.fn();
   const getNetworkConfigurationByNetworkClientId = jest.fn().mockReturnValue({
@@ -54,7 +48,6 @@ const createMockedHandler = () => {
       hasPermission,
       requestAccountsPermission,
       sendMetrics,
-      getPermissionsForOrigin,
       metamaskState,
       grantPermissions,
       getNetworkConfigurationByNetworkClientId,
@@ -69,7 +62,6 @@ const createMockedHandler = () => {
     hasPermission,
     requestAccountsPermission,
     sendMetrics,
-    getPermissionsForOrigin,
     grantPermissions,
     getNetworkConfigurationByNetworkClientId,
     handler,
@@ -77,6 +69,10 @@ const createMockedHandler = () => {
 };
 
 describe('requestEthereumAccountsHandler', () => {
+  beforeEach(() => {
+    shouldEmitDappViewedEvent.mockReturnValue(true);
+  });
+
   beforeAll(() => {
     delete process.env.BARAD_DUR;
   });
@@ -171,7 +167,23 @@ describe('requestEthereumAccountsHandler', () => {
       expect(response.result).toStrictEqual(['0xdead', '0xbeef']);
     });
 
-    it.todo('emits the dapp viewed metrics event');
+    it('emits the dapp viewed metrics event', async () => {
+      const { handler, sendMetrics } = createMockedHandler();
+
+      await handler(baseRequest);
+      expect(sendMetrics).toHaveBeenCalledWith({
+        category: 'inpage_provider',
+        event: 'Dapp Viewed',
+        properties: {
+          is_first_visit: true,
+          number_of_accounts: 3,
+          number_of_accounts_connected: 2,
+        },
+        referrer: {
+          url: 'http://test.com',
+        },
+      });
+    });
 
     it('does not grant a CAIP-25 endowment if the BARAD_DUR flag is not set', async () => {
       delete process.env.BARAD_DUR;

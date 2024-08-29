@@ -24,8 +24,8 @@ import {
   validateAndFlattenScopes,
   ScopesObject,
   ScopeObject,
+  assertScopesSupported,
 } from './scope';
-import { assertScopesSupported } from './scope/assert';
 
 export type Caip25CaveatValue = {
   requiredScopes: ScopesObject;
