@@ -14,7 +14,7 @@ const mockAccountsControllerState: AccountsControllerState = {
   },
 };
 
-describe('migration #126', () => {
+describe('migration #121.1', () => {
   afterEach(() => jest.resetAllMocks());
 
   it('updates the version metadata', async () => {
