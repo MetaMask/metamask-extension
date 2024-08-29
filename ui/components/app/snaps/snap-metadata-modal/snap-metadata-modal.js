@@ -40,6 +40,7 @@ import { ShowMore } from '../show-more';
 import SnapExternalPill from '../snap-version/snap-external-pill';
 import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';
 import Tooltip from '../../../ui/tooltip';
+import { isSnapId } from '../../../../helpers/utils/snaps';
 
 export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
   const t = useI18nContext();
@@ -60,9 +61,7 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
     : undefined;
 
   const installOrigin = useOriginMetadata(installInfo?.origin);
-  const isSnapRequesting =
-    installInfo?.origin?.startsWith('local:') ||
-    installInfo?.origin?.startsWith('npm:');
+  const isSnapRequesting = isSnapId(installInfo?.origin);
 
   const snapPrefix = getSnapPrefix(snapId);
   const packageName = stripSnapPrefix(snapId);

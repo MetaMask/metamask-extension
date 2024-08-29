@@ -23,6 +23,7 @@ import SnapPrivacyWarning from '../../../../components/app/snaps/snap-privacy-wa
 import { getPermissions, getSnapMetadata } from '../../../../selectors';
 import SnapAvatar from '../../../../components/app/snaps/snap-avatar/snap-avatar';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
+import { isSnapId } from '../../../../helpers/utils/snaps';
 
 export default function SnapsConnect({
   request,
@@ -59,7 +60,7 @@ export default function SnapsConnect({
   const SnapsConnectContent = () => {
     let trimmedOrigin = (useOriginMetadata(origin) || {})?.name;
 
-    if (origin?.startsWith('local:') || origin?.startsWith('npm:')) {
+    if (isSnapId(origin)) {
       trimmedOrigin = targetSubjectMetadata.name;
     }
 

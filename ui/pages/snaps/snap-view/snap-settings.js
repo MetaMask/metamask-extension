@@ -53,6 +53,7 @@ import { CONNECT_ROUTE } from '../../../helpers/constants/routes';
 import { ShowMore } from '../../../components/app/snaps/show-more';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { KeyringSnapRemovalResultStatus } from './constants';
+import { isSnapId } from '../../../helpers/utils/snaps';
 ///: END:ONLY_INCLUDE_IF
 
 function SnapSettings({ snapId, initRemove, resetInitRemove }) {
@@ -130,11 +131,9 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
   };
 
   const connectedTitle = () => {
-    const hasSnap = (subject) =>
-      subject.origin.startsWith('local:') || subject.origin.startsWith('npm:');
-    if (connectedSubjects.every((subject) => hasSnap(subject))) {
+    if (connectedSubjects.every((subject) => isSnapId(subject.origin))) {
       return t('connectedSnaps');
-    } else if (connectedSubjects.some((subject) => hasSnap(subject))) {
+    } else if (connectedSubjects.some((subject) => isSnapId(subject.origin))) {
       return t('connectedSitesAndSnaps');
     }
     return t('connectedSites');
