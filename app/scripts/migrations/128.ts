@@ -286,6 +286,9 @@ function transformState(
     networksMetadata: networkState.networksMetadata ?? {},
   };
 
+  // TODO: It might be the case that entries in SelectedNetworkController.domains need
+  // to be removed/replaced, if some network client ids had to be removed due to duplicates
+
   // Set `showMultiRpcModal` based on whether there are any networks with multiple rpc endpoints
   if (
     hasProperty(state, 'PreferencesController') &&
