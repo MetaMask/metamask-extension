@@ -287,9 +287,11 @@ function ActionButton({
   }
 
   const { key, label } = action;
+  const dataTestId = `alert-modal-action-${key}`;
 
   return (
     <Button
+      data-testid={dataTestId}
       key={key}
       variant={ButtonVariant.Primary}
       width={BlockSize.Full}
