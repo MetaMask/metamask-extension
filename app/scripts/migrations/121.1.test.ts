@@ -66,6 +66,43 @@ describe(`migration #${version}`, () => {
     expect(transformedState.data).toStrictEqual(expectedState);
   });
 
+  it('Does not update ticker to POL if ticker is not MATIC, but still updates imageURL in networkConfigurations', async () => {
+    const oldState = {
+      NetworkController: {
+        networkConfigurations: {
+          '0x89': {
+            chainId: '0x89',
+            ticker: 'NOT_MATIC',
+            rpcPrefs: {
+              imageUrl: './images/matic-token.svg',
+            },
+          },
+        },
+      },
+    };
+
+    const expectedState = {
+      NetworkController: {
+        networkConfigurations: {
+          '0x89': {
+            chainId: '0x89',
+            ticker: 'NOT_MATIC',
+            rpcPrefs: {
+              imageUrl: './images/pol-token.svg',
+            },
+          },
+        },
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toStrictEqual(expectedState);
+  });
+
   it('Does not update tickers for other network configurations, updates only ticker and imageURL for chain 0x89', async () => {
     const oldState = {
       NetworkController: {
