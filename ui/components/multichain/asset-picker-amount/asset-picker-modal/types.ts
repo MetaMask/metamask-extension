@@ -35,7 +35,7 @@ export type ERC20Asset = Pick<TokenListToken, 'address' | 'symbol'> & {
 };
 export type NativeAsset = {
   type: AssetType.native;
-  address?: null; // TODO add zero address
+  address?: null;
   image: typeof CHAIN_ID_TOKEN_IMAGE_MAP extends Record<string, infer V>
     ? V
     : never; // only allow wallet's hardcoded images
