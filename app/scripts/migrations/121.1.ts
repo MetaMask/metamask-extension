@@ -46,7 +46,8 @@ function transformState(state: Record<string, unknown>): void {
         if (
           hasProperty(networkConfiguration, 'rpcPrefs') &&
           isObject(networkConfiguration.rpcPrefs) &&
-          hasProperty(networkConfiguration.rpcPrefs, 'imageUrl')
+          hasProperty(networkConfiguration.rpcPrefs, 'imageUrl') &&
+          networkConfiguration.rpcPrefs.imageUrl === './images/matic-token.svg'
         ) {
           networkConfiguration.rpcPrefs.imageUrl = './images/pol-token.svg';
         }
@@ -78,7 +79,9 @@ function transformState(state: Record<string, unknown>): void {
     if (
       hasProperty(networkControllerState.providerConfig, 'rpcPrefs') &&
       isObject(networkControllerState.providerConfig.rpcPrefs) &&
-      hasProperty(networkControllerState.providerConfig.rpcPrefs, 'imageUrl')
+      hasProperty(networkControllerState.providerConfig.rpcPrefs, 'imageUrl') &&
+      networkControllerState.providerConfig.rpcPrefs.imageUrl ===
+        './images/matic-token.svg'
     ) {
       networkControllerState.providerConfig.rpcPrefs.imageUrl =
         './images/pol-token.svg';

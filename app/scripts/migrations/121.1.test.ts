@@ -74,7 +74,7 @@ describe(`migration #${version}`, () => {
             chainId: '0x89',
             ticker: 'MATIC',
             rpcPrefs: {
-              imageUrl: './images/old-image.svg',
+              imageUrl: './images/matic-token.svg',
             },
           },
           '0x1': {
@@ -154,7 +154,7 @@ describe(`migration #${version}`, () => {
           chainId: '0x89',
           ticker: 'MATIC',
           rpcPrefs: {
-            imageUrl: './images/old-image.svg',
+            imageUrl: './images/matic-token.svg',
           },
         },
       },
@@ -208,7 +208,7 @@ describe(`migration #${version}`, () => {
           chainId: '0x89',
           ticker: 'NOT_MATIC',
           rpcPrefs: {
-            imageUrl: './images/old-image.svg',
+            imageUrl: './images/matic-token.svg',
           },
         },
       },
