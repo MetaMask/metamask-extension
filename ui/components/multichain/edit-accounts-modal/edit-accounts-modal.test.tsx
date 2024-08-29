@@ -4,6 +4,7 @@ import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { EditAccountsModal } from '.';
+import { fireEvent, getByText } from '@testing-library/react';
 
 const render = (
   props: {
@@ -40,5 +41,10 @@ describe('EditAccountsModal', () => {
   it('should render correctly', () => {
     const { container } = render();
     expect(container).toMatchSnapshot();
+  });
+
+  it('shows select all button', async () => {
+    const { getByLabelText } = render();
+    expect(getByLabelText('Select all')).toBeInTheDocument();
   });
 });

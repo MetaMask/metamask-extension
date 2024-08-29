@@ -24,7 +24,7 @@ import { mergeAccounts } from '../account-list-menu/account-list-menu';
 
 type EditAccountsModalProps = {
   onClose: () => void;
-  allowedAccountTypes?: KeyringAccountType[]; // Made optional to match default
+  allowedAccountTypes?: KeyringAccountType[];
 };
 
 const defaultAllowedAccountTypes: KeyringAccountType[] = [
