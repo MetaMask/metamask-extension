@@ -109,6 +109,7 @@ const NetworkListItem = ({
               textAlign={TextAlign.Left}
               onMouseLeave={handleMouseLeave}
               onMouseOver={handleMouseEnter}
+              ellipsis
             >
               {rpcEndpoint.name ?? new URL(rpcEndpoint.url).host}
             </Text>
