@@ -6398,8 +6398,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} origin - the domain to safelist
    */
   safelistPhishingDomain(origin) {
-    const { hostname } = new URL(origin);
-    return this.phishingController.bypass(hostname);
+    return this.phishingController.bypass(origin);
   }
 
   async backToSafetyPhishingWarning() {
