@@ -8,7 +8,7 @@ The other NEW option is to SSH into CircleCI and use VNC.
 
 1. You must be logged into CircleCI and have access to metamask-extension
 2. "Rerun job with SSH" [Documentation](https://circleci.com/docs/ssh-access-jobs/)
-3. Look for this instruction
+3. Look for this instruction inside the `Enable SSH` section
 
    ```
    You can now SSH into this box if your SSH public key is added:
