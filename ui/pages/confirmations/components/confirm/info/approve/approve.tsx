@@ -1,6 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateCurrentConfirmation } from '../../../../../../ducks/confirm/confirm';
 import { useConfirmContext } from '../../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
@@ -12,9 +13,10 @@ import { useIsNFT } from './hooks/use-is-nft';
 import { SpendingCap } from './spending-cap/spending-cap';
 
 const ApproveInfo = () => {
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
+  const dispatch = useDispatch();
+
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
