@@ -71,7 +71,7 @@ function MultiRpcEditModal() {
             <Box marginTop={isPopUp ? 0 : 4} marginBottom={1}>
               {Object.values(networkConfigurations).map(
                 (networkConfiguration: NetworkConfiguration) =>
-                  networkConfiguration.rpcEndpoints.length > 0 ? (
+                  networkConfiguration.rpcEndpoints.length > 1 ? (
                     <NetworkListItem
                       networkConfiguration={networkConfiguration}
                       key={networkConfiguration.chainId}
