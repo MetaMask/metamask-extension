@@ -210,7 +210,7 @@ export default function PrivacySettings() {
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
       properties: {
-        settings_group: 'advanced',
+        settings_group: 'onboarding_advanced_configuration',
         is_profile_syncing_enabled: profileSyncingProps.isProfileSyncingEnabled,
         is_basic_functionality_enabled: externalServicesOnboardingToggleState,
         show_incoming_tx: incomingTransactionsPreferences,
