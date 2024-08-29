@@ -145,8 +145,6 @@ describe('switchEthereumChainHandler', () => {
       );
     });
 
-    // TODO: Fix below tests
-
     it('should call setActiveNetwork when switching to a custom network', async () => {
       const mocks = makeMocks({
         permissionsFeatureFlagIsActive,
