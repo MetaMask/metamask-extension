@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 126;
+export const version = 121.1;
 
 /**
  * This migration removes depreciated `Txcontroller` key if it is present in state.

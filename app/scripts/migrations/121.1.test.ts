@@ -1,8 +1,8 @@
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
-import { migrate, version } from './126';
+import { migrate, version } from './121.1';
 
-const oldVersion = 125;
+const oldVersion = 121;
 
 const mockInternalAccount = createMockInternalAccount();
 const mockAccountsControllerState: AccountsControllerState = {
