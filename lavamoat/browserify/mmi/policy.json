@@ -2204,18 +2204,25 @@
     },
     "@metamask/phishing-controller": {
       "globals": {
+        "TextEncoder": true,
+        "URL": true,
         "fetch": true
       },
       "packages": {
-        "@metamask/base-controller": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/controller-utils": true,
-        "@metamask/phishing-warning>eth-phishing-detect": true,
+        "@metamask/phishing-controller>@metamask/base-controller": true,
+        "@metamask/phishing-controller>fastest-levenshtein": true,
+        "@noble/hashes": true,
         "punycode": true
       }
     },
-    "@metamask/phishing-warning>eth-phishing-detect": {
+    "@metamask/phishing-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
       "packages": {
-        "eslint>optionator>fast-levenshtein": true
+        "immer": true
       }
     },
     "@metamask/post-message-stream": {
@@ -4318,16 +4325,6 @@
     "eslint-plugin-react>array-includes>is-string": {
       "packages": {
         "koa>is-generator-function>has-tostringtag": true
-      }
-    },
-    "eslint>optionator>fast-levenshtein": {
-      "globals": {
-        "Intl": true,
-        "Levenshtein": "write",
-        "console.log": true,
-        "define": true,
-        "importScripts": true,
-        "postMessage": true
       }
     },
     "eth-ens-namehash": {

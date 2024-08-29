@@ -183,11 +183,11 @@ __metadata:
   linkType: hard
 
 "@babel/helper-annotate-as-pure@npm:^7.22.5":
-  version: 7.24.7
-  resolution: "@babel/helper-annotate-as-pure@npm:7.24.7"
+  version: 7.22.5
+  resolution: "@babel/helper-annotate-as-pure@npm:7.22.5"
   dependencies:
-    "@babel/types": "npm:^7.24.7"
-  checksum: 10/a9017bfc1c4e9f2225b967fbf818004703de7cf29686468b54002ffe8d6b56e0808afa20d636819fcf3a34b89ba72f52c11bdf1d69f303928ee10d92752cad95
+    "@babel/types": "npm:^7.22.5"
+  checksum: 10/53da330f1835c46f26b7bf4da31f7a496dee9fd8696cca12366b94ba19d97421ce519a74a837f687749318f94d1a37f8d1abcbf35e8ed22c32d16373b2f6198d
   languageName: node
   linkType: hard
 
@@ -288,7 +288,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-member-expression-to-functions@npm:^7.24.5, @babel/helper-member-expression-to-functions@npm:^7.24.7":
+"@babel/helper-member-expression-to-functions@npm:^7.23.0, @babel/helper-member-expression-to-functions@npm:^7.24.5":
   version: 7.24.8
   resolution: "@babel/helper-member-expression-to-functions@npm:7.24.8"
   dependencies:
@@ -322,7 +322,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-optimise-call-expression@npm:^7.22.5, @babel/helper-optimise-call-expression@npm:^7.24.7":
+"@babel/helper-optimise-call-expression@npm:^7.22.5":
   version: 7.24.7
   resolution: "@babel/helper-optimise-call-expression@npm:7.24.7"
   dependencies:
@@ -352,15 +352,15 @@ __metadata:
   linkType: hard
 
 "@babel/helper-replace-supers@npm:^7.22.5, @babel/helper-replace-supers@npm:^7.22.9, @babel/helper-replace-supers@npm:^7.24.1":
-  version: 7.24.7
-  resolution: "@babel/helper-replace-supers@npm:7.24.7"
+  version: 7.24.1
+  resolution: "@babel/helper-replace-supers@npm:7.24.1"
   dependencies:
-    "@babel/helper-environment-visitor": "npm:^7.24.7"
-    "@babel/helper-member-expression-to-functions": "npm:^7.24.7"
-    "@babel/helper-optimise-call-expression": "npm:^7.24.7"
+    "@babel/helper-environment-visitor": "npm:^7.22.20"
+    "@babel/helper-member-expression-to-functions": "npm:^7.23.0"
+    "@babel/helper-optimise-call-expression": "npm:^7.22.5"
   peerDependencies:
     "@babel/core": ^7.0.0
-  checksum: 10/18b7c3709819d008a14953e885748f3e197537f131d8f7ae095fec245506d854ff40b236edb1754afb6467f795aa90ae42a1d961a89557702249bacfc3fdad19
+  checksum: 10/1103b28ce0cc7fba903c21bc78035c696ff191bdbbe83c20c37030a2e10ae6254924556d942cdf8c44c48ba606a8266fdb105e6bb10945de9285f79cb1905df1
   languageName: node
   linkType: hard
 
@@ -374,12 +374,11 @@ __metadata:
   linkType: hard
 
 "@babel/helper-skip-transparent-expression-wrappers@npm:^7.22.5":
-  version: 7.24.7
-  resolution: "@babel/helper-skip-transparent-expression-wrappers@npm:7.24.7"
+  version: 7.22.5
+  resolution: "@babel/helper-skip-transparent-expression-wrappers@npm:7.22.5"
   dependencies:
-    "@babel/traverse": "npm:^7.24.7"
-    "@babel/types": "npm:^7.24.7"
-  checksum: 10/784a6fdd251a9a7e42ccd04aca087ecdab83eddc60fda76a2950e00eb239cc937d3c914266f0cc476298b52ac3f44ffd04c358e808bd17552a7e008d75494a77
+    "@babel/types": "npm:^7.22.5"
+  checksum: 10/1012ef2295eb12dc073f2b9edf3425661e9b8432a3387e62a8bc27c42963f1f216ab3124228015c748770b2257b4f1fda882ca8fa34c0bf485e929ae5bc45244
   languageName: node
   linkType: hard
 
@@ -1651,7 +1650,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/traverse@npm:^7.12.5, @babel/traverse@npm:^7.18.9, @babel/traverse@npm:^7.23.2, @babel/traverse@npm:^7.24.7, @babel/traverse@npm:^7.24.8":
+"@babel/traverse@npm:^7.12.5, @babel/traverse@npm:^7.18.9, @babel/traverse@npm:^7.23.2, @babel/traverse@npm:^7.24.8":
   version: 7.24.8
   resolution: "@babel/traverse@npm:7.24.8"
   dependencies:
@@ -4426,29 +4425,29 @@ __metadata:
   linkType: hard
 
 "@mantine/core@npm:^7.8.0":
-  version: 7.10.2
-  resolution: "@mantine/core@npm:7.10.2"
+  version: 7.8.0
+  resolution: "@mantine/core@npm:7.8.0"
   dependencies:
     "@floating-ui/react": "npm:^0.26.9"
-    clsx: "npm:^2.1.1"
+    clsx: "npm:2.1.0"
     react-number-format: "npm:^5.3.1"
     react-remove-scroll: "npm:^2.5.7"
     react-textarea-autosize: "npm:8.5.3"
     type-fest: "npm:^4.12.0"
   peerDependencies:
-    "@mantine/hooks": 7.10.2
+    "@mantine/hooks": 7.8.0
     react: ^18.2.0
     react-dom: ^18.2.0
-  checksum: 10/312c3d8777c18b30ca04a2ebf43b110b4f888fb3cfeb4f1dce6dd6b37ca5656ffa160a707fe2933bef87bcfda9e3249f21ff7dab673d3a01f660044ae8bf31e7
+  checksum: 10/9d3ba53cd41a7b725579dec3723ee92444b45c51a0ed7a283caad047c1a9d3d4c8edf2cf143c4abf8959f3ade62cc7cdcb552fe1f4bfc1ef0f6a6d6136ce958f
   languageName: node
   linkType: hard
 
 "@mantine/hooks@npm:^7.8.0":
-  version: 7.10.2
-  resolution: "@mantine/hooks@npm:7.10.2"
+  version: 7.8.0
+  resolution: "@mantine/hooks@npm:7.8.0"
   peerDependencies:
     react: ^18.2.0
-  checksum: 10/cdf16046e42fbe266ed4ac5a1e053fa541a30de21485fe0d5a964f5261f8e40df4b028768059f11326a5ff702b5da07c8672fb3df2bcb747234ec84e14cec4a6
+  checksum: 10/723d963995076574842ed3296a9acc63fd4a279d265a80edfe7f32c0359f70821e86dc5da5c37c13ce4ce8edfcbbf2c0c32a3024c60a7167172034cf6ddac220
   languageName: node
   linkType: hard
 
@@ -4908,6 +4907,16 @@ __metadata:
     "@metamask/utils": "npm:^9.1.0"
     immer: "npm:^9.0.6"
   checksum: 10/43e208627c673094e3b4a7766ef4df34cd5a9ec7f09721cc3e60123b69a22b82c68752b963d17f4ad925a01c6e5dc89f125cac33aeee4e90e0a8346a1d153aae
+  languageName: node
+  linkType: hard
+
+"@metamask/base-controller@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@metamask/base-controller@npm:7.0.0"
+  dependencies:
+    "@metamask/utils": "npm:^9.1.0"
+    immer: "npm:^9.0.6"
+  checksum: 10/0ea307da4a7863224fd1fc83039165dbd06d2725922d4d4cf5854f5e7894e789a3c277f1e4592a38ae002de869217a26550f3b9687c259fc29153984dc5b4a4c
   languageName: node
   linkType: hard
 
@@ -5914,16 +5923,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^9.0.3":
-  version: 9.0.4
-  resolution: "@metamask/phishing-controller@npm:9.0.4"
+"@metamask/phishing-controller@npm:^12.0.1":
+  version: 12.0.1
+  resolution: "@metamask/phishing-controller@npm:12.0.1"
   dependencies:
-    "@metamask/base-controller": "npm:^5.0.2"
-    "@metamask/controller-utils": "npm:^10.0.0"
+    "@metamask/base-controller": "npm:^7.0.0"
+    "@metamask/controller-utils": "npm:^11.1.0"
+    "@noble/hashes": "npm:^1.4.0"
     "@types/punycode": "npm:^2.1.0"
     eth-phishing-detect: "npm:^1.2.0"
+    ethereum-cryptography: "npm:^2.1.2"
+    fastest-levenshtein: "npm:^1.0.16"
     punycode: "npm:^2.1.1"
-  checksum: 10/e68258c3dfedd7a60a040f8b58577ee98cc4566a3893a047b7b620edd72e98c8f2f75056332457b9773932c3ae8cbc7c66bbe0792e07de31dff895a9b77d081b
+  checksum: 10/3f7c69434a783251657f333495fbee1cb8a02ffb731cf430fcd21812482bf1237948c498db74b55fb4e1e6976d71932f4b11c39a26f9e367ffd26a69efa2583e
   languageName: node
   linkType: hard
 
@@ -14424,9 +14436,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001587, caniuse-lite@npm:^1.0.30001599":
-  version: 1.0.30001643
-  resolution: "caniuse-lite@npm:1.0.30001643"
-  checksum: 10/dddbda29fa24fbc435873309c71070461cbfc915d9bce3216180524c20c5637b2bee1a14b45972e9ac19e1fdf63fba3f63608b9e7d68de32f5ee1953c8c69e05
+  version: 1.0.30001600
+  resolution: "caniuse-lite@npm:1.0.30001600"
+  checksum: 10/4c52f83ed71bc5f6e443bd17923460f1c77915adc2c2aa79ddaedceccc690b5917054b0c41b79e9138cbbd9abcdc0db9e224e79e3e734e581dfec06505f3a2b4
   languageName: node
   linkType: hard
 
@@ -14935,17 +14947,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"clsx@npm:2.1.0":
+  version: 2.1.0
+  resolution: "clsx@npm:2.1.0"
+  checksum: 10/2e0ce7c3b6803d74fc8147c408f88e79245583202ac14abd9691e2aebb9f312de44270b79154320d10bb7804a9197869635d1291741084826cff20820f31542b
+  languageName: node
+  linkType: hard
+
 "clsx@npm:^1.0.4":
   version: 1.1.1
   resolution: "clsx@npm:1.1.1"
   checksum: 10/ff052650329773b9b245177305fc4c4dc3129f7b2be84af4f58dc5defa99538c61d4207be7419405a5f8f3d92007c954f4daba5a7b74e563d5de71c28c830063
-  languageName: node
-  linkType: hard
-
-"clsx@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "clsx@npm:2.1.1"
-  checksum: 10/cdfb57fa6c7649bbff98d9028c2f0de2f91c86f551179541cf784b1cfdc1562dcb951955f46d54d930a3879931a980e32a46b598acaea274728dbe068deca919
   languageName: node
   linkType: hard
 
@@ -17865,9 +17877,9 @@ __metadata:
   linkType: hard
 
 "escalade@npm:^3.1.1":
-  version: 3.1.2
-  resolution: "escalade@npm:3.1.2"
-  checksum: 10/a1e07fea2f15663c30e40b9193d658397846ffe28ce0a3e4da0d8e485fedfeca228ab846aee101a05015829adf39f9934ff45b2a3fca47bed37a29646bd05cd3
+  version: 3.1.1
+  resolution: "escalade@npm:3.1.1"
+  checksum: 10/afa618e73362576b63f6ca83c975456621095a1ed42ff068174e3f5cea48afc422814dda548c96e6ebb5333e7265140c7292abcc81bbd6ccb1757d50d3a4e182
   languageName: node
   linkType: hard
 
@@ -26155,7 +26167,7 @@ __metadata:
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^10.0.0"
     "@metamask/permission-log-controller": "npm:^2.0.1"
-    "@metamask/phishing-controller": "npm:^9.0.3"
+    "@metamask/phishing-controller": "npm:^12.0.1"
     "@metamask/phishing-warning": "npm:^3.0.3"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "patch:@metamask/ppom-validator@npm%3A0.32.0#~/.yarn/patches/@metamask-ppom-validator-npm-0.32.0-f677deea54.patch"
@@ -29061,9 +29073,9 @@ __metadata:
   linkType: hard
 
 "picocolors@npm:^1.0.0":
-  version: 1.0.1
-  resolution: "picocolors@npm:1.0.1"
-  checksum: 10/fa68166d1f56009fc02a34cdfd112b0dd3cf1ef57667ac57281f714065558c01828cdf4f18600ad6851cbe0093952ed0660b1e0156bddf2184b6aaf5817553a5
+  version: 1.0.0
+  resolution: "picocolors@npm:1.0.0"
+  checksum: 10/a2e8092dd86c8396bdba9f2b5481032848525b3dc295ce9b57896f931e63fc16f79805144321f72976383fc249584672a75cc18d6777c6b757603f372f745981
   languageName: node
   linkType: hard
 
