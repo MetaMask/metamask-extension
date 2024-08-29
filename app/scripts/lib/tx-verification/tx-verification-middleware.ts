@@ -2,19 +2,14 @@ import { hashMessage } from '@ethersproject/hash';
 import { verifyMessage } from '@ethersproject/wallet';
 import type { NetworkController } from '@metamask/network-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import {
-  type Json,
-  type JsonRpcParams,
-  hasProperty,
-  isObject,
-  type Hex,
-} from '@metamask/utils';
-import {
-  JsonRpcRequest,
-  type JsonRpcResponse,
-  type JsonRpcEngineEndCallback,
-  type JsonRpcEngineNextCallback,
+import type { Json, JsonRpcParams, Hex } from '@metamask/utils';
+import { hasProperty, isObject } from '@metamask/utils';
+import type {
+  JsonRpcResponse,
+  JsonRpcEngineEndCallback,
+  JsonRpcEngineNextCallback,
 } from 'json-rpc-engine';
+import { JsonRpcRequest } from 'json-rpc-engine';
 import {
   EXPERIENCES_TO_VERIFY,
   getExperience,

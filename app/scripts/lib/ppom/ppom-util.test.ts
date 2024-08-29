@@ -7,7 +7,7 @@ import {
   normalizeTransactionParams,
 } from '@metamask/transaction-controller';
 import { SignatureController } from '@metamask/signature-controller';
-import { PersonalMessage } from '@metamask/message-manager';
+import type { PersonalMessage } from '@metamask/message-manager';
 import {
   BlockaidReason,
   BlockaidResultType,
