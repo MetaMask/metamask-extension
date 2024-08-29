@@ -38,9 +38,11 @@ export type MetaMetricsDataDeletionState = {
   metaMetricsDataDeletionStatus?: DeleteRegulationStatus;
 };
 
-const defaultState: MetaMetricsDataDeletionState = {
-  metaMetricsDataDeletionId: null,
-  metaMetricsDataDeletionTimestamp: 0,
+const getDefaultState = (): MetaMetricsDataDeletionState => {
+  return {
+    metaMetricsDataDeletionId: null,
+    metaMetricsDataDeletionTimestamp: 0,
+  };
 };
 
 // Metadata for the controller state
@@ -124,7 +126,7 @@ export class MetaMetricsDataDeletionController extends BaseController<
       messenger,
       metadata,
       name: controllerName,
-      state: { ...defaultState, ...state },
+      state: { ...getDefaultState(), ...state },
     });
     this.#getMetaMetricsId = getMetaMetricsId;
     this.#dataDeletionService = dataDeletionService;
