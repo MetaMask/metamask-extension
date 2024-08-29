@@ -40,10 +40,19 @@ function transformState(state: Record<string, unknown>): void {
     )) {
       if (
         isObject(networkConfiguration) &&
-        networkConfiguration.chainId === CHAIN_IDS.POLYGON &&
-        networkConfiguration.ticker === 'MATIC'
+        networkConfiguration.chainId === CHAIN_IDS.POLYGON
       ) {
-        networkConfiguration.ticker = 'POL';
+        // update image path regardless of ticker
+        if (hasProperty(networkConfiguration, 'imageUrl')) {
+          networkConfiguration.imageUrl = './images/pol-token.svg';
+        }
+        // update ticker only if MATIC
+        if (
+          hasProperty(networkConfiguration, 'ticker') &&
+          networkConfiguration.ticker === 'MATIC'
+        ) {
+          networkConfiguration.ticker = 'POL';
+        }
       }
     }
   }
@@ -54,13 +63,20 @@ function transformState(state: Record<string, unknown>): void {
     hasProperty(networkControllerState, 'providerConfig') &&
     isObject(networkControllerState.providerConfig) &&
     hasProperty(networkControllerState.providerConfig, 'chainId') &&
-    networkControllerState.providerConfig.chainId === CHAIN_IDS.POLYGON &&
-    networkControllerState.providerConfig.ticker === 'MATIC'
+    networkControllerState.providerConfig.chainId === CHAIN_IDS.POLYGON
   ) {
-    networkControllerState.providerConfig.ticker = 'POL';
+    if (
+      hasProperty(networkControllerState.providerConfig, 'ticker') &&
+      networkControllerState.providerConfig.ticker === 'MATIC'
+    ) {
+      networkControllerState.providerConfig.ticker = 'POL';
+    }
+    if (
+      hasProperty(networkControllerState.providerConfig, 'rpcPrefs') &&
+      isObject(networkControllerState.providerConfig.rpcPrefs) &&
+      hasProperty(networkControllerState.providerConfig.rpcPrefs, 'imageUrl')
+    ) {
+      networkControllerState.providerConfig.rpcPrefs = './images/pol-token.svg';
+    }
   }
-  state = {
-    ...state,
-    NetworkController: networkControllerState,
-  };
 }
