@@ -10,11 +10,12 @@ describe('isBlockedUrl', () => {
     allowedEvents: [],
   });
   const phishingController = new PhishingController({
+    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     messenger: phishingControllerMessenger,
     state: {
       phishingLists: [
         {
-          blocklist: ['metamask.test'],
+          blocklist: ['https://metamask.test'],
           allowlist: [],
           fuzzylist: [],
           tolerance: 0,
