@@ -172,7 +172,7 @@ function transformState(
           // be unique across all chains, not just within each chain.
           const isDuplicate = [
             ...Object.values(acc).flatMap(({ rpcEndpoints: eps }) => eps),
-            endpoints,
+            ...endpoints,
           ].some(
             (endpoint) =>
               URI.equal(endpoint.url, network.rpcUrl) ||
@@ -211,13 +211,6 @@ function transformState(
       // Or arbitrarily default to the first endpoint if we don't have a tie breaker
       0,
     );
-
-    // TODO: Check what validations the network controller performs.
-    // I think it enforces:
-    //    - Uniqueness of RPC URLs *across all chains*, not just within a chain like this migration currently guarantees
-    //    - Well formedness of RPC URLs
-    //
-    // If we don't pass all validations, MM will not start up
 
     // Calculate the unique array of non-empty block explorer urls
     const blockExplorerUrls = [
