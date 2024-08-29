@@ -67,7 +67,7 @@ export { Tag } from './tag';
 export type { TagProps } from './tag';
 export { TagUrl } from './tag-url';
 export type { TagUrlProps } from './tag-url';
-export { Text, ValidTag, TextDirection, InvisibleCharacter } from './text';
+export { Text, ValidTag, TextDirection, InvisibleCharacter, TextVariant } from './text';
 export type { TextProps } from './text';
 export { Input, InputType } from './input';
 export type { InputProps } from './input';

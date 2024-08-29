@@ -7,6 +7,8 @@ import {
   OverflowWrap,
 } from '../../../helpers/constants/design-system';
 
+export { TextVariant, FontWeight, FontStyle, TextTransform, OverflowWrap };
+
 import type {
   StyleUtilityProps,
   PolymorphicComponentPropWithRef,
