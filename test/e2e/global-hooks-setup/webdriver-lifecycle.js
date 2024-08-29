@@ -24,21 +24,6 @@ async function createServiceBuilder() {
 }
 
 /**
- * Stops the driver service if it is running.
- * This function should be called after all tests.
- *
- * @async
- * @function stopServiceBuilder
- * @returns {Promise<void>} A promise that resolves when the driver service is stopped.
- */
-async function stopServiceBuilder() {
-  if (driverService) {
-    console.log('Stopping driver service');
-    await driverService.stop();
-  }
-}
-
-/**
  * Creates a new WebDriver instance using the specified options and the existing driver service.
  *
  * @async
@@ -66,8 +51,6 @@ async function quitDriver() {
 
 module.exports = {
   createServiceBuilder,
-  stopServiceBuilder,
   createDriver,
   quitDriver,
-  getDriverServiceAddress: () => driverService.address(),
 };

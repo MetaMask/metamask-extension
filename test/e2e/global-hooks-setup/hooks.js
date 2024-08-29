@@ -1,14 +1,7 @@
-const {
-  createServiceBuilder,
-  stopServiceBuilder,
-} = require('./webdriver-lifecycle');
+const { createServiceBuilder } = require('./webdriver-lifecycle');
 
 module.exports.mochaHooks = {
   async beforeAll() {
     await createServiceBuilder();
-  },
-
-  async afterAll() {
-    await stopServiceBuilder();
   },
 };
