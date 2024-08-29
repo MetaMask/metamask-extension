@@ -18,6 +18,7 @@
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "transactions": "object",
     "networkConfigurations": "object",
+    "networkConfigurationsByChainId": "object",
     "addressBook": "object",
     "confirmationExchangeRates": {},
     "pendingTokens": "object",
@@ -36,7 +37,8 @@
       "petnamesEnabled": true,
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
-      "redesignedTransactionsEnabled": "boolean"
+      "redesignedTransactionsEnabled": "boolean",
+      "showMultiRpcModal": "boolean"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
