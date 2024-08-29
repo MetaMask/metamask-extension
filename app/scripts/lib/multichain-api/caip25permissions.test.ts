@@ -494,7 +494,7 @@ describe('endowment:caip25', () => {
       expect(isChainIdSupportedBody).toContain('findNetworkClientIdByChainId');
     });
 
-    it('throws if the input requiredScopes ScopesObject is not already validated and flattened', () => {
+    it('throws if the input requiredScopes does not match the output of validateAndFlattenScopes', () => {
       MockScope.validateAndFlattenScopes.mockReturnValue({
         flattenedRequiredScopes: {},
         flattenedOptionalScopes: {
@@ -537,7 +537,7 @@ describe('endowment:caip25', () => {
       }).toThrow(/Expected values to be strictly deep-equal/u);
     });
 
-    it('throws if the input optionalScopes ScopesObject is not already validated and flattened', () => {
+    it('throws if the input optionalScopes does not match the output of validateAndFlattenScopes', () => {
       MockScope.validateAndFlattenScopes.mockReturnValue({
         flattenedRequiredScopes: {
           'eip155:1': {
