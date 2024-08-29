@@ -62,6 +62,7 @@ function transformState(state: Record<string, unknown>): void {
     }
   }
 
+  // handle legacy NetworkController versions (with providerConfig)
   if (
     hasProperty(state, 'NetworkController') &&
     isObject(networkControllerState) &&
@@ -70,12 +71,7 @@ function transformState(state: Record<string, unknown>): void {
     hasProperty(networkControllerState.providerConfig, 'chainId') &&
     networkControllerState.providerConfig.chainId === CHAIN_IDS.POLYGON
   ) {
-    if (
-      hasProperty(networkControllerState.providerConfig, 'ticker') &&
-      networkControllerState.providerConfig.ticker === 'MATIC'
-    ) {
-      networkControllerState.providerConfig.ticker = 'POL';
-    }
+    // update image path regardless of ticker
     if (
       hasProperty(networkControllerState.providerConfig, 'rpcPrefs') &&
       isObject(networkControllerState.providerConfig.rpcPrefs) &&
@@ -85,6 +81,13 @@ function transformState(state: Record<string, unknown>): void {
     ) {
       networkControllerState.providerConfig.rpcPrefs.imageUrl =
         './images/pol-token.svg';
+    }
+    // update ticker only if MATIC
+    if (
+      hasProperty(networkControllerState.providerConfig, 'ticker') &&
+      networkControllerState.providerConfig.ticker === 'MATIC'
+    ) {
+      networkControllerState.providerConfig.ticker = 'POL';
     }
   }
 }
