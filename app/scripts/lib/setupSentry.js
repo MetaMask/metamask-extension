@@ -28,6 +28,9 @@ const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
 const SENTRY_DSN_MMI = process.env.SENTRY_MMI_DSN;
 /* eslint-enable prefer-destructuring */
 
+// This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
+const SENTRY_DSN_FAKE = 'https://fake@sentry.io/0000000';
+
 export const ERROR_URL_ALLOWLIST = {
   CRYPTOCOMPARE: 'cryptocompare.com',
   COINGECKO: 'coingecko.com',
@@ -94,20 +97,23 @@ function getClientOptions() {
     // we can safely turn them off by setting the `sendClientReports` option to
     // `false`.
     sendClientReports: false,
-    tracesSampleRate: METAMASK_DEBUG || process.env.CIRCLECI ? 1.0 : 0.01,
+    tracesSampleRate:
+      METAMASK_DEBUG || getManifestFlags().circleci ? 1.0 : 0.01,
     transport: makeTransport,
   };
 }
 
 function setCircleCiTags() {
-  Sentry.setTag('circleci.enabled', Boolean(process.env.CIRCLECI));
+  const { circleci } = getManifestFlags();
 
-  if (process.env.CIRCLECI) {
-    Sentry.setTag('circleci.branch', process.env.CIRCLE_BRANCH);
-    Sentry.setTag('circleci.buildNum', process.env.CIRCLE_BUILD_NUM);
-    Sentry.setTag('circleci.job', process.env.CIRCLE_JOB);
-    Sentry.setTag('circleci.nodeIndex', process.env.CIRCLE_NODE_INDEX);
-    Sentry.setTag('circleci.prNumber', process.env.CIRCLE_PR_NUMBER);
+  Sentry.setTag('circleci.enabled', circleci.enabled);
+
+  if (circleci.enabled) {
+    Sentry.setTag('circleci.branch', circleci.branch);
+    Sentry.setTag('circleci.buildNum', circleci.buildNum);
+    Sentry.setTag('circleci.job', circleci.job);
+    Sentry.setTag('circleci.nodeIndex', circleci.nodeIndex);
+    Sentry.setTag('circleci.prNumber', circleci.prNumber);
   }
 }
 
@@ -194,6 +200,10 @@ function getSentryEnvironment() {
 }
 
 function getSentryTarget() {
+  if (getManifestFlags().doNotForceSentryForThisTest) {
+    return SENTRY_DSN_FAKE;
+  }
+
   if (METAMASK_ENVIRONMENT !== 'production') {
     return SENTRY_DSN_DEV;
   }
@@ -218,9 +228,11 @@ function getSentryTarget() {
  * @returns `true` if MetaMetrics is enabled, `false` otherwise.
  */
 async function getMetaMetricsEnabled() {
+  const flags = getManifestFlags();
+
   if (
     METAMASK_BUILD_TYPE === 'mmi' ||
-    (process.env.CIRCLECI && !getManifestFlags().doNotForceSentryForThisTest)
+    (flags.circleci && !flags.doNotForceSentryForThisTest)
   ) {
     return true;
   }

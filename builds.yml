@@ -271,10 +271,14 @@ env:
   # URL of security alerts API used to validate dApp requests
   - SECURITY_ALERTS_API_URL: 'http://localhost:3000'
 
-  # Enables the notifications feature within the build:
+    # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''
 
   - METAMASK_RAMP_API_CONTENT_BASE_URL: https://on-ramp-content.api.cx.metamask.io
+
+  ###
+  # Meta variables
+  ###
 
   # Uses yaml anchors to DRY - https://juju.is/docs/sdk/yaml-anchors-and-aliases
   - METAMASK_BUILD_TYPE_DEFAULT: *default
@@ -282,20 +286,10 @@ env:
   ###
   # Account Abstraction (EIP-4337)
   ###
-  - EIP_4337_ENTRYPOINT: null
 
+  - EIP_4337_ENTRYPOINT: null
   ###
   # Enable/disable why did you render debug tool: https://github.com/welldone-software/why-did-you-render
   # This should NEVER be enabled in production since it slows down react
   ###
   - ENABLE_WHY_DID_YOU_RENDER: false
-
-  ###
-  # Env variables for CircleCI to send to Sentry
-  ###
-  - CIRCLECI: false
-  - CIRCLE_BRANCH: ''
-  - CIRCLE_BUILD_NUM: -1
-  - CIRCLE_JOB: ''
-  - CIRCLE_NODE_INDEX: -1
-  - CIRCLE_PR_NUMBER: -1

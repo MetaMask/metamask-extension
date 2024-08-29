@@ -24,7 +24,18 @@ function restoreBackupManifest() {
   }
 }
 
-export function setManifestFlags(flags: object) {
+export function setManifestFlags(flags: { circleci?: object } = {}) {
+  if (process.env.CIRCLECI) {
+    flags.circleci = {
+      enabled: true,
+      branch: process.env.CIRCLE_BRANCH,
+      buildNum: process.env.CIRCLE_BUILD_NUM,
+      job: process.env.CIRCLE_JOB,
+      nodeIndex: process.env.CIRCLE_NODE_INDEX,
+      prNumber: process.env.CIRCLE_PR_NUMBER,
+    };
+  }
+
   const manifest = JSON.parse(
     fs.readFileSync('dist/chrome/manifest.json').toString(),
   );
