@@ -52,8 +52,8 @@ import SnapUpdateAlert from '../../../components/app/snaps/snap-update-alert';
 import { CONNECT_ROUTE } from '../../../helpers/constants/routes';
 import { ShowMore } from '../../../components/app/snaps/show-more';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import { KeyringSnapRemovalResultStatus } from './constants';
 import { isSnapId } from '../../../helpers/utils/snaps';
+import { KeyringSnapRemovalResultStatus } from './constants';
 ///: END:ONLY_INCLUDE_IF
 
 function SnapSettings({ snapId, initRemove, resetInitRemove }) {
