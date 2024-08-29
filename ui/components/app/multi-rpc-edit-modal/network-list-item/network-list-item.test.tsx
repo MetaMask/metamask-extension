@@ -21,29 +21,33 @@ const setup = (props: any) => {
 describe('NetworkListItem', () => {
   it('renders correctly with required props', () => {
     const { container } = setup({
-      item: {
-        rpcUrl: 'https://mainnet.infura.io/v3/YOUR_INFURA_KEY',
-        nickname: 'Ethereum Mainnet',
-        rpcPrefs: { imageUrl: '/images/mainnet.png' },
+      networkConfiguration: {
+        chainId: '0x1',
+        name: 'Ethereum Mainnet',
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [
+          {
+            name: 'Infura Mainnet',
+            url: 'https://mainnet.infura.io/v3/YOUR_INFURA_KEY',
+          },
+        ],
       },
-      index: 0,
-      rpcName: 'Infura Mainnet',
-      setSelectedNetwork: jest.fn(),
-      setActionMode: jest.fn(),
     });
     expect(container).toMatchSnapshot();
   });
   it('renders the network list item with correct data', () => {
     setup({
-      item: {
-        rpcUrl: 'https://mainnet.infura.io/v3/YOUR_INFURA_KEY',
-        nickname: 'Ethereum Mainnet',
-        rpcPrefs: { imageUrl: '/images/mainnet.png' },
+      networkConfiguration: {
+        chainId: '0x1',
+        name: 'Ethereum Mainnet',
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [
+          {
+            name: 'Infura Mainnet',
+            url: 'https://mainnet.infura.io/v3/YOUR_INFURA_KEY',
+          },
+        ],
       },
-      index: 0,
-      rpcName: 'Infura Mainnet',
-      setSelectedNetwork: jest.fn(),
-      setActionMode: jest.fn(),
     });
 
     expect(screen.getByText('Ethereum Mainnet')).toBeInTheDocument();
@@ -52,15 +56,17 @@ describe('NetworkListItem', () => {
 
   it('shows tooltip with rpcUrl on hover', () => {
     setup({
-      item: {
-        rpcUrl: 'https://mainnet.infura.io/v3/YOUR_INFURA_KEY',
-        nickname: 'Ethereum Mainnet',
-        rpcPrefs: { imageUrl: '/images/mainnet.png' },
+      networkConfiguration: {
+        chainId: '0x1',
+        name: 'Ethereum Mainnet',
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [
+          {
+            name: 'Infura Mainnet',
+            url: 'https://mainnet.infura.io/v3/YOUR_INFURA_KEY',
+          },
+        ],
       },
-      index: 0,
-      rpcName: 'Infura Mainnet',
-      setSelectedNetwork: jest.fn(),
-      setActionMode: jest.fn(),
     });
 
     fireEvent.mouseOver(screen.getByText('Infura Mainnet'));
