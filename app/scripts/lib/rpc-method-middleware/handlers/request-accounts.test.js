@@ -1,5 +1,5 @@
 import { ethErrors } from 'eth-rpc-errors';
-import { deferredPromise } from '../../util';
+import { deferredPromise, shouldEmitDappViewedEvent } from '../../util';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -59,6 +59,11 @@ const createMockedHandler = () => {
   const metamaskState = {
     permissionHistory: {},
     metaMetricsId: 'metaMetricsId',
+    accounts: {
+      '0x1': {},
+      '0x2': {},
+      '0x3': {},
+    },
   };
   const grantPermissions = jest.fn();
   const getNetworkConfigurationByNetworkClientId = jest.fn().mockReturnValue({
@@ -91,17 +96,18 @@ const createMockedHandler = () => {
 };
 
 describe('requestEthereumAccountsHandler', () => {
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-
   beforeEach(() => {
+    shouldEmitDappViewedEvent.mockReturnValue(true);
     MockEthAccountsAdapters.setEthAccounts.mockImplementation(
       (caveatValue) => caveatValue,
     );
     MockPermittedChainsAdapters.setPermittedEthChainIds.mockImplementation(
       (caveatValue) => caveatValue,
     );
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   it('checks if eth accounts from a CAIP-25 permission exist', async () => {
@@ -259,6 +265,25 @@ describe('requestEthereumAccountsHandler', () => {
       expect(getAccounts).toHaveBeenCalledTimes(2);
     });
 
-    it.todo('emits the dapp viewed metrics event');
+    it('emits the dapp viewed metrics event', async () => {
+      const { handler, getAccounts, sendMetrics } = createMockedHandler();
+      getAccounts
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce(['0xdead', '0xbeef']);
+
+      await handler(baseRequest);
+      expect(sendMetrics).toHaveBeenCalledWith({
+        category: 'inpage_provider',
+        event: 'Dapp Viewed',
+        properties: {
+          is_first_visit: true,
+          number_of_accounts: 3,
+          number_of_accounts_connected: 2,
+        },
+        referrer: {
+          url: 'http://test.com',
+        },
+      });
+    });
   });
 });

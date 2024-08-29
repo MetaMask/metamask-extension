@@ -275,4 +275,32 @@ describe('addEthereumChainHandler', () => {
       }),
     );
   });
+
+  it('should add result set to null to response object if the requested rpcUrl (and chainId) is currently selected', async () => {
+    const CURRENT_RPC_CONFIG = createMockNonInfuraConfiguration();
+    const { handler, mocks, response } = createMockedHandler();
+
+    mocks.getCurrentChainIdForDomain.mockReturnValue(
+      CURRENT_RPC_CONFIG.chainId,
+    );
+    mocks.findNetworkConfigurationBy.mockReturnValue(CURRENT_RPC_CONFIG);
+    mocks.getCurrentRpcUrl.mockReturnValue(CURRENT_RPC_CONFIG.rpcUrl);
+
+    await handler({
+      origin: 'example.com',
+      params: [
+        {
+          chainId: CURRENT_RPC_CONFIG.chainId,
+          chainName: 'Custom Network',
+          rpcUrls: [CURRENT_RPC_CONFIG.rpcUrl],
+          nativeCurrency: {
+            symbol: CURRENT_RPC_CONFIG.ticker,
+            decimals: 18,
+          },
+          blockExplorerUrls: ['https://custom.blockexplorer'],
+        },
+      ],
+    });
+    expect(response.result).toBeNull();
+  });
 });

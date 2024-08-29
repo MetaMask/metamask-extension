@@ -134,11 +134,11 @@ async function addEthereumChainHandler(
   } else {
     networkClientId = existingNetwork.id ?? existingNetwork.type;
     const currentRpcUrl = getCurrentRpcUrl();
-
     if (
       currentChainIdForDomain === chainId &&
       currentRpcUrl === firstValidRPCUrl
     ) {
+      res.result = null;
       return end();
     }
 

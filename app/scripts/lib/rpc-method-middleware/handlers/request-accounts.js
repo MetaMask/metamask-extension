@@ -86,7 +86,7 @@ async function requestEthereumAccountsHandler(
     return end();
   }
 
-  const ethAccounts = await getAccounts();
+  let ethAccounts = await getAccounts();
   if (ethAccounts.length > 0) {
     // We wait for the extension to unlock in this case only, because permission
     // requests are handled when the extension is unlocked, regardless of the
@@ -156,14 +156,14 @@ async function requestEthereumAccountsHandler(
     },
   });
 
-  const numberOfConnectedAccounts = ethAccounts.length;
+  ethAccounts = await getAccounts();
   // first time connection to dapp will lead to no log in the permissionHistory
   // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
   // we will leverage that to identify `is_first_visit` for metrics
-  const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
-    origin,
-  );
   if (shouldEmitDappViewedEvent(metamaskState.metaMetricsId)) {
+    const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
+      origin,
+    );
     sendMetrics({
       event: MetaMetricsEventName.DappViewed,
       category: MetaMetricsEventCategory.InpageProvider,
@@ -173,14 +173,14 @@ async function requestEthereumAccountsHandler(
       properties: {
         is_first_visit: isFirstVisit,
         number_of_accounts: Object.keys(metamaskState.accounts).length,
-        number_of_accounts_connected: numberOfConnectedAccounts,
+        number_of_accounts_connected: ethAccounts.length,
       },
     });
   }
 
   // We cannot derive ethAccounts directly from the CAIP-25 permission
   // because the accounts will not be in order of lastSelected
-  res.result = await getAccounts();
+  res.result = ethAccounts;
 
   return end();
 }

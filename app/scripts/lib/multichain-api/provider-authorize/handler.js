@@ -11,6 +11,11 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '../caip25permissions';
+import { shouldEmitDappViewedEvent } from '../../util';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
 import { assignAccountsToScopes, validateAndUpsertEip3085 } from './helpers';
 
 // TODO:
@@ -197,7 +202,28 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       },
     });
 
-    // TODO: metrics/tracking after approval
+    // TODO: Contact analytics team for how they would prefer to track this
+    // first time connection to dapp will lead to no log in the permissionHistory
+    // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
+    // we will leverage that to identify `is_first_visit` for metrics
+    if (shouldEmitDappViewedEvent(hooks.metamaskState.metaMetricsId)) {
+      const isFirstVisit = !Object.keys(
+        hooks.metamaskState.permissionHistory,
+      ).includes(origin);
+
+      hooks.sendMetrics({
+        event: MetaMetricsEventName.DappViewed,
+        category: MetaMetricsEventCategory.InpageProvider,
+        referrer: {
+          url: origin,
+        },
+        properties: {
+          is_first_visit: isFirstVisit,
+          number_of_accounts: Object.keys(hooks.metamaskState.accounts).length,
+          number_of_accounts_connected: legacyApproval.approvedAccounts.length,
+        },
+      });
+    }
 
     res.result = {
       sessionId,
