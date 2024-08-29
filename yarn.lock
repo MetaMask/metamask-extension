@@ -4910,6 +4910,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/base-controller@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@metamask/base-controller@npm:7.0.0"
+  dependencies:
+    "@metamask/utils": "npm:^9.1.0"
+    immer: "npm:^9.0.6"
+  checksum: 10/0ea307da4a7863224fd1fc83039165dbd06d2725922d4d4cf5854f5e7894e789a3c277f1e4592a38ae002de869217a26550f3b9687c259fc29153984dc5b4a4c
+  languageName: node
+  linkType: hard
+
 "@metamask/bitcoin-wallet-snap@npm:^0.5.0":
   version: 0.5.0
   resolution: "@metamask/bitcoin-wallet-snap@npm:0.5.0"
@@ -5952,11 +5962,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "@metamask/phishing-controller@npm:12.0.0"
+"@metamask/phishing-controller@npm:^12.0.1":
+  version: 12.0.1
+  resolution: "@metamask/phishing-controller@npm:12.0.1"
   dependencies:
-    "@metamask/base-controller": "npm:^6.0.3"
+    "@metamask/base-controller": "npm:^7.0.0"
     "@metamask/controller-utils": "npm:^11.1.0"
     "@noble/hashes": "npm:^1.4.0"
     "@types/punycode": "npm:^2.1.0"
@@ -5964,7 +5974,7 @@ __metadata:
     ethereum-cryptography: "npm:^2.1.2"
     fastest-levenshtein: "npm:^1.0.16"
     punycode: "npm:^2.1.1"
-  checksum: 10/1c164f8ae5bd20a48f451f3e62bfbd7936c1ddad9265e255a918aa12ffee29cf00d05224bc77909726d5a7fae7d9a5b92cf7e7809c850ec14d8adbed3d2c231b
+  checksum: 10/3f7c69434a783251657f333495fbee1cb8a02ffb731cf430fcd21812482bf1237948c498db74b55fb4e1e6976d71932f4b11c39a26f9e367ffd26a69efa2583e
   languageName: node
   linkType: hard
 
@@ -26516,7 +26526,7 @@ __metadata:
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^10.0.0"
     "@metamask/permission-log-controller": "npm:^2.0.1"
-    "@metamask/phishing-controller": "npm:^12.0.0"
+    "@metamask/phishing-controller": "npm:^12.0.1"
     "@metamask/phishing-warning": "npm:^3.0.3"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "patch:@metamask/ppom-validator@npm%3A0.32.0#~/.yarn/patches/@metamask-ppom-validator-npm-0.32.0-f677deea54.patch"
