@@ -62,10 +62,10 @@ const PrepareBridgePage = () => {
     fromChain?.chainId,
   );
   const toTokenListGenerator = useTokensWithFiltering(
-    toTokens ?? fromTokens,
-    toTopAssets ?? fromTopAssets,
+    toTokens, // ?? fromTokens,
+    toTopAssets, // ?? fromTopAssets,
     TokenBucketPriority.top,
-    toChain?.chainId ?? fromChain?.chainId,
+    toChain?.chainId, // ?? fromChain?.chainId,
   );
 
   return (
@@ -119,6 +119,16 @@ const PrepareBridgePage = () => {
                       .networkClientId
                   : undefined;
               toChainClientId && dispatch(setActiveNetwork(toChainClientId));
+              // toChain?.rpcEndpoints &&
+              //   toChain?.defaultRpcEndpointIndex &&
+              //   toChain.rpcEndpoints[toChain.defaultRpcEndpointIndex]
+              //     .networkClientId &&
+              //   dispatch(
+              //     setActiveNetwork(
+              //       toChain.rpcEndpoints[toChain.defaultRpcEndpointIndex]
+              //         .networkClientId,
+              //     ),
+              //   );
               dispatch(switchToAndFromTokens({ fromChain }));
             }}
           />
