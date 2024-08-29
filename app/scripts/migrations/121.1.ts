@@ -10,7 +10,8 @@ type VersionedData = {
 export const version = 121.1;
 
 /**
- * This migration removes depreciated `Txcontroller` key if it is present in state.
+ * Fix AccountsController state corruption, where the `selectedAccount` state is set to an invalid
+ * ID.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
  * what we persist to dist.
