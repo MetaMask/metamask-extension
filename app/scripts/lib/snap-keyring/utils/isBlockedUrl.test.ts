@@ -15,7 +15,10 @@ describe('isBlockedUrl', () => {
     state: {
       phishingLists: [
         {
-          blocklist: ['metamask.test'],
+          blocklist: [
+            'metamask.test',
+            'QmYwAPJzv5CZsnAzt8auVTL6aKqgfZY5vHBYdbyz4ySxTm',
+          ],
           allowlist: [],
           fuzzylist: [],
           tolerance: 0,
@@ -36,6 +39,7 @@ describe('isBlockedUrl', () => {
     ['https://metamask.io', false],
     ['https://metamask.test', true],
     ['sftp://metamask.io', true],
+    ['ipfs://QmYwAPJzv5CZsnAzt8auVTL6aKqgfZY5vHBYdbyz4ySxTm', true],
     ['', true],
     ['1', true],
     [undefined, true],
