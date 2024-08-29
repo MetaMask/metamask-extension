@@ -40,6 +40,7 @@ describe('isBlockedUrl', () => {
     ['https://metamask.test', true],
     ['sftp://metamask.io', true],
     ['ipfs://QmYwAPJzv5CZsnAzt8auVTL6aKqgfZY5vHBYdbyz4ySxTm', true],
+    ['ipfs://QmVtYj4FR5DiA3tB3vWBJGxVZPps6dVcQ9rJ5tDbkSZTYE', false],
     ['', true],
     ['1', true],
     [undefined, true],
