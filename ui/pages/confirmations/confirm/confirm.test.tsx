@@ -24,6 +24,11 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+jest.mock(
+  '../../../components/app/currency-input/hooks/useTokenExchangeRate',
+  () => '1',
+);
+
 const middleware = [thunk];
 
 describe('Confirm', () => {
