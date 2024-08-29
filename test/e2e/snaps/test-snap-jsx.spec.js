@@ -79,7 +79,7 @@ describe('Test Snap JSX', function () {
         // check for count zero
         await driver.waitForSelector({
           text: '0',
-          tag: 'b',
+          tag: 'p',
         });
 
         // click increment twice
@@ -88,7 +88,7 @@ describe('Test Snap JSX', function () {
         // wait for count to be 1
         await driver.waitForSelector({
           text: '1',
-          tag: 'b',
+          tag: 'p',
         });
       },
     );
