@@ -35,16 +35,17 @@ Sorts tokenList by query match, balance/popularity, all other tokens
 export const useTokensWithFiltering = (
   tokenList: Record<string, SwapsTokenObject>,
   topTokens: { address: string }[],
-  chainId: ChainId | Hex,
   sortOrder: TokenBucketPriority = TokenBucketPriority.owned,
+  chainId?: ChainId | Hex,
 ) => {
   // Only inlucdes non-native tokens
   const allDetectedTokens = useSelector(getAllTokens);
   const { address: selectedAddress, balance: balanceOnActiveChain } =
     useSelector(getSelectedInternalAccountWithBalance);
 
-  const allDetectedTokensForChainAndAddress =
-    allDetectedTokens?.[chainId]?.[selectedAddress] ?? [];
+  const allDetectedTokensForChainAndAddress = chainId
+    ? allDetectedTokens?.[chainId]?.[selectedAddress] ?? []
+    : [];
 
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -77,7 +78,7 @@ export const useTokensWithFiltering = (
         | AssetWithDisplayData<NativeAsset>
         | AssetWithDisplayData<ERC20Asset>
         | undefined => {
-        if (shouldAddToken(token.symbol, token.address)) {
+        if (shouldAddToken(token.symbol, token.address) && chainId) {
           return getRenderableTokenData(
             {
               ...token,

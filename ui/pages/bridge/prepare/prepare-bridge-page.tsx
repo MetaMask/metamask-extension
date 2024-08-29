@@ -58,14 +58,16 @@ const PrepareBridgePage = () => {
   const fromTokenListGenerator = useTokensWithFiltering(
     fromTokens,
     fromTopAssets,
-    fromChain?.chainId,
+
     TokenBucketPriority.owned,
+    fromChain?.chainId,
   );
   const toTokenListGenerator = useTokensWithFiltering(
-    toTokens ?? fromTokens,
-    toTopAssets ?? fromTopAssets,
-    toChain?.chainId ?? fromChain?.chainId,
+    toTokens, // ?? fromTokens,
+    toTopAssets, // ?? fromTopAssets,
+
     TokenBucketPriority.top,
+    toChain?.chainId, // ?? fromChain?.chainId,
   );
 
   return (
