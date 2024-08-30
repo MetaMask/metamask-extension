@@ -72,7 +72,7 @@ async function getAllInfuraJsonRpcRequests(
     );
 
     for (const r of seenProviderRequests) {
-      const json = await r.body.getJson();
+      const json = (await r.body.getJson()) as JsonRpcRequest | undefined;
       if (json !== undefined) {
         allInfuraJsonRpcRequests.push(json);
       }
