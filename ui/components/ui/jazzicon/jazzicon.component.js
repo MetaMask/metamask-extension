@@ -11,7 +11,7 @@ import iconFactoryGenerator, {
 // Therefore we choose to use a byte array as the seed for multichain addresses.
 // This works since the underlying Mersenne Twister PRNG can be seeded with an array as well.
 function generateSeed(address) {
-  return Array.from(stringToBytes(address));
+  return Array.from(stringToBytes(address.normalize('NFKC')));
 }
 
 const ethereumIconFactory = iconFactoryGenerator(jazzicon);

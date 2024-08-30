@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { parseCaipAccountId } from '@metamask/utils';
+import { CaipAccountId, parseCaipAccountId } from '@metamask/utils';
 import { Box, Text } from '../../../component-library';
 import {
   AlignItems,
@@ -9,6 +9,7 @@ import {
 import BlockieIdenticon from '../../../ui/identicon/blockieIdenticon';
 import Jazzicon from '../../../ui/jazzicon';
 import { getUseBlockie } from '../../../../selectors';
+import { shortenAddress } from '../../../../helpers/utils/util';
 
 export type SnapUIAddressProps = {
   // The address must be a CAIP-10 string.
@@ -16,8 +17,8 @@ export type SnapUIAddressProps = {
   diameter?: number;
 };
 
-export const SnapUIAddress = ({ address, diameter = 32 }) => {
-  const parsed = useMemo(() => parseCaipAccountId(address), [address]);
+export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({ address, diameter = 32 }) => {
+  const parsed = useMemo(() => parseCaipAccountId(address as CaipAccountId), [address]);
   const useBlockie = useSelector(getUseBlockie);
 
   return (
@@ -36,7 +37,7 @@ export const SnapUIAddress = ({ address, diameter = 32 }) => {
           style={{ display: 'flex' }}
         />
       )}
-      <Text>{parsed.address}</Text>
+      <Text>{shortenAddress(parsed.address)}</Text>
     </Box>
   );
 };
