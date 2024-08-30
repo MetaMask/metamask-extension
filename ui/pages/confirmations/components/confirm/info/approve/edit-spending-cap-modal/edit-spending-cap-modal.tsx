@@ -116,6 +116,7 @@ export const EditSpendingCapModal = ({
                 : customSpendingCap
             } ${tokenSymbol}`}
             style={{ width: '100%' }}
+            inputProps={{ 'data-testid': 'custom-spending-cap-input' }}
           />
           <Text
             variant={TextVariant.bodySm}

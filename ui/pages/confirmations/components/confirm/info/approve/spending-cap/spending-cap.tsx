@@ -50,7 +50,8 @@ const SpendingCapGroup = ({
             } ${tokenSymbol}`
       }
       onEditClick={() => setIsOpenEditSpendingCapModal(true)}
-      editIconClassName="edit-spending-cap-icon"
+      editIconClassName="edit-spending-cap-btn"
+      editIconDataTestId="edit-spending-cap-icon"
     />
   );
 

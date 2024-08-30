@@ -1,12 +1,8 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
-import { WINDOW_TITLES } from '../../../helpers';
+import { veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
-import {
-  confirmApproveTransaction,
-  createERC20ApproveTransaction,
-  importTST,
-} from './erc20-approve-redesign.spec';
+import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import { openDAppWithContract, TestSuiteArguments } from './shared';
 
 const {
@@ -20,8 +16,8 @@ const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 describe('Confirmation Redesign ERC20 Increase Allowance', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
-  describe.only('Submit an increase allowance transaction @no-mmi', function () {
-    it.only('Sends a type 0 transaction (Legacy)', async function () {
+  describe('Submit an increase allowance transaction @no-mmi', function () {
+    it('Sends a type 0 transaction (Legacy)', async function () {
       await withFixtures(
         {
           dapp: true,
@@ -42,13 +38,14 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
-          await createERC20ApproveTransaction(driver);
-
-          await confirmApproveTransaction(driver);
-
           await createERC20IncreaseAllowanceTransaction(driver);
 
-          await driver.delay(1024 ** 2);
+          const NEW_SPENDING_CAP = '3';
+          await editSpendingCap(driver, NEW_SPENDING_CAP);
+
+          await scrollAndConfirmAndAssertConfirm(driver);
+
+          await assertChangedSpendingCap(driver, NEW_SPENDING_CAP);
         },
       );
     });
@@ -74,13 +71,14 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
-          await createERC20ApproveTransaction(driver);
-
-          await confirmApproveTransaction(driver);
-
           await createERC20IncreaseAllowanceTransaction(driver);
 
-          await driver.delay(1024 ** 2);
+          const NEW_SPENDING_CAP = '3';
+          await editSpendingCap(driver, NEW_SPENDING_CAP);
+
+          await scrollAndConfirmAndAssertConfirm(driver);
+
+          await assertChangedSpendingCap(driver, NEW_SPENDING_CAP);
         },
       );
     });
@@ -143,4 +141,38 @@ async function mocks(server: MockttpServer) {
 async function createERC20IncreaseAllowanceTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#increaseTokenAllowance');
+}
+
+async function editSpendingCap(driver: Driver, newSpendingCap: string) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.clickElement('[data-testid="edit-spending-cap-icon"');
+
+  await driver.fill(
+    '[data-testid="custom-spending-cap-input"]',
+    newSpendingCap,
+  );
+
+  await driver.clickElement({ text: 'Save', tag: 'button' });
+}
+
+async function assertChangedSpendingCap(
+  driver: Driver,
+  newSpendingCap: string,
+) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+
+  await driver.clickElement({ text: 'Activity', tag: 'button' });
+
+  await driver.delay(veryLargeDelayMs);
+
+  await driver.clickElement(
+    '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+  );
+
+  await driver.waitForSelector({
+    text: `${newSpendingCap} TST`,
+    tag: 'span',
+  });
+
+  await driver.waitForSelector({ text: 'Confirmed', tag: 'div' });
 }
