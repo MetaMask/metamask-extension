@@ -1,18 +1,16 @@
 import EventEmitter from 'events';
 import log from 'loglevel';
 import {
-  DecryptMessageManager,
-  DecryptMessageParams,
-  DecryptMessageParamsMetamask,
-} from '@metamask/message-manager';
-import {
   AbstractMessage,
   AbstractMessageManager,
   AbstractMessageParams,
   AbstractMessageParamsMetamask,
   MessageManagerState,
   OriginalRequest,
-} from '@metamask/message-manager/dist/AbstractMessageManager';
+  DecryptMessageManager,
+  DecryptMessageParams,
+  DecryptMessageParamsMetamask,
+} from '@metamask/message-manager';
 import {
   BaseController,
   RestrictedControllerMessenger,
