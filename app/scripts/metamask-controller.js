@@ -2146,7 +2146,6 @@ export default class MetamaskController extends EventEmitter {
       version,
       // account mgmt
       getAccounts: async ({ origin: innerOrigin }) => {
-        // what?..
         if (innerOrigin === ORIGIN_METAMASK) {
           const selectedAddress =
             this.accountsController.getSelectedAccount().address;
