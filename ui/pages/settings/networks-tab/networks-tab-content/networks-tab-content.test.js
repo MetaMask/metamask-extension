@@ -3,18 +3,13 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { defaultNetworksData } from '../networks-tab.constants';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import NetworksTabContent from '.';
 
 const mockState = {
   metamask: {
-    providerConfig: {
-      chainId: '0x539',
-      nickname: '',
-      rpcPrefs: {},
-      rpcUrl: 'http://localhost:8545',
-      ticker: 'ETH',
-      type: 'localhost',
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.LOCALHOST }),
     orderedNetworkList: {
       chainId: '0x539',
       rpcUrl: 'http://localhost:8545',

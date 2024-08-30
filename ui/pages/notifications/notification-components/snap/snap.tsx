@@ -57,6 +57,7 @@ export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
   return (
     <NotificationListItemSnap
       id={snapNotification.id}
+      snapId={snapNotification.data.origin}
       isRead={snapNotification.isRead}
       createdAt={new Date(snapNotification.createdAt)}
       title={{
