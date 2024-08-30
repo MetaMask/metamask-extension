@@ -291,7 +291,7 @@ export const AccountListMenu = ({
               <CreateBtcAccount
                 defaultAccountName="Bitcoin Account"
                 network={MultichainNetworks.BITCOIN}
-                onActionComplete={(confirmed) => {
+                onActionComplete={async (confirmed) => {
                   if (confirmed) {
                     onClose();
                   } else {
@@ -312,7 +312,7 @@ export const AccountListMenu = ({
               <CreateBtcAccount
                 defaultAccountName="Bitcoin Testnet Account"
                 network={MultichainNetworks.BITCOIN_TESTNET}
-                onActionComplete={(confirmed) => {
+                onActionComplete={async (confirmed) => {
                   if (confirmed) {
                     onClose();
                   } else {
