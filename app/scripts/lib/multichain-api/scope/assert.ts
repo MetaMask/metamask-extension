@@ -7,64 +7,6 @@ import {
 } from './supported';
 import { ScopeObject, ScopesObject } from './scope';
 
-// export const assertScopeValid = (
-//   scopeString: Scope,
-//   scopeObject: ScopeObject,
-// ) => {
-//   const { namespace, reference } = parseScopeString(scopeString);
-
-//   if (!namespace && !reference) {
-//     throw new Error('Invalid scopeString') ;
-//   }
-
-//   const {
-//     scopes,
-//     methods,
-//     notifications,
-//     accounts,
-//     rpcDocuments,
-//     rpcEndpoints,
-//     ...restScopeObject
-//   } = scopeObject;
-
-//   if (!methods || !notifications) {
-//     throw new Error('Missing expected properties on scopeObject') ;
-//   }
-
-//   // These assume that the namespace has a notion of chainIds
-//   if (reference && scopes && scopes.length > 0) {
-//     throw new EthereumRpcError(5204, 'ChainId defined in two different scopes');
-//   }
-//   if (namespace && scopes) {
-//     const areScopesValid = scopes.every((scope) => {
-//       return parseCaipChainId(scope).namespace === namespace;
-//     });
-
-//     if(!areScopesValid) {
-//       throw new EthereumRpcError(5203, 'Scope/chain mismatch');
-//     }
-//   }
-
-//   const areMethodsValid = methods.every(
-//     (method) => typeof method === 'string' && method !== '',
-//   );
-//   if (!areMethodsValid) {
-//     throw new Error('Expected methods to be non-empty strings')
-//   }
-
-//   const areNotificationsValid = notifications.every(
-//     (notification) => typeof notification === 'string' && notification !== '',
-//   );
-//   if (!areNotificationsValid) {
-//     throw new Error('Expected notifications to be non-empty strings')
-//   }
-
-//   // unexpected properties found on scopeObject
-//   if (Object.keys(restScopeObject).length !== 0) {
-//     throw new Error('Unexpected properties properties on scopeObject')
-//   }
-// };
-
 export const assertScopeSupported = (
   scopeString: string,
   scopeObject: ScopeObject,
