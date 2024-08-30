@@ -110,7 +110,7 @@ describe('requestEthereumAccountsHandler', () => {
     jest.resetAllMocks();
   });
 
-  it('checks if eth accounts from a CAIP-25 permission exist', async () => {
+  it('checks if there are any eip155 accounts permissioned', async () => {
     const { handler, getAccounts } = createMockedHandler();
 
     await handler(baseRequest);
