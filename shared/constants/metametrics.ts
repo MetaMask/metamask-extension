@@ -705,9 +705,10 @@ export enum MetaMetricsEventName {
   TurnOffMetaMetrics = 'MetaMetrics Turned Off',
   // Notifications
   NotificationReceived = 'Notification Received',
-  NotificationsSettingsUpdated = 'Notifications Settings Updated',
   NotificationClicked = 'Notification Clicked',
   NotificationMenuOpened = 'Notification Menu Opened',
+  NotificationsSettingsUpdated = 'Notifications Settings Updated',
+  NotificationsActivated = 'Notifications Activated',
 
   // Send
   sendAssetSelected = 'Send Asset Selected',
@@ -755,6 +756,7 @@ export enum MetaMetricsEventCategory {
   Network = 'Network',
   Onboarding = 'Onboarding',
   NotificationInteraction = 'Notification Interaction',
+  NotificationsActivationFlow = 'Notifications Activation Flow',
   NotificationSettings = 'Notification Settings',
   Petnames = 'Petnames',
   Phishing = 'Phishing',
