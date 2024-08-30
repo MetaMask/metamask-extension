@@ -30,7 +30,7 @@ describe('Test Snap Interactive UI', function () {
 
         // switch to metamask extension and click connect
         await switchToNotificationWindow(driver);
-        await driver.clickElement({
+        await driver.clickElementAndWaitToDisappear({
           text: 'Connect',
           tag: 'button',
         });
