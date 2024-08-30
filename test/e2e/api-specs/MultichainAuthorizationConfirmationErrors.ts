@@ -75,7 +75,7 @@ export class MultichainAuthorizationConfirmationErrors implements Rule {
     if (isMethodAllowed) {
       if (method.errors) {
         method.errors.forEach((err) => {
-          const unsupportedErrorCodes = [5000, 5203, 5204, 5300, 5301];
+          const unsupportedErrorCodes = [5000, 5300, 5301];
           const error = err as ErrorObject;
           if (unsupportedErrorCodes.includes(error.code)) {
             return;
