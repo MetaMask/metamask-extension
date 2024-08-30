@@ -1,6 +1,6 @@
 import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Name from '../../../../../../../components/app/name';
 import { Box, Text } from '../../../../../../../components/component-library';
@@ -31,11 +31,21 @@ export const ApproveStaticSimulation = () => {
     currentConfirmationSelector,
   ) as TransactionMeta;
 
-  const { decimals } = useAssetDetails(
+  const { decimals: initialDecimals } = useAssetDetails(
     transactionMeta.txParams.to,
     transactionMeta.txParams.from,
     transactionMeta.txParams.data,
   );
+
+  // decimals are sometimes undefined for a split second, so we need to ensure
+  // the spending cap is recalculated when the value updates
+  const [decimals, setDecimals] = useState(initialDecimals || '0');
+
+  useEffect(() => {
+    if (initialDecimals && initialDecimals !== decimals) {
+      setDecimals(initialDecimals);
+    }
+  }, [initialDecimals, decimals]);
 
   const { spendingCap, formattedSpendingCap, value, pending } =
     useApproveTokenSimulation(transactionMeta, decimals || '0');

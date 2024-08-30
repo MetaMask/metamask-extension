@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { useIsNFT } from './use-is-nft';
+import { useMemo } from 'react';
 
 export const UNLIMITED_MSG = 'UNLIMITED MESSAGE';
 
@@ -18,30 +19,32 @@ export const useApproveTokenSimulation = (
   decimals: string,
 ) => {
   const locale = useSelector(getIntlLocale);
-
   const { isNFT, pending: isNFTPending } = useIsNFT(transactionMeta);
-
   const decodedResponse = useDecodedTransactionData();
-
   const { value, pending } = decodedResponse;
 
-  const decodedSpendingCap = value
-    ? new BigNumber(value.data[0].params[1].value)
-        .dividedBy(new BigNumber(10).pow(Number(decimals)))
-        .toNumber()
-    : 0;
+  const decodedSpendingCap = useMemo(() => {
+    return value
+      ? new BigNumber(value.data[0].params[1].value)
+          .dividedBy(new BigNumber(10).pow(Number(decimals)))
+          .toNumber()
+      : 0;
+  }, [value, decimals]);
 
-  const tokenPrefix = isNFT ? '#' : '';
-  const formattedSpendingCap = isNFT
-    ? decodedSpendingCap
-    : new Intl.NumberFormat(locale).format(decodedSpendingCap);
+  const formattedSpendingCap = useMemo(() => {
+    return isNFT
+      ? decodedSpendingCap
+      : new Intl.NumberFormat(locale).format(decodedSpendingCap);
+  }, [decodedSpendingCap, isNFT, locale]);
 
-  let spendingCap;
-  if (!isNFT && isSpendingCapUnlimited(decodedSpendingCap)) {
-    spendingCap = UNLIMITED_MSG;
-  } else {
-    spendingCap = `${tokenPrefix}${formattedSpendingCap}`;
-  }
+  const spendingCap = useMemo(() => {
+    if (!isNFT && isSpendingCapUnlimited(decodedSpendingCap)) {
+      return UNLIMITED_MSG;
+    } else {
+      const tokenPrefix = isNFT ? '#' : '';
+      return `${tokenPrefix}${formattedSpendingCap}`;
+    }
+  }, [decodedSpendingCap, formattedSpendingCap, isNFT]);
 
   return {
     spendingCap,
