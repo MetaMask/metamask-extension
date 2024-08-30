@@ -14,14 +14,13 @@ export async function providerRequestHandler(
 ) {
   const { scope, request: wrappedRequest } = request.params;
 
-  // maybe pull this stuff out into permission middleware
   const caveat = hooks.getCaveat(
     request.origin,
     Caip25EndowmentPermissionName,
     Caip25CaveatType,
   );
   if (!caveat?.value.isMultichainOrigin) {
-    return end(new Error('missing CAIP-25 endowment'));
+    return end(new Error('missing CAIP-25 endowment')); // TODO: update these errors
   }
 
   const scopeObject = mergeScopes(
