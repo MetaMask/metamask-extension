@@ -37,24 +37,23 @@ export function useMMICustodySendTransaction() {
       const closeNotification = false;
 
       await dispatch(updateAndApproveTx(confirmation, true, ''));
-        showCustodianDeepLink({
-          dispatch,
-          mmiActions,
-          txId,
-          fromAddress,
-          closeNotification,
-          isSignature: false,
-          custodyId: '',
-          onDeepLinkFetched: () => undefined,
-          onDeepLinkShown: () => {
-            dispatch(clearConfirmTransaction());
-          },
-          showCustodyConfirmLink,
-        });
-
+      showCustodianDeepLink({
+        dispatch,
+        mmiActions,
+        txId,
+        fromAddress,
+        closeNotification,
+        isSignature: false,
+        custodyId: '',
+        onDeepLinkFetched: () => undefined,
+        onDeepLinkShown: () => {
+          dispatch(clearConfirmTransaction());
+        },
+        showCustodyConfirmLink,
+      });
     } else {
       // Non Custody accounts follow normal flow
-      await dispatch(updateAndApproveTx(_transactionData, true, ''))
+      await dispatch(updateAndApproveTx(_transactionData, true, ''));
       dispatch(clearConfirmTransaction());
       history.push(mostRecentOverviewPage);
     }

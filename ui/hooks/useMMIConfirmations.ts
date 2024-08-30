@@ -1,4 +1,7 @@
-import { TransactionMeta, TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 
 import { currentConfirmationSelector } from '../pages/confirmations/selectors';
@@ -18,6 +21,7 @@ export function useMMIConfirmations() {
         currentConfirmation.type === TransactionType.signTypedData) &&
       Boolean(currentConfirmation?.custodyId),
     mmiOnSignCallback: () => custodySignFn(currentConfirmation),
-    mmiOnTransactionCallback: () => custodyTransactionFn(currentConfirmation as TransactionMeta),
+    mmiOnTransactionCallback: () =>
+      custodyTransactionFn(currentConfirmation as TransactionMeta),
   };
 }

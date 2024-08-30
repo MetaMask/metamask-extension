@@ -22,7 +22,9 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   updateAndApproveTx,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../../store/actions';
 import { confirmSelector } from '../../../selectors';
 import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
@@ -135,6 +137,7 @@ const Footer = () => {
       (type) => type === currentConfirmation?.type,
     );
     if (isTransactionConfirmation) {
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       const mergeTxDataWithNonce = (transactionData: TransactionMeta) =>
         customNonceValue
           ? { ...transactionData, customNonceValue }
@@ -143,6 +146,7 @@ const Footer = () => {
       const updatedTx = mergeTxDataWithNonce(
         currentConfirmation as TransactionMeta,
       );
+      ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       mmiOnTransactionCallback();
