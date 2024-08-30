@@ -9,7 +9,6 @@ import {
   KnownCaipNamespace,
 } from './scope';
 
-// Make this an assert
 export const isValidScope = (
   scopeString: Scope,
   scopeObject: ScopeObject,
@@ -36,13 +35,6 @@ export const isValidScope = (
 
   // These assume that the namespace has a notion of chainIds
   if (reference && scopes && scopes.length > 0) {
-    // TODO: Probably requires refactoring this helper a bit
-    // When a badly-formed request includes a chainId mismatched to scope
-    //   code = 5203
-    //   message = "Scope/chain mismatch"
-    // When a badly-formed request defines one chainId two ways
-    //  code = 5204
-    //  message = "ChainId defined in two different scopes"
     return false;
   }
   if (namespace && scopes) {
@@ -50,7 +42,6 @@ export const isValidScope = (
       try {
         return parseCaipChainId(scope).namespace === namespace;
       } catch (e) {
-        // parsing caipChainId failed
         console.log(e);
         return false;
       }
