@@ -6,7 +6,6 @@ on:
   pull_request:
     branches:
       - merge-queue
-  merge_group:
 
 jobs:
   sonarcloud:

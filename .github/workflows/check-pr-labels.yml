@@ -3,7 +3,7 @@ name: Check PR has required labels
 on:
   pull_request:
     branches:
-      - merge-queue
+      - merge-queue-test
     types:
       - opened
       - reopened
