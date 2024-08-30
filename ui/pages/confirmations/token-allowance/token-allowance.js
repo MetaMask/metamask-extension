@@ -296,7 +296,6 @@ export default function TokenAllowance({
     }
 
     if (customSpendingCap) {
-      console.log('customSpendingCap', customSpendingCap);
       fullTxData.customTokenAmount = customSpendingCap;
       fullTxData.finalApprovalAmount = customSpendingCap;
     } else if (dappProposedTokenAmount !== undefined) {

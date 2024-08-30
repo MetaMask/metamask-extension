@@ -28,14 +28,22 @@ const ApproveInfo = () => {
     useState(false);
   const [customSpendingCap, _setCustomSpendingCap] = useState('');
 
+  const { decimals } = useAssetDetails(
+    transactionMeta.txParams.to,
+    transactionMeta.txParams.from,
+    transactionMeta.txParams.data,
+  );
+
   const setCustomSpendingCap = (newValue: string) => {
-    if (newValue === '') {
-      delete transactionMeta.customTokenAmount;
-      delete transactionMeta.finalApprovalAmount;
-    } else {
-      transactionMeta.customTokenAmount = newValue;
-      transactionMeta.finalApprovalAmount = newValue;
-    }
+    const customTxParamsData = getCustomTxParamsData(
+      transactionMeta.txParams.data,
+      {
+        customPermissionAmount: newValue,
+        decimals,
+      },
+    );
+
+    transactionMeta.txParams.data = customTxParamsData;
 
     _setCustomSpendingCap(newValue);
     dispatch(updateCurrentConfirmation(transactionMeta));
