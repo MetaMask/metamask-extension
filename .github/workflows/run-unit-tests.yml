@@ -52,7 +52,6 @@ jobs:
           path: coverage/coverage-webpack.json
 
   report-coverage:
-    name: Report unit test coverage
     runs-on: ubuntu-latest
     needs:
       - test-unit
