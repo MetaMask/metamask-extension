@@ -88,7 +88,7 @@ export function NotificationsSettingsAllowNotifications({
         event: MetaMetricsEventName.NotificationsSettingsUpdated,
         properties: {
           setting_type: 'notifications',
-          is_profile_syncing_enabled: isProfileSyncingEnabled,
+          was_profile_syncing_on: isProfileSyncingEnabled,
           old_value: true,
           new_value: false,
         },
@@ -100,7 +100,7 @@ export function NotificationsSettingsAllowNotifications({
         event: MetaMetricsEventName.NotificationsSettingsUpdated,
         properties: {
           setting_type: 'notifications',
-          is_profile_syncing_enabled: isProfileSyncingEnabled,
+          was_profile_syncing_on: isProfileSyncingEnabled,
           old_value: false,
           new_value: true,
         },
