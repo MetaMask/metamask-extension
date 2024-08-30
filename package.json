@@ -680,7 +680,7 @@
   },
   "engines": {
     "node": ">= 20",
-    "yarn": "^4.2.2"
+    "yarn": "^4.4.1"
   },
   "lavamoat": {
     "allowScripts": {
@@ -758,5 +758,5 @@
       "resolve-url-loader>es6-iterator>d>es5-ext>esniff>es5-ext": false
     }
   },
-  "packageManager": "yarn@4.2.2"
+  "packageManager": "yarn@4.4.1"
 }
