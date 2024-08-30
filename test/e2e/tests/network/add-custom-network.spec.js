@@ -111,15 +111,6 @@ const selectors = {
   errorContainer: '.settings-tab__error',
 };
 
-async function navigateToAddNetwork(driver) {
-  await openMenuSafe(driver);
-
-  await driver.clickElement(selectors.settingsOption);
-  await driver.clickElement(selectors.networkOption);
-  await driver.clickElement(selectors.addNetwork);
-  await driver.clickElement(selectors.addNetworkManually);
-}
-
 const inputData = {
   networkName: 'Collision network',
   rpcUrl: 'https://responsive-rpc.test/',
