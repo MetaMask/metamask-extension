@@ -10,7 +10,6 @@ on:
       - reopened
       - synchronize
       - ready_for_review
-  merge_group:
 
 jobs:
   check-attributions:

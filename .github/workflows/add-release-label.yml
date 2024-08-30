@@ -6,7 +6,6 @@ on:
       - merge-queue
     types:
       - closed
-  merge_group:
 
 jobs:
   add-release-label:
