@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 121.3;
+export const version = 127;
 
 /**
  * This migration removes invalid state from the NftController

@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { migrate, version } from './121.3';
+import { migrate, version } from './127';
 
 const sentryCaptureExceptionMock = jest.fn();
 
@@ -7,7 +7,7 @@ global.sentry = {
   captureException: sentryCaptureExceptionMock,
 };
 
-const oldVersion = 121.2;
+const oldVersion = 126;
 
 describe(`migration #${version}`, () => {
   afterEach(() => {
