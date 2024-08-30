@@ -39,16 +39,18 @@ const setEthAccountsForScopesObject = (
   Object.entries(scopesObject).forEach(([scopeString, scopeObject]) => {
     const { namespace } = parseScopeString(scopeString);
 
+    if (namespace !== KnownCaipNamespace.Eip155) {
+      updatedScopesObject[scopeString] = scopeObject;
+      return;
+    }
+
     const caipAccounts = accounts.map(
       (account) => `${scopeString}:${account}` as CaipAccountId,
     );
 
     updatedScopesObject[scopeString] = {
       ...scopeObject,
-      accounts:
-        namespace === KnownCaipNamespace.Eip155
-          ? caipAccounts
-          : scopeObject.accounts,
+      accounts: caipAccounts,
     };
   });
 
