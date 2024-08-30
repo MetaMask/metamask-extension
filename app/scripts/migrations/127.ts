@@ -187,7 +187,7 @@ function transformState(state: Record<string, unknown>) {
       return state;
     }
 
-    let basePermission = {};
+    let basePermission;
 
     let ethAccounts: string[] = [];
     if (
