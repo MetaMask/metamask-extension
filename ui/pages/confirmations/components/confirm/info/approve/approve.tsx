@@ -29,9 +29,9 @@ const ApproveInfo = () => {
   const [customSpendingCap, _setCustomSpendingCap] = useState('');
 
   const { decimals } = useAssetDetails(
-    transactionMeta.txParams.to,
-    transactionMeta.txParams.from,
-    transactionMeta.txParams.data,
+    transactionMeta.txParams?.to,
+    transactionMeta.txParams?.from,
+    transactionMeta.txParams?.data,
   );
 
   const setCustomSpendingCap = (newValue: string) => {
