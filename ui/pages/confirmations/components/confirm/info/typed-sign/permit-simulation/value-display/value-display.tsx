@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { NameType } from '@metamask/name-controller';
+import { captureException } from '@sentry/browser';
 import { getTokenStandardAndDetails } from '../../../../../../../../store/actions';
 import { shortenString } from '../../../../../../../../helpers/utils/util';
 
@@ -35,9 +36,10 @@ const getTokenDecimals = async (tokenContract: string) => {
 };
 
 const PermitSimulationValueDisplay: React.FC<{
+  primaryType?: string;
   tokenContract: string;
   value: number | string;
-}> = ({ tokenContract, value }) => {
+}> = ({ primaryType, tokenContract, value }) => {
   const exchangeRate = useTokenExchangeRate(tokenContract);
 
   const { value: tokenDecimals } = useAsyncResult(
@@ -65,6 +67,12 @@ const PermitSimulationValueDisplay: React.FC<{
       tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', tokenAmount),
     };
   }, [tokenDecimals, value]);
+
+  /** Temporary error capturing as we are building out Permit Simulations */
+  if(!tokenContract) {
+    captureException(new Error(`PermitSimulationValueDisplay: Token contract address is missing where primaryType === ${primaryType}`));
+    return null;
+  }
 
   return (
     <Box>
