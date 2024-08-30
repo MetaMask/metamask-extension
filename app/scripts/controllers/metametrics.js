@@ -478,7 +478,13 @@ export default class MetaMetricsController {
 
   setDataCollectionForMarketing(dataCollectionForMarketing) {
     const { metaMetricsId } = this.state;
+
     this.store.updateState({ dataCollectionForMarketing });
+
+    if (!dataCollectionForMarketing) {
+      this.setMarketingCampaignCookieId(null);
+    }
+
     return metaMetricsId;
   }
 

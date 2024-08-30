@@ -14,6 +14,11 @@ import {
   isDetectedCookieMarketingSite,
 } from './streams/cookie-handler-stream';
 import { logStreamDisconnectWarning } from './streams/shared';
+import {
+  METAMASK_COOKIE_HANDLER,
+  PHISHING_STREAM,
+  METAMASK_PROVIDER,
+} from './constants/stream';
 
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
@@ -78,6 +83,11 @@ function setupPhishingPageStreams() {
   );
 
   phishingPageChannel = phishingPageMux.createStream(PHISHING_SAFELIST);
+  phishingPageMux.ignoreStream(METAMASK_COOKIE_HANDLER);
+  phishingPageMux.ignoreStream(LEGACY_PUBLIC_CONFIG);
+  phishingPageMux.ignoreStream(LEGACY_PROVIDER);
+  phishingPageMux.ignoreStream(METAMASK_PROVIDER);
+  phishingPageMux.ignoreStream(PHISHING_STREAM);
 }
 
 const setupPhishingExtStreams = () => {
@@ -121,6 +131,11 @@ const setupPhishingExtStreams = () => {
         error,
       ),
   );
+  phishingExtMux.ignoreStream(METAMASK_COOKIE_HANDLER);
+  phishingExtMux.ignoreStream(LEGACY_PUBLIC_CONFIG);
+  phishingExtMux.ignoreStream(LEGACY_PROVIDER);
+  phishingExtMux.ignoreStream(METAMASK_PROVIDER);
+  phishingExtMux.ignoreStream(PHISHING_STREAM);
 
   // eslint-disable-next-line no-use-before-define
   phishingExtPort.onDisconnect.addListener(onDisconnectDestroyPhishingStreams);
@@ -218,6 +233,11 @@ const setupPageStreams = () => {
   );
 
   pageChannel = pageMux.createStream(PROVIDER);
+  pageMux.ignoreStream(METAMASK_COOKIE_HANDLER);
+  pageMux.ignoreStream(LEGACY_PROVIDER);
+  pageMux.ignoreStream(LEGACY_PUBLIC_CONFIG);
+  pageMux.ignoreStream(PHISHING_SAFELIST);
+  pageMux.ignoreStream(PHISHING_STREAM);
 };
 
 // The field below is used to ensure that replay is done only once for each restart.
@@ -252,6 +272,10 @@ const setupExtensionStreams = () => {
   // connect "phishing" channel to warning system
   extensionPhishingStream = extensionMux.createStream('phishing');
   extensionPhishingStream.once('data', redirectToPhishingWarning);
+
+  extensionMux.ignoreStream(METAMASK_COOKIE_HANDLER);
+  extensionMux.ignoreStream(LEGACY_PROVIDER);
+  extensionMux.ignoreStream(PHISHING_SAFELIST);
 
   // eslint-disable-next-line no-use-before-define
   extensionPort.onDisconnect.addListener(onDisconnectDestroyStreams);
@@ -293,6 +317,11 @@ const setupLegacyPageStreams = () => {
     legacyPageMux.createStream(LEGACY_PROVIDER);
   legacyPagePublicConfigChannel =
     legacyPageMux.createStream(LEGACY_PUBLIC_CONFIG);
+
+  legacyPageMux.ignoreStream(METAMASK_COOKIE_HANDLER);
+  legacyPageMux.ignoreStream(METAMASK_PROVIDER);
+  legacyPageMux.ignoreStream(PHISHING_SAFELIST);
+  legacyPageMux.ignoreStream(PHISHING_STREAM);
 };
 
 // TODO:LegacyProvider: Delete
@@ -336,6 +365,10 @@ const setupLegacyExtensionStreams = () => {
         error,
       ),
   );
+  legacyExtMux.ignoreStream(METAMASK_COOKIE_HANDLER);
+  legacyExtMux.ignoreStream(LEGACY_PROVIDER);
+  legacyExtMux.ignoreStream(PHISHING_SAFELIST);
+  legacyExtMux.ignoreStream(PHISHING_STREAM);
 };
 
 /**

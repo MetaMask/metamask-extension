@@ -328,7 +328,7 @@ import { addDappTransaction, addTransaction } from './lib/transaction/util';
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
 import PREINSTALLED_SNAPS from './snaps/preinstalled-snaps';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
-import { METAMASK_COOKIE_HANDLER } from './constants/stream-constant';
+import {METAMASK_COOKIE_HANDLER} from './constants/stream';
 
 // Notification controllers
 import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
@@ -5154,7 +5154,21 @@ export default class MetamaskController extends EventEmitter {
 
   getCookieFromMarketingPage(data) {
     const { ga_client_id: cookieId } = data;
-    this.metaMetricsController.setMarketingCampaignCookieId(cookieId);
+    const {
+      metaMetricsId,
+      dataCollectionForMarketing,
+      participateInMetaMetrics,
+    } = this.metaMetricsController.store.getState();
+
+    if (
+      metaMetricsId &&
+      dataCollectionForMarketing &&
+      participateInMetaMetrics
+    ) {
+      this.metaMetricsController.setMarketingCampaignCookieId(cookieId);
+    } else {
+      this.metaMetricsController.setMarketingCampaignCookieId(null);
+    }
   }
 
   /**
