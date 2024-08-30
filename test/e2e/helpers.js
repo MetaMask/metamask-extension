@@ -7,15 +7,11 @@ const detectPort = require('detect-port');
 const { difference } = require('lodash');
 const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
-const {
-  createDriver,
-  quitDriver,
-} = require('./global-hooks-setup/webdriver-lifecycle');
+const { createDriver } = require('./global-hooks-setup/webdriver-lifecycle');
 const { setupMocking } = require('./mock-e2e');
 const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
-const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
@@ -102,8 +98,6 @@ async function withFixtures(options, testSuite) {
   let driver;
   let failed = false;
 
-  driver = await createDriver(driverOptions);
-
   try {
     if (!disableGanache) {
       await ganacheServer.start(ganacheOptions);
@@ -186,10 +180,8 @@ async function withFixtures(options, testSuite) {
     }
     await mockServer.start(8000);
 
-    if (!driver) {
-      driver = (await buildWebDriver(driverOptions)).driver;
-      webDriver = driver.driver;
-    }
+    driver = await createDriver(driverOptions);
+    webDriver = driver.driver;
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       await driver.checkBrowserForExceptions(ignoredConsoleErrors);
@@ -319,8 +311,9 @@ async function withFixtures(options, testSuite) {
         await bundlerServer.stop();
       }
 
-      await quitDriver();
-
+      if (webDriver) {
+        await driver.quit();
+      }
       if (dapp) {
         for (let i = 0; i < numberOfDapps; i++) {
           if (dappServer[i] && dappServer[i].listening) {

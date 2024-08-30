@@ -36,21 +36,7 @@ async function createDriver(driverOptions = {}) {
   return driver;
 }
 
-/**
- * Quits the WebDriver instance if it is running.
- *
- * @async
- * @function quitDriver
- * @returns {Promise<void>} A promise that resolves when the WebDriver instance is quit.
- */
-async function quitDriver() {
-  if (driver) {
-    await driver.quit();
-  }
-}
-
 module.exports = {
   createServiceBuilder,
   createDriver,
-  quitDriver,
 };
