@@ -37,6 +37,10 @@ const ApproveInfo = () => {
   );
 
   const setCustomSpendingCap = (newValue: string) => {
+    if (parseInt(newValue, 10) < 0) {
+      newValue = '0';
+    }
+
     const customTxParamsData = getCustomTxParamsData(
       transactionMeta.txParams.data,
       {
