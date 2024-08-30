@@ -58,7 +58,7 @@ export default function SnapsConnect({
   const snaps = getDedupedSnaps(request, currentPermissions);
 
   const SnapsConnectContent = () => {
-    let trimmedOrigin = (useOriginMetadata(origin) || {})?.name;
+    let trimmedOrigin = (useOriginMetadata(origin) || {})?.hostname;
 
     if (isSnapId(origin)) {
       trimmedOrigin = targetSubjectMetadata.name;
