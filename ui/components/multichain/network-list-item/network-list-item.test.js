@@ -2,15 +2,15 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import {
-  MATIC_TOKEN_IMAGE_URL,
+  POL_TOKEN_IMAGE_URL,
   POLYGON_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
 import { NetworkListItem } from '.';
 
 const DEFAULT_PROPS = {
   name: POLYGON_DISPLAY_NAME,
-  iconSrc: MATIC_TOKEN_IMAGE_URL,
   chainId: '0x1',
+  iconSrc: POL_TOKEN_IMAGE_URL,
   selected: false,
   onClick: () => undefined,
   onDeleteClick: () => undefined,
