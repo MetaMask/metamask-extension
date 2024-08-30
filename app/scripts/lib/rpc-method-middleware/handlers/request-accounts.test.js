@@ -158,7 +158,7 @@ describe('requestEthereumAccountsHandler', () => {
     });
   });
 
-  describe('eth accounts do not exist', () => {
+  describe('eip155 account permissions do not exist', () => {
     it('gets the network configuration for the request networkClientId', async () => {
       const { handler, getNetworkConfigurationByNetworkClientId } =
         createMockedHandler();
