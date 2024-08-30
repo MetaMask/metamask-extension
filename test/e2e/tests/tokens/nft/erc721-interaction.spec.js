@@ -51,7 +51,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
-        await driver.delay(500);
+        await driver.delay(1000);
         const transactionItem = await driver.waitForSelector({
           css: '[data-testid="activity-list-item-action"]',
           text: 'Deposit',
