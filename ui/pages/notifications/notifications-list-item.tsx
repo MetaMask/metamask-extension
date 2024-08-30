@@ -39,11 +39,10 @@ export function NotificationsListItem({
       properties: {
         notification_id: notification.id,
         notification_type: notification.type,
-        notification_is_read: notification.isRead,
         ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT && {
           chain_id: notification?.chain_id,
         }),
-        click_type: 'item',
+        previously_read: notification.isRead,
       },
     });
     markNotificationAsRead([
