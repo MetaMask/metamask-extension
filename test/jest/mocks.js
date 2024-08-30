@@ -172,10 +172,10 @@ export const getInitialSendStateWithExistingTxState = (draftTxState) => ({
 
 export function createMockInternalAccount({
   address = MOCK_DEFAULT_ADDRESS,
-  name,
+  name = 'Account 1',
   type = EthAccountType.Eoa,
   keyringType = KeyringTypes.hd,
-  snapOptions,
+  snapOptions = { id: '', name: '', enabled: true },
 } = {}) {
   let methods;
 
