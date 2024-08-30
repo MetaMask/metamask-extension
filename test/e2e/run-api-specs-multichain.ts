@@ -21,6 +21,7 @@ import {
 } from './helpers';
 import { MultichainAuthorizationConfirmation } from './api-specs/MultichainAuthorizationConfirmation';
 import transformOpenRPCDocument from './api-specs/transform';
+import { MultichainAuthorizationConfirmationErrors } from './api-specs/MultichainAuthorizationConfirmationErrors';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -60,7 +61,7 @@ async function main() {
               name: 'requiredScopes',
               value: {
                 eip155: {
-                  scopes: ['eip155:1337'],
+                  scopes: ['eip155:1'],
                   methods: [
                     'eth_sendTransaction',
                     'eth_getBalance',
@@ -89,7 +90,16 @@ async function main() {
             value: {
               sessionId: '0xdeadbeef',
               sessionScopes: {
-                'eip155:1337': {
+                'eip155:1': {
+                  accounts: [`eip155:1:${ACCOUNT_1}`],
+                  methods: [
+                    'eth_sendTransaction',
+                    'eth_getBalance',
+                    'personal_sign',
+                  ],
+                  notifications: [],
+                },
+                [`eip155:${chainId}`]: {
                   accounts: [`eip155:${chainId}:${ACCOUNT_1}`],
                   methods: [
                     'eth_sendTransaction',
@@ -129,6 +139,9 @@ async function main() {
         skip: ['wallet_invokeMethod'],
         rules: [
           new MultichainAuthorizationConfirmation({
+            driver,
+          }),
+          new MultichainAuthorizationConfirmationErrors({
             driver,
           }),
         ],

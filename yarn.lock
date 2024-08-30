@@ -4814,10 +4814,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/api-specs@npm:^0.10.2":
-  version: 0.10.2
-  resolution: "@metamask/api-specs@npm:0.10.2"
-  checksum: 10/c7e4f8846a9837342cc5082501b93dacd937dc44a66401b557fbc79a8c60aaa714b4ef935fbdaa41ec3a63b9a5874b6da6a9ad6454922b0bb4d3a471944356a7
+"@metamask/api-specs@npm:^0.10.7":
+  version: 0.10.7
+  resolution: "@metamask/api-specs@npm:0.10.7"
+  checksum: 10/bd4c3afb6851b515b9080c47c302fcd4adefd23ff55da7a8b27f529e03dbd022a421baa55454f9f799d4092d946c2d94dd1d07b5462c099b17a9b5b75dc76108
   languageName: node
   linkType: hard
 
@@ -26130,11 +26130,10 @@ __metadata:
     "@metamask-institutional/transaction-update": "npm:^0.2.5"
     "@metamask-institutional/types": "npm:^1.1.0"
     "@metamask/abi-utils": "npm:^2.0.2"
-    "@metamask/account-watcher": "npm:^4.1.0"
-    "@metamask/accounts-controller": "npm:^18.1.0"
-    "@metamask/address-book-controller": "npm:^5.0.0"
-    "@metamask/announcement-controller": "npm:^7.0.0"
-    "@metamask/api-specs": "npm:^0.10.2"
+    "@metamask/accounts-controller": "npm:^17.2.0"
+    "@metamask/address-book-controller": "npm:^4.0.1"
+    "@metamask/announcement-controller": "npm:^6.1.0"
+    "@metamask/api-specs": "npm:^0.10.7"
     "@metamask/approval-controller": "npm:^7.0.0"
     "@metamask/assets-controllers": "npm:^36.0.0"
     "@metamask/auto-changelog": "npm:^2.1.0"

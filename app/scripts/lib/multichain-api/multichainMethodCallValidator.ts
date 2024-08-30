@@ -65,7 +65,7 @@ export const multichainMethodCallValidator = async (
     const result = v.validate(paramToCheck, p.schema as unknown as Schema, {
       required: true,
     });
-    if (result.errors) {
+    if (result.errors && p.required) {
       errors.push(
         ...result.errors.map((e) => {
           return transformError(e, p, paramToCheck);
