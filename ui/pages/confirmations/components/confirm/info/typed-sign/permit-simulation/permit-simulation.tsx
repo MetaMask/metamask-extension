@@ -14,6 +14,28 @@ import { SignatureRequestType } from '../../../../../types/confirm';
 import StaticSimulation from '../../shared/static-simulation/static-simulation';
 import PermitSimulationValueDisplay from './value-display/value-display';
 
+function extractTokenDetailsByPrimaryType(
+  message: Record<string, unknown>,
+  primaryType: PrimaryType,
+): object[] | unknown {
+  let tokenDetails;
+
+  switch (primaryType) {
+    case PrimaryType.PermitBatch:
+    case PrimaryType.PermitSingle:
+      tokenDetails = message?.details;
+      break;
+    case PrimaryType.PermitBatchTransferFrom:
+    case PrimaryType.PermitTransferFrom:
+      tokenDetails = message?.permitted;
+      break;
+    default:
+      break;
+  }
+
+  return typeof tokenDetails === 'object' ? [tokenDetails] : tokenDetails;
+}
+
 const PermitSimulation: React.FC<object> = () => {
   const t = useI18nContext();
   const currentConfirmation = useSelector(
@@ -23,20 +45,11 @@ const PermitSimulation: React.FC<object> = () => {
   const msgData = currentConfirmation.msgParams?.data;
   const {
     domain: { verifyingContract },
-    message: { details, value },
+    message,
     primaryType,
   } = parseTypedDataMessage(msgData as string);
 
-  const isPermitSingle = primaryType === PrimaryType.PermitSingle;
-  const isPermitBatch = primaryType === PrimaryType.PermitBatch;
-
-  let tokenDetails;
-
-  if (isPermitSingle) {
-    tokenDetails = [details];
-  } else if (isPermitBatch) {
-    tokenDetails = details;
-  }
+  const tokenDetails = extractTokenDetailsByPrimaryType(message, primaryType);
 
   return (
     <StaticSimulation
@@ -45,7 +58,7 @@ const PermitSimulation: React.FC<object> = () => {
       description={t('permitSimulationDetailInfo')}
       simulationHeading={t('spendingCap')}
       simulationElements={
-        tokenDetails ? (
+        Array.isArray(tokenDetails) ? (
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
@@ -58,6 +71,7 @@ const PermitSimulation: React.FC<object> = () => {
               ) => (
                 <PermitSimulationValueDisplay
                   key={`${token}-${i}`}
+                  primaryType={primaryType}
                   tokenContract={token}
                   value={amount}
                 />
@@ -67,7 +81,7 @@ const PermitSimulation: React.FC<object> = () => {
         ) : (
           <PermitSimulationValueDisplay
             tokenContract={verifyingContract}
-            value={value}
+            value={message.value}
           />
         )
       }
