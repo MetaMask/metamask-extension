@@ -33,7 +33,9 @@ function extractTokenDetailsByPrimaryType(
       break;
   }
 
-  return typeof tokenDetails === 'object' ? [tokenDetails] : tokenDetails;
+  const isNonArrayObject = tokenDetails && !Array.isArray(tokenDetails);
+
+  return isNonArrayObject ? [tokenDetails] : tokenDetails;
 }
 
 const PermitSimulation: React.FC<object> = () => {
