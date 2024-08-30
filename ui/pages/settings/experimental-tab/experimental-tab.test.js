@@ -30,7 +30,7 @@ describe('ExperimentalTab', () => {
     const { getAllByRole } = render();
     const toggle = getAllByRole('checkbox');
 
-    expect(toggle).toHaveLength(5);
+    expect(toggle).toHaveLength(6);
   });
 
   it('enables add account snap', async () => {
