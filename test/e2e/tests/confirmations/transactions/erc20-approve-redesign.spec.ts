@@ -48,8 +48,6 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
 
           await assertApproveDetails(driver);
 
-          await driver.delay(1024 ** 2);
-
           await confirmApproveTransaction(driver);
         },
       );

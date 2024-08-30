@@ -11,6 +11,8 @@ import { ApproveStaticSimulation } from './approve-static-simulation/approve-sta
 import { EditSpendingCapModal } from './edit-spending-cap-modal/edit-spending-cap-modal';
 import { useIsNFT } from './hooks/use-is-nft';
 import { SpendingCap } from './spending-cap/spending-cap';
+import { getCustomTxParamsData } from '../../../../confirm-approve/confirm-approve.util';
+import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 
 const ApproveInfo = () => {
   const dispatch = useDispatch();
@@ -28,14 +30,22 @@ const ApproveInfo = () => {
     useState(false);
   const [customSpendingCap, _setCustomSpendingCap] = useState('');
 
+  const { decimals } = useAssetDetails(
+    transactionMeta.txParams.to,
+    transactionMeta.txParams.from,
+    transactionMeta.txParams.data,
+  );
+
   const setCustomSpendingCap = (newValue: string) => {
-    if (newValue === '') {
-      delete transactionMeta.customTokenAmount;
-      delete transactionMeta.finalApprovalAmount;
-    } else {
-      transactionMeta.customTokenAmount = newValue;
-      transactionMeta.finalApprovalAmount = newValue;
-    }
+    const customTxParamsData = getCustomTxParamsData(
+      transactionMeta.txParams.data,
+      {
+        customPermissionAmount: newValue,
+        decimals,
+      },
+    );
+
+    transactionMeta.txParams.data = customTxParamsData;
 
     _setCustomSpendingCap(newValue);
     dispatch(updateCurrentConfirmation(transactionMeta));
@@ -52,7 +62,6 @@ const ApproveInfo = () => {
       {!isNFT && (
         <SpendingCap
           setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
-          customSpendingCap={customSpendingCap}
         />
       )}
       <GasFeesSection />
@@ -60,7 +69,6 @@ const ApproveInfo = () => {
       <EditSpendingCapModal
         isOpenEditSpendingCapModal={isOpenEditSpendingCapModal}
         setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
-        customSpendingCap={customSpendingCap}
         setCustomSpendingCap={setCustomSpendingCap}
       />
     </>

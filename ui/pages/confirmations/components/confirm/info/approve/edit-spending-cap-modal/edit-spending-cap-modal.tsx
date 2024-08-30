@@ -149,7 +149,10 @@ export const EditSpendingCapModal = ({
             color={TextColor.textAlternative}
             paddingTop={1}
           >
-            {t('editSpendingCapAccountBalance', [accountBalance, tokenSymbol])}
+            {t('editSpendingCapAccountBalance', [
+              accountBalance,
+              tokenSymbol || '',
+            ])}
           </Text>
         </ModalBody>
         <ModalFooter

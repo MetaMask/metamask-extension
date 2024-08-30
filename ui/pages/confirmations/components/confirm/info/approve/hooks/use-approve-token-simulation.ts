@@ -30,7 +30,6 @@ export const useApproveTokenSimulation = (
       : 0;
   }, [value, decimals]);
 
-<<<<<<< HEAD
   const formattedSpendingCap = useMemo(() => {
     return isNFT
       ? decodedSpendingCap
@@ -44,19 +43,6 @@ export const useApproveTokenSimulation = (
     const tokenPrefix = isNFT ? '#' : '';
     return `${tokenPrefix}${formattedSpendingCap}`;
   }, [decodedSpendingCap, formattedSpendingCap, isNFT]);
-=======
-  const tokenPrefix = isNFT ? '#' : '';
-  const formattedSpendingCap = isNFT
-    ? decodedSpendingCap
-    : new Intl.NumberFormat(locale).format(decodedSpendingCap);
-
-  let spendingCap;
-  if (!isNFT && isSpendingCapUnlimited(decodedSpendingCap)) {
-    spendingCap = UNLIMITED_MSG;
-  } else {
-    spendingCap = `${tokenPrefix}${formattedSpendingCap}`;
-  }
->>>>>>> 41256edb65 (update modal)
 
   return {
     spendingCap,
