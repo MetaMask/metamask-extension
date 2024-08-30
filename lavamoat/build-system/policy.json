@@ -34,12 +34,7 @@
     },
     "@babel/code-frame>@babel/highlight>chalk>ansi-styles": {
       "packages": {
-        "@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
+        "@metamask/jazzicon>color>color-convert": true
       }
     },
     "@babel/code-frame>@babel/highlight>chalk>supports-color": {
@@ -1208,6 +1203,11 @@
         "Buffer": true
       }
     },
+    "@metamask/jazzicon>color>color-convert": {
+      "packages": {
+        "@metamask/jazzicon>color>color-convert>color-name": true
+      }
+    },
     "@metamask/object-multiplex>once": {
       "packages": {
         "@metamask/object-multiplex>once>wrappy": true
@@ -2119,8 +2119,7 @@
         "chokidar>normalize-path": true,
         "chokidar>readdirp": true,
         "del>is-glob": true,
-        "eslint>glob-parent": true,
-        "tsx>fsevents": true
+        "eslint>glob-parent": true
       }
     },
     "chokidar>anymatch": {
@@ -3127,7 +3126,6 @@
         "path.dirname": true
       },
       "globals": {
-        "__dirname": true,
         "__filename": true
       },
       "packages": {
@@ -3430,12 +3428,12 @@
         "util.inherits": true
       },
       "globals": {
-        "process.version": true
+        "Buffer": true,
+        "process.version.match": true
       },
       "packages": {
         "firebase>@firebase/database>faye-websocket>websocket-driver>http-parser-js": true,
-        "firebase>@firebase/database>faye-websocket>websocket-driver>websocket-extensions": true,
-        "koa>content-disposition>safe-buffer": true
+        "firebase>@firebase/database>faye-websocket>websocket-driver>websocket-extensions": true
       }
     },
     "firebase>@firebase/database>faye-websocket>websocket-driver>http-parser-js": {
@@ -3587,12 +3585,7 @@
     },
     "gulp-livereload>chalk>ansi-styles": {
       "packages": {
-        "gulp-livereload>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "gulp-livereload>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "gulp-livereload>chalk>ansi-styles>color-convert>color-name": true
+        "@metamask/jazzicon>color>color-convert": true
       }
     },
     "gulp-livereload>chalk>supports-color": {
@@ -8592,12 +8585,7 @@
     },
     "stylelint>table>slice-ansi>ansi-styles": {
       "packages": {
-        "stylelint>table>slice-ansi>ansi-styles>color-convert": true
-      }
-    },
-    "stylelint>table>slice-ansi>ansi-styles>color-convert": {
-      "packages": {
-        "stylelint>table>slice-ansi>ansi-styles>color-convert>color-name": true
+        "@metamask/jazzicon>color>color-convert": true
       }
     },
     "stylelint>table>string-width": {
@@ -8891,13 +8879,6 @@
         "tslib": true,
         "typescript": true
       }
-    },
-    "tsx>fsevents": {
-      "globals": {
-        "console.assert": true,
-        "process.platform": true
-      },
-      "native": true
     },
     "typescript": {
       "builtin": {
