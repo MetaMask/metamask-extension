@@ -704,12 +704,13 @@ export enum MetaMetricsEventName {
   TurnOnMetaMetrics = 'MetaMetrics Turned On',
   TurnOffMetaMetrics = 'MetaMetrics Turned Off',
   // Notifications
-  NotificationReceived = 'Notification Received',
   NotificationClicked = 'Notification Clicked',
   NotificationDetailClicked = 'Notification Detail Clicked',
   NotificationMenuOpened = 'Notification Menu Opened',
   NotificationsSettingsUpdated = 'Notifications Settings Updated',
   NotificationsActivated = 'Notifications Activated',
+  PushNotificationReceived = 'Push Notification Received',
+  PushNotificationClicked = 'Push Notification Clicked',
 
   // Send
   sendAssetSelected = 'Send Asset Selected',
