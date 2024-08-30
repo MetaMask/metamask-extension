@@ -175,7 +175,7 @@ describe('requestPermissionsHandler', () => {
     );
   });
 
-  it('requests approval for eth_accounts and permittedChains with the chainId for the request networkClientId when only eth_accounts is specified in params', async () => {
+  it('requests approval for eth_accounts and permittedChains with the chainId for the currently selected networkClientId (either global or dapp selected) when only eth_accounts is specified in params', async () => {
     const {
       handler,
       getNetworkConfigurationByNetworkClientId,

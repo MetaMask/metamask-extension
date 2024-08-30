@@ -110,14 +110,14 @@ describe('requestEthereumAccountsHandler', () => {
     jest.resetAllMocks();
   });
 
-  it('checks if eth accounts from a CAIP-25 permission exist', async () => {
+  it('checks if there are any eip155 accounts permissioned', async () => {
     const { handler, getAccounts } = createMockedHandler();
 
     await handler(baseRequest);
     expect(getAccounts).toHaveBeenCalled();
   });
 
-  describe('eth accounts exist', () => {
+  describe('eip155 account permissions exist', () => {
     it('waits for the wallet to unlock', async () => {
       const { handler, getUnlockPromise, getAccounts } = createMockedHandler();
       getAccounts.mockResolvedValue(['0xdead', '0xbeef']);
@@ -158,7 +158,7 @@ describe('requestEthereumAccountsHandler', () => {
     });
   });
 
-  describe('eth accounts do not exist', () => {
+  describe('eip155 account permissions do not exist', () => {
     it('gets the network configuration for the request networkClientId', async () => {
       const { handler, getNetworkConfigurationByNetworkClientId } =
         createMockedHandler();
