@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.5.0]
+
 ## [12.1.0]
 ### Added
 - Launched a feature displaying the percentage increase or decrease for tokens within the UI ([#24223](https://github.com/MetaMask/metamask-extension/pull/24223))
@@ -4996,7 +4998,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.5.0...HEAD
+[12.5.0]: https://github.com/MetaMask/metamask-extension/compare/v12.1.0...v12.5.0
 [12.1.0]: https://github.com/MetaMask/metamask-extension/compare/v12.0.6...v12.1.0
 [12.0.6]: https://github.com/MetaMask/metamask-extension/compare/v12.0.5...v12.0.6
 [12.0.5]: https://github.com/MetaMask/metamask-extension/compare/v12.0.4...v12.0.5
