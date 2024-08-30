@@ -60,15 +60,16 @@ describe('Block Explorer', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkController(
-            mockNetworkStateOld({
+          .withNetworkController({
+            ...mockNetworkStateOld({
               chainId: '0x539',
               nickname: 'Localhost 8545',
               rpcUrl: 'http://localhost:8545',
               ticker: 'ETH',
               blockExplorerUrl: 'https://etherscan.io/',
             }),
-          )
+            selectedNetworkClientId: 'networkConfigurationId',
+          })
           .withTokensControllerERC20()
           .build(),
         ganacheOptions: defaultGanacheOptions,
@@ -114,8 +115,8 @@ describe('Block Explorer', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withNetworkController(
-            mockNetworkStateOld({
+          .withNetworkController({
+            ...mockNetworkStateOld({
               id: 'localhost-client-id',
               chainId: '0x539',
               nickname: 'Localhost 8545',
@@ -123,7 +124,8 @@ describe('Block Explorer', function () {
               ticker: 'ETH',
               blockExplorerUrl: 'https://etherscan.io',
             }),
-          )
+            selectedNetworkClientId: 'networkConfigurationId',
+          })
           .withTransactionControllerCompletedTransaction()
           .build(),
         ganacheOptions: defaultGanacheOptions,
