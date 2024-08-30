@@ -13,7 +13,7 @@ import {
 import { calcGasTotal } from '../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../shared/modules/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
-import { getIsMainnet } from '.';
+import { getIsMainnet } from './selectors';
 
 export function getCustomGasLimit(state) {
   return state.gas.customData.limit;
