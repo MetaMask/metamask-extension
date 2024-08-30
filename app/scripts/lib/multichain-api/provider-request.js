@@ -1,4 +1,5 @@
 import { numberToHex } from '@metamask/utils';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -20,7 +21,7 @@ export async function providerRequestHandler(
     Caip25CaveatType,
   );
   if (!caveat?.value.isMultichainOrigin) {
-    return end(new Error('missing CAIP-25 endowment')); // TODO: update these errors
+    return end(providerErrors.unauthorized());
   }
 
   const scopeObject = mergeScopes(
@@ -28,12 +29,8 @@ export async function providerRequestHandler(
     caveat.value.optionalScopes,
   )[scope];
 
-  if (!scopeObject) {
-    return end(new Error('unauthorized (missing scope)'));
-  }
-
-  if (!scopeObject.methods.includes(wrappedRequest.method)) {
-    return end(new Error('unauthorized (method missing in scopeObject)'));
+  if (!scopeObject?.methods?.includes(wrappedRequest.method)) {
+    return end(providerErrors.unauthorized());
   }
 
   const { namespace, reference } = parseScopeString(scope);
@@ -51,11 +48,19 @@ export async function providerRequestHandler(
       }
       break;
     default:
-      return end(new Error('unable to handle namespace'));
+      console.error(
+        'failed to resolve namespace for provider_request',
+        request,
+      );
+      return end(rpcErrors.internal());
   }
 
   if (!networkClientId) {
-    return end(new Error('failed to get network client for reference'));
+    console.error(
+      'failed to resolve network client for provider_request',
+      request,
+    );
+    return end(rpcErrors.internal());
   }
 
   Object.assign(request, {
