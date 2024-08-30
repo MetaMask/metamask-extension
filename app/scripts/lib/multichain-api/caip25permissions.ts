@@ -83,7 +83,9 @@ const specificationBuilder: PermissionSpecificationBuilder<
         permission.caveats?.length !== 1 ||
         caip25Caveat?.type !== Caip25CaveatType
       ) {
-        throw new Error(`${Caip25EndowmentPermissionName} error: Invalid caveats. There must be a single caveat of type "${Caip25CaveatType}".`);
+        throw new Error(
+          `${Caip25EndowmentPermissionName} error: Invalid caveats. There must be a single caveat of type "${Caip25CaveatType}".`,
+        );
       }
 
       // TODO: FIX THIS TYPE
@@ -96,7 +98,9 @@ const specificationBuilder: PermissionSpecificationBuilder<
         !optionalScopes ||
         typeof isMultichainOrigin !== 'boolean'
       ) {
-        throw new Error(`${Caip25EndowmentPermissionName} error: Received invalid value for caveat of type "${Caip25CaveatType}".`);
+        throw new Error(
+          `${Caip25EndowmentPermissionName} error: Received invalid value for caveat of type "${Caip25CaveatType}".`,
+        );
       }
 
       const { flattenedRequiredScopes, flattenedOptionalScopes } =
