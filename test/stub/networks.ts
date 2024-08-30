@@ -75,7 +75,6 @@ export const mockNetworkStateOld = (
 export const mockNetworkState = (
   ...networks: {
     id?: string;
-    // type?: string;
     chainId: Hex;
     rpcUrl?: string;
     nickname?: string;
@@ -87,7 +86,7 @@ export const mockNetworkState = (
   if (
     new Set(networks.map((network) => network.chainId)).size !== networks.length
   ) {
-    throw 'mockNetworkState currently support multiple rpc urls per chain id';
+    throw 'mockNetworkState doesnt currently support multiple rpc urls per chain id';
   }
 
   const networkConfigurations = networks.map((network) => {
