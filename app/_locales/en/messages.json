@@ -6329,7 +6329,7 @@
     "message": "Update request"
   },
   "updatedRpcForNetworks": {
-    "message": "Updated RPCs for networks"
+    "message": "Network RPCs Updated"
   },
   "updatedWithDate": {
     "message": "Updated $1"
