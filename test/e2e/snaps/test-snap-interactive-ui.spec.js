@@ -30,12 +30,16 @@ describe('Test Snap Interactive UI', function () {
 
         // switch to metamask extension and click connect
         await switchToNotificationWindow(driver);
-        await driver.clickElementAndWaitToDisappear({
+        await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+        // We need a bigger timeout as the Connect action takes some time
+        await driver.clickElementSafe(
+          '[data-testid="snap-install-scroll"]',
+          3000,
+        );
 
         await driver.waitForSelector({ text: 'Confirm' });
 
