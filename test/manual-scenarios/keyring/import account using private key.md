@@ -34,11 +34,9 @@ And I should see the 'Import account' option
 
 # Scenario: Importing an account with a private key
 
-Given I am on the 'Import account' menu
-When I select 'Import account'
-Then I should be directed to the Import page
-And I should see a field to paste my private key
-When I paste my private key and click 'Import'
+Given I am on the import dialog modal
+When I see a field to paste my private key
+And I paste my private key (e.g.: 669456835741782c2ceca4e6ded60420ede38db2fb28742a1c9ae5ddf6680fa9) and click 'Import'
 Then I should see the newly imported account in the account selector dropdown
 And the newly imported account should have an 'Imported' tag next to it
 
