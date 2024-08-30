@@ -38,6 +38,20 @@ describe('Name', () => {
     jest.resetAllMocks();
   });
 
+  it('renders when no address value is passed', () => {
+    useDisplayNameMock.mockReturnValue({
+      name: null,
+      hasPetname: false,
+    });
+
+    const { container } = renderWithProvider(
+      <Name type={NameType.ETHEREUM_ADDRESS} value={''} />,
+      store,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
   it('renders address with no saved name', () => {
     useDisplayNameMock.mockReturnValue({
       name: null,

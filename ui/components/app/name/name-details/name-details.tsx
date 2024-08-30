@@ -71,6 +71,10 @@ type ProposedNameOption = Required<FormComboFieldOption> & {
 };
 
 function formatValue(value: string, type: NameType): string {
+  if (!value.length) {
+    return value;
+  }
+
   switch (type) {
     case NameType.ETHEREUM_ADDRESS:
       return toChecksumAddress(value);
