@@ -37,6 +37,7 @@ const ApproveInfo = () => {
   );
 
   const setCustomSpendingCap = (newValue: string) => {
+    // coerce negative numbers to zero
     if (parseInt(newValue, 10) < 0) {
       newValue = '0';
     }
