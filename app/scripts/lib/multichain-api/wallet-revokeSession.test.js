@@ -3,6 +3,7 @@ import {
   PermissionDoesNotExistError,
   UnrecognizedSubjectError,
 } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { Caip25EndowmentPermissionName } from './caip25permissions';
 import { walletRevokeSessionHandler } from './wallet-revokeSession';
 
@@ -31,7 +32,7 @@ const createMockedHandler = () => {
 };
 
 describe('wallet_revokeSession', () => {
-  it('throws an error when sessionId param is specified', async () => {
+  it('throws a 5500 error when sessionId param is specified', async () => {
     const { handler, end } = createMockedHandler();
     await handler({
       ...baseRequest,
@@ -54,7 +55,7 @@ describe('wallet_revokeSession', () => {
     );
   });
 
-  it('throws an error if the CAIP-25 endowment permission does not exist', async () => {
+  it('throws a 5501 error if the CAIP-25 endowment permission does not exist', async () => {
     const { handler, revokePermission, end } = createMockedHandler();
     revokePermission.mockImplementation(() => {
       throw new PermissionDoesNotExistError();
@@ -66,7 +67,7 @@ describe('wallet_revokeSession', () => {
     );
   });
 
-  it('throws an error if the subject does not exist', async () => {
+  it('throws a 5501 error if the subject does not exist', async () => {
     const { handler, revokePermission, end } = createMockedHandler();
     revokePermission.mockImplementation(() => {
       throw new UnrecognizedSubjectError();
@@ -78,14 +79,14 @@ describe('wallet_revokeSession', () => {
     );
   });
 
-  it('throws an error if something unexpected goes wrong with revoking the permission', async () => {
+  it('throws an internal RPC error if something unexpected goes wrong with revoking the permission', async () => {
     const { handler, revokePermission, end } = createMockedHandler();
     revokePermission.mockImplementation(() => {
       throw new Error('revoke failed');
     });
 
     await handler(baseRequest);
-    expect(end).toHaveBeenCalledWith(new Error('revoke failed'));
+    expect(end).toHaveBeenCalledWith(rpcErrors.internal());
   });
 
   it('returns true if the permission was revoked', async () => {

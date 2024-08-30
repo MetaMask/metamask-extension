@@ -3,8 +3,8 @@ import {
   UnrecognizedSubjectError,
 } from '@metamask/permission-controller';
 import { EthereumRpcError } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { Caip25EndowmentPermissionName } from './caip25permissions';
-import { error } from 'console';
 
 export async function walletRevokeSessionHandler(
   request,
@@ -13,7 +13,6 @@ export async function walletRevokeSessionHandler(
   end,
   hooks,
 ) {
-  return end(new Error('test'))
   if (request.params?.sessionId) {
     return end(
       new EthereumRpcError(5500, 'SessionId not recognized'), // we aren't currently storing a sessionId to check this against
@@ -29,8 +28,8 @@ export async function walletRevokeSessionHandler(
     ) {
       return end(new EthereumRpcError(5501, 'No active sessions'));
     }
-
-    return end(err); // TODO: handle this better
+    console.error(err);
+    return end(rpcErrors.internal());
   }
 
   response.result = true;
