@@ -117,7 +117,7 @@ describe('requestEthereumAccountsHandler', () => {
     expect(getAccounts).toHaveBeenCalled();
   });
 
-  describe('eth accounts exist', () => {
+  describe('eip155 account permissions exist', () => {
     it('waits for the wallet to unlock', async () => {
       const { handler, getUnlockPromise, getAccounts } = createMockedHandler();
       getAccounts.mockResolvedValue(['0xdead', '0xbeef']);
