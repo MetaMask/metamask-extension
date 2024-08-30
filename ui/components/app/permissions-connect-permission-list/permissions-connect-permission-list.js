@@ -26,6 +26,7 @@ function getDescriptionNode(permission, index, accounts) {
       avatarIcon={permission.leftIcon}
       key={`${permission.permissionName}-${index}`}
       accounts={accounts}
+      permissionValue={permission.permissionValue.restrictNetworkSwitching}
     />
   );
 }
@@ -45,9 +46,9 @@ export default function PermissionsConnectPermissionList({
         permissions,
         getSubjectName: getSnapName(snapsMetadata),
         subjectName,
-      }).map((permission, index) =>
-        getDescriptionNode(permission, index, accounts),
-      )}
+      }).map((permission, index) => {
+        return getDescriptionNode(permission, index, accounts);
+      })}
     </Box>
   );
 }

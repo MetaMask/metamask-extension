@@ -88,6 +88,7 @@ import {
   SNAPS_VIEW_ROUTE,
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -114,7 +115,7 @@ import {
   Icon,
   IconName,
 } from '../../components/component-library';
-import { ToggleIpfsModal } from '../../components/app/nft-default-image/toggle-ipfs-modal';
+import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
 import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
@@ -132,7 +133,8 @@ import {
 import { MILLISECOND, SECOND } from '../../../shared/constants/time';
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
-import NftFullImage from '../../components/app/nft-details/nft-full-image';
+import NftFullImage from '../../components/app/assets/nfts/nft-details/nft-full-image';
+import CrossChainSwap from '../bridge';
 
 const isConfirmTransactionRoute = (pathname) =>
   Boolean(
@@ -367,6 +369,10 @@ export default class Routes extends Component {
         />
         <Authenticated path={SWAPS_ROUTE} component={Swaps} />
         <Authenticated
+          path={CROSS_CHAIN_SWAP_ROUTE}
+          component={CrossChainSwap}
+        />
+        <Authenticated
           path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
           component={ConfirmAddSuggestedTokenPage}
           exact
@@ -565,6 +571,16 @@ export default class Routes extends Component {
       }),
     );
     if (isMultichainSend) {
+      return true;
+    }
+
+    const isSnapsHome = Boolean(
+      matchPath(location.pathname, {
+        path: SNAPS_VIEW_ROUTE,
+        exact: false,
+      }),
+    );
+    if (isSnapsHome) {
       return true;
     }
 

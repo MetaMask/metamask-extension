@@ -55,7 +55,6 @@ import {
   getExternalServicesOnboardingToggleState,
 } from '../../../selectors';
 import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
-import { selectParticipateInMetaMetrics } from '../../../selectors/metamask-notifications/authentication';
 import {
   setIpfsGateway,
   setUseCurrencyRateCheck,
@@ -135,7 +134,6 @@ export default function PrivacySettings() {
     useTransactionSimulations,
   } = defaultState;
   const petnamesEnabled = useSelector(getPetnamesEnabled);
-  const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
 
   const [usePhishingDetection, setUsePhishingDetection] = useState(null);
   const [turnOn4ByteResolution, setTurnOn4ByteResolution] =
@@ -205,23 +203,11 @@ export default function PrivacySettings() {
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
       properties: {
+        is_profile_syncing_enabled: profileSyncingProps.isProfileSyncingEnabled,
         show_incoming_tx: incomingTransactionsPreferences,
         use_phising_detection: usePhishingDetection,
         turnon_token_detection: turnOnTokenDetection,
-      },
-    });
-
-    const eventName =
-      profileSyncingProps.isProfileSyncingEnabled || participateInMetaMetrics
-        ? MetaMetricsEventName.OnboardingWalletAdvancedSettingsWithAuthenticating
-        : MetaMetricsEventName.OnboardingWalletAdvancedSettingsWithoutAuthenticating;
-
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: eventName,
-      properties: {
-        isProfileSyncingEnabled: profileSyncingProps.isProfileSyncingEnabled,
-        participateInMetaMetrics,
+        settings_group: 'advanced',
       },
     });
 
@@ -237,10 +223,12 @@ export default function PrivacySettings() {
             profileSyncingProps.setIsProfileSyncingEnabled(false);
             trackEvent({
               category: MetaMetricsEventCategory.Onboarding,
-              event:
-                MetaMetricsEventName.OnboardingWalletAdvancedSettingsTurnOffProfileSyncing,
+              event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
               properties: {
-                participateInMetaMetrics,
+                settings_group: 'advanced',
+                settings_type: 'profile_syncing',
+                old_value: true,
+                new_value: false,
               },
             });
           },
@@ -250,10 +238,12 @@ export default function PrivacySettings() {
       profileSyncingProps.setIsProfileSyncingEnabled(true);
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
-        event:
-          MetaMetricsEventName.OnboardingWalletAdvancedSettingsTurnOnProfileSyncing,
+        event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
         properties: {
-          participateInMetaMetrics,
+          settings_group: 'advanced',
+          settings_type: 'profile_syncing',
+          old_value: false,
+          new_value: true,
         },
       });
     }

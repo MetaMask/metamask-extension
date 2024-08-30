@@ -2,14 +2,12 @@ const { promises: fs } = require('fs');
 const path = require('path');
 const childProcess = require('child_process');
 const { mergeWith, cloneDeep } = require('lodash');
+const { isManifestV3 } = require('../../shared/modules/mv3.utils');
 
-const IS_MV3_ENABLED =
-  process.env.ENABLE_MV3 === 'true' || process.env.ENABLE_MV3 === undefined;
-
-const baseManifest = IS_MV3_ENABLED
+const baseManifest = isManifestV3
   ? require('../../app/manifest/v3/_base.json')
   : require('../../app/manifest/v2/_base.json');
-const baradDurManifest = IS_MV3_ENABLED
+const baradDurManifest = isManifestV3
   ? require('../../app/manifest/v3/_barad_dur.json')
   : require('../../app/manifest/v2/_barad_dur.json');
 const { loadBuildTypesConfig } = require('../lib/build-type');
@@ -38,7 +36,7 @@ function createManifestTasks({
             '..',
             '..',
             'app',
-            IS_MV3_ENABLED ? 'manifest/v3' : 'manifest/v2',
+            isManifestV3 ? 'manifest/v3' : 'manifest/v2',
             `${platform}.json`,
           ),
         );
@@ -71,6 +69,7 @@ function createManifestTasks({
       ...manifest.permissions,
       'webRequestBlocking',
       'http://localhost/*',
+      'tabs', // test builds need tabs permission for switchToWindowWithTitle
     ];
   });
 
@@ -80,6 +79,7 @@ function createManifestTasks({
       ...manifest.permissions,
       'webRequestBlocking',
       'http://localhost/*',
+      'tabs', // test builds need tabs permission for switchToWindowWithTitle
     ];
   });
 
@@ -143,7 +143,7 @@ function createManifestTasks({
       buildType,
       applyLavaMoat,
       shouldIncludeSnow,
-      shouldIncludeMV3: IS_MV3_ENABLED,
+      isManifestV3,
     });
 
     manifest.description = `${environment} build from git id: ${gitRevisionStr}`;

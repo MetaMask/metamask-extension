@@ -102,6 +102,11 @@ aliases:
 
 workflows:
   test_and_release:
+    when:
+      not:
+        matches:
+          pattern: /^l10n_crowdin_action$/
+          value: << pipeline.git.branch >>
     jobs:
       - create_release_pull_request:
           <<: *rc_branch_only
@@ -158,11 +163,7 @@ workflows:
       - prep-build-test-mv2:
           requires:
             - prep-deps
-      - prep-build-confirmation-redesign-test:
-          requires:
-            - prep-deps
-      - prep-build-confirmation-redesign-test-mv2:
-          <<: *develop_master_rc_only
+      - prep-build-test-webpack:
           requires:
             - prep-deps
       - prep-build-test-flask:
@@ -195,22 +196,18 @@ workflows:
       - test-lint-changelog:
           requires:
             - prep-deps
+      - test-e2e-chrome-webpack:
+          requires:
+            - prep-build-test-webpack
+            - get-changed-files-with-git-diff
       - test-e2e-chrome:
           requires:
             - prep-build-test
-            - get-changed-files-with-git-diff
-      - test-e2e-chrome-confirmation-redesign:
-          requires:
-            - prep-build-confirmation-redesign-test
             - get-changed-files-with-git-diff
       - test-e2e-firefox:
           requires:
             - prep-build-test-mv2
             - get-changed-files-with-git-diff
-      - test-e2e-firefox-confirmation-redesign:
-          <<: *develop_master_rc_only
-          requires:
-            - prep-build-confirmation-redesign-test-mv2
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
@@ -237,9 +234,6 @@ workflows:
       - test-e2e-mmi-playwright - OPTIONAL:
           requires:
             - prep-build-test-mmi-playwright
-      - test-e2e-swap-playwright - OPTIONAL:
-          requires:
-            - prep-build
       - test-e2e-chrome-rpc-mmi:
           requires:
             - prep-build-test-mmi
@@ -252,9 +246,6 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
-      - test-unit-global:
-          requires:
-            - prep-deps
       - test-storybook:
           requires:
             - prep-deps
@@ -295,7 +286,6 @@ workflows:
             - test-lint-shellcheck
             - test-lint-lockfile
             - test-lint-changelog
-            - test-unit-global
             - validate-source-maps
             - validate-source-maps-beta
             - validate-source-maps-flask
@@ -304,14 +294,13 @@ workflows:
             - test-mozilla-lint-flask-mv2
             - test-e2e-chrome
             - test-e2e-chrome-multiple-providers
-            - test-e2e-chrome-confirmation-redesign
-            - test-e2e-firefox-confirmation-redesign
             - test-e2e-firefox
             - test-e2e-chrome-flask
             - test-e2e-firefox-flask
             - test-e2e-chrome-mmi
             - test-e2e-chrome-rpc-mmi
             - test-e2e-chrome-vault-decryption
+            - test-e2e-chrome-webpack
             - test-storybook
       - benchmark:
           requires:
@@ -362,6 +351,27 @@ workflows:
           requires:
             - prep-build-ts-migration-dashboard
 
+  locales_only:
+    when:
+      matches:
+        pattern: /^l10n_crowdin_action$/
+        value: << pipeline.git.branch >>
+    jobs:
+      - prep-deps
+      - get-changed-files-with-git-diff:
+          requires:
+            - prep-deps
+      - validate-locales-only:
+          requires:
+            - get-changed-files-with-git-diff
+      - test-lint:
+          requires:
+            - prep-deps
+      - all-tests-pass:
+          requires:
+            - test-lint
+            - validate-locales-only
+
 jobs:
   trigger-beta-build:
     executor: node-browsers-small
@@ -379,8 +389,7 @@ jobs:
           steps:
             - run:
                 name: Build beta prod
-                command: |
-                  .circleci/scripts/trigger-beta-build.sh
+                command: .circleci/scripts/trigger-beta-build.sh
             - run:
                 name: Move beta build to 'dist-beta' to avoid conflict with production build
                 command: mv ./dist ./dist-beta
@@ -394,9 +403,9 @@ jobs:
                   - builds-beta
 
   create_release_pull_request:
-    executor: node-browsers-small
+    executor: node-browsers-medium
     steps:
-      - run: *shallow-git-clone
+      - checkout
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -453,8 +462,7 @@ jobs:
       - run: sudo corepack enable
       - run:
           name: Save Yarn version
-          command: |
-            yarn --version > /tmp/YARN_VERSION
+          command: yarn --version > /tmp/YARN_VERSION
       - restore_cache:
           keys:
             # First try to get the specific cache for the checksum of the yarn.lock file.
@@ -498,6 +506,15 @@ jobs:
           root: .
           paths:
             - changed-files
+
+  validate-locales-only:
+    executor: node-browsers-small
+    steps:
+      - run: *shallow-git-clone
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run: yarn tsx .circleci/scripts/validate-locales-only.ts
 
   validate-lavamoat-allow-scripts:
     executor: node-browsers-small
@@ -893,49 +910,25 @@ jobs:
             - dist-test-mv2
             - builds-test-mv2
 
-  prep-build-confirmation-redesign-test:
+  prep-build-test-webpack:
     executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
+          name: Activate yarn
+          command: corepack enable
+      - run:
           name: Build extension for testing
-          command: ENABLE_CONFIRMATION_REDESIGN="true" yarn build:test
+          command: yarn build:test:webpack
       - run:
-          name: Move test build to 'dist-test' to avoid conflict with production build
-          command: mv ./dist ./dist-test-confirmations
-      - run:
-          name: Move test zips to 'builds-test' to avoid conflict with production build
-          command: mv ./builds ./builds-test-confirmations
+          name: Move test build to 'dist-test-webpack' to avoid conflict with production build
+          command: mv ./dist ./dist-test-webpack
       - persist_to_workspace:
           root: .
           paths:
-            - dist-test-confirmations
-            - builds-test-confirmations
-
-  prep-build-confirmation-redesign-test-mv2:
-    executor: node-linux-medium
-    steps:
-      - run: *shallow-git-clone
-      - run: corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build extension for testing
-          command: ENABLE_CONFIRMATION_REDESIGN="true" yarn build:test:mv2
-      - run:
-          name: Move test build to 'dist-test-confirmations-mv2' to avoid conflict with production build
-          command: mv ./dist ./dist-test-confirmations-mv2
-      - run:
-          name: Move test zips to 'builds-test-confirmations-mv2' to avoid conflict with production build
-          command: mv ./builds ./builds-test-confirmations-mv2
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-test-confirmations-mv2
-            - builds-test-confirmations-mv2
+            - dist-test-webpack
 
   prep-build-storybook:
     executor: node-linux-medium
@@ -1078,6 +1071,27 @@ jobs:
           name: depcheck
           command: yarn depcheck
 
+  test-e2e-chrome-webpack:
+    executor: node-browsers-medium-plus
+    parallelism: 20
+    steps:
+      - run: *shallow-git-clone
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-webpack ./dist
+      - run:
+          name: test:e2e:chrome:webpack
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:webpack
+          no_output_timeout: 5m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
   test-api-specs:
     executor: node-browsers-medium-plus
     steps:
@@ -1094,8 +1108,7 @@ jobs:
       - gh/install
       - run:
           name: test:api-specs
-          command: |
-            timeout 20m yarn test:api-specs --retries 2
+          command: .circleci/scripts/test-run-e2e.sh yarn test:api-specs
           no_output_timeout: 5m
       - run:
           name: Comment on PR
@@ -1126,42 +1139,8 @@ jobs:
           command: mv ./builds-test ./builds
       - run:
           name: test:e2e:chrome
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              timeout 20m yarn test:e2e:chrome --retries 1
-            fi
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome
           no_output_timeout: 5m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-          path: test/test-results/e2e
-
-  test-e2e-chrome-confirmation-redesign:
-    executor: node-browsers-medium-plus
-    parallelism: 20
-    steps:
-      - run: *shallow-git-clone
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test-confirmations ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test-confirmations ./builds
-      - run:
-          name: test:e2e:chrome-confirmation-redesign
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              timeout 20m yarn test:e2e:chrome:confirmation-redesign --retries 1
-            fi
-          no_output_timeout: 5m
-          environment:
-            ENABLE_CONFIRMATION_REDESIGN: 'true'
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1184,11 +1163,7 @@ jobs:
           command: mv ./builds-test ./builds
       - run:
           name: test:e2e:chrome:rpc
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              timeout 20m yarn test:e2e:chrome:rpc --retries 1
-            fi
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:rpc
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
@@ -1212,11 +1187,7 @@ jobs:
           command: mv ./builds-test ./builds
       - run:
           name: test:e2e:chrome:multi-provider
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              yarn test:e2e:chrome:multi-provider --retries 1
-            fi
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:multi-provider
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
@@ -1239,11 +1210,7 @@ jobs:
           command: mv ./builds-test-mmi ./builds
       - run:
           name: test:e2e:chrome:rpc
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              timeout 20m yarn test:e2e:chrome:rpc --retries 1 --build-type=mmi
-            fi
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:rpc --build-type=mmi
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
@@ -1259,12 +1226,8 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: test:e2e:chrome:vault
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.js --browser chrome --retries 1
-            fi
+          name: test:e2e:single
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.js --browser chrome
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
@@ -1288,12 +1251,7 @@ jobs:
           command: mv ./builds-test-flask-mv2 ./builds
       - run:
           name: test:e2e:firefox:flask
-          command: |
-            export ENABLE_MV3=false
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              timeout 20m yarn test:e2e:firefox:flask --retries 1
-            fi
+          command: ENABLE_MV3=false .circleci/scripts/test-run-e2e.sh yarn test:e2e:firefox:flask
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
@@ -1317,11 +1275,7 @@ jobs:
           command: mv ./builds-test-flask ./builds
       - run:
           name: test:e2e:chrome:flask
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              timeout 20m yarn test:e2e:chrome:flask --retries 1
-            fi
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:flask
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
@@ -1345,11 +1299,7 @@ jobs:
           command: mv ./builds-test-mmi ./builds
       - run:
           name: test:e2e:chrome:mmi
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              timeout 20m yarn test:e2e:chrome:mmi --retries 1 --build-type=mmi
-            fi
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:mmi --build-type=mmi
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
@@ -1371,8 +1321,7 @@ jobs:
           command: mv ./dist-test-mmi-playwright ./dist
       - run:
           name: Install chromium
-          command: |
-            yarn playwright install chromium
+          command: yarn playwright install chromium
       - run:
           name: test:e2e:chrome:mmi
           command: |
@@ -1409,8 +1358,7 @@ jobs:
           at: .
       - run:
           name: Install chromium
-          command: |
-            yarn playwright install chromium
+          command: yarn playwright install chromium
       - run:
           name: test:e2e:chrome:swap
           command: |
@@ -1446,44 +1394,8 @@ jobs:
           command: mv ./builds-test-mv2 ./builds
       - run:
           name: test:e2e:firefox
-          command: |
-            export ENABLE_MV3=false
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              timeout 20m yarn test:e2e:firefox --retries 1
-            fi
+          command: ENABLE_MV3=false .circleci/scripts/test-run-e2e.sh yarn test:e2e:firefox
           no_output_timeout: 5m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-          path: test/test-results/e2e
-
-  test-e2e-firefox-confirmation-redesign:
-    executor: node-browsers-medium-plus
-    parallelism: 20
-    steps:
-      - run: *shallow-git-clone
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test-confirmations-mv2 ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test-confirmations-mv2 ./builds
-      - run:
-          name: test:e2e:firefox-confirmation-redesign
-          command: |
-            export ENABLE_MV3=false
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              timeout 20m yarn test:e2e:firefox --retries 1
-            fi
-          no_output_timeout: 5m
-          environment:
-            ENABLE_CONFIRMATION_REDESIGN: 'true'
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1653,15 +1565,20 @@ jobs:
           name: Publish main release to Sentry
           command: yarn sentry:publish
       - run:
+          name: Publish main MV2 release to Sentry
+          command: yarn sentry:publish --dist mv2
+      - run:
           name: Publish Flask release to Sentry
           command: yarn sentry:publish --build-type flask
+      - run:
+          name: Publish Flask MV2 release to Sentry
+          command: yarn sentry:publish --build-type flask --dist mv2
       - run:
           name: Publish MMI release to Sentry
           command: yarn sentry:publish --build-type mmi
       - run:
           name: Create GitHub release
-          command: |
-            .circleci/scripts/release-create-gh-release.sh
+          command: .circleci/scripts/release-create-gh-release.sh
 
   job-publish-storybook:
     executor: node-browsers-small
@@ -1697,17 +1614,6 @@ jobs:
             git config user.email metamaskbot@users.noreply.github.com
             yarn ts-migration:dashboard:deploy
 
-  test-unit-global:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: test:unit:global
-          command: yarn test:unit:global
-
   validate-source-maps:
     executor: node-browsers-small
     steps:
@@ -1728,8 +1634,7 @@ jobs:
           at: .
       - run:
           name: Validate source maps
-          command: |
-            .circleci/scripts/validate-source-maps-beta.sh
+          command: .circleci/scripts/validate-source-maps-beta.sh
 
   validate-source-maps-mmi:
     executor: node-browsers-small

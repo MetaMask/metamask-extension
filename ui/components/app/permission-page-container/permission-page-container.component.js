@@ -60,7 +60,13 @@ export default class PermissionPageContainer extends Component {
   state = {};
 
   getRequestedPermissions() {
-    return Object.entries(this.props.request.permissions ?? {}).reduce(
+    const { request } = this.props;
+
+    // if the request contains a diff this means its an incremental permission request
+    const permissions =
+      request?.diff?.permissionDiffMap ?? request.permissions ?? {};
+
+    return Object.entries(permissions).reduce(
       (acc, [permissionName, permissionValue]) => {
         if (permissionName === RestrictedMethods.wallet_snap) {
           acc[permissionName] = this.getDedupedSnapPermissions();

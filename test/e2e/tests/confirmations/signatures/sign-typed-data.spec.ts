@@ -1,16 +1,11 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { withRedesignConfirmationFixtures } from '../helpers';
-import {
-  DAPP_HOST_ADDRESS,
-  WINDOW_TITLES,
-  openDapp,
-  switchToNotificationWindow,
-  unlockWallet,
-} from '../../../helpers';
+import { MockedEndpoint } from 'mockttp';
+import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
-import { Mockttp } from '../../../mock-e2e';
+import { withRedesignConfirmationFixtures } from '../helpers';
+import { TestSuiteArguments } from '../transactions/shared';
 import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
@@ -18,13 +13,11 @@ import {
   assertSignatureMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
+  openDappAndTriggerSignature,
+  SignatureType,
 } from './signature-helpers';
 
-describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-    return;
-  }
-
+describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Suite) {
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
@@ -32,18 +25,11 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
         driver,
         ganacheServer,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-        mockedEndpoint: Mockttp;
-      }) => {
-        const addresses = await ganacheServer.getAccounts();
+      }: TestSuiteArguments) => {
+        const addresses = await (ganacheServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
 
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#signTypedData');
-        await switchToNotificationWindow(driver);
+        await openDappAndTriggerSignature(driver, SignatureType.SignTypedData);
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
@@ -52,7 +38,7 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
         await assertPastedAddress(driver);
         await assertAccountDetailsMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData',
         );
 
@@ -63,7 +49,7 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
 
         await assertSignatureMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData',
         );
 
@@ -78,14 +64,8 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        mockedEndpoint: Mockttp;
-      }) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#signTypedData');
-        await switchToNotificationWindow(driver);
+      }: TestSuiteArguments) => {
+        await openDappAndTriggerSignature(driver, SignatureType.SignTypedData);
 
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
@@ -94,7 +74,7 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
 
         await assertSignatureMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData',
         );
 

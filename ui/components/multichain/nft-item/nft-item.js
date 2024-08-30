@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
-import NftDefaultImage from '../../app/nft-default-image/nft-default-image';
+import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -121,7 +121,7 @@ NftItem.propTypes = {
   /**
    * Image that represents the network
    */
-  networkSrc: PropTypes.string.isRequired,
+  networkSrc: PropTypes.string,
   /**
    * Token ID of the NFT
    */

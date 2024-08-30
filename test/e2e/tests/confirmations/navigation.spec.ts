@@ -11,10 +11,6 @@ import { Driver } from '../../webdriver/driver';
 import { withRedesignConfirmationFixtures } from './helpers';
 
 describe('Navigation Signature - Different signature types', function (this: Suite) {
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-    return;
-  }
-
   it('initiates and queues multiple signatures and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),

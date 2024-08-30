@@ -1,10 +1,12 @@
 const { strict: assert } = require('assert');
 const { toHex } = require('@metamask/controller-utils');
+const { mockNetworkState } = require('../../../stub/networks');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   defaultGanacheOptions,
   withFixtures,
   openDapp,
+  openMenuSafe,
   regularDelayMs,
   unlockWallet,
   WINDOW_TITLES,
@@ -110,10 +112,8 @@ const selectors = {
 };
 
 async function navigateToAddNetwork(driver) {
-  await driver.clickElement(selectors.accountOptionsMenuButton);
-  if (process.env.MMI) {
-    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
-  }
+  await openMenuSafe(driver);
+
   await driver.clickElement(selectors.settingsOption);
   await driver.clickElement(selectors.networkOption);
   await driver.clickElement(selectors.addNetwork);
@@ -587,15 +587,13 @@ describe('Custom network', function () {
         {
           fixtures: new FixtureBuilder()
             .withNetworkController({
-              networkConfigurations: {
-                networkConfigurationId: {
-                  rpcUrl: networkURL,
-                  chainId: chainID,
-                  nickname: networkNAME,
-                  ticker: currencySYMBOL,
-                  rpcPrefs: {},
-                },
-              },
+              ...mockNetworkState({
+                rpcUrl: networkURL,
+                chainId: chainID,
+                nickname: networkNAME,
+                ticker: currencySYMBOL,
+              }),
+              selectedNetworkClientId: 'mainnet',
             })
             .build(),
           ganacheOptions: defaultGanacheOptions,
@@ -604,15 +602,7 @@ describe('Custom network', function () {
         async ({ driver }) => {
           await unlockWallet(driver);
 
-          await driver.clickElement(
-            '[data-testid="account-options-menu-button"]',
-          );
-
-          if (process.env.MMI) {
-            await driver.waitForSelector(
-              '[data-testid="global-menu-mmi-portfolio"]',
-            );
-          }
+          await openMenuSafe(driver);
 
           await driver.clickElement('[data-testid="global-menu-settings"]');
           await driver.clickElement({ text: 'Networks', tag: 'div' });
@@ -761,8 +751,7 @@ describe('Custom network', function () {
           assert.equal(suggestedTicker, false);
           assert.equal(tickerWarning, false);
 
-          driver.clickElement(selectors.tickerButton);
-          driver.clickElement(selectors.saveButton);
+          await driver.clickElement(selectors.saveButton);
 
           // Validate the network was added
           const networkAdded = await driver.isElementPresent(
@@ -876,8 +865,8 @@ describe('Custom network', function () {
           assert.equal(suggestedTicker, true);
           assert.equal(tickerWarning, true);
 
-          driver.clickElement(selectors.tickerButton);
-          driver.clickElement(selectors.saveButton);
+          await driver.clickElement(selectors.tickerButton);
+          await driver.clickElement(selectors.saveButton);
 
           // Validate the network was added
           const networkAdded = await driver.isElementPresent(
@@ -894,11 +883,7 @@ async function checkThatSafeChainsListValidationToggleIsOn(driver) {
   const accountOptionsMenuSelector =
     '[data-testid="account-options-menu-button"]';
   await driver.waitForSelector(accountOptionsMenuSelector);
-  await driver.clickElement(accountOptionsMenuSelector);
-
-  if (process.env.MMI) {
-    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
-  }
+  await openMenuSafe(driver);
 
   const globalMenuSettingsSelector = '[data-testid="global-menu-settings"]';
   await driver.waitForSelector(globalMenuSettingsSelector);
@@ -1027,7 +1012,7 @@ async function toggleOffSafeChainsListValidation(driver) {
     'Safe chains list validation toggle is ON',
   );
 
-  driver.delay(regularDelayMs);
+  await driver.delay(regularDelayMs);
 
   // return to the home screen
   const appHeaderSelector = '[data-testid="app-header-logo"]';

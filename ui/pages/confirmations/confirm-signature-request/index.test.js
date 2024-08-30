@@ -3,12 +3,12 @@ import configureMockStore from 'redux-mock-store';
 import { EthAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import ConfTx from '.';
 
 const mockState = {
   metamask: {
-    unapprovedMsgs: {},
-    unapprovedMsgCount: 0,
     unapprovedPersonalMsgs: {},
     unapprovedPersonalMsgCount: 0,
     unapprovedTypedMessages: {
@@ -27,10 +27,13 @@ const mockState = {
       },
     },
     unapprovedTypedMessagesCount: 1,
-    providerConfig: { chainId: '0x5', type: 'goerli' },
+    ...mockNetworkState({
+      chainId: CHAIN_IDS.GOERLI,
+      nickname: 'Goerli test network',
+      ticker: undefined,
+    }),
     currencyRates: {},
     keyrings: [],
-    networkConfigurations: {},
     subjectMetadata: {},
     accountsByChainId: {
       '0x5': {},
@@ -132,6 +135,19 @@ const mockState = {
             version: '5.1.2',
           },
         ],
+      },
+    },
+    pendingApprovals: {
+      '741bad30-45b6-11ef-b6ec-870d18dd6c01': {
+        id: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+        origin: 'http://127.0.0.1:8080',
+        type: 'transaction',
+        time: 1721383540624,
+        requestData: {
+          txId: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+        },
+        requestState: null,
+        expectsResult: true,
       },
     },
   },

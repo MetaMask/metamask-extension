@@ -1113,13 +1113,10 @@
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "Isulat ito at itabi sa maraming tagong lugar."
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "I-save sa password manager"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "Ilagay sa safe-deposit box."
   },
   "seedPhraseIntroSidebarCopyOne": {
