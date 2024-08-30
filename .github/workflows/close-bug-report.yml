@@ -6,7 +6,6 @@ on:
       - master
     types:
       - closed
-  merge_group:
 
 jobs:
   close-bug-report:

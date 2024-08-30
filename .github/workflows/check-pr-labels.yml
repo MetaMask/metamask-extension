@@ -10,7 +10,6 @@ on:
       - synchronize
       - labeled
       - unlabeled
-  merge_group:
 
 jobs:
   check-pr-labels:
