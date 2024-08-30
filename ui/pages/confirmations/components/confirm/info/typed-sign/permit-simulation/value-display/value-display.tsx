@@ -69,8 +69,12 @@ const PermitSimulationValueDisplay: React.FC<{
   }, [tokenDecimals, value]);
 
   /** Temporary error capturing as we are building out Permit Simulations */
-  if(!tokenContract) {
-    captureException(new Error(`PermitSimulationValueDisplay: Token contract address is missing where primaryType === ${primaryType}`));
+  if (!tokenContract) {
+    captureException(
+      new Error(
+        `PermitSimulationValueDisplay: Token contract address is missing where primaryType === ${primaryType}`,
+      ),
+    );
     return null;
   }
 
