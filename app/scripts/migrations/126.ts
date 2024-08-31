@@ -1,4 +1,4 @@
-import { AccountsControllerState } from '@metamask/accounts-controller';
+import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 
 type VersionedData = {
@@ -9,14 +9,12 @@ type VersionedData = {
 export const version = 126;
 
 /**
- * This migration removes depreciated `Txcontroller` key if it is present in state.
+ * This migration removes `providerConfig` from the network controller state.
  *
- * @param originalVersionedData - Versioned MetaMask extension state, exactly
- * what we persist to dist.
+ * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
  * @param originalVersionedData.meta.version - The current state version.
- * @param originalVersionedData.data - The persisted MetaMask state, keyed by
- * controller.
+ * @param originalVersionedData.data - The persisted MetaMask state, keyed by controller.
  * @returns Updated versioned MetaMask extension state.
  */
 export async function migrate(
@@ -28,22 +26,14 @@ export async function migrate(
   return versionedData;
 }
 
-function transformState(state: Record<string, unknown>) {
-  const accountsControllerState = state?.AccountsController as
-    | AccountsControllerState
-    | undefined;
-
+function transformState(
+  state: Record<string, unknown>,
+): Record<string, unknown> {
   if (
-    accountsControllerState &&
-    Object.values(accountsControllerState?.internalAccounts.accounts).length >
-      0 &&
-    !accountsControllerState?.internalAccounts.accounts[
-      accountsControllerState?.internalAccounts.selectedAccount
-    ]
+    hasProperty(state, 'NetworkController') &&
+    isObject(state.NetworkController)
   ) {
-    accountsControllerState.internalAccounts.selectedAccount = Object.values(
-      accountsControllerState?.internalAccounts.accounts,
-    )[0].id;
+    delete state.NetworkController.providerConfig;
   }
   return state;
 }
