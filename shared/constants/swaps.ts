@@ -70,8 +70,8 @@ export const BNB_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
 } as const;
 
 export const MATIC_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
-  symbol: CURRENCY_SYMBOLS.MATIC,
-  name: 'Matic',
+  symbol: CURRENCY_SYMBOLS.POL,
+  name: 'Polygon',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
   iconUrl: POL_TOKEN_IMAGE_URL,

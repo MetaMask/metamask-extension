@@ -300,11 +300,11 @@
     "@metamask/abi-utils": "^2.0.2",
     "@metamask/account-watcher": "^4.1.0",
     "@metamask/accounts-controller": "^18.1.0",
-    "@metamask/address-book-controller": "^4.0.1",
-    "@metamask/announcement-controller": "^6.1.0",
+    "@metamask/address-book-controller": "^5.0.0",
+    "@metamask/announcement-controller": "^7.0.0",
     "@metamask/approval-controller": "^7.0.0",
     "@metamask/assets-controllers": "^36.0.0",
-    "@metamask/base-controller": "^5.0.1",
+    "@metamask/base-controller": "^6.0.2",
     "@metamask/bitcoin-wallet-snap": "^0.5.0",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.5.0",
@@ -329,12 +329,12 @@
     "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A17.1.1#~/.yarn/patches/@metamask-keyring-controller-npm-17.1.1-098cb41930.patch",
     "@metamask/logging-controller": "^5.0.0",
     "@metamask/logo": "^3.1.2",
-    "@metamask/message-manager": "^7.3.0",
+    "@metamask/message-manager": "^10.0.0",
     "@metamask/message-signing-snap": "^0.3.3",
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/name-controller": "^8.0.0",
     "@metamask/network-controller": "^20.0.0",
-    "@metamask/notification-controller": "^5.0.1",
+    "@metamask/notification-controller": "^6.0.0",
     "@metamask/notification-services-controller": "^0.2.1",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",
@@ -346,7 +346,7 @@
     "@metamask/profile-sync-controller": "^0.2.1",
     "@metamask/providers": "^14.0.2",
     "@metamask/queued-request-controller": "^2.0.0",
-    "@metamask/rate-limit-controller": "^5.0.1",
+    "@metamask/rate-limit-controller": "^6.0.0",
     "@metamask/rpc-errors": "^6.2.1",
     "@metamask/safe-event-emitter": "^3.1.1",
     "@metamask/scure-bip39": "^2.0.3",
@@ -464,7 +464,7 @@
     "@lydell/node-pty": "^1.0.1",
     "@metamask/api-specs": "^0.9.3",
     "@metamask/auto-changelog": "^2.1.0",
-    "@metamask/build-utils": "^1.0.0",
+    "@metamask/build-utils": "^3.0.0",
     "@metamask/eslint-config": "^9.0.0",
     "@metamask/eslint-config-jest": "^9.0.0",
     "@metamask/eslint-config-mocha": "^9.0.0",
@@ -472,7 +472,7 @@
     "@metamask/eslint-config-typescript": "^9.0.1",
     "@metamask/eslint-plugin-design-tokens": "^1.1.0",
     "@metamask/forwarder": "^1.1.0",
-    "@metamask/phishing-warning": "^3.0.3",
+    "@metamask/phishing-warning": "^4.0.0",
     "@metamask/test-bundler": "^1.0.0",
     "@metamask/test-dapp": "^8.4.0",
     "@octokit/core": "^3.6.0",
@@ -683,7 +683,7 @@
   },
   "engines": {
     "node": ">= 20",
-    "yarn": "^4.2.2"
+    "yarn": "^4.4.1"
   },
   "lavamoat": {
     "allowScripts": {
@@ -761,5 +761,5 @@
       "resolve-url-loader>es6-iterator>d>es5-ext>esniff>es5-ext": false
     }
   },
-  "packageManager": "yarn@4.2.2"
+  "packageManager": "yarn@4.4.1"
 }
