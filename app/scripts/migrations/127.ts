@@ -170,8 +170,8 @@ function transformState(
         if (network.id && network.rpcUrl) {
           //
           // Check if the endpoint is a duplicate, which the network controller doesn't allow
-          const findDuplicate = (endpoint) =>
-            endpoint.url === network.rpcUrl ||
+          const findDuplicate = (endpoint: RuntimeObject) =>
+            URI.equal(endpoint.url, network.rpcUrl) ||
             // This should not be possible, but protect against duplicate network client ids
             endpoint.networkClientId === network.id;
 
@@ -283,16 +283,17 @@ function transformState(
     return acc;
   }, {});
 
+  const allRpcEndpoints = Object.values(networkConfigurationsByChainId).flatMap(
+    (n) => n.rpcEndpoints,
+  );
+
   // Ensure that selectedNetworkClientId points to some endpoint of
   // some network configuration. It may not, if its endpoint was not
   // well formed or a duplicate.  In that case, fallback to mainnet.
   const selectedNetworkClientId =
-    Object.values(networkConfigurationsByChainId)
-      .flatMap(({ rpcEndpoints }) => rpcEndpoints)
-      .find(
-        ({ networkClientId }) =>
-          networkClientId === networkState.selectedNetworkClientId,
-      )?.networkClientId ?? 'mainnet';
+    allRpcEndpoints.find(
+      (e) => e.networkClientId === networkState.selectedNetworkClientId,
+    )?.networkClientId ?? 'mainnet';
 
   state.NetworkController = {
     selectedNetworkClientId,
@@ -300,8 +301,22 @@ function transformState(
     networksMetadata: networkState.networksMetadata ?? {},
   };
 
-  // TODO: It might be the case that entries in SelectedNetworkController.domains need
-  // to be removed/replaced, if some network client ids had to be removed due to duplicates
+  // Remove any entries in the selected network controller pointing to
+  // network client ids that no longer exist due to duplicates/invalidity.
+  if (
+    hasProperty(state, 'SelectedNetworkController') &&
+    isObject(state.SelectedNetworkController) &&
+    hasProperty(state.SelectedNetworkController, 'domains') &&
+    isObject(state.SelectedNetworkController.domains)
+  ) {
+    for (const [domain, networkClientId] of Object.entries(
+      state.SelectedNetworkController.domains,
+    )) {
+      if (!allRpcEndpoints.some((e) => e.networkClientId === networkClientId)) {
+        delete state.SelectedNetworkController.domains[domain];
+      }
+    }
+  }
 
   // Set `showMultiRpcModal` based on whether there are any networks with multiple rpc endpoints
   if (

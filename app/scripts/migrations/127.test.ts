@@ -560,68 +560,121 @@ describe(`migration #${version}`, () => {
       ],
     });
   });
-});
 
-it('sets `preferences.showMultiRpcModal` to false when there are no networks with multiple endpoints', async () => {
-  const randomChainId = '0x123456';
+  it('sets `preferences.showMultiRpcModal` to false when there are no networks with multiple endpoints', async () => {
+    const randomChainId = '0x123456';
 
-  const oldState = {
-    meta: { version: oldVersion },
-    data: {
-      PreferencesController: { preferences: {} },
-      NetworkController: {
-        selectedNetworkClientId: 'mainnet',
-        networkConfigurations: {
-          'network-id-1': {
-            id: 'network-id-1',
-            chainId: randomChainId,
-            nickname: 'Random Network',
-            ticker: 'FOO',
-            rpcUrl: 'https://localhost/rpc',
+    const oldState = {
+      meta: { version: oldVersion },
+      data: {
+        PreferencesController: { preferences: {} },
+        NetworkController: {
+          selectedNetworkClientId: 'mainnet',
+          networkConfigurations: {
+            'network-id-1': {
+              id: 'network-id-1',
+              chainId: randomChainId,
+              nickname: 'Random Network',
+              ticker: 'FOO',
+              rpcUrl: 'https://localhost/rpc',
+            },
           },
         },
       },
-    },
-  };
+    };
 
-  const newState = await migrate(oldState);
-  expect(newState.data.PreferencesController).toStrictEqual({
-    preferences: { showMultiRpcModal: false },
+    const newState = await migrate(oldState);
+    expect(newState.data.PreferencesController).toStrictEqual({
+      preferences: { showMultiRpcModal: false },
+    });
   });
-});
 
-it('sets `preferences.showMultiRpcModal` to true when there are networks with multiple endpoints', async () => {
-  const randomChainId = '0x123456';
+  it('sets `preferences.showMultiRpcModal` to true when there are networks with multiple endpoints', async () => {
+    const randomChainId = '0x123456';
 
-  const oldState = {
-    meta: { version: oldVersion },
-    data: {
-      PreferencesController: { preferences: {} },
-      NetworkController: {
-        selectedNetworkClientId: 'mainnet',
-        networkConfigurations: {
-          'network-id-1': {
-            id: 'network-id-1',
-            chainId: randomChainId,
-            nickname: 'Ethereum Network',
-            ticker: 'ETH',
-            rpcUrl: 'https://localhost/rpc/1',
-          },
-          'network-id-2': {
-            id: 'network-id-2',
-            chainId: randomChainId,
-            nickname: 'Random Network',
-            ticker: 'FOO',
-            rpcUrl: 'https://localhost/rpc/2',
+    const oldState = {
+      meta: { version: oldVersion },
+      data: {
+        PreferencesController: { preferences: {} },
+        NetworkController: {
+          selectedNetworkClientId: 'mainnet',
+          networkConfigurations: {
+            'network-id-1': {
+              id: 'network-id-1',
+              chainId: randomChainId,
+              nickname: 'Ethereum Network',
+              ticker: 'ETH',
+              rpcUrl: 'https://localhost/rpc/1',
+            },
+            'network-id-2': {
+              id: 'network-id-2',
+              chainId: randomChainId,
+              nickname: 'Random Network',
+              ticker: 'FOO',
+              rpcUrl: 'https://localhost/rpc/2',
+            },
           },
         },
       },
-    },
-  };
+    };
 
-  const newState = await migrate(oldState);
-  expect(newState.data.PreferencesController).toStrictEqual({
-    preferences: { showMultiRpcModal: true },
+    const newState = await migrate(oldState);
+    expect(newState.data.PreferencesController).toStrictEqual({
+      preferences: { showMultiRpcModal: true },
+    });
+  });
+
+  it('updates the selected network controller to remove stale network client ids', async () => {
+    const randomChainId = '0x123456';
+
+    const oldState = {
+      meta: { version: oldVersion },
+      data: {
+        SelectedNetworkController: {
+          domains: {
+            // I should stay in the selected network controller
+            'normal.com': 'normal-network-id',
+            // I should be removed, as I never pointed to a network
+            'neverexisted.com': 'never-existed-id',
+            // I should be removed, since my url was invalid
+            'invalid-id': 'invalid-id',
+            // I should be removed, since I'm a duplicate
+            'duplicated-id': 'duplicated-id',
+          },
+        },
+        NetworkController: {
+          selectedNetworkClientId: 'mainnet',
+          networkConfigurations: {
+            'normal-network-id': {
+              id: 'normal-network-id',
+              chainId: randomChainId,
+              nickname: 'Normal Network',
+              ticker: 'TICK',
+              rpcUrl: 'https://localhost/rpc',
+            },
+            'invalid-network-id': {
+              id: 'invalid-network-id',
+              chainId: randomChainId,
+              nickname: 'Invalid Network',
+              ticker: 'FOO',
+              rpcUrl: 'invalid-url',
+            },
+            'duplicate-network-id': {
+              id: 'duplicate-network-id',
+              chainId: randomChainId,
+              nickname: 'Duplicate Network',
+              ticker: 'FOO',
+              rpcUrl: 'https://localhost/rpc',
+            },
+          },
+        },
+      },
+    };
+
+    const newState = await migrate(oldState);
+    expect(newState.data.SelectedNetworkController).toStrictEqual({
+      domains: { 'normal.com': 'normal-network-id' },
+    });
   });
 });
 
