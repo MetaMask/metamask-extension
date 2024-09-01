@@ -68,7 +68,6 @@ describe('Block Explorer', function () {
               ticker: 'ETH',
               blockExplorerUrl: 'https://etherscan.io/',
             }),
-            selectedNetworkClientId: 'networkConfigurationId',
           })
           .withTokensControllerERC20()
           .build(),
@@ -124,7 +123,6 @@ describe('Block Explorer', function () {
               ticker: 'ETH',
               blockExplorerUrl: 'https://etherscan.io',
             }),
-            selectedNetworkClientId: 'networkConfigurationId',
           })
           .withTransactionControllerCompletedTransaction()
           .build(),

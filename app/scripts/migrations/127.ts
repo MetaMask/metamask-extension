@@ -164,23 +164,37 @@ function transformState(
       tieBreaker = networks.find((network) => network.type === 'infura');
     }
 
-    // Calculate the unique set of valid rpc endpoints
+    // Calculate the unique set of valid rpc endpoints for this chain id
     const rpcEndpoints = networks.reduce(
       (endpoints: RuntimeObject[], network) => {
         if (network.id && network.rpcUrl) {
-          // Check if the endpoint is a duplicate. Each endpoint must
-          // be unique across all chains, not just within each chain.
-          const isDuplicate = [
-            ...Object.values(acc).flatMap(({ rpcEndpoints: eps }) => eps),
-            ...endpoints,
-          ].some(
-            (endpoint) =>
-              URI.equal(endpoint.url, network.rpcUrl) ||
-              // This should not be possible, but protect against duplicate network client ids
-              endpoint.networkClientId === network.id,
-          );
+          //
+          // Check if the endpoint is a duplicate, which the network controller doesn't allow
+          const findDuplicate = (endpoint) =>
+            endpoint.url === network.rpcUrl ||
+            // This should not be possible, but protect against duplicate network client ids
+            endpoint.networkClientId === network.id;
 
-          if (isValidUrl(network.rpcUrl) && !isDuplicate) {
+          // The endpoint must be unique across all chains, not just within each
+          const duplicateWithinChain = endpoints.find(findDuplicate);
+          const duplicateAcrossChains = Object.values(acc)
+            .flatMap((n) => n.rpcEndpoints)
+            .find(findDuplicate);
+
+          if (
+            duplicateWithinChain &&
+            network.id === networkState.selectedNetworkClientId
+          ) {
+            // If there's a duplicate RPC url within a chain, and one of the
+            // networks is the globally selected network, prefer to use its network
+            // client id so that `selectedNetworkClientId` can remain unchanged.
+            duplicateWithinChain.networkClientId = network.id;
+          } else if (
+            !duplicateWithinChain &&
+            !duplicateAcrossChains &&
+            isValidUrl(network.rpcUrl)
+          ) {
+            // The endpoint is unique and valid, so add it to the list
             endpoints.push({
               networkClientId: network.id,
               url: network.rpcUrl,
