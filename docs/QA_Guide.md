@@ -36,7 +36,7 @@ Steps to mark a full pass of QA complete.
 * Token Management
     * create a token with tokenfactory (http://tokenfactory.surge.sh/#/factory)
     * Add that token to the token view
-    * Send that token to another metamask address.
+    * Send that token to another MetaMask address.
     * confirm the token arrived.
 * Send a transaction and sign a message (https://danfinlay.github.io/js-eth-personal-sign-examples/) for each keyring type
     * hd keyring
