@@ -73,9 +73,8 @@ import {
 } from '../../../ducks/app/app';
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import {
-  CHAIN_IDS,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  NETWORK_TO_NAME_MAP,
+  TEST_CHAINS,
 } from '../../../../shared/constants/network';
 import { Setting } from './setting';
 
@@ -398,13 +397,16 @@ export default function PrivacySettings() {
                     flexDirection={FlexDirection.Column}
                     gap={5}
                   >
-                    {[CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET].map(
-                      (chainId) => (
+                    {Object.values(networkConfigurations)
+                      .filter(({ chainId }) => !TEST_CHAINS.includes(chainId))
+                      .map((network) => (
                         <Box
-                          key={chainId}
+                          key={network.chainId}
                           className="privacy-settings__customizable-network"
                           onClick={() => {
-                            dispatch(setEditedNetwork({ chainId }));
+                            dispatch(
+                              setEditedNetwork({ chainId: network.chainId }),
+                            );
                             dispatch(toggleNetworkMenu());
                           }}
                           display={Display.Flex}
@@ -416,11 +418,15 @@ export default function PrivacySettings() {
                             alignItems={AlignItems.center}
                           >
                             <AvatarNetwork
-                              src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
+                              src={
+                                CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                                  network.chainId
+                                ]
+                              }
                             />
                             <Box textAlign={TextAlign.Left} marginLeft={3}>
                               <Text variant={TextVariant.bodySmMedium}>
-                                {NETWORK_TO_NAME_MAP[chainId]}
+                                {network.name}
                               </Text>
                               <Text
                                 variant={TextVariant.bodyXs}
@@ -429,12 +435,8 @@ export default function PrivacySettings() {
                                 {
                                   // Get just the protocol + domain, not the infura key in path
                                   new URL(
-                                    networkConfigurations[
-                                      chainId
-                                    ]?.rpcEndpoints[
-                                      networkConfigurations[
-                                        chainId
-                                      ]?.defaultRpcEndpointIndex
+                                    network?.rpcEndpoints[
+                                      network?.defaultRpcEndpointIndex
                                     ]?.url,
                                   )?.origin
                                 }
@@ -446,8 +448,7 @@ export default function PrivacySettings() {
                             size={IconSize.Md}
                           />
                         </Box>
-                      ),
-                    )}
+                      ))}
                     <ButtonLink
                       onClick={() => {
                         dispatch(

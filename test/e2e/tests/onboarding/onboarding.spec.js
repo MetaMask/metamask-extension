@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { toHex } = require('@metamask/controller-utils');
 const { By } = require('selenium-webdriver');
 const {
   TEST_SEED_PHRASE,
@@ -19,6 +20,7 @@ const {
   onboardingCompleteWalletCreation,
   regularDelayMs,
   unlockWallet,
+  tinyDelayMs,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -277,29 +279,54 @@ describe('MetaMask onboarding @no-mmi', function () {
 
         // Add custom network localhost 8546 during onboarding
         await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
-        await driver.clickElement('.mm-picker-network');
+        await driver.clickElement({ text: 'Add a network' });
+        await driver.waitForSelector(
+          '.multichain-network-list-menu-content-wrapper__dialog',
+        );
+
+        await driver.fill(
+          '[data-testid="network-form-network-name"]',
+          networkName,
+        );
+        await driver.fill(
+          '[data-testid="network-form-chain-id"]',
+          chainId.toString(),
+        );
+        await driver.fill(
+          '[data-testid="network-form-ticker-input"]',
+          currencySymbol,
+        );
+
+        // Add rpc url
+        const rpcUrlInputDropDown = await driver.waitForSelector(
+          '[data-testid="test-add-rpc-drop-down"]',
+        );
+        await rpcUrlInputDropDown.click();
+        await driver.delay(tinyDelayMs);
         await driver.clickElement({
-          text: 'Add network',
+          text: 'Add RPC URL',
+          tag: 'button',
+        });
+        const rpcUrlInput = await driver.waitForSelector(
+          '[data-testid="rpc-url-input-test"]',
+        );
+        await rpcUrlInput.clear();
+        await rpcUrlInput.sendKeys(networkUrl);
+        await driver.clickElement({
+          text: 'Add URL',
           tag: 'button',
         });
 
-        await driver.waitForSelector('[data-testid="add-network-modal"]');
-        const [
-          networkNameField,
-          networkUrlField,
-          chainIdField,
-          currencySymbolField,
-        ] = await driver.findElements('input[type="text"]');
-        await networkNameField.sendKeys(networkName);
-        await networkUrlField.sendKeys(networkUrl);
-        await chainIdField.sendKeys(chainId.toString());
-        await currencySymbolField.sendKeys(currencySymbol);
-
         await driver.clickElement({ text: 'Save', tag: 'button' });
-        await driver.assertElementNotPresent(
-          '[data-testid="add-network-modal"]',
+        await driver.clickElement({
+          text: 'Done',
+          tag: 'button',
+        });
+
+        await driver.clickElement('.mm-picker-network');
+        await driver.clickElement(
+          `[data-rbd-draggable-id="${toHex(chainId)}"]`,
         );
-        await driver.clickElement({ text: 'Done', tag: 'button' });
 
         // Check localhost 8546 is selected and its balance value is correct
         await driver.findElement({
