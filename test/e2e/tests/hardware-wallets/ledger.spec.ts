@@ -62,6 +62,13 @@ describe('Ledger Hardware', function () {
         await connectLedger(driver);
 
         // Check that the first page of accounts is correct
+        const accountElements = await driver.findElements('[data-testid="hw-account-list__item__address"]');
+        assert.strictEqual(
+          accountElements.length,
+          5,
+          `Expected 5 account elements, but found ${accountElements.length}`
+        );
+
         for (const { address, index } of KNOWN_PUBLIC_KEY_ADDRESSES.slice(
           0,
           4,
@@ -73,11 +80,15 @@ describe('Ledger Hardware', function () {
             '==================================> shortenedAddress',
             shortenedAddress,
           );
-          assert(
-            await driver.isElementPresent({
-              text: shortenedAddress,
-            }),
-            `Known account ${index} with address ${shortenedAddress} not found`,
+          const displayedAddress = await accountElements[index].getText();
+          console.log(
+            '==================================> displayedAddress',
+            displayedAddress,
+          );
+          assert.strictEqual(
+            displayedAddress.toUpperCase(),
+            shortenedAddress,
+            `Known account ${index} with address ${shortenedAddress} not found`
           );
         }
       },
