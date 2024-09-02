@@ -53,7 +53,7 @@ async function switchEthereumChainHandler(
   const networkConfigurationForRequestedChainId =
     getNetworkConfigurationByChainId(chainId);
   const networkClientIdToSwitchTo =
-    networkConfigurationForRequestedChainId.rpcEndpoints[
+    networkConfigurationForRequestedChainId?.rpcEndpoints[
       networkConfigurationForRequestedChainId.defaultRpcEndpointIndex
     ].networkClientId;
 
