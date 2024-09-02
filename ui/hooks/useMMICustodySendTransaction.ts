@@ -13,7 +13,7 @@ import { showCustodyConfirmLink } from '../store/institutional/institution-actio
 type MMITransactionMeta = TransactionMeta & {
   txParams: { from: string };
   custodyStatus: CustodyStatus;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 };
 
 export function useMMICustodySendTransaction() {
