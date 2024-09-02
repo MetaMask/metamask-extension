@@ -205,9 +205,6 @@
   "delete": {
     "message": "Slet"
   },
-  "deleteNetwork": {
-    "message": "Slet Netværk?"
-  },
   "details": {
     "message": "Detaljer"
   },
@@ -349,9 +346,6 @@
   },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "Ikke ETH-netværk, sat til små bogstaver"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Ugyldig Block Explorer-webadresse"
   },
   "invalidRPC": {
     "message": "Ugyldig RPC-webadresse"

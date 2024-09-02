@@ -205,9 +205,6 @@
   "delete": {
     "message": "Usuń"
   },
-  "deleteNetwork": {
-    "message": "Usunąć sieć?"
-  },
   "details": {
     "message": "Szczegóły"
   },
@@ -356,9 +353,6 @@
   },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "To nie jest sieć ETH, zmień na małe litery"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Nieprawidłowe Block Explorer URI"
   },
   "invalidRPC": {
     "message": "Nieprawidłowe RPC URI"

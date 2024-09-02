@@ -236,9 +236,6 @@
   "invalidAddressRecipient": {
     "message": "Moun ki resevwa adrès la pa valab"
   },
-  "invalidBlockExplorerURL": {
-    "message": "Block Explorer URI pa valab"
-  },
   "invalidRPC": {
     "message": "RPC URI pa valab"
   },

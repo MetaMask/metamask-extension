@@ -199,9 +199,6 @@
   "delete": {
     "message": "Radera"
   },
-  "deleteNetwork": {
-    "message": "Radera nätverk?"
-  },
   "details": {
     "message": "Info"
   },
@@ -346,9 +343,6 @@
   },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "Ej ETH-nätverk, ange med små bokstäver"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Ogiltig Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Ogiltig RPC-URL"

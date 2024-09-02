@@ -205,9 +205,6 @@
   "delete": {
     "message": "Ištrinti"
   },
-  "deleteNetwork": {
-    "message": "Panaikinti tinklą?"
-  },
   "details": {
     "message": "Išsami informacija"
   },
@@ -356,9 +353,6 @@
   },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "Ne ETH tinklas, nustatykite į mažąsias raides"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Netinkamas Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Netinkamas RPC URL"

@@ -205,9 +205,6 @@
   "delete": {
     "message": "Poista"
   },
-  "deleteNetwork": {
-    "message": "Poistetaanko verkko?"
-  },
   "details": {
     "message": "Tiedot"
   },
@@ -356,9 +353,6 @@
   },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "Ei ole ETH-verkosto; vaihda pieniin kirjaimiin"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Virheellinen Block Explorer URL-osoite"
   },
   "invalidRPC": {
     "message": "Virheellinen RPC:n URL-osoite"

@@ -534,9 +534,6 @@
   "delete": {
     "message": "Eliminar"
   },
-  "deleteNetwork": {
-    "message": "¿Eliminar red?"
-  },
   "description": {
     "message": "Descripción"
   },
@@ -1023,9 +1020,6 @@
   "invalidAddressRecipientNotEthNetwork": {
     "message": "No es una red ETH; configurar en minúsculas"
   },
-  "invalidBlockExplorerURL": {
-    "message": "Dirección URL del explorador de bloques no válida"
-  },
   "invalidChainIdTooBig": {
     "message": "ID de cadena no válido. El identificador de cadena es demasiado grande."
   },
@@ -1272,9 +1266,6 @@
   "networkNameTestnet": {
     "message": "Red de prueba"
   },
-  "networkSettingsChainIdDescription": {
-    "message": "El ID de la cadena se usa para firmar transacciones. Debe coincidir con el ID de la cadena que devuelve la red. Puede escribir un número decimal o un número hexadecimal con el prefijo “0x”, pero el número se mostrará en decimal."
-  },
   "networkStatus": {
     "message": "Estado de la red"
   },
@@ -1432,9 +1423,6 @@
   "onboardingPinExtensionTitle": {
     "message": "¡Su instalación de MetaMask ha finalizado!"
   },
-  "onlyAddTrustedNetworks": {
-    "message": "Un proveedor de red malintencionado puede mentir sobre el estado de la cadena de bloques y registrar su actividad de red. Agregue solo redes personalizadas de confianza."
-  },
   "onlyConnectTrust": {
     "message": "Conéctese solo con sitios de confianza.",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -1445,9 +1433,6 @@
   },
   "optional": {
     "message": "Opcional"
-  },
-  "optionalWithParanthesis": {
-    "message": "(Opcional)"
   },
   "or": {
     "message": "o"
@@ -2440,9 +2425,6 @@
   },
   "urlErrorMsg": {
     "message": "Las direcciones URL requieren el prefijo HTTP/HTTPS adecuado."
-  },
-  "urlExistsErrorMsg": {
-    "message": "En este momento, la red $1 está utilizando esta dirección URL."
   },
   "useNftDetection": {
     "message": "Autodetectar NFT"

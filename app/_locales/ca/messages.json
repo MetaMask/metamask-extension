@@ -202,9 +202,6 @@
   "delete": {
     "message": "Suprimeix"
   },
-  "deleteNetwork": {
-    "message": "Esborrar Xarxa?"
-  },
   "details": {
     "message": "Detalls"
   },
@@ -343,9 +340,6 @@
   },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "No hi ha xarxa ETH, posar en minúscules"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "URL de Block Explorer"
   },
   "invalidRPC": {
     "message": "URL de RPC"

@@ -205,9 +205,6 @@
   "delete": {
     "message": "Törlés"
   },
-  "deleteNetwork": {
-    "message": "Törli a hálózatot?"
-  },
   "details": {
     "message": "Részletek"
   },
@@ -352,9 +349,6 @@
   },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "Nem ETH hálózat, állítsa kisbetűre"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Helytelen Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Helytelen RPC URL"

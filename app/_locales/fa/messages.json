@@ -205,9 +205,6 @@
   "delete": {
     "message": "حذف"
   },
-  "deleteNetwork": {
-    "message": "شبکه حذف شود؟"
-  },
   "details": {
     "message": "جزئیات"
   },
@@ -356,9 +353,6 @@
   },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "شبکه ETH نه، به حروف کوچک تنظیم کنید"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Block Explorer URL نا معتبر"
   },
   "invalidRPC": {
     "message": "RPC URL نا معتبر"

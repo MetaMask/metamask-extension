@@ -205,9 +205,6 @@
   "delete": {
     "message": "Видалити"
   },
-  "deleteNetwork": {
-    "message": "Видалити мережу?"
-  },
   "details": {
     "message": "Деталі"
   },
@@ -356,9 +353,6 @@
   },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "Не є мережею ETH, налаштуйте нижній регістр"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Недійсний Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Недійсний RPC URL"

@@ -202,9 +202,6 @@
   "delete": {
     "message": "Избриши"
   },
-  "deleteNetwork": {
-    "message": "Da li želite da obrišete mrežu?"
-  },
   "details": {
     "message": "Детаљи"
   },
@@ -353,9 +350,6 @@
   },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "Nije ETH mreža, podešeno na mala slova"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Nevažeći Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Nevažeći RPC URL"

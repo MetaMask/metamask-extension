@@ -205,9 +205,6 @@
   "delete": {
     "message": "Izbriši"
   },
-  "deleteNetwork": {
-    "message": "Izbrišem to omrežje?"
-  },
   "details": {
     "message": "Podrobnosti"
   },
@@ -350,9 +347,6 @@
   },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "Ni omrežja ETH, nastavljene so male črke"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Neveljaven Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Neveljaven RPC URL"

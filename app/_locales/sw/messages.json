@@ -199,9 +199,6 @@
   "delete": {
     "message": "Futa"
   },
-  "deleteNetwork": {
-    "message": "Futa Mtandao?"
-  },
   "details": {
     "message": "Maelezo"
   },
@@ -343,9 +340,6 @@
   },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "Kwa mtandao wa ETH, weka herufi ndogo"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Block Explorer URL batili"
   },
   "invalidRPC": {
     "message": "RPC URL batili"

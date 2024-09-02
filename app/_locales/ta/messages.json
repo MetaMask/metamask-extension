@@ -191,9 +191,6 @@
   "invalidAddressRecipient": {
     "message": "பெறுநர் முகவரி தவறானது"
   },
-  "invalidBlockExplorerURL": {
-    "message": "தவறான Block Explorer URI"
-  },
   "invalidRPC": {
     "message": "தவறான RPC URI"
   },

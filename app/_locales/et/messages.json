@@ -205,9 +205,6 @@
   "delete": {
     "message": "Kustuta"
   },
-  "deleteNetwork": {
-    "message": "Võrk kustutada?"
-  },
   "details": {
     "message": "Üksikasjad"
   },
@@ -352,9 +349,6 @@
   },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "Kehtetu ETH-võrk, kasutage väiketähti"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Vale Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Vale RPC URL"

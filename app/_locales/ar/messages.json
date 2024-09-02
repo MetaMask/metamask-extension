@@ -209,9 +209,6 @@
   "delete": {
     "message": "حذف"
   },
-  "deleteNetwork": {
-    "message": "هل تريد حذف الشبكة؟"
-  },
   "details": {
     "message": "التفاصيل"
   },
@@ -356,9 +353,6 @@
   },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "لا تجعلها شبكة ETH، قم بتعيين الأحرف صغيرة"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "غير صحيح Block Explorer رابط"
   },
   "invalidRPC": {
     "message": "رابط آر بي سي غير صحيح"

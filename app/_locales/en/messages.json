@@ -189,9 +189,6 @@
   "addANetwork": {
     "message": "Add a network"
   },
-  "addANetworkManually": {
-    "message": "Add a network manually"
-  },
   "addANickname": {
     "message": "Add a nickname"
   },
@@ -239,9 +236,6 @@
   "addEthereumChainConfirmationTitle": {
     "message": "Allow this site to add a network?"
   },
-  "addEthereumChainConfirmationTitleExistingNetwork": {
-    "message": "Allow this site to add an RPC endpoint to an existing network?"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Only add this RPC provider if you’re sure you can trust it. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -270,9 +264,6 @@
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
   },
-  "addFromAListOfPopularNetworks": {
-    "message": "Add from a list of popular networks or add a network manually. Only interact with the entities you trust."
-  },
   "addHardwareWallet": {
     "message": "Add hardware wallet"
   },
@@ -285,19 +276,12 @@
   "addMemo": {
     "message": "Add memo"
   },
-  "addMoreNetworks": {
-    "message": "add more networks manually"
-  },
   "addNetwork": {
     "message": "Add network"
   },
   "addNetworkConfirmationTitle": {
     "message": "Add $1",
     "description": "$1 represents network name"
-  },
-  "addNetworkTooltipWarning": {
-    "message": "This network connection relies on third parties. This connection may be less reliable or enable third-parties to track activity. $1",
-    "description": "$1 is Learn more link"
   },
   "addNewAccount": {
     "message": "Add a new Ethereum account"
@@ -351,14 +335,8 @@
   "addingTokens": {
     "message": "Adding tokens"
   },
-  "additionalBlockExplorerUrl": {
-    "message": "Additional Block Explorer URL"
-  },
   "additionalNetworks": {
     "message": "Additional networks"
-  },
-  "additionalRpcUrl": {
-    "message": "Additional RPC URL"
   },
   "address": {
     "message": "Address"
@@ -1051,9 +1029,6 @@
   "confirmConnectionTitle": {
     "message": "Confirm connection to $1"
   },
-  "confirmDeletion": {
-    "message": "Confirm deletion"
-  },
   "confirmFieldPaymaster": {
     "message": "Fee paid by"
   },
@@ -1065,9 +1040,6 @@
   },
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
-  },
-  "confirmRpcUrlDeletionMessage": {
-    "message": "Are you sure you want to delete the RPC URL? Your information will not be saved for this network."
   },
   "confirmTitleApproveTransaction": {
     "message": "Allowance request"
@@ -1434,9 +1406,6 @@
   "custom": {
     "message": "Advanced"
   },
-  "customContentSearch": {
-    "message": "Search for a previously added network"
-  },
   "customGasSettingToolTipMessage": {
     "message": "Use $1 to customize the gas price. This can be confusing if you aren’t familiar. Interact at your own risk.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
@@ -1556,18 +1525,12 @@
   "deleteContact": {
     "message": "Delete contact"
   },
-  "deleteNetwork": {
-    "message": "Delete network?"
-  },
   "deleteNetworkIntro": {
     "message": "If you delete this network, you will need to add it again to view your assets in this network"
   },
   "deleteNetworkTitle": {
     "message": "Delete $1 network?",
     "description": "$1 represents the name of the network"
-  },
-  "deleteRpcUrl": {
-    "message": "Delete RPC URL"
   },
   "deposit": {
     "message": "Deposit"
@@ -1773,9 +1736,6 @@
   "editGasTooLow": {
     "message": "Unknown processing time"
   },
-  "editNetworkInformation": {
-    "message": "Edit network information"
-  },
   "editNetworkLink": {
     "message": "edit the original network"
   },
@@ -1963,9 +1923,6 @@
   "existingRequestsBannerAlertDesc": {
     "message": "To view and confirm your most recent request, you'll need to approve or reject existing requests first."
   },
-  "existingRpcUrl": {
-    "message": "This URL is associated with another chain ID."
-  },
   "expandView": {
     "message": "Expand view"
   },
@@ -1997,9 +1954,6 @@
   "failedToFetchChainId": {
     "message": "Could not fetch chain ID. Is your RPC URL correct?"
   },
-  "failedToFetchTickerSymbolData": {
-    "message": "Ticker symbol verification data is currently unavailable, make sure that the symbol you have entered is correct. It will impact the conversion rates that you see for this network"
-  },
   "failureMessage": {
     "message": "Something went wrong, and we were unable to complete the action"
   },
@@ -2019,9 +1973,6 @@
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "findTheRightChainId": {
-    "message": "Find the right one on:"
   },
   "flaskWelcomeUninstall": {
     "message": "you should uninstall this extension",
@@ -2514,9 +2465,6 @@
   },
   "invalidAssetType": {
     "message": "This asset is an NFT and needs to be re-added on the Import NFTs page found under the NFTs tab"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Invalid block explorer URL"
   },
   "invalidChainIdTooBig": {
     "message": "Invalid chain ID. The chain ID is too big."
@@ -3040,9 +2988,6 @@
   "network": {
     "message": "Network:"
   },
-  "networkAddedSuccessfully": {
-    "message": "Network added successfully!"
-  },
   "networkDetails": {
     "message": "Network details"
   },
@@ -3102,9 +3047,6 @@
   },
   "networkProvider": {
     "message": "Network provider"
-  },
-  "networkSettingsChainIdDescription": {
-    "message": "The chain ID is used for signing transactions. It must match the chain ID returned by the network. You can enter a decimal or '0x'-prefixed hexadecimal number, but we will display the number in decimal."
   },
   "networkStatus": {
     "message": "Network status"
@@ -3568,9 +3510,6 @@
   "onboardingAdvancedPrivacyIPFSValid": {
     "message": "IPFS gateway URL is valid"
   },
-  "onboardingAdvancedPrivacyNetworkButton": {
-    "message": "Add custom network"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our $1 to learn more about how Infura handles data."
   },
@@ -3598,9 +3537,6 @@
   },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Privacy Policy"
-  },
-  "onboardingMetametricsModalTitle": {
-    "message": "Add custom network"
   },
   "onboardingMetametricsNeverCollect": {
     "message": "$1 clicks and views on the app are stored, but other details (like your public address) are not.",
@@ -3694,9 +3630,6 @@
   "onekey": {
     "message": "OneKey"
   },
-  "onlyAddTrustedNetworks": {
-    "message": "A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust."
-  },
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3720,9 +3653,6 @@
   },
   "optional": {
     "message": "Optional"
-  },
-  "optionalWithParanthesis": {
-    "message": "(Optional)"
   },
   "options": {
     "message": "Options"
@@ -4082,9 +4012,6 @@
   "plusXMore": {
     "message": "+ $1 more",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
-  },
-  "popularCustomNetworks": {
-    "message": "Popular custom networks"
   },
   "popularNetworkAddToolTip": {
     "message": "Some of these networks rely on third parties. The connections may be less reliable or enable third-parties to track activity. $1",
@@ -5944,9 +5871,6 @@
   "termsOfUseTitle": {
     "message": "Our Terms of Use have updated"
   },
-  "testNetworks": {
-    "message": "Test networks"
-  },
   "testnets": {
     "message": "Testnets"
   },
@@ -6261,9 +6185,6 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
-  "unMatchedChain": {
-    "message": "According to our records, this URL does not match a known provider for this chain ID."
-  },
   "unapproved": {
     "message": "Unapproved"
   },
@@ -6342,9 +6263,6 @@
   },
   "urlErrorMsg": {
     "message": "URLs require the appropriate HTTP/HTTPS prefix."
-  },
-  "urlExistsErrorMsg": {
-    "message": "This URL is currently used by the $1 network."
   },
   "use4ByteResolution": {
     "message": "Decode smart contracts"
@@ -6562,9 +6480,6 @@
   "whatsThis": {
     "message": "What's this?"
   },
-  "wrongChainId": {
-    "message": "This chain ID doesn’t match the network name."
-  },
   "wrongNetworkName": {
     "message": "According to our records, the network name may not correctly match this chain ID."
   },
@@ -6577,10 +6492,6 @@
   },
   "you": {
     "message": "You"
-  },
-  "youHaveAddedAll": {
-    "message": "You've added all the popular networks. You can discover more networks $1 Or you can $2",
-    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "You need to allow camera access to use this feature."

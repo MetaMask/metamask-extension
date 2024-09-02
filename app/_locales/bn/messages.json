@@ -202,9 +202,6 @@
   "delete": {
     "message": "মুছুন"
   },
-  "deleteNetwork": {
-    "message": "নেটওয়ার্ক মুছবেন?"
-  },
   "details": {
     "message": "বিশদ বিবরণ"
   },
@@ -353,9 +350,6 @@
   },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "ETH নেটওয়ার্ক নয়, ছোটো হরফে সেট করা হয়েছে"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "অবৈধ Block Explorer URL"
   },
   "invalidRPC": {
     "message": "অবৈধ RPC URL"
