@@ -1,7 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<ApproveInfo /> does not render if required data is not present in the transaction 1`] = `<div />`;
-
 exports[`<ApproveInfo /> renders component for approve request 1`] = `
 <div>
   <div

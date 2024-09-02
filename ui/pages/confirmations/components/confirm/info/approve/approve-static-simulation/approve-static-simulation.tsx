@@ -32,9 +32,9 @@ export const ApproveStaticSimulation = () => {
   ) as TransactionMeta;
 
   const { decimals: initialDecimals } = useAssetDetails(
-    transactionMeta.txParams.to,
-    transactionMeta.txParams.from,
-    transactionMeta.txParams.data,
+    transactionMeta?.txParams?.to,
+    transactionMeta?.txParams?.from,
+    transactionMeta?.txParams?.data,
   );
 
   // decimals are sometimes undefined for a split second, so we need to ensure
