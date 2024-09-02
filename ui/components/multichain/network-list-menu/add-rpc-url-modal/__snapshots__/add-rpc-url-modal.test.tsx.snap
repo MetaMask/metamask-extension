@@ -12,7 +12,8 @@ exports[`AddRpcUrlModal should render correctly 1`] = `
         class="mm-box mm-form-text-field mm-box--display-flex mm-box--flex-direction-column"
       >
         <label
-          class="mm-box mm-text mm-label mm-form-text-field__label mm-text--body-md-medium mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+          class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md-medium mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+          for="rpcUrl"
         >
           rpcUrl
         </label>
@@ -24,6 +25,7 @@ exports[`AddRpcUrlModal should render correctly 1`] = `
             class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
             data-testid="rpc-url-input-test"
             focused="false"
+            id="rpcUrl"
             placeholder="enterRpcUrl"
             type="text"
             value=""
@@ -34,7 +36,8 @@ exports[`AddRpcUrlModal should render correctly 1`] = `
         class="mm-box mm-form-text-field mm-box--padding-top-4 mm-box--display-flex mm-box--flex-direction-column"
       >
         <label
-          class="mm-box mm-text mm-label mm-form-text-field__label mm-text--body-md-medium mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+          class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md-medium mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+          for="rpcName"
         >
           rpcNameOptional
         </label>
@@ -43,9 +46,10 @@ exports[`AddRpcUrlModal should render correctly 1`] = `
         >
           <input
             autocomplete="off"
-            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-sm mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
             data-testid="rpc-name-input-test"
             focused="false"
+            id="rpcName"
             placeholder="enterANameToIdentifyTheUrl"
             type="text"
             value=""
