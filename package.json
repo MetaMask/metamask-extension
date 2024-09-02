@@ -8,6 +8,7 @@
   },
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
+    "webpack:lavamoat": "yarn webpack --lavamoat --no-cache",
     "webpack:clearcache": "rimraf node_modules/.cache/webpack",
     "postinstall": "yarn webpack:clearcache",
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' SENTRY_DSN_DEV=https://fake@sentry.io/0000000 yarn",
