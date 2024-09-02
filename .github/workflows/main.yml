@@ -4,7 +4,6 @@ on:
   push:
     branches: [merge-queue-test, master]
   pull_request:
-  merge_group:
 
 jobs:
   check-workflows:
