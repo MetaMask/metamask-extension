@@ -8,8 +8,12 @@ import browser from 'webextension-polyfill';
 import PortStream from 'extension-port-stream';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
+import {
+  CONTENT_SCRIPT,
+  PHISHING_SAFELIST,
+  PHISHING_WARNING_PAGE,
+} from '../constants/stream';
 import { logStreamDisconnectWarning } from './stream-utils';
-import { CONTENT_SCRIPT, PHISHING_SAFELIST, PHISHING_WARNING_PAGE } from '../constants/stream';
 
 const phishingPageUrl = new URL(
   process.env.PHISHING_WARNING_PAGE_URL as string,
