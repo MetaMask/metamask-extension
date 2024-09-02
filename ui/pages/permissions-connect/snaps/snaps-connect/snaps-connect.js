@@ -59,7 +59,10 @@ export default function SnapsConnect({
 
   const SnapsConnectContent = () => {
     let trimmedOrigin = (useOriginMetadata(origin) || {})?.hostname;
-    const { name } = useSelector((state) => getSnapMetadata(state, origin));
+    const { name } = useSelector((state) =>
+      // hack around the selector throwing
+      getSnapMetadata(state, isSnapId(origin) ? origin : `npm:${origin}`),
+    );
 
     if (isSnapId(origin)) {
       trimmedOrigin = name;
