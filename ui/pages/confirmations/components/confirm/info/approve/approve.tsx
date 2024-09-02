@@ -42,11 +42,11 @@ const ApproveInfo = () => {
   );
 
   const customTxParamsData = useMemo(() => {
-    return getCustomTxParamsData(transactionMeta.txParams.data, {
+    return getCustomTxParamsData(transactionMeta?.txParams?.data, {
       customPermissionAmount: customSpendingCap || '0',
       decimals,
     });
-  }, [customSpendingCap, transactionMeta.txParams.data, decimals]);
+  }, [customSpendingCap, transactionMeta?.txParams?.data, decimals]);
 
   const { value: estimatedGasLimit } = useAsyncResult(async () => {
     return await estimateGas({
