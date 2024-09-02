@@ -142,12 +142,6 @@ export function getNetworkIdentifier(state) {
   return nickname || rpcUrl || type;
 }
 
-/**
- * Returns the chain id for the currently selected network.
- *
- * @param {object} state
- * @returns {import('@metamask/utils').Hex}
- */
 export function getCurrentChainId(state) {
   const { chainId } = getProviderConfig(state);
   return chainId;

@@ -30,7 +30,7 @@ const AddBlockExplorerModal = ({
   const [error, setError] = useState<string>();
 
   useEffect(() => {
-    if (url?.length > 0 && !isWebUrl(url)) {
+    if (url && url?.length > 0 && !isWebUrl(url)) {
       setError(t('urlErrorMsg'));
     } else {
       setError(undefined);
@@ -53,7 +53,6 @@ const AddBlockExplorerModal = ({
           id="additional-rpc-url"
           label={t('blockExplorerUrl')}
           inputProps={{
-            variant: TextVariant.bodySm,
             'data-testid': 'explorer-url-input',
           }}
           labelProps={{

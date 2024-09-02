@@ -132,7 +132,7 @@ export function getMultichainNetwork(
     // ProviderConfig will be deprecated to use NetworkConfigurations
     // When a user updates a network name its only updated in the NetworkConfigurations.
     const evmNetwork: ProviderConfigWithImageUrlAndExplorerUrl =
-      getProviderConfig(state);
+      getProviderConfig(state) as ProviderConfigWithImageUrlAndExplorerUrl;
 
     const evmChainIdKey =
       evmChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
@@ -298,7 +298,7 @@ export function getMultichainDefaultToken(
 ) {
   const symbol = getMultichainIsEvm(state, account)
     ? // We fallback to 'ETH' to keep original behavior of `getSwapsDefaultToken`
-      getProviderConfig(state).ticker ?? 'ETH'
+      getProviderConfig(state)?.ticker ?? 'ETH'
     : getMultichainProviderConfig(state, account).ticker;
 
   return { symbol };

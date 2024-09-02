@@ -32,9 +32,7 @@ export const getExampleMockSignatureConfirmState = (
     unapprovedTypedMessages: {
       '123': {
         id: '123',
-        chainId:
-          mockState.metamask.networkConfigurations.testNetworkConfigurationId
-            .chainId,
+        chainId: '0x1',
         type: TransactionType.signTypedData,
         status: TransactionStatus.unapproved,
         txParams: { from: Object.keys(mockState.metamask.identities)[0] },
@@ -69,9 +67,7 @@ export const getExampleMockContractInteractionConfirmState = (
       {
         id: '123',
         type: TransactionType.contractInteraction,
-        chainId:
-          mockState.metamask.networkConfigurations.testNetworkConfigurationId
-            .chainId,
+        chainId: '0x1',
         status: TransactionStatus.unapproved,
         txParams: { from: Object.keys(mockState.metamask.identities)[0] },
       },

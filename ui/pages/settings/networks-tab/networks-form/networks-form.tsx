@@ -5,7 +5,7 @@ import {
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { isStrictHexString } from '@metamask/utils';
+import { Hex, isStrictHexString } from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -163,7 +163,7 @@ export const NetworksForm = ({
 
   // Validate the chain ID when it changes
   useEffect(() => {
-    let error;
+    let error: [string, string] | undefined;
 
     if (chainId === undefined || chainId === '') {
       error = undefined;
@@ -187,8 +187,12 @@ export const NetworksForm = ({
       error = ['invalidChainIdTooBig', t('invalidChainIdTooBig')];
     }
 
+    const chainIdHex = toHex(chainId);
+
     if (!error && !existingNetwork) {
-      const matchingNetwork = networkConfigurations[toHex(chainId)];
+      const matchingNetwork = chainIdHex
+        ? networkConfigurations[chainIdHex]
+        : undefined;
       if (matchingNetwork) {
         error = [
           'existingChainId',
@@ -197,8 +201,8 @@ export const NetworksForm = ({
       }
     }
 
-    let rpcError;
-    if (fetchedChainId && chainId && fetchedChainId !== toHex(chainId)) {
+    let rpcError: [string, string] | undefined;
+    if (fetchedChainId && chainIdHex && fetchedChainId !== chainIdHex) {
       rpcError = [
         'endpointReturnedDifferentChainId',
         t('endpointReturnedDifferentChainId', [hexToDecimal(fetchedChainId)]),
@@ -215,12 +219,12 @@ export const NetworksForm = ({
   // Fetch the chain ID from the RPC endpoint when it changes
   useEffect(() => {
     const rpcUrl =
-      rpcUrls?.rpcEndpoints?.[rpcUrls?.defaultRpcEndpointIndex]?.url;
+      rpcUrls?.rpcEndpoints?.[rpcUrls?.defaultRpcEndpointIndex ?? -1]?.url;
 
     if (rpcUrl) {
       jsonRpcRequest(templateInfuraRpc(rpcUrl), 'eth_chainId')
         .then((response) => {
-          setFetchedChainId(response);
+          setFetchedChainId(response as string);
         })
         .catch((err) => {
           setFetchedChainId(undefined);
@@ -241,13 +245,13 @@ export const NetworksForm = ({
       const chainIdHex = chainId ? toHex(chainId) : undefined;
       if (chainIdHex === CHAIN_IDS.GOERLI) {
         dispatch(showDeprecatedNetworkModal());
-      } else {
+      } else if (chainIdHex) {
         const networkPayload = {
           chainId: chainIdHex,
           name,
           nativeCurrency: ticker,
           rpcEndpoints: rpcUrls?.rpcEndpoints,
-          defaultRpcEndpointIndex: rpcUrls?.defaultRpcEndpointIndex,
+          defaultRpcEndpointIndex: rpcUrls?.defaultRpcEndpointIndex ?? 0,
           blockExplorerUrls: blockExplorers?.blockExplorerUrls,
           defaultBlockExplorerUrlIndex:
             blockExplorers?.defaultBlockExplorerUrlIndex,
@@ -271,7 +275,7 @@ export const NetworksForm = ({
           properties: {
             block_explorer_url:
               blockExplorers?.blockExplorerUrls?.[
-                blockExplorers?.defaultBlockExplorerUrlIndex
+                blockExplorers?.defaultBlockExplorerUrlIndex ?? -1
               ],
             chain_id: chainIdHex,
             network_name: name,
@@ -314,6 +318,7 @@ export const NetworksForm = ({
         paddingBottom={2}
       >
         <FormTextField
+          id="networkName"
           size={FormTextFieldSize.Lg}
           placeholder={t('enterNetworkName')}
           data-testid="network-form-name-input"
@@ -430,6 +435,7 @@ export const NetworksForm = ({
           </Box>
         )}
         <FormTextField
+          id="chainId"
           size={FormTextFieldSize.Lg}
           placeholder={t('enterChainId')}
           paddingTop={4}
@@ -475,10 +481,11 @@ export const NetworksForm = ({
                 variant={TextVariant.bodySm}
                 color={TextColor.primaryDefault}
                 onClick={() => {
-                  if (chainId) {
+                  const chainIdHex = toHex(chainId);
+                  if (chainIdHex) {
                     dispatch(
                       setEditedNetwork({
-                        chainId: toHex(chainId),
+                        chainId: chainIdHex,
                       }),
                     );
                   }
@@ -490,6 +497,7 @@ export const NetworksForm = ({
           </Box>
         ) : null}
         <FormTextField
+          id="nativeCurrency"
           size={FormTextFieldSize.Lg}
           placeholder={t('enterSymbol')}
           paddingTop={4}
@@ -622,7 +630,7 @@ export const NetworksForm = ({
   );
 };
 
-function toHex(value: string) {
+function toHex(value: string): Hex | undefined {
   if (isStrictHexString(value)) {
     return value;
   } else if (/^\d+$/u.test(value)) {

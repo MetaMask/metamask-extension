@@ -29,9 +29,13 @@ const NativeAsset = () => {
   const image = useSelector(getNativeCurrencyImage);
   const showFiat = useSelector(getShouldShowFiat);
   const currentCurrency = useSelector(getCurrentCurrency);
-  const { chainId, ticker, type } = useSelector(getProviderConfig);
+  const { chainId, ticker, type } = useSelector(getProviderConfig) ?? {};
   const { address } = useSelector(getSelectedInternalAccount);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+
+  if (!chainId) {
+    return null;
+  }
 
   const accountLink = getAccountLink(address, chainId, rpcPrefs);
   const trackEvent = useContext(MetaMetricsContext);

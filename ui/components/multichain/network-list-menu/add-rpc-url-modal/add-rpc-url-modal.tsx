@@ -32,7 +32,7 @@ const AddRpcUrlModal = ({
   const nameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (url?.length > 0 && !isWebUrl(url)) {
+    if (url && url?.length > 0 && !isWebUrl(url)) {
       setError(isWebUrl(`https://${url}`) ? t('urlErrorMsg') : t('invalidRPC'));
     } else {
       setError(undefined);
@@ -49,6 +49,7 @@ const AddRpcUrlModal = ({
     >
       <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
         <FormTextField
+          id="rpcUrl"
           size={FormTextFieldSize.Lg}
           error={Boolean(error)}
           label={t('rpcUrl')}
@@ -67,9 +68,9 @@ const AddRpcUrlModal = ({
           <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>
         )}
         <FormTextField
+          id="rpcName"
           size={FormTextFieldSize.Lg}
           inputProps={{
-            variant: TextVariant.bodySm,
             'data-testid': 'rpc-name-input-test',
           }}
           placeholder={t('enterANameToIdentifyTheUrl')}

@@ -273,7 +273,15 @@ describe(`migration #${version}`, () => {
     const newState = await migrate(oldState);
 
     const { networkConfigurationsByChainId } = newState.data
-      .NetworkController as Record<string, object>;
+      .NetworkController as {
+      networkConfigurationsByChainId: Record<
+        string,
+        {
+          defaultBlockExplorerUrlIndex: number;
+          blockExplorerUrls: string[];
+        }
+      >;
+    };
 
     const networkConfiguration = networkConfigurationsByChainId[randomChainId];
     expect(networkConfiguration.defaultBlockExplorerUrlIndex).toStrictEqual(0);
@@ -318,7 +326,20 @@ describe(`migration #${version}`, () => {
       const newState = await migrate(oldState);
 
       const { networkConfigurationsByChainId } = newState.data
-        .NetworkController as Record<string, object>;
+        .NetworkController as {
+        networkConfigurationsByChainId: Record<
+          string,
+          {
+            defaultRpcEndpointIndex: number;
+            rpcEndpoints: {
+              url: string;
+              type: string;
+              name: string;
+              networkClientId: string;
+            }[];
+          }
+        >;
+      };
 
       const networkConfiguration =
         networkConfigurationsByChainId[randomChainId];
@@ -451,7 +472,20 @@ describe(`migration #${version}`, () => {
     const newState = await migrate(oldState);
 
     const { networkConfigurationsByChainId } = newState.data
-      .NetworkController as Record<string, object>;
+      .NetworkController as {
+      networkConfigurationsByChainId: Record<
+        string,
+        {
+          defaultRpcEndpointIndex: number;
+          rpcEndpoints: {
+            url: string;
+            type: string;
+            name: string;
+            networkClientId: string;
+          }[];
+        }
+      >;
+    };
 
     const networkConfiguration = networkConfigurationsByChainId[randomChainId];
     expect(networkConfiguration.defaultRpcEndpointIndex).toStrictEqual(0);

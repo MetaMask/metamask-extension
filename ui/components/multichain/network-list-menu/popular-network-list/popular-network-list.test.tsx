@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { useDispatch, useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { getUnapprovedConfirmations } from '../../../../selectors';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
@@ -63,7 +64,7 @@ describe('PopularNetworkList', () => {
           rpcEndpoints: [
             {
               url: 'https://exampleEth.org/',
-              type: 'custom',
+              type: RpcEndpointType.Custom as const,
               networkClientId: 'network1',
             },
           ],
@@ -78,7 +79,7 @@ describe('PopularNetworkList', () => {
           rpcEndpoints: [
             {
               url: 'https://example.org/',
-              type: 'custom',
+              type: RpcEndpointType.Custom as const,
               networkClientId: 'network2',
             },
           ],
@@ -104,7 +105,7 @@ describe('PopularNetworkList', () => {
           rpcEndpoints: [
             {
               url: 'https://example.org/',
-              type: 'custom',
+              type: RpcEndpointType.Custom as const,
               networkClientId: 'network2',
             },
           ],

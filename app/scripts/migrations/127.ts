@@ -170,15 +170,18 @@ function transformState(
         if (network.id && network.rpcUrl) {
           //
           // Check if the endpoint is a duplicate, which the network controller doesn't allow
-          const findDuplicate = (endpoint: RuntimeObject) =>
-            URI.equal(endpoint.url, network.rpcUrl) ||
-            // This should not be possible, but protect against duplicate network client ids
-            endpoint.networkClientId === network.id;
+          const findDuplicate = (endpoint: unknown) =>
+            isObject(endpoint) &&
+            ((typeof endpoint.url === 'string' &&
+              typeof network.rpcUrl === 'string' &&
+              URI.equal(endpoint.url, network.rpcUrl)) ||
+              // This should not be possible, but protect against duplicate network client ids
+              endpoint.networkClientId === network.id);
 
           // The endpoint must be unique across all chains, not just within each
           const duplicateWithinChain = endpoints.find(findDuplicate);
           const duplicateAcrossChains = Object.values(acc)
-            .flatMap((n) => n.rpcEndpoints)
+            .flatMap((n) => (isObject(n) ? n.rpcEndpoints : []))
             .find(findDuplicate);
 
           if (
@@ -192,6 +195,7 @@ function transformState(
           } else if (
             !duplicateWithinChain &&
             !duplicateAcrossChains &&
+            typeof network.rpcUrl === 'string' &&
             isValidUrl(network.rpcUrl)
           ) {
             // The endpoint is unique and valid, so add it to the list
@@ -284,7 +288,7 @@ function transformState(
   }, {});
 
   const allRpcEndpoints = Object.values(networkConfigurationsByChainId).flatMap(
-    (n) => n.rpcEndpoints,
+    (n) => (isObject(n) && Array.isArray(n.rpcEndpoints) ? n.rpcEndpoints : []),
   );
 
   // Ensure that selectedNetworkClientId points to some endpoint of

@@ -17,19 +17,19 @@ describe('AddRpcUrlModal', () => {
   });
 
   it('should render correctly', () => {
-    const { container } = render(<AddRpcUrlModal />);
+    const { container } = render(<AddRpcUrlModal onAdded={() => undefined} />);
     expect(container).toMatchSnapshot();
   });
 
   it('should render the "Add URL" button with correct text', () => {
-    render(<AddRpcUrlModal />);
+    render(<AddRpcUrlModal onAdded={() => undefined} />);
     const addButton = screen.getByRole('button', { name: 'addUrl' });
     expect(addButton).toBeInTheDocument();
   });
 
   it('should call the appropriate function when "Add URL" button is clicked', () => {
     const mockAddUrl = jest.fn();
-    render(<AddRpcUrlModal />);
+    render(<AddRpcUrlModal onAdded={() => null} />);
     const addButton = screen.getByRole('button', { name: 'addUrl' });
     userEvent.click(addButton);
     expect(mockAddUrl).not.toHaveBeenCalled();

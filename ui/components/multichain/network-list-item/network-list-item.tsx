@@ -68,7 +68,10 @@ export const NetworkListItem = ({
 
   const [networkListItemMenuElement, setNetworkListItemMenuElement] =
     useState();
-  const setNetworkListItemMenuRef = (ref) => {
+
+  // I can't find a type that satisfies this.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const setNetworkListItemMenuRef = (ref: any) => {
     setNetworkListItemMenuElement(ref);
   };
   const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
