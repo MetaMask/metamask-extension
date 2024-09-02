@@ -21,7 +21,7 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
   describe('Submit an increase allowance transaction @no-mmi', function () {
-    it('Sends a type 0 transaction (Legacy)', async function () {
+    it('Sends a type 0 transaction (Legacy) with a small spending cap', async function () {
       await withFixtures(
         {
           dapp: true,
@@ -54,7 +54,7 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
       );
     });
 
-    it('Sends a type 2 transaction (EIP1559)', async function () {
+    it('Sends a type 2 transaction (EIP1559) with a small spending cap', async function () {
       await withFixtures(
         {
           dapp: true,
@@ -78,6 +78,72 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
           await createERC20IncreaseAllowanceTransaction(driver);
 
           const NEW_SPENDING_CAP = '3';
+          await editSpendingCap(driver, NEW_SPENDING_CAP);
+
+          await scrollAndConfirmAndAssertConfirm(driver);
+
+          await assertChangedSpendingCap(driver, NEW_SPENDING_CAP);
+        },
+      );
+    });
+
+    it('Sends a type 0 transaction (Legacy) with a large spending cap', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .withPreferencesController({
+              preferences: {
+                redesignedConfirmationsEnabled: true,
+                isRedesignedConfirmationsDeveloperEnabled: true,
+              },
+            })
+            .build(),
+          ganacheOptions: defaultGanacheOptions,
+          smartContract,
+          testSpecificMock: mocks,
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+          await openDAppWithContract(driver, contractRegistry, smartContract);
+
+          await createERC20IncreaseAllowanceTransaction(driver);
+
+          const NEW_SPENDING_CAP = '3000';
+          await editSpendingCap(driver, NEW_SPENDING_CAP);
+
+          await scrollAndConfirmAndAssertConfirm(driver);
+
+          await assertChangedSpendingCap(driver, NEW_SPENDING_CAP);
+        },
+      );
+    });
+
+    it('Sends a type 2 transaction (EIP1559) with a large spending cap', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .withPreferencesController({
+              preferences: {
+                redesignedConfirmationsEnabled: true,
+                isRedesignedConfirmationsDeveloperEnabled: true,
+              },
+            })
+            .build(),
+          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          smartContract,
+          testSpecificMock: mocks,
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+          await openDAppWithContract(driver, contractRegistry, smartContract);
+
+          await createERC20IncreaseAllowanceTransaction(driver);
+
+          const NEW_SPENDING_CAP = '3000';
           await editSpendingCap(driver, NEW_SPENDING_CAP);
 
           await scrollAndConfirmAndAssertConfirm(driver);
@@ -159,6 +225,9 @@ async function editSpendingCap(driver: Driver, newSpendingCap: string) {
   await driver.delay(largeDelayMs);
 
   await driver.clickElement({ text: 'Save', tag: 'button' });
+
+  // wait for the confirmation to be updated before submitting tx
+  await driver.delay(veryLargeDelayMs * 2);
 }
 
 async function assertChangedSpendingCap(

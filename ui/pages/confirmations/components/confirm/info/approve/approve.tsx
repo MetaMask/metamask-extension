@@ -1,7 +1,10 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { hexToDecimal } from '../../../../../../../shared/modules/conversion.utils';
 import { updateCurrentConfirmation } from '../../../../../../ducks/confirm/confirm';
+import { useAsyncResult } from '../../../../../../hooks/useAsyncResult';
+import { estimateGas } from '../../../../../../store/actions';
 import { getCustomTxParamsData } from '../../../../confirm-approve/confirm-approve.util';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
@@ -36,24 +39,49 @@ const ApproveInfo = () => {
     transactionMeta.txParams?.data,
   );
 
-  const setCustomSpendingCap = (newValue: string) => {
-    // coerce negative numbers to zero
-    if (parseInt(newValue, 10) < 0) {
-      newValue = '0';
+  const customTxParamsData = useMemo(() => {
+    return getCustomTxParamsData(transactionMeta.txParams.data, {
+      customPermissionAmount: customSpendingCap || '0',
+      decimals,
+    });
+  }, [customSpendingCap, transactionMeta.txParams.data, decimals]);
+
+  const { value: estimatedGasLimit } = useAsyncResult(async () => {
+    return await estimateGas({
+      from: transactionMeta.txParams.from,
+      to: transactionMeta.txParams.to,
+      value: transactionMeta.txParams.value,
+      data: customTxParamsData,
+    });
+  }, [customTxParamsData, customSpendingCap, decimals]);
+
+  const [shouldUpdateConfirmation, setShouldUpdateConfirmation] =
+    useState(false);
+  const updateConfirmation = useCallback(() => {
+    if (shouldUpdateConfirmation && estimatedGasLimit) {
+      transactionMeta.txParams.data = customTxParamsData;
+      transactionMeta.txParams.gas = hexToDecimal(estimatedGasLimit as string);
+
+      dispatch(updateCurrentConfirmation(transactionMeta));
+      setShouldUpdateConfirmation(false);
     }
+  }, [
+    shouldUpdateConfirmation,
+    estimatedGasLimit,
+    customTxParamsData,
+    transactionMeta,
+    dispatch,
+  ]);
 
-    const customTxParamsData = getCustomTxParamsData(
-      transactionMeta.txParams.data,
-      {
-        customPermissionAmount: newValue,
-        decimals,
-      },
-    );
+  useEffect(() => {
+    updateConfirmation();
+  }, [updateConfirmation]);
 
-    transactionMeta.txParams.data = customTxParamsData;
-
-    _setCustomSpendingCap(newValue);
-    dispatch(updateCurrentConfirmation(transactionMeta));
+  const setCustomSpendingCap = (newValue: string) => {
+    const value = parseInt(newValue, 10);
+    // coerce negative numbers to zero
+    _setCustomSpendingCap(value < 0 ? '0' : newValue);
+    setShouldUpdateConfirmation(true);
   };
 
   if (!transactionMeta?.txParams) {
