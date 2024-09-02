@@ -10,8 +10,7 @@ import { MMIMainMenuPage } from '../pageObjects/mmi-mainMenu-page';
 import { MMIMainPage } from '../pageObjects/mmi-main-page';
 
 const support = 'https://support.metamask-institutional.io';
-const supportContactUs =
-  'https://support.metamask-institutional.io';
+const supportContactUs = 'https://support.metamask-institutional.io';
 const mmiHomePage = 'https://metamask.io/institutions/';
 const privacyAndNotice = 'https://consensys.io/privacy-notice';
 const openSeaTermsOfUse = 'https://opensea.io/securityproviderterms';
