@@ -1,4 +1,8 @@
 import { ApprovalType } from '@metamask/controller-utils';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 
 import { Confirmation } from '../../../ui/pages/confirmations/types/confirm';
 import mockState from '../mock-state.json';
