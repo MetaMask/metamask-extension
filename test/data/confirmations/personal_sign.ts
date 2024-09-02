@@ -9,6 +9,7 @@ export const unapprovedPersonalSignMsg = {
   time: new Date().getTime(),
   type: 'personal_sign',
   securityProviderResponse: null,
+  chainid: '0x5',
   msgParams: {
     from: PERSONAL_SIGN_SENDER_ADDRESS,
     data: '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
