@@ -51,7 +51,7 @@ async function navigateToEditNetwork(driver: Driver) {
 }
 
 describe('Update Network:', function (this: Suite) {
-  it.only('update network details and validate the ui elements', async function () {
+  it('update network details and validate the ui elements', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
