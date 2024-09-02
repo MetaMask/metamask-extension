@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "12.1.0",
+  "version": "12.1.1",
   "private": true,
   "repository": {
     "type": "git",
@@ -137,6 +137,7 @@
     "analytics-node/axios": "^0.21.2",
     "bn.js": "^5.2.1",
     "ganache-core/lodash": "^4.17.21",
+    "ganache/abstract-level": "1.0.4",
     "git-url-parse@^12.0.0": "^13.1.0",
     "glob-parent": "^6.0.2",
     "netmask": "^2.0.1",
@@ -612,6 +613,7 @@
     "lavamoat": "^8.0.2",
     "lavamoat-browserify": "^17.0.4",
     "lavamoat-viz": "^7.0.5",
+    "level": "^8.0.1",
     "lockfile-lint": "^4.10.6",
     "loose-envify": "^1.4.0",
     "mocha": "^10.2.0",
@@ -755,7 +757,8 @@
       "$root$": true,
       "core-js-pure": true,
       "resolve-url-loader>es6-iterator>d>es5-ext": false,
-      "resolve-url-loader>es6-iterator>d>es5-ext>esniff>es5-ext": false
+      "resolve-url-loader>es6-iterator>d>es5-ext>esniff>es5-ext": false,
+      "level>classic-level": false
     }
   },
   "packageManager": "yarn@4.4.1"

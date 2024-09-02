@@ -118,7 +118,9 @@ describe('ERC721 Approve Confirmation', () => {
     setupSubmitRequestToBackgroundMocks();
     const APPROVE_NFT_HEX_SIG = '0x095ea7b3';
     mock4byte(APPROVE_NFT_HEX_SIG);
-    useIsNFTMock = jest.fn().mockImplementation(() => ({ isNFT: true }));
+    useIsNFTMock = jest
+      .fn()
+      .mockImplementation(() => ({ isNFT: false, decimals: '18' }));
     (useIsNFT as jest.Mock).mockImplementation(useIsNFTMock);
   });
 
@@ -142,7 +144,7 @@ describe('ERC721 Approve Confirmation', () => {
     });
 
     await waitFor(() => {
-      expect(getByText('Allowance request')).toBeInTheDocument();
+      expect(getByText('Spending cap request')).toBeInTheDocument();
     });
 
     await waitFor(() => {
