@@ -1,34 +1,49 @@
+import { ApprovalType } from '@metamask/controller-utils';
+import { TransactionType } from '@metamask/transaction-controller';
+
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockState from '../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
+import {
+  getMockConfirmState,
+  getMockTypedSignConfirmState,
+} from '../../../../test/data/confirmations/helper';
 import useConfirmationNetworkInfo from './useConfirmationNetworkInfo';
 
 describe('useConfirmationNetworkInfo', () => {
   it('returns display name and image when confirmation chainId is present', () => {
-    const { result } = renderHookWithProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationNetworkInfo(),
-      {
-        ...mockState,
+      getMockConfirmState({
         metamask: {
           ...mockState.metamask,
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          pendingApprovals: {
+            123: {
+              id: 123,
+              type: ApprovalType.EthSignTypedData,
+            },
+          },
+          unapprovedTypedMessages: {
+            123: {
+              id: 123,
+              chainId: '0x1',
+              type: TransactionType.signTypedData,
+            },
+          },
         },
-        confirm: {
-          currentConfirmation: { id: '1', chainId: '0x1' },
-        },
-      },
+      }),
     );
 
     expect(result.current.networkDisplayName).toBe('Ethereum Mainnet');
     expect(result.current.networkImageUrl).toBe('./images/eth_logo.svg');
   });
 
-  it.only('returns display name and image for custom network', () => {
-    const { result } = renderHookWithProvider(
+  it('returns display name and image for custom network', () => {
+    const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationNetworkInfo(),
-      {
-        ...mockState,
+      getMockTypedSignConfirmState({
         metamask: {
           ...mockState.metamask,
           ...mockNetworkState({
@@ -36,11 +51,21 @@ describe('useConfirmationNetworkInfo', () => {
             rpcUrl: 'https://testrpc.com',
             nickname: 'Custom Mainnet RPC',
           }),
+          pendingApprovals: {
+            123: {
+              id: 123,
+              type: ApprovalType.EthSignTypedData,
+            },
+          },
+          unapprovedTypedMessages: {
+            123: {
+              id: 123,
+              chainId: '0x7',
+              type: TransactionType.signTypedData,
+            },
+          },
         },
-        confirm: {
-          currentConfirmation: { id: '1', msgParams: {} },
-        },
-      },
+      }),
     );
 
     expect(result.current.networkDisplayName).toBe('Custom Mainnet RPC');
@@ -52,18 +77,27 @@ describe('useConfirmationNetworkInfo', () => {
       nickname: 'Flashbots Protect',
       rpcUrl: 'https://rpc.flashbots.net',
     };
-    const { result } = renderHookWithProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationNetworkInfo(),
-      {
-        ...mockState,
+      getMockConfirmState({
         metamask: {
           ...mockState.metamask,
           ...mockNetworkState(customNetwork),
+          pendingApprovals: {
+            123: {
+              id: 123,
+              type: ApprovalType.EthSignTypedData,
+            },
+          },
+          unapprovedTypedMessages: {
+            123: {
+              id: 123,
+              chainId: '0x1',
+              type: TransactionType.signTypedData,
+            },
+          },
         },
-        confirm: {
-          currentConfirmation: { id: '1', chainId: '0x1' },
-        },
-      },
+      }),
     );
 
     expect(result.current.networkDisplayName).toBe('Flashbots Protect');

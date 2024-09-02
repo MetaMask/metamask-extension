@@ -5,13 +5,14 @@ import {
 } from '@metamask/transaction-controller';
 
 import mockState from '../mock-state.json';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 
 type RootState = { metamask: Record<string, unknown> } & Record<
   string,
   unknown
 >;
 
-export const getExampleMockSignatureConfirmState = (
+export const getMockTypedSignConfirmState = (
   args: RootState = { metamask: {} },
 ) => ({
   ...mockState,
@@ -32,7 +33,7 @@ export const getExampleMockSignatureConfirmState = (
     unapprovedTypedMessages: {
       '123': {
         id: '123',
-        chainId: '0x1',
+        chainId: CHAIN_IDS.GOERLI,
         type: TransactionType.signTypedData,
         status: TransactionStatus.unapproved,
         txParams: { from: Object.keys(mockState.metamask.identities)[0] },
@@ -45,7 +46,7 @@ export const getExampleMockSignatureConfirmState = (
   },
 });
 
-export const getExampleMockContractInteractionConfirmState = (
+export const getMockContractInteractionConfirmState = (
   args: RootState = { metamask: {} },
 ) => ({
   ...mockState,
@@ -67,7 +68,7 @@ export const getExampleMockContractInteractionConfirmState = (
       {
         id: '123',
         type: TransactionType.contractInteraction,
-        chainId: '0x1',
+        chainId: CHAIN_IDS.GOERLI,
         status: TransactionStatus.unapproved,
         txParams: { from: Object.keys(mockState.metamask.identities)[0] },
       },

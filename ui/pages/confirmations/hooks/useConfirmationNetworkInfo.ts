@@ -7,16 +7,16 @@ import {
 } from '../../../../shared/constants/network';
 
 import {
-  currentConfirmationSelector,
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
 } from '../../../selectors';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useConfirmContext } from '../context/confirm';
 
 function useConfirmationNetworkInfo() {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { currentConfirmation } = useConfirmContext();
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const currentChainId = useSelector(getCurrentChainId);
 
