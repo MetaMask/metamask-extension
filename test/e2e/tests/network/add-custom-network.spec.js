@@ -852,6 +852,10 @@ describe('Custom network', function () {
             tag: 'button',
           });
 
+          // suggestion and warning ticker should be displayed
+          await driver.waitForSelector(selectors.suggestedTicker);
+          await driver.waitForSelector(selectors.tickerWarning);
+
           // Add explorer URL
           const explorerUrlInputDropDown = await driver.waitForSelector(
             '[data-testid="test-explorer-drop-down"]',
@@ -878,18 +882,6 @@ describe('Custom network', function () {
             text: 'Add URL',
             tag: 'button',
           });
-
-          const suggestedTicker = await driver.isElementPresent(
-            selectors.suggestedTicker,
-          );
-
-          const tickerWarning = await driver.isElementPresent(
-            selectors.tickerWarning,
-          );
-
-          // suggestion and warning ticker should be displayed
-          assert.equal(suggestedTicker, true);
-          assert.equal(tickerWarning, true);
         },
       );
     });
