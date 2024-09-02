@@ -37,9 +37,7 @@ describe('<ApproveInfo />', () => {
       mockStore,
     );
 
-    await waitFor(() => {
-      expect(container).toMatchSnapshot();
-    });
+    expect(container).toMatchSnapshot();
   });
 
   it('does not render if required data is not present in the transaction', () => {
