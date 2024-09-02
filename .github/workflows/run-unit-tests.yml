@@ -2,7 +2,7 @@ name: Run unit tests
 
 on:
   push:
-    branches: [merge-queue, master]
+    branches: [merge-queue-test, master]
   pull_request:
     types: [opened,reopened,synchronize]
   merge_group:

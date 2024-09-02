@@ -3,10 +3,9 @@ name: Add release label to PR and linked issues when PR gets merged
 on:
   pull_request:
     branches:
-      - merge-queue
+      - merge-queue-test
     types:
       - closed
-  merge_group:
 
 jobs:
   add-release-label:
