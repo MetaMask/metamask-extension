@@ -21,6 +21,7 @@ import {
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
   DEFAULT_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -70,6 +71,7 @@ class SettingsPage extends PureComponent {
     isPopup: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     pathnameI18nKey: PropTypes.string,
+    useExternalServices: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -291,7 +293,7 @@ class SettingsPage extends PureComponent {
   }
 
   renderTabs() {
-    const { history, currentPath } = this.props;
+    const { history, currentPath, useExternalServices } = this.props;
     const { t } = this.context;
 
     const tabs = [
@@ -336,6 +338,14 @@ class SettingsPage extends PureComponent {
         key: ABOUT_US_ROUTE,
       },
     ];
+
+    if (useExternalServices) {
+      tabs.splice(4, 0, {
+        content: t('notifications'),
+        icon: <i className="fa fa-bell" />,
+        key: NOTIFICATIONS_SETTINGS_ROUTE,
+      });
+    }
 
     if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS) {
       tabs.splice(-1, 0, {

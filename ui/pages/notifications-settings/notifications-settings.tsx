@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import type { InternalAccount } from '@metamask/keyring-api';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import {
   Box,
   IconName,
@@ -82,7 +81,7 @@ export default function NotificationsSettings() {
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
-            onClick={() => history.push(NOTIFICATIONS_ROUTE)}
+            onClick={() => history.go(-1)}
           />
         }
         endAccessory={null}

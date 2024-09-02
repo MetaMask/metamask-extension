@@ -1,7 +1,10 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { getAddressBookEntryOrAccountName } from '../../selectors';
+import {
+  getAddressBookEntryOrAccountName,
+  getUseExternalServices,
+} from '../../selectors';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
@@ -95,6 +98,7 @@ const mapStateToProps = (state, ownProps) => {
       ? pathNameTail
       : '',
   );
+  const useExternalServices = getUseExternalServices(state);
 
   return {
     addNewNetwork,
@@ -108,6 +112,7 @@ const mapStateToProps = (state, ownProps) => {
     isPopup,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     pathnameI18nKey,
+    useExternalServices,
   };
 };
 
