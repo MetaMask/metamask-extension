@@ -444,7 +444,13 @@ export function getMetaMaskCachedBalances(state) {
 }
 
 /**
+ *  @typedef {import('./selectors.types').InternalAccountWithBalance} InternalAccountWithBalance
+ */
+
+/**
  * Get ordered (by keyrings) accounts with InternalAccount and balance
+ *
+ * @returns {InternalAccountWithBalance} An array of internal accounts with balance
  */
 export const getMetaMaskAccountsOrdered = createSelector(
   getInternalAccountsSortedByKeyring,
@@ -2328,6 +2334,16 @@ export function getIsAddSnapAccountEnabled(state) {
  */
 export function getIsBitcoinSupportEnabled(state) {
   return state.metamask.bitcoinSupportEnabled;
+}
+
+/**
+ * Get the state of the `bitcoinTestnetSupportEnabled` flag.
+ *
+ * @param {*} state
+ * @returns The state of the `bitcoinTestnetSupportEnabled` flag.
+ */
+export function getIsBitcoinTestnetSupportEnabled(state) {
+  return state.metamask.bitcoinTestnetSupportEnabled;
 }
 
 export function getIsCustomNetwork(state) {

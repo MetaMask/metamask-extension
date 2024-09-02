@@ -10,7 +10,14 @@ import { CreateBtcAccount } from '.';
 
 const render = (props = { onActionComplete: jest.fn() }) => {
   const store = configureStore(mockState);
-  return renderWithProvider(<CreateBtcAccount {...props} />, store);
+  return renderWithProvider(
+    <CreateBtcAccount
+      network={MultichainNetworks.BITCOIN}
+      defaultAccountName="Bitcoin Account"
+      {...props}
+    />,
+    store,
+  );
 };
 
 const ACCOUNT_NAME = 'Bitcoin Account';
@@ -26,12 +33,22 @@ const mockBtcAccount = {
   methods: [BtcMethod.SendMany],
 };
 const mockBitcoinWalletSnapSend = jest.fn().mockReturnValue(mockBtcAccount);
+const mockMultichainUpdateBalance = jest.fn().mockReturnValue({
+  [mockBtcAccount.address]: {
+    [`${MultichainNetworks.BITCOIN_TESTNET}/slip44:0`]: {
+      amount: '0.00000000',
+      unit: 'BTC',
+    },
+  },
+});
 const mockSetAccountLabel = jest.fn().mockReturnValue({ type: 'TYPE' });
 
 jest.mock('../../../store/actions', () => ({
   forceUpdateMetamaskState: jest.fn(),
   setAccountLabel: (address: string, label: string) =>
     mockSetAccountLabel(address, label),
+  multichainUpdateBalance: (accountId: string) =>
+    mockMultichainUpdateBalance(accountId),
 }));
 
 jest.mock(
@@ -78,6 +95,7 @@ describe('CreateBtcAccount', () => {
         newAccountName,
       ),
     );
+    await waitFor(() => expect(mockMultichainUpdateBalance).toHaveBeenCalled());
     await waitFor(() => expect(onActionComplete).toHaveBeenCalled());
   });
 
