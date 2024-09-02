@@ -1,6 +1,7 @@
 // contexts
 export const CONTENT_SCRIPT = 'metamask-contentscript';
 export const METAMASK_INPAGE = 'metamask-inpage';
+export const PHISHING_WARNING_PAGE = 'metamask-phishing-warning-page';
 
 // stream channels
 export const METAMASK_PROVIDER = 'metamask-provider';
