@@ -1,4 +1,6 @@
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { TransactionMeta } from '@metamask/transaction-controller';
+///: END:ONLY_INCLUDE_IF
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
