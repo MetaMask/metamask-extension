@@ -12,9 +12,9 @@ import { MMIMainPage } from '../pageObjects/mmi-main-page';
 
 const portfolio = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}/portfolio`;
 const stake = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}/stake`;
-const support = 'https://mmi-support.metamask.io/hc/en-us';
+const support = 'https://support.metamask-institutional.io';
 const supportContactUs =
-  'https://mmi-support.metamask.io/hc/en-us/requests/new';
+  'https://support.metamask-institutional.io';
 const mmiHomePage = 'https://metamask.io/institutions/';
 const privacyAndPolicy = 'https://consensys.io/privacy-policy';
 const openSeaTermsOfUse = 'https://opensea.io/securityproviderterms';

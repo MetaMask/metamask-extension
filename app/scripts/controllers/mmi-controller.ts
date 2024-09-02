@@ -279,7 +279,9 @@ export default class MMIController extends EventEmitter {
     let addresses: string[] = [];
     const custodyTypes = this.custodyController.getAllCustodyTypes();
 
-    for (const type of custodyTypes) {
+    const filteredCustodyTypesArray = Array.from(custodyTypes).filter(type => type !== 'Custody - Qredo');
+
+    for (const type of filteredCustodyTypesArray) {
       try {
         const keyring = await this.addKeyringIfNotExists(type as KeyringTypes);
 
