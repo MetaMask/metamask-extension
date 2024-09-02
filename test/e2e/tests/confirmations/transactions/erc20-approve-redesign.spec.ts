@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
-import { veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
+import { tinyDelayMs, veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import {
@@ -17,8 +17,8 @@ const {
 const FixtureBuilder = require('../../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
-describe('Confirmation Redesign ERC721 Approve Component', function () {
-  const smartContract = SMART_CONTRACTS.NFTS;
+describe('Confirmation Redesign ERC20 Approve Component', function () {
+  const smartContract = SMART_CONTRACTS.HST;
 
   describe('Submit an Approve transaction @no-mmi', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
@@ -42,12 +42,12 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
-          await createMintTransaction(driver);
-          await confirmMintTransaction(driver);
+          await importTST(driver);
 
-          await createApproveTransaction(driver);
+          await createERC20ApproveTransaction(driver);
 
           await assertApproveDetails(driver);
+
           await confirmApproveTransaction(driver);
         },
       );
@@ -74,11 +74,12 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
-          await createMintTransaction(driver);
-          await confirmMintTransaction(driver);
+          await importTST(driver);
 
-          await createApproveTransaction(driver);
+          await createERC20ApproveTransaction(driver);
+
           await assertApproveDetails(driver);
+
           await confirmApproveTransaction(driver);
         },
       );
@@ -113,27 +114,40 @@ async function mocks(server: MockttpServer) {
   return [await mocked4Bytes(server)];
 }
 
-async function createMintTransaction(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#mintButton');
-}
-
-export async function confirmMintTransaction(driver: Driver) {
-  await driver.waitUntilXWindowHandles(3);
-
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+async function importTST(driver: Driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+  await driver.clickElement('[data-testid="import-token-button"]');
 
   await driver.waitForSelector({
-    css: 'h2',
-    text: 'Transaction request',
+    css: '.import-tokens-modal__button-tab',
+    text: 'Custom token',
+  });
+  await driver.clickElement({
+    css: '.import-tokens-modal__button-tab',
+    text: 'Custom token',
   });
 
-  await scrollAndConfirmAndAssertConfirm(driver);
+  await driver.fill(
+    '[data-testid="import-tokens-modal-custom-address"]',
+    '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+  );
+
+  await driver.delay(tinyDelayMs);
+
+  await driver.clickElement({
+    css: '[data-testid="import-tokens-button-next"]',
+    text: 'Next',
+  });
+
+  await driver.clickElement({
+    css: '[data-testid="import-tokens-modal-import-button"]',
+    text: 'Import',
+  });
 }
 
-async function createApproveTransaction(driver: Driver) {
+async function createERC20ApproveTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#approveButton');
+  await driver.clickElement('#approveTokens');
 }
 
 async function assertApproveDetails(driver: Driver) {
@@ -143,12 +157,12 @@ async function assertApproveDetails(driver: Driver) {
 
   await driver.waitForSelector({
     css: 'h2',
-    text: 'Allowance request',
+    text: 'Spending cap request',
   });
 
   await driver.waitForSelector({
     css: 'p',
-    text: 'This site wants permission to withdraw your NFTs',
+    text: 'This site wants permission to withdraw your tokens',
   });
 
   await driver.waitForSelector({
@@ -158,12 +172,12 @@ async function assertApproveDetails(driver: Driver) {
 
   await driver.waitForSelector({
     css: 'p',
-    text: 'Withdraw',
+    text: 'Spending cap',
   });
 
   await driver.waitForSelector({
     css: 'p',
-    text: '#1',
+    text: '7',
   });
 
   await toggleAdvancedDetails(driver);
@@ -186,6 +200,16 @@ async function assertApproveDetails(driver: Driver) {
   await driver.waitForSelector({
     css: 'p',
     text: 'Method',
+  });
+
+  await driver.waitForSelector({
+    css: 'p',
+    text: 'Account balance',
+  });
+
+  await driver.waitForSelector({
+    css: 'p',
+    text: 'Spending cap',
   });
 }
 
