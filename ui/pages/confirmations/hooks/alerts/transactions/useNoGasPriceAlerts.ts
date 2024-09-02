@@ -30,6 +30,8 @@ export function useNoGasPriceAlerts(): Alert[] {
     currentConfirmation.userFeeLevel !== UserFeeLevel.CUSTOM &&
     !txParamsAreDappSuggested(currentConfirmation);
 
+  console.log({ isNotCustomGasPrice, isNoGasPriceFetched });
+
   const noGasPrice = isNotCustomGasPrice && isNoGasPriceFetched;
 
   return useMemo(() => {

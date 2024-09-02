@@ -208,6 +208,7 @@ export function getIsCustomNetworkGasPriceFetched(state) {
 
 export function getNoGasPriceFetched(state) {
   const gasEstimateType = getGasEstimateType(state);
+  console.log({ gasEstimateType });
   return gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.none;
 }
 
