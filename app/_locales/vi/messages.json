@@ -1027,9 +1027,6 @@
   "confirmRpcUrlDeletionMessage": {
     "message": "Bạn có chắc chắn muốn xóa URL RPC? Thông tin của bạn sẽ không được lưu cho mạng này."
   },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "Chỉ xác nhận giao dịch này nếu bạn hoàn toàn hiểu nội dung và tin tưởng trang web yêu cầu."
-  },
   "confirmTitleDescPermitSignature": {
     "message": "Trang web này muốn được cấp quyền để chi tiêu số token của bạn."
   },
@@ -4164,9 +4161,6 @@
   },
   "receive": {
     "message": "Nhận"
-  },
-  "receiveTokensCamelCase": {
-    "message": "Nhận token"
   },
   "recipientAddressPlaceholder": {
     "message": "Nhập địa chỉ công khai (0x) hoặc tên ENS"

@@ -49,6 +49,7 @@ jest.mock('../../../selectors', () => {
   const mockGetSelectedAccount = jest.fn(() => mockSelectedAccount);
 
   return {
+    ...jest.requireActual('../../../selectors'),
     getAccountType: mockGetAccountType,
     getSelectedInternalAccount: mockGetSelectedAccount,
     getCurrentChainId: jest.fn(() => '0x1'),
@@ -98,7 +99,7 @@ describe('SelectedAccount Component', () => {
     );
 
     const tooltipTitle = container.querySelector(
-      '[data-original-title="This account is not set up for use with goerli"]',
+      '[data-original-title="This account is not set up for use with Chain 5"]',
     );
 
     const button = queryByTestId('selected-account-click');

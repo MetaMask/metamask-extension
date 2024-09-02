@@ -183,16 +183,19 @@ const TokenButtons = ({
       <IconButton
         className="token-overview__button"
         onClick={async () => {
-          trackEvent({
-            event: MetaMetricsEventName.NavSendButtonClicked,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              token_symbol: token.symbol,
-              location: MetaMetricsSwapsEventSource.TokenView,
-              text: 'Send',
-              chain_id: chainId,
+          trackEvent(
+            {
+              event: MetaMetricsEventName.NavSendButtonClicked,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                token_symbol: token.symbol,
+                location: MetaMetricsSwapsEventSource.TokenView,
+                text: 'Send',
+                chain_id: chainId,
+              },
             },
-          });
+            { excludeMetaMetricsId: false },
+          );
           try {
             await dispatch(
               startNewDraftTransaction({

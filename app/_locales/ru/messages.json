@@ -1027,9 +1027,6 @@
   "confirmRpcUrlDeletionMessage": {
     "message": "Уверены, что хотите удалить URL-адрес RPC? Ваша информация не будет сохранена для этой сети."
   },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "Подтверждайте эту транзакцию только в том случае, если вы полностью понимаете ее содержание и доверяете запрашивающему сайту."
-  },
   "confirmTitleDescPermitSignature": {
     "message": "Этот сайт хочет получить разрешение на расходование ваших токенов."
   },
@@ -4164,9 +4161,6 @@
   },
   "receive": {
     "message": "Получить"
-  },
-  "receiveTokensCamelCase": {
-    "message": "Получить токены"
   },
   "recipientAddressPlaceholder": {
     "message": "Введите публичный адрес (0x) или имя ENS"

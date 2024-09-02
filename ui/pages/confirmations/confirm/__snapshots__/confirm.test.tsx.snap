@@ -19,53 +19,13 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class=""
-            >
-              <div
-                class="identicon"
-                style="height: 32px; width: 32px; border-radius: 16px;"
-              >
-                <div
-                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 73, 94);"
-                >
-                  <svg
-                    height="32"
-                    width="32"
-                    x="0"
-                    y="0"
-                  >
-                    <rect
-                      fill="#FB184D"
-                      height="32"
-                      transform="translate(-0.010232866814926739 -2.467961361206475) rotate(274.3 16 16)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#1888F2"
-                      height="32"
-                      transform="translate(0.7019171336752298 13.759175028660584) rotate(203.5 16 16)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#FA8900"
-                      height="32"
-                      transform="translate(28.820219003567207 11.830135279564011) rotate(192.7 16 16)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
+              class="identicon__image-border"
+              style="height: 32px; width: 32px; border-radius: 16px;"
+            />
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
-              C
+              ?
             </div>
           </div>
           <div
@@ -78,9 +38,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
               data-testid="header-network-display-name"
-            >
-              Chain 5
-            </p>
+            />
           </div>
         </div>
         <div
@@ -141,6 +99,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -183,6 +142,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -244,53 +204,13 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class=""
-            >
-              <div
-                class="identicon"
-                style="height: 32px; width: 32px; border-radius: 16px;"
-              >
-                <div
-                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 73, 94);"
-                >
-                  <svg
-                    height="32"
-                    width="32"
-                    x="0"
-                    y="0"
-                  >
-                    <rect
-                      fill="#FB184D"
-                      height="32"
-                      transform="translate(-0.010232866814926739 -2.467961361206475) rotate(274.3 16 16)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#1888F2"
-                      height="32"
-                      transform="translate(0.7019171336752298 13.759175028660584) rotate(203.5 16 16)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#FA8900"
-                      height="32"
-                      transform="translate(28.820219003567207 11.830135279564011) rotate(192.7 16 16)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
+              class="identicon__image-border"
+              style="height: 32px; width: 32px; border-radius: 16px;"
+            />
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
-              C
+              ?
             </div>
           </div>
           <div
@@ -303,9 +223,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
               data-testid="header-network-display-name"
-            >
-              Chain 5
-            </p>
+            />
           </div>
         </div>
         <div
@@ -366,6 +284,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -404,6 +323,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -479,6 +399,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -495,6 +416,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    style="align-items: center;"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -526,6 +448,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -550,6 +473,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -566,6 +490,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                         >
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                            style="align-items: center;"
                           >
                             <p
                               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -590,6 +515,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                         >
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                            style="align-items: center;"
                           >
                             <p
                               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -606,6 +532,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                             >
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                style="align-items: center;"
                               >
                                 <p
                                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -677,6 +604,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                             >
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                style="align-items: center;"
                               >
                                 <p
                                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -748,6 +676,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                             >
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                style="align-items: center;"
                               >
                                 <p
                                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -823,6 +752,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -839,6 +769,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                         >
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                            style="align-items: center;"
                           >
                             <p
                               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -855,6 +786,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                             >
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                style="align-items: center;"
                               >
                                 <p
                                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -879,6 +811,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                             >
                               <div
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                style="align-items: center;"
                               >
                                 <p
                                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -895,6 +828,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                 >
                                   <div
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                    style="align-items: center;"
                                   >
                                     <p
                                       class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -966,6 +900,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                 >
                                   <div
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                    style="align-items: center;"
                                   >
                                     <p
                                       class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1037,6 +972,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                 >
                                   <div
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                    style="align-items: center;"
                                   >
                                     <p
                                       class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1155,53 +1091,13 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class=""
-            >
-              <div
-                class="identicon"
-                style="height: 32px; width: 32px; border-radius: 16px;"
-              >
-                <div
-                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 59);"
-                >
-                  <svg
-                    height="32"
-                    width="32"
-                    x="0"
-                    y="0"
-                  >
-                    <rect
-                      fill="#017B8E"
-                      height="32"
-                      transform="translate(0.7994460693567097 -0.8216011156969824) rotate(317.9 16 16)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#F2B602"
-                      height="32"
-                      transform="translate(-7.493396036912253 11.409935428284795) rotate(134.1 16 16)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#FA8E00"
-                      height="32"
-                      transform="translate(-25.712272690754798 -11.558881043268883) rotate(364.0 16 16)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
+              class="identicon__image-border"
+              style="height: 32px; width: 32px; border-radius: 16px;"
+            />
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
-              C
+              ?
             </div>
           </div>
           <div
@@ -1214,9 +1110,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
               data-testid="header-network-display-name"
-            >
-              Chain 5
-            </p>
+            />
           </div>
         </div>
         <div
@@ -1277,6 +1171,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1351,6 +1246,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1389,6 +1285,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1464,6 +1361,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1480,6 +1378,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    style="align-items: center;"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1511,6 +1410,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1582,6 +1482,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1653,6 +1554,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1690,6 +1592,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1714,6 +1617,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1779,53 +1683,13 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class=""
-            >
-              <div
-                class="identicon"
-                style="height: 32px; width: 32px; border-radius: 16px;"
-              >
-                <div
-                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 59);"
-                >
-                  <svg
-                    height="32"
-                    width="32"
-                    x="0"
-                    y="0"
-                  >
-                    <rect
-                      fill="#017B8E"
-                      height="32"
-                      transform="translate(0.7994460693567097 -0.8216011156969824) rotate(317.9 16 16)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#F2B602"
-                      height="32"
-                      transform="translate(-7.493396036912253 11.409935428284795) rotate(134.1 16 16)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#FA8E00"
-                      height="32"
-                      transform="translate(-25.712272690754798 -11.558881043268883) rotate(364.0 16 16)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
+              class="identicon__image-border"
+              style="height: 32px; width: 32px; border-radius: 16px;"
+            />
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
-              C
+              ?
             </div>
           </div>
           <div
@@ -1838,9 +1702,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
               data-testid="header-network-display-name"
-            >
-              Chain 5
-            </p>
+            />
           </div>
         </div>
         <div
@@ -1901,6 +1763,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1939,6 +1802,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2014,6 +1878,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2030,6 +1895,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    style="align-items: center;"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2061,6 +1927,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2085,6 +1952,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2156,6 +2024,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2227,6 +2096,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2251,6 +2121,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2275,6 +2146,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2346,6 +2218,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2370,6 +2243,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2387,6 +2261,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2458,6 +2333,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2482,6 +2358,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        style="align-items: center;"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"

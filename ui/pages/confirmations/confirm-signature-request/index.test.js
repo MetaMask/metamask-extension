@@ -3,6 +3,8 @@ import configureMockStore from 'redux-mock-store';
 import { EthAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import ConfTx from '.';
 
 const mockState = {
@@ -25,10 +27,13 @@ const mockState = {
       },
     },
     unapprovedTypedMessagesCount: 1,
-    providerConfig: { chainId: '0x5', type: 'goerli' },
+    ...mockNetworkState({
+      chainId: CHAIN_IDS.GOERLI,
+      nickname: 'Goerli test network',
+      ticker: undefined,
+    }),
     currencyRates: {},
     keyrings: [],
-    networkConfigurations: {},
     subjectMetadata: {},
     accountsByChainId: {
       '0x5': {},
