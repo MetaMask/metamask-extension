@@ -107,16 +107,7 @@ const cache = args.cache
 // #region plugins
 const commitHash = isDevelopment ? getLatestCommit().hash() : null;
 const plugins: WebpackPluginInstance[] = [
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore: webpack plugin types might differ when the plugin is loaded from a neighboring folder instead of the properly deduplicated dependencies of the project. Remove this when the plugin is properly installed.
-  new LavamoatPlugin({
-    rootDir: projectRoot,
-    diagnosticsVerbosity: 2,
-    generatePolicy: true,
-    runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
-    readableResourceIds: true,
-    inlineLockdown: /^runtime/u,
-  }),
+  // TODO: we need to have a separate config for inpage because it (and its dependencies) are not supposed to be wrapped with LavaMoat
   new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }),
   // HtmlBundlerPlugin treats HTML files as entry points
   new HtmlBundlerPlugin({
@@ -185,6 +176,21 @@ const plugins: WebpackPluginInstance[] = [
     ],
   }),
 ];
+if (args.lavamoat) {
+  plugins.push(
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore: webpack plugin types might differ when the plugin is loaded from a neighboring folder instead of the properly deduplicated dependencies of the project. Remove this when the plugin is properly installed.
+    new LavamoatPlugin({
+      rootDir: projectRoot,
+      diagnosticsVerbosity: 2,
+      generatePolicy: true,
+      runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
+      readableResourceIds: true,
+      inlineLockdown: /^runtime|contentscript\.js/u,
+      debugRuntime: true,
+    }),
+  );
+}
 // enable React Refresh in 'development' mode when `watch` is enabled
 if (__HMR_READY__ && isDevelopment && args.watch) {
   const ReactRefreshWebpackPlugin: typeof ReactRefreshPluginType = require('@pmmmwh/react-refresh-webpack-plugin');
