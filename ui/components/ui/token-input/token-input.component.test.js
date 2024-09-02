@@ -66,7 +66,7 @@ describe('TokenInput Component', () => {
         metamask: {
           ...mockState.metamask,
           currencyRates: {
-            [CURRENCY_SYMBOLS.MATIC]: {
+            [CURRENCY_SYMBOLS.POL]: {
               conversionRate: 1,
             },
           },
@@ -77,7 +77,7 @@ describe('TokenInput Component', () => {
           providerConfig: {
             chainId: CHAIN_IDS.POLYGON,
             type: NETWORK_TYPES.MAINNET,
-            ticker: CURRENCY_SYMBOLS.MATIC,
+            ticker: CURRENCY_SYMBOLS.POL,
           },
         },
       };
@@ -88,7 +88,7 @@ describe('TokenInput Component', () => {
         mockStore,
       );
 
-      expect(queryByTitle('0 MATIC')).toBeInTheDocument();
+      expect(queryByTitle('0 POL')).toBeInTheDocument();
     });
 
     it('should render showFiat', () => {

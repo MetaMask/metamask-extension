@@ -37,8 +37,8 @@ describe('AssetPill', () => {
       {
         chainId: CHAIN_IDS.POLYGON,
         expected: {
-          ticker: 'MATIC',
-          imgSrc: './images/matic-token.svg',
+          ticker: 'POL',
+          imgSrc: './images/pol-token.svg',
         },
       },
     ];
