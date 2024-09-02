@@ -170,6 +170,42 @@ describe('switchEthereumChainHandler', () => {
         createMockMainnetConfiguration().rpcEndpoints[0].networkClientId,
       );
     });
+
+    it('should handle missing networkConfiguration', async () => {
+      // Mock a network configuration that has an undefined or missing rpcEndpoints
+      const mockNetworkConfiguration = undefined;
+
+      const mocks = makeMocks({
+        overrides: {
+          getNetworkConfigurationByChainId: jest
+            .fn()
+            .mockReturnValue(mockNetworkConfiguration),
+        },
+      });
+
+      const switchEthereumChainHandler = switchEthereumChain.implementation;
+
+      const mockEnd = jest.fn();
+      await switchEthereumChainHandler(
+        {
+          origin: 'example.com',
+          params: [{ chainId: CHAIN_IDS.MAINNET }],
+        },
+        {},
+        jest.fn(),
+        mockEnd,
+        mocks,
+      );
+
+      // Check that the function handled the missing rpcEndpoints and did not attempt to call setActiveNetwork
+      expect(mockEnd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          code: 4902,
+          message: expect.stringContaining('Unrecognized chain ID'),
+        }),
+      );
+      expect(mocks.setActiveNetwork).not.toHaveBeenCalled();
+    });
   });
 
   describe('with permittedChains permissioning active', () => {
