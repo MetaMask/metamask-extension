@@ -50,7 +50,9 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../components/component-library';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import MultiRpcEditModal from '../../components/app/multi-rpc-edit-modal/multi-rpc-edit-modal';
+///: END:ONLY_INCLUDE_IF
 import {
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
