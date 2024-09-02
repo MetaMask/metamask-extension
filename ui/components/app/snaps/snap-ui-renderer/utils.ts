@@ -4,6 +4,7 @@ import { memoize } from 'lodash';
 import { sha256 } from '@noble/hashes/sha256';
 import { NonEmptyArray, bytesToHex, remove0x } from '@metamask/utils';
 import { unescape as unescapeEntities } from 'he';
+import { ChangeEvent as ReactChangeEvent } from 'react';
 import { COMPONENT_MAPPING } from './components';
 import { UIComponent } from './components/types';
 
@@ -11,6 +12,14 @@ export type MapToTemplateParams = {
   map: Record<string, number>;
   element: JSXElement;
   form?: string;
+  useFooter?: boolean;
+  onCancel?: () => void;
+  promptLegacyProps?: {
+    onInputChange: (event: ReactChangeEvent<HTMLInputElement>) => void;
+    inputValue: string;
+    placeholder?: string;
+  };
+  t?: (key: string) => string;
 };
 
 /**
@@ -89,7 +98,7 @@ export const mapToTemplate = (params: MapToTemplateParams): UIComponent => {
   const { type, key } = params.element;
   const elementKey = key ?? generateKey(params.map, params.element);
   const mapped = COMPONENT_MAPPING[
-    type as Exclude<JSXElement['type'], 'Option'>
+    type as Exclude<JSXElement['type'], 'Option' | 'Radio' | 'SelectorOption'>
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ](params as any);

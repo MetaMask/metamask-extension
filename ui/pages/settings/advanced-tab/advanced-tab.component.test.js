@@ -8,12 +8,15 @@ import AdvancedTab from '.';
 
 const mockSetAutoLockTimeLimit = jest.fn().mockReturnValue({ type: 'TYPE' });
 const mockSetShowTestNetworks = jest.fn();
+const mockSetShowFiatConversionOnTestnetsPreference = jest.fn();
 const mockSetStxOptIn = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => {
   return {
     setAutoLockTimeLimit: (...args) => mockSetAutoLockTimeLimit(...args),
     setShowTestNetworks: () => mockSetShowTestNetworks,
+    setShowFiatConversionOnTestnetsPreference: () =>
+      mockSetShowFiatConversionOnTestnetsPreference,
     setSmartTransactionsOptInStatus: () => mockSetStxOptIn,
   };
 });
@@ -31,12 +34,6 @@ describe('AdvancedTab Component', () => {
     const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
     const backupButton = queryByTestId('backup-button');
     expect(backupButton).toBeInTheDocument();
-  });
-
-  it('should render restore button', () => {
-    const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
-    const restoreFile = queryByTestId('restore-file');
-    expect(restoreFile).toBeInTheDocument();
   });
 
   it('should default the auto-lockout time to 0', () => {
@@ -72,6 +69,16 @@ describe('AdvancedTab Component', () => {
     fireEvent.click(autoLockoutButton);
 
     expect(mockSetAutoLockTimeLimit).toHaveBeenCalledWith(0);
+  });
+
+  it('should toggle show fiat on test networks', () => {
+    const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
+
+    const testShowFiatOnTestnets = queryAllByRole('checkbox')[2];
+
+    fireEvent.click(testShowFiatOnTestnets);
+
+    expect(mockSetShowFiatConversionOnTestnetsPreference).toHaveBeenCalled();
   });
 
   it('should toggle show test networks', () => {

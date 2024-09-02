@@ -70,10 +70,38 @@ function getBrowserVersionMap(platforms, version) {
     const versionParts = [major, minor, patch];
     const browserSpecificVersion = {};
     if (prerelease) {
-      if (platform === 'firefox') {
-        versionParts[2] = `${versionParts[2]}${buildType}${buildVersion}`;
-      } else {
-        versionParts.push(buildVersion);
+      const { id } = loadBuildTypesConfig().buildTypes[buildType];
+      if (id < 10 || id > 64 || buildVersion < 0 || buildVersion > 999) {
+        throw new Error(
+          `Build id must be 10-64 and release version must be 0-999
+(inclusive). Received an id of '${id}' and a release version of
+'${buildVersion}'.
+
+Wait, but that seems so arbitrary?
+==================================
+
+We encode the build id and the release version into the extension version by
+concatenating the two numbers together. The maximum value for the concatenated
+number is 65535 (a Chromium limitation). The value cannot start with a '0'. We
+utilize 2 digits for the build id and 3 for the release version. This affords us
+55 release types and 1000 releases per 'version' + build type (for a minimum
+value of 10000 and a maximum value of 64999).
+
+Okay, so how do I fix it?
+=========================
+
+You'll need to adjust the build 'id' (in builds.yml) or the release version to
+fit within these limits or bump the version number in package.json and start the
+release version number over from 0. If you can't do that you'll need to come up
+with a new way of encoding this information, or re-evaluate the need for this
+metadata.
+
+Good luck on your endeavors.`,
+        );
+      }
+      versionParts.push(`${id}${buildVersion}`);
+      if (platform !== 'firefox') {
+        // firefox doesn't support `version_name`
         browserSpecificVersion.version_name = version;
       }
     }
@@ -227,7 +255,7 @@ function getPathInsideNodeModules(packageName, pathToFiles) {
  * @param {string} options.buildType - The build type of the current build.
  * @param {boolean} options.applyLavaMoat - Flag if lavamoat was applied.
  * @param {boolean} options.shouldIncludeSnow - Flag if snow should be included in the build name.
- * @param {boolean} options.shouldIncludeMV3 - Flag if mv3 should be included in the build name.
+ * @param {boolean} options.isManifestV3 - Flag if mv3 should be included in the build name.
  * @param options.environment
  * @returns {string} The build name.
  */
@@ -236,7 +264,7 @@ function getBuildName({
   buildType,
   applyLavaMoat,
   shouldIncludeSnow,
-  shouldIncludeMV3,
+  isManifestV3,
 }) {
   const config = loadBuildTypesConfig();
 
@@ -245,7 +273,7 @@ function getBuildName({
     `MetaMask ${capitalize(buildType)}`;
 
   if (environment !== ENVIRONMENT.PRODUCTION) {
-    const mv3Str = shouldIncludeMV3 ? ' MV3' : '';
+    const mv3Str = isManifestV3 ? ' MV3' : '';
     const lavamoatStr = applyLavaMoat ? ' lavamoat' : '';
     const snowStr = shouldIncludeSnow ? ' snow' : '';
     name += `${mv3Str}${lavamoatStr}${snowStr}`;

@@ -21,14 +21,14 @@ describe('useFeeCalculations', () => {
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "estimatedFiatFee": "$0.00",
-        "estimatedNativeFee": "0 WEI",
-        "l1FiatFee": "",
-        "l1NativeFee": "",
-        "l2FiatFee": "",
-        "l2NativeFee": "",
-        "maxFiatFee": "$0.00",
-        "maxNativeFee": "0 WEI",
+        "estimatedFeeFiat": "$0.00",
+        "estimatedFeeNative": "0 WEI",
+        "l1FeeFiat": "",
+        "l1FeeNative": "",
+        "l2FeeFiat": "",
+        "l2FeeNative": "",
+        "maxFeeFiat": "$0.00",
+        "maxFeeNative": "0 WEI",
       }
     `);
   });
@@ -45,14 +45,14 @@ describe('useFeeCalculations', () => {
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "estimatedFiatFee": "$2.20",
-        "estimatedNativeFee": "0.004 ETH",
-        "l1FiatFee": "",
-        "l1NativeFee": "",
-        "l2FiatFee": "",
-        "l2NativeFee": "",
-        "maxFiatFee": "$4.23",
-        "maxNativeFee": "0.0076 ETH",
+        "estimatedFeeFiat": "$2.20",
+        "estimatedFeeNative": "0.004 ETH",
+        "l1FeeFiat": "",
+        "l1FeeNative": "",
+        "l2FeeFiat": "",
+        "l2FeeNative": "",
+        "maxFeeFiat": "$4.23",
+        "maxFeeNative": "0.0076 ETH",
       }
     `);
   });
@@ -71,14 +71,14 @@ describe('useFeeCalculations', () => {
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "estimatedFiatFee": "$2.54",
-        "estimatedNativeFee": "0.0046 ETH",
-        "l1FiatFee": "$2.50",
-        "l1NativeFee": "0.0045 ETH",
-        "l2FiatFee": "$0.04",
-        "l2NativeFee": "0.0001 ETH",
-        "maxFiatFee": "$4.23",
-        "maxNativeFee": "0.0076 ETH",
+        "estimatedFeeFiat": "$2.54",
+        "estimatedFeeNative": "0.0046 ETH",
+        "l1FeeFiat": "$2.50",
+        "l1FeeNative": "0.0045 ETH",
+        "l2FeeFiat": "$0.04",
+        "l2FeeNative": "0.0001 ETH",
+        "maxFeeFiat": "$4.23",
+        "maxFeeNative": "0.0076 ETH",
       }
     `);
   });

@@ -275,7 +275,7 @@ describe('Change assets', function () {
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
         await driver.fill('[placeholder="Account 2"]', 'Account 2');
-        await driver.clickElement({ text: tEn('create'), tag: 'button' });
+        await driver.clickElement({ text: tEn('addAccount'), tag: 'button' });
 
         // Go back to Account 1
         await driver.clickElement('[data-testid="account-menu-icon"]');

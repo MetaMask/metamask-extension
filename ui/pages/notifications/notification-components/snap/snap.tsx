@@ -29,11 +29,12 @@ export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
     dispatch(markNotificationsAsRead([snapNotification.id]));
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationDetailClicked,
+      event: MetaMetricsEventName.NotificationClicked,
       properties: {
-        notificationId: snapNotification.id,
-        notificationType: snapNotification.type,
-        notificationIsRead: snapNotification.isRead,
+        notification_id: snapNotification.id,
+        notification_type: snapNotification.type,
+        notification_is_read: snapNotification.isRead,
+        click_type: 'item',
       },
     });
   };
@@ -42,11 +43,12 @@ export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
     dispatch(markNotificationsAsRead([snapNotification.id]));
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationItemClicked,
+      event: MetaMetricsEventName.NotificationClicked,
       properties: {
-        notificationId: snapNotification.id,
-        notificationType: snapNotification.type,
-        notificationIsRead: snapNotification.isRead,
+        notification_id: snapNotification.id,
+        notification_type: snapNotification.type,
+        notification_is_read: snapNotification.isRead,
+        click_type: 'item',
       },
     });
     history.push(getSnapRoute(snapNotification.data.origin));
@@ -55,6 +57,7 @@ export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
   return (
     <NotificationListItemSnap
       id={snapNotification.id}
+      snapId={snapNotification.data.origin}
       isRead={snapNotification.isRead}
       createdAt={new Date(snapNotification.createdAt)}
       title={{

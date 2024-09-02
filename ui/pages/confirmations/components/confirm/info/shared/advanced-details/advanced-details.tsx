@@ -4,6 +4,7 @@ import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import {
   getCustomNonceValue,
@@ -15,7 +16,6 @@ import {
   showModal,
   updateCustomNonce,
 } from '../../../../../../../store/actions';
-import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { TransactionData } from '../transaction-data/transaction-data';
 
 const NonceDetails = () => {
@@ -46,12 +46,13 @@ const NonceDetails = () => {
   const displayedNonce = customNonceValue || nextNonce;
 
   return (
-    <ConfirmInfoSection>
+    <ConfirmInfoSection data-testid="advanced-details-nonce-section">
       <ConfirmInfoRow
         label={t('advancedDetailsNonceDesc')}
         tooltip={t('advancedDetailsNonceTooltip')}
       >
         <ConfirmInfoRowText
+          data-testid="advanced-details-displayed-nonce"
           text={`${displayedNonce}`}
           onEditClick={
             enableCustomNonce ? () => openEditNonceModal() : undefined

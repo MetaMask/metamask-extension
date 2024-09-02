@@ -1,15 +1,25 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
+import { Browser } from 'selenium-webdriver';
 import FixtureBuilder from '../../fixture-builder';
+import { generateGanacheOptions } from '../../helpers';
 import {
-  WINDOW_TITLES,
-  clickNestedButton,
-  generateGanacheOptions,
-} from '../../helpers';
+  BRIDGE_CLIENT_ID,
+  BRIDGE_DEV_API_BASE_URL,
+  BRIDGE_PROD_API_BASE_URL,
+} from '../../../../shared/constants/bridge';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import GanacheContractAddressRegistry from '../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../webdriver/driver';
+import { FeatureFlagResponse } from '../../../../ui/pages/bridge/bridge.util';
+import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
+import {
+  DEFAULT_FEATURE_FLAGS_RESPONSE,
+  ETH_CONVERSION_RATE_USD,
+  MOCK_CURRENCY_RATES,
+} from './constants';
+
+const IS_FIREFOX = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 export class BridgePage {
   driver: Driver;
@@ -18,12 +28,18 @@ export class BridgePage {
     this.driver = driver;
   }
 
-  load = async (
+  reloadHome = async () => {
+    await this.driver.navigate();
+  };
+
+  navigateToBridgePage = async (
     location:
       | 'wallet-overview'
       | 'coin-overview'
       | 'token-overview' = 'wallet-overview',
   ) => {
+    // Mitigates flakiness by waiting for the feature flags to be fetched
+    await this.driver.delay(3000);
     let bridgeButtonTestIdPrefix;
     switch (location) {
       case 'wallet-overview':
@@ -41,90 +57,96 @@ export class BridgePage {
     );
   };
 
-  reloadHome = async (shouldCloseWindow = true) => {
-    if (shouldCloseWindow) {
-      await this.driver.closeWindow();
-      await this.driver.delay(2000);
-      await this.driver.switchToWindowWithTitle(
-        WINDOW_TITLES.ExtensionInFullScreenView,
-      );
-    }
-    await this.driver.navigate();
-  };
+  navigateToAssetPage = async (symbol: string) => {
+    await this.driver.clickElement({
+      css: '[data-testid="multichain-token-list-button"]',
+      text: symbol,
+    });
 
-  loadAssetPage = async (
-    contractRegistry: GanacheContractAddressRegistry,
-    symbol?: string,
-  ) => {
-    let tokenListItem;
-
-    if (symbol) {
-      // Import token
-      const contractAddress = await contractRegistry.getContractAddress(
-        SMART_CONTRACTS.HST,
-      );
-      await this.driver.clickElement({
-        text: 'Import tokens',
-        tag: 'button',
-      });
-      await clickNestedButton(this.driver, 'Custom token');
-      await this.driver.fill(
-        '[data-testid="import-tokens-modal-custom-address"]',
-        contractAddress,
-      );
-      await this.driver.waitForSelector(
-        '[data-testid="import-tokens-modal-custom-decimals"]',
-      );
-      await this.driver.clickElement({
-        text: 'Next',
-        tag: 'button',
-      });
-      await this.driver.clickElement(
-        '[data-testid="import-tokens-modal-import-button"]',
-      );
-      await this.driver.delay(2000);
-      tokenListItem = await this.driver.findElement({ text: symbol });
-    } else {
-      tokenListItem = await this.driver.findElement(
-        '[data-testid="multichain-token-list-button"]',
-      );
-    }
-    await tokenListItem.click();
+    await this.driver.delay(2000);
     assert.ok((await this.driver.getCurrentUrl()).includes('asset'));
   };
 
-  verifyPortfolioTab = async (url: string) => {
+  verifyPortfolioTab = async (expectedHandleCount: number) => {
     await this.driver.delay(4000);
     await this.driver.switchToWindowWithTitle('MetaMask Portfolio - Bridge');
-    assert.equal(await this.driver.getCurrentUrl(), url);
+    assert.equal(
+      (await this.driver.getAllWindowHandles()).length,
+      IS_FIREFOX || !isManifestV3
+        ? expectedHandleCount
+        : expectedHandleCount + 1,
+    );
+    assert.match(
+      await this.driver.getCurrentUrl(),
+      /^https:\/\/portfolio\.metamask\.io\/bridge/u,
+    );
   };
 
-  verifySwapPage = async () => {
-    const currentUrl = await this.driver.getCurrentUrl();
-    assert.ok(currentUrl.includes('cross-chain/swaps'));
+  verifySwapPage = async (expectedHandleCount: number) => {
+    await this.driver.delay(4000);
+    await this.driver.waitForSelector({
+      css: '.bridge__title',
+      text: 'Bridge',
+    });
+    assert.equal(
+      (await this.driver.getAllWindowHandles()).length,
+      IS_FIREFOX || !isManifestV3
+        ? expectedHandleCount
+        : expectedHandleCount + 1,
+    );
+    assert.match(await this.driver.getCurrentUrl(), /.+cross-chain\/swaps/u);
   };
 }
 
+const mockServer =
+  (featureFlagOverrides: Partial<FeatureFlagResponse>) =>
+  async (mockServer_: Mockttp) => {
+    const featureFlagMocks = [
+      `${BRIDGE_DEV_API_BASE_URL}/getAllFeatureFlags`,
+      `${BRIDGE_PROD_API_BASE_URL}/getAllFeatureFlags`,
+    ].map(
+      async (url) =>
+        await mockServer_
+          .forGet(url)
+          .withHeaders({ 'X-Client-Id': BRIDGE_CLIENT_ID })
+          .always()
+          .thenCallback(() => {
+            return {
+              statusCode: 200,
+              json: {
+                ...DEFAULT_FEATURE_FLAGS_RESPONSE,
+                ...featureFlagOverrides,
+              },
+            };
+          }),
+    );
+    return Promise.all(featureFlagMocks);
+  };
+
 export const getBridgeFixtures = (
   title?: string,
-  testSpecificMock?: (server: Mockttp) => Promise<void>,
+  featureFlags: Partial<FeatureFlagResponse> = {},
   withErc20: boolean = true,
 ) => {
   const fixtureBuilder = new FixtureBuilder({
     inputChainId: CHAIN_IDS.MAINNET,
-  }).withNetworkControllerOnMainnet();
+  })
+    .withNetworkControllerOnMainnet()
+    .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withBridgeControllerDefaultState();
 
   if (withErc20) {
-    fixtureBuilder.withTokensControllerERC20();
+    fixtureBuilder.withTokensControllerERC20({ chainId: 1 });
   }
 
   return {
     driverOptions: {
-      openDevToolsForTabs: true,
+      // openDevToolsForTabs: true,
     },
     fixtures: fixtureBuilder.build(),
-    testSpecificMock,
+    testSpecificMock: mockServer(featureFlags),
     smartContract: SMART_CONTRACTS.HST,
+    ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     ganacheOptions: generateGanacheOptions({
       hardfork: 'london',
       chain: { chainId: CHAIN_IDS.MAINNET },

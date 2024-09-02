@@ -4,9 +4,9 @@ const {
 } = require('@metamask/snaps-utils');
 const { merge } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
-const { NetworkStatus } = require('@metamask/network-controller');
+const { mockNetworkState } = require('../stub/networks');
 
-const { CHAIN_IDS, NETWORK_TYPES } = require('../../shared/constants/network');
+const { CHAIN_IDS } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { DAPP_URL, DAPP_ONE_URL, ACCOUNT_1 } = require('./helpers');
 const { DEFAULT_FIXTURE_ACCOUNT, ERC_4337_ACCOUNT } = require('./constants');
@@ -40,32 +40,15 @@ function onboardingFixture() {
         },
       },
       NetworkController: {
-        selectedNetworkClientId: 'networkConfigurationId',
-        networksMetadata: {
-          networkConfigurationId: {
-            EIPS: {},
-            status: NetworkStatus.Available,
-          },
-        },
-        providerConfig: {
-          ticker: 'ETH',
-          type: 'rpc',
-          rpcUrl: 'http://localhost:8545',
+        ...mockNetworkState({
+          id: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
-          id: 'networkConfigurationId',
-        },
-        networkConfigurations: {
-          networkConfigurationId: {
-            chainId: CHAIN_IDS.LOCALHOST,
-            nickname: 'Localhost 8545',
-            rpcPrefs: {},
-            rpcUrl: 'http://localhost:8545',
-            ticker: 'ETH',
-            networkConfigurationId: 'networkConfigurationId',
-            type: 'rpc',
-          },
-        },
+          rpcUrl: 'http://localhost:8545',
+          ticker: 'ETH',
+          blockExplorerUrl: undefined,
+        }),
+        providerConfig: { id: 'networkConfigurationId' },
       },
       PreferencesController: {
         advancedGasFee: null,
@@ -87,7 +70,8 @@ function onboardingFixture() {
           smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
-          showTokenAutodetectModal: false,
+          isRedesignedConfirmationsDeveloperEnabled: false,
+          showConfirmationAdvancedDetails: false,
         },
         useExternalServices: true,
         theme: 'light',
@@ -223,59 +207,48 @@ class FixtureBuilder {
 
   withNetworkController(data) {
     merge(this.fixture.data.NetworkController, data);
+    this.fixture.data.NetworkController.providerConfig = {
+      id: this.fixture.data.NetworkController.selectedNetworkClientId,
+    };
     return this;
   }
 
   withNetworkControllerOnMainnet() {
-    merge(this.fixture.data.NetworkController, {
-      providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
-        nickname: '',
-        rpcUrl: '',
-        type: NETWORK_TYPES.MAINNET,
-      },
-    });
-    return this;
+    return this.withNetworkController({ selectedNetworkClientId: 'mainnet' });
   }
 
   withNetworkControllerDoubleGanache() {
-    return this.withNetworkController({
-      networkConfigurations: {
-        networkConfigurationId: {
-          chainId: CHAIN_IDS.LOCALHOST,
-          nickname: 'Localhost 8545',
-          rpcPrefs: {},
-          rpcUrl: 'http://localhost:8545',
-          ticker: 'ETH',
-          networkConfigurationId: 'networkConfigurationId',
-          id: 'networkConfigurationId',
-        },
-        '76e9cd59-d8e2-47e7-b369-9c205ccb602c': {
-          id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
-          rpcUrl: 'http://localhost:8546',
-          chainId: '0x53a',
-          ticker: 'ETH',
-          nickname: 'Localhost 8546',
-          rpcPrefs: {},
-        },
+    const ganacheNetworks = mockNetworkState(
+      {
+        chainId: CHAIN_IDS.LOCALHOST,
+        nickname: 'Localhost 8545',
+        rpcUrl: 'http://localhost:8545',
+        ticker: 'ETH',
       },
-    });
+      {
+        id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
+        rpcUrl: 'http://localhost:8546',
+        chainId: '0x53a',
+        ticker: 'ETH',
+        nickname: 'Localhost 8546',
+      },
+    );
+    delete ganacheNetworks.selectedNetworkClientId;
+    return this.withNetworkController(ganacheNetworks);
   }
 
   withNetworkControllerTripleGanache() {
     this.withNetworkControllerDoubleGanache();
-    merge(this.fixture.data.NetworkController, {
-      networkConfigurations: {
-        '243ad4c2-10a6-4621-9536-e3a67f4dd4c9': {
-          id: '243ad4c2-10a6-4621-9536-e3a67f4dd4c9',
-          rpcUrl: 'http://localhost:7777',
-          chainId: '0x3e8',
-          ticker: 'ETH',
-          nickname: 'Localhost 7777',
-          rpcPrefs: {},
-        },
-      },
-    });
+    merge(
+      this.fixture.data.NetworkController,
+      mockNetworkState({
+        rpcUrl: 'http://localhost:7777',
+        chainId: '0x3e8',
+        ticker: 'ETH',
+        nickname: 'Localhost 7777',
+        blockExplorerUrl: undefined,
+      }),
+    );
     return this;
   }
 
@@ -365,6 +338,19 @@ class FixtureBuilder {
     return this;
   }
 
+  withBridgeControllerDefaultState() {
+    this.fixture.data.BridgeController = {
+      bridgeState: {
+        bridgeFeatureFlags: {
+          destNetworkAllowlist: [],
+          extensionSupport: false,
+          srcNetworkAllowlist: [],
+        },
+      },
+    };
+    return this;
+  }
+
   withPermissionControllerConnectedToTestDapp(restrictReturnedAccounts = true) {
     return this.withPermissionController({
       subjects: {
@@ -383,6 +369,32 @@ class FixtureBuilder {
                     '0x09781764c08de8ca82e156bbf156a3ca217c7950',
                     ERC_4337_ACCOUNT.toLowerCase(),
                   ],
+                },
+              ],
+              date: 1664388714636,
+            },
+          },
+        },
+      },
+    });
+  }
+
+  withPermissionControllerSnapAccountConnectedToTestDapp(
+    restrictReturnedAccounts = true,
+  ) {
+    return this.withPermissionController({
+      subjects: {
+        [DAPP_URL]: {
+          origin: DAPP_URL,
+          permissions: {
+            eth_accounts: {
+              id: 'ZaqPEWxyhNCJYACFw93jE',
+              parentCapability: 'eth_accounts',
+              invoker: DAPP_URL,
+              caveats: restrictReturnedAccounts && [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: ['0x09781764c08de8ca82e156bbf156a3ca217c7950'],
                 },
               ],
               date: 1664388714636,
@@ -539,6 +551,11 @@ class FixtureBuilder {
     });
   }
 
+  withPreferencesControllerAndFeatureFlag(flags) {
+    merge(this.fixture.data.PreferencesController, flags);
+    return this;
+  }
+
   withAccountsController(data) {
     merge(this.fixture.data.AccountsController, data);
     return this;
@@ -555,7 +572,6 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -576,7 +592,6 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -596,7 +611,6 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -625,7 +639,6 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -646,7 +659,6 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -736,7 +748,7 @@ class FixtureBuilder {
     return this;
   }
 
-  withTokensControllerERC20() {
+  withTokensControllerERC20({ chainId = 1337 } = {}) {
     merge(this.fixture.data.TokensController, {
       tokens: [
         {
@@ -752,7 +764,7 @@ class FixtureBuilder {
       ignoredTokens: [],
       detectedTokens: [],
       allTokens: {
-        [toHex(1337)]: {
+        [toHex(chainId)]: {
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,

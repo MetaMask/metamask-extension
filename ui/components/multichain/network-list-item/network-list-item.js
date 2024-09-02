@@ -16,6 +16,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
+  AvatarNetworkSize,
   Box,
   ButtonIcon,
   ButtonIconSize,
@@ -33,11 +34,14 @@ const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 export const NetworkListItem = ({
   name,
   iconSrc,
+  iconSize = AvatarNetworkSize.Md,
   selected = false,
   focus = true,
   onClick,
   onDeleteClick,
   onEditClick,
+  startAccessory,
+  showEndAccessory = true,
 }) => {
   const t = useI18nContext();
   const networkRef = useRef();
@@ -99,7 +103,7 @@ export const NetworkListItem = ({
   return (
     <Box
       padding={4}
-      gap={2}
+      gap={4}
       backgroundColor={selected ? Color.primaryMuted : Color.transparent}
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
@@ -110,6 +114,7 @@ export const NetworkListItem = ({
       width={BlockSize.Full}
       onClick={onClick}
     >
+      {startAccessory ? <Box marginTop={1}>{startAccessory}</Box> : null}
       {selected && (
         <Box
           className="multichain-network-list-item__selected-indicator"
@@ -121,6 +126,7 @@ export const NetworkListItem = ({
         backgroundColor={getAvatarNetworkColor(name)}
         name={name}
         src={iconSrc}
+        size={iconSize}
       />
       <Box
         className="multichain-network-list-item__network-name"
@@ -150,13 +156,15 @@ export const NetworkListItem = ({
         </Text>
       </Box>
       {renderButton()}
-      <NetworkListItemMenu
-        anchorElement={networkListItemMenuElement}
-        isOpen={networkOptionsMenuOpen}
-        onDeleteClick={onDeleteClick}
-        onEditClick={onEditClick}
-        onClose={() => setNetworkOptionsMenuOpen(false)}
-      />
+      {showEndAccessory ? (
+        <NetworkListItemMenu
+          anchorElement={networkListItemMenuElement}
+          isOpen={networkOptionsMenuOpen}
+          onDeleteClick={onDeleteClick}
+          onEditClick={onEditClick}
+          onClose={() => setNetworkOptionsMenuOpen(false)}
+        />
+      ) : null}
     </Box>
   );
 };
@@ -170,6 +178,10 @@ NetworkListItem.propTypes = {
    * Path to the Icon image
    */
   iconSrc: PropTypes.string,
+  /**
+   * Icon network size
+   */
+  iconSize: PropTypes.string,
   /**
    * Represents if the network item is selected
    */
@@ -190,4 +202,12 @@ NetworkListItem.propTypes = {
    * Represents if the network item should be keyboard selected
    */
   focus: PropTypes.bool,
+  /**
+   * Represents start accessory
+   */
+  startAccessory: PropTypes.node,
+  /**
+   * Represents if we need to show menu option
+   */
+  showEndAccessory: PropTypes.bool,
 };

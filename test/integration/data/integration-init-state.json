@@ -358,9 +358,6 @@
   "defaultHomeActiveTabName": "activity",
   "desktopEnabled": false,
   "detectedTokens": [],
-  "disabledRpcMethodPreferences": {
-    "eth_sign": false
-  },
   "dismissSeedBackUpReminder": false,
   "ensEntries": {},
   "ensResolutionsByAddress": {},
@@ -395,7 +392,7 @@
     "latestPriorityFeeRange": ["1", "40"],
     "historicalPriorityFeeRange": ["0.1458417", "700.156384646"],
     "priorityFeeTrend": "down",
-    "networkCongestion": 0.90625
+    "networkCongestion": 0.10625
   },
   "gasFeeEstimatesByChainId": {
     "0x5": {
@@ -429,7 +426,7 @@
         "latestPriorityFeeRange": ["1", "40"],
         "historicalPriorityFeeRange": ["0.1458417", "700.156384646"],
         "priorityFeeTrend": "down",
-        "networkCongestion": 0.90625
+        "networkCongestion": 0.10625
       }
     }
   },
@@ -482,7 +479,6 @@
         "options": {},
         "methods": [
           "personal_sign",
-          "eth_sign",
           "eth_signTransaction",
           "eth_signTypedData_v1",
           "eth_signTypedData_v3",
@@ -502,7 +498,6 @@
         "options": {},
         "methods": [
           "personal_sign",
-          "eth_sign",
           "eth_signTransaction",
           "eth_signTypedData_v1",
           "eth_signTypedData_v3",
@@ -522,7 +517,6 @@
         "options": {},
         "methods": [
           "personal_sign",
-          "eth_sign",
           "eth_signTransaction",
           "eth_signTypedData_v1",
           "eth_signTypedData_v3",
@@ -542,7 +536,6 @@
         "options": {},
         "methods": [
           "personal_sign",
-          "eth_sign",
           "eth_signTransaction",
           "eth_signTypedData_v1",
           "eth_signTypedData_v3",
@@ -562,7 +555,6 @@
         "options": {},
         "methods": [
           "personal_sign",
-          "eth_sign",
           "eth_signTransaction",
           "eth_signTypedData_v1",
           "eth_signTypedData_v3",
@@ -586,7 +578,6 @@
         "options": {},
         "methods": [
           "personal_sign",
-          "eth_sign",
           "eth_signTransaction",
           "eth_signTypedData_v1",
           "eth_signTypedData_v3",
@@ -671,16 +662,22 @@
       "type": "rpc",
       "id": "testNetworkConfigurationId"
     },
-    "chain5": {
+    "goerli-network-id": {
       "type": "rpc",
       "chainId": "0x5",
       "ticker": "ETH",
       "nickname": "Chain 5",
-      "id": "chain5"
+      "id": "goerli-network-id"
     }
   },
   "networksMetadata": {
-    "goerli": {
+    "goerli-network-id": {
+      "EIPS": {
+        "1559": true
+      },
+      "status": "available"
+    },
+    "sepolia": {
       "EIPS": {
         "1559": true
       },
@@ -745,7 +742,8 @@
     "showTestNetworks": true,
     "smartTransactionsOptInStatus": false,
     "useNativeCurrencyAsPrimaryCurrency": true,
-    "petnamesEnabled": false
+    "petnamesEnabled": false,
+    "showConfirmationAdvancedDetails": false
   },
   "preventPollingOnNetworkRestart": true,
   "previousAppVersion": "11.14.4",
@@ -760,7 +758,7 @@
   "securityAlertsEnabled": true,
   "seedPhraseBackedUp": true,
   "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-  "selectedNetworkClientId": "goerli",
+  "selectedNetworkClientId": "goerli-network-id",
   "showAccountBanner": false,
   "showBetaHeader": false,
   "showNetworkBanner": true,
@@ -2004,8 +2002,6 @@
   "unapprovedDecryptMsgs": {},
   "unapprovedEncryptionPublicKeyMsgCount": 0,
   "unapprovedEncryptionPublicKeyMsgs": {},
-  "unapprovedMsgCount": 0,
-  "unapprovedMsgs": {},
   "unapprovedPersonalMsgCount": 0,
   "unapprovedPersonalMsgs": {},
   "unapprovedTypedMessages": {},
