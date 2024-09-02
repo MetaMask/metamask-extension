@@ -15,6 +15,15 @@ const mockStoreWithBlockies = configureMockStore([])({
 });
 
 describe('SnapUIAddress', () => {
+  it('renders legacy Ethereum address', () => {
+    const { container } = renderWithProvider(
+      <SnapUIAddress address="0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb" />,
+      mockStore,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
   it('renders Ethereum address', () => {
     const { container } = renderWithProvider(
       <SnapUIAddress address="eip155:1:0xab16a96D359eC26a11e2C2b3d8f8B8942d5Bfcdb" />,
@@ -113,7 +122,6 @@ describe('SnapUIAddress', () => {
 
     expect(container).toMatchSnapshot();
   });
-
 
   it('renders Hedera address with blockie', () => {
     const { container } = renderWithProvider(
