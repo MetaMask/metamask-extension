@@ -136,6 +136,9 @@
   "accountActivityText": {
     "message": "Select the accounts you want to be notified about:"
   },
+  "accountBalance": {
+    "message": "Account balance"
+  },
   "accountDetails": {
     "message": "Account details"
   },
@@ -1065,6 +1068,9 @@
   },
   "confirmTitleDescDeployContract": {
     "message": "This site wants you to deploy a contract"
+  },
+  "confirmTitleDescERC20ApproveTransaction": {
+    "message": "This site wants permission to withdraw your tokens"
   },
   "confirmTitleDescPermitSignature": {
     "message": "This site wants permission to spend your tokens."
@@ -5189,6 +5195,9 @@
   },
   "spendingCapRequest": {
     "message": "Spending cap request for your $1"
+  },
+  "spendingCapTooltipDesc": {
+    "message": "This is the amount of tokens the spender will be able to access on your behalf."
   },
   "srpInputNumberOfWords": {
     "message": "I have a $1-word phrase",
