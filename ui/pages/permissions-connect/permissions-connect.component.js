@@ -26,7 +26,7 @@ const APPROVE_TIMEOUT = MILLISECOND * 1200;
 
 function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
   const permission =
-    permissionsRequest.permissions?.[RestrictedMethods.eth_accounts];
+    permissionsRequest?.permissions?.[RestrictedMethods.eth_accounts];
   const requestedAccounts = permission?.caveats?.find(
     (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
   )?.value;
