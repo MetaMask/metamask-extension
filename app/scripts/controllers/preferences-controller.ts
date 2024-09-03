@@ -27,7 +27,7 @@ const testNetworks = {
 
 type PreferencesControllerOptions = {
   networkConfigurations?: Record<string, { chainId: Hex }>;
-  initState?: Partial<PreferencesState>;
+  initState?: Partial<PreferencesControllerState>;
   initLangCode?: string;
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -53,7 +53,7 @@ type Preferences = {
   showConfirmationAdvancedDetails: boolean;
 };
 
-export type PreferencesState = {
+export type PreferencesControllerState = {
   selectedAddress: string;
   useBlockie: boolean;
   useNonceField: boolean;
@@ -96,7 +96,7 @@ export type PreferencesState = {
 };
 
 export default class PreferencesController {
-  store: ObservableStore<PreferencesState>;
+  store: ObservableStore<PreferencesControllerState>;
 
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -129,7 +129,7 @@ export default class PreferencesController {
       return acc;
     }, {});
 
-    const initState: PreferencesState = {
+    const initState: PreferencesControllerState = {
       selectedAddress: '',
       useBlockie: false,
       useNonceField: false,
@@ -716,8 +716,6 @@ export default class PreferencesController {
   ): void {
     const { accounts, selectedAccount: selectedAccountId } =
       newAccountsControllerState.internalAccounts;
-    console.log('Accounts:', accounts);
-    console.log('selected account:', selectedAccountId);
     const selectedAccount = accounts[selectedAccountId];
 
     const { identities, lostIdentities } = this.store.getState();

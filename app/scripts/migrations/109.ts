@@ -1,6 +1,6 @@
 import { cloneDeep, isEmpty } from 'lodash';
 import { FALLBACK_VARIATION, NameOrigin } from '@metamask/name-controller';
-import { PreferencesState } from '../controllers/preferences-controller';
+import { PreferencesControllerState } from '../controllers/preferences-controller';
 
 type VersionedData = {
   meta: { version: number };
@@ -30,7 +30,7 @@ export async function migrate(
 // TODO: Replace `any` with type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
-  const identities: PreferencesState['identities'] =
+  const identities: PreferencesControllerState['identities'] =
     state?.PreferencesController?.identities ?? {};
 
   const names = state?.NameController?.names?.ethereumAddress ?? {};
