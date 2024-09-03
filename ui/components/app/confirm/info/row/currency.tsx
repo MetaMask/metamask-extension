@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { PRIMARY } from '../../../../../helpers/constants/common';
 import {
   AlignItems,
   Display,

@@ -4,8 +4,8 @@ import classnames from 'classnames';
 import CurrencyDisplay from '../../ui/currency-display';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import HexToDecimal from '../../ui/hex-to-decimal';
-import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { EtherDenomination } from '../../../../shared/constants/common';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import TransactionBreakdownRow from './transaction-breakdown-row';
 
 export default class TransactionBreakdown extends PureComponent {
@@ -211,13 +211,13 @@ export default class TransactionBreakdown extends PureComponent {
               denomination={EtherDenomination.ETH}
               numberOfDecimals={9}
               value={maxFeePerGas}
-              //type={PRIMARY}
+              type={PRIMARY}
               showNative
             />
             {showFiat && (
               <UserPreferencedCurrencyDisplay
                 className="transaction-breakdown__value"
-                //type={SECONDARY}
+                type={SECONDARY}
                 showFiat
                 value={maxFeePerGas}
               />
@@ -231,13 +231,13 @@ export default class TransactionBreakdown extends PureComponent {
               data-testid="transaction-breakdown__l1-gas-total"
               numberOfDecimals={18}
               value={l1HexGasTotal}
-              // type={PRIMARY}
+              type={PRIMARY}
               showNative
             />
             {showFiat && (
               <UserPreferencedCurrencyDisplay
                 className="transaction-breakdown__value"
-                //type={SECONDARY}
+                type={SECONDARY}
                 showFiat
                 value={l1HexGasTotal}
               />
@@ -247,7 +247,7 @@ export default class TransactionBreakdown extends PureComponent {
         <TransactionBreakdownRow title={t('total')}>
           <UserPreferencedCurrencyDisplay
             className="transaction-breakdown__value transaction-breakdown__value--eth-total"
-            //type={PRIMARY}
+            type={PRIMARY}
             showNative
             value={totalInHex}
             numberOfDecimals={l1HexGasTotal ? 18 : null}
@@ -255,7 +255,7 @@ export default class TransactionBreakdown extends PureComponent {
           {showFiat && (
             <UserPreferencedCurrencyDisplay
               className="transaction-breakdown__value"
-              //type={SECONDARY}
+              type={SECONDARY}
               showFiat
               value={totalInHex}
             />

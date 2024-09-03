@@ -6,7 +6,7 @@ import {
   getMultichainShouldShowFiat,
 } from '../selectors/multichain';
 
-import { PRIMARY, SECONDARY } from '../helpers/constants/common';
+import { PRIMARY } from '../helpers/constants/common';
 import { EtherDenomination } from '../../shared/constants/common';
 import { ETH_DEFAULT_DECIMALS } from '../constants';
 import { useMultichainSelector } from './useMultichainSelector';

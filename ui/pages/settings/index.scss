@@ -263,7 +263,7 @@
   }
 
   &__body {
-    padding: 0px 16px 16px 16px;
+    padding: 0 16px 16px 16px;
   }
 
   &__content-row {
@@ -333,10 +333,8 @@
       @include design-system.H6;
 
       font-size: 12px;
-
       line-height: 20px;
       letter-spacing: 0.25px;
-
       margin-top: 8px;
       margin-bottom: 12px;
       font-weight: 400;
