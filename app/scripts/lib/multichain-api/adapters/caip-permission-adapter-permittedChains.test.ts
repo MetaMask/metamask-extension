@@ -169,7 +169,7 @@ describe('CAIP-25 permittedChains adapters', () => {
         },
         isMultichainOrigin: false,
       };
-      const result = addPermittedEthChainId(input, '0x64');
+      const result = addPermittedEthChainId(input, '0x64'); //0x64 === 100 
 
       expect(result).toStrictEqual(input);
     });
