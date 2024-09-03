@@ -66,7 +66,6 @@ export const EditSpendingCapModal = ({
   const onCancelHandler = () => {
     setIsOpenEditSpendingCapModal(false);
     setCustomSpendingCapCandidate('');
-    setCustomSpendingCap('');
   };
 
   function submitEditSpendingCap() {
