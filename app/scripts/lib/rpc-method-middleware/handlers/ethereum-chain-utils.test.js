@@ -6,10 +6,6 @@ import {
 } from '../../multichain-api/caip25permissions';
 import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
-import {
-  validNotifications,
-  validRpcMethods,
-} from '../../multichain-api/scope';
 import * as EthChainUtils from './ethereum-chain-utils';
 
 describe('Ethereum Chain Utils', () => {
@@ -225,8 +221,8 @@ describe('Ethereum Chain Utils', () => {
             requiredScopes: {},
             optionalScopes: {
               'eip155:1': {
-                methods: validRpcMethods,
-                notifications: validNotifications,
+                methods: [],
+                notifications: [],
                 accounts: [],
               },
             },

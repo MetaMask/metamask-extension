@@ -1,13 +1,7 @@
 import { Hex, KnownCaipNamespace } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { Caip25CaveatValue } from '../caip25permissions';
-import {
-  mergeScopes,
-  parseScopeString,
-  ScopesObject,
-  validNotifications,
-  validRpcMethods,
-} from '../scope';
+import { mergeScopes, parseScopeString, ScopesObject } from '../scope';
 
 export const getPermittedEthChainIds = (
   caip25CaveatValue: Caip25CaveatValue,
@@ -45,8 +39,8 @@ export const addPermittedEthChainId = (
     optionalScopes: {
       ...caip25CaveatValue.optionalScopes,
       [scopeString]: {
-        methods: validRpcMethods,
-        notifications: validNotifications,
+        methods: [],
+        notifications: [],
         accounts: [],
       },
     },
