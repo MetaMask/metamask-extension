@@ -4947,6 +4947,28 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController.setSelectedAddress(importedAccountAddress);
   }
 
+  /**
+   * Requests approval for permissions for the specified origin
+   *
+   * @param origin - The origin to request approval for.
+   * @param permissions - The permissions to request approval for.
+   */
+  async requestPermissionApprovalForOrigin(origin, permissions) {
+    const id = nanoid();
+    return this.approvalController.addAndShowApprovalRequest({
+      id,
+      origin,
+      requestData: {
+        metadata: {
+          id,
+          origin,
+        },
+        permissions,
+      },
+      type: MethodNames.requestPermissions,
+    });
+  }
+
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
 
@@ -5704,21 +5726,8 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
-        requestPermissionApprovalForOrigin: async (permissions) => {
-          const id = nanoid();
-          return this.approvalController.addAndShowApprovalRequest({
-            id,
-            origin,
-            requestData: {
-              metadata: {
-                id,
-                origin,
-              },
-              permissions,
-            },
-            type: MethodNames.requestPermissions,
-          });
-        },
+        requestPermissionApprovalForOrigin:
+          this.requestPermissionApprovalForOrigin.bind(this, origin),
         requestPermissionsForOrigin:
           this.permissionController.requestPermissions.bind(
             this.permissionController,
@@ -5983,21 +5992,8 @@ export default class MetamaskController extends EventEmitter {
               this.networkController.removeNetworkConfiguration.bind(
                 this.networkController,
               ),
-            requestPermissionApprovalForOrigin: async (permissions) => {
-              const id = nanoid();
-              return this.approvalController.addAndShowApprovalRequest({
-                id,
-                origin,
-                requestData: {
-                  metadata: {
-                    id,
-                    origin,
-                  },
-                  permissions,
-                },
-                type: MethodNames.requestPermissions,
-              });
-            },
+            requestPermissionApprovalForOrigin:
+              this.requestPermissionApprovalForOrigin.bind(this, origin),
           });
         },
         [MESSAGE_TYPE.PROVIDER_REQUEST]: (request, response, next, end) => {
@@ -6141,21 +6137,8 @@ export default class MetamaskController extends EventEmitter {
             this.alertController,
           ),
 
-        requestPermissionApprovalForOrigin: async (permissions) => {
-          const id = nanoid();
-          return this.approvalController.addAndShowApprovalRequest({
-            id,
-            origin,
-            requestData: {
-              metadata: {
-                id,
-                origin,
-              },
-              permissions,
-            },
-            type: MethodNames.requestPermissions,
-          });
-        },
+        requestPermissionApprovalForOrigin:
+          this.requestPermissionApprovalForOrigin.bind(this, origin),
         updateCaveat: this.permissionController.updateCaveat.bind(
           this.permissionController,
         ),
