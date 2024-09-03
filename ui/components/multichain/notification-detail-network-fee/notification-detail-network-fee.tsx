@@ -128,16 +128,18 @@ export const NotificationDetailNetworkFee: FC<
   }, []);
 
   const handleClick = () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationDetailClicked,
-      properties: {
-        notification_id: notification.id,
-        notification_type: notification.type,
-        chain_id: notification.chain_id,
-        click_type: 'fee_details',
-      },
-    });
+    if (!isOpen) {
+      trackEvent({
+        category: MetaMetricsEventCategory.NotificationInteraction,
+        event: MetaMetricsEventName.NotificationDetailClicked,
+        properties: {
+          notification_id: notification.id,
+          notification_type: notification.type,
+          chain_id: notification.chain_id,
+          click_type: 'fee_details',
+        },
+      });
+    }
     setIsOpen(!isOpen);
   };
 
