@@ -136,7 +136,7 @@ export const NotificationDetailNetworkFee: FC<
           notification_id: notification.id,
           notification_type: notification.type,
           chain_id: notification.chain_id,
-          click_type: 'fee_details',
+          clicked_item: 'fee_details',
         },
       });
     }
