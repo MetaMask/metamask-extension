@@ -123,9 +123,7 @@ describe('preferences controller', () => {
       });
 
       let [firstAccount, secondAccount] = accountsController.listAccounts();
-      console.log('First Account', firstAccount);
       const { identities } = preferencesController.store.getState();
-      console.log('Identities', identities);
       const firstPreferenceAccount = identities[firstAccount.address];
       const secondPreferenceAccount = identities[secondAccount.address];
 
