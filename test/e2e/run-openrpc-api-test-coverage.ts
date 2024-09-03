@@ -4,12 +4,8 @@ import HtmlReporter from '@open-rpc/test-coverage/build/reporters/html-reporter'
 import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
 import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
 
-import {
-  ExampleObject,
-  ExamplePairingObject,
-  MethodObject,
-} from '@open-rpc/meta-schema';
-import openrpcDocument from '@metamask/api-specs';
+import { MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
+import { MetaMaskOpenRPCDocument } from '@metamask/api-specs';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
 
 import { Driver, PAGES } from './webdriver/driver';
@@ -24,6 +20,7 @@ import {
   DAPP_URL,
   ACCOUNT_1,
 } from './helpers';
+import transformOpenRPCDocument from './api-specs/transform';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -48,283 +45,13 @@ async function main() {
       await openDapp(driver, undefined, DAPP_URL);
 
       const transport = createDriverTransport(driver);
-
-      const transaction =
-        openrpcDocument.components?.schemas?.TransactionInfo?.allOf?.[0];
-
-      if (transaction) {
-        delete transaction.unevaluatedProperties;
-      }
-
-      const chainIdMethod = openrpcDocument.methods.find(
-        (m) => (m as MethodObject).name === 'eth_chainId',
-      );
-      (chainIdMethod as MethodObject).examples = [
-        {
-          name: 'chainIdExample',
-          description: 'Example of a chainId request',
-          params: [],
-          result: {
-            name: 'chainIdResult',
-            value: `0x${chainId.toString(16)}`,
-          },
-        },
-      ];
-
-      const getBalanceMethod = openrpcDocument.methods.find(
-        (m) => (m as MethodObject).name === 'eth_getBalance',
+      const doc: OpenrpcDocument = transformOpenRPCDocument(
+        MetaMaskOpenRPCDocument as unknown as OpenrpcDocument,
+        chainId,
+        ACCOUNT_1,
       );
 
-      (getBalanceMethod as MethodObject).examples = [
-        {
-          name: 'getBalanceExample',
-          description: 'Example of a getBalance request',
-          params: [
-            {
-              name: 'address',
-              value: ACCOUNT_1,
-            },
-            {
-              name: 'tag',
-              value: 'latest',
-            },
-          ],
-          result: {
-            name: 'getBalanceResult',
-            value: '0x1a8819e0c9bab700', // can we get this from a variable too
-          },
-        },
-      ];
-
-      const blockNumber = openrpcDocument.methods.find(
-        (m) => (m as MethodObject).name === 'eth_blockNumber',
-      );
-
-      (blockNumber as MethodObject).examples = [
-        {
-          name: 'blockNumberExample',
-          description: 'Example of a blockNumber request',
-          params: [],
-          result: {
-            name: 'blockNumberResult',
-            value: '0x1',
-          },
-        },
-      ];
-
-      const personalSign = openrpcDocument.methods.find(
-        (m) => (m as MethodObject).name === 'personal_sign',
-      );
-
-      (personalSign as MethodObject).examples = [
-        {
-          name: 'personalSignExample',
-          description: 'Example of a personalSign request',
-          params: [
-            {
-              name: 'data',
-              value: '0xdeadbeef',
-            },
-            {
-              name: 'address',
-              value: ACCOUNT_1,
-            },
-          ],
-          result: {
-            name: 'personalSignResult',
-            value: '0x1a8819e0c9bab700',
-          },
-        },
-      ];
-
-      const switchEthereumChain = openrpcDocument.methods.find(
-        (m) => (m as MethodObject).name === 'wallet_switchEthereumChain',
-      );
-      (switchEthereumChain as MethodObject).examples = [
-        {
-          name: 'wallet_switchEthereumChain',
-          description:
-            'Example of a wallet_switchEthereumChain request to sepolia',
-          params: [
-            {
-              name: 'SwitchEthereumChainParameter',
-              value: {
-                chainId: '0xaa36a7',
-              },
-            },
-          ],
-          result: {
-            name: 'wallet_switchEthereumChain',
-            value: null,
-          },
-        },
-      ];
-
-      const signTypedData4 = openrpcDocument.methods.find(
-        (m) => (m as MethodObject).name === 'eth_signTypedData_v4',
-      );
-
-      const signTypedData4Example = (signTypedData4 as MethodObject)
-        .examples?.[0] as ExamplePairingObject;
-
-      // just update address for signTypedData
-      (signTypedData4Example.params[0] as ExampleObject).value = ACCOUNT_1;
-
-      // update chainId for signTypedData
-      (
-        signTypedData4Example.params[1] as ExampleObject
-      ).value.domain.chainId = 1337;
-
-      // net_version missing from execution-apis. see here: https://github.com/ethereum/execution-apis/issues/540
-      const netVersion: MethodObject = {
-        name: 'net_version',
-        summary: 'Returns the current network ID.',
-        params: [],
-        result: {
-          description: 'Returns the current network ID.',
-          name: 'net_version',
-          schema: {
-            type: 'string',
-          },
-        },
-        description: 'Returns the current network ID.',
-        examples: [
-          {
-            name: 'net_version',
-            description: 'Example of a net_version request',
-            params: [],
-            result: {
-              name: 'net_version',
-              description: 'The current network ID',
-              value: '0x1',
-            },
-          },
-        ],
-      };
-      // add net_version
-      (openrpcDocument.methods as MethodObject[]).push(
-        netVersion as unknown as MethodObject,
-      );
-
-      const getEncryptionPublicKey = openrpcDocument.methods.find(
-        (m) => (m as MethodObject).name === 'eth_getEncryptionPublicKey',
-      );
-
-      (getEncryptionPublicKey as MethodObject).examples = [
-        {
-          name: 'getEncryptionPublicKeyExample',
-          description: 'Example of a getEncryptionPublicKey request',
-          params: [
-            {
-              name: 'address',
-              value: ACCOUNT_1,
-            },
-          ],
-          result: {
-            name: 'getEncryptionPublicKeyResult',
-            value: '0x1a8819e0c9bab700',
-          },
-        },
-      ];
-
-      const getTransactionCount = openrpcDocument.methods.find(
-        (m) => (m as MethodObject).name === 'eth_getTransactionCount',
-      );
-      (getTransactionCount as MethodObject).examples = [
-        {
-          name: 'getTransactionCountExampleEarliest',
-          description: 'Example of a pending getTransactionCount request',
-          params: [
-            {
-              name: 'address',
-              value: ACCOUNT_1,
-            },
-            {
-              name: 'tag',
-              value: 'earliest',
-            },
-          ],
-          result: {
-            name: 'getTransactionCountResult',
-            value: '0x0',
-          },
-        },
-        {
-          name: 'getTransactionCountExampleFinalized',
-          description: 'Example of a pending getTransactionCount request',
-          params: [
-            {
-              name: 'address',
-              value: ACCOUNT_1,
-            },
-            {
-              name: 'tag',
-              value: 'finalized',
-            },
-          ],
-          result: {
-            name: 'getTransactionCountResult',
-            value: '0x0',
-          },
-        },
-        {
-          name: 'getTransactionCountExampleSafe',
-          description: 'Example of a pending getTransactionCount request',
-          params: [
-            {
-              name: 'address',
-              value: ACCOUNT_1,
-            },
-            {
-              name: 'tag',
-              value: 'safe',
-            },
-          ],
-          result: {
-            name: 'getTransactionCountResult',
-            value: '0x0',
-          },
-        },
-        {
-          name: 'getTransactionCountExample',
-          description: 'Example of a getTransactionCount request',
-          params: [
-            {
-              name: 'address',
-              value: ACCOUNT_1,
-            },
-            {
-              name: 'tag',
-              value: 'latest',
-            },
-          ],
-          result: {
-            name: 'getTransactionCountResult',
-            value: '0x0',
-          },
-        },
-        // returns a number right now. see here: https://github.com/MetaMask/metamask-extension/pull/14822
-        // {
-        //   name: 'getTransactionCountExamplePending',
-        //   description: 'Example of a pending getTransactionCount request',
-        //   params: [
-        //     {
-        //       name: 'address',
-        //       value: ACCOUNT_1,
-        //     },
-        //     {
-        //       name: 'tag',
-        //       value: 'pending',
-        //     },
-        //   ],
-        //   result: {
-        //     name: 'getTransactionCountResult',
-        //     value: '0x0',
-        //   },
-        // },
-      ];
-
-      const server = mockServer(port, openrpcDocument);
+      const server = mockServer(port, doc);
       server.start();
 
       // TODO: move these to a "Confirmation" tag in api-specs
@@ -341,7 +68,7 @@ async function main() {
         // see here https://github.com/MetaMask/metamask-extension/issues/24227
         // 'eth_getEncryptionPublicKey', // requires permissions for eth_accounts
       ];
-      const filteredMethods = openrpcDocument.methods
+      const filteredMethods = doc.methods
         .filter((_m: unknown) => {
           const m = _m as MethodObject;
           return (
@@ -363,9 +90,7 @@ async function main() {
         .map((m) => (m as MethodObject).name);
 
       const testCoverageResults = await testCoverage({
-        openrpcDocument: (await parseOpenRPCDocument(
-          openrpcDocument as never,
-        )) as never,
+        openrpcDocument: await parseOpenRPCDocument(doc),
         transport,
         reporters: [
           'console-streaming',
