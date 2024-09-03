@@ -474,7 +474,6 @@ export default class ConfirmTransactionBase extends Component {
         return (
           <div className="confirm-page-container-content__total-value">
             <LoadingHeartBeat estimateUsed={this.props.txData?.userFeeLevel} />
-            {/** OGP */}
             <UserPreferencedCurrencyDisplay
               type={SECONDARY}
               key="total-detail-text"
