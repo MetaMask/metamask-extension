@@ -1,11 +1,14 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import {
-  TransactionStatus,
-  TransactionType,
-} from '@metamask/transaction-controller';
 
+import { Confirmation } from '../../../ui/pages/confirmations/types/confirm';
 import mockState from '../mock-state.json';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import {
+  genUnapprovedApproveConfirmation,
+  genUnapprovedContractInteractionConfirmation,
+} from './contract-interaction';
+import { unapprovedPersonalSignMsg } from './personal_sign';
+import { unapprovedTypedSignMsgV4 } from './typed_sign';
 
 type RootState = { metamask: Record<string, unknown> } & Record<
   string,
@@ -19,61 +22,48 @@ export const getMockTypedSignConfirmState = (
   ...args,
   metamask: {
     ...mockState.metamask,
+    ...args.metamask,
     preferences: {
+      ...mockState.metamask.preferences,
       redesignedTransactionsEnabled: true,
       redesignedConfirmationsEnabled: true,
       isRedesignedConfirmationsDeveloperEnabled: true,
     },
     pendingApprovals: {
-      '123': {
-        id: '123',
+      [unapprovedTypedSignMsgV4.id]: {
+        id: unapprovedTypedSignMsgV4.id,
         type: ApprovalType.EthSignTypedData,
       },
     },
     unapprovedTypedMessages: {
-      '123': {
-        id: '123',
-        chainId: CHAIN_IDS.GOERLI,
-        type: TransactionType.signTypedData,
-        status: TransactionStatus.unapproved,
-        txParams: { from: Object.keys(mockState.metamask.identities)[0] },
-        msgParams: {
-          signatureMethod: 'eth_signTypedData_v4',
-        },
-      },
+      [unapprovedTypedSignMsgV4.id]: unapprovedTypedSignMsgV4,
     },
-    ...args.metamask,
   },
 });
 
-export const getMockContractInteractionConfirmState = (
+export const getMockPersonalSignConfirmState = (
   args: RootState = { metamask: {} },
 ) => ({
   ...mockState,
   ...args,
   metamask: {
     ...mockState.metamask,
+    ...args.metamask,
     preferences: {
+      ...mockState.metamask.preferences,
       redesignedTransactionsEnabled: true,
       redesignedConfirmationsEnabled: true,
       isRedesignedConfirmationsDeveloperEnabled: true,
     },
     pendingApprovals: {
-      '123': {
-        id: '123',
-        type: ApprovalType.Transaction,
+      [unapprovedPersonalSignMsg.id]: {
+        id: unapprovedPersonalSignMsg.id,
+        type: ApprovalType.PersonalSign,
       },
     },
-    transactions: [
-      {
-        id: '123',
-        type: TransactionType.contractInteraction,
-        chainId: CHAIN_IDS.GOERLI,
-        status: TransactionStatus.unapproved,
-        txParams: { from: Object.keys(mockState.metamask.identities)[0] },
-      },
-    ],
-    ...args.metamask,
+    unapprovedPersonalMsgs: {
+      [unapprovedPersonalSignMsg.id]: unapprovedPersonalSignMsg,
+    },
   },
 });
 
@@ -82,11 +72,44 @@ export const getMockConfirmState = (args: RootState = { metamask: {} }) => ({
   ...args,
   metamask: {
     ...mockState.metamask,
+    ...args.metamask,
     preferences: {
+      ...mockState.metamask.preferences,
       redesignedTransactionsEnabled: true,
       redesignedConfirmationsEnabled: true,
       isRedesignedConfirmationsDeveloperEnabled: true,
     },
-    ...args.metamask,
   },
 });
+
+export const getMockConfirmStateForTransaction = (
+  transaction: Confirmation,
+  args: RootState = { metamask: {} },
+) =>
+  getMockConfirmState({
+    ...args,
+    metamask: {
+      ...args.metamask,
+      pendingApprovals: {
+        [transaction.id]: {
+          id: transaction.id,
+          type: ApprovalType.Transaction,
+        },
+      },
+      transactions: [transaction],
+    },
+    confirm: {
+      currentConfirmation: transaction,
+    },
+  });
+
+export const getMockContractInteractionConfirmState = () => {
+  const contractInteraction = genUnapprovedContractInteractionConfirmation({
+    chainId: CHAIN_IDS.GOERLI
+  });
+  return getMockConfirmStateForTransaction(contractInteraction);
+};
+
+export const getMockApproveConfirmState = () => {
+  return getMockConfirmStateForTransaction(genUnapprovedApproveConfirmation());
+};
