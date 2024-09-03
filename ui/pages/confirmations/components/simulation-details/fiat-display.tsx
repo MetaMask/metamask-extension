@@ -77,12 +77,12 @@ export const IndividualFiatDisplay: React.FC<{
 export const TotalFiatDisplay: React.FC<{
   fiatAmounts: FiatAmount[];
 }> = ({ fiatAmounts }) => {
-  const hideFiatForTestnet = useHideFiatForTestnet();
+  const shouldShowFiat = useSelector(getShouldShowFiat);
   const t = useI18nContext();
   const fiatFormatter = useFiatFormatter();
   const totalFiat = calculateTotalFiat(fiatAmounts);
 
-  if (hideFiatForTestnet) {
+  if (!shouldShowFiat) {
     return null;
   }
 
