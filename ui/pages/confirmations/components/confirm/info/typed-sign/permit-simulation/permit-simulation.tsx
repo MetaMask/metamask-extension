@@ -1,6 +1,5 @@
 import { NameType } from '@metamask/name-controller';
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { parseTypedDataMessage } from '../../../../../../../../shared/modules/transaction.utils';
@@ -17,8 +16,8 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 import { shortenString } from '../../../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../../../../selectors';
 import { SignatureRequestType } from '../../../../../types/confirm';
+import { useConfirmContext } from '../../../../../context/confirm';
 import { IndividualFiatDisplay } from '../../../../simulation-details/fiat-display';
 import {
   formatAmount,
@@ -30,9 +29,9 @@ const PermitSimulation: React.FC<{
   tokenDecimals: number;
 }> = ({ tokenDecimals }) => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as SignatureRequestType;
+  const { currentConfirmation } = useConfirmContext() as {
+    currentConfirmation: SignatureRequestType;
+  };
 
   const {
     domain: { verifyingContract },
