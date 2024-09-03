@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { getMockApproveConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import ApproveInfo from './approve';
+import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
 
 jest.mock('../../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../../store/actions'),
@@ -11,7 +12,6 @@ jest.mock('../../../../../../store/actions', () => ({
     lowerTimeBound: 0,
     upperTimeBound: 60000,
   }),
-  estimateGas: jest.fn().mockResolvedValue('0x5208'), // Mock estimateGas function
 }));
 
 jest.mock(
@@ -22,13 +22,6 @@ jest.mock(
     })),
   }),
 );
-
-jest.mock('../../../../confirm-approve/confirm-approve.util', () => ({
-  ...jest.requireActual('../../../../confirm-approve/confirm-approve.util'),
-  getCustomTxParamsData: jest.fn().mockResolvedValue({
-    data: '0x095ea7b30000000000000000000000002e0d7e8c45221fca00d74a3609a0f7097035d09b0000000000000000000000000000000000000000000000000000000000000001',
-  }),
-}));
 
 jest.mock('../../../../hooks/useAssetDetails', () => ({
   useAssetDetails: jest.fn(() => ({
@@ -46,19 +39,34 @@ jest.mock('./hooks/use-is-nft', () => ({
   })),
 }));
 
-jest.mock('../../../../../../hooks/useAsyncResult', () => ({
-  useAsyncResult: jest.fn((asyncFn, deps) => ({
-    value: '0x5208', // Mocked estimatedGasLimit value
+jest.mock('../hooks/useDecodedTransactionData', () => ({
+  useDecodedTransactionData: jest.fn(() => ({
+    value: {
+      data: [
+        {
+          params: [
+            {
+              type: 'address',
+              value: '0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B',
+            },
+            {
+              type: 'uint256',
+              value: 1,
+            },
+          ],
+        },
+      ],
+    },
+    pending: false,
   })),
 }));
 
 describe('<ApproveInfo />', () => {
   const middleware = [thunk];
+  useDecodedTransactionData;
 
   it('renders component for approve request', async () => {
     const state = getMockApproveConfirmState();
-
-    console.log({ state });
 
     const mockStore = configureMockStore(middleware)(state);
 

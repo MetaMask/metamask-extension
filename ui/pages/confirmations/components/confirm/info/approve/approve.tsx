@@ -85,8 +85,6 @@ const ApproveInfo = () => {
     setShouldUpdateConfirmation(true);
   };
 
-  console.log({ transactionMeta });
-
   if (!transactionMeta?.txParams) {
     return null;
   }

@@ -6,34 +6,31 @@ import mockState from '../../../../../../../../test/data/mock-state.json';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { EditSpendingCapModal } from './edit-spending-cap-modal';
+import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
+import { getMockApproveConfirmState } from '../../../../../../../../test/data/confirmations/helper';
+
+jest.mock('../hooks/use-approve-token-simulation', () => ({
+  useApproveTokenSimulation: jest.fn(() => ({
+    spendingCap: '1000',
+    formattedSpendingCap: '1000',
+    value: '1000',
+  })),
+}));
 
 jest.mock('../../../../../hooks/useAssetDetails', () => ({
-  ...jest.requireActual('../../../../../hooks/useAssetDetails'),
-  useAssetDetails: jest.fn(),
+  useAssetDetails: jest.fn(() => ({
+    decimals: 18,
+    userBalance: '1000000',
+    tokenSymbol: 'TST',
+  })),
 }));
 
 describe('<EditSpendingCapModal />', () => {
   const middleware = [thunk];
 
-  let useAssetDetailsMock;
-  beforeEach(() => {
-    jest.resetAllMocks();
-
-    useAssetDetailsMock = jest.fn().mockImplementation(() => ({
-      userBalance: '1000000000000000000',
-      tokenSymbol: 'TST',
-      decimals: '18',
-    }));
-    (useAssetDetails as jest.Mock).mockImplementation(useAssetDetailsMock);
-  });
-
   it('renders component', () => {
-    const state = {
-      ...mockState,
-      confirm: {
-        currentConfirmation: genUnapprovedApproveConfirmation(),
-      },
-    };
+    const state = getMockApproveConfirmState();
+
     const mockStore = configureMockStore(middleware)(state);
 
     const isOpenEditSpendingCapModal = true;

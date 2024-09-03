@@ -1,21 +1,26 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { genUnapprovedApproveConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import mockState from '../../../../../../../../test/data/mock-state.json';
+import { getMockApproveConfirmState } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { SpendingCap } from './spending-cap';
+import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
+
+jest.mock('../hooks/use-approve-token-simulation', () => ({
+  useApproveTokenSimulation: jest.fn(() => ({
+    spendingCap: '1000',
+    formattedSpendingCap: '1000',
+    value: '1000',
+  })),
+}));
 
 describe('<SpendingCap />', () => {
   const middleware = [thunk];
+  useApproveTokenSimulation;
 
   it('renders component', () => {
-    const state = {
-      ...mockState,
-      confirm: {
-        currentConfirmation: genUnapprovedApproveConfirmation(),
-      },
-    };
+    const state = getMockApproveConfirmState();
+
     const mockStore = configureMockStore(middleware)(state);
 
     const setIsOpenEditSpendingCapModal = () => {};

@@ -27,8 +27,6 @@ export const ConfirmContextProvider: React.FC<{
   const { currentConfirmation } = useCurrentConfirmation();
   syncConfirmPath(currentConfirmation);
 
-  console.log({ currentConfirmation });
-
   return (
     <ConfirmContext.Provider
       value={{
