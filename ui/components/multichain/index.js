@@ -50,3 +50,4 @@ export { Toast, ToastContainer } from './toast';
 export { PermissionDetailsModal } from './permission-details-modal';
 export { ReceiveModal } from './receive-modal';
 export { EditNetworksModal } from './edit-networks-modal';
+export { EditAccountsModal } from './edit-accounts-modal';
