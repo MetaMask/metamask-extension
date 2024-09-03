@@ -178,6 +178,7 @@ export const NetworkListItem = ({
             className="multichain-network-list-item__rpc-endpoint"
             display={Display.Flex}
             alignItems={AlignItems.center}
+            data-testid={`network-rpc-name-button-${chainId}`}
             onClick={(e: React.MouseEvent) => {
               e.stopPropagation();
               onRpcEndpointClick?.();

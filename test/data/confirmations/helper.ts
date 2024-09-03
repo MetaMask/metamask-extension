@@ -162,7 +162,7 @@ export const getMockConfirmStateForTransaction = (
 
 export const getMockContractInteractionConfirmState = () => {
   const contractInteraction = genUnapprovedContractInteractionConfirmation({
-    chainId: CHAIN_IDS.GOERLI
+    chainId: CHAIN_IDS.GOERLI,
   });
   return getMockConfirmStateForTransaction(contractInteraction);
 };
