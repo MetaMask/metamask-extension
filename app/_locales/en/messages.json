@@ -1693,6 +1693,9 @@
   "editANickname": {
     "message": "Edit nickname"
   },
+  "editAccounts": {
+    "message": "Edit accounts"
+  },
   "editAddressNickname": {
     "message": "Edit address nickname"
   },
