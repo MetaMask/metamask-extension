@@ -175,7 +175,7 @@ describe('requestPermissionsHandler', () => {
     );
   });
 
-  it('requests approval for eth_accounts and permittedChains with the chainId for the currently selected networkClientId (either global or dapp selected) when only eth_accounts is specified in params', async () => {
+  it('requests approval from the ApprovalController for eth_accounts and permittedChains with the chainId for the currently selected networkClientId (either global or dapp selected) when only eth_accounts is specified in params', async () => {
     const {
       handler,
       getNetworkConfigurationByNetworkClientId,
@@ -211,7 +211,7 @@ describe('requestPermissionsHandler', () => {
     });
   });
 
-  it('requests approval for eth_accounts and permittedChains when only permittedChains is specified in params', async () => {
+  it('requests approval from the ApprovalController for eth_accounts and permittedChains when only permittedChains is specified in params', async () => {
     const {
       handler,
       getNetworkConfigurationByNetworkClientId,
@@ -248,7 +248,7 @@ describe('requestPermissionsHandler', () => {
     });
   });
 
-  it('requests approval for eth_accounts and permittedChains when both are specified in params', async () => {
+  it('requests approval from the ApprovalController for eth_accounts and permittedChains when both are specified in params', async () => {
     const {
       handler,
       getNetworkConfigurationByNetworkClientId,
@@ -290,7 +290,7 @@ describe('requestPermissionsHandler', () => {
     });
   });
 
-  it('requests other permissions from params, but ignores CAIP-25 if specified', async () => {
+  it('requests other permissions in params from the PermissionController, but ignores CAIP-25 if specified', async () => {
     const { handler, requestPermissionsForOrigin } = createMockedHandler();
 
     await handler({
@@ -307,7 +307,7 @@ describe('requestPermissionsHandler', () => {
     });
   });
 
-  it('requests other permissions from params, but ignores eth_accounts if specified', async () => {
+  it('requests other permissions in params from the PermissionController, but ignores eth_accounts if specified', async () => {
     const { handler, requestPermissionsForOrigin } = createMockedHandler();
 
     await handler({
@@ -324,7 +324,7 @@ describe('requestPermissionsHandler', () => {
     });
   });
 
-  it('requests other permissions from params, but ignores permittedChains if specified', async () => {
+  it('requests other permissions in params from the PermissionController, but ignores permittedChains if specified', async () => {
     const { handler, requestPermissionsForOrigin } = createMockedHandler();
 
     await handler({
@@ -341,7 +341,7 @@ describe('requestPermissionsHandler', () => {
     });
   });
 
-  it('does not request permissions when only eth_accounts is provided in params', async () => {
+  it('does not request permissions from the PermissionController when only eth_accounts is provided in params', async () => {
     const { handler, requestPermissionsForOrigin } = createMockedHandler();
 
     await handler({
@@ -355,7 +355,7 @@ describe('requestPermissionsHandler', () => {
     expect(requestPermissionsForOrigin).not.toHaveBeenCalled();
   });
 
-  it('does not request permissions when only permittedChains is provided in params', async () => {
+  it('does not request permissions from the PermissionController when only permittedChains is provided in params', async () => {
     const { handler, requestPermissionsForOrigin } = createMockedHandler();
 
     await handler({
@@ -369,7 +369,7 @@ describe('requestPermissionsHandler', () => {
     expect(requestPermissionsForOrigin).not.toHaveBeenCalled();
   });
 
-  it('does not request permissions when both eth_accounts and permittedChains are provided in params', async () => {
+  it('does not request permissions from the PermissionController when both eth_accounts and permittedChains are provided in params', async () => {
     const { handler, requestPermissionsForOrigin } = createMockedHandler();
 
     await handler({
@@ -391,7 +391,7 @@ describe('requestPermissionsHandler', () => {
     expect(requestPermissionsForOrigin).not.toHaveBeenCalled();
   });
 
-  it('requests empty permissions when only CAIP-25 permission is provided in params', async () => {
+  it('requests empty permissions from the PermissionController when only CAIP-25 permission is provided in params', async () => {
     const { handler, requestPermissionsForOrigin } = createMockedHandler();
 
     await handler({
@@ -405,7 +405,7 @@ describe('requestPermissionsHandler', () => {
     expect(requestPermissionsForOrigin).toHaveBeenCalledWith({});
   });
 
-  it('requests empty permissions when no permissions are provided in params', async () => {
+  it('requests empty permissions from the PermissionController when no permissions are provided in params', async () => {
     const { handler, requestPermissionsForOrigin } = createMockedHandler();
 
     await handler({
