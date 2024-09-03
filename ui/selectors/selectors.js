@@ -973,7 +973,16 @@ export function getShouldShowFiat(state) {
 
   const conversionRate = getConversionRate(state);
   const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
-  return Boolean(useCurrencyRateCheck && conversionRate);
+
+  const isMainNet = getIsMainnet(state);
+  const isLineaMainNet = getIsLineaMainnet(state);
+  const isCustomNetwork = getIsCustomNetwork(state);
+
+  return Boolean(
+    (isMainNet || isLineaMainNet || isCustomNetwork) &&
+      useCurrencyRateCheck &&
+      conversionRate,
+  );
 }
 
 export function getShouldHideZeroBalanceTokens(state) {
