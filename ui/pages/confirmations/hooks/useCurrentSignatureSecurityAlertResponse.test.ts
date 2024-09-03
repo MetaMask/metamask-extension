@@ -1,9 +1,9 @@
-import { ApprovalType } from '@metamask/controller-utils';
+import { TransactionType } from '@metamask/transaction-controller';
 
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { getMockPersonalSignConfirmStateForRequest } from '../../../../test/data/confirmations/helper';
 import { BlockaidResultType } from '../../../../shared/constants/security-provider';
-import { SecurityAlertResponse, SignatureRequestType } from '../types/confirm';
+import { SecurityAlertResponse } from '../types/confirm';
 import useCurrentSignatureSecurityAlertResponse from './useCurrentSignatureSecurityAlertResponse';
 
 const mockSecurityAlertResponse: SecurityAlertResponse = {
@@ -17,21 +17,18 @@ const currentConfirmationMock = {
   id: '1',
   status: 'unapproved',
   time: new Date().getTime(),
-  type: ApprovalType.PersonalSign,
+  type: TransactionType.personalSign,
   securityAlertResponse: mockSecurityAlertResponse,
 };
 
 const getMockCurrentState = () =>
-  getMockPersonalSignConfirmStateForRequest(
-    currentConfirmationMock as unknown as SignatureRequestType,
-    {
-      metamask: {
-        signatureSecurityAlertResponses: {
-          'test-id-mock': mockSecurityAlertResponse,
-        },
+  getMockPersonalSignConfirmStateForRequest(currentConfirmationMock, {
+    metamask: {
+      signatureSecurityAlertResponses: {
+        'test-id-mock': mockSecurityAlertResponse,
       },
     },
-  );
+  });
 
 describe('useCurrentSignatureSecurityAlertResponse', () => {
   it('returns security alert response for current signature request', () => {

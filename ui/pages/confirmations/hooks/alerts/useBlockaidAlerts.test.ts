@@ -1,4 +1,3 @@
-import { ApprovalType } from '@metamask/controller-utils';
 import {
   TransactionStatus,
   TransactionType,
@@ -32,7 +31,7 @@ const currentConfirmationMock = {
   id: '1',
   status: 'unapproved',
   time: new Date().getTime(),
-  type: ApprovalType.PersonalSign,
+  type: TransactionType.personalSign,
   securityAlertResponse: mockSecurityAlertResponse,
 };
 
@@ -56,7 +55,7 @@ describe('useBlockaidAlerts', () => {
 
   it('returns alerts when there is a valid PersonalSign confirmation with a security alert response', () => {
     const mockCurrentState = getMockPersonalSignConfirmStateForRequest(
-      currentConfirmationMock as unknown as SignatureRequestType,
+      currentConfirmationMock,
       {
         metamask: {
           signatureSecurityAlertResponses: {
