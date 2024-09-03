@@ -39,17 +39,17 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  currentConfirmationSelector,
-  getUseBlockie,
-} from '../../../../../selectors';
+import { getUseBlockie } from '../../../../../selectors';
 import { setConfirmationAdvancedDetailsOpen } from '../../../../../store/actions';
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
 import { SignatureRequestType } from '../../../types/confirm';
-import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
-import { isSignatureTransactionType } from '../../../utils/confirm';
+import {
+  isSignatureTransactionType,
+  REDESIGN_DEV_TRANSACTION_TYPES,
+} from '../../../utils/confirm';
+import { useConfirmContext } from '../../../context/confirm';
 
 const HeaderInfo = () => {
   const dispatch = useDispatch();
@@ -66,7 +66,8 @@ const HeaderInfo = () => {
     dispatch(setConfirmationAdvancedDetailsOpen(value));
   };
 
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { currentConfirmation } = useConfirmContext();
+
   const { senderAddress: fromAddress, senderName: fromName } =
     useConfirmationRecipientInfo();
 
@@ -100,7 +101,7 @@ const HeaderInfo = () => {
     trackEvent(event);
   }
 
-  const isShowAdvancedDetailsToggle = REDESIGN_TRANSACTION_TYPES.includes(
+  const isShowAdvancedDetailsToggle = REDESIGN_DEV_TRANSACTION_TYPES.includes(
     currentConfirmation?.type as TransactionType,
   );
 
@@ -134,6 +135,7 @@ const HeaderInfo = () => {
                 : BackgroundColor.transparent
             }
             borderRadius={BorderRadius.MD}
+            marginLeft={4}
           >
             <ButtonIcon
               ariaLabel={'Advanced tx details'}

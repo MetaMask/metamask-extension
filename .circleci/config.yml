@@ -3,25 +3,25 @@ version: 2.1
 executors:
   node-browsers-small:
     docker:
-      - image: cimg/node:20.11-browsers
+      - image: cimg/node:20.17-browsers
     resource_class: small
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
   node-browsers-medium:
     docker:
-      - image: cimg/node:20.11-browsers
+      - image: cimg/node:20.17-browsers
     resource_class: medium
     environment:
       NODE_OPTIONS: --max_old_space_size=3072
   node-linux-medium:
     machine:
-      image: ubuntu-2404:2024.05.1
+      image: ubuntu-2404:current
     resource_class: medium #// linux medium: 2 CPUs, 7.5 GB RAM, 10 credits/min
     environment:
       NODE_OPTIONS: --max_old_space_size=6144
   node-browsers-medium-plus:
     docker:
-      - image: cimg/node:20.11-browsers
+      - image: cimg/node:20.17-browsers
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=4096
@@ -62,7 +62,7 @@ exclude_develop_master_rc: &exclude_develop_master_rc
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 aliases:
   # Shallow Git Clone
-  - &shallow-git-clone
+  - &shallow-git-clone-and-enable-vnc
     name: Shallow Git Clone
     command: |
       #!/bin/bash
@@ -86,6 +86,12 @@ aliases:
       else
         echo "Checkout branch '${CIRCLE_BRANCH}' at commit '${CIRCLE_SHA1}'"
         git checkout -B "$CIRCLE_BRANCH" "$CIRCLE_SHA1"
+      fi
+
+      # Piggyback on this alias to enable VNC connections
+      # The if statement will only be true on node-browsers executors
+      if [ "${SHELL}" != "/bin/bash" ]; then
+        cat ${HOME}/project/.circleci/scripts/enable-vnc.sh >> ~/.bashrc
       fi
 
   # Check if MMI Optional tests should run
@@ -376,7 +382,7 @@ jobs:
   trigger-beta-build:
     executor: node-browsers-small
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -458,7 +464,7 @@ jobs:
   prep-deps:
     executor: node-browsers-medium
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - run:
           name: Save Yarn version
@@ -495,7 +501,7 @@ jobs:
   get-changed-files-with-git-diff:
     executor: node-browsers-small
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -510,7 +516,7 @@ jobs:
   validate-locales-only:
     executor: node-browsers-small
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -519,7 +525,7 @@ jobs:
   validate-lavamoat-allow-scripts:
     executor: node-browsers-small
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -533,7 +539,7 @@ jobs:
   validate-lavamoat-policy-build:
     executor: node-browsers-medium
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -550,7 +556,7 @@ jobs:
       build-type:
         type: string
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -564,7 +570,7 @@ jobs:
   prep-build:
     executor: node-linux-medium
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: corepack enable
       - attach_workspace:
           at: .
@@ -601,7 +607,7 @@ jobs:
   prep-build-mv2:
     executor: node-linux-medium
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: corepack enable
       - attach_workspace:
           at: .
@@ -644,7 +650,7 @@ jobs:
   prep-build-mmi:
     executor: node-linux-medium
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: corepack enable
       - attach_workspace:
           at: .
@@ -688,7 +694,7 @@ jobs:
   prep-build-flask:
     executor: node-linux-medium
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: corepack enable
       - attach_workspace:
           at: .
@@ -729,7 +735,7 @@ jobs:
   prep-build-flask-mv2:
     executor: node-linux-medium
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: corepack enable
       - attach_workspace:
           at: .
@@ -770,7 +776,7 @@ jobs:
   prep-build-test-flask:
     executor: node-linux-medium
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: corepack enable
       - attach_workspace:
           at: .
@@ -792,7 +798,7 @@ jobs:
   prep-build-test-flask-mv2:
     executor: node-linux-medium
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: corepack enable
       - attach_workspace:
           at: .
@@ -814,7 +820,7 @@ jobs:
   prep-build-test-mmi:
     executor: node-linux-medium
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: corepack enable
       - attach_workspace:
           at: .
@@ -836,7 +842,7 @@ jobs:
   prep-build-test-mmi-playwright:
     executor: node-linux-medium
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: corepack enable
       - attach_workspace:
           at: .
@@ -865,7 +871,7 @@ jobs:
   prep-build-test:
     executor: node-linux-medium
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: corepack enable
       - attach_workspace:
           at: .
@@ -889,7 +895,7 @@ jobs:
   prep-build-test-mv2:
     executor: node-linux-medium
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: corepack enable
       - attach_workspace:
           at: .
@@ -913,7 +919,7 @@ jobs:
   prep-build-test-webpack:
     executor: node-linux-medium
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - attach_workspace:
           at: .
       - run:
@@ -933,7 +939,7 @@ jobs:
   prep-build-storybook:
     executor: node-linux-medium
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: corepack enable
       - attach_workspace:
           at: .
@@ -948,7 +954,7 @@ jobs:
   prep-build-ts-migration-dashboard:
     executor: node-browsers-small
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -963,7 +969,7 @@ jobs:
   test-yarn-dedupe:
     executor: node-browsers-small
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -974,7 +980,7 @@ jobs:
   test-lint:
     executor: node-browsers-medium
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -988,7 +994,7 @@ jobs:
   test-storybook:
     executor: node-browsers-medium-plus
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1011,7 +1017,7 @@ jobs:
   test-lint-lockfile:
     executor: node-browsers-medium
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1025,7 +1031,7 @@ jobs:
   test-lint-changelog:
     executor: node-browsers-small
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1052,7 +1058,7 @@ jobs:
   test-deps-audit:
     executor: node-browsers-small
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1063,7 +1069,7 @@ jobs:
   test-deps-depcheck:
     executor: node-browsers-small
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1075,7 +1081,7 @@ jobs:
     executor: node-browsers-medium-plus
     parallelism: 20
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1095,7 +1101,7 @@ jobs:
   test-api-specs:
     executor: node-browsers-medium-plus
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1127,7 +1133,7 @@ jobs:
     executor: node-browsers-medium-plus
     parallelism: 20
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1151,7 +1157,7 @@ jobs:
     executor: node-browsers-medium
     parallelism: 1
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1175,7 +1181,7 @@ jobs:
     executor: node-browsers-small
     parallelism: 1
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1198,7 +1204,7 @@ jobs:
   test-e2e-chrome-rpc-mmi:
     executor: node-browsers-medium
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1221,7 +1227,7 @@ jobs:
   test-e2e-chrome-vault-decryption:
     executor: node-browsers-medium-plus
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1239,7 +1245,7 @@ jobs:
     executor: node-browsers-medium-plus
     parallelism: 10
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1263,7 +1269,7 @@ jobs:
     executor: node-browsers-medium-plus
     parallelism: 8
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1287,7 +1293,7 @@ jobs:
     executor: node-browsers-medium-plus
     parallelism: 12
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1311,7 +1317,7 @@ jobs:
     executor: playwright
     parallelism: 2
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: corepack enable
       - attach_workspace:
           at: .
@@ -1352,7 +1358,7 @@ jobs:
     executor: playwright
     parallelism: 2
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: corepack enable
       - attach_workspace:
           at: .
@@ -1382,7 +1388,7 @@ jobs:
     executor: node-browsers-medium-plus
     parallelism: 24
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1405,7 +1411,7 @@ jobs:
   benchmark:
     executor: node-browsers-small
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1429,7 +1435,7 @@ jobs:
   user-actions-benchmark:
     executor: node-browsers-small
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1453,7 +1459,7 @@ jobs:
   stats-module-load-init:
     executor: node-browsers-small
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1557,7 +1563,7 @@ jobs:
   job-publish-release:
     executor: node-browsers-small
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1565,8 +1571,14 @@ jobs:
           name: Publish main release to Sentry
           command: yarn sentry:publish
       - run:
+          name: Publish main MV2 release to Sentry
+          command: yarn sentry:publish --dist mv2
+      - run:
           name: Publish Flask release to Sentry
           command: yarn sentry:publish --build-type flask
+      - run:
+          name: Publish Flask MV2 release to Sentry
+          command: yarn sentry:publish --build-type flask --dist mv2
       - run:
           name: Publish MMI release to Sentry
           command: yarn sentry:publish --build-type mmi
@@ -1580,7 +1592,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - '3d:49:29:f4:b2:e8:ea:af:d1:32:eb:2a:fc:15:85:d8'
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1596,7 +1608,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - '8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49'
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1611,7 +1623,7 @@ jobs:
   validate-source-maps:
     executor: node-browsers-small
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1622,7 +1634,7 @@ jobs:
   validate-source-maps-beta:
     executor: node-browsers-small
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1633,7 +1645,7 @@ jobs:
   validate-source-maps-mmi:
     executor: node-browsers-small
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1650,7 +1662,7 @@ jobs:
   validate-source-maps-flask:
     executor: node-browsers-small
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1667,7 +1679,7 @@ jobs:
   validate-source-maps-flask-mv2:
     executor: node-browsers-small
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1684,7 +1696,7 @@ jobs:
   validate-source-maps-mv2:
     executor: node-browsers-small
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1701,7 +1713,7 @@ jobs:
   test-mozilla-lint-mv2:
     executor: node-browsers-medium
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .
@@ -1718,7 +1730,7 @@ jobs:
   test-mozilla-lint-flask-mv2:
     executor: node-browsers-medium
     steps:
-      - run: *shallow-git-clone
+      - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
           at: .

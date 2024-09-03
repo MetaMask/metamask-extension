@@ -38,7 +38,7 @@ describe('BTC Account - Overview', function (this: Suite) {
         assert.equal(await buySellButton.isEnabled(), false);
 
         const portfolioButton = await driver.waitForSelector(
-          '[data-testid="coin-overview-portfolio"]',
+          '[data-testid="coin-overview-receive"]',
         );
         assert.equal(await portfolioButton.isEnabled(), true);
       },

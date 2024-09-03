@@ -1027,9 +1027,6 @@
   "confirmRpcUrlDeletionMessage": {
     "message": "RPC URL adresini silmek istediğinizden emin misiniz? Bilgileriniz bu ağ için kaydedilmeyecektir."
   },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "Bu işlemi sadece içeriği tam olarak anlıyorsanız ve talepte bulunan siteye güveniyorsanız onaylayın."
-  },
   "confirmTitleDescPermitSignature": {
     "message": "Bu site token'lerinizi harcamak için izin istiyor."
   },
@@ -4164,9 +4161,6 @@
   },
   "receive": {
     "message": "Al"
-  },
-  "receiveTokensCamelCase": {
-    "message": "Token'leri al"
   },
   "recipientAddressPlaceholder": {
     "message": "Genel adres (0x) veya ENS adı girin"
