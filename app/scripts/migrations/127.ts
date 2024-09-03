@@ -138,26 +138,76 @@ export async function migrate(
 function transformState(state: Record<string, unknown>) {
   if (
     !hasProperty(state, 'PermissionController') ||
-    !isObject(state.PermissionController) ||
+    !isObject(state.PermissionController)
+  ) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: typeof state.PermissionController is ${typeof state.PermissionController}`,
+      ),
+    );
+    return state;
+  }
+
+  if (
     !hasProperty(state, 'NetworkController') ||
-    !isObject(state.NetworkController) ||
+    !isObject(state.NetworkController)
+  ) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: typeof state.NetworkController is ${typeof state.NetworkController}`,
+      ),
+    );
+    return state;
+  }
+
+  if (
     !hasProperty(state, 'SelectedNetworkController') ||
     !isObject(state.SelectedNetworkController)
   ) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: typeof state.SelectedNetworkController is ${typeof state.SelectedNetworkController}`,
+      ),
+    );
     return state;
   }
+
   const {
     PermissionController: { subjects },
     NetworkController: { selectedNetworkClientId, networkConfigurations },
     SelectedNetworkController: { domains },
   } = state;
-  if (
-    !isObject(subjects) ||
-    !selectedNetworkClientId ||
-    typeof selectedNetworkClientId !== 'string' ||
-    !isObject(networkConfigurations) ||
-    !isObject(domains)
-  ) {
+
+  if (!isObject(subjects)) {
+    global.sentry?.captureException(
+      new Error(
+        `Migration ${version}: typeof state.PermissionController.subjects is ${typeof subjects}`,
+      ),
+    );
+    return state;
+  }
+  if (!selectedNetworkClientId || typeof selectedNetworkClientId !== 'string') {
+    global.sentry?.captureException(
+      new Error(
+        `Migration ${version}: typeof state.NetworkController.selectedNetworkClientId is ${typeof selectedNetworkClientId}`,
+      ),
+    );
+    return state;
+  }
+  if (!isObject(networkConfigurations)) {
+    global.sentry?.captureException(
+      new Error(
+        `Migration ${version}: typeof state.NetworkController.networkConfigurations is ${typeof networkConfigurations}`,
+      ),
+    );
+    return state;
+  }
+  if (!isObject(domains)) {
+    global.sentry?.captureException(
+      new Error(
+        `Migration ${version}: typeof state.SelectedNetworkController.domains is ${typeof domains}`,
+      ),
+    );
     return state;
   }
 
@@ -172,11 +222,21 @@ function transformState(state: Record<string, unknown>) {
 
   const currentChainId = getChainIdForNetworkClientId(selectedNetworkClientId);
   if (!currentChainId || typeof currentChainId !== 'string') {
+    global.sentry?.captureException(
+      new Error(
+        `Migration ${version}: Invalid chainId for selectedNetworkClientId "${selectedNetworkClientId}" of type ${typeof currentChainId}`,
+      ),
+    );
     return state;
   }
 
   for (const [origin, subject] of Object.entries(subjects)) {
     if (!isObject(subject)) {
+      global.sentry?.captureException(
+        new Error(
+          `Migration ${version}: Invalid subject for origin "${origin}" of type ${typeof subject}`,
+        ),
+      );
       return state;
     }
 
@@ -184,6 +244,11 @@ function transformState(state: Record<string, unknown>) {
       permissions: Record<string, PermissionConstraint>;
     };
     if (!isObject(permissions)) {
+      global.sentry?.captureException(
+        new Error(
+          `Migration ${version}: Invalid permissions for origin "${origin}" of type ${typeof permissions}`,
+        ),
+      );
       return state;
     }
 

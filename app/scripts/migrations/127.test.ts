@@ -66,6 +66,12 @@ const validRpcMethods = [
   'eth_uninstallFilter',
 ];
 
+const sentryCaptureExceptionMock = jest.fn();
+
+global.sentry = {
+  captureException: sentryCaptureExceptionMock,
+};
+
 const oldVersion = 126;
 
 describe('migration #127', () => {
@@ -91,6 +97,12 @@ describe('migration #127', () => {
     };
 
     const newStorage = await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(
+        `Migration ${version}: typeof state.PermissionController is undefined`,
+      ),
+    );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
@@ -105,6 +117,12 @@ describe('migration #127', () => {
     };
 
     const newStorage = await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(
+        `Migration ${version}: typeof state.PermissionController is string`,
+      ),
+    );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
@@ -118,6 +136,12 @@ describe('migration #127', () => {
     };
 
     const newStorage = await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(
+        `Migration ${version}: typeof state.NetworkController is undefined`,
+      ),
+    );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
@@ -132,6 +156,12 @@ describe('migration #127', () => {
     };
 
     const newStorage = await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(
+        `Migration ${version}: typeof state.NetworkController is string`,
+      ),
+    );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
@@ -145,6 +175,12 @@ describe('migration #127', () => {
     };
 
     const newStorage = await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(
+        `Migration ${version}: typeof state.SelectedNetworkController is undefined`,
+      ),
+    );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
@@ -159,6 +195,12 @@ describe('migration #127', () => {
     };
 
     const newStorage = await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(
+        `Migration ${version}: typeof state.SelectedNetworkController is string`,
+      ),
+    );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
@@ -175,6 +217,12 @@ describe('migration #127', () => {
     };
 
     const newStorage = await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(
+        `Migration ${version}: typeof state.PermissionController.subjects is string`,
+      ),
+    );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
@@ -186,13 +234,19 @@ describe('migration #127', () => {
           subjects: {},
         },
         NetworkController: {
-          selectedNetworkClientId: '',
+          selectedNetworkClientId: {},
         },
         SelectedNetworkController: {},
       },
     };
 
     const newStorage = await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(
+        `Migration ${version}: typeof state.NetworkController.selectedNetworkClientId is object`,
+      ),
+    );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
@@ -212,6 +266,12 @@ describe('migration #127', () => {
     };
 
     const newStorage = await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(
+        `Migration ${version}: typeof state.NetworkController.networkConfigurations is string`,
+      ),
+    );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
@@ -233,6 +293,12 @@ describe('migration #127', () => {
     };
 
     const newStorage = await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(
+        `Migration ${version}: typeof state.SelectedNetworkController.domains is string`,
+      ),
+    );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
@@ -254,6 +320,12 @@ describe('migration #127', () => {
     };
 
     const newStorage = await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(
+        `Migration ${version}: Invalid chainId for selectedNetworkClientId "nonExistentNetworkClientId" of type undefined`,
+      ),
+    );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
@@ -277,6 +349,12 @@ describe('migration #127', () => {
     };
 
     const newStorage = await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(
+        `Migration ${version}: Invalid subject for origin "test.com" of type string`,
+      ),
+    );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
@@ -302,6 +380,12 @@ describe('migration #127', () => {
     };
 
     const newStorage = await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(
+        `Migration ${version}: Invalid permissions for origin "test.com" of type string`,
+      ),
+    );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
