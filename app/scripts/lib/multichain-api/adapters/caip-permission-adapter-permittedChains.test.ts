@@ -8,7 +8,7 @@ import {
 
 describe('CAIP-25 permittedChains adapters', () => {
   describe('getPermittedEthChainIds', () => {
-    it('returns the unique set of EIP-155 chainIds in hex from the CAIP-25 caveat value', () => {
+    it('returns the unique set of EIP155 chainIds in hexadecimal format from the CAIP-25 caveat value', () => {
       const ethChainIds = getPermittedEthChainIds({
         requiredScopes: {
           'eip155:1': {
