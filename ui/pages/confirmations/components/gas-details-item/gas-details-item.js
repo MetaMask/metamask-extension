@@ -20,7 +20,6 @@ import {
   getPreferences,
   getShouldShowFiat,
   getTxData,
-  getUseCurrencyRateCheck,
   transactionFeeSelector,
 } from '../../../../selectors';
 import { getCurrentDraftTransaction } from '../../../../ducks/send';
@@ -70,8 +69,6 @@ const GasDetailsItem = ({
   } = useGasFeeContext();
 
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-
-  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const getTransactionFeeTotal = useMemo(() => {
     if (layer1GasFee) {
       return sumHexes(hexMinimumTransactionFee, layer1GasFee);
@@ -140,7 +137,7 @@ const GasDetailsItem = ({
             <EditGasFeeIcon
               userAcknowledgedGasMissing={userAcknowledgedGasMissing}
             />
-            {useCurrencyRateCheck && shouldShowFiat && (
+            {shouldShowFiat && (
               <UserPreferencedCurrencyDisplay
                 paddingInlineStart={1}
                 suffixProps={{
