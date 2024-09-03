@@ -3,6 +3,7 @@ import {
   Hex,
   isCaipChainId,
   isCaipNamespace,
+  KnownCaipNamespace,
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
@@ -10,7 +11,6 @@ import { toHex } from '@metamask/controller-utils';
 import { InternalAccount } from '@metamask/keyring-api';
 import MetaMaskOpenRPCDocument from '@metamask/api-specs';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { KnownCaipNamespace } from './scope';
 
 export const validRpcMethods = MetaMaskOpenRPCDocument.methods.map(
   ({ name }) => name,
