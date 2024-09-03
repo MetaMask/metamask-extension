@@ -3,7 +3,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { getMockPersonalSignConfirmStateForRequest } from '../../../../test/data/confirmations/helper';
 import { BlockaidResultType } from '../../../../shared/constants/security-provider';
-import { SecurityAlertResponse, SignatureRequestType } from '../types/confirm';
+import { SecurityAlertResponse } from '../types/confirm';
 import useCurrentSignatureSecurityAlertResponse from './useCurrentSignatureSecurityAlertResponse';
 
 const mockSecurityAlertResponse: SecurityAlertResponse = {

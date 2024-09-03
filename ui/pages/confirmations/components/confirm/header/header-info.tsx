@@ -45,7 +45,10 @@ import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
 import { SignatureRequestType } from '../../../types/confirm';
-import { isSignatureTransactionType } from '../../../utils/confirm';
+import {
+  isSignatureTransactionType,
+  REDESIGN_DEV_TRANSACTION_TYPES,
+} from '../../../utils/confirm';
 import { useConfirmContext } from '../../../context/confirm';
 
 const HeaderInfo = () => {
