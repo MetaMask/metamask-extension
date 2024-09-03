@@ -67,6 +67,7 @@ const HeaderInfo = () => {
   };
 
   const { currentConfirmation } = useConfirmContext();
+
   const { senderAddress: fromAddress, senderName: fromName } =
     useConfirmationRecipientInfo();
 
