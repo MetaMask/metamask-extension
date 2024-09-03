@@ -21,9 +21,8 @@ export const assertScopeSupported = (
     throw new EthereumRpcError(5100, 'Requested chains are not supported');
   }
 
-  // Needs to be split by namespace?
   const allMethodsSupported = methods.every((method) =>
-    isSupportedMethod(method),
+    isSupportedMethod(scopeString, method),
   );
   if (!allMethodsSupported) {
     // not sure which one of these to use
@@ -40,7 +39,7 @@ export const assertScopeSupported = (
   if (
     notifications &&
     !notifications.every((notification) =>
-      isSupportedNotification(notification),
+      isSupportedNotification(scopeString, notification),
     )
   ) {
     // not sure which one of these to use
