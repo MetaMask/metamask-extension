@@ -11,9 +11,9 @@ import {
   shortenAddress,
 } from '../../../helpers/utils/util';
 import { useConfirmContext } from '../../../pages/confirmations/context/confirm';
-import { BannerAlert } from '../../component-library';
 import { SignatureRequestType } from '../../../pages/confirmations/types/confirm';
 import { isSIWESignatureRequest } from '../../../pages/confirmations/utils/confirm';
+import { BannerAlert } from '../../component-library';
 
 const MMISignatureMismatchBanner: React.FC = memo(() => {
   const t = useI18nContext();
