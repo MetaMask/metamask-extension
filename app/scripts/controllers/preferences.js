@@ -383,8 +383,11 @@ export default class PreferencesController {
    */
   addKnownMethodData(fourBytePrefix, methodData) {
     const { knownMethodData } = this.store.getState();
-    knownMethodData[fourBytePrefix] = methodData;
-    this.store.updateState({ knownMethodData });
+
+    const updatedKnownMethodData = { ...knownMethodData };
+    updatedKnownMethodData[fourBytePrefix] = methodData;
+
+    this.store.updateState({ knownMethodData: updatedKnownMethodData });
   }
 
   /**

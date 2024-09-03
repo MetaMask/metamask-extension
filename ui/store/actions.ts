@@ -35,7 +35,6 @@ import {
   NetworkClientId,
   NetworkConfiguration,
 } from '@metamask/network-controller';
-import { applyPatches, Patch } from 'immer';
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
@@ -5597,4 +5596,22 @@ export async function endBackgroundTrace(request: EndTraceRequest) {
   await submitRequestToBackground<void>('endTrace', [
     { ...request, timestamp },
   ]);
+}
+
+function applyPatches(oldState, patches) {
+  const newState = { ...oldState };
+
+  for (const patch of patches) {
+    const { op, path, value } = patch;
+
+    if (op === 'replace') {
+      if (path.length === 0) {
+        Object.assign(newState, value);
+      } else {
+        newState[path[0]] = value;
+      }
+    }
+  }
+
+  return newState;
 }

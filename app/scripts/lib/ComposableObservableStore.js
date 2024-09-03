@@ -20,8 +20,6 @@ export default class ComposableObservableStore extends ObservableStore {
    */
   config = {};
 
-  pendingPatches = [];
-
   /**
    * Create a new store
    *
@@ -105,12 +103,6 @@ export default class ComposableObservableStore extends ObservableStore {
       flatState = { ...flatState, ...state };
     }
     return flatState;
-  }
-
-  flushPendingPatches() {
-    const newPatches = this.pendingPatches;
-    this.pendingPatches = [];
-    return newPatches;
   }
 
   #onStateChange(controllerKey, newState) {
