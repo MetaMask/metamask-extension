@@ -10,11 +10,8 @@ import { MMIMainMenuPage } from '../pageObjects/mmi-mainMenu-page';
 import { Auth0Page } from '../pageObjects/mmi-auth0-page';
 import { MMIMainPage } from '../pageObjects/mmi-main-page';
 
-const portfolio = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}/portfolio`;
-const stake = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}/stake`;
-const support = 'https://mmi-support.metamask.io/hc/en-us';
-const supportContactUs =
-  'https://mmi-support.metamask.io/hc/en-us/requests/new';
+const support = 'https://support.metamask-institutional.io';
+const supportContactUs = 'https://support.metamask-institutional.io';
 const mmiHomePage = 'https://metamask.io/institutions/';
 const privacyAndNotice = 'https://consensys.io/privacy-notice';
 const openSeaTermsOfUse = 'https://opensea.io/securityproviderterms';
@@ -53,19 +50,6 @@ test.describe('MMI Navigation', () => {
       await getPageAndCloseRepeated(context, 'home.html'),
     );
 
-    await mainPage.finishOnboarding();
-
-    // Check main page links
-    await checkLinkURL(
-      context,
-      mainPage.page,
-      'Portfolio',
-      portfolio,
-      'button',
-    );
-
-    await checkLinkURL(context, mainPage.page, 'Stake', stake, 'button');
-
     await checkLinkURL(
       context,
       mainPage.page,
@@ -100,15 +84,6 @@ test.describe('MMI Navigation', () => {
       mainMenuPage.page,
       'Support',
       support,
-      'button',
-    );
-
-    await mainMenuPage.openMenu();
-    await checkLinkURL(
-      context,
-      mainMenuPage.page,
-      'Portfolio Dashboard',
-      portfolio,
       'button',
     );
 
