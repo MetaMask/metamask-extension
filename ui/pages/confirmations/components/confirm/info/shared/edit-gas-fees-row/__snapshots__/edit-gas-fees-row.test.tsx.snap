@@ -14,7 +14,7 @@ exports[`<EditGasFeesRow /> renders component 1`] = `
       <p
         class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
       >
-        Estimated fee
+        Network fee
       </p>
       <div>
         <div
