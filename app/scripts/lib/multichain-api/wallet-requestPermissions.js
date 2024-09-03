@@ -75,6 +75,12 @@ async function requestPermissionsImplementation(
   delete requestedPermissions[RestrictedMethods.eth_accounts];
   delete requestedPermissions[PermissionNames.permittedChains];
 
+  // We manually handle eth_accounts and permittedChains permissions
+  // by calling the ApprovalController rather than the PermissionController
+  // because these two permissions do not actually exist in the Permssion
+  // Specifications. Calling the PermissionController with them will
+  // cause an error to be thrown. Instead, we will use the approval result
+  // from the ApprovalController to form a CAIP-25 permission later.
   let legacyApproval;
   const haveLegacyPermissions =
     Object.keys(legacyRequestedPermissions).length > 0;
