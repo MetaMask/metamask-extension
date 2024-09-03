@@ -40,14 +40,13 @@ export type AllowedActions =
 
 export type AllowedEvents = SmartTransactionsControllerSmartTransactionEvent;
 
-export type SmartTransactionsControllerMessenger =
-  RestrictedControllerMessenger<
-    typeof namespace,
-    AllowedActions,
-    AllowedEvents,
-    AllowedActions['type'],
-    AllowedEvents['type']
-  >;
+export type SmartTransactionHookMessenger = RestrictedControllerMessenger<
+  typeof namespace,
+  AllowedActions,
+  AllowedEvents,
+  AllowedActions['type'],
+  AllowedEvents['type']
+>;
 
 export type FeatureFlags = {
   extensionActive: boolean;
@@ -65,7 +64,7 @@ export type SubmitSmartTransactionRequest = {
   smartTransactionsController: SmartTransactionsController;
   transactionController: TransactionController;
   isSmartTransaction: boolean;
-  controllerMessenger: SmartTransactionsControllerMessenger;
+  controllerMessenger: SmartTransactionHookMessenger;
   featureFlags: FeatureFlags;
 };
 
@@ -76,7 +75,7 @@ class SmartTransactionHook {
 
   #chainId: Hex;
 
-  #controllerMessenger: SmartTransactionsControllerMessenger;
+  #controllerMessenger: SmartTransactionHookMessenger;
 
   #featureFlags: {
     extensionActive: boolean;

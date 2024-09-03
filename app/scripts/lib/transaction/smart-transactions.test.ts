@@ -7,10 +7,7 @@ import { ControllerMessenger } from '@metamask/base-controller';
 import SmartTransactionsController, {
   SmartTransactionsControllerMessenger,
 } from '@metamask/smart-transactions-controller';
-import {
-  NetworkControllerGetNetworkClientByIdAction,
-  NetworkControllerStateChangeEvent,
-} from '@metamask/network-controller';
+import { NetworkControllerStateChangeEvent } from '@metamask/network-controller';
 import type { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { submitSmartTransactionHook } from './smart-transactions';
@@ -64,7 +61,7 @@ function withRequest<ReturnValue>(
 ): ReturnValue {
   const [fn] = args;
   const controllerMessenger = new ControllerMessenger<
-    NetworkControllerGetNetworkClientByIdAction | AllowedActions,
+    AllowedActions,
     NetworkControllerStateChangeEvent | AllowedEvents
   >();
 
