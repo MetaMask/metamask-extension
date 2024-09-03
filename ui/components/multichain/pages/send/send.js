@@ -25,7 +25,6 @@ import {
   getCurrentDraftTransaction,
   getDraftTransactionExists,
   getDraftTransactionID,
-  getIsGasEstimateLoading,
   getRecipient,
   getRecipientWarningAcknowledgement,
   getSendAnalyticProperties,
@@ -323,10 +322,7 @@ export const SendPage = () => {
     sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR &&
     sendErrors.amount !== INSUFFICIENT_FUNDS_ERROR;
 
-  const isGasEstimateLoading = useSelector(getIsGasEstimateLoading);
-
   const submitDisabled =
-    isGasEstimateLoading ||
     (isInvalidSendForm && !isGasTooLow) ||
     requireContractAddressAcknowledgement ||
     (isSwapAndSend && isSmartTransactionPending);

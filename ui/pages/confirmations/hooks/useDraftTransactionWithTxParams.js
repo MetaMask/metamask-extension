@@ -1,9 +1,5 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import {
-  computeEstimatedGasLimit,
-  getCurrentDraftTransaction,
-} from '../../../ducks/send';
+import { useSelector } from 'react-redux';
+import { getCurrentDraftTransaction } from '../../../ducks/send';
 import { getUnapprovedTransactions } from '../../../selectors';
 
 /**
@@ -15,21 +11,12 @@ import { getUnapprovedTransactions } from '../../../selectors';
  * @returns {object} The transaction data
  */
 export const useDraftTransactionWithTxParams = () => {
-  const dispatch = useDispatch();
   const draftTransaction = useSelector(getCurrentDraftTransaction);
 
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
 
   let transactionData = {};
 
-  useEffect(() => {
-    console.log('====draftTransaction in conf', {
-      draftTransaction,
-      unapprovedTxs,
-    });
-  }, [draftTransaction, unapprovedTxs]);
-
-  // TODO add gas calculation here based on draftTx and override current gas values?
   if (Object.keys(draftTransaction).length !== 0) {
     const editingTransaction = unapprovedTxs[draftTransaction.id];
     transactionData = {
