@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { zeroAddress } from 'ethereumjs-util';
 import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
-import { Icon, IconName } from '../../component-library';
+import { Icon, IconName, IconSize } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -122,14 +122,6 @@ export const CoinOverview = ({
           disabled={!balanceIsCached}
         >
           <div className={`${classPrefix}-overview__balance`}>
-            <div
-              onClick={handlePortfolioOnClick}
-              className="wallet-overview__portfolio_button"
-              data-testid="portfolio-link"
-            >
-              {t('portfolio')}
-              <Icon name={IconName.Diagram} color={IconColor.primaryDefault} />
-            </div>
             <div className={`${classPrefix}-overview__primary-container`}>
               {balance ? (
                 <UserPreferencedCurrencyDisplay
@@ -164,17 +156,32 @@ export const CoinOverview = ({
               )}
             </div>
             {showFiat && isOriginalNativeSymbol && balance && (
-              <UserPreferencedCurrencyDisplay
-                className={classnames({
-                  [`${classPrefix}__cached-secondary-balance`]: balanceIsCached,
-                  [`${classPrefix}__secondary-balance`]: !balanceIsCached,
-                })}
-                data-testid={`${classPrefix}-overview__secondary-currency`}
-                value={balance}
-                type={SECONDARY}
-                ethNumberOfDecimals={4}
-                hideTitle
-              />
+              <div className="wallet-overview__currency-wrapper">
+                <UserPreferencedCurrencyDisplay
+                  className={classnames({
+                    [`${classPrefix}__cached-secondary-balance`]:
+                      balanceIsCached,
+                    [`${classPrefix}__secondary-balance`]: !balanceIsCached,
+                  })}
+                  data-testid={`${classPrefix}-overview__secondary-currency`}
+                  value={balance}
+                  type={SECONDARY}
+                  ethNumberOfDecimals={4}
+                  hideTitle
+                />
+                <div
+                  onClick={handlePortfolioOnClick}
+                  className="wallet-overview__portfolio_button"
+                  data-testid="portfolio-link"
+                >
+                  {t('portfolio')}
+                  <Icon
+                    size={IconSize.Sm}
+                    name={IconName.Export}
+                    color={IconColor.primaryDefault}
+                  />
+                </div>
+              </div>
             )}
             {isEvm && (
               <PercentageAndAmountChange
