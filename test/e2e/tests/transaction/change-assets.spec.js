@@ -1,12 +1,16 @@
-const { strict: assert } = require('assert');
-const {
+import { strict as assert } from 'assert';
+import {
   defaultGanacheOptions,
   withFixtures,
   logInWithBalanceValidation,
-} = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
-const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
-const { tEn } = require('../../../lib/i18n-helpers');
+} from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
+import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import { tEn } from '../../../lib/i18n-helpers';
+import { SendTransactionPage } from '../pages/send-transaction.page';
+import { ConfirmTransactionPage } from '../pages/confirm-transaction.page';
+import { AssetPickerModal } from '../pages/asset-picker-modal.page';
+import { AccountListPage } from '../pages/account-list.page';
 
 describe('Change assets', function () {
   it('sends the correct asset when switching from native currency to NFT', async function () {

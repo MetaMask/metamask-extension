@@ -128,14 +128,26 @@ class Driver {
    * @param {number} timeout - Defaults to 10000 milliseconds (10 seconds)
    */
   constructor(driver, browser, extensionUrl, timeout = 10 * 1000) {
-    this.driver = driver;
-    this.browser = browser;
-    this.extensionUrl = extensionUrl;
-    this.timeout = timeout;
-    this.exceptions = [];
-    this.errors = [];
-    this.eventProcessingStack = [];
-    this.windowHandles = new WindowHandles(this.driver);
+    console.log('Initializing Driver with the following parameters:');
+    console.log(`Browser: ${browser}`);
+    console.log(`Extension URL: ${extensionUrl}`);
+    console.log(`Timeout: ${timeout}ms`);
+
+    try {
+      this.driver = driver;
+      this.browser = browser;
+      this.extensionUrl = extensionUrl;
+      this.timeout = timeout;
+      this.exceptions = [];
+      this.errors = [];
+      this.eventProcessingStack = [];
+      this.windowHandles = new WindowHandles(this.driver);
+
+      console.log('Driver initialized successfully');
+    } catch (error) {
+      console.error('Error during Driver initialization:', error);
+      throw error;
+    }
 
     // The following values are found in
     // https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/lib/input.js#L50-L110
