@@ -6,7 +6,7 @@ import {
 
 describe('CAIP-25 eth_accounts adapters', () => {
   describe('getEthAccounts', () => {
-    it('returns the unique set of EIP-155 accounts from the CAIP-25 caveat value', () => {
+    it('returns the unique set of EIP155 accounts from the CAIP-25 caveat value', () => {
       const ethAccounts = getEthAccounts({
         requiredScopes: {
           'eip155:1': {
@@ -133,7 +133,7 @@ describe('CAIP-25 eth_accounts adapters', () => {
       });
     });
 
-    it('does not modify the input CAIP-25 caveat value object', () => {
+    it('does not modify the input CAIP-25 caveat value object in place', () => {
       const input: Caip25CaveatValue = {
         requiredScopes: {
           'eip155:1': {

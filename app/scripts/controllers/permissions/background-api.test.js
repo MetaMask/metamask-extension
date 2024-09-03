@@ -356,7 +356,7 @@ describe('permission background API methods', () => {
       expect(permissionController.revokePermission).not.toHaveBeenCalled();
     });
 
-    it('revokes the permission if the removed account is the only eth account', () => {
+    it('revokes the entire permission if the removed account is the only eip:155 scoped account', () => {
       const permissionController = {
         getCaveat: jest.fn().mockReturnValue({
           value: {
@@ -473,7 +473,7 @@ describe('permission background API methods', () => {
   });
 
   describe('requestAccountsPermissionWithId', () => {
-    it('gets the networkConfiguration for the currently selected network client', () => {
+    it('gets the networkConfiguration for the current globally selected network client', () => {
       const networkController = {
         state: {
           selectedNetworkClientId: 'mainnet',
@@ -558,7 +558,7 @@ describe('permission background API methods', () => {
       );
     });
 
-    it('grants a legacy CAIP-25 permission (isMultichainOrigin: false) with the approved eip155 chainIds and accounts', async () => {
+    it('grants a legacy CAIP-25 permission (isMultichainOrigin: false) with the approved eip155 chainIds and accounts and all supported methods/notifications', async () => {
       const networkController = {
         state: {
           selectedNetworkClientId: 'mainnet',
