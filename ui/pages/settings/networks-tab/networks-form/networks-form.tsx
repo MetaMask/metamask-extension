@@ -62,7 +62,7 @@ import RpcListItem, {
   stripKeyFromInfuraUrl,
   stripProtocol,
 } from '../../../../components/multichain/network-list-menu/rpc-list-item';
-import { useSafeChains } from './use-safe-chains';
+import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 import { DropdownEditor, DropdownEditorStyle } from './dropdown-editor';
 
@@ -282,6 +282,12 @@ export const NetworksForm = ({
             source_connection_method:
               MetaMetricsNetworkEventSource.CustomNetworkForm,
             token_symbol: ticker,
+          },
+          sensitiveProperties: {
+            rpcUrl: rpcIdentifierUtility(
+              rpcUrls?.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex ?? -1]?.url,
+              safeChains ?? [],
+            ),
           },
         });
 
