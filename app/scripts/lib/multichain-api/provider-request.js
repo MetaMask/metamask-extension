@@ -1,28 +1,9 @@
-import {
-  isCaipChainId,
-  isCaipNamespace,
-  numberToHex,
-  parseCaipChainId,
-} from '@metamask/utils';
+import { numberToHex } from '@metamask/utils';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
-import { mergeScopes } from './scope';
-
-// TODO: remove this when https://github.com/MetaMask/metamask-extension/pull/25708 is merged
-const parseScopeString = (scopeString) => {
-  if (isCaipNamespace(scopeString)) {
-    return {
-      namespace: scopeString,
-    };
-  }
-  if (isCaipChainId(scopeString)) {
-    return parseCaipChainId(scopeString);
-  }
-
-  return {};
-};
+import { mergeScopes, parseScopeString } from './scope';
 
 export async function providerRequestHandler(
   request,

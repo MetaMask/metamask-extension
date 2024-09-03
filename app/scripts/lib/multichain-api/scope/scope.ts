@@ -6,14 +6,8 @@ import {
   isCaipNamespace,
   isCaipChainId,
   parseCaipChainId,
+  KnownCaipNamespace,
 } from '@metamask/utils';
-
-// TODO: Remove this after bumping utils
-export enum KnownCaipNamespace {
-  /** EIP-155 compatible chains. */
-  Eip155 = 'eip155',
-  Wallet = 'wallet', // Needs to be added to utils
-}
 
 export type NonWalletKnownCaipNamespace = Exclude<
   KnownCaipNamespace,

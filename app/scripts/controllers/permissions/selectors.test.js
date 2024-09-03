@@ -1,5 +1,9 @@
 import { cloneDeep } from 'lodash';
 import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '../../lib/multichain-api/caip25permissions';
+import {
   getChangedAccounts,
   getPermittedAccountsByOrigin,
   getRemovedAuthorizations,
@@ -53,25 +57,82 @@ describe('PermissionController selectors', () => {
           'foo.bar': {
             origin: 'foo.bar',
             permissions: {
-              eth_accounts: {
-                caveats: [{ type: 'restrictReturnedAccounts', value: ['0x1'] }],
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:1': {
+                          methods: [],
+                          notifications: [],
+                          accounts: ['eip155:1:0x1'],
+                        },
+                      },
+                      optionalScopes: {
+                        'bip122:000000000019d6689c085ae165831e93': {
+                          methods: [],
+                          notifications: [],
+                          accounts: [
+                            'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: true,
+                    },
+                  },
+                ],
               },
             },
           },
           'bar.baz': {
             origin: 'bar.baz',
             permissions: {
-              eth_accounts: {
-                caveats: [{ type: 'restrictReturnedAccounts', value: ['0x2'] }],
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          methods: [],
+                          notifications: [],
+                          accounts: ['eip155:1:0x2'],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
               },
             },
           },
           'baz.bizz': {
             origin: 'baz.fizz',
             permissions: {
-              eth_accounts: {
+              [Caip25EndowmentPermissionName]: {
                 caveats: [
-                  { type: 'restrictReturnedAccounts', value: ['0x1', '0x2'] },
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:1': {
+                          methods: [],
+                          notifications: [],
+                          accounts: ['eip155:1:0x1'],
+                        },
+                      },
+                      optionalScopes: {
+                        'eip155:1': {
+                          methods: [],
+                          notifications: [],
+                          accounts: ['eip155:1:0x2'],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
                 ],
               },
             },
@@ -117,6 +178,7 @@ describe('PermissionController selectors', () => {
       expect(selected2).toBe(getPermittedAccountsByOrigin(state2));
     });
   });
+
   describe('getRemovedAuthorizations', () => {
     it('returns an empty map if the new and previous values are the same', () => {
       const newAuthorizations = new Map();

@@ -2,8 +2,8 @@ import { providerErrors } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from './caip25permissions';
-import { mergeScopes } from './scope';
+} from '../caip25permissions';
+import { mergeScopes } from '../scope';
 
 export async function CaipPermissionAdapterMiddleware(
   request,
@@ -12,10 +12,6 @@ export async function CaipPermissionAdapterMiddleware(
   end,
   hooks,
 ) {
-  if (!process.env.BARAD_DUR) {
-    return next();
-  }
-
   const { networkClientId, method } = request;
 
   let caveat;

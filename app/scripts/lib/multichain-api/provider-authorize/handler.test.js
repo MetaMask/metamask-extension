@@ -1,8 +1,5 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
-import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../../../../shared/constants/permissions';
+import { RestrictedMethods } from '../../../../../shared/constants/permissions';
 import {
   validateAndFlattenScopes,
   processScopedProperties,
@@ -13,8 +10,14 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '../caip25permissions';
+import { shouldEmitDappViewedEvent } from '../../util';
 import { providerAuthorizeHandler } from './handler';
 import { assignAccountsToScopes, validateAndUpsertEip3085 } from './helpers';
+
+jest.mock('../../util', () => ({
+  ...jest.requireActual('../../util'),
+  shouldEmitDappViewedEvent: jest.fn(),
+}));
 
 jest.mock('../scope', () => ({
   ...jest.requireActual('../scope'),
@@ -56,18 +59,9 @@ const baseRequest = {
 const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
-  const requestPermissions = jest.fn().mockResolvedValue([
-    {
-      eth_accounts: {
-        caveats: [
-          {
-            type: CaveatTypes.restrictReturnedAccounts,
-            value: ['0x1', '0x2', '0x3', '0x4'],
-          },
-        ],
-      },
-    },
-  ]);
+  const requestPermissionApprovalForOrigin = jest.fn().mockResolvedValue({
+    approvedAccounts: ['0x1', '0x2', '0x3', '0x4'],
+  });
   const grantPermissions = jest.fn().mockResolvedValue(undefined);
   const findNetworkClientIdByChainId = jest.fn().mockReturnValue('mainnet');
   const upsertNetworkConfiguration = jest.fn().mockResolvedValue();
@@ -85,16 +79,28 @@ const createMockedHandler = () => {
     unsubscribeDomain: jest.fn(),
     unsubscribeScope: jest.fn(),
   };
+  const sendMetrics = jest.fn();
+  const metamaskState = {
+    permissionHistory: {},
+    metaMetricsId: 'metaMetricsId',
+    accounts: {
+      '0x1': {},
+      '0x2': {},
+      '0x3': {},
+    },
+  };
   const response = {};
   const handler = (request) =>
     providerAuthorizeHandler(request, response, next, end, {
       findNetworkClientIdByChainId,
-      requestPermissions,
+      requestPermissionApprovalForOrigin,
       grantPermissions,
       upsertNetworkConfiguration,
       removeNetworkConfiguration,
       multichainMiddlewareManager,
       multichainSubscriptionManager,
+      metamaskState,
+      sendMetrics,
     });
 
   return {
@@ -102,12 +108,14 @@ const createMockedHandler = () => {
     next,
     end,
     findNetworkClientIdByChainId,
-    requestPermissions,
+    requestPermissionApprovalForOrigin,
     grantPermissions,
     upsertNetworkConfiguration,
     removeNetworkConfiguration,
     multichainMiddlewareManager,
     multichainSubscriptionManager,
+    metamaskState,
+    sendMetrics,
     handler,
   };
 };
@@ -350,8 +358,9 @@ describe('provider_authorize', () => {
     expect(isChainIdSupportableBody).toContain('validScopedProperties');
   });
 
-  it('requests permissions with no args even if there is accounts in the scope', async () => {
-    const { handler, requestPermissions } = createMockedHandler();
+  it('requests approval for account permission with no args even if there is accounts in the scope', async () => {
+    const { handler, requestPermissionApprovalForOrigin } =
+      createMockedHandler();
     bucketScopes
       .mockReturnValueOnce({
         supportedScopes: {
@@ -401,12 +410,9 @@ describe('provider_authorize', () => {
       });
     await handler(baseRequest);
 
-    expect(requestPermissions).toHaveBeenCalledWith(
-      { origin: 'http://test.com' },
-      {
-        [RestrictedMethods.eth_accounts]: {},
-      },
-    );
+    expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
+      [RestrictedMethods.eth_accounts]: {},
+    });
   });
 
   it('assigns the permitted accounts to the scopeObjects', async () => {
@@ -492,14 +498,15 @@ describe('provider_authorize', () => {
     );
   });
 
-  it('throws an error when requesting account permission fails', async () => {
-    const { handler, requestPermissions, end } = createMockedHandler();
-    requestPermissions.mockImplementation(() => {
-      throw new Error('failed to request account permissions');
+  it('throws an error when requesting account permission approval fails', async () => {
+    const { handler, requestPermissionApprovalForOrigin, end } =
+      createMockedHandler();
+    requestPermissionApprovalForOrigin.mockImplementation(() => {
+      throw new Error('failed to request account permission approval');
     });
     await handler(baseRequest);
     expect(end).toHaveBeenCalledWith(
-      new Error('failed to request account permissions'),
+      new Error('failed to request account permission approval'),
     );
   });
 
@@ -669,6 +676,30 @@ describe('provider_authorize', () => {
     expect(end).toHaveBeenCalledWith(
       new Error('failed to grant CAIP-25 permissions'),
     );
+  });
+
+  it('emits the dapp viewed metrics event', async () => {
+    shouldEmitDappViewedEvent.mockReturnValue(true);
+    const { handler, sendMetrics } = createMockedHandler();
+    bucketScopes.mockReturnValue({
+      supportedScopes: {},
+      supportableScopes: {},
+      unsupportableScopes: {},
+    });
+    await handler(baseRequest);
+
+    expect(sendMetrics).toHaveBeenCalledWith({
+      category: 'inpage_provider',
+      event: 'Dapp Viewed',
+      properties: {
+        is_first_visit: true,
+        number_of_accounts: 3,
+        number_of_accounts_connected: 4,
+      },
+      referrer: {
+        url: 'http://test.com',
+      },
+    });
   });
 
   it('returns the session ID, properties, and merged scopes', async () => {

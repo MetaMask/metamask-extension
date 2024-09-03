@@ -3,6 +3,7 @@ import {
   Hex,
   isCaipChainId,
   isCaipNamespace,
+  KnownCaipNamespace,
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
@@ -10,7 +11,6 @@ import { toHex } from '@metamask/controller-utils';
 import { InternalAccount } from '@metamask/keyring-api';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import {
-  KnownCaipNamespace,
   KnownNotifications,
   KnownRpcMethods,
   KnownWalletNamespaceRpcMethods,
