@@ -4,18 +4,13 @@ import { MockedEndpoint } from 'mockttp';
 import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
-import {
-  mockSignatureApproved,
-  mockSignatureRejected,
-  withRedesignConfirmationFixtures,
-} from '../helpers';
+import { withRedesignConfirmationFixtures } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
-  assertSignatureConfirmedMetrics,
-  assertSignatureRejectedMetrics,
+  assertSignatureMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
   openDappAndTriggerSignature,
@@ -52,15 +47,14 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
         await driver.clickElement('[data-testid="confirm-footer-button"]');
         await driver.delay(1000);
 
-        await assertSignatureConfirmedMetrics({
+        await assertSignatureMetrics(
           driver,
-          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
-          signatureType: 'eth_signTypedData',
-        });
+          mockedEndpoints as MockedEndpoint[],
+          'eth_signTypedData',
+        );
 
         await assertVerifiedResults(driver, publicAddress);
       },
-      mockSignatureApproved,
     );
   });
 
@@ -78,12 +72,11 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
         );
         await driver.delay(1000);
 
-        await assertSignatureRejectedMetrics({
+        await assertSignatureMetrics(
           driver,
-          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
-          signatureType: 'eth_signTypedData',
-          location: 'confirmation',
-        });
+          mockedEndpoints as MockedEndpoint[],
+          'eth_signTypedData',
+        );
 
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -94,7 +87,6 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
         });
         assert.ok(rejectionResult);
       },
-      mockSignatureRejected,
     );
   });
 });

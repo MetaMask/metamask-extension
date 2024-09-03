@@ -9,7 +9,7 @@ import {
 } from '../../../../../../components/app/confirm/info/row';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../../context/confirm';
+import { currentConfirmationSelector } from '../../../../../../selectors';
 import {
   hexToText,
   sanitizeString,
@@ -23,9 +23,9 @@ import { SIWESignInfo } from './siwe-sign';
 
 const PersonalSignInfo: React.FC = () => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext() as {
-    currentConfirmation: SignatureRequestType;
-  };
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
+  ) as SignatureRequestType;
   const useTransactionSimulations = useSelector(
     selectUseTransactionSimulations,
   );

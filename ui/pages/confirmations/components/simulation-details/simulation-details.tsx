@@ -1,30 +1,28 @@
+import React from 'react';
 import {
   SimulationData,
   SimulationError,
   SimulationErrorCode,
 } from '@metamask/transaction-controller';
-import React from 'react';
 import {
   Box,
   Icon,
   IconName,
-  IconSize,
   Text,
 } from '../../../../components/component-library';
-import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
-import Tooltip from '../../../../components/ui/tooltip';
 import {
   AlignItems,
   BorderColor,
   BorderRadius,
   Display,
   FlexDirection,
-  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import InfoTooltip from '../../../../components/ui/info-tooltip/info-tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
 import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
@@ -113,23 +111,10 @@ const HeaderLayout: React.FC = ({ children }) => {
         <Text variant={TextVariant.bodyMdMedium}>
           {t('simulationDetailsTitle')}
         </Text>
-        <Tooltip
-          interactive
+        <InfoTooltip
           position="top"
-          containerClassName="info-tooltip__tooltip-container"
-          tooltipInnerClassName="info-tooltip__tooltip-content"
-          tooltipArrowClassName="info-tooltip__top-tooltip-arrow"
-          html={t('simulationDetailsTitleTooltip')}
-          theme="tippy-tooltip-info"
-          style={{ display: Display.Flex }}
-        >
-          <Icon
-            name={IconName.Question}
-            marginLeft={1}
-            color={IconColor.iconMuted}
-            size={IconSize.Sm}
-          />
-        </Tooltip>
+          contentText={t('simulationDetailsTitleTooltip')}
+        />
       </Box>
       {children}
     </Box>

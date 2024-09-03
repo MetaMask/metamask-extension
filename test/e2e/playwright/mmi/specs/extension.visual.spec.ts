@@ -105,8 +105,6 @@ test.describe('MMI extension', () => {
       'Custody Account R',
       'Custody Account S',
       'Custody Account T',
-      'TR',
-      'TR2',
     ];
 
     // Getting extension id of MMI

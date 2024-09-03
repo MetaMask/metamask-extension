@@ -5,17 +5,19 @@ import {
   NETWORK_TYPES,
 } from '../../../../shared/constants/network';
 
-import { getAllNetworks } from '../../../selectors';
+import {
+  currentConfirmationSelector,
+  getAllNetworks,
+} from '../../../selectors';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useConfirmContext } from '../context/confirm';
 
 type KeyOfNetworkName = keyof typeof NETWORK_TO_NAME_MAP;
 
 function useConfirmationNetworkInfo() {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext();
+  const currentConfirmation = useSelector(currentConfirmationSelector);
   const allNetworks = useSelector(getAllNetworks);
   const providerConfig = useSelector(getProviderConfig);
 

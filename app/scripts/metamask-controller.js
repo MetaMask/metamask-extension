@@ -2682,7 +2682,7 @@ export default class MetamaskController extends EventEmitter {
               'PhishingController:maybeUpdateState',
             );
           },
-          isOnPhishingList: (sender) => {
+          isOnPhishingList: (origin) => {
             const { usePhishDetect } =
               this.preferencesController.store.getState();
 
@@ -2692,7 +2692,7 @@ export default class MetamaskController extends EventEmitter {
 
             return this.controllerMessenger.call(
               'PhishingController:testOrigin',
-              sender.url,
+              origin,
             ).result;
           },
           createInterface: this.controllerMessenger.call.bind(
@@ -4999,7 +4999,7 @@ export default class MetamaskController extends EventEmitter {
           const { hostname } = new URL(sender.url);
           this.phishingController.maybeUpdateState();
           // Check if new connection is blocked if phishing detection is on
-          const phishingTestResponse = this.phishingController.test(sender.url);
+          const phishingTestResponse = this.phishingController.test(hostname);
           if (phishingTestResponse?.result) {
             this.sendPhishingWarning(connectionStream, hostname);
             this.metaMetricsController.trackEvent({
@@ -6395,10 +6395,10 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Adds a domain to the PhishingController safelist
    *
-   * @param {string} origin - the domain to safelist
+   * @param {string} hostname - the domain to safelist
    */
-  safelistPhishingDomain(origin) {
-    return this.phishingController.bypass(origin);
+  safelistPhishingDomain(hostname) {
+    return this.phishingController.bypass(hostname);
   }
 
   async backToSafetyPhishingWarning() {

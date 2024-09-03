@@ -7,7 +7,7 @@ import {
   normalizeTransactionParams,
 } from '@metamask/transaction-controller';
 import { SignatureController } from '@metamask/signature-controller';
-import type { PersonalMessage } from '@metamask/message-manager';
+import { Message } from '@metamask/message-manager';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -246,7 +246,7 @@ describe('PPOM Utils', () => {
             ...SECURITY_ALERT_RESPONSE_MOCK,
             securityAlertId: SECURITY_ALERT_ID_MOCK,
           },
-        } as unknown as PersonalMessage,
+        } as unknown as Message,
       });
 
       await updateSecurityAlertResponse({

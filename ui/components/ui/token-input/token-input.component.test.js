@@ -66,7 +66,7 @@ describe('TokenInput Component', () => {
         metamask: {
           ...mockState.metamask,
           currencyRates: {
-            [CURRENCY_SYMBOLS.POL]: {
+            [CURRENCY_SYMBOLS.MATIC]: {
               conversionRate: 1,
             },
           },
@@ -84,7 +84,7 @@ describe('TokenInput Component', () => {
         mockStore,
       );
 
-      expect(queryByTitle('0 POL')).toBeInTheDocument();
+      expect(queryByTitle('0 MATIC')).toBeInTheDocument();
     });
 
     it('should render showFiat', () => {

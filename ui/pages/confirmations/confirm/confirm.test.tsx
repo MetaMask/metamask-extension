@@ -3,19 +3,16 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { act } from '@testing-library/react';
+import { unapprovedPersonalSignMsg } from '../../../../test/data/confirmations/personal_sign';
 import {
   orderSignatureMsg,
   permitSignatureMsg,
+  unapprovedTypedSignMsgV4,
 } from '../../../../test/data/confirmations/typed_sign';
 import mockState from '../../../../test/data/mock-state.json';
-import {
-  getMockPersonalSignConfirmState,
-  getMockTypedSignConfirmState,
-  getMockTypedSignConfirmStateForRequest,
-} from '../../../../test/data/confirmations/helper';
-import { renderWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import * as actions from '../../../store/actions';
-import { SignatureRequestType } from '../types/confirm';
+
 import Confirm from './confirm';
 
 jest.mock('react-router-dom', () => ({
@@ -34,20 +31,18 @@ describe('Confirm', () => {
 
   it('should render', () => {
     const mockStore = configureMockStore(middleware)(mockState);
-    const { container } = renderWithConfirmContextProvider(
-      <Confirm />,
-      mockStore,
-    );
+    const { container } = renderWithProvider(<Confirm />, mockStore);
     expect(container).toBeDefined();
   });
 
   it('should match snapshot for signature - typed sign - permit', async () => {
-    const mockStateTypedSign = getMockTypedSignConfirmStateForRequest(
-      permitSignatureMsg,
-      {
-        metamask: { useTransactionSimulations: true },
+    const mockStateTypedSign = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
       },
-    );
+      confirm: { currentConfirmation: permitSignatureMsg },
+    };
 
     jest.spyOn(actions, 'getTokenStandardAndDetails').mockResolvedValue({
       decimals: '2',
@@ -58,7 +53,7 @@ describe('Confirm', () => {
     let container;
 
     await act(async () => {
-      const { container: renderContainer } = renderWithConfirmContextProvider(
+      const { container: renderContainer } = renderWithProvider(
         <Confirm />,
         mockStore,
       );
@@ -69,24 +64,26 @@ describe('Confirm', () => {
   });
 
   it('matches snapshot for signature - personal sign type', () => {
-    const mockStatePersonalSign = getMockPersonalSignConfirmState();
+    const mockStatePersonalSign = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+      },
+      confirm: { currentConfirmation: unapprovedPersonalSignMsg },
+    };
     const mockStore = configureMockStore(middleware)(mockStatePersonalSign);
-    const { container } = renderWithConfirmContextProvider(
-      <Confirm />,
-      mockStore,
-    );
+    const { container } = renderWithProvider(<Confirm />, mockStore);
     expect(container).toMatchSnapshot();
   });
 
   it('should match snapshot signature - typed sign - order', async () => {
-    const mockStateTypedSign = getMockTypedSignConfirmStateForRequest(
-      orderSignatureMsg as SignatureRequestType,
-      {
-        metamask: {
-          useTransactionSimulations: true,
-        },
+    const mockStateTypedSign = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
       },
-    );
+      confirm: { currentConfirmation: orderSignatureMsg },
+    };
 
     jest.spyOn(actions, 'getTokenStandardAndDetails').mockResolvedValue({
       decimals: '2',
@@ -97,7 +94,7 @@ describe('Confirm', () => {
     let container;
 
     await act(async () => {
-      const { container: renderContainer } = renderWithConfirmContextProvider(
+      const { container: renderContainer } = renderWithProvider(
         <Confirm />,
         mockStore,
       );
@@ -108,12 +105,15 @@ describe('Confirm', () => {
   });
 
   it('should match snapshot for signature - typed sign - V4', async () => {
-    const mockStateTypedSign = getMockTypedSignConfirmState();
+    const mockStateTypedSign = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+      },
+      confirm: { currentConfirmation: unapprovedTypedSignMsgV4 },
+    };
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
-    const { container } = renderWithConfirmContextProvider(
-      <Confirm />,
-      mockStore,
-    );
+    const { container } = renderWithProvider(<Confirm />, mockStore);
     expect(container).toMatchSnapshot();
   });
 });

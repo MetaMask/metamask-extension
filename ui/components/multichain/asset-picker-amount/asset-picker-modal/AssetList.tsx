@@ -19,30 +19,26 @@ import {
   FlexWrap,
 } from '../../../../helpers/constants/design-system';
 import { TokenListItem } from '../..';
+import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import { Asset, Token } from './types';
 import AssetComponent from './Asset';
-import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
 type AssetListProps = {
-  handleAssetChange: (
-    token: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
-  ) => void;
-  asset?: ERC20Asset | NativeAsset;
-  tokenList: (
-    | AssetWithDisplayData<ERC20Asset>
-    | AssetWithDisplayData<NativeAsset>
-  )[];
-  isTokenDisabled?: (
-    token: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
-  ) => boolean;
+  handleAssetChange: (token: Token) => void;
+  asset: Asset;
+  tokenList: Token[];
+  sendingAssetSymbol?: string;
+  memoizedSwapsBlockedTokens: Set<string>;
 };
 
 export default function AssetList({
   handleAssetChange,
   asset,
   tokenList,
-  isTokenDisabled,
+  sendingAssetSymbol,
+  memoizedSwapsBlockedTokens,
 }: AssetListProps) {
-  const selectedToken = asset?.address;
+  const selectedToken = asset.details?.address;
 
   const nativeCurrency = useSelector(getNativeCurrency);
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
@@ -75,7 +71,10 @@ export default function AssetList({
       {tokenList.map((token) => {
         const tokenAddress = token.address?.toLowerCase();
         const isSelected = tokenAddress === selectedToken?.toLowerCase();
-        const isDisabled = isTokenDisabled?.(token) ?? false;
+        const isDisabled = sendingAssetSymbol
+          ? !isEqualCaseInsensitive(sendingAssetSymbol, token.symbol) &&
+            memoizedSwapsBlockedTokens.has(tokenAddress as string)
+          : false;
         return (
           <Box
             padding={0}
@@ -134,6 +133,7 @@ export default function AssetList({
                   <AssetComponent
                     key={token.address}
                     {...token}
+                    decimalTokenAmount={token.string}
                     tooltipText={
                       isDisabled ? 'swapTokenNotAvailable' : undefined
                     }

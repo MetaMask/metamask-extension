@@ -2,27 +2,27 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { isValidAddress } from 'ethereumjs-util';
 import React from 'react';
 import { useSelector } from 'react-redux';
+
+import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
   ConfirmInfoRowText,
   ConfirmInfoRowUrl,
 } from '../../../../../../../components/app/confirm/info/row';
-import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
-import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { selectPaymasterAddress } from '../../../../../../../selectors/account-abstraction';
-import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { currentConfirmationSelector } from '../../../../../selectors';
 import { useFourByte } from '../../hooks/useFourByte';
 
 export const OriginRow = () => {
   const t = useI18nContext();
 
-  const { currentConfirmation } = useConfirmContext() as unknown as {
-    currentConfirmation: TransactionMeta | undefined;
-  };
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
+  ) as TransactionMeta;
 
   const origin = currentConfirmation?.origin;
 
@@ -46,9 +46,9 @@ export const OriginRow = () => {
 export const RecipientRow = () => {
   const t = useI18nContext();
 
-  const { currentConfirmation } = useConfirmContext() as unknown as {
-    currentConfirmation: TransactionMeta | undefined;
-  };
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
+  ) as TransactionMeta;
 
   if (
     !currentConfirmation?.txParams?.to ||
@@ -71,9 +71,9 @@ export const RecipientRow = () => {
 export const MethodDataRow = () => {
   const t = useI18nContext();
 
-  const { currentConfirmation } = useConfirmContext() as unknown as {
-    currentConfirmation: TransactionMeta;
-  };
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
+  ) as TransactionMeta;
 
   const methodData = useFourByte(currentConfirmation);
 
@@ -95,9 +95,9 @@ export const MethodDataRow = () => {
 const PaymasterRow = () => {
   const t = useI18nContext();
 
-  const { currentConfirmation } = useConfirmContext() as unknown as {
-    currentConfirmation: TransactionMeta | undefined;
-  };
+  const currentConfirmation = useSelector(currentConfirmationSelector) as
+    | TransactionMeta
+    | undefined;
 
   const { id: userOperationId } = currentConfirmation ?? {};
   const isUserOperation = Boolean(currentConfirmation?.isUserOperation);
@@ -125,16 +125,12 @@ const PaymasterRow = () => {
 };
 
 export const TransactionDetails = () => {
-  const showAdvancedDetails = useSelector(
-    selectConfirmationAdvancedDetailsOpen,
-  );
-
   return (
     <>
       <ConfirmInfoSection data-testid="transaction-details-section">
         <OriginRow />
         <RecipientRow />
-        {showAdvancedDetails && <MethodDataRow />}
+        <MethodDataRow />
       </ConfirmInfoSection>
       <PaymasterRow />
     </>

@@ -146,45 +146,9 @@ export const SendPage = () => {
           }),
         );
       }
-
-      trackEvent(
-        {
-          event: MetaMetricsEventName.sendAssetSelected,
-          category: MetaMetricsEventCategory.Send,
-          properties: {
-            is_destination_asset_picker_modal: Boolean(isReceived),
-            is_nft: false,
-          },
-          sensitiveProperties: {
-            ...sendAnalytics,
-            new_asset_symbol: token.symbol,
-            new_asset_address: token.address,
-          },
-        },
-        { excludeMetaMetricsId: false },
-      );
       history.push(SEND_ROUTE);
     },
-    [dispatch, history, sendAnalytics, trackEvent],
-  );
-
-  const handleAssetPickerClick = useCallback(
-    (isDest) => {
-      trackEvent(
-        {
-          event: MetaMetricsEventName.sendTokenModalOpened,
-          category: MetaMetricsEventCategory.Send,
-          properties: {
-            is_destination_asset_picker_modal: Boolean(isDest),
-          },
-          sensitiveProperties: {
-            ...sendAnalytics,
-          },
-        },
-        { excludeMetaMetricsId: false },
-      );
-    },
-    [sendAnalytics, trackEvent],
+    [dispatch, history],
   );
 
   const cleanup = useCallback(() => {
@@ -376,12 +340,10 @@ export const SendPage = () => {
         {isSendFormShown && (
           <AssetPickerAmount
             error={error}
-            header={t('sendSelectSendAsset')}
             asset={transactionAsset}
             amount={amount}
             onAssetChange={handleSelectSendToken}
             onAmountChange={onAmountChange}
-            onClick={() => handleAssetPickerClick(false)}
           />
         )}
         <Box marginTop={6}>
@@ -392,7 +354,6 @@ export const SendPage = () => {
                 requireContractAddressAcknowledgement
               }
               onAssetChange={handleSelectToken}
-              onClick={() => handleAssetPickerClick(true)}
             />
           ) : (
             <SendPageRecipient />

@@ -1,13 +1,16 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import Preloader from '../../../../../components/ui/icon/preloader';
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
 import { Box } from '../../../../../components/component-library';
-import useCurrentSignatureSecurityAlertResponse from '../../../hooks/useCurrentSignatureSecurityAlertResponse';
+
+import { currentSignatureRequestSecurityResponseSelector } from '../../../selectors';
 
 const BlockaidLoadingIndicator = () => {
-  const signatureSecurityAlertResponse =
-    useCurrentSignatureSecurityAlertResponse();
+  const signatureSecurityAlertResponse = useSelector(
+    currentSignatureRequestSecurityResponseSelector,
+  );
 
   if (
     signatureSecurityAlertResponse?.result_type !== BlockaidResultType.Loading

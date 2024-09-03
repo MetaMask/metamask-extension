@@ -22,19 +22,29 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
           >
             Estimated changes
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-1"
-              class="info-tooltip__tooltip-container"
-              data-original-title="null"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
+          <div
+            class="info-tooltip"
+            data-testid="info-tooltip"
+          >
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-1"
+                class="info-tooltip__tooltip-container"
+                data-original-title="null"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <svg
+                  viewBox="0 0 10 10"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
+                    fill="var(--color-icon-alternative)"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
@@ -95,7 +105,6 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -135,7 +144,6 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -228,7 +236,6 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -288,7 +295,6 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -303,12 +309,12 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
           class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
         >
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-1 mm-box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-sm mm-box--padding-inline-end-1 mm-box--color-text-muted"
           >
             🦊 Market
           </p>
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-success-default"
           >
             <span
               data-testid="gas-timing-time"
@@ -344,19 +350,29 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
           >
             Estimated changes
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-1"
-              class="info-tooltip__tooltip-container"
-              data-original-title="null"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
+          <div
+            class="info-tooltip"
+            data-testid="info-tooltip"
+          >
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-1"
+                class="info-tooltip__tooltip-container"
+                data-original-title="null"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <svg
+                  viewBox="0 0 10 10"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
+                    fill="var(--color-icon-alternative)"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
@@ -455,7 +471,6 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -495,7 +510,6 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -588,7 +602,6 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -648,7 +661,6 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -663,12 +675,12 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
           class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
         >
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-1 mm-box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-sm mm-box--padding-inline-end-1 mm-box--color-text-muted"
           >
             🦊 Market
           </p>
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-success-default"
           >
             <span
               data-testid="gas-timing-time"
@@ -704,19 +716,29 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
           >
             Estimated changes
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-1"
-              class="info-tooltip__tooltip-container"
-              data-original-title="null"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
+          <div
+            class="info-tooltip"
+            data-testid="info-tooltip"
+          >
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-1"
+                class="info-tooltip__tooltip-container"
+                data-original-title="null"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <svg
+                  viewBox="0 0 10 10"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
+                    fill="var(--color-icon-alternative)"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
@@ -812,7 +834,6 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -852,7 +873,6 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -945,7 +965,6 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1005,7 +1024,6 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1020,12 +1038,12 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
           class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
         >
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-1 mm-box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-sm mm-box--padding-inline-end-1 mm-box--color-text-muted"
           >
             🦊 Market
           </p>
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-success-default"
           >
             <span
               data-testid="gas-timing-time"

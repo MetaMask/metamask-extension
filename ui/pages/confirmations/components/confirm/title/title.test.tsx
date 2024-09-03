@@ -1,16 +1,13 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { TransactionType } from '@metamask/transaction-controller';
 
 import {
-  getMockContractInteractionConfirmState,
-  getMockPersonalSignConfirmState,
-  getMockPersonalSignConfirmStateForRequest,
-  getMockTypedSignConfirmState,
-  getMockTypedSignConfirmStateForRequest,
-} from '../../../../../../test/data/confirmations/helper';
-import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { permitSignatureMsg } from '../../../../../../test/data/confirmations/typed_sign';
-import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
+  permitSignatureMsg,
+  unapprovedTypedSignMsgV4,
+} from '../../../../../../test/data/confirmations/typed_sign';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import { Confirmation } from '../../../types/confirm';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import {
   Alert,
@@ -18,13 +15,25 @@ import {
 } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import ConfirmTitle from './title';
 
+const genMockState = (confirmationOverride: Partial<Confirmation> = {}) => ({
+  confirm: {
+    currentConfirmation: {
+      type: TransactionType.personalSign,
+      ...confirmationOverride,
+    },
+  },
+  confirmAlerts: {
+    alerts: {},
+    confirmed: {},
+  },
+});
+
 describe('ConfirmTitle', () => {
   it('should render the title and description for a personal signature', () => {
-    const mockStore = configureMockStore([])(getMockPersonalSignConfirmState);
-    const { getByText } = renderWithConfirmContextProvider(
-      <ConfirmTitle />,
-      mockStore,
+    const mockStore = configureMockStore([])(
+      genMockState({ type: TransactionType.personalSign }),
     );
+    const { getByText } = renderWithProvider(<ConfirmTitle />, mockStore);
 
     expect(getByText('Signature request')).toBeInTheDocument();
     expect(
@@ -36,12 +45,9 @@ describe('ConfirmTitle', () => {
 
   it('should render the title and description for a permit signature', () => {
     const mockStore = configureMockStore([])(
-      getMockTypedSignConfirmStateForRequest(permitSignatureMsg),
+      genMockState(permitSignatureMsg as Confirmation),
     );
-    const { getByText } = renderWithConfirmContextProvider(
-      <ConfirmTitle />,
-      mockStore,
-    );
+    const { getByText } = renderWithProvider(<ConfirmTitle />, mockStore);
 
     expect(getByText('Spending cap request')).toBeInTheDocument();
     expect(
@@ -50,11 +56,10 @@ describe('ConfirmTitle', () => {
   });
 
   it('should render the title and description for typed signature', () => {
-    const mockStore = configureMockStore([])(getMockTypedSignConfirmState());
-    const { getByText } = renderWithConfirmContextProvider(
-      <ConfirmTitle />,
-      mockStore,
+    const mockStore = configureMockStore([])(
+      genMockState(unapprovedTypedSignMsgV4 as Confirmation),
     );
+    const { getByText } = renderWithProvider(<ConfirmTitle />, mockStore);
 
     expect(getByText('Signature request')).toBeInTheDocument();
     expect(
@@ -66,50 +71,54 @@ describe('ConfirmTitle', () => {
 
   it('should render the title and description for a contract interaction transaction', () => {
     const mockStore = configureMockStore([])(
-      getMockContractInteractionConfirmState(),
+      genMockState({ type: TransactionType.contractInteraction }),
     );
-    const { getByText } = renderWithConfirmContextProvider(
-      <ConfirmTitle />,
-      mockStore,
-    );
+    const { getByText } = renderWithProvider(<ConfirmTitle />, mockStore);
 
     expect(getByText('Transaction request')).toBeInTheDocument();
+    expect(
+      getByText(
+        'Only confirm this transaction if you fully understand the content and trust the requesting site.',
+      ),
+    ).toBeInTheDocument();
   });
 
   describe('Alert banner', () => {
+    const CONFIRMATION_ID_MOCK = '123';
     const alertMock = {
       severity: Severity.Danger,
       message: 'mock message',
       reason: 'mock reason',
       key: 'mock key',
     };
-    const mockAlertState = (state: Partial<ConfirmAlertsState> = {}) =>
-      getMockPersonalSignConfirmStateForRequest(unapprovedPersonalSignMsg, {
-        metamask: {},
-        confirmAlerts: {
-          alerts: {
-            [unapprovedPersonalSignMsg.id]: [alertMock, alertMock, alertMock],
-          },
-          confirmed: {
-            [unapprovedPersonalSignMsg.id]: {
-              [alertMock.key]: false,
-            },
-          },
-          ...state,
+    const mockAlertState = (state: Partial<ConfirmAlertsState> = {}) => ({
+      confirm: {
+        currentConfirmation: {
+          type: TransactionType.personalSign,
+          id: CONFIRMATION_ID_MOCK,
         },
-      });
+      },
+      confirmAlerts: {
+        alerts: {
+          [CONFIRMATION_ID_MOCK]: [alertMock, alertMock, alertMock],
+        },
+        confirmed: {
+          [CONFIRMATION_ID_MOCK]: {
+            [alertMock.key]: false,
+          },
+        },
+        ...state,
+      },
+    });
     it('renders an alert banner if there is a danger alert', () => {
       const mockStore = configureMockStore([])(
         mockAlertState({
           alerts: {
-            [unapprovedPersonalSignMsg.id]: [alertMock as Alert],
+            [CONFIRMATION_ID_MOCK]: [alertMock as Alert],
           },
         }),
       );
-      const { queryByText } = renderWithConfirmContextProvider(
-        <ConfirmTitle />,
-        mockStore,
-      );
+      const { queryByText } = renderWithProvider(<ConfirmTitle />, mockStore);
 
       expect(queryByText(alertMock.reason)).toBeInTheDocument();
       expect(queryByText(alertMock.message)).toBeInTheDocument();
@@ -118,10 +127,7 @@ describe('ConfirmTitle', () => {
     it('renders alert banner when there are multiple alerts', () => {
       const mockStore = configureMockStore([])(mockAlertState());
 
-      const { getByText } = renderWithConfirmContextProvider(
-        <ConfirmTitle />,
-        mockStore,
-      );
+      const { getByText } = renderWithProvider(<ConfirmTitle />, mockStore);
 
       expect(getByText('Multiple alerts!')).toBeInTheDocument();
     });

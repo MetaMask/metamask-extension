@@ -1,16 +1,10 @@
+import { waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import {
-  TransactionStatus,
-  TransactionType,
-} from '@metamask/transaction-controller';
-
-import {
-  getMockApproveConfirmState,
-  getMockConfirmStateForTransaction,
-} from '../../../../../../../test/data/confirmations/helper';
-import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import { genUnapprovedApproveConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
+import mockState from '../../../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
 import ApproveInfo from './approve';
 
 jest.mock('../../../../../../store/actions', () => ({
@@ -34,29 +28,35 @@ describe('<ApproveInfo />', () => {
   const middleware = [thunk];
 
   it('renders component for approve request', async () => {
-    const state = getMockApproveConfirmState();
+    const state = {
+      ...mockState,
+      confirm: {
+        currentConfirmation: genUnapprovedApproveConfirmation(),
+      },
+    };
     const mockStore = configureMockStore(middleware)(state);
 
-    const { container } = renderWithConfirmContextProvider(
-      <ApproveInfo />,
-      mockStore,
-    );
+    const { container } = renderWithProvider(<ApproveInfo />, mockStore);
 
-    expect(container).toMatchSnapshot();
+    await waitFor(() => {
+      expect(container).toMatchSnapshot();
+    });
   });
 
   it('does not render if required data is not present in the transaction', () => {
-    const state = getMockConfirmStateForTransaction({
-      id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
-      status: TransactionStatus.unapproved,
-      time: new Date().getTime(),
-      type: TransactionType.tokenMethodApprove,
-    });
+    const state = {
+      ...mockState,
+      confirm: {
+        currentConfirmation: {
+          id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
+          status: 'unapproved',
+          time: new Date().getTime(),
+          type: 'json_request',
+        },
+      },
+    };
     const mockStore = configureMockStore(middleware)(state);
-    const { container } = renderWithConfirmContextProvider(
-      <ApproveInfo />,
-      mockStore,
-    );
+    const { container } = renderWithProvider(<ApproveInfo />, mockStore);
     expect(container).toMatchSnapshot();
   });
 });

@@ -5,8 +5,6 @@ import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
-  mockSignatureApproved,
-  mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
   withRedesignConfirmationFixtures,
 } from '../helpers';
@@ -15,8 +13,7 @@ import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
-  assertSignatureConfirmedMetrics,
-  assertSignatureRejectedMetrics,
+  assertSignatureMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
   openDappAndTriggerSignature,
@@ -55,16 +52,14 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
         await scrollAndConfirmAndAssertConfirm(driver);
         await driver.delay(1000);
 
-        await assertSignatureConfirmedMetrics({
+        await assertSignatureMetrics(
           driver,
-          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
-          signatureType: 'eth_signTypedData_v4',
-          primaryType: 'Mail',
-        });
-
+          mockedEndpoints as MockedEndpoint[],
+          'eth_signTypedData_v4',
+          'Mail',
+        );
         await assertVerifiedResults(driver, publicAddress);
       },
-      mockSignatureApproved,
     );
   });
 
@@ -85,13 +80,12 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
         );
         await driver.delay(1000);
 
-        await assertSignatureRejectedMetrics({
+        await assertSignatureMetrics(
           driver,
-          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
-          signatureType: 'eth_signTypedData_v4',
-          primaryType: 'Mail',
-          location: 'confirmation',
-        });
+          mockedEndpoints as MockedEndpoint[],
+          'eth_signTypedData_v4',
+          'Mail',
+        );
 
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -102,7 +96,6 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
         });
         assert.ok(rejectionResult);
       },
-      mockSignatureRejected,
     );
   });
 });

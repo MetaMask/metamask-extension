@@ -19,7 +19,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useScrollRequired } from '../../../../../hooks/useScrollRequired';
-import { useConfirmContext } from '../../../context/confirm';
+import { currentConfirmationSelector } from '../../../selectors';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
 
 type ContentProps = {
@@ -32,7 +32,7 @@ type ContentProps = {
 const ScrollToBottom = ({ children }: ContentProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const { currentConfirmation } = useConfirmContext();
+  const currentConfirmation = useSelector(currentConfirmationSelector);
   const previousId = usePrevious(currentConfirmation?.id);
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,

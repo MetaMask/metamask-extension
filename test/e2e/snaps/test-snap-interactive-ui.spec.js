@@ -35,11 +35,7 @@ describe('Test Snap Interactive UI', function () {
           tag: 'button',
         });
 
-        // We need a bigger timeout as the Connect action takes some time
-        await driver.clickElementSafe(
-          '[data-testid="snap-install-scroll"]',
-          3000,
-        );
+        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         await driver.waitForSelector({ text: 'Confirm' });
 

@@ -17,6 +17,7 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import Spinner from '../../../ui/spinner';
 import {
@@ -25,8 +26,24 @@ import {
   getUseNftDetection,
 } from '../../../../selectors';
 import NFTsDetectionNoticeNFTsTab from '../../../app/assets/nfts/nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
-import { useNftsCollections } from '../../../../hooks/useNftsCollections';
-import { Collection, NFT } from './types';
+
+type NFT = {
+  address: string;
+  description: string | null;
+  favorite: boolean;
+  image: string | null;
+  isCurrentlyOwned: boolean;
+  name: string | null;
+  standard: TokenStandard;
+  tokenId: string;
+  tokenURI?: string;
+};
+
+type Collection = {
+  collectionName: string;
+  collectionImage: string | null;
+  nfts: NFT[];
+};
 
 type PreviouslyOwnedCollections = {
   collectionName: string;
@@ -34,48 +51,19 @@ type PreviouslyOwnedCollections = {
 };
 
 type AssetPickerModalNftTabProps = {
-  searchQuery: string;
+  collectionDataFiltered: Collection[];
+  previouslyOwnedCollection: PreviouslyOwnedCollections;
   onClose: () => void;
   renderSearch: () => void;
 };
 
 export function AssetPickerModalNftTab({
-  searchQuery,
+  collectionDataFiltered,
+  previouslyOwnedCollection,
   onClose,
   renderSearch,
 }: AssetPickerModalNftTabProps) {
   const t = useI18nContext();
-
-  const {
-    collections,
-    previouslyOwnedCollection,
-  }: {
-    collections: Record<string, Collection>;
-    previouslyOwnedCollection: PreviouslyOwnedCollections;
-  } = useNftsCollections();
-
-  const collectionsKeys = Object.keys(collections);
-
-  const collectionsData = collectionsKeys.reduce((acc: unknown[], key) => {
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const collection = (collections as any)[key];
-
-    const isMatchingQuery = collection.collectionName
-      ?.toLowerCase()
-      .includes(searchQuery.toLowerCase());
-
-    if (isMatchingQuery) {
-      acc.push(collection);
-      return acc;
-    }
-    return acc;
-  }, []);
-
-  // filter and exclude ERC1155
-  const collectionDataFiltered = (collectionsData as Collection[]).filter(
-    (collection) => collection.nfts.length > 0,
-  );
 
   const hasAnyNfts = Object.keys(collectionDataFiltered).length > 0;
   const useNftDetection = useSelector(getUseNftDetection);

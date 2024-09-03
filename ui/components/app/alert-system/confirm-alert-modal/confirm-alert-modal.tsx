@@ -23,12 +23,10 @@ import useAlerts from '../../../../hooks/useAlerts';
 import { AlertModal } from '../alert-modal';
 import { AcknowledgeCheckboxBase } from '../alert-modal/alert-modal';
 import { MultipleAlertModal } from '../multiple-alert-modal';
-import { MetaMetricsEventLocation } from '../../../../../shared/constants/metametrics';
-import { OnCancelHandler } from '../../../../pages/confirmations/components/confirm/footer/footer';
 
 export type ConfirmAlertModalProps = {
   /** Callback function that is called when the cancel button is clicked. */
-  onCancel: OnCancelHandler;
+  onCancel: () => void;
   /** The function to be executed when the modal needs to be closed. */
   onClose: () => void;
   /** Callback function that is called when the submit button is clicked. */
@@ -42,20 +40,16 @@ function ConfirmButtons({
   onSubmit,
   isConfirmed,
 }: {
-  onCancel: OnCancelHandler;
+  onCancel: () => void;
   onSubmit: () => void;
   isConfirmed: boolean;
 }) {
   const t = useI18nContext();
-  const onAlertCancel = useCallback(() => {
-    onCancel({ location: MetaMetricsEventLocation.AlertFrictionModal });
-  }, [onCancel]);
-
   return (
     <>
       <Button
         block
-        onClick={onAlertCancel}
+        onClick={onCancel}
         size={ButtonSize.Lg}
         variant={ButtonVariant.Secondary}
         data-testid="confirm-alert-modal-cancel-button"

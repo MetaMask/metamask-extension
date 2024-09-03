@@ -323,6 +323,10 @@ describe('MetaMaskController', () => {
             blocklist: ['test.metamask-phishing.io'],
             name: ListNames.MetaMask,
           },
+          phishfort_hotlist: {
+            blocklist: [],
+            name: ListNames.Phishfort,
+          },
         }),
       )
       .get(METAMASK_HOTLIST_DIFF_FILE)

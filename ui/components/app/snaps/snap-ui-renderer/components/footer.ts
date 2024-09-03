@@ -7,8 +7,7 @@ import {
   Display,
   FlexDirection,
 } from '../../../../../helpers/constants/design-system';
-import { UIComponentFactory, UIComponentParams } from './types';
-import { button as buttonFn } from './button';
+import { UIComponentFactory } from './types';
 
 export const DEFAULT_FOOTER = {
   element: 'Box',
@@ -53,24 +52,20 @@ export const footer: UIComponentFactory<FooterElement> = ({
   element,
   t,
   onCancel,
-  ...params
 }) => {
   const defaultButtons = getDefaultButtons(element, t, onCancel);
 
   const footerChildren = (getJsxChildren(element) as ButtonElement[]).map(
-    (children, index) => {
-      const buttonMapped = buttonFn({
-        ...params,
-        element: children,
-      } as UIComponentParams<ButtonElement>);
+    (children) => {
+      const { children: buttonChildren, ...props } = children.props;
       return {
         element: 'SnapFooterButton',
-        key: `snap-footer-button-${buttonMapped.props?.name ?? index}`,
+        key: `snap-footer-button-${props.name}`,
         props: {
-          ...buttonMapped.props,
+          ...props,
           isSnapAction: true,
         },
-        children: buttonMapped.children,
+        children: buttonChildren,
       };
     },
   );

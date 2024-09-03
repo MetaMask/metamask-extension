@@ -39,7 +39,6 @@ describe('AssetPickerAmount', () => {
   const onAmountChangeMock = jest.fn();
 
   const defaultProps = {
-    header: 'testHeader',
     asset: {
       type: AssetType.token,
       details: { address: '0xToken', symbol: 'TOKEN', decimals: 18 },

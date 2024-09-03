@@ -1,9 +1,11 @@
 import React from 'react';
 import { DateTime } from 'luxon';
+import { useSelector } from 'react-redux';
 import { toHex } from '@metamask/controller-utils';
 
 import { NETWORK_TO_NAME_MAP } from '../../../../../../../../shared/constants/network';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { currentConfirmationSelector } from '../../../../../../../selectors';
 import { SignatureRequestType } from '../../../../../types/confirm';
 import {
   ConfirmInfoRow,
@@ -11,13 +13,12 @@ import {
   ConfirmInfoRowDate,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
-import { useConfirmContext } from '../../../../../context/confirm';
 
 const SIWESignInfo: React.FC = () => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext() as {
-    currentConfirmation: SignatureRequestType;
-  };
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
+  ) as SignatureRequestType;
 
   const siweMessage = currentConfirmation?.msgParams?.siwe?.parsedMessage;
 

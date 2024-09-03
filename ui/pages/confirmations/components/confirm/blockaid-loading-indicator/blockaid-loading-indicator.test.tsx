@@ -7,7 +7,7 @@ import {
 
 import mockState from '../../../../../../test/data/mock-state.json';
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
-import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 
 import { SecurityAlertResponse } from '../../../types/confirm';
 import BlockaidLoadingIndicator from './blockaid-loading-indicator';
@@ -55,10 +55,7 @@ const render = (
   };
 
   const defaultStore = configureStore()(mockExpectedState);
-  return renderWithConfirmContextProvider(
-    <BlockaidLoadingIndicator />,
-    defaultStore,
-  );
+  return renderWithProvider(<BlockaidLoadingIndicator />, defaultStore);
 };
 
 describe('BlockaidLoadingIndicator', () => {

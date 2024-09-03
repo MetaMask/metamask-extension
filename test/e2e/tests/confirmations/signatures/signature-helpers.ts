@@ -20,36 +20,19 @@ export enum SignatureType {
   SIWE_BadDomain = '#siweBadDomain',
 }
 
-type AssertSignatureMetricsOptions = {
-  driver: Driver;
-  mockedEndpoints: MockedEndpoint[];
-  signatureType: string;
-  primaryType?: string;
-  uiCustomizations?: string[];
-  location?: string;
-};
+export async function assertSignatureMetrics(
+  driver: Driver,
+  mockedEndpoints: MockedEndpoint[],
+  type: string,
+  primaryType: string = '',
+  uiCustomizations = ['redesigned_confirmation'],
+) {
+  const events = await getEventPayloads(driver, mockedEndpoints);
 
-type SignatureEventProperty = {
-  account_type: 'MetaMask';
-  category: 'inpage_provider';
-  chain_id: '0x539';
-  environment_type: 'background';
-  locale: 'en';
-  security_alert_response: 'NotApplicable';
-  signature_type: string;
-  eip712_primary_type?: string;
-  ui_customizations?: string[];
-  location?: string;
-};
-
-function getSignatureEventProperty(
-  signatureType: string,
-  primaryType: string,
-  uiCustomizations: string[],
-): SignatureEventProperty {
-  const signatureEventProperty: SignatureEventProperty = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const signatureEventProperty: any = {
     account_type: 'MetaMask',
-    signature_type: signatureType,
+    signature_type: type,
     category: 'inpage_provider',
     chain_id: '0x539',
     environment_type: 'background',
@@ -62,15 +45,6 @@ function getSignatureEventProperty(
     signatureEventProperty.eip712_primary_type = primaryType;
   }
 
-  return signatureEventProperty;
-}
-
-function assertSignatureRequestedMetrics(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  events: any[],
-  signatureEventProperty: SignatureEventProperty,
-) {
-  assert.equal(events[0].event, 'Signature Requested');
   assert.deepStrictEqual(
     events[0].properties,
     {
@@ -79,55 +53,10 @@ function assertSignatureRequestedMetrics(
     },
     'Signature request event details do not match',
   );
-}
-
-export async function assertSignatureConfirmedMetrics({
-  driver,
-  mockedEndpoints,
-  signatureType,
-  primaryType = '',
-  uiCustomizations = ['redesigned_confirmation'],
-}: AssertSignatureMetricsOptions) {
-  const events = await getEventPayloads(driver, mockedEndpoints);
-  const signatureEventProperty = getSignatureEventProperty(
-    signatureType,
-    primaryType,
-    uiCustomizations,
-  );
-
-  assertSignatureRequestedMetrics(events, signatureEventProperty);
-  assert.equal(events[1].event, 'Signature Approved');
   assert.deepStrictEqual(
     events[1].properties,
     signatureEventProperty,
-    'Signature Accepted event properties do not match',
-  );
-}
-
-export async function assertSignatureRejectedMetrics({
-  driver,
-  mockedEndpoints,
-  signatureType,
-  primaryType = '',
-  uiCustomizations = ['redesigned_confirmation'],
-  location,
-}: AssertSignatureMetricsOptions) {
-  const events = await getEventPayloads(driver, mockedEndpoints);
-  const signatureEventProperty = getSignatureEventProperty(
-    signatureType,
-    primaryType,
-    uiCustomizations,
-  );
-
-  assertSignatureRequestedMetrics(events, signatureEventProperty);
-  assert.equal(events[1].event, 'Signature Rejected');
-  assert.deepStrictEqual(
-    events[1].properties,
-    {
-      ...signatureEventProperty,
-      location,
-    },
-    'Signature Rejected event properties do not match',
+    'Signature Accepted/Rejected event properties do not match',
   );
 }
 

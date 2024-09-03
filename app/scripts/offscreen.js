@@ -1,8 +1,5 @@
 import { captureException } from '@sentry/browser';
-import {
-  OFFSCREEN_LOAD_TIMEOUT,
-  OffscreenCommunicationTarget,
-} from '../../shared/constants/offscreen-communication';
+import { OffscreenCommunicationTarget } from '../../shared/constants/offscreen-communication';
 import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/socket-background-to-mocha';
 
 /**
@@ -68,7 +65,7 @@ export async function createOffscreen() {
 
   // In case we are in a bad state where the offscreen document is not loading, timeout and let execution continue.
   const timeoutPromise = new Promise((resolve) => {
-    setTimeout(resolve, OFFSCREEN_LOAD_TIMEOUT);
+    setTimeout(resolve, 5000);
   });
 
   await Promise.race([loadPromise, timeoutPromise]);

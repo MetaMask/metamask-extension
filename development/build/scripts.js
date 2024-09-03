@@ -659,12 +659,6 @@ function createFactoredBuild({
         const isTest =
           buildTarget === BUILD_TARGETS.TEST ||
           buildTarget === BUILD_TARGETS.TEST_DEV;
-        const scripts = getScriptTags({
-          groupSet,
-          commonSet,
-          shouldIncludeSnow,
-          applyLavaMoat,
-        });
         switch (groupLabel) {
           case 'ui': {
             renderHtmlFile({
@@ -673,21 +667,12 @@ function createFactoredBuild({
               shouldIncludeSnow,
               applyLavaMoat,
               isMMI: buildType === 'mmi',
-              scripts,
             });
             renderHtmlFile({
               htmlName: 'popup',
               browserPlatforms,
               shouldIncludeSnow,
               applyLavaMoat,
-              scripts,
-            });
-            renderHtmlFile({
-              htmlName: 'popup-init',
-              browserPlatforms,
-              shouldIncludeSnow,
-              applyLavaMoat,
-              scripts,
             });
             renderHtmlFile({
               htmlName: 'notification',
@@ -696,7 +681,6 @@ function createFactoredBuild({
               applyLavaMoat,
               isMMI: buildType === 'mmi',
               isTest,
-              scripts,
             });
             renderHtmlFile({
               htmlName: 'home',
@@ -705,7 +689,14 @@ function createFactoredBuild({
               applyLavaMoat,
               isMMI: buildType === 'mmi',
               isTest,
-              scripts,
+            });
+            renderJavaScriptLoader({
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              shouldIncludeSnow,
+              applyLavaMoat,
+              destinationFileName: 'load-app.js',
             });
             break;
           }
@@ -717,7 +708,14 @@ function createFactoredBuild({
               browserPlatforms,
               shouldIncludeSnow,
               applyLavaMoat,
-              scripts,
+            });
+            renderJavaScriptLoader({
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              shouldIncludeSnow,
+              applyLavaMoat,
+              destinationFileName: 'load-background.js',
             });
             if (isManifestV3) {
               const jsBundles = [
@@ -747,19 +745,17 @@ function createFactoredBuild({
               browserPlatforms,
               shouldIncludeSnow,
               applyLavaMoat: false,
-              scripts,
             });
             break;
           }
           case 'offscreen': {
-            renderHtmlFile({
-              htmlName: 'offscreen',
+            renderJavaScriptLoader({
               groupSet,
               commonSet,
               browserPlatforms,
               shouldIncludeSnow,
               applyLavaMoat,
-              scripts,
+              destinationFileName: 'load-offscreen.js',
             });
             break;
           }
@@ -1143,11 +1139,13 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
   }
 }
 
-function getScriptTags({
+function renderJavaScriptLoader({
   groupSet,
   commonSet,
+  browserPlatforms,
   shouldIncludeSnow,
   applyLavaMoat,
+  destinationFileName,
 }) {
   if (applyLavaMoat === undefined) {
     throw new Error(
@@ -1181,8 +1179,17 @@ function getScriptTags({
     ...jsBundles,
   ];
 
-  return requiredScripts.map((src) => {
-    return `<script src="${src}" defer></script>`;
+  browserPlatforms.forEach((platform) => {
+    const appLoadFilePath = './app/scripts/load-app.js';
+    const appLoadContents = readFileSync(appLoadFilePath, 'utf8');
+
+    const scriptDest = `./dist/${platform}/${destinationFileName}`;
+    const scriptOutput = appLoadContents.replace(
+      '/* SCRIPTS */',
+      `...${JSON.stringify(requiredScripts)}`,
+    );
+
+    writeFileSync(scriptDest, scriptOutput);
   });
 }
 
@@ -1193,7 +1200,6 @@ function renderHtmlFile({
   applyLavaMoat,
   isMMI,
   isTest,
-  scripts = [],
 }) {
   if (applyLavaMoat === undefined) {
     throw new Error(
@@ -1206,12 +1212,7 @@ function renderHtmlFile({
     );
   }
 
-  const scriptTags = scripts.join('\n    ');
-
-  const htmlFilePath =
-    htmlName === 'offscreen'
-      ? `./offscreen/${htmlName}.html`
-      : `./app/${htmlName}.html`;
+  const htmlFilePath = `./app/${htmlName}.html`;
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
 
   const eta = new Eta();
@@ -1222,10 +1223,9 @@ function renderHtmlFile({
     .replace('./scripts/load/background.ts', './load-background.js')
     .replace(
       '<script src="./load-background.js" defer></script>',
-      `${scriptTags}\n    <script src="./chromereload.js" async></script>`,
+      '<script src="./load-background.js" defer></script>\n    <script src="./chromereload.js" defer></script>',
     )
-    .replace('<script src="./scripts/load/ui.ts" defer></script>', scriptTags)
-    .replace('<script src="./load-offscreen.js" defer></script>', scriptTags)
+    .replace('./scripts/load/ui.ts', './load-app.js')
     .replace('../ui/css/index.scss', './index.css')
     .replace('@lavamoat/snow/snow.prod.js', './scripts/snow.js');
   browserPlatforms.forEach((platform) => {

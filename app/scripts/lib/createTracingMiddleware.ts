@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
-import { trace, TraceName } from '../../../shared/lib/trace';
+import { trace } from '../../../shared/lib/trace';
 
 export default function createTracingMiddleware() {
   return async function tracingMiddleware(
@@ -14,16 +14,12 @@ export default function createTracingMiddleware() {
 
     if (method === MESSAGE_TYPE.ETH_SEND_TRANSACTION) {
       req.traceContext = await trace({
-        name: TraceName.Transaction,
+        name: 'Transaction',
         id,
         tags: { source: 'dapp' },
       });
 
-      await trace({
-        name: TraceName.Middleware,
-        id,
-        parentContext: req.traceContext,
-      });
+      await trace({ name: 'Middleware', id, parentContext: req.traceContext });
     }
 
     next();

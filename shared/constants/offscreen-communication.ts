@@ -1,6 +1,3 @@
-export const OFFSCREEN_LEDGER_INIT_TIMEOUT = 4000;
-export const OFFSCREEN_LOAD_TIMEOUT = OFFSCREEN_LEDGER_INIT_TIMEOUT + 1000;
-
 /**
  * Defines legal targets for offscreen communication. These values are used to
  * filter and route messages to the correct target.

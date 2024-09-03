@@ -15,7 +15,7 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { trace, TraceName } from '../../../../shared/lib/trace';
+import { trace } from '../../../../shared/lib/trace';
 
 export function SentryTest() {
   return (
@@ -74,14 +74,14 @@ function GenerateTrace() {
   const handleClick = useCallback(async () => {
     await trace(
       {
-        name: TraceName.DeveloperTest,
+        name: 'Developer Test',
         data: { 'test.data.number': 123 },
         tags: { 'test.tag.number': 123 },
       },
       async (context) => {
         await trace(
           {
-            name: TraceName.NestedTest1,
+            name: 'Nested Test 1',
             data: { 'test.data.boolean': true },
             tags: { 'test.tag.boolean': true },
             parentContext: context,
@@ -91,7 +91,7 @@ function GenerateTrace() {
 
         await trace(
           {
-            name: TraceName.NestedTest2,
+            name: 'Nested Test 2',
             data: { 'test.data.string': 'test' },
             tags: { 'test.tag.string': 'test' },
             parentContext: context,

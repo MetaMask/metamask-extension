@@ -20,7 +20,7 @@ import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getIsFiatPrimary } from '../utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
-import { TokenWithBalance } from '../asset-picker-modal/types';
+import { Token } from '../asset-picker-modal/types';
 
 export type AssetBalanceTextProps = {
   asset: Asset;
@@ -38,7 +38,7 @@ export function AssetBalanceText({
 
   const isFiatPrimary = useSelector(getIsFiatPrimary);
 
-  const { tokensWithBalances }: { tokensWithBalances: TokenWithBalance[] } =
+  const { tokensWithBalances }: { tokensWithBalances: Token[] } =
     useTokenTracker({
       tokens:
         asset.details?.address && !asset.balance

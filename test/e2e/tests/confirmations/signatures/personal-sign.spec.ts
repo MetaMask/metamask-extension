@@ -1,21 +1,20 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
+import {
+  DAPP_HOST_ADDRESS,
+  WINDOW_TITLES,
+  switchToNotificationWindow,
+} from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
-import {
-  mockSignatureApproved,
-  mockSignatureRejected,
-  withRedesignConfirmationFixtures,
-} from '../helpers';
+import { withRedesignConfirmationFixtures } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
-  assertSignatureConfirmedMetrics,
-  assertSignatureRejectedMetrics,
+  assertSignatureMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
   openDappAndTriggerSignature,
@@ -46,19 +45,18 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
           mockedEndpoints as MockedEndpoint[],
           'personal_sign',
         );
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver);
         await assertInfoValues(driver);
 
         await driver.clickElement('[data-testid="confirm-footer-button"]');
 
         await assertVerifiedPersonalMessage(driver, publicAddress);
-        await assertSignatureConfirmedMetrics({
+        await assertSignatureMetrics(
           driver,
-          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
-          signatureType: 'personal_sign',
-        });
+          mockedEndpoints as MockedEndpoint[],
+          'personal_sign',
+        );
       },
-      mockSignatureApproved,
     );
   });
 
@@ -83,14 +81,12 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
           text: 'Error: User rejected the request.',
         });
         assert.ok(rejectionResult);
-        await assertSignatureRejectedMetrics({
+        await assertSignatureMetrics(
           driver,
-          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
-          signatureType: 'personal_sign',
-          location: 'confirmation',
-        });
+          mockedEndpoints as MockedEndpoint[],
+          'personal_sign',
+        );
       },
-      mockSignatureRejected,
     );
   });
 });

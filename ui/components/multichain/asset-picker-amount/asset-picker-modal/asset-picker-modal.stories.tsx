@@ -5,8 +5,6 @@ import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from './asset-picker-modal';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ERC20Asset } from './types';
 
 const storybook = {
   title: 'Components/Multichain/AssetPickerModal',
@@ -17,35 +15,21 @@ const props = {
   isOpen: true,
   onClose: () => ({}),
   asset: {
-    address: '0xAddress',
-    symbol: 'TOKEN',
-    image: 'image.png',
+    balance: null,
+    details: null,
+    error: null,
     type: AssetType.token,
-  } as ERC20Asset,
+  } as unknown as Asset,
 };
-export const DefaultStory = () => {
-  const t = useI18nContext();
-  return (
-    <AssetPickerModal
-      header={t('sendSelectSendAsset')}
-      onAssetChange={() => ({})}
-      {...props}
-    />
-  );
-};
+export const DefaultStory = () => (
+  <AssetPickerModal onAssetChange={() => ({})} {...props} />
+);
 
 DefaultStory.storyName = 'Default';
 
-export const TokenStory = () => {
-  const t = useI18nContext();
-  return (
-    <AssetPickerModal
-      header={t('sendSelectSendAsset')}
-      onAssetChange={() => ({})}
-      {...props}
-    />
-  );
-};
+export const TokenStory = () => (
+  <AssetPickerModal onAssetChange={() => ({})} {...props} />
+);
 
 TokenStory.storyName = 'Modal With Balance';
 

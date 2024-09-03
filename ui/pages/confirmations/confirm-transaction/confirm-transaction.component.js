@@ -49,7 +49,6 @@ import Confirm from '../confirm/confirm';
 import useCurrentConfirmation from '../hooks/useCurrentConfirmation';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { useAsyncResult } from '../../../hooks/useAsyncResult';
-import { TraceName } from '../../../../shared/lib/trace';
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
 const ConfirmTransaction = () => {
@@ -103,10 +102,7 @@ const ConfirmTransaction = () => {
       return undefined;
     }
 
-    return await endBackgroundTrace({
-      name: TraceName.NotificationDisplay,
-      id,
-    });
+    return await endBackgroundTrace({ name: 'Notification Display', id });
   }, [id, isNotification]);
 
   const transactionId = id;

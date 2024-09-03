@@ -2,10 +2,9 @@ import { waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-
-import { getMockContractInteractionConfirmState } from '../../../../../../../test/data/confirmations/helper';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../../../../test/data/mock-state.json';
-import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
 import BaseTransactionInfo from './base-transaction-info';
 
 jest.mock('../../../../../../store/actions', () => ({
@@ -29,10 +28,15 @@ describe('<BaseTransactionInfo />', () => {
   const middleware = [thunk];
 
   it('renders component for contract interaction request', async () => {
-    const state = getMockContractInteractionConfirmState();
+    const state = {
+      ...mockState,
+      confirm: {
+        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
+      },
+    };
     const mockStore = configureMockStore(middleware)(state);
 
-    const { container } = renderWithConfirmContextProvider(
+    const { container } = renderWithProvider(
       <BaseTransactionInfo />,
       mockStore,
     );
@@ -55,7 +59,7 @@ describe('<BaseTransactionInfo />', () => {
       },
     };
     const mockStore = configureMockStore(middleware)(state);
-    const { container } = renderWithConfirmContextProvider(
+    const { container } = renderWithProvider(
       <BaseTransactionInfo />,
       mockStore,
     );

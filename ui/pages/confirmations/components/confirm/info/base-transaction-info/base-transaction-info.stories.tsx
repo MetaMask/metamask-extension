@@ -1,21 +1,27 @@
 import { Meta } from '@storybook/react';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { getMockContractInteractionConfirmState } from '../../../../../../../test/data/confirmations/helper';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
+import mockState from '../../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../../store/store';
-import { ConfirmContextProvider } from '../../../../context/confirm';
 import BaseTransactionInfo from './base-transaction-info';
 
-const store = configureStore(getMockContractInteractionConfirmState());
+const store = configureStore({
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+  },
+  confirm: {
+    currentConfirmation: genUnapprovedContractInteractionConfirmation(),
+  },
+});
 
 const Story = {
   title: 'Components/App/Confirm/info/BaseTransactionInfo',
   component: BaseTransactionInfo,
   decorators: [
     (story: () => Meta<typeof BaseTransactionInfo>) => (
-      <Provider store={store}>
-        <ConfirmContextProvider>{story()}</ConfirmContextProvider>
-      </Provider>
+      <Provider store={store}>{story()}</Provider>
     ),
   ],
 };

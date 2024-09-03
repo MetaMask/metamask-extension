@@ -1,13 +1,7 @@
-import { ButtonElement, JSXElement } from '@metamask/snaps-sdk/jsx';
-import { getJsxChildren } from '@metamask/snaps-utils';
-import { NonEmptyArray } from '@metamask/utils';
-import { mapTextToTemplate } from '../utils';
+import { ButtonElement } from '@metamask/snaps-sdk/jsx';
 import { UIComponentFactory } from './types';
 
-export const button: UIComponentFactory<ButtonElement> = ({
-  element,
-  ...params
-}) => ({
+export const button: UIComponentFactory<ButtonElement> = ({ element }) => ({
   element: 'SnapUIButton',
   props: {
     type: element.props.type,
@@ -15,8 +9,5 @@ export const button: UIComponentFactory<ButtonElement> = ({
     name: element.props.name,
     disabled: element.props.disabled,
   },
-  children: mapTextToTemplate(
-    getJsxChildren(element) as NonEmptyArray<string | JSXElement>,
-    params,
-  ),
+  children: element.props.children,
 });

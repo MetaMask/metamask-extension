@@ -114,7 +114,11 @@ export const NetworkListItem = ({
       width={BlockSize.Full}
       onClick={onClick}
     >
-      {startAccessory ? <Box marginTop={1}>{startAccessory}</Box> : null}
+      {startAccessory ? (
+        <Box marginInlineEnd={2} marginTop={1}>
+          {startAccessory}
+        </Box>
+      ) : null}
       {selected && (
         <Box
           className="multichain-network-list-item__selected-indicator"

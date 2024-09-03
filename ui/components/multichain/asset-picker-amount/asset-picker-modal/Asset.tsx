@@ -7,9 +7,12 @@ import { TokenListItem } from '../../token-list-item';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { AssetWithDisplayData, ERC20Asset } from './types';
 
-type AssetProps = AssetWithDisplayData<ERC20Asset> & {
+type AssetProps = {
+  address?: string | null;
+  image?: string;
+  symbol: string;
+  decimalTokenAmount?: string;
   tooltipText?: string;
 };
 
@@ -17,7 +20,7 @@ export default function Asset({
   address,
   image,
   symbol,
-  string: decimalTokenAmount,
+  decimalTokenAmount,
   tooltipText,
 }: AssetProps) {
   const locale = useSelector(getIntlLocale);

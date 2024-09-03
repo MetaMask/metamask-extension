@@ -1,15 +1,12 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { TransactionStatus, TransactionType } from '@metamask/transaction-controller';
 
 import mockState from '../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../store/store';
-import { ConfirmContextProvider } from '../../../context/confirm';
 
 import Nav from './nav';
-import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 
-const store = configureStore(getMockConfirmState({
+const store = configureStore({
   metamask: {
     ...mockState.metamask,
     pendingApprovals: {
@@ -51,26 +48,20 @@ const store = configureStore(getMockConfirmState({
       },
     },
   },
-  unapprovedPersonalMsgs: {
-    testApprovalId2: {
+  confirm: {
+    currentConfirmation: {
       id: 'testApprovalId2',
-      type: TransactionType.personalSign,
-      chainId: '0x5',
-      status: TransactionStatus.unapproved,
       msgParams: {
         from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
       },
     },
   },
-}));
+});
 
 const Story = {
   title: 'Components/App/Confirm/Nav',
   component: Nav,
-  decorators: [(story: any) => <Provider store={store}>
-    <ConfirmContextProvider>{story()}</ConfirmContextProvider>
-  </Provider>,
-  ]
+  decorators: [(story: any) => <Provider store={store}>{story()}</Provider>],
 };
 
 export default Story;

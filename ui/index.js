@@ -13,7 +13,6 @@ import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
 import { COPY_OPTIONS } from '../shared/constants/copy';
 import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
-import { endTrace, trace, TraceName } from '../shared/lib/trace';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -60,17 +59,10 @@ export const updateBackgroundConnection = (backgroundConnection) => {
 };
 
 export default function launchMetamaskUi(opts, cb) {
-  const { backgroundConnection, traceContext } = opts;
-
-  trace({
-    name: TraceName.GetState,
-    parentContext: traceContext,
-  });
+  const { backgroundConnection } = opts;
 
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
-    endTrace({ name: TraceName.GetState });
-
     if (err) {
       cb(
         err,
@@ -81,7 +73,6 @@ export default function launchMetamaskUi(opts, cb) {
       );
       return;
     }
-
     startApp(metamaskState, backgroundConnection, opts).then((store) => {
       setupStateHooks(store);
       cb(null, store);
@@ -186,12 +177,10 @@ export async function setupInitialStore(
 }
 
 async function startApp(metamaskState, backgroundConnection, opts) {
-  const { traceContext } = opts;
-
-  const store = await trace(
-    { name: TraceName.SetupStore, parentContext: traceContext },
-    () =>
-      setupInitialStore(metamaskState, backgroundConnection, opts.activeTab),
+  const store = await setupInitialStore(
+    metamaskState,
+    backgroundConnection,
+    opts.activeTab,
   );
 
   // global metamask api - used by tooling
@@ -204,48 +193,40 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     },
   };
 
-  await trace(
-    { name: TraceName.InitialActions, parentContext: traceContext },
-    async () => {
-      // This block autoswitches chains based on the last chain used
-      // for a given dapp, when there are no pending confimrations
-      // This allows the user to be connected on one chain
-      // for one dapp, and automatically change for another
-      const state = store.getState();
-      const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(state);
-      if (networkIdToSwitchTo) {
-        await store.dispatch(
-          actions.automaticallySwitchNetwork(
-            networkIdToSwitchTo,
-            getOriginOfCurrentTab(state),
-          ),
-        );
-      } else if (getSwitchedNetworkDetails(state)) {
-        // It's possible that old details could exist if the user
-        // opened the toast but then didn't close it
-        // Clear out any existing switchedNetworkDetails
-        // if the user didn't just change the dapp network
-        await store.dispatch(actions.clearSwitchedNetworkDetails());
-      }
+  // This block autoswitches chains based on the last chain used
+  // for a given dapp, when there are no pending confimrations
+  // This allows the user to be connected on one chain
+  // for one dapp, and automatically change for another
+  const state = store.getState();
+  const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(state);
+  if (networkIdToSwitchTo) {
+    await store.dispatch(
+      actions.automaticallySwitchNetwork(
+        networkIdToSwitchTo,
+        getOriginOfCurrentTab(state),
+      ),
+    );
+  } else if (getSwitchedNetworkDetails(state)) {
+    // It's possible that old details could exist if the user
+    // opened the toast but then didn't close it
+    // Clear out any existing switchedNetworkDetails
+    // if the user didn't just change the dapp network
+    await store.dispatch(actions.clearSwitchedNetworkDetails());
+  }
 
-      // Register this window as the current popup
-      // and set in background state
-      if (
-        getUseRequestQueue(state) &&
-        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-      ) {
-        const thisPopupId = Date.now();
-        global.metamask.id = thisPopupId;
-        await store.dispatch(actions.setCurrentExtensionPopupId(thisPopupId));
-      }
-    },
-  );
+  // Register this window as the current popup
+  // and set in background state
+  if (
+    getUseRequestQueue(state) &&
+    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+  ) {
+    const thisPopupId = Date.now();
+    global.metamask.id = thisPopupId;
+    await store.dispatch(actions.setCurrentExtensionPopupId(thisPopupId));
+  }
 
-  trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
-    render(<Root store={store} />, opts.container),
-  );
-
-  endTrace({ name: TraceName.UIStartup });
+  // start app
+  render(<Root store={store} />, opts.container);
 
   return store;
 }

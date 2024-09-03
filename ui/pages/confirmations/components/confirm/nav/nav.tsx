@@ -30,18 +30,20 @@ import {
   SIGNATURE_REQUEST_PATH,
 } from '../../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { pendingConfirmationsSortedSelector } from '../../../../../selectors';
+import {
+  currentConfirmationSelector,
+  pendingConfirmationsSortedSelector,
+} from '../../../../../selectors';
 import { rejectPendingApproval } from '../../../../../store/actions';
 import { useQueuedConfirmationsEvent } from '../../../hooks/useQueuedConfirmationEvents';
 import { isSignatureApprovalRequest } from '../../../utils';
-import { useConfirmContext } from '../../../context/confirm';
 
 const Nav = () => {
   const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const { currentConfirmation } = useConfirmContext();
+  const currentConfirmation = useSelector(currentConfirmationSelector);
 
   const pendingConfirmations = useSelector(pendingConfirmationsSortedSelector);
 

@@ -287,11 +287,9 @@ function ActionButton({
   }
 
   const { key, label } = action;
-  const dataTestId = `alert-modal-action-${key}`;
 
   return (
     <Button
-      data-testid={dataTestId}
       key={key}
       variant={ButtonVariant.Primary}
       width={BlockSize.Full}
@@ -344,7 +342,7 @@ export function AlertModal({
   }, [isConfirmed, selectedAlert.key, setAlertConfirmed]);
 
   return (
-    <Modal isOpen onClose={handleClose} data-testid="alert-modal">
+    <Modal isOpen onClose={handleClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader

@@ -29,10 +29,9 @@ import {
 import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import * as actions from '../../../../store/actions';
-import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { AssetPickerModal } from './asset-picker-modal';
+import { Asset } from './types';
 import AssetList from './AssetList';
-import { ERC20Asset } from './types';
 
 jest.mock('./AssetList', () => jest.fn(() => <div>AssetList</div>));
 
@@ -69,20 +68,17 @@ describe('AssetPickerModal', () => {
   const onCloseMock = jest.fn();
 
   const defaultProps = {
-    header: 'sendSelectReceiveAsset',
     isOpen: true,
     onClose: onCloseMock,
     asset: {
-      address: '0xAddress',
-      symbol: 'TOKEN',
-      image: 'image.png',
-      type: AssetType.token,
-    } as ERC20Asset,
+      balance: '0x0',
+      details: { address: '0xAddress', decimals: 18, symbol: 'TOKEN' },
+      error: null,
+      type: 'TOKEN',
+    } as unknown as Asset,
     onAssetChange: onAssetChangeMock,
-    sendingAsset: {
-      image: 'image.png',
-      symbol: 'SYMB',
-    },
+    sendingAssetImage: 'image.png',
+    sendingAssetSymbol: 'SYMB',
   };
 
   beforeEach(() => {
@@ -109,18 +105,7 @@ describe('AssetPickerModal', () => {
         return {};
       }
       if (selector === getTokenList) {
-        return {
-          '0xAddress': { ...defaultProps.asset, symbol: 'TOKEN' },
-          '0xtoken1': {
-            address: '0xToken1',
-            symbol: 'TOKEN1',
-            type: AssetType.token,
-            image: 'image1.png',
-            string: '10',
-            decimals: 18,
-            balance: '0',
-          },
-        };
+        return { '0xAddress': { ...defaultProps.asset, symbol: 'TOKEN' } };
       }
       if (selector === getConversionRate) {
         return 1;
@@ -136,9 +121,6 @@ describe('AssetPickerModal', () => {
       }
       if (selector === getPreferences) {
         return { useNativeCurrencyAsPrimaryCurrency: false };
-      }
-      if (selector === getSwapsBlockedTokens) {
-        return new Set(['0xtoken1']);
       }
       return undefined;
     });
@@ -179,11 +161,11 @@ describe('AssetPickerModal', () => {
       <AssetPickerModal
         {...defaultProps}
         asset={{
+          balance: '0x0',
           type: AssetType.NFT,
-          tokenId: 5,
-          image: 'nft image',
         }}
-        sendingAsset={undefined}
+        sendingAssetImage={undefined}
+        sendingAssetSymbol={undefined}
       />,
       store,
     );
@@ -202,7 +184,7 @@ describe('AssetPickerModal', () => {
 
     expect(
       (AssetList as jest.Mock).mock.calls.slice(-1)[0][0].tokenList.length,
-    ).toBe(2);
+    ).toBe(1);
 
     fireEvent.change(screen.getByPlaceholderText('searchTokens'), {
       target: { value: 'UNAVAILABLE TOKEN' },
@@ -250,48 +232,5 @@ describe('AssetPickerModal', () => {
 
     expect(modalTitle).toBeInTheDocument();
     expect(searchPlaceholder).toBeInTheDocument();
-  });
-
-  it('should disable the token if it is in the blocked tokens list', () => {
-    renderWithProvider(
-      <AssetPickerModal
-        {...defaultProps}
-        sendingAsset={{ image: '', symbol: 'IRRELEVANT' }}
-      />,
-      store,
-    );
-
-    fireEvent.change(screen.getByPlaceholderText('searchTokens'), {
-      target: { value: 'TO' },
-    });
-
-    expect(
-      (AssetList as jest.Mock).mock.calls.slice(-1)[0][0].tokenList.length,
-    ).toBe(2);
-
-    fireEvent.change(screen.getByPlaceholderText('searchTokens'), {
-      target: { value: 'TOKEN1' },
-    });
-
-    expect((AssetList as jest.Mock).mock.calls[1][0]).not.toEqual(
-      expect.objectContaining({
-        asset: {
-          balance: '0x0',
-          details: { address: '0xAddress', decimals: 18, symbol: 'TOKEN' },
-          error: null,
-          type: 'NATIVE',
-        },
-      }),
-    );
-
-    expect(
-      (AssetList as jest.Mock).mock.calls.slice(-1)[0][0].tokenList.length,
-    ).toBe(1);
-
-    expect(
-      (AssetList as jest.Mock).mock.calls[2][0].isTokenDisabled({
-        address: '0xtoken1',
-      }),
-    ).toBe(true);
   });
 });

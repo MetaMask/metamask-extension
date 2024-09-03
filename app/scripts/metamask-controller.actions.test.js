@@ -89,6 +89,10 @@ describe('MetaMaskController', function () {
             blocklist: ['127.0.0.1'],
             name: ListNames.MetaMask,
           },
+          phishfort_hotlist: {
+            blocklist: [],
+            name: ListNames.Phishfort,
+          },
         }),
       )
       .get(METAMASK_HOTLIST_DIFF_FILE)

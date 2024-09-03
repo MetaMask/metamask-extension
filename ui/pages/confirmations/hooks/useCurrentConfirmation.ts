@@ -15,13 +15,8 @@ import {
   latestPendingConfirmationSelector,
   selectPendingApproval,
 } from '../../../selectors';
-import {
-  REDESIGN_APPROVAL_TYPES,
-  REDESIGN_DEV_TRANSACTION_TYPES,
-  REDESIGN_USER_TRANSACTION_TYPES,
-} from '../utils';
+import { REDESIGN_APPROVAL_TYPES, REDESIGN_TRANSACTION_TYPES } from '../utils';
 import { selectUnapprovedMessage } from '../../../selectors/signatures';
-import { isMMI } from '../../../helpers/utils/build-types';
 
 /**
  * Determine the current confirmation based on the pending approvals and controller state.
@@ -65,14 +60,9 @@ const useCurrentConfirmation = () => {
     selectUnapprovedMessage(state, confirmationId),
   );
 
-  const isCorrectUserTransactionType = REDESIGN_USER_TRANSACTION_TYPES.includes(
+  const isCorrectTransactionType = REDESIGN_TRANSACTION_TYPES.includes(
     transactionMetadata?.type as TransactionType,
   );
-
-  const isCorrectDeveloperTransactionType =
-    REDESIGN_DEV_TRANSACTION_TYPES.includes(
-      transactionMetadata?.type as TransactionType,
-    );
 
   const isCorrectApprovalType = REDESIGN_APPROVAL_TYPES.includes(
     pendingApproval?.type as ApprovalType,
@@ -83,20 +73,17 @@ const useCurrentConfirmation = () => {
     (isRedesignedConfirmationsDeveloperSettingEnabled && isCorrectApprovalType);
 
   const shouldUseRedesignForTransactions =
-    (isRedesignedTransactionsUserSettingEnabled &&
-      isCorrectUserTransactionType) ||
+    (isRedesignedTransactionsUserSettingEnabled && isCorrectTransactionType) ||
     (isRedesignedConfirmationsDeveloperSettingEnabled &&
-      isCorrectDeveloperTransactionType);
+      isCorrectTransactionType);
 
   // If the developer toggle or the build time environment variable are enabled,
   // all the signatures and transactions in development are shown. If the user
   // facing feature toggles for signature or transactions are enabled, we show
   // only confirmations that shipped (contained in `REDESIGN_APPROVAL_TYPES` and
-  // `REDESIGN_USER_TRANSACTION_TYPES` or `REDESIGN_DEV_TRANSACTION_TYPES`
-  // respectively).
+  // `REDESIGN_TRANSACTION_TYPES` respectively).
   const shouldUseRedesign =
-    shouldUseRedesignForSignatures ||
-    (!isMMI() && shouldUseRedesignForTransactions);
+    shouldUseRedesignForSignatures || shouldUseRedesignForTransactions;
 
   return useMemo(() => {
     if (!shouldUseRedesign) {

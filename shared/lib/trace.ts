@@ -3,27 +3,7 @@ import { Primitive, StartSpanOptions } from '@sentry/types';
 import { createModuleLogger } from '@metamask/utils';
 import { log as sentryLogger } from '../../app/scripts/lib/setupSentry';
 
-export enum TraceName {
-  BackgroundConnect = 'Background Connect',
-  DeveloperTest = 'Developer Test',
-  FirstRender = 'First Render',
-  GetState = 'Get State',
-  InitialActions = 'Initial Actions',
-  LoadScripts = 'Load Scripts',
-  Middleware = 'Middleware',
-  NestedTest1 = 'Nested Test 1',
-  NestedTest2 = 'Nested Test 2',
-  NotificationDisplay = 'Notification Display',
-  PPOMValidation = 'PPOM Validation',
-  SetupStore = 'Setup Store',
-  Transaction = 'Transaction',
-  UIStartup = 'UI Startup',
-}
-
 const log = createModuleLogger(sentryLogger, 'trace');
-
-const ID_DEFAULT = 'default';
-const OP_DEFAULT = 'custom';
 
 const tracesByKey: Map<string, PendingTrace> = new Map();
 
@@ -35,41 +15,45 @@ type PendingTrace = {
 
 export type TraceContext = unknown;
 
-export type TraceCallback<T> = (context?: TraceContext) => T;
+export type TraceCallback<T> = (context?: TraceContext) => Promise<T>;
 
 export type TraceRequest = {
   data?: Record<string, number | string | boolean>;
   id?: string;
-  name: TraceName;
+  name: string;
   parentContext?: TraceContext;
-  startTime?: number;
   tags?: Record<string, number | string | boolean>;
 };
 
 export type EndTraceRequest = {
-  id?: string;
-  name: TraceName;
+  id: string;
+  name: string;
   timestamp?: number;
 };
 
-export function trace<T>(request: TraceRequest, fn: TraceCallback<T>): T;
+export async function trace<T>(
+  request: TraceRequest,
+  fn: TraceCallback<T>,
+): Promise<T>;
 
-export function trace(request: TraceRequest): TraceContext;
+export async function trace(request: TraceRequest): Promise<TraceContext>;
 
-export function trace<T>(
+export async function trace<T>(
   request: TraceRequest,
   fn?: TraceCallback<T>,
-): T | TraceContext {
+): Promise<T | TraceContext> {
+  const isSentryEnabled = ((await globalThis.sentry?.getMetaMetricsEnabled()) ??
+    false) as boolean;
+
   if (!fn) {
-    return startTrace(request);
+    return await startTrace(request, isSentryEnabled);
   }
 
-  return traceCallback(request, fn);
+  return await traceCallback(request, fn, isSentryEnabled);
 }
 
 export function endTrace(request: EndTraceRequest) {
-  const { name, timestamp } = request;
-  const id = getTraceId(request);
+  const { id, name, timestamp } = request;
   const key = getTraceKey(request);
   const pendingTrace = tracesByKey.get(key);
 
@@ -89,41 +73,54 @@ export function endTrace(request: EndTraceRequest) {
   log('Finished trace', name, id, duration, { request: pendingRequest });
 }
 
-function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
+async function traceCallback<T>(
+  request: TraceRequest,
+  fn: TraceCallback<T>,
+  isSentryEnabled: boolean,
+): Promise<T> {
   const { name } = request;
 
-  const callback = (span: Sentry.Span | null) => {
+  const callback = async (span: Sentry.Span | null) => {
     log('Starting trace', name, request);
 
     const start = Date.now();
-    let error: unknown;
+    let error;
 
-    return tryCatchMaybePromise<T>(
-      () => fn(span),
-      (currentError) => {
-        error = currentError;
-        throw currentError;
-      },
-      () => {
-        const end = Date.now();
-        const duration = end - start;
+    try {
+      return await fn(span);
+    } catch (currentError) {
+      error = currentError;
+      throw currentError;
+    } finally {
+      const end = Date.now();
+      const duration = end - start;
 
-        log('Finished trace', name, duration, { error, request });
-      },
-    ) as T;
+      log('Finished trace', name, duration, { error, request });
+    }
   };
 
-  return startSpan(request, (spanOptions) =>
+  if (!isSentryEnabled) {
+    return await callback(null);
+  }
+
+  return await startSpan(request, (spanOptions) =>
     Sentry.startSpan(spanOptions, callback),
   );
 }
 
-function startTrace(request: TraceRequest): TraceContext {
-  const { name, startTime: requestStartTime } = request;
-  const startTime = requestStartTime ?? getPerformanceTimestamp();
-  const id = getTraceId(request);
+async function startTrace(
+  request: TraceRequest,
+  isSentryEnabled: boolean,
+): Promise<TraceContext> {
+  const { id, name } = request;
+  const startTime = getPerformanceTimestamp();
 
-  const callback = (span: Sentry.Span | null) => {
+  if (!id) {
+    log('No trace ID provided', name, request);
+    return undefined;
+  }
+
+  const callback = async (span: Sentry.Span | null) => {
     const end = (timestamp?: number) => {
       span?.end(timestamp);
     };
@@ -137,73 +134,35 @@ function startTrace(request: TraceRequest): TraceContext {
     return span;
   };
 
-  return startSpan(request, (spanOptions) =>
+  if (!isSentryEnabled) {
+    return await callback(null);
+  }
+
+  return await startSpan(request, (spanOptions) =>
     Sentry.startSpanManual(spanOptions, callback),
   );
 }
 
-function startSpan<T>(
+async function startSpan<T>(
   request: TraceRequest,
-  callback: (spanOptions: StartSpanOptions) => T,
+  callback: (spanOptions: StartSpanOptions) => Promise<T>,
 ) {
-  const { data: attributes, name, parentContext, startTime, tags } = request;
+  const { data: attributes, name, parentContext, tags } = request;
   const parentSpan = (parentContext ?? null) as Sentry.Span | null;
+  const spanOptions = { name, parentSpan, attributes };
 
-  const spanOptions: StartSpanOptions = {
-    attributes,
-    name,
-    op: OP_DEFAULT,
-    parentSpan,
-    startTime,
-  };
-
-  return Sentry.withIsolationScope((scope) => {
+  return await Sentry.withIsolationScope(async (scope) => {
     scope.setTags(tags as Record<string, Primitive>);
 
-    return callback(spanOptions);
+    return await callback(spanOptions);
   });
 }
 
-function getTraceId(request: TraceRequest) {
-  return request.id ?? ID_DEFAULT;
-}
-
 function getTraceKey(request: TraceRequest) {
-  const { name } = request;
-  const id = getTraceId(request);
-
+  const { id, name } = request;
   return [name, id].join(':');
 }
 
 function getPerformanceTimestamp(): number {
   return performance.timeOrigin + performance.now();
-}
-
-function tryCatchMaybePromise<T>(
-  tryFn: () => T,
-  catchFn: (error: unknown) => void,
-  finallyFn: () => void,
-): T | undefined {
-  let isPromise = false;
-
-  try {
-    const result = tryFn() as T;
-
-    if (result instanceof Promise) {
-      isPromise = true;
-      return result.catch(catchFn).finally(finallyFn) as T;
-    }
-
-    return result;
-  } catch (error) {
-    if (!isPromise) {
-      catchFn(error);
-    }
-  } finally {
-    if (!isPromise) {
-      finallyFn();
-    }
-  }
-
-  return undefined;
 }
