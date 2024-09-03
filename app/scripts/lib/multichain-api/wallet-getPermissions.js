@@ -1,20 +1,21 @@
 import { MethodNames } from '@metamask/permission-controller';
-import { KnownCaipNamespace, parseCaipAccountId } from '@metamask/utils';
 import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
+import { PermissionNames } from '../../controllers/permissions';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
-import { mergeScopes } from './scope';
+import { getPermittedEthChainIds } from './adapters/caip-permission-adapter-permittedChains';
 
 export const getPermissionsHandler = {
   methodNames: [MethodNames.getPermissions],
   implementation: getPermissionsImplementation,
   hookNames: {
     getPermissionsForOrigin: true,
+    getAccounts: true,
   },
 };
 
@@ -27,16 +28,17 @@ export const getPermissionsHandler = {
  * @param end - JsonRpcEngine end() callback
  * @param options - Method hooks passed to the method implementation
  * @param options.getPermissionsForOrigin - The specific method hook needed for this method implementation
+ * @param options.getAccounts
  * @returns A promise that resolves to nothing
  */
-function getPermissionsImplementation(
+async function getPermissionsImplementation(
   _req,
   res,
   _next,
   end,
-  { getPermissionsForOrigin },
+  { getPermissionsForOrigin, getAccounts },
 ) {
-  // caveat values are frozen and must be cloned before modified
+  // permissions are frozen and must be cloned before modified
   const permissions = { ...getPermissionsForOrigin() } || {};
   const caip25Endowment = permissions[Caip25EndowmentPermissionName];
   const caip25Caveat = caip25Endowment?.caveats.find(
@@ -44,27 +46,10 @@ function getPermissionsImplementation(
   );
   delete permissions[Caip25EndowmentPermissionName];
 
-  if (process.env.BARAD_DUR && caip25Caveat) {
-    delete permissions[RestrictedMethods.eth_accounts];
-
-    const ethAccounts = [];
-    const sessionScopes = mergeScopes(
-      caip25Caveat.value.requiredScopes,
-      caip25Caveat.value.optionalScopes,
-    );
-
-    Object.entries(sessionScopes).forEach(([_, { accounts }]) => {
-      accounts?.forEach((account) => {
-        const {
-          address,
-          chain: { namespace },
-        } = parseCaipAccountId(account);
-
-        if (namespace === KnownCaipNamespace.Eip155) {
-          ethAccounts.push(address);
-        }
-      });
-    });
+  if (caip25Caveat) {
+    // We cannot derive ethAccounts directly from the CAIP-25 permission
+    // because the accounts will not be in order of lastSelected
+    const ethAccounts = await getAccounts();
 
     if (ethAccounts.length > 0) {
       permissions[RestrictedMethods.eth_accounts] = {
@@ -73,7 +58,22 @@ function getPermissionsImplementation(
         caveats: [
           {
             type: CaveatTypes.restrictReturnedAccounts,
-            value: Array.from(new Set(ethAccounts)),
+            value: ethAccounts,
+          },
+        ],
+      };
+    }
+
+    const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
+
+    if (ethChainIds.length > 0) {
+      permissions[PermissionNames.permittedChains] = {
+        ...caip25Endowment,
+        parentCapability: PermissionNames.permittedChains,
+        caveats: [
+          {
+            type: CaveatTypes.restrictNetworkSwitching,
+            value: ethChainIds,
           },
         ],
       };

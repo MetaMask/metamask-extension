@@ -1,11 +1,11 @@
 import { invalidParams, MethodNames } from '@metamask/permission-controller';
-import { isNonEmptyArray, KnownCaipNamespace } from '@metamask/utils';
+import { isNonEmptyArray } from '@metamask/utils';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
+import { PermissionNames } from '../../controllers/permissions';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
-import { parseScopeString } from './scope';
 
 export const revokePermissionsHandler = {
   methodNames: [MethodNames.revokePermissions],
@@ -27,7 +27,6 @@ export const revokePermissionsHandler = {
  * @param options - Method hooks passed to the method implementation
  * @param options.revokePermissionsForOrigin - A hook that revokes given permission keys for an origin
  * @param options.getPermissionsForOrigin
- * @param options.updateCaveat
  * @returns A promise that resolves to nothing
  */
 function revokePermissionsImplementation(
@@ -35,7 +34,7 @@ function revokePermissionsImplementation(
   res,
   _next,
   end,
-  { revokePermissionsForOrigin, getPermissionsForOrigin, updateCaveat },
+  { revokePermissionsForOrigin, getPermissionsForOrigin },
 ) {
   const { params, origin } = req;
 
@@ -55,52 +54,33 @@ function revokePermissionsImplementation(
     return end(invalidParams({ data: { request: req } }));
   }
 
-  revokePermissionsForOrigin(permissionKeys);
-
-  const permissions = getPermissionsForOrigin(origin) || {};
-  const caip25Endowment = permissions?.[Caip25EndowmentPermissionName];
-  const caip25Caveat = caip25Endowment?.caveats.find(
-    ({ type }) => type === Caip25CaveatType,
+  const relevantPermissionKeys = permissionKeys.filter(
+    (name) =>
+      ![
+        RestrictedMethods.eth_accounts,
+        PermissionNames.permittedChains,
+      ].includes(name),
   );
 
-  if (
-    process.env.BARAD_DUR &&
-    permissionKeys.includes(RestrictedMethods.eth_accounts) &&
-    caip25Caveat
-  ) {
-    // should we remove accounts from required scopes? if so doesn't that mean we should
-    // just revoke the caip25Endowment entirely?
+  const shouldRevokeLegacyPermission =
+    relevantPermissionKeys.length !== permissionKeys.length;
 
-    const requiredScopesWithoutEip155Accounts = {};
-    Object.entries(caip25Caveat.value.requiredScopes).forEach(
-      ([scopeString, scopeObject]) => {
-        const { namespace } = parseScopeString(scopeString);
-        requiredScopesWithoutEip155Accounts[scopeString] = {
-          ...scopeObject,
-          accounts:
-            namespace === KnownCaipNamespace.Eip155 ? [] : scopeObject.accounts,
-        };
-      },
+  if (shouldRevokeLegacyPermission) {
+    const permissions = getPermissionsForOrigin(origin) || {};
+    const caip25Endowment = permissions?.[Caip25EndowmentPermissionName];
+    const caip25Caveat = caip25Endowment?.caveats.find(
+      ({ type }) => type === Caip25CaveatType,
     );
 
-    const optionalScopesWithoutEip155Accounts = {};
-    Object.entries(caip25Caveat.value.optionalScopes).forEach(
-      ([scopeString, scopeObject]) => {
-        const { namespace } = parseScopeString(scopeString);
-        optionalScopesWithoutEip155Accounts[scopeString] = {
-          ...scopeObject,
-          accounts:
-            namespace === KnownCaipNamespace.Eip155 ? [] : scopeObject.accounts,
-        };
-      },
-    );
-
-    updateCaveat(origin, Caip25EndowmentPermissionName, Caip25CaveatType, {
-      ...caip25Caveat.value,
-      requiredScopes: requiredScopesWithoutEip155Accounts,
-      optionalScopes: optionalScopesWithoutEip155Accounts,
-    });
+    if (caip25Caveat && caip25Caveat.value.isMultichainOrigin) {
+      return end(
+        new Error('cannot modify permission granted from multichain flow'),
+      ); // TODO: better error
+    }
+    relevantPermissionKeys.push(Caip25EndowmentPermissionName);
   }
+
+  revokePermissionsForOrigin(relevantPermissionKeys);
 
   res.result = null;
 
