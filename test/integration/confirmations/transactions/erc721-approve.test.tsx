@@ -1,6 +1,7 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { waitFor } from '@testing-library/react';
 import nock from 'nock';
+import { useIsNFT } from '../../../../ui/pages/confirmations/components/confirm/info/approve/hooks/use-is-nft';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
@@ -11,6 +12,16 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
 }));
+
+jest.mock(
+  '../../../../ui/pages/confirmations/components/confirm/info/approve/hooks/use-is-nft',
+  () => ({
+    ...jest.requireActual(
+      '../../../../ui/pages/confirmations/components/confirm/info/approve/hooks/use-is-nft',
+    ),
+    useIsNFT: jest.fn(),
+  }),
+);
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 
@@ -101,11 +112,14 @@ const setupSubmitRequestToBackgroundMocks = (
 };
 
 describe('ERC721 Approve Confirmation', () => {
+  let useIsNFTMock;
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks();
     const APPROVE_NFT_HEX_SIG = '0x095ea7b3';
     mock4byte(APPROVE_NFT_HEX_SIG);
+    useIsNFTMock = jest.fn().mockImplementation(() => ({ isNFT: true }));
+    (useIsNFT as jest.Mock).mockImplementation(useIsNFTMock);
   });
 
   afterEach(() => {
