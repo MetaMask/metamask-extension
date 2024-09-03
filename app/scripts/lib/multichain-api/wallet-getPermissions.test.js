@@ -68,7 +68,9 @@ const createMockedHandler = () => {
       },
     }),
   );
-  const getAccounts = jest.fn().mockResolvedValue([]);
+  const getAccounts = jest
+    .fn()
+    .mockResolvedValue(['0x1', '0x2', '0x3', '0xdeadbeef']);
   const response = {};
   const handler = (request) =>
     getPermissionsHandler.implementation(request, response, next, end, {
@@ -140,7 +142,8 @@ describe('getPermissionsHandler', () => {
 
   describe('CAIP-25 endowment permissions has been granted', () => {
     it('returns the permissions with the CAIP-25 permission removed', async () => {
-      const { handler, response } = createMockedHandler();
+      const { handler, getAccounts, response } = createMockedHandler();
+      getAccounts.mockResolvedValue([]);
       await handler(baseRequest);
       expect(response.result).toStrictEqual([
         {
@@ -164,8 +167,7 @@ describe('getPermissionsHandler', () => {
     });
 
     it('returns the permissions with an eth_accounts permission if some eth accounts are permissioned', async () => {
-      const { handler, getAccounts, response } = createMockedHandler();
-      getAccounts.mockResolvedValue(['0x1', '0x2', '0xdeadbeef']);
+      const { handler, response } = createMockedHandler();
 
       await handler(baseRequest);
       expect(response.result).toStrictEqual([
@@ -186,7 +188,7 @@ describe('getPermissionsHandler', () => {
           caveats: [
             {
               type: CaveatTypes.restrictReturnedAccounts,
-              value: ['0x1', '0x2', '0xdeadbeef'],
+              value: ['0x1', '0x2', '0x3', '0xdeadbeef'],
             },
           ],
         },
@@ -222,7 +224,8 @@ describe('getPermissionsHandler', () => {
     });
 
     it('returns the permissions with a permittedChains permission if some eth chain ids are permissioned', async () => {
-      const { handler, response } = createMockedHandler();
+      const { handler, getAccounts, response } = createMockedHandler();
+      getAccounts.mockResolvedValue([]);
       MockPermittedChainsAdapters.getPermittedEthChainIds.mockReturnValue([
         '0x1',
         '0x64',
