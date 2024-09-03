@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { getMockApproveConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import ApproveInfo from './approve';
+import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
 
 jest.mock('../../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../../store/actions'),
@@ -11,7 +12,6 @@ jest.mock('../../../../../../store/actions', () => ({
     lowerTimeBound: 0,
     upperTimeBound: 60000,
   }),
-  estimateGas: jest.fn().mockResolvedValue('0x5208'), // Mock estimateGas function
 }));
 
 jest.mock(
@@ -63,6 +63,7 @@ jest.mock('../hooks/useDecodedTransactionData', () => ({
 
 describe('<ApproveInfo />', () => {
   const middleware = [thunk];
+  useDecodedTransactionData;
 
   it('renders component for approve request', async () => {
     const state = getMockApproveConfirmState();
