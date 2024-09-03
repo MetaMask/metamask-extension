@@ -1,5 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { ErrorObject } from '@open-rpc/meta-schema';
+import { JsonRpcResponse } from 'json-rpc-engine';
+import { JsonRpcFailure } from '@metamask/utils';
 import { Driver } from '../webdriver/driver';
 
 // eslint-disable-next-line @typescript-eslint/no-shadow, @typescript-eslint/no-explicit-any
@@ -47,7 +49,6 @@ export const pollForResult = async (
   generatedKey: string,
 ): Promise<unknown> => {
   let result;
-  // eslint-disable-next-line no-loop-func
   await new Promise((resolve, reject) => {
     addToQueue({
       name: 'pollResult',
@@ -58,7 +59,7 @@ export const pollForResult = async (
           `return window['${generatedKey}'];`,
         );
 
-        if (result) {
+        if (result !== undefined && result !== null) {
           // clear the result
           await driver.executeScript(`delete window['${generatedKey}'];`);
         } else {
@@ -73,6 +74,79 @@ export const pollForResult = async (
     return result;
   }
   return pollForResult(driver, generatedKey);
+};
+
+export const createMultichainDriverTransport = (driver: Driver) => {
+  // use externally_connectable to communicate with the extension
+  // https://developer.chrome.com/docs/extensions/mv3/messaging/
+  return async (
+    _: string,
+    method: string,
+    params: unknown[] | Record<string, unknown>,
+  ) => {
+    const generatedKey = uuid();
+    addToQueue({
+      name: 'transport',
+      resolve: () => {
+        // noop
+      },
+      reject: () => {
+        // noop
+      },
+      task: async () => {
+        // don't wait for executeScript to finish window.ethereum promise
+        // we need this because if we wait for the promise to resolve it
+        // will hang in selenium since it can only do one thing at a time.
+        // the workaround is to put the response on window.asyncResult and poll for it.
+        driver.executeScript(
+          ([m, p, g]: [
+            string,
+            unknown[] | Record<string, unknown>,
+            string,
+          ]) => {
+            const EXTENSION_ID = 'famgliladofnadeldnodcgnjhafnbnhj';
+            const extensionPort = chrome.runtime.connect(EXTENSION_ID);
+
+            const listener = ({
+              type,
+              data,
+            }: {
+              type: string;
+              data: JsonRpcResponse<unknown>;
+            }) => {
+              if (type !== 'caip-x') {
+                return;
+              }
+              if (data?.id !== g) {
+                return;
+              }
+
+              if (data.id || (data as JsonRpcFailure).error) {
+                window[g] = data;
+                extensionPort.onMessage.removeListener(listener);
+              }
+            };
+
+            extensionPort.onMessage.addListener(listener);
+            const msg = {
+              type: 'caip-x',
+              data: {
+                jsonrpc: '2.0',
+                method: m,
+                params: p,
+                id: g,
+              },
+            };
+            extensionPort.postMessage(msg);
+          },
+          method,
+          params,
+          generatedKey,
+        );
+      },
+    });
+    return pollForResult(driver, generatedKey);
+  };
 };
 
 export const createDriverTransport = (driver: Driver) => {
@@ -109,6 +183,7 @@ export const createDriverTransport = (driver: Driver) => {
               })
               .catch((e: ErrorObject) => {
                 window[g] = {
+                  id: g,
                   error: {
                     code: e.code,
                     message: e.message,
