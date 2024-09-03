@@ -76,7 +76,9 @@ async function requestPermissionsImplementation(
   delete requestedPermissions[PermissionNames.permittedChains];
 
   let legacyApproval;
-  if (Object.keys(legacyRequestedPermissions).length > 0) {
+  const haveLegacyPermissions =
+    Object.keys(legacyRequestedPermissions).length > 0;
+  if (haveLegacyPermissions) {
     if (!legacyRequestedPermissions[RestrictedMethods.eth_accounts]) {
       legacyRequestedPermissions[RestrictedMethods.eth_accounts] = {};
     }
@@ -100,8 +102,13 @@ async function requestPermissionsImplementation(
   }
 
   let grantedPermissions = {};
+  // Request permissions from the PermissionController for any permissions other
+  // than eth_accounts and permittedChains in the params. If no permissions
+  // are in the params, then request empty permissions from the PermissionController
+  // to get an appropriate error to be returned to the dapp.
   if (
-    (Object.keys(requestedPermissions).length === 0 && !legacyApproval) ||
+    (Object.keys(requestedPermissions).length === 0 &&
+      !haveLegacyPermissions) ||
     Object.keys(requestedPermissions).length > 0
   ) {
     const [_grantedPermissions] = await requestPermissionsForOrigin(
