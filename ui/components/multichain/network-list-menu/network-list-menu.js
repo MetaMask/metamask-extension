@@ -107,7 +107,6 @@ export const NetworkListMenu = ({ onClose }) => {
   const chains = useSelector(getPermittedChainsByOrigin);
   const permittedChains = Object.values(chains);
   const flattenedPermittedChains = permittedChains.flat();
-  console.log(permittedChains, 'hhh');
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
@@ -309,15 +308,10 @@ export const NetworkListMenu = ({ onClose }) => {
         selected={isCurrentNetwork && !focusSearch}
         focus={isCurrentNetwork && !focusSearch}
         onClick={() => {
-          console.log(permittedChains, network.chainId);
           dispatch(toggleNetworkMenu());
           dispatch(setActiveNetwork(network.providerType || network.id));
           grantPermittedChain(selectedTabOrigin, network.chainId);
           if (!flattenedPermittedChains.includes(network.chainId)) {
-            console.log(
-              'hello hi bye',
-              permittedChains.includes(network.chainId),
-            );
             dispatch(showPermittedNetworkToast());
           }
           if (
