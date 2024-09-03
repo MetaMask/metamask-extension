@@ -1188,6 +1188,8 @@ class Driver {
     );
 
     this.driver.onLogEvent(cdpConnection, (event) => {
+      logEvent(event);
+
       if (event.type === 'error') {
         if (event.args.length !== 0) {
           event.ignoredConsoleErrors = ignoredConsoleErrors;
@@ -1287,6 +1289,33 @@ function collectMetrics() {
     });
 
   return results;
+}
+
+function logEvent(event) {
+  const args = event.args.map(parseLogArg);
+
+  if (args[0]) {
+    args[0] = `[browser] ${args[0]}`;
+  }
+
+  console.log(...args);
+}
+
+function parseLogArg(arg) {
+  const { type, value, preview } = arg;
+
+  if (type === 'string' || type === 'number' || type === 'boolean') {
+    return value;
+  }
+
+  if (type === 'object') {
+    return (preview?.properties ?? []).reduce((acc, prop) => {
+      acc[prop.name] = parseLogArg(prop);
+      return acc;
+    }, {});
+  }
+
+  return value;
 }
 
 module.exports = { Driver, PAGES };
