@@ -38,7 +38,10 @@ $brand-evolution-font-families: (
   $font-family: map-get($brand-evolution-font-families, $type);
 
   font-family: $font-family, var(--font-family-sans);
-  font-weight: var(--font-weight-normal);
+
+  @if $type == 'display' or $type == 'heading' {
+    font-weight: var(--font-weight-normal);
+  }
 }
 
 .mm-text {
