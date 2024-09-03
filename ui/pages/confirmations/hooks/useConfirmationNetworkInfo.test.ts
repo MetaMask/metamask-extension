@@ -1,39 +1,27 @@
-import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
 
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import mockState from '../../../../test/data/mock-state.json';
-import { mockNetworkState } from '../../../../test/stub/networks';
+import { getMockTypedSignConfirmStateForRequest } from '../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
-import {
-  getMockConfirmState,
-  getMockTypedSignConfirmState,
-} from '../../../../test/data/confirmations/helper';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import useConfirmationNetworkInfo from './useConfirmationNetworkInfo';
 
 describe('useConfirmationNetworkInfo', () => {
   it('returns display name and image when confirmation chainId is present', () => {
     const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationNetworkInfo(),
-      getMockConfirmState({
-        metamask: {
-          ...mockState.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-          pendingApprovals: {
-            123: {
-              id: 123,
-              type: ApprovalType.EthSignTypedData,
-            },
-          },
-          unapprovedTypedMessages: {
-            123: {
-              id: 123,
-              chainId: '0x1',
-              type: TransactionType.signTypedData,
-            },
+      getMockTypedSignConfirmStateForRequest(
+        {
+          id: '123',
+          chainId: '0x1',
+          type: TransactionType.signTypedData,
+        },
+        {
+          metamask: {
+            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           },
         },
-      }),
+      ),
     );
 
     expect(result.current.networkDisplayName).toBe('Ethereum Mainnet');
@@ -43,29 +31,22 @@ describe('useConfirmationNetworkInfo', () => {
   it('returns display name and image for custom network', () => {
     const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationNetworkInfo(),
-      getMockTypedSignConfirmState({
-        metamask: {
-          ...mockState.metamask,
-          ...mockNetworkState({
-            chainId: '0x7',
-            rpcUrl: 'https://testrpc.com',
-            nickname: 'Custom Mainnet RPC',
-          }),
-          pendingApprovals: {
-            123: {
-              id: 123,
-              type: ApprovalType.EthSignTypedData,
-            },
-          },
-          unapprovedTypedMessages: {
-            123: {
-              id: 123,
+      getMockTypedSignConfirmStateForRequest(
+        {
+          id: '123',
+          chainId: '0x7',
+          type: TransactionType.signTypedData,
+        },
+        {
+          metamask: {
+            ...mockNetworkState({
               chainId: '0x7',
-              type: TransactionType.signTypedData,
-            },
+              rpcUrl: 'https://testrpc.com',
+              nickname: 'Custom Mainnet RPC',
+            }),
           },
         },
-      }),
+      ),
     );
 
     expect(result.current.networkDisplayName).toBe('Custom Mainnet RPC');
@@ -79,25 +60,18 @@ describe('useConfirmationNetworkInfo', () => {
     };
     const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationNetworkInfo(),
-      getMockConfirmState({
-        metamask: {
-          ...mockState.metamask,
-          ...mockNetworkState(customNetwork),
-          pendingApprovals: {
-            123: {
-              id: 123,
-              type: ApprovalType.EthSignTypedData,
-            },
-          },
-          unapprovedTypedMessages: {
-            123: {
-              id: 123,
-              chainId: '0x1',
-              type: TransactionType.signTypedData,
-            },
+      getMockTypedSignConfirmStateForRequest(
+        {
+          id: '123',
+          chainId: '0x1',
+          type: TransactionType.signTypedData,
+        },
+        {
+          metamask: {
+            ...mockNetworkState(customNetwork),
           },
         },
-      }),
+      ),
     );
 
     expect(result.current.networkDisplayName).toBe('Flashbots Protect');
