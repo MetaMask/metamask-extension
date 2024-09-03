@@ -3,7 +3,6 @@ import {
   setCurrentCurrency,
   setUseBlockie,
   updateCurrentLocale,
-  setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setHideZeroBalanceTokens,
   setParticipateInMetaMetrics,
   setTheme,
@@ -26,11 +25,8 @@ const mapStateToProps = (state) => {
   const { currentCurrency, useBlockie, currentLocale } = metamask;
   const { ticker: nativeCurrency } = getProviderConfig(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
-  const {
-    useNativeCurrencyAsPrimaryCurrency,
-    hideZeroBalanceTokens,
-    showNativeTokenAsMainBalance,
-  } = getPreferences(state);
+  const { hideZeroBalanceTokens, showNativeTokenAsMainBalance } =
+    getPreferences(state);
 
   const tokenList = getTokenList(state);
 
@@ -40,7 +36,6 @@ const mapStateToProps = (state) => {
     currentCurrency,
     nativeCurrency,
     useBlockie,
-    useNativeCurrencyAsPrimaryCurrency,
     showNativeTokenAsMainBalance,
     hideZeroBalanceTokens,
     selectedAddress,
@@ -54,9 +49,6 @@ const mapDispatchToProps = (dispatch) => {
     setCurrentCurrency: (currency) => dispatch(setCurrentCurrency(currency)),
     setUseBlockie: (value) => dispatch(setUseBlockie(value)),
     updateCurrentLocale: (key) => dispatch(updateCurrentLocale(key)),
-    setUseNativeCurrencyAsPrimaryCurrencyPreference: (value) => {
-      return dispatch(setUseNativeCurrencyAsPrimaryCurrencyPreference(value));
-    },
     setShowNativeTokenAsMainBalancePreference: (value) => {
       return dispatch(setShowNativeTokenAsMainBalancePreference(value));
     },

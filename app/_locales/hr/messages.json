@@ -773,9 +773,6 @@
   "unlockMessage": {
     "message": "Decentralizirani internet čeka"
   },
-  "updatedWithDate": {
-    "message": "Ažurirano $1"
-  },
   "urlErrorMsg": {
     "message": "URI-jevima se zahtijeva prikladan prefiks HTTP/HTTPS."
   },

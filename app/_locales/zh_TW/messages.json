@@ -521,10 +521,6 @@
   "feeAssociatedRequest": {
     "message": "這個請求會附帶一筆手續費。"
   },
-  "fiat": {
-    "message": "法定貨幣",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "檔案匯入失敗？點擊這裡！",
     "description": "Helps user import their account from a JSON file"
@@ -1406,9 +1402,6 @@
   "unrecognizedChain": {
     "message": "無法辨識這個自訂網路。我們建議您先$1再繼續。",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "updatedWithDate": {
-    "message": "更新時間 $1"
   },
   "urlErrorMsg": {
     "message": "URL 需要以適當的 HTTP/HTTPS 作為開頭"

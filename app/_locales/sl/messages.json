@@ -250,10 +250,6 @@
   "fast": {
     "message": "Hiter"
   },
-  "fiat": {
-    "message": "Klasične",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Uvoz z datoteko ne deluje? Kliknite tukaj!",
     "description": "Helps user import their account from a JSON file"
@@ -770,9 +766,6 @@
   },
   "unlockMessage": {
     "message": "Decentralizirana spletna denarnica"
-  },
-  "updatedWithDate": {
-    "message": "Posodobljeno $1"
   },
   "urlErrorMsg": {
     "message": "URI zahtevajo ustrezno HTTP/HTTPS predpono."

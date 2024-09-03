@@ -1928,10 +1928,6 @@
   "feeDetails": {
     "message": "Detalles de la tarifa"
   },
-  "fiat": {
-    "message": "Fiduciaria",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "¿No funciona la importación del archivo? Haga clic aquí.",
     "description": "Helps user import their account from a JSON file"
@@ -3159,9 +3155,6 @@
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask no está conectado a este sitio"
-  },
-  "noConversionDateAvailable": {
-    "message": "No hay fecha de conversión de moneda disponible"
   },
   "noConversionRateAvailable": {
     "message": "No hay tasa de conversión disponible"
@@ -6173,9 +6166,6 @@
   },
   "updateRequest": {
     "message": "Solicitud de actualización"
-  },
-  "updatedWithDate": {
-    "message": "$1 actualizado"
   },
   "uploadDropFile": {
     "message": "Ingrese su archivo aquí"

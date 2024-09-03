@@ -764,9 +764,6 @@
   "unlockMessage": {
     "message": "Web-ul descentralizat așteaptă"
   },
-  "updatedWithDate": {
-    "message": "Actualizat $1"
-  },
   "urlErrorMsg": {
     "message": "URL necesită prefixul potrivit HTTP/HTTPS."
   },

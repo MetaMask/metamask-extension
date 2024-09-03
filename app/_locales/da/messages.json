@@ -752,9 +752,6 @@
   "unlockMessage": {
     "message": "Det decentraliserede internet venter"
   },
-  "updatedWithDate": {
-    "message": "Opdaterede $1"
-  },
   "urlErrorMsg": {
     "message": "Links kræver det rette HTTP/HTTPS-præfix."
   },

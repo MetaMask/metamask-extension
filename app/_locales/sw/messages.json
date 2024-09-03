@@ -761,9 +761,6 @@
   "unlockMessage": {
     "message": "Wavuti uliotenganishwa unasubiri"
   },
-  "updatedWithDate": {
-    "message": "Imesasishwa $1"
-  },
   "urlErrorMsg": {
     "message": "URI huhitaji kiambishi sahihi cha  HTTP/HTTPS."
   },

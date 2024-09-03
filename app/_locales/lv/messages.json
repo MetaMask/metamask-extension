@@ -779,9 +779,6 @@
   "unlockMessage": {
     "message": "Decentralizētais tīkls jau gaida"
   },
-  "updatedWithDate": {
-    "message": "Atjaunināts $1"
-  },
   "urlErrorMsg": {
     "message": "URI jāsākas ar atbilstošo HTTP/HTTPS priedēkli."
   },

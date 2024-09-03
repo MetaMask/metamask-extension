@@ -9,7 +9,6 @@ import 'jest-canvas-mock';
 
 const mockSetCurrentCurrency = jest.fn();
 const mockUpdateCurrentLocale = jest.fn();
-const mockSetUseNativeCurrencyAsPrimaryCurrencyPreference = jest.fn();
 const mockSetUseBlockie = jest.fn();
 const mockSetHideZeroBalanceTokens = jest.fn();
 const mockSetShowNativeTokenAsMainBalance = jest.fn();
@@ -17,8 +16,6 @@ const mockSetShowNativeTokenAsMainBalance = jest.fn();
 jest.mock('../../../store/actions.ts', () => ({
   setCurrentCurrency: () => mockSetCurrentCurrency,
   updateCurrentLocale: () => mockUpdateCurrentLocale,
-  setUseNativeCurrencyAsPrimaryCurrencyPreference: () =>
-    mockSetUseNativeCurrencyAsPrimaryCurrencyPreference,
   setUseBlockie: () => mockSetUseBlockie,
   setHideZeroBalanceTokens: () => mockSetHideZeroBalanceTokens,
   setShowNativeTokenAsMainBalancePreference: () =>
@@ -31,7 +28,6 @@ describe('Settings Tab', () => {
   afterEach(() => {
     mockSetCurrentCurrency.mockReset();
     mockUpdateCurrentLocale.mockReset();
-    mockSetUseNativeCurrencyAsPrimaryCurrencyPreference.mockReset();
   });
 
   it('selects currency', async () => {
@@ -52,26 +48,6 @@ describe('Settings Tab', () => {
     });
 
     expect(mockUpdateCurrentLocale).toHaveBeenCalled();
-  });
-
-  it('sets fiat primary currency', async () => {
-    const { queryByTestId } = renderWithProvider(<SettingsTab />, mockStore);
-
-    const fiatCurrencyToggle = queryByTestId('toggle-fiat-currency');
-
-    fireEvent.click(fiatCurrencyToggle);
-
-    expect(
-      mockSetUseNativeCurrencyAsPrimaryCurrencyPreference,
-    ).toHaveBeenCalled();
-  });
-
-  it('should display currency symbol for native token', async () => {
-    const { getByText } = renderWithProvider(<SettingsTab />, mockStore);
-
-    const textElement = getByText('ETH');
-
-    expect(textElement).toBeInTheDocument();
   });
 
   it('clicks jazzicon', () => {

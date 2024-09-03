@@ -758,9 +758,6 @@
   "unlockMessage": {
     "message": "Det desentraliserte internett venter deg"
   },
-  "updatedWithDate": {
-    "message": "Oppdatert $1"
-  },
   "urlErrorMsg": {
     "message": "URI-er krever det aktuelle HTTP/HTTPS-prefikset."
   },

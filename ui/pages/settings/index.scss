@@ -267,7 +267,7 @@
   }
 
   &__content-row {
-    padding: 14px 0 0;
+    padding: 16px 0 0;
 
     @include design-system.screen-sm-max {
       flex-wrap: wrap;
@@ -294,6 +294,10 @@
 
     & .dialog {
       margin-top: 10px;
+    }
+
+    &__dropdown {
+      height: auto;
     }
 
     &__title {

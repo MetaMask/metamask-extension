@@ -244,10 +244,6 @@
   "fast": {
     "message": "Rýchle"
   },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Import souboru nefunguje? Klikněte sem!",
     "description": "Helps user import their account from a JSON file"
@@ -748,9 +744,6 @@
   },
   "unlockMessage": {
     "message": "Decentralizovaný web čaká"
-  },
-  "updatedWithDate": {
-    "message": "Aktualizované $1"
   },
   "urlErrorMsg": {
     "message": "URI vyžadují korektní HTTP/HTTPS prefix."
