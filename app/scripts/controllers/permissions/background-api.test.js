@@ -356,7 +356,7 @@ describe('permission background API methods', () => {
       expect(permissionController.revokePermission).not.toHaveBeenCalled();
     });
 
-    it('revokes the permission if the removed account is the only eth account', () => {
+    it('revokes the entire permission if the removed account is the only eip:155 scoped account', () => {
       const permissionController = {
         getCaveat: jest.fn().mockReturnValue({
           value: {
