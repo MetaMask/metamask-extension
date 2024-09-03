@@ -70,11 +70,11 @@ describe('Marketing cookieId', function (this: Suite) {
         await unlockWallet(driver);
 
         await driver.openNewPage(`http://127.0.0.1:8080`);
+        // wait for state to update
+        await driver.delay(5000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        // wait for state to update
-        await driver.navigate();
 
         const uiState = await getCleanAppState(driver);
         assert.equal(uiState.metamask.marketingCampaignCookieId, 12345);
@@ -112,11 +112,11 @@ describe('Marketing cookieId', function (this: Suite) {
         await unlockWallet(driver);
 
         await driver.openNewPage(`http://127.0.0.1:8080`);
+        // wait for state to update
+        await driver.delay(5000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        // wait for state to update
-        await driver.navigate();
 
         const uiState = await getCleanAppState(driver);
         assert.equal(uiState.metamask.marketingCampaignCookieId, null);
@@ -149,11 +149,11 @@ describe('Marketing cookieId', function (this: Suite) {
         await unlockWallet(driver);
 
         await driver.openNewPage(`http://127.0.0.1:8080`);
+        // wait for state to update
+        await driver.delay(5000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        // wait for state to update
-        await driver.navigate();
 
         const uiState = await getCleanAppState(driver);
         assert.equal(uiState.metamask.marketingCampaignCookieId, null);
@@ -190,11 +190,11 @@ describe('Marketing cookieId', function (this: Suite) {
         await unlockWallet(driver);
 
         await driver.openNewPage(`http://127.0.0.1:8080`);
+        // wait for state to update
+        await driver.delay(5000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        // wait for state to update
-        await driver.navigate();
 
         let uiState = await getCleanAppState(driver);
         assert.equal(uiState.metamask.marketingCampaignCookieId, 12345);
@@ -215,7 +215,7 @@ describe('Marketing cookieId', function (this: Suite) {
         await driver.clickElement(selectors.dataCollectionWarningAckButton);
 
         // wait for state to update
-        await driver.navigate();
+        await driver.delay(5000);
 
         uiState = await getCleanAppState(driver);
         assert.equal(uiState.metamask.dataCollectionForMarketing, false);
