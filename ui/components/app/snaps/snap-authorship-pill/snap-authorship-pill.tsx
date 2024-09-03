@@ -10,17 +10,22 @@ import {
   Display,
   FlexDirection,
   TextColor,
-  TextVariant
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 
 type SnapAuthorshipPillProps = {
   snapId: string;
   onClick: () => void;
-}
+};
 
-const SnapAuthorshipPill: React.FC<SnapAuthorshipPillProps> = ({ snapId, onClick }) => {
-  // @ts-ignore ts is picking up the wrong type for the selector
-  const { name: snapName } = useSelector((state) => getSnapMetadata(state, snapId));
+const SnapAuthorshipPill: React.FC<SnapAuthorshipPillProps> = ({
+  snapId,
+  onClick,
+}) => {
+  const { name: snapName } = useSelector((state) =>
+    // @ts-expect-error ts is picking up the wrong type for the selector
+    getSnapMetadata(state, snapId),
+  );
 
   return (
     <Box
@@ -47,7 +52,7 @@ const SnapAuthorshipPill: React.FC<SnapAuthorshipPillProps> = ({ snapId, onClick
         {snapName}
       </Text>
     </Box>
-  )
-}
+  );
+};
 
 export default SnapAuthorshipPill;
