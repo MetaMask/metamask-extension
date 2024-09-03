@@ -182,7 +182,7 @@ describe('permission background API methods', () => {
       );
     });
 
-    it('calls updateCaveat with the accounts added and all eip155 accounts synced', () => {
+    it('calls updateCaveat with the accounts added to only eip155 scopes and all accounts for eip155 scopes synced', () => {
       const permissionController = {
         getCaveat: jest.fn().mockReturnValue({
           value: {
