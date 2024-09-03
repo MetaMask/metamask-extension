@@ -195,7 +195,7 @@ describe('getPermissionsHandler', () => {
       ]);
     });
 
-    it('gets the permitted eth chainIds from the CAIP-25 caveat value', async () => {
+    it('gets the permitted eip155 chainIds from the CAIP-25 caveat value', async () => {
       const { handler } = createMockedHandler();
       await handler(baseRequest);
       expect(
