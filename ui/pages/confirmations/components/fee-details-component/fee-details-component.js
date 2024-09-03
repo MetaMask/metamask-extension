@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   AlignItems,
@@ -19,7 +18,6 @@ import {
   Text,
 } from '../../../../components/component-library';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
-import { getPreferences } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import LoadingHeartBeat from '../../../../components/ui/loading-heartbeat';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
@@ -34,8 +32,6 @@ export default function FeeDetailsComponent({
 }) {
   const layer1GasFee = txData?.layer1GasFee ?? null;
   const [expandFeeDetails, setExpandFeeDetails] = useState(false);
-
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
   const t = useI18nContext();
 
@@ -62,12 +58,12 @@ export default function FeeDetailsComponent({
               color: TextColor.textAlternative,
               variant: TextVariant.bodySmBold,
             }}
-            hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+            hideLabel
           />
         </div>
       );
     },
-    [txData, useNativeCurrencyAsPrimaryCurrency],
+    [txData],
   );
 
   const renderTotalDetailValue = useCallback(
@@ -87,12 +83,11 @@ export default function FeeDetailsComponent({
               color: TextColor.textAlternative,
               variant: TextVariant.bodySm,
             }}
-            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
           />
         </Box>
       );
     },
-    [txData, useNativeCurrencyAsPrimaryCurrency],
+    [txData],
   );
 
   const hasLayer1GasFee = layer1GasFee !== null;

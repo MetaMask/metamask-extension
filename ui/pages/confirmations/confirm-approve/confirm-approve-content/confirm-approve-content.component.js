@@ -86,7 +86,6 @@ export default class ConfirmApproveContent extends Component {
     setUserAcknowledgedGasMissing: PropTypes.func,
     renderSimulationFailureWarning: PropTypes.bool,
     useCurrencyRateCheck: PropTypes.bool,
-    useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
   };
 
   state = {
@@ -159,7 +158,6 @@ export default class ConfirmApproveContent extends Component {
       userAcknowledgedGasMissing,
       renderSimulationFailureWarning,
       useCurrencyRateCheck,
-      useNativeCurrencyAsPrimaryCurrency,
     } = this.props;
     if (
       !hasLayer1GasFee &&
@@ -183,7 +181,6 @@ export default class ConfirmApproveContent extends Component {
                 <UserPreferencedCurrencyDisplay
                   type={PRIMARY}
                   value={hexMinimumTransactionFee}
-                  hideLabel={!useNativeCurrencyAsPrimaryCurrency}
                   numberOfDecimals={18}
                   suffixProps={{
                     color: TextColor.textDefault,
@@ -199,7 +196,7 @@ export default class ConfirmApproveContent extends Component {
                 <UserPreferencedCurrencyDisplay
                   type={SECONDARY}
                   value={hexMinimumTransactionFee}
-                  hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                  hideLabel
                 />
               }
               noBold

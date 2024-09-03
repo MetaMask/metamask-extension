@@ -306,7 +306,7 @@ const AccountListItem = ({
                 account={account}
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                 value={balanceToTranslate}
-                type={PRIMARY}
+                //type={PRIMARY}
                 showFiat={showFiat}
                 data-testid="first-currency-display"
               />
@@ -353,7 +353,7 @@ const AccountListItem = ({
                   account={account}
                   ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                   value={account.balance}
-                  type={SECONDARY}
+                  //type={SECONDARY}
                   showNative
                   data-testid="second-currency-display"
                 />

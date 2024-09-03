@@ -11,10 +11,7 @@ import {
   TextColor,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import {
-  currentConfirmationSelector,
-  getPreferences,
-} from '../../../../../../../selectors';
+import { currentConfirmationSelector } from '../../../../../../../selectors';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
@@ -31,9 +28,6 @@ export const EditGasFeesRow = ({
   setShowCustomizeGasPopover: Dispatch<SetStateAction<boolean>>;
 }) => {
   const t = useI18nContext();
-
-  const { useNativeCurrencyAsPrimaryCurrency: isNativeCurrencyUsed } =
-    useSelector(getPreferences);
 
   const transactionMeta = useSelector(
     currentConfirmationSelector,
@@ -59,14 +53,14 @@ export const EditGasFeesRow = ({
           color={TextColor.textDefault}
           data-testid="first-gas-field"
         >
-          {isNativeCurrencyUsed ? nativeFee : fiatFee}
+          {nativeFee}
         </Text>
         <Text
           marginRight={2}
           color={TextColor.textAlternative}
           data-testid="native-currency"
         >
-          {isNativeCurrencyUsed ? fiatFee : nativeFee}
+          {fiatFee}
         </Text>
         <EditGasIconButton
           supportsEIP1559={supportsEIP1559}

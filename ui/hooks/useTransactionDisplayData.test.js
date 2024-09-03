@@ -209,7 +209,6 @@ const renderHookWithRouter = (cb, tokenAddress) => {
       currentCurrency: 'ETH',
       useCurrencyRateCheck: false, // to force getShouldShowFiat to return false
       preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
         getShowFiatInTestnets: false,
       },
       allNfts: [],

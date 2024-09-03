@@ -9,10 +9,8 @@ import {
 } from '../../store/actions';
 
 import {
-  conversionRateSelector,
   unconfirmedTransactionsListSelector,
   getTargetAccountWithSendEtherInfo,
-  getPreferences,
   getCurrentCurrency,
 } from '../../selectors';
 
@@ -21,12 +19,11 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
 import ConfirmEncryptionPublicKey from './confirm-encryption-public-key.component';
 
+// Removing usage of useNativeCurrencyAsPrimaryCurrency because component ConfirmEncryptionPublicKey is not
 function mapStateToProps(state) {
   const {
     metamask: { subjectMetadata = {} },
   } = state;
-
-  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
 
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
 
@@ -43,9 +40,7 @@ function mapStateToProps(state) {
     fromAccount,
     requester: null,
     requesterAddress: null,
-    conversionRate: useNativeCurrencyAsPrimaryCurrency
-      ? null
-      : conversionRateSelector(state),
+    conversionRate: null,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     nativeCurrency: getNativeCurrency(state),
     currentCurrency: getCurrentCurrency(state),

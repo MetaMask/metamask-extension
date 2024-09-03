@@ -1,10 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
-import {
-  getPreferences,
-  getSelectedAccountCachedBalance,
-} from '../../../../selectors';
+import { getSelectedAccountCachedBalance } from '../../../../selectors';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
@@ -46,7 +43,6 @@ export default function AssetList({
 
   const nativeCurrency = useSelector(getNativeCurrency);
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
   const {
     currency: primaryCurrency,
@@ -121,11 +117,7 @@ export default function AssetList({
                       primaryCurrencyProperties.value ??
                       secondaryCurrencyProperties.value
                     }
-                    tokenSymbol={
-                      useNativeCurrencyAsPrimaryCurrency
-                        ? primaryCurrency
-                        : secondaryCurrency
-                    }
+                    tokenSymbol={primaryCurrency}
                     secondary={secondaryCurrencyDisplay}
                     tokenImage={token.image}
                     isOriginalTokenSymbol

@@ -16,12 +16,12 @@ export default class CancelTransaction extends PureComponent {
         <UserPreferencedCurrencyDisplay
           className="cancel-transaction-gas-fee__eth"
           value={value}
-          type={PRIMARY}
+          showNative
         />
         <UserPreferencedCurrencyDisplay
           className="cancel-transaction-gas-fee__fiat"
           value={value}
-          type={SECONDARY}
+          showFiat
         />
       </div>
     );

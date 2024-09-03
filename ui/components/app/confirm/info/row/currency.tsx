@@ -38,7 +38,7 @@ export const ConfirmInfoRowCurrency = ({
     {currency ? (
       <CurrencyDisplay currency={currency} value={`${value}`} />
     ) : (
-      <UserPreferencedCurrencyDisplay type={PRIMARY} value={`${value}`} />
+      <UserPreferencedCurrencyDisplay showNative value={`${value}`} />
     )}
   </Box>
 );

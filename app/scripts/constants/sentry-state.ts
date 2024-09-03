@@ -221,6 +221,7 @@ export const SENTRY_BACKGROUND_STATE = {
       showTestNetworks: true,
       smartTransactionsOptInStatus: true,
       useNativeCurrencyAsPrimaryCurrency: true,
+      showNativeTokenAsMainBalance: false,
       petnamesEnabled: true,
       showConfirmationAdvancedDetails: true,
     },

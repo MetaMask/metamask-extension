@@ -49,7 +49,7 @@ export function useUserPreferencedCurrency(type, opts = {}) {
     account,
   );
 
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(
+  const { showNativeTokenAsMainBalance } = useSelector(
     getPreferences,
     shallowEqual,
   );
@@ -74,12 +74,21 @@ export function useUserPreferencedCurrency(type, opts = {}) {
     return nativeReturn;
   } else if (opts.showFiatOverride) {
     return fiatReturn;
-  } else if (
-    !showFiat ||
-    (type === PRIMARY && useNativeCurrencyAsPrimaryCurrency) ||
-    (type === SECONDARY && !useNativeCurrencyAsPrimaryCurrency)
-  ) {
+  } else if (!showFiat) {
     return nativeReturn;
+  } else if (
+    (opts.withCheckShowNativeToken && showNativeTokenAsMainBalance) ||
+    !opts.withCheckShowNativeToken
+  ) {
+    return type === PRIMARY ? nativeReturn : fiatReturn;
   }
-  return fiatReturn;
+  return type === PRIMARY ? fiatReturn : nativeReturn;
 }
+
+/*
+if ((withCheck && showNat) || !withCheck) {
+  return primary ? native : fiat;
+} else {
+  return primary ? fiat : native;
+}
+*/

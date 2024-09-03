@@ -1320,7 +1320,7 @@
     "message": "CryptoCompare"
   },
   "currencyConversion": {
-    "message": "Currency conversion"
+    "message": "Currency"
   },
   "currencyRateCheckToggle": {
     "message": "Show balance and token price checker"
@@ -4786,6 +4786,9 @@
   },
   "showMore": {
     "message": "Show more"
+  },
+  "showNativeTokenAsMainBalance": {
+    "message": "Show native token as main balance"
   },
   "showNft": {
     "message": "Show NFT"

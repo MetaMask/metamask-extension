@@ -12,6 +12,7 @@ const mockUpdateCurrentLocale = jest.fn();
 const mockSetUseNativeCurrencyAsPrimaryCurrencyPreference = jest.fn();
 const mockSetUseBlockie = jest.fn();
 const mockSetHideZeroBalanceTokens = jest.fn();
+const mockSetShowNativeTokenAsMainBalance = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setCurrentCurrency: () => mockSetCurrentCurrency,
@@ -20,6 +21,8 @@ jest.mock('../../../store/actions.ts', () => ({
     mockSetUseNativeCurrencyAsPrimaryCurrencyPreference,
   setUseBlockie: () => mockSetUseBlockie,
   setHideZeroBalanceTokens: () => mockSetHideZeroBalanceTokens,
+  setShowNativeTokenAsMainBalancePreference: () =>
+    mockSetShowNativeTokenAsMainBalance,
 }));
 
 describe('Settings Tab', () => {
@@ -92,12 +95,24 @@ describe('Settings Tab', () => {
   });
 
   it('toggles hiding zero balance', () => {
-    const { getByRole } = renderWithProvider(<SettingsTab />, mockStore);
+    const { getAllByRole } = renderWithProvider(<SettingsTab />, mockStore);
 
-    const hideZerBalanceTokens = getByRole('checkbox');
+    const allCheckBoxes = getAllByRole('checkbox');
+    const hideZerBalanceTokens = allCheckBoxes[1];
 
     fireEvent.click(hideZerBalanceTokens);
 
     expect(mockSetHideZeroBalanceTokens).toHaveBeenCalled();
+  });
+
+  it('toggles showing native token as main balance', () => {
+    const { getAllByRole } = renderWithProvider(<SettingsTab />, mockStore);
+
+    const allCheckBoxes = getAllByRole('checkbox');
+    const showNativeTokenAsMainBalance = allCheckBoxes[0];
+
+    fireEvent.click(showNativeTokenAsMainBalance);
+
+    expect(mockSetShowNativeTokenAsMainBalance).toHaveBeenCalled();
   });
 });

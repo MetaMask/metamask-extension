@@ -3011,6 +3011,10 @@ export function setUseNativeCurrencyAsPrimaryCurrencyPreference(
   return setPreference('useNativeCurrencyAsPrimaryCurrency', value);
 }
 
+export function setShowNativeTokenAsMainBalancePreference(value: boolean) {
+  return setPreference('showNativeTokenAsMainBalance', value);
+}
+
 export function setHideZeroBalanceTokens(value: boolean) {
   return setPreference('hideZeroBalanceTokens', value);
 }

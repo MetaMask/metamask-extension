@@ -47,7 +47,7 @@ describe('EthOverview', () => {
         },
       },
       preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
+        showNativeTokenAsMainBalance: true,
       },
       useExternalServices: true,
       useCurrencyRateCheck: true,

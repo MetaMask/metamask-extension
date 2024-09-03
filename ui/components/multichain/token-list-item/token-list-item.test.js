@@ -13,9 +13,7 @@ const state = {
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     useTokenDetection: false,
     currencyRates: {},
-    preferences: {
-      useNativeCurrencyAsPrimaryCurrency: false,
-    },
+    preferences: {},
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -107,12 +105,10 @@ describe('TokenListItem', () => {
     expect(getByText('This is a potential scam')).toBeInTheDocument();
   });
 
-  it('should render crypto balance if useNativeCurrencyAsPrimaryCurrency is false', () => {
+  it('should render crypto balance', () => {
     const store = configureMockStore()({
       ...state,
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: false,
-      },
+      preferences: {},
     });
     const propsToUse = {
       primary: '11.9751 ETH',

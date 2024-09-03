@@ -13,6 +13,7 @@ import { EtherDenomination } from '../../../shared/constants/common';
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../shared/modules/conversion.utils';
 
+// This component is only being used in stories and test file
 export default class ConfirmEncryptionPublicKey extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,

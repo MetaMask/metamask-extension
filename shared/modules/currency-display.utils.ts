@@ -1,9 +1,9 @@
 export const showPrimaryCurrency = (
   isOriginalNativeSymbol: boolean,
-  useNativeCurrencyAsPrimaryCurrency: boolean,
+  showNativeTokenAsMainBalance: boolean,
 ): boolean => {
   // crypto is the primary currency in this case , so we have to display it always
-  if (useNativeCurrencyAsPrimaryCurrency) {
+  if (showNativeTokenAsMainBalance) {
     return true;
   }
   // if the primary currency corresponds to a fiat value, check that the symbol is correct.
@@ -16,10 +16,10 @@ export const showPrimaryCurrency = (
 
 export const showSecondaryCurrency = (
   isOriginalNativeSymbol: boolean,
-  useNativeCurrencyAsPrimaryCurrency: boolean,
+  showNativeTokenAsMainBalance: boolean,
 ): boolean => {
   // crypto is the secondary currency in this case , so we have to display it always
-  if (!useNativeCurrencyAsPrimaryCurrency) {
+  if (!showNativeTokenAsMainBalance) {
     return true;
   }
   // if the secondary currency corresponds to a fiat value, check that the symbol is correct.
