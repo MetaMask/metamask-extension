@@ -10,7 +10,6 @@ const {
   regularDelayMs,
   WINDOW_TITLES,
   defaultGanacheOptions,
-  switchToNotificationWindow,
 } = require('../../helpers');
 
 describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', function () {
@@ -68,7 +67,10 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
 
         // Reject the pending confirmation from the first dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.clickElementAndWaitForWindowToClose({ text: 'Reject', tag: 'button' });
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Reject',
+          tag: 'button',
+        });
 
         // Wait for switch confirmation to close then request accounts confirmation to show for the second dapp
         await driver.delay(regularDelayMs);
