@@ -21,7 +21,7 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
   describe('Submit an Approve transaction @no-mmi', function () {
-    it.only('Sends a type 0 transaction (Legacy)', async function () {
+    it('Sends a type 0 transaction (Legacy)', async function () {
       await withFixtures(
         {
           dapp: true,

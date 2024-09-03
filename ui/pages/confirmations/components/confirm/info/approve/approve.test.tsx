@@ -11,6 +11,7 @@ jest.mock('../../../../../../store/actions', () => ({
     lowerTimeBound: 0,
     upperTimeBound: 60000,
   }),
+  estimateGas: jest.fn().mockResolvedValue('0x5208'), // Mock estimateGas function
 }));
 
 jest.mock(
