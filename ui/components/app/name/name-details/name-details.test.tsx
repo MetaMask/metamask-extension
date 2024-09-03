@@ -11,6 +11,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import NameDetails from './name-details';
 
 jest.mock('../../../../store/actions', () => ({
@@ -38,9 +40,8 @@ const PROPOSED_NAME_2_MOCK = 'TestProposedName2';
 
 const STATE_MOCK = {
   metamask: {
-    providerConfig: {
-      chainId: CHAIN_ID_MOCK,
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
     nameSources: {
       [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },
     },
@@ -149,6 +150,19 @@ describe('NameDetails', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     useDispatchMock.mockReturnValue(jest.fn());
+  });
+
+  it('renders when no address value is passed', () => {
+    const { baseElement } = renderWithProvider(
+      <NameDetails
+        type={NameType.ETHEREUM_ADDRESS}
+        value={''}
+        onClose={() => undefined}
+      />,
+      store,
+    );
+
+    expect(baseElement).toMatchSnapshot();
   });
 
   it('renders with no saved name', () => {

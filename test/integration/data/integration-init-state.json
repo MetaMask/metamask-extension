@@ -392,7 +392,7 @@
     "latestPriorityFeeRange": ["1", "40"],
     "historicalPriorityFeeRange": ["0.1458417", "700.156384646"],
     "priorityFeeTrend": "down",
-    "networkCongestion": 0.90625
+    "networkCongestion": 0.10625
   },
   "gasFeeEstimatesByChainId": {
     "0x5": {
@@ -426,7 +426,7 @@
         "latestPriorityFeeRange": ["1", "40"],
         "historicalPriorityFeeRange": ["0.1458417", "700.156384646"],
         "priorityFeeTrend": "down",
-        "networkCongestion": 0.90625
+        "networkCongestion": 0.10625
       }
     }
   },
@@ -662,16 +662,16 @@
       "type": "rpc",
       "id": "testNetworkConfigurationId"
     },
-    "chain5": {
+    "goerli-network-id": {
       "type": "rpc",
       "chainId": "0x5",
       "ticker": "ETH",
       "nickname": "Chain 5",
-      "id": "chain5"
+      "id": "goerli-network-id"
     }
   },
   "networksMetadata": {
-    "goerli": {
+    "goerli-network-id": {
       "EIPS": {
         "1559": true
       },
@@ -742,7 +742,8 @@
     "showTestNetworks": true,
     "smartTransactionsOptInStatus": false,
     "useNativeCurrencyAsPrimaryCurrency": true,
-    "petnamesEnabled": false
+    "petnamesEnabled": false,
+    "showConfirmationAdvancedDetails": false
   },
   "preventPollingOnNetworkRestart": true,
   "previousAppVersion": "11.14.4",
@@ -757,7 +758,7 @@
   "securityAlertsEnabled": true,
   "seedPhraseBackedUp": true,
   "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-  "selectedNetworkClientId": "goerli",
+  "selectedNetworkClientId": "goerli-network-id",
   "showAccountBanner": false,
   "showBetaHeader": false,
   "showNetworkBanner": true,

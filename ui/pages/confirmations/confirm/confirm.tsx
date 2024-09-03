@@ -17,8 +17,10 @@ import { PluggableSection } from '../components/confirm/pluggable-section';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { Title } from '../components/confirm/title';
 import EditGasFeePopover from '../components/edit-gas-fee-popover';
+import { NetworkChangeToast } from '../components/confirm/network-change-toast';
 import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
 import syncConfirmPath from '../hooks/syncConfirmPath';
+import { ConfirmContextProvider } from '../context/confirm';
 
 const EIP1559TransactionGasModal = () => {
   return (
@@ -34,31 +36,34 @@ const Confirm = () => {
   syncConfirmPath();
 
   return (
-    <TransactionModalContextProvider>
-      {/* This context should be removed once we implement the new edit gas fees popovers */}
-      <GasFeeContextProvider transaction={currentConfirmation}>
-        <EIP1559TransactionGasModal />
-        <ConfirmAlerts>
-          <Page className="confirm_wrapper">
-            <Nav />
-            <Header />
-            <ScrollToBottom>
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                <MMISignatureMismatchBanner />
-                ///: END:ONLY_INCLUDE_IF
-              }
-              <BlockaidLoadingIndicator />
-              <LedgerInfo />
-              <Title />
-              <Info />
-              <PluggableSection />
-            </ScrollToBottom>
-            <Footer />
-          </Page>
-        </ConfirmAlerts>
-      </GasFeeContextProvider>
-    </TransactionModalContextProvider>
+    <ConfirmContextProvider>
+      <TransactionModalContextProvider>
+        {/* This context should be removed once we implement the new edit gas fees popovers */}
+        <GasFeeContextProvider transaction={currentConfirmation}>
+          <EIP1559TransactionGasModal />
+          <ConfirmAlerts>
+            <Page className="confirm_wrapper">
+              <Nav />
+              <Header />
+              <ScrollToBottom>
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+                  <MMISignatureMismatchBanner />
+                  ///: END:ONLY_INCLUDE_IF
+                }
+                <BlockaidLoadingIndicator />
+                <LedgerInfo />
+                <Title />
+                <Info />
+                <PluggableSection />
+              </ScrollToBottom>
+              <Footer />
+              <NetworkChangeToast />
+            </Page>
+          </ConfirmAlerts>
+        </GasFeeContextProvider>
+      </TransactionModalContextProvider>
+    </ConfirmContextProvider>
   );
 };
 

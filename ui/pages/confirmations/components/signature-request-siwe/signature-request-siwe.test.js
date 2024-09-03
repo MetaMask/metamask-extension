@@ -5,6 +5,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';
+import { getCurrentChainId } from '../../../../selectors';
 import SignatureRequestSIWE from '.';
 
 const MOCK_ORIGIN = 'https://example-dapp.website';
@@ -27,6 +28,8 @@ const mockShowModal = jest.fn();
 jest.mock('../../../../store/actions.ts', () => {
   return {
     showModal: () => mockShowModal,
+    getLastInteractedConfirmationInfo: jest.fn(),
+    setLastInteractedConfirmationInfo: jest.fn(),
   };
 });
 
@@ -180,7 +183,7 @@ describe('SignatureRequestSIWE (Sign in with Ethereum)', () => {
           transactions: [
             ...mockStoreInitialState.metamask.transactions,
             {
-              chainId: mockStoreInitialState.metamask.providerConfig.chainId,
+              chainId: getCurrentChainId(mockStoreInitialState),
               status: 'unapproved',
             },
           ],

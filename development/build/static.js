@@ -146,9 +146,7 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
     ...(shouldIncludeSnow
       ? [
           {
-            src: shouldIncludeSnow
-              ? `./node_modules/@lavamoat/snow/snow.prod.js`
-              : EMPTY_JS_FILE,
+            src: `./node_modules/@lavamoat/snow/snow.prod.js`,
             dest: `scripts/snow.js`,
           },
           {
@@ -166,10 +164,6 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
     {
       src: './app/scripts/init-globals.js',
       dest: 'scripts/init-globals.js',
-    },
-    {
-      src: './app/scripts/load-app.js',
-      dest: 'scripts/load-app.js',
     },
     {
       src: shouldIncludeLockdown
@@ -192,11 +186,6 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       src: getPathInsideNodeModules('@lavamoat/lavapack', 'src/runtime.js'),
       dest: `scripts/runtime-lavamoat.js`,
       pattern: '',
-    },
-    {
-      src: `./offscreen/`,
-      pattern: `*.html`,
-      dest: '',
     },
     {
       src: getPathInsideNodeModules('@blockaid/ppom_release', '/'),

@@ -1,14 +1,20 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { act } from '@testing-library/react';
-import mockState from '../../../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../../../test/lib/render-helpers';
+
+import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
+import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { decodeTransactionData } from '../../../../../../../store/actions';
 import {
   TRANSACTION_DECODE_FOUR_BYTE,
   TRANSACTION_DECODE_NESTED,
   TRANSACTION_DECODE_UNISWAP,
 } from '../../../../../../../../test/data/confirmations/transaction-decode';
+import { Confirmation } from '../../../../../types/confirm';
 import { TransactionData } from './transaction-data';
 
 const DATA_MOCK = '0x123456';
@@ -19,19 +25,21 @@ jest.mock('../../../../../../../store/actions', () => ({
 }));
 
 async function renderTransactionData(transactionData: string) {
-  const state = {
-    ...mockState,
-    confirm: {
-      currentConfirmation: {
-        txParams: {
-          data: transactionData,
-        },
-      },
+  const state = getMockConfirmStateForTransaction({
+    id: '123',
+    chainId: '0x5',
+    type: TransactionType.contractInteraction,
+    status: TransactionStatus.unapproved,
+    txParams: {
+      data: transactionData,
     },
-  };
+  } as Confirmation);
 
   const mockStore = configureMockStore()(state);
-  const { container } = renderWithProvider(<TransactionData />, mockStore);
+  const { container } = renderWithConfirmContextProvider(
+    <TransactionData />,
+    mockStore,
+  );
 
   await act(() => {
     // Ignore

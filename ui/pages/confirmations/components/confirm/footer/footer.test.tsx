@@ -19,6 +19,17 @@ jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn(),
 }));
 
+jest.mock(
+  '../../../../../components/app/alert-system/contexts/alertMetricsContext',
+  () => ({
+    useAlertMetrics: jest.fn(() => ({
+      trackInlineAlertClicked: jest.fn(),
+      trackAlertRender: jest.fn(),
+      trackAlertActionClicked: jest.fn(),
+    })),
+  }),
+);
+
 const render = (args = {}) => {
   const store = configureStore({
     metamask: {
@@ -148,6 +159,7 @@ describe('ConfirmFooter', () => {
       .spyOn(MMIConfirmations, 'useMMIConfirmations')
       .mockImplementation(() => ({
         mmiOnSignCallback: () => Promise.resolve(),
+        mmiOnTransactionCallback: () => Promise.resolve(),
         mmiSubmitDisabled: true,
       }));
     const { getAllByRole } = render();
@@ -161,6 +173,7 @@ describe('ConfirmFooter', () => {
       .spyOn(MMIConfirmations, 'useMMIConfirmations')
       .mockImplementation(() => ({
         mmiOnSignCallback: mockFn,
+        mmiOnTransactionCallback: mockFn,
         mmiSubmitDisabled: false,
       }));
     const { getAllByRole } = render();

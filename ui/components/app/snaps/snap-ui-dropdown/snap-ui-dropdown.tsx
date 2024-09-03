@@ -29,7 +29,7 @@ export const SnapUIDropdown: FunctionComponent<SnapUIDropdownProps> = ({
 }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
-  const initialValue = getValue<string>(name, form);
+  const initialValue = getValue(name, form) as string;
 
   const [value, setValue] = useState(initialValue ?? '');
 
