@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../ui/button';
-import { AvatarFavicon } from '../../component-library';
+import { AvatarFavicon, IconSize } from '../../component-library';
 import { stripHttpsSchemeWithoutPort } from '../../../helpers/utils/util';
 import SiteOrigin from '../../ui/site-origin';
 import { Size } from '../../../helpers/constants/design-system';
@@ -28,7 +28,7 @@ export default class ConnectedSitesList extends Component {
   getConnectedSitesListContent = () => {
     const { connectedSubjects, onDisconnect, getSnapName } = this.props;
     const { t } = this.context;
-    connectedSubjects.map((subject) => {
+    return connectedSubjects.map((subject) => {
       if (isSnapId(subject.origin)) {
         const snapName = getSnapName(subject.origin);
         return (
@@ -37,7 +37,7 @@ export default class ConnectedSitesList extends Component {
             className="connected-sites-list__content-row"
           >
             <div className="connected-sites-list__subject-info">
-              <SnapIcon snapId={subject.origin} />
+              <SnapIcon avatarSize={IconSize.Md} snapId={subject.origin} />
               <SiteOrigin
                 className="connected-sites-list__subject-name"
                 title={snapName}
