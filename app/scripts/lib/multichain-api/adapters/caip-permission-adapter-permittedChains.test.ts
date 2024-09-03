@@ -176,7 +176,7 @@ describe('CAIP-25 permittedChains adapters', () => {
   });
 
   describe('setPermittedEthChainIds', () => {
-    it('returns a CAIP-25 caveat value with all non-matching EIP-155 scopes removed', () => {
+    it('returns a CAIP-25 caveat value with EIP-155 scopes missing from the chainIds array removed', () => {
       const result = setPermittedEthChainIds(
         {
           requiredScopes: {
