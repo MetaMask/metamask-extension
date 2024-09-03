@@ -251,11 +251,12 @@ function validateSecurity(request: AddTransactionRequest) {
       params: [
         {
           from,
-          to,
-          value,
-          data,
+          to: to ?? '',
+          value: value ?? '',
+          data: data ?? '',
         },
       ],
+      jsonrpc: '2.0' as const,
     };
 
     const securityAlertId = generateSecurityAlertId();

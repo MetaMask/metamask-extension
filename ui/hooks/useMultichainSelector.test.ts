@@ -60,6 +60,7 @@ describe('useMultichainSelector', () => {
   });
 
   it('uses selectedAccount if account is not provided', () => {
+    // @ts-expect-error: intentionally testing without account
     const { result } = renderUseMultichainHook(getMultichainIsEvm, null);
 
     expect(result.current).toBe(true);

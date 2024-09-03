@@ -1,10 +1,5 @@
-import {
-  type Hex,
-  JsonRpcRequestStruct,
-  JsonRpcResponseStruct,
-} from '@metamask/utils';
+import { type Hex, JsonRpcResponseStruct } from '@metamask/utils';
 import * as ControllerUtils from '@metamask/controller-utils';
-
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 import {
@@ -12,7 +7,7 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
-import { createPPOMMiddleware } from './ppom-middleware';
+import { createPPOMMiddleware, PPOMMiddlewareRequest } from './ppom-middleware';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -28,6 +23,12 @@ const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
   securityAlertId: SECURITY_ALERT_ID_MOCK,
   result_type: BlockaidResultType.Malicious,
   reason: BlockaidReason.permitFarming,
+};
+
+const REQUEST_MOCK = {
+  params: [],
+  id: '',
+  jsonrpc: '2.0' as const,
 };
 
 const createMiddleware = (
@@ -107,14 +108,14 @@ describe('PPOMMiddleware', () => {
     });
 
     const req = {
-      ...JsonRpcRequestStruct,
+      ...REQUEST_MOCK,
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
     };
 
     await middlewareFunction(
       req,
-      { ...JsonRpcResponseStruct },
+      { ...JsonRpcResponseStruct.TYPE },
       () => undefined,
     );
 
@@ -131,20 +132,20 @@ describe('PPOMMiddleware', () => {
   it('adds loading response to confirmation requests while validation is in progress', async () => {
     const middlewareFunction = createMiddleware();
 
-    const req = {
-      ...JsonRpcRequestStruct,
+    const req: PPOMMiddlewareRequest<(string | { to: string })[]> = {
+      ...REQUEST_MOCK,
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
     };
 
     await middlewareFunction(
       req,
-      { ...JsonRpcResponseStruct },
+      { ...JsonRpcResponseStruct.TYPE },
       () => undefined,
     );
 
-    expect(req.securityAlertResponse.reason).toBe(BlockaidReason.inProgress);
-    expect(req.securityAlertResponse.result_type).toBe(
+    expect(req.securityAlertResponse?.reason).toBe(BlockaidReason.inProgress);
+    expect(req.securityAlertResponse?.result_type).toBe(
       BlockaidResultType.Loading,
     );
   });
@@ -155,7 +156,7 @@ describe('PPOMMiddleware', () => {
     });
 
     const req = {
-      ...JsonRpcRequestStruct,
+      ...REQUEST_MOCK,
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
     };
@@ -172,14 +173,14 @@ describe('PPOMMiddleware', () => {
     });
 
     const req = {
-      ...JsonRpcRequestStruct,
+      ...REQUEST_MOCK,
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
     };
 
     await middlewareFunction(
       req,
-      { ...JsonRpcResponseStruct },
+      { ...JsonRpcResponseStruct.TYPE },
       () => undefined,
     );
 
@@ -191,14 +192,14 @@ describe('PPOMMiddleware', () => {
     const middlewareFunction = createMiddleware();
 
     const req = {
-      ...JsonRpcRequestStruct,
+      ...REQUEST_MOCK,
       method: 'eth_someRequest',
       securityAlertResponse: undefined,
     };
 
     await middlewareFunction(
       req,
-      { ...JsonRpcResponseStruct },
+      { ...JsonRpcResponseStruct.TYPE },
       () => undefined,
     );
 
@@ -256,8 +257,8 @@ describe('PPOMMiddleware', () => {
     const nextMock = jest.fn();
 
     await middlewareFunction(
-      { ...JsonRpcRequestStruct, method: 'eth_sendTransaction' },
-      { ...JsonRpcResponseStruct },
+      { ...REQUEST_MOCK, method: 'eth_sendTransaction' },
+      { ...JsonRpcResponseStruct.TYPE },
       nextMock,
     );
 
@@ -273,12 +274,12 @@ describe('PPOMMiddleware', () => {
     const middlewareFunction = createMiddleware({ error });
 
     const req = {
-      ...JsonRpcRequestStruct,
+      ...REQUEST_MOCK,
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
     };
 
-    await middlewareFunction(req, { ...JsonRpcResponseStruct }, nextMock);
+    await middlewareFunction(req, { ...JsonRpcResponseStruct.TYPE }, nextMock);
 
     expect(req.securityAlertResponse).toStrictEqual(
       SECURITY_ALERT_RESPONSE_MOCK,

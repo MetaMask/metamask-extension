@@ -34,6 +34,8 @@ const CHAIN_ID_MOCK = '0x1';
 const REQUEST_MOCK = {
   method: 'eth_signTypedData_v4',
   params: [],
+  id: '',
+  jsonrpc: '2.0' as const,
 };
 
 const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {

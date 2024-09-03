@@ -541,4 +541,45 @@ describe('addEthereumChainHandler', () => {
       }),
     );
   });
+
+  it('should add result set to null to response object if the requested rpcUrl (and chainId) is currently selected', async () => {
+    const CURRENT_RPC_CONFIG = createMockNonInfuraConfiguration();
+
+    const mocks = makeMocks({
+      permissionsFeatureFlagIsActive: false,
+      overrides: {
+        getCurrentChainIdForDomain: jest
+          .fn()
+          .mockReturnValue(CURRENT_RPC_CONFIG.chainId),
+        findNetworkConfigurationBy: jest
+          .fn()
+          .mockReturnValue(CURRENT_RPC_CONFIG),
+        getCurrentRpcUrl: jest.fn().mockReturnValue(CURRENT_RPC_CONFIG.rpcUrl),
+      },
+    });
+    const res = {};
+
+    await addEthereumChainHandler(
+      {
+        origin: 'example.com',
+        params: [
+          {
+            chainId: CURRENT_RPC_CONFIG.chainId,
+            chainName: 'Custom Network',
+            rpcUrls: [CURRENT_RPC_CONFIG.rpcUrl],
+            nativeCurrency: {
+              symbol: CURRENT_RPC_CONFIG.ticker,
+              decimals: 18,
+            },
+            blockExplorerUrls: ['https://custom.blockexplorer'],
+          },
+        ],
+      },
+      res,
+      jest.fn(),
+      jest.fn(),
+      mocks,
+    );
+    expect(res.result).toBeNull();
+  });
 });
