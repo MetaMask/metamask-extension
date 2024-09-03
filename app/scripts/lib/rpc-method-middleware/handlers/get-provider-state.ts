@@ -2,14 +2,13 @@ import type {
   JsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
 } from 'json-rpc-engine';
-import type {
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
-  JsonRpcParams,
-} from '@metamask/utils';
+import type { PendingJsonRpcResponse, JsonRpcParams } from '@metamask/utils';
 import { OriginString } from '@metamask/permission-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { HandlerWrapper } from './types';
+import {
+  HandlerWrapper,
+  HandlerRequestType as ProviderStateHandlerRequest,
+} from './types';
 
 /**
  * @property chainId - The current chain ID.
@@ -31,7 +30,7 @@ type GetProviderState = (
 type GetProviderStateConstraint<Params extends JsonRpcParams = JsonRpcParams> =
   {
     implementation: (
-      _req: JsonRpcRequest<Params>,
+      _req: ProviderStateHandlerRequest<Params>,
       res: PendingJsonRpcResponse<ProviderStateHandlerResult>,
       _next: JsonRpcEngineNextCallback,
       end: JsonRpcEngineEndCallback,
@@ -65,13 +64,13 @@ export default getProviderState;
 async function getProviderStateHandler<
   Params extends JsonRpcParams = JsonRpcParams,
 >(
-  req: JsonRpcRequest<Params>,
+  req: ProviderStateHandlerRequest<Params>,
   res: PendingJsonRpcResponse<ProviderStateHandlerResult>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   { getProviderState: _getProviderState }: Record<string, GetProviderState>,
 ): Promise<void> {
-  const { origin } = req.origin;
+  const { origin } = req;
   res.result = {
     ...(await _getProviderState(origin)),
   };
