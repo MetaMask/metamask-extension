@@ -77,7 +77,7 @@ const ProfileSyncToggle = () => {
               category: MetaMetricsEventCategory.Settings,
               event: MetaMetricsEventName.SettingsUpdated,
               properties: {
-                settings_group: 'security',
+                settings_group: 'security_privacy',
                 settings_type: 'profile_syncing',
                 old_value: true,
                 new_value: false,
@@ -93,7 +93,7 @@ const ProfileSyncToggle = () => {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,
         properties: {
-          settings_group: 'security',
+          settings_group: 'security_privacy',
           settings_type: 'profile_syncing',
           old_value: false,
           new_value: true,
