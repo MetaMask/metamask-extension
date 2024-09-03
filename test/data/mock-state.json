@@ -372,6 +372,7 @@
       "showTestNetworks": true,
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
+      "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": false
     },
     "ensResolutionsByAddress": {},
