@@ -1,7 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
   Modal,
   ModalBody,
@@ -22,7 +21,7 @@ import {
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../../../../selectors';
+import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
 
@@ -44,9 +43,9 @@ export const EditSpendingCapModal = ({
 }) => {
   const t = useI18nContext();
 
-  const transactionMeta = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
+    currentConfirmation: TransactionMeta;
+  };
 
   const { userBalance, tokenSymbol, decimals } = useAssetDetails(
     transactionMeta.txParams.to,

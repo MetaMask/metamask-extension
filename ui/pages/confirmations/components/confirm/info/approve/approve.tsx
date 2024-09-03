@@ -20,8 +20,9 @@ import { SpendingCap } from './spending-cap/spending-cap';
 const ApproveInfo = () => {
   const dispatch = useDispatch();
 
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
+    currentConfirmation: TransactionMeta;
+  };
 
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
@@ -31,12 +32,12 @@ const ApproveInfo = () => {
 
   const [isOpenEditSpendingCapModal, setIsOpenEditSpendingCapModal] =
     useState(false);
-  const [customSpendingCap, _setCustomSpendingCap] = useState('');
+  const [customSpendingCap, setCustomSpendingCap] = useState('');
 
   const { decimals } = useAssetDetails(
-    transactionMeta.txParams?.to,
-    transactionMeta.txParams?.from,
-    transactionMeta.txParams?.data,
+    transactionMeta?.txParams?.to,
+    transactionMeta?.txParams?.from,
+    transactionMeta?.txParams?.data,
   );
 
   const customTxParamsData = useMemo(() => {
@@ -77,12 +78,14 @@ const ApproveInfo = () => {
     updateConfirmation();
   }, [updateConfirmation]);
 
-  const setCustomSpendingCap = (newValue: string) => {
+  const setCustomSpendingCapCandidate = (newValue: string) => {
     const value = parseInt(newValue, 10);
     // coerce negative numbers to zero
-    _setCustomSpendingCap(value < 0 ? '0' : newValue);
+    setCustomSpendingCap(value < 0 ? '0' : newValue);
     setShouldUpdateConfirmation(true);
   };
+
+  console.log({ transactionMeta });
 
   if (!transactionMeta?.txParams) {
     return null;
@@ -104,7 +107,7 @@ const ApproveInfo = () => {
         isOpenEditSpendingCapModal={isOpenEditSpendingCapModal}
         setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
         customSpendingCap={customSpendingCap}
-        setCustomSpendingCap={setCustomSpendingCap}
+        setCustomSpendingCap={setCustomSpendingCapCandidate}
       />
     </>
   );

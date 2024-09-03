@@ -1,7 +1,6 @@
 import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import Name from '../../../../../../../components/app/name';
 import { Box, Text } from '../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../components/ui/tooltip';
@@ -14,7 +13,7 @@ import {
   TextAlign,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../../../../selectors';
+import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import StaticSimulation from '../../shared/static-simulation/static-simulation';
 import { Container } from '../../shared/transaction-data/transaction-data';
@@ -27,9 +26,9 @@ import { useIsNFT } from '../hooks/use-is-nft';
 export const ApproveStaticSimulation = () => {
   const t = useI18nContext();
 
-  const transactionMeta = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
+    currentConfirmation: TransactionMeta;
+  };
 
   const { decimals: initialDecimals } = useAssetDetails(
     transactionMeta?.txParams?.to,
@@ -74,25 +73,23 @@ export const ApproveStaticSimulation = () => {
   );
 
   const simulationElements = (
-    <>
-      <Box display={Display.Flex}>
-        <Box
-          display={Display.Inline}
-          marginInlineEnd={1}
-          minWidth={BlockSize.Zero}
-        >
-          {spendingCap === UNLIMITED_MSG ? (
-            <Tooltip title={formattedSpendingCap}>{formattedTokenText}</Tooltip>
-          ) : (
-            formattedTokenText
-          )}
-        </Box>
-        <Name
-          value={transactionMeta.txParams.to as string}
-          type={NameType.ETHEREUM_ADDRESS}
-        />
+    <Box display={Display.Flex}>
+      <Box
+        display={Display.Inline}
+        marginInlineEnd={1}
+        minWidth={BlockSize.Zero}
+      >
+        {spendingCap === UNLIMITED_MSG ? (
+          <Tooltip title={formattedSpendingCap}>{formattedTokenText}</Tooltip>
+        ) : (
+          formattedTokenText
+        )}
       </Box>
-    </>
+      <Name
+        value={transactionMeta.txParams.to as string}
+        type={NameType.ETHEREUM_ADDRESS}
+      />
+    </Box>
   );
 
   return (

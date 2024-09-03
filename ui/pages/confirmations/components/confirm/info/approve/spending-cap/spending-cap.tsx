@@ -1,6 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
-import { useSelector } from 'react-redux';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowDivider,
@@ -9,7 +8,7 @@ import {
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../../../../selectors';
+import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { Container } from '../../shared/transaction-data/transaction-data';
 import { getAccountBalance } from '../edit-spending-cap-modal/edit-spending-cap-modal';
@@ -31,23 +30,22 @@ const SpendingCapGroup = ({
 }) => {
   const t = useI18nContext();
 
-  const transactionMeta = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
+    currentConfirmation: TransactionMeta;
+  };
 
   const { spendingCap, formattedSpendingCap, value } =
     useApproveTokenSimulation(transactionMeta, decimals);
+
+  const spendingCapValue =
+    customSpendingCap === '' ? formattedSpendingCap : customSpendingCap;
 
   const SpendingCapElement = (
     <ConfirmInfoRowText
       text={
         spendingCap === UNLIMITED_MSG
           ? `${t('unlimited')} ${tokenSymbol}`
-          : `${
-              customSpendingCap === ''
-                ? formattedSpendingCap
-                : customSpendingCap
-            } ${tokenSymbol}`
+          : `${spendingCapValue} ${tokenSymbol}`
       }
       onEditClick={() => setIsOpenEditSpendingCapModal(true)}
       editIconClassName="edit-spending-cap-btn"
@@ -86,9 +84,9 @@ export const SpendingCap = ({
 }) => {
   const t = useI18nContext();
 
-  const transactionMeta = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
+    currentConfirmation: TransactionMeta;
+  };
 
   const { userBalance, tokenSymbol, decimals } = useAssetDetails(
     transactionMeta.txParams.to,

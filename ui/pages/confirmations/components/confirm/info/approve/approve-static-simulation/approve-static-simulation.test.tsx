@@ -1,10 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import mockState from '../../../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../../../test/lib/render-helpers';
-import { ApproveStaticSimulation } from './approve-static-simulation';
 import { genUnapprovedApproveConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
+import mockState from '../../../../../../../../test/data/mock-state.json';
+import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import { ApproveStaticSimulation } from './approve-static-simulation';
 
 describe('<ApproveStaticSimulation />', () => {
   const middleware = [thunk];
@@ -17,7 +17,7 @@ describe('<ApproveStaticSimulation />', () => {
       },
     };
     const mockStore = configureMockStore(middleware)(state);
-    const { container } = renderWithProvider(
+    const { container } = renderWithConfirmContextProvider(
       <ApproveStaticSimulation />,
       mockStore,
     );

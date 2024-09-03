@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { genUnapprovedApproveConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../../../test/lib/render-helpers';
+import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { SpendingCap } from './spending-cap';
 
 describe('<SpendingCap />', () => {
@@ -21,11 +21,12 @@ describe('<SpendingCap />', () => {
     const setIsOpenEditSpendingCapModal = () => {};
     const customSpendingCap = '10';
 
-    const { container } = renderWithProvider(
+    const { container } = renderWithConfirmContextProvider(
       <SpendingCap
         setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
         customSpendingCap={customSpendingCap}
       />,
+
       mockStore,
     );
 
