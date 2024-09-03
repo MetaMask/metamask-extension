@@ -223,7 +223,7 @@ describe('getPermissionsHandler', () => {
       });
     });
 
-    it('returns the permissions with a permittedChains permission if some eth chain ids are permissioned', async () => {
+    it('returns the permissions with a permittedChains permission if some eip155 chainIds are permissioned', async () => {
       const { handler, getAccounts, response } = createMockedHandler();
       getAccounts.mockResolvedValue([]);
       MockPermittedChainsAdapters.getPermittedEthChainIds.mockReturnValue([
