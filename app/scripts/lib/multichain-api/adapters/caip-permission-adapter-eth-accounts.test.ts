@@ -133,7 +133,7 @@ describe('CAIP-25 eth_accounts adapters', () => {
       });
     });
 
-    it('does not modify the input CAIP-25 caveat value object', () => {
+    it('does not modify the input CAIP-25 caveat value object in place', () => {
       const input: Caip25CaveatValue = {
         requiredScopes: {
           'eip155:1': {
