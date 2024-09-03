@@ -260,6 +260,8 @@ env:
   - TRANSACTION_MULTICHAIN: ''
   # Determines if Barad Dur features should be used
   - BARAD_DUR: ''
+  # Determines if feature flagged Chain permissions
+  - CHAIN_PERMISSIONS: ''
   # Enables use of test gas fee flow to debug gas fee estimation
   - TEST_GAS_FEE_FLOWS: false
   # Determines if feature flagged network ui new design
