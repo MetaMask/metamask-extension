@@ -1,7 +1,7 @@
 export const COOKIE_ID_MARKETING_WHITELIST = [
   'https://metamask.io',
   'https://learn.metamask.io',
-  'https://mmi-support.zendesk.com/hc/en-us',
+  'https://mmi-support.zendesk.com',
   'https://community.metamask.io',
   'https://support.metamask.io',
 ];
