@@ -2,14 +2,13 @@ import type {
   JsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
 } from '@metamask/json-rpc-engine';
-import type {
-  JsonRpcRequest,
-  JsonRpcParams,
-  PendingJsonRpcResponse,
-} from '@metamask/utils';
+import type { JsonRpcParams, PendingJsonRpcResponse } from '@metamask/utils';
 import { OriginString } from '@metamask/permission-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { HandlerWrapper } from './types';
+import {
+  HandlerWrapper,
+  HandlerRequestType as LogWeb3ShimUsageHandlerRequest,
+} from './types';
 
 type LogWeb3ShimUsageOptions = {
   getWeb3ShimUsageState: (origin: OriginString) => undefined | 1 | 2;
@@ -18,7 +17,7 @@ type LogWeb3ShimUsageOptions = {
 type LogWeb3ShimUsageConstraint<Params extends JsonRpcParams = JsonRpcParams> =
   {
     implementation: (
-      req: JsonRpcRequest<Params>,
+      req: LogWeb3ShimUsageHandlerRequest<Params>,
       res: PendingJsonRpcResponse<true>,
       _next: JsonRpcEngineNextCallback,
       end: JsonRpcEngineEndCallback,
@@ -57,7 +56,7 @@ export default logWeb3ShimUsage;
  * usage for a particular origin.
  */
 function logWeb3ShimUsageHandler<Params extends JsonRpcParams = JsonRpcParams>(
-  req: JsonRpcRequest<Params>,
+  req: LogWeb3ShimUsageHandlerRequest<Params>,
   res: PendingJsonRpcResponse<true>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
