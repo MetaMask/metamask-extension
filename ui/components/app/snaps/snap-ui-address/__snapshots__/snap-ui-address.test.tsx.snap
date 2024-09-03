@@ -9,7 +9,7 @@ exports[`SnapUIAddress renders Bitcoin address 1`] = `
       style="display: flex;"
     >
       <div
-        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 94, 91);"
+        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(35, 83, 225);"
       >
         <svg
           height="32"
@@ -18,25 +18,25 @@ exports[`SnapUIAddress renders Bitcoin address 1`] = `
           y="0"
         >
           <rect
-            fill="#FA4700"
+            fill="#03475E"
             height="32"
-            transform="translate(-8.662444064083436 -0.5511004452514604) rotate(277.5 16 16)"
+            transform="translate(2.9305136451897345 1.2261469525972557) rotate(127.9 16 16)"
             width="32"
             x="0"
             y="0"
           />
           <rect
-            fill="#C8146E"
+            fill="#F95801"
             height="32"
-            transform="translate(6.57176803029907 -15.152127512910315) rotate(425.9 16 16)"
+            transform="translate(7.1718321011849575 11.079805523008025) rotate(153.0 16 16)"
             width="32"
             x="0"
             y="0"
           />
           <rect
-            fill="#018E79"
+            fill="#017B8E"
             height="32"
-            transform="translate(20.118327611213395 20.95221350375136) rotate(49.4 16 16)"
+            transform="translate(8.451434427080768 22.468601749359266) rotate(146.6 16 16)"
             width="32"
             x="0"
             y="0"
