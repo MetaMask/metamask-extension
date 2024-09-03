@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -19,10 +19,13 @@ import { selectUseTransactionSimulations } from '../../../../selectors/preferenc
 import { isSIWESignatureRequest } from '../../../../utils';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
+import SnapAuthorshipPill from '../../../../../../components/app/snaps/snap-authorship-pill';
+import { SnapMetadataModal } from '../../../../../../components/app/snaps/snap-metadata-modal';
 import { SIWESignInfo } from './siwe-sign';
 
 const PersonalSignInfo: React.FC = () => {
   const t = useI18nContext();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { currentConfirmation } = useConfirmContext() as {
     currentConfirmation: SignatureRequestType;
   };
@@ -33,6 +36,20 @@ const PersonalSignInfo: React.FC = () => {
   if (!currentConfirmation?.msgParams) {
     return null;
   }
+
+  const { origin } = currentConfirmation.msgParams;
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  const isSnapId = origin.startsWith('npm:') || origin.startsWith('local:');
+
+  const ConfirmInfoOrigin = () => {
+    if (isSnapId) {
+      return <SnapAuthorshipPill snapId={origin} onClick={openModal} />;
+    }
+    return <ConfirmInfoRowUrl url={origin} />;
+  };
 
   const { from } = currentConfirmation.msgParams;
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
@@ -56,7 +73,7 @@ const PersonalSignInfo: React.FC = () => {
           label={t('requestFrom')}
           tooltip={isSIWE ? undefined : t('requestFromInfo')}
         >
-          <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
+          <ConfirmInfoOrigin />
         </ConfirmInfoAlertRow>
         {isSIWE && (
           <ConfirmInfoAlertRow
@@ -85,6 +102,13 @@ const PersonalSignInfo: React.FC = () => {
           </ConfirmInfoAlertRow>
         )}
       </ConfirmInfoSection>
+      {isSnapId && (
+        <SnapMetadataModal
+          snapId={origin}
+          isOpen={isModalOpen}
+          onClose={closeModal}
+        />
+      )}
     </>
   );
 };

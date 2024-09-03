@@ -1,0 +1,11 @@
+.snap-authorship-pill {
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--color-info-muted);
+
+    & * {
+      color: var(--color-info-default);
+    }
+  }
+}
