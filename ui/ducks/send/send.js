@@ -2,10 +2,11 @@ import {
   createAsyncThunk,
   createSelector,
   createSlice,
+  current,
 } from '@reduxjs/toolkit';
 import BigNumber from 'bignumber.js';
 import { addHexPrefix, zeroAddress } from 'ethereumjs-util';
-import { cloneDeep, debounce } from 'lodash';
+import { cloneDeep, debounce, isEqual } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import {
   TransactionEnvelopeType,
@@ -503,6 +504,7 @@ export const draftTransactionInitialState = {
  * @property {string[]} swapsBlockedTokens - list of tokens that are blocked by the swaps-api
  */
 
+let gasAbortPromise;
 /**
  * @type {SendState}
  */
@@ -561,7 +563,7 @@ const name = 'send';
 // action handler in extraReducers.
 export const computeEstimatedGasLimit = createAsyncThunk(
   'send/computeEstimatedGasLimit',
-  async (_, thunkApi) => {
+  async (x, thunkApi) => {
     const state = thunkApi.getState();
     const { send, metamask } = state;
     const draftTransaction =
@@ -611,9 +613,36 @@ export const computeEstimatedGasLimit = createAsyncThunk(
       return {
         gasLimit,
         gasTotalForLayer1,
+        time: Date.now(),
+        draftTransactionParams: {
+          value: draftTransaction?.amount?.value,
+          receiveAsset: draftTransaction?.receiveAsset?.details,
+          sendAsset: draftTransaction?.sendAsset?.details,
+          recipient: draftTransaction?.recipient?.address,
+        },
       };
     }
     return null;
+  },
+  {
+    idGenerator: (x) => {
+      return Date.now();
+    },
+    getPendingMeta: ({ arg, requestId }, { getState, extra }) => {
+      // console.log('====getPendingMeta', { arg, requestId, extra });
+      const state = getState();
+      const { send } = state;
+      const draftTransaction =
+        send.draftTransactions[send.currentTransactionUUID];
+      return {
+        draftTransactionParams: {
+          value: draftTransaction?.amount?.value,
+          receiveAsset: draftTransaction?.receiveAsset?.details,
+          sendAsset: draftTransaction?.sendAsset?.details,
+          recipient: draftTransaction?.recipient?.address,
+        },
+      };
+    },
   },
 );
 
@@ -983,6 +1012,7 @@ const slice = createSlice({
      *
      * @param {SendStateDraft} state - A writable draft of the send state to be
      *  updated.
+     * @param action
      * @returns {void}
      */
     calculateGasTotal: (state) => {
@@ -992,6 +1022,8 @@ const slice = createSlice({
       if (!draftTransaction) {
         return;
       }
+
+      console.log('====calculateGasTotal', current(draftTransaction));
 
       // use maxFeePerGas as the multiplier if working with a FEE_MARKET transaction
       // otherwise use gasPrice
@@ -1022,6 +1054,7 @@ const slice = createSlice({
       slice.caseReducers.validateGasField(state);
       // validate send state
       slice.caseReducers.validateSendState(state);
+      // state.gasEstimateIsLoading = false;
     },
     /**
      * Clears all drafts from send state and drops the currentTransactionUUID.
@@ -1178,6 +1211,7 @@ const slice = createSlice({
      * @returns {void}
      */
     updateGasFeeEstimates: (state, action) => {
+      console.log('====updateGasFeeEstimates', action);
       const { gasFeeEstimates, gasEstimateType } = action.payload;
       let gasPriceEstimate = '0x0';
       switch (gasEstimateType) {
@@ -1563,6 +1597,7 @@ const slice = createSlice({
      * @returns {void}
      */
     validateGasField: (state) => {
+      // TODO throw error here if gas is outdated?
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
 
@@ -1854,6 +1889,7 @@ const slice = createSlice({
             draftTransaction.status = SEND_STATUSES.VALID;
         }
       }
+      state.gasEstimateIsLoading = false;
     },
   },
   extraReducers: (builder) => {
@@ -1915,10 +1951,29 @@ const slice = createSlice({
         draftTransaction.timeToFetchQuotes =
           draftTransactionInitialState.timeToFetchQuotes;
       })
-      .addCase(computeEstimatedGasLimit.pending, (state) => {
+      .addCase(computeEstimatedGasLimit.pending, (state, action) => {
         // When we begin to fetch gasLimit we should indicate we are loading
         // a gas estimate.
-        state.gasEstimateIsLoading = true;
+        console.log(
+          '====computeEstimatedGasLimit.pending',
+          action.meta,
+          action.meta.draftTransactionParams,
+          state.draftTransactions[state.currentTransactionUUID] &&
+            current(state.draftTransactions[state.currentTransactionUUID]),
+        );
+        // TODO set to false if draftTransaction is not equal to state.draftTransactions[state.currentTransactionUUID]
+        const currentState = current(state);
+        const currentDraft =
+          currentState.draftTransactions[currentState.currentTransactionUUID];
+        const currentDraftParams = {
+          value: currentDraft?.amount?.value,
+          receiveAsset: currentDraft?.receiveAsset?.details,
+          sendAsset: currentDraft?.sendAsset?.details,
+          recipient: currentDraft?.recipient?.address,
+        };
+        if (isEqual(action.meta.draftTransactionParams, currentDraftParams)) {
+          state.gasEstimateIsLoading = true;
+        }
       })
       .addCase(computeEstimatedGasLimit.fulfilled, (state, action) => {
         // When we receive a new gasLimit from the computeEstimatedGasLimit
@@ -1926,24 +1981,51 @@ const slice = createSlice({
         // caseReducer updateGasLimit to tap into the appropriate follow up
         // checks and gasTotal calculation. First set gasEstimateIsLoading to
         // false.
-        state.gasEstimateIsLoading = false;
-        if (action.payload?.gasLimit) {
-          slice.caseReducers.updateGasLimit(state, {
-            payload: action.payload.gasLimit,
-          });
-        }
-        if (action.payload?.gasTotalForLayer1) {
-          slice.caseReducers.updateLayer1Fees(state, {
-            payload: action.payload.gasTotalForLayer1,
-          });
+        // TODO compare payload.time to requestId
+        // TODO set gasUpdateTime?
+        const currentState = current(state);
+        const currentDraft =
+          currentState.draftTransactions[currentState.currentTransactionUUID];
+        const currentDraftParams = {
+          value: currentDraft?.amount?.value,
+          receiveAsset: currentDraft?.receiveAsset?.details,
+          sendAsset: currentDraft?.sendAsset?.details,
+          recipient: currentDraft?.recipient?.address,
+        };
+        console.log(
+          '====computeEstimatedGasLimit.fulfilled',
+          action.meta,
+          action.payload.draftTransactionParams,
+          currentDraftParams,
+          isEqual(action.payload.draftTransactionParams, currentDraftParams),
+        );
+        if (
+          isEqual(action.payload.draftTransactionParams, currentDraftParams)
+        ) {
+          state.gasEstimateIsLoading = false;
+          if (action.payload?.gasLimit) {
+            slice.caseReducers.updateGasLimit(state, {
+              payload: action.payload.gasLimit,
+            });
+          }
+          if (action.payload?.gasTotalForLayer1) {
+            slice.caseReducers.updateLayer1Fees(state, {
+              payload: action.payload.gasTotalForLayer1,
+            });
+          }
         }
       })
-      .addCase(computeEstimatedGasLimit.rejected, (state) => {
+      .addCase(computeEstimatedGasLimit.rejected, (state, action) => {
+        console.log('====computeEstimatedGasLimit.rejected', action);
         // If gas estimation fails, we should set the loading state to false,
         // because it is no longer loading
         state.gasEstimateIsLoading = false;
       })
       .addCase(GAS_FEE_ESTIMATES_UPDATED, (state, action) => {
+        console.log(
+          '====computeEstimatedGasLimit GAS_FEE_ESTIMATES_UPDATED',
+          action.meta,
+        );
         // When the gasFeeController updates its gas fee estimates we need to
         // update and validate state based on those new values
         slice.caseReducers.updateGasFeeEstimates(state, {
@@ -2187,7 +2269,10 @@ const debouncedValidateRecipientUserInput = debounce(
 );
 
 const debouncedComputeEstimatedGasLimit = debounce(async (dispatch) => {
-  await dispatch(computeEstimatedGasLimit());
+  if (gasAbortPromise) {
+    // gasAbortPromise.abort();
+  }
+  gasAbortPromise = await dispatch(computeEstimatedGasLimit());
 }, 300);
 
 const debouncedAddHistoryEntry = debounce((dispatch, payload) => {
@@ -2405,8 +2490,12 @@ export function updateSendQuote(
     }
 
     if (isComputingSendGasLimit) {
+      if (gasAbortPromise) {
+        // console.log('====gasAbortPromise', gasAbortPromise);
+        // gasAbortPromise.abort();
+      }
       if (isComputingSendGasLimitUrgent) {
-        await dispatch(computeEstimatedGasLimit());
+        gasAbortPromise = await dispatch(computeEstimatedGasLimit());
       } else {
         await debouncedComputeEstimatedGasLimit(dispatch);
       }
@@ -3538,6 +3627,10 @@ export function isSendFormInvalid(state) {
 export function getSendStage(state) {
   return state[name].stage;
 }
+
+export const getIsGasEstimateLoading = (state) => {
+  return state[name].gasEstimateIsLoading;
+};
 
 export function hasSendLayer1GasFee(state) {
   return state[name].gasTotalForLayer1 !== null;
