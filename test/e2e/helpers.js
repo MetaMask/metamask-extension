@@ -61,7 +61,7 @@ async function withFixtures(options, testSuite) {
     fixtures,
     ganacheOptions,
     smartContract,
-    driverOptions,
+    driverOptions: initialDriverOptions,
     dappOptions,
     title,
     ignoredConsoleErrors = [],
@@ -76,6 +76,197 @@ async function withFixtures(options, testSuite) {
     usePaymaster,
     ethConversionInUsd,
   } = options;
+
+  const browserType = process.env.SELENIUM_BROWSER || 'chrome';
+  const isFirefox = browserType.toLowerCase() === 'firefox';
+
+  // Ensure driverOptions is initialized with necessary browser-specific flags
+  const driverOptions = {
+    ...initialDriverOptions,
+    binary: isFirefox
+      ? process.env.FIREFOX_BINARY_PATH || initialDriverOptions?.binary || '/usr/bin/firefox'
+      : process.env.CHROME_BINARY_PATH || process.env.CHROME_BIN || initialDriverOptions?.binary || '/usr/bin/google-chrome',
+    args: [
+      ...(initialDriverOptions?.args || []),
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--window-size=1920,1080',
+      '--disable-extensions',
+      '--enable-logging',
+      '--v=1',
+      '--verbose',
+      ...(isFirefox ? ['--marionette'] : [
+        '--headless=new',
+        '--remote-debugging-port=9222',
+        '--disable-gpu',
+        '--disable-software-rasterizer',
+        '--no-zygote',
+        '--disable-background-networking',
+        '--disable-default-apps',
+        '--disable-sync',
+        '--disable-translate',
+        '--metrics-recording-only',
+        '--mute-audio',
+        '--no-first-run',
+        '--disable-web-security',
+        '--disable-features=IsolateOrigins,site-per-process',
+        '--disable-site-isolation-trials',
+        '--ignore-certificate-errors',
+        '--enable-automation',
+        '--disable-renderer-backgrounding',
+        '--disable-backgrounding-occluded-windows',
+        '--disable-hang-monitor',
+        '--disable-ipc-flooding-protection',
+      ]),
+    ],
+    // Ensure the debug log path is set correctly and accessible for writing logs
+    logPath: isFirefox ? '/tmp/firefox_debug.log' : `/tmp/${browserType}_debug.log`,
+    tmpdir: `/tmp/${browserType}_tmp`,
+  };
+
+  console.log(`=== ${browserType.toUpperCase()} Configuration ===`);
+  console.log('Binary path:', driverOptions.binary);
+  console.log('Arguments:', driverOptions.args.join(' '));
+  console.log('Log path:', driverOptions.logPath);
+  console.log('Temporary directory:', driverOptions.tmpdir);
+
+  console.log('\n=== System Information ===');
+  console.log('Platform:', process.platform);
+  console.log('Architecture:', process.arch);
+  console.log('Node version:', process.version);
+
+  console.log(`\n=== ${browserType.toUpperCase()}-related Environment Variables ===`);
+  const browserEnvVars = Object.keys(process.env)
+    .filter(key => key.toLowerCase().includes(browserType))
+    .reduce((obj, key) => {
+      obj[key] = process.env[key];
+      return obj;
+    }, {});
+  console.log(JSON.stringify(browserEnvVars, null, 2));
+
+  // Check if browser binary exists
+  const fs = require('fs');
+  const { execSync } = require('child_process');
+
+  async function findBrowserBinary() {
+    const commonLocations = isFirefox
+      ? [
+          driverOptions.binary,
+          '/usr/bin/firefox',
+          '/usr/bin/firefox-esr',
+        ]
+      : [
+          driverOptions.binary,
+          '/usr/bin/google-chrome',
+          '/usr/bin/google-chrome-stable',
+          '/usr/bin/chromium-browser',
+          '/usr/bin/chromium',
+        ];
+
+    for (const location of commonLocations) {
+      if (fs.existsSync(location)) {
+        console.log(`Found ${browserType} at: ${location}`);
+        return location;
+      }
+    }
+
+    throw new Error(`${browserType} binary not found in any common location`);
+  }
+
+  try {
+    driverOptions.binary = await findBrowserBinary();
+    console.log(`${browserType} binary found:`, driverOptions.binary);
+  } catch (error) {
+    console.error(`Error finding ${browserType} binary:`, error.message);
+    throw new Error(`${browserType}Driver initialization failed: ${error.message}`);
+  }
+
+  // Ensure temporary directory exists
+  try {
+    await fs.promises.mkdir(driverOptions.tmpdir, { recursive: true });
+    console.log(`Temporary directory created: ${driverOptions.tmpdir}`);
+  } catch (error) {
+    console.error(`Error creating temporary directory: ${error.message}`);
+    throw new Error(`${browserType}Driver initialization failed: ${error.message}`);
+  }
+
+  // Verify browser version
+  try {
+    const browserVersion = execSync(`"${driverOptions.binary}" --version`).toString().trim();
+    console.log(`${browserType} version:`, browserVersion);
+  } catch (error) {
+    console.error(`Error getting ${browserType} version:`, error.message);
+    throw new Error(`${browserType}Driver initialization failed: ${error.message}`);
+  }
+
+  console.log(`\n=== End of ${browserType.toUpperCase()} Configuration ===\n`);
+
+  // Browser-specific WebDriver initialization
+  try {
+    const { Builder } = require('selenium-webdriver');
+    const browserModule = isFirefox
+      ? require('selenium-webdriver/firefox')
+      : require('selenium-webdriver/chrome');
+
+    let options = new browserModule.Options();
+    driverOptions.args.forEach(arg => options.addArguments(arg));
+
+    if (isFirefox) {
+      const fs = require('fs');
+      const path = require('path');
+      const os = require('os');
+
+      // Set Firefox ESR binary path
+      const firefoxESRPath = '/usr/bin/firefox-esr';
+      options.setBinary(firefoxESRPath);
+
+      // Create a custom Firefox profile directory
+      const customProfilePath = path.join(os.tmpdir(), 'metamask-test-profile');
+      if (!fs.existsSync(customProfilePath)) {
+        fs.mkdirSync(customProfilePath, { recursive: true });
+      }
+
+      options.setProfile(customProfilePath);
+      const firefoxPrefs = {
+        'extensions.legacy.enabled': true,
+        'xpinstall.signatures.required': false,
+        'browser.tabs.remote.autostart': false,
+        'browser.tabs.remote.autostart.2': false,
+        'dom.ipc.processCount': 1,
+        'security.sandbox.content.level': 0,
+        'network.captive-portal-service.enabled': false,
+        'network.proxy.type': 0,
+      };
+
+      if (process.env.ENABLE_MV3 === 'false') {
+        firefoxPrefs['extensions.webextensions.enableMV3'] = false;
+      }
+
+      options.set('moz:firefoxOptions', {
+        prefs: firefoxPrefs,
+        args: ['-no-remote', '-headless'],
+        log: { level: 'trace' },
+      });
+
+      console.log(`Using custom Firefox profile at: ${customProfilePath}`);
+      console.log(`Using Firefox ESR binary at: ${firefoxESRPath}`);
+    } else {
+      options.setBinary(driverOptions.binary);
+    }
+
+    const driver = await new Builder()
+      .forBrowser(browserType)
+      .setFirefoxOptions(isFirefox ? options : undefined)
+      .setChromeOptions(!isFirefox ? options : undefined)
+      .build();
+
+    console.log(`${browserType}Driver initialization successful`);
+    return driver;
+  } catch (error) {
+    console.error(`Error during ${browserType}Driver initialization:`, error);
+    throw new Error(`${browserType}Driver initialization failed: ${error.message}`);
+  }
 
   const fixtureServer = new FixtureServer();
   let ganacheServer;
