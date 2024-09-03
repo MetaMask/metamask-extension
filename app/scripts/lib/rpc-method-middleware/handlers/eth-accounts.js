@@ -1,10 +1,10 @@
-import { parseCaipAccountId } from '@metamask/utils';
+import { KnownCaipNamespace, parseCaipAccountId } from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '../../multichain-api/caip25permissions';
-import { KnownCaipNamespace, mergeScopes } from '../../multichain-api/scope';
+import { mergeScopes } from '../../multichain-api/scope';
 
 /**
  * A wrapper for `eth_accounts` that returns an empty array when permission is denied.

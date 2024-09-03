@@ -1,5 +1,5 @@
 import { MethodNames } from '@metamask/permission-controller';
-import { parseCaipAccountId } from '@metamask/utils';
+import { KnownCaipNamespace, parseCaipAccountId } from '@metamask/utils';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -8,7 +8,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
-import { KnownCaipNamespace, mergeScopes } from './scope';
+import { mergeScopes } from './scope';
 
 export const getPermissionsHandler = {
   methodNames: [MethodNames.getPermissions],
