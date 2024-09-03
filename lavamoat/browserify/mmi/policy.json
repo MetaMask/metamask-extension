@@ -1199,7 +1199,7 @@
     "@metamask/eth-ledger-bridge-keyring": {
       "globals": {
         "addEventListener": true,
-        "console.error": true,
+        "console.log": true,
         "document.createElement": true,
         "document.head.appendChild": true,
         "fetch": true,
@@ -1209,62 +1209,10 @@
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth": true,
         "@metamask/eth-sig-util": true,
         "@metamask/eth-trezor-keyring>hdkey": true,
         "browserify>buffer": true,
         "webpack>events": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@ethersproject/abi": true,
-        "@ethersproject/providers>@ethersproject/rlp": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/errors": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>axios": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>bignumber.js": true,
-        "browserify>buffer": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/errors": {
-      "globals": {
-        "console.warn": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": {
-      "globals": {
-        "__ledgerLogsListen": "write",
-        "console.error": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>axios": {
-      "globals": {
-        "Blob": true,
-        "FormData": true,
-        "URLSearchParams": true,
-        "XMLHttpRequest": true,
-        "btoa": true,
-        "console.warn": true,
-        "document": true,
-        "location.href": true,
-        "navigator": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "axios>form-data": true,
-        "browserify>buffer": true,
-        "process": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
       }
     },
     "@metamask/eth-query": {
@@ -3757,11 +3705,6 @@
       "packages": {
         "browserify>timers-browserify": true,
         "process": true
-      }
-    },
-    "axios>form-data": {
-      "globals": {
-        "FormData": true
       }
     },
     "base32-encode": {
