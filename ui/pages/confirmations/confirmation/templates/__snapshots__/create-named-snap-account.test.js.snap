@@ -7,6 +7,7 @@ exports[`create-named-snap-account confirmation matches snapshot 1`] = `
   >
     <div
       class="mm-box confirmation-page__content mm-box--padding-top-0"
+      style="margin-top: 0px; overflow-y: auto;"
     >
       <div
         class="mm-box name-snap-account-page mm-box--padding-4"
@@ -105,6 +106,7 @@ exports[`create-named-snap-account confirmation matches snapshot 2`] = `
   >
     <div
       class="mm-box confirmation-page__content mm-box--padding-top-0"
+      style="margin-top: 0px; overflow-y: auto;"
     >
       <div
         class="mm-box name-snap-account-page mm-box--padding-4"
