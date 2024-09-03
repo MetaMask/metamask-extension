@@ -4,8 +4,6 @@ import thunk from 'redux-thunk';
 import { getMockApproveConfirmState } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { EditSpendingCapModal } from './edit-spending-cap-modal';
-import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
-import { getMockApproveConfirmState } from '../../../../../../../../test/data/confirmations/helper';
 
 jest.mock('../hooks/use-approve-token-simulation', () => ({
   useApproveTokenSimulation: jest.fn(() => ({
