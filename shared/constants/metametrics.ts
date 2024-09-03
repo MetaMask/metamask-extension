@@ -706,7 +706,7 @@ export enum MetaMetricsEventName {
   // Notifications
   NotificationClicked = 'Notification Clicked',
   NotificationDetailClicked = 'Notification Detail Clicked',
-  NotificationMenuOpened = 'Notification Menu Opened',
+  NotificationsMenuOpened = 'Notifications Menu Opened',
   NotificationsSettingsUpdated = 'Notifications Settings Updated',
   NotificationsActivated = 'Notifications Activated',
   PushNotificationReceived = 'Push Notification Received',

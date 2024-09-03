@@ -164,7 +164,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
     // Otherwise we can navigate to the notifications page
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationMenuOpened,
+      event: MetaMetricsEventName.NotificationsMenuOpened,
       properties: {
         unread_count: notificationsUnreadCount,
         read_count: notificationsReadCount,
