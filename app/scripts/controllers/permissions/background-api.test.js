@@ -473,7 +473,7 @@ describe('permission background API methods', () => {
   });
 
   describe('requestAccountsPermissionWithId', () => {
-    it('gets the networkConfiguration for the currently selected network client', () => {
+    it('gets the networkConfiguration for the current globally selected network client', () => {
       const networkController = {
         state: {
           selectedNetworkClientId: 'mainnet',
