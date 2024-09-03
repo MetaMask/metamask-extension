@@ -136,6 +136,7 @@ export interface TextStyleUtilityProps extends StyleUtilityProps {
   ellipsis?: boolean;
   /**
    * Enable Brand Evolution Typography
+   * Do not use unless you are working on the brand evolution
    */
   isBrandEvolution?: boolean;
 }
