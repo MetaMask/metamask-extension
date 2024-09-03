@@ -307,7 +307,7 @@
     "@metamask/accounts-controller": "^17.2.0",
     "@metamask/address-book-controller": "^4.0.1",
     "@metamask/announcement-controller": "^6.1.0",
-    "@metamask/api-specs": "^0.10.7",
+    "@metamask/api-specs": "^0.10.8",
     "@metamask/approval-controller": "^7.0.0",
     "@metamask/assets-controllers": "^36.0.0",
     "@metamask/base-controller": "^6.0.2",
