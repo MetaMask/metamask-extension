@@ -19,6 +19,10 @@ if (typeof afterEach === 'function') {
 }
 
 function restoreBackupManifest() {
+  fs.cpSync(`${folder}/manifest.json`, `${folder}/manifest.altered.json`, {
+    preserveTimestamps: true,
+  });
+
   if (fs.existsSync(`${folder}/manifest.backup.json`)) {
     fs.cpSync(`${folder}/manifest.backup.json`, `${folder}/manifest.json`, {
       preserveTimestamps: true,

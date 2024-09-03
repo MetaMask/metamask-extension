@@ -32,17 +32,18 @@ const getTestPathsForTestDir = async (testDir) => {
 };
 
 // Quality Gate Retries
-const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 5;
+// const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 5;
 
 /**
  * Runs the quality gate logic to filter and append changed or new tests if present.
  *
  * @param {string} fullTestList - List of test paths to be considered.
- * @param {string[]} changedOrNewTests - List of changed or new test paths.
+ * @param {string[]} _changedOrNewTests - List of changed or new test paths.
  * @returns {string} The updated full test list.
  */
-async function applyQualityGate(fullTestList, changedOrNewTests) {
-  let qualityGatedList = fullTestList;
+async function applyQualityGate(fullTestList, _changedOrNewTests) {
+  return fullTestList;
+  // let qualityGatedList = fullTestList;
 
   // if (changedOrNewTests.length > 0) {
   //   // Filter to include only the paths present in fullTestList
@@ -59,7 +60,7 @@ async function applyQualityGate(fullTestList, changedOrNewTests) {
   //   }
   // }
 
-  return qualityGatedList;
+  // return qualityGatedList;
 }
 
 // For running E2Es in parallel in CI

@@ -97,13 +97,27 @@ function getClientOptions() {
     // we can safely turn them off by setting the `sendClientReports` option to
     // `false`.
     sendClientReports: false,
-    tracesSampleRate: getManifestFlags().circleci
-      ? 0.001
-      : METAMASK_DEBUG
-      ? 1.0
-      : 0.01,
+    tracesSampleRate: getTracesSampleRate(sentryTarget),
     transport: makeTransport,
   };
+}
+
+function getTracesSampleRate(sentryTarget) {
+  if (sentryTarget === SENTRY_DSN_FAKE) {
+    return 1.0;
+  }
+
+  const flags = getManifestFlags();
+
+  if (flags.circleci) {
+    return 0.001;
+  }
+
+  if (METAMASK_DEBUG) {
+    return 1.0;
+  }
+
+  return 0.01;
 }
 
 function setCircleCiTags() {

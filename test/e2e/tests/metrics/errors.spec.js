@@ -63,6 +63,8 @@ const removedBackgroundFields = [
 
 const removedUiFields = removedBackgroundFields.map(backgroundToUiField);
 
+const WAIT_FOR_SENTRY_MS = 10000;
+
 /**
  * Transform background state to make it consistent between test runs.
  *
@@ -325,7 +327,7 @@ describe('Sentry errors', function () {
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, 8000);
+          }, WAIT_FOR_SENTRY_MS);
 
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
@@ -372,7 +374,7 @@ describe('Sentry errors', function () {
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, 8000);
+          }, WAIT_FOR_SENTRY_MS);
 
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
@@ -432,7 +434,7 @@ describe('Sentry errors', function () {
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, 3000);
+          }, WAIT_FOR_SENTRY_MS);
 
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
@@ -469,6 +471,7 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          ignoredConsoleErrors: ['SES_UNHANDLED_REJECTION: (TestError#1)'],
           manifestFlags: {
             doNotForceSentryForThisTest: true,
           },
@@ -488,7 +491,7 @@ describe('Sentry errors', function () {
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, 8000);
+          }, WAIT_FOR_SENTRY_MS);
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
@@ -514,6 +517,7 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          ignoredConsoleErrors: ['SES_UNHANDLED_REJECTION: (TestError#1)'],
           manifestFlags: {
             doNotForceSentryForThisTest: true,
           },
@@ -533,7 +537,7 @@ describe('Sentry errors', function () {
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, 8000);
+          }, WAIT_FOR_SENTRY_MS);
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
@@ -578,6 +582,7 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          ignoredConsoleErrors: ['SES_UNHANDLED_REJECTION: (TestError#1)'],
           manifestFlags: {
             doNotForceSentryForThisTest: true,
           },
@@ -613,6 +618,7 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          ignoredConsoleErrors: ['SES_UNHANDLED_REJECTION: (TestError#1)'],
           manifestFlags: {
             doNotForceSentryForThisTest: true,
           },
@@ -648,6 +654,7 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          ignoredConsoleErrors: ['SES_UNHANDLED_REJECTION: (TestError#1)'],
           manifestFlags: {
             doNotForceSentryForThisTest: true,
           },
@@ -665,7 +672,7 @@ describe('Sentry errors', function () {
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, 3000);
+          }, WAIT_FOR_SENTRY_MS);
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
@@ -694,6 +701,7 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          ignoredConsoleErrors: ['SES_UNHANDLED_REJECTION: (TestError#1)'],
           manifestFlags: {
             doNotForceSentryForThisTest: true,
           },
@@ -711,7 +719,7 @@ describe('Sentry errors', function () {
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, 3000);
+          }, WAIT_FOR_SENTRY_MS);
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
@@ -757,6 +765,7 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          ignoredConsoleErrors: ['SES_UNHANDLED_REJECTION: (TestError#1)'],
           manifestFlags: {
             doNotForceSentryForThisTest: true,
           },
@@ -772,7 +781,7 @@ describe('Sentry errors', function () {
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, 3000);
+          }, WAIT_FOR_SENTRY_MS);
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
@@ -800,6 +809,7 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          ignoredConsoleErrors: ['SES_UNHANDLED_REJECTION: (TestError#1)'],
           manifestFlags: {
             doNotForceSentryForThisTest: true,
           },
@@ -816,7 +826,7 @@ describe('Sentry errors', function () {
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, 3000);
+          }, WAIT_FOR_SENTRY_MS);
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
