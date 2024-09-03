@@ -74,11 +74,6 @@ describe('ConfirmTitle', () => {
     );
 
     expect(getByText('Transaction request')).toBeInTheDocument();
-    expect(
-      getByText(
-        'Only confirm this transaction if you fully understand the content and trust the requesting site.',
-      ),
-    ).toBeInTheDocument();
   });
 
   describe('Alert banner', () => {

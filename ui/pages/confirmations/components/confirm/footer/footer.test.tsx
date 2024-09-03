@@ -147,6 +147,7 @@ describe('ConfirmFooter', () => {
       .spyOn(MMIConfirmations, 'useMMIConfirmations')
       .mockImplementation(() => ({
         mmiOnSignCallback: () => Promise.resolve(),
+        mmiOnTransactionCallback: () => Promise.resolve(),
         mmiSubmitDisabled: true,
       }));
     const { getAllByRole } = render();
@@ -160,6 +161,7 @@ describe('ConfirmFooter', () => {
       .spyOn(MMIConfirmations, 'useMMIConfirmations')
       .mockImplementation(() => ({
         mmiOnSignCallback: mockFn,
+        mmiOnTransactionCallback: mockFn,
         mmiSubmitDisabled: false,
       }));
     const { getAllByRole } = render();

@@ -5,7 +5,6 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { waitFor } from '@testing-library/react';
 
 import {
   getMockApproveConfirmState,
@@ -43,9 +42,7 @@ describe('<ApproveInfo />', () => {
       mockStore,
     );
 
-    await waitFor(() => {
-      expect(container).toMatchSnapshot();
-    });
+    expect(container).toMatchSnapshot();
   });
 
   it('does not render if required data is not present in the transaction', () => {

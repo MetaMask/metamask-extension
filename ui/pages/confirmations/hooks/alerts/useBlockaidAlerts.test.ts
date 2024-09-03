@@ -1,4 +1,3 @@
-import { ApprovalType } from '@metamask/controller-utils';
 import {
   TransactionStatus,
   TransactionType,
@@ -15,10 +14,7 @@ import {
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { Severity } from '../../../../helpers/constants/design-system';
 import mockState from '../../../../../test/data/mock-state.json';
-import {
-  SecurityAlertResponse,
-  SignatureRequestType,
-} from '../../types/confirm';
+import { SecurityAlertResponse } from '../../types/confirm';
 import useBlockaidAlert from './useBlockaidAlerts';
 
 const mockSecurityAlertResponse: SecurityAlertResponse = {
@@ -32,7 +28,7 @@ const currentConfirmationMock = {
   id: '1',
   status: 'unapproved',
   time: new Date().getTime(),
-  type: ApprovalType.PersonalSign,
+  type: TransactionType.personalSign,
   securityAlertResponse: mockSecurityAlertResponse,
 };
 
@@ -56,7 +52,7 @@ describe('useBlockaidAlerts', () => {
 
   it('returns alerts when there is a valid PersonalSign confirmation with a security alert response', () => {
     const mockCurrentState = getMockPersonalSignConfirmStateForRequest(
-      currentConfirmationMock as unknown as SignatureRequestType,
+      currentConfirmationMock,
       {
         metamask: {
           signatureSecurityAlertResponses: {
