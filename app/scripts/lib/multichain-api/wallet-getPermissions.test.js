@@ -195,7 +195,7 @@ describe('getPermissionsHandler', () => {
       ]);
     });
 
-    it('gets the permitted eth chainIds from the CAIP-25 caveat value', async () => {
+    it('gets the permitted eip155 chainIds from the CAIP-25 caveat value', async () => {
       const { handler } = createMockedHandler();
       await handler(baseRequest);
       expect(
@@ -223,7 +223,7 @@ describe('getPermissionsHandler', () => {
       });
     });
 
-    it('returns the permissions with a permittedChains permission if some eth chain ids are permissioned', async () => {
+    it('returns the permissions with a permittedChains permission if some eip155 chainIds are permissioned', async () => {
       const { handler, getAccounts, response } = createMockedHandler();
       getAccounts.mockResolvedValue([]);
       MockPermittedChainsAdapters.getPermittedEthChainIds.mockReturnValue([
@@ -257,7 +257,7 @@ describe('getPermissionsHandler', () => {
       ]);
     });
 
-    it('returns the permissions with a eth_accounts and permittedChains permission if some eth accounts and chain ids are permissioned', async () => {
+    it('returns the permissions with a eth_accounts and permittedChains permission if some eip155 accounts and chainIds are permissioned', async () => {
       const { handler, getAccounts, response } = createMockedHandler();
       getAccounts.mockResolvedValue(['0x1', '0x2', '0xdeadbeef']);
       MockPermittedChainsAdapters.getPermittedEthChainIds.mockReturnValue([
