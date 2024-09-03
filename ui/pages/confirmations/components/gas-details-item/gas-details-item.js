@@ -144,6 +144,7 @@ const GasDetailsItem = ({
                   variant: TextVariant.bodyMdBold,
                 }}
                 type={SECONDARY}
+                value={getTransactionFeeTotal}
                 hideLabel // Sending hideLabel true by default because this should no longer depend on useNativeCurrencyAsPrimaryCurrency and will always display fiat value
               />
             )}
