@@ -558,7 +558,7 @@ describe('permission background API methods', () => {
       );
     });
 
-    it('grants a legacy CAIP-25 permission (isMultichainOrigin: false) with the approved eip155 chainIds and accounts', async () => {
+    it('grants a legacy CAIP-25 permission (isMultichainOrigin: false) with the approved eip155 chainIds and accounts and all supported methods/notifications', async () => {
       const networkController = {
         state: {
           selectedNetworkClientId: 'mainnet',
