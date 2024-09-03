@@ -11,7 +11,6 @@ import {
 } from './contract-interaction';
 import { unapprovedPersonalSignMsg } from './personal_sign';
 import { unapprovedTypedSignMsgV4 } from './typed_sign';
-import { TransactionType } from '@metamask/transaction-controller';
 
 type RootState = { metamask: Record<string, unknown> } & Record<
   string,
