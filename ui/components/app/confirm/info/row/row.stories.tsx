@@ -36,7 +36,7 @@ CopyEnabledStory.args = {
   label: 'Key',
   children: 'Value',
   copyEnabled: true,
-  copyText: 'Some copy text'
+  copyText: 'Some copy text',
 };
 
 export default ConfirmInfoRowStory;

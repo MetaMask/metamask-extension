@@ -29,5 +29,3 @@ export default meta;
 type Story = StoryObj<typeof IconButton>;
 
 export const Default: Story = {};
-
-Default.storyName = 'Default';

@@ -101,6 +101,8 @@ export function useIsOriginalNativeTokenSymbol(
     type,
     rpcUrl,
     useSafeChainsListValidation,
+    isEvm,
+    providerConfig?.ticker,
   ]);
 
   return isOriginalNativeSymbol;

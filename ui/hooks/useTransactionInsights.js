@@ -51,7 +51,7 @@ const useTransactionInsights = ({ txData }) => {
           response?.id && dispatch(deleteInterface(response.id)),
       );
     };
-  }, [data]);
+  }, [data, dispatch]);
 
   if (!isAllowedTransactionTypes(txData.type) || !insightSnaps.length) {
     return null;

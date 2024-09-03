@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useContext,
+  useCallback,
+} from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { filter } from 'lodash';
@@ -21,8 +27,6 @@ import { I18nContext } from '../../../contexts/i18n';
 import { fetchToken } from '../swaps.util';
 import { getCurrentChainId } from '../../../selectors/selectors';
 
-let timeoutIdForSearch;
-
 export default function ListWithSearch({
   itemsToSearch = [],
   listTitle,
@@ -38,6 +42,7 @@ export default function ListWithSearch({
   setSearchQuery,
 }) {
   const itemListRef = useRef();
+  const timeoutIdForSearch = useRef(null);
   const t = useContext(I18nContext);
 
   const [items, setItems] = useState(itemsToSearch);
@@ -48,65 +53,77 @@ export default function ListWithSearch({
    *
    * @param {string} contractAddress
    */
-  const handleSearchTokenForImport = async (contractAddress) => {
-    try {
-      const token = await fetchToken(contractAddress, chainId);
-      if (token) {
-        token.primaryLabel = token.symbol;
-        token.secondaryLabel = token.name;
-        token.notImported = true;
-        setItems([token]);
-        return;
-      }
-    } catch (e) {
-      log.error('Token not found, show 0 results.', e);
-    }
-    setItems([]); // No token for import found.
-  };
-
-  const handleSearch = async (newSearchQuery) => {
-    setSearchQuery(newSearchQuery);
-    if (timeoutIdForSearch) {
-      clearTimeout(timeoutIdForSearch);
-    }
-    timeoutIdForSearch = setTimeout(async () => {
-      timeoutIdForSearch = null;
-      const trimmedNewSearchQuery = newSearchQuery.trim();
-      const trimmedNewSearchQueryUpperCase =
-        trimmedNewSearchQuery.toUpperCase();
-      const trimmedNewSearchQueryLowerCase =
-        trimmedNewSearchQuery.toLowerCase();
-      if (!trimmedNewSearchQuery) {
-        setItems(itemsToSearch);
-        return;
-      }
-      const validHexAddress = isValidHexAddress(trimmedNewSearchQuery);
-      let filteredItems = [];
-      if (validHexAddress) {
-        // E.g. DAI token: 0x6b175474e89094c44da98b954eedeac495271D0f
-        const foundItem = itemsToSearch.find((item) => {
-          return item.address === trimmedNewSearchQueryLowerCase;
-        });
-        if (foundItem) {
-          filteredItems.push(foundItem);
+  const handleSearchTokenForImport = useCallback(
+    async (contractAddress) => {
+      try {
+        const token = await fetchToken(contractAddress, chainId);
+        if (token) {
+          token.primaryLabel = token.symbol;
+          token.secondaryLabel = token.name;
+          token.notImported = true;
+          setItems([token]);
+          return;
         }
-      } else {
-        filteredItems = filter(itemsToSearch, function (item) {
-          return item.symbol.includes(trimmedNewSearchQueryUpperCase);
-        });
+      } catch (e) {
+        log.error('Token not found, show 0 results.', e);
       }
-      const results = newSearchQuery === '' ? itemsToSearch : filteredItems;
-      if (shouldSearchForImports && results.length === 0 && validHexAddress) {
-        await handleSearchTokenForImport(trimmedNewSearchQuery);
-        return;
+      setItems([]); // No token for import found.
+    },
+    [chainId, setItems],
+  );
+
+  const handleSearch = useCallback(
+    async (newSearchQuery) => {
+      setSearchQuery(newSearchQuery);
+      if (timeoutIdForSearch.current) {
+        clearTimeout(timeoutIdForSearch.current);
       }
-      setItems(results);
-    }, 350);
-  };
+      timeoutIdForSearch.current = setTimeout(async () => {
+        timeoutIdForSearch.current = null;
+        const trimmedNewSearchQuery = newSearchQuery.trim();
+        const trimmedNewSearchQueryUpperCase =
+          trimmedNewSearchQuery.toUpperCase();
+        const trimmedNewSearchQueryLowerCase =
+          trimmedNewSearchQuery.toLowerCase();
+        if (!trimmedNewSearchQuery) {
+          setItems(itemsToSearch);
+          return;
+        }
+        const validHexAddress = isValidHexAddress(trimmedNewSearchQuery);
+        let filteredItems = [];
+        if (validHexAddress) {
+          // E.g. DAI token: 0x6b175474e89094c44da98b954eedeac495271D0f
+          const foundItem = itemsToSearch.find(
+            (item) => item.address === trimmedNewSearchQueryLowerCase,
+          );
+          if (foundItem) {
+            filteredItems.push(foundItem);
+          }
+        } else {
+          filteredItems = filter(itemsToSearch, (item) =>
+            item.symbol.includes(trimmedNewSearchQueryUpperCase),
+          );
+        }
+        const results = newSearchQuery === '' ? itemsToSearch : filteredItems;
+        if (shouldSearchForImports && results.length === 0 && validHexAddress) {
+          await handleSearchTokenForImport(trimmedNewSearchQuery);
+          return;
+        }
+        setItems(results);
+      }, 350);
+    },
+    [
+      itemsToSearch,
+      shouldSearchForImports,
+      handleSearchTokenForImport,
+      setItems,
+      setSearchQuery,
+    ],
+  );
 
   useEffect(() => {
     handleSearch(searchQuery);
-  }, [searchQuery]);
+  }, [searchQuery, handleSearch]);
 
   const handleOnClear = () => {
     setSearchQuery('');

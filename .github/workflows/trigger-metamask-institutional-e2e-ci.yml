@@ -2,9 +2,9 @@ name: Trigger MetaMask Institutional E2E CI
 
 on:
   push:
-    branches: [ Version-v*, master ]
+    branches: [Version-v*, master]
   pull_request:
-    branches: [ Version-v*, master ]
+    branches: [Version-v*, master]
     types:
       - opened
       - reopened

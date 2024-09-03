@@ -2,10 +2,12 @@ import { readdirSync } from 'node:fs';
 import { parse, join, relative, sep } from 'node:path';
 import type { Chunk, EntryObject, Stats } from 'webpack';
 import type TerserPluginType from 'terser-webpack-plugin';
+// Import Chrome manifest types from @types/chrome
+import type { Manifest } from '@types/chrome/common';
+import type { ManifestV2 } from '@types/chrome/manifest/v2';
+import type { ManifestV3 } from '@types/chrome/manifest/v3';
 
-export type Manifest = chrome.runtime.Manifest;
-export type ManifestV2 = chrome.runtime.ManifestV2;
-export type ManifestV3 = chrome.runtime.ManifestV3;
+export type { Manifest, ManifestV2, ManifestV3 };
 
 // HMR (Hot Module Reloading) can't be used until all circular dependencies in
 // the codebase are removed
@@ -77,17 +79,20 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
   }
 
   // add content_scripts to entries
-  manifest.content_scripts?.forEach((s) => s.js?.forEach(addManifestScript));
+  manifest.content_scripts?.forEach((s: { js?: string[] }) =>
+    s.js?.forEach(addManifestScript),
+  );
 
   if (manifest.manifest_version === 3) {
     addManifestScript(manifest.background?.service_worker);
-    manifest.web_accessible_resources?.forEach(({ resources }) =>
-      resources.forEach((filename) => {
-        filename.endsWith('.js') && addManifestScript(filename);
-      }),
+    manifest.web_accessible_resources?.forEach(
+      ({ resources }: { resources: string[] }) =>
+        resources.forEach((filename: string) => {
+          filename.endsWith('.js') && addManifestScript(filename);
+        }),
     );
   } else {
-    manifest.web_accessible_resources?.forEach((filename) => {
+    manifest.web_accessible_resources?.forEach((filename: string) => {
       filename.endsWith('.js') && addManifestScript(filename);
     });
     manifest.background?.scripts?.forEach(addManifestScript);

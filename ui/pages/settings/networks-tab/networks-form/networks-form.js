@@ -244,7 +244,22 @@ const NetworksForm = ({
     setIsSubmitting(false);
     setIsEditing(false);
     setPreviousNetwork(selectedNetwork);
-  }, [selectedNetwork, selectedNetworkName]);
+  }, [
+    selectedNetwork,
+    selectedNetworkName,
+    setNetworkName,
+    setRpcUrl,
+    setChainId,
+    setTicker,
+    setBlockExplorerUrl,
+    setErrors,
+    setWarnings,
+    setSuggestedTicker,
+    setSuggestedNames,
+    setIsSubmitting,
+    setIsEditing,
+    setPreviousNetwork,
+  ]);
 
   const stateIsUnchanged = () => {
     // These added conditions are in case the saved chainId is invalid, which
@@ -605,7 +620,7 @@ const NetworksForm = ({
       addNewNetwork,
       autoSuggestName,
       autoSuggestTicker,
-      orderedNetworksList,
+      networkMenuRedesign,
     ],
   );
 
@@ -802,7 +817,15 @@ const NetworksForm = ({
 
       return null;
     },
-    [selectedNetwork, networksToRender, t, rpcUrl],
+    [
+      selectedNetwork,
+      networksToRender,
+      t,
+      rpcUrl,
+      addNewNetwork,
+      networkMenuRedesign,
+      networksList,
+    ],
   );
 
   // validation effect
@@ -859,7 +882,6 @@ const NetworksForm = ({
     blockExplorerUrl,
     viewOnly,
     networkName,
-    label,
     previousRpcUrl,
     previousChainId,
     previousTicker,
@@ -870,6 +892,8 @@ const NetworksForm = ({
     validateTickerSymbol,
     validateRPCUrl,
     validateNetworkName,
+    setErrors,
+    setWarnings,
   ]);
 
   const onSubmit = async () => {

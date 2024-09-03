@@ -45,7 +45,7 @@ export const SnapHomeRenderer = ({ snapId }) => {
 
   useEffect(() => {
     return () => interfaceId && dispatch(deleteInterface(interfaceId));
-  }, [interfaceId]);
+  }, [interfaceId, dispatch]);
 
   useEffect(() => {
     // Snaps are allowed to redirect to their own pending confirmations (templated or not)
@@ -61,7 +61,12 @@ export const SnapHomeRenderer = ({ snapId }) => {
     } else if (snapApproval) {
       history.push(`${CONFIRM_TRANSACTION_ROUTE}/${snapApproval.id}`);
     }
-  }, [unapprovedTemplatedConfirmations, unapprovedConfirmations, history]);
+  }, [
+    unapprovedTemplatedConfirmations,
+    unapprovedConfirmations,
+    history,
+    snapId,
+  ]);
 
   return (
     <Box height={BlockSize.Full}>

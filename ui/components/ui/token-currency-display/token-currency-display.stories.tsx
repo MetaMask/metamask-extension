@@ -14,7 +14,9 @@ export default {
   },
 } as Meta;
 
-const Template: Story<TokenCurrencyDisplayProps> = (args) => <TokenCurrencyDisplay {...args} />;
+const Template: Story<TokenCurrencyDisplayProps> = (args) => (
+  <TokenCurrencyDisplay {...args} />
+);
 
 export const Default = Template.bind({});
 Default.args = {

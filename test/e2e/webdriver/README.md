@@ -579,15 +579,20 @@ This organization helps provide a clear structure for understanding the various 
 > The other supported state is 'detached', which means waiting until the elements are removed from the DOM.
 >
 > #### Returns
+>
 > @returns `{Promise<Array<WebElement>>}` Promise resolving when all elements meet the state or timeout occurs.<br>
 > @throws `{Error}` Will throw an error if any of the elements do not reach the specified state within the timeout period.
 
 > **Example** wait for multiple elements to load
 >
 > ```jsx
-> await driver.waitForMultipleSelectors(['.selector1', '.selector2', '.selector3']);
+> await driver.waitForMultipleSelectors([
+>   '.selector1',
+>   '.selector2',
+>   '.selector3',
+> ]);
 > ```
->
+
 </details>
 <details><summary><b>waitForNonEmptyElement</b></summary>
 

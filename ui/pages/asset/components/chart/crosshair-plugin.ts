@@ -1,5 +1,5 @@
-// @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Chart, Point, ChartEvent } from 'chart.js';
+import { Color } from '../../../../helpers/constants/design-system';
 
 type CrosshairChart = Chart & { crosshairX?: number };
 
@@ -29,7 +29,7 @@ export const CrosshairPlugin = {
         const y = yAxis.getPixelForValue(point.y);
 
         chart.ctx.lineWidth = 1;
-        chart.ctx.strokeStyle = '#BBC0C5';
+        chart.ctx.strokeStyle = Color.borderDefault;
         chart.ctx.beginPath();
         chart.ctx.moveTo(x, 0);
         chart.ctx.lineTo(x, chart.height);

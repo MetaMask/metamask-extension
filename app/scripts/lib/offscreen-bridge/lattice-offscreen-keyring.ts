@@ -50,21 +50,24 @@ class LatticeKeyringOffscreen extends LatticeKeyring {
               url,
             },
           },
-          (response) => {
+          (response: {
+            error?: string;
+            result?: { deviceID: string; password: string; endpoint: string };
+          }) => {
             if (response.error) {
               reject(response.error);
+            } else if (response.result) {
+              resolve(response.result);
+            } else {
+              reject(new Error('No result received from Lattice connector'));
             }
-
-            resolve(response.result);
           },
         );
       });
 
       return creds;
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      throw new Error(err);
+    } catch (err) {
+      throw new Error(err instanceof Error ? err.message : String(err));
     }
   }
 }

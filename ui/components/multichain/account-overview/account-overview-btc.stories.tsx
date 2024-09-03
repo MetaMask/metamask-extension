@@ -1,5 +1,5 @@
 import React from 'react';
-import { AccountOverviewBtc } from './account-overview-btc'
+import { AccountOverviewBtc } from './account-overview-btc';
 import { AccountOverviewCommonProps } from './common';
 
 export default {
@@ -8,5 +8,5 @@ export default {
 };
 
 export const DefaultStory = (
-  args: JSX.IntrinsicAttributes & AccountOverviewCommonProps
+  args: JSX.IntrinsicAttributes & AccountOverviewCommonProps,
 ) => <AccountOverviewBtc {...args} />;

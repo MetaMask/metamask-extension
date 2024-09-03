@@ -82,7 +82,7 @@ module.exports = {
             sourceMap: true,
             implementation: require('sass-embedded'),
             sassOptions: {
-              includePaths: ['ui/css/', 'node_modules/',],
+              includePaths: ['ui/css/', 'node_modules/'],
             },
           },
         },
@@ -92,12 +92,7 @@ module.exports = {
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: path.join(
-              'ui',
-              'css',
-              'utilities',
-              'fonts/',
-            ),
+            from: path.join('ui', 'css', 'utilities', 'fonts/'),
             to: 'fonts',
           },
           {

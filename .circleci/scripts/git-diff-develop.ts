@@ -15,7 +15,9 @@ const exec = promisify(execCallback);
 async function fetchWithDepth(depth: number): Promise<boolean> {
   try {
     await exec(`git fetch --depth ${depth} origin develop`);
-    await exec(`git fetch --depth ${depth} origin ${process.env.CIRCLE_BRANCH}`);
+    await exec(
+      `git fetch --depth ${depth} origin ${process.env.CIRCLE_BRANCH}`,
+    );
     return true;
   } catch (error: unknown) {
     console.error(`Failed to fetch with depth ${depth}:`, error);
@@ -44,7 +46,9 @@ async function fetchUntilMergeBaseFound() {
         hasProperty(error, 'code') &&
         error.code === 1
       ) {
-        console.error(`Error 'no merge base' encountered with depth ${depth}. Incrementing depth...`);
+        console.error(
+          `Error 'no merge base' encountered with depth ${depth}. Incrementing depth...`,
+        );
       } else {
         throw error;
       }
@@ -62,9 +66,11 @@ async function fetchUntilMergeBaseFound() {
  */
 async function gitDiff(): Promise<string> {
   await fetchUntilMergeBaseFound();
-  const { stdout: diffResult } = await exec(`git diff --name-only origin/HEAD...${process.env.CIRCLE_BRANCH}`);
+  const { stdout: diffResult } = await exec(
+    `git diff --name-only origin/HEAD...${process.env.CIRCLE_BRANCH}`,
+  );
   if (!diffResult) {
-      throw new Error('Unable to get diff after full checkout.');
+    throw new Error('Unable to get diff after full checkout.');
   }
   return diffResult;
 }
@@ -76,7 +82,7 @@ async function gitDiff(): Promise<string> {
  */
 async function storeGitDiffOutput() {
   try {
-    console.log("Attempting to get git diff...");
+    console.log('Attempting to get git diff...');
     const diffOutput = await gitDiff();
     console.log(diffOutput);
 

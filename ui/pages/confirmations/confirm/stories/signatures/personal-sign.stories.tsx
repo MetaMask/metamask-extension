@@ -1,10 +1,13 @@
-import ConfirmPage from '../../confirm'
+import ConfirmPage from '../../confirm';
 import {
   ARG_TYPES_SIGNATURE,
   CONFIRM_PAGE_DECORATOR,
-  SignatureStoryTemplate
+  SignatureStoryTemplate,
 } from '../utils';
-import { signatureRequestSIWE, unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
+import {
+  signatureRequestSIWE,
+  unapprovedPersonalSignMsg,
+} from '../../../../../../test/data/confirmations/personal_sign';
 
 /**
  * The `<ConfirmPage>` that's displayed when the current confirmation is a `personal_sign` signature.
@@ -18,7 +21,7 @@ export default {
 
 export const DefaultStory = (args) => {
   return SignatureStoryTemplate(args, unapprovedPersonalSignMsg);
-}
+};
 DefaultStory.storyName = 'Default';
 DefaultStory.args = {
   msgParams: { ...unapprovedPersonalSignMsg.msgParams },
@@ -30,7 +33,7 @@ DefaultStory.args = {
  */
 export const SignInWithEthereumStory = (args) => {
   return SignatureStoryTemplate(args, signatureRequestSIWE);
-}
+};
 SignInWithEthereumStory.storyName = 'Sign-in With Ethereum (SIWE)';
 SignInWithEthereumStory.args = {
   msgParams: { ...signatureRequestSIWE.msgParams },

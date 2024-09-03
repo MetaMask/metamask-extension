@@ -1,4 +1,3 @@
-import { TrezorBridge } from '@metamask/eth-trezor-keyring';
 import type {
   EthereumSignMessage,
   EthereumSignTransaction,
@@ -6,7 +5,6 @@ import type {
   EthereumSignTypedDataTypes,
   ConnectSettings,
   Manifest,
-  Response as TrezorResponse,
   EthereumSignedTx,
   PROTO,
   EthereumSignTypedHash,
@@ -16,6 +14,13 @@ import {
   OffscreenCommunicationTarget,
   TrezorAction,
 } from '../../../../shared/constants/offscreen-communication';
+import { TrezorResponse, TrezorBridgeInterface } from './types';
+
+type TrezorMessage = {
+  target: OffscreenCommunicationTarget;
+  event: OffscreenCommunicationEvents;
+  payload?: unknown;
+};
 
 /**
  * This class is used as a custom bridge for the Trezor connection. Every
@@ -27,7 +32,7 @@ import {
  * loaded and registers a listener for these calls and communicate with the
  * trezor/connect-web library.
  */
-export class TrezorOffscreenBridge implements TrezorBridge {
+export class TrezorOffscreenBridge implements TrezorBridgeInterface {
   model: string | undefined;
 
   init(
@@ -35,14 +40,16 @@ export class TrezorOffscreenBridge implements TrezorBridge {
       manifest: Manifest;
     } & Partial<ConnectSettings>,
   ) {
-    chrome.runtime.onMessage.addListener((msg) => {
-      if (
-        msg.target === OffscreenCommunicationTarget.extension &&
-        msg.event === OffscreenCommunicationEvents.trezorDeviceConnect
-      ) {
-        this.model = msg.payload;
-      }
-    });
+    chrome.runtime.onMessage.addListener(
+      (msg: TrezorMessage & { payload?: string }) => {
+        if (
+          msg.target === OffscreenCommunicationTarget.extension &&
+          msg.event === OffscreenCommunicationEvents.trezorDeviceConnect
+        ) {
+          this.model = msg.payload;
+        }
+      },
+    );
 
     return new Promise<void>((resolve) => {
       chrome.runtime.sendMessage(
@@ -72,65 +79,91 @@ export class TrezorOffscreenBridge implements TrezorBridge {
     });
   }
 
-  getPublicKey(params: { path: string; coin: string }) {
-    return new Promise((resolve) => {
+  getPublicKey(
+    params: Params<{ path: string; coin: string }>,
+  ): Promise<{ publicKey: string; chainCode: string }> {
+    return new Promise((resolve, reject) => {
       chrome.runtime.sendMessage(
         {
           target: OffscreenCommunicationTarget.trezorOffscreen,
           action: TrezorAction.getPublicKey,
           params,
         },
-        (response) => {
-          resolve(response);
+        (response: TrezorResponse) => {
+          if (response.success && response.payload) {
+            resolve(
+              response.payload as { publicKey: string; chainCode: string },
+            );
+          } else {
+            reject(new Error(response.error || 'Unknown error occurred'));
+          }
         },
       );
-    }) as TrezorResponse<{ publicKey: string; chainCode: string }>;
+    });
   }
 
-  ethereumSignTransaction(params: Params<EthereumSignTransaction>) {
-    return new Promise((resolve) => {
+  ethereumSignTransaction(
+    params: Params<EthereumSignTransaction>,
+  ): Promise<EthereumSignedTx> {
+    return new Promise((resolve, reject) => {
       chrome.runtime.sendMessage(
         {
           target: OffscreenCommunicationTarget.trezorOffscreen,
           action: TrezorAction.signTransaction,
           params,
         },
-        (response) => {
-          resolve(response);
+        (response: TrezorResponse) => {
+          if (response.success && response.payload) {
+            resolve(response.payload as EthereumSignedTx);
+          } else {
+            reject(new Error(response.error || 'Unknown error occurred'));
+          }
         },
       );
-    }) as TrezorResponse<EthereumSignedTx>;
+    });
   }
 
-  ethereumSignMessage(params: Params<EthereumSignMessage>) {
-    return new Promise((resolve) => {
+  ethereumSignMessage(
+    params: Params<EthereumSignMessage>,
+  ): Promise<{ address: string; signature: string }> {
+    return new Promise((resolve, reject) => {
       chrome.runtime.sendMessage(
         {
           target: OffscreenCommunicationTarget.trezorOffscreen,
           action: TrezorAction.signMessage,
           params,
         },
-        (response) => {
-          resolve(response);
+        (response: TrezorResponse) => {
+          if (response.success && response.payload) {
+            const { address, signature } =
+              response.payload as PROTO.MessageSignature;
+            resolve({ address, signature });
+          } else {
+            reject(new Error(response.error || 'Unknown error occurred'));
+          }
         },
       );
-    }) as TrezorResponse<PROTO.MessageSignature>;
+    });
   }
 
   ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(
     params: Params<EthereumSignTypedHash<T>>,
-  ) {
-    return new Promise((resolve) => {
+  ): Promise<PROTO.EthereumTypedDataSignature> {
+    return new Promise((resolve, reject) => {
       chrome.runtime.sendMessage(
         {
           target: OffscreenCommunicationTarget.trezorOffscreen,
           action: TrezorAction.signTypedData,
           params,
         },
-        (response) => {
-          resolve(response);
+        (response: TrezorResponse) => {
+          if (response.success && response.payload) {
+            resolve(response.payload as PROTO.EthereumTypedDataSignature);
+          } else {
+            reject(new Error(response.error || 'Unknown error occurred'));
+          }
         },
       );
-    }) as TrezorResponse<PROTO.EthereumTypedDataSignature>;
+    });
   }
 }

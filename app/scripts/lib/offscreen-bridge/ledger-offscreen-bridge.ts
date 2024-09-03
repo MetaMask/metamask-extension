@@ -5,6 +5,17 @@ import {
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
 
+type LedgerMessage = {
+  target: OffscreenCommunicationTarget;
+  event: OffscreenCommunicationEvents;
+};
+
+type LedgerResponse<T = unknown> = {
+  success: boolean;
+  payload?: T;
+  error?: string;
+};
+
 /**
  * This class is used as a custom bridge for the Ledger connection. Every
  * hardware wallet keyring also requires a bridge that has a known interface
@@ -20,7 +31,7 @@ export class LedgerOffscreenBridge implements LedgerBridge {
   isDeviceConnected = false;
 
   init() {
-    chrome.runtime.onMessage.addListener((msg) => {
+    chrome.runtime.onMessage.addListener((msg: LedgerMessage) => {
       if (
         msg.target === OffscreenCommunicationTarget.extension &&
         msg.event === OffscreenCommunicationEvents.ledgerDeviceConnect
@@ -44,7 +55,7 @@ export class LedgerOffscreenBridge implements LedgerBridge {
           target: OffscreenCommunicationTarget.ledgerOffscreen,
           action: LedgerAction.makeApp,
         },
-        (response) => {
+        (response: LedgerResponse) => {
           if (response.success) {
             resolve(true);
           } else if (response.error) {
@@ -65,7 +76,7 @@ export class LedgerOffscreenBridge implements LedgerBridge {
           action: LedgerAction.updateTransport,
           params: { transportType },
         },
-        (response) => {
+        (response: LedgerResponse) => {
           if (response.success) {
             resolve(true);
           } else {
@@ -88,11 +99,17 @@ export class LedgerOffscreenBridge implements LedgerBridge {
           action: LedgerAction.getPublicKey,
           params,
         },
-        (response) => {
-          if (response.success) {
+        (
+          response: LedgerResponse<{
+            publicKey: string;
+            address: string;
+            chainCode?: string;
+          }>,
+        ) => {
+          if (response.success && response.payload) {
             resolve(response.payload);
           } else {
-            reject(response.payload.error);
+            reject(new Error(response.error || 'Unknown error occurred'));
           }
         },
       );
@@ -111,11 +128,11 @@ export class LedgerOffscreenBridge implements LedgerBridge {
           action: LedgerAction.signTransaction,
           params,
         },
-        (response) => {
-          if (response.success) {
+        (response: LedgerResponse<{ v: string; s: string; r: string }>) => {
+          if (response.success && response.payload) {
             resolve(response.payload);
           } else {
-            reject(response.payload.error);
+            reject(new Error(response.error || 'Unknown error occurred'));
           }
         },
       );
@@ -134,11 +151,11 @@ export class LedgerOffscreenBridge implements LedgerBridge {
           action: LedgerAction.signPersonalMessage,
           params,
         },
-        (response) => {
-          if (response.success) {
+        (response: LedgerResponse<{ v: number; s: string; r: string }>) => {
+          if (response.success && response.payload) {
             resolve(response.payload);
           } else {
-            reject(response.payload.error);
+            reject(new Error(response.error || 'Unknown error occurred'));
           }
         },
       );
@@ -161,11 +178,11 @@ export class LedgerOffscreenBridge implements LedgerBridge {
           action: LedgerAction.signTypedData,
           params,
         },
-        (response) => {
-          if (response.success) {
+        (response: LedgerResponse<{ v: number; s: string; r: string }>) => {
+          if (response.success && response.payload) {
             resolve(response.payload);
           } else {
-            reject(response.payload.error);
+            reject(new Error(response.error || 'Unknown error occurred'));
           }
         },
       );

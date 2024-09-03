@@ -554,7 +554,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     if (!originalApproveAmount && approveAmount) {
       setOriginalApproveAmount(approveAmount);
     }
-  }, [originalApproveAmount, approveAmount]);
+  }, [originalApproveAmount, approveAmount, setOriginalApproveAmount]);
 
   // If it's not a Smart Transaction and ETH balance is needed, we want to show a warning.
   const isNotStxAndEthBalanceIsNeeded = !isSmartTransaction && ethBalanceNeeded;
@@ -1011,7 +1011,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       }
     };
     getEstimatedL1Fees();
-  }, [unsignedTransaction, approveTxParams, chainId, usedQuote]);
+  }, [unsignedTransaction, approveTxParams, chainId, usedQuote, dispatch]);
 
   const destinationValue = calcTokenValue(
     destinationTokenValue,

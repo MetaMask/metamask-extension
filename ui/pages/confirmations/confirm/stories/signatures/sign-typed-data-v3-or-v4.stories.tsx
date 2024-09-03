@@ -1,10 +1,14 @@
-import ConfirmPage from '../../confirm'
+import ConfirmPage from '../../confirm';
 import {
   ARG_TYPES_SIGNATURE,
   CONFIRM_PAGE_DECORATOR,
-  SignatureStoryTemplate
+  SignatureStoryTemplate,
 } from '../utils';
-import { permitSignatureMsg, unapprovedTypedSignMsgV3, unapprovedTypedSignMsgV4 } from '../../../../../../test/data/confirmations/typed_sign';
+import {
+  permitSignatureMsg,
+  unapprovedTypedSignMsgV3,
+  unapprovedTypedSignMsgV4,
+} from '../../../../../../test/data/confirmations/typed_sign';
 
 /**
  * The `<ConfirmPage>` that's displayed when the current confirmation is either a version
@@ -34,7 +38,7 @@ PermitStory.args = {
  */
 export const V3Story = (args) => {
   return SignatureStoryTemplate(args, unapprovedTypedSignMsgV4);
-}
+};
 V3Story.storyName = 'V3';
 V3Story.args = {
   msgParams: { ...unapprovedTypedSignMsgV3.msgParams },
@@ -45,7 +49,7 @@ V3Story.args = {
  */
 export const DefaultStory = (args) => {
   return SignatureStoryTemplate(args, unapprovedTypedSignMsgV4);
-}
+};
 DefaultStory.storyName = 'V4';
 DefaultStory.args = {
   msgParams: { ...unapprovedTypedSignMsgV4.msgParams },

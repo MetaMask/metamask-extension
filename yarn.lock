@@ -10150,13 +10150,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/chrome@npm:^0.0.268":
-  version: 0.0.268
-  resolution: "@types/chrome@npm:0.0.268"
+"@types/chrome@npm:^0.0.270":
+  version: 0.0.270
+  resolution: "@types/chrome@npm:0.0.270"
   dependencies:
     "@types/filesystem": "npm:*"
     "@types/har-format": "npm:*"
-  checksum: 10/f03cf2f816f7c8f19319299af9399dd3eed8b46b3e4791bd7c1c70d982ae63634580a4c03509841cd65b91e99e6bc47f05358811d2c8b707968746d3d482b983
+  checksum: 10/7d5e350dbfb58b4bbab67df83324f353e97c78171ec3df3d37ea2fd57fc2011311fa8cc91ba98d54d0f989716076777a39b125a0782109646faca94853984522
   languageName: node
   linkType: hard
 
@@ -26245,7 +26245,7 @@ __metadata:
     "@tsconfig/node20": "npm:^20.1.2"
     "@types/babelify": "npm:^7.3.7"
     "@types/browserify": "npm:^12.0.37"
-    "@types/chrome": "npm:^0.0.268"
+    "@types/chrome": "npm:^0.0.270"
     "@types/currency-formatter": "npm:^1.5.1"
     "@types/fs-extra": "npm:^9.0.13"
     "@types/gulp": "npm:^4.0.9"

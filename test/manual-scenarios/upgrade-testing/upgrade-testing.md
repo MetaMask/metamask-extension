@@ -34,5 +34,6 @@ To ensure MetaMask extension's upgrade process is seamless and retains user data
 ### Expected Outcome
 
 After upgrading from the master branch to the release branch, the MetaMask extension should:
+
 - Retain all user data including accounts, transactions, and imported tokens.
 - Maintain full functionality, enabling the user to continue using extension without any issues.

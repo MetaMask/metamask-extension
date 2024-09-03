@@ -1,8 +1,8 @@
-import ConfirmPage from '../../confirm'
+import ConfirmPage from '../../confirm';
 import {
   ARG_TYPES_SIGNATURE,
   CONFIRM_PAGE_DECORATOR,
-  SignatureStoryTemplate
+  SignatureStoryTemplate,
 } from '../utils';
 import { unapprovedTypedSignMsgV1 } from '../../../../../../test/data/confirmations/typed_sign';
 
@@ -21,5 +21,5 @@ export default {
 
 export const DefaultStory = (args) => {
   return SignatureStoryTemplate(args, unapprovedTypedSignMsgV1);
-}
+};
 DefaultStory.storyName = 'Default';

@@ -22,7 +22,14 @@
     "resolveJsonModule": true,
     // sets output file location for the `incremental` setting
     "tsBuildInfoFile": "node_modules/.cache/typescript/tsconfig.tsbuildinfo",
-    "useUnknownInCatchVariables": true
+    "useUnknownInCatchVariables": true,
+    // Add support for ES modules
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    // Add support for Chrome extension types
+    "types": ["chrome"],
+    "strict": true
   },
   "exclude": [
     // don't typecheck stories, as they don't yet pass the type checker.

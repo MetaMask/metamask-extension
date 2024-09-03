@@ -8,6 +8,7 @@ import {
   Display,
   FlexDirection,
   TextVariant,
+  Color,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -38,29 +39,25 @@ export const RAMPS_CARD_VARIANT_TYPES = {
 export const RAMPS_CARD_VARIANTS = {
   [RAMPS_CARD_VARIANT_TYPES.TOKEN]: {
     illustrationSrc: './images/ramps-card-token-illustration.png',
-    gradient:
-      'linear-gradient(90deg, #0189EC 0%, #4B7AED 35%, #6774EE 58%, #706AF4 80.5%, #7C5BFC 100%)',
+    gradient: `linear-gradient(90deg, ${Color.primaryDefault} 0%, ${Color.primaryAlternative} 35%, ${Color.primaryMuted} 58%, ${Color.primaryInverse} 80.5%, ${Color.primaryDisabled} 100%)`,
     title: 'fundYourWallet',
     body: 'fundYourWalletDescription',
   },
   [RAMPS_CARD_VARIANT_TYPES.NFT]: {
     illustrationSrc: './images/ramps-card-nft-illustration.png',
-    gradient: 'linear-gradient(90deg, #F6822D 0%, #F894A7 52%, #ED94FB 92.5%)',
+    gradient: `linear-gradient(90deg, ${Color.warningDefault} 0%, ${Color.errorDefault} 52%, ${Color.infoDefault} 92.5%)`,
     title: 'getStartedWithNFTs',
     body: 'getStartedWithNFTsDescription',
   },
   [RAMPS_CARD_VARIANT_TYPES.ACTIVITY]: {
     illustrationSrc: './images/ramps-card-activity-illustration.png',
-    gradient:
-      'linear-gradient(90deg, #57C5DC 0%, #06BFDD 49.39%, #35A9C7 100%)',
-
+    gradient: `linear-gradient(90deg, ${Color.successDefault} 0%, ${Color.successAlternative} 49.39%, ${Color.successMuted} 100%)`,
     title: 'startYourJourney',
     body: 'startYourJourneyDescription',
   },
   [RAMPS_CARD_VARIANT_TYPES.BTC]: {
     illustrationSrc: './images/ramps-card-btc-illustration.png',
-    gradient:
-      'linear-gradient(90deg, #017ED9 0%, #446FD9 35%, #5E6AD9 58%, #635ED9 80.5%, #6855D9 92.5%, #6A4FD9 100%)',
+    gradient: `linear-gradient(90deg, ${Color.infoDefault} 0%, ${Color.infoAlternative} 35%, ${Color.infoMuted} 58%, ${Color.infoInverse} 80.5%, ${Color.infoDisabled} 92.5%, ${Color.infoDisabled} 100%)`,
     title: 'fundYourWallet',
     body: 'fundYourWalletDescription',
   },

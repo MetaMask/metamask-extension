@@ -972,112 +972,6 @@ describe('SwapsController', function () {
 
         expect(newQuotes[topAggId].isBestQuote).toStrictEqual(undefined);
       });
-
-      // TODO: Re think how to test this without exposing internal state
-
-      // it('should replace ethers instance when called with a different chainId than was current when the controller was instantiated', async function () {
-      //   fetchTradesInfoStub.mockReset();
-
-      //   const _swapsController = getSwapsController();
-
-      //   const currentEthersInstance = _swapsController._ethersProvider;
-
-      //   // Make the network fetch error message disappear
-      //   jest
-      //     .spyOn(_swapsController, '_setSwapsNetworkConfig')
-      //     .mockReturnValue();
-
-      //   await _swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
-      //     ...MOCK_FETCH_METADATA,
-      //     chainId: CHAIN_IDS.GOERLI,
-      //   });
-
-      //   const newEthersInstance = _swapsController._ethersProvider;
-      //   expect(currentEthersInstance).not.toStrictEqual(newEthersInstance);
-      // });
-
-      // it('should not replace ethers instance when called with the same chainId that was current when the controller was instantiated', async function () {
-      //   const _swapsController = new SwapsController({
-      //     getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
-      //     provider,
-      //     fetchTradesInfo: fetchTradesInfoStub,
-      //   });
-      //   const currentEthersInstance = _swapsController._ethersProvider;
-
-      //   // Make the network fetch error message disappear
-      //   jest.spyOn(swapsController, '_setSwapsNetworkConfig').mockReturnValue();
-
-      //   await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
-      //     ...MOCK_FETCH_METADATA,
-      //     chainId: CHAIN_IDS.MAINNET,
-      //   });
-
-      //   const newEthersInstance = _swapsController._ethersProvider;
-      //   expect(currentEthersInstance).toStrictEqual(newEthersInstance);
-      // });
-
-      // it('should replace ethers instance, and _ethersProviderChainId, twice when called twice with two different chainIds, and successfully set the _ethersProviderChainId when returning to the original chain', async function () {
-      //   const _swapsController = new SwapsController({
-      //     getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
-      //     provider,
-      //     fetchTradesInfo: fetchTradesInfoStub,
-      //     getLayer1GasFee: getLayer1GasFeeStub,
-      //   });
-      //   const firstEthersInstance = _swapsController._ethersProvider;
-      //   const firstEthersProviderChainId =
-      //     _swapsController._ethersProviderChainId;
-
-      //   // Make the network fetch error message disappear
-      //   jest
-      //     .spyOn(_swapsController, '_setSwapsNetworkConfig')
-      //     .mockReturnValue();
-
-      //   await _swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
-      //     ...MOCK_FETCH_METADATA,
-      //     chainId: CHAIN_IDS.GOERLI,
-      //   });
-
-      //   const secondEthersInstance = _swapsController._ethersProvider;
-      //   const secondEthersProviderChainId =
-      //     _swapsController._ethersProviderChainId;
-
-      //   expect(firstEthersInstance).not.toStrictEqual(secondEthersInstance);
-      //   expect(firstEthersInstance).not.toStrictEqual(
-      //     secondEthersProviderChainId,
-      //   );
-
-      //   await _swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
-      //     ...MOCK_FETCH_METADATA,
-      //     chainId: CHAIN_IDS.LOCALHOST,
-      //   });
-
-      //   const thirdEthersInstance = _swapsController._ethersProvider;
-      //   const thirdEthersProviderChainId =
-      //     _swapsController._ethersProviderChainId;
-
-      //   expect(firstEthersProviderChainId).not.toStrictEqual(
-      //     thirdEthersInstance,
-      //   );
-      //   expect(secondEthersInstance).not.toStrictEqual(thirdEthersInstance);
-      //   expect(firstEthersInstance).not.toStrictEqual(
-      //     thirdEthersProviderChainId,
-      //   );
-      //   expect(secondEthersProviderChainId).not.toStrictEqual(
-      //     thirdEthersProviderChainId,
-      //   );
-
-      //   await _swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
-      //     ...MOCK_FETCH_METADATA,
-      //     chainId: CHAIN_IDS.MAINNET,
-      //   });
-
-      //   const lastEthersProviderChainId =
-      //     _swapsController._ethersProviderChainId;
-
-      //   expect(firstEthersProviderChainId).toStrictEqual(
-      //     lastEthersProviderChainId,
-      //   );
-      // });
     });
 
     describe('resetSwapsState', function () {
@@ -1099,35 +993,9 @@ describe('SwapsController', function () {
           swapsStxStatusDeadline: oldState.swapsState.swapsStxStatusDeadline,
         });
       });
-
-      // it('clears polling timeout', function () {
-      //   swapsController._pollingTimeout = setTimeout(() => {
-      //     throw new Error('Polling timeout not cleared');
-      //   }, POLLING_TIMEOUT);
-
-      //   // Reseting swaps state should clear the polling timeout
-      //   swapsController.resetSwapsState();
-
-      //   // Verify by ensuring the error is not thrown, indicating that the timer was cleared
-      //   expect(jest.runOnlyPendingTimers).not.toThrow();
-      // });
     });
 
     describe('stopPollingForQuotes', function () {
-      // TODO: Re think how to test this without exposing internal state
-
-      // it('clears polling timeout', function () {
-      //   swapsController._pollingTimeout = setTimeout(() => {
-      //     throw new Error('Polling timeout not cleared');
-      //   }, POLLING_TIMEOUT);
-
-      //   // Stop polling for quotes should clear the polling timeout
-      //   swapsController.stopPollingForQuotes();
-
-      //   // Verify by ensuring the error is not thrown, indicating that the timer was cleared
-      //   expect(jest.runOnlyPendingTimers).not.toThrow();
-      // });
-
       it('resets quotes state correctly', function () {
         swapsController.stopPollingForQuotes();
         const swapsState = swapsController.state;
@@ -1137,21 +1005,37 @@ describe('SwapsController', function () {
     });
 
     describe('resetPostFetchState', function () {
-      // TODO: Re think how to test this without exposing internal state
-
-      // it('clears polling timeout', function () {
-      //   swapsController._pollingTimeout = setTimeout(() => {
-      //     throw new Error('Polling timeout not cleared');
-      //   }, POLLING_TIMEOUT);
-
-      //   // Reset post fetch state should clear the polling timeout
-      //   swapsController.resetPostFetchState();
-
-      //   // Verify by ensuring the error is not thrown, indicating that the timer was cleared
-      //   expect(jest.runOnlyPendingTimers).not.toThrow();
-      // });
-
       it('updates state correctly', function () {
+        // Setup initial state
+        const initialState = {
+          tokens: ['token1', 'token2'],
+          fetchParams: {
+            /* mock fetch params */
+          },
+          swapsFeatureIsLive: true,
+          swapsQuoteRefreshTime: 10000,
+          swapsQuotePrefetchingRefreshTime: 60000,
+        };
+        swapsController.__test__updateState({ swapsState: initialState });
+
+        // Call the method under test
+        swapsController.resetPostFetchState();
+
+        // Assert the state after reset
+        const { swapsState } = swapsController.state;
+        expect(swapsState).toStrictEqual({
+          ...getDefaultSwapsControllerState().swapsState,
+          ...initialState,
+          fetchParams: null,
+          quotes: {},
+          quotesLastFetched: null,
+          topAggId: null,
+          error: null,
+          topQuote: null,
+        });
+      });
+
+      it('updates state correctly with custom parameters', function () {
         const tokens = [''];
         const fetchParams: FetchTradesInfoParams & {
           metaData: FetchTradesInfoParamsMetadata;
@@ -1194,7 +1078,7 @@ describe('SwapsController', function () {
         expect(swapsState).toStrictEqual({
           ...getDefaultSwapsControllerState().swapsState,
           tokens,
-          fetchParams,
+          fetchParams: null,
           swapsFeatureIsLive,
           swapsQuoteRefreshTime,
           swapsQuotePrefetchingRefreshTime,
@@ -1202,193 +1086,194 @@ describe('SwapsController', function () {
       });
     });
   });
+});
 
-  describe('utils', function () {
-    describe('getMedianEthValueQuote', function () {
-      it('calculates median correctly with uneven sample', function () {
-        const expectedResult = {
+describe('utils', function () {
+  describe('getMedianEthValueQuote', function () {
+    it('calculates median correctly with uneven sample', function () {
+      const expectedResult = {
+        ethFee: '10',
+        metaMaskFeeInEth: '5',
+        ethValueOfTokens: '0.3',
+      };
+
+      const values = [
+        {
+          overallValueOfQuote: '3',
           ethFee: '10',
           metaMaskFeeInEth: '5',
           ethValueOfTokens: '0.3',
-        };
-
-        const values = [
-          {
-            overallValueOfQuote: '3',
-            ethFee: '10',
-            metaMaskFeeInEth: '5',
-            ethValueOfTokens: '0.3',
-          },
-          {
-            overallValueOfQuote: '2',
-            ethFee: '20',
-            metaMaskFeeInEth: '3',
-            ethValueOfTokens: '0.2',
-          },
-          {
-            overallValueOfQuote: '6',
-            ethFee: '40',
-            metaMaskFeeInEth: '6',
-            ethValueOfTokens: '0.6',
-          },
-        ] as Quote[];
-
-        const median = getMedianEthValueQuote(values);
-        expect(median).toStrictEqual(expectedResult);
-      });
-
-      it('calculates median correctly with even sample', function () {
-        const expectedResult = {
+        },
+        {
+          overallValueOfQuote: '2',
           ethFee: '20',
-          metaMaskFeeInEth: '6.5',
-          ethValueOfTokens: '0.25',
-        };
+          metaMaskFeeInEth: '3',
+          ethValueOfTokens: '0.2',
+        },
+        {
+          overallValueOfQuote: '6',
+          ethFee: '40',
+          metaMaskFeeInEth: '6',
+          ethValueOfTokens: '0.6',
+        },
+      ] as Quote[];
 
-        const values = [
-          {
-            overallValueOfQuote: '3',
-            ethFee: '10',
-            metaMaskFeeInEth: '5',
-            ethValueOfTokens: '0.3',
-          },
-          {
-            overallValueOfQuote: '1',
-            ethFee: '20',
-            metaMaskFeeInEth: '3',
-            ethValueOfTokens: '0.2',
-          },
-          {
-            overallValueOfQuote: '2',
-            ethFee: '30',
-            metaMaskFeeInEth: '8',
-            ethValueOfTokens: '0.2',
-          },
-          {
-            overallValueOfQuote: '6',
-            ethFee: '40',
-            metaMaskFeeInEth: '6',
-            ethValueOfTokens: '0.6',
-          },
-        ] as Quote[];
+      const median = getMedianEthValueQuote(values);
+      expect(median).toStrictEqual(expectedResult);
+    });
 
-        const median = getMedianEthValueQuote(values);
-        expect(median).toStrictEqual(expectedResult);
-      });
+    it('calculates median correctly with even sample', function () {
+      const expectedResult = {
+        ethFee: '20',
+        metaMaskFeeInEth: '6.5',
+        ethValueOfTokens: '0.25',
+      };
 
-      it('calculates median correctly with an uneven sample where multiple quotes have the median overall value', function () {
-        const expectedResult = {
+      const values = [
+        {
+          overallValueOfQuote: '3',
+          ethFee: '10',
+          metaMaskFeeInEth: '5',
+          ethValueOfTokens: '0.3',
+        },
+        {
+          overallValueOfQuote: '1',
+          ethFee: '20',
+          metaMaskFeeInEth: '3',
+          ethValueOfTokens: '0.2',
+        },
+        {
+          overallValueOfQuote: '2',
+          ethFee: '30',
+          metaMaskFeeInEth: '8',
+          ethValueOfTokens: '0.2',
+        },
+        {
+          overallValueOfQuote: '6',
+          ethFee: '40',
+          metaMaskFeeInEth: '6',
+          ethValueOfTokens: '0.6',
+        },
+      ] as Quote[];
+
+      const median = getMedianEthValueQuote(values);
+      expect(median).toStrictEqual(expectedResult);
+    });
+
+    it('calculates median correctly with an uneven sample where multiple quotes have the median overall value', function () {
+      const expectedResult = {
+        ethFee: '2',
+        metaMaskFeeInEth: '0.5',
+        ethValueOfTokens: '5',
+      };
+
+      const values = [
+        {
+          overallValueOfQuote: '1',
+          ethValueOfTokens: '2',
+          ethFee: '1',
+          metaMaskFeeInEth: '0.2',
+        },
+        {
+          overallValueOfQuote: '3',
+          ethValueOfTokens: '4',
+          ethFee: '1',
+          metaMaskFeeInEth: '0.4',
+        },
+        {
+          overallValueOfQuote: '3',
+          ethValueOfTokens: '5',
           ethFee: '2',
           metaMaskFeeInEth: '0.5',
-          ethValueOfTokens: '5',
-        };
-
-        const values = [
-          {
-            overallValueOfQuote: '1',
-            ethValueOfTokens: '2',
-            ethFee: '1',
-            metaMaskFeeInEth: '0.2',
-          },
-          {
-            overallValueOfQuote: '3',
-            ethValueOfTokens: '4',
-            ethFee: '1',
-            metaMaskFeeInEth: '0.4',
-          },
-          {
-            overallValueOfQuote: '3',
-            ethValueOfTokens: '5',
-            ethFee: '2',
-            metaMaskFeeInEth: '0.5',
-          },
-          {
-            overallValueOfQuote: '3',
-            ethValueOfTokens: '6',
-            ethFee: '3',
-            metaMaskFeeInEth: '0.6',
-          },
-          {
-            overallValueOfQuote: '4',
-            ethValueOfTokens: '6',
-            ethFee: '2',
-            metaMaskFeeInEth: '0.6',
-          },
-          {
-            overallValueOfQuote: '4',
-            ethValueOfTokens: '7',
-            ethFee: '3',
-            metaMaskFeeInEth: '0.7',
-          },
-          {
-            overallValueOfQuote: '6',
-            ethValueOfTokens: '8',
-            ethFee: '2',
-            metaMaskFeeInEth: '0.8',
-          },
-        ] as Quote[];
-
-        const median = getMedianEthValueQuote(values);
-        expect(median).toStrictEqual(expectedResult);
-      });
-
-      it('calculates median correctly with an even sample where multiple quotes have the same overall value as either of the two middle values', function () {
-        const expectedResult = {
+        },
+        {
+          overallValueOfQuote: '3',
+          ethValueOfTokens: '6',
+          ethFee: '3',
+          metaMaskFeeInEth: '0.6',
+        },
+        {
+          overallValueOfQuote: '4',
+          ethValueOfTokens: '6',
           ethFee: '2',
-          metaMaskFeeInEth: '0.55',
-          ethValueOfTokens: '5.5',
-        };
+          metaMaskFeeInEth: '0.6',
+        },
+        {
+          overallValueOfQuote: '4',
+          ethValueOfTokens: '7',
+          ethFee: '3',
+          metaMaskFeeInEth: '0.7',
+        },
+        {
+          overallValueOfQuote: '6',
+          ethValueOfTokens: '8',
+          ethFee: '2',
+          metaMaskFeeInEth: '0.8',
+        },
+      ] as Quote[];
 
-        const values = [
-          {
-            overallValueOfQuote: '1',
-            ethValueOfTokens: '2',
-            ethFee: '1',
-            metaMaskFeeInEth: '0.2',
-          },
-          {
-            overallValueOfQuote: '3',
-            ethValueOfTokens: '4',
-            ethFee: '1',
-            metaMaskFeeInEth: '0.4',
-          },
-          {
-            overallValueOfQuote: '3',
-            ethValueOfTokens: '5',
-            ethFee: '2',
-            metaMaskFeeInEth: '0.5',
-          },
-          {
-            overallValueOfQuote: '4',
-            ethValueOfTokens: '6',
-            ethFee: '2',
-            metaMaskFeeInEth: '0.6',
-          },
-          {
-            overallValueOfQuote: '4',
-            ethValueOfTokens: '7',
-            ethFee: '3',
-            metaMaskFeeInEth: '0.7',
-          },
-          {
-            overallValueOfQuote: '6',
-            ethValueOfTokens: '8',
-            ethFee: '2',
-            metaMaskFeeInEth: '0.8',
-          },
-        ] as Quote[];
+      const median = getMedianEthValueQuote(values);
+      expect(median).toStrictEqual(expectedResult);
+    });
 
-        const median = getMedianEthValueQuote(values);
-        expect(median).toStrictEqual(expectedResult);
-      });
+    it('calculates median correctly with an even sample where multiple quotes have the same overall value as either of the two middle values', function () {
+      const expectedResult = {
+        ethFee: '2',
+        metaMaskFeeInEth: '0.55',
+        ethValueOfTokens: '5.5',
+      };
 
-      it('throws on empty array', function () {
-        expect(() => getMedianEthValueQuote([])).toThrow(
-          'Expected non-empty array param.',
-        );
-      });
+      const values = [
+        {
+          overallValueOfQuote: '1',
+          ethValueOfTokens: '2',
+          ethFee: '1',
+          metaMaskFeeInEth: '0.2',
+        },
+        {
+          overallValueOfQuote: '3',
+          ethValueOfTokens: '4',
+          ethFee: '1',
+          metaMaskFeeInEth: '0.4',
+        },
+        {
+          overallValueOfQuote: '3',
+          ethValueOfTokens: '5',
+          ethFee: '2',
+          metaMaskFeeInEth: '0.5',
+        },
+        {
+          overallValueOfQuote: '4',
+          ethValueOfTokens: '6',
+          ethFee: '2',
+          metaMaskFeeInEth: '0.6',
+        },
+        {
+          overallValueOfQuote: '4',
+          ethValueOfTokens: '7',
+          ethFee: '3',
+          metaMaskFeeInEth: '0.7',
+        },
+        {
+          overallValueOfQuote: '6',
+          ethValueOfTokens: '8',
+          ethFee: '2',
+          metaMaskFeeInEth: '0.8',
+        },
+      ] as Quote[];
+
+      const median = getMedianEthValueQuote(values);
+      expect(median).toStrictEqual(expectedResult);
+    });
+
+    it('throws on empty array', function () {
+      expect(() => getMedianEthValueQuote([])).toThrow(
+        'Expected non-empty array param.',
+      );
     });
   });
 });
+// Utility functions moved outside of the main describe block
 
 function getMockQuotes(): Record<string, Quote> {
   return {

@@ -70,18 +70,15 @@ export default {
   decorators: [(story: () => Meta<typeof TransactionData>) => story()],
 };
 
-export const UniswapStory = () =>
-  Template({ to: CONTRACT_ADDRESS_UNISWAP });
+export const UniswapStory = () => Template({ to: CONTRACT_ADDRESS_UNISWAP });
 
 UniswapStory.storyName = 'Uniswap';
 
-export const SourcifyStory = () =>
-  Template({ to: CONTRACT_ADDRESS_SOURCIFY });
+export const SourcifyStory = () => Template({ to: CONTRACT_ADDRESS_SOURCIFY });
 
 SourcifyStory.storyName = 'Sourcify';
 
-export const FourByteStory = () =>
-  Template({ to: CONTRACT_ADDRESS_FOUR_BYTE });
+export const FourByteStory = () => Template({ to: CONTRACT_ADDRESS_FOUR_BYTE });
 
 FourByteStory.storyName = 'Four Byte';
 

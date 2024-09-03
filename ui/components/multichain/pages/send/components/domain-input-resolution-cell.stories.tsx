@@ -1,7 +1,6 @@
 import React from 'react';
 import { DomainInputResolutionCell } from '.';
 
-
 export default {
   title: 'Components/Multichain/DomainInputResolutionCell',
   component: DomainInputResolutionCell,
@@ -52,7 +51,7 @@ LensStory.args = {
 LensStory.storyName = 'Lens Resolution';
 
 export const OverflowingTitleStory = (args) => (
-  <div style={{ width: '308px', padding: '16px', border: '1px solid black', }}>
+  <div style={{ width: '308px', padding: '16px', border: '1px solid black' }}>
     <DomainInputResolutionCell {...args} />
   </div>
 );
@@ -64,6 +63,6 @@ OverflowingTitleStory.args = {
   domainName: 'superduperlongnamethatisoverflowingthiscontainer.testprotocol',
   resolvingSnap: 'Test Resolver Snap',
   onClick: () => undefined,
-}
+};
 
 OverflowingTitleStory.storyName = 'Overflowing Domain Resolution';
