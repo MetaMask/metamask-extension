@@ -1,7 +1,7 @@
 import { SignatureRequestType } from '../../../ui/pages/confirmations/types/confirm';
 
 export const PERSONAL_SIGN_SENDER_ADDRESS =
-  '0x8eeee1781fd885ff5ddef7789486676961873d12';
+  '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
 export const unapprovedPersonalSignMsg = {
   id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',

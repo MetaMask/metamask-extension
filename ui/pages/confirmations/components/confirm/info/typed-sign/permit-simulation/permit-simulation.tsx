@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 
 import { Box } from '../../../../../../../components/component-library';
 import { PrimaryType } from '../../../../../../../../shared/constants/signatures';
@@ -9,8 +8,8 @@ import {
   FlexDirection,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../../../../selectors';
 import { SignatureRequestType } from '../../../../../types/confirm';
+import { useConfirmContext } from '../../../../../context/confirm';
 import StaticSimulation from '../../shared/static-simulation/static-simulation';
 import PermitSimulationValueDisplay from './value-display/value-display';
 
@@ -40,9 +39,9 @@ function extractTokenDetailsByPrimaryType(
 
 const PermitSimulation: React.FC<object> = () => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as SignatureRequestType;
+  const { currentConfirmation } = useConfirmContext() as {
+    currentConfirmation: SignatureRequestType;
+  };
 
   const msgData = currentConfirmation.msgParams?.data;
   const {
