@@ -1,11 +1,11 @@
-import { CaipAccountId, Hex, parseCaipAccountId } from '@metamask/utils';
-import { Caip25CaveatValue } from '../caip25permissions';
 import {
+  CaipAccountId,
+  Hex,
   KnownCaipNamespace,
-  mergeScopes,
-  parseScopeString,
-  ScopesObject,
-} from '../scope';
+  parseCaipAccountId,
+} from '@metamask/utils';
+import { Caip25CaveatValue } from '../caip25permissions';
+import { mergeScopes, parseScopeString, ScopesObject } from '../scope';
 
 export const getEthAccounts = (caip25CaveatValue: Caip25CaveatValue) => {
   const ethAccounts: string[] = [];

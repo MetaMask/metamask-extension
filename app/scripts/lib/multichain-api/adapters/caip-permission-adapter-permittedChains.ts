@@ -1,8 +1,7 @@
-import { Hex } from '@metamask/utils';
+import { Hex, KnownCaipNamespace } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { Caip25CaveatValue } from '../caip25permissions';
 import {
-  KnownCaipNamespace,
   mergeScopes,
   parseScopeString,
   ScopesObject,
