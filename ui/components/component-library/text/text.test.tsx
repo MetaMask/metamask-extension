@@ -101,7 +101,7 @@ describe('Text', () => {
     expect(container).toMatchSnapshot();
   });
 
-  // Phase 1: Brand Evolution Typography
+  // Brand Evolution Typography
   it('should render the Text with proper brand evolution class name', () => {
     const { getByText } = render(
       <>
