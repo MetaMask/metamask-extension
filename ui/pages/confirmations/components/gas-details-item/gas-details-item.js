@@ -18,6 +18,7 @@ import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { PriorityLevels } from '../../../../../shared/constants/gas';
 import {
   getPreferences,
+  getShouldShowFiat,
   getTxData,
   getUseCurrencyRateCheck,
   transactionFeeSelector,
@@ -38,20 +39,20 @@ import GasTiming from '../gas-timing/gas-timing.component';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
 import Tooltip from '../../../../components/ui/tooltip';
-import { useHideFiatForTestnet } from '../../../../hooks/useHideFiatForTestnet';
 
 const GasDetailsItem = ({
   'data-testid': dataTestId,
   userAcknowledgedGasMissing = false,
 }) => {
   const t = useI18nContext();
-  const hideFiatForTestNet = useHideFiatForTestnet();
+  const shouldShowFiat = useSelector(getShouldShowFiat);
 
   const txData = useSelector(getTxData);
   const { layer1GasFee } = txData;
 
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const transactionData = useDraftTransactionWithTxParams();
+
   const {
     hexMinimumTransactionFee: draftHexMinimumTransactionFee,
     hexMaximumTransactionFee: draftHexMaximumTransactionFee,
@@ -139,7 +140,7 @@ const GasDetailsItem = ({
             <EditGasFeeIcon
               userAcknowledgedGasMissing={userAcknowledgedGasMissing}
             />
-            {useCurrencyRateCheck && !hideFiatForTestNet && (
+            {useCurrencyRateCheck && shouldShowFiat && (
               <UserPreferencedCurrencyDisplay
                 paddingInlineStart={1}
                 suffixProps={{

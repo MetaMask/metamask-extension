@@ -19,14 +19,13 @@ import {
   Text,
 } from '../../../../components/component-library';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
-import { getPreferences } from '../../../../selectors';
+import { getPreferences, getShouldShowFiat } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import LoadingHeartBeat from '../../../../components/ui/loading-heartbeat';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { addHexes } from '../../../../../shared/modules/conversion.utils';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
-import { useHideFiatForTestnet } from '../../../../hooks/useHideFiatForTestnet';
 
 export default function FeeDetailsComponent({
   txData,
@@ -35,7 +34,7 @@ export default function FeeDetailsComponent({
 }) {
   const layer1GasFee = txData?.layer1GasFee ?? null;
   const [expandFeeDetails, setExpandFeeDetails] = useState(false);
-  const hideFiatForTestNet = useHideFiatForTestnet();
+  const shouldShowFiat = useSelector(getShouldShowFiat);
 
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
@@ -52,7 +51,7 @@ export default function FeeDetailsComponent({
       return (
         <div className="confirm-page-container-content__total-value">
           <LoadingHeartBeat estimateUsed={txData?.userFeeLevel} />
-          {!hideFiatForTestNet && (
+          {shouldShowFiat && (
             <UserPreferencedCurrencyDisplay
               type={SECONDARY}
               key="total-detail-text"
@@ -79,7 +78,7 @@ export default function FeeDetailsComponent({
       return (
         <Box className="confirm-page-container-content__total-value">
           <LoadingHeartBeat estimateUsed={txData?.userFeeLevel} />
-          {!hideFiatForTestNet && (
+          {shouldShowFiat && (
             <UserPreferencedCurrencyDisplay
               type={PRIMARY}
               key="total-detail-value"
@@ -174,11 +173,7 @@ export default function FeeDetailsComponent({
                   {t('layer1Fees')}
                 </Text>
               }
-              detailText={
-                useCurrencyRateCheck &&
-                !hideFiatForTestNet &&
-                renderTotalDetailText(layer1GasFee)
-              }
+              detailText={shouldShowFiat && renderTotalDetailText(layer1GasFee)}
               detailTotal={renderTotalDetailValue(layer1GasFee)}
             />
           )}
@@ -186,9 +181,7 @@ export default function FeeDetailsComponent({
             <TransactionDetailItem
               detailTitle={t('total')}
               detailText={
-                useCurrencyRateCheck &&
-                !hideFiatForTestNet &&
-                renderTotalDetailText(getTransactionFeeTotal)
+                shouldShowFiat && renderTotalDetailText(getTransactionFeeTotal)
               }
               detailTotal={renderTotalDetailValue(getTransactionFeeTotal)}
             />
