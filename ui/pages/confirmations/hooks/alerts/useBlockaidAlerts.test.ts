@@ -14,10 +14,7 @@ import {
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { Severity } from '../../../../helpers/constants/design-system';
 import mockState from '../../../../../test/data/mock-state.json';
-import {
-  SecurityAlertResponse,
-  SignatureRequestType,
-} from '../../types/confirm';
+import { SecurityAlertResponse } from '../../types/confirm';
 import useBlockaidAlert from './useBlockaidAlerts';
 
 const mockSecurityAlertResponse: SecurityAlertResponse = {
