@@ -155,8 +155,8 @@ export const CoinOverview = ({
                 </span>
               )}
             </div>
-            {showFiat && isOriginalNativeSymbol && balance && (
-              <div className="wallet-overview__currency-wrapper">
+            <div className="wallet-overview__currency-wrapper">
+              {showFiat && isOriginalNativeSymbol && balance && (
                 <UserPreferencedCurrencyDisplay
                   className={classnames({
                     [`${classPrefix}__cached-secondary-balance`]:
@@ -169,20 +169,20 @@ export const CoinOverview = ({
                   ethNumberOfDecimals={4}
                   hideTitle
                 />
-                <div
-                  onClick={handlePortfolioOnClick}
-                  className="wallet-overview__portfolio_button"
-                  data-testid="portfolio-link"
-                >
-                  {t('portfolio')}
-                  <Icon
-                    size={IconSize.Sm}
-                    name={IconName.Export}
-                    color={IconColor.primaryDefault}
-                  />
-                </div>
+              )}
+              <div
+                onClick={handlePortfolioOnClick}
+                className="wallet-overview__portfolio_button"
+                data-testid="portfolio-link"
+              >
+                {t('portfolio')}
+                <Icon
+                  size={IconSize.Sm}
+                  name={IconName.Export}
+                  color={IconColor.primaryDefault}
+                />
               </div>
-            )}
+            </div>
             {isEvm && (
               <PercentageAndAmountChange
                 value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
