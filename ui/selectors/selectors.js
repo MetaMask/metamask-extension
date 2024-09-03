@@ -966,13 +966,14 @@ export function getShouldShowFiat(state) {
   const currentChainId = getCurrentChainId(state);
   const isTestnet = TEST_NETWORK_IDS.includes(currentChainId);
   const { showFiatInTestnets } = getPreferences(state);
-
-  if (isTestnet && !showFiatInTestnets) {
-    return false;
-  }
-
   const conversionRate = getConversionRate(state);
   const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
+
+  if (isTestnet) {
+    return Boolean(
+      showFiatInTestnets && useCurrencyRateCheck && conversionRate,
+    );
+  }
 
   const isMainNet = getIsMainnet(state);
   const isLineaMainNet = getIsLineaMainnet(state);
