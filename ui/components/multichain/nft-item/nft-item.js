@@ -121,7 +121,7 @@ NftItem.propTypes = {
   /**
    * Image that represents the network
    */
-  networkSrc: PropTypes.string.isRequired,
+  networkSrc: PropTypes.string,
   /**
    * Token ID of the NFT
    */

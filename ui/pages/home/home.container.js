@@ -51,11 +51,7 @@ import {
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
-import {
-  getIsShowTokenAutodetectModal,
-  getIsSmartTransactionsOptInModalAvailable,
-  getIsShowNftAutodetectModal,
-} from '../../../shared/modules/selectors';
+import { getIsSmartTransactionsOptInModalAvailable } from '../../../shared/modules/selectors';
 
 import {
   closeNotificationPopup,
@@ -74,9 +70,6 @@ import {
   setActiveNetwork,
   setNewTokensImportedError,
   setDataCollectionForMarketing,
-  setShowTokenAutodetectModal,
-  setShowTokenAutodetectModalOnUpgrade,
-  setShowNftAutodetectModal,
   setEditedNetwork,
 } from '../../store/actions';
 import {
@@ -162,6 +155,7 @@ const mapStateToProps = (state) => {
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
+    SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
     ///: END:ONLY_INCLUDE_IF
   ]);
@@ -232,8 +226,6 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IF
     isSmartTransactionsOptInModalAvailable:
       getIsSmartTransactionsOptInModalAvailable(state),
-    isShowTokenAutodetectModal: getIsShowTokenAutodetectModal(state),
-    isShowNftAutodetectModal: getIsShowNftAutodetectModal(state),
   };
 };
 
@@ -286,15 +278,6 @@ const mapDispatchToProps = (dispatch) => {
     },
     setActiveNetwork: (networkConfigurationId) => {
       dispatch(setActiveNetwork(networkConfigurationId));
-    },
-    setTokenAutodetectModal: (val) => {
-      dispatch(setShowTokenAutodetectModal(val));
-    },
-    setShowTokenAutodetectModalOnUpgrade: (val) => {
-      dispatch(setShowTokenAutodetectModalOnUpgrade(val));
-    },
-    setNftAutodetectModal: (val) => {
-      dispatch(setShowNftAutodetectModal(val));
     },
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     setWaitForConfirmDeepLinkDialog: (wait) =>

@@ -46,13 +46,13 @@ function transformState(state: Record<string, any>) {
         .accounts,
     ).length > 0
   ) {
-    Object.values(accountsController.internalAccounts.accounts).forEach(
-      (internalAccount: InternalAccount) => {
-        if (!internalAccount.metadata?.importTime) {
-          internalAccount.metadata.importTime = Date.now();
-        }
-      },
-    );
+    Object.values<InternalAccount>(
+      accountsController.internalAccounts.accounts,
+    ).forEach((internalAccount) => {
+      if (!internalAccount.metadata?.importTime) {
+        internalAccount.metadata.importTime = Date.now();
+      }
+    });
   }
 
   return {

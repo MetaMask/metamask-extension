@@ -24,6 +24,7 @@ import {
   LOADING_SECURITY_ALERT_RESPONSE,
   SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES,
 } from '../../../../shared/constants/security-provider';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -65,7 +66,7 @@ export async function addDappTransaction(
 ): Promise<string> {
   const { dappRequest } = request;
   const { id: actionId, method, origin } = dappRequest;
-  const { securityAlertResponse } = dappRequest;
+  const { securityAlertResponse, traceContext } = dappRequest;
 
   const transactionOptions: AddTransactionOptions = {
     actionId,
@@ -76,12 +77,21 @@ export async function addDappTransaction(
     securityAlertResponse,
   };
 
+  endTrace({ name: TraceName.Middleware, id: actionId });
+
   const { waitForHash } = await addTransactionOrUserOperation({
     ...request,
-    transactionOptions,
+    transactionOptions: {
+      ...transactionOptions,
+      traceContext,
+    },
   });
 
-  return (await waitForHash()) as string;
+  const hash = (await waitForHash()) as string;
+
+  endTrace({ name: TraceName.Transaction, id: actionId });
+
+  return hash;
 }
 
 export async function addTransaction(
@@ -264,11 +274,12 @@ async function validateSecurity(request: AddTransactionRequest) {
       params: [
         {
           from,
-          to,
-          value,
-          data,
+          to: to ?? '',
+          value: value ?? '',
+          data: data ?? '',
         },
       ],
+      jsonrpc: '2.0' as const,
     };
 
     const securityAlertId = generateSecurityAlertId();

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Label, Text } from '../../component-library';
 
 import {
@@ -11,11 +10,7 @@ import {
   TextVariant,
   Display,
 } from '../../../helpers/constants/design-system';
-
-type LabelItem = {
-  key: string;
-  value: string;
-};
+import { LabelItem } from '../../../pages/institutional/custody/custody';
 
 type CustodyLabelsProps = {
   labels: LabelItem[];
@@ -56,18 +51,6 @@ const CustodyLabels: React.FC<CustodyLabelsProps> = (props) => {
       ))}
     </Label>
   );
-};
-
-CustodyLabels.propTypes = {
-  labels: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      value: PropTypes.string.isRequired,
-    }).isRequired,
-  ).isRequired,
-  index: PropTypes.string,
-  background: PropTypes.string,
-  hideNetwork: PropTypes.bool,
 };
 
 export default CustodyLabels;

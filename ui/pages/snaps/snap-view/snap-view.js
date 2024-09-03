@@ -8,7 +8,7 @@ import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { SNAPS_ROUTE } from '../../../helpers/constants/routes';
+import { DEFAULT_ROUTE, SNAPS_ROUTE } from '../../../helpers/constants/routes';
 import { getSnaps, getPermissions } from '../../../selectors';
 import {
   ButtonIcon,
@@ -65,7 +65,9 @@ function SnapView() {
   };
 
   const handleBackClick = () => {
-    if (showSettings && hasHomePage) {
+    if (snap.preinstalled && snap.hidden) {
+      history.push(DEFAULT_ROUTE);
+    } else if (showSettings && hasHomePage) {
       setShowSettings(false);
     } else {
       history.push(SNAPS_ROUTE);
@@ -108,7 +110,8 @@ function SnapView() {
         <Content
           backgroundColor={BackgroundColor.backgroundDefault}
           className="snap-view__content"
-          marginTop={4}
+          marginTop={showSettings ? 4 : 0}
+          padding={showSettings ? 4 : 0}
         >
           {showSettings ? (
             <SnapSettings

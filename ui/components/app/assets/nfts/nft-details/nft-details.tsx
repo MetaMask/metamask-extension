@@ -77,6 +77,8 @@ import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
 
+const MAX_TOKEN_ID_LENGTH = 15;
+
 export default function NftDetails({ nft }: { nft: Nft }) {
   const {
     image,
@@ -300,6 +302,13 @@ export default function NftDetails({ nft }: { nft: Nft }) {
     return formatCurrency(new Numeric(value, 10).toString(), currency);
   };
 
+  const renderShortTokenId = (text: string, chars: number) => {
+    if (text.length <= MAX_TOKEN_ID_LENGTH) {
+      return text;
+    }
+    return `${text.slice(0, chars)}...${text.slice(-chars)}`;
+  };
+
   return (
     <Page>
       <Content className="nft-details__content">
@@ -336,7 +345,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
               alt={image ? nftImageAlt : ''}
               name={name}
               tokenId={tokenId}
-              networkName={currentChain.nickname}
+              networkName={currentChain.nickname ?? ''}
               networkSrc={currentChain.rpcPrefs?.imageUrl}
               isIpfsURL={isIpfsURL}
               onClick={handleImageClick}
@@ -608,7 +617,12 @@ export default function NftDetails({ nft }: { nft: Nft }) {
               }
             />
           ) : null}
-          <NftDetailInformationRow title={t('tokenId')} value={tokenId} />
+          <NftDetailInformationRow
+            title={t('tokenId')}
+            value={renderShortTokenId(tokenId, 5)}
+            fullValue={tokenId}
+            withPopover={tokenId.length > MAX_TOKEN_ID_LENGTH}
+          />
           <NftDetailInformationRow
             title={t('tokenSymbol')}
             value={collection?.symbol}

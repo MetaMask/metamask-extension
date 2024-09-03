@@ -14,6 +14,7 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../shared/constants/permissions';
+import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 import SnapsConnect from './snaps/snaps-connect';
@@ -25,7 +26,7 @@ const APPROVE_TIMEOUT = MILLISECOND * 1200;
 
 function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
   const permission =
-    permissionsRequest.permissions?.[RestrictedMethods.eth_accounts];
+    permissionsRequest?.permissions?.[RestrictedMethods.eth_accounts];
   const requestedAccounts = permission?.caveats?.find(
     (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
   )?.value;
@@ -141,6 +142,14 @@ export default class PermissionConnect extends Component {
     if (!permissionsRequest) {
       history.replace(DEFAULT_ROUTE);
       return;
+    }
+    // if this is an incremental permission request for permitted chains, skip the account selection
+    if (
+      permissionsRequest?.diff?.permissionDiffMap?.[
+        PermissionNames.permittedChains
+      ]
+    ) {
+      history.replace(confirmPermissionPath);
     }
 
     if (history.location.pathname === connectPath && !isRequestingAccounts) {

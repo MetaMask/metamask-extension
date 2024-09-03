@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../../../test/lib/render-helpers';
+import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { AdvancedDetails } from './advanced-details';
 
 describe('<AdvancedDetails />', () => {
@@ -12,7 +12,10 @@ describe('<AdvancedDetails />', () => {
   it('does not render component for advanced transaction details', () => {
     const state = { ...mockState, confirm: { currentConfirmation: null } };
     const mockStore = configureMockStore(middleware)(state);
-    const { container } = renderWithProvider(<AdvancedDetails />, mockStore);
+    const { container } = renderWithConfirmContextProvider(
+      <AdvancedDetails />,
+      mockStore,
+    );
 
     expect(container).toMatchSnapshot();
   });
@@ -31,7 +34,10 @@ describe('<AdvancedDetails />', () => {
       },
     };
     const mockStore = configureMockStore(middleware)(state);
-    const { container } = renderWithProvider(<AdvancedDetails />, mockStore);
+    const { container } = renderWithConfirmContextProvider(
+      <AdvancedDetails />,
+      mockStore,
+    );
 
     expect(container).toMatchSnapshot();
   });

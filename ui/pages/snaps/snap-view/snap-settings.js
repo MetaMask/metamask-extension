@@ -162,6 +162,7 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
           snapName={snapName}
           permissions={permissions ?? {}}
           showOptions
+          showAllPermissions
         />
       </Box>
       <Box className="snap-view__content__connected-sites" marginTop={12}>

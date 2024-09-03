@@ -64,6 +64,7 @@ async function createSnapAccount(
   await driver.clickElement({ text: 'Create Account', tag: 'button' });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({ text: 'Create', tag: 'button' });
+  await driver.clickElement({ text: 'Add account', tag: 'button' });
   await driver.clickElement({ text: 'Ok', tag: 'button' });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ERC4337Snap);
 }
@@ -75,24 +76,38 @@ async function setSnapConfig(
     entrypoint,
     simpleAccountFactory,
     paymaster,
+    paymasterSK,
   }: {
     bundlerUrl: string;
     entrypoint: string;
     simpleAccountFactory: string;
     paymaster?: string;
+    paymasterSK?: string;
   },
 ) {
-  const data = JSON.stringify({
-    bundlerUrl,
-    entryPoint: entrypoint,
-    simpleAccountFactory,
-    customVerifyingPaymasterAddress: paymaster,
-  });
-
   await driver.switchToWindowWithTitle('Account Abstraction Snap');
-  await driver.clickElement({ text: 'Set Chain Config' });
-  await driver.fill('#set-chain-config-chain-config-object', data);
-  await driver.clickElement({ text: 'Set Chain Configs', tag: 'button' });
+  await driver.clickElement('[data-testid="chain-select"]');
+  await driver.clickElement('[data-testid="chain-id-1337"]');
+  await driver.fill('[data-testid="bundlerUrl"]', bundlerUrl);
+  await driver.fill('[data-testid="entryPoint"]', entrypoint);
+  await driver.fill(
+    '[data-testid="simpleAccountFactory"]',
+    simpleAccountFactory,
+  );
+  if (paymaster) {
+    await driver.fill(
+      '[data-testid="customVerifyingPaymasterAddress"]',
+      paymaster,
+    );
+  }
+  if (paymasterSK) {
+    await driver.fill(
+      '[data-testid="customVerifyingPaymasterSK"]',
+      paymasterSK,
+    );
+  }
+
+  await driver.clickElement({ text: 'Set Chain Config', tag: 'button' });
 }
 
 async function createSwap(driver: Driver) {

@@ -5,17 +5,7 @@ import { renderWithProvider } from '../../../../../test/jest/rendering';
 import NetworksTabSubheader from '.';
 
 const mockState = {
-  metamask: {
-    providerConfig: {
-      chainId: '0x539',
-      nickname: '',
-      rpcPrefs: {},
-      rpcUrl: 'http://localhost:8545',
-      ticker: 'ETH',
-      type: 'localhost',
-    },
-    networkConfigurations: {},
-  },
+  metamask: {},
   appState: {
     networksTabSelectedRpcUrl: 'http://localhost:8545',
   },

@@ -36,7 +36,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
     <ul>
       <li>
         <div
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-success-default"
@@ -57,7 +57,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
       </li>
       <li>
         <div
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-success-default"
@@ -78,7 +78,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
       </li>
       <li>
         <div
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-success-default"
@@ -138,13 +138,13 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
       class="mm-box onboarding-metametrics__buttons mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
     >
       <button
-        class="button btn--rounded btn-secondary btn--large"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
         data-testid="metametrics-no-thanks"
       >
         No thanks
       </button>
       <button
-        class="button btn--rounded btn-primary btn--large"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
         data-testid="metametrics-i-agree"
       >
         I agree
@@ -190,7 +190,7 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
     <ul>
       <li>
         <div
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-success-default"
@@ -211,7 +211,7 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
       </li>
       <li>
         <div
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-success-default"
@@ -232,7 +232,7 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
       </li>
       <li>
         <div
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-success-default"
@@ -292,13 +292,13 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
       class="mm-box onboarding-metametrics__buttons mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
     >
       <button
-        class="button btn--rounded btn-secondary btn--large"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
         data-testid="metametrics-no-thanks"
       >
         No thanks
       </button>
       <button
-        class="button btn--rounded btn-primary btn--large"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
         data-testid="metametrics-i-agree"
       >
         I agree

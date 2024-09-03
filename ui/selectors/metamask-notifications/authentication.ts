@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect';
-import type { AuthenticationControllerState } from '../../../app/scripts/controllers/authentication/authentication-controller';
+import type { AuthenticationController } from '@metamask/profile-sync-controller';
 
 type AppState = {
-  metamask: AuthenticationControllerState & {
+  metamask: AuthenticationController.AuthenticationControllerState & {
     participateInMetaMetrics: boolean;
   };
 };
