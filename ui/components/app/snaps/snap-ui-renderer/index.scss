@@ -4,7 +4,7 @@
   }
 
   &__container {
-    & > div:first-child {
+    & > *:first-child {
       padding: 16px;
     }
   }
