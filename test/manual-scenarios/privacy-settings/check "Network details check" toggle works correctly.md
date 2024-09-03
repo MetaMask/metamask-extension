@@ -32,12 +32,22 @@ Then the toggle switch should visually indicate to OFF
 When I click on the "Network details check" toggle icon again
 Then the toggle switch should visually indicate to ON
 
-# Scenario: Verification of network details check functionality
+# Scenario: Verification of network details check functionality when toggle is ON
 
 Given I am on the Security & Privacy settings page
 And the "Network details check" toggle is set to ON
-When I attempt to connect to a blockchain network
-Then MetaMask should check the network details against the information provided by chainid.network
+When I navigate to the Neworks tab
+And I change the network name
+Then the suggested name appears below
+When I change the currency symbol
+Then the suggested ticker appears below
 
+# Scenario: Verification of network details check functionality when toggle is OFF
+
+Given I am on the Security & Privacy settings page
+And the "Network details check" toggle is set to OFF
+When I attempt to check network details from the Neworks tab
+And I change the currency symbol
+Then a message appears below indicating that verification is unavailable
 
 ```
