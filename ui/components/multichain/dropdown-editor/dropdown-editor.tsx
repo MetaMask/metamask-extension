@@ -107,6 +107,7 @@ export const DropdownEditor = <Item,>({
                 ariaLabel={t('delete')}
                 size={ButtonIconSize.Sm}
                 iconName={IconName.Trash}
+                data-testid={`delete-rpc-${index}`}
                 color={IconColor.errorDefault}
                 onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();

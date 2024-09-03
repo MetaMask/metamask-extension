@@ -3,6 +3,7 @@ import { Suite } from 'mocha';
 import FixtureBuilder from '../../fixture-builder';
 import {
   defaultGanacheOptions,
+  regularDelayMs,
   tinyDelayMs,
   unlockWallet,
   withFixtures,
@@ -128,6 +129,113 @@ describe('Update Network:', function (this: Suite) {
           false,
           'Add url button should not be enabled',
         );
+      },
+    );
+  });
+
+  it('should delete added rpc url for existing network', async function () {
+    async function mockRPCURLAndChainId(mockServer: Mockttp) {
+      return [
+        await mockServer
+          .forPost('https://responsive-rpc.test/')
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              id: '1694444405781',
+              jsonrpc: '2.0',
+              result: '0xa4b1',
+            },
+          })),
+      ];
+    }
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withNetworkController({
+            providerConfig: {
+              rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
+            },
+            networkConfigurations: {
+              networkConfigurationId: {
+                chainId: '0x539',
+                nickname: 'Localhost 8545',
+                rpcUrl: 'http://localhost:8545',
+                ticker: 'ETH',
+                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
+              },
+              '2ce66016-8aab-47df-b27f-318c80865eb0': {
+                chainId: '0xa4b1',
+                id: '2ce66016-8aab-47df-b27f-318c80865eb0',
+                nickname: 'Arbitrum mainnet',
+                rpcPrefs: {},
+                rpcUrl: 'https://arbitrum-mainnet.infura.io',
+                ticker: 'ETH',
+              },
+              '2ce66016-8aab-47df-b27f-318c80865eb1': {
+                chainId: '0xa4b1',
+                id: '2ce66016-8aab-47df-b27f-318c80865eb1',
+                nickname: 'Arbitrum mainnet 2',
+                rpcPrefs: {},
+                rpcUrl: 'https://responsive-rpc.test/',
+                ticker: 'ETH',
+              },
+            },
+            selectedNetworkClientId: 'networkConfigurationId',
+          })
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockRPCURLAndChainId,
+      },
+
+      async ({ driver }: { driver: Driver }) => {
+        await unlockWallet(driver);
+
+        // Avoid a stale element error
+        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="network-display"]');
+
+        // Go to Edit Menu
+        const networkMenu = await driver.findElement(
+          '[data-testid="network-list-item-options-button-0xa4b1"]',
+        );
+        await networkMenu.click();
+
+        await driver.delay(regularDelayMs);
+        const editButton = await driver.findElement(
+          '[data-testid="network-list-item-options-edit"]',
+        );
+        editButton.click();
+
+        await driver.delay(regularDelayMs);
+
+        const rpcButtonMenu = await driver.findElement(
+          '[data-testid="test-add-rpc-drop-down"]',
+        );
+        rpcButtonMenu.click();
+
+        await driver.delay(regularDelayMs);
+
+        const arbitrumRpcToDelete = await driver.findElement({
+          text: 'responsive-rpc.test',
+          tag: 'p',
+        });
+
+        const existRpcToDelete = arbitrumRpcToDelete !== undefined;
+        assert.equal(existRpcToDelete, true, 'Rpc is not deleted');
+
+        const deleteRpcButton = await driver.findElement(
+          '[data-testid="delete-rpc-1"]',
+        );
+        deleteRpcButton.click();
+
+        const arbitrumRpcDeleted = await driver.findElement({
+          text: 'responsive-rpc.test',
+          tag: 'p',
+        });
+
+        const existRpcDeleted = arbitrumRpcDeleted !== undefined;
+        assert.equal(!existRpcDeleted, false, 'Rpc is deleted');
       },
     );
   });
