@@ -1,5 +1,6 @@
 import { ObservableStore } from '@metamask/obs-store';
 import { AccountsControllerState } from '@metamask/accounts-controller';
+import { Hex } from '@metamask/utils';
 import {
   CHAIN_IDS,
   IPFS_DEFAULT_GATEWAY_URL,
@@ -25,7 +26,7 @@ const testNetworks = {
 };
 
 type PreferencesControllerOptions = {
-  networkConfigurations?: Record<string, { chainId: number }>;
+  networkConfigurations?: Record<string, { chainId: Hex }>;
   initState?: Partial<PreferencesState>;
   initLangCode?: string;
   // TODO: Replace `any` with type
@@ -121,9 +122,9 @@ export default class PreferencesController {
    * @property {string} store.selectedAddress A hex string that matches the currently selected address in the app
    */
   constructor(opts: PreferencesControllerOptions = {}) {
-    const addedNonMainNetwork: Record<number, boolean> = Object.values(
+    const addedNonMainNetwork: Record<Hex, boolean> = Object.values(
       opts.networkConfigurations || {},
-    ).reduce((acc: Record<number, boolean>, element) => {
+    ).reduce((acc: Record<Hex, boolean>, element) => {
       acc[element.chainId] = true;
       return acc;
     }, {});
@@ -694,7 +695,7 @@ export default class PreferencesController {
    * @param chainId - chainId of the network
    * @param value - preference of certain network, true to be enabled
    */
-  setIncomingTransactionsPreferences(chainId: string, value: boolean): void {
+  setIncomingTransactionsPreferences(chainId: Hex, value: boolean): void {
     const previousValue = this.store.getState().incomingTransactionsPreferences;
     const updatedValue = { ...previousValue, [chainId]: value };
     this.store.updateState({ incomingTransactionsPreferences: updatedValue });
@@ -715,7 +716,8 @@ export default class PreferencesController {
   ): void {
     const { accounts, selectedAccount: selectedAccountId } =
       newAccountsControllerState.internalAccounts;
-
+    console.log('Accounts:', accounts);
+    console.log('selected account:', selectedAccountId);
     const selectedAccount = accounts[selectedAccountId];
 
     const { identities, lostIdentities } = this.store.getState();
