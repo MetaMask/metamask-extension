@@ -61,7 +61,6 @@ describe('Settings', function () {
         await driver.clickElement(
           '.settings-page__header__title-container__close-button',
         );
-        await driver.delay(1000);
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',
         );
