@@ -58,9 +58,7 @@ const TypedSignInfo: React.FC = () => {
 
   return (
     <>
-      {isPermit && useTransactionSimulations && (
-        <PermitSimulation tokenDecimals={decimals} />
-      )}
+      {isPermit && useTransactionSimulations && <PermitSimulation />}
       <ConfirmInfoSection>
         {isPermit && (
           <>
