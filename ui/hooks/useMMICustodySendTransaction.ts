@@ -42,21 +42,22 @@ export function useMMICustodySendTransaction() {
   const fromChecksumHexAddress = toChecksumHexAddress(from || '');
 
   const isNoteToTraderSupported = useSelector((state: State) =>
-    getIsNoteToTraderSupported(state, fromChecksumHexAddress)
+    getIsNoteToTraderSupported(state, fromChecksumHexAddress),
   );
 
   const custodianPublishesTransaction = useSelector((state: State) =>
-    getIsCustodianPublishesTransactionSupported(state, fromChecksumHexAddress)
+    getIsCustodianPublishesTransactionSupported(state, fromChecksumHexAddress),
   );
 
   const noteToTraderMessage = useSelector((state: State) =>
-    getNoteToTraderMessage(state)
+    getNoteToTraderMessage(state),
   );
 
   const isSmartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
 
   const { chainId, rpcUrl: customRpcUrl } = useSelector(getProviderConfig);
-  const builtinRpcUrl = CHAIN_ID_TO_RPC_URL_MAP[chainId as keyof typeof CHAIN_ID_TO_RPC_URL_MAP];
+  const builtinRpcUrl =
+    CHAIN_ID_TO_RPC_URL_MAP[chainId as keyof typeof CHAIN_ID_TO_RPC_URL_MAP];
 
   const rpcUrl = customRpcUrl || builtinRpcUrl;
 
@@ -75,7 +76,8 @@ export function useMMICustodySendTransaction() {
         confirmation.origin += '#smartTransaction';
       }
 
-      confirmation.metadata.custodianPublishesTransaction = custodianPublishesTransaction;
+      confirmation.metadata.custodianPublishesTransaction =
+        custodianPublishesTransaction;
       confirmation.metadata.rpcUrl = rpcUrl;
 
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));

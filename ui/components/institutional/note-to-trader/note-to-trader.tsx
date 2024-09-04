@@ -30,24 +30,23 @@ const NoteToTrader: React.FC = () => {
   const { from } = getConfirmationSender(currentConfirmation);
   const fromChecksumHexAddress = toChecksumHexAddress(from || '');
   const isNoteToTraderSupported = useSelector((state: State) =>
-    getIsNoteToTraderSupported(state, fromChecksumHexAddress)
+    getIsNoteToTraderSupported(state, fromChecksumHexAddress),
   );
 
   useEffect(() => {
     const timer = setTimeout(() => {
       dispatch(setNoteToTraderMessage(noteText));
-    }, 700)
+    }, 700);
 
-    return () => clearTimeout(timer)
-  }, [noteText])
+    return () => clearTimeout(timer);
+  }, [noteText]);
 
-  return (
-    isNoteToTraderSupported ?
+  return isNoteToTraderSupported ? (
     <Box
-    backgroundColor={BackgroundColor.backgroundDefault}
-    borderRadius={BorderRadius.MD}
-    padding={0}
-    marginBottom={4}
+      backgroundColor={BackgroundColor.backgroundDefault}
+      borderRadius={BorderRadius.MD}
+      padding={0}
+      marginBottom={4}
     >
       <Box
         display={Display.Flex}
@@ -80,8 +79,8 @@ const NoteToTrader: React.FC = () => {
           />
         </Box>
       </Box>
-    </Box> : null
-  );
+    </Box>
+  ) : null;
 };
 
 export default NoteToTrader;

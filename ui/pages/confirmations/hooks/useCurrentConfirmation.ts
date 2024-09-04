@@ -94,8 +94,7 @@ const useCurrentConfirmation = () => {
   // `REDESIGN_USER_TRANSACTION_TYPES` or `REDESIGN_DEV_TRANSACTION_TYPES`
   // respectively).
   const shouldUseRedesign =
-    shouldUseRedesignForSignatures ||
-    shouldUseRedesignForTransactions;
+    shouldUseRedesignForSignatures || shouldUseRedesignForTransactions;
 
   return useMemo(() => {
     if (!shouldUseRedesign) {

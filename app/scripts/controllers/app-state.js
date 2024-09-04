@@ -533,7 +533,7 @@ export default class AppStateController extends EventEmitter {
 
   setNoteToTraderMessage(message) {
     this.store.updateState({
-      noteToTraderMessage: message
+      noteToTraderMessage: message,
     });
   }
 
