@@ -78,18 +78,23 @@ describe('ConfirmFooter', () => {
     expect(getByText('Cancel')).toBeInTheDocument();
   });
 
-  it('renders enabled "Confirm" button when isScrollToBottomCompleted is false', () => {
-    const { getByText } = render();
+  it('renders enabled "Confirm" button when isScrollToBottomCompleted is true', () => {
+    const { getByText } = render({
+      confirm: {
+        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
+        isScrollToBottomCompleted: true,
+      },
+    });
     const confirmButton = getByText('Confirm');
     expect(confirmButton).not.toBeDisabled();
   });
 
-  describe.only('renders disabled "Confirm" Button', () => {
-    it('when isScrollToBottomCompleted is true', () => {
+  describe('renders disabled "Confirm" Button', () => {
+    it('when isScrollToBottomCompleted is false', () => {
       const { getByText } = render({
         confirm: {
           currentConfirmation: genUnapprovedContractInteractionConfirmation(),
-          isScrollToBottomCompleted: true,
+          isScrollToBottomCompleted: false,
         },
       });
 
