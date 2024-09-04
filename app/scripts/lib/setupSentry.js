@@ -116,7 +116,7 @@ function getTracesSampleRate(sentryTarget) {
   const flags = getManifestFlags();
 
   if (flags.circleci) {
-    return 0.001;
+    return 0.003;
   }
 
   if (METAMASK_DEBUG) {

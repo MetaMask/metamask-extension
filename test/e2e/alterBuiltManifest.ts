@@ -13,29 +13,41 @@
  * 5) A global afterEach hook restores the backup copy of the manifest, so that the next test gets the normal manifest
  */
 import fs from 'fs';
+import { ManifestFlags } from '../../app/scripts/lib/manifestFlags';
 
 const folder = `dist/${process.env.SELENIUM_BROWSER}`;
 
 // Global beforeEach hook to backup the manifest.json file
 if (typeof beforeEach === 'function' && process.env.SELENIUM_BROWSER) {
   beforeEach(() => {
+    console.debug('alterBuiltManifest.ts -- beforeEach hook');
+
     restoreBackupManifest();
 
-    fs.cpSync(`${folder}/manifest.json`, `${folder}/manifest.backup.json`, {
-      preserveTimestamps: true,
-    });
+    backupManifest();
   });
 }
 
 // Global afterEach hook to restore the backup manifest
 if (typeof afterEach === 'function' && process.env.SELENIUM_BROWSER) {
   afterEach(() => {
-    fs.cpSync(`${folder}/manifest.json`, `${folder}/manifest.altered.json`, {
-      preserveTimestamps: true,
-    });
+    console.debug('alterBuiltManifest.ts -- afterEach hook');
+
+    // create manifest.altered.json
+    backupManifest('altered');
 
     restoreBackupManifest();
   });
+}
+
+function backupManifest(newExtension = 'backup') {
+  fs.cpSync(
+    `${folder}/manifest.json`,
+    `${folder}/manifest.${newExtension}.json`,
+    {
+      preserveTimestamps: true,
+    },
+  );
 }
 
 function restoreBackupManifest() {
@@ -46,21 +58,27 @@ function restoreBackupManifest() {
   }
 }
 
+function parseIntOrUndefined(value: string | undefined): number | undefined {
+  return value ? parseInt(value, 10) : undefined;
+}
+
 /**
  * Alter the manifest with CircleCI environment variables and custom flags
  *
  * @param flags - Custom flags to set
  * @param flags.circleci - This will usually come in as undefined, and be set in this function
  */
-export function setManifestFlags(flags: { circleci?: object } = {}) {
+export function setManifestFlags(flags: ManifestFlags = {}) {
   if (process.env.CIRCLECI) {
     flags.circleci = {
       enabled: true,
       branch: process.env.CIRCLE_BRANCH,
-      buildNum: process.env.CIRCLE_BUILD_NUM,
+      buildNum: parseIntOrUndefined(process.env.CIRCLE_BUILD_NUM),
       job: process.env.CIRCLE_JOB,
-      nodeIndex: process.env.CIRCLE_NODE_INDEX,
-      prNumber: process.env.CIRCLE_PR_NUMBER,
+      nodeIndex: parseIntOrUndefined(process.env.CIRCLE_BUILD_NUM),
+      prNumber: parseIntOrUndefined(
+        process.env.CIRCLE_PULL_REQUEST?.split('/').pop(), // even though CIRCLE_PR_NUMBER is documented, it doesn't work
+      ),
     };
   }
 
