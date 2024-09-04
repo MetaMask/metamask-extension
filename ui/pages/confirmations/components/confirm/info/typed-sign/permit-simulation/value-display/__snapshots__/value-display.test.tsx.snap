@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PermitSimulationValueDisplay renders component correctly 1`] = `
+<div>
+  <div
+    class="mm-box"
+  >
+    <div
+      class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+    >
+      <div
+        class="mm-box mm-box--margin-inline-end-1 mm-box--display-inline mm-box--min-width-0"
+      >
+        <div
+          style="min-width: 0;"
+        >
+          <div
+            aria-describedby="tippy-tooltip-1"
+            class=""
+            data-original-title="0.4321"
+            data-tooltipped=""
+            style="display: inline;"
+            tabindex="0"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
+              data-testid="simulation-token-value"
+              style="padding-top: 1px; padding-bottom: 1px;"
+            >
+              0.432
+            </p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div
+          class="name name__missing"
+        >
+          <span
+            class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/question.svg');"
+          />
+          <p
+            class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+          >
+            0xA0b86...6eB48
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box"
+    />
+  </div>
+</div>
+`;

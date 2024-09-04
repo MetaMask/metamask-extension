@@ -1,3 +1,4 @@
+import MetaMaskOpenRPCDocument from '@metamask/api-specs';
 import {
   CaipChainId,
   CaipReference,
@@ -5,14 +6,48 @@ import {
   isCaipNamespace,
   isCaipChainId,
   parseCaipChainId,
+  KnownCaipNamespace,
 } from '@metamask/utils';
 
-// TODO: Remove this after bumping utils
-export enum KnownCaipNamespace {
-  /** EIP-155 compatible chains. */
-  Eip155 = 'eip155',
-  Wallet = 'wallet', // Needs to be added to utils
-}
+export type NonWalletKnownCaipNamespace = Exclude<
+  KnownCaipNamespace,
+  KnownCaipNamespace.Wallet
+>;
+
+export const KnownWalletRpcMethods: string[] = [
+  'wallet_registerOnboarding',
+  'wallet_scanQRCode',
+];
+const WalletEip155Methods = [
+  'wallet_addEthereumChain',
+  'wallet_watchAsset',
+  'personal_sign',
+  'eth_signTypedData',
+  'eth_signTypedData_v1',
+  'eth_signTypedData_v3',
+  'eth_signTypedData_v4',
+];
+
+const Eip155Methods = MetaMaskOpenRPCDocument.methods
+  .map(({ name }) => name)
+  .filter((method) => !WalletEip155Methods.includes(method))
+  .filter((method) => !KnownWalletRpcMethods.includes(method));
+
+export const KnownRpcMethods: Record<NonWalletKnownCaipNamespace, string[]> = {
+  eip155: Eip155Methods,
+};
+
+export const KnownWalletNamespaceRpcMethods: Record<
+  NonWalletKnownCaipNamespace,
+  string[]
+> = {
+  eip155: WalletEip155Methods,
+};
+
+export const KnownNotifications: Record<NonWalletKnownCaipNamespace, string[]> =
+  {
+    eip155: ['accountsChanged', 'chainChanged', 'eth_subscription'],
+  };
 
 export type Scope = CaipChainId | CaipReference;
 

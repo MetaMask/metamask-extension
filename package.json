@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "12.1.0",
+  "version": "12.1.2",
   "private": true,
   "repository": {
     "type": "git",
@@ -55,6 +55,7 @@
     "test:e2e:chrome:flask": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --build-type flask",
     "test:e2e:chrome:webpack": "ENABLE_MV3=false SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
     "test:api-specs": "SELENIUM_BROWSER=chrome ts-node test/e2e/run-openrpc-api-test-coverage.ts",
+    "test:api-specs-multichain": "SELENIUM_BROWSER=chrome ts-node test/e2e/run-api-specs-multichain.ts",
     "test:e2e:mmi:ci": "yarn playwright test --project=mmi --project=mmi.visual",
     "test:e2e:mmi:all": "yarn playwright test --project=mmi && yarn test:e2e:mmi:visual",
     "test:e2e:mmi:regular": "yarn playwright test --project=mmi",
@@ -137,6 +138,7 @@
     "analytics-node/axios": "^0.21.2",
     "bn.js": "^5.2.1",
     "ganache-core/lodash": "^4.17.21",
+    "ganache/abstract-level": "1.0.4",
     "git-url-parse@^12.0.0": "^13.1.0",
     "glob-parent": "^6.0.2",
     "netmask": "^2.0.1",
@@ -364,7 +366,7 @@
     "@metamask/snaps-utils": "^8.0.1",
     "@metamask/transaction-controller": "^35.2.0",
     "@metamask/user-operation-controller": "^13.0.0",
-    "@metamask/utils": "^8.2.1",
+    "@metamask/utils": "^9.2.0",
     "@ngraveio/bc-ur": "^1.1.12",
     "@noble/hashes": "^1.3.3",
     "@popperjs/core": "^2.4.0",
@@ -482,7 +484,7 @@
     "@open-rpc/meta-schema": "^1.14.6",
     "@open-rpc/mock-server": "^1.7.5",
     "@open-rpc/schema-utils-js": "^2.0.3",
-    "@open-rpc/test-coverage": "^2.2.2",
+    "@open-rpc/test-coverage": "^2.2.4",
     "@playwright/test": "^1.39.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
     "@sentry/cli": "^2.19.4",
@@ -618,6 +620,7 @@
     "lavamoat": "^8.0.2",
     "lavamoat-browserify": "^17.0.4",
     "lavamoat-viz": "^7.0.5",
+    "level": "^8.0.1",
     "lockfile-lint": "^4.10.6",
     "loose-envify": "^1.4.0",
     "mocha": "^10.2.0",
@@ -761,7 +764,8 @@
       "$root$": true,
       "core-js-pure": true,
       "resolve-url-loader>es6-iterator>d>es5-ext": false,
-      "resolve-url-loader>es6-iterator>d>es5-ext>esniff>es5-ext": false
+      "resolve-url-loader>es6-iterator>d>es5-ext>esniff>es5-ext": false,
+      "level>classic-level": false
     }
   },
   "packageManager": "yarn@4.4.1"

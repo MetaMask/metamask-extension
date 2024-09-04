@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.1.2]
+### Fixed
+- Fix Trezor signing and connecting accounts ([#26882](https://github.com/MetaMask/metamask-extension/pull/26882))
+
+## [12.1.1]
+### Changed
+- Update Polygon from MATIC to POL ([#26671](https://github.com/MetaMask/metamask-extension/pull/26671))
+
+### Fixed
+- Fix signature confirmation UI crash ([#26143](https://github.com/MetaMask/metamask-extension/pull/26143))
+- Update current selected account when selected account is removed ([#26573](https://github.com/MetaMask/metamask-extension/pull/26573), [#26742](https://github.com/MetaMask/metamask-extension/pull/26742), [#26773](https://github.com/MetaMask/metamask-extension/pull/26773))
+  - This also includes a migration to reset the selected account if it's currently invalid
+- Prevent pending confirmations from being inaccessible after attempting to add currently selected chain ([#26726](https://github.com/MetaMask/metamask-extension/pull/26726))
+
 ## [12.1.0]
 ### Added
 - Launched a feature displaying the percentage increase or decrease for tokens within the UI ([#24223](https://github.com/MetaMask/metamask-extension/pull/24223))
@@ -4996,7 +5010,9 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.1.2...HEAD
+[12.1.2]: https://github.com/MetaMask/metamask-extension/compare/v12.1.1...v12.1.2
+[12.1.1]: https://github.com/MetaMask/metamask-extension/compare/v12.1.0...v12.1.1
 [12.1.0]: https://github.com/MetaMask/metamask-extension/compare/v12.0.6...v12.1.0
 [12.0.6]: https://github.com/MetaMask/metamask-extension/compare/v12.0.5...v12.0.6
 [12.0.5]: https://github.com/MetaMask/metamask-extension/compare/v12.0.4...v12.0.5

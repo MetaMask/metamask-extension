@@ -10,9 +10,12 @@ import {
   Caip25EndowmentPermissionName,
 } from '../../multichain-api/caip25permissions';
 import {
-  validNotifications,
-  validRpcMethods,
-} from '../../multichain-api/scope';
+  CaveatTypes,
+  RestrictedMethods,
+} from '../../../../../shared/constants/permissions';
+import { setEthAccounts } from '../../multichain-api/adapters/caip-permission-adapter-eth-accounts';
+import { PermissionNames } from '../../../controllers/permissions';
+import { setPermittedEthChainIds } from '../../multichain-api/adapters/caip-permission-adapter-permittedChains';
 
 /**
  * This method attempts to retrieve the Ethereum accounts available to the
@@ -28,13 +31,11 @@ const requestEthereumAccounts = {
   hookNames: {
     getAccounts: true,
     getUnlockPromise: true,
-    hasPermission: true,
-    requestAccountsPermission: true,
+    requestPermissionApprovalForOrigin: true,
     sendMetrics: true,
     metamaskState: true,
     grantPermissions: true,
     getNetworkConfigurationByNetworkClientId: true,
-    updateCaveat: true,
   },
 };
 export default requestEthereumAccounts;
@@ -70,8 +71,7 @@ async function requestEthereumAccountsHandler(
   {
     getAccounts,
     getUnlockPromise,
-    hasPermission,
-    requestAccountsPermission,
+    requestPermissionApprovalForOrigin,
     sendMetrics,
     metamaskState,
     grantPermissions,
@@ -86,14 +86,15 @@ async function requestEthereumAccountsHandler(
     return end();
   }
 
-  if (hasPermission(MESSAGE_TYPE.ETH_ACCOUNTS)) {
+  let ethAccounts = await getAccounts();
+  if (ethAccounts.length > 0) {
     // We wait for the extension to unlock in this case only, because permission
     // requests are handled when the extension is unlocked, regardless of the
     // lock state when they were received.
     try {
       locks.add(origin);
       await getUnlockPromise(true);
-      res.result = await getAccounts();
+      res.result = ethAccounts;
       end();
     } catch (error) {
       end(error);
@@ -103,85 +104,83 @@ async function requestEthereumAccountsHandler(
     return undefined;
   }
 
-  // If no accounts, request the accounts permission
+  const { chainId } = getNetworkConfigurationByNetworkClientId(
+    req.networkClientId,
+  );
+
+  let legacyApproval;
   try {
-    await requestAccountsPermission();
+    legacyApproval = await requestPermissionApprovalForOrigin({
+      [RestrictedMethods.eth_accounts]: {},
+      [PermissionNames.permittedChains]: {
+        caveats: [
+          {
+            type: CaveatTypes.restrictNetworkSwitching,
+            value: [chainId],
+          },
+        ],
+      },
+    });
   } catch (err) {
     res.error = err;
     return end();
   }
 
-  // Get the approved accounts
-  const accounts = await getAccounts();
-  /* istanbul ignore else: too hard to induce, see below comment */
-  if (accounts.length > 0) {
-    res.result = accounts;
+  // NOTE: the eth_accounts/permittedChains approvals will be combined in the future.
+  // We assume that approvedAccounts and permittedChains are both defined here.
+  // Until they are actually combined, when testing, you must request both
+  // eth_accounts and permittedChains together.
+  let caveatValue = {
+    requiredScopes: {},
+    optionalScopes: {},
+    isMultichainOrigin: false,
+  };
+  caveatValue = setPermittedEthChainIds(
+    caveatValue,
+    legacyApproval.approvedChainIds,
+  );
 
-    // first time connection to dapp will lead to no log in the permissionHistory
-    // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
-    // we will leverage that to identify `is_first_visit` for metrics
+  caveatValue = setEthAccounts(caveatValue, legacyApproval.approvedAccounts);
+
+  grantPermissions({
+    subject: { origin },
+    approvedPermissions: {
+      [Caip25EndowmentPermissionName]: {
+        caveats: [
+          {
+            type: Caip25CaveatType,
+            value: caveatValue,
+          },
+        ],
+      },
+    },
+  });
+
+  ethAccounts = await getAccounts();
+  // first time connection to dapp will lead to no log in the permissionHistory
+  // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
+  // we will leverage that to identify `is_first_visit` for metrics
+  if (shouldEmitDappViewedEvent(metamaskState.metaMetricsId)) {
     const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
       origin,
     );
-    if (shouldEmitDappViewedEvent(metamaskState.metaMetricsId)) {
-      sendMetrics({
-        event: MetaMetricsEventName.DappViewed,
-        category: MetaMetricsEventCategory.InpageProvider,
-        referrer: {
-          url: origin,
-        },
-        properties: {
-          is_first_visit: isFirstVisit,
-          number_of_accounts: Object.keys(metamaskState.accounts).length,
-          number_of_accounts_connected: accounts.length,
-        },
-      });
-    }
-  } else {
-    // This should never happen, because it should be caught in the
-    // above catch clause
-    res.error = ethErrors.rpc.internal(
-      'Accounts unexpectedly unavailable. Please report this bug.',
-    );
-    return end();
-  }
-
-  if (process.env.BARAD_DUR) {
-    // caip25 endowment will never exist at this point in code because
-    // the provider_authorize grants the eth_accounts permission in addition
-    // to the caip25 endowment and the eth_requestAccounts hanlder
-    // returns early if eth_account is already granted
-    const { chainId } = getNetworkConfigurationByNetworkClientId(
-      req.networkClientId,
-    );
-    const scopeString = `eip155:${parseInt(chainId, 16)}`;
-
-    const caipAccounts = accounts.map((account) => `${scopeString}:${account}`);
-
-    grantPermissions({
-      subject: { origin },
-      approvedPermissions: {
-        [Caip25EndowmentPermissionName]: {
-          caveats: [
-            {
-              type: Caip25CaveatType,
-              value: {
-                requiredScopes: {},
-                optionalScopes: {
-                  [scopeString]: {
-                    methods: validRpcMethods,
-                    notifications: validNotifications,
-                    accounts: caipAccounts,
-                  },
-                },
-                isMultichainOrigin: false,
-              },
-            },
-          ],
-        },
+    sendMetrics({
+      event: MetaMetricsEventName.DappViewed,
+      category: MetaMetricsEventCategory.InpageProvider,
+      referrer: {
+        url: origin,
+      },
+      properties: {
+        is_first_visit: isFirstVisit,
+        number_of_accounts: Object.keys(metamaskState.accounts).length,
+        number_of_accounts_connected: ethAccounts.length,
       },
     });
   }
+
+  // We cannot derive ethAccounts directly from the CAIP-25 permission
+  // because the accounts will not be in order of lastSelected
+  res.result = ethAccounts;
 
   return end();
 }

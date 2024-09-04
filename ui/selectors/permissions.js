@@ -1,7 +1,11 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { CaveatTypes } from '../../shared/constants/permissions';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '../../app/scripts/lib/multichain-api/caip25permissions';
+import { getEthAccounts } from '../../app/scripts/lib/multichain-api/adapters/caip-permission-adapter-eth-accounts';
 import { getApprovalRequestsByType } from './approvals';
 import { createDeepEqualSelector } from './util';
 import {
@@ -56,7 +60,7 @@ export function getPermissionSubjects(state) {
  */
 export function getPermittedAccounts(state, origin) {
   return getAccountsFromPermission(
-    getAccountsPermissionFromSubject(subjectSelector(state, origin)),
+    getCaip25PermissionFromSubject(subjectSelector(state, origin)),
   );
 }
 
@@ -249,26 +253,22 @@ export const isAccountConnectedToCurrentTab = createDeepEqualSelector(
 // selector helpers
 
 function getAccountsFromSubject(subject) {
-  return getAccountsFromPermission(getAccountsPermissionFromSubject(subject));
+  return getAccountsFromPermission(getCaip25PermissionFromSubject(subject));
 }
 
-function getAccountsPermissionFromSubject(subject = {}) {
-  return subject.permissions?.eth_accounts || {};
+function getCaip25PermissionFromSubject(subject = {}) {
+  return subject.permissions?.[Caip25EndowmentPermissionName] || {};
 }
 
-function getAccountsFromPermission(accountsPermission) {
-  const accountsCaveat = getAccountsCaveatFromPermission(accountsPermission);
-  return accountsCaveat && Array.isArray(accountsCaveat.value)
-    ? accountsCaveat.value
-    : [];
+function getAccountsFromPermission(caip25Permission) {
+  const caip25Caveat = getCaveatFromPermission(caip25Permission);
+  return caip25Caveat ? getEthAccounts(caip25Caveat.value) : [];
 }
 
-function getAccountsCaveatFromPermission(accountsPermission = {}) {
+function getCaveatFromPermission(caip25Permission = {}) {
   return (
-    Array.isArray(accountsPermission.caveats) &&
-    accountsPermission.caveats.find(
-      (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
-    )
+    Array.isArray(caip25Permission.caveats) &&
+    caip25Permission.caveats.find((caveat) => caveat.type === Caip25CaveatType)
   );
 }
 

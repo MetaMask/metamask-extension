@@ -1151,6 +1151,11 @@ describe('Selectors', () => {
       mockState.metamask.notifications.test2,
     ]);
   });
+  it('#getReadNotificationsCount', () => {
+    const readNotificationsCount =
+      selectors.getReadNotificationsCount(mockState);
+    expect(readNotificationsCount).toStrictEqual(1);
+  });
   it('#getUnreadNotificationsCount', () => {
     const unreadNotificationCount =
       selectors.getUnreadNotificationsCount(mockState);
@@ -1598,15 +1603,27 @@ describe('Selectors', () => {
         subjects: {
           'https://test.dapp': {
             permissions: {
-              eth_accounts: {
+              'endowment:caip25': {
                 caveats: [
                   {
-                    type: 'restrictReturnedAccounts',
-                    value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          methods: [],
+                          notifications: [],
+                          accounts: [
+                            'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
                   },
                 ],
                 invoker: 'https://test.dapp',
-                parentCapability: 'eth_accounts',
+                parentCapability: 'endowment:caip25',
               },
             },
           },
