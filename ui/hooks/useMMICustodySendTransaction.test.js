@@ -25,10 +25,21 @@ jest.mock('../store/institutional/institution-background', () => ({
 
 jest.mock('../selectors', () => ({
   getAccountType: jest.fn(),
+  getIsNoteToTraderSupported: () => true,
 }));
 
 jest.mock('../store/actions', () => ({
   updateAndApproveTx: jest.fn(),
+}));
+
+jest.mock('../../../pages/confirmations/context/confirm', () => ({
+  useConfirmContext: () => ({
+    currentConfirmation: { from: '0x123' },
+  }),
+}));
+
+jest.mock('../../../pages/confirmations/components/confirm/utils', () => ({
+  getConfirmationSender: () => ({ from: '0x123' }),
 }));
 
 describe('useMMICustodySendTransaction', () => {

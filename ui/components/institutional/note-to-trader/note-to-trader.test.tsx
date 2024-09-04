@@ -1,10 +1,10 @@
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
-import NoteToTrader from './note-to-trader';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
+import NoteToTrader from './note-to-trader';
 
 jest.mock('../../../selectors/institutional/selectors', () => ({
   getIsNoteToTraderSupported: () => true,

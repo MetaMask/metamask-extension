@@ -62,10 +62,12 @@ export function setNoteToTraderMessage(message: string) {
       await submitRequestToBackground('setNoteToTraderMessage', [message]);
 
       await forceUpdateMetamaskState(dispatch);
-    } catch (err: any) {
-      if (err) {
-        dispatch(displayWarning(err.message));
-        throw new Error(err.message);
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error) {
+        dispatch(displayWarning(error.message));
+        throw new Error(error.message);
       }
     }
   };
