@@ -67,7 +67,7 @@ export const ConnectPage = ({
     const _request = {
       ...request,
       permissions: { ...request.permissions },
-      approvedAccounts: selectedAccount.address,
+      approvedAccounts: [selectedAccount.address],
       approvedChainIds: networksList.map((network) => network.chainId),
     };
     approveConnection(_request);
