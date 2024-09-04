@@ -109,6 +109,7 @@
         "showTestNetworks": false,
         "smartTransactionsOptInStatus": false,
         "useNativeCurrencyAsPrimaryCurrency": true,
+        "showNativeTokenAsMainBalance": true,
         "petnamesEnabled": true,
         "showConfirmationAdvancedDetails": false,
         "isRedesignedConfirmationsDeveloperEnabled": "boolean"
