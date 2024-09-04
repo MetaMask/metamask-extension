@@ -273,6 +273,16 @@ export default function PrivacySettings() {
                 dispatch(openBasicFunctionalityModal());
               } else {
                 dispatch(onboardingToggleBasicFunctionalityOn());
+                trackEvent({
+                  category: MetaMetricsEventCategory.Onboarding,
+                  event: MetaMetricsEventName.SettingsUpdated,
+                  properties: {
+                    settings_group: 'advanced',
+                    settings_type: 'basic_functionality',
+                    old_value: false,
+                    new_value: true,
+                  },
+                });
               }
             }}
             title={t('basicConfigurationLabel')}
