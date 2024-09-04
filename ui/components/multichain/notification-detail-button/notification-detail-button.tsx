@@ -41,15 +41,14 @@ export const NotificationDetailButton = ({
   const onClick = () => {
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationClicked,
+      event: MetaMetricsEventName.NotificationDetailClicked,
       properties: {
         notification_id: notification.id,
         notification_type: notification.type,
         ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT && {
           chain_id: notification?.chain_id,
         }),
-        notification_is_read: notification.isRead,
-        click_type: 'detail',
+        clicked_item: 'block_explorer',
       },
     });
   };
