@@ -2406,8 +2406,8 @@ export function updateSendQuote(
 
     if (isComputingSendGasLimit) {
       if (isComputingSendGasLimitUrgent) {
-        await debouncedComputeEstimatedGasLimit(dispatch);
-        // await dispatch(computeEstimatedGasLimit());
+        // await debouncedComputeEstimatedGasLimit(dispatch);
+        await dispatch(computeEstimatedGasLimit());
       } else {
         await debouncedComputeEstimatedGasLimit(dispatch);
       }

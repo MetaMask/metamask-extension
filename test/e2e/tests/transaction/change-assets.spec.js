@@ -13,6 +13,7 @@ describe('Change assets', function () {
     const smartContract = SMART_CONTRACTS.NFTS;
     await withFixtures(
       {
+        // driverOptions: { openDevToolsForTabs: true },
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -170,6 +171,7 @@ describe('Change assets', function () {
     const smartContract = SMART_CONTRACTS.NFTS;
     await withFixtures(
       {
+        // driverOptions: { openDevToolsForTabs: true },
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -199,7 +201,10 @@ describe('Change assets', function () {
         await driver.waitForSelector(
           '.confirm-page-container-summary__title img',
         );
-        await driver.waitForSelector({ css: 'h3', text: 'Test Dapp NFTs #1' });
+        await driver.waitForSelector({
+          css: 'h3',
+          text: 'Test Dapp NFTs #1',
+        });
 
         // Click edit
         await driver.clickElement(
@@ -247,9 +252,11 @@ describe('Change assets', function () {
   });
 
   it('changes to native currency when switching accounts during a NFT send', async function () {
+    // it('changes to native currency when switching accounts during a NFT send', async function () {
     const smartContract = SMART_CONTRACTS.NFTS;
     await withFixtures(
       {
+        // driverOptions: { openDevToolsForTabs: true },
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNftControllerERC721()
