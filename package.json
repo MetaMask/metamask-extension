@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "12.1.1",
+  "version": "12.1.2",
   "private": true,
   "repository": {
     "type": "git",
@@ -272,14 +272,7 @@
     "@json-schema-tools/reference-resolver@npm:^1.2.1": "patch:@json-schema-tools/reference-resolver@npm%3A1.2.6#~/.yarn/patches/@json-schema-tools-reference-resolver-npm-1.2.6-4e1497c16d.patch",
     "@metamask/keyring-controller@npm:^16.0.0": "patch:@metamask/keyring-controller@npm%3A17.1.1#~/.yarn/patches/@metamask-keyring-controller-npm-17.1.1-098cb41930.patch",
     "@metamask/keyring-controller@npm:^17.1.0": "patch:@metamask/keyring-controller@npm%3A17.1.1#~/.yarn/patches/@metamask-keyring-controller-npm-17.1.1-098cb41930.patch",
-    "@trezor/connect-web@npm:^9.1.11": "patch:@trezor/connect-web@npm%3A9.3.0#~/.yarn/patches/@trezor-connect-web-npm-9.3.0-040ab10d9a.patch",
-    "@metamask/utils@npm:^8.2.0": "patch:@metamask/utils@npm%3A8.5.0#~/.yarn/patches/@metamask-utils-npm-8.5.0-bf696c2d49.patch",
-    "@metamask/utils@npm:^9.0.0": "patch:@metamask/utils@npm%3A8.5.0#~/.yarn/patches/@metamask-utils-npm-8.5.0-bf696c2d49.patch",
-    "@metamask/utils@npm:^8.3.0": "patch:@metamask/utils@npm%3A8.5.0#~/.yarn/patches/@metamask-utils-npm-8.5.0-bf696c2d49.patch",
-    "@metamask/utils@npm:^8.1.0": "patch:@metamask/utils@npm%3A8.5.0#~/.yarn/patches/@metamask-utils-npm-8.5.0-bf696c2d49.patch",
-    "@metamask/utils@npm:^9.1.0": "patch:@metamask/utils@npm%3A8.5.0#~/.yarn/patches/@metamask-utils-npm-8.5.0-bf696c2d49.patch",
-    "@metamask/utils@npm:^8.4.0": "patch:@metamask/utils@npm%3A8.5.0#~/.yarn/patches/@metamask-utils-npm-8.5.0-bf696c2d49.patch",
-    "@metamask/utils@npm:^5.0.0": "patch:@metamask/utils@npm%3A8.5.0#~/.yarn/patches/@metamask-utils-npm-8.5.0-bf696c2d49.patch"
+    "@trezor/connect-web@npm:^9.1.11": "patch:@trezor/connect-web@npm%3A9.3.0#~/.yarn/patches/@trezor-connect-web-npm-9.3.0-040ab10d9a.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
@@ -373,7 +366,7 @@
     "@metamask/snaps-utils": "^8.0.1",
     "@metamask/transaction-controller": "^35.2.0",
     "@metamask/user-operation-controller": "^13.0.0",
-    "@metamask/utils": "patch:@metamask/utils@npm%3A8.5.0#~/.yarn/patches/@metamask-utils-npm-8.5.0-bf696c2d49.patch",
+    "@metamask/utils": "^9.2.0",
     "@ngraveio/bc-ur": "^1.1.12",
     "@noble/hashes": "^1.3.3",
     "@popperjs/core": "^2.4.0",
