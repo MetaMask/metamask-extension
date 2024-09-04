@@ -4,7 +4,10 @@ import { renderHook } from '@testing-library/react-hooks';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { TRIGGER_TYPES } from '../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
-import { useCounter } from './useCounter';
+import {
+  useUnreadNotificationsCounter,
+  useReadNotificationsCounter,
+} from './useCounter';
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
@@ -73,10 +76,12 @@ const wrapper = ({ children }: { children: ReactNode }) => (
   <Provider store={mockStore(mockState)}>{children}</Provider>
 );
 
-describe('useCounter', () => {
+describe('useUnreadNotificationsCounter', () => {
   it('should return the correct notifications count', () => {
-    const { result } = renderHook(() => useCounter(), { wrapper });
-    expect(result.current.notificationsCount).toBe(5);
+    const { result } = renderHook(() => useUnreadNotificationsCounter(), {
+      wrapper,
+    });
+    expect(result.current.notificationsUnreadCount).toBe(5);
   });
 
   it('should return three when metamask notifications are disabled', () => {
@@ -88,11 +93,37 @@ describe('useCounter', () => {
         isFeatureAnnouncementsEnabled: false,
       },
     };
-    const { result } = renderHook(() => useCounter(), {
+    const { result } = renderHook(() => useUnreadNotificationsCounter(), {
       wrapper: ({ children }) => (
         <Provider store={mockStore(disabledState)}>{children}</Provider>
       ),
     });
-    expect(result.current.notificationsCount).toBe(3);
+    expect(result.current.notificationsUnreadCount).toBe(3);
+  });
+});
+
+describe('useReadNotificationsCounter', () => {
+  it('should return the correct read notifications count', () => {
+    const { result } = renderHook(() => useReadNotificationsCounter(), {
+      wrapper,
+    });
+    expect(result.current.notificationsReadCount).toBe(0);
+  });
+
+  it('should return zero when metamask notifications are disabled', () => {
+    const disabledState = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        isMetamaskNotificationsEnabled: false,
+        isFeatureAnnouncementsEnabled: false,
+      },
+    };
+    const { result } = renderHook(() => useReadNotificationsCounter(), {
+      wrapper: ({ children }) => (
+        <Provider store={mockStore(disabledState)}>{children}</Provider>
+      ),
+    });
+    expect(result.current.notificationsReadCount).toBe(0);
   });
 });
