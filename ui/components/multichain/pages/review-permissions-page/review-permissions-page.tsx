@@ -4,7 +4,9 @@ import { useHistory, useParams } from 'react-router-dom';
 import {
   AlignItems,
   BackgroundColor,
+  BlockSize,
   Display,
+  FlexDirection,
   IconColor,
   JustifyContent,
   TextAlign,
@@ -21,7 +23,7 @@ import {
   getPermissionSubjects,
   getPermittedChainsByOrigin,
   getPermittedChainsForSelectedTab,
-} from '../../../../selectors/index';
+} from '../../../../selectors';
 import { removePermissionsFor } from '../../../../store/actions';
 import {
   AvatarFavicon,
@@ -37,9 +39,10 @@ import {
   IconSize,
   Text,
 } from '../../../component-library';
+import { ToastContainer, Toast } from '../..';
 import { NoConnectionContent } from '../connections/components/no-connection';
 import { Content, Footer, Header, Page } from '../page';
-import { SiteCell } from './index';
+import { SiteCell } from '.';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -47,7 +50,8 @@ export const ReviewPermissions = () => {
   const history = useHistory();
   const urlParams: { origin: string } = useParams();
   const securedOrigin = decodeURIComponent(urlParams.origin);
-
+  const [showAccountToast, setShowAccountToast] = useState(false);
+  const [showNetworkToast, setShowNetworkToast] = useState(false);
   const activeTabOrigin: string = securedOrigin;
   const subjectMetadata = useSelector(getConnectedSitesList);
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
@@ -62,6 +66,7 @@ export const ReviewPermissions = () => {
   const grantedNetworks = networksList.filter(
     (net: { chainId: any }) => connectedNetworks.indexOf(net.chainId) !== -1,
   );
+  const hostName = getURLHost(securedOrigin);
   const disconnectAllAccounts = () => {
     const subject = (subjects as SubjectsType)[activeTabOrigin];
 
@@ -81,8 +86,6 @@ export const ReviewPermissions = () => {
           ),
         );
       }
-
-      console.log('all disconnected');
     }
   };
   return (
@@ -90,65 +93,111 @@ export const ReviewPermissions = () => {
       data-testid="connections-page"
       className="main-container connections-page"
     >
-      {connectedAccounts.length > 0 ? <>
-      <Header
-        backgroundColor={BackgroundColor.backgroundDefault}
-        startAccessory={
-          <ButtonIcon
-            ariaLabel={t('back')}
-            iconName={IconName.ArrowLeft}
-            className="connections-header__start-accessory"
-            size={ButtonIconSize.Sm}
-            onClick={() => (history as any).goBack()}
-          />
-        }
-      >
-        <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          gap={2}
-          justifyContent={JustifyContent.center}
-          className="connections-header__title"
-        >
-          {connectedSubjectsMetadata?.iconUrl ? (
-            <AvatarFavicon
-              name={connectedSubjectsMetadata.name}
-              size={AvatarFaviconSize.Sm}
-              src={connectedSubjectsMetadata.iconUrl}
-            />
-          ) : (
-            <Icon
-              name={IconName.Global}
-              size={IconSize.Sm}
-              color={IconColor.iconDefault}
-            />
-          )}
-          <Text
-            as="span"
-            variant={TextVariant.headingMd}
-            textAlign={TextAlign.Center}
-            ellipsis
+      {connectedAccounts.length > 0 ? (
+        <>
+          <Header
+            backgroundColor={BackgroundColor.backgroundDefault}
+            startAccessory={
+              <ButtonIcon
+                ariaLabel={t('back')}
+                iconName={IconName.ArrowLeft}
+                className="connections-header__start-accessory"
+                size={ButtonIconSize.Sm}
+                onClick={() => (history as any).goBack()}
+              />
+            }
           >
-            {getURLHost(securedOrigin)}
-          </Text>
-        </Box>
-      </Header>
-      <Content padding={0}>
-        <SiteCell networks={grantedNetworks} accounts={connectedAccounts} />
-      </Content>
-      <Footer>
-        <Button
-          size={ButtonSize.Lg}
-          block
-          variant={ButtonVariant.Secondary}
-          startIconName={IconName.Logout}
-          danger
-          onClick={() => disconnectAllAccounts()}
-        >
-          {t('disconnectAllAccounts')}
-        </Button>
-      </Footer> </> : <NoConnectionContent />
-}
+            <Box
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              gap={2}
+              justifyContent={JustifyContent.center}
+              className="connections-header__title"
+            >
+              {connectedSubjectsMetadata?.iconUrl ? (
+                <AvatarFavicon
+                  name={connectedSubjectsMetadata.name}
+                  size={AvatarFaviconSize.Sm}
+                  src={connectedSubjectsMetadata.iconUrl}
+                />
+              ) : (
+                <Icon
+                  name={IconName.Global}
+                  size={IconSize.Sm}
+                  color={IconColor.iconDefault}
+                />
+              )}
+              <Text
+                as="span"
+                variant={TextVariant.headingMd}
+                textAlign={TextAlign.Center}
+                ellipsis
+              >
+                {hostName}
+              </Text>
+            </Box>
+          </Header>
+          <Content padding={0}>
+            <SiteCell
+              networks={grantedNetworks}
+              accounts={connectedAccounts}
+              onAccountsClick={() => setShowAccountToast(true)}
+              onNetworksClick={() => setShowNetworkToast(true)}
+            />
+          </Content>
+          <Footer>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              width={BlockSize.Full}
+              gap={2}
+            >
+              {showAccountToast ? (
+                <ToastContainer>
+                  <Toast
+                    text={t('accountPermissionToast', [hostName])}
+                    onClose={() => setShowAccountToast(false)}
+                    startAdornment={
+                      <AvatarFavicon
+                        name={connectedSubjectsMetadata?.name}
+                        size={AvatarFaviconSize.Sm}
+                        src={connectedSubjectsMetadata?.iconUrl}
+                      />
+                    }
+                  />
+                </ToastContainer>
+              ) : null}
+              {showNetworkToast ? (
+                <ToastContainer>
+                  <Toast
+                    text={t('networkPermissionToast', [hostName])}
+                    onClose={() => setShowNetworkToast(false)}
+                    startAdornment={
+                      <AvatarFavicon
+                        name={connectedSubjectsMetadata?.name}
+                        size={AvatarFaviconSize.Sm}
+                        src={connectedSubjectsMetadata?.iconUrl}
+                      />
+                    }
+                  />
+                </ToastContainer>
+              ) : null}
+              <Button
+                size={ButtonSize.Lg}
+                block
+                variant={ButtonVariant.Secondary}
+                startIconName={IconName.Logout}
+                danger
+                onClick={() => disconnectAllAccounts()}
+              >
+                {t('disconnectAllAccounts')}
+              </Button>
+            </Box>
+          </Footer>{' '}
+        </>
+      ) : (
+        <NoConnectionContent />
+      )}
     </Page>
   );
 };

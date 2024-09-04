@@ -162,6 +162,10 @@
   "accountOptions": {
     "message": "Account options"
   },
+  "accountPermissionToast": {
+    "message": "Account permissions updated for $1",
+    "description": "$1 represents connected dapp"
+  },
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
@@ -173,6 +177,9 @@
   },
   "accountsConnected": {
     "message": "Accounts connected"
+  },
+  "accountsPermissionsTitle": {
+    "message": "See your accounts and suggest transactions"
   },
   "active": {
     "message": "Active"
@@ -640,9 +647,6 @@
   "approvedOnForAccounts": {
     "message": "Approved on $1 for $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
-  },
-  "permittedChainToastUpdate": {
-    "message": "$1 has been given access to $2."
   },
   "areYouSure": {
     "message": "Are you sure?"
@@ -1819,9 +1823,6 @@
   },
   "encryptionPublicKeyRequest": {
     "message": "Request encryption public key"
-  },
-  "accountsPermissionsTitle": {
-    "message": "See your accounts and suggest transactions"
   },
   "endpointReturnedDifferentChainId": {
     "message": "The RPC URL you have entered returned a different chain ID ($1). Please update the Chain ID to match the RPC URL of the network you are trying to add.",
@@ -3088,6 +3089,10 @@
   "networkOptions": {
     "message": "Network options"
   },
+  "networkPermissionToast": {
+    "message": "Network permissions updated for $1",
+    "description": "$1 represents connected dapp"
+  },
   "networkProvider": {
     "message": "Network provider"
   },
@@ -4038,6 +4043,9 @@
   },
   "permitSimulationDetailInfo": {
     "message": "You're giving the spender permission to spend this many tokens from your account."
+  },
+  "permittedChainToastUpdate": {
+    "message": "$1 has been given access to $2."
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."

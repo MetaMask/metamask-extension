@@ -34,8 +34,6 @@ type AppState = {
     tokenId?: string;
     ignoreErc20Token?: boolean;
   };
-  showEditAccountsModalOpen: boolean;
-  showEditNetworksModalOpen: boolean;
   showPermittedNetworkToastOpen: boolean;
   showIpfsModalOpen: boolean;
   keyringRemovalSnapModal: {
@@ -127,8 +125,6 @@ const initialState: AppState = {
   qrCodeData: null,
   networkDropdownOpen: false,
   importNftsModal: { open: false },
-  showEditAccountsModalOpen: false,
-  showEditNetworksModalOpen: false,
   showPermittedNetworkToastOpen: false,
   showIpfsModalOpen: false,
   showBasicFunctionalityModal: false,
@@ -264,12 +260,6 @@ export default function reduceApp(
         showIpfsModalOpen: false,
       };
 
-    case actionConstants.SHOW_EDIT_NETWORKS_MODAL_OPEN:
-      return {
-        ...appState,
-        showEditNetworksModalOpen: true,
-      };
-
     case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_OPEN:
       return {
         ...appState,
@@ -280,24 +270,6 @@ export default function reduceApp(
       return {
         ...appState,
         showPermittedNetworkToastOpen: false,
-      };
-
-    case actionConstants.SHOW_EDIT_NETWORKS_MODAL_CLOSE:
-      return {
-        ...appState,
-        showEditNetworksModalOpen: false,
-      };
-
-    case actionConstants.SHOW_EDIT_ACCOUNTS_MODAL_OPEN:
-      return {
-        ...appState,
-        showEditAccountsModalOpen: true,
-      };
-
-    case actionConstants.SHOW_EDIT_ACCOUNTS_MODAL_CLOSE:
-      return {
-        ...appState,
-        showEditAccountsModalOpen: false,
       };
 
     case actionConstants.IMPORT_TOKENS_POPOVER_OPEN:

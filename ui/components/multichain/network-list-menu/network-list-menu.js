@@ -176,7 +176,7 @@ export const NetworkListMenu = ({ onClose }) => {
     return sortedNonTestNetworks;
   };
 
-  //check if not granted chain is clicked, then show the toast and grant permission
+  // check if not granted chain is clicked, then show the toast and grant permission
   const networksList = newOrderNetworks();
 
   const [items, setItems] = useState([...networksList]);
@@ -310,9 +310,11 @@ export const NetworkListMenu = ({ onClose }) => {
         onClick={() => {
           dispatch(toggleNetworkMenu());
           dispatch(setActiveNetwork(network.providerType || network.id));
-          grantPermittedChain(selectedTabOrigin, network.chainId);
-          if (!flattenedPermittedChains.includes(network.chainId)) {
-            dispatch(showPermittedNetworkToast());
+          if (process.env.CHAIN_PERMISSIONS) {
+            grantPermittedChain(selectedTabOrigin, network.chainId);
+            if (!flattenedPermittedChains.includes(network.chainId)) {
+              dispatch(showPermittedNetworkToast());
+            }
           }
           if (
             useRequestQueue &&

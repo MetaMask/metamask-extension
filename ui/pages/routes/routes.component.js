@@ -34,8 +34,6 @@ import {
   NetworkListMenu,
   AccountDetails,
   ImportNftsModal,
-  EditAccountsModal,
-  EditNetworksModal,
   ImportTokensModal,
   ToastContainer,
   Toast,
@@ -192,12 +190,8 @@ export default class Routes extends Component {
     accountDetailsAddress: PropTypes.string,
     isImportNftsModalOpen: PropTypes.bool.isRequired,
     hideImportNftsModal: PropTypes.func.isRequired,
-    isEditNetworksModalOpen: PropTypes.bool.isRequired,
     isPermittedNetworkToastOpen: PropTypes.bool.isRequired,
-    hideEditNetworksModal: PropTypes.func.isRequired,
     hidePermittedNetworkToast: PropTypes.func.isRequired,
-    isEditAccountsModalOpen: PropTypes.bool.isRequired,
-    hideEditAccountsModal: PropTypes.func.isRequired,
     isIpfsModalOpen: PropTypes.bool.isRequired,
     isBasicConfigurationModalOpen: PropTypes.bool.isRequired,
     hideIpfsModal: PropTypes.func.isRequired,
@@ -801,7 +795,7 @@ export default class Routes extends Component {
                 `${REVIEW_PERMISSIONS}/${safeEncodedHost}`,
               )
             }
-            onClose={() => hidePermittedNetworkToast()}
+            onClose={() => this.props.hidePermittedNetworkToast()}
           />
         ) : null}
       </ToastContainer>
@@ -868,10 +862,6 @@ export default class Routes extends Component {
       location,
       isImportNftsModalOpen,
       hideImportNftsModal,
-      isEditAccountsModalOpen,
-      hideEditAccountsModal,
-      isEditNetworksModalOpen,
-      hideEditNetworksModal,
       isIpfsModalOpen,
       isBasicConfigurationModalOpen,
       hideIpfsModal,
@@ -976,12 +966,6 @@ export default class Routes extends Component {
         ) : null}
         {isImportNftsModalOpen ? (
           <ImportNftsModal onClose={() => hideImportNftsModal()} />
-        ) : null}
-        {isEditAccountsModalOpen ? (
-          <EditAccountsModal onClose={() => hideEditAccountsModal()} />
-        ) : null}
-        {isEditNetworksModalOpen ? (
-          <EditNetworksModal onClose={() => hideEditNetworksModal()} />
         ) : null}
 
         {isIpfsModalOpen ? (

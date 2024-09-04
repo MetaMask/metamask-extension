@@ -54,8 +54,6 @@ import {
   hideKeyringRemovalResultModal,
   ///: END:ONLY_INCLUDE_IF
   setEditedNetwork,
-  hideEditAccountsModal,
-  hideEditNetworksModal,
   hidePermittedNetworkToast,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
@@ -135,9 +133,7 @@ function mapStateToProps(state) {
     accountDetailsAddress: state.appState.accountDetailsAddress,
     isImportNftsModalOpen: state.appState.importNftsModal.open,
     isIpfsModalOpen: state.appState.showIpfsModalOpen,
-    isEditNetworksModalOpen: state.appState.showEditNetworksModalOpen,
     isPermittedNetworkToastOpen: state.appState.showPermittedNetworkToastOpen,
-    isEditAccountsModalOpen: state.appState.showEditAccountsModalOpen,
     switchedNetworkDetails,
     useNftDetection,
     showNftEnablementToast,
@@ -171,8 +167,6 @@ function mapDispatchToProps(dispatch) {
     toggleNetworkMenu: () => dispatch(toggleNetworkMenu()),
     hideImportNftsModal: () => dispatch(hideImportNftsModal()),
     hideIpfsModal: () => dispatch(hideIpfsModal()),
-    hideEditAccountsModal: () => dispatch(hideEditAccountsModal()),
-    hideEditNetworksModal: () => dispatch(hideEditNetworksModal()),
     hidePermittedNetworkToast: () => dispatch(hidePermittedNetworkToast()),
     hideImportTokensModal: () => dispatch(hideImportTokensModal()),
     hideDeprecatedNetworkModal: () => dispatch(hideDeprecatedNetworkModal()),

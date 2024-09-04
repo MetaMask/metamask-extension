@@ -252,25 +252,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
       >
         {t('allPermissions')}
       </MenuItem>
-      <MenuItem
-        iconName={IconName.SecurityTick}
-        onClick={() => {
-          history.push(REVIEW_PERMISSIONS);
-          trackEvent({
-            event: MetaMetricsEventName.NavPermissionsOpened,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              location: METRICS_LOCATION,
-            },
-          });
-          closeMenu();
-        }}
-        data-testid="global-menu-connected-sites"
-        disabled={hasUnapprovedTransactions}
-      >
-        "global menu"
-      </MenuItem>
-
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         mmiPortfolioEnabled && (

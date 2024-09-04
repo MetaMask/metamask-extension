@@ -116,6 +116,11 @@ import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import { EndTraceRequest } from '../../shared/lib/trace';
+import {
+  CaveatFactories,
+  PermissionNames,
+} from '../../app/scripts/controllers/permissions/specifications';
+import { CaveatTypes } from '../../shared/constants/permissions';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -130,11 +135,6 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
-import {
-  CaveatFactories,
-  PermissionNames,
-} from '../../app/scripts/controllers/permissions/specifications';
-import { CaveatTypes } from '../../shared/constants/permissions';
 
 type CustomGasSettings = {
   gas?: string;
@@ -1826,7 +1826,7 @@ export function removePermittedAccount(
   origin: string,
   address: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  console.log("removed is done")
+  console.log('removed is done');
   return async (dispatch: MetaMaskReduxDispatch) => {
     await new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
@@ -1851,17 +1851,13 @@ export function removePermittedChain(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await new Promise<void>((resolve, reject) => {
-      callBackgroundMethod(
-        'removePermittedChain',
-        [origin, chain],
-        (error) => {
-          if (error) {
-            reject(error);
-            return;
-          }
-          resolve();
-        },
-      );
+      callBackgroundMethod('removePermittedChain', [origin, chain], (error) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve();
+      });
     });
     await forceUpdateMetamaskState(dispatch);
   };
@@ -2624,30 +2620,6 @@ export function showImportNftsModal(payload: {
 export function hideImportNftsModal(): Action {
   return {
     type: actionConstants.IMPORT_NFTS_MODAL_CLOSE,
-  };
-}
-
-export function showEditAccountsModal(): Action {
-  return {
-    type: actionConstants.SHOW_EDIT_ACCOUNTS_MODAL_OPEN,
-  };
-}
-
-export function hideEditAccountsModal(): Action {
-  return {
-    type: actionConstants.SHOW_EDIT_ACCOUNTS_MODAL_CLOSE,
-  };
-}
-
-export function hideEditNetworksModal(): Action {
-  return {
-    type: actionConstants.SHOW_EDIT_NETWORKS_MODAL_CLOSE,
-  };
-}
-
-export function showEditNetworksModal(): Action {
-  return {
-    type: actionConstants.SHOW_EDIT_NETWORKS_MODAL_OPEN,
   };
 }
 

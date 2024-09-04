@@ -96,18 +96,16 @@ export const SiteCellMenu = ({
       >
         <ModalFocus restoreFocus initialFocusRef={{ current: anchorElement }}>
           <Box onKeyDown={handleKeyDown} ref={popoverDialogRef}>
-              <TsMenuItem
-                iconName={IconName.SecurityTick}
-                data-testid="permission-details-menu-item"
-                onClick={() => {
-                  setShowPermissionModal(true);
-                  onClose();
-                }}
-              >
-                <Text variant={TextVariant.bodyMd}>
-                  {t('permissionDetails')}
-                </Text>
-              </TsMenuItem>
+            <TsMenuItem
+              iconName={IconName.SecurityTick}
+              data-testid="permission-details-menu-item"
+              onClick={() => {
+                setShowPermissionModal(true);
+                onClose();
+              }}
+            >
+              <Text variant={TextVariant.bodyMd}>{t('permissionDetails')}</Text>
+            </TsMenuItem>
           </Box>
         </ModalFocus>
       </Popover>

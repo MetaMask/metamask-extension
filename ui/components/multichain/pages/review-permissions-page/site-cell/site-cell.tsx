@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { SubjectType } from '@metamask/permission-controller';
+import { useDispatch } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
@@ -29,15 +30,15 @@ import {
 } from '../../../../component-library';
 import { getURLHost } from '../../../../../helpers/utils/util';
 import { ConnectionListTooltip } from '../../permissions-page/connection-list-tooltip/connection-list-tooltip';
-import {
-  showEditAccountsModal,
-  showEditNetworksModal,
-} from '../../../../../store/actions';
-import { useDispatch } from 'react-redux';
-import { AvatarGroup } from '../../../index';
+import { AvatarGroup, EditAccountsModal, EditNetworksModal } from '../../..';
 import { AvatarType } from '../../../avatar-group/avatar-group.types';
 
-export const SiteCell = ({ networks, accounts }) => {
+export const SiteCell = ({
+  networks,
+  accounts,
+  onAccountsClick,
+  onNetworksClick,
+}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const avatarNetworksData = networks.map((network) => ({
@@ -47,6 +48,9 @@ export const SiteCell = ({ networks, accounts }) => {
   const avatarAccountsData = accounts.map((account) => ({
     avatarValue: account.address,
   }));
+  const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
+  const [showEditNetworksModal, setShowEditNetworksModal] = useState(false);
+
   return (
     <>
       <Box
@@ -113,7 +117,7 @@ export const SiteCell = ({ networks, accounts }) => {
           style={{ flex: '1', alignSelf: 'center' }}
           gap={2}
           onClick={() => {
-            dispatch(showEditAccountsModal());
+            setShowEditAccountsModal(true);
           }}
         >
           <Icon
@@ -189,7 +193,7 @@ export const SiteCell = ({ networks, accounts }) => {
           style={{ flex: '1', alignSelf: 'center' }}
           gap={2}
           onClick={() => {
-            dispatch(showEditNetworksModal());
+            setShowEditNetworksModal(true);
           }}
         >
           <Icon
@@ -201,6 +205,18 @@ export const SiteCell = ({ networks, accounts }) => {
           />
         </Box>
       </Box>
+      {showEditNetworksModal ? (
+        <EditNetworksModal
+          onClose={() => setShowEditNetworksModal(false)}
+          onClick={onNetworksClick}
+        />
+      ) : null}
+      {showEditAccountsModal ? (
+        <EditAccountsModal
+          onClose={() => setShowEditAccountsModal(false)}
+          onClick={onAccountsClick}
+        />
+      ) : null}
     </>
   );
 };

@@ -61,7 +61,7 @@ export function getPermittedAccounts(state, origin) {
 }
 
 export function getPermittedChains(state, origin) {
-    return getChainsFromPermission(
+  return getChainsFromPermission(
     getChainsPermissionFromSubject(subjectSelector(state, origin)),
   );
 }
