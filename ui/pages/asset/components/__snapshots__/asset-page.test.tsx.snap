@@ -87,24 +87,6 @@ exports[`AssetPage should render a native asset 1`] = `
           </p>
         </button>
         <button
-          class="icon-button coin-overview__button"
-          data-testid="coin-overview-send"
-        >
-          <div
-            class="icon-button__circle"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
-            />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-          >
-            Send
-          </p>
-        </button>
-        <button
           class="icon-button coin-overview__button icon-button--disabled"
           data-testid="token-overview-button-swap"
           disabled=""
@@ -139,6 +121,24 @@ exports[`AssetPage should render a native asset 1`] = `
             class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
             Bridge
+          </p>
+        </button>
+        <button
+          class="icon-button coin-overview__button"
+          data-testid="coin-overview-send"
+        >
+          <div
+            class="icon-button__circle"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+          >
+            Send
           </p>
         </button>
         <button

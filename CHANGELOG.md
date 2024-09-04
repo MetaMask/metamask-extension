@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.1.2]
+### Fixed
+- Fix Trezor signing and connecting accounts ([#26882](https://github.com/MetaMask/metamask-extension/pull/26882))
+
 ## [12.1.1]
 ### Changed
 - Update Polygon from MATIC to POL ([#26671](https://github.com/MetaMask/metamask-extension/pull/26671))
@@ -5006,7 +5010,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.1.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.1.2...HEAD
+[12.1.2]: https://github.com/MetaMask/metamask-extension/compare/v12.1.1...v12.1.2
 [12.1.1]: https://github.com/MetaMask/metamask-extension/compare/v12.1.0...v12.1.1
 [12.1.0]: https://github.com/MetaMask/metamask-extension/compare/v12.0.6...v12.1.0
 [12.0.6]: https://github.com/MetaMask/metamask-extension/compare/v12.0.5...v12.0.6

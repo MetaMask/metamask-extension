@@ -1058,6 +1058,20 @@ export default class SecurityTab extends PureComponent {
                 setBasicFunctionalityModalOpen();
               } else {
                 toggleExternalServices(true);
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Settings,
+                  event: MetaMetricsEventName.SettingsUpdated,
+                  properties: {
+                    settings_group: 'security_privacy',
+                    settings_type: 'basic_functionality',
+                    old_value: false,
+                    new_value: true,
+                    // these values will always be set to false
+                    // when basic functionality is re-enabled
+                    was_notifications_on: false,
+                    was_profile_syncing_on: false,
+                  },
+                });
               }
             }}
             offLabel={t('off')}
