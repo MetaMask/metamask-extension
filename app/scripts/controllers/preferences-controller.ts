@@ -593,16 +593,16 @@ export default class PreferencesController {
    * @returns the account label
    */
   setAccountLabel(address: string, label: string): string | undefined {
-    const account = this.messagingSystem.call(
-      'AccountsController:getAccountByAddress',
-      address,
-    );
     if (!address) {
       throw new Error(
         `setAccountLabel requires a valid address, got ${String(address)}`,
       );
     }
 
+    const account = this.messagingSystem.call(
+      'AccountsController:getAccountByAddress',
+      address,
+    );
     if (account) {
       this.messagingSystem.call(
         'AccountsController:setAccountName',
