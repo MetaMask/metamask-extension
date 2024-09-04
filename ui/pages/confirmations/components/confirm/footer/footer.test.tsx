@@ -41,7 +41,7 @@ const render = (args = {}) => {
           from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         },
       },
-      isScrollToBottomUncompleted: false,
+      isScrollToBottomCompleted: true,
     },
     ...args,
   });
@@ -54,7 +54,7 @@ describe('ConfirmFooter', () => {
     const { container } = render({
       confirm: {
         currentConfirmation: unapprovedPersonalSignMsg,
-        isScrollToBottomUncompleted: false,
+        isScrollToBottomCompleted: true,
       },
     });
     expect(container).toMatchSnapshot();
@@ -64,7 +64,7 @@ describe('ConfirmFooter', () => {
     const { container } = render({
       confirm: {
         currentConfirmation: genUnapprovedContractInteractionConfirmation(),
-        isScrollToBottomUncompleted: false,
+        isScrollToBottomCompleted: true,
       },
     });
     expect(container).toMatchSnapshot();
@@ -78,18 +78,18 @@ describe('ConfirmFooter', () => {
     expect(getByText('Cancel')).toBeInTheDocument();
   });
 
-  it('renders enabled "Confirm" button when isScrollToBottomUncompleted is false', () => {
+  it('renders enabled "Confirm" button when isScrollToBottomCompleted is false', () => {
     const { getByText } = render();
     const confirmButton = getByText('Confirm');
     expect(confirmButton).not.toBeDisabled();
   });
 
   describe.only('renders disabled "Confirm" Button', () => {
-    it('when isScrollToBottomUncompleted is true', () => {
+    it('when isScrollToBottomCompleted is true', () => {
       const { getByText } = render({
         confirm: {
           currentConfirmation: genUnapprovedContractInteractionConfirmation(),
-          isScrollToBottomUncompleted: true,
+          isScrollToBottomCompleted: true,
         },
       });
 

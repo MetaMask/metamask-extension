@@ -52,7 +52,7 @@ describe('ScrollToBottom', () => {
       expect(container.querySelector(buttonSelector)).not.toBeInTheDocument();
     });
 
-    it('sets isScrollToBottomUncompleted to false', () => {
+    it('sets isScrollToBottomCompleted to true', () => {
       const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
       renderWithConfirmContextProvider(
         <ScrollToBottom>foobar</ScrollToBottom>,
@@ -60,7 +60,7 @@ describe('ScrollToBottom', () => {
       );
 
       expect(updateSpy).toHaveBeenCalledWith({
-        isScrollToBottomUncompleted: false,
+        isScrollToBottomCompleted: true,
       });
     });
   });
@@ -86,7 +86,7 @@ describe('ScrollToBottom', () => {
       expect(container.querySelector(buttonSelector)).toBeInTheDocument();
     });
 
-    it('sets isScrollToBottomUncompleted to true', () => {
+    it('sets isScrollToBottomCompleted to false', () => {
       const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
       renderWithConfirmContextProvider(
         <ScrollToBottom>foobar</ScrollToBottom>,
@@ -94,7 +94,7 @@ describe('ScrollToBottom', () => {
       );
 
       expect(updateSpy).toHaveBeenCalledWith({
-        isScrollToBottomUncompleted: true,
+        isScrollToBottomCompleted: false,
       });
     });
 
@@ -155,7 +155,7 @@ describe('ScrollToBottom', () => {
         expect(container.querySelector(buttonSelector)).not.toBeInTheDocument();
       });
 
-      it('sets isScrollToBottomUncompleted to false', () => {
+      it('sets isScrollToBottomCompleted to true', () => {
         const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
         const { container } = renderWithConfirmContextProvider(
           <ScrollToBottom>foobar</ScrollToBottom>,
@@ -164,7 +164,7 @@ describe('ScrollToBottom', () => {
 
         expect(container.querySelector(buttonSelector)).not.toBeInTheDocument();
         expect(updateSpy).toHaveBeenCalledWith({
-          isScrollToBottomUncompleted: true,
+          isScrollToBottomCompleted: true,
         });
       });
     });
