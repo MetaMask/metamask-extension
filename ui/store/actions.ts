@@ -1548,6 +1548,10 @@ export function updateMetamaskState(
       return currentState;
     }
 
+    if (rawNewState) {
+      log.debug('Updating state with full state');
+    }
+
     const newState = rawNewState ?? applyPatches(currentState, patches);
 
     const { currentLocale } = currentState;
@@ -3143,15 +3147,21 @@ export async function forceUpdateMetamaskState(
 ) {
   log.debug(`background.getState`);
 
-  let pendingPatches;
+  let pendingPatches: Patch[] | undefined;
+
   try {
-    pendingPatches = await submitRequestToBackground<
-      MetaMaskReduxState['metamask']
-    >('getStatePatches');
+    pendingPatches = await submitRequestToBackground<Patch[]>(
+      'getStatePatches',
+    );
   } catch (error) {
     dispatch(displayWarning(error));
     throw error;
   }
+
+  log.debug(
+    'Updated state with patches',
+    pendingPatches?.map((p) => p.path.join('.')),
+  );
 
   return dispatch(updateMetamaskState(undefined, pendingPatches));
 }
