@@ -69,6 +69,7 @@ function onboardingFixture() {
           showTestNetworks: false,
           smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
+          showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
