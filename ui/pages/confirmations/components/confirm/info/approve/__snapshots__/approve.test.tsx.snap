@@ -542,6 +542,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
         >
 <<<<<<< HEAD
+<<<<<<< HEAD
           Network fee
         </p>
         <div>
@@ -549,6 +550,9 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
             aria-describedby="tippy-tooltip-2"
 =======
           Estimated fee
+=======
+          Network fee
+>>>>>>> 081db119b3 (Update snapshot)
         </p>
         <div>
           <div
