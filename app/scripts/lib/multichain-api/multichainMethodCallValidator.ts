@@ -63,12 +63,12 @@ export const multichainMethodCallValidator = async (
       paramToCheck = params[i];
     }
     const result = v.validate(paramToCheck, p.schema as unknown as Schema, {
-      required: true,
+      required: p.required,
     });
-    if (result.errors && p.required) {
+    if (result.errors) {
       errors.push(
         ...result.errors.map((e) => {
-          return transformError(e, p, paramToCheck);
+          return transformError(e, p, paramToCheck) as JsonRpcError;
         }),
       );
     }
