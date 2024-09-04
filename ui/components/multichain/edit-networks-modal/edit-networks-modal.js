@@ -53,6 +53,18 @@ export const EditNetworksModal = ({ onClose, onClick }) => {
     }
     setSelectedChains(newSelectedChains);
   };
+    const allAreSelected = () => {
+      return nonTestNetworks.length === selectedChains.length;
+    };
+    let checked = false;
+    let isIndeterminate = false;
+    if (allAreSelected()) {
+      checked = true;
+      isIndeterminate = false;
+    } else if (selectedChains.length > 0 && !allAreSelected()) {
+      checked = false;
+      isIndeterminate = true;
+    }
   const managePermittedChains = (
     selectedChains,
     flattenedPermittedChains,
@@ -94,10 +106,10 @@ export const EditNetworksModal = ({ onClose, onClick }) => {
         <Box padding={4}>
           <Checkbox
             label={t('selectAll')}
-            isChecked
+            isChecked={checked}
             gap={4}
-            // onClick={() => (allAreSelected() ? deselectAll() : selectAll())}
-            // isIndeterminate={isIndeterminate}
+            onClick={() => (allAreSelected() ? deselectAll() : selectAll())}
+            isIndeterminate={isIndeterminate}
           />
         </Box>
         {nonTestNetworks.map((network) => (
