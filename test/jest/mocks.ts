@@ -9,6 +9,7 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import { v4 as uuidv4 } from 'uuid';
 import { keyringTypeToName } from '@metamask/accounts-controller';
 import {
+  DraftTransaction,
   draftTransactionInitialState,
   initialState,
 } from '../../ui/ducks/send';
@@ -133,9 +134,9 @@ export const INITIAL_SEND_STATE_FOR_EXISTING_DRAFT = {
   },
 };
 
-// TODO: Define the type of draftTxState
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const getInitialSendStateWithExistingTxState = (draftTxState: any) => ({
+export const getInitialSendStateWithExistingTxState = (
+  draftTxState: DraftTransaction & { test: string },
+) => ({
   ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
   draftTransactions: {
     'test-uuid': {
