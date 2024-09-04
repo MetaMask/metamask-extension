@@ -44,6 +44,8 @@ Given I am on the Security & Privacy settings page
 And the "IPFS gateway" toggle is set to OFF
 When I attempt to view images of my NFTs (e.g. ERC1155) stored on IPFS
 Then MetaMask should display a placeholder image instead of the NFT media
+And I should see a "Show" button
+And clicking "Show" should prompt me to confirm turning ON IPFS resolution
 
 
 ```
