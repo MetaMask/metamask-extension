@@ -3040,6 +3040,9 @@
   "networkDetails": {
     "message": "Network details"
   },
+  "networkFee": {
+    "message": "Network fee"
+  },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
   },
