@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "Ikonekta ang iyong QR na wallet na hardware"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "Ang address sa kahilingan sa pag-sign in ay hindi tugma sa address ng account na ginagamit mo sa pag-sign in."
   },
@@ -192,6 +189,9 @@
   "addAccount": {
     "message": "Magdagdag ng account"
   },
+  "addAccountToMetaMask": {
+    "message": "Idagdag ang account sa MetaMask"
+  },
   "addAcquiredTokens": {
     "message": "Idagdag ang mga token na nakuha mo gamit ang MetaMask"
   },
@@ -306,6 +306,9 @@
   },
   "addUrl": {
     "message": "Idagdag ang URL"
+  },
+  "addingAccount": {
+    "message": "Idinaragdag ang account"
   },
   "addingCustomNetwork": {
     "message": "Nagdaragdag ng Network"
@@ -1506,6 +1509,9 @@
   "details": {
     "message": "Mga Detalye"
   },
+  "developerOptions": {
+    "message": "Mga Opsyon ng Developer"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "Ang “$1” ay hindi pinagagana dahil hindi nito naabot ang pinakamababang 10% na dagdag mula sa orihinal na bayad sa gas.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1847,6 +1853,9 @@
   },
   "existingChainId": {
     "message": "Ang impormasyon na iyong inilagay ay nauugnay sa isang umiiral na ID ng chain."
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "Para tingnan at kumpirmahin ang iyong pinakabagong hiling, kailangan mo munang aprubahan o tanggihan ang mga umiiral na hiling."
   },
   "expandView": {
     "message": "I-expand ang view"
@@ -2862,6 +2871,10 @@
     "message": "Pumili ng palayaw...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "Ang $1 ay humihiling ng iyong pag-apruba para:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "Gusto mo bang gawin ng site na ito ang mga sumusunod?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3465,6 +3478,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opsyonal:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Matuto kung paano namin pinoprotektahan ang iyong pagkapribado habang kinokolekta ang data sa paggamit para sa iyong profile."
   },
   "onboardingMetametricsTitle": {
     "message": "Tulungan kaming mapahusay ang MetaMask"
@@ -4137,6 +4153,12 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "I-on ito upang makita ang mga hiling sa pirma sa isang pinahusay na format."
   },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "Pinahusay na mga hiling sa transaksyon"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "I-on ito upang makita ang mga hiling sa transaksyon sa isang pinahusay na format."
+  },
   "refreshList": {
     "message": "I-refresh ang listahan"
   },
@@ -4336,6 +4358,9 @@
   },
   "reviewAlerts": {
     "message": "Suriin ang mga alerto"
+  },
+  "reviewPermissions": {
+    "message": "Suriin ang mga pahintulot"
   },
   "revokeAllTokensTitle": {
     "message": "Bawiin ang pahintulot na i-access at ilipat ang lahat ng iyong $1?",
