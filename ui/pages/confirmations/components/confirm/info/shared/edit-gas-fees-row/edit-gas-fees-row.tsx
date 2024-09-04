@@ -11,10 +11,8 @@ import {
   TextColor,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import {
-  currentConfirmationSelector,
-  getPreferences,
-} from '../../../../../../../selectors';
+import { getPreferences } from '../../../../../../../selectors';
+import { useConfirmContext } from '../../../../../context/confirm';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
@@ -35,9 +33,9 @@ export const EditGasFeesRow = ({
   const { useNativeCurrencyAsPrimaryCurrency: isNativeCurrencyUsed } =
     useSelector(getPreferences);
 
-  const transactionMeta = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
+    currentConfirmation: TransactionMeta;
+  };
 
   return (
     <ConfirmInfoAlertRow
