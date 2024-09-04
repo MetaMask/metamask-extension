@@ -21,6 +21,7 @@ import {
   isSIWESignatureRequest,
 } from '../../../utils';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
+import { useSpendingCapContext } from '../info/approve/spending-cap-context';
 import { useDecodedTransactionData } from '../info/hooks/useDecodedTransactionData';
 import { getIsRevokeSetApprovalForAll } from '../info/utils';
 
@@ -66,6 +67,7 @@ const getTitle = (
   t: IntlFunction,
   confirmation?: Confirmation,
   isNFT?: boolean,
+  customSpendingCap?: string,
   isRevokeSetApprovalForAll?: boolean,
 ) => {
   switch (confirmation?.type) {
@@ -103,21 +105,12 @@ const getDescription = (
   t: IntlFunction,
   confirmation?: Confirmation,
   isNFT?: boolean,
+  customSpendingCap?: string,
   isRevokeSetApprovalForAll?: boolean,
 ) => {
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
       return '';
-<<<<<<< HEAD
-=======
-    case TransactionType.tokenMethodApprove:
-      if (isNFT) {
-        return t('confirmTitleDescApproveTransaction');
-      }
-      return t('confirmTitleDescERC20ApproveTransaction');
-    case TransactionType.tokenMethodIncreaseAllowance:
-      return t('confirmTitleDescPermitSignature');
->>>>>>> 754fe6cadd (wip)
     case TransactionType.deployContract:
       return t('confirmTitleDescDeployContract');
     case TransactionType.personalSign:
@@ -153,6 +146,8 @@ const ConfirmTitle: React.FC = memo(() => {
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
+  const { customSpendingCap } = useSpendingCapContext();
+
   let isRevokeSetApprovalForAll = false;
   if (
     currentConfirmation?.type === TransactionType.tokenMethodSetApprovalForAll
@@ -170,9 +165,10 @@ const ConfirmTitle: React.FC = memo(() => {
         t as IntlFunction,
         currentConfirmation,
         isNFT,
+        customSpendingCap,
         isRevokeSetApprovalForAll,
       ),
-    [currentConfirmation, isNFT, isRevokeSetApprovalForAll],
+    [currentConfirmation, isNFT, customSpendingCap, isRevokeSetApprovalForAll],
   );
 
   const description = useMemo(
@@ -181,9 +177,11 @@ const ConfirmTitle: React.FC = memo(() => {
         t as IntlFunction,
         currentConfirmation,
         isNFT,
+        customSpendingCap,
         isRevokeSetApprovalForAll,
       ),
-    [currentConfirmation, isNFT, isRevokeSetApprovalForAll],
+
+    [currentConfirmation, isNFT, customSpendingCap, isRevokeSetApprovalForAll],
   );
 
   if (!currentConfirmation) {

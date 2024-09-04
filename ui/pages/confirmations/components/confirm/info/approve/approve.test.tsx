@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { getMockApproveConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import ApproveInfo from './approve';
+import { SpendingCapProvider } from './spending-cap-context';
 
 jest.mock('../../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../../store/actions'),
@@ -69,7 +70,9 @@ describe('<ApproveInfo />', () => {
     const mockStore = configureMockStore(middleware)(state);
 
     const { container } = renderWithConfirmContextProvider(
-      <ApproveInfo />,
+      <SpendingCapProvider>
+        <ApproveInfo />
+      </SpendingCapProvider>,
       mockStore,
     );
 

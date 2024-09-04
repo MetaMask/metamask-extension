@@ -1,4 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useConfirmContext } from '../../../../context/confirm';
@@ -9,6 +12,9 @@ import { ApproveDetails } from './approve-details/approve-details';
 import { ApproveStaticSimulation } from './approve-static-simulation/approve-static-simulation';
 import { EditSpendingCapModal } from './edit-spending-cap-modal/edit-spending-cap-modal';
 import { useIsNFT } from './hooks/use-is-nft';
+import { RevokeDetails } from './revoke-details/revoke-details';
+import { RevokeStaticSimulation } from './revoke-static-simulation/revoke-static-simulation';
+import { useSpendingCapContext } from './spending-cap-context';
 import { SpendingCap } from './spending-cap/spending-cap';
 
 const ApproveInfo = () => {
@@ -29,11 +35,19 @@ const ApproveInfo = () => {
     return null;
   }
 
+  const showRevokeScreen =
+    customSpendingCap === '0' &&
+    transactionMeta.type === TransactionType.tokenMethodApprove;
+
   return (
     <>
-      <ApproveStaticSimulation />
-      <ApproveDetails />
-      {!isNFT && (
+      {showRevokeScreen ? (
+        <RevokeStaticSimulation />
+      ) : (
+        <ApproveStaticSimulation />
+      )}
+      {showRevokeScreen ? <RevokeDetails /> : <ApproveDetails />}
+      {!isNFT && !showRevokeScreen && (
         <SpendingCap
           setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
         />
