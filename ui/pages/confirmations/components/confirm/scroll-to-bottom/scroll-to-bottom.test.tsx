@@ -52,7 +52,7 @@ describe('ScrollToBottom', () => {
       expect(container.querySelector(buttonSelector)).not.toBeInTheDocument();
     });
 
-    it('sets isScrollToBottomNeeded to false', () => {
+    it('sets isScrollToBottomFulfilled to false', () => {
       const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
       renderWithConfirmContextProvider(
         <ScrollToBottom>foobar</ScrollToBottom>,
@@ -60,7 +60,7 @@ describe('ScrollToBottom', () => {
       );
 
       expect(updateSpy).toHaveBeenCalledWith({
-        isScrollToBottomNeeded: false,
+        isScrollToBottomFulfilled: false,
       });
     });
   });
@@ -86,7 +86,7 @@ describe('ScrollToBottom', () => {
       expect(container.querySelector(buttonSelector)).toBeInTheDocument();
     });
 
-    it('sets isScrollToBottomNeeded to true', () => {
+    it('sets isScrollToBottomFulfilled to true', () => {
       const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
       renderWithConfirmContextProvider(
         <ScrollToBottom>foobar</ScrollToBottom>,
@@ -94,7 +94,7 @@ describe('ScrollToBottom', () => {
       );
 
       expect(updateSpy).toHaveBeenCalledWith({
-        isScrollToBottomNeeded: true,
+        isScrollToBottomFulfilled: true,
       });
     });
 
@@ -155,7 +155,7 @@ describe('ScrollToBottom', () => {
         expect(container.querySelector(buttonSelector)).not.toBeInTheDocument();
       });
 
-      it('sets isScrollToBottomNeeded to false', () => {
+      it('sets isScrollToBottomFulfilled to false', () => {
         const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
         const { container } = renderWithConfirmContextProvider(
           <ScrollToBottom>foobar</ScrollToBottom>,
@@ -164,7 +164,7 @@ describe('ScrollToBottom', () => {
 
         expect(container.querySelector(buttonSelector)).not.toBeInTheDocument();
         expect(updateSpy).toHaveBeenCalledWith({
-          isScrollToBottomNeeded: true,
+          isScrollToBottomFulfilled: true,
         });
       });
     });
