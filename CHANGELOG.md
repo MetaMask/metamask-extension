@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.1.3]
+### Fixed
+- Fix `eth_signTypedData` error when `verifyingContract` is not provided ([#26914](https://github.com/MetaMask/metamask-extension/pull/26914))
 
 ## [12.1.2]
 ### Fixed
