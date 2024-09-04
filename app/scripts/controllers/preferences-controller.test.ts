@@ -93,23 +93,21 @@ describe('preferences controller', () => {
 
   describe('setCurrentLocale', () => {
     it('checks the default currentLocale', () => {
-      const { currentLocale }: { currentLocale: string } =
-        preferencesController.store.getState();
+      const { currentLocale } = preferencesController.store.getState();
       expect(currentLocale).toStrictEqual('en_US');
     });
 
     it('sets current locale in preferences controller', () => {
       preferencesController.setCurrentLocale('ja');
-      const { currentLocale }: { currentLocale: string } =
-        preferencesController.store.getState();
+      const { currentLocale } = preferencesController.store.getState();
       expect(currentLocale).toStrictEqual('ja');
     });
   });
 
   describe('setAccountLabel', () => {
-    const mockName: string = 'mockName';
-    const firstAddress: string = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
-    const secondAddress: string = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
+    const mockName = 'mockName';
+    const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
+    const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
 
     it('updating name from preference controller will update the name in accounts controller and preferences controller', () => {
       controllerMessenger.publish('KeyringController:stateChange', {
@@ -136,9 +134,7 @@ describe('preferences controller', () => {
 
       [firstAccount, secondAccount] = accountsController.listAccounts();
 
-      const {
-        identities: updatedIdentities,
-      }: { identities: Record<string, { name: string }> } =
+      const { identities: updatedIdentities } =
         preferencesController.store.getState();
 
       const updatedFirstPreferenceAccount =
@@ -168,8 +164,7 @@ describe('preferences controller', () => {
 
       let [firstAccount, secondAccount] = accountsController.listAccounts();
 
-      const { identities }: { identities: Record<string, { name: string }> } =
-        preferencesController.store.getState();
+      const { identities } = preferencesController.store.getState();
 
       const firstPreferenceAccount = identities[firstAccount.address];
       const secondPreferenceAccount = identities[secondAccount.address];
@@ -182,9 +177,7 @@ describe('preferences controller', () => {
 
       [firstAccount, secondAccount] = accountsController.listAccounts();
 
-      const {
-        identities: updatedIdentities,
-      }: { identities: Record<string, { name: string }> } =
+      const { identities: updatedIdentities } =
         preferencesController.store.getState();
 
       const updatedFirstPreferenceAccount =
@@ -204,9 +197,8 @@ describe('preferences controller', () => {
 
   describe('setSelectedAddress', () => {
     it('updating selectedAddress from preferences controller updates the selectedAccount in accounts controller and preferences controller', () => {
-      const firstAddress: string = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
-      const secondAddress: string =
-        '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
+      const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
+      const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
       controllerMessenger.publish('KeyringController:stateChange', {
         isUnlocked: true,
         keyrings: [
@@ -219,17 +211,15 @@ describe('preferences controller', () => {
 
       const selectedAccount = accountsController.getSelectedAccount();
 
-      const { selectedAddress }: { selectedAddress: string } =
-        preferencesController.store.getState();
+      const { selectedAddress } = preferencesController.store.getState();
 
       expect(selectedAddress).toBe(selectedAccount.address);
 
       preferencesController.setSelectedAddress(secondAddress);
       // refresh state after state changed
 
-      const {
-        selectedAddress: updatedSelectedAddress,
-      }: { selectedAddress: string } = preferencesController.store.getState();
+      const { selectedAddress: updatedSelectedAddress } =
+        preferencesController.store.getState();
 
       const updatedSelectedAccount = accountsController.getSelectedAccount();
 
@@ -237,9 +227,8 @@ describe('preferences controller', () => {
     });
 
     it('updating selectedAccount from accounts controller updates the selectedAddress in preferences controller', () => {
-      const firstAddress: string = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
-      const secondAddress: string =
-        '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
+      const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
+      const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
       controllerMessenger.publish('KeyringController:stateChange', {
         isUnlocked: true,
         keyrings: [
@@ -253,17 +242,15 @@ describe('preferences controller', () => {
       const selectedAccount = accountsController.getSelectedAccount();
       const accounts = accountsController.listAccounts();
 
-      const { selectedAddress }: { selectedAddress: string } =
-        preferencesController.store.getState();
+      const { selectedAddress } = preferencesController.store.getState();
 
       expect(selectedAddress).toBe(selectedAccount.address);
 
       accountsController.setSelectedAccount(accounts[1].id);
       // refresh state after state changed
 
-      const {
-        selectedAddress: updatedSelectedAddress,
-      }: { selectedAddress: string } = preferencesController.store.getState();
+      const { selectedAddress: updatedSelectedAddress } =
+        preferencesController.store.getState();
 
       const updatedSelectedAccount = accountsController.getSelectedAccount();
 
@@ -327,8 +314,7 @@ describe('preferences controller', () => {
 
   describe('setUseSafeChainsListValidation', function () {
     it('should default to true', function () {
-      const state: { useSafeChainsListValidation: boolean } =
-        preferencesController.store.getState();
+      const state = preferencesController.store.getState();
 
       expect(state.useSafeChainsListValidation).toStrictEqual(true);
     });
@@ -348,8 +334,7 @@ describe('preferences controller', () => {
 
   describe('setUseTokenDetection', function () {
     it('should default to true for new users', function () {
-      const state: { useTokenDetection: boolean } =
-        preferencesController.store.getState();
+      const state = preferencesController.store.getState();
 
       expect(state.useTokenDetection).toStrictEqual(true);
     });
@@ -364,14 +349,12 @@ describe('preferences controller', () => {
     it('should keep initial value of useTokenDetection for existing users', function () {
       const preferencesControllerExistingUser = new PreferencesController({
         initLangCode: 'en_US',
-        // tokenListController,
         initState: {
           useTokenDetection: false,
         },
         networkConfigurations: NETWORK_CONFIGURATION_DATA,
       });
-      const state: { useTokenDetection: boolean } =
-        preferencesControllerExistingUser.store.getState();
+      const state = preferencesControllerExistingUser.store.getState();
       expect(state.useTokenDetection).toStrictEqual(false);
     });
   });
@@ -477,9 +460,7 @@ describe('preferences controller', () => {
   });
 
   describe('setIncomingTransactionsPreferences', () => {
-    const addedNonTestNetworks: string[] = Object.keys(
-      NETWORK_CONFIGURATION_DATA,
-    );
+    const addedNonTestNetworks = Object.keys(NETWORK_CONFIGURATION_DATA);
 
     it('should have default value combined', () => {
       const state: {
@@ -518,9 +499,8 @@ describe('preferences controller', () => {
 
   describe('AccountsController:stateChange subscription', () => {
     it('sync the identities with the accounts in the accounts controller', () => {
-      const firstAddress: string = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
-      const secondAddress: string =
-        '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
+      const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
+      const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
       controllerMessenger.publish('KeyringController:stateChange', {
         isUnlocked: true,
         keyrings: [
