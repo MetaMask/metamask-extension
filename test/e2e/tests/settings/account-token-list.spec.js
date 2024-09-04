@@ -56,7 +56,7 @@ describe('Settings', function () {
           text: 'General',
           tag: 'div',
         });
-        await driver.clickElement({ text: 'Fiat', tag: 'label' });
+        await driver.clickElement('.show-native-token-as-main-balance');
         // We now need to enable "Show fiat on testnet" if we are using testnets (and since our custom
         // network during test is using a testnet chain ID, it will be considered as a test network)
         await driver.clickElement({

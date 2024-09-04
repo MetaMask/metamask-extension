@@ -349,6 +349,7 @@ export default class SettingsTab extends PureComponent {
 
         <div className="settings-page__content-item-col">
           <ToggleButton
+            className="show-native-token-as-main-balance"
             value={showNativeTokenAsMainBalance}
             onToggle={(value) => {
               setShowNativeTokenAsMainBalancePreference(!value);
