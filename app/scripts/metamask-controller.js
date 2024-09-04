@@ -3605,6 +3605,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       setCustodianDeepLink:
         appStateController.setCustodianDeepLink.bind(appStateController),
+      setNoteToTraderMessage:
+        appStateController.setNoteToTraderMessage.bind(appStateController),
       ///: END:ONLY_INCLUDE_IF
 
       // snaps

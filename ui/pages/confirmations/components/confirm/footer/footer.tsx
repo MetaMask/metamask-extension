@@ -1,6 +1,4 @@
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { TransactionMeta } from '@metamask/transaction-controller';
-///: END:ONLY_INCLUDE_IF
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -149,7 +147,6 @@ const Footer = () => {
       (type) => type === currentConfirmation?.type,
     );
     if (isTransactionConfirmation) {
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       const mergeTxDataWithNonce = (transactionData: TransactionMeta) =>
         customNonceValue
           ? { ...transactionData, customNonceValue }
@@ -158,10 +155,9 @@ const Footer = () => {
       const updatedTx = mergeTxDataWithNonce(
         currentConfirmation as TransactionMeta,
       );
-      ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      mmiOnTransactionCallback();
+      mmiOnTransactionCallback(updatedTx);
       ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

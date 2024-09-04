@@ -21,6 +21,7 @@ import { NetworkChangeToast } from '../components/confirm/network-change-toast';
 import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
 import syncConfirmPath from '../hooks/syncConfirmPath';
 import { ConfirmContextProvider } from '../context/confirm';
+import NoteToTrader from '../../../components/institutional/note-to-trader';
 
 const EIP1559TransactionGasModal = () => {
   return (
@@ -56,6 +57,11 @@ const Confirm = () => {
                 <Title />
                 <Info />
                 <PluggableSection />
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+                  <NoteToTrader />
+                  ///: END:ONLY_INCLUDE_IF
+                }
               </ScrollToBottom>
               <Footer />
               <NetworkChangeToast />

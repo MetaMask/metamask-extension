@@ -56,6 +56,21 @@ export function setCustodianDeepLink({
   };
 }
 
+export function setNoteToTraderMessage(message: string) {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setNoteToTraderMessage', [message]);
+
+      await forceUpdateMetamaskState(dispatch);
+    } catch (err: any) {
+      if (err) {
+        dispatch(displayWarning(err.message));
+        throw new Error(err.message);
+      }
+    }
+  };
+}
+
 export function setTypedMessageInProgress(msgId: string) {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());

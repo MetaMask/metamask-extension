@@ -21,7 +21,6 @@ import {
   REDESIGN_USER_TRANSACTION_TYPES,
 } from '../utils';
 import { selectUnapprovedMessage } from '../../../selectors/signatures';
-import { isMMI } from '../../../helpers/utils/build-types';
 
 /**
  * Determine the current confirmation based on the pending approvals and controller state.
@@ -96,7 +95,7 @@ const useCurrentConfirmation = () => {
   // respectively).
   const shouldUseRedesign =
     shouldUseRedesignForSignatures ||
-    (!isMMI() && shouldUseRedesignForTransactions);
+    shouldUseRedesignForTransactions;
 
   return useMemo(() => {
     if (!shouldUseRedesign) {
