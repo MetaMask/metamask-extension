@@ -29,7 +29,10 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../../store/actions';
 import { confirmSelector } from '../../../selectors';
-import { REDESIGN_DEV_TRANSACTION_TYPES } from '../../../utils';
+import {
+  REDESIGN_DEV_TRANSACTION_TYPES,
+  isSIWESignatureRequest,
+} from '../../../utils';
 import { getConfirmationSender } from '../utils';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 
@@ -124,12 +127,15 @@ const Footer = () => {
     return false;
   });
 
+  const isSIWE = isSIWESignatureRequest(currentConfirmation);
+
   const isConfirmDisabled =
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    mmiSubmitDisabled ||
-    ///: END:ONLY_INCLUDE_IF
-    !isScrollToBottomCompleted ||
-    hardwareWalletRequiresConnection;
+    !isSIWE &&
+    (!isScrollToBottomCompleted ||
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      mmiSubmitDisabled ||
+      ///: END:ONLY_INCLUDE_IF
+      hardwareWalletRequiresConnection);
 
   const onCancel = useCallback(
     ({ location }: { location?: MetaMetricsEventLocation }) => {

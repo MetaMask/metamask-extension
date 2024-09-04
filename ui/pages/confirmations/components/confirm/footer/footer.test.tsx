@@ -5,7 +5,10 @@ import {
 } from '../../../../../../shared/constants/hardware-wallets';
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
-import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
+import {
+  signatureRequestSIWE,
+  unapprovedPersonalSignMsg,
+} from '../../../../../../test/data/confirmations/personal_sign';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
 import * as MMIConfirmations from '../../../../../hooks/useMMIConfirmations';
@@ -78,15 +81,30 @@ describe('ConfirmFooter', () => {
     expect(getByText('Cancel')).toBeInTheDocument();
   });
 
-  it('renders enabled "Confirm" button when isScrollToBottomCompleted is true', () => {
-    const { getByText } = render({
-      confirm: {
-        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
-        isScrollToBottomCompleted: true,
-      },
+  describe('renders enabled "Confirm" Button', () => {
+    it('when isScrollToBottomCompleted is true', () => {
+      const { getByText } = render({
+        confirm: {
+          currentConfirmation: genUnapprovedContractInteractionConfirmation(),
+          isScrollToBottomCompleted: true,
+        },
+      });
+
+      const confirmButton = getByText('Confirm');
+      expect(confirmButton).not.toBeDisabled();
     });
-    const confirmButton = getByText('Confirm');
-    expect(confirmButton).not.toBeDisabled();
+
+    it('when the confirmation is a Sign-in With Ethereum (SIWE) request', () => {
+      const { getByText } = render({
+        confirm: {
+          currentConfirmation: signatureRequestSIWE,
+          isScrollToBottomCompleted: false,
+        },
+      });
+
+      const confirmButton = getByText('Confirm');
+      expect(confirmButton).not.toBeDisabled();
+    });
   });
 
   describe('renders disabled "Confirm" Button', () => {
