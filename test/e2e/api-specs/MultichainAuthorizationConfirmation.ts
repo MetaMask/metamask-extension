@@ -24,7 +24,7 @@ export class MultichainAuthorizationConfirmation implements Rule {
 
   constructor(options: MultichainAuthorizationConfirmationOptions) {
     this.driver = options.driver;
-    this.only = options.only || ['provider_authorize'];
+    this.only = options.only || ['wallet_createSession'];
   }
 
   getTitle() {

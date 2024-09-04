@@ -47,13 +47,13 @@ async function main() {
         MultiChainOpenRPCDocument as OpenrpcDocument,
       );
       const providerAuthorize = doc.methods.find(
-        (m) => (m as MethodObject).name === 'provider_authorize',
+        (m) => (m as MethodObject).name === 'wallet_createSession',
       );
 
-      // fix the example for provider_authorize
+      // fix the example for wallet_createSession
       (providerAuthorize as MethodObject).examples = [
         {
-          name: 'provider_authorizeExample',
+          name: 'wallet_createSessionExample',
           description: 'Example of a provider authorization request.',
           params: [
             {
@@ -126,7 +126,7 @@ async function main() {
             destination: `${process.cwd()}/html-report-multichain`,
           }),
         ],
-        skip: ['provider_request'],
+        skip: ['wallet_invokeMethod'],
         rules: [
           new MultichainAuthorizationConfirmation({
             driver,

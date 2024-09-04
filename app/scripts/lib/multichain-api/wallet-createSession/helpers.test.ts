@@ -7,7 +7,7 @@ jest.mock('../../rpc-method-middleware/handlers/ethereum-chain-utils', () => ({
 }));
 const MockEthereumChainUtils = jest.mocked(EthereumChainUtils);
 
-describe('provider_authorize helpers', () => {
+describe('wallet_createSession helpers', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });

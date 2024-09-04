@@ -3,7 +3,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
-import { providerRequestHandler } from './provider-request';
+import { walletInvokeMethodHandler } from './wallet-invokeMethod';
 
 const createMockedRequest = () => ({
   origin: 'http://test.com',
@@ -55,7 +55,7 @@ const createMockedHandler = () => {
     .fn()
     .mockReturnValue('selectedNetworkClientId');
   const handler = (request) =>
-    providerRequestHandler(request, {}, next, end, {
+    walletInvokeMethodHandler(request, {}, next, end, {
       getCaveat,
       findNetworkClientIdByChainId,
       getSelectedNetworkClientId,
@@ -71,7 +71,7 @@ const createMockedHandler = () => {
   };
 };
 
-describe('provider_request', () => {
+describe('wallet_invokeMethod', () => {
   it('gets the authorized scopes from the CAIP-25 endowment permission', async () => {
     const request = createMockedRequest();
     const { handler, getCaveat } = createMockedHandler();
