@@ -124,6 +124,13 @@ const Footer = () => {
     return false;
   });
 
+  const isConfirmDisabled =
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    mmiSubmitDisabled ||
+    ///: END:ONLY_INCLUDE_IF
+    isScrollToBottomFulfilled ||
+    hardwareWalletRequiresConnection;
+
   const onCancel = useCallback(
     ({ location }: { location?: MetaMetricsEventLocation }) => {
       if (!currentConfirmation) {
@@ -194,13 +201,7 @@ const Footer = () => {
       <ConfirmButton
         alertOwnerId={currentConfirmation?.id}
         onSubmit={() => onSubmit()}
-        disabled={
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          mmiSubmitDisabled ||
-          ///: END:ONLY_INCLUDE_IF
-          isScrollToBottomFulfilled ||
-          hardwareWalletRequiresConnection
-        }
+        disabled={isConfirmDisabled}
         onCancel={onCancel}
       />
     </PageFooter>
