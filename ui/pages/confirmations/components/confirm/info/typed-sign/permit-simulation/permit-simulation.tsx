@@ -100,7 +100,12 @@ const PermitSimulation: React.FC<{
                 </Text>
               </Tooltip>
             </Box>
-            <Name value={verifyingContract} type={NameType.ETHEREUM_ADDRESS} />
+            {verifyingContract && (
+              <Name
+                value={verifyingContract}
+                type={NameType.ETHEREUM_ADDRESS}
+              />
+            )}
           </Box>
           <Box>
             {fiatValue && (
