@@ -78,6 +78,26 @@ describe('ConfirmFooter', () => {
     expect(getByText('Cancel')).toBeInTheDocument();
   });
 
+  it('renders enabled "Confirm" button when isScrollToBottomUnfulfilled is false', () => {
+    const { getByText } = render();
+    const confirmButton = getByText('Confirm');
+    expect(confirmButton).not.toBeDisabled();
+  });
+
+  describe.only('renders disabled "Confirm" Button', () => {
+    it('when isScrollToBottomUnfulfilled is true', () => {
+      const { getByText } = render({
+        confirm: {
+          currentConfirmation: genUnapprovedContractInteractionConfirmation(),
+          isScrollToBottomUnfulfilled: true,
+        },
+      });
+
+      const confirmButton = getByText('Confirm');
+      expect(confirmButton).toBeDisabled();
+    });
+  });
+
   it('invoke action rejectPendingApproval when cancel button is clicked', () => {
     const { getAllByRole } = render();
     const cancelButton = getAllByRole('button')[0];
