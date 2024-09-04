@@ -1,6 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
+
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../context/confirm';
