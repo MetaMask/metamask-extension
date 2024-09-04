@@ -119,6 +119,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // eth_sendTransaction request
         await driver.clickElement('#sendButton');
+        await driver.waitUntilXWindowHandles(3);
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
