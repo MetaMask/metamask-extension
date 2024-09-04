@@ -1677,14 +1677,15 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
+        "@metamask/network-controller>@metamask/base-controller": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
+        "@metamask/network-controller>reselect": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/utils": true,
@@ -1692,6 +1693,14 @@
         "browserify>util": true,
         "uri-js": true,
         "uuid": true
+      }
+    },
+    "@metamask/network-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/network-controller>@metamask/eth-block-tracker": {
@@ -1800,6 +1809,13 @@
         "@metamask/safe-event-emitter": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "uuid": true
+      }
+    },
+    "@metamask/network-controller>reselect": {
+      "globals": {
+        "WeakRef": true,
+        "console.warn": true,
+        "unstable_autotrackMemoize": true
       }
     },
     "@metamask/notification-controller": {
@@ -2113,9 +2129,9 @@
         "crypto": true
       },
       "packages": {
-        "@metamask/controller-utils": true,
         "@metamask/eth-query>json-rpc-random-id": true,
         "@metamask/ppom-validator>@metamask/base-controller": true,
+        "@metamask/ppom-validator>@metamask/controller-utils": true,
         "@metamask/ppom-validator>crypto-js": true,
         "@metamask/ppom-validator>elliptic": true,
         "await-semaphore": true,
@@ -2128,6 +2144,39 @@
       },
       "packages": {
         "immer": true
+      }
+    },
+    "@metamask/ppom-validator>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/ethjs>@metamask/ethjs-unit": true,
+        "@metamask/ppom-validator>@metamask/utils": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true
+      }
+    },
+    "@metamask/ppom-validator>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/ppom-validator>crypto-js": {
@@ -2318,8 +2367,17 @@
     },
     "@metamask/selected-network-controller": {
       "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/network-controller>@metamask/swappable-obj-proxy": true
+        "@metamask/network-controller": true,
+        "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
+        "@metamask/selected-network-controller>@metamask/base-controller": true
+      }
+    },
+    "@metamask/selected-network-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/signature-controller": {
