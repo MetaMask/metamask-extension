@@ -137,7 +137,6 @@ import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/mu
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import NftFullImage from '../../components/app/assets/nfts/nft-details/nft-full-image';
 import CrossChainSwap from '../bridge';
-import { hidePermittedNetworkToast } from '../../store/actions';
 
 const isConfirmTransactionRoute = (pathname) =>
   Boolean(
