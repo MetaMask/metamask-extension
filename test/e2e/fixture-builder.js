@@ -68,7 +68,6 @@ function onboardingFixture() {
           showFiatInTestnets: false,
           showTestNetworks: false,
           smartTransactionsOptInStatus: false,
-          useNativeCurrencyAsPrimaryCurrency: true,
           showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           isRedesignedConfirmationsDeveloperEnabled: false,

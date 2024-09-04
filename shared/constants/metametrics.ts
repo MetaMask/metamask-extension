@@ -446,10 +446,6 @@ export enum MetaMetricsUserTrait {
    */
   TokenDetectionEnabled = 'token_detection_enabled',
   /**
-   * Identified when the user enables native currency.
-   */
-  UseNativeCurrencyAsPrimaryCurrency = 'use_native_currency_as_primary_currency',
-  /**
    * Identified when show native token as main balance is toggled.
    */
   ShowNativeTokenAsMainBalance = 'show_native_token_as_main_balance',
@@ -626,7 +622,6 @@ export enum MetaMetricsEventName {
   TokenHidden = 'Token Hidden',
   TokenImportCanceled = 'Token Import Canceled',
   TokenImportClicked = 'Token Import Clicked',
-  UseNativeCurrencyAsPrimaryCurrency = 'Use Native Currency as Primary Currency',
   ShowNativeTokenAsMainBalance = 'Show native token as main balance',
   WalletSetupStarted = 'Wallet Setup Selected',
   WalletSetupCanceled = 'Wallet Setup Canceled',

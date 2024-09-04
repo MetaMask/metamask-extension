@@ -673,7 +673,7 @@ const state = {
     welcomeScreenSeen: false,
     currentLocale: 'en',
     preferences: {
-      useNativeCurrencyAsPrimaryCurrency: true,
+      showNativeTokenAsMainBalance: true,
     },
     incomingTransactionsPreferences: {
       [CHAIN_IDS.MAINNET]: true,
@@ -1218,7 +1218,8 @@ const state = {
         accounts: ['0x9d0ba4ddac06032527b140912ec808ab9451b788'],
       },
     ],
-    ...mockNetworkState({
+    ...mockNetworkState(
+      {
         id: 'test-networkConfigurationId-1',
         rpcUrl: 'https://testrpc.com',
         chainId: '0x1',
@@ -1227,14 +1228,16 @@ const state = {
         metadata: {
           EIPS: { 1559: true },
           status: NetworkStatus.Available,
-        }
-      }, {
+        },
+      },
+      {
         id: 'test-networkConfigurationId-2',
         rpcUrl: 'http://localhost:8545',
         chainId: '0x539',
         ticker: 'ETH',
         nickname: 'Localhost 8545',
-      }),
+      },
+    ),
     accountTokens: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
         '0x1': [
