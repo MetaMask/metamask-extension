@@ -1,6 +1,8 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { hexToDecimal } from '../../../../../../../../shared/modules/conversion.utils';
 import {
   Modal,
   ModalBody,
@@ -12,6 +14,7 @@ import {
   TextField,
   TextFieldType,
 } from '../../../../../../../components/component-library';
+import { updateCurrentConfirmation } from '../../../../../../../ducks/confirm/confirm';
 import {
   AlignItems,
   Display,
@@ -21,9 +24,11 @@ import {
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { getCustomTxParamsData } from '../../../../../confirm-approve/confirm-approve.util';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
+import { useTransactionGasEstimate } from '../hooks/use-transaction-gas-estimate';
 
 export const getAccountBalance = (userBalance: string, decimals: string) =>
   new BigNumber(userBalance)
@@ -42,6 +47,8 @@ export const EditSpendingCapModal = ({
   setCustomSpendingCap: (newValue: string) => void;
 }) => {
   const t = useI18nContext();
+
+  const dispatch = useDispatch();
 
   const { currentConfirmation: transactionMeta } = useConfirmContext() as {
     currentConfirmation: TransactionMeta;
@@ -62,6 +69,34 @@ export const EditSpendingCapModal = ({
 
   const [customSpendingCapCandidate, setCustomSpendingCapCandidate] =
     useState('');
+
+  const customTxParamsData = useMemo(() => {
+    return getCustomTxParamsData(transactionMeta?.txParams?.data, {
+      customPermissionAmount: customSpendingCap || '0',
+      decimals,
+    });
+  }, [customSpendingCap, transactionMeta?.txParams?.data, decimals]);
+
+  const { estimatedGasLimit } = useTransactionGasEstimate(
+    transactionMeta,
+    customTxParamsData,
+    customSpendingCap,
+  );
+
+  useEffect(() => {
+    if (customSpendingCap && estimatedGasLimit) {
+      transactionMeta.txParams.data = customTxParamsData;
+      transactionMeta.txParams.gas = hexToDecimal(estimatedGasLimit as string);
+
+      dispatch(updateCurrentConfirmation(transactionMeta));
+    }
+  }, [
+    customSpendingCap,
+    estimatedGasLimit,
+    customTxParamsData,
+    transactionMeta,
+    dispatch,
+  ]);
 
   const handleCancel = () => {
     setIsOpenEditSpendingCapModal(false);
