@@ -53,18 +53,18 @@ export const EditNetworksModal = ({ onClose, onClick }) => {
     }
     setSelectedChains(newSelectedChains);
   };
-    const allAreSelected = () => {
-      return nonTestNetworks.length === selectedChains.length;
-    };
-    let checked = false;
-    let isIndeterminate = false;
-    if (allAreSelected()) {
-      checked = true;
-      isIndeterminate = false;
-    } else if (selectedChains.length > 0 && !allAreSelected()) {
-      checked = false;
-      isIndeterminate = true;
-    }
+  const allAreSelected = () => {
+    return nonTestNetworks.length === selectedChains.length;
+  };
+  let checked = false;
+  let isIndeterminate = false;
+  if (allAreSelected()) {
+    checked = true;
+    isIndeterminate = false;
+  } else if (selectedChains.length > 0 && !allAreSelected()) {
+    checked = false;
+    isIndeterminate = true;
+  }
   const managePermittedChains = (
     selectedChains,
     flattenedPermittedChains,
