@@ -1308,6 +1308,10 @@ function logEvent(event) {
 function parseLogArg(arg) {
   const { type, value, preview } = arg;
 
+  if (String(value).length > 5000) {
+    return '[too long to display]';
+  }
+
   if (type === 'string' || type === 'number' || type === 'boolean') {
     return value;
   }

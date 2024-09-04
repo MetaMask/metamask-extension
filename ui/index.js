@@ -85,6 +85,7 @@ export default function launchMetamaskUi(opts, cb) {
     }
 
     startApp(metamaskState, backgroundConnection, opts).then((store) => {
+      backgroundConnection.startPatches();
       setupStateHooks(store);
       cb(null, store);
     });

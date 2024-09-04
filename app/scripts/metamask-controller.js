@@ -5142,17 +5142,6 @@ export default class MetamaskController extends EventEmitter {
   setupControllerConnection(outStream) {
     const patchStore = new PatchStore(this.memStore);
 
-    const api = {
-      ...this.getApi(),
-      getStatePatches: patchStore.flushPendingPatches.bind(patchStore),
-    };
-
-    // report new active controller connection
-    this.activeControllerConnections += 1;
-    this.emit('controllerConnectionChanged', this.activeControllerConnections);
-
-    // set up postStream transport
-    outStream.on('data', createMetaRPCHandler(api, outStream));
     const handleUpdate = (_state) => {
       if (!isStreamWritable(outStream)) {
         return;
@@ -5165,7 +5154,22 @@ export default class MetamaskController extends EventEmitter {
         params: [patches],
       });
     };
-    this.on('update', handleUpdate);
+
+    const api = {
+      ...this.getApi(),
+      startPatches: () => {
+        this.on('update', handleUpdate);
+      },
+      getStatePatches: patchStore.flushPendingPatches.bind(patchStore),
+    };
+
+    // report new active controller connection
+    this.activeControllerConnections += 1;
+    this.emit('controllerConnectionChanged', this.activeControllerConnections);
+
+    // set up postStream transport
+    outStream.on('data', createMetaRPCHandler(api, outStream));
+
     const startUISync = () => {
       if (!isStreamWritable(outStream)) {
         return;
