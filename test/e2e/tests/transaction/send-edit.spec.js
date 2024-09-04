@@ -13,6 +13,7 @@ describe('Editing Confirm Transaction', function () {
       {
         fixtures: new FixtureBuilder()
           .withTransactionControllerTypeOneTransaction()
+          .withConversionRateDisabled()
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
@@ -87,6 +88,7 @@ describe('Editing Confirm Transaction', function () {
       {
         fixtures: new FixtureBuilder()
           .withTransactionControllerTypeTwoTransaction()
+          .withConversionRateDisabled()
           .build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
