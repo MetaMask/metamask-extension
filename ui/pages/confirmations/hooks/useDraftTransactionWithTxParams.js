@@ -1,27 +1,6 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useMemo } from 'react';
-import {
-  getCurrentDraftTransaction,
-  getPrevSwapAndSendInput,
-  getSelectedAccountAddress,
-  getSendStage,
-  updateGasEstimates,
-} from '../../../ducks/send';
-import {
-  getCurrentChainId,
-  getIsNonStandardEthChain,
-  getUnapprovedTransactions,
-  txDataSelector,
-} from '../../../selectors';
-import { useDebounce } from '../../../ducks/send/useDebounce';
-import {
-  computeEstimatedGasLimitHelper,
-  estimateGasLimitForSend,
-} from '../../../ducks/send/helpers';
-import {
-  getBlockGasLimit,
-  getNativeCurrency,
-} from '../../../ducks/metamask/metamask';
+import { useSelector } from 'react-redux';
+import { getCurrentDraftTransaction } from '../../../ducks/send';
+import { getUnapprovedTransactions } from '../../../selectors';
 
 /**
  * Returns an object that resembles the txData.txParams from the Transactions state.
@@ -38,59 +17,6 @@ export const useDraftTransactionWithTxParams = () => {
 
   let transactionData = {};
 
-  const dispatch = useDispatch();
-
-  const confPage = useSelector((state) => txDataSelector(state));
-  const { id: transactionId, dappSuggestedGasFees, layer1GasFee } = confPage;
-
-  const transaction = Object.keys(draftTransaction).length
-    ? draftTransaction
-    : unapprovedTxs[transactionId] || {};
-
-  const selectedAccountAddress = useSelector(getSelectedAccountAddress);
-  const sendStage = useSelector(getSendStage);
-
-  const chainId = useSelector(getCurrentChainId);
-
-  const isNonStandardEthChain = useSelector(getIsNonStandardEthChain);
-  const blockGasLimit = useSelector(getBlockGasLimit);
-  const prevSwapAndSendInput = useSelector(getPrevSwapAndSendInput);
-
-  console.log('====conf page 0', {
-    draftTransaction,
-    transaction,
-    transactionData,
-  });
-  const gasLimit = (async () =>
-    await estimateGasLimitForSend({
-      gasPrice: transaction?.txParams?.gasPrice,
-      blockGasLimit,
-      selectedAddress: selectedAccountAddress,
-      sendToken: prevSwapAndSendInput.sendAsset?.details,
-      to: prevSwapAndSendInput.recipient?.address?.toLowerCase(),
-      value: prevSwapAndSendInput.amount?.value,
-      data: prevSwapAndSendInput?.userInputHexData,
-      isNonStandardEthChain,
-      chainId,
-    }))();
-
-  // const gasLimit_ = await computeEstimatedGasLimitHelper(
-  //   transaction,
-  //   unapprovedTxs,
-  //   isNonStandardEthChain,
-  //   chainId,
-  //   selectedAccountAddress,
-  //   sendStage,
-  //   blockGasLimit,
-  // );
-
-  console.log('====conf page ', {
-    draftTransaction,
-    transaction,
-    transactionData,
-    gasLimit,
-  });
-
   if (Object.keys(draftTransaction).length !== 0) {
     const editingTransaction = unapprovedTxs[draftTransaction.id];
     transactionData = {
@@ -98,7 +24,7 @@ export const useDraftTransactionWithTxParams = () => {
         gasPrice: draftTransaction.gas?.gasPrice,
         gas: editingTransaction?.userEditedGasLimit
           ? editingTransaction?.txParams?.gas
-          : gasLimit ?? draftTransaction.gas?.gasLimit,
+          : draftTransaction.gas?.gasLimit,
         maxFeePerGas: editingTransaction?.txParams?.maxFeePerGas
           ? editingTransaction?.txParams?.maxFeePerGas
           : draftTransaction.gas?.maxFeePerGas,
@@ -112,14 +38,5 @@ export const useDraftTransactionWithTxParams = () => {
     };
   }
 
-  // return transactionData;
-  const tx =
-    Object.keys(draftTransaction).length === 0 ? transaction : transactionData;
-  return {
-    ...tx,
-    txParams: {
-      ...tx.txParams,
-      gas: gasLimit ?? tx.txParams.gas,
-    },
-  };
+  return transactionData;
 };
