@@ -1,6 +1,14 @@
 import { ObservableStore } from '@metamask/obs-store';
-import { AccountsControllerState } from '@metamask/accounts-controller';
+import {
+  AccountsControllerChangeEvent,
+  AccountsControllerGetAccountByAddressAction,
+  AccountsControllerGetSelectedAccountAction,
+  AccountsControllerSetAccountNameAction,
+  AccountsControllerSetSelectedAccountAction,
+  AccountsControllerState,
+} from '@metamask/accounts-controller';
 import { Hex } from '@metamask/utils';
+import { RestrictedControllerMessenger } from '@metamask/base-controller';
 import {
   CHAIN_IDS,
   IPFS_DEFAULT_GATEWAY_URL,
@@ -25,16 +33,60 @@ const testNetworks = {
   [CHAIN_IDS.LINEA_SEPOLIA]: true,
 };
 
+const controllerName = 'PreferencesController';
+
+/**
+ * Returns the state of the {@link PreferencesController}.
+ */
+export type PreferencesControllerGetStateAction = {
+  type: 'PreferencesController:getState';
+  handler: () => PreferencesControllerState;
+};
+
+/**
+ * Actions exposed by the {@link PreferencesController}.
+ */
+export type PreferencesControllerActions = PreferencesControllerGetStateAction;
+
+/**
+ * Event emitted when the state of the {@link PreferencesController} changes.
+ */
+export type PreferencesControllerStateChangeEvent = {
+  type: 'PreferencesController:stateChange';
+  payload: [PreferencesControllerState, []];
+};
+
+/**
+ * Events emitted by {@link PreferencesController}.
+ */
+export type PreferencesControllerEvents = PreferencesControllerStateChangeEvent;
+
+/**
+ * Actions that this controller is allowed to call.
+ */
+export type AllowedActions =
+  | AccountsControllerGetAccountByAddressAction
+  | AccountsControllerSetAccountNameAction
+  | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerSetSelectedAccountAction;
+
+/**
+ * Events that this controller is allowed to subscribe.
+ */
+export type AllowedEvents = AccountsControllerChangeEvent;
+export type PreferencesControllerMessenger = RestrictedControllerMessenger<
+  typeof controllerName,
+  PreferencesControllerActions | AllowedActions,
+  PreferencesControllerEvents | AllowedEvents,
+  AllowedActions['type'],
+  AllowedEvents['type']
+>;
+
 type PreferencesControllerOptions = {
   networkConfigurations?: Record<string, { chainId: Hex }>;
   initState?: Partial<PreferencesControllerState>;
   initLangCode?: string;
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  network?: any;
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  messenger?: any;
+  messenger: PreferencesControllerMessenger;
 };
 
 type Preferences = {
@@ -98,30 +150,24 @@ export type PreferencesControllerState = {
 export default class PreferencesController {
   store: ObservableStore<PreferencesControllerState>;
 
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private messagingSystem: any;
-
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private network: any;
+  private messagingSystem: PreferencesControllerMessenger;
 
   /**
    *
    * @param opts - Overrides the defaults for the initial state of this.store
-   * @property {object} messenger - The controller messenger
-   * @property {object} store The stored object containing a users preferences, stored in local storage
-   * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
-   * @property {boolean} store.useNonceField The users preference for nonce field within the UI
-   * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
+   * @property messenger - The controller messenger
+   * @property initState The stored object containing a users preferences, stored in local storage
+   * @property initState.useBlockie The users preference for blockie identicons within the UI
+   * @property initState.useNonceField The users preference for nonce field within the UI
+   * @property initState.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
    * user wishes to see that feature.
    *
    * Feature flags can be set by the global function `setPreference(feature, enabled)`, and so should not expose any sensitive behavior.
-   * @property {object} store.knownMethodData Contains all data methods known by the user
-   * @property {string} store.currentLocale The preferred language locale key
-   * @property {string} store.selectedAddress A hex string that matches the currently selected address in the app
+   * @property initState.knownMethodData Contains all data methods known by the user
+   * @property initState.currentLocale The preferred language locale key
+   * @property initState.selectedAddress A hex string that matches the currently selected address in the app
    */
-  constructor(opts: PreferencesControllerOptions = {}) {
+  constructor(opts: PreferencesControllerOptions) {
     const addedNonMainNetwork: Record<Hex, boolean> = Object.values(
       opts.networkConfigurations || {},
     ).reduce((acc: Record<Hex, boolean>, element) => {
@@ -208,22 +254,20 @@ export default class PreferencesController {
       ...opts.initState,
     };
 
-    this.network = opts.network;
-
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(13);
 
     this.messagingSystem = opts.messenger;
-    this.messagingSystem?.registerActionHandler(
+    this.messagingSystem.registerActionHandler(
       `PreferencesController:getState`,
       () => this.store.getState(),
     );
-    this.messagingSystem?.registerInitialEventPayload({
+    this.messagingSystem.registerInitialEventPayload({
       eventType: `PreferencesController:stateChange`,
       getPayload: () => [this.store.getState(), []],
     });
 
-    this.messagingSystem?.subscribe(
+    this.messagingSystem.subscribe(
       'AccountsController:stateChange',
       this.#handleAccountsControllerSync.bind(this),
     );
@@ -546,9 +590,9 @@ export default class PreferencesController {
    * @deprecated - Use setAccountName from the AccountsController
    * @param address - the account to set a label for
    * @param label - the custom label for the account
-   * @returns
+   * @returns the account label
    */
-  async setAccountLabel(address: string, label: string): Promise<string> {
+  setAccountLabel(address: string, label: string): string | undefined {
     const account = this.messagingSystem.call(
       'AccountsController:getAccountByAddress',
       address,
@@ -559,13 +603,17 @@ export default class PreferencesController {
       );
     }
 
-    this.messagingSystem.call(
-      'AccountsController:setAccountName',
-      account.id,
-      label,
-    );
+    if (account) {
+      this.messagingSystem.call(
+        'AccountsController:setAccountName',
+        account.id,
+        label,
+      );
 
-    return label;
+      return label;
+    }
+
+    return undefined;
   }
 
   /**
@@ -573,12 +621,9 @@ export default class PreferencesController {
    *
    * @param feature - A key that corresponds to a UI feature.
    * @param activated - Indicates whether or not the UI feature should be displayed
-   * @returns Promises a new object; the updated featureFlags object.
+   * @returns the updated featureFlags object.
    */
-  async setFeatureFlag(
-    feature: string,
-    activated: boolean,
-  ): Promise<Record<string, boolean>> {
+  setFeatureFlag(feature: string, activated: boolean): Record<string, boolean> {
     const currentFeatureFlags = this.store.getState().featureFlags;
     const updatedFeatureFlags = {
       ...currentFeatureFlags,
@@ -598,10 +643,7 @@ export default class PreferencesController {
    * @param value - Indicates whether or not the preference should be enabled or disabled.
    * @returns Promises a updated Preferences object.
    */
-  async setPreference(
-    preference: string,
-    value: boolean | object,
-  ): Promise<Preferences> {
+  setPreference(preference: string, value: boolean | object): Preferences {
     const currentPreferences = this.getPreferences();
     const updatedPreferences = {
       ...currentPreferences,
@@ -634,9 +676,9 @@ export default class PreferencesController {
    * A setter for the `ipfsGateway` property
    *
    * @param domain - The new IPFS gateway domain
-   * @returns A promise of the update IPFS gateway domain
+   * @returns the update IPFS gateway domain
    */
-  async setIpfsGateway(domain: string): Promise<string> {
+  setIpfsGateway(domain: string): string {
     this.store.updateState({ ipfsGateway: domain });
     return domain;
   }
@@ -646,7 +688,7 @@ export default class PreferencesController {
    *
    * @param enabled - Whether or not IPFS is enabled
    */
-  async setIsIpfsGatewayEnabled(enabled: boolean): Promise<void> {
+  setIsIpfsGatewayEnabled(enabled: boolean): void {
     this.store.updateState({ isIpfsGatewayEnabled: enabled });
   }
 
@@ -655,9 +697,7 @@ export default class PreferencesController {
    *
    * @param useAddressBarEnsResolution - Whether or not user prefers IPFS resolution for domains
    */
-  async setUseAddressBarEnsResolution(
-    useAddressBarEnsResolution: boolean,
-  ): Promise<void> {
+  setUseAddressBarEnsResolution(useAddressBarEnsResolution: boolean): void {
     this.store.updateState({ useAddressBarEnsResolution });
   }
 
@@ -681,10 +721,8 @@ export default class PreferencesController {
    *
    * @param dismissSeedBackUpReminder - User preference for dismissing the back up reminder.
    */
-  async setDismissSeedBackUpReminder(
-    dismissSeedBackUpReminder: boolean,
-  ): Promise<void> {
-    await this.store.updateState({
+  setDismissSeedBackUpReminder(dismissSeedBackUpReminder: boolean): void {
+    this.store.updateState({
       dismissSeedBackUpReminder,
     });
   }
