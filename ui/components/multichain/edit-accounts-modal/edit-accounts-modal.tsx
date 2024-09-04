@@ -6,6 +6,7 @@ import {
   isEvmAccountType,
   KeyringAccountType,
 } from '@metamask/keyring-api';
+import { NonEmptyArray } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getInternalAccounts,
@@ -33,16 +34,15 @@ import {
   removePermissionsFor,
   removePermittedAccount,
 } from '../../../store/actions';
-import { NonEmptyArray } from '@metamask/utils';
 import { SubjectsType } from '../pages/connections/components/connections.types';
 
 const defaultAllowedAccountTypes = [EthAccountType.Eoa, EthAccountType.Erc4337];
 
-interface EditAccountsModalProps {
+type EditAccountsModalProps = {
   onClose: () => void;
   onClick: () => void;
   allowedAccountTypes?: KeyringAccountType[];
-}
+};
 
 export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   onClose,

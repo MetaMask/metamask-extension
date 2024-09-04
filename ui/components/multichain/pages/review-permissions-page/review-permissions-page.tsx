@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
+import { NonEmptyArray } from '@metamask/utils';
 import {
   AlignItems,
   BackgroundColor,
@@ -16,12 +17,9 @@ import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getConnectedSitesList,
-  getConnectedSitesListWithNetworkInfo,
   getNonTestNetworks,
   getOrderedConnectedAccountsForConnectedDapp,
-  getOrderedNetworksList,
   getPermissionSubjects,
-  getPermittedChainsByOrigin,
   getPermittedChainsForSelectedTab,
 } from '../../../../selectors';
 import { removePermissionsFor } from '../../../../store/actions';
@@ -42,9 +40,8 @@ import {
 import { ToastContainer, Toast } from '../..';
 import { NoConnectionContent } from '../connections/components/no-connection';
 import { Content, Footer, Header, Page } from '../page';
-import { SiteCell } from '.';
-import { NonEmptyArray } from '@metamask/utils';
 import { SubjectsType } from '../connections/components/connections.types';
+import { SiteCell } from '.';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -55,7 +52,9 @@ export const ReviewPermissions = () => {
   const [showAccountToast, setShowAccountToast] = useState(false);
   const [showNetworkToast, setShowNetworkToast] = useState(false);
   const activeTabOrigin: string = securedOrigin;
-  const subjectMetadata = useSelector(getConnectedSitesList);
+  const subjectMetadata: { [key: string]: any } = useSelector(
+    getConnectedSitesList,
+  );
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
   const connectedNetworks = useSelector((state) =>
     getPermittedChainsForSelectedTab(state, activeTabOrigin),

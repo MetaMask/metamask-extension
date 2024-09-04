@@ -14,7 +14,6 @@ import {
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   PERMISSIONS,
-  REVIEW_PERMISSIONS,
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,

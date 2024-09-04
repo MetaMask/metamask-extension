@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { SubjectType } from '@metamask/permission-controller';
-import { useDispatch } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
@@ -16,20 +14,14 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
-  AvatarFavicon,
   AvatarIcon,
   AvatarIconSize,
-  AvatarNetwork,
-  AvatarNetworkSize,
-  BadgeWrapper,
   Box,
   Icon,
   IconName,
   IconSize,
   Text,
 } from '../../../../component-library';
-import { getURLHost } from '../../../../../helpers/utils/util';
-import { ConnectionListTooltip } from '../../permissions-page/connection-list-tooltip/connection-list-tooltip';
 import { AvatarGroup, EditAccountsModal, EditNetworksModal } from '../../..';
 import { AvatarType } from '../../../avatar-group/avatar-group.types';
 
@@ -40,12 +32,11 @@ export const SiteCell = ({
   onNetworksClick,
 }) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
-  const avatarNetworksData = networks.map((network) => ({
+  const avatarNetworksData = networks.map((network: { rpcPrefs: { imageUrl: string; }; nickname: string; }) => ({
     avatarValue: network.rpcPrefs.imageUrl,
     symbol: network.nickname,
   }));
-  const avatarAccountsData = accounts.map((account) => ({
+  const avatarAccountsData = accounts.map((account: { address: string; }) => ({
     avatarValue: account.address,
   }));
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);

@@ -56,8 +56,9 @@ export const PermissionsPage = () => {
     const safeEncodedHost = encodeURIComponent(hostName);
     if (process.env.CHAIN_PERMISSIONS) {
       history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
+    } else {
+      history.push(`${CONNECTIONS}/${safeEncodedHost}`);
     }
-    history.push(`${CONNECTIONS}/${safeEncodedHost}`);
   };
 
   const renderConnectionsList = (connectionList) =>
