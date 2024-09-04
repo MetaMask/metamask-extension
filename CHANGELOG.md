@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.1.2]
+### Fixed
+- Fix Trezor signing and connecting accounts ([#26882](https://github.com/MetaMask/metamask-extension/pull/26882))
 
 ## [12.1.1]
 ### Changed
