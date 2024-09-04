@@ -46,11 +46,32 @@ import {
 } from '../../../components/multichain/pages/page/index';
 import { SiteCell } from '../../../components/multichain/pages/review-permissions-page/index';
 
-export const ConnectPage = ({ rejectPermissionsRequest }) => {
+export const ConnectPage = ({
+  request,
+  rejectPermissionsRequest,
+  permissionsRequestId,
+  approveConnection,
+}: {
+  request: any;
+  permissionsRequestId: string;
+  rejectPermissionsRequest: () => void;
+  approveConnection: (requestId: string) => void;
+}) => {
   const t = useI18nContext();
   const networksList = useSelector(getNonTestNetworks);
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  console.log(networksList, selectedAccount);
+
+  // TODO we should check if there are actually specifically requested accounts and preselect them and otherwise default
+  // to the selectedAccount
+  const onConfirm = () => {
+    const _request = {
+      ...request,
+      permissions: { ...request.permissions },
+      approvedAccounts: selectedAccount.address,
+      approvedChainIds: networksList.map((network) => network.chainId),
+    };
+    approveConnection(_request);
+  };
   return (
     <Page
       data-testid="connections-page"
@@ -83,7 +104,7 @@ export const ConnectPage = ({ rejectPermissionsRequest }) => {
             block
             data-testid="confirm-btn"
             size={ButtonSize.Lg}
-            onClick={() => console.log('confirm')}
+            onClick={onConfirm}
           >
             {t('confirm')}
           </Button>

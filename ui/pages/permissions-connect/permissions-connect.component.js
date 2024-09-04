@@ -291,9 +291,14 @@ export default class PermissionConnect extends Component {
     );
   }
 
+  approveConnection = (...args) => {
+    const { approvePermissionsRequest } = this.props;
+    approvePermissionsRequest(...args);
+    this.redirect(true);
+  };
+
   render() {
     const {
-      approvePermissionsRequest,
       accounts,
       showNewAccountModal,
       newAccountNumber,
@@ -361,6 +366,9 @@ export default class PermissionConnect extends Component {
                   rejectPermissionsRequest={(requestId) =>
                     this.cancelPermissionsRequest(requestId)
                   }
+                  request={permissionsRequest}
+                  permissionsRequestId={permissionsRequestId}
+                  approveConnection={this.approveConnection}
                 />
               )}
             />
@@ -370,10 +378,7 @@ export default class PermissionConnect extends Component {
               render={() => (
                 <SnapsConnect
                   request={permissionsRequest || {}}
-                  approveConnection={(...args) => {
-                    approvePermissionsRequest(...args);
-                    this.redirect(true);
-                  }}
+                  approveConnection={this.approveConnection}
                   rejectConnection={(requestId) =>
                     this.cancelPermissionsRequest(requestId)
                   }
