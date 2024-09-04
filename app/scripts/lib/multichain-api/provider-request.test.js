@@ -1,3 +1,4 @@
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -82,15 +83,15 @@ describe('provider_request', () => {
     );
   });
 
-  it('throws an error when there is no CAIP-25 endowment permission', async () => {
+  it('throws an unauthorized error when there is no CAIP-25 endowment permission', async () => {
     const request = createMockedRequest();
     const { handler, getCaveat, end } = createMockedHandler();
     getCaveat.mockReturnValue(null);
     await handler(request);
-    expect(end).toHaveBeenCalledWith(new Error('missing CAIP-25 endowment'));
+    expect(end).toHaveBeenCalledWith(providerErrors.unauthorized());
   });
 
-  it('throws an error when the CAIP-25 endowment permission was not granted from the multichain flow', async () => {
+  it('throws an unauthorized error when the CAIP-25 endowment permission was not granted from the multichain flow', async () => {
     const request = createMockedRequest();
     const { handler, getCaveat, end } = createMockedHandler();
     getCaveat.mockReturnValue({
@@ -99,10 +100,10 @@ describe('provider_request', () => {
       },
     });
     await handler(request);
-    expect(end).toHaveBeenCalledWith(new Error('missing CAIP-25 endowment'));
+    expect(end).toHaveBeenCalledWith(providerErrors.unauthorized());
   });
 
-  it('throws an error if the requested scope is not authorized', async () => {
+  it('throws an unauthorized error if the requested scope is not authorized', async () => {
     const request = createMockedRequest();
     const { handler, end } = createMockedHandler();
 
@@ -113,10 +114,10 @@ describe('provider_request', () => {
         scope: 'eip155:999',
       },
     });
-    expect(end).toHaveBeenCalledWith(new Error('unauthorized (missing scope)'));
+    expect(end).toHaveBeenCalledWith(providerErrors.unauthorized());
   });
 
-  it('throws an error if the requested scope method is not authorized', async () => {
+  it('throws an unauthorized error if the requested scope method is not authorized', async () => {
     const request = createMockedRequest();
     const { handler, end } = createMockedHandler();
 
@@ -130,12 +131,10 @@ describe('provider_request', () => {
         },
       },
     });
-    expect(end).toHaveBeenCalledWith(
-      new Error('unauthorized (method missing in scopeObject)'),
-    );
+    expect(end).toHaveBeenCalledWith(providerErrors.unauthorized());
   });
 
-  it('throws an error for authorized but unhandled scopes', async () => {
+  it('throws an internal error for authorized but unhandled scopes', async () => {
     const request = createMockedRequest();
     const { handler, end } = createMockedHandler();
 
@@ -151,7 +150,7 @@ describe('provider_request', () => {
       },
     });
 
-    expect(end).toHaveBeenCalledWith(new Error('unable to handle namespace'));
+    expect(end).toHaveBeenCalledWith(rpcErrors.internal());
   });
 
   describe('ethereum scope', () => {
@@ -163,16 +162,14 @@ describe('provider_request', () => {
       expect(findNetworkClientIdByChainId).toHaveBeenCalledWith('0x1');
     });
 
-    it('throws an error if a networkClientId does not exist for the chainId', async () => {
+    it('throws an internal error if a networkClientId does not exist for the chainId', async () => {
       const request = createMockedRequest();
       const { handler, findNetworkClientIdByChainId, end } =
         createMockedHandler();
       findNetworkClientIdByChainId.mockReturnValue(undefined);
 
       await handler(request);
-      expect(end).toHaveBeenCalledWith(
-        new Error('failed to get network client for reference'),
-      );
+      expect(end).toHaveBeenCalledWith(rpcErrors.internal());
     });
 
     it('sets the networkClientId and unwraps the CAIP-27 request', async () => {
@@ -212,7 +209,7 @@ describe('provider_request', () => {
       expect(getSelectedNetworkClientId).toHaveBeenCalled();
     });
 
-    it('throws an error if a networkClientId cannot be retrieved for the globally selected network', async () => {
+    it('throws an internal error if a networkClientId cannot be retrieved for the globally selected network', async () => {
       const request = createMockedRequest();
       const { handler, getSelectedNetworkClientId, end } =
         createMockedHandler();
@@ -229,9 +226,7 @@ describe('provider_request', () => {
           },
         },
       });
-      expect(end).toHaveBeenCalledWith(
-        new Error('failed to get network client for reference'),
-      );
+      expect(end).toHaveBeenCalledWith(rpcErrors.internal());
     });
 
     it('sets the networkClientId and unwraps the CAIP-27 request', async () => {
