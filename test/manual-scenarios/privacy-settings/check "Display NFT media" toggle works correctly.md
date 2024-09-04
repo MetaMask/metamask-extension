@@ -38,7 +38,6 @@ Given I am on the Security & Privacy settings page
 And the "Display NFT media" toggle is set to ON
 When I view my NFTs in MetaMask
 Then MetaMask should display NFT media and data
-And NFT autodetection should be available
 
 
 ```
