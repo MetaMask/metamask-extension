@@ -5,7 +5,6 @@ import { getMockContractInteractionConfirmState } from '../../../../../../../../
 import configureStore from '../../../../../../../store/store';
 import { ConfirmContextProvider } from '../../../../../context/confirm';
 import { EditGasFeesRow } from './edit-gas-fees-row';
-import { ConfirmContextProvider } from '../../../../../context/confirm';
 
 function getStore() {
   return configureStore(getMockContractInteractionConfirmState());
