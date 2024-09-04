@@ -109,7 +109,7 @@ const Footer = () => {
   const confirm = useSelector(confirmSelector);
   const customNonceValue = useSelector(getCustomNonceValue);
 
-  const { currentConfirmation, isScrollToBottomUnfulfilled } = confirm;
+  const { currentConfirmation, isScrollToBottomUncompleted } = confirm;
   const { from } = getConfirmationSender(currentConfirmation);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -128,7 +128,7 @@ const Footer = () => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     mmiSubmitDisabled ||
     ///: END:ONLY_INCLUDE_IF
-    isScrollToBottomUnfulfilled ||
+    isScrollToBottomUncompleted ||
     hardwareWalletRequiresConnection;
 
   const onCancel = useCallback(
