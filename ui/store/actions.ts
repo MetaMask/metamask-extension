@@ -435,9 +435,7 @@ export function importNewAccount(
       dispatch(hideLoadingIndication());
     }
 
-    await forceUpdateMetamaskState(dispatch);
-
-    return newState;
+    return await forceUpdateMetamaskState(dispatch);
   };
 }
 
@@ -2298,7 +2296,7 @@ export function createSpeedUpTransaction(
             const currentNetworkTxList =
               getCurrentNetworkTransactions(newState);
             newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
-            resolve(newState);
+            resolve();
           }
         },
       );
