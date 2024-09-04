@@ -5,6 +5,14 @@ import { getMockApproveConfirmState } from '../../../../../../../../test/data/co
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { EditSpendingCapModal } from './edit-spending-cap-modal';
 
+jest.mock('../../../../../../../store/actions', () => ({
+  ...jest.requireActual('../../../../../../../store/actions'),
+  getGasFeeTimeEstimate: jest.fn().mockResolvedValue({
+    lowerTimeBound: 0,
+    upperTimeBound: 60000,
+  }),
+}));
+
 jest.mock('../hooks/use-approve-token-simulation', () => ({
   useApproveTokenSimulation: jest.fn(() => ({
     spendingCap: '1000',
