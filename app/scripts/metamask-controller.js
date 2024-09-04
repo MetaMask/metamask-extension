@@ -5992,6 +5992,10 @@ export default class MetamaskController extends EventEmitter {
               ),
             requestPermissionApprovalForOrigin:
               this.requestPermissionApprovalForOrigin.bind(this, origin),
+            sendMetrics: this.metaMetricsController.trackEvent.bind(
+              this.metaMetricsController,
+            ),
+            metamaskState: this.getState(),
           });
         },
         [MESSAGE_TYPE.PROVIDER_REQUEST]: (request, response, next, end) => {
