@@ -44,7 +44,7 @@ export type Confirmation = SignatureRequestType | TransactionMeta;
 export type ConfirmMetamaskState = {
   confirm: {
     currentConfirmation?: Confirmation;
-    isScrollToBottomFulfilled?: boolean;
+    isScrollToBottomUnfulfilled?: boolean;
   };
   metamask: {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];

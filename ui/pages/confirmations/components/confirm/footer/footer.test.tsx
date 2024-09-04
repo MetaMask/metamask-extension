@@ -41,7 +41,7 @@ const render = (args = {}) => {
           from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         },
       },
-      isScrollToBottomFulfilled: false,
+      isScrollToBottomUnfulfilled: false,
     },
     ...args,
   });
@@ -54,7 +54,7 @@ describe('ConfirmFooter', () => {
     const { container } = render({
       confirm: {
         currentConfirmation: unapprovedPersonalSignMsg,
-        isScrollToBottomFulfilled: false,
+        isScrollToBottomUnfulfilled: false,
       },
     });
     expect(container).toMatchSnapshot();
@@ -64,7 +64,7 @@ describe('ConfirmFooter', () => {
     const { container } = render({
       confirm: {
         currentConfirmation: genUnapprovedContractInteractionConfirmation(),
-        isScrollToBottomFulfilled: false,
+        isScrollToBottomUnfulfilled: false,
       },
     });
     expect(container).toMatchSnapshot();
