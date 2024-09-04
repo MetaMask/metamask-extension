@@ -49,26 +49,23 @@ export const KnownNotifications: Record<NonWalletKnownCaipNamespace, string[]> =
     eip155: ['accountsChanged', 'chainChanged', 'eth_subscription'],
   };
 
-export type Scope = CaipChainId | CaipReference;
 
-export type InternalScope = CaipChainId | KnownCaipNamespace.Wallet;
-
-export type ExternalScopeObject = InternalScopeObject & {
+export type ExternalScope = CaipChainId | CaipReference;
+export type ExternalScopeObject = ScopeObject & {
   scopes?: CaipChainId[];
 };
+export type ExternalScopesObject = Record<ExternalScope, ExternalScopeObject>;
 
-export type InternalScopeObject = {
+export type Scope = CaipChainId | KnownCaipNamespace.Wallet;
+export type ScopeObject = {
   methods: string[];
   notifications: string[];
   accounts?: CaipAccountId[];
   rpcDocuments?: string[];
   rpcEndpoints?: string[];
 };
-
-export type ExternalScopesObject = Record<Scope, ExternalScopeObject>;
-
-export type InternalScopesObject = Record<CaipChainId, InternalScopeObject> & {
-  [KnownCaipNamespace.Wallet]?: InternalScopeObject;
+export type ScopesObject = Record<CaipChainId, ScopeObject> & {
+  [KnownCaipNamespace.Wallet]?: ScopeObject;
 };
 
 export const parseScopeString = (
@@ -89,4 +86,4 @@ export const parseScopeString = (
   return {};
 };
 
-export type ScopedProperties = Record<Scope, Record<string, unknown>>;
+export type ScopedProperties = Record<ExternalScope, Record<string, unknown>>;

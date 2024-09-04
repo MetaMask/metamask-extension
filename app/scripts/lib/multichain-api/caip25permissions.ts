@@ -21,16 +21,16 @@ import {
 import { NetworkClientId } from '@metamask/network-controller';
 import { cloneDeep, isEqual } from 'lodash';
 import {
-  Scope,
+  ExternalScope,
   validateAndFlattenScopes,
-  InternalScopesObject,
-  InternalScopeObject,
+  ScopesObject,
+  ScopeObject,
   assertScopesSupported,
 } from './scope';
 
 export type Caip25CaveatValue = {
-  requiredScopes: InternalScopesObject;
-  optionalScopes: InternalScopesObject;
+  requiredScopes: ScopesObject;
+  optionalScopes: ScopesObject;
   sessionProperties?: Record<string, Json>;
   isMultichainOrigin: boolean;
 };
@@ -158,10 +158,7 @@ function removeAccountFilterFn(targetAddress: string) {
   };
 }
 
-function removeAccountOnScope(
-  targetAddress: string,
-  scopeObject: InternalScopeObject,
-) {
+function removeAccountOnScope(targetAddress: string, scopeObject: ScopeObject) {
   if (scopeObject.accounts) {
     scopeObject.accounts = scopeObject.accounts.filter(
       removeAccountFilterFn(targetAddress),
@@ -209,7 +206,7 @@ function removeAccount(
  * @param caip25CaveatValue - The CAIP-25 permission caveat value to remove the scope from.
  */
 export function removeScope(
-  targetScopeString: Scope,
+  targetScopeString: ExternalScope,
   caip25CaveatValue: Caip25CaveatValue,
 ) {
   const newRequiredScopes = Object.entries(

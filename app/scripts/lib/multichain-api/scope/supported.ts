@@ -17,7 +17,7 @@ import {
   KnownWalletRpcMethods,
   NonWalletKnownCaipNamespace,
   parseScopeString,
-  Scope,
+  ExternalScope,
 } from './scope';
 
 export const isSupportedScopeString = (
@@ -76,7 +76,10 @@ export const isSupportedAccount = (
   }
 };
 
-export const isSupportedMethod = (scope: Scope, method: string): boolean => {
+export const isSupportedMethod = (
+  scope: ExternalScope,
+  method: string,
+): boolean => {
   const { namespace, reference } = parseScopeString(scope);
 
   if (namespace === KnownCaipNamespace.Wallet) {
@@ -97,7 +100,7 @@ export const isSupportedMethod = (scope: Scope, method: string): boolean => {
 };
 
 export const isSupportedNotification = (
-  scope: Scope,
+  scope: ExternalScope,
   notification: string,
 ): boolean => {
   const { namespace } = parseScopeString(scope);

@@ -1,6 +1,6 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
 import { assertScopeSupported, assertScopesSupported } from './assert';
-import { InternalScopeObject } from './scope';
+import { ScopeObject } from './scope';
 import * as Supported from './supported';
 
 jest.mock('./supported', () => ({
@@ -10,7 +10,7 @@ jest.mock('./supported', () => ({
 }));
 const MockSupported = jest.mocked(Supported);
 
-const validScopeObject: InternalScopeObject = {
+const validScopeObject: ScopeObject = {
   methods: [],
   notifications: [],
 };

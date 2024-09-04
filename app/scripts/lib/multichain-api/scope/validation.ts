@@ -2,7 +2,7 @@ import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { validateAddEthereumChainParams } from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
 import {
-  Scope,
+  ExternalScope,
   parseScopeString,
   ExternalScopeObject,
   ExternalScopesObject,
@@ -10,7 +10,7 @@ import {
 
 // Make this an assert
 export const isValidScope = (
-  scopeString: Scope,
+  scopeString: ExternalScope,
   scopeObject: ExternalScopeObject,
 ): boolean => {
   const { namespace, reference } = parseScopeString(scopeString);

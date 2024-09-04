@@ -1,17 +1,17 @@
 import { CaipChainId, Hex } from '@metamask/utils';
-import { InternalScopesObject } from './scope';
+import { ScopesObject } from './scope';
 import { assertScopeSupported } from './assert';
 
 export const bucketScopesBySupport = (
-  scopes: InternalScopesObject,
+  scopes: ScopesObject,
   {
     isChainIdSupported,
   }: {
     isChainIdSupported: (chainId: Hex) => boolean;
   },
 ) => {
-  const supportedScopes: InternalScopesObject = {};
-  const unsupportedScopes: InternalScopesObject = {};
+  const supportedScopes: ScopesObject = {};
+  const unsupportedScopes: ScopesObject = {};
 
   for (const [scopeString, scopeObject] of Object.entries(scopes)) {
     try {
@@ -28,7 +28,7 @@ export const bucketScopesBySupport = (
 };
 
 export const filterScopesSupported = (
-  scopes: InternalScopesObject,
+  scopes: ScopesObject,
   {
     isChainIdSupported,
   }: {

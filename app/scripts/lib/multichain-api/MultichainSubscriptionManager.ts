@@ -3,7 +3,7 @@ import { NetworkController } from '@metamask/network-controller';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
 import { parseCaipChainId } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
-import { InternalScope, Scope } from './scope';
+import { Scope, ExternalScope } from './scope';
 
 export type SubscriptionManager = {
   events: EventEmitter;
@@ -42,7 +42,7 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
     this.subscriptionsCountByScope = {};
   }
 
-  onNotification(scope: Scope, domain: string, message: unknown) {
+  onNotification(scope: ExternalScope, domain: string, message: unknown) {
     this.emit('notification', domain, {
       method: 'wallet_invokeMethod',
       params: {
@@ -52,7 +52,7 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
     });
   }
 
-  subscribe(scope: InternalScope, domain: string) {
+  subscribe(scope: Scope, domain: string) {
     let subscriptionManager;
     if (this.subscriptionManagerByChain[scope]) {
       subscriptionManager = this.subscriptionManagerByChain[scope];
@@ -80,7 +80,7 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
     return subscriptionManager;
   }
 
-  unsubscribe(scope: Scope, domain: string) {
+  unsubscribe(scope: ExternalScope, domain: string) {
     const subscriptionManager: SubscriptionManager =
       this.subscriptionManagerByChain[scope];
     if (subscriptionManager && this.subscriptionsByChain[scope][domain]) {

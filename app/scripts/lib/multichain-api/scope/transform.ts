@@ -2,9 +2,9 @@ import { CaipChainId, isCaipChainId } from '@metamask/utils';
 import {
   ExternalScopeObject,
   ExternalScopesObject,
-  InternalScope,
-  InternalScopeObject,
-  InternalScopesObject,
+  Scope,
+  ScopeObject,
+  ScopesObject,
 } from './scope';
 
 // DRY THIS
@@ -25,7 +25,7 @@ function unique<T>(list: T[]): T[] {
 export const flattenScope = (
   scopeString: string,
   scopeObject: ExternalScopeObject,
-): InternalScopesObject => {
+): ScopesObject => {
   const { scopes, ...restScopeObject } = scopeObject;
   const isChainScoped = isCaipChainId(scopeString);
 
@@ -33,7 +33,7 @@ export const flattenScope = (
     return { [scopeString]: scopeObject };
   }
 
-  const scopeMap: InternalScopesObject = {};
+  const scopeMap: ScopesObject = {};
   scopes.forEach((scope: CaipChainId) => {
     scopeMap[scope] = restScopeObject;
   });
@@ -41,10 +41,10 @@ export const flattenScope = (
 };
 
 export const mergeScopeObject = (
-  scopeObjectA: InternalScopeObject,
-  scopeObjectB: InternalScopeObject,
+  scopeObjectA: ScopeObject,
+  scopeObjectB: ScopeObject,
 ) => {
-  const mergedScopeObject: InternalScopeObject = {
+  const mergedScopeObject: ScopeObject = {
     methods: unique([...scopeObjectA.methods, ...scopeObjectB.methods]),
     notifications: unique([
       ...scopeObjectA.notifications,
@@ -77,13 +77,13 @@ export const mergeScopeObject = (
 };
 
 export const mergeScopes = (
-  scopeA: InternalScopesObject,
-  scopeB: InternalScopesObject,
-): InternalScopesObject => {
-  const scope: InternalScopesObject = {};
+  scopeA: ScopesObject,
+  scopeB: ScopesObject,
+): ScopesObject => {
+  const scope: ScopesObject = {};
 
   Object.entries(scopeA).forEach(([_scopeString, scopeObjectA]) => {
-    const scopeString = _scopeString as InternalScope;
+    const scopeString = _scopeString as Scope;
     const scopeObjectB = scopeB[scopeString];
 
     scope[scopeString] = scopeObjectB
@@ -92,7 +92,7 @@ export const mergeScopes = (
   });
 
   Object.entries(scopeB).forEach(([_scopeString, scopeObjectB]) => {
-    const scopeString = _scopeString as InternalScope;
+    const scopeString = _scopeString as Scope;
     const scopeObjectA = scopeA[scopeString];
 
     if (!scopeObjectA) {
@@ -105,8 +105,8 @@ export const mergeScopes = (
 
 export const flattenMergeScopes = (
   scopes: ExternalScopesObject,
-): InternalScopesObject => {
-  let flattenedScopes: InternalScopesObject = {};
+): ScopesObject => {
+  let flattenedScopes: ScopesObject = {};
   Object.keys(scopes).forEach((scopeString) => {
     const flattenedScopeMap = flattenScope(scopeString, scopes[scopeString]);
     flattenedScopes = mergeScopes(flattenedScopes, flattenedScopeMap);

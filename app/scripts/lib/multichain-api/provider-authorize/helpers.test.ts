@@ -1,5 +1,5 @@
 import * as EthereumChainUtils from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
-import { InternalScopesObject } from '../scope';
+import { ScopesObject } from '../scope';
 import { assignAccountsToScopes, validateAndUpsertEip3085 } from './helpers';
 
 jest.mock('../../rpc-method-middleware/handlers/ethereum-chain-utils', () => ({
@@ -14,7 +14,7 @@ describe('provider_authorize helpers', () => {
 
   describe('assignAccountsToScopes', () => {
     it('overwrites the accounts property of each scope object with a CAIP-10 id built from the scopeString and passed in accounts', () => {
-      const scopes: InternalScopesObject = {
+      const scopes: ScopesObject = {
         'eip155:1': {
           methods: [],
           notifications: [],
@@ -44,7 +44,7 @@ describe('provider_authorize helpers', () => {
     });
 
     it('does not assign accounts for the wallet scope', () => {
-      const scopes: InternalScopesObject = {
+      const scopes: ScopesObject = {
         wallet: {
           methods: [],
           notifications: [],
