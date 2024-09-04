@@ -5,6 +5,8 @@ import ComposableObservableStore from './ComposableObservableStore';
 
 const log = createProjectLogger('patch-store');
 
+const IGNORE_KEYS = ['snapStates', 'unencryptedSnapStates', 'vault'];
+
 export class PatchStore {
   private id: string;
 
@@ -53,16 +55,29 @@ export class PatchStore {
     newState: Record<string, unknown>;
   }) {
     const patches = this._generatePatches(oldState, newState);
+    const isInitialized = Boolean(newState.vault);
 
-    if (!patches.length) {
+    if (isInitialized) {
+      patches.push({
+        op: 'replace',
+        path: ['isInitialized'],
+        value: isInitialized,
+      });
+    }
+
+    const finalPatches = patches.filter(
+      (patch) => !IGNORE_KEYS.includes((patch.path as string[])?.[0]),
+    );
+
+    if (!finalPatches.length) {
       return;
     }
 
-    patches.forEach((patch) => {
+    finalPatches.forEach((patch) => {
       log('Added', patch.path.join('.'), this.id, patch);
     });
 
-    this.pendingPatches.push(...patches);
+    this.pendingPatches.push(...finalPatches);
   }
 
   private _generatePatches(

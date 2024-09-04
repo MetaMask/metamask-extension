@@ -38,6 +38,7 @@ import {
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import { Patch } from 'immer';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -1535,7 +1536,7 @@ export function unlockSucceeded(message?: string) {
 }
 
 export function updateMetamaskState(
-  _rawNewState: MetaMaskReduxState['metamask'],
+  rawNewState: MetaMaskReduxState['metamask'] | undefined,
   patches: Patch[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch, getState) => {
@@ -1547,7 +1548,7 @@ export function updateMetamaskState(
       return currentState;
     }
 
-    const newState = applyPatches(currentState, patches);
+    const newState = rawNewState ?? applyPatches(currentState, patches);
 
     const { currentLocale } = currentState;
     const currentInternalAccount = getSelectedInternalAccount(state);
@@ -5598,7 +5599,10 @@ export async function endBackgroundTrace(request: EndTraceRequest) {
   ]);
 }
 
-function applyPatches(oldState, patches) {
+function applyPatches(
+  oldState: Record<string, unknown>,
+  patches: Patch[],
+): Record<string, unknown> {
   const newState = { ...oldState };
 
   for (const patch of patches) {
