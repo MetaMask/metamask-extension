@@ -2,10 +2,6 @@
   cursor: pointer;
 
   &:hover {
-    background-color: var(--color-info-muted);
-
-    & * {
-      color: var(--color-info-default);
-    }
+    background-color: var(--color-background-alternative);
   }
 }

@@ -5,7 +5,6 @@ import { SnapIcon } from '../snap-icon';
 import { getSnapMetadata } from '../../../../selectors';
 import {
   AlignItems,
-  BackgroundColor,
   BorderRadius,
   Display,
   FlexDirection,
@@ -33,21 +32,19 @@ const SnapAuthorshipPill: React.FC<SnapAuthorshipPillProps> = ({
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       alignItems={AlignItems.center}
-      backgroundColor={BackgroundColor.backgroundAlternative}
       borderRadius={BorderRadius.pill}
       paddingTop={1}
       paddingBottom={1}
       paddingLeft={1}
       paddingRight={2}
-      style={{ width: '150px' }}
       onClick={onClick}
     >
       <SnapIcon avatarSize={IconSize.Sm} snapId={snapId} />
       <Text
-        color={TextColor.textAlternative}
+        color={TextColor.primaryDefault}
         variant={TextVariant.bodySm}
         ellipsis
-        paddingLeft={4}
+        paddingLeft={1}
       >
         {snapName}
       </Text>
