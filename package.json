@@ -31,7 +31,7 @@
     "mv3:stats:chrome": "SELENIUM_BROWSER=chrome ts-node test/e2e/mv3-perf-stats/index.js",
     "user-actions-benchmark:chrome": "SELENIUM_BROWSER=chrome ts-node test/e2e/user-actions-benchmark.js",
     "benchmark:firefox": "SELENIUM_BROWSER=firefox ts-node test/e2e/benchmark.js",
-    "build:test": "yarn env:e2e build test --apply-lavamoat=false",
+    "build:test": "yarn env:e2e build test",
     "build:test:dev": "yarn env:e2e build:dev testDev --apply-lavamoat=false",
     "build:test:flask": "yarn build:test --build-type flask",
     "build:test:flask:mv2": "ENABLE_MV3=false yarn build:test:flask",
