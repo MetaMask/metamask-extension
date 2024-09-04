@@ -43,6 +43,8 @@ import { ToastContainer, Toast } from '../..';
 import { NoConnectionContent } from '../connections/components/no-connection';
 import { Content, Footer, Header, Page } from '../page';
 import { SiteCell } from '.';
+import { NonEmptyArray } from '@metamask/utils';
+import { SubjectsType } from '../connections/components/connections.types';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
