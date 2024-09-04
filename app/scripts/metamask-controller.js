@@ -5971,7 +5971,12 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createScaffoldMiddleware({
-        [MESSAGE_TYPE.WALLET_CREATE_SESSION]: (request, response, next, end) => {
+        [MESSAGE_TYPE.WALLET_CREATE_SESSION]: (
+          request,
+          response,
+          next,
+          end,
+        ) => {
           return walletCreateSessionHandler(request, response, next, end, {
             multichainMiddlewareManager: this.multichainMiddlewareManager,
             multichainSubscriptionManager: this.multichainSubscriptionManager,
