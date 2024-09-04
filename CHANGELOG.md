@@ -9,27 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [12.2.0]
 
 ### Added
-- Added an experimental toggle for BTC accounts ([#25672](https://github.com/MetaMask/metamask-extension/pull/25672))
-- Added the Bitcoin Wallet Snap as a pre-installed Snap ([#25715](https://github.com/MetaMask/metamask-extension/pull/25715))
 - Updated the activity tab to display a message and a block explorer link for Bitcoin accounts ([#25642](https://github.com/MetaMask/metamask-extension/pull/25642))
-- Updated Ramps banners to include a BTC variant with new illustrations and text ([#25615](https://github.com/MetaMask/metamask-extension/pull/25615))
-- Added support for creating Bitcoin testnet accounts with a feature flag ([#25772](https://github.com/MetaMask/metamask-extension/pull/25772))
 - Enabled the redesigned SIWE (Sign-In with Ethereum) signature pages ([#25660](https://github.com/MetaMask/metamask-extension/pull/25660))
 - Implemented a new Gas Fees component for redesigned transactions ([#24714](https://github.com/MetaMask/metamask-extension/pull/24714))
 - Improved the display of large and small token values on the permit signature page ([#25438](https://github.com/MetaMask/metamask-extension/pull/25438))
 - Added support for security alerts on zkSync, Berachain, Scroll, and Metachain One networks ([#25555](https://github.com/MetaMask/metamask-extension/pull/25555))
 - Added an account mismatch warning alert to the SIWE redesign page ([#25613](https://github.com/MetaMask/metamask-extension/pull/25613))
 - Enabled the redesigned confirmations by default ([#25769](https://github.com/MetaMask/metamask-extension/pull/25769))
-- Updated the Ramps feature to include Bitcoin as a buyable token and improved zero balance state handling ([#25621](https://github.com/MetaMask/metamask-extension/pull/25621))
 
 ### Changed
 - Removed the modals prompting users to enable token and NFT detection ([#26403](https://github.com/MetaMask/metamask-extension/pull/26403))
 
 ### Fixed
-- Fixed the display of the correct asset and balance when a BTC account is selected ([#25719](https://github.com/MetaMask/metamask-extension/pull/25719))
 - Fixed an issue where removing non-EVM accounts was broken if there was an existing EVM dapp permission ([#25739](https://github.com/MetaMask/metamask-extension/pull/25739))
 - Fixed the issue to show the connected toast only for EVM accounts, hiding it for non-EVM accounts ([#25628](https://github.com/MetaMask/metamask-extension/pull/25628))
-- Updated block explorer support for non-EVM explorers and fixed QR code display for non-EVM accounts ([#25526](https://github.com/MetaMask/metamask-extension/pull/25526))
 - Improved error messaging during Ledger pairing to guide users when the device is locked or the Ethereum app is not open ([#25462](https://github.com/MetaMask/metamask-extension/pull/25462))
 - Fixed an issue where the connected account was missing on the connection page ([#25500](https://github.com/MetaMask/metamask-extension/pull/25500))
 - Fixed an issue where the account name was out of sync in the account list during the connect account flow ([#26542](https://github.com/MetaMask/metamask-extension/pull/26542))
