@@ -4,8 +4,7 @@ Below is a summary of the validations included:
 
 * Validate that the 'Show ENS domains in address bar' toggle is present in the Security & Privacy settings and is ON by default.
 * Validate that the toggle can be turned on and off.
-* Validate that when the toggle is turned on, MetaMask checks with Ethereum's ENS contract to find the code connected to the ENS name.
-* Validate that if the code links to IPFS, the content associated with it is displayed.
+* Validate that when the toggle is turned on, ENS domain name is displayed alongside the public address
 
 ```markdown
 

@@ -4,7 +4,8 @@ Below is a summary of the validations included:
 
 * Validate that the 'IPFS gateway' toggle is present in the Security & Privacy settings and is ON by default.
 * Validate that the toggle can be turned on and off.
-* Validate that when the toggle is turned on, MetaMask shows images of NFTs, displays information related to ENS addresses, and fetches icons for different tokens.
+* Validate that when the toggle is turned on, MetaMask shows images of NFTs
+* Validate that when the toggle is turned off, NFT images are replaced by placeholders and I am prompted to turn on IPFS resolution
 
 ```markdown
 
