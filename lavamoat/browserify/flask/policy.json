@@ -3574,7 +3574,7 @@
       },
       "packages": {
         "browserify>assert>util": true,
-        "react>object-assign": true
+        "react-dom>object-assign": true
       }
     },
     "browserify>assert>util": {
@@ -3924,7 +3924,7 @@
       "packages": {
         "currency-formatter>accounting": true,
         "currency-formatter>locale-currency": true,
-        "react>object-assign": true
+        "react-dom>object-assign": true
       }
     },
     "currency-formatter>accounting": {
@@ -4577,7 +4577,7 @@
       },
       "packages": {
         "prop-types>react-is": true,
-        "react>object-assign": true
+        "react-dom>object-assign": true
       }
     },
     "prop-types>react-is": {
@@ -4601,11 +4601,9 @@
     },
     "react": {
       "globals": {
+        "MessageChannel": true,
+        "__REACT_DEVTOOLS_GLOBAL_HOOK__": true,
         "console": true
-      },
-      "packages": {
-        "prop-types": true,
-        "react>object-assign": true
       }
     },
     "react-beautiful-dnd": {
@@ -4710,8 +4708,8 @@
       "packages": {
         "prop-types": true,
         "react": true,
-        "react-dom>scheduler": true,
-        "react>object-assign": true
+        "react-dom>object-assign": true,
+        "react-dom>scheduler": true
       }
     },
     "react-dom>scheduler": {
