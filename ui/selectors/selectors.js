@@ -968,22 +968,13 @@ export function getShouldShowFiat(state) {
   const { showFiatInTestnets } = getPreferences(state);
   const conversionRate = getConversionRate(state);
   const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
+  const isConvertibleToFiat = Boolean(useCurrencyRateCheck && conversionRate);
 
   if (isTestnet) {
-    return Boolean(
-      showFiatInTestnets && useCurrencyRateCheck && conversionRate,
-    );
+    return showFiatInTestnets && isConvertibleToFiat;
   }
 
-  const isMainNet = getIsMainnet(state);
-  const isLineaMainNet = getIsLineaMainnet(state);
-  const isCustomNetwork = getIsCustomNetwork(state);
-
-  return Boolean(
-    (isMainNet || isLineaMainNet || isCustomNetwork) &&
-      useCurrencyRateCheck &&
-      conversionRate,
-  );
+  return isConvertibleToFiat;
 }
 
 export function getShouldHideZeroBalanceTokens(state) {
