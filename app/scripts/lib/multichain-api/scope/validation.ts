@@ -1,10 +1,9 @@
-import { parseCaipChainId } from '@metamask/utils';
+import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { validateAddEthereumChainParams } from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
 import {
   Scope,
   parseScopeString,
-  KnownCaipNamespace,
   ExternalScopeObject,
   ExternalScopesObject,
 } from './scope';

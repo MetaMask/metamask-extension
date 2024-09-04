@@ -134,4 +134,144 @@ describe('Contract Interaction Confirmation', () => {
 
     expect(queryByTestId('alert-modal')).not.toBeInTheDocument();
   });
+
+  it('displays the alert when gas estimate fails', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedApproveTransaction(account.address);
+
+    const transactions = {
+      ...mockedMetaMaskState.transactions[0],
+      simulationFails: {
+        reason: 'Internal JSON-RPC error.',
+        debug: {
+          blockNumber: '0x3a3c20d',
+          blockGasLimit: '0x1c9c380',
+        },
+      },
+    };
+
+    const { findByTestId, getByTestId, queryByTestId } =
+      await integrationTestRender({
+        preloadedState: {
+          ...mockedMetaMaskState,
+          transactions: [transactions],
+        },
+        backgroundConnection: backgroundConnectionMocked,
+      });
+
+    act(() => {
+      fireEvent.click(getByTestId('inline-alert'));
+    });
+
+    expect(await findByTestId('alert-modal')).toBeInTheDocument();
+
+    expect(
+      await findByTestId('alert-modal__selected-alert'),
+    ).toBeInTheDocument();
+
+    expect(await findByTestId('alert-modal__selected-alert')).toHaveTextContent(
+      'We’re unable to provide an accurate fee and this estimate might be high. We suggest you to input a custom gas limit, but there’s a risk the transaction will still fail.',
+    );
+
+    expect(await findByTestId('alert-modal-button')).toBeInTheDocument();
+    const alertModalConfirmButton = await findByTestId('alert-modal-button');
+
+    act(() => {
+      fireEvent.click(alertModalConfirmButton);
+    });
+
+    expect(queryByTestId('alert-modal')).not.toBeInTheDocument();
+  });
+
+  it('displays the alert for insufficient gas', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedApproveTransaction(account.address);
+    const transaction = mockedMetaMaskState.transactions[0];
+    transaction.txParams.gas = '0x0';
+
+    const { findByTestId, getByTestId } = await integrationTestRender({
+      preloadedState: {
+        ...mockedMetaMaskState,
+        transactions: [transaction],
+      },
+      backgroundConnection: backgroundConnectionMocked,
+    });
+
+    act(() => {
+      fireEvent.click(getByTestId('inline-alert'));
+    });
+
+    expect(await findByTestId('alert-modal')).toBeInTheDocument();
+
+    expect(
+      await findByTestId('alert-modal__selected-alert'),
+    ).toBeInTheDocument();
+
+    expect(await findByTestId('alert-modal__selected-alert')).toHaveTextContent(
+      'To continue with this transaction, you’ll need to increase the gas limit to 21000 or higher.',
+    );
+
+    expect(
+      await findByTestId('alert-modal-action-showAdvancedGasModal'),
+    ).toBeInTheDocument();
+    expect(
+      await findByTestId('alert-modal-action-showAdvancedGasModal'),
+    ).toHaveTextContent('Update gas limit');
+  });
+
+  it('displays the alert for no gas price', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedApproveTransaction(account.address);
+
+    const transaction = mockedMetaMaskState.transactions[0];
+    transaction.gasFeeEstimates.type = 'none';
+
+    const { findByTestId, getByTestId } = await integrationTestRender({
+      preloadedState: {
+        ...mockedMetaMaskState,
+        gasEstimateType: 'none',
+        transactions: [transaction],
+      },
+      backgroundConnection: backgroundConnectionMocked,
+    });
+
+    act(() => {
+      fireEvent.click(getByTestId('inline-alert'));
+    });
+
+    expect(await findByTestId('alert-modal')).toBeInTheDocument();
+
+    expect(
+      await findByTestId('alert-modal__selected-alert'),
+    ).toBeInTheDocument();
+
+    expect(await findByTestId('alert-modal__selected-alert')).toHaveTextContent(
+      'We can’t move forward with this transaction until you manually update the fee.',
+    );
+
+    expect(
+      await findByTestId('alert-modal-action-showAdvancedGasModal'),
+    ).toBeInTheDocument();
+    expect(
+      await findByTestId('alert-modal-action-showAdvancedGasModal'),
+    ).toHaveTextContent('Update fee');
+  });
 });

@@ -1,4 +1,6 @@
 import { invalidParams } from '@metamask/permission-controller';
+import { PermissionNames } from '../../controllers/permissions';
+import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -9,7 +11,6 @@ const baseRequest = {
   origin: 'http://test.com',
   params: [
     {
-      eth_accounts: {},
       [Caip25EndowmentPermissionName]: {},
       otherPermission: {},
     },
@@ -22,70 +23,27 @@ const createMockedHandler = () => {
   const revokePermissionsForOrigin = jest.fn();
   const getPermissionsForOrigin = jest.fn().mockReturnValue(
     Object.freeze({
-      eth_accounts: {
-        id: '1',
-        parentCapability: 'eth_accounts',
-        caveats: [
-          {
-            value: ['0xdead', '0xbeef'],
-          },
-        ],
-      },
       [Caip25EndowmentPermissionName]: {
-        id: '2',
+        id: '1',
         parentCapability: Caip25EndowmentPermissionName,
         caveats: [
           {
             type: Caip25CaveatType,
             value: {
-              requiredScopes: {
-                'eip155:1': {
-                  methods: [],
-                  notifications: [],
-                  accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
-                },
-                'eip155:5': {
-                  methods: [],
-                  notifications: [],
-                  accounts: ['eip155:5:0x1', 'eip155:5:0x3'],
-                },
-              },
-              optionalScopes: {
-                'eip155:1': {
-                  methods: [],
-                  notifications: [],
-                  accounts: ['eip155:1:0xdeadbeef'],
-                },
-                'other:1': {
-                  methods: [],
-                  notifications: [],
-                  accounts: ['other:1:0xdeadbeef'],
-                },
-              },
-            },
-          },
-        ],
-      },
-      otherPermission: {
-        id: '3',
-        parentCapability: 'otherPermission',
-        caveats: [
-          {
-            value: {
-              foo: 'bar',
+              requiredScopes: {},
+              optionalScopes: {},
+              isMultichainOrigin: false,
             },
           },
         ],
       },
     }),
   );
-  const updateCaveat = jest.fn();
   const response = {};
   const handler = (request) =>
     revokePermissionsHandler.implementation(request, response, next, end, {
       revokePermissionsForOrigin,
       getPermissionsForOrigin,
-      updateCaveat,
     });
 
   return {
@@ -94,16 +52,11 @@ const createMockedHandler = () => {
     end,
     revokePermissionsForOrigin,
     getPermissionsForOrigin,
-    updateCaveat,
     handler,
   };
 };
 
 describe('revokePermissionsHandler', () => {
-  beforeAll(() => {
-    delete process.env.BARAD_DUR;
-  });
-
   it('returns an error if params is malformed', () => {
     const { handler, end } = createMockedHandler();
 
@@ -130,12 +83,114 @@ describe('revokePermissionsHandler', () => {
     );
   });
 
-  it('revokes permissions from params, but ignores CAIP-25 if specified', () => {
+  it('returns an error if params only the CAIP-25 permission is specified', () => {
+    const { handler, end } = createMockedHandler();
+
+    const emptyRequest = {
+      ...baseRequest,
+      params: [
+        {
+          [Caip25EndowmentPermissionName]: {},
+        },
+      ],
+    };
+    handler(emptyRequest);
+    expect(end).toHaveBeenCalledWith(
+      invalidParams({ data: { request: emptyRequest } }),
+    );
+  });
+
+  describe.each([
+    [RestrictedMethods.eth_accounts],
+    [PermissionNames.permittedChains],
+  ])('%s permission is specified', (permission) => {
+    it('gets permissions for the origin', () => {
+      const { handler, getPermissionsForOrigin } = createMockedHandler();
+
+      handler({
+        ...baseRequest,
+        params: [
+          {
+            [permission]: {},
+          },
+        ],
+      });
+      expect(getPermissionsForOrigin).toHaveBeenCalled();
+    });
+
+    it('revokes the CAIP-25 endowment permission', () => {
+      const { handler, revokePermissionsForOrigin } = createMockedHandler();
+
+      handler({
+        ...baseRequest,
+        params: [
+          {
+            [permission]: {},
+          },
+        ],
+      });
+      expect(revokePermissionsForOrigin).toHaveBeenCalledWith([
+        Caip25EndowmentPermissionName,
+      ]);
+    });
+
+    it('revokes other permissions specified', () => {
+      const { handler, revokePermissionsForOrigin } = createMockedHandler();
+
+      handler({
+        ...baseRequest,
+        params: [
+          {
+            [permission]: {},
+            otherPermission: {},
+          },
+        ],
+      });
+      expect(revokePermissionsForOrigin).toHaveBeenCalledWith([
+        'otherPermission',
+        Caip25EndowmentPermissionName,
+      ]);
+    });
+
+    it('throws an error when a CAIP-25 permission exists from the multichain flow (isMultichainOrigin: true)', () => {
+      const { handler, getPermissionsForOrigin, end } = createMockedHandler();
+      getPermissionsForOrigin.mockReturnValue({
+        [Caip25EndowmentPermissionName]: {
+          id: '1',
+          parentCapability: Caip25EndowmentPermissionName,
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: {
+                requiredScopes: {},
+                optionalScopes: {},
+                isMultichainOrigin: true,
+              },
+            },
+          ],
+        },
+      });
+
+      handler({
+        ...baseRequest,
+        params: [
+          {
+            [permission]: {},
+            otherPermission: {},
+          },
+        ],
+      });
+      expect(end).toHaveBeenCalledWith(
+        new Error('cannot modify permission granted from multichain flow'),
+      );
+    });
+  });
+
+  it('revokes permissions other than eth_accounts, permittedChains, CAIP-25 if specified', () => {
     const { handler, revokePermissionsForOrigin } = createMockedHandler();
 
     handler(baseRequest);
     expect(revokePermissionsForOrigin).toHaveBeenCalledWith([
-      'eth_accounts',
       'otherPermission',
     ]);
   });
@@ -145,91 +200,5 @@ describe('revokePermissionsHandler', () => {
 
     handler(baseRequest);
     expect(response.result).toStrictEqual(null);
-  });
-
-  describe('BARAD_DUR flag is set', () => {
-    beforeAll(() => {
-      process.env.BARAD_DUR = 1;
-    });
-
-    it('does not update the CAIP-25 endowment if it does not exist', () => {
-      const { handler, getPermissionsForOrigin, updateCaveat } =
-        createMockedHandler();
-
-      getPermissionsForOrigin.mockReturnValue(
-        Object.freeze({
-          eth_accounts: {
-            id: '1',
-            parentCapability: 'eth_accounts',
-            caveats: [
-              {
-                value: ['0xdead', '0xbeef'],
-              },
-            ],
-          },
-          otherPermission: {
-            id: '2',
-            parentCapability: 'otherPermission',
-            caveats: [
-              {
-                value: {
-                  foo: 'bar',
-                },
-              },
-            ],
-          },
-        }),
-      );
-
-      handler(baseRequest);
-      expect(updateCaveat).not.toHaveBeenCalled();
-    });
-
-    it('does not update the CAIP-25 endowment if eth_accounts was not revoked', () => {
-      const { handler, updateCaveat } = createMockedHandler();
-
-      handler({
-        ...baseRequest,
-        params: [{ otherParams: {} }],
-      });
-      expect(updateCaveat).not.toHaveBeenCalled();
-    });
-
-    it('updates the CAIP-25 endowment with all eip155 accounts removed', () => {
-      const { handler, updateCaveat } = createMockedHandler();
-
-      handler(baseRequest);
-      expect(updateCaveat).toHaveBeenCalledWith(
-        'http://test.com',
-        Caip25EndowmentPermissionName,
-        Caip25CaveatType,
-        {
-          requiredScopes: {
-            'eip155:1': {
-              methods: [],
-              notifications: [],
-              accounts: [],
-            },
-            'eip155:5': {
-              methods: [],
-              notifications: [],
-              accounts: [],
-            },
-          },
-          optionalScopes: {
-            'eip155:1': {
-              methods: [],
-              notifications: [],
-              accounts: [],
-            },
-            'other:1': {
-              methods: [],
-              notifications: [],
-              accounts: ['other:1:0xdeadbeef'],
-            },
-          },
-        },
-      );
-    });
   });
 });

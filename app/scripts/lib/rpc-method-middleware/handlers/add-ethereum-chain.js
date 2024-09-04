@@ -21,8 +21,8 @@ const addEthereumChain = {
     endApprovalFlow: true,
     getCurrentChainIdForDomain: true,
     getCaveat: true,
-    requestPermittedChainsPermission: true,
-    getChainPermissionsFeatureFlag: true,
+    requestPermissionApprovalForOrigin: true,
+    updateCaveat: true,
   },
 };
 
@@ -43,8 +43,8 @@ async function addEthereumChainHandler(
     endApprovalFlow,
     getCurrentChainIdForDomain,
     getCaveat,
-    requestPermittedChainsPermission,
-    getChainPermissionsFeatureFlag,
+    requestPermissionApprovalForOrigin,
+    updateCaveat,
   },
 ) {
   let validParams;
@@ -134,11 +134,11 @@ async function addEthereumChainHandler(
   } else {
     networkClientId = existingNetwork.id ?? existingNetwork.type;
     const currentRpcUrl = getCurrentRpcUrl();
-
     if (
       currentChainIdForDomain === chainId &&
       currentRpcUrl === firstValidRPCUrl
     ) {
+      res.result = null;
       return end();
     }
 
@@ -157,12 +157,12 @@ async function addEthereumChainHandler(
     networkClientId,
     approvalFlowId,
     {
-      getChainPermissionsFeatureFlag,
       setActiveNetwork,
       requestUserApproval,
       getCaveat,
-      requestPermittedChainsPermission,
       endApprovalFlow,
+      requestPermissionApprovalForOrigin,
+      updateCaveat,
     },
   );
 }

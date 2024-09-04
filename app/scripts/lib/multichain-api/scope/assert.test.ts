@@ -72,6 +72,7 @@ describe('Scope Assert', () => {
         }
 
         expect(MockSupported.isSupportedMethod).toHaveBeenCalledWith(
+          'scopeString',
           'eth_chainId',
         );
       });
@@ -112,6 +113,7 @@ describe('Scope Assert', () => {
         }
 
         expect(MockSupported.isSupportedNotification).toHaveBeenCalledWith(
+          'scopeString',
           'chainChanged',
         );
       });
