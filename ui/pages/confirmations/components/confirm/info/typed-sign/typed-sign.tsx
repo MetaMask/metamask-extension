@@ -48,7 +48,7 @@ const TypedSignInfo: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      if (!isPermit && !isOrder) {
+      if ((!isPermit && !isOrder) || !verifyingContract) {
         return;
       }
       const tokenDetails = await getTokenStandardAndDetails(verifyingContract);
@@ -78,7 +78,7 @@ const TypedSignInfo: React.FC = () => {
         >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoAlertRow>
-        {isValidAddress(verifyingContract) && (
+        {verifyingContract && isValidAddress(verifyingContract) && (
           <ConfirmInfoRow label={t('interactingWith')}>
             <ConfirmInfoRowAddress address={verifyingContract} />
           </ConfirmInfoRow>
