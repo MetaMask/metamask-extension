@@ -9,6 +9,7 @@ import {
   signatureRequestSIWE,
   unapprovedPersonalSignMsg,
 } from '../../../../../../test/data/confirmations/personal_sign';
+import { permitSignatureMsg } from '../../../../../../test/data/confirmations/typed_sign';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
 import * as MMIConfirmations from '../../../../../hooks/useMMIConfirmations';
@@ -33,10 +34,11 @@ jest.mock(
   }),
 );
 
-const render = (args = {}) => {
+const render = (args = {}, metamaskState = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+      ...metamaskState,
     },
     confirm: {
       currentConfirmation: {
@@ -105,6 +107,23 @@ describe('ConfirmFooter', () => {
       const confirmButton = getByText('Confirm');
       expect(confirmButton).not.toBeDisabled();
     });
+
+    it('when the confirmation is a Permit with the transaction simulation setting enabled', () => {
+      const { getByText } = render(
+        {
+          confirm: {
+            currentConfirmation: permitSignatureMsg,
+            isScrollToBottomCompleted: false,
+          },
+        },
+        {
+          useTransactionSimulations: true,
+        },
+      );
+
+      const confirmButton = getByText('Confirm');
+      expect(confirmButton).not.toBeDisabled();
+    });
   });
 
   describe('renders disabled "Confirm" Button', () => {
@@ -115,6 +134,23 @@ describe('ConfirmFooter', () => {
           isScrollToBottomCompleted: false,
         },
       });
+
+      const confirmButton = getByText('Confirm');
+      expect(confirmButton).toBeDisabled();
+    });
+
+    it('when the confirmation is a Permit with the transaction simulation setting disabled', () => {
+      const { getByText } = render(
+        {
+          confirm: {
+            currentConfirmation: permitSignatureMsg,
+            isScrollToBottomCompleted: false,
+          },
+        },
+        {
+          useTransactionSimulations: false,
+        },
+      );
 
       const confirmButton = getByText('Confirm');
       expect(confirmButton).toBeDisabled();

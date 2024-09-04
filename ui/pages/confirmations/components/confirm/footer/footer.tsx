@@ -29,8 +29,11 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../../store/actions';
 import { confirmSelector } from '../../../selectors';
+import { selectUseTransactionSimulations } from '../../../selectors/preferences';
+
 import {
   REDESIGN_DEV_TRANSACTION_TYPES,
+  isPermitSignatureRequest,
   isSIWESignatureRequest,
 } from '../../../utils';
 import { getConfirmationSender } from '../utils';
@@ -111,6 +114,9 @@ const Footer = () => {
   const t = useI18nContext();
   const confirm = useSelector(confirmSelector);
   const customNonceValue = useSelector(getCustomNonceValue);
+  const useTransactionSimulations = useSelector(
+    selectUseTransactionSimulations,
+  );
 
   const { currentConfirmation, isScrollToBottomCompleted } = confirm;
   const { from } = getConfirmationSender(currentConfirmation);
@@ -128,14 +134,18 @@ const Footer = () => {
   });
 
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
+  const isPermit = isPermitSignatureRequest(currentConfirmation);
+  const isPermitSimulationShown = isPermit && useTransactionSimulations;
+
+  console.log('isPermit', isPermit);
+  console.log('isPermitSimulationShown', isPermitSimulationShown);
 
   const isConfirmDisabled =
-    !isSIWE &&
-    (!isScrollToBottomCompleted ||
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      mmiSubmitDisabled ||
-      ///: END:ONLY_INCLUDE_IF
-      hardwareWalletRequiresConnection);
+    (!isScrollToBottomCompleted && !isSIWE && !isPermitSimulationShown) ||
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    mmiSubmitDisabled ||
+    ///: END:ONLY_INCLUDE_IF
+    hardwareWalletRequiresConnection;
 
   const onCancel = useCallback(
     ({ location }: { location?: MetaMetricsEventLocation }) => {
