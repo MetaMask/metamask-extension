@@ -31,14 +31,19 @@ Then the toggle switch should visually indicate to OFF
 When I click on the "IPFS gateway" toggle icon again
 Then the toggle switch should visually indicate to ON
 
-# Scenario: Verification of IPFS gateway functionality
+# Scenario: Verification of IPFS gateway functionality with toggle ON
 
 Given I am on the Security & Privacy settings page
 And the "IPFS gateway" toggle is set to ON
-When I view images of my NFTs
-Or I enter ENS addresses in my browser's address bar
-Or I view icons for different tokens
-Then MetaMask should fetch this information
+When I attempt to view images of my NFTs (e.g. ERC1155) stored on IPFS
+Then MetaMask should successfully fetch and display this information
+
+# Scenario: Verification of IPFS gateway functionality with toggle OFF
+
+Given I am on the Security & Privacy settings page
+And the "IPFS gateway" toggle is set to OFF
+When I attempt to view images of my NFTs (e.g. ERC1155) stored on IPFS
+Then MetaMask should display a placeholder image instead of the NFT media
 
 
 ```
