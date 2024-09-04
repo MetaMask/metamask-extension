@@ -356,7 +356,13 @@ export default class PermissionConnect extends Component {
             <Route
               path={confirmPermissionPath}
               exact
-              render={() => <ConnectPage />}
+              render={() => (
+                <ConnectPage
+                  rejectPermissionsRequest={(requestId) =>
+                    this.cancelPermissionsRequest(requestId)
+                  }
+                />
+              )}
             />
             <Route
               path={snapsConnectPath}

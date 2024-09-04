@@ -30,6 +30,7 @@ import {
   Button,
   ButtonIcon,
   ButtonIconSize,
+  ButtonSecondarySize,
   ButtonSize,
   ButtonVariant,
   Icon,
@@ -45,7 +46,7 @@ import {
 } from '../../../components/multichain/pages/page/index';
 import { SiteCell } from '../../../components/multichain/pages/review-permissions-page/index';
 
-export const ConnectPage = () => {
+export const ConnectPage = ({ rejectPermissionsRequest }) => {
   const t = useI18nContext();
   const networksList = useSelector(getNonTestNetworks);
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -68,19 +69,21 @@ export const ConnectPage = () => {
         />
       </Content>
       <Footer>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          width={BlockSize.Full}
-          gap={2}
-        >
+        <Box display={Display.Flex} gap={4} width={BlockSize.Full}>
           <Button
-            size={ButtonSize.Lg}
             block
             variant={ButtonVariant.Secondary}
-            startIconName={IconName.Logout}
-            danger
-            onClick={() => console.log('hello')}
+            size={ButtonSize.Lg}
+            data-testid="cancel-btn"
+            onClick={rejectPermissionsRequest}
+          >
+            {t('cancel')}
+          </Button>
+          <Button
+            block
+            data-testid="confirm-btn"
+            size={ButtonSize.Lg}
+            onClick={() => console.log('confirm')}
           >
             {t('confirm')}
           </Button>
