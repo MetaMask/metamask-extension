@@ -204,13 +204,6 @@ describe('Contract Interaction Confirmation', () => {
     const { findByTestId, getByTestId } = await integrationTestRender({
       preloadedState: {
         ...mockedMetaMaskState,
-        gasFeeEstimatesByChainId: {
-          '0x5': {
-            gasFeeEstimates: {
-              networkCongestion: 0.0005,
-            },
-          },
-        },
         transactions: [transaction],
       },
       backgroundConnection: backgroundConnectionMocked,
@@ -236,5 +229,49 @@ describe('Contract Interaction Confirmation', () => {
     expect(
       await findByTestId('alert-modal-action-showAdvancedGasModal'),
     ).toHaveTextContent('Update gas limit');
+  });
+
+  it('displays the alert for no gas price', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedApproveTransaction(account.address);
+
+    const transaction = mockedMetaMaskState.transactions[0];
+    transaction.gasFeeEstimates.type = 'none';
+
+    const { findByTestId, getByTestId } = await integrationTestRender({
+      preloadedState: {
+        ...mockedMetaMaskState,
+        gasEstimateType: 'none',
+        transactions: [transaction],
+      },
+      backgroundConnection: backgroundConnectionMocked,
+    });
+
+    act(() => {
+      fireEvent.click(getByTestId('inline-alert'));
+    });
+
+    expect(await findByTestId('alert-modal')).toBeInTheDocument();
+
+    expect(
+      await findByTestId('alert-modal__selected-alert'),
+    ).toBeInTheDocument();
+
+    expect(await findByTestId('alert-modal__selected-alert')).toHaveTextContent(
+      'We can’t move forward with this transaction until you manually update the fee.',
+    );
+
+    expect(
+      await findByTestId('alert-modal-action-showAdvancedGasModal'),
+    ).toBeInTheDocument();
+    expect(
+      await findByTestId('alert-modal-action-showAdvancedGasModal'),
+    ).toHaveTextContent('Update fee');
   });
 });
