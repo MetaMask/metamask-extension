@@ -38,6 +38,10 @@ const createTransactionControllerMock = () => {
   } as unknown as jest.Mocked<TransactionController>;
 };
 
+type WithRequestOptions = {
+  options?: Partial<SubmitSmartTransactionRequest>;
+};
+
 type WithRequestCallback<ReturnValue> = ({
   request,
   messenger,
@@ -54,12 +58,15 @@ type WithRequestCallback<ReturnValue> = ({
   endFlowSpy: jest.Mock;
 }) => ReturnValue;
 
-type WithRequestArgs<ReturnValue> = [WithRequestCallback<ReturnValue>];
+type WithRequestArgs<ReturnValue> =
+  | [WithRequestCallback<ReturnValue>]
+  | [WithRequestOptions, WithRequestCallback<ReturnValue>];
 
 function withRequest<ReturnValue>(
   ...args: WithRequestArgs<ReturnValue>
 ): ReturnValue {
-  const [fn] = args;
+  const [{ ...rest }, fn] = args.length === 2 ? args : [{}, args[0]];
+  const { options } = rest;
   const controllerMessenger = new ControllerMessenger<
     AllowedActions,
     NetworkControllerStateChangeEvent | AllowedEvents
@@ -164,6 +171,7 @@ function withRequest<ReturnValue>(
         returnTxHashAsap: false,
       },
     },
+    ...options,
   };
 
   return fn({
@@ -182,11 +190,17 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('does not submit a transaction that is not a smart transaction', async () => {
-    withRequest(async ({ request }) => {
-      request.isSmartTransaction = false;
-      const result = await submitSmartTransactionHook(request);
-      expect(result).toEqual({ transactionHash: undefined });
-    });
+    withRequest(
+      {
+        options: {
+          isSmartTransaction: false,
+        },
+      },
+      async ({ request }) => {
+        const result = await submitSmartTransactionHook(request);
+        expect(result).toEqual({ transactionHash: undefined });
+      },
+    );
   });
 
   it('falls back to regular transaction submit if the transaction type is "swapAndSend"', async () => {
@@ -339,6 +353,11 @@ describe('submitSmartTransactionHook', () => {
 
   it('signs and submits a smart transaction', async () => {
     withRequest(
+      {
+        options: {
+          signedTransactionInHex: undefined,
+        },
+      },
       async ({
         request,
         messenger,
@@ -347,7 +366,6 @@ describe('submitSmartTransactionHook', () => {
         updateRequestStateSpy,
         endFlowSpy,
       }) => {
-        request.signedTransactionInHex = undefined;
         setImmediate(() => {
           messenger.publish('SmartTransactionsController:smartTransaction', {
             status: 'pending',
