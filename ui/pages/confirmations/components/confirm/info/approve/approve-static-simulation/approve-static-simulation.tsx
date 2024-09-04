@@ -36,15 +36,7 @@ export const ApproveStaticSimulation = () => {
     transactionMeta?.txParams?.data,
   );
 
-  // decimals are sometimes undefined for a split second, so we need to ensure
-  // the spending cap is recalculated when the value updates
-  const [decimals, setDecimals] = useState(initialDecimals || '0');
-
-  useEffect(() => {
-    if (initialDecimals && initialDecimals !== decimals) {
-      setDecimals(initialDecimals);
-    }
-  }, [initialDecimals, decimals]);
+  const decimals = initialDecimals || '0';
 
   const { spendingCap, formattedSpendingCap, value, pending } =
     useApproveTokenSimulation(transactionMeta, decimals || '0');

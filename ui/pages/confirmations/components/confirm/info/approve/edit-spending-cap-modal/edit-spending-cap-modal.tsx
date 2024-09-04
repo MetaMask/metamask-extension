@@ -63,12 +63,12 @@ export const EditSpendingCapModal = ({
   const [customSpendingCapCandidate, setCustomSpendingCapCandidate] =
     useState('');
 
-  const onCancelHandler = () => {
+  const handleCancel = () => {
     setIsOpenEditSpendingCapModal(false);
     setCustomSpendingCapCandidate('');
   };
 
-  function submitEditSpendingCap() {
+  function handleSubmit() {
     setIsOpenEditSpendingCapModal(false);
     setCustomSpendingCapCandidate('');
     setCustomSpendingCap(customSpendingCapCandidate);
@@ -128,8 +128,8 @@ export const EditSpendingCapModal = ({
           </Text>
         </ModalBody>
         <ModalFooter
-          onSubmit={() => submitEditSpendingCap()}
-          onCancel={() => onCancelHandler()}
+          onSubmit={handleSubmit}
+          onCancel={handleCancel}
           submitButtonProps={{ children: t('save') }}
         />
       </ModalContent>
