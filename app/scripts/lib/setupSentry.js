@@ -102,6 +102,12 @@ function getClientOptions() {
   };
 }
 
+/**
+ * Compute the tracesSampleRate depending on testing condition.
+ *
+ * @param {string} sentryTarget
+ * @returns tracesSampleRate to setup Sentry
+ */
 function getTracesSampleRate(sentryTarget) {
   if (sentryTarget === SENTRY_DSN_FAKE) {
     return 1.0;
@@ -120,6 +126,10 @@ function getTracesSampleRate(sentryTarget) {
   return 0.01;
 }
 
+/**
+ * Get CircleCI tags passed from the test environment, through manifest.json,
+ * and give them to the Sentry client.
+ */
 function setCircleCiTags() {
   const { circleci } = getManifestFlags();
 
