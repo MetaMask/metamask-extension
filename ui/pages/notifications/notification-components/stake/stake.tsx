@@ -230,6 +230,7 @@ export const components: NotificationComponent<StakeNotification> = {
           detail={t('notificationItemConfirmed') || ''}
           action={
             <NotificationDetailCopyButton
+              notification={notification}
               text={notification.tx_hash}
               displayText={t('notificationItemTransactionId') || ''}
             />
