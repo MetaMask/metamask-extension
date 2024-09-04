@@ -18,6 +18,7 @@ import {
   getMMIConfiguration,
   getInteractiveReplacementToken,
   getCustodianDeepLink,
+  getNoteToTraderMessage,
   getIsNoteToTraderSupported,
   MmiConfiguration,
   State,
@@ -839,6 +840,31 @@ describe('Institutional selectors', () => {
       const isSupported = getIsNoteToTraderSupported(state, '0x1');
 
       expect(isSupported).toBe(false);
+    });
+  });
+
+  describe('getNoteToTraderMessage', () => {
+    it('returns noteToTraderMessage if it exists', () => {
+      const noteToTraderMessage = 'some message';
+      const state = {
+        metamask: {
+          noteToTraderMessage,
+        },
+      };
+
+      const token = getNoteToTraderMessage(state);
+
+      expect(token).toStrictEqual(noteToTraderMessage);
+    });
+
+    it('returns an empty string if noteToTraderMessage does not exist', () => {
+      const state = {
+        metamask: {},
+      };
+
+      const token = getNoteToTraderMessage(state);
+
+      expect(token).toStrictEqual('');
     });
   });
 });

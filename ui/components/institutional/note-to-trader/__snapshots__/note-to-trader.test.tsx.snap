@@ -3,7 +3,7 @@
 exports[`NoteToTrader should render the Note to trader component 1`] = `
 <div>
   <div
-    class="mm-box confirm-page-container-content__data"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-0 mm-box--background-color-background-default mm-box--rounded-md"
   >
     <div
       class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column"
@@ -20,7 +20,7 @@ exports[`NoteToTrader should render the Note to trader component 1`] = `
         <p
           class="mm-box mm-text note-header__counter mm-text--body-md mm-box--color-text-default"
         >
-          9
+          0
           /
           280
         </p>
@@ -32,10 +32,8 @@ exports[`NoteToTrader should render the Note to trader component 1`] = `
           data-testid="transaction-note"
           id="transaction-note"
           maxlength="280"
-          placeholder=""
-        >
-          some text
-        </textarea>
+          placeholder="The approver will see this note when approving the transaction at the custodian."
+        />
       </div>
     </div>
   </div>
