@@ -17,7 +17,7 @@ import fs from 'fs';
 const folder = `dist/${process.env.SELENIUM_BROWSER}`;
 
 // Global beforeEach hook to backup the manifest.json file
-if (typeof beforeEach === 'function') {
+if (typeof beforeEach === 'function' && process.env.SELENIUM_BROWSER) {
   beforeEach(() => {
     restoreBackupManifest();
 
@@ -28,7 +28,7 @@ if (typeof beforeEach === 'function') {
 }
 
 // Global afterEach hook to restore the backup manifest
-if (typeof afterEach === 'function') {
+if (typeof afterEach === 'function' && process.env.SELENIUM_BROWSER) {
   afterEach(() => {
     fs.cpSync(`${folder}/manifest.json`, `${folder}/manifest.altered.json`, {
       preserveTimestamps: true,
