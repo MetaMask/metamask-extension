@@ -1,10 +1,10 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { useIsNFT } from './use-is-nft';
-import { useMemo } from 'react';
 
 export const UNLIMITED_MSG = 'UNLIMITED MESSAGE';
 
@@ -40,10 +40,9 @@ export const useApproveTokenSimulation = (
   const spendingCap = useMemo(() => {
     if (!isNFT && isSpendingCapUnlimited(decodedSpendingCap)) {
       return UNLIMITED_MSG;
-    } else {
-      const tokenPrefix = isNFT ? '#' : '';
-      return `${tokenPrefix}${formattedSpendingCap}`;
     }
+    const tokenPrefix = isNFT ? '#' : '';
+    return `${tokenPrefix}${formattedSpendingCap}`;
   }, [decodedSpendingCap, formattedSpendingCap, isNFT]);
 
   return {
