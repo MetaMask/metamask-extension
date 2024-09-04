@@ -1298,6 +1298,10 @@ function logEvent(event) {
     args[0] = `[browser] ${args[0]}`;
   }
 
+  if (Object.keys(args).length > 10000) {
+    return;
+  }
+
   console.log(...args);
 }
 
