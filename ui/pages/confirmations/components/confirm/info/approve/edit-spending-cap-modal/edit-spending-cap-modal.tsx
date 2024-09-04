@@ -156,8 +156,8 @@ export const EditSpendingCapModal = ({
           </Text>
         </ModalBody>
         <ModalFooter
-          onSubmit={() => handleSubmit()}
-          onCancel={() => handleCancel()}
+          onSubmit={handleSubmit}
+          onCancel={handleCancel}
           submitButtonProps={{ children: t('save') }}
         />
       </ModalContent>

@@ -63,7 +63,6 @@ jest.mock('../hooks/useDecodedTransactionData', () => ({
 
 describe('<ApproveInfo />', () => {
   const middleware = [thunk];
-  useDecodedTransactionData;
 
   it('renders component for approve request', async () => {
     const state = getMockApproveConfirmState();
