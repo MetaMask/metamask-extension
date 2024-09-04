@@ -7,7 +7,7 @@ permissions:
 on:
   push:
     branches:
-      - merge-queue-test
+      - develop
   schedule:
     - cron: "0 */12 * * *"
 
