@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import type { FC } from 'react';
 import type { Notification } from '../../../../app/scripts/controllers/metamask-notifications/types/types';
 import { TRIGGER_TYPES } from '../../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
