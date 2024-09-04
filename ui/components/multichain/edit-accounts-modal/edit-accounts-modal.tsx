@@ -13,6 +13,7 @@ import {
   getOrderedConnectedAccountsForConnectedDapp,
   getOriginOfCurrentTab,
   getPermissionSubjects,
+  getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
 } from '../../../selectors';
 import {
@@ -67,13 +68,16 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
       (account: InternalAccount) => isEvmAccountType(account.type),
     ),
   );
-
+  const currentSelectedAccount = useSelector(getSelectedInternalAccount);
   const connectedAccountsAddresses = connectedAccounts.map(
     (account: InternalAccount) => account.address,
   );
-
+  const defaultAccountsAddresses =
+    connectedAccountsAddresses.length > 0
+      ? connectedAccountsAddresses
+      : [currentSelectedAccount.address];
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>(
-    connectedAccountsAddresses,
+    defaultAccountsAddresses,
   );
 
   const handleAccountClick = (address: string) => {
