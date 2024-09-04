@@ -8,7 +8,7 @@ import {
 } from '../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { sanitizeMessage } from '../../../helpers/utils/util';
-import { SignatureRequestType } from '../types/confirm';
+import { Confirmation, SignatureRequestType } from '../types/confirm';
 import { TYPED_SIGNATURE_VERSIONS } from '../constants';
 
 export const REDESIGN_APPROVAL_TYPES = [
@@ -50,8 +50,13 @@ export const parseSanitizeTypedDataMessage = (dataToParse: string) => {
   return { sanitizedMessage, primaryType };
 };
 
-export const isSIWESignatureRequest = (request: SignatureRequestType) =>
-  Boolean(request?.msgParams?.siwe?.isSIWEMessage);
+/**
+ * Returns true if the request is a SIWE signature request
+ *
+ * @param request - The confirmation request to check
+ */
+export const isSIWESignatureRequest = (request?: Confirmation) =>
+  Boolean((request as SignatureRequestType)?.msgParams?.siwe?.isSIWEMessage);
 
 export const isOrderSignatureRequest = (request: SignatureRequestType) => {
   if (
