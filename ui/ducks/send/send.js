@@ -2404,31 +2404,12 @@ export function updateSendQuote(
       });
     }
 
-    // if (isComputingSendGasLimit) {
-    //   if (isComputingSendGasLimitUrgent) {
-    //     // await debouncedComputeEstimatedGasLimit(dispatch);
-    //     await dispatch(computeEstimatedGasLimit());
-    //   } else {
-    //     await debouncedComputeEstimatedGasLimit(dispatch);
-    //   }
-    // }
-  };
-}
-
-export function updateGasEstimates(
-  isComputingSendGasLimit = true,
-  isComputingSendGasLimitUrgent = true,
-) {
-  return async (dispatch) => {
     if (isComputingSendGasLimit) {
       if (isComputingSendGasLimitUrgent) {
-        // await debouncedComputeEstimatedGasLimit(dispatch);
-        const estGasL = await dispatch(computeEstimatedGasLimit());
-        console.log('====updateGasEstimates', estGasL);
+        await debouncedComputeEstimatedGasLimit(dispatch);
+        // await dispatch(computeEstimatedGasLimit());
       } else {
-        // await debouncedComputeEstimatedGasLimit(dispatch);
-        const estGasL = await dispatch(computeEstimatedGasLimit());
-        console.log('====updateGasEstimates', estGasL);
+        await debouncedComputeEstimatedGasLimit(dispatch);
       }
     }
   };
@@ -3575,7 +3556,6 @@ export const getIsSwapAndSendDisabledForNetwork = createSelector(
   },
 );
 
-export const getGasEstimateIsLoading = (state) => state.gasEstimateIsLoading;
 export const getSendAnalyticProperties = createSelector(
   getProviderConfig,
   getCurrentDraftTransaction,
