@@ -233,7 +233,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
         >
-          Estimated fee
+          Network fee
         </p>
         <div>
           <div
@@ -593,7 +593,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
         >
-          Estimated fee
+          Network fee
         </p>
         <div>
           <div
@@ -950,7 +950,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
         >
-          Estimated fee
+          Network fee
         </p>
         <div>
           <div
