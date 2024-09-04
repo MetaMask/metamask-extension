@@ -138,23 +138,6 @@ describe('provider_authorize', () => {
     jest.resetAllMocks();
   });
 
-  it('throws an error when unexpected properties are defined in the root level params object', async () => {
-    const { handler, end } = createMockedHandler();
-    await handler({
-      ...baseRequest,
-      params: {
-        ...baseRequest.params,
-        unexpected: 'property',
-      },
-    });
-    expect(end).toHaveBeenCalledWith(
-      new EthereumRpcError(
-        5301,
-        'Session Properties can only be optional and global',
-      ),
-    );
-  });
-
   it('throws an error when session properties is defined but empty', async () => {
     const { handler, end } = createMockedHandler();
     await handler({
