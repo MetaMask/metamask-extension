@@ -1,13 +1,22 @@
 import EventEmitter from 'events';
 import { NetworkController } from '@metamask/network-controller';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
-import { parseCaipChainId } from '@metamask/utils';
+import { Hex, parseCaipChainId } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { Scope } from './scope';
 
 export type SubscriptionManager = {
   events: EventEmitter;
   destroy?: () => void;
+};
+
+type subscriptionNotificationEvent = {
+  jsonrpc: '2.0';
+  method: 'eth_subscription';
+  params: {
+    subscription: Hex;
+    result: unknown;
+  };
 };
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
@@ -42,12 +51,16 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
     this.subscriptionsCountByScope = {};
   }
 
-  onNotification(scope: Scope, domain: string, message: unknown) {
+  onNotification(
+    scope: Scope,
+    domain: string,
+    { method, params }: subscriptionNotificationEvent,
+  ) {
     this.emit('notification', domain, {
-      method: 'wallet_invokeMethod',
+      method: 'wallet_notify',
       params: {
         scope,
-        request: message,
+        notification: { method, params },
       },
     });
   }
