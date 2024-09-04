@@ -136,6 +136,9 @@
   "accountActivityText": {
     "message": "Select the accounts you want to be notified about:"
   },
+  "accountBalance": {
+    "message": "Account balance"
+  },
   "accountDetails": {
     "message": "Account details"
   },
@@ -1063,11 +1066,11 @@
   "confirmTitleDescApproveTransaction": {
     "message": "This site wants permission to withdraw your NFTs"
   },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
-  },
   "confirmTitleDescDeployContract": {
     "message": "This site wants you to deploy a contract"
+  },
+  "confirmTitleDescERC20ApproveTransaction": {
+    "message": "This site wants permission to withdraw your tokens"
   },
   "confirmTitleDescPermitSignature": {
     "message": "This site wants permission to spend your tokens."
@@ -1684,6 +1687,9 @@
   "editANickname": {
     "message": "Edit nickname"
   },
+  "editAccounts": {
+    "message": "Edit accounts"
+  },
   "editAddressNickname": {
     "message": "Edit address nickname"
   },
@@ -1763,6 +1769,9 @@
   },
   "editNetworkLink": {
     "message": "edit the original network"
+  },
+  "editNetworksTitle": {
+    "message": "Edit networks"
   },
   "editNonceField": {
     "message": "Edit nonce"
@@ -3012,6 +3021,9 @@
   },
   "networkDetails": {
     "message": "Network details"
+  },
+  "networkFee": {
+    "message": "Network fee"
   },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
@@ -5190,6 +5202,9 @@
   "spendingCapRequest": {
     "message": "Spending cap request for your $1"
   },
+  "spendingCapTooltipDesc": {
+    "message": "This is the amount of tokens the spender will be able to access on your behalf."
+  },
   "srpInputNumberOfWords": {
     "message": "I have a $1-word phrase",
     "description": "This is the text for each option in the dropdown where a user selects how many words their secret recovery phrase has during import. The $1 is the number of words (either 12, 15, 18, 21, or 24)."
@@ -5901,6 +5916,9 @@
   },
   "testNetworks": {
     "message": "Test networks"
+  },
+  "testnets": {
+    "message": "Testnets"
   },
   "theme": {
     "message": "Theme"
