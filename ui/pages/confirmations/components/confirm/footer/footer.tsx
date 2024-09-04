@@ -137,9 +137,6 @@ const Footer = () => {
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const isPermitSimulationShown = isPermit && useTransactionSimulations;
 
-  console.log('isPermit', isPermit);
-  console.log('isPermitSimulationShown', isPermitSimulationShown);
-
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSIWE && !isPermitSimulationShown) ||
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

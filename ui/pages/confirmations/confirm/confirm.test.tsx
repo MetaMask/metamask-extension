@@ -107,7 +107,7 @@ describe('Confirm', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should match snapshot for signature - typed sign - V4', async () => {
+  it('should match snapshot for signature - typed sign - V4', () => {
     const mockStateTypedSign = getMockTypedSignConfirmState();
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
     const { container } = renderWithConfirmContextProvider(
