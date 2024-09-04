@@ -22,9 +22,11 @@ import {
 import { Content, Footer, Header, Page } from '../page';
 import {
   SEND_STAGES,
+  computeEstimatedGasLimit,
   getCurrentDraftTransaction,
   getDraftTransactionExists,
   getDraftTransactionID,
+  getGasEstimateIsLoading,
   getRecipient,
   getRecipientWarningAcknowledgement,
   getSendAnalyticProperties,
@@ -32,10 +34,12 @@ import {
   getSendStage,
   isSendFormInvalid,
   resetSendState,
-  signTransaction,
+  // signTransaction,
   startNewDraftTransaction,
+  updateGasEstimates,
   updateSendAmount,
   updateSendAsset,
+  updateSendQuote,
 } from '../../../../ducks/send';
 import {
   TokenStandard,
@@ -60,6 +64,8 @@ import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
 import { smartTransactionsListSelector } from '../../../../selectors';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
+import { useDebounce } from '../../../../ducks/send/useDebounce';
+import { useSignTransaction } from '../../../../ducks/send/useSignTransaction';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -81,6 +87,39 @@ export const SendPage = () => {
     amount,
     swapQuotesError,
   } = draftTransaction;
+
+  const debouncedUpdateGasEstimate = useDebounce(() => {
+    dispatch(computeEstimatedGasLimit());
+  });
+
+  const debouncedUpdateQuote = useDebounce(() => {
+    dispatch(updateSendQuote());
+  });
+
+  const [abortPromise, setAbortPromise] = useState(undefined);
+  useEffect(() => {
+    // debouncedUpdateQuote();
+    // debouncedUpdateGasEstimate();
+    if (abortPromise) {
+      abortPromise.abort();
+      // abortPromise.cancel();
+      setAbortPromise(undefined);
+    }
+    setAbortPromise(dispatch(computeEstimatedGasLimit()));
+    // setAbortPromise(debouncedUpdateGasEstimate());
+    // console.log('====send draftTransaction', draftTransaction);
+  }, [
+    draftTransaction?.amount,
+    draftTransaction?.recipient,
+    draftTransaction?.receiveAsset,
+    draftTransaction?.sendAsset,
+    dispatch,
+    // debouncedUpdateGasEstimate,
+    // debouncedUpdateGasEstimate,
+    // debouncedUpdateQuote,
+  ]);
+
+  // useEstimateGasLimit();
 
   const draftTransactionID = useSelector(getDraftTransactionID);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
@@ -271,14 +310,18 @@ export const SendPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trackEvent, swapQuotesError]);
 
+  const signTransaction = useSignTransaction();
   const onSubmit = async (event) => {
     event.preventDefault();
+
+    // await dispatch(updateGasEstimates());
 
     setIsSubmitting(true);
     setError(undefined);
 
     try {
-      await dispatch(signTransaction(history));
+      // await dispatch(signTransaction(history));
+      await signTransaction();
 
       trackEvent({
         category: MetaMetricsEventCategory.Transactions,
@@ -322,7 +365,9 @@ export const SendPage = () => {
     sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR &&
     sendErrors.amount !== INSUFFICIENT_FUNDS_ERROR;
 
+  const gasEstimateIsLoading = useSelector(getGasEstimateIsLoading);
   const submitDisabled =
+    gasEstimateIsLoading ||
     (isInvalidSendForm && !isGasTooLow) ||
     requireContractAddressAcknowledgement ||
     (isSwapAndSend && isSmartTransactionPending);

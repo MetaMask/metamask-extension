@@ -33,6 +33,7 @@ import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { SEND_STAGES } from './send';
 
 export async function estimateGasLimitForSend({
   selectedAddress,
@@ -285,26 +286,68 @@ export const calculateBestQuote = (quotesArray) =>
     return currentValue > bestValue ? current : best;
   }, quotesArray?.[0]);
 
+export const computeEstimatedGasLimitHelper = async (
+  draftTransaction,
+  unapprovedTxs,
+  isNonStandardEthChain,
+  chainId,
+  selectedAccountAddress,
+  stage,
+  blockGasLimit,
+) => {
+  const transaction = unapprovedTxs[draftTransaction.id];
+
+  if (
+    stage !== SEND_STAGES.EDIT ||
+    !transaction.dappSuggestedGasFees?.gas ||
+    !transaction.userEditedGasLimit
+  ) {
+    const gasLimit = await estimateGasLimitForSend({
+      gasPrice: draftTransaction.gas.gasPrice,
+      blockGasLimit,
+      selectedAddress: selectedAccountAddress,
+      sendToken: draftTransaction.sendAsset.details,
+      to: draftTransaction.recipient.address?.toLowerCase(),
+      value: draftTransaction.amount.value,
+      data: draftTransaction.userInputHexData,
+      isNonStandardEthChain,
+      chainId,
+      gasLimit: draftTransaction.gas.gasLimit,
+    });
+    // await thunkApi.dispatch(setCustomGasLimit(gasLimit));
+    return gasLimit;
+  }
+  return null;
+};
+
 /**
  * Generates a txParams from the send slice.
  *
  * @param {import('.').SendState} sendState - the state of the send slice
+ * @param eip1559support
+ * @param selectedAccountAddress
+ * @param draftTransaction
+ * @param gasLimit
  * @returns {import('@metamask/transaction-controller').TransactionParams} A txParams object that can be used to create a transaction or
  *  update an existing transaction.
  */
-export function generateTransactionParams(sendState) {
-  const draftTransaction =
-    sendState.draftTransactions[sendState.currentTransactionUUID];
+export function generateTransactionParams(
+  eip1559support,
+  selectedAccountAddress,
+  draftTransaction,
+  gasLimit,
+) {
+  // const draftTransaction =
+  //   sendState.draftTransactions[sendState.currentTransactionUUID];
 
   const txParams = {
     // If the fromAccount has been specified we use that, if not we use the
     // selected account.
-    from:
-      draftTransaction.fromAccount?.address ||
-      sendState.selectedAccount.address,
+    from: draftTransaction.fromAccount?.address || selectedAccountAddress,
     // gasLimit always needs to be set regardless of the asset being sent
     // or the type of transaction.
-    gas: draftTransaction.gas.gasLimit,
+    // TODO recalculate here estimateGasLimitForSend?
+    gas: gasLimit ?? draftTransaction.gas.gasLimit,
   };
 
   switch (draftTransaction.sendAsset.type) {
@@ -334,15 +377,13 @@ export function generateTransactionParams(sendState) {
           ? generateERC721TransferData({
               toAddress: draftTransaction.recipient.address,
               fromAddress:
-                draftTransaction.fromAccount?.address ??
-                sendState.selectedAccount.address,
+                draftTransaction.fromAccount?.address ?? selectedAccountAddress,
               tokenId: draftTransaction.sendAsset.details.tokenId,
             })
           : generateERC1155TransferData({
               toAddress: draftTransaction.recipient.address,
               fromAddress:
-                draftTransaction.fromAccount?.address ??
-                sendState.selectedAccount.address,
+                draftTransaction.fromAccount?.address ?? selectedAccountAddress,
               tokenId: draftTransaction.sendAsset.details.tokenId,
               amount: draftTransaction.amount.value,
             });
@@ -360,7 +401,7 @@ export function generateTransactionParams(sendState) {
   // We need to make sure that we only include the right gas fee fields
   // based on the type of transaction the network supports. We will also set
   // the type param here.
-  if (sendState.eip1559support) {
+  if (eip1559support) {
     txParams.type = TransactionEnvelopeType.feeMarket;
 
     txParams.maxFeePerGas = draftTransaction.gas.maxFeePerGas;

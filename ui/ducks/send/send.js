@@ -151,6 +151,7 @@ import {
   calculateBestQuote,
   addAdjustedReturnToQuotes,
   getIsDraftSwapAndSend,
+  computeEstimatedGasLimitHelper,
 } from './helpers';
 
 const RECENT_REQUEST_ERROR =
@@ -595,18 +596,15 @@ export const computeEstimatedGasLimit = createAsyncThunk(
       !transaction.dappSuggestedGasFees?.gas ||
       !transaction.userEditedGasLimit
     ) {
-      const gasLimit = await estimateGasLimitForSend({
-        gasPrice: draftTransaction.gas.gasPrice,
-        blockGasLimit: metamask.currentBlockGasLimit,
-        selectedAddress: selectedAccount.address,
-        sendToken: draftTransaction.sendAsset.details,
-        to: draftTransaction.recipient.address?.toLowerCase(),
-        value: draftTransaction.amount.value,
-        data: draftTransaction.userInputHexData,
+      const gasLimit = await computeEstimatedGasLimitHelper(
+        draftTransaction,
+        unapprovedTxs,
         isNonStandardEthChain,
         chainId,
-        gasLimit: draftTransaction.gas.gasLimit,
-      });
+        selectedAccount.address,
+        send.stage,
+        metamask.currentBlockGasLimit,
+      );
       await thunkApi.dispatch(setCustomGasLimit(gasLimit));
       return {
         gasLimit,
@@ -2880,12 +2878,24 @@ export function resetSendState() {
  * @returns {ThunkAction<void>}
  */
 
-export function signTransaction(history) {
-  return async (dispatch, getState) => {
-    const state = getState();
-    const { stage, eip1559support, amountMode } = state[name];
-    const draftTransaction =
-      state[name].draftTransactions[state[name].currentTransactionUUID];
+// Pass in vars instead of getState
+export function signTransaction(
+  history,
+  eip1559support,
+  selectedAccountAddress,
+  draftTransaction,
+  stage,
+  amountMode,
+  unapprovedTxs,
+  chainId,
+  nativeCurrency,
+  gasLimit = undefined,
+) {
+  return async (dispatch) => {
+    // const state = getState();
+    // const { stage, eip1559support, amountMode } = state[name];
+    // const draftTransaction =
+    //   state[name].draftTransactions[state[name].currentTransactionUUID];
 
     let txParams;
     const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
@@ -2897,7 +2907,19 @@ export function signTransaction(history) {
     if (isSwapAndSend) {
       txParams = { ...bestQuote.trade };
     } else {
-      txParams = generateTransactionParams(state[name]);
+      // const gasEstimates = await dispatch(computeEstimatedGasLimit());
+      txParams = generateTransactionParams(
+        eip1559support,
+        selectedAccountAddress,
+        draftTransaction,
+        gasLimit, // ?? gasEstimates.payload.gasLimit,
+      );
+      console.log(
+        '=====sign gasEstimates',
+        gasLimit,
+        // gasEstimates.payload.gasLimit,
+        txParams,
+      );
     }
 
     const { amount, sendAsset, receiveAsset, recipient } = draftTransaction;
@@ -2906,7 +2928,7 @@ export function signTransaction(history) {
       sendAsset: { ...sendAsset },
       receiveAsset: { ...receiveAsset },
       recipient: { ...recipient },
-      amountMode: state[name].amountMode,
+      amountMode,
     };
 
     await dispatch(actions.setPrevSwapAndSend(prevSwapAndSendData));
@@ -2918,7 +2940,7 @@ export function signTransaction(history) {
       // We first must grab the previous transaction object from state and then
       // merge in the modified txParams. Once the transaction has been modified
       // we can send that to the background to update the transaction in state.
-      const unapprovedTxs = getUnapprovedTransactions(state);
+      // const unapprovedTxs = getUnapprovedTransactions(state);
       const unapprovedTx = cloneDeep(unapprovedTxs[draftTransaction.id]);
       // We only update the tx params that can be changed via the edit flow UX
       const eip1559OnlyTxParamsToUpdate = {
@@ -2989,7 +3011,7 @@ export function signTransaction(history) {
       if (isSwapAndSend) {
         // clear existing swap transaction if editing
         if (stage === SEND_STAGES.EDIT) {
-          const unapprovedTxs = getUnapprovedTransactions(state);
+          // const unapprovedTxs = getUnapprovedTransactions(state);
           const unapprovedSendTx = unapprovedTxs[draftTransaction.id];
           if (unapprovedSendTx) {
             await dispatch(
@@ -3001,16 +3023,16 @@ export function signTransaction(history) {
           }
         }
 
-        const chainId = getCurrentChainId(state);
+        // const chainId = getCurrentChainId(state);
         const NATIVE_CURRENCY_DECIMALS =
           SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].decimals;
 
         const sourceTokenSymbol =
-          draftTransaction.sendAsset.details?.symbol ||
-          getNativeCurrency(state);
+          draftTransaction.sendAsset.details?.symbol || nativeCurrency;
+        // getNativeCurrency(state);
         const destinationTokenSymbol =
-          draftTransaction.receiveAsset.details?.symbol ||
-          getNativeCurrency(state);
+          draftTransaction.receiveAsset.details?.symbol || nativeCurrency;
+        // getNativeCurrency(state);
         const destinationTokenDecimals =
           draftTransaction.receiveAsset.details?.decimals ||
           NATIVE_CURRENCY_DECIMALS;
@@ -3220,6 +3242,7 @@ export function getSendLayer1GasFee(state) {
   return state[name].gasTotalForLayer1;
 }
 
+export const getAmountMode = (state) => state[name].amountMode;
 /**
  * Selector that returns if a native send is possible based on the current gas value
  *
@@ -3575,6 +3598,17 @@ export const getIsSwapAndSendDisabledForNetwork = createSelector(
   },
 );
 
+export const getEip1559support = (state) => {
+  return state[name].eip1559support;
+};
+
+export const getSelectedAccountAddress = (state) => {
+  return state[name].selectedAccount.address;
+};
+
+export const getPrevSwapAndSendInput = (state) => {
+  return state[name].prevSwapAndSendInput;
+};
 export const getGasEstimateIsLoading = (state) => state.gasEstimateIsLoading;
 export const getSendAnalyticProperties = createSelector(
   getProviderConfig,
