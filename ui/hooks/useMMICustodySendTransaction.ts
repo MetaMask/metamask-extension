@@ -55,7 +55,9 @@ export function useMMICustodySendTransaction() {
 
   const isSmartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
 
-  const { chainId, rpcUrl: customRpcUrl } = useSelector(getProviderConfig);
+  const { chainId, rpcUrl: customRpcUrl } =
+    useSelector(getProviderConfig) || {};
+
   const builtinRpcUrl =
     CHAIN_ID_TO_RPC_URL_MAP[chainId as keyof typeof CHAIN_ID_TO_RPC_URL_MAP];
 
