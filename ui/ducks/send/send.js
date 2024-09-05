@@ -2409,11 +2409,11 @@ export function updateGasPrice(gasPrice) {
 const deValidateSendState = debounce((dispatch) => {
   console.log('====deValidateSendState');
   dispatch(validateEverything());
-}, 700);
+}, 600);
 
 const desetGasIsEstimateLoading = debounce((dispatch, payload) => {
   dispatch(setGasIsEstimateLoading(payload));
-}, 700); // TODO find average time for gas estimation
+}, 400); // TODO find average time for gas estimation
 // TODO add abort for this dispatch
 
 let gasAbortPromise;
