@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
@@ -24,6 +23,7 @@ import {
   BadgeWrapper,
   Box,
   ButtonIcon,
+  ButtonIconSize,
   ButtonSecondary,
   Icon,
   IconName,
@@ -63,8 +63,24 @@ import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 
+interface TokenListItemProps {
+  className?: string;
+  onClick?: (arg?: string) => void;
+  tokenSymbol: string;
+  tokenImage: string;
+  primary: string;
+  secondary?: string | null;
+  title: string;
+  tooltipText?: string;
+  isOriginalTokenSymbol?: boolean | null;
+  isNativeCurrency?: boolean;
+  isStakeable?: boolean;
+  address?: string | null;
+  showPercentage?: boolean;
+}
+
 export const TokenListItem = ({
-  className,
+  className = '',
   onClick,
   tokenSymbol,
   tokenImage,
@@ -77,7 +93,7 @@ export const TokenListItem = ({
   isStakeable = false,
   address = null,
   showPercentage = false,
-}) => {
+}: TokenListItemProps) => {
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
   const trackEvent = useContext(MetaMetricsContext);
@@ -114,8 +130,9 @@ export const TokenListItem = ({
 
   const tokensMarketData = useSelector(getTokensMarketData);
 
-  const tokenPercentageChange =
-    tokensMarketData?.[address]?.pricePercentChange1d;
+  const tokenPercentageChange = address
+    ? tokensMarketData?.[address]?.pricePercentChange1d
+    : null;
 
   const tokenTitle = getTokenTitle();
   const tokenMainTitleToDisplay = showPercentage ? tokenTitle : tokenSymbol;
@@ -129,8 +146,8 @@ export const TokenListItem = ({
       paddingInline={0}
       paddingInlineStart={1}
       paddingInlineEnd={1}
-      tabIndex="0"
-      onClick={(e) => {
+      tabIndex={0}
+      onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
         e.stopPropagation();
         const url = getPortfolioUrl(
@@ -199,7 +216,7 @@ export const TokenListItem = ({
         {...(onClick && {
           as: 'a',
           href: '#',
-          onClick: (e) => {
+          onClick: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
             e.preventDefault();
 
             if (showScamWarningModal) {
@@ -224,7 +241,7 @@ export const TokenListItem = ({
           badge={
             <AvatarNetwork
               size={AvatarNetworkSize.Xs}
-              name={currentNetwork?.nickname}
+              name={currentNetwork?.nickname || ''}
               src={currentNetwork?.rpcPrefs?.imageUrl}
               backgroundColor={testNetworkBackgroundColor}
               className="multichain-token-list-item__badge__avatar-network"
@@ -307,7 +324,11 @@ export const TokenListItem = ({
                       ? tokensMarketData?.[zeroAddress()]?.pricePercentChange1d
                       : tokenPercentageChange
                   }
-                  address={isNativeCurrency ? zeroAddress() : address}
+                  address={
+                    isNativeCurrency
+                      ? (zeroAddress() as `0x${string}`)
+                      : (address as `0x${string}`)
+                  }
                 />
               )}
             </Box>
@@ -321,15 +342,18 @@ export const TokenListItem = ({
               >
                 <ButtonIcon
                   iconName={IconName.Danger}
-                  onClick={(e) => {
+                  onClick={(
+                    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                  ) => {
                     e.preventDefault();
                     e.stopPropagation();
                     setShowScamWarningModal(true);
                   }}
                   color={IconColor.errorDefault}
-                  size={IconSize.Md}
+                  size={ButtonIconSize.Md}
                   backgroundColor={BackgroundColor.transparent}
                   data-testid="scam-warning"
+                  ariaLabel={''}
                 />
 
                 <Text
@@ -378,12 +402,10 @@ export const TokenListItem = ({
         </Box>
       </Box>
       {isEvm && showScamWarningModal ? (
-        <Modal isOpen>
+        <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader onClose={() => setShowScamWarningModal(false)}>
-              {t('nativeTokenScamWarningTitle')}
-            </ModalHeader>
+            <ModalHeader>{t('nativeTokenScamWarningTitle')}</ModalHeader>
             <Box marginTop={4} marginBottom={4}>
               {t('nativeTokenScamWarningDescription', [tokenSymbol])}
             </Box>
@@ -396,7 +418,10 @@ export const TokenListItem = ({
                   if (isFullScreen) {
                     history.push(NETWORKS_ROUTE);
                   } else {
-                    global.platform.openExtensionInBrowser(NETWORKS_ROUTE);
+                    global.platform &&
+                      typeof global.platform.openExtensionInBrowser ===
+                        'function' &&
+                      global.platform.openExtensionInBrowser(NETWORKS_ROUTE);
                   }
                 }}
                 block
@@ -409,59 +434,4 @@ export const TokenListItem = ({
       ) : null}
     </Box>
   );
-};
-
-TokenListItem.propTypes = {
-  /**
-   * An additional className to apply to the TokenList.
-   */
-  className: PropTypes.string,
-  /**
-   * The onClick handler to be passed to the TokenListItem component
-   */
-  onClick: PropTypes.func,
-  /**
-   * tokenSymbol represents the symbol of the Token
-   */
-  tokenSymbol: PropTypes.string,
-  /**
-   * title represents the name of the token and if name is not available then Symbol
-   */
-  title: PropTypes.string,
-  /**
-   * tooltipText represents the text to show in the tooltip when hovering over the token
-   */
-  tooltipText: PropTypes.string,
-  /**
-   * tokenImage represents the image of the token icon
-   */
-  tokenImage: PropTypes.string,
-  /**
-   * primary represents the balance
-   */
-  primary: PropTypes.string,
-  /**
-   * secondary represents the balance in dollars
-   */
-  secondary: PropTypes.string,
-  /**
-   * isOriginalTokenSymbol represents a boolean value to check if the token symbol is original or not
-   */
-  isOriginalTokenSymbol: PropTypes.bool,
-  /**
-   * isNativeCurrency represents if this item is the native currency
-   */
-  isNativeCurrency: PropTypes.bool,
-  /**
-   * isStakeable represents if this item is stakeable
-   */
-  isStakeable: PropTypes.bool,
-  /**
-   * address represents the token address
-   */
-  address: PropTypes.string,
-  /**
-   * showPercentage represents if the increase decrease percentage will be hidden
-   */
-  showPercentage: PropTypes.bool,
 };
