@@ -59,7 +59,9 @@ describe('migration #35', () => {
           identities: {},
           lostIdentities: {},
           forgottenPassword: false,
-          preferences: {},
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
           completedOnboarding: false,
           migratedPrivacyMode: false,
           metaMetricsId: null,

@@ -27,6 +27,7 @@ const PREFERENCES_CONTROLLER_MOCK = {
     autoLockTimeLimit: undefined,
     showFiatInTestnets: false,
     showTestNetworks: false,
+    useNativeCurrencyAsPrimaryCurrency: true,
     hideZeroBalanceTokens: false,
   },
   // ENS decentralized website resolution

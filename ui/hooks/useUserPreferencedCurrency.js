@@ -34,7 +34,7 @@ import { useMultichainSelector } from './useMultichainSelector';
  * useUserPreferencedCurrency
  *
  * returns an object that contains what currency to use for displaying values based
- * on the user's preference settings, as well as the significant number of decimals
+ * on whether the user needs to check showNativeTokenAsMainBalance setting, as well as the significant number of decimals
  * to display based on the currency
  *
  * @param {"PRIMARY" | "SECONDARY"} type - what display type is being rendered
