@@ -228,10 +228,8 @@ async function createERC20IncreaseAllowanceTransaction(driver: Driver) {
 }
 
 async function editSpendingCap(driver: Driver, newSpendingCap: string) {
-  await driver.delay(10000);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement('[data-testid="edit-spending-cap-icon"');
-  // scroll into view
 
   await driver.fill(
     '[data-testid="custom-spending-cap-input"]',
