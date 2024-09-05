@@ -28,6 +28,7 @@ import {
 } from '../../../../../store/actions';
 import { confirmSelector } from '../../../selectors';
 import { REDESIGN_DEV_TRANSACTION_TYPES } from '../../../utils';
+import { useConfirmContext } from '../../../context/confirm';
 import { getConfirmationSender } from '../utils';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 
@@ -107,7 +108,8 @@ const Footer = () => {
   const confirm = useSelector(confirmSelector);
   const customNonceValue = useSelector(getCustomNonceValue);
 
-  const { currentConfirmation, isScrollToBottomNeeded } = confirm;
+  const { currentConfirmation } = useConfirmContext();
+  const { isScrollToBottomNeeded } = confirm;
   const { from } = getConfirmationSender(currentConfirmation);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
