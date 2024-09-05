@@ -1,6 +1,6 @@
 import React from 'react';
 import { ConfirmInfoRowVariant } from '../row';
-import { AlertRow } from './alert-row';
+import { ConfirmInfoAlertRow } from './alert-row';
 import configureStore from '../../../../../../store/store';
 import { Provider } from 'react-redux';
 import { Meta } from '@storybook/react';
@@ -33,15 +33,12 @@ const storeMock = configureStore({
       },
     },
   },
-  confirm: {
-    currentConfirmation: pendingApprovalMock,
-  },
 });
 
 const ConfirmInfoRowStory = {
   title: 'Components/App/Confirm/AlertRow',
 
-  component: AlertRow,
+  component: ConfirmInfoAlertRow,
   argTypes: {
     variant: {
       control: 'select',
@@ -55,9 +52,9 @@ const ConfirmInfoRowStory = {
     },
   },
   decorators: [(story) => <Provider store={storeMock}>{story()}</Provider>],
-} as Meta<typeof AlertRow>;
+} as Meta<typeof ConfirmInfoAlertRow>;
 
-export const DefaultStory = (args) => <AlertRow {...args} />;
+export const DefaultStory = (args) => <ConfirmInfoAlertRow {...args} />;
 
 DefaultStory.storyName = 'Default';
 

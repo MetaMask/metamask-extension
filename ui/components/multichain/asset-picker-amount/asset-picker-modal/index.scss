@@ -37,10 +37,10 @@
       }
     }
 
-    &--disabled {
-      @include disabled-token {
-        opacity: 0.4;
-      }
+    &--disabled,
+    &:disabled {
+      opacity: var(--opacity-disabled);
+      cursor: not-allowed;
     }
 
     &__selected-indicator {
@@ -92,6 +92,22 @@
     &__wrapper {
       max-height: 100%;
       overflow-y: scroll;
+    }
+
+    &__loading {
+      display: flex;
+      height: 200px;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    }
+
+    &__fetching {
+      display: flex;
+      height: 100px;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
     }
   }
 }

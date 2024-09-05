@@ -99,9 +99,7 @@ export default class SecurityTab extends PureComponent {
     securityAlertsEnabled: PropTypes.bool,
     useExternalServices: PropTypes.bool,
     toggleExternalServices: PropTypes.func.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     setSecurityAlertsEnabled: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IF
   };
 
   state = {
@@ -999,7 +997,6 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   /**
    * toggleSecurityAlert
    *
@@ -1017,7 +1014,6 @@ export default class SecurityTab extends PureComponent {
     });
     setSecurityAlertsEnabled(newValue);
   }
-  ///: END:ONLY_INCLUDE_IF
 
   renderUseExternalServices() {
     const { t } = this.context;
@@ -1062,6 +1058,20 @@ export default class SecurityTab extends PureComponent {
                 setBasicFunctionalityModalOpen();
               } else {
                 toggleExternalServices(true);
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Settings,
+                  event: MetaMetricsEventName.SettingsUpdated,
+                  properties: {
+                    settings_group: 'security_privacy',
+                    settings_type: 'basic_functionality',
+                    old_value: false,
+                    new_value: true,
+                    // these values will always be set to false
+                    // when basic functionality is re-enabled
+                    was_notifications_on: false,
+                    was_profile_syncing_on: false,
+                  },
+                });
               }
             }}
             offLabel={t('off')}
@@ -1132,9 +1142,7 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('security')}
         </span>
         {this.renderSeedWords()}
-        {/* ///: BEGIN:ONLY_INCLUDE_IF(blockaid) */}
         {this.renderSecurityAlertsToggle()}
-        {/* ///: END:ONLY_INCLUDE_IF */}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>

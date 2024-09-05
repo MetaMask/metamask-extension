@@ -1,15 +1,16 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import Typography from '../../../components/ui/typography/typography';
 import {
-  TypographyVariant,
-  FONT_WEIGHT,
-  TEXT_ALIGN,
+  Display,
+  FlexDirection,
+  TextVariant,
+  FontWeight,
+  TextAlign,
   TextColor,
   IconColor,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
-import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   setParticipateInMetaMetrics,
@@ -30,23 +31,23 @@ import {
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  Box,
   Checkbox,
   Icon,
   IconName,
   IconSize,
+  Text,
+  Button,
+  ButtonVariant,
+  ButtonSize,
 } from '../../../components/component-library';
-import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 
-import Box from '../../../components/ui/box/box';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
-
-  const newPrivacyPolicyDate = new Date(PRIVACY_POLICY_DATE);
-  const currentDate = new Date(Date.now());
 
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
@@ -108,298 +109,145 @@ export default function OnboardingMetametrics() {
     history.push(nextRoute);
   };
 
-  const renderLegacyOnboarding = () => {
-    return (
-      <div
-        className="onboarding-metametrics"
-        data-testid="onboarding-legacy-metametrics"
+  return (
+    <div
+      className="onboarding-metametrics"
+      data-testid="onboarding-metametrics"
+    >
+      <Text
+        variant={TextVariant.headingLg}
+        textAlign={TextAlign.Center}
+        fontWeight={FontWeight.Bold}
       >
-        <Typography
-          variant={TypographyVariant.H2}
-          align={TEXT_ALIGN.CENTER}
-          fontWeight={FONT_WEIGHT.BOLD}
+        {t('onboardingMetametricsTitle')}
+      </Text>
+      <Text className="onboarding-metametrics__desc" textAlign={TextAlign.Left}>
+        {t('onboardingMetametricsDescription')}
+      </Text>
+      <Box paddingTop={2} paddingBottom={2}>
+        <Text
+          color={TextColor.primaryDefault}
+          as="a"
+          href="https://support.metamask.io/privacy-and-security/profile-privacy#how-is-the-profile-created"
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          {t('onboardingMetametricsTitle')}
-        </Typography>
-        <Typography
-          className="onboarding-metametrics__desc"
-          align={TEXT_ALIGN.CENTER}
-        >
-          {t('onboardingMetametricsDescriptionLegacy')}
-        </Typography>
-        <Typography
-          className="onboarding-metametrics__desc"
-          align={TEXT_ALIGN.CENTER}
-        >
-          {t('onboardingMetametricsDescription2Legacy')}
-        </Typography>
-        <ul>
-          <li>
+          {t('onboardingMetametricsPrivacyDescription')}
+        </Text>
+      </Box>
+      <Text className="onboarding-metametrics__desc" textAlign={TextAlign.Left}>
+        {t('onboardingMetametricsDescription2')}
+      </Text>
+      <ul>
+        <li>
+          <Box>
             <Icon
+              marginInlineEnd={2}
               name={IconName.Check}
+              size={IconSize.Sm}
               color={IconColor.successDefault}
-              marginInlineEnd={3}
             />
-            {t('onboardingMetametricsAllowOptOutLegacy')}
-          </li>
-          <li>
+            {t('onboardingMetametricsNeverCollect', [
+              <Text
+                variant={TextVariant.inherit}
+                key="never"
+                fontWeight={FontWeight.Bold}
+                marginTop={0}
+              >
+                {t('onboardingMetametricsNeverCollectEmphasis')}
+              </Text>,
+            ])}
+          </Box>
+        </li>
+        <li>
+          <Box>
             <Icon
+              marginInlineEnd={2}
               name={IconName.Check}
+              size={IconSize.Sm}
               color={IconColor.successDefault}
-              marginInlineEnd={3}
             />
-            {t('onboardingMetametricsSendAnonymizeLegacy')}
-          </li>
-          <li>
-            <Box>
-              <Icon
-                marginInlineEnd={2}
-                name={IconName.Close}
-                size={IconSize.Sm}
-                color={IconColor.errorDefault}
-              />
-              {t('onboardingMetametricsNeverCollectLegacy', [
-                <Typography
-                  variant={TypographyVariant.span}
-                  key="never"
-                  fontWeight={FONT_WEIGHT.BOLD}
-                  marginTop={0}
-                >
-                  {t('onboardingMetametricsNeverEmphasisLegacy')}
-                </Typography>,
-              ])}
-            </Box>
-          </li>
-          <li>
-            <Box>
-              <Icon
-                marginInlineEnd={2}
-                name={IconName.Close}
-                size={IconSize.Sm}
-                color={IconColor.errorDefault}
-              />
-              {t('onboardingMetametricsNeverCollectIPLegacy', [
-                <Typography
-                  variant={TypographyVariant.span}
-                  key="never-collect"
-                  fontWeight={FONT_WEIGHT.BOLD}
-                >
-                  {t('onboardingMetametricsNeverEmphasisLegacy')}
-                </Typography>,
-              ])}
-            </Box>
-          </li>
-          <li>
-            <Box>
-              <Icon
-                marginInlineEnd={2}
-                name={IconName.Close}
-                size={IconSize.Sm}
-                color={IconColor.errorDefault}
-              />
-              {t('onboardingMetametricsNeverSellDataLegacy', [
-                <Typography
-                  variant={TypographyVariant.span}
-                  key="never-sell"
-                  fontWeight={FONT_WEIGHT.BOLD}
-                >
-                  {t('onboardingMetametricsNeverEmphasisLegacy')}
-                </Typography>,
-              ])}
-            </Box>{' '}
-          </li>
-        </ul>
-        <Typography
-          color={TextColor.textAlternative}
-          align={TEXT_ALIGN.CENTER}
-          variant={TypographyVariant.H6}
-          className="onboarding-metametrics__terms"
-        >
-          {t('onboardingMetametricsDataTermsLegacy')}
-        </Typography>
-        <Typography
-          color={TextColor.textAlternative}
-          align={TEXT_ALIGN.CENTER}
-          variant={TypographyVariant.H6}
-          className="onboarding-metametrics__terms"
-        >
-          {t('onboardingMetametricsInfuraTermsLegacy', [
-            <a
-              href="https://consensys.io/blog/consensys-data-retention-update"
-              target="_blank"
-              rel="noopener noreferrer"
-              key="retention-link"
-            >
-              {t('onboardingMetametricsInfuraTermsPolicyLinkLegacy')}
-            </a>,
-            <a
-              href="https://metamask.io/privacy.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              key="privacy-link"
-            >
-              {t('onboardingMetametricsInfuraTermsPolicyLegacy')}
-            </a>,
-          ])}
-        </Typography>
-
-        <div className="onboarding-metametrics__buttons">
-          <Button
-            data-testid="metametrics-i-agree"
-            type="primary"
-            large
-            onClick={onConfirm}
-          >
-            {t('onboardingMetametricsAgree')}
-          </Button>
-          <Button
-            data-testid="metametrics-no-thanks"
-            type="secondary"
-            large
-            onClick={onCancel}
-          >
-            {t('onboardingMetametricsDisagree')}
-          </Button>
-        </div>
-      </div>
-    );
-  };
-
-  const renderOnboarding = () => {
-    return (
-      <div
-        className="onboarding-metametrics"
-        data-testid="onboarding-metametrics"
+            {t('onboardingMetametricsNeverCollectIP', [
+              <Text
+                variant={TextVariant.inherit}
+                key="never-collect"
+                fontWeight={FontWeight.Bold}
+              >
+                {t('onboardingMetametricsNeverCollectIPEmphasis')}
+              </Text>,
+            ])}
+          </Box>
+        </li>
+        <li>
+          <Box>
+            <Icon
+              marginInlineEnd={2}
+              name={IconName.Check}
+              size={IconSize.Sm}
+              color={IconColor.successDefault}
+            />
+            {t('onboardingMetametricsNeverSellData', [
+              <Text
+                variant={TextVariant.inherit}
+                key="never-sell"
+                fontWeight={FontWeight.Bold}
+              >
+                {t('onboardingMetametricsNeverSellDataEmphasis')}
+              </Text>,
+            ])}
+          </Box>{' '}
+        </li>
+      </ul>
+      <Checkbox
+        id="metametrics-opt-in"
+        isChecked={dataCollectionForMarketing}
+        onClick={() =>
+          dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))
+        }
+        label={t('onboardingMetametricsUseDataCheckbox')}
+        paddingBottom={3}
+      />
+      <Text
+        color={TextColor.textAlternative}
+        textAlign={TextAlign.Left}
+        variant={TextVariant.bodySm}
+        className="onboarding-metametrics__terms"
       >
-        <Typography
-          variant={TypographyVariant.H2}
-          align={TEXT_ALIGN.CENTER}
-          fontWeight={FONT_WEIGHT.BOLD}
-        >
-          {t('onboardingMetametricsTitle')}
-        </Typography>
-        <Typography
-          className="onboarding-metametrics__desc"
-          align={TEXT_ALIGN.LEFT}
-        >
-          {t('onboardingMetametricsDescription')}
-        </Typography>
-        <Typography
-          className="onboarding-metametrics__desc"
-          align={TEXT_ALIGN.LEFT}
-        >
-          {t('onboardingMetametricsDescription2')}
-        </Typography>
-        <ul>
-          <li>
-            <Box>
-              <Icon
-                marginInlineEnd={2}
-                name={IconName.Check}
-                size={IconSize.Sm}
-                color={IconColor.successDefault}
-              />
-              {t('onboardingMetametricsNeverCollect', [
-                <Typography
-                  variant={TypographyVariant.span}
-                  key="never"
-                  fontWeight={FONT_WEIGHT.BOLD}
-                  marginTop={0}
-                >
-                  {t('onboardingMetametricsNeverCollectEmphasis')}
-                </Typography>,
-              ])}
-            </Box>
-          </li>
-          <li>
-            <Box>
-              <Icon
-                marginInlineEnd={2}
-                name={IconName.Check}
-                size={IconSize.Sm}
-                color={IconColor.successDefault}
-              />
-              {t('onboardingMetametricsNeverCollectIP', [
-                <Typography
-                  variant={TypographyVariant.span}
-                  key="never-collect"
-                  fontWeight={FONT_WEIGHT.BOLD}
-                >
-                  {t('onboardingMetametricsNeverCollectIPEmphasis')}
-                </Typography>,
-              ])}
-            </Box>
-          </li>
-          <li>
-            <Box>
-              <Icon
-                marginInlineEnd={2}
-                name={IconName.Check}
-                size={IconSize.Sm}
-                color={IconColor.successDefault}
-              />
-              {t('onboardingMetametricsNeverSellData', [
-                <Typography
-                  variant={TypographyVariant.span}
-                  key="never-sell"
-                  fontWeight={FONT_WEIGHT.BOLD}
-                >
-                  {t('onboardingMetametricsNeverSellDataEmphasis')}
-                </Typography>,
-              ])}
-            </Box>{' '}
-          </li>
-        </ul>
-        <Checkbox
-          id="metametrics-opt-in"
-          isChecked={dataCollectionForMarketing}
-          onClick={() =>
-            dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))
-          }
-          label={t('onboardingMetametricsUseDataCheckbox')}
-          paddingBottom={3}
-        />
-        <Typography
-          color={TextColor.textAlternative}
-          align={TEXT_ALIGN.LEFT}
-          variant={TypographyVariant.H6}
-          className="onboarding-metametrics__terms"
-        >
-          {t('onboardingMetametricsInfuraTerms', [
-            <a
-              href="https://metamask.io/privacy.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              key="privacy-link"
-            >
-              {t('onboardingMetametricsInfuraTermsPolicy')}
-            </a>,
-          ])}
-        </Typography>
-
-        <div className="onboarding-metametrics__buttons">
-          <Button
-            data-testid="metametrics-i-agree"
-            type="primary"
-            large
-            onClick={onConfirm}
+        {t('onboardingMetametricsInfuraTerms', [
+          <a
+            href="https://metamask.io/privacy.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            key="privacy-link"
           >
-            {t('onboardingMetametricsAgree')}
-          </Button>
-          <Button
-            data-testid="metametrics-no-thanks"
-            type="secondary"
-            large
-            onClick={onCancel}
-          >
-            {t('onboardingMetametricsDisagree')}
-          </Button>
-        </div>
-      </div>
-    );
-  };
+            {t('onboardingMetametricsInfuraTermsPolicy')}
+          </a>,
+        ])}
+      </Text>
 
-  return currentDate >= newPrivacyPolicyDate
-    ? renderOnboarding()
-    : renderLegacyOnboarding();
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        width={BlockSize.Full}
+        className="onboarding-metametrics__buttons"
+        gap={4}
+      >
+        <Button
+          data-testid="metametrics-no-thanks"
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
+          onClick={onCancel}
+        >
+          {t('noThanks')}
+        </Button>
+        <Button
+          data-testid="metametrics-i-agree"
+          size={ButtonSize.Lg}
+          onClick={onConfirm}
+        >
+          {t('onboardingMetametricsAgree')}
+        </Button>
+      </Box>
+    </div>
+  );
 }

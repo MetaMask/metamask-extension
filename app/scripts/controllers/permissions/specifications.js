@@ -3,12 +3,11 @@ import {
   PermissionType,
   SubjectType,
 } from '@metamask/permission-controller';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import {
   caveatSpecifications as snapsCaveatsSpecifications,
   endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications,
 } from '@metamask/snaps-rpc-methods';
-///: END:ONLY_INCLUDE_IF
+import { isValidHexAddress } from '@metamask/utils';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -26,7 +25,7 @@ import {
  */
 export const PermissionNames = Object.freeze({
   ...RestrictedMethods,
-  permittedChains: 'permittedChains',
+  permittedChains: 'endowment:permitted-chains',
 });
 
 /**
@@ -79,12 +78,15 @@ export const getCaveatSpecifications = ({
       type: CaveatTypes.restrictNetworkSwitching,
       validator: (caveat, _origin, _target) =>
         validateCaveatNetworks(caveat.value, findNetworkClientIdByChainId),
+      merger: (leftValue, rightValue) => {
+        const newValue = Array.from(new Set([...leftValue, ...rightValue]));
+        const diff = newValue.filter((value) => !leftValue.includes(value));
+        return [newValue, diff];
+      },
     },
 
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     ...snapsCaveatsSpecifications,
     ...snapsEndowmentCaveatSpecifications,
-    ///: END:ONLY_INCLUDE_IF
   };
 };
 
@@ -141,7 +143,8 @@ export const getPermissionSpecifications = ({
         });
       },
       methodImplementation: async (_args) => {
-        const accounts = await getAllAccounts();
+        // We only consider EVM addresses here, hence the filtering:
+        const accounts = (await getAllAccounts()).filter(isValidHexAddress);
         const internalAccounts = getInternalAccounts();
 
         return accounts.sort((firstAddress, secondAddress) => {
@@ -309,6 +312,18 @@ function validateCaveatNetworks(
 }
 
 /**
+ * Unrestricted methods for Ethereum, see {@link unrestrictedMethods} for more details.
+ */
+export const unrestrictedEthSigningMethods = Object.freeze([
+  'eth_sendRawTransaction',
+  'eth_sendTransaction',
+  'eth_signTypedData',
+  'eth_signTypedData_v1',
+  'eth_signTypedData_v3',
+  'eth_signTypedData_v4',
+]);
+
+/**
  * All unrestricted methods recognized by the PermissionController.
  * Unrestricted methods are ignored by the permission system, but every
  * JSON-RPC request seen by the permission system must correspond to a
@@ -355,7 +370,6 @@ export const unrestrictedMethods = Object.freeze([
   'eth_requestAccounts',
   'eth_sendRawTransaction',
   'eth_sendTransaction',
-  'eth_sign',
   'eth_signTypedData',
   'eth_signTypedData_v1',
   'eth_signTypedData_v3',
@@ -384,7 +398,6 @@ export const unrestrictedMethods = Object.freeze([
   'wallet_watchAsset',
   'web3_clientVersion',
   'web3_sha3',
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   'wallet_getAllSnaps',
   'wallet_getSnaps',
   'wallet_requestSnaps',
@@ -395,7 +408,7 @@ export const unrestrictedMethods = Object.freeze([
   'snap_createInterface',
   'snap_updateInterface',
   'snap_getInterfaceState',
-  ///: END:ONLY_INCLUDE_IF
+  'snap_resolveInterface',
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   'metamaskinstitutional_authenticate',
   'metamaskinstitutional_reauthenticate',

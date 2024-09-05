@@ -8,6 +8,14 @@ import {
   ConfirmAlertModal,
 } from './confirm-alert-modal';
 
+jest.mock('../contexts/alertMetricsContext', () => ({
+  useAlertMetrics: jest.fn(() => ({
+    trackInlineAlertClicked: jest.fn(),
+    trackAlertRender: jest.fn(),
+    trackAlertActionClicked: jest.fn(),
+  })),
+}));
+
 describe('ConfirmAlertModal', () => {
   const OWNER_ID_MOCK = '123';
   const FROM_ALERT_KEY_MOCK = 'from';
@@ -18,18 +26,18 @@ describe('ConfirmAlertModal', () => {
   const onSubmitMock = jest.fn();
   const alertsMock = [
     {
+      key: DATA_ALERT_KEY_MOCK,
+      field: DATA_ALERT_KEY_MOCK,
+      severity: Severity.Danger,
+      message: DATA_ALERT_MESSAGE_MOCK,
+    },
+    {
       key: FROM_ALERT_KEY_MOCK,
       field: FROM_ALERT_KEY_MOCK,
       severity: Severity.Warning,
       message: 'Alert 1',
       reason: 'Reason 1',
       alertDetails: ['Detail 1', 'Detail 2'],
-    },
-    {
-      key: DATA_ALERT_KEY_MOCK,
-      field: DATA_ALERT_KEY_MOCK,
-      severity: Severity.Danger,
-      message: DATA_ALERT_MESSAGE_MOCK,
     },
   ];
 
@@ -44,11 +52,11 @@ describe('ConfirmAlertModal', () => {
       },
     },
   };
+
   const mockStore = configureMockStore([])(STATE_MOCK);
 
   const defaultProps: ConfirmAlertModalProps = {
     ownerId: OWNER_ID_MOCK,
-    alertKey: FROM_ALERT_KEY_MOCK,
     onClose: onCloseMock,
     onCancel: onCancelMock,
     onSubmit: onSubmitMock,
@@ -65,7 +73,7 @@ describe('ConfirmAlertModal', () => {
 
   it('disables submit button when confirm modal is not acknowledged', () => {
     const { getByTestId } = renderWithProvider(
-      <ConfirmAlertModal {...defaultProps} alertKey={DATA_ALERT_KEY_MOCK} />,
+      <ConfirmAlertModal {...defaultProps} />,
       mockStore,
     );
 
@@ -84,7 +92,7 @@ describe('ConfirmAlertModal', () => {
 
   it('calls onSubmit when the button is clicked', () => {
     const { getByTestId } = renderWithProvider(
-      <ConfirmAlertModal {...defaultProps} alertKey={DATA_ALERT_KEY_MOCK} />,
+      <ConfirmAlertModal {...defaultProps} />,
       mockStore,
     );
 

@@ -89,10 +89,6 @@ describe('Test Snap Homepage', function () {
 
         // check that the home page appears and contains the right info
         await driver.waitForSelector({
-          text: 'Content from Home Page Example Snap',
-          tag: 'p',
-        });
-        await driver.waitForSelector({
           text: 'Welcome to my Snap home page!',
           tag: 'p',
         });

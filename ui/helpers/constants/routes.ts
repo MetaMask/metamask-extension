@@ -44,18 +44,17 @@ const PERMISSIONS = '/permissions';
 const TOKEN_DETAILS = '/token-details';
 const CONNECT_ROUTE = '/connect';
 const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 const CONNECT_SNAPS_CONNECT_ROUTE = '/snaps-connect';
 const CONNECT_SNAP_INSTALL_ROUTE = '/snap-install';
 const CONNECT_SNAP_UPDATE_ROUTE = '/snap-update';
 const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
 const SNAPS_ROUTE = '/snaps';
 const SNAPS_VIEW_ROUTE = '/snaps/view';
-///: END:ONLY_INCLUDE_IF
 const NOTIFICATIONS_ROUTE = '/notifications';
 const NOTIFICATIONS_SETTINGS_ROUTE = '/notifications/settings';
 const CONNECTED_ROUTE = '/connected';
 const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
+const CROSS_CHAIN_SWAP_ROUTE = '/cross-chain';
 const SWAPS_ROUTE = '/swaps';
 const PREPARE_SWAP_ROUTE = '/swaps/prepare-swap-page';
 const SWAPS_NOTIFICATION_ROUTE = '/swaps/notification-page';
@@ -111,6 +110,7 @@ const PATH_NAME_MAP = {
   [UNLOCK_ROUTE]: 'Unlock Page',
   [LOCK_ROUTE]: 'Lock Page',
   [`${ASSET_ROUTE}/:asset/:id`]: `Asset Page`,
+  [`${ASSET_ROUTE}/image/:asset/:id`]: `Nft Image Page`,
   [SETTINGS_ROUTE]: 'Settings Page',
   [GENERAL_ROUTE]: 'General Settings Page',
   [ADVANCED_ROUTE]: 'Advanced Settings Page',
@@ -139,9 +139,8 @@ const PATH_NAME_MAP = {
   [CONFIRM_ADD_SUGGESTED_NFT_ROUTE]: 'Confirm Add Suggested NFT Page',
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
   [NOTIFICATIONS_ROUTE]: 'Notifications Page',
-  [`${NOTIFICATIONS_ROUTE}/:uuid`]: 'Notification Detail Page',
   [NOTIFICATIONS_SETTINGS_ROUTE]: 'Notifications Settings Page',
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+  [`${NOTIFICATIONS_ROUTE}/:uuid`]: 'Notification Detail Page',
   [`${CONNECT_ROUTE}/:id${CONNECT_SNAPS_CONNECT_ROUTE}`]: 'Snaps Connect Page',
   [`${CONNECT_ROUTE}/:id${CONNECT_SNAP_INSTALL_ROUTE}`]: 'Snap Install Page',
   [`${CONNECT_ROUTE}/:id${CONNECT_SNAP_UPDATE_ROUTE}`]: 'Snap Update Page',
@@ -149,7 +148,6 @@ const PATH_NAME_MAP = {
     'Snap Install Result Page',
   [SNAPS_ROUTE]: 'Snaps List Page',
   [`${SNAPS_VIEW_ROUTE}/:snapId`]: 'Snap View Page',
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional Features Done Page',
   [CUSTODY_ACCOUNT_ROUTE]: 'Connect Custody',
@@ -263,7 +261,6 @@ export {
   ADD_POPULAR_CUSTOM_NETWORK,
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   CONNECT_SNAPS_CONNECT_ROUTE,
   CONNECT_SNAP_INSTALL_ROUTE,
   CONNECT_SNAP_UPDATE_ROUTE,
@@ -272,7 +269,7 @@ export {
   NOTIFICATIONS_SETTINGS_ROUTE,
   SNAPS_ROUTE,
   SNAPS_VIEW_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
+  CROSS_CHAIN_SWAP_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   PATH_NAME_MAP,

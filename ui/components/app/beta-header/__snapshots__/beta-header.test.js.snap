@@ -12,7 +12,7 @@ exports[`Beta Header should match snapshot 1`] = `
          
         This is a beta version. Please report bugs 
         <a
-          href="https://metamask.zendesk.com/hc/en-us"
+          href="https://support.metamask.io"
           rel="noreferrer noopener"
           target="_blank"
         >

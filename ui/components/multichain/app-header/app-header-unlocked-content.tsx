@@ -3,6 +3,7 @@ import browser from 'webextension-polyfill';
 
 import { InternalAccount } from '@metamask/keyring-api';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
   AlignItems,
   BackgroundColor,
@@ -40,6 +41,7 @@ import { GlobalMenu } from '../global-menu';
 import {
   getSelectedInternalAccount,
   getTestNetworkBackgroundColor,
+  getOriginOfCurrentTab,
 } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
@@ -49,15 +51,13 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
-import {
-  MultichainProviderConfig,
-  ProviderConfigWithImageUrl,
-} from '../../../../shared/constants/multichain/networks';
+import { CONNECTIONS } from '../../../helpers/constants/routes';
+import { MultichainNetwork } from '../../../selectors/multichain';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;
   isEvmNetwork: boolean;
-  currentNetwork: ProviderConfigWithImageUrl | MultichainProviderConfig;
+  currentNetwork: MultichainNetwork;
   networkOpenCallback: () => void;
   disableNetworkPicker: boolean;
   disableAccountPicker: boolean;
@@ -76,7 +76,9 @@ export const AppHeaderUnlockedContent = ({
 }: AppHeaderUnlockedContentProps) => {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
+  const history = useHistory();
   const dispatch = useDispatch();
+  const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
@@ -112,6 +114,10 @@ export const AppHeaderUnlockedContent = ({
     setAccountOptionsMenuOpen(true);
   };
 
+  const handleConnectionsRoute = () => {
+    history.push(`${CONNECTIONS}/${encodeURIComponent(origin)}`);
+  };
+
   return (
     <>
       {popupStatus ? (
@@ -126,7 +132,7 @@ export const AppHeaderUnlockedContent = ({
               className="multichain-app-header__contents--avatar-network"
               ref={menuRef}
               as="button"
-              src={currentNetwork?.rpcPrefs?.imageUrl ?? ''}
+              src={currentNetwork?.network?.rpcPrefs?.imageUrl ?? ''}
               label={currentNetwork?.nickname ?? ''}
               aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
               labelProps={{
@@ -153,7 +159,7 @@ export const AppHeaderUnlockedContent = ({
             margin={2}
             aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
             label={currentNetwork?.nickname ?? ''}
-            src={currentNetwork?.rpcPrefs?.imageUrl}
+            src={currentNetwork?.network?.rpcPrefs?.imageUrl}
             onClick={(e: React.MouseEvent<HTMLElement>) => {
               e.stopPropagation();
               e.preventDefault();
@@ -244,7 +250,7 @@ export const AppHeaderUnlockedContent = ({
                   if (!isEvmNetwork) {
                     return;
                   }
-                  handleMainMenuOpened();
+                  handleConnectionsRoute();
                 }}
                 disabled={!isEvmNetwork}
               />

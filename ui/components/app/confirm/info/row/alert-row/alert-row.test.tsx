@@ -5,7 +5,7 @@ import { Text } from '../../../../../component-library';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
 import { Severity } from '../../../../../../helpers/constants/design-system';
 import mockState from '../../../../../../../test/data/mock-state.json';
-import { AlertRow, AlertRowProps } from './alert-row';
+import { ConfirmInfoAlertRow, ConfirmInfoAlertRowProps } from './alert-row';
 
 const onProcessActionMock = jest.fn();
 
@@ -15,6 +15,15 @@ const mockAlertActionHandlerProviderValue = {
 
 jest.mock('../../../../alert-system/contexts/alertActionHandler', () => ({
   useAlertActionHandler: jest.fn(() => mockAlertActionHandlerProviderValue),
+}));
+
+const mockTrackInlineAlertClicked = jest.fn();
+jest.mock('../../../../alert-system/contexts/alertMetricsContext', () => ({
+  useAlertMetrics: jest.fn(() => ({
+    trackInlineAlertClicked: mockTrackInlineAlertClicked,
+    trackAlertRender: jest.fn(),
+    trackAlertActionClicked: jest.fn(),
+  })),
 }));
 
 describe('AlertRow', () => {
@@ -36,7 +45,7 @@ describe('AlertRow', () => {
     },
   ];
   const renderAlertRow = (
-    props?: Partial<AlertRowProps>,
+    props?: Partial<ConfirmInfoAlertRowProps>,
     state?: Record<string, unknown>,
   ) => {
     const STATE_MOCK = {
@@ -47,20 +56,12 @@ describe('AlertRow', () => {
           [OWNER_ID_MOCK]: { [KEY_ALERT_KEY_MOCK]: false },
         },
       },
-      confirm: {
-        currentConfirmation: {
-          id: OWNER_ID_MOCK,
-          status: 'unapproved',
-          time: new Date().getTime(),
-          type: 'personal_sign',
-        },
-      },
       ...state,
     };
 
     const mockStore = configureMockStore([])(STATE_MOCK);
     return renderWithProvider(
-      <AlertRow
+      <ConfirmInfoAlertRow
         label={KEY_ALERT_KEY_MOCK}
         children={<Text>value</Text>}
         ownerId={OWNER_ID_NO_ALERT_MOCK}
@@ -118,6 +119,19 @@ describe('AlertRow', () => {
         fireEvent.click(getByTestId('inline-alert'));
         fireEvent.click(getByTestId('alert-modal-button'));
         expect(queryByTestId('alert-modal-button')).toBeNull();
+      });
+    });
+
+    describe('Track alert metrics', () => {
+      it('calls trackInlineAlertClicked when inline alert is clicked', () => {
+        const { getByTestId } = renderAlertRow({
+          alertKey: KEY_ALERT_KEY_MOCK,
+          ownerId: OWNER_ID_MOCK,
+        });
+        fireEvent.click(getByTestId('inline-alert'));
+        expect(mockTrackInlineAlertClicked).toHaveBeenCalledWith(
+          KEY_ALERT_KEY_MOCK,
+        );
       });
     });
 

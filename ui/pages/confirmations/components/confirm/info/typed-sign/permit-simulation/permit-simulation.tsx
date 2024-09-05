@@ -1,81 +1,92 @@
-import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { NameType } from '@metamask/name-controller';
+import React from 'react';
 
+import { Box } from '../../../../../../../components/component-library';
+import { PrimaryType } from '../../../../../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../../../../../shared/modules/transaction.utils';
-import { Numeric } from '../../../../../../../../shared/modules/Numeric';
-import Name from '../../../../../../../components/app/name/name';
 import {
-  ConfirmInfoRow,
-  ConfirmInfoRowText,
-} from '../../../../../../../components/app/confirm/info/row';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../../../../selectors';
-import { Box, Text } from '../../../../../../../components/component-library';
-import {
-  BackgroundColor,
-  BorderRadius,
   Display,
-  TextAlign,
+  FlexDirection,
 } from '../../../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { SignatureRequestType } from '../../../../../types/confirm';
-import useTokenExchangeRate from '../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
-import { IndividualFiatDisplay } from '../../../../simulation-details/fiat-display';
+import { useConfirmContext } from '../../../../../context/confirm';
+import StaticSimulation from '../../shared/static-simulation/static-simulation';
+import PermitSimulationValueDisplay from './value-display/value-display';
 
-const PermitSimulation: React.FC = () => {
+function extractTokenDetailsByPrimaryType(
+  message: Record<string, unknown>,
+  primaryType: PrimaryType,
+): object[] | unknown {
+  let tokenDetails;
+
+  switch (primaryType) {
+    case PrimaryType.PermitBatch:
+    case PrimaryType.PermitSingle:
+      tokenDetails = message?.details;
+      break;
+    case PrimaryType.PermitBatchTransferFrom:
+    case PrimaryType.PermitTransferFrom:
+      tokenDetails = message?.permitted;
+      break;
+    default:
+      break;
+  }
+
+  const isNonArrayObject = tokenDetails && !Array.isArray(tokenDetails);
+
+  return isNonArrayObject ? [tokenDetails] : tokenDetails;
+}
+
+const PermitSimulation: React.FC<object> = () => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as SignatureRequestType;
+  const { currentConfirmation } = useConfirmContext() as {
+    currentConfirmation: SignatureRequestType;
+  };
 
+  const msgData = currentConfirmation.msgParams?.data;
   const {
     domain: { verifyingContract },
-    message: { value },
-  } = parseTypedDataMessage(currentConfirmation.msgParams?.data as string);
+    message,
+    primaryType,
+  } = parseTypedDataMessage(msgData as string);
 
-  const exchangeRate = useTokenExchangeRate(verifyingContract);
-
-  const fiatValue = useMemo(() => {
-    if (exchangeRate && value) {
-      return exchangeRate.times(new Numeric(value, 10)).toNumber();
-    }
-    return undefined;
-  }, [exchangeRate, value]);
+  const tokenDetails = extractTokenDetailsByPrimaryType(message, primaryType);
 
   return (
-    <Box
-      backgroundColor={BackgroundColor.backgroundDefault}
-      borderRadius={BorderRadius.MD}
-      padding={2}
-      marginBottom={4}
-    >
-      <ConfirmInfoRow
-        label={t('simulationDetailsTitle')}
-        tooltip={t('simulationDetailsTitleTooltip')}
-      >
-        <ConfirmInfoRowText text={t('permitSimulationDetailInfo')} />
-      </ConfirmInfoRow>
-      <ConfirmInfoRow label={t('approve')}>
-        <Box>
-          <Box display={Display.Flex}>
-            <Box display={Display.Inline} marginInlineEnd={1}>
-              <Text
-                backgroundColor={BackgroundColor.backgroundAlternative}
-                borderRadius={BorderRadius.XL}
-                paddingInline={2}
-                textAlign={TextAlign.Center}
-              >
-                {value}
-              </Text>
-            </Box>
-            <Name value={verifyingContract} type={NameType.ETHEREUM_ADDRESS} />
+    <StaticSimulation
+      title={t('simulationDetailsTitle')}
+      titleTooltip={t('simulationDetailsTitleTooltip')}
+      description={t('permitSimulationDetailInfo')}
+      simulationHeading={t('spendingCap')}
+      simulationElements={
+        Array.isArray(tokenDetails) ? (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={2}
+          >
+            {tokenDetails.map(
+              (
+                { token, amount }: { token: string; amount: string },
+                i: number,
+              ) => (
+                <PermitSimulationValueDisplay
+                  key={`${token}-${i}`}
+                  primaryType={primaryType}
+                  tokenContract={token}
+                  value={amount}
+                />
+              ),
+            )}
           </Box>
-          <Box>
-            {fiatValue && <IndividualFiatDisplay fiatAmount={fiatValue} />}
-          </Box>
-        </Box>
-      </ConfirmInfoRow>
-    </Box>
+        ) : (
+          <PermitSimulationValueDisplay
+            tokenContract={verifyingContract}
+            value={message.value}
+          />
+        )
+      }
+    />
   );
 };
 

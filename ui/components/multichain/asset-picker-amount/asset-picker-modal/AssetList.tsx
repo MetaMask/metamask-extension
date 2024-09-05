@@ -1,7 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { getSelectedAccountCachedBalance } from '../../../../selectors';
+import {
+  getPreferences,
+  getSelectedAccountCachedBalance,
+} from '../../../../selectors';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
@@ -16,29 +19,34 @@ import {
   FlexWrap,
 } from '../../../../helpers/constants/design-system';
 import { TokenListItem } from '../..';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { Asset, Token } from './types';
 import AssetComponent from './Asset';
+import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
 type AssetListProps = {
-  handleAssetChange: (token: Token) => void;
-  asset: Asset;
-  tokenList: Token[];
-  sendingAssetSymbol?: string;
-  memoizedSwapsBlockedTokens: Set<string>;
+  handleAssetChange: (
+    token: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
+  ) => void;
+  asset?: ERC20Asset | NativeAsset;
+  tokenList: (
+    | AssetWithDisplayData<ERC20Asset>
+    | AssetWithDisplayData<NativeAsset>
+  )[];
+  isTokenDisabled?: (
+    token: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
+  ) => boolean;
 };
 
 export default function AssetList({
   handleAssetChange,
   asset,
   tokenList,
-  sendingAssetSymbol,
-  memoizedSwapsBlockedTokens,
+  isTokenDisabled,
 }: AssetListProps) {
-  const selectedToken = asset.details?.address;
+  const selectedToken = asset?.address;
 
   const nativeCurrency = useSelector(getNativeCurrency);
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
   const {
     currency: primaryCurrency,
@@ -67,10 +75,7 @@ export default function AssetList({
       {tokenList.map((token) => {
         const tokenAddress = token.address?.toLowerCase();
         const isSelected = tokenAddress === selectedToken?.toLowerCase();
-        const isDisabled = sendingAssetSymbol
-          ? !isEqualCaseInsensitive(sendingAssetSymbol, token.symbol) &&
-            memoizedSwapsBlockedTokens.has(tokenAddress as string)
-          : false;
+        const isDisabled = isTokenDisabled?.(token) ?? false;
         return (
           <Box
             padding={0}
@@ -107,7 +112,6 @@ export default function AssetList({
               display={Display.Block}
               flexWrap={FlexWrap.NoWrap}
               alignItems={AlignItems.center}
-              style={{ cursor: 'pointer' }}
             >
               <Box marginInlineStart={2}>
                 {token.type === AssetType.native ? (
@@ -117,15 +121,19 @@ export default function AssetList({
                       primaryCurrencyProperties.value ??
                       secondaryCurrencyProperties.value
                     }
-                    tokenSymbol={primaryCurrencyProperties.suffix}
+                    tokenSymbol={
+                      useNativeCurrencyAsPrimaryCurrency
+                        ? primaryCurrency
+                        : secondaryCurrency
+                    }
                     secondary={secondaryCurrencyDisplay}
                     tokenImage={token.image}
+                    isOriginalTokenSymbol
                   />
                 ) : (
                   <AssetComponent
                     key={token.address}
                     {...token}
-                    decimalTokenAmount={token.string}
                     tooltipText={
                       isDisabled ? 'swapTokenNotAvailable' : undefined
                     }

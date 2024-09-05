@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { ConfirmContextProvider } from '../../../context/confirm';
 import ScrollToBottom from './scroll-to-bottom';
 
 const Story = {
@@ -7,7 +8,9 @@ const Story = {
   component: ScrollToBottom,
   decorators: [
     (story: any) => (
-      <div style={{ height: '120px', width: '280px' }}>{story()}</div>
+      <div style={{ height: '120px', width: '280px' }}>
+        <ConfirmContextProvider>{story()}</ConfirmContextProvider>
+      </div>
     ),
   ],
 
@@ -30,7 +33,7 @@ const Story = {
 export const DefaultStory = (args) => {
   return (
     <ScrollToBottom {...args}>
-      <div style={{ minHeight: '420px;' }}>{args.children}</div>
+      <div style={{ minHeight: '420px' }}>{args.children}</div>
     </ScrollToBottom>
   );
 };

@@ -40,6 +40,7 @@ import {
 import {
   TokenStandard,
   AssetType,
+  SmartTransactionStatus,
 } from '../../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { INSUFFICIENT_FUNDS_ERROR } from '../../../../pages/confirmations/send/send.constants';
@@ -54,8 +55,11 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import { AssetPickerAmount } from '../..';
-import useUpdateSwapsState from '../../../../hooks/useUpdateSwapsState';
+import useUpdateSwapsState from '../../../../pages/swaps/hooks/useUpdateSwapsState';
 import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
+import { smartTransactionsListSelector } from '../../../../selectors';
+import { TextVariant } from '../../../../helpers/constants/design-system';
+import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -89,6 +93,7 @@ export const SendPage = () => {
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(undefined);
 
   const handleSelectToken = useCallback(
     (token, isReceived) => {
@@ -141,14 +146,51 @@ export const SendPage = () => {
           }),
         );
       }
+
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendAssetSelected,
+          category: MetaMetricsEventCategory.Send,
+          properties: {
+            is_destination_asset_picker_modal: Boolean(isReceived),
+            is_nft: false,
+          },
+          sensitiveProperties: {
+            ...sendAnalytics,
+            new_asset_symbol: token.symbol,
+            new_asset_address: token.address,
+          },
+        },
+        { excludeMetaMetricsId: false },
+      );
       history.push(SEND_ROUTE);
     },
-    [dispatch, history],
+    [dispatch, history, sendAnalytics, trackEvent],
+  );
+
+  const handleAssetPickerClick = useCallback(
+    (isDest) => {
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendTokenModalOpened,
+          category: MetaMetricsEventCategory.Send,
+          properties: {
+            is_destination_asset_picker_modal: Boolean(isDest),
+          },
+          sensitiveProperties: {
+            ...sendAnalytics,
+          },
+        },
+        { excludeMetaMetricsId: false },
+      );
+    },
+    [sendAnalytics, trackEvent],
   );
 
   const cleanup = useCallback(() => {
     dispatch(resetSendState());
     setIsSubmitting(false);
+    setError(undefined);
   }, [dispatch]);
 
   /**
@@ -196,13 +238,16 @@ export const SendPage = () => {
     }
     dispatch(resetSendState());
 
-    trackEvent({
-      event: MetaMetricsEventName.sendFlowExited,
-      category: MetaMetricsEventCategory.Send,
-      properties: {
-        ...sendAnalytics,
+    trackEvent(
+      {
+        event: MetaMetricsEventName.sendFlowExited,
+        category: MetaMetricsEventCategory.Send,
+        sensitiveProperties: {
+          ...sendAnalytics,
+        },
       },
-    });
+      { excludeMetaMetricsId: false },
+    );
 
     const nextRoute =
       sendStage === SEND_STAGES.EDIT ? DEFAULT_ROUTE : mostRecentOverviewPage;
@@ -211,13 +256,16 @@ export const SendPage = () => {
 
   useEffect(() => {
     if (swapQuotesError) {
-      trackEvent({
-        event: MetaMetricsEventName.sendSwapQuoteError,
-        category: MetaMetricsEventCategory.Send,
-        properties: {
-          ...sendAnalytics,
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendSwapQuoteError,
+          category: MetaMetricsEventCategory.Send,
+          sensitiveProperties: {
+            ...sendAnalytics,
+          },
         },
-      });
+        { excludeMetaMetricsId: false },
+      );
     }
     // sendAnalytics should not result in the event refiring
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -227,20 +275,28 @@ export const SendPage = () => {
     event.preventDefault();
 
     setIsSubmitting(true);
-    await dispatch(signTransaction(history));
-    // prevents state update on unmounted component error
-    if (isSubmitting) {
-      setIsSubmitting(false);
+    setError(undefined);
+
+    try {
+      await dispatch(signTransaction(history));
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Transactions,
+        event: 'Complete',
+        properties: {
+          ...sendAnalytics,
+          action: isSwapAndSend ? 'Submit Immediately' : 'Edit Screen',
+          legacy_event: true,
+        },
+      });
+    } catch {
+      setError(TRANSACTION_ERRORED_EVENT);
+    } finally {
+      // prevents state update on unmounted component error
+      if (isSubmitting) {
+        setIsSubmitting(false);
+      }
     }
-    trackEvent({
-      category: MetaMetricsEventCategory.Transactions,
-      event: 'Complete',
-      properties: {
-        ...sendAnalytics,
-        action: isSwapAndSend ? 'Submit Immediately' : 'Edit Screen',
-        legacy_event: true,
-      },
-    });
   };
 
   // Submit button
@@ -256,13 +312,20 @@ export const SendPage = () => {
   const sendErrors = useSelector(getSendErrors);
   const isInvalidSendForm = useSelector(isSendFormInvalid);
 
+  const smartTransactions = useSelector(smartTransactionsListSelector);
+
+  const isSmartTransactionPending = smartTransactions?.find(
+    ({ status }) => status === SmartTransactionStatus.pending,
+  );
+
   const isGasTooLow =
     sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR &&
     sendErrors.amount !== INSUFFICIENT_FUNDS_ERROR;
 
   const submitDisabled =
     (isInvalidSendForm && !isGasTooLow) ||
-    requireContractAddressAcknowledgement;
+    requireContractAddressAcknowledgement ||
+    (isSwapAndSend && isSmartTransactionPending);
 
   const isSendFormShown =
     draftTransactionExists &&
@@ -276,16 +339,27 @@ export const SendPage = () => {
   useUpdateSwapsState();
 
   const onAmountChange = useCallback(
-    (newAmountRaw, newAmountFormatted) =>
-      dispatch(updateSendAmount(newAmountRaw, newAmountFormatted)),
+    (newAmountRaw, newAmountFormatted) => {
+      dispatch(updateSendAmount(newAmountRaw, newAmountFormatted));
+      setError(undefined);
+    },
     [dispatch],
   );
 
-  const tooltipTitle = isSwapAndSend ? t('sendSwapSubmissionWarning') : '';
+  let tooltipTitle = '';
+
+  if (isSwapAndSend) {
+    tooltipTitle = isSmartTransactionPending
+      ? t('isSigningOrSubmitting')
+      : t('sendSwapSubmissionWarning');
+  }
 
   return (
     <Page className="multichain-send-page">
       <Header
+        textProps={{
+          variant: TextVariant.headingSm,
+        }}
         startAccessory={
           <ButtonIcon
             size={ButtonIconSize.Sm}
@@ -295,16 +369,19 @@ export const SendPage = () => {
           />
         }
       >
-        {t('sendAToken')}
+        {t('send')}
       </Header>
       <Content>
         <SendPageAccountPicker />
         {isSendFormShown && (
           <AssetPickerAmount
+            error={error}
+            header={t('sendSelectSendAsset')}
             asset={transactionAsset}
             amount={amount}
             onAssetChange={handleSelectSendToken}
             onAmountChange={onAmountChange}
+            onClick={() => handleAssetPickerClick(false)}
           />
         )}
         <Box marginTop={6}>
@@ -315,6 +392,7 @@ export const SendPage = () => {
                 requireContractAddressAcknowledgement
               }
               onAssetChange={handleSelectToken}
+              onClick={() => handleAssetPickerClick(true)}
             />
           ) : (
             <SendPageRecipient />

@@ -20,6 +20,24 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Jest Integration: current file",
+      "program": "${workspaceFolder}/node_modules/.bin/jest",
+      "args": [
+        "${fileBasenameNoExtension}",
+        "--config",
+        "jest.integration.config.js",
+        "--testTimeout",
+        "30000"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "windows": {
+        "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Test E2E: current file",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "yarn",

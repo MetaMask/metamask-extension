@@ -1,18 +1,16 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+
 import { unapprovedTypedSignMsgV4 } from '../../../../../../test/data/confirmations/typed_sign';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import { getMockPersonalSignConfirmState } from '../../../../../../test/data/confirmations/helper';
+import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import * as ConfirmDucks from '../../../../../ducks/confirm/confirm';
 import * as usePreviousHooks from '../../../../../hooks/usePrevious';
 import ScrollToBottom from './scroll-to-bottom';
 
 const buttonSelector = '.confirm-scroll-to-bottom__button';
 
-const mockState = {
-  confirm: {
-    currentConfirmation: unapprovedTypedSignMsgV4,
-  },
-};
+const mockState = getMockPersonalSignConfirmState();
 
 const mockSetHasScrolledToBottom = jest.fn();
 
@@ -41,7 +39,7 @@ describe('ScrollToBottom', () => {
 
   describe('when content is not scrollable', () => {
     it('renders without button', () => {
-      const { container, getByText } = renderWithProvider(
+      const { container, getByText } = renderWithConfirmContextProvider(
         <ScrollToBottom>
           <div>foo</div>
           <div>bar</div>
@@ -56,7 +54,7 @@ describe('ScrollToBottom', () => {
 
     it('sets isScrollToBottomNeeded to false', () => {
       const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
-      renderWithProvider(
+      renderWithConfirmContextProvider(
         <ScrollToBottom>foobar</ScrollToBottom>,
         configureMockStore([])(mockState),
       );
@@ -73,7 +71,7 @@ describe('ScrollToBottom', () => {
     });
 
     it('renders with button', () => {
-      const { container, getByText } = renderWithProvider(
+      const { container, getByText } = renderWithConfirmContextProvider(
         <div>
           <ScrollToBottom>
             <div>foo</div>
@@ -90,7 +88,7 @@ describe('ScrollToBottom', () => {
 
     it('sets isScrollToBottomNeeded to true', () => {
       const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
-      renderWithProvider(
+      renderWithConfirmContextProvider(
         <ScrollToBottom>foobar</ScrollToBottom>,
         configureMockStore([])(mockState),
       );
@@ -109,7 +107,7 @@ describe('ScrollToBottom', () => {
         .spyOn(usePreviousHooks, 'usePrevious')
         .mockImplementation(() => unapprovedTypedSignMsgV4.id);
 
-      renderWithProvider(
+      renderWithConfirmContextProvider(
         <ScrollToBottom>foobar</ScrollToBottom>,
         configureMockStore([])(mockState),
       );
@@ -124,7 +122,7 @@ describe('ScrollToBottom', () => {
       const originalScrollTo = window.HTMLDivElement.prototype.scrollTo;
       window.HTMLDivElement.prototype.scrollTo = mockScrollTo;
 
-      renderWithProvider(
+      renderWithConfirmContextProvider(
         <ScrollToBottom>foobar</ScrollToBottom>,
         configureMockStore([])(mockState),
       );
@@ -135,7 +133,7 @@ describe('ScrollToBottom', () => {
     });
 
     it('resets setHasScrolledToBottom to false when the confirmation changes', () => {
-      renderWithProvider(
+      renderWithConfirmContextProvider(
         <ScrollToBottom>foobar</ScrollToBottom>,
         configureMockStore([])(mockState),
       );
@@ -149,7 +147,7 @@ describe('ScrollToBottom', () => {
       });
 
       it('hides the button', () => {
-        const { container } = renderWithProvider(
+        const { container } = renderWithConfirmContextProvider(
           <ScrollToBottom>foobar</ScrollToBottom>,
           configureMockStore([])(mockState),
         );
@@ -159,7 +157,7 @@ describe('ScrollToBottom', () => {
 
       it('sets isScrollToBottomNeeded to false', () => {
         const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
-        const { container } = renderWithProvider(
+        const { container } = renderWithConfirmContextProvider(
           <ScrollToBottom>foobar</ScrollToBottom>,
           configureMockStore([])(mockState),
         );

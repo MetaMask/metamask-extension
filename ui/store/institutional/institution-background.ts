@@ -19,8 +19,8 @@ export function showInteractiveReplacementTokenBanner({
   url,
   oldRefreshToken,
 }: {
-  url: string;
-  oldRefreshToken: string;
+  url?: string;
+  oldRefreshToken?: string;
 }) {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -169,19 +169,6 @@ export function mmiActionsFactory() {
       createAsyncAction(
         'getCustodianAccounts',
         [token, envName, custody, getNonImportedAccounts],
-        forceUpdateMetamaskState,
-        'Getting custodian accounts...',
-      ),
-    // TODO (Bernardo) - It doesn't look like this is being used
-    getCustodianAccountsByAddress: (
-      jwt: string,
-      envName: string,
-      address: string,
-      custody: string,
-    ) =>
-      createAsyncAction(
-        'getCustodianAccountsByAddress',
-        [jwt, envName, address, custody],
         forceUpdateMetamaskState,
         'Getting custodian accounts...',
       ),

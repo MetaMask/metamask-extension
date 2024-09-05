@@ -12,6 +12,8 @@ export const methodsRequiringNetworkSwitch = [
   'wallet_switchEthereumChain',
   'wallet_addEthereumChain',
   'wallet_watchAsset',
+  'eth_signTypedData',
+  'eth_signTypedData_v3',
   'eth_signTypedData_v4',
   'personal_sign',
 ] as const;
@@ -26,7 +28,6 @@ export const methodsWithConfirmation = [
   'wallet_requestPermissions',
   'wallet_requestSnaps',
   'eth_decrypt',
-  'eth_sign',
   'eth_requestAccounts',
   'eth_getEncryptionPublicKey',
 ];

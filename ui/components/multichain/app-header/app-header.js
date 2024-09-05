@@ -40,13 +40,8 @@ export const AppHeader = ({ location }) => {
   const menuRef = useRef(null);
   const isUnlocked = useSelector(getIsUnlocked);
 
-  const {
-    chainId,
-    // Used for network icon / dropdown
-    network: currentNetwork,
-    // Used for network icon / dropdown
-    isEvmNetwork,
-  } = useSelector(getMultichainNetwork);
+  const multichainNetwork = useSelector(getMultichainNetwork);
+  const { chainId, isEvmNetwork } = multichainNetwork;
 
   const dispatch = useDispatch();
 
@@ -135,16 +130,21 @@ export const AppHeader = ({ location }) => {
       >
         <>
           <Box
-            className={classnames('multichain-app-header__contents', {
-              'multichain-app-header-shadow': isUnlocked && !popupStatus,
-            })}
+            className={classnames(
+              isUnlocked
+                ? 'multichain-app-header__contents'
+                : 'multichain-app-header__lock-contents',
+              {
+                'multichain-app-header-shadow': isUnlocked && !popupStatus,
+              },
+            )}
             {...(isUnlocked ? unlockedStyling : lockStyling)}
           >
             {isUnlocked ? (
               <AppHeaderUnlockedContent
                 popupStatus={popupStatus}
                 isEvmNetwork={isEvmNetwork}
-                currentNetwork={currentNetwork}
+                currentNetwork={multichainNetwork}
                 networkOpenCallback={networkOpenCallback}
                 disableNetworkPicker={disableNetworkPicker}
                 disableAccountPicker={disableAccountPicker}
@@ -152,7 +152,7 @@ export const AppHeader = ({ location }) => {
               />
             ) : (
               <AppHeaderLockedContent
-                currentNetwork={currentNetwork}
+                currentNetwork={multichainNetwork}
                 networkOpenCallback={networkOpenCallback}
               />
             )}

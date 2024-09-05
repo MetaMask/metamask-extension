@@ -85,15 +85,24 @@ export function NotificationsSettingsAllowNotifications({
       await disableNotifications();
       trackEvent({
         category: MetaMetricsEventCategory.NotificationSettings,
-        event: MetaMetricsEventName.DisablingNotifications,
+        event: MetaMetricsEventName.NotificationsSettingsUpdated,
+        properties: {
+          settings_type: 'notifications',
+          was_profile_syncing_on: isProfileSyncingEnabled,
+          old_value: true,
+          new_value: false,
+        },
       });
     } else {
       await enableNotifications();
       trackEvent({
         category: MetaMetricsEventCategory.NotificationSettings,
-        event: MetaMetricsEventName.EnablingNotifications,
+        event: MetaMetricsEventName.NotificationsSettingsUpdated,
         properties: {
-          isProfileSyncingEnabled,
+          settings_type: 'notifications',
+          was_profile_syncing_on: isProfileSyncingEnabled,
+          old_value: false,
+          new_value: true,
         },
       });
     }

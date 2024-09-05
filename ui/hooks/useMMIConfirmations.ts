@@ -1,12 +1,17 @@
-import { TransactionType } from '@metamask/transaction-controller';
-import { useSelector } from 'react-redux';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 
-import { currentConfirmationSelector } from '../pages/confirmations/selectors';
+import { useConfirmContext } from '../pages/confirmations/context/confirm';
 import { useMMICustodySignMessage } from './useMMICustodySignMessage';
+import { useMMICustodySendTransaction } from './useMMICustodySendTransaction';
 
 export function useMMIConfirmations() {
   const { custodySignFn } = useMMICustodySignMessage();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { custodyTransactionFn } = useMMICustodySendTransaction();
+
+  const { currentConfirmation } = useConfirmContext();
 
   return {
     mmiSubmitDisabled:
@@ -15,5 +20,7 @@ export function useMMIConfirmations() {
         currentConfirmation.type === TransactionType.signTypedData) &&
       Boolean(currentConfirmation?.custodyId),
     mmiOnSignCallback: () => custodySignFn(currentConfirmation),
+    mmiOnTransactionCallback: () =>
+      custodyTransactionFn(currentConfirmation as TransactionMeta),
   };
 }

@@ -14,6 +14,7 @@ import {
   getTheme,
   getSelectedInternalAccount,
 } from '../../../selectors';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import SettingsTab from './settings-tab.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -21,12 +22,8 @@ const mapStateToProps = (state, ownProps) => {
     appState: { warning },
     metamask,
   } = state;
-  const {
-    currentCurrency,
-    providerConfig: { ticker: nativeCurrency },
-    useBlockie,
-    currentLocale,
-  } = metamask;
+  const { currentCurrency, useBlockie, currentLocale } = metamask;
+  const { ticker: nativeCurrency } = getProviderConfig(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { useNativeCurrencyAsPrimaryCurrency, hideZeroBalanceTokens } =
     getPreferences(state);

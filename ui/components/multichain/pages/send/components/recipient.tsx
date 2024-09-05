@@ -54,6 +54,7 @@ export const SendPageRecipient = () => {
     resolvingSnap?: string;
     protocol: string;
     addressBookEntryName?: string;
+    domainName: string;
   };
 
   const onClick = (
@@ -66,14 +67,17 @@ export const SendPageRecipient = () => {
         `sendFlow - User clicked recipient from ${type}. address: ${address}, nickname ${nickname}`,
       ),
     );
-    trackEvent({
-      event: MetaMetricsEventName.sendRecipientSelected,
-      category: MetaMetricsEventCategory.Send,
-      properties: {
-        location: 'send page recipient screen',
-        inputType: type,
+    trackEvent(
+      {
+        event: MetaMetricsEventName.sendRecipientSelected,
+        category: MetaMetricsEventCategory.Send,
+        properties: {
+          location: 'send page recipient screen',
+          inputType: type,
+        },
       },
-    });
+      { excludeMetaMetricsId: false },
+    );
     dispatch(updateRecipient({ address, nickname }));
     dispatch(updateRecipientUserInput(address));
   };
@@ -90,18 +94,23 @@ export const SendPageRecipient = () => {
     );
   } else if (domainResolutions?.length > 0 && !recipient.error) {
     contents = domainResolutions.map((domainResolution: DomainResolution) => {
-      const { resolvedAddress, resolvingSnap, addressBookEntryName, protocol } =
-        domainResolution;
+      const {
+        resolvedAddress,
+        resolvingSnap,
+        addressBookEntryName,
+        protocol,
+        domainName,
+      } = domainResolution;
       return (
         <DomainInputResolutionCell
           key={`${resolvedAddress}${resolvingSnap}${protocol}`}
           domainType={domainType}
           address={resolvedAddress}
-          domainName={addressBookEntryName ?? userInput}
+          domainName={addressBookEntryName ?? domainName}
           onClick={() =>
             onClick(
               resolvedAddress,
-              addressBookEntryName ?? userInput,
+              addressBookEntryName ?? domainName,
               'Domain resolution',
             )
           }

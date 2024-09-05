@@ -1,11 +1,11 @@
 import React, { useContext, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import type { Notification } from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import { Box } from '../../components/component-library';
 import {
   BlockSize,
@@ -18,6 +18,9 @@ import {
   NotificationComponents,
   hasNotificationComponents,
 } from './notification-components';
+
+type Notification = NotificationServicesController.Types.INotification;
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 export function NotificationsListItem({
   notification,
@@ -32,11 +35,14 @@ export function NotificationsListItem({
   const handleNotificationClick = useCallback(() => {
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationItemClicked,
+      event: MetaMetricsEventName.NotificationClicked,
       properties: {
-        notificationId: notification.id,
-        notificationType: notification.type,
-        notificationIsRead: notification.isRead,
+        notification_id: notification.id,
+        notification_type: notification.type,
+        ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT && {
+          chain_id: notification?.chain_id,
+        }),
+        previously_read: notification.isRead,
       },
     });
     markNotificationAsRead([
@@ -59,7 +65,6 @@ export function NotificationsListItem({
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       width={BlockSize.Full}
-      onClick={handleNotificationClick}
     >
       <ncs.item notification={notification} onClick={handleNotificationClick} />
     </Box>

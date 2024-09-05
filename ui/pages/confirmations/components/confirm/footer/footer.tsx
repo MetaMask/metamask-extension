@@ -1,31 +1,44 @@
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { TransactionMeta } from '@metamask/transaction-controller';
+///: END:ONLY_INCLUDE_IF
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
+import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
 import {
   Button,
   ButtonSize,
   ButtonVariant,
   IconName,
 } from '../../../../../components/component-library';
-import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
-import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import {
+  doesAddressRequireLedgerHidConnection,
+  getCustomNonceValue,
+} from '../../../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useMMIConfirmations } from '../../../../../hooks/useMMIConfirmations';
 ///: END:ONLY_INCLUDE_IF
+import useAlerts from '../../../../../hooks/useAlerts';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  updateAndApproveTx,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../../store/actions';
-import useAlerts from '../../../../../hooks/useAlerts';
 import { confirmSelector } from '../../../selectors';
+import { REDESIGN_DEV_TRANSACTION_TYPES } from '../../../utils';
+import { useConfirmContext } from '../../../context/confirm';
 import { getConfirmationSender } from '../utils';
+import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 
-function getIconName(hasUnconfirmedAlerts: boolean): IconName {
-  return hasUnconfirmedAlerts ? IconName.SecuritySearch : IconName.Danger;
-}
+export type OnCancelHandler = ({
+  location,
+}: {
+  location: MetaMetricsEventLocation;
+}) => void;
 
 const ConfirmButton = ({
   alertOwnerId = '',
@@ -36,14 +49,14 @@ const ConfirmButton = ({
   alertOwnerId?: string;
   disabled: boolean;
   onSubmit: () => void;
-  onCancel: () => void;
+  onCancel: OnCancelHandler;
 }) => {
   const t = useI18nContext();
 
   const [confirmModalVisible, setConfirmModalVisible] =
     useState<boolean>(false);
 
-  const { alerts, dangerAlerts, hasDangerAlerts, hasUnconfirmedDangerAlerts } =
+  const { dangerAlerts, hasDangerAlerts, hasUnconfirmedDangerAlerts } =
     useAlerts(alertOwnerId);
 
   const handleCloseConfirmModal = useCallback(() => {
@@ -58,26 +71,35 @@ const ConfirmButton = ({
     <>
       {confirmModalVisible && (
         <ConfirmAlertModal
-          alertKey={alerts[0]?.key}
           ownerId={alertOwnerId}
           onClose={handleCloseConfirmModal}
           onCancel={onCancel}
           onSubmit={onSubmit}
         />
       )}
-      <Button
-        block
-        data-testid="confirm-footer-button"
-        startIconName={
-          hasDangerAlerts ? getIconName(hasUnconfirmedDangerAlerts) : undefined
-        }
-        onClick={hasDangerAlerts ? handleOpenConfirmModal : onSubmit}
-        danger={hasDangerAlerts}
-        size={ButtonSize.Lg}
-        disabled={hasUnconfirmedDangerAlerts ? false : disabled}
-      >
-        {dangerAlerts?.length > 1 ? t('reviewAlerts') : t('confirm')}
-      </Button>
+      {hasDangerAlerts ? (
+        <Button
+          block
+          danger
+          data-testid="confirm-footer-button"
+          disabled={hasUnconfirmedDangerAlerts ? false : disabled}
+          onClick={handleOpenConfirmModal}
+          size={ButtonSize.Lg}
+          startIconName={IconName.Danger}
+        >
+          {dangerAlerts?.length > 1 ? t('reviewAlerts') : t('confirm')}
+        </Button>
+      ) : (
+        <Button
+          block
+          data-testid="confirm-footer-button"
+          disabled={disabled}
+          onClick={onSubmit}
+          size={ButtonSize.Lg}
+        >
+          {t('confirm')}
+        </Button>
+      )}
     </>
   );
 };
@@ -86,12 +108,15 @@ const Footer = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const confirm = useSelector(confirmSelector);
+  const customNonceValue = useSelector(getCustomNonceValue);
 
-  const { currentConfirmation, isScrollToBottomNeeded } = confirm;
+  const { currentConfirmation } = useConfirmContext();
+  const { isScrollToBottomNeeded } = confirm;
   const { from } = getConfirmationSender(currentConfirmation);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const { mmiOnSignCallback, mmiSubmitDisabled } = useMMIConfirmations();
+  const { mmiOnTransactionCallback, mmiOnSignCallback, mmiSubmitDisabled } =
+    useMMIConfirmations();
   ///: END:ONLY_INCLUDE_IF
 
   const hardwareWalletRequiresConnection = useSelector((state) => {
@@ -101,37 +126,68 @@ const Footer = () => {
     return false;
   });
 
-  const onCancel = useCallback(() => {
-    if (!currentConfirmation) {
-      return;
-    }
+  const onCancel = useCallback(
+    ({ location }: { location?: MetaMetricsEventLocation }) => {
+      if (!currentConfirmation) {
+        return;
+      }
 
-    dispatch(
-      rejectPendingApproval(
-        currentConfirmation.id,
-        serializeError(ethErrors.provider.userRejectedRequest()),
-      ),
-    );
-  }, [currentConfirmation]);
+      const error = ethErrors.provider.userRejectedRequest();
+      error.data = { location };
+
+      dispatch(
+        rejectPendingApproval(currentConfirmation.id, serializeError(error)),
+      );
+    },
+    [currentConfirmation],
+  );
 
   const onSubmit = useCallback(() => {
     if (!currentConfirmation) {
       return;
     }
 
-    dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
+    const isTransactionConfirmation = REDESIGN_DEV_TRANSACTION_TYPES.find(
+      (type) => type === currentConfirmation?.type,
+    );
+    if (isTransactionConfirmation) {
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+      const mergeTxDataWithNonce = (transactionData: TransactionMeta) =>
+        customNonceValue
+          ? { ...transactionData, customNonceValue }
+          : transactionData;
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    mmiOnSignCallback();
-    ///: END:ONLY_INCLUDE_IF
-  }, [currentConfirmation]);
+      const updatedTx = mergeTxDataWithNonce(
+        currentConfirmation as TransactionMeta,
+      );
+      ///: END:ONLY_INCLUDE_IF
+
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      mmiOnTransactionCallback();
+      ///: END:ONLY_INCLUDE_IF
+
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+      dispatch(updateAndApproveTx(updatedTx, true, ''));
+      ///: END:ONLY_INCLUDE_IF
+    } else {
+      dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
+
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      mmiOnSignCallback();
+      ///: END:ONLY_INCLUDE_IF
+    }
+  }, [currentConfirmation, customNonceValue]);
+
+  const onFooterCancel = useCallback(() => {
+    onCancel({ location: MetaMetricsEventLocation.Confirmation });
+  }, [currentConfirmation, onCancel]);
 
   return (
     <PageFooter className="confirm-footer_page-footer">
       <Button
         block
         data-testid="confirm-footer-cancel-button"
-        onClick={onCancel}
+        onClick={onFooterCancel}
         size={ButtonSize.Lg}
         variant={ButtonVariant.Secondary}
       >
@@ -139,7 +195,7 @@ const Footer = () => {
       </Button>
       <ConfirmButton
         alertOwnerId={currentConfirmation?.id}
-        onSubmit={onSubmit}
+        onSubmit={() => onSubmit()}
         disabled={
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           mmiSubmitDisabled ||

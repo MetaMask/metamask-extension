@@ -1,6 +1,7 @@
 const {
   METAMASK_STALELIST_URL,
   METAMASK_HOTLIST_DIFF_URL,
+  C2_DOMAIN_BLOCKLIST_URL,
   ListNames,
 } = require('@metamask/phishing-controller');
 
@@ -10,16 +11,15 @@ const {
  * @enum {BlockProvider}
  * @readonly
  * @property {string} MetaMask - The name of the MetaMask block provider.
- * @property {string} PhishFort - The name of the PhishFort block provider.
  */
 const BlockProvider = {
   MetaMask: 'metamask',
-  PhishFort: 'phishfort',
 };
 
 module.exports = {
   METAMASK_HOTLIST_DIFF_URL,
   METAMASK_STALELIST_URL,
+  C2_DOMAIN_BLOCKLIST_URL,
   BlockProvider,
   ListNames,
 };

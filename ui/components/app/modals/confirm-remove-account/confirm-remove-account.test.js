@@ -1,34 +1,67 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
-import { EthAccountType } from '@metamask/keyring-api';
+import { BtcAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
+import { createMockInternalAccount } from '../../../../../test/jest/mocks';
+import { addressSummary } from '../../../../helpers/utils/util';
+import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
+import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import ConfirmRemoveAccount from '.';
+
+global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
+
+const mockAccount = createMockInternalAccount({
+  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+  name: 'Account 1',
+  address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+});
+
+const mockNonEvmAccount = createMockInternalAccount({
+  id: 'e3a1c914-0bf3-41b3-b569-7c00185ad982',
+  name: 'Btc account',
+  address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+  type: BtcAccountType.P2wpkh,
+});
+
+const mockEvmNetwork = {
+  nickname: 'network',
+  isEvmNetwork: true,
+  chainId: 'eip155:99',
+  network: {
+    type: 'rpc',
+    chainId: '0x99',
+    rpcUrl: 'https://rpc.network',
+    rpcPrefs: {
+      blockExplorerUrl: 'https://explorer.network',
+    },
+  },
+};
+
+const mockNonEvmNetwork = {
+  nickname: 'network',
+  isEvmNetwork: true,
+  chainId: MultichainNetworks.BITCOIN,
+  network: {
+    chainId: MultichainNetworks.BITCOIN,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://blockstream.info',
+    },
+  },
+};
 
 describe('Confirm Remove Account', () => {
   const state = {
     metamask: {
-      providerConfig: {
-        chainId: '0x99',
-      },
+      completedOnboarding: true,
+      ...mockNetworkState({ chainId: '0x99' }),
       internalAccounts: {
         accounts: {
-          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-            metadata: {
-              name: 'Account 1',
-              keyring: {
-                type: 'HD Key Tree',
-              },
-            },
-            options: {},
-            methods: ETH_EOA_METHODS,
-            type: EthAccountType.Eoa,
-          },
+          [mockAccount.id]: mockAccount,
+          [mockNonEvmAccount.id]: mockNonEvmAccount,
         },
-        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        selectedAccount: mockNonEvmAccount,
       },
     },
   };
@@ -36,21 +69,8 @@ describe('Confirm Remove Account', () => {
   const props = {
     hideModal: jest.fn(),
     removeAccount: jest.fn().mockResolvedValue(),
-    account: {
-      address: '0x0',
-      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-      metadata: {
-        name: 'Account 1',
-        keyring: {
-          type: 'HD Key Tree',
-        },
-      },
-      options: {},
-      mmethods: ETH_EOA_METHODS,
-      type: EthAccountType.Eoa,
-    },
-    chainId: '0x99',
-    rpcPrefs: {},
+    account: mockAccount,
+    network: mockEvmNetwork,
   };
 
   const mockStore = configureMockStore()(state);
@@ -97,5 +117,40 @@ describe('Confirm Remove Account', () => {
     fireEvent.click(queryByTestId('modal-header-close'));
 
     expect(props.hideModal).toHaveBeenCalled();
+  });
+
+  it('should display non-EVM accounts and explorer link leads to non-EVM explorer', async () => {
+    const updatedProps = {
+      ...props,
+      account: mockNonEvmAccount,
+      network: mockNonEvmNetwork,
+    };
+    const expectedAddressSummary = addressSummary(
+      mockNonEvmAccount.address,
+      4,
+      4,
+      false,
+    );
+
+    const expectedAccountLink = getMultichainAccountUrl(
+      mockNonEvmAccount.address,
+      mockNonEvmNetwork,
+    );
+
+    const { getByText, getByTestId } = renderWithProvider(
+      <ConfirmRemoveAccount.WrappedComponent {...updatedProps} />,
+      mockStore,
+    );
+
+    expect(getByText(expectedAddressSummary)).toBeInTheDocument();
+
+    const explorerLink = getByTestId('explorer-link');
+    expect(explorerLink).toBeInTheDocument();
+
+    fireEvent.click(explorerLink);
+
+    expect(global.platform.openTab).toHaveBeenCalledWith({
+      url: expectedAccountLink,
+    });
   });
 });

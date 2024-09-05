@@ -10,7 +10,7 @@
       "512": "images/icon-512.png"
     },
     "default_title": "MetaMask",
-    "default_popup": "popup.html"
+    "default_popup": "popup-init.html"
   },
   "author": "https://metamask.io",
   "background": {
@@ -75,5 +75,8 @@
     "webRequest",
     "offscreen"
   ],
+  "sandbox": {
+    "pages": ["snaps/index.html"]
+  },
   "short_name": "__MSG_appName__"
 }

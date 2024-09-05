@@ -61,10 +61,11 @@ export default function TurnOnMetamaskNotifications() {
     setButtonState(true);
     await createNotifications();
     trackEvent({
-      category: MetaMetricsEventCategory.EnableNotifications,
-      event: MetaMetricsEventName.EnablingNotifications,
+      category: MetaMetricsEventCategory.NotificationsActivationFlow,
+      event: MetaMetricsEventName.NotificationsActivated,
       properties: {
-        isProfileSyncingEnabled,
+        is_profile_syncing_enabled: true,
+        action_type: 'activated',
       },
     });
   };
@@ -72,10 +73,11 @@ export default function TurnOnMetamaskNotifications() {
   const handleHideModal = () => {
     hideModal();
     trackEvent({
-      category: MetaMetricsEventCategory.EnableNotifications,
-      event: MetaMetricsEventName.DismissEnablingNotificationsFlow,
+      category: MetaMetricsEventCategory.NotificationsActivationFlow,
+      event: MetaMetricsEventName.NotificationsActivated,
       properties: {
-        isProfileSyncingEnabled,
+        is_profile_syncing_enabled: isProfileSyncingEnabled,
+        action_type: 'dismissed',
       },
     });
   };

@@ -6,8 +6,11 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
     class="mm-box mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
   >
     <div
-      class="mm-box multichain-account-list-item multichain-account-list-item--clickable mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
+      class="mm-box multichain-account-list-item multichain-account-list-item--selected multichain-account-list-item--clickable mm-box--padding-4 mm-box--display-flex mm-box--background-color-primary-muted"
     >
+      <div
+        class="mm-box multichain-account-list-item__selected-indicator mm-box--background-color-primary-default mm-box--rounded-pill"
+      />
       <div
         class="mm-box mm-box--display-flex mm-box--sm:display-none"
         data-testid="account-list-item-badge"
@@ -240,17 +243,18 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                title="$880.18 USD"
+                data-testid="first-currency-display"
+                title="966.988 ETH"
               >
                 <span
                   class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                 >
-                  $880.18
+                  966.988
                 </span>
                 <span
                   class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                 >
-                  USD
+                  ETH
                 </span>
               </div>
             </div>
@@ -264,6 +268,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+              data-testid="account-list-address"
             >
               0x0DCD5...3E7bc
             </p>
@@ -281,6 +286,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="second-currency-display"
                 title="966.988 ETH"
               >
                 <span
@@ -534,17 +540,18 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                title="$0.00 USD"
+                data-testid="first-currency-display"
+                title="0 ETH"
               >
                 <span
                   class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                 >
-                  $0.00
+                  0
                 </span>
                 <span
                   class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                 >
-                  USD
+                  ETH
                 </span>
               </div>
             </div>
@@ -558,6 +565,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+              data-testid="account-list-address"
             >
               0xEC1Ad...9251B
             </p>
@@ -575,6 +583,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="second-currency-display"
                 title="0 ETH"
               >
                 <span
@@ -828,17 +837,18 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                title="$0.00 USD"
+                data-testid="first-currency-display"
+                title="0 ETH"
               >
                 <span
                   class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                 >
-                  $0.00
+                  0
                 </span>
                 <span
                   class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                 >
-                  USD
+                  ETH
                 </span>
               </div>
             </div>
@@ -852,6 +862,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+              data-testid="account-list-address"
             >
               0xc42ED...D8813
             </p>
@@ -869,6 +880,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="second-currency-display"
                 title="0 ETH"
               >
                 <span
@@ -1131,17 +1143,18 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                title="$0.00 USD"
+                data-testid="first-currency-display"
+                title="0 ETH"
               >
                 <span
                   class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                 >
-                  $0.00
+                  0
                 </span>
                 <span
                   class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                 >
-                  USD
+                  ETH
                 </span>
               </div>
             </div>
@@ -1155,6 +1168,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+              data-testid="account-list-address"
             >
               0xeB9e6...64823
             </p>
@@ -1172,6 +1186,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="second-currency-display"
                 title="0 ETH"
               >
                 <span
@@ -1425,17 +1440,18 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                title="$0.00 USD"
+                data-testid="first-currency-display"
+                title="0 ETH"
               >
                 <span
                   class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                 >
-                  $0.00
+                  0
                 </span>
                 <span
                   class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                 >
-                  USD
+                  ETH
                 </span>
               </div>
             </div>
@@ -1449,6 +1465,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+              data-testid="account-list-address"
             >
               0xb5526...FEe5D
             </p>
@@ -1466,6 +1483,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="second-currency-display"
                 title="0 ETH"
               >
                 <span
@@ -1732,17 +1750,18 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                title="$0.00 USD"
+                data-testid="first-currency-display"
+                title="0 ETH"
               >
                 <span
                   class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                 >
-                  $0.00
+                  0
                 </span>
                 <span
                   class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                 >
-                  USD
+                  ETH
                 </span>
               </div>
             </div>
@@ -1756,6 +1775,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+              data-testid="account-list-address"
             >
               0xca8f1...Cf281
             </p>
@@ -1773,6 +1793,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="second-currency-display"
                 title="0 ETH"
               >
                 <span

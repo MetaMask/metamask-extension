@@ -3,35 +3,51 @@ import configureMockStore from 'redux-mock-store';
 
 import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import {
-  CHAIN_IDS,
-  CURRENCY_SYMBOLS,
-  NETWORK_TYPES,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { TokenListItem } from '.';
 
 const state = {
   metamask: {
-    providerConfig: {
-      ticker: CURRENCY_SYMBOLS.ETH,
-      nickname: '',
-      chainId: CHAIN_IDS.MAINNET,
-      type: NETWORK_TYPES.MAINNET,
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     useTokenDetection: false,
     currencyRates: {},
     preferences: {
       useNativeCurrencyAsPrimaryCurrency: false,
+    },
+    internalAccounts: {
+      accounts: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            name: 'Test Account',
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+        },
+      },
+      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
   },
 };
 
 let openTabSpy;
 
+jest.mock('../../../ducks/locale/locale', () => ({
+  getIntlLocale: jest.fn(),
+}));
+
+const mockGetIntlLocale = getIntlLocale;
+
 describe('TokenListItem', () => {
   beforeAll(() => {
     global.platform = { openTab: jest.fn() };
     openTabSpy = jest.spyOn(global.platform, 'openTab');
+    mockGetIntlLocale.mockReturnValue('en-US');
   });
   const props = {
     onClick: jest.fn(),
@@ -78,6 +94,7 @@ describe('TokenListItem', () => {
       primary: '11.9751 ETH',
       isNativeCurrency: true,
       isOriginalTokenSymbol: false,
+      showPercentage: true,
     };
     const { getByTestId, getByText } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
