@@ -8,6 +8,7 @@ import {
   Icon,
   IconName,
   IconSize,
+  PolymorphicRef,
   Text,
 } from '../../../../components/component-library';
 import {
@@ -29,7 +30,12 @@ import DataDeletionErrorModal from '../../../../components/app/data-deletion-err
 import { formatDate } from '../../../../helpers/utils/util';
 import { DeleteRegulationStatus } from '../../../../../shared/constants/metametrics';
 
-const DeleteMetaMetricsDataButton = () => {
+const DeleteMetaMetricsDataButton = ({
+  wrapperRef,
+}: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  wrapperRef?: PolymorphicRef<any>;
+}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -73,6 +79,7 @@ const DeleteMetaMetricsDataButton = () => {
   return (
     <>
       <Box
+        ref={wrapperRef}
         className="settings-page__content-row"
         data-testid="delete-metametrics-data-button"
         display={Display.Flex}

@@ -967,7 +967,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[18]}
+        ref={this.settingsRefs[17]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -1228,7 +1228,7 @@ export default class SecurityTab extends PureComponent {
             setDataCollectionForMarketing={setDataCollectionForMarketing}
           />
           {this.renderDataCollectionForMarketing()}
-          <DeleteMetametricsDataButton />
+          <DeleteMetametricsDataButton wrapperRef={this.settingsRefs[18]} />
         </div>
       </div>
     );
