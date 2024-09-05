@@ -4499,6 +4499,10 @@
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
   },
+  "review": {
+    "message": "Review",
+    "description": "Review button for the multichain send flow."
+  },
   "reviewAlerts": {
     "message": "Review alerts"
   },
@@ -4536,6 +4540,10 @@
   },
   "safeTransferFrom": {
     "message": "Safe transfer from"
+  },
+  "satProtection": {
+    "message": "Sat protection included",
+    "description": "Sat protection is a Bitcoin specific feature that protects against a user inadvertently sending a satoshi with an inscription."
   },
   "save": {
     "message": "Save"

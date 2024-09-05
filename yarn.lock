@@ -26190,6 +26190,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^11.0.0"
     "@metamask/snaps-sdk": "npm:^6.3.0"
     "@metamask/snaps-utils": "npm:^8.0.1"
+    "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:^8.4.0"
     "@metamask/transaction-controller": "npm:^35.2.0"
