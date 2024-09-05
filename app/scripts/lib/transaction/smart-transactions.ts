@@ -25,7 +25,7 @@ import {
 } from '@metamask/approval-controller';
 
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
-import { CANCEL_GAS_LIMIT_DEC } from '../../../../shared/constants/smartTransactions';
+import { CANCEL_GAS_LIMIT_DEC } from '../../../../ui/pages/smart-transactions/constants';
 import {
   SMART_TRANSACTION_CONFIRMATION_TYPES,
   ORIGIN_METAMASK,

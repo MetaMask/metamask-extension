@@ -24,7 +24,7 @@ import {
   FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
   FALLBACK_SMART_TRANSACTIONS_DEADLINE,
-} from '../../../../shared/constants/smartTransactions';
+} from '../../../../ui/pages/smart-transactions/constants';
 import {
   DEFAULT_ERC20_APPROVE_GAS,
   QUOTES_EXPIRED_ERROR,

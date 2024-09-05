@@ -1,6 +1,6 @@
-import { isProduction } from '../modules/environment';
-import { getAllowedSmartTransactionsChainIds } from './smartTransactions';
-import { CHAIN_IDS } from './network';
+import { isProduction } from '../../../shared/modules/environment';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { getAllowedSmartTransactionsChainIds } from './constants';
 
 jest.mock('../modules/environment', () => ({
   isProduction: jest.fn(() => false), // Initially mock isProduction to return false

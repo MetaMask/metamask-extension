@@ -35,7 +35,7 @@ import { BaseUrl } from '../../../../shared/constants/urls';
 import {
   FALLBACK_SMART_TRANSACTIONS_EXPECTED_DEADLINE,
   FALLBACK_SMART_TRANSACTIONS_MAX_DEADLINE,
-} from '../../../../shared/constants/smartTransactions';
+} from '../constants';
 import { hideLoadingIndication } from '../../../store/actions';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { SimulationDetails } from '../../confirmations/components/simulation-details';

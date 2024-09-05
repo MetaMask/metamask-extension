@@ -171,7 +171,7 @@ import {
   NETWORK_TYPES,
   NetworkStatus,
 } from '../../shared/constants/network';
-import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
+import { getAllowedSmartTransactionsChainIds } from '../../ui/pages/smart-transactions/constants';
 
 import {
   HardwareDeviceNames,

@@ -96,7 +96,7 @@ import {
 } from '../../helpers/constants/design-system';
 import useUpdateSwapsState from './hooks/useUpdateSwapsState';
 import AwaitingSignatures from './awaiting-signatures';
-import SmartTransactionStatus from './smart-transaction-status';
+import SmartTransactionStatus from '../smart-transactions/swap-smart-transaction-status';
 import AwaitingSwap from './awaiting-swap';
 import LoadingQuote from './loading-swaps-quotes';
 import BuildQuote from './build-quote';

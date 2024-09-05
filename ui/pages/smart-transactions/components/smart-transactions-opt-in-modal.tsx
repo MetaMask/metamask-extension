@@ -27,9 +27,9 @@ import {
   ButtonLinkSize,
   Icon,
   IconName,
-} from '../../component-library';
+} from '../../../components/component-library';
 import { setSmartTransactionsOptInStatus } from '../../../store/actions';
-import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
+import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../constants';
 
 export type SmartTransactionsOptInModalProps = {
   isOpen: boolean;
