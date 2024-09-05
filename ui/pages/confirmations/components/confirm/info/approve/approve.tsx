@@ -24,7 +24,7 @@ import {
   TextAlign,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../../../selectors';
+import { useConfirmContext } from '../../../../context/confirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
@@ -41,9 +41,9 @@ import { useIsNFT } from './hooks/use-is-nft';
 const ApproveStaticSimulation = () => {
   const t = useI18nContext();
 
-  const transactionMeta = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
+    currentConfirmation: TransactionMeta;
+  };
 
   const { decimals } = useAssetDetails(
     transactionMeta.txParams.to,
@@ -121,9 +121,9 @@ const SpendingCapGroup = ({
 }) => {
   const t = useI18nContext();
 
-  const transactionMeta = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
+    currentConfirmation: TransactionMeta;
+  };
 
   const { tokenAmount, formattedTokenNum, value } = useApproveTokenSimulation(
     transactionMeta,
@@ -171,9 +171,9 @@ const SpendingCapGroup = ({
 const SpendingCap = () => {
   const t = useI18nContext();
 
-  const transactionMeta = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
+    currentConfirmation: TransactionMeta;
+  };
 
   const { userBalance, tokenSymbol, decimals } = useAssetDetails(
     transactionMeta.txParams.to,
@@ -209,9 +209,9 @@ const SpendingCap = () => {
 };
 
 const ApproveInfo = () => {
-  const transactionMeta = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
+    currentConfirmation: TransactionMeta;
+  };
 
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
