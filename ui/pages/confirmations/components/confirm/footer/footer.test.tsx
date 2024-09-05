@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
@@ -12,11 +13,11 @@ import {
 import mockState from '../../../../../../test/data/mock-state.json';
 import { fireEvent } from '../../../../../../test/jest';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
 import * as MMIConfirmations from '../../../../../hooks/useMMIConfirmations';
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
 import { SignatureRequestType } from '../../../types/confirm';
 import Footer from './footer';
 
@@ -147,6 +148,7 @@ describe('ConfirmFooter', () => {
       .spyOn(MMIConfirmations, 'useMMIConfirmations')
       .mockImplementation(() => ({
         mmiOnSignCallback: () => Promise.resolve(),
+        mmiOnTransactionCallback: () => Promise.resolve(),
         mmiSubmitDisabled: true,
       }));
     const { getAllByRole } = render();
@@ -160,6 +162,7 @@ describe('ConfirmFooter', () => {
       .spyOn(MMIConfirmations, 'useMMIConfirmations')
       .mockImplementation(() => ({
         mmiOnSignCallback: mockFn,
+        mmiOnTransactionCallback: mockFn,
         mmiSubmitDisabled: false,
       }));
     const { getAllByRole } = render();

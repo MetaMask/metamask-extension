@@ -1,17 +1,19 @@
 import React, { createContext, useContext, ReactNode, useMemo } from 'react';
 
+type TrackFunctionType = (alertKey: string) => void;
+
 const AlertMetricsContext = createContext<{
-  trackAlertActionClicked: (alertKey: string) => void;
-  trackAlertRender: (alertKey: string) => void;
-  trackInlineAlertClicked: (alertKey: string) => void;
+  trackAlertActionClicked: TrackFunctionType;
+  trackAlertRender: TrackFunctionType;
+  trackInlineAlertClicked: TrackFunctionType;
 } | null>(null);
 
 type AlertMetricsProps = {
   children: ReactNode;
   metrics: {
-    trackAlertActionClicked: (alertKey: string) => void;
-    trackAlertRender: (alertKey: string) => void;
-    trackInlineAlertClicked: (alertKey: string) => void;
+    trackAlertActionClicked: TrackFunctionType;
+    trackAlertRender: TrackFunctionType;
+    trackInlineAlertClicked: TrackFunctionType;
   };
 };
 

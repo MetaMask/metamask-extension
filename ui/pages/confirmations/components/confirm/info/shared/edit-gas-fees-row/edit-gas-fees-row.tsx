@@ -42,7 +42,7 @@ export const EditGasFeesRow = ({
       alertKey={RowAlertKey.EstimatedFee}
       ownerId={transactionMeta.id}
       data-testid="edit-gas-fees-row"
-      label={t('estimatedFee')}
+      label={t('networkFee')}
       tooltip={t('estimatedFeeTooltip')}
     >
       <Box
