@@ -19,7 +19,6 @@ import { Title } from '../components/confirm/title';
 import EditGasFeePopover from '../components/edit-gas-fee-popover';
 import { NetworkChangeToast } from '../components/confirm/network-change-toast';
 import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
-import syncConfirmPath from '../hooks/syncConfirmPath';
 import { ConfirmContextProvider } from '../context/confirm';
 
 const EIP1559TransactionGasModal = () => {
@@ -33,7 +32,6 @@ const EIP1559TransactionGasModal = () => {
 
 const Confirm = () => {
   const currentConfirmation = setCurrentConfirmation();
-  syncConfirmPath();
 
   return (
     <ConfirmContextProvider>

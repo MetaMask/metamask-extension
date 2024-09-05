@@ -12,13 +12,13 @@ import {
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../../../selectors';
 import { getTokenStandardAndDetails } from '../../../../../../store/actions';
 import { SignatureRequestType } from '../../../../types/confirm';
 import {
   isOrderSignatureRequest,
   isPermitSignatureRequest,
 } from '../../../../utils';
+import { useConfirmContext } from '../../../../context/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
@@ -26,9 +26,9 @@ import { PermitSimulation } from './permit-simulation';
 
 const TypedSignInfo: React.FC = () => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as SignatureRequestType;
+  const { currentConfirmation } = useConfirmContext() as {
+    currentConfirmation: SignatureRequestType;
+  };
   const useTransactionSimulations = useSelector(
     selectUseTransactionSimulations,
   );
@@ -60,9 +60,7 @@ const TypedSignInfo: React.FC = () => {
 
   return (
     <>
-      {isPermit && useTransactionSimulations && (
-        <PermitSimulation tokenDecimals={decimals} />
-      )}
+      {isPermit && useTransactionSimulations && <PermitSimulation />}
       <ConfirmInfoSection>
         {isPermit && (
           <>
