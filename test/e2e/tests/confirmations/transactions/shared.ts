@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockedEndpoint } from 'mockttp';
+import { veryLargeDelayMs } from '../../../helpers';
+import { Ganache } from '../../../seeder/ganache';
 import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
-import { Ganache } from '../../../seeder/ganache';
 
 const {
   logInWithBalanceValidation,
@@ -42,11 +43,39 @@ export async function confirmContractDeploymentTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
-    css: '.confirm-page-container-summary__action__name',
-    text: 'Contract deployment',
+    css: 'h2',
+    text: 'Deploy a contract',
   });
 
-  await driver.clickElement({ text: 'Confirm', tag: 'button' });
+  await scrollAndConfirmAndAssertConfirm(driver);
+
+  await driver.delay(2000);
+  await driver.waitUntilXWindowHandles(2);
+
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+  await driver.clickElement({ text: 'Activity', tag: 'button' });
+  await driver.waitForSelector(
+    '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+  );
+}
+
+export async function confirmRedesignedContractDeploymentTransaction(
+  driver: Driver,
+) {
+  await driver.waitUntilXWindowHandles(3);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+  await driver.waitForSelector({
+    css: 'h2',
+    text: 'Deploy a contract',
+  });
+
+  await driver.waitForSelector({
+    css: 'p',
+    text: 'This site wants you to deploy a contract',
+  });
+
+  await scrollAndConfirmAndAssertConfirm(driver);
 
   await driver.delay(2000);
   await driver.waitUntilXWindowHandles(2);
@@ -81,6 +110,7 @@ export async function confirmDepositTransaction(driver: Driver) {
     text: 'Nonce',
   });
 
+  await driver.delay(veryLargeDelayMs);
   await scrollAndConfirmAndAssertConfirm(driver);
 }
 
@@ -109,6 +139,7 @@ export async function confirmDepositTransactionWithCustomNonce(
     text: 'Save',
     tag: 'button',
   });
+  await driver.delay(veryLargeDelayMs);
   await scrollAndConfirmAndAssertConfirm(driver);
 
   // Confirm tx was submitted with the higher nonce
@@ -195,13 +226,13 @@ export async function toggleAdvancedDetails(driver: Driver) {
 }
 
 export async function assertAdvancedGasDetails(driver: Driver) {
-  await driver.waitForSelector({ css: 'p', text: 'Estimated fee' });
+  await driver.waitForSelector({ css: 'p', text: 'Network fee' });
   await driver.waitForSelector({ css: 'p', text: 'Speed' });
   await driver.waitForSelector({ css: 'p', text: 'Max fee' });
 }
 
 export async function assertAdvancedGasDetailsWithL2Breakdown(driver: Driver) {
-  await driver.waitForSelector({ css: 'p', text: 'Estimated fee' });
+  await driver.waitForSelector({ css: 'p', text: 'Network fee' });
   await driver.waitForSelector({ css: 'p', text: 'L1 fee' });
   await driver.waitForSelector({ css: 'p', text: 'L2 fee' });
   await driver.waitForSelector({ css: 'p', text: 'Speed' });

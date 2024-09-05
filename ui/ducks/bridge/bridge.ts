@@ -1,9 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
+
 import { swapsSlice } from '../swaps/swaps';
+import { RPCDefinition } from '../../../shared/constants/network';
 
 // Only states that are not in swaps slice
-type BridgeState = {
-  toChain: string | null;
+export type BridgeState = {
+  toChain: RPCDefinition | null;
 };
 
 const initialState: BridgeState = {

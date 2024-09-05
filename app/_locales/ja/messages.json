@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "QRハードウェアウォレットを接続"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "サインインリクエストのアドレスが、サインインに使用しているアカウントのアドレスと一致していません。"
   },
@@ -195,6 +192,9 @@
   "addAccount": {
     "message": "アカウントを追加"
   },
+  "addAccountToMetaMask": {
+    "message": "MetaMaskにアカウントを追加する"
+  },
   "addAcquiredTokens": {
     "message": "MetaMaskを使用して取得したトークンを追加します"
   },
@@ -319,6 +319,9 @@
   },
   "addUrl": {
     "message": "URLを追加"
+  },
+  "addingAccount": {
+    "message": "アカウントの追加"
   },
   "addingCustomNetwork": {
     "message": "ネットワークを追加中"
@@ -513,12 +516,6 @@
   "allow": {
     "message": "許可する"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "MetaMaskによる自動検出でのNFTの検出と表示を許可してください。これにより、次のことが可能になります:"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "MetaMaskによる自動検出でのトークンの検出と表示を許可してください。これにより、次のことが可能になります:"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "これにより、MMIが$1に接続してアカウントをインポートできるようになります。"
   },
@@ -549,9 +546,6 @@
   "andForTwoItems": {
     "message": "$1および$2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
-  },
-  "announcements": {
-    "message": "お知らせ"
   },
   "appDescription": {
     "message": "ブラウザにあるイーサリアムウォレット",
@@ -1035,9 +1029,6 @@
   },
   "confirmRpcUrlDeletionMessage": {
     "message": "RPC URLを削除してよろしいですか？このネットワークの情報は保存されません。"
-  },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "このトランザクションの内容を完全に理解し、要求元のサイトを信頼する場合にのみ確定してください。"
   },
   "confirmTitleDescPermitSignature": {
     "message": "このサイトがトークンの使用許可を求めています。"
@@ -1552,27 +1543,6 @@
   "developerOptions": {
     "message": "開発者用オプション"
   },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "現在開発中の承認のデザイン変更機能の有効・無効を切り替えます"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "承認のデザイン変更"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "ネットワークメニューを新しいデザインに切り替えます"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "ネットワークメニューのデザイン変更"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "すべてのお知らせのisShownのブール値をfalseにリセットします。お知らせとは、「最新情報」ポップアップモーダルに表示される通知のことです。"
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "オンボーディングに関するさまざまなステートをリセットし、「ウォレットのセキュリティ保護」オンボーディングページにリダイレクトします。"
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "タイムスタンプがセッションストレージに継続的に保存されるようになります"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "元のガス代の10%以上という増額の条件を満たしていないため、「$1」は無効になっています。",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1632,12 +1602,6 @@
   },
   "displayNftMediaDescription": {
     "message": "NFTのメディアとデータを表示した場合、IPアドレスがOpenSeaをはじめとするサードパーティに公開されます。その結果、攻撃者がユーザーのIPアドレスとイーサリアムアドレスを関連付けられるようになる可能性があります。NFTの自動検出はこの設定に依存しており、この設定を無効にすると利用できなくなります。"
-  },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "NFTをすぐに使用開始"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "トークンをすぐに使用開始"
   },
   "doNotShare": {
     "message": "これは誰にも教えないでください"
@@ -1770,9 +1734,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "高速化用のガス代を編集"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "デジタル資産を簡単に運用"
-  },
   "enable": {
     "message": "有効にする"
   },
@@ -1782,21 +1743,12 @@
   "enableFromSettings": {
     "message": " 設定で有効にします。"
   },
-  "enableNftAutoDetection": {
-    "message": "NFTの自動検出を有効にする"
-  },
   "enableSnap": {
     "message": "有効にする"
   },
   "enableToken": {
     "message": "$1を有効にする",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "トークンの自動検出を有効にする"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "基本機能トグルがオンになっているユーザーは、MetaMask拡張機能 v12.3.0で、この機能が自動的にオンになります。"
   },
   "enabled": {
     "message": "有効"
@@ -1932,6 +1884,9 @@
   },
   "existingChainId": {
     "message": "入力された情報は、既存のチェーンIDと関連付けられています。"
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "一番最近の要求を表示して確定するには、はじめに既存の要求を承認または拒否する必要があります。"
   },
   "existingRpcUrl": {
     "message": "このURLは別のチェーンIDに関連付けられています。"
@@ -2309,12 +2264,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "NFTにすぐにアクセス"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "トークンにすぐにアクセス"
   },
   "import": {
     "message": "インポート",
@@ -2965,6 +2914,10 @@
     "message": "ニックネームを選択...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1が次の承認を求めています:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "このサイトに次のことを希望しますか？",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3280,9 +3233,6 @@
   "notEnoughGas": {
     "message": "ガスが不足しています"
   },
-  "notRightNow": {
-    "message": "また後で"
-  },
   "note": {
     "message": "備考"
   },
@@ -3517,9 +3467,6 @@
   "onboardedMetametricsTitle": {
     "message": "エクスペリエンスの改善にご協力ください"
   },
-  "onboarding": {
-    "message": "オンボーディング"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "IPFSゲートウェイにより、第三者がホスティングしているデータへのアクセスと表示が可能になります。カスタムIPFSゲートウェイを追加するか、引き続きデフォルトを使用できます。"
   },
@@ -3586,6 +3533,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "任意:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "当社がプロファイル用に使用状況データを収集しつつ、どのようにユーザーのプライバシーを守るのかご覧ください。"
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMaskの改善にご協力ください"
@@ -4228,9 +4178,6 @@
   "receive": {
     "message": "受取"
   },
-  "receiveTokensCamelCase": {
-    "message": "トークンの受取"
-  },
   "recipientAddressPlaceholder": {
     "message": "パブリックアドレス (0x) またはENS名を入力してください"
   },
@@ -4269,6 +4216,12 @@
   },
   "redesignedConfirmationsToggleDescription": {
     "message": "この機能をオンにすると、強化された形式で署名要求が表示されます。"
+  },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "改善されたトランザクション要求"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "トランザクション要求を強化された形式で表示するには、この機能をオンにします。"
   },
   "refreshList": {
     "message": "リストを更新"
@@ -4385,9 +4338,6 @@
   "reset": {
     "message": "リセット"
   },
-  "resetStates": {
-    "message": "ステートのリセット"
-  },
   "resetWallet": {
     "message": "ウォレットをリセット"
   },
@@ -4472,6 +4422,9 @@
   },
   "reviewAlerts": {
     "message": "アラートを確認する"
+  },
+  "reviewPermissions": {
+    "message": " アクセス許可を確認する"
   },
   "revokeAllTokensTitle": {
     "message": "すべての$1へのアクセスおよび転送許可を取り消しますか？",
@@ -4706,9 +4659,6 @@
   },
   "sepolia": {
     "message": "Sepoliaテストネットワーク"
-  },
-  "serviceWorkerKeepAlive": {
-    "message": "Service Worker Keep Alive"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMaskはこれらの信頼できるサードパーティサービスを使用して、製品の使いやすさと安全性を向上させています。"
@@ -5272,9 +5222,6 @@
   },
   "stateLogsDescription": {
     "message": "ステートログには、パブリックアカウントアドレスと送信済みトランザクションが含まれています。"
-  },
-  "states": {
-    "message": "ステート"
   },
   "status": {
     "message": "ステータス"

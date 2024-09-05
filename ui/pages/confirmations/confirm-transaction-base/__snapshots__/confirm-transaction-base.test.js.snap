@@ -249,7 +249,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
           <div
             class="confirm-page-container-summary__nonce"
           >
-            #undefined
+            #70
           </div>
         </div>
         <div
@@ -320,29 +320,19 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                   >
                     Estimated changes
                   </p>
-                  <div
-                    class="info-tooltip"
-                    data-testid="info-tooltip"
-                  >
-                    <div>
-                      <div
-                        aria-describedby="tippy-tooltip-2"
-                        class="info-tooltip__tooltip-container"
-                        data-original-title="null"
-                        data-tooltipped=""
-                        style="display: inline;"
-                        tabindex="0"
-                      >
-                        <svg
-                          viewBox="0 0 10 10"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
-                            fill="var(--color-icon-alternative)"
-                          />
-                        </svg>
-                      </div>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-2"
+                      class="info-tooltip__tooltip-container"
+                      data-original-title="null"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
                     </div>
                   </div>
                 </div>
@@ -456,6 +446,33 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
                   />
+                </div>
+              </div>
+            </div>
+            <div>
+              <div
+                class="confirm-detail-row"
+              >
+                <div
+                  class="confirm-detail-row__label"
+                >
+                  Custom nonce
+                </div>
+                <div
+                  class="custom-nonce-input"
+                >
+                  <div
+                    class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+                    min="0"
+                  >
+                    <input
+                      autocomplete="off"
+                      class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                      focused="false"
+                      type="number"
+                      value="70"
+                    />
+                  </div>
                 </div>
               </div>
             </div>

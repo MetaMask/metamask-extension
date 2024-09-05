@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "QR 하드웨어 지갑을 연결하세요"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "로그인 요청 주소가 현재 로그인 계정의 주소와 일치하지 않습니다."
   },
@@ -195,6 +192,9 @@
   "addAccount": {
     "message": "계정 추가"
   },
+  "addAccountToMetaMask": {
+    "message": "MetaMask에 계정 추가"
+  },
   "addAcquiredTokens": {
     "message": "MetaMask를 이용해 얻은 토큰 추가"
   },
@@ -319,6 +319,9 @@
   },
   "addUrl": {
     "message": "URL 추가"
+  },
+  "addingAccount": {
+    "message": "계정 추가"
   },
   "addingCustomNetwork": {
     "message": "네트워크 추가"
@@ -513,12 +516,6 @@
   "allow": {
     "message": "허용"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "자동 감지를 통해 MetaMask가 NFT를 감지하고 표시하도록 허용합니다. 다음과 같은 작업을 할 수 있습니다."
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "자동 감지를 통해 MetaMask가 토큰을 감지하고 표시하도록 허용합니다. 다음과 같은 작업을 할 수 있습니다."
-  },
   "allowMmiToConnectToCustodian": {
     "message": "허용할 경우, MMI가 $1에 연결하여 계정을 가져올 수 있습니다."
   },
@@ -549,9 +546,6 @@
   "andForTwoItems": {
     "message": "$1 및 $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
-  },
-  "announcements": {
-    "message": "공지"
   },
   "appDescription": {
     "message": "브라우저의 이더리움 지갑",
@@ -1035,9 +1029,6 @@
   },
   "confirmRpcUrlDeletionMessage": {
     "message": "정말로 RPC URL을 삭제하시겠습니까? 고객님의 정보는 이 네트워크에 저장되지 않습니다."
-  },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "요청하는 사이트를 신뢰하고 그 내용을 완전히 이해하는 경우에만 이 트랜젝션을 컨펌하세요."
   },
   "confirmTitleDescPermitSignature": {
     "message": "해당 사이트에서 토큰 사용 승인을 요청합니다."
@@ -1552,27 +1543,6 @@
   "developerOptions": {
     "message": "개발자 옵션"
   },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "현재 개발 중인 확인 재설계 기능을 활성화 또는 비활성화합니다."
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "확인 재설계"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "네트워크 메뉴를 새로운 디자인으로 전환"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "네트워크 메뉴 디자인 변경"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "온보딩과 관련된 다양한 상태를 초기화하고 '지갑 보안' 온보딩 페이지로 리디렉션합니다."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "session.storage에 타임스탬프가 지속적으로 저장됩니다"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” 유형은 오리지널 가스비를 최소 10% 인상해야 하는 기준에 미치지 못하므로 비활성화되었습니다.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1632,12 +1602,6 @@
   },
   "displayNftMediaDescription": {
     "message": "NFT 미디어와 데이터를 표시하면 IP 주소가 OpenSea나 기타 제삼자에게 노출될 수 있습니다. 공격자는 이를 통해 회원님의 IP 주소와 이더리움 주소를 연결할 수 있습니다. NFT 자동 감지는 이 설정을 사용하며, 이 설정이 꺼져 있는 경우 사용할 수 없습니다."
-  },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "NFT 바로 사용"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "토큰 바로 사용"
   },
   "doNotShare": {
     "message": "누구와도 공유하지 마세요"
@@ -1770,9 +1734,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "가스비 가속 편집"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "디지털 자산을 손쉽게 탐색"
-  },
   "enable": {
     "message": "활성화"
   },
@@ -1782,21 +1743,12 @@
   "enableFromSettings": {
     "message": " 설정에서 이 기능을 활성화합니다."
   },
-  "enableNftAutoDetection": {
-    "message": "NFT 자동 감지 활성화"
-  },
   "enableSnap": {
     "message": "활성화"
   },
   "enableToken": {
     "message": "$1 활성화",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "토큰 자동 감지 활성화"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "기본 기능을 사용하면 Metamask 확장 v12.3.0에서 이 기능이 자동으로 켜집니다"
   },
   "enabled": {
     "message": "활성화됨"
@@ -1932,6 +1884,9 @@
   },
   "existingChainId": {
     "message": "입력한 정보는 기존 체인 ID와 연결되어 있습니다."
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "가장 최근 요청을 보고 확인하려면, 먼저 기존 요청을 승인하거나 거부해야 합니다."
   },
   "existingRpcUrl": {
     "message": "이 URL은 다른 체인 ID랑 연결되어 있습니다."
@@ -2309,12 +2264,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "NFT에 즉시 액세스"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "토큰에 즉시 액세스"
   },
   "import": {
     "message": "가져오기",
@@ -2965,6 +2914,10 @@
     "message": "닉네임을 선택하세요...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1에서 다음 승인을 요청합니다:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "이 사이트가 다음을 수행하기 원하십니까?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3280,9 +3233,6 @@
   "notEnoughGas": {
     "message": "가스 부족"
   },
-  "notRightNow": {
-    "message": "나중에"
-  },
   "note": {
     "message": "메모"
   },
@@ -3517,9 +3467,6 @@
   "onboardedMetametricsTitle": {
     "message": "사용자 경험을 개선할 수 있도록 도와주세요"
   },
-  "onboarding": {
-    "message": "온보딩"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "IPFS 게이트웨이를 사용하면 타사 호스팅 데이터에 액세스하여 이를 볼 수 있습니다. 사용자 지정 IPFS 게이트웨이를 추가하셔도 좋고 기본 설정을 계속 사용하셔도 됩니다."
   },
@@ -3586,6 +3533,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "선택 사항:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "프로필의 사용 데이터를 수집하는 동안 개인정보를 보호하는 방법을 알아보세요."
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMask 개선에 도움을 주세요"
@@ -4228,9 +4178,6 @@
   "receive": {
     "message": "받기"
   },
-  "receiveTokensCamelCase": {
-    "message": "토큰 받기"
-  },
   "recipientAddressPlaceholder": {
     "message": "공개 주소(0x) 또는 ENS 제목 입력"
   },
@@ -4269,6 +4216,12 @@
   },
   "redesignedConfirmationsToggleDescription": {
     "message": "이 기능을 켜면 개선된 형식의 서명 요청을 확인할 수 있습니다."
+  },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "개선된 트랜잭션 요청"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "이 기능을 켜면 개선된 형식의 트랜잭션 요청을 확인할 수 있습니다."
   },
   "refreshList": {
     "message": "새로 고침 목록"
@@ -4385,9 +4338,6 @@
   "reset": {
     "message": "재설정"
   },
-  "resetStates": {
-    "message": "상태 초기화"
-  },
   "resetWallet": {
     "message": "지갑 초기화"
   },
@@ -4472,6 +4422,9 @@
   },
   "reviewAlerts": {
     "message": "경고 검토하기"
+  },
+  "reviewPermissions": {
+    "message": "권한 검토"
   },
   "revokeAllTokensTitle": {
     "message": "모든 $1에 액세스할 수 있는 권한을 철회하시겠습니까?",
@@ -4706,9 +4659,6 @@
   },
   "sepolia": {
     "message": "Sepolia 테스트 네트워크"
-  },
-  "serviceWorkerKeepAlive": {
-    "message": "서비스 작업자 유지"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "이와 같이 MetaMask는 신용있는 타사의 서비스를 사용하여 제품 가용성과 안전성을 향상합니다."
@@ -5272,9 +5222,6 @@
   },
   "stateLogsDescription": {
     "message": "상태 로그에 공개 계정 주소와 전송된 트랜잭션이 있습니다."
-  },
-  "states": {
-    "message": "상태"
   },
   "status": {
     "message": "상태"

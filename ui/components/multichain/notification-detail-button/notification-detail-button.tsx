@@ -1,11 +1,10 @@
 import React, { useContext } from 'react';
-import type { Notification } from '../../../../app/scripts/controllers/metamask-notifications/types/types';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { TRIGGER_TYPES } from '../../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
 import {
   Button,
   ButtonVariant,
@@ -13,6 +12,10 @@ import {
   IconName,
 } from '../../component-library';
 import { BlockSize } from '../../../helpers/constants/design-system';
+
+type Notification = NotificationServicesController.Types.INotification;
+
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 type NotificationDetailButtonProps = {
   notification: Notification;
@@ -38,15 +41,14 @@ export const NotificationDetailButton = ({
   const onClick = () => {
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationClicked,
+      event: MetaMetricsEventName.NotificationDetailClicked,
       properties: {
         notification_id: notification.id,
         notification_type: notification.type,
         ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT && {
           chain_id: notification?.chain_id,
         }),
-        notification_is_read: notification.isRead,
-        click_type: 'detail',
+        clicked_item: 'block_explorer',
       },
     });
   };

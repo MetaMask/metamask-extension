@@ -14,6 +14,7 @@
   &__balance {
     flex: 1;
     display: flex;
+    gap: 4px;
     flex-direction: column;
     align-items: center;
     width: 100%;
@@ -24,6 +25,21 @@
     flex-direction: row;
     height: 68px;
     margin-bottom: 24px;
+  }
+
+  &__portfolio_button {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    cursor: pointer;
+    align-items: center;
+    color: var(--color-primary-default);
+  }
+
+  &__currency-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
   }
 }
 
@@ -45,6 +61,7 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
+    gap: 4px;
     position: relative;
     align-items: center;
     margin: 16px 0;

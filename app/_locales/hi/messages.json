@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "अपने QR hardware wallet को कनेक्ट करें"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "साइन-इन रिक्वेस्ट का एड्रेस उस अकाउंट के एड्रेस से मेल नहीं खाता जिसका इस्तेमाल आप साइन इन करने के लिए कर रहे हैं।"
   },
@@ -195,6 +192,9 @@
   "addAccount": {
     "message": "अकाउंट जोड़ें"
   },
+  "addAccountToMetaMask": {
+    "message": "MetaMask में अकाउंट जोड़ें"
+  },
   "addAcquiredTokens": {
     "message": "MetaMask का इस्तेमाल करके, आपके द्वारा प्राप्त किए गए टोकन जोड़ें"
   },
@@ -319,6 +319,9 @@
   },
   "addUrl": {
     "message": "URL जोड़ें"
+  },
+  "addingAccount": {
+    "message": "अकाउंट जोड़ा जा रहा है"
   },
   "addingCustomNetwork": {
     "message": "नेटवर्क जोड़ रहे हैं"
@@ -513,12 +516,6 @@
   "allow": {
     "message": "अनुमति दें"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "MetaMask को ऑटोडिटेक्शन के साथ आपके NFT का पता लगाने और प्रदर्शित करने की अनुमति दें। आप यह कर सकेंगे:"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "MetaMask को ऑटोडिटेक्शन के साथ आपके टोकन का पता लगाने और प्रदर्शित करने की अनुमति दें। आप यह कर सकेंगे:"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "यह आपके एकाउंट्स को इम्पोर्ट करने के लिए MMI को $1 से कनेक्ट करने की अनुमति देगा।"
   },
@@ -549,9 +546,6 @@
   "andForTwoItems": {
     "message": "$1 और $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
-  },
-  "announcements": {
-    "message": "घोषणाएं"
   },
   "appDescription": {
     "message": "आपके ब्राउज़र में एक Ethereum वॉलेट",
@@ -1035,9 +1029,6 @@
   },
   "confirmRpcUrlDeletionMessage": {
     "message": "क्या आप वाकई RPC URL को हटाना चाहते हैं? आपकी जानकारी इस नेटवर्क के लिए सेव नहीं की जाएगी।"
-  },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "यदि आप कंटेंट को पूरी तरह से समझते हैं और अनुरोध करने वाली साइट पर भरोसा करते हैं तो ही इस ट्रांसेक्शन को कन्फर्म करें"
   },
   "confirmTitleDescPermitSignature": {
     "message": "यह साइट आपके टोकन खर्च करने की अनुमति चाहती है।"
@@ -1552,27 +1543,6 @@
   "developerOptions": {
     "message": "डेवलपर विकल्प"
   },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "वर्तमान में विकास में कन्फर्मेशन रीडिज़ाइन सुविधा को चालू या बंद करता है"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "कन्फर्मेशन रीडिज़ाइन"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "नेटवर्क मेनू के नए डिज़ाइन को टॉगल करता है"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "नेटवर्क मेनू रीडिज़ाइन"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "सभी घोषणाओं के लिए isShown boolean को गलत पर रीसेट करता है। घोषणाएं व्हाट्स न्यू पॉपअप मोडल में दिखाई जाने वाली सूचनाएं हैं।"
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "ऑनबोर्डिंग से संबंधित विभिन्न स्टेट को रीसेट करता है और \"सिक्योर योर वॉलेट\" ऑनबोर्डिंग पेज पर रीडायरेक्ट करता है।"
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "हर टाइमस्टैम्प के परिणाम को लगातार session.storage में सेव किया जा रहा है"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "\"$1\" डिसेबल किया गया है क्योंकि यह ओरिजिनल गैस फ़ीस से कम-से-कम 10% वृद्धि को पूरा नहीं करता है।",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1632,12 +1602,6 @@
   },
   "displayNftMediaDescription": {
     "message": "NFT मीडिया और डेटा दिखाने से आपका IP एड्रेस OpenSea या अन्य थर्ड पार्टियों के सामने आ जाता है। ऐसा होने पर, हमला करने वाले आपके IP एड्रेस को आपके Ethereum एड्रेस के साथ जोड़ पाते हैं। NFT ऑटोडिटेक्शन की सुविधा इस सेटिंग पर निर्भर करती है, और इस सेटिंग को बंद किए जाने पर उपलब्ध नहीं रहेगी।"
-  },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "अपने NFT का उपयोग करने के लिए सीधे प्रवेश करें"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "अपने टोकन का उपयोग करने के लिए सीधे प्रवेश करें"
   },
   "doNotShare": {
     "message": "इसे किसी के साथ शेयर न करें।"
@@ -1770,9 +1734,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "गैस फ़ीस स्पीड अप को बदलें"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "अपनी डिजिटल एसेट को आसानी से नेविगेट करें"
-  },
   "enable": {
     "message": "चालू करें"
   },
@@ -1782,21 +1743,12 @@
   "enableFromSettings": {
     "message": " इसे सेटिंग्स से इनेबल करें।"
   },
-  "enableNftAutoDetection": {
-    "message": "NFT ऑटोडिटेक्शन चालू करें"
-  },
   "enableSnap": {
     "message": "इनेबल करें"
   },
   "enableToken": {
     "message": "$1 इनेबल करें",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "टोकन ऑटोडिटेक्शन चालू करें"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "बेसिक फ़ंक्शनैलिटी टॉगल को चालू रखने वाले उपयोगकर्ताओं के लिए MetaMask एक्सटेंशन v12.3.0 में यह स्वचालित रूप से चालू हो जाएगा"
   },
   "enabled": {
     "message": "इनेबल किया गया"
@@ -1932,6 +1884,9 @@
   },
   "existingChainId": {
     "message": "आपके द्वारा दर्ज की गई जानकारी मौजूदा चेन ID से जुड़ी है।"
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "अपने सबसे हालिया अनुरोध को देखने और कन्फर्म करने के लिए, आपको पहले मौजूदा अनुरोधों को एप्रूव या रिजेक्ट करना होगा।"
   },
   "existingRpcUrl": {
     "message": "यह URL किसी अन्य चेन ID से जुड़ा है।"
@@ -2309,12 +2264,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "तुरंत अपने NFT तक पहुंचें"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "आपके टोकन तक तत्काल पहुंच"
   },
   "import": {
     "message": "इम्पोर्ट करें",
@@ -2965,6 +2914,10 @@
     "message": "एक उपनाम चुनें...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1 निम्नलिखित के लिए आपका एप्रूवल मांग रहा है:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "क्या आप चाहते हैं कि यह साइट निम्नलिखित कार्य करे?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3280,9 +3233,6 @@
   "notEnoughGas": {
     "message": "गैस कम है"
   },
-  "notRightNow": {
-    "message": "अभी नहीं"
-  },
   "note": {
     "message": "टिप्पणी"
   },
@@ -3517,9 +3467,6 @@
   "onboardedMetametricsTitle": {
     "message": "आपके अनुभव को बेहतर करने में हमारी सहायता करें"
   },
-  "onboarding": {
-    "message": "ऑनबोर्ड हो रहा है"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "IPFS (आईपीएफएस) गेटवे थर्ड पार्टियों द्वारा होस्ट किए गए डेटा को एक्सेस करना और देखना संभव बनाता है। आप एक कस्टम IPFS गेटवे जोड़ सकते हैं या डिफॉल्ट का इस्तेमाल जारी रख सकते हैं।"
   },
@@ -3586,6 +3533,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "वैकल्पिक:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "जानें कि आपके प्रोफ़ाइल के लिए यूसेज डेटा एकत्र करते समय हम आपकी गोपनीयता की सुरक्षा कैसे करते हैं।"
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMask को बेहतर बनाने में हमारी मदद करें"
@@ -4228,9 +4178,6 @@
   "receive": {
     "message": "प्राप्त करें"
   },
-  "receiveTokensCamelCase": {
-    "message": "टोकन प्राप्त करें"
-  },
   "recipientAddressPlaceholder": {
     "message": "सार्वजनिक एड्रेस (0x) या ENS नाम डालें"
   },
@@ -4269,6 +4216,12 @@
   },
   "redesignedConfirmationsToggleDescription": {
     "message": "उन्नत फॉर्मेट में सिग्नेचर अनुरोध देखने के लिए इसे चालू करें।"
+  },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "बेहतर ट्रांसेक्शन के अनुरोध"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "उन्नत फॉर्मेट में ट्रांसेक्शन के अनुरोध देखने के लिए इसे चालू करें।"
   },
   "refreshList": {
     "message": "लिस्ट रिफ्रेश करें"
@@ -4385,9 +4338,6 @@
   "reset": {
     "message": "रीसेट करें"
   },
-  "resetStates": {
-    "message": "स्टेट रीसेट करें"
-  },
   "resetWallet": {
     "message": "वॉलेट रीसेट करें"
   },
@@ -4472,6 +4422,9 @@
   },
   "reviewAlerts": {
     "message": "एलर्ट की समीक्षा करें"
+  },
+  "reviewPermissions": {
+    "message": "अनुमतियों की समीक्षा करें"
   },
   "revokeAllTokensTitle": {
     "message": "आपके सभी $1 को एक्सेस और ट्रांसफ़र करने की अनुमति निरस्त करें?",
@@ -4706,9 +4659,6 @@
   },
   "sepolia": {
     "message": "Sepolia टेस्ट नेटवर्क"
-  },
-  "serviceWorkerKeepAlive": {
-    "message": "सेवाकर्मी जीवित रहें"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask उत्पाद की उपयोगिता और सुरक्षा को बढ़ाने के लिए इन विश्वसनीय तीसरे-पक्ष की सेवाओं का इस्तेमाल करता है।"
@@ -5272,9 +5222,6 @@
   },
   "stateLogsDescription": {
     "message": "स्टेट लॉग में आपके सार्वजनिक अकाउंट के एड्रेस और भेजे गए ट्रांसेक्शन शामिल होते हैं।"
-  },
-  "states": {
-    "message": "स्टेट"
   },
   "status": {
     "message": "स्टेटस"

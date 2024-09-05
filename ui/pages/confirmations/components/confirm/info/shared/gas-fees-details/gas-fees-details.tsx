@@ -11,8 +11,8 @@ import {
   Display,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../../../../selectors';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
+import { useConfirmContext } from '../../../../../context/confirm';
 import GasTiming from '../../../../gas-timing/gas-timing.component';
 import { useEIP1559TxFees } from '../../hooks/useEIP1559TxFees';
 import { useFeeCalculations } from '../../hooks/useFeeCalculations';
@@ -27,9 +27,9 @@ export const GasFeesDetails = ({
 }) => {
   const t = useI18nContext();
 
-  const transactionMeta = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
+    currentConfirmation: TransactionMeta;
+  };
 
   const { maxFeePerGas, maxPriorityFeePerGas } =
     useEIP1559TxFees(transactionMeta);
@@ -67,12 +67,14 @@ export const GasFeesDetails = ({
       {showAdvancedDetails && hasLayer1GasFee && (
         <>
           <GasFeesRow
+            data-testid="gas-fee-details-l1"
             label={t('l1Fee')}
             tooltipText={t('l1FeeTooltip')}
             fiatFee={l1FeeFiat}
             nativeFee={l1FeeNative}
           />
           <GasFeesRow
+            data-testid="gas-fee-details-l2"
             label={t('l2Fee')}
             tooltipText={t('l2FeeTooltip')}
             fiatFee={l2FeeFiat}
@@ -82,6 +84,7 @@ export const GasFeesDetails = ({
       )}
       {supportsEIP1559 && (
         <ConfirmInfoRow
+          data-testid="gas-fee-details-speed"
           label={t('speed')}
           variant={ConfirmInfoRowVariant.Default}
         >
@@ -95,6 +98,7 @@ export const GasFeesDetails = ({
       )}
       {showAdvancedDetails && (
         <GasFeesRow
+          data-testid="gas-fee-details-max-fee"
           label={t('maxFee')}
           tooltipText={t('maxFeeTooltip')}
           fiatFee={maxFeeFiat}

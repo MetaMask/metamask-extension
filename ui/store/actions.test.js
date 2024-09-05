@@ -3,28 +3,32 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import enLocale from '../../app/_locales/en/messages.json';
 import MetaMaskController from '../../app/scripts/metamask-controller';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
 import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametrics';
-import { TRIGGER_TYPES } from '../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../test/stub/networks';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
+
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 const middleware = [thunk];
 const defaultState = {
   metamask: {
     currentLocale: 'test',
-    providerConfig: { chainId: '0x1' },
     accounts: {
       '0xFirstAddress': {
         balance: '0x0',
       },
     },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -244,10 +248,8 @@ describe('Actions', () => {
 
       background.getState.callsFake((cb) =>
         cb(null, {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           currentLocale: 'test',
-          providerConfig: {
-            chainId: '0x1',
-          },
           accounts: {
             '0xAnotherAddress': {
               balance: '0x0',
@@ -1023,49 +1025,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setProviderType', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls setProviderType', async () => {
-      const store = mockStore();
-
-      const setProviderTypeStub = sinon.stub().callsFake((_, cb) => cb());
-
-      background.getApi.returns({
-        setProviderType: setProviderTypeStub,
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      await store.dispatch(actions.setProviderType());
-      expect(setProviderTypeStub.callCount).toStrictEqual(1);
-    });
-
-    it('displays warning when setProviderType throws', async () => {
-      const store = mockStore();
-
-      background.getApi.returns({
-        setProviderType: sinon
-          .stub()
-          .callsFake((_, cb) => cb(new Error('error'))),
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      const expectedActions = [
-        {
-          type: 'DISPLAY_WARNING',
-          payload: 'Had a problem changing networks!',
-        },
-      ];
-
-      await store.dispatch(actions.setProviderType());
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
   describe('#setActiveNetwork', () => {
     afterEach(() => {
       sinon.restore();
@@ -1111,114 +1070,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#editAndSetNetworkConfiguration', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('removes then re-adds the given network configuration', async () => {
-      const store = mockStore();
-
-      const removeNetworkConfigurationStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
-
-      const upsertNetworkConfigurationStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
-
-      background.getApi.returns({
-        removeNetworkConfiguration: removeNetworkConfigurationStub,
-        upsertNetworkConfiguration: upsertNetworkConfigurationStub,
-      });
-      setBackgroundConnection(background.getApi());
-
-      const networkConfiguration = {
-        rpcUrl: 'newRpc',
-        chainId: '0x',
-        ticker: 'ETH',
-        nickname: 'nickname',
-        rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
-      };
-
-      await store.dispatch(
-        actions.editAndSetNetworkConfiguration(
-          {
-            ...networkConfiguration,
-            networkConfigurationId: 'networkConfigurationId',
-          },
-          { source: 'https://test-dapp.com' },
-        ),
-      );
-      expect(
-        removeNetworkConfigurationStub.calledOnceWith('networkConfigurationId'),
-      ).toBe(true);
-      expect(
-        upsertNetworkConfigurationStub.calledOnceWith(networkConfiguration, {
-          setActive: true,
-          referrer: ORIGIN_METAMASK,
-          source: 'https://test-dapp.com',
-        }),
-      ).toBe(true);
-    });
-
-    it('displays warning when removeNetworkConfiguration throws', async () => {
-      const store = mockStore();
-
-      const upsertNetworkConfigurationStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
-
-      const removeNetworkConfigurationStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb(new Error('error')));
-
-      background.getApi.returns({
-        removeNetworkConfiguration: removeNetworkConfigurationStub,
-        upsertNetworkConfiguration: upsertNetworkConfigurationStub,
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      const expectedActions = [
-        { type: 'DISPLAY_WARNING', payload: 'Had a problem removing network!' },
-      ];
-
-      await store.dispatch(
-        actions.editAndSetNetworkConfiguration(
-          {
-            networkConfigurationId: 'networkConfigurationId',
-            rpcUrl: 'newRpc',
-            chainId: '0x',
-            ticker: 'ETH',
-            nickname: 'nickname',
-            rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
-          },
-          { source: 'https://test-dapp.com' },
-        ),
-      );
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-
-    it('throws when no options object is passed as a second argument', async () => {
-      const store = mockStore();
-      await expect(() =>
-        store.dispatch(
-          actions.editAndSetNetworkConfiguration({
-            networkConfigurationId: 'networkConfigurationId',
-            rpcUrl: 'newRpc',
-            chainId: '0x',
-            ticker: 'ETH',
-            nickname: 'nickname',
-            rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
-          }),
-        ),
-      ).toThrow(
-        "Cannot destructure property 'source' of 'undefined' as it is undefined.",
-      );
-    });
-  });
-
   describe('#upsertNetworkConfiguration', () => {
     afterEach(() => {
       sinon.restore();
@@ -1237,6 +1088,7 @@ describe('Actions', () => {
       setBackgroundConnection(background.getApi());
 
       const networkConfiguration = {
+        id: 'networkConfigurationId',
         rpcUrl: 'newRpc',
         chainId: '0x',
         ticker: 'ETH',
@@ -1264,7 +1116,7 @@ describe('Actions', () => {
       await expect(() =>
         store.dispatch(
           actions.upsertNetworkConfiguration({
-            networkConfigurationId: 'networkConfigurationId',
+            id: 'networkConfigurationId',
             rpcUrl: 'newRpc',
             chainId: '0x',
             ticker: 'ETH',
@@ -2067,10 +1919,8 @@ describe('Actions', () => {
         }),
         getState: sinon.stub().callsFake((cb) =>
           cb(null, {
+            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
             currentLocale: 'test',
-            providerConfig: {
-              chainId: '0x1',
-            },
             accounts: {
               '0xFirstAddress': {
                 balance: '0x0',
@@ -2679,27 +2529,6 @@ describe('Actions', () => {
       ];
 
       expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
-  describe('#setBridgeFeatureFlags', () => {
-    it('calls setBridgeFeatureFlags in the background', async () => {
-      const store = mockStore();
-      background.setBridgeFeatureFlags = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
-      setBackgroundConnection(background);
-
-      await store.dispatch(
-        actions.setBridgeFeatureFlags({ extensionSupport: true }),
-      );
-
-      expect(background.setBridgeFeatureFlags.callCount).toStrictEqual(1);
-      expect(background.setBridgeFeatureFlags.getCall(0).args[0]).toStrictEqual(
-        {
-          extensionSupport: true,
-        },
-      );
     });
   });
 });
