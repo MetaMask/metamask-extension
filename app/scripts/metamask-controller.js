@@ -226,6 +226,7 @@ import {
 import { getCurrentChainId } from '../../ui/selectors';
 import { getProviderConfig } from '../../ui/ducks/metamask/metamask';
 import { endTrace, trace } from '../../shared/lib/trace';
+import { submitSmartTransactionHook } from '../../ui/pages/smart-transactions/lib/smart-transaction-submit-hook';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -250,7 +251,6 @@ import {
   getAdditionalSignArguments as getAdditionalSignArgumentsMMI,
 } from './lib/transaction/mmi-hooks';
 ///: END:ONLY_INCLUDE_IF
-import { submitSmartTransactionHook } from '../../ui/pages/smart-transactions/lib/smart-transaction-submit-hook';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
