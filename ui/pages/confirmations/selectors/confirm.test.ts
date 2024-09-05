@@ -1,5 +1,4 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { TransactionType } from '@metamask/transaction-controller';
 
 import { ConfirmMetamaskState } from '../types/confirm';
 import {
@@ -10,12 +9,7 @@ import {
 
 describe('confirm selectors', () => {
   const mockedState: ConfirmMetamaskState = {
-    confirm: {
-      currentConfirmation: {
-        id: '1',
-        type: TransactionType.contractInteraction,
-      },
-    },
+    confirm: {},
     metamask: {
       pendingApprovals: {
         '1': {
