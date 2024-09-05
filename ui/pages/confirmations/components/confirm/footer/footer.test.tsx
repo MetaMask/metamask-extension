@@ -55,7 +55,14 @@ describe('ConfirmFooter', () => {
   });
 
   it('should match snapshot with transaction confirmation', () => {
-    const { container } = render(getMockContractInteractionConfirmState());
+    const { container } = render(
+      getMockContractInteractionConfirmState({
+        confirm: {
+          isScrollToBottomCompleted: true,
+        },
+        metamask: {},
+      }),
+    );
     expect(container).toMatchSnapshot();
   });
 
