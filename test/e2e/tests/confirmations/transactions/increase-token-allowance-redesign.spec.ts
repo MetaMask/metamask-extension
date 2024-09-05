@@ -6,15 +6,10 @@ import {
   veryLargeDelayMs,
   WINDOW_TITLES,
 } from '../../../helpers';
+import { MockedEndpoint } from '../../../mock-e2e';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import { openDAppWithContract, TestSuiteArguments } from './shared';
-import { MockedEndpoint } from '../../../mock-e2e';
-<<<<<<< Updated upstream
-=======
-import { mocked4BytesApprove } from './erc20-approve-redesign.spec';
-import { MockedEndpoint } from '../../../mock-e2e';
->>>>>>> Stashed changes
 
 const {
   defaultGanacheOptions,
@@ -61,8 +56,6 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
           );
 
           console.log({ events });
-
-
 
           const NEW_SPENDING_CAP = '3';
           await editSpendingCap(driver, NEW_SPENDING_CAP);
