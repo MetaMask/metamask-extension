@@ -196,7 +196,7 @@ export function AssetPicker({
                       selectedNetwork?.rpcPrefs?.imageUrl ??
                       (selectedNetwork?.chainId &&
                         CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                          selectedNetwork.chainId
+                          selectedNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
                         ])
                     }
                     backgroundColor={
