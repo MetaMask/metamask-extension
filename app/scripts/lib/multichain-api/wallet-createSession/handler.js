@@ -18,7 +18,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { assignAccountsToScopes, validateAndUpsertEip3085 } from './helpers';
 
-export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
+export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
   // TODO: Does this handler need a rate limiter/lock like the one in eth_requestAccounts?
 
   const {

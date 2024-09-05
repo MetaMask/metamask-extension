@@ -11,7 +11,7 @@ import {
   Caip25EndowmentPermissionName,
 } from '../caip25permissions';
 import { shouldEmitDappViewedEvent } from '../../util';
-import { providerAuthorizeHandler } from './handler';
+import { walletCreateSessionHandler } from './handler';
 import { assignAccountsToScopes, validateAndUpsertEip3085 } from './helpers';
 
 jest.mock('../../util', () => ({
@@ -91,7 +91,7 @@ const createMockedHandler = () => {
   };
   const response = {};
   const handler = (request) =>
-    providerAuthorizeHandler(request, response, next, end, {
+    walletCreateSessionHandler(request, response, next, end, {
       findNetworkClientIdByChainId,
       requestPermissionApprovalForOrigin,
       grantPermissions,
@@ -120,7 +120,7 @@ const createMockedHandler = () => {
   };
 };
 
-describe('provider_authorize', () => {
+describe('wallet_createSession', () => {
   beforeEach(() => {
     validateAndFlattenScopes.mockReturnValue({
       flattenedRequiredScopes: {},

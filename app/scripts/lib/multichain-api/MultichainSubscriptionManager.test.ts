@@ -48,10 +48,10 @@ describe('MultichainSubscriptionManager', () => {
       newHeadsNotificationMock,
     );
     expect(onNotificationSpy).toHaveBeenCalledWith(domain, {
-      method: 'wallet_invokeMethod',
+      method: 'wallet_notify',
       params: {
         scope,
-        request: newHeadsNotificationMock,
+        notification: newHeadsNotificationMock,
       },
     });
   });
