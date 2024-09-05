@@ -58,7 +58,7 @@ export const Copyable = ({
       backgroundColor={
         isVisible && sensitive
           ? BackgroundColor.errorMuted
-          : BackgroundColor.backgroundAlternative
+          : BackgroundColor.primaryMuted
       }
       borderRadius={BorderRadius.LG}
       borderColor={BorderColor.borderMuted}
