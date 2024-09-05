@@ -296,15 +296,20 @@ describe('AssetPickerModal', () => {
     ).toBe(true);
   });
 
-  it('should render network picker when networks prop is defined', () => {
+  it('should render network picker when onNetworkPickerClick prop is defined', () => {
     const { getByText, getAllByRole } = renderWithProvider(
       <AssetPickerModal
         {...defaultProps}
         header="selectNetworkHeader"
         network={{
-          type: 'rpc',
           ticker: 'ETH',
           chainId: '0x1',
+          rpcUrl: 'https://rpcurl',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://explorerurl',
+            imageUrl: 'https://image.com',
+          },
+          nickname: 'Network name',
         }}
       />,
       store,
@@ -314,7 +319,33 @@ describe('AssetPickerModal', () => {
     expect(modalTitle).toBeInTheDocument();
 
     expect(getAllByRole('img')).toHaveLength(2);
-    const modalContent = getByText('Select network');
+    const modalContent = getByText('Network name');
     expect(modalContent).toBeInTheDocument();
+  });
+
+  it('should not render network picker when onNetworkPickerClick prop is not defined', () => {
+    const { getByText, getAllByRole } = renderWithProvider(
+      <AssetPickerModal
+        {...defaultProps}
+        onNetworkPickerClick={undefined}
+        header="selectNetworkHeader"
+        network={{
+          ticker: 'ETH',
+          chainId: '0x1',
+          rpcUrl: 'https://rpcurl',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://explorerurl',
+            imageUrl: 'https://image.com',
+          },
+          nickname: 'Network name',
+        }}
+      />,
+      store,
+    );
+
+    const modalTitle = getByText('selectNetworkHeader');
+    expect(modalTitle).toBeInTheDocument();
+
+    expect(getAllByRole('img')).toHaveLength(1);
   });
 });

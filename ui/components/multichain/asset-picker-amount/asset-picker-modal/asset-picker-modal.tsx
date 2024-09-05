@@ -330,11 +330,7 @@ export function AssetPickerModal({
           <Box className="network-picker">
             <PickerNetwork
               label={network?.nickname ?? 'Select network'}
-              src={
-                network?.rpcPrefs && 'imageUrl' in network.rpcPrefs
-                  ? (network.rpcPrefs.imageUrl as string)
-                  : undefined
-              }
+              src={network?.rpcPrefs?.imageUrl}
               onClick={onNetworkPickerClick}
               data-testid="multichain-asset-picker__network"
             />

@@ -314,10 +314,37 @@ describe('AssetPicker', () => {
           onAssetChange={() => mockAssetChange()}
           isDisabled
           networkProps={{
-            network: { chainId: '0x1', type: 'rpc', ticker: 'ETH' },
+            network: {
+              chainId: '0x1',
+              ticker: 'ETH',
+              rpcUrl: 'https://rpcurl',
+              rpcPrefs: {
+                blockExplorerUrl: 'https://explorerurl',
+                imageUrl: './images/eth_logo.svg',
+              },
+              nickname: 'network',
+            },
             networks: [
-              { chainId: '0x1', type: 'rpc', ticker: 'ETH' },
-              { chainId: '0xa', type: 'rpc', ticker: 'ETH' },
+              {
+                chainId: '0x1',
+                ticker: 'ETH',
+                rpcUrl: 'https://rpcurl',
+                rpcPrefs: {
+                  blockExplorerUrl: 'https://explorerurl',
+                  imageUrl: 'https://image.com',
+                },
+                nickname: 'Network name 3',
+              },
+              {
+                chainId: '0xa',
+                ticker: 'ETH',
+                rpcUrl: 'https://rpcurl',
+                rpcPrefs: {
+                  blockExplorerUrl: 'https://explorerurl',
+                  imageUrl: 'https://image.com',
+                },
+                nickname: 'Network name 4',
+              },
             ],
             onNetworkChange: jest.fn(),
           }}
