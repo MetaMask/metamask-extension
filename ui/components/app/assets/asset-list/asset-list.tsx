@@ -48,6 +48,7 @@ import {
   RampsCard,
 } from '../../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
+import { Button } from '../../../component-library';
 ///: END:ONLY_INCLUDE_IF
 
 export type TokenWithBalance = {
@@ -176,6 +177,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         ) : null
         ///: END:ONLY_INCLUDE_IF
       }
+      <Button onClick={() => console.log('click')}>Sort by</Button>
       <TokenListItem
         onClick={() => onClickAsset(nativeCurrency)}
         title={nativeCurrency}
