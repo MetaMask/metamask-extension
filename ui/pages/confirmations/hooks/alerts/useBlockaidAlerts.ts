@@ -17,14 +17,14 @@ import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getCurrentChainId } from '../../../../selectors';
 import {
+  SIGNATURE_TRANSACTION_TYPES,
+  REDESIGN_DEV_TRANSACTION_TYPES,
+} from '../../utils';
+import {
   SecurityAlertResponse,
   SignatureRequestType,
 } from '../../types/confirm';
 import { useConfirmContext } from '../../context/confirm';
-import {
-  REDESIGN_DEV_TRANSACTION_TYPES,
-  SIGNATURE_TRANSACTION_TYPES,
-} from '../../utils';
 import useCurrentSignatureSecurityAlertResponse from '../useCurrentSignatureSecurityAlertResponse';
 import { normalizeProviderAlert } from './utils';
 
