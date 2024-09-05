@@ -140,6 +140,35 @@ describe('addEthereumChainHandler', () => {
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123);
     });
 
+    it('creates a new networkConfiguration when called without "blockExplorerUrls" property', async () => {
+      const mocks = makeMocks({
+        permissionsFeatureFlagIsActive: false,
+      });
+      await addEthereumChainHandler(
+        {
+          origin: 'example.com',
+          params: [
+            {
+              chainId: CHAIN_IDS.OPTIMISM,
+              chainName: 'Optimism Mainnet',
+              rpcUrls: ['https://optimism.llamarpc.com'],
+              nativeCurrency: {
+                symbol: 'ETH',
+                decimals: 18,
+              },
+              iconUrls: ['https://optimism.icon.com'],
+            },
+          ],
+        },
+        {},
+        jest.fn(),
+        jest.fn(),
+        mocks,
+      );
+      expect(mocks.upsertNetworkConfiguration).toHaveBeenCalledTimes(1);
+      expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
+    });
+
     describe('if a networkConfiguration for the given chainId already exists', () => {
       it('updates the existing networkConfiguration with the new rpc url if it doesnt already exist', async () => {
         const mocks = makeMocks({
