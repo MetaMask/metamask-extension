@@ -29,11 +29,13 @@ import {
   IconName,
   IconSize,
   Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   ModalOverlay,
   Text,
 } from '../../component-library';
-import { ModalContent } from '../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import {
   getMetaMetricsId,
   getTestNetworkBackgroundColor,
@@ -406,10 +408,12 @@ export const TokenListItem = ({
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>{t('nativeTokenScamWarningTitle')}</ModalHeader>
-            <Box marginTop={4} marginBottom={4}>
-              {t('nativeTokenScamWarningDescription', [tokenSymbol])}
-            </Box>
-            <Box>
+            <ModalBody>
+              <Box marginTop={4} marginBottom={4}>
+                {t('nativeTokenScamWarningDescription', [tokenSymbol])}
+              </Box>
+            </ModalBody>
+            <ModalFooter>
               <ButtonSecondary
                 onClick={() => {
                   dispatch(
@@ -428,7 +432,7 @@ export const TokenListItem = ({
               >
                 {t('nativeTokenScamWarningConversion')}
               </ButtonSecondary>
-            </Box>
+            </ModalFooter>
           </ModalContent>
         </Modal>
       ) : null}
