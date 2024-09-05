@@ -32,10 +32,11 @@ import { confirmSelector } from '../../../selectors';
 import { selectUseTransactionSimulations } from '../../../selectors/preferences';
 
 import {
-  REDESIGN_DEV_TRANSACTION_TYPES,
   isPermitSignatureRequest,
   isSIWESignatureRequest,
+  REDESIGN_DEV_TRANSACTION_TYPES,
 } from '../../../utils';
+import { useConfirmContext } from '../../../context/confirm';
 import { getConfirmationSender } from '../utils';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 
@@ -118,7 +119,8 @@ const Footer = () => {
     selectUseTransactionSimulations,
   );
 
-  const { currentConfirmation, isScrollToBottomCompleted } = confirm;
+  const { currentConfirmation } = useConfirmContext();
+  const { isScrollToBottomCompleted } = confirm;
   const { from } = getConfirmationSender(currentConfirmation);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
