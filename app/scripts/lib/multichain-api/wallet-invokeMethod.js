@@ -6,7 +6,7 @@ import {
 } from './caip25permissions';
 import { mergeScopes, parseScopeString } from './scope';
 
-export async function providerRequestHandler(
+export async function walletInvokeMethodHandler(
   request,
   _response,
   next,
@@ -49,7 +49,7 @@ export async function providerRequestHandler(
       break;
     default:
       console.error(
-        'failed to resolve namespace for provider_request',
+        'failed to resolve namespace for wallet_invokeMethod',
         request,
       );
       return end(rpcErrors.internal());
@@ -57,7 +57,7 @@ export async function providerRequestHandler(
 
   if (!networkClientId) {
     console.error(
-      'failed to resolve network client for provider_request',
+      'failed to resolve network client for wallet_invokeMethod',
       request,
     );
     return end(rpcErrors.internal());

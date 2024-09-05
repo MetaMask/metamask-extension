@@ -262,7 +262,11 @@ describe('endowment:caip25', () => {
           invoker: 'test.com',
           parentCapability: Caip25EndowmentPermissionName,
         });
-      }).toThrow(new Error('missing required caveat'));
+      }).toThrow(
+        new Error(
+          `${Caip25EndowmentPermissionName} error: Invalid caveats. There must be a single caveat of type "${Caip25CaveatType}".`,
+        ),
+      );
 
       expect(() => {
         validator({
@@ -272,7 +276,11 @@ describe('endowment:caip25', () => {
           invoker: 'test.com',
           parentCapability: Caip25EndowmentPermissionName,
         });
-      }).toThrow(new Error('missing required caveat'));
+      }).toThrow(
+        new Error(
+          `${Caip25EndowmentPermissionName} error: Invalid caveats. There must be a single caveat of type "${Caip25CaveatType}".`,
+        ),
+      );
     });
 
     it('throws an error if there is no CAIP-25 caveat', () => {
@@ -289,7 +297,11 @@ describe('endowment:caip25', () => {
           invoker: 'test.com',
           parentCapability: Caip25EndowmentPermissionName,
         });
-      }).toThrow(new Error('missing required caveat'));
+      }).toThrow(
+        new Error(
+          `${Caip25EndowmentPermissionName} error: Invalid caveats. There must be a single caveat of type "${Caip25CaveatType}".`,
+        ),
+      );
     });
 
     it('throws an error if the CAIP-25 caveat is malformed', () => {
@@ -310,7 +322,11 @@ describe('endowment:caip25', () => {
           invoker: 'test.com',
           parentCapability: Caip25EndowmentPermissionName,
         });
-      }).toThrow(new Error('missing expected caveat values'));
+      }).toThrow(
+        new Error(
+          `${Caip25EndowmentPermissionName} error: Received invalid value for caveat of type "${Caip25CaveatType}".`,
+        ),
+      );
 
       expect(() => {
         validator({
@@ -329,7 +345,11 @@ describe('endowment:caip25', () => {
           invoker: 'test.com',
           parentCapability: Caip25EndowmentPermissionName,
         });
-      }).toThrow(new Error('missing expected caveat values'));
+      }).toThrow(
+        new Error(
+          `${Caip25EndowmentPermissionName} error: Received invalid value for caveat of type "${Caip25CaveatType}".`,
+        ),
+      );
 
       expect(() => {
         validator({
@@ -348,7 +368,11 @@ describe('endowment:caip25', () => {
           invoker: 'test.com',
           parentCapability: Caip25EndowmentPermissionName,
         });
-      }).toThrow(new Error('missing expected caveat values'));
+      }).toThrow(
+        new Error(
+          `${Caip25EndowmentPermissionName} error: Received invalid value for caveat of type "${Caip25CaveatType}".`,
+        ),
+      );
     });
 
     it('validates and flattens the ScopesObjects', () => {

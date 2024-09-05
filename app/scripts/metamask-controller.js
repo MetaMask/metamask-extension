@@ -336,8 +336,8 @@ import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verific
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
-import { providerAuthorizeHandler } from './lib/multichain-api/provider-authorize';
-import { providerRequestHandler } from './lib/multichain-api/provider-request';
+import { walletCreateSessionHandler } from './lib/multichain-api/wallet-createSession';
+import { walletInvokeMethodHandler } from './lib/multichain-api/wallet-invokeMethod';
 import {
   Caip25CaveatMutatorFactories,
   Caip25CaveatType,
@@ -5955,8 +5955,8 @@ export default class MetamaskController extends EventEmitter {
     engine.push((req, _res, next, end) => {
       if (
         ![
-          MESSAGE_TYPE.PROVIDER_AUTHORIZE,
-          MESSAGE_TYPE.PROVIDER_REQUEST,
+          MESSAGE_TYPE.WALLET_CREATE_SESSION,
+          MESSAGE_TYPE.WALLET_INVOKE_METHOD,
           MESSAGE_TYPE.WALLET_GET_SESSION,
           MESSAGE_TYPE.WALLET_REVOKE_SESSION,
         ].includes(req.method)
@@ -5971,8 +5971,13 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createScaffoldMiddleware({
-        [MESSAGE_TYPE.PROVIDER_AUTHORIZE]: (request, response, next, end) => {
-          return providerAuthorizeHandler(request, response, next, end, {
+        [MESSAGE_TYPE.WALLET_CREATE_SESSION]: (
+          request,
+          response,
+          next,
+          end,
+        ) => {
+          return walletCreateSessionHandler(request, response, next, end, {
             multichainMiddlewareManager: this.multichainMiddlewareManager,
             multichainSubscriptionManager: this.multichainSubscriptionManager,
             grantPermissions: this.permissionController.grantPermissions.bind(
@@ -5992,10 +5997,14 @@ export default class MetamaskController extends EventEmitter {
               ),
             requestPermissionApprovalForOrigin:
               this.requestPermissionApprovalForOrigin.bind(this, origin),
+            sendMetrics: this.metaMetricsController.trackEvent.bind(
+              this.metaMetricsController,
+            ),
+            metamaskState: this.getState(),
           });
         },
-        [MESSAGE_TYPE.PROVIDER_REQUEST]: (request, response, next, end) => {
-          return providerRequestHandler(request, response, next, end, {
+        [MESSAGE_TYPE.WALLET_INVOKE_METHOD]: (request, response, next, end) => {
+          return walletInvokeMethodHandler(request, response, next, end, {
             findNetworkClientIdByChainId:
               this.networkController.findNetworkClientIdByChainId.bind(
                 this.networkController,
@@ -6029,7 +6038,7 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
-    // TODO: Does this need to go before the provider_authorize middleware?
+    // TODO: Does this need to go before the wallet_createSession middleware?
     // Add a middleware that will switch chain on each request (as needed)
     const requestQueueMiddleware = createQueuedRequestMiddleware({
       enqueueRequest: this.queuedRequestController.enqueueRequest.bind(

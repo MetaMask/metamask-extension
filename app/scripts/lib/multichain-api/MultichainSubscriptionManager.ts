@@ -1,13 +1,22 @@
 import EventEmitter from 'events';
 import { NetworkController } from '@metamask/network-controller';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
-import { parseCaipChainId } from '@metamask/utils';
+import { Hex, parseCaipChainId } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
-import { Scope, ExternalScope } from './scope';
+import { ScopeString, ExternalScopeString } from './scope';
 
 export type SubscriptionManager = {
   events: EventEmitter;
   destroy?: () => void;
+};
+
+type subscriptionNotificationEvent = {
+  jsonrpc: '2.0';
+  method: 'eth_subscription';
+  params: {
+    subscription: Hex;
+    result: unknown;
+  };
 };
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
@@ -42,17 +51,21 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
     this.subscriptionsCountByScope = {};
   }
 
-  onNotification(scope: ExternalScope, domain: string, message: unknown) {
+  onNotification(
+    scope: ScopeString,
+    domain: string,
+    { method, params }: subscriptionNotificationEvent,
+  ) {
     this.emit('notification', domain, {
-      method: 'wallet_invokeMethod',
+      method: 'wallet_notify',
       params: {
         scope,
-        request: message,
+        notification: { method, params },
       },
     });
   }
 
-  subscribe(scope: Scope, domain: string) {
+  subscribe(scope: ScopeString, domain: string) {
     let subscriptionManager;
     if (this.subscriptionManagerByChain[scope]) {
       subscriptionManager = this.subscriptionManagerByChain[scope];
@@ -80,7 +93,7 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
     return subscriptionManager;
   }
 
-  unsubscribe(scope: ExternalScope, domain: string) {
+  unsubscribe(scope: ExternalScopeString, domain: string) {
     const subscriptionManager: SubscriptionManager =
       this.subscriptionManagerByChain[scope];
     if (subscriptionManager && this.subscriptionsByChain[scope][domain]) {

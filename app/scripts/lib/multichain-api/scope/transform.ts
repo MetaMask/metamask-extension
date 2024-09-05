@@ -2,7 +2,7 @@ import { CaipChainId, isCaipChainId } from '@metamask/utils';
 import {
   ExternalScopeObject,
   ExternalScopesObject,
-  Scope,
+  ScopeString,
   ScopeObject,
   ScopesObject,
 } from './scope';
@@ -83,7 +83,7 @@ export const mergeScopes = (
   const scope: ScopesObject = {};
 
   Object.entries(scopeA).forEach(([_scopeString, scopeObjectA]) => {
-    const scopeString = _scopeString as Scope;
+    const scopeString = _scopeString as ScopeString;
     const scopeObjectB = scopeB[scopeString];
 
     scope[scopeString] = scopeObjectB
@@ -92,7 +92,7 @@ export const mergeScopes = (
   });
 
   Object.entries(scopeB).forEach(([_scopeString, scopeObjectB]) => {
-    const scopeString = _scopeString as Scope;
+    const scopeString = _scopeString as ScopeString;
     const scopeObjectA = scopeA[scopeString];
 
     if (!scopeObjectA) {

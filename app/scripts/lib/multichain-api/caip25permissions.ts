@@ -21,7 +21,7 @@ import {
 import { NetworkClientId } from '@metamask/network-controller';
 import { cloneDeep, isEqual } from 'lodash';
 import {
-  ExternalScope,
+  ExternalScopeString,
   validateAndFlattenScopes,
   ScopesObject,
   ScopeObject,
@@ -210,7 +210,7 @@ function removeAccount(
  * @param caip25CaveatValue - The CAIP-25 permission caveat value to remove the scope from.
  */
 export function removeScope(
-  targetScopeString: ExternalScope,
+  targetScopeString: ExternalScopeString,
   caip25CaveatValue: Caip25CaveatValue,
 ) {
   const newRequiredScopes = Object.entries(

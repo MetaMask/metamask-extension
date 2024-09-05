@@ -52,10 +52,11 @@ export const KnownNotifications: Record<NonWalletKnownCaipNamespace, string[]> =
 // These External prefixed types represent the CAIP-217
 // Scope and ScopeObject as defined in the spec.
 export type ExternalScope = CaipChainId | CaipReference;
+export type ExternalScopeString = CaipChainId | CaipReference;
 export type ExternalScopeObject = ScopeObject & {
   scopes?: CaipChainId[];
 };
-export type ExternalScopesObject = Record<ExternalScope, ExternalScopeObject>;
+export type ExternalScopesObject = Record<ExternalScopeString, ExternalScopeObject>;
 
 // These non-prefixed types represent CAIP-217 Scope and
 // ScopeObject as defined by the spec but without
@@ -64,7 +65,7 @@ export type ExternalScopesObject = Record<ExternalScope, ExternalScopeObject>;
 // These deviations from the spec are necessary as MetaMask
 // does not support wildcarded Scopes, i.e. Scopes that only
 // specify a namespace but no specific reference.
-export type Scope = CaipChainId | KnownCaipNamespace.Wallet;
+export type ScopeString = CaipChainId | KnownCaipNamespace.Wallet;
 export type ScopeObject = {
   methods: string[];
   notifications: string[];
@@ -94,4 +95,4 @@ export const parseScopeString = (
   return {};
 };
 
-export type ScopedProperties = Record<ExternalScope, Record<string, unknown>>;
+export type ScopedProperties = Record<ExternalScopeString, Record<string, unknown>>;
