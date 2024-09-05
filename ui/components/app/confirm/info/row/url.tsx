@@ -18,6 +18,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import SnapAuthorshipPill from '../../../snaps/snap-authorship-pill';
 import { SnapMetadataModal } from '../../../snaps/snap-metadata-modal';
+import { isSnapId } from '../../../../../helpers/utils/snaps';
 
 export type ConfirmInfoRowUrlProps = {
   url: string;
@@ -28,9 +29,8 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-  const isSnapId = url.startsWith('npm:') || url.startsWith('local:');
 
-  if (isSnapId) {
+  if (isSnapId(url)) {
     return (
       <>
         <SnapAuthorshipPill snapId={url} onClick={openModal} />
