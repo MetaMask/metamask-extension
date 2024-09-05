@@ -6,11 +6,11 @@ import {
 } from '@metamask/transaction-controller';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { submitSmartTransactionHook } from './smart-transactions';
+import { submitSmartTransactionHook } from './smart-transaction-submit-hook';
 import type {
   SubmitSmartTransactionRequest,
   SmartTransactionsControllerMessenger,
-} from './smart-transactions';
+} from './smart-transaction-submit-hook';
 
 const addressFrom = '0xabce7847fd3661a9b7c86aaf1daea08d9da5750e';
 const txHash =
