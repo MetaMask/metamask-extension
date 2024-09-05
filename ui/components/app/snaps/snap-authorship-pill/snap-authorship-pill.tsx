@@ -42,7 +42,7 @@ const SnapAuthorshipPill: React.FC<SnapAuthorshipPillProps> = ({
       <SnapIcon avatarSize={IconSize.Sm} snapId={snapId} />
       <Text
         color={TextColor.primaryDefault}
-        variant={TextVariant.bodySm}
+        variant={TextVariant.bodyMdMedium}
         ellipsis
         paddingLeft={1}
       >
