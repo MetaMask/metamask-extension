@@ -316,6 +316,7 @@
   },
   "currentCurrency": "usd",
   "currentLocale": "en",
+  "currentMigrationVersion": 127,
   "customNonceValue": "",
   "database": {
     "verifiedSnaps": {
@@ -660,17 +661,108 @@
       "chainId": "0x1",
       "rpcEndpoints": [
         {
-          "networkClientId": "testNetworkConfigurationId",
-          "url": "https://testrpc.com",
-          "type": "custom",
-          "name": "Custom Mainnet RPC"
+          "networkClientId": "mainnet",
+          "url": "https://mainnet.infura.io/v3/{infuraProjectId}",
+          "type": "infura"
         }
       ],
       "defaultRpcEndpointIndex": 0,
-      "blockExplorerUrls": [],
+      "blockExplorerUrls": ["https://etherscan.io"],
       "defaultBlockExplorerUrlIndex": 0,
-      "name": "Custom Mainnet RPC",
+      "name": "Ethereum Mainnet",
       "nativeCurrency": "ETH"
+    },
+    "0xe705": {
+      "chainId": "0xe705",
+      "rpcEndpoints": [
+        {
+          "networkClientId": "linea-sepolia",
+          "url": "https://linea-sepolia.infura.io/v3/{infuraProjectId}",
+          "type": "infura"
+        }
+      ],
+      "defaultRpcEndpointIndex": 0,
+      "blockExplorerUrls": ["https://sepolia.lineascan.build"],
+      "defaultBlockExplorerUrlIndex": 0,
+      "name": "Linea Sepolia",
+      "nativeCurrency": "LineaETH"
+    },
+    "0xe708": {
+      "chainId": "0xe708",
+      "rpcEndpoints": [
+        {
+          "networkClientId": "linea-mainnet",
+          "url": "https://linea-mainnet.infura.io/v3/{infuraProjectId}",
+          "type": "infura"
+        }
+      ],
+      "defaultRpcEndpointIndex": 0,
+      "blockExplorerUrls": ["https://lineascan.build"],
+      "defaultBlockExplorerUrlIndex": 0,
+      "name": "Linea Mainnet",
+      "nativeCurrency": "ETH"
+    },
+    "0x2105": {
+      "chainId": "0x2105",
+      "rpcEndpoints": [
+        {
+          "networkClientId": "225ae6de-deda-4078-9f6c-4a4fb758ae00",
+          "url": "https://base.meowrpc.com",
+          "type": "custom",
+          "name": "Base Meow"
+        },
+        {
+          "networkClientId": "78d85c4e-eeb0-4b81-ae5b-52d0fca7e5e3",
+          "url": "https://base-pokt.nodies.app",
+          "type": "custom",
+          "name": "Base"
+        },
+        {
+          "networkClientId": "b3742c56-a2be-48ef-8811-6e9d265b420b",
+          "url": "https://base.llamarpc.com",
+          "type": "custom",
+          "name": "Base LlamaNodes"
+        }
+      ],
+      "defaultRpcEndpointIndex": 2,
+      "blockExplorerUrls": ["https://basescan.org"],
+      "defaultBlockExplorerUrlIndex": 0,
+      "name": "Base Mainnet",
+      "nativeCurrency": "ETH"
+    },
+    "0x38": {
+      "chainId": "0x38",
+      "rpcEndpoints": [
+        {
+          "networkClientId": "53e97f54-22fe-4b03-9fcd-0de69b8e94c4",
+          "url": "https://bsc-rpc.publicnode.com",
+          "type": "custom",
+          "name": "BNB Smart Chain Public node"
+        },
+        {
+          "networkClientId": "ab06ec91-1062-4b7f-9a36-0eef6037e42c",
+          "url": "https://binance.llamarpc.com",
+          "type": "custom",
+          "name": "BNB Chain LlamaNodes"
+        },
+        {
+          "networkClientId": "ee9efbc0-de0d-4caf-afe9-edd747dd84f9",
+          "url": "https://bsc.meowrpc.com",
+          "type": "custom",
+          "name": "BNB Smart Chain Meow"
+        },
+        {
+          "networkClientId": "f740f15b-d4a1-4ae9-afa9-3130ccbf2543",
+          "url": "https://endpoints.omniatech.io/v1/bsc/mainnet/public",
+          "type": "custom",
+          "name": "BNB Smart Chain Mainnet"
+        }
+      ],
+      "defaultRpcEndpointIndex": 0,
+      "blockExplorerUrls": ["https://bscscan.com"],
+      "defaultBlockExplorerUrlIndex": 0,
+      "name": "Binance Smart Chain",
+      "nativeCurrency": "BNB"
     },
     "0x5": {
       "chainId": "0x5",
@@ -751,21 +843,8 @@
   "openSeaEnabled": false,
   "orderedNetworkList": [],
   "participateInMetaMetrics": false,
-  "pendingApprovalCount": 1,
-  "pendingApprovals": {
-    "testApprovalId": {
-      "id": "testApprovalId",
-      "time": 1528133319641,
-      "origin": "metamask",
-      "type": "transaction",
-      "requestData": {
-        "txId": "testTransactionId"
-      },
-      "requestState": {
-        "test": "value"
-      }
-    }
-  },
+  "pendingApprovalCount": 0,
+  "pendingApprovals": {},
   "permissionHistory": {
     "https://metamask.github.io": {
       "eth_accounts": {
@@ -784,11 +863,19 @@
     "smartTransactionsOptInStatus": false,
     "useNativeCurrencyAsPrimaryCurrency": true,
     "petnamesEnabled": false,
-    "showConfirmationAdvancedDetails": false
+    "showConfirmationAdvancedDetails": false,
+    "showMultiRpcModal": false
   },
   "preventPollingOnNetworkRestart": true,
   "previousAppVersion": "11.14.4",
   "previousMigrationVersion": 112,
+  "providerConfig": {
+    "type": "rpc",
+    "nickname": "goerli",
+    "chainId": "0x5",
+    "ticker": "ETH",
+    "id": "chain5"
+  },
   "securityAlertsEnabled": true,
   "seedPhraseBackedUp": true,
   "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
