@@ -1301,6 +1301,14 @@ const slice = createSlice({
         slice.caseReducers.updateAmountToMax(state);
       }
     },
+    // setGasIsEstimateLoading: debounce((state, action) => {
+    //   console.log('====setGasIsEstimateLoading', action);
+    //   state.gasEstimateIsLoading = action.payload;
+    // }, 1000),
+    setGasIsEstimateLoading: (state, action) => {
+      console.log('====setGasIsEstimateLoading', action);
+      state.gasEstimateIsLoading = action.payload;
+    },
     /**
      * Updates the recipient of the draftTransaction
      *
@@ -1915,10 +1923,12 @@ const slice = createSlice({
         draftTransaction.timeToFetchQuotes =
           draftTransactionInitialState.timeToFetchQuotes;
       })
-      .addCase(computeEstimatedGasLimit.pending, (state) => {
+      .addCase(computeEstimatedGasLimit.pending, (state, action) => {
         // When we begin to fetch gasLimit we should indicate we are loading
         // a gas estimate.
+        console.log('====computeEstimatedGasLimit.pending', action);
         state.gasEstimateIsLoading = true;
+        // slice.caseReducers.setGasIsEstimateLoading(state, { payload: true });
       })
       .addCase(computeEstimatedGasLimit.fulfilled, (state, action) => {
         // When we receive a new gasLimit from the computeEstimatedGasLimit
@@ -1926,7 +1936,8 @@ const slice = createSlice({
         // caseReducer updateGasLimit to tap into the appropriate follow up
         // checks and gasTotal calculation. First set gasEstimateIsLoading to
         // false.
-        state.gasEstimateIsLoading = false;
+        // state.gasEstimateIsLoading = false;
+        console.log('====computeEstimatedGasLimit.fulfilled', action);
         if (action.payload?.gasLimit) {
           slice.caseReducers.updateGasLimit(state, {
             payload: action.payload.gasLimit,
@@ -1937,12 +1948,21 @@ const slice = createSlice({
             payload: action.payload.gasTotalForLayer1,
           });
         }
+        // slice.caseReducers.setGasIsEstimateLoading(state, { payload: false });
       })
-      .addCase(computeEstimatedGasLimit.rejected, (state) => {
+      .addCase(computeEstimatedGasLimit.rejected, (state, action) => {
         // If gas estimation fails, we should set the loading state to false,
         // because it is no longer loading
-        state.gasEstimateIsLoading = false;
+        // state.gasEstimateIsLoading = false;
+        // slice.caseReducers.setGasIsEstimateLoading(state, { payload: false });
+        console.log('====computeEstimatedGasLimit.rejected', action);
       })
+      // .addCase(
+      //   'setGasIsEstimateLoading',
+      //   debounce((state, payload) => {
+      //     state.gasEstimateIsLoading = payload;
+      //   }, 5000),
+      // )
       .addCase(GAS_FEE_ESTIMATES_UPDATED, (state, action) => {
         // When the gasFeeController updates its gas fee estimates we need to
         // update and validate state based on those new values
@@ -2155,6 +2175,8 @@ const {
   updateRecipientSearchMode,
   addHistoryEntry,
   acknowledgeRecipientWarning,
+  setGasIsEstimateLoading,
+  validateSendState,
 } = actions;
 
 export {
@@ -2193,6 +2215,10 @@ const debouncedComputeEstimatedGasLimit = debounce(async (dispatch) => {
 const debouncedAddHistoryEntry = debounce((dispatch, payload) => {
   dispatch(addHistoryEntry(payload));
 }, 100);
+
+// const debouncedSetGasEstimateIsLoading = debounce((dispatch) => {
+//   dispatch(setGasIsEstimateLoading());
+// }, 2000);
 
 /**
  * Begins a new draft transaction, derived from the txParams of an existing
@@ -2363,6 +2389,17 @@ export function updateGasPrice(gasPrice) {
   };
 }
 
+// Debounce validation to prevent blocking state
+const deValidateSendState = debounce((dispatch, payload) => {
+  dispatch(validateSendState());
+}, 700);
+
+const desetGasIsEstimateLoading = debounce((dispatch, payload) => {
+  dispatch(setGasIsEstimateLoading(payload));
+}, 700); // TODO find average time for gas estimation
+// TODO add abort for this dispatch
+
+let gasAbortPromise;
 export function updateSendQuote(
   isComputingSendGasLimit = true,
   isRefreshingQuotes = false,
@@ -2405,12 +2442,19 @@ export function updateSendQuote(
     }
 
     if (isComputingSendGasLimit) {
+      if (gasAbortPromise) {
+        // cancel ongoing gas estimation
+        // TODO add gasAbortPromise to state
+        gasAbortPromise.abort();
+        gasAbortPromise = undefined;
+      }
       if (isComputingSendGasLimitUrgent) {
-        // await debouncedComputeEstimatedGasLimit(dispatch);
-        await dispatch(computeEstimatedGasLimit());
+        gasAbortPromise = await dispatch(computeEstimatedGasLimit());
       } else {
         await debouncedComputeEstimatedGasLimit(dispatch);
       }
+      desetGasIsEstimateLoading(dispatch, false);
+      deValidateSendState(dispatch);
     }
   };
 }
@@ -3555,6 +3599,9 @@ export const getIsSwapAndSendDisabledForNetwork = createSelector(
     return disabledSwapAndSendNetworks.includes(chainId);
   },
 );
+
+export const getGasEstimateIsLoading = (state) =>
+  state[name].gasEstimateIsLoading;
 
 export const getSendAnalyticProperties = createSelector(
   getProviderConfig,
