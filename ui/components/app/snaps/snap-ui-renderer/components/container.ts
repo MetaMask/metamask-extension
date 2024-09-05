@@ -81,7 +81,8 @@ export const container: UIComponentFactory<BoxElement> = ({
       height: BlockSize.Full,
       className: 'snap-ui-renderer__container',
       style: {
-        overflow: 'auto',
+        overflowY: 'auto',
+        paddingBottom: useFooter ? '74px' : 'initial',
       },
     },
   };

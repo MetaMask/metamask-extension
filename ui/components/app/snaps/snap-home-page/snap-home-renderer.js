@@ -70,7 +70,7 @@ export const SnapHomeRenderer = ({ snapId }) => {
       width={BlockSize.Full}
       backgroundColor={BackgroundColor.backgroundAlternative}
       style={{
-        overflow: 'auto',
+        overflowY: 'auto',
       }}
     >
       {error && (
