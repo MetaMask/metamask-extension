@@ -77,10 +77,10 @@ export const isSupportedAccount = (
 };
 
 export const isSupportedMethod = (
-  scope: ExternalScopeString,
+  scopeString: ExternalScopeString,
   method: string,
 ): boolean => {
-  const { namespace, reference } = parseScopeString(scope);
+  const { namespace, reference } = parseScopeString(scopeString);
 
   if (namespace === KnownCaipNamespace.Wallet) {
     if (reference) {
@@ -100,10 +100,10 @@ export const isSupportedMethod = (
 };
 
 export const isSupportedNotification = (
-  scope: ExternalScopeString,
+  scopeString: ExternalScopeString,
   notification: string,
 ): boolean => {
-  const { namespace } = parseScopeString(scope);
+  const { namespace } = parseScopeString(scopeString);
 
   return (
     KnownNotifications[namespace as NonWalletKnownCaipNamespace] || []

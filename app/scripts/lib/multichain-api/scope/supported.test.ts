@@ -8,17 +8,18 @@ import {
   KnownRpcMethods,
   KnownWalletNamespaceRpcMethods,
   KnownWalletRpcMethods,
+  ScopeString,
 } from './scope';
 
 describe('Scope Support', () => {
   describe('isSupportedNotification', () => {
     it.each(Object.entries(KnownNotifications))(
       'returns true for each %s scope method',
-      (scope: string, notifications: string[]) => {
+      (scopeString: ScopeString, notifications: string[]) => {
         notifications.forEach((notification) => {
-          expect(isSupportedNotification(scope, notification)).toStrictEqual(
-            true,
-          );
+          expect(
+            isSupportedNotification(scopeString, notification),
+          ).toStrictEqual(true);
         });
       },
     );
@@ -34,9 +35,9 @@ describe('Scope Support', () => {
   describe('isSupportedMethod', () => {
     it.each(Object.entries(KnownRpcMethods))(
       'returns true for each %s scoped method',
-      (scope: string, methods: string[]) => {
+      (scopeString: ScopeString, methods: string[]) => {
         methods.forEach((method) => {
-          expect(isSupportedMethod(scope, method)).toStrictEqual(true);
+          expect(isSupportedMethod(scopeString, method)).toStrictEqual(true);
         });
       },
     );
@@ -49,11 +50,11 @@ describe('Scope Support', () => {
 
     it.each(Object.entries(KnownWalletNamespaceRpcMethods))(
       'returns true for each wallet:%s scoped method',
-      (scope: string, methods: string[]) => {
+      (scopeString: ScopeString, methods: string[]) => {
         methods.forEach((method) => {
-          expect(isSupportedMethod(`wallet:${scope}`, method)).toStrictEqual(
-            true,
-          );
+          expect(
+            isSupportedMethod(`wallet:${scopeString}`, method),
+          ).toStrictEqual(true);
         });
       },
     );

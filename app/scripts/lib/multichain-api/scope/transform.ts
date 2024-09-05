@@ -34,8 +34,8 @@ export const flattenScope = (
   }
 
   const scopeMap: ScopesObject = {};
-  scopes.forEach((scope: CaipChainId) => {
-    scopeMap[scope] = restScopeObject;
+  scopes.forEach((nestedScopeString: CaipChainId) => {
+    scopeMap[nestedScopeString] = restScopeObject;
   });
   return scopeMap;
 };

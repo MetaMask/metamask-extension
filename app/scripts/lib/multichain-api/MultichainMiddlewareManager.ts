@@ -31,31 +31,32 @@ export default class MultichainMiddlewareManager {
   }
 
   public addMiddleware(
-    scope: ExternalScopeString,
+    scopeString: ExternalScopeString,
     domain: string,
     middleware: ExtendedJsonRpcMiddleware,
   ) {
-    this.middlewareCountByDomainAndScope[scope] =
-      this.middlewareCountByDomainAndScope[scope] || {};
-    this.middlewareCountByDomainAndScope[scope][domain] =
-      this.middlewareCountByDomainAndScope[scope][domain] || 0;
-    this.middlewareCountByDomainAndScope[scope][domain] += 1;
-    if (!this.middlewaresByScope[scope]) {
-      this.middlewaresByScope[scope] = middleware;
+    this.middlewareCountByDomainAndScope[scopeString] =
+      this.middlewareCountByDomainAndScope[scopeString] || {};
+    this.middlewareCountByDomainAndScope[scopeString][domain] =
+      this.middlewareCountByDomainAndScope[scopeString][domain] || 0;
+    this.middlewareCountByDomainAndScope[scopeString][domain] += 1;
+    if (!this.middlewaresByScope[scopeString]) {
+      this.middlewaresByScope[scopeString] = middleware;
     }
   }
 
-  public removeMiddleware(scope: ExternalScopeString, domain: string) {
-    if (this.middlewareCountByDomainAndScope[scope]?.[domain]) {
-      this.middlewareCountByDomainAndScope[scope][domain] -= 1;
-      if (this.middlewareCountByDomainAndScope[scope][domain] === 0) {
-        delete this.middlewareCountByDomainAndScope[scope][domain];
+  public removeMiddleware(scopeString: ExternalScopeString, domain: string) {
+    if (this.middlewareCountByDomainAndScope[scopeString]?.[domain]) {
+      this.middlewareCountByDomainAndScope[scopeString][domain] -= 1;
+      if (this.middlewareCountByDomainAndScope[scopeString][domain] === 0) {
+        delete this.middlewareCountByDomainAndScope[scopeString][domain];
       }
       if (
-        Object.keys(this.middlewareCountByDomainAndScope[scope]).length === 0
+        Object.keys(this.middlewareCountByDomainAndScope[scopeString])
+          .length === 0
       ) {
-        delete this.middlewareCountByDomainAndScope[scope];
-        delete this.middlewaresByScope[scope];
+        delete this.middlewareCountByDomainAndScope[scopeString];
+        delete this.middlewaresByScope[scopeString];
       }
     }
   }
