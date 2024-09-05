@@ -30,28 +30,30 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
     return await mockServer
       .forGet('https://www.4byte.directory/api/v1/signatures/')
       .withQuery({ hex_signature: '0x39509351' })
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {
-          count: 1,
-          next: null,
-          previous: null,
-          results: [
-            {
-              id: 46002,
-              created_at: '2018-06-24T21:43:27.354648Z',
-              text_signature: 'increaseAllowance(address,uint256)',
-              hex_signature: '0x39509351',
-              bytes_signature: '9PQ',
-              test: 'Priya',
-            },
-          ],
-        },
-      }));
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            count: 1,
+            next: null,
+            previous: null,
+            results: [
+              {
+                id: 46002,
+                created_at: '2018-06-24T21:43:27.354648Z',
+                text_signature: 'increaseAllowance(address,uint256)',
+                hex_signature: '0x39509351',
+                bytes_signature: '9PQ',
+                test: 'Priya',
+              },
+            ],
+          },
+        };
+      });
   }
 
-  describe('Submit an increase allowance transaction @no-mmi', function () {
-    it('Sends a type 0 transaction (Legacy) with a small spending cap', async function () {
+  describe.only('Submit an increase allowance transaction @no-mmi', function () {
+    it.only('Sends a type 0 transaction (Legacy) with a small spending cap', async function () {
       await withFixtures(
         {
           dapp: true,
@@ -81,6 +83,7 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
           const events = await getEventPayloads(
             driver,
             mockedEndpoints as MockedEndpoint[],
+            false,
           );
 
           console.log('here '.repeat(42), { mockedEndpoints, events });
@@ -203,6 +206,9 @@ async function createERC20IncreaseAllowanceTransaction(driver: Driver) {
 
 async function editSpendingCap(driver: Driver, newSpendingCap: string) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.takeScreenshot('spendingCapDialog-before-wait');
+  await driver.delay(10000);
+  await driver.takeScreenshot('spendingCapDialog-after-wait');
   await driver.clickElement('[data-testid="edit-spending-cap-icon"');
 
   await driver.fill(

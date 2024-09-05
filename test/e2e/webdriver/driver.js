@@ -589,6 +589,17 @@ class Driver {
     }
   }
 
+  async takeScreenshot(title) {
+    const artifactDir = `./test-artifacts/${this.browser}/${title}`;
+    const filepathBase = `${artifactDir}/test-screenshot`;
+    await fs.mkdir(artifactDir, { recursive: true });
+
+    const screenshot = await this.driver.takeScreenshot();
+    await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
+      encoding: 'base64',
+    });
+  }
+
   /**
    * Clicks on an element identified by the provided locator and waits for it to disappear.
    * For scenarios where the clicked element, such as a notification or popup, needs to disappear afterward.
