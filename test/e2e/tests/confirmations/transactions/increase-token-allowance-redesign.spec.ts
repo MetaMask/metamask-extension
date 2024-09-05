@@ -14,6 +14,7 @@ import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import { openDAppWithContract, TestSuiteArguments } from './shared';
 import { mocked4BytesApprove } from './erc20-approve-redesign.spec';
+import { MockedEndpoint } from '../../../mock-e2e';
 
 describe('Confirmation Redesign ERC20 Increase Allowance', function () {
   describe('Submit an increase allowance transaction @no-mmi', function () {

@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
-import { tinyDelayMs, veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
+import {
+  getEventPayloads,
+  tinyDelayMs,
+  veryLargeDelayMs,
+  WINDOW_TITLES,
+} from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import {
@@ -8,6 +13,7 @@ import {
   TestSuiteArguments,
   toggleAdvancedDetails,
 } from './shared';
+import { MockedEndpoint } from '../../../mock-e2e';
 
 const {
   defaultGanacheOptions,
@@ -20,8 +26,8 @@ const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 describe('Confirmation Redesign ERC20 Approve Component', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
-  describe('Submit an Approve transaction @no-mmi', function () {
-    it('Sends a type 0 transaction (Legacy)', async function () {
+  describe.only('Submit an Approve transaction @no-mmi', function () {
+    it.only('Sends a type 0 transaction (Legacy)', async function () {
       await withFixtures(
         {
           dapp: true,
@@ -39,12 +45,23 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          contractRegistry,
+          mockedEndpoint: mockedEndpoints,
+        }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
           await importTST(driver);
 
           await createERC20ApproveTransaction(driver);
+
+          const events = await getEventPayloads(
+            driver,
+            mockedEndpoints as MockedEndpoint[],
+          );
+
+          console.log('here '.repeat(42), { mockedEndpoints, events });
 
           await assertApproveDetails(driver);
 
