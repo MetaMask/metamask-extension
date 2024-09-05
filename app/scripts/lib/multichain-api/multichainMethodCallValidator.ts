@@ -46,7 +46,7 @@ const dereffedPromise = dereferenceDocument(
 );
 export const multichainMethodCallValidator = async (
   method: string,
-  params: JsonRpcParams,
+  params: JsonRpcParams | undefined,
 ) => {
   const dereffed = await dereffedPromise;
   const methodToCheck = dereffed.methods.find(
@@ -59,7 +59,7 @@ export const multichainMethodCallValidator = async (
     const p = param as ContentDescriptorObject;
     if (isObject(params)) {
       paramToCheck = params[p.name];
-    } else {
+    } else if (params && Array.isArray(params)) {
       paramToCheck = params[i];
     }
     const result = v.validate(paramToCheck, p.schema as unknown as Schema, {
