@@ -65,7 +65,7 @@ export async function addDappTransaction(
 ): Promise<string> {
   const { dappRequest } = request;
   const { id: actionId, method, origin } = dappRequest;
-  const { securityAlertResponse, traceContext } = dappRequest;
+  const { securityAlertResponse } = dappRequest;
 
   const transactionOptions: AddTransactionOptions = {
     actionId,
@@ -82,7 +82,6 @@ export async function addDappTransaction(
     ...request,
     transactionOptions: {
       ...transactionOptions,
-      traceContext,
     },
   });
 
