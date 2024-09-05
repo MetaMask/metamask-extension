@@ -165,7 +165,7 @@ describe('addEthereumChainHandler', () => {
         jest.fn(),
         mocks,
       );
-      expect(mocks.upsertNetworkConfiguration).toHaveBeenCalledTimes(1);
+      expect(mocks.addNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
     });
 
