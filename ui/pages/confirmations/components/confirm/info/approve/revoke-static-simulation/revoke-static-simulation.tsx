@@ -16,29 +16,36 @@ export const RevokeStaticSimulation = () => {
     currentConfirmation: TransactionMeta;
   };
 
+  const TokenContractRow = (
+    <ConfirmInfoRow label={t('spendingCap')}>
+      <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
+        <Box display={Display.Flex}>
+          <Name
+            value={transactionMeta.txParams.to as string}
+            type={NameType.ETHEREUM_ADDRESS}
+          />
+        </Box>
+      </Box>
+    </ConfirmInfoRow>
+  );
+
+  const SpenderRow = (
+    <ConfirmInfoRow label={t('spender')}>
+      <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
+        <Box display={Display.Flex}>
+          <Name
+            value={transactionMeta.txParams.from as string}
+            type={NameType.ETHEREUM_ADDRESS}
+          />
+        </Box>
+      </Box>
+    </ConfirmInfoRow>
+  );
+
   const simulationElements = (
     <>
-      <ConfirmInfoRow label={t('spendingCap')}>
-        <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
-          <Box display={Display.Flex}>
-            <Name
-              value={transactionMeta.txParams.to as string}
-              type={NameType.ETHEREUM_ADDRESS}
-            />
-          </Box>
-        </Box>
-      </ConfirmInfoRow>
-
-      <ConfirmInfoRow label={t('spender')}>
-        <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
-          <Box display={Display.Flex}>
-            <Name
-              value={transactionMeta.txParams.from as string}
-              type={NameType.ETHEREUM_ADDRESS}
-            />
-          </Box>
-        </Box>
-      </ConfirmInfoRow>
+      {TokenContractRow}
+      {SpenderRow}
     </>
   );
 
