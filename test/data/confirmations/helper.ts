@@ -155,16 +155,15 @@ export const getMockConfirmStateForTransaction = (
       },
       transactions: [transaction],
     },
-    confirm: {
-      currentConfirmation: transaction,
-    },
   });
 
-export const getMockContractInteractionConfirmState = () => {
+export const getMockContractInteractionConfirmState = (
+  args: RootState = { metamask: {} },
+) => {
   const contractInteraction = genUnapprovedContractInteractionConfirmation({
     chainId: CHAIN_IDS.GOERLI,
   });
-  return getMockConfirmStateForTransaction(contractInteraction);
+  return getMockConfirmStateForTransaction(contractInteraction, args);
 };
 
 export const getMockApproveConfirmState = () => {

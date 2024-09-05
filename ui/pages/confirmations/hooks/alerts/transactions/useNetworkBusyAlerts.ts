@@ -4,16 +4,16 @@ import { useSelector } from 'react-redux';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../selectors';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { getIsNetworkBusyByChainId } from '../../../../../ducks/metamask/metamask';
+import { useConfirmContext } from '../../../context/confirm';
 
 export function useNetworkBusyAlerts(): Alert[] {
   const t = useI18nContext();
 
-  const currentConfirmation = useSelector(currentConfirmationSelector) as
-    | TransactionMeta
-    | undefined;
+  const { currentConfirmation } = useConfirmContext() as {
+    currentConfirmation: TransactionMeta | undefined;
+  };
 
   const isNetworkBusy = useSelector((state) =>
     getIsNetworkBusyByChainId(state, currentConfirmation?.chainId),
