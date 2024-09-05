@@ -21,7 +21,7 @@ const TypedSignV1Info: React.FC = () => {
     currentConfirmation: SignatureRequestType;
   };
 
-  if (!currentConfirmation?.msgParams) {
+  if (!(currentConfirmation as SignatureRequestType)?.msgParams) {
     return null;
   }
 
