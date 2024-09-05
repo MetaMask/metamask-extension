@@ -13,7 +13,6 @@ import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import { openDAppWithContract, TestSuiteArguments } from './shared';
-import { MockedEndpoint } from '../../../mock-e2e';
 
 describe('Confirmation Redesign ERC20 Increase Allowance', function () {
   describe('Submit an increase allowance transaction @no-mmi', function () {
@@ -229,6 +228,9 @@ async function createERC20IncreaseAllowanceTransaction(driver: Driver) {
 
 async function editSpendingCap(driver: Driver, newSpendingCap: string) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.takeScreenshot('spendingCapDialog-before-wait');
+  await driver.delay(10000);
+  await driver.takeScreenshot('spendingCapDialog-after-wait');
   await driver.clickElement('[data-testid="edit-spending-cap-icon"');
 
   await driver.fill(
