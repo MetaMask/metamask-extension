@@ -48,7 +48,6 @@ import {
   RampsCard,
 } from '../../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
-import { zeroAddress } from 'ethereumjs-util';
 ///: END:ONLY_INCLUDE_IF
 
 export type TokenWithBalance = {
@@ -178,7 +177,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         ///: END:ONLY_INCLUDE_IF
       }
       <TokenListItem
-        address={zeroAddress()}
         onClick={() => onClickAsset(nativeCurrency)}
         title={nativeCurrency}
         // The primary and secondary currencies are subject to change based on the user's settings
@@ -189,12 +187,12 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
             useNativeCurrencyAsPrimaryCurrency,
           )
             ? secondaryCurrencyDisplay
-            : ''
+            : undefined
         }
         tokenSymbol={
           useNativeCurrencyAsPrimaryCurrency
-            ? primaryCurrencyProperties.suffix || ''
-            : secondaryCurrencyProperties.suffix || ''
+            ? primaryCurrencyProperties.suffix
+            : secondaryCurrencyProperties.suffix
         }
         secondary={
           showFiat &&
@@ -203,7 +201,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
             useNativeCurrencyAsPrimaryCurrency,
           )
             ? primaryCurrencyDisplay
-            : ''
+            : undefined
         }
         tokenImage={balanceIsLoading ? null : primaryTokenImage}
         isOriginalTokenSymbol={isOriginalNativeSymbol}
@@ -212,6 +210,8 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         showPercentage
       />
       <TokenList
+        tokens={tokensWithBalances}
+        loading={loading}
         onTokenClick={(tokenAddress: string) => {
           onClickAsset(tokenAddress);
           trackEvent({
@@ -223,8 +223,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
             },
           });
         }}
-        tokens={tokensWithBalances}
-        loading={loading}
       />
       {shouldShowTokensLinks && (
         <ImportTokenLink

@@ -68,9 +68,9 @@ import { PercentageChange } from './price/percentage-change/percentage-change';
 interface TokenListItemProps {
   className?: string;
   onClick?: (arg?: string) => void;
-  tokenSymbol: string;
+  tokenSymbol?: string;
   tokenImage: string;
-  primary: string;
+  primary?: string;
   secondary?: string | null;
   title: string;
   tooltipText?: string;
