@@ -853,7 +853,7 @@ describe('Selectors', () => {
           networkConfigurationsByChainId,
         },
       });
-      expect(networks).toHaveLength(2);
+      expect(Object.values(networks)).toHaveLength(2);
     });
 
     it('returns networks with showTestNetworks on', () => {
