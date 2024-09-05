@@ -2060,6 +2060,7 @@ export const getAllEnabledNetworks = createDeepEqualSelector(
         }
         return acc;
       },
+      {},
     ),
 );
 

@@ -32,7 +32,7 @@ const mapStateToProps = (state) => {
     const networks = getAllEnabledNetworks(state);
     const desiredNetwork = networks[chainId];
     if (desiredNetwork) {
-      networkName = desiredNetwork.nickname;
+      networkName = desiredNetwork.name;
     }
   }
 
