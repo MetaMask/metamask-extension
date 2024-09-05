@@ -19,17 +19,43 @@ export async function mockBtcBalanceQuote(
   mockServer: Mockttp,
   address: string = DEFAULT_BTC_ACCOUNT,
 ) {
-  return [
-    await mockServer
-      .forGet(/https:\/\/api\.blockchair\.com\/bitcoin\/addresses\/balances/u)
-      .withQuery({
-        addresses: address,
-      })
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: GENERATE_MOCK_BTC_BALANCE_CALL(address),
-      })),
-  ];
+  return await mockServer
+    .forGet(/https:\/\/api\.blockchair\.com\/bitcoin\/addresses\/balances/u)
+    .withQuery({
+      addresses: address,
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: GENERATE_MOCK_BTC_BALANCE_CALL(address),
+    }));
+}
+
+export async function mockRampsDynamicFeatureFlag(
+  mockServer: Mockttp,
+  subDomain: string,
+) {
+  return await mockServer
+    .forGet(
+      `https://on-ramp-content.${subDomain}.cx.metamask.io/regions/networks`,
+    )
+    .withQuery({
+      context: 'extension',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        networks: [
+          {
+            active: true,
+            chainId: 'bip122:000000000019d6689c085ae165831e93',
+            chainName: 'Bitcoin',
+            shortName: 'Bitcoin',
+            nativeTokenSupported: true,
+            isEvm: false,
+          },
+        ],
+      },
+    }));
 }
 
 export async function withBtcAccountSnap(
@@ -48,7 +74,13 @@ export async function withBtcAccountSnap(
         .build(),
       title,
       dapp: true,
-      testSpecificMock: mockBtcBalanceQuote,
+      testSpecificMock: async (mockServer: Mockttp) => [
+        await mockBtcBalanceQuote(mockServer),
+        // See: PROD_RAMP_API_BASE_URL
+        await mockRampsDynamicFeatureFlag(mockServer, 'api'),
+        // See: UAT_RAMP_API_BASE_URL
+        await mockRampsDynamicFeatureFlag(mockServer, 'uat-api'),
+      ],
     },
     async ({ driver }: { driver: Driver }) => {
       await unlockWallet(driver);
