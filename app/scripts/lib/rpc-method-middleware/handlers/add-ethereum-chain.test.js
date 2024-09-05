@@ -120,7 +120,7 @@ describe('addEthereumChainHandler', () => {
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123);
     });
 
-    it('creates a new networkConfiguration when called with no "blockExplorerUrls" property', async () => {
+    it('creates a new networkConfiguration when called without "blockExplorerUrls" property', async () => {
       const mocks = makeMocks({
         permissionsFeatureFlagIsActive: false,
       });

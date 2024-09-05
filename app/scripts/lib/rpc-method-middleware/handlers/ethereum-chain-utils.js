@@ -119,12 +119,11 @@ export function validateAddEthereumChainParams(params, end) {
   };
 
   const firstValidRPCUrl = rpcUrls.find((rpcUrl) => isLocalhostOrHttps(rpcUrl));
-  const firstValidBlockExplorerUrl =
-    blockExplorerUrls && Array.isArray(blockExplorerUrls)
-      ? blockExplorerUrls.find((blockExplorerUrl) =>
-          isLocalhostOrHttps(blockExplorerUrl),
-        )
-      : null;
+  const firstValidBlockExplorerUrl = Array.isArray(blockExplorerUrls)
+    ? blockExplorerUrls.find((blockExplorerUrl) =>
+        isLocalhostOrHttps(blockExplorerUrl),
+      )
+    : null;
 
   if (!firstValidRPCUrl) {
     throw ethErrors.rpc.invalidParams({
