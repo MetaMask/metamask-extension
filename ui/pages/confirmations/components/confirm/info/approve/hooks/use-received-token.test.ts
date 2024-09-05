@@ -1,10 +1,11 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+
 import {
   CONTRACT_INTERACTION_SENDER_ADDRESS,
   genUnapprovedApproveConfirmation,
 } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import mockState from '../../../../../../../../test/data/mock-state.json';
-import { renderHookWithProvider } from '../../../../../../../../test/lib/render-helpers';
+import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
+import { renderHookWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { useAccountTotalFiatBalance } from '../../../../../../../hooks/useAccountTotalFiatBalance';
 import { useReceivedToken } from './use-received-token';
 
@@ -32,12 +33,13 @@ describe('useReceivedToken', () => {
 
     const transactionMeta = genUnapprovedApproveConfirmation({
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+      chainId: '0x5',
     }) as TransactionMeta;
 
-    const { result } = renderHookWithProvider(() => useReceivedToken(), {
-      ...mockState,
-      confirm: { currentConfirmation: transactionMeta },
-    });
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useReceivedToken(),
+      getMockConfirmStateForTransaction(transactionMeta),
+    );
 
     expect(result.current.receivedToken).toMatchInlineSnapshot(`
       {
