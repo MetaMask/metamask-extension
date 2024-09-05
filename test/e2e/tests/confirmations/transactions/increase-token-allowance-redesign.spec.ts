@@ -22,6 +22,34 @@ const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 describe('Confirmation Redesign ERC20 Increase Allowance', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
+  async function mocks(server: MockttpServer) {
+    return [await mocked4BytesIncreaseAllowance(server)];
+  }
+
+  async function mocked4BytesIncreaseAllowance(mockServer: MockttpServer) {
+    return await mockServer
+      .forGet('https://www.4byte.directory/api/v1/signatures/')
+      .withQuery({ hex_signature: '0x39509351' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          count: 1,
+          next: null,
+          previous: null,
+          results: [
+            {
+              id: 46002,
+              created_at: '2018-06-24T21:43:27.354648Z',
+              text_signature: 'increaseAllowance(address,uint256)',
+              hex_signature: '0x39509351',
+              bytes_signature: '9PQ',
+              test: 'Priya',
+            },
+          ],
+        },
+      }));
+  }
+
   describe('Submit an increase allowance transaction @no-mmi', function () {
     it('Sends a type 0 transaction (Legacy) with a small spending cap', async function () {
       await withFixtures(
@@ -55,7 +83,7 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
             mockedEndpoints as MockedEndpoint[],
           );
 
-          console.log({ events });
+          console.log('here '.repeat(42), { mockedEndpoints, events });
 
           const NEW_SPENDING_CAP = '3';
           await editSpendingCap(driver, NEW_SPENDING_CAP);
@@ -168,43 +196,14 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
   });
 });
 
-async function mocked4BytesIncreaseAllowance(mockServer: MockttpServer) {
-  return await mockServer
-    .forGet('https://www.4byte.directory/api/v1/signatures/')
-    .withQuery({ hex_signature: '0x39509351' })
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        count: 1,
-        next: null,
-        previous: null,
-        results: [
-          {
-            id: 46002,
-            created_at: '2018-06-24T21:43:27.354648Z',
-            text_signature: 'increaseAllowance(address,uint256)',
-            hex_signature: '0x39509351',
-            bytes_signature: '9PQ',
-          },
-        ],
-      },
-    }));
-}
-
-async function mocks(server: MockttpServer) {
-  return [await mocked4BytesIncreaseAllowance(server)];
-}
-
 async function createERC20IncreaseAllowanceTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#increaseTokenAllowance');
 }
 
 async function editSpendingCap(driver: Driver, newSpendingCap: string) {
-  await driver.delay(10000);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement('[data-testid="edit-spending-cap-icon"');
-  // scroll into view
 
   await driver.fill(
     '[data-testid="custom-spending-cap-input"]',
