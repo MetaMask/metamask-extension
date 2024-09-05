@@ -57,10 +57,10 @@ export type TokenWithBalance = {
   image: string;
 };
 
-interface AssetListProps {
+type AssetListProps = {
   onClickAsset: (arg: string) => void;
   showTokensLinks: boolean;
-}
+};
 
 const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);

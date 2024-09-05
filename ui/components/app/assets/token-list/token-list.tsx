@@ -9,11 +9,11 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { TokenWithBalance } from '../asset-list/asset-list';
 
-interface TokenListProps {
+type TokenListProps = {
   onTokenClick: (arg: string) => void;
   tokens: TokenWithBalance[];
   loading: boolean;
-}
+};
 
 export default function TokenList({
   onTokenClick,

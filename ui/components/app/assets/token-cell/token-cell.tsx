@@ -7,13 +7,13 @@ import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-uti
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 
-interface TokenCellProps {
+type TokenCellProps = {
   address: string;
   symbol: string;
   string: string;
   image: string;
   onClick?: (arg: string) => void;
-}
+};
 
 export default function TokenCell({
   address,

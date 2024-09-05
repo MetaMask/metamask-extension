@@ -65,7 +65,7 @@ import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 
-interface TokenListItemProps {
+type TokenListItemProps = {
   className?: string;
   onClick?: (arg?: string) => void;
   tokenSymbol?: string;
@@ -79,7 +79,7 @@ interface TokenListItemProps {
   isStakeable?: boolean;
   address?: string | null;
   showPercentage?: boolean;
-}
+};
 
 export const TokenListItem = ({
   className = '',
