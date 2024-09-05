@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
 import {
+  getEventPayloads,
   largeDelayMs,
   veryLargeDelayMs,
   WINDOW_TITLES,
@@ -8,6 +9,12 @@ import {
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import { openDAppWithContract, TestSuiteArguments } from './shared';
+import { MockedEndpoint } from '../../../mock-e2e';
+<<<<<<< Updated upstream
+=======
+import { mocked4BytesApprove } from './erc20-approve-redesign.spec';
+import { MockedEndpoint } from '../../../mock-e2e';
+>>>>>>> Stashed changes
 
 const {
   defaultGanacheOptions,
@@ -39,10 +46,23 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          contractRegistry,
+          mockedEndpoint: mockedEndpoints,
+        }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
           await createERC20IncreaseAllowanceTransaction(driver);
+
+          const events = await getEventPayloads(
+            driver,
+            mockedEndpoints as MockedEndpoint[],
+          );
+
+          console.log({ events });
+
+
 
           const NEW_SPENDING_CAP = '3';
           await editSpendingCap(driver, NEW_SPENDING_CAP);
@@ -191,6 +211,7 @@ async function editSpendingCap(driver: Driver, newSpendingCap: string) {
   await driver.delay(10000);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement('[data-testid="edit-spending-cap-icon"');
+  // scroll into view
 
   await driver.fill(
     '[data-testid="custom-spending-cap-input"]',
