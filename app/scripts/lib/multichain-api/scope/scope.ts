@@ -56,7 +56,10 @@ export type ExternalScopeString = CaipChainId | CaipReference;
 export type ExternalScopeObject = ScopeObject & {
   scopes?: CaipChainId[];
 };
-export type ExternalScopesObject = Record<ExternalScopeString, ExternalScopeObject>;
+export type ExternalScopesObject = Record<
+  ExternalScopeString,
+  ExternalScopeObject
+>;
 
 // These non-prefixed types represent CAIP-217 Scope and
 // ScopeObject as defined by the spec but without
@@ -95,4 +98,7 @@ export const parseScopeString = (
   return {};
 };
 
-export type ScopedProperties = Record<ExternalScopeString, Record<string, unknown>>;
+export type ScopedProperties = Record<
+  ExternalScopeString,
+  Record<string, unknown>
+>;
