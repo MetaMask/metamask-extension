@@ -5997,6 +5997,10 @@ export default class MetamaskController extends EventEmitter {
               ),
             requestPermissionApprovalForOrigin:
               this.requestPermissionApprovalForOrigin.bind(this, origin),
+            sendMetrics: this.metaMetricsController.trackEvent.bind(
+              this.metaMetricsController,
+            ),
+            metamaskState: this.getState(),
           });
         },
         [MESSAGE_TYPE.WALLET_INVOKE_METHOD]: (request, response, next, end) => {
