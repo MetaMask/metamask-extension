@@ -24,9 +24,9 @@ import {
   TextAlign,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../../context/confirm';
-import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
+import { useAssetDetails } from '../../../../hooks/useAssetDetails';
+import { useConfirmContext } from '../../../../context/confirm';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import StaticSimulation from '../shared/static-simulation/static-simulation';
