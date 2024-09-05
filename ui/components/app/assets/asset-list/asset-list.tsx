@@ -120,7 +120,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const tokensWithBalances =
     accountTotalFiatBalance.tokensWithBalances as TokenWithBalance[];
 
-  const loading = accountTotalFiatBalance.loading;
+  const { loading } = accountTotalFiatBalance;
 
   tokensWithBalances.forEach((token) => {
     // token.string is the balance displayed in the TokenList UI
