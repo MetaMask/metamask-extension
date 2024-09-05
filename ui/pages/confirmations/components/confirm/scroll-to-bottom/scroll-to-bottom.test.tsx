@@ -144,6 +144,7 @@ describe('ScrollToBottom', () => {
     describe('when user has scrolled to the bottom', () => {
       beforeEach(() => {
         mockedUseScrollRequiredResult.isScrolledToBottom = true;
+        mockedUseScrollRequiredResult.hasScrolledToBottom = true;
       });
 
       it('hides the button', () => {
@@ -157,12 +158,11 @@ describe('ScrollToBottom', () => {
 
       it('sets isScrollToBottomCompleted to true', () => {
         const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
-        const { container } = renderWithConfirmContextProvider(
+        renderWithConfirmContextProvider(
           <ScrollToBottom>foobar</ScrollToBottom>,
           configureMockStore([])(mockState),
         );
 
-        expect(container.querySelector(buttonSelector)).not.toBeInTheDocument();
         expect(updateSpy).toHaveBeenCalledWith({
           isScrollToBottomCompleted: true,
         });
