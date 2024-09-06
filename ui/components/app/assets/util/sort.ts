@@ -4,11 +4,12 @@ interface SortCriteria<T> {
   sortCallback?: string;
 }
 
-type SortOrder = 'asc' | 'dsc';
+export type SortOrder = 'asc' | 'dsc';
 
 // All sortingCallbacks should be asc order, sortAssets function handles asc/dsc
 const sortingCallbacks: { [key: string]: (a: any, b: any) => number } = {
   numeric: (a: number, b: number) => a - b,
+  stringNumeric: (a: string, b: string) => parseInt(a) - parseInt(b),
   alphaNumeric: (a: string, b: string) => a.localeCompare(b),
   date: (a: Date, b: Date) => a.getTime() - b.getTime(),
 };
