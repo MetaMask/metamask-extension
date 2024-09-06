@@ -15,13 +15,14 @@ import {
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
+import { useAssetDetails } from '../../../hooks/useAssetDetails';
 import { Confirmation, SignatureRequestType } from '../../../types/confirm';
 import {
   isPermitSignatureRequest,
   isSIWESignatureRequest,
 } from '../../../utils';
+import { useApproveTokenSimulation } from '../info/approve/hooks/use-approve-token-simulation';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
-import { useSpendingCapContext } from '../info/approve/spending-cap-context';
 import { useDecodedTransactionData } from '../info/hooks/useDecodedTransactionData';
 import { getIsRevokeSetApprovalForAll } from '../info/utils';
 
@@ -140,13 +141,33 @@ const getDescription = (
   }
 };
 
+const isTransactionMeta = (
+  confirmation: Confirmation,
+): confirmation is TransactionMeta => {
+  return (confirmation as TransactionMeta).txParams !== undefined;
+};
+
 const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
-  const { customSpendingCap } = useSpendingCapContext();
+  let customSpendingCap = '';
+  if (isTransactionMeta(currentConfirmation)) {
+    const { decimals } = useAssetDetails(
+      currentConfirmation.txParams.to,
+      currentConfirmation.txParams.from,
+      currentConfirmation.txParams.data,
+    );
+
+    const { spendingCap } = useApproveTokenSimulation(
+      currentConfirmation,
+      decimals || '0',
+    );
+
+    customSpendingCap = spendingCap;
+  }
 
   let isRevokeSetApprovalForAll = false;
   if (

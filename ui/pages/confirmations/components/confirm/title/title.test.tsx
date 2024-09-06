@@ -20,8 +20,23 @@ import {
 } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
-import { SpendingCapProvider } from '../info/approve/spending-cap-context';
 import ConfirmTitle from './title';
+
+jest.mock('../info/approve/hooks/use-approve-token-simulation', () => ({
+  useApproveTokenSimulation: jest.fn(() => ({
+    spendingCap: '1000',
+    formattedSpendingCap: '1000',
+    value: '1000',
+  })),
+}));
+
+jest.mock('../../../hooks/useAssetDetails', () => ({
+  useAssetDetails: jest.fn(() => ({
+    decimals: 18,
+    userBalance: '1000000',
+    tokenSymbol: 'TST',
+  })),
+}));
 
 jest.mock('../info/approve/hooks/use-is-nft', () => ({
   useIsNFT: jest.fn(() => ({ isNFT: true })),
@@ -31,9 +46,7 @@ describe('ConfirmTitle', () => {
   it('should render the title and description for a personal signature', () => {
     const mockStore = configureMockStore([])(getMockPersonalSignConfirmState);
     const { getByText } = renderWithConfirmContextProvider(
-      <SpendingCapProvider>
-        <ConfirmTitle />
-      </SpendingCapProvider>,
+      <ConfirmTitle />,
       mockStore,
     );
 
@@ -48,9 +61,7 @@ describe('ConfirmTitle', () => {
       getMockTypedSignConfirmStateForRequest(permitSignatureMsg),
     );
     const { getByText } = renderWithConfirmContextProvider(
-      <SpendingCapProvider>
-        <ConfirmTitle />
-      </SpendingCapProvider>,
+      <ConfirmTitle />,
       mockStore,
     );
 
@@ -63,9 +74,7 @@ describe('ConfirmTitle', () => {
   it('should render the title and description for typed signature', () => {
     const mockStore = configureMockStore([])(getMockTypedSignConfirmState());
     const { getByText } = renderWithConfirmContextProvider(
-      <SpendingCapProvider>
-        <ConfirmTitle />
-      </SpendingCapProvider>,
+      <ConfirmTitle />,
       mockStore,
     );
 
@@ -80,9 +89,7 @@ describe('ConfirmTitle', () => {
       getMockContractInteractionConfirmState(),
     );
     const { getByText } = renderWithConfirmContextProvider(
-      <SpendingCapProvider>
-        <ConfirmTitle />
-      </SpendingCapProvider>,
+      <ConfirmTitle />,
       mockStore,
     );
 
@@ -94,9 +101,7 @@ describe('ConfirmTitle', () => {
   it('should render the title and description for a approval transaction for NFTs', () => {
     const mockStore = configureMockStore([])(getMockApproveConfirmState());
     const { getByText } = renderWithConfirmContextProvider(
-      <SpendingCapProvider>
-        <ConfirmTitle />
-      </SpendingCapProvider>,
+      <ConfirmTitle />,
       mockStore,
     );
 
@@ -118,9 +123,7 @@ describe('ConfirmTitle', () => {
 
     const mockStore = configureMockStore([])(getMockApproveConfirmState());
     const { getByText } = renderWithConfirmContextProvider(
-      <SpendingCapProvider>
-        <ConfirmTitle />
-      </SpendingCapProvider>,
+      <ConfirmTitle />,
       mockStore,
     );
 
@@ -137,9 +140,7 @@ describe('ConfirmTitle', () => {
       getMockSetApprovalForAllConfirmState(),
     );
     const { getByText } = renderWithConfirmContextProvider(
-      <SpendingCapProvider>
-        <ConfirmTitle />
-      </SpendingCapProvider>,
+      <ConfirmTitle />,
       mockStore,
     );
 
@@ -182,9 +183,7 @@ describe('ConfirmTitle', () => {
         }),
       );
       const { queryByText } = renderWithConfirmContextProvider(
-        <SpendingCapProvider>
-          <ConfirmTitle />
-        </SpendingCapProvider>,
+        <ConfirmTitle />,
         mockStore,
       );
 
@@ -196,9 +195,7 @@ describe('ConfirmTitle', () => {
       const mockStore = configureMockStore([])(mockAlertState());
 
       const { getByText } = renderWithConfirmContextProvider(
-        <SpendingCapProvider>
-          <ConfirmTitle />
-        </SpendingCapProvider>,
+        <ConfirmTitle />,
         mockStore,
       );
 

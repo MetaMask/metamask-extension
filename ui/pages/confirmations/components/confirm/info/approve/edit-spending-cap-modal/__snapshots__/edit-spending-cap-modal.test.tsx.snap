@@ -63,11 +63,7 @@ exports[`<EditSpendingCapModal /> renders component 1`] = `
             <p
               class="mm-box mm-text mm-text--body-sm mm-box--padding-top-1 mm-box--color-text-alternative"
             >
-<<<<<<< HEAD
               Account balance: 0.000000000001 TST
-=======
-              Account balance: 1e-12 TST
->>>>>>> eb95a7b36f (Mock react portal)
             </p>
           </div>
           <div
