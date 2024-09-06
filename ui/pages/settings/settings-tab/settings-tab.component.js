@@ -9,6 +9,7 @@ import {
   FlexDirection,
   JustifyContent,
   AlignItems,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 import Dropdown from '../../../components/ui/dropdown';
 import ToggleButton from '../../../components/ui/toggle-button';
@@ -103,6 +104,7 @@ export default class SettingsTab extends PureComponent {
           <Text
             variant={TextVariant.bodyMd}
             color={TextColor.textAlternative}
+            fontWeight={FontWeight.Medium}
             className="settings-page__content-item__title"
           >
             {t('currencyConversion')}
@@ -143,6 +145,7 @@ export default class SettingsTab extends PureComponent {
           <Text
             variant={TextVariant.bodyMd}
             color={TextColor.textAlternative}
+            fontWeight={FontWeight.Medium}
             className="settings-page__content-item__title"
           >
             {t('currentLanguage')}
@@ -185,6 +188,7 @@ export default class SettingsTab extends PureComponent {
           <Text
             variant={TextVariant.bodyMd}
             color={TextColor.textAlternative}
+            fontWeight={FontWeight.Medium}
             className="settings-page__content-item__title"
           >
             {t('hideZeroBalanceTokens')}
@@ -227,6 +231,7 @@ export default class SettingsTab extends PureComponent {
             variant={TextVariant.bodyMd}
             color={TextColor.textAlternative}
             className="settings-page__content-item__title"
+            fontWeight={FontWeight.Medium}
           >
             {t('accountIdenticon')}
           </Text>
@@ -234,6 +239,10 @@ export default class SettingsTab extends PureComponent {
             variant={TextVariant.bodySm}
             color={TextColor.textAlternative}
             className="settings-page__content-item__description"
+            letterSpacing="0.25px"
+            fontWeight={FontWeight.Normal}
+            marginTop={2}
+            marginBottom={3}
           >
             {t('jazzAndBlockies')}
           </Text>
@@ -340,6 +349,7 @@ export default class SettingsTab extends PureComponent {
           <Text
             variant={TextVariant.bodyMd}
             color={TextColor.textAlternative}
+            fontWeight={FontWeight.Medium}
             className="settings-page__content-item__title"
           >
             {t('showNativeTokenAsMainBalance')}
@@ -402,6 +412,7 @@ export default class SettingsTab extends PureComponent {
             variant={TextVariant.bodyMd}
             color={TextColor.textAlternative}
             className="settings-page__content-item__title"
+            fontWeight={FontWeight.Medium}
           >
             {this.context.t('theme')}
           </Text>
