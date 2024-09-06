@@ -5,6 +5,11 @@ import { getMockApproveConfirmState } from '../../../../../../../../test/data/co
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { EditSpendingCapModal } from './edit-spending-cap-modal';
 
+jest.mock('react-dom', () => ({
+  ...jest.requireActual('react-dom'),
+  createPortal: (node: ReactNode) => node,
+}));
+
 jest.mock('../../../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../../../store/actions'),
   getGasFeeTimeEstimate: jest.fn().mockResolvedValue({
