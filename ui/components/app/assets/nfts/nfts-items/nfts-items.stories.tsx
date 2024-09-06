@@ -4,8 +4,6 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { Meta, StoryObj } from '@storybook/react';
 import NftsItems from './nfts-items';
-import { updateNftDropDownState } from '../../../../../store/actions';
-import { getNftsDropdownState } from '../../../../../ducks/metamask/metamask';
 
 // Custom middleware to ensure actions are plain objects
 const ensurePlainObjectMiddleware = () => (next) => (action) => {
@@ -19,7 +17,14 @@ const mockStore = configureStore([thunk, ensurePlainObjectMiddleware]);
 
 const createMockState = () => ({
   metamask: {
-    nftsDropdownState: {},
+    nftsDropdownState: {
+      '0x123': {
+        '0x1': {
+          '0x123': true, // This sets isExpanded to true for the specific collection
+          previouslyOwned: true, // Expanded previously owned collection
+        },
+      },
+    },
     selectedAddress: '0x123',
     selectedAccount: {
       address: '0x123',
@@ -125,7 +130,7 @@ const mockCollections = {
         tokenId: '1',
         name: 'NFT 1',
         description: 'This is NFT 1',
-        image: 'https://example.com/nft1.png',
+        image: './catnip-spicywright.png',
         standard: 'ERC721',
       },
       {
@@ -133,12 +138,12 @@ const mockCollections = {
         tokenId: '2',
         name: 'NFT 2',
         description: 'This is NFT 2',
-        image: 'https://example.com/nft2.png',
+        image: './catnip-spicywright.png',
         standard: 'ERC721',
       },
     ],
     collectionName: 'Test Collection',
-    collectionImage: 'https://example.com/collection.png',
+    collectionImage: './catnip-spicywright.png',
   },
 };
 
@@ -191,7 +196,7 @@ export const WithPreviouslyOwnedCollection: Story = {
           tokenId: '3',
           name: 'Previously Owned NFT',
           description: 'This is a previously owned NFT',
-          image: 'https://example.com/nft3.png',
+          image: './catnip-spicywright.png',
           standard: 'ERC721',
         },
       ],
