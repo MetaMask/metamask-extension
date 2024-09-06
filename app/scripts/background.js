@@ -33,6 +33,7 @@ import {
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IF
 } from '../../shared/constants/app';
+import { getClientConfigFeatureFlags } from '../../shared/modules/client-config.utils';
 import {
   REJECT_NOTIFICATION_CLOSE,
   REJECT_NOTIFICATION_CLOSE_SIG,
@@ -413,6 +414,9 @@ function saveTimestamp() {
 async function initialize() {
   try {
     const offscreenPromise = isManifestV3 ? createOffscreen() : null;
+    const featureFlags = await getClientConfigFeatureFlags();
+    console.log(featureFlags);
+    debugger;
 
     const initData = await loadStateFromPersistence();
 

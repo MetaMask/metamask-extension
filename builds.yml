@@ -172,6 +172,9 @@ env:
 
   - SENTRY_MMI_DSN: ''
 
+  # Client Config API is used to fetch LaunchDarkly flags
+  - CLIENT_CONFIG_API_BASE_URL: https://client-config.dev-api.cx.metamask.io
+
   ###
   # Notifications Feature
   ###
