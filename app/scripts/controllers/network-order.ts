@@ -8,7 +8,7 @@ import {
 } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
+import { TEST_CHAINS } from '../../../shared/constants/network';
 
 // Unique name for the controller
 const controllerName = 'NetworkOrderController';
@@ -120,20 +120,20 @@ export class NetworkOrderController extends BaseController<
           !TEST_CHAINS.includes(chainId as (typeof TEST_CHAINS)[number]),
       ) as Hex[];
 
+      const newNetworks = chainIds
+        .filter(
+          (chainId) =>
+            !state.orderedNetworkList.some(
+              ({ networkId }) => networkId === chainId,
+            ),
+        )
+        .map((chainId) => ({ networkId: chainId }));
+
       state.orderedNetworkList = state.orderedNetworkList
         // Filter out deleted networks
         .filter(({ networkId }) => chainIds.includes(networkId))
         // Append new networks to the end
-        .concat(
-          chainIds
-            .filter(
-              (chainId) =>
-                !state.orderedNetworkList.some(
-                  ({ networkId }) => networkId === chainId,
-                ),
-            )
-            .map((chainId) => ({ networkId: chainId })),
-        );
+        .concat(newNetworks);
     });
   }
 
