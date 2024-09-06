@@ -436,7 +436,7 @@ export default function ConfirmationPage({
 
     const toNetwork =
       pendingConfirmation?.requestData?.toNetworkConfiguration?.chainId ||
-      pendingConfirmations?.[0]?.requestData?.chainId;
+      pendingConfirmation?.requestData?.chainId;
 
     if (fromNetwork && toNetwork) {
       trackEvent({
