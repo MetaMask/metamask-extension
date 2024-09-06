@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-import { MockttpServer } from 'mockttp';
 import {
   getEventPayloads,
   largeDelayMs,
   veryLargeDelayMs,
   WINDOW_TITLES,
 } from '../../../helpers';
-import { MockedEndpoint } from '../../../mock-e2e';
+import { MockedEndpoint, Mockttp } from '../../../mock-e2e';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import { openDAppWithContract, TestSuiteArguments } from './shared';
@@ -22,13 +21,14 @@ const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 describe('Confirmation Redesign ERC20 Increase Allowance', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
-  async function mocks(server: MockttpServer) {
+  async function mocks(server: Mockttp) {
     return [await mocked4BytesIncreaseAllowance(server)];
   }
 
-  async function mocked4BytesIncreaseAllowance(mockServer: MockttpServer) {
+  async function mocked4BytesIncreaseAllowance(mockServer: Mockttp) {
     return await mockServer
       .forGet('https://www.4byte.directory/api/v1/signatures/')
+      .always()
       .withQuery({ hex_signature: '0x39509351' })
       .thenCallback(() => {
         return {
@@ -52,8 +52,8 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
       });
   }
 
-  describe.only('Submit an increase allowance transaction @no-mmi', function () {
-    it.only('Sends a type 0 transaction (Legacy) with a small spending cap', async function () {
+  describe('Submit an increase allowance transaction @no-mmi', function () {
+    it('Sends a type 0 transaction (Legacy) with a small spending cap', async function () {
       await withFixtures(
         {
           dapp: true,
@@ -87,6 +87,7 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
           );
 
           console.log('here '.repeat(42), { mockedEndpoints, events });
+          await driver.delay(5000);
 
           const NEW_SPENDING_CAP = '3';
           await editSpendingCap(driver, NEW_SPENDING_CAP);
@@ -94,6 +95,8 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
           await scrollAndConfirmAndAssertConfirm(driver);
 
           await assertChangedSpendingCap(driver, NEW_SPENDING_CAP);
+
+          await driver.delay(5000);
         },
       );
     });
