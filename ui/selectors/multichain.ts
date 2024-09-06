@@ -3,7 +3,7 @@ import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import type { RatesControllerState } from '@metamask/assets-controllers';
 import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
-import { createSelector } from '@reduxjs/toolkit';
+import { createSelector } from 'reselect';
 import { NetworkType } from '@metamask/controller-utils';
 import { Numeric } from '../../shared/modules/Numeric';
 import {
