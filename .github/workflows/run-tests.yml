@@ -105,6 +105,11 @@ jobs:
           yarn nyc merge coverage .nyc_output/coverage-final.json
           yarn nyc report --reporter lcov
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lcov.info
+          path: coverage/lcon.info
+
       - name: SonarCloud Scan
         # This is SonarSource/sonarcloud-github-action@v2.0.0
         uses: SonarSource/sonarcloud-github-action@4b4d7634dab97dcee0b75763a54a6dc92a9e6bc1
