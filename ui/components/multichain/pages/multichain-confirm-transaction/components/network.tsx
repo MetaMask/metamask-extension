@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import {
   AlignItems,
   BackgroundColor,
+  BorderRadius,
   Display,
   FlexDirection,
   JustifyContent,
@@ -26,6 +27,7 @@ export const MultichainTransactionNetwork = ({
 
   return (
     <Box
+      borderRadius={BorderRadius.LG}
       backgroundColor={BackgroundColor.backgroundDefault}
       display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}

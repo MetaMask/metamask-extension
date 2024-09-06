@@ -17,29 +17,39 @@ import {
   IconName,
 } from '../../../component-library';
 import SenderToRecipient from '../../../ui/sender-to-recipient';
-import { clearDraft } from '../../../../ducks/multichain-send/multichain-send';
+import {
+  clearDraft,
+  DraftTransaction,
+  signAndSend,
+} from '../../../../ducks/multichain-send/multichain-send';
 import { MultichainFee } from '../multichain-send/components/fee';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
 } from '../../../../../shared/constants/multichain/networks';
+import {
+  getCurrentMultichainDraftTransaction,
+  getCurrentMultichainDraftTransactionId,
+} from '../../../../selectors/multichain';
+import { getInternalAccount } from '../../../../selectors';
 import { MultichainTransactionNetwork } from './components/network';
+import { MultichainConfirmationAssetTotal } from './components/confirmation-asset';
 
 export const MultichainConfirmTransactionPage = () => {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const transaction = useSelector(
-    (state) =>
-      state.multichainSend.draftTransactions[
-        state.multichainSend.currentTransactionUUID
-      ],
+  const transactionId: string = useSelector(
+    getCurrentMultichainDraftTransactionId,
   );
-
-  const { fees: estimateFee } = transaction.transactionParams;
-
-  // const multichainNetwork = transaction.network.network;
+  const transaction: DraftTransaction = useSelector(
+    getCurrentMultichainDraftTransaction,
+  );
+  const selectedAccount = useSelector((state) =>
+    getInternalAccount(state, transaction.transactionParams.sender.id),
+  );
+  const { fee: estimateFee } = transaction.transactionParams;
 
   if (!transaction) {
     history.push('/multichain-send');
@@ -51,8 +61,13 @@ export const MultichainConfirmTransactionPage = () => {
     history.push('/home');
   };
 
-  const signAndSend = async () => {
-    await dispatch(signAndSend());
+  const confirmTranasction = async () => {
+    await dispatch(
+      signAndSend({
+        account: selectedAccount,
+        transactionId,
+      }),
+    );
   };
 
   return (
@@ -77,19 +92,21 @@ export const MultichainConfirmTransactionPage = () => {
         {t('review')}
       </Header>
       <Content>
+        <MultichainConfirmationAssetTotal
+          fee={estimateFee}
+          sendAsset={transaction.transactionParams.sendAsset}
+        />
         <Box
           backgroundColor={BackgroundColor.backgroundDefault}
-          borderStyle={BorderStyle.solid}
           borderRadius={BorderRadius.LG}
           marginBottom={4}
         >
           <SenderToRecipient
             onRecipientClick={function noRefCheck() {}}
             onSenderClick={function noRefCheck() {}}
-            recipientAddress="tb1qgaetv8fl5fs99jjyfamkxuvsly5fhq3dpkvmh5"
-            recipientName="Account 2"
-            senderAddress="tb1qgaetv8fl5fs99jjyfamkxuvsly5fhq3dpkvmh5"
-            senderName="Account 1"
+            recipientAddress={transaction.transactionParams.recipient.address}
+            senderAddress={selectedAccount.address}
+            senderName={selectedAccount.metadata.name}
           />
         </Box>
         <Box
@@ -103,23 +120,22 @@ export const MultichainConfirmTransactionPage = () => {
           />
         </Box>
         {estimateFee && (
-          <MultichainFee
-            backgroundColor={BackgroundColor.backgroundDefault}
-            estimatedFee={transaction.transactionParams.fees}
-          />
+          <Box marginBottom={4}>
+            <MultichainFee
+              asset={transaction.transactionParams.sendAsset}
+              backgroundColor={BackgroundColor.backgroundDefault}
+              estimatedFee={estimateFee}
+            />
+          </Box>
         )}
       </Content>
       <PageContainerFooter
         onCancel={onCancel}
         cancelText={t('cancel')}
-        onSubmit={async () => await signAndSend()}
+        onSubmit={async () => await confirmTranasction()}
         submitText={t('confirm')}
         submitButtonType={'primary'}
-      >
-        {/* {unapprovedTxCount > 1 && (
-          <a onClick={onCancelAll}>{t('rejectTxsN', [unapprovedTxCount])}</a>
-        )} */}
-      </PageContainerFooter>
+      ></PageContainerFooter>
     </Page>
   );
 };
