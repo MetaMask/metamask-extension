@@ -27,11 +27,11 @@ export type ConfirmInfoRowUrlProps = {
 export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
   let urlObject;
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const handleOpenModal = useCallback(
+  const handlePillClick = useCallback(
     () => setIsModalOpen(true),
     [setIsModalOpen],
   );
-  const handleCloseModal = useCallback(
+  const handleModalClose = useCallback(
     () => setIsModalOpen(false),
     [setIsModalOpen],
   );
@@ -39,11 +39,11 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
   if (isSnapId(url)) {
     return (
       <>
-        <SnapAuthorshipPill snapId={url} onClick={handleOpenModal} />
+        <SnapAuthorshipPill snapId={url} onClick={handlePillClick} />
         <SnapMetadataModal
           snapId={url}
           isOpen={isModalOpen}
-          onClose={handleCloseModal}
+          onClose={handleModalClose}
         />
       </>
     );
