@@ -1,23 +1,24 @@
-import React, { useState, useCallback, useMemo, useContext } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 
 import { useSelector } from 'react-redux';
 import { isEqual, uniqBy } from 'lodash';
-import { Tab, Tabs } from '../../../ui/tabs';
+import {
+  Token,
+  TokenListMap,
+  TokenListToken,
+} from '@metamask/assets-controllers';
+import { Hex } from '@metamask/utils';
 import {
   Modal,
   ModalContent,
   ModalOverlay,
   ModalHeader,
-  TextFieldSearch,
   Box,
-  ButtonIconSize,
-  TextFieldSearchSize,
   AvatarTokenSize,
   AvatarToken,
   Text,
 } from '../../../component-library';
 import {
-  BlockSize,
   BorderRadius,
   TextVariant,
   TextAlign,
@@ -28,7 +29,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { AssetType } from '../../../../../shared/constants/transaction';
 
-import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 import {
   getAllTokens,
   getCurrentChainId,
@@ -48,119 +48,95 @@ import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { useEqualityCheck } from '../../../../hooks/useEqualityCheck';
-import {
-  MetaMetricsEventName,
-  MetaMetricsEventCategory,
-} from '../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import {
-  getSendAnalyticProperties,
-  getSwapsBlockedTokens,
-} from '../../../../ducks/send';
+import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { Asset, Collection, Token } from './types';
+import {
+  ERC20Asset,
+  NativeAsset,
+  NFT,
+  AssetWithDisplayData,
+  TokenWithBalance,
+} from './types';
+import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 import AssetList from './AssetList';
+import { Search } from './asset-picker-modal-search';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import {
+  getMultichainConversionRate,
   getMultichainCurrentChainId,
   getMultichainCurrentCurrency,
   getMultichainNativeCurrency,
   getMultichainNativeCurrencyImage,
   getMultichainSelectedAccountCachedBalance,
 } from '../../../../selectors/multichain';
-import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 
 type AssetPickerModalProps = {
+  header: JSX.Element | string | null;
   isOpen: boolean;
   onClose: () => void;
-  asset: Asset;
-  onAssetChange: (asset: Asset) => void;
-  sendingAssetImage?: string;
-  sendingAssetSymbol?: string;
-};
+  asset?: ERC20Asset | NativeAsset | Pick<NFT, 'type' | 'tokenId' | 'image'>;
+  onAssetChange: (
+    asset: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
+  ) => void;
+  /**
+   * Sending asset for UI treatments; only for dest component
+   */
+  sendingAsset?: { image: string; symbol: string } | undefined;
+} & Pick<
+  React.ComponentProps<typeof AssetPickerModalTabs>,
+  'visibleTabs' | 'defaultActiveTabKey'
+>;
 
 const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
 export function MultichainAssetPickerModal({
+  header,
   isOpen,
   onClose,
   asset,
   onAssetChange,
-  sendingAssetImage,
-  sendingAssetSymbol,
+  sendingAsset,
+  ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
-  const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   const [searchQuery, setSearchQuery] = useState('');
-
-  const isDest = sendingAssetImage && sendingAssetSymbol;
-
-  const handleAssetChange = useCallback(
-    (token: Token) => {
-      onAssetChange(token);
-      trackEvent({
-        event: MetaMetricsEventName.sendAssetSelected,
-        category: MetaMetricsEventCategory.Send,
-        properties: {
-          ...sendAnalytics,
-          is_destination_asset_picker_modal: Boolean(isDest),
-          new_asset_symbol: token.symbol,
-          new_asset_address: token.address,
-          is_nft: false,
-        },
-      });
-      onClose();
-    },
-    [onAssetChange],
-  );
-
-  const defaultActiveTabKey = asset?.type === AssetType.NFT ? 'nfts' : 'tokens';
-
   const chainId = useMultichainSelector(getMultichainCurrentChainId);
-  const selectedAccount = useSelector(getSelectedInternalAccount);
   const nativeCurrencyImage = useMultichainSelector(
     getMultichainNativeCurrencyImage,
-    selectedAccount,
   );
-  const nativeCurrency = useMultichainSelector(
-    getMultichainNativeCurrency,
-    selectedAccount,
+  const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
+  const balanceValue = useMultichainSelector(
+    getMultichainSelectedAccountCachedBalance,
   );
-  const balanceValue = useSelector(getMultichainSelectedAccountCachedBalance);
+  const conversionRate = useMultichainSelector(getMultichainConversionRate);
+  const currentCurrency = useMultichainSelector(getMultichainCurrentCurrency);
 
-  // TODO: add conversion for nonevm tokens
-  const conversionRate = useSelector(getConversionRate);
-  const currentCurrency = useMultichainSelector(
-    getMultichainCurrentCurrency,
-    selectedAccount,
-  );
-
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
-  );
-
-  const usersTokens = uniqBy([], 'address');
-
-  const memoizedUsersTokens = useEqualityCheck(usersTokens);
+  const handleAssetChange = () => {
+    //TODO: Implement
+  };
 
   const filteredTokenList = useMemo(() => {
-    const nativeToken = {
+    const nativeToken: AssetWithDisplayData<NativeAsset> = {
       address: null,
       symbol: nativeCurrency,
-      decimals: 18,
+      // TODO: fix decimals
+      decimals: 8,
       image: nativeCurrencyImage,
       balance: balanceValue,
+      string: undefined,
       type: AssetType.native,
-      string: '',
     };
 
-    const filteredTokens: Token[] = [nativeToken];
+    const filteredTokens: AssetWithDisplayData<ERC20Asset | NativeAsset>[] = [
+      nativeToken,
+    ];
+    // undefined would be the native token address
+    const filteredTokensAddresses = new Set<string | undefined>();
 
     return filteredTokens;
   }, [
-    memoizedUsersTokens,
     searchQuery,
     nativeCurrency,
     nativeCurrencyImage,
@@ -168,45 +144,7 @@ export function MultichainAssetPickerModal({
     conversionRate,
     currentCurrency,
     chainId,
-    sendingAssetSymbol,
   ]);
-
-  const memoizedSwapsBlockedTokens = new Set<string>();
-
-  const Search = useCallback(
-    ({
-      isNFTSearch = false,
-      props,
-    }: {
-      isNFTSearch?: boolean;
-      props?: React.ComponentProps<typeof Box>;
-    }) => (
-      <Box padding={4} {...props}>
-        <TextFieldSearch
-          borderRadius={BorderRadius.LG}
-          placeholder={t(isNFTSearch ? 'searchNfts' : 'searchTokens')}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          error={false}
-          autoFocus
-          autoComplete={false}
-          width={BlockSize.Full}
-          clearButtonOnClick={() => setSearchQuery('')}
-          clearButtonProps={{
-            size: ButtonIconSize.Sm,
-          }}
-          showClearButton={true}
-          className="asset-picker-modal__search-list"
-          inputProps={{
-            'data-testid': 'asset-picker-modal-search-input',
-          }}
-          endAccessory={null}
-          size={TextFieldSearchSize.Lg}
-        />
-      </Box>
-    ),
-    [searchQuery],
-  );
 
   return (
     <Modal
@@ -217,80 +155,54 @@ export function MultichainAssetPickerModal({
     >
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
-        <ModalHeader paddingBottom={2} onClose={onClose}>
+        <ModalHeader onClose={onClose}>
           <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
-            {t(isDest ? 'sendSelectReceiveAsset' : 'sendSelectSendAsset')}
+            {header}
           </Text>
         </ModalHeader>
-        {isDest && (
+        {sendingAsset?.image && sendingAsset?.symbol && (
           <Box
             display={Display.Flex}
             gap={1}
             alignItems={AlignItems.center}
             marginInline="auto"
-            marginBottom={3}
           >
             <AvatarToken
               borderRadius={BorderRadius.full}
-              src={sendingAssetImage}
+              src={sendingAsset.image}
               size={AvatarTokenSize.Xs}
             />
             <Text variant={TextVariant.bodySm}>
-              {t('sendingAsset', [sendingAssetSymbol])}
+              {t('sendingAsset', [sendingAsset.symbol])}
             </Text>
           </Box>
         )}
         <Box className="modal-tab__wrapper">
-          {isDest ? (
-            <>
-              <Search props={{ paddingTop: 1 }} />
+          <AssetPickerModalTabs {...tabProps}>
+            <React.Fragment key={TabName.TOKENS}>
+              <Search
+                searchQuery={searchQuery}
+                onChange={(value) => setSearchQuery(value)}
+              />
               <AssetList
                 handleAssetChange={handleAssetChange}
-                asset={asset}
+                asset={asset?.type === AssetType.NFT ? undefined : asset}
                 tokenList={filteredTokenList}
-                sendingAssetSymbol={sendingAssetSymbol}
-                memoizedSwapsBlockedTokens={memoizedSwapsBlockedTokens}
               />
-            </>
-          ) : (
-            <Tabs
-              defaultActiveTabKey={defaultActiveTabKey}
-              tabsClassName="modal-tab__tabs"
-            >
-              {
-                <Tab
-                  activeClassName="modal-tab__tab--active"
-                  className="modal-tab__tab"
-                  name={t('tokens')}
-                  tabKey="tokens"
-                >
-                  <Search />
-                  <AssetList
-                    handleAssetChange={handleAssetChange}
-                    asset={asset}
-                    tokenList={filteredTokenList}
-                    memoizedSwapsBlockedTokens={memoizedSwapsBlockedTokens}
-                  />
-                </Tab>
-              }
-
-              {
-                <Tab
-                  activeClassName="modal-tab__tab--active"
-                  className="modal-tab__tab"
-                  name={t('nfts')}
-                  tabKey="nfts"
-                >
-                  <AssetPickerModalNftTab
-                    collectionDataFiltered={[]}
-                    previouslyOwnedCollection={{ collectionName: '', nfts: [] }}
-                    onClose={onClose}
-                    renderSearch={() => Search({ isNFTSearch: true })}
-                  />
-                </Tab>
-              }
-            </Tabs>
-          )}
+            </React.Fragment>
+            <AssetPickerModalNftTab
+              key={TabName.NFTS}
+              searchQuery={searchQuery}
+              onClose={onClose}
+              renderSearch={() => (
+                <Search
+                  isNFTSearch
+                  searchQuery={searchQuery}
+                  onChange={(value) => setSearchQuery(value)}
+                />
+              )}
+            />
+          </AssetPickerModalTabs>
         </Box>
       </ModalContent>
     </Modal>

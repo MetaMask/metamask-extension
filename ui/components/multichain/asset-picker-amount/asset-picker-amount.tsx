@@ -34,11 +34,6 @@ import {
 import { NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR } from '../../../pages/confirmations/send/send.constants';
 import { getAssetImageURL } from '../../../helpers/utils/util';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
-import {
-  getCurrentMultichainDraftTransaction,
-  getMultichainIsEvm,
-} from '../../../selectors/multichain';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -77,22 +72,9 @@ export const AssetPickerAmount = ({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const t = useI18nContext();
 
-  const isEvm = useMultichainSelector(getMultichainIsEvm, selectedAccount);
-
-  let swapQuotesError, sendAsset, receiveAsset;
-  if (isEvm) {
-    const draftTransaction = useSelector(getCurrentDraftTransaction);
-    swapQuotesError = draftTransaction?.swapQuotesError;
-    sendAsset = draftTransaction?.sendAsset;
-    receiveAsset = draftTransaction?.receiveAsset;
-  } else {
-    const draftTransaction = useSelector(getCurrentMultichainDraftTransaction);
-    swapQuotesError = null;
-    sendAsset = draftTransaction?.transactionParams.sendAsset.assetDetails;
-    console.log('sendAsset', sendAsset);
-    receiveAsset = { type: '' };
-  }
-
+  const { swapQuotesError, sendAsset, receiveAsset } = useSelector(
+    getCurrentDraftTransaction,
+  );
   const isDisabled = !onAmountChange;
   const isSwapsErrorShown = isDisabled && swapQuotesError;
 
@@ -244,7 +226,7 @@ export const AssetPickerAmount = ({
           </Text>
         )}
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        {onAmountChange && !isSwapAndSendFromNative && (
+        {onAmountChange && isNativeSendPossible && !isSwapAndSendFromNative && (
           <MaxClearButton asset={asset} />
         )}
       </Box>

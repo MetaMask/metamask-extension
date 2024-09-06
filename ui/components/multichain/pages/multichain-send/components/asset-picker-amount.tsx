@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useCallback, useContext, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Box } from '../../../../component-library';
 import {
   Display,
@@ -13,11 +13,19 @@ import { SwappableCurrencyInput } from '../../../asset-picker-amount/swappable-c
 import { AssetBalance } from '../../../asset-picker-amount/asset-balance';
 import MaxClearButton from '../../../asset-picker-amount/max-clear-button';
 import { AssetPicker } from '../../../asset-picker-amount/asset-picker';
-import type { Amount, Asset } from '../../../../../ducks/send';
-import { updateSendAmount } from '../../../../../ducks/multichain-send/multichain-send';
+import type { Amount } from '../../../../../ducks/send';
+import {
+  estimateFee,
+  updateSendAmount,
+} from '../../../../../ducks/multichain-send/multichain-send';
+import { NativeAsset } from '../../../asset-picker-amount/asset-picker-modal/types';
+import { I18nContext } from '../../../../../contexts/i18n';
+import { getCurrentMultichainDraftTransactionId } from '../../../../../selectors/multichain';
+import { getSelectedInternalAccount } from '../../../../../selectors';
+import { decimalToHex } from '../../../../../../shared/modules/conversion.utils';
 
 export type MultichainAssetPickerAmountProps = {
-  asset: Asset;
+  asset: NativeAsset & { balance: string };
   amount: Amount;
   error: string;
 };
@@ -27,17 +35,25 @@ export const MultichainAssetPickerAmount = ({
   amount,
   error,
 }: MultichainAssetPickerAmountProps) => {
+  const t = useContext(I18nContext);
   const dispatch = useDispatch();
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const currentTransactionId = useSelector(
+    getCurrentMultichainDraftTransactionId,
+  );
   const [isFocused, setIsFocused] = useState(false);
 
   // TODO: fix border color based on errors
   const borderColor = BorderColor.borderMuted;
 
-  const onAmountChange = useCallback((sendAmount) => {
-    if (sendAmount < 0) {
-      return;
-    }
+  const onAmountChange = useCallback(async (sendAmount) => {
     dispatch(updateSendAmount(sendAmount));
+    await dispatch(
+      estimateFee({
+        account: selectedAccount,
+        transactionId: currentTransactionId,
+      }),
+    );
   }, []);
 
   // TODO: fix when there are more than only native assets
@@ -61,12 +77,20 @@ export const MultichainAssetPickerAmount = ({
         paddingTop={1}
         paddingBottom={1}
       >
-        <AssetPicker asset={asset} onAssetChange={onAssetChange} />
+        <AssetPicker
+          header={t('sendSelectSendAsset')}
+          asset={asset}
+          onAssetChange={onAssetChange}
+          sendingAsset={asset}
+        />
         <SwappableCurrencyInput
-          onAmountChange={onAmountChange}
+          onAmountChange={async (e) => await onAmountChange(e)}
           assetType={asset.type}
           asset={asset}
-          amount={amount}
+          amount={{
+            ...amount,
+            value: decimalToHex(amount.value),
+          }}
           isAmountLoading={false}
         />
       </Box>

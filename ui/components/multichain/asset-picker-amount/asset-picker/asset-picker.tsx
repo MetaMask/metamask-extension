@@ -43,6 +43,7 @@ import {
   getMultichainCurrentNetwork,
   getMultichainIsEvm,
 } from '../../../../selectors/multichain';
+import { MultichainAssetPickerModal } from '../asset-picker-modal/multichain-asset-picker-modal';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
@@ -113,25 +114,48 @@ export function AssetPicker({
   return (
     <>
       {/* This is the Modal that ask to choose token to send */}
-      <AssetPickerModal
-        visibleTabs={visibleTabs}
-        header={header}
-        isOpen={showAssetPickerModal}
-        onClose={() => setShowAssetPickerModal(false)}
-        asset={asset}
-        onAssetChange={(
-          token:
-            | AssetWithDisplayData<ERC20Asset>
-            | AssetWithDisplayData<NativeAsset>,
-        ) => {
-          onAssetChange(token);
-          setShowAssetPickerModal(false);
-        }}
-        sendingAsset={sendingAsset}
-        defaultActiveTabKey={
-          asset?.type === AssetType.NFT ? TabName.NFTS : TabName.TOKENS
-        }
-      />
+      {isEvm ? (
+        <AssetPickerModal
+          visibleTabs={visibleTabs}
+          header={header}
+          isOpen={showAssetPickerModal}
+          onClose={() => setShowAssetPickerModal(false)}
+          asset={asset}
+          onAssetChange={(
+            token:
+              | AssetWithDisplayData<ERC20Asset>
+              | AssetWithDisplayData<NativeAsset>,
+          ) => {
+            onAssetChange(token);
+            setShowAssetPickerModal(false);
+          }}
+          sendingAsset={sendingAsset}
+          defaultActiveTabKey={
+            asset?.type === AssetType.NFT ? TabName.NFTS : TabName.TOKENS
+          }
+        />
+      ) : (
+        <MultichainAssetPickerModal
+          visibleTabs={visibleTabs}
+          header={header}
+          isOpen={showAssetPickerModal}
+          onClose={() => setShowAssetPickerModal(false)}
+          asset={asset}
+          onAssetChange={(
+            token:
+              | AssetWithDisplayData<ERC20Asset>
+              | AssetWithDisplayData<NativeAsset>,
+          ) => {
+            onAssetChange(token);
+            setShowAssetPickerModal(false);
+          }}
+          sendingAsset={sendingAsset}
+          defaultActiveTabKey={
+            asset?.type === AssetType.NFT ? TabName.NFTS : TabName.TOKENS
+          }
+        />
+      )}
+
       <Button
         data-testid="asset-picker-button"
         className="asset-picker"
