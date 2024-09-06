@@ -9,7 +9,7 @@ const createActionType = (action: string): string =>
 export const UPDATE_CONFIRM = createActionType('UPDATE_CONFIRM');
 
 const initState = {
-  isScrollToBottomNeeded: false,
+  isScrollToBottomCompleted: true,
 };
 
 export default function confirmReducer(
