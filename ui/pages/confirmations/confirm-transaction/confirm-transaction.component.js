@@ -88,7 +88,6 @@ const ConfirmTransaction = () => {
   ]);
 
   const { id, type } = transaction;
-
   const transactionId = id;
   const isValidTokenMethod = isTokenMethodAction(type);
   const isValidTransactionId =
