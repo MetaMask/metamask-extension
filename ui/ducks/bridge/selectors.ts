@@ -95,11 +95,11 @@ export const getToChain = createDeepEqualSelector(
 );
 
 export const getFromTokens = (state: BridgeAppState) => {
-  return state.metamask.bridgeState.srcTokens;
+  return state.metamask.bridgeState.srcTokens ?? {};
 };
 
 export const getFromTopAssets = (state: BridgeAppState) => {
-  return state.metamask.bridgeState.srcTopAssets;
+  return state.metamask.bridgeState.srcTopAssets ?? [];
 };
 
 export const getToTopAssets = (state: BridgeAppState) => {
