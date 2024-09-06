@@ -55,12 +55,14 @@ export const multichainMethodCallValidator = async (
   const errors: JsonRpcError[] = [];
   // check each param and aggregate errors
   (methodToCheck as unknown as MethodObject).params.forEach((param, i) => {
-    let paramToCheck: Json;
+    let paramToCheck: Json | undefined;
     const p = param as ContentDescriptorObject;
     if (isObject(params)) {
       paramToCheck = params[p.name];
     } else if (params && Array.isArray(params)) {
       paramToCheck = params[i];
+    } else {
+      paramToCheck = undefined;
     }
     const result = v.validate(paramToCheck, p.schema as unknown as Schema, {
       required: p.required,
