@@ -46,10 +46,11 @@ async function decryptMessage(driver) {
 
 async function verifyDecryptedMessageMM(driver, message) {
   await driver.clickElement({ text: 'Decrypt message', tag: 'div' });
-  await driver.findElement({
+  const notificationMessage = await driver.isElementPresent({
     text: message,
     tag: 'div',
   });
+  assert.equal(notificationMessage, true);
   await driver.clickElement({ text: 'Decrypt', tag: 'button' });
 }
 
@@ -150,8 +151,6 @@ describe('Encrypt Decrypt', function () {
           WINDOW_TITLES.Dialog,
           windowHandles,
         );
-
-        await driver.delay(1000);
 
         // Verify message 2 in MetaMask Notification
         await verifyDecryptedMessageMM(driver, message2);

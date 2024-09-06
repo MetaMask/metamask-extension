@@ -5592,6 +5592,17 @@ export async function endBackgroundTrace(request: EndTraceRequest) {
   ]);
 }
 
+/**
+ * Apply the state patches from the background.
+ * Intentionally not using immer as a temporary measure to avoid
+ * freezing the resulting state and requiring further fixes
+ * to remove direct state mutations.
+ *
+ * @param oldState - The current state.
+ * @param patches - The patches to apply.
+ * Only supports 'replace' operations with a single path element.
+ * @returns The new state.
+ */
 function applyPatches(
   oldState: Record<string, unknown>,
   patches: Patch[],
@@ -5602,11 +5613,9 @@ function applyPatches(
     const { op, path, value } = patch;
 
     if (op === 'replace') {
-      if (path.length === 0) {
-        Object.assign(newState, value);
-      } else {
-        newState[path[0]] = value;
-      }
+      newState[path[0]] = value;
+    } else {
+      throw new Error(`Unsupported patch operation: ${op}`);
     }
   }
 
