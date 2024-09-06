@@ -140,7 +140,7 @@ export const SendPageRecipientInput = () => {
                 event.persist();
                 onChange(event);
               }}
-              placeholder={t('recipientAddressPlaceholder')}
+              placeholder={'Enter public address'}
               display={Display.Block}
               type={InputType.Text}
               spellCheck={false}
