@@ -68,7 +68,6 @@ export class MultichainAuthorizationConfirmationErrors implements Rule {
     });
   }
 
-  // get all the confirmation calls to make and expect to pass
   getCalls(__: unknown, method: MethodObject) {
     const calls: Call[] = [];
     const isMethodAllowed = this.only ? this.only.includes(method.name) : true;
