@@ -60,6 +60,7 @@ import {
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { Asset, Collection, Token } from './types';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
+
 import AssetList from './AssetList';
 
 type AssetPickerModalProps = {
@@ -122,17 +123,22 @@ export function AssetPickerModal({
   const handleAssetChange = useCallback(
     (token: Token) => {
       onAssetChange(token);
-      trackEvent({
-        event: MetaMetricsEventName.sendAssetSelected,
-        category: MetaMetricsEventCategory.Send,
-        properties: {
-          ...sendAnalytics,
-          is_destination_asset_picker_modal: Boolean(isDest),
-          new_asset_symbol: token.symbol,
-          new_asset_address: token.address,
-          is_nft: false,
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendAssetSelected,
+          category: MetaMetricsEventCategory.Send,
+          properties: {
+            is_destination_asset_picker_modal: Boolean(isDest),
+            is_nft: false,
+          },
+          sensitiveProperties: {
+            ...sendAnalytics,
+            new_asset_symbol: token.symbol,
+            new_asset_address: token.address,
+          },
         },
-      });
+        { excludeMetaMetricsId: false },
+      );
       onClose();
     },
     [onAssetChange],

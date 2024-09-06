@@ -1151,7 +1151,6 @@ async function getSelectedAccountAddress(driver) {
 
   return accountAddress;
 }
-
 /**
  * Rather than using the FixtureBuilder#withPreferencesController to set the setting
  * we need to manually set the setting because the migration #122 overrides this.
@@ -1173,7 +1172,6 @@ async function tempToggleSettingRedesignedConfirmations(driver) {
   if (process.env.MMI) {
     await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
   }
-
   // Click settings from dropdown menu
   await driver.clickElement('[data-testid="global-menu-settings"]');
 

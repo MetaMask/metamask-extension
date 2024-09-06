@@ -519,12 +519,6 @@
   "allow": {
     "message": "Allow"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "Allow MetaMask to detect and display your NFTs with autodetection. You’ll be able to:"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "Allow MetaMask to detect and display your tokens with autodetection. You’ll be able to:"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "This will allow MMI to connect to $1 to import your accounts."
   },
@@ -1555,6 +1549,45 @@
   "developerOptions": {
     "message": "Developer Options"
   },
+  "developerOptionsEnableConfirmationsRedesignDescription": {
+    "message": "Enables or disables the confirmations redesign feature currently in development"
+  },
+  "developerOptionsEnableConfirmationsRedesignTitle": {
+    "message": "Confirmations Redesign"
+  },
+  "developerOptionsNetworkMenuRedesignDescription": {
+    "message": "Toggles the new design of the Networks menu"
+  },
+  "developerOptionsNetworkMenuRedesignTitle": {
+    "message": "Network Menu Redesign"
+  },
+  "developerOptionsResetStatesAnnouncementsDescription": {
+    "message": "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal."
+  },
+  "developerOptionsResetStatesOnboarding": {
+    "message": "Resets various states related to onboarding and redirects to the \"Secure Your Wallet\" onboarding page."
+  },
+  "developerOptionsSentryButtonGenerateBackgroundError": {
+    "message": "Generate Background Error"
+  },
+  "developerOptionsSentryButtonGenerateTrace": {
+    "message": "Generate Trace"
+  },
+  "developerOptionsSentryButtonGenerateUIError": {
+    "message": "Generate UI Error"
+  },
+  "developerOptionsSentryDescriptionGenerateBackgroundError": {
+    "message": "Generate an unhandled $1 in the service worker."
+  },
+  "developerOptionsSentryDescriptionGenerateTrace": {
+    "message": " Generate a $1 Sentry trace."
+  },
+  "developerOptionsSentryDescriptionGenerateUIError": {
+    "message": "Generate an unhandled $1 in this window."
+  },
+  "developerOptionsServiceWorkerKeepAlive": {
+    "message": "Results in a timestamp being continuously saved to session.storage"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1614,12 +1647,6 @@
   },
   "displayNftMediaDescription": {
     "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off."
-  },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "Dive straight into using your NFTs"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "Dive straight into using your tokens"
   },
   "doNotShare": {
     "message": "Do not share this with anyone"
@@ -1752,9 +1779,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Edit speed up gas fee"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "Effortlessly navigate your digital assets"
-  },
   "enable": {
     "message": "Enable"
   },
@@ -1763,9 +1787,6 @@
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
-  },
-  "enableNftAutoDetection": {
-    "message": "Enable NFT autodetection"
   },
   "enableSnap": {
     "message": "Enable"
@@ -2294,12 +2315,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "Immediately access your NFTs"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "Immediate access to your tokens"
   },
   "import": {
     "message": "Import",
@@ -3277,9 +3292,6 @@
   "notEnoughGas": {
     "message": "Not enough gas"
   },
-  "notRightNow": {
-    "message": "Not right now"
-  },
   "note": {
     "message": "Note"
   },
@@ -3549,6 +3561,9 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "When we gather metrics, it will always be..."
+  },
+  "onboardingMetametricsDisagree": {
+    "message": "No thanks"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "We’ll let you know if we decide to use this data for other purposes. You can review our $1 for more information. Remember, you can go to settings and opt out at any time.",

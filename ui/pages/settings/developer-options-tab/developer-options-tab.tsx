@@ -218,8 +218,8 @@ const DeveloperOptionsTab = () => {
   const renderServiceWorkerKeepAliveToggle = () => {
     return (
       <ToggleRow
-        title="Service Worker Keep Alive"
-        description="Results in a timestamp being continuously saved to session.storage"
+        title={t('serviceWorkerKeepAlive')}
+        description={t('developerOptionsServiceWorkerKeepAlive')}
         isEnabled={isServiceWorkerKeptAlive}
         onToggle={(value) => handleToggleServiceWorkerAlive(!value)}
         dataTestId="developer-options-service-worker-alive-toggle"
@@ -231,8 +231,8 @@ const DeveloperOptionsTab = () => {
   const renderNetworkMenuRedesign = () => {
     return (
       <ToggleRow
-        title="Network Menu Redesign"
-        description="Toggles the new design of the Networks menu"
+        title={t('developerOptionsNetworkMenuRedesignTitle')}
+        description={t('developerOptionsNetworkMenuRedesignDescription')}
         isEnabled={enableNetworkRedesign}
         onToggle={(value) => {
           setEnableNetworkRedesign(!value);
@@ -249,8 +249,10 @@ const DeveloperOptionsTab = () => {
   const renderEnableConfirmationsRedesignToggle = () => {
     return (
       <ToggleRow
-        title="Confirmations Redesign"
-        description="Enables or disables the confirmations redesign feature currently in development"
+        title={t('developerOptionsEnableConfirmationsRedesignTitle')}
+        description={t(
+          'developerOptionsEnableConfirmationsRedesignDescription',
+        )}
         isEnabled={isRedesignedConfirmationsFeatureEnabled}
         onToggle={(value: boolean) =>
           setEnableConfirmationsRedesignEnabled(!value)

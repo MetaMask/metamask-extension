@@ -34,7 +34,6 @@
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
-      "showTokenAutodetectModal": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean"
@@ -96,7 +95,6 @@
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
-    "showTokenAutodetectModalOnUpgrade": "object",
     "balances": "object",
     "selectedNetworkClientId": "string",
     "networksMetadata": {
@@ -247,6 +245,7 @@
       "swapsQuoteRefreshTime": 60000,
       "swapsQuotePrefetchingRefreshTime": 60000,
       "swapsStxBatchStatusRefreshTime": 10000,
+      "swapsStxStatusDeadline": 180,
       "swapsStxGetTransactionsRefreshTime": 10000,
       "swapsStxMaxFeeMultiplier": 2,
       "swapsFeatureFlags": {}

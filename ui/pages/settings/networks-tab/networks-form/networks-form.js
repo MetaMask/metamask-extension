@@ -48,7 +48,6 @@ import {
   useSafeChainsListValidationSelector,
 } from '../../../../selectors';
 import {
-  editAndSetNetworkConfiguration,
   requestUserApproval,
   setEditedNetwork,
   setNewNetworkAdded,
@@ -222,6 +221,12 @@ const NetworksForm = ({
         });
         safeChainsList.current = [
           ...chainList,
+          {
+            chainId: 137,
+            nativeCurrency: {
+              symbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.MATIC,
+            },
+          },
           {
             chainId: 78,
             nativeCurrency: {
@@ -920,11 +925,11 @@ const NetworksForm = ({
         dispatch(showDeprecatedNetworkModal());
       } else if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
         await dispatch(
-          editAndSetNetworkConfiguration(
+          upsertNetworkConfiguration(
             {
               rpcUrl,
               ticker,
-              networkConfigurationId: selectedNetwork.networkConfigurationId,
+              id: selectedNetwork.networkConfigurationId,
               chainId: prefixedChainId,
               nickname: networkName,
               rpcPrefs: {
@@ -935,6 +940,7 @@ const NetworksForm = ({
             },
             {
               source: MetaMetricsNetworkEventSource.CustomNetworkForm,
+              setActive: true,
             },
           ),
         );

@@ -16,6 +16,7 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { trace } from '../../../../shared/lib/trace';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export function SentryTest() {
   return (
@@ -33,18 +34,18 @@ export function SentryTest() {
 }
 
 function GenerateUIError() {
+  const t = useI18nContext();
+
   const handleClick = useCallback(async () => {
     await window.stateHooks.throwTestError?.('Developer Options');
   }, []);
 
   return (
     <TestButton
-      name="Generate UI Error"
-      description={
-        <span>
-          Generate an unhandled <b>TestError</b> in this window.
-        </span>
-      }
+      name={t('developerOptionsSentryButtonGenerateUIError')}
+      description={t('developerOptionsSentryDescriptionGenerateUIError', [
+        <b>TestError</b>,
+      ])}
       onClick={handleClick}
       expectError
     />
@@ -52,18 +53,19 @@ function GenerateUIError() {
 }
 
 function GenerateBackgroundError() {
+  const t = useI18nContext();
+
   const handleClick = useCallback(async () => {
     await window.stateHooks.throwTestBackgroundError?.('Developer Options');
   }, []);
 
   return (
     <TestButton
-      name="Generate Background Error"
-      description={
-        <span>
-          Generate an unhandled <b>TestError</b> in the service worker.
-        </span>
-      }
+      name={t('developerOptionsSentryButtonGenerateBackgroundError')}
+      description={t(
+        'developerOptionsSentryDescriptionGenerateBackgroundError',
+        [<b>TestError</b>],
+      )}
       onClick={handleClick}
       expectError
     />
@@ -71,6 +73,8 @@ function GenerateBackgroundError() {
 }
 
 function GenerateTrace() {
+  const t = useI18nContext();
+
   const handleClick = useCallback(async () => {
     await trace(
       {
@@ -104,12 +108,10 @@ function GenerateTrace() {
 
   return (
     <TestButton
-      name="Generate Trace"
-      description={
-        <span>
-          Generate a <b>Developer Test</b> Sentry trace.
-        </span>
-      }
+      name={t('developerOptionsSentryButtonGenerateTrace')}
+      description={t('developerOptionsSentryDescriptionGenerateTrace', [
+        <b>Developer Test</b>,
+      ])}
       onClick={handleClick}
     />
   );

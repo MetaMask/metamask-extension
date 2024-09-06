@@ -10,7 +10,7 @@ import { capitalize, isEqual } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import { Hex, Json, JsonRpcRequest } from '@metamask/utils';
+import type { Hex, Json, JsonRpcRequest } from '@metamask/utils';
 import {
   AssetsContractController,
   BalanceMap,
@@ -1240,11 +1240,14 @@ export function removeSnap(
   };
 }
 
-export async function handleSnapRequest(args: {
+export async function handleSnapRequest<
+  Params extends Record<string, unknown> = JsonRpcParams,
+>(args: {
   snapId: string;
   origin: string;
   handler: string;
-  request: JsonRpcRequest;
+  request: Pick<JsonRpcRequest, 'jsonrpc' | 'method'> &
+    Partial<Pick<JsonRpcRequest<Params>, 'id' | 'params'>>;
 }): Promise<unknown> {
   return submitRequestToBackground('handleSnapRequest', [args]);
 }
@@ -2383,12 +2386,14 @@ export function setProviderType(
 
 export function upsertNetworkConfiguration(
   {
+    id,
     rpcUrl,
     chainId,
     nickname,
     rpcPrefs,
     ticker = EtherDenomination.ETH,
   }: {
+    id?: string;
     rpcUrl: string;
     chainId: string;
     nickname: string;
@@ -2405,14 +2410,21 @@ export function upsertNetworkConfiguration(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     log.debug(
-      `background.upsertNetworkConfiguration: ${rpcUrl} ${chainId} ${ticker} ${nickname}`,
+      `background.upsertNetworkConfiguration: ${id} ${rpcUrl} ${chainId} ${ticker} ${nickname}`,
     );
     let networkConfigurationId;
     try {
       networkConfigurationId = await submitRequestToBackground(
         'upsertNetworkConfiguration',
         [
-          { rpcUrl, chainId, ticker, nickname: nickname || rpcUrl, rpcPrefs },
+          {
+            id,
+            rpcUrl,
+            chainId,
+            ticker,
+            nickname: nickname || rpcUrl,
+            rpcPrefs,
+          },
           { setActive, source, referrer: ORIGIN_METAMASK },
         ],
       );
@@ -2421,56 +2433,6 @@ export function upsertNetworkConfiguration(
       dispatch(displayWarning('Had a problem adding network!'));
     }
     return networkConfigurationId;
-  };
-}
-
-export function editAndSetNetworkConfiguration(
-  {
-    networkConfigurationId,
-    rpcUrl,
-    chainId,
-    nickname,
-    rpcPrefs,
-    ticker = EtherDenomination.ETH,
-  }: {
-    networkConfigurationId: string;
-    rpcUrl: string;
-    chainId: string;
-    nickname: string;
-    rpcPrefs: RPCDefinition['rpcPrefs'];
-    ticker: string;
-  },
-  { source }: { source: string },
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch) => {
-    log.debug(
-      `background.removeNetworkConfiguration: ${networkConfigurationId}`,
-    );
-    try {
-      await submitRequestToBackground('removeNetworkConfiguration', [
-        networkConfigurationId,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem removing network!'));
-      return;
-    }
-
-    try {
-      await submitRequestToBackground('upsertNetworkConfiguration', [
-        {
-          rpcUrl,
-          chainId,
-          ticker,
-          nickname: nickname || rpcUrl,
-          rpcPrefs,
-        },
-        { setActive: true, referrer: ORIGIN_METAMASK, source },
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem changing networks!'));
-    }
   };
 }
 
@@ -3117,10 +3079,6 @@ export function setSmartTransactionsOptInStatus(
     await dispatch(setPreference('smartTransactionsOptInStatus', value));
     await forceUpdateMetamaskState(dispatch);
   };
-}
-
-export function setShowTokenAutodetectModal(value: boolean) {
-  return setPreference('showTokenAutodetectModal', value);
 }
 
 export function setAutoLockTimeLimit(value: number | null) {
@@ -4086,27 +4044,6 @@ export function setFirstTimeFlowType(
     } catch (err) {
       dispatch(displayWarning(err));
     }
-  };
-}
-
-export function setShowTokenAutodetectModalOnUpgrade(
-  val: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.setShowTokenAutodetectModalOnUpgrade`);
-    callBackgroundMethod(
-      'setShowTokenAutodetectModalOnUpgrade',
-      [val],
-      (err) => {
-        if (err) {
-          dispatch(displayWarning(err));
-        }
-      },
-    );
-    dispatch({
-      type: actionConstants.SET_SHOW_TOKEN_AUTO_DETECT_MODAL_UPGRADE,
-      value: val,
-    });
   };
 }
 
@@ -5610,14 +5547,6 @@ export function setIsProfileSyncingEnabled(
       dispatch(hideLoadingIndication());
     }
   };
-}
-
-export function setShowNftAutodetectModal(value: boolean) {
-  return setPreference('showNftAutodetectModal', value);
-}
-
-export function setConfirmationAdvancedDetailsOpen(value: boolean) {
-  return setPreference('showConfirmationAdvancedDetails', value);
 }
 
 export async function getNextAvailableAccountName(

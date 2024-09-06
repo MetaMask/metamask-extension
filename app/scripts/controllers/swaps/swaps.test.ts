@@ -1182,6 +1182,7 @@ describe('SwapsController', function () {
             swapsQuotePrefetchingRefreshTime,
             swapsStxBatchStatusRefreshTime,
             swapsStxGetTransactionsRefreshTime,
+            swapsStxStatusDeadline,
           },
         });
 

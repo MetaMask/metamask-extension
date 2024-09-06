@@ -3526,6 +3526,9 @@
   "onboardingMetametricsDescription2": {
     "message": "Saat kami mengumpulkan metrik, maka akan selalu..."
   },
+  "onboardingMetametricsDisagree": {
+    "message": "Tidak, terima kasih"
+  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Kami akan memberitahukan keputusan untuk menggunakan data ini dengan tujuan lain. Anda dapat meninjau $1 kami untuk informasi selengkapnya. Ingat, Anda dapat membuka pengaturan dan memilih keluar setiap saat.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"

@@ -1471,9 +1471,9 @@ export default class MetamaskController extends EventEmitter {
       (notification) => {
         this.metaMetricsController.trackEvent({
           category: MetaMetricsEventCategory.PushNotifications,
-          event: MetaMetricsEventName.NotificationReceived,
+          event: MetaMetricsEventName.PushNotificationReceived,
           properties: {
-            notification_channel: 'push',
+            notification_id: notification.id,
             notification_type: notification.type,
             chain_id: notification?.chain_id,
           },
@@ -1485,7 +1485,7 @@ export default class MetamaskController extends EventEmitter {
       (notification) => {
         this.metaMetricsController.trackEvent({
           category: MetaMetricsEventCategory.PushNotifications,
-          event: MetaMetricsEventName.NotificationClicked,
+          event: MetaMetricsEventName.PushNotificationClicked,
           properties: {
             notification_id: notification.id,
             notification_type: notification.type,
@@ -3038,7 +3038,6 @@ export default class MetamaskController extends EventEmitter {
       networkController,
       announcementController,
       onboardingController,
-      appMetadataController,
       permissionController,
       preferencesController,
       tokensController,
@@ -3476,12 +3475,6 @@ export default class MetamaskController extends EventEmitter {
       cancelEncryptionPublicKey:
         this.encryptionPublicKeyController.cancelEncryptionPublicKey.bind(
           this.encryptionPublicKeyController,
-        ),
-
-      // AppMetadataController
-      setShowTokenAutodetectModalOnUpgrade:
-        appMetadataController.setShowTokenAutodetectModalOnUpgrade.bind(
-          appMetadataController,
         ),
 
       // onboarding controller

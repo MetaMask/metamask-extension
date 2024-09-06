@@ -3526,6 +3526,9 @@
   "onboardingMetametricsDescription2": {
     "message": "Kapag kami ay nangangalap ng metrics, ito ay palaging..."
   },
+  "onboardingMetametricsDisagree": {
+    "message": "Salamat nalang"
+  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Ipapaalam namin sa iyo kung magdesisyon kaming gamitin ang data na ito para sa ibang layunin. Maaari mong suriin ang aming $1 para sa karagdagang impormasyon. Tandaan, maaari kang magpunta sa mga setting at mag-opt out anumang oras.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"

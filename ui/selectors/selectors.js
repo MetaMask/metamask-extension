@@ -1740,6 +1740,13 @@ export function getUnreadNotifications(state) {
   return unreadNotificationCount;
 }
 
+export const getReadNotificationsCount = createSelector(
+  getNotifications,
+  (notifications) =>
+    notifications.filter((notification) => notification.readDate !== null)
+      .length,
+);
+
 export const getUnreadNotificationsCount = createSelector(
   getUnreadNotifications,
   (notifications) => notifications.length,

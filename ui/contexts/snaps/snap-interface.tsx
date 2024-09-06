@@ -6,6 +6,7 @@ import {
   UserInputEventType,
 } from '@metamask/snaps-sdk';
 import { encodeBase64 } from '@metamask/snaps-utils';
+
 import { Json } from '@metamask/utils';
 import { debounce, throttle } from 'lodash';
 import React, {

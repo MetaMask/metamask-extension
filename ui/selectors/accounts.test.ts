@@ -101,7 +101,45 @@ describe('Accounts Selectors', () => {
           ...MOCK_STATE.metamask,
           internalAccounts: {
             selectedAccount: MOCK_ACCOUNT_EOA.id,
-            accounts: [MOCK_ACCOUNT_EOA],
+            accounts: { mock_account_eoa: MOCK_ACCOUNT_EOA },
+          },
+        },
+      };
+
+      expect(isSelectedInternalAccountBtc(state)).toBe(false);
+    });
+  });
+
+  describe('hasCreatedBtcTestnetAccount', () => {
+    it('returns true if the BTC testnet account has been created', () => {
+      const state: AccountsState = {
+        metamask: {
+          // No-op for this test, but might be required in the future:
+          ...MOCK_STATE.metamask,
+          internalAccounts: {
+            selectedAccount: MOCK_ACCOUNT_BIP122_P2WPKH.id,
+            accounts: {
+              mock_account_bip122_pwpkh: MOCK_ACCOUNT_BIP122_P2WPKH,
+              mock_account_bip122_p2wpkh_testnet:
+                MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
+            },
+          },
+        },
+      };
+
+      expect(hasCreatedBtcTestnetAccount(state)).toBe(true);
+    });
+
+    it('returns false if the BTC testnet account has not been created yet', () => {
+      const state: AccountsState = {
+        metamask: {
+          // No-op for this test, but might be required in the future:
+          ...MOCK_STATE.metamask,
+          internalAccounts: {
+            selectedAccount: MOCK_ACCOUNT_BIP122_P2WPKH.id,
+            accounts: {
+              mock_account_bip122_p2wpkh: MOCK_ACCOUNT_BIP122_P2WPKH,
+            },
           },
         },
       };

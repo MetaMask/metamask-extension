@@ -10,8 +10,10 @@ import {
   getSelectedAccount,
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
 import { isProduction } from '../environment';
-
-import { MultichainState } from '../../../ui/selectors/multichain';
+import {
+  MultichainState,
+  MultichainState,
+} from '../../../ui/selectors/multichain';
 
 type SmartTransactionsMetaMaskState = {
   metamask: {

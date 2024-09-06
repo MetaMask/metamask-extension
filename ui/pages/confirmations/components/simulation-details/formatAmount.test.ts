@@ -1,24 +1,7 @@
 import { BigNumber } from 'bignumber.js';
-import { ellipsisAmountText, formatAmount } from './formatAmount';
+import { formatAmount } from './formatAmount';
 
 describe('formatAmount', () => {
-  describe('#ellipsisAmountText', () => {
-    const MOCK_MAX_LEFT_DIGITS = 15;
-
-    // @ts-expect-error This is missing from the Mocha type definitions
-    it.each([
-      ['1.003', '1.003'],
-      ['1,034', '1,034'],
-      ['1,213,098,292,340,945', '1,213,098,292,340,94...'],
-      ['30,001,231,231,212,312,138,768', '30,001,231,231,212,3...'],
-    ])(
-      'formats amount greater than or equal to 1 with appropriate decimal precision (%s => %s)',
-      (amount: string, expected: string) => {
-        expect(ellipsisAmountText(amount, MOCK_MAX_LEFT_DIGITS)).toBe(expected);
-      },
-    );
-  });
-
   describe('#formatAmount', () => {
     const locale = 'en-US';
 
