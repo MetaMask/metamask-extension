@@ -14,6 +14,7 @@ import bridgeReducer from './bridge/bridge';
 import historyReducer from './history/history';
 import rampsReducer from './ramps/ramps';
 import confirmAlertsReducer from './confirm-alerts/confirm-alerts';
+import multichainSend from './multichain-send/multichain-send';
 
 export default combineReducers({
   [AlertTypes.invalidCustomNetwork]: invalidCustomNetwork,
@@ -24,6 +25,7 @@ export default combineReducers({
   DNS: domainReducer,
   history: historyReducer,
   send: sendReducer,
+  multichainSend,
   confirm: confirmReducer,
   confirmAlerts: confirmAlertsReducer,
   confirmTransaction: confirmTransactionReducer,
