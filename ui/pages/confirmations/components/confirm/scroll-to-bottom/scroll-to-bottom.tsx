@@ -74,7 +74,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
   useEffect(() => {
     dispatch(
       updateConfirm({
-        isScrollToBottomNeeded: isScrollable && !hasScrolledToBottom,
+        isScrollToBottomCompleted: !isScrollable || hasScrolledToBottom,
       }),
     );
   }, [isScrollable, hasScrolledToBottom]);
