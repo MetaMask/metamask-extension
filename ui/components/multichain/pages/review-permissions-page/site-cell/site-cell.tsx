@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import {
   AlignItems,
   BackgroundColor,
@@ -27,37 +26,43 @@ import { AvatarType } from '../../../avatar-group/avatar-group.types';
 import { useSelector } from 'react-redux';
 import { getPermittedAccountsByOrigin } from '../../../../../selectors/permissions';
 
-export const SiteCell = ({
+interface SiteCellProps {
+  networks: {
+    rpcPrefs?: { imageUrl?: string };
+    nickname: string;
+    chainId?: string;
+  }[];
+  accounts: { address: string }[];
+  onAccountsClick: () => void;
+  onNetworksClick: () => void;
+  approvedAccounts: { address: string }[];
+  activeTabOrigin: string;
+}
+
+export const SiteCell: React.FC<SiteCellProps> = ({
   networks,
   accounts,
   onAccountsClick,
   onNetworksClick,
-  selectNewAccountViaModal,
-  selectAll,
-  handleAccountClick,
   approvedAccounts,
   activeTabOrigin,
 }) => {
   const t = useI18nContext();
-  const avatarNetworksData = networks.map(
-    (network: { rpcPrefs?: { imageUrl?: string }; nickname: string }) => ({
-      avatarValue: network?.rpcPrefs?.imageUrl || '', // Fall back to empty string if imageUrl is undefined or null
-      symbol: network.nickname,
-    }),
-  );
-  const avatarAccountsData = accounts.map((account: { address: string }) => ({
+  const avatarNetworksData = networks.map((network) => ({
+    avatarValue: network?.rpcPrefs?.imageUrl || '',
+    symbol: network.nickname,
+  }));
+  const avatarAccountsData = accounts.map((account) => ({
     avatarValue: account.address,
   }));
+
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
   const [showEditNetworksModal, setShowEditNetworksModal] = useState(false);
-  const permittedAccountsByOrigin = useSelector(
-    getPermittedAccountsByOrigin,
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ) as { [key: string]: any[] };
+
+  const permittedAccountsByOrigin = useSelector(getPermittedAccountsByOrigin);
   const currentTabHasNoAccounts =
     !permittedAccountsByOrigin[activeTabOrigin]?.length;
-  console.log(currentTabHasNoAccounts);
+
   return (
     <>
       <Box
@@ -75,9 +80,7 @@ export const SiteCell = ({
         <AvatarIcon
           iconName={IconName.Wallet}
           size={AvatarIconSize.Md}
-          iconProps={{
-            size: IconSize.Sm,
-          }}
+          iconProps={{ size: IconSize.Sm }}
           color={IconColor.iconAlternative}
           backgroundColor={BackgroundColor.backgroundAlternative}
         />
@@ -85,7 +88,7 @@ export const SiteCell = ({
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           width={BlockSize.FiveTwelfths}
-          style={{ alignSelf: 'center', flexGrow: '1' }}
+          style={{ alignSelf: 'center', flexGrow: 1 }}
         >
           <Text
             variant={TextVariant.bodyMd}
@@ -94,7 +97,6 @@ export const SiteCell = ({
           >
             {t('accountsPermissionsTitle')}
           </Text>
-
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Row}
@@ -120,11 +122,9 @@ export const SiteCell = ({
           display={Display.Flex}
           justifyContent={JustifyContent.flexEnd}
           alignItems={AlignItems.center}
-          style={{ flex: '1', alignSelf: 'center' }}
+          style={{ flex: 1, alignSelf: 'center' }}
           gap={2}
-          onClick={() => {
-            setShowEditAccountsModal(true);
-          }}
+          onClick={() => setShowEditAccountsModal(true)}
         >
           <Icon
             display={Display.Flex}
@@ -135,6 +135,7 @@ export const SiteCell = ({
           />
         </Box>
       </Box>
+
       <Box
         data-testid="connection-list-item"
         as="button"
@@ -150,9 +151,7 @@ export const SiteCell = ({
         <AvatarIcon
           iconName={IconName.Data}
           size={AvatarIconSize.Md}
-          iconProps={{
-            size: IconSize.Sm,
-          }}
+          iconProps={{ size: IconSize.Sm }}
           color={IconColor.iconAlternative}
           backgroundColor={BackgroundColor.backgroundAlternative}
         />
@@ -160,7 +159,7 @@ export const SiteCell = ({
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           width={BlockSize.FiveTwelfths}
-          style={{ alignSelf: 'center', flexGrow: '1' }}
+          style={{ alignSelf: 'center', flexGrow: 1 }}
         >
           <Text
             variant={TextVariant.bodyMd}
@@ -169,7 +168,6 @@ export const SiteCell = ({
           >
             {t('permission_walletSwitchEthereumChain')}
           </Text>
-
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Row}
@@ -195,11 +193,9 @@ export const SiteCell = ({
           display={Display.Flex}
           justifyContent={JustifyContent.flexEnd}
           alignItems={AlignItems.center}
-          style={{ flex: '1', alignSelf: 'center' }}
+          style={{ flex: 1, alignSelf: 'center' }}
           gap={2}
-          onClick={() => {
-            setShowEditNetworksModal(true);
-          }}
+          onClick={() => setShowEditNetworksModal(true)}
         >
           <Icon
             display={Display.Flex}
@@ -210,14 +206,16 @@ export const SiteCell = ({
           />
         </Box>
       </Box>
-      {showEditNetworksModal ? (
+
+      {showEditNetworksModal && (
         <EditNetworksModal
           onClose={() => setShowEditNetworksModal(false)}
           onClick={onNetworksClick}
           currentTabHasNoAccounts={currentTabHasNoAccounts}
         />
-      ) : null}
-      {showEditAccountsModal ? (
+      )}
+
+      {showEditAccountsModal && (
         <EditAccountsModal
           onClose={() => setShowEditAccountsModal(false)}
           onClick={onAccountsClick}
@@ -226,18 +224,7 @@ export const SiteCell = ({
           activeTabOrigin={activeTabOrigin}
           currentTabHasNoAccounts={currentTabHasNoAccounts}
         />
-      ) : null}
+      )}
     </>
   );
-};
-
-SiteCell.propTypes = {
-  /**
-   * The connection data to display
-   */
-  connection: PropTypes.object.isRequired,
-  /**
-   * The function to call when the connection is clicked
-   */
-  onClick: PropTypes.func.isRequired,
 };

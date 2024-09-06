@@ -11,9 +11,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getInternalAccounts,
   getOrderedConnectedAccountsForConnectedDapp,
-  getOriginOfCurrentTab,
   getPermissionSubjects,
-  getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
 } from '../../../selectors';
 import {
@@ -44,7 +42,7 @@ type EditAccountsModalProps = {
   onClose: () => void;
   onClick: () => void;
   allowedAccountTypes?: KeyringAccountType[];
-  approvedAccounts: any;
+  approvedAccounts: string[];
   activeTabOrigin: string;
   currentTabHasNoAccounts: boolean;
 };
@@ -67,6 +65,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
       (account: InternalAccount) => allowedAccountTypes.includes(account.type),
     );
   }, [accounts, internalAccounts, allowedAccountTypes]);
+
   const subjects = useSelector(getPermissionSubjects);
   const connectedAccounts = useSelector((state: any) =>
     getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin).filter(
@@ -77,27 +76,22 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   const connectedAccountsAddresses = connectedAccounts.map(
     (account: InternalAccount) => account.address,
   );
+
   const defaultAccountsAddresses =
     connectedAccountsAddresses.length > 0
       ? connectedAccountsAddresses
       : approvedAccounts;
-  console.log(defaultAccountsAddresses, approvedAccounts);
+
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>(
     defaultAccountsAddresses,
   );
 
   const handleAccountClick = (address: string) => {
-    const index = selectedAccounts.indexOf(address);
-    let newSelectedAccounts: string[];
-
-    if (index === -1) {
-      newSelectedAccounts = [...selectedAccounts, address];
-    } else {
-      newSelectedAccounts = selectedAccounts.filter(
-        (account) => account !== address,
-      );
-    }
-    setSelectedAccounts(newSelectedAccounts);
+    setSelectedAccounts((prevSelectedAccounts) =>
+      prevSelectedAccounts.includes(address)
+        ? prevSelectedAccounts.filter((acc) => acc !== address)
+        : [...prevSelectedAccounts, address],
+    );
   };
 
   const disconnectAllAccounts = () => {
@@ -124,24 +118,19 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   const managePermittedAccounts = (
     selectedAccounts: string[],
     connectedAccountsAddresses: string[],
-    activeTabOrigin: string,
   ) => {
-    const removedElements = connectedAccountsAddresses.filter(
-      (account) => !selectedAccounts.includes(account),
+    const removedAccounts = connectedAccountsAddresses.filter(
+      (acc) => !selectedAccounts.includes(acc),
     );
+    removedAccounts.forEach((account) => {
+      dispatch(removePermittedAccount(activeTabOrigin, account));
+    });
 
-    if (removedElements.length > 0) {
-      removedElements.forEach((account) => {
-        dispatch(removePermittedAccount(activeTabOrigin, account));
-      });
-    }
-
-    const newElements = selectedAccounts.filter(
-      (account) => !connectedAccountsAddresses.includes(account),
+    const newAccounts = selectedAccounts.filter(
+      (acc) => !connectedAccountsAddresses.includes(acc),
     );
-
-    if (newElements.length > 0) {
-      dispatch(addMorePermittedAccounts(activeTabOrigin, newElements));
+    if (newAccounts.length > 0) {
+      dispatch(addMorePermittedAccounts(activeTabOrigin, newAccounts));
     }
   };
 
@@ -172,11 +161,10 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
             selected={false}
           />
         ))}
-
         <ModalFooter>
           {selectedAccounts.length === 0 ? (
             <ButtonPrimary
-              data-testid="connect-more-accounts-button"
+              data-testid="disconnect-all-accounts-button"
               onClick={() => {
                 disconnectAllAccounts();
                 onClose();
@@ -189,7 +177,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
             </ButtonPrimary>
           ) : (
             <ButtonPrimary
-              data-testid="connect-more-accounts-button"
+              data-testid="confirm-selection-button"
               onClick={() => {
                 onClick();
                 if (currentTabHasNoAccounts) {

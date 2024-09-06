@@ -1,44 +1,18 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
-import { NonEmptyArray } from '@metamask/utils';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Display,
-  FlexDirection,
-  IconColor,
-  JustifyContent,
-  TextAlign,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import { getURLHost } from '../../../helpers/utils/util';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getConnectedSitesList,
-  getSelectedAccountsForDappConnection,
   getNonTestNetworks,
-  getOrderedConnectedAccountsForConnectedDapp,
-  getPermissionSubjects,
-  getPermittedChainsForSelectedTab,
+  getSelectedAccountsForDappConnection,
   getSelectedInternalAccount,
   getSelectedNetworksForDappConnection,
   getTestNetworks,
 } from '../../../selectors';
 import {
-  AvatarFavicon,
-  AvatarFaviconSize,
   Box,
   Button,
-  ButtonIcon,
-  ButtonIconSize,
-  ButtonSecondarySize,
   ButtonSize,
   ButtonVariant,
-  Icon,
-  IconName,
-  IconSize,
   Text,
 } from '../../../components/component-library/index';
 import {
@@ -48,22 +22,25 @@ import {
   Page,
 } from '../../../components/multichain/pages/page/index';
 import { SiteCell } from '../../../components/multichain/pages/review-permissions-page/index';
+import { BlockSize, Display } from '../../../helpers/constants/design-system';
 
 export const ConnectPage = ({
   request,
   rejectPermissionsRequest,
-  permissionsRequestId,
   approveConnection,
   accounts,
   selectAccounts,
-  selectNewAccountViaModal,
   selectedAccountAddresses,
   activeTabOrigin,
 }: {
   request: any;
   permissionsRequestId: string;
   rejectPermissionsRequest: () => void;
-  approveConnection: (requestId: string) => void;
+  approveConnection: (request: any) => void;
+  accounts: any[];
+  selectAccounts: (addresses: any[]) => void;
+  selectedAccountAddresses: Set<string>;
+  activeTabOrigin: string;
 }) => {
   const t = useI18nContext();
   const networksList = useSelector(getNonTestNetworks);
@@ -72,19 +49,18 @@ export const ConnectPage = ({
   );
   const testNetworks = useSelector(getTestNetworks);
   const combinedNetworks = [...networksList, ...testNetworks];
-  console.log(combinedNetworks, selectednetworksList);
 
   const currentAccount = useSelector(getSelectedInternalAccount);
   const [selectedAccounts, setSelectedAccounts] = useState(
     selectedAccountAddresses,
   );
-  // const evmAccounts = accounts.filter((account) =>
-  //   isEvmAccountType(account.type),
-  // );
+
   const selectedAccountsForDappConnection = useSelector(
     getSelectedAccountsForDappConnection,
   );
-  const handleAccountClick = (address) => {
+
+  // Handle account selection/deselection
+  const handleAccountClick = (address: string) => {
     const newSelectedAccounts = new Set(selectedAccounts);
     if (newSelectedAccounts.has(address)) {
       newSelectedAccounts.delete(address);
@@ -93,37 +69,30 @@ export const ConnectPage = ({
     }
     setSelectedAccounts(newSelectedAccounts);
   };
-  const filteredNetworksByChainId = () => {
-    // Ensure that selectednetworksList is an array before filtering
-    if (Array.isArray(selectednetworksList)) {
-      return combinedNetworks.filter((network) =>
-        selectednetworksList.includes(network.chainId),
-      );
-    } else {
-      // Return an empty array or handle cases when selectednetworksList is not an array
-      console.warn('selectednetworksList is not an array');
-      return [];
-    }
-  };
-  const filteredNetworks = filteredNetworksByChainId();
 
+  // Filter networks based on chainId
+  const filteredNetworks = Array.isArray(selectednetworksList)
+    ? combinedNetworks.filter((network) =>
+        selectednetworksList.includes(network.chainId),
+      )
+    : networksList;
+
+  // Select approved accounts and networks
   const approvedAccounts =
     selectedAccountsForDappConnection.length > 0
       ? selectedAccountsForDappConnection
       : [currentAccount.address];
-  const approvedNetworks =
-    filteredNetworks?.length > 0 ? filteredNetworks : networksList;
-  // TODO we should check if there are actually specifically requested accounts and preselect them and otherwise default
-  // to the currentAccount
+
+  // Handle confirmation
   const onConfirm = () => {
     const _request = {
       ...request,
-      permissions: { ...request.permissions },
-      approvedAccounts: approvedAccounts,
-      approvedChainIds: approvedNetworks.map((network) => network.chainId),
+      approvedAccounts,
+      approvedChainIds: filteredNetworks.map((network) => network.chainId),
     };
     approveConnection(_request);
   };
+
   const filterAccountsByAddress = accounts.filter((account) =>
     approvedAccounts.includes(account.address),
   );
@@ -133,17 +102,16 @@ export const ConnectPage = ({
       data-testid="connections-page"
       className="main-container connections-page"
     >
-      <Header backgroundColor={BackgroundColor.backgroundDefault}>
+      <Header>
         <Text>Connect with MetaMask</Text>
         <Text>This site wants to: </Text>
       </Header>
       <Content padding={0}>
         <SiteCell
-          networks={approvedNetworks}
+          networks={filteredNetworks}
           accounts={filterAccountsByAddress}
-          selectNewAccountViaModal={selectNewAccountViaModal}
           handleAccountClick={handleAccountClick}
-          onAccountsClick={() => selectAccounts(selectedAccounts)}
+          onAccountsClick={() => selectAccounts(Array.from(selectedAccounts))}
           onNetworksClick={() => console.log('testing')}
           approvedAccounts={approvedAccounts}
           activeTabOrigin={activeTabOrigin}
@@ -169,7 +137,7 @@ export const ConnectPage = ({
             {t('confirm')}
           </Button>
         </Box>
-      </Footer>{' '}
+      </Footer>
     </Page>
   );
 };
