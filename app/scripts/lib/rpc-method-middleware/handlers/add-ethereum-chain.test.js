@@ -325,7 +325,7 @@ describe('addEthereumChainHandler', () => {
           },
         });
 
-        // Add an rpc endpoint for mainnet
+        // Add with rpc + block explorers that already exist
         await addEthereumChainHandler(
           {
             origin: 'example.com',
@@ -348,16 +348,12 @@ describe('addEthereumChainHandler', () => {
           mocks,
         );
 
-        expect(mocks.updateNetwork).toHaveBeenCalledTimes(1);
-        expect(mocks.updateNetwork).toHaveBeenCalledWith(
-          '0x1',
-          existingNetwork,
-          undefined,
-        );
+        // No updates, network already had all the info
+        expect(mocks.updateNetwork).toHaveBeenCalledTimes(0);
 
         // User should be prompted to switch chains
         expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
-        expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123);
+        expect(mocks.setActiveNetwork).toHaveBeenCalledWith('mainnet');
       });
 
       it('should return error for invalid chainId', async () => {
@@ -555,7 +551,9 @@ describe('addEthereumChainHandler', () => {
 
         expect(mocks.requestPermittedChainsPermission).not.toHaveBeenCalled();
         expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
-        expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123);
+        expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
+          createMockOptimismConfiguration().rpcEndpoints[0].networkClientId,
+        );
       });
     });
   });
