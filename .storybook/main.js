@@ -48,6 +48,7 @@ module.exports = {
     config.resolve.alias['../../../../../../store/actions'] = require.resolve(
       '../ui/__mocks__/actions.js',
     );
+    config.resolve.alias['component-library'] = path.resolve(__dirname, '../ui/components/component-library');
     config.resolve.fallback = {
       child_process: false,
       constants: false,
