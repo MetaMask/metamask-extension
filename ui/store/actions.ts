@@ -115,8 +115,6 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import type { MarkAsReadNotificationsParam } from '../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import { BridgeFeatureFlags } from '../../app/scripts/controllers/bridge';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
-import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
-import { EndTraceRequest } from '../../shared/lib/trace';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -5606,33 +5604,4 @@ export async function multichainUpdateBalance(
 
 export async function multichainUpdateBalances(): Promise<void> {
   return await submitRequestToBackground<void>('multichainUpdateBalances', []);
-}
-
-export async function getLastInteractedConfirmationInfo(): Promise<
-  LastInteractedConfirmationInfo | undefined
-> {
-  return await submitRequestToBackground<void>(
-    'getLastInteractedConfirmationInfo',
-  );
-}
-
-export async function setLastInteractedConfirmationInfo(
-  info: LastInteractedConfirmationInfo,
-): Promise<void> {
-  return await submitRequestToBackground<void>(
-    'setLastInteractedConfirmationInfo',
-    [info],
-  );
-}
-
-export async function endBackgroundTrace(request: EndTraceRequest) {
-  // We want to record the timestamp immediately, not after the request reaches the background.
-  // Sentry uses the Performance interface for more accuracy, so we also must use it to align with
-  // other timings.
-  const timestamp =
-    request.timestamp || performance.timeOrigin + performance.now();
-
-  await submitRequestToBackground<void>('endTrace', [
-    { ...request, timestamp },
-  ]);
 }
