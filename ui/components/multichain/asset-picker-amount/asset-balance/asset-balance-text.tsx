@@ -4,10 +4,6 @@ import { Text } from '../../../component-library';
 import UserPreferencedCurrencyDisplay from '../../../app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { Asset } from '../../../../ducks/send';
-import {
-  getCurrentCurrency,
-  getSelectedAccountCachedBalance,
-} from '../../../../selectors';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
   TextColor,
@@ -21,6 +17,11 @@ import { getIsFiatPrimary } from '../utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { TokenWithBalance } from '../asset-picker-modal/types';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import {
+  getMultichainCurrentCurrency,
+  getMultichainSelectedAccountCachedBalance,
+} from '../../../../selectors/multichain';
 
 export type AssetBalanceTextProps = {
   asset: Asset;
@@ -34,7 +35,7 @@ export function AssetBalanceText({
   error,
 }: AssetBalanceTextProps) {
   const t = useI18nContext();
-  const secondaryCurrency = useSelector(getCurrentCurrency);
+  const secondaryCurrency = useMultichainSelector(getMultichainCurrentCurrency);
 
   const isFiatPrimary = useSelector(getIsFiatPrimary);
 
@@ -50,7 +51,9 @@ export function AssetBalanceText({
   const balanceString =
     hexToDecimal(asset.balance) || tokensWithBalances[0]?.string;
 
-  const balanceValue = useSelector(getSelectedAccountCachedBalance);
+  const balanceValue = useMultichainSelector(
+    getMultichainSelectedAccountCachedBalance,
+  );
 
   const nativeTokenFiatBalance = useCurrencyDisplay(balanceValue, {
     numberOfDecimals: 2,

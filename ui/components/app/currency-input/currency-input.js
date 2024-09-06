@@ -5,19 +5,17 @@ import { Box } from '../../component-library';
 import { BlockSize } from '../../../helpers/constants/design-system';
 import UnitInput from '../../ui/unit-input';
 import CurrencyDisplay from '../../ui/currency-display';
-import {
-  getNativeCurrency,
-  getProviderConfig,
-} from '../../../ducks/metamask/metamask';
-import {
-  getCurrentChainId,
-  getCurrentCurrency,
-  getShouldShowFiat,
-} from '../../../selectors';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { getCurrentChainId, getShouldShowFiat } from '../../../selectors';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import {
+  getMultichainCurrentCurrency,
+  getMultichainNativeCurrency,
+} from '../../../selectors/multichain';
 import useTokenExchangeRate from './hooks/useTokenExchangeRate';
 import useProcessNewDecimalValue from './hooks/useProcessNewDecimalValue';
 import useStateWithFirstTouch from './hooks/useStateWithFirstTouch';
@@ -55,8 +53,8 @@ export default function CurrencyInput({
 }) {
   const assetDecimals = Number(asset?.decimals) || NATIVE_CURRENCY_DECIMALS;
 
-  const preferredCurrency = useSelector(getNativeCurrency);
-  const secondaryCurrency = useSelector(getCurrentCurrency);
+  const preferredCurrency = useMultichainSelector(getMultichainNativeCurrency);
+  const secondaryCurrency = useMultichainSelector(getMultichainCurrentCurrency);
 
   const primarySuffix =
     asset?.symbol || preferredCurrency || EtherDenomination.ETH;

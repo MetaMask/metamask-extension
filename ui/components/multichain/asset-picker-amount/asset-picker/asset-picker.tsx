@@ -24,10 +24,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
-import {
-  getCurrentNetwork,
-  getTestNetworkBackgroundColor,
-} from '../../../../selectors';
+import { getTestNetworkBackgroundColor } from '../../../../selectors';
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -41,6 +38,11 @@ import {
   NFT,
 } from '../asset-picker-modal/types';
 import { TabName } from '../asset-picker-modal/asset-picker-modal-tabs';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import {
+  getMultichainCurrentNetwork,
+  getMultichainIsEvm,
+} from '../../../../selectors/multichain';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
@@ -94,7 +96,8 @@ export function AssetPicker({
       : symbol;
 
   // Badge details
-  const currentNetwork = useSelector(getCurrentNetwork);
+  const currentNetwork = useMultichainSelector(getMultichainCurrentNetwork);
+  const isEvm = useMultichainSelector(getMultichainIsEvm);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   const handleAssetPickerTitle = (): string | undefined => {
@@ -129,7 +132,6 @@ export function AssetPicker({
           asset?.type === AssetType.NFT ? TabName.NFTS : TabName.TOKENS
         }
       />
-
       <Button
         data-testid="asset-picker-button"
         className="asset-picker"
