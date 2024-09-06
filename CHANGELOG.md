@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.2.0]
 
+## [12.1.3]
+### Fixed
+- Fix `eth_signTypedData` error when `verifyingContract` is not provided ([#26914](https://github.com/MetaMask/metamask-extension/pull/26914))
+
 ## [12.1.2]
 ### Fixed
 - Fix Trezor signing and connecting accounts ([#26882](https://github.com/MetaMask/metamask-extension/pull/26882))
@@ -5013,7 +5017,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.2.0...HEAD
-[12.2.0]: https://github.com/MetaMask/metamask-extension/compare/v12.1.2...v12.2.0
+[12.2.0]: https://github.com/MetaMask/metamask-extension/compare/v12.1.3...v12.2.0
+[12.1.3]: https://github.com/MetaMask/metamask-extension/compare/v12.1.2...v12.1.3
 [12.1.2]: https://github.com/MetaMask/metamask-extension/compare/v12.1.1...v12.1.2
 [12.1.1]: https://github.com/MetaMask/metamask-extension/compare/v12.1.0...v12.1.1
 [12.1.0]: https://github.com/MetaMask/metamask-extension/compare/v12.0.6...v12.1.0
