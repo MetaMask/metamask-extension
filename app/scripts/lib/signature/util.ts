@@ -4,9 +4,9 @@ import type {
 } from '@metamask/message-manager';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 
-type SignatureParams = [TypedMessageParams, OriginalRequest];
+export type SignatureParams = [TypedMessageParams, OriginalRequest];
 
-type AddTypedMessageRequest = {
+export type AddTypedMessageRequest = {
   signatureParams: SignatureParams;
   newUnsignedTypedMessage: (...args: SignatureParams) => Promise<string>;
 };
