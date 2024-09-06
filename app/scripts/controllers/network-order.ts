@@ -8,7 +8,7 @@ import {
 } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 
 // Unique name for the controller
 const controllerName = 'NetworkOrderController';
@@ -117,12 +117,7 @@ export class NetworkOrderController extends BaseController<
       // Filter out testnets, which are in the state but not orderable
       const chainIds = Object.keys(networkConfigurationsByChainId).filter(
         (chainId) =>
-          ![
-            CHAIN_IDS.SEPOLIA,
-            CHAIN_IDS.LINEA_SEPOLIA,
-            CHAIN_IDS.GOERLI,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ].includes(chainId as any),
+          !TEST_CHAINS.includes(chainId as (typeof TEST_CHAINS)[number]),
       ) as Hex[];
 
       state.orderedNetworkList = state.orderedNetworkList
