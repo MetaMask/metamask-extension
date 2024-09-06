@@ -3,7 +3,7 @@
 
 Instead, use export const parameters = {}; and export const decorators = []; in your .storybook/preview.js. Addon authors similarly should use such an export in a preview entry file (see Preview entries).
   * */
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { action } from '@storybook/addon-actions';
 import { Provider } from 'react-redux';
 import configureStore from '../ui/store/store';
@@ -20,7 +20,6 @@ import { metamaskStorybookTheme } from './metamask-storybook-theme';
 import { DocsContainer } from '@storybook/addon-docs';
 import { useDarkMode } from 'storybook-dark-mode';
 import { themes } from '@storybook/theming';
-import { AlertMetricsProvider } from '../ui/components/app/alert-system/contexts/alertMetricsContext';
 
 // eslint-disable-next-line
 /* @ts-expect-error: Avoids error from window property not existing */
@@ -35,20 +34,22 @@ export const parameters = {
     ],
   },
   docs: {
-    container: ({ children, context }) => {
-      const DocsContainerWrapper = () => {
-        // Temporarily use a static light theme
-        const isDark = false;
-        const theme = { ...themes.light, ...metamaskStorybookTheme };
+    container: (context) => {
+      const isDark = useDarkMode();
 
-        return (
-          <div data-theme="light">
-            <DocsContainer context={{ ...context, theme }}>{children}</DocsContainer>
-          </div>
-        );
+      const props = {
+        ...context,
+        theme: isDark
+          ? { ...themes.dark, ...metamaskStorybookTheme }
+          : { ...themes.light, ...metamaskStorybookTheme },
+        'data-theme': isDark ? 'dark' : 'light',
       };
 
-      return React.createElement(DocsContainerWrapper);
+      return (
+        <div data-theme={isDark ? 'dark' : 'light'}>
+          <DocsContainer {...props} />
+        </div>
+      );
     },
   },
   options: {
@@ -68,53 +69,6 @@ export const parameters = {
   },
 };
 
-const store = configureStore(testData);
-const history = createBrowserHistory();
-
-export const decorators = [
-  (Story, context) => {
-    const StoryWrapper = () => {
-      // Temporarily use a static light theme
-      const isDark = false;
-      const currentLocale = context.globals.locale;
-      const current = allLocales[currentLocale];
-
-      useEffect(() => {
-        // Set a static light theme
-        document.documentElement.setAttribute('data-theme', 'light');
-      }, []);
-
-      return (
-        <Provider store={store}>
-          <Router history={history}>
-            <MetaMetricsProviderStorybook>
-              <AlertMetricsProvider
-                metrics={{
-                  trackAlertActionClicked: () => undefined,
-                  trackAlertRender: () => undefined,
-                  trackInlineAlertClicked: () => undefined,
-                }}
-              >
-                <I18nProvider
-                  currentLocale={currentLocale}
-                  current={current}
-                  en={allLocales.en}
-                >
-                  <LegacyI18nProvider>
-                    <Story />
-                  </LegacyI18nProvider>
-                </I18nProvider>
-              </AlertMetricsProvider>
-            </MetaMetricsProviderStorybook>
-          </Router>
-        </Provider>
-      );
-    };
-
-    return <StoryWrapper />;
-  },
-];
-
 export const globalTypes = {
   locale: {
     name: 'Locale',
@@ -133,6 +87,8 @@ export const getNewState = (state, props) => {
   return Object.assign(state, props);
 };
 
+export const store = configureStore(testData);
+const history = createBrowserHistory();
 const proxiedBackground = new Proxy(
   {},
   {
@@ -145,3 +101,40 @@ const proxiedBackground = new Proxy(
   },
 );
 setBackgroundConnection(proxiedBackground);
+
+const metamaskDecorator = (story, context) => {
+  const isDark = useDarkMode();
+  const currentLocale = context.globals.locale;
+  const current = allLocales[currentLocale];
+
+  useEffect(() => {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+
+    if (!currentTheme)
+      document.documentElement.setAttribute('data-theme', 'light');
+
+    if (currentTheme === 'light' && isDark) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else if (currentTheme === 'dark' && !isDark) {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  }, [isDark]);
+
+  return (
+    <Provider store={store}>
+      <Router history={history}>
+        <MetaMetricsProviderStorybook>
+          <I18nProvider
+            currentLocale={currentLocale}
+            current={current}
+            en={allLocales.en}
+          >
+            <LegacyI18nProvider>{story()}</LegacyI18nProvider>
+          </I18nProvider>
+        </MetaMetricsProviderStorybook>
+      </Router>
+    </Provider>
+  );
+};
+
+export const decorators = [metamaskDecorator];
