@@ -4,10 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import Box from '../../../../ui/box';
-import Typography from '../../../../ui/typography/typography';
 import {
   Color,
-  TypographyVariant,
   JustifyContent,
   FLEX_DIRECTION,
   AlignItems,
@@ -34,7 +32,7 @@ import { updateNftDropDownState } from '../../../../../store/actions';
 import { usePrevious } from '../../../../../hooks/usePrevious';
 import { getNftsDropdownState } from '../../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { Icon, IconName, Text } from '../../../../component-library';
+import { Icon, IconName, Text, FontWeight, FontStyle, OverflowWrap, TextAlign } from '../../../../component-library';
 import { NftItem } from '../../../../multichain/nft-item';
 import {
   getSendAnalyticProperties,
@@ -121,16 +119,16 @@ export default function NftsItems({
   const renderCollectionImage = (collectionImage, collectionName) => {
     if (collectionImage?.startsWith('ipfs') && !ipfsGateway) {
       return (
-        <div className="nfts-items__collection-image-alt">
+        <Text className="nfts-items__collection-image-alt" variant="bodyMd">
           {collectionName?.[0]?.toUpperCase() ?? null}
-        </div>
+        </Text>
       );
     }
     if (!openSeaEnabled && !collectionImage?.startsWith('ipfs')) {
       return (
-        <div className="nfts-items__collection-image-alt">
+        <Text className="nfts-items__collection-image-alt" variant="bodyMd">
           {collectionName?.[0]?.toUpperCase() ?? null}
-        </div>
+        </Text>
       );
     }
 
@@ -144,9 +142,9 @@ export default function NftsItems({
       );
     }
     return (
-      <div className="nfts-items__collection-image-alt">
+      <Text className="nfts-items__collection-image-alt" variant="bodyMd">
         {collectionName?.[0]?.toUpperCase() ?? null}
-      </div>
+      </Text>
     );
   };
 
@@ -221,13 +219,13 @@ export default function NftsItems({
               className="nfts-items__collection-header"
             >
               {renderCollectionImage(collectionImage, collectionName)}
-              <Typography
+              <Text
                 color={Color.textDefault}
-                variant={TypographyVariant.H5}
-                margin={2}
+                variant="bodyLg"
+                marginLeft={2}
               >
                 {`${collectionName ?? t('unknownCollection')} (${nfts.length})`}
-              </Typography>
+              </Text>
             </Box>
             <Box alignItems={AlignItems.flexEnd}>
               <Icon
