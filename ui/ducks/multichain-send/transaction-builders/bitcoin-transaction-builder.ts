@@ -25,11 +25,8 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 import { handleSnapRequest } from '../../../store/actions';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap';
 import { isBtcMainnetAddress } from '../../../../shared/lib/multichain';
+import { getBtcCachedBalance } from '../../../selectors/multichain';
 import { AbstractTransactionBuilder } from './abstract-transaction-builder';
-import {
-  getBtcCachedBalance,
-  getMultichainSelectedAccountCachedBalance,
-} from '../../../selectors/multichain';
 
 const SUPPORTED_BTC_NETWORKS = [
   MultichainNetworks.BITCOIN,

@@ -38,7 +38,7 @@ export abstract class AbstractTransactionBuilder {
     this.transactionParams = transactionParams;
   }
 
-  abstract estimateGas(): DraftTransaction['transactionParams']['fee'];
+  abstract estimateGas(): Promise<DraftTransaction['transactionParams']['fee']>;
 
   abstract queryAssetBalance(address: string): Promise<{
     amount: string;
