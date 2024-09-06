@@ -30,6 +30,7 @@ import {
   getApprovalFlows,
   getTotalUnapprovedCount,
   useSafeChainsListValidationSelector,
+  getCurrentNetwork,
   getSnapsMetadata,
 } from '../../../selectors';
 import NetworkDisplay from '../../../components/app/network-display/network-display';
@@ -247,6 +248,8 @@ export default function ConfirmationPage({
 
   const snapsMetadata = useSelector(getSnapsMetadata);
 
+  const { chainId } = useSelector(getCurrentNetwork);
+
   const name = snapsMetadata[pendingConfirmation?.origin]?.name;
 
   const SNAP_DIALOG_TYPE = Object.values(DIALOG_APPROVAL_TYPES);
@@ -427,19 +430,22 @@ export default function ConfirmationPage({
   const handleSubmit = async () => {
     setLoading(true);
 
-    if (
-      pendingConfirmation?.requestData?.fromNetworkConfiguration?.chainId &&
-      pendingConfirmation?.requestData?.toNetworkConfiguration?.chainId
-    ) {
+    const fromNetwork =
+      pendingConfirmation?.requestData?.fromNetworkConfiguration?.chainId ||
+      chainId;
+
+    const toNetwork =
+      pendingConfirmation?.requestData?.toNetworkConfiguration?.chainId ||
+      pendingConfirmations?.[0]?.requestData?.chainId;
+
+    if (fromNetwork && toNetwork) {
       trackEvent({
         category: MetaMetricsEventCategory.Network,
         event: MetaMetricsEventName.NavNetworkSwitched,
         properties: {
           location: 'Switch Modal',
-          from_network:
-            pendingConfirmation.requestData.fromNetworkConfiguration.chainId,
-          to_network:
-            pendingConfirmation.requestData.toNetworkConfiguration.chainId,
+          from_network: fromNetwork,
+          to_network: toNetwork,
           referrer: {
             url: window.location.origin,
           },
