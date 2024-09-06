@@ -10,7 +10,7 @@ import {
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
   getTargetSubjectMetadata,
-} from '.';
+} from './selectors';
 
 // selectors
 
