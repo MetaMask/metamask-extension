@@ -119,22 +119,15 @@ export function validateAddEthereumChainParams(params, end) {
   };
 
   const firstValidRPCUrl = rpcUrls.find((rpcUrl) => isLocalhostOrHttps(rpcUrl));
-  const firstValidBlockExplorerUrl =
-    blockExplorerUrls !== null && Array.isArray(blockExplorerUrls)
-      ? blockExplorerUrls.find((blockExplorerUrl) =>
-          isLocalhostOrHttps(blockExplorerUrl),
-        )
-      : null;
+  const firstValidBlockExplorerUrl = Array.isArray(blockExplorerUrls)
+    ? blockExplorerUrls.find((blockExplorerUrl) =>
+        isLocalhostOrHttps(blockExplorerUrl),
+      )
+    : null;
 
   if (!firstValidRPCUrl) {
     throw ethErrors.rpc.invalidParams({
       message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
-    });
-  }
-
-  if (blockExplorerUrls !== null && !firstValidBlockExplorerUrl) {
-    throw ethErrors.rpc.invalidParams({
-      message: `Expected null or array with at least one valid string HTTPS URL 'blockExplorerUrl'. Received: ${blockExplorerUrls}`,
     });
   }
 

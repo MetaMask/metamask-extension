@@ -23,6 +23,7 @@ import SnapPrivacyWarning from '../../../../components/app/snaps/snap-privacy-wa
 import { getPermissions, getSnapMetadata } from '../../../../selectors';
 import SnapAvatar from '../../../../components/app/snaps/snap-avatar/snap-avatar';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
+import { isSnapId } from '../../../../helpers/utils/snaps';
 
 export default function SnapsConnect({
   request,
@@ -57,7 +58,15 @@ export default function SnapsConnect({
   const snaps = getDedupedSnaps(request, currentPermissions);
 
   const SnapsConnectContent = () => {
-    const { hostname: trimmedOrigin } = useOriginMetadata(origin) || {};
+    let trimmedOrigin = (useOriginMetadata(origin) || {})?.hostname;
+    const { name } = useSelector((state) =>
+      // hack around the selector throwing
+      getSnapMetadata(state, isSnapId(origin) ? origin : `npm:${origin}`),
+    );
+
+    if (isSnapId(origin)) {
+      trimmedOrigin = name;
+    }
 
     const snapId = snaps[0];
     const { name: snapName } = useSelector((state) =>

@@ -74,7 +74,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
   useEffect(() => {
     dispatch(
       updateConfirm({
-        isScrollToBottomNeeded: isScrollable && !hasScrolledToBottom,
+        isScrollToBottomCompleted: !isScrollable || hasScrolledToBottom,
       }),
     );
   }, [isScrollable, hasScrolledToBottom]);
@@ -111,7 +111,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
 
         {isScrollable && !isScrolledToBottom && (
           <ButtonIcon
-            className={'confirm-scroll-to-bottom__button'}
+            className="confirm-scroll-to-bottom__button"
             onClick={scrollToBottom}
             iconName={IconName.Arrow2Down}
             ariaLabel={t('scrollDown')}
