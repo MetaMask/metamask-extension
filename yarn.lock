@@ -5689,7 +5689,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^10.0.3, @metamask/message-manager@npm:^10.1.0":
+"@metamask/message-manager@npm:^10.0.2, @metamask/message-manager@npm:^10.1.0":
   version: 10.1.0
   resolution: "@metamask/message-manager@npm:10.1.0"
   dependencies:
@@ -6233,20 +6233,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:^19.0.0":
-  version: 19.0.0
-  resolution: "@metamask/signature-controller@npm:19.0.0"
+"@metamask/signature-controller@npm:^18.1.0":
+  version: 18.1.0
+  resolution: "@metamask/signature-controller@npm:18.1.0"
   dependencies:
-    "@metamask/base-controller": "npm:^7.0.0"
-    "@metamask/controller-utils": "npm:^11.1.0"
-    "@metamask/message-manager": "npm:^10.0.3"
+    "@metamask/base-controller": "npm:^6.0.2"
+    "@metamask/controller-utils": "npm:^11.0.2"
+    "@metamask/message-manager": "npm:^10.0.2"
     "@metamask/utils": "npm:^9.1.0"
     lodash: "npm:^4.17.21"
   peerDependencies:
     "@metamask/approval-controller": ^7.0.0
     "@metamask/keyring-controller": ^17.0.0
-    "@metamask/logging-controller": ^6.0.0
-  checksum: 10/9eec874bddee00a969a0231367c55c2b1768ad029c8125929603544ddc94b1e7c833457e39aa0aa5fed19608cb68633f0a90ca40a5639a8d6e2c84dbf9756feb
+    "@metamask/logging-controller": ^5.0.0
+  checksum: 10/250a21808de56b46ab853fcffcc3b1149b5fd751cf30ae6ce1b025bba5f8db661c3c90d9157208abac6f5f35d9d02835d93181f0f30b82f1181f967155f7b7f8
   languageName: node
   linkType: hard
 
@@ -26215,7 +26215,7 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^15.0.2"
-    "@metamask/signature-controller": "npm:^19.0.0"
+    "@metamask/signature-controller": "npm:^18.1.0"
     "@metamask/smart-transactions-controller": "npm:12.0.1"
     "@metamask/snaps-controllers": "npm:^9.5.0"
     "@metamask/snaps-execution-environments": "npm:^6.6.2"
