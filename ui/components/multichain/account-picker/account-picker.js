@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import {
   AvatarAccount,
   AvatarAccountVariant,
@@ -28,6 +27,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IF
@@ -45,7 +45,7 @@ export const AccountPicker = ({
   ...props
 }) => {
   const useBlockie = useSelector(getUseBlockie);
-  const shortenedAddress = shortenAddress(toChecksumHexAddress(address));
+  const shortenedAddress = shortenAddress(normalizeSafeAddress(address));
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const selectedAddress = useSelector(getSelectedAddress);
