@@ -25,9 +25,10 @@ import { NetworkListItem } from '..';
 import {
   grantPermittedChains,
   removePermittedChain,
+  setSelectedNetworksForDappConnection,
 } from '../../../store/actions';
 
-export const EditNetworksModal = ({ onClose, onClick }) => {
+export const EditNetworksModal = ({ onClose, onClick, currentTabHasNoAccounts }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const nonTestNetworks = useSelector(getNonTestNetworks);
@@ -162,11 +163,17 @@ export const EditNetworksModal = ({ onClose, onClick }) => {
               onClick={() => {
                 onClick();
                 onClose();
-                managePermittedChains(
-                  selectedChains,
-                  flattenedPermittedChains,
-                  activeTabOrigin,
-                ); // Then call the managePermittedChains function
+                if (currentTabHasNoAccounts) {
+                  dispatch(
+                    setSelectedNetworksForDappConnection(selectedChains),
+                  );
+                } else {
+                  managePermittedChains(
+                    selectedChains,
+                    flattenedPermittedChains,
+                    activeTabOrigin,
+                  ); // Then call the managePermittedChains function
+                }
               }}
               size={ButtonPrimarySize.Lg}
               block

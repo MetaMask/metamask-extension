@@ -17,11 +17,14 @@ import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getConnectedSitesList,
+  getSelectedAccountsForDappConnection,
   getNonTestNetworks,
   getOrderedConnectedAccountsForConnectedDapp,
   getPermissionSubjects,
   getPermittedChainsForSelectedTab,
   getSelectedInternalAccount,
+  getSelectedNetworksForDappConnection,
+  getTestNetworks,
 } from '../../../selectors';
 import {
   AvatarFavicon,
@@ -51,6 +54,11 @@ export const ConnectPage = ({
   rejectPermissionsRequest,
   permissionsRequestId,
   approveConnection,
+  accounts,
+  selectAccounts,
+  selectNewAccountViaModal,
+  selectedAccountAddresses,
+  activeTabOrigin,
 }: {
   request: any;
   permissionsRequestId: string;
@@ -59,19 +67,67 @@ export const ConnectPage = ({
 }) => {
   const t = useI18nContext();
   const networksList = useSelector(getNonTestNetworks);
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const selectednetworksList = useSelector(
+    getSelectedNetworksForDappConnection,
+  );
+  const testNetworks = useSelector(getTestNetworks);
+  const combinedNetworks = [...networksList, ...testNetworks];
+  console.log(combinedNetworks, selectednetworksList);
 
+  const currentAccount = useSelector(getSelectedInternalAccount);
+  const [selectedAccounts, setSelectedAccounts] = useState(
+    selectedAccountAddresses,
+  );
+  // const evmAccounts = accounts.filter((account) =>
+  //   isEvmAccountType(account.type),
+  // );
+  const selectedAccountsForDappConnection = useSelector(
+    getSelectedAccountsForDappConnection,
+  );
+  const handleAccountClick = (address) => {
+    const newSelectedAccounts = new Set(selectedAccounts);
+    if (newSelectedAccounts.has(address)) {
+      newSelectedAccounts.delete(address);
+    } else {
+      newSelectedAccounts.add(address);
+    }
+    setSelectedAccounts(newSelectedAccounts);
+  };
+  const filteredNetworksByChainId = () => {
+    // Ensure that selectednetworksList is an array before filtering
+    if (Array.isArray(selectednetworksList)) {
+      return combinedNetworks.filter((network) =>
+        selectednetworksList.includes(network.chainId),
+      );
+    } else {
+      // Return an empty array or handle cases when selectednetworksList is not an array
+      console.warn('selectednetworksList is not an array');
+      return [];
+    }
+  };
+  const filteredNetworks = filteredNetworksByChainId();
+
+  const approvedAccounts =
+    selectedAccountsForDappConnection.length > 0
+      ? selectedAccountsForDappConnection
+      : [currentAccount.address];
+  const approvedNetworks =
+    filteredNetworks?.length > 0 ? filteredNetworks : networksList;
   // TODO we should check if there are actually specifically requested accounts and preselect them and otherwise default
-  // to the selectedAccount
+  // to the currentAccount
   const onConfirm = () => {
     const _request = {
       ...request,
       permissions: { ...request.permissions },
-      approvedAccounts: [selectedAccount.address],
-      approvedChainIds: networksList.map((network) => network.chainId),
+      approvedAccounts: approvedAccounts,
+      approvedChainIds: approvedNetworks.map((network) => network.chainId),
     };
     approveConnection(_request);
   };
+  const filterAccountsByAddress = accounts.filter((account) =>
+    approvedAccounts.includes(account.address),
+  );
+
   return (
     <Page
       data-testid="connections-page"
@@ -83,10 +139,14 @@ export const ConnectPage = ({
       </Header>
       <Content padding={0}>
         <SiteCell
-          networks={networksList}
-          accounts={[selectedAccount]}
-          onAccountsClick={() => console.log('test')}
+          networks={approvedNetworks}
+          accounts={filterAccountsByAddress}
+          selectNewAccountViaModal={selectNewAccountViaModal}
+          handleAccountClick={handleAccountClick}
+          onAccountsClick={() => selectAccounts(selectedAccounts)}
           onNetworksClick={() => console.log('testing')}
+          approvedAccounts={approvedAccounts}
+          activeTabOrigin={activeTabOrigin}
         />
       </Content>
       <Footer>

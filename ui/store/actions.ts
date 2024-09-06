@@ -3227,6 +3227,20 @@ export function setAccountDetailsAddress(address: string) {
   };
 }
 
+export function setSelectedAccountsForDappConnection(addresses: []) {
+  return {
+    type: actionConstants.SET_SELECTED_ACCOUNTS_FOR_DAPP_CONNECTIONS,
+    payload: addresses,
+  };
+}
+
+export function setSelectedNetworksForDappConnection(addresses: []) {
+  return {
+    type: actionConstants.SET_SELECTED_NETWORKS_FOR_DAPP_CONNECTIONS,
+    payload: addresses,
+  };
+}
+
 export function setParticipateInMetaMetrics(
   participationPreference: boolean,
 ): ThunkAction<

@@ -24,24 +24,40 @@ import {
 } from '../../../../component-library';
 import { AvatarGroup, EditAccountsModal, EditNetworksModal } from '../../..';
 import { AvatarType } from '../../../avatar-group/avatar-group.types';
+import { useSelector } from 'react-redux';
+import { getPermittedAccountsByOrigin } from '../../../../../selectors/permissions';
 
 export const SiteCell = ({
   networks,
   accounts,
   onAccountsClick,
   onNetworksClick,
+  selectNewAccountViaModal,
+  selectAll,
+  handleAccountClick,
+  approvedAccounts,
+  activeTabOrigin,
 }) => {
   const t = useI18nContext();
-  const avatarNetworksData = networks.map((network: { rpcPrefs: { imageUrl: string; }; nickname: string; }) => ({
-    avatarValue: network.rpcPrefs.imageUrl,
-    symbol: network.nickname,
-  }));
-  const avatarAccountsData = accounts.map((account: { address: string; }) => ({
+  const avatarNetworksData = networks.map(
+    (network: { rpcPrefs?: { imageUrl?: string }; nickname: string }) => ({
+      avatarValue: network?.rpcPrefs?.imageUrl || '', // Fall back to empty string if imageUrl is undefined or null
+      symbol: network.nickname,
+    }),
+  );
+  const avatarAccountsData = accounts.map((account: { address: string }) => ({
     avatarValue: account.address,
   }));
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
   const [showEditNetworksModal, setShowEditNetworksModal] = useState(false);
-
+  const permittedAccountsByOrigin = useSelector(
+    getPermittedAccountsByOrigin,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ) as { [key: string]: any[] };
+  const currentTabHasNoAccounts =
+    !permittedAccountsByOrigin[activeTabOrigin]?.length;
+  console.log(currentTabHasNoAccounts);
   return (
     <>
       <Box
@@ -200,12 +216,17 @@ export const SiteCell = ({
         <EditNetworksModal
           onClose={() => setShowEditNetworksModal(false)}
           onClick={onNetworksClick}
+          currentTabHasNoAccounts={currentTabHasNoAccounts}
         />
       ) : null}
       {showEditAccountsModal ? (
         <EditAccountsModal
           onClose={() => setShowEditAccountsModal(false)}
           onClick={onAccountsClick}
+          selAccounts={accounts}
+          approvedAccounts={approvedAccounts}
+          activeTabOrigin={activeTabOrigin}
+          currentTabHasNoAccounts={currentTabHasNoAccounts}
         />
       ) : null}
     </>

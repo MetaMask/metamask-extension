@@ -27,6 +27,8 @@
       }
     },
     "showIpfsModalOpen": false,
+    "selectedAccountsForDappConnection": {},
+    "selectedNetworksForDappConnection": {},
     "showKeyringRemovalSnapModal": false,
     "showWhatsNewPopup": false,
     "warning": null,

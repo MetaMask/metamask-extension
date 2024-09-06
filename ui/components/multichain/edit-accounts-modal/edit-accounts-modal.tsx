@@ -34,6 +34,7 @@ import {
   addMorePermittedAccounts,
   removePermissionsFor,
   removePermittedAccount,
+  setSelectedAccountsForDappConnection,
 } from '../../../store/actions';
 import { SubjectsType } from '../pages/connections/components/connections.types';
 
@@ -43,12 +44,18 @@ type EditAccountsModalProps = {
   onClose: () => void;
   onClick: () => void;
   allowedAccountTypes?: KeyringAccountType[];
+  approvedAccounts: any;
+  activeTabOrigin: string;
+  currentTabHasNoAccounts: boolean;
 };
 
 export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   onClose,
   onClick,
   allowedAccountTypes = defaultAllowedAccountTypes,
+  approvedAccounts,
+  activeTabOrigin,
+  currentTabHasNoAccounts,
 }) => {
   const t = useI18nContext();
   const accounts = useSelector(getUpdatedAndSortedAccounts);
@@ -60,22 +67,21 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
       (account: InternalAccount) => allowedAccountTypes.includes(account.type),
     );
   }, [accounts, internalAccounts, allowedAccountTypes]);
-
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const subjects = useSelector(getPermissionSubjects);
   const connectedAccounts = useSelector((state: any) =>
     getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin).filter(
       (account: InternalAccount) => isEvmAccountType(account.type),
     ),
   );
-  const currentSelectedAccount = useSelector(getSelectedInternalAccount);
+
   const connectedAccountsAddresses = connectedAccounts.map(
     (account: InternalAccount) => account.address,
   );
   const defaultAccountsAddresses =
     connectedAccountsAddresses.length > 0
       ? connectedAccountsAddresses
-      : [currentSelectedAccount.address];
+      : approvedAccounts;
+  console.log(defaultAccountsAddresses, approvedAccounts);
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>(
     defaultAccountsAddresses,
   );
@@ -186,11 +192,17 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
               data-testid="connect-more-accounts-button"
               onClick={() => {
                 onClick();
-                managePermittedAccounts(
-                  selectedAccounts,
-                  connectedAccountsAddresses,
-                  activeTabOrigin,
-                );
+                if (currentTabHasNoAccounts) {
+                  dispatch(
+                    setSelectedAccountsForDappConnection(selectedAccounts),
+                  );
+                } else {
+                  managePermittedAccounts(
+                    selectedAccounts,
+                    connectedAccountsAddresses,
+                    activeTabOrigin,
+                  );
+                }
                 onClose();
               }}
               size={ButtonPrimarySize.Lg}

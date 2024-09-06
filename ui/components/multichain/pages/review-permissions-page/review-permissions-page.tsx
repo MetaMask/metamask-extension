@@ -21,6 +21,7 @@ import {
   getOrderedConnectedAccountsForConnectedDapp,
   getPermissionSubjects,
   getPermittedChainsForSelectedTab,
+  getTestNetworks,
 } from '../../../../selectors';
 import { removePermissionsFor } from '../../../../store/actions';
 import {
@@ -60,11 +61,13 @@ export const ReviewPermissions = () => {
     getPermittedChainsForSelectedTab(state, activeTabOrigin),
   );
   const networksList = useSelector(getNonTestNetworks);
+  const testNetworks = useSelector(getTestNetworks);
+  const combinedNetworks = [...networksList, ...testNetworks];
   const connectedAccounts = useSelector((state) =>
     getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin),
   );
   const subjects = useSelector(getPermissionSubjects);
-  const grantedNetworks = networksList.filter(
+  const grantedNetworks = combinedNetworks.filter(
     (net: { chainId: any }) => connectedNetworks.indexOf(net.chainId) !== -1,
   );
   const hostName = getURLHost(securedOrigin);
@@ -144,6 +147,7 @@ export const ReviewPermissions = () => {
               accounts={connectedAccounts}
               onAccountsClick={() => setShowAccountToast(true)}
               onNetworksClick={() => setShowNetworkToast(true)}
+              activeTabOrigin={activeTabOrigin}
             />
           </Content>
           <Footer>

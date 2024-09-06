@@ -363,12 +363,23 @@ export default class PermissionConnect extends Component {
               exact
               render={() => (
                 <ConnectPage
+                  accounts={accounts}
                   rejectPermissionsRequest={(requestId) =>
                     this.cancelPermissionsRequest(requestId)
                   }
+                  activeTabOrigin={this.state.origin}
                   request={permissionsRequest}
                   permissionsRequestId={permissionsRequestId}
                   approveConnection={this.approveConnection}
+                  selectAccounts={(addresses) => this.selectAccounts(addresses)}
+                  selectedAccountAddresses={selectedAccountAddresses}
+                  selectNewAccountViaModal={(handleAccountClick) => {
+                    showNewAccountModal({
+                      onCreateNewAccount: (address) =>
+                        handleAccountClick(address),
+                      newAccountNumber,
+                    });
+                  }}
                 />
               )}
             />
