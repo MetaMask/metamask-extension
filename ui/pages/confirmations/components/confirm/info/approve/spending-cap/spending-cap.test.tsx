@@ -23,12 +23,10 @@ describe('<SpendingCap />', () => {
 
     const setIsOpenEditSpendingCapModal = () =>
       console.log('setIsOpenEditSpendingCapModal');
-    const customSpendingCap = '10';
 
     const { container } = renderWithConfirmContextProvider(
       <SpendingCap
         setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
-        customSpendingCap={customSpendingCap}
       />,
 
       mockStore,

@@ -21,37 +21,6 @@ const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 describe('Confirmation Redesign ERC20 Increase Allowance', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
-  async function mocks(server: Mockttp) {
-    return [await mocked4BytesIncreaseAllowance(server)];
-  }
-
-  async function mocked4BytesIncreaseAllowance(mockServer: Mockttp) {
-    return await mockServer
-      .forGet('https://www.4byte.directory/api/v1/signatures/')
-      .always()
-      .withQuery({ hex_signature: '0x39509351' })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            count: 1,
-            next: null,
-            previous: null,
-            results: [
-              {
-                id: 46002,
-                created_at: '2018-06-24T21:43:27.354648Z',
-                text_signature: 'increaseAllowance(address,uint256)',
-                hex_signature: '0x39509351',
-                bytes_signature: '9PQ',
-                test: 'Priya',
-              },
-            ],
-          },
-        };
-      });
-  }
-
   describe('Submit an increase allowance transaction @no-mmi', function () {
     it('Sends a type 0 transaction (Legacy) with a small spending cap', async function () {
       await withFixtures(
@@ -71,23 +40,10 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
         },
-        async ({
-          driver,
-          contractRegistry,
-          mockedEndpoint: mockedEndpoints,
-        }: TestSuiteArguments) => {
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
           await createERC20IncreaseAllowanceTransaction(driver);
-
-          const events = await getEventPayloads(
-            driver,
-            mockedEndpoints as MockedEndpoint[],
-            false,
-          );
-
-          console.log('here '.repeat(42), { mockedEndpoints, events });
-          await driver.delay(5000);
 
           const NEW_SPENDING_CAP = '3';
           await editSpendingCap(driver, NEW_SPENDING_CAP);
@@ -95,8 +51,6 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
           await scrollAndConfirmAndAssertConfirm(driver);
 
           await assertChangedSpendingCap(driver, NEW_SPENDING_CAP);
-
-          await driver.delay(5000);
         },
       );
     });
@@ -200,6 +154,37 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
       );
     });
   });
+
+  async function mocks(server: Mockttp) {
+    return [await mocked4BytesIncreaseAllowance(server)];
+  }
+
+  async function mocked4BytesIncreaseAllowance(mockServer: Mockttp) {
+    return await mockServer
+      .forGet('https://www.4byte.directory/api/v1/signatures/')
+      .always()
+      .withQuery({ hex_signature: '0x39509351' })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            count: 1,
+            next: null,
+            previous: null,
+            results: [
+              {
+                id: 46002,
+                created_at: '2018-06-24T21:43:27.354648Z',
+                text_signature: 'increaseAllowance(address,uint256)',
+                hex_signature: '0x39509351',
+                bytes_signature: '9PQ',
+                test: 'Priya',
+              },
+            ],
+          },
+        };
+      });
+  }
 });
 
 async function createERC20IncreaseAllowanceTransaction(driver: Driver) {
@@ -209,9 +194,6 @@ async function createERC20IncreaseAllowanceTransaction(driver: Driver) {
 
 async function editSpendingCap(driver: Driver, newSpendingCap: string) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.takeScreenshot('spendingCapDialog-before-wait');
-  await driver.delay(10000);
-  await driver.takeScreenshot('spendingCapDialog-after-wait');
   await driver.clickElement('[data-testid="edit-spending-cap-icon"');
 
   await driver.fill(

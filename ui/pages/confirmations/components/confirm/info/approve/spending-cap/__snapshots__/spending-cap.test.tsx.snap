@@ -69,7 +69,7 @@ exports[`<SpendingCap /> renders component 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          10 
+          1000 
         </p>
         <button
           aria-label="Edit"

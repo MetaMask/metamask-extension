@@ -40,15 +40,11 @@ describe('<EditSpendingCapModal />', () => {
     const isOpenEditSpendingCapModal = true;
     const setIsOpenEditSpendingCapModal = () =>
       console.log('setIsOpenEditSpendingCapModal');
-    const customSpendingCap = '10';
-    const setCustomSpendingCap = () => console.log('setCustomSpendingCap');
 
     const { container } = renderWithConfirmContextProvider(
       <EditSpendingCapModal
         isOpenEditSpendingCapModal={isOpenEditSpendingCapModal}
         setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
-        customSpendingCap={customSpendingCap}
-        setCustomSpendingCap={setCustomSpendingCap}
       />,
       mockStore,
     );
