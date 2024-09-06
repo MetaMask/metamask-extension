@@ -30,7 +30,7 @@ exports[`<SpendingCap /> renders component 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          0
+          0 
         </p>
       </div>
     </div>
@@ -78,7 +78,7 @@ exports[`<SpendingCap /> renders component 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          1000
+          1000 
         </p>
         <button
           aria-label="Edit"
