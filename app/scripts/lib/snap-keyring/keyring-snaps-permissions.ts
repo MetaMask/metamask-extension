@@ -47,7 +47,6 @@ const WEBSITE_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.GetRequest,
   KeyringRpcMethod.ApproveRequest,
   KeyringRpcMethod.RejectRequest,
-  KeyringRpcMethod.SubmitRequest,
 ];
 
 /**
