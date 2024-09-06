@@ -14,11 +14,14 @@ type AddTypedMessageRequest = {
 export async function addTypedMessage(request: AddTypedMessageRequest) {
   const { signatureParams, newUnsignedTypedMessage } = request;
   const [_messageParams, signatureRequest] = signatureParams;
-  const { id: actionId } = signatureRequest;
+  const { id } = signatureRequest;
+  const actionId = id?.toString();
+
+  endTrace({ name: TraceName.Middleware, id: actionId });
 
   const hash = await newUnsignedTypedMessage(...signatureParams);
 
-  endTrace({ name: TraceName.Signature, id: actionId?.toString() });
+  endTrace({ name: TraceName.Signature, id: actionId });
 
   return hash;
 }
