@@ -8,7 +8,7 @@ import FixtureBuilder = require('../../fixture-builder');
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import HomePage from '../../page-objects/pages/home-page';
+import HomePage from '../../page-objects/pages/home/home-page';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import ConfirmTransactionPage from '../../page-objects/pages/confirm-transaction-page';
 import AccountListPage from '../../page-objects/pages/account/account-list-page';
