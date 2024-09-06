@@ -26,7 +26,7 @@ const variantHash = {
   [FLAT_VARIANT]: 'sender-to-recipient--flat',
 };
 
-function SenderAddress({
+export function SenderAddress({
   addressOnly,
   checksummedSenderAddress,
   senderName,

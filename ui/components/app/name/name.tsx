@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import { NameType } from '@metamask/name-controller';
 import classnames from 'classnames';
-import { toChecksumAddress } from 'ethereumjs-util';
 import { Icon, IconName, IconSize, Text } from '../../component-library';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -18,6 +17,7 @@ import {
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../hooks/useDisplayName';
 import Identicon from '../../ui/identicon';
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import NameDetails from './name-details/name-details';
 
 export type NameProps = {
@@ -47,7 +47,7 @@ function formatValue(value: string, type: NameType): string {
 
   switch (type) {
     case NameType.ETHEREUM_ADDRESS:
-      return shortenAddress(toChecksumAddress(value));
+      return shortenAddress(normalizeSafeAddress(value));
 
     default:
       return value;
