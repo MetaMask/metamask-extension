@@ -32,7 +32,7 @@ import { updateNftDropDownState } from '../../../../../store/actions';
 import { usePrevious } from '../../../../../hooks/usePrevious';
 import { getNftsDropdownState } from '../../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { Icon, IconName, Text, FontWeight, FontStyle, OverflowWrap, TextAlign } from '../../../../component-library';
+import { Icon, IconName, Text } from '../../../../component-library';
 import { NftItem } from '../../../../multichain/nft-item';
 import {
   getSendAnalyticProperties,
@@ -219,11 +219,7 @@ export default function NftsItems({
               className="nfts-items__collection-header"
             >
               {renderCollectionImage(collectionImage, collectionName)}
-              <Text
-                color={Color.textDefault}
-                variant="bodyLg"
-                marginLeft={2}
-              >
+              <Text color={Color.textDefault} variant="bodyLg" marginLeft={2}>
                 {`${collectionName ?? t('unknownCollection')} (${nfts.length})`}
               </Text>
             </Box>
