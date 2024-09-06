@@ -396,6 +396,14 @@ const CoinButtons = ({
             }
             label={t('receive')}
             onClick={() => {
+              trackEvent({
+                category: MetaMetricsEventCategory.Navigation,
+                event: MetaMetricsEventName.AccountDetailsOpened,
+                properties: {
+                  location: 'Home',
+                  text: 'Account Details',
+                },
+              });
               setShowReceiveModal(true);
             }}
           />
