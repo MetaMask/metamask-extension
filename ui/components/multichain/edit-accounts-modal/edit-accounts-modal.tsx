@@ -218,9 +218,9 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
         </ModalContent>
       </Modal>
 
-      {/* {showAddNewAccountsModal && (
+      {showAddNewAccountsModal && (
         <NewAccountModal onClose={() => setShowAddNewAccountsModal(false)} />
-      )} */}
+      )}
     </>
   );
 };
