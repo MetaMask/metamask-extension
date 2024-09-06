@@ -1236,8 +1236,7 @@ const state = {
         chainId: '0x539',
         ticker: 'ETH',
         nickname: 'Localhost 8545',
-      },
-    ),
+      }),
     accountTokens: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
         '0x1': [

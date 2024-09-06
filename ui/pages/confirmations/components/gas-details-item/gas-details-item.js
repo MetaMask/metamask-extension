@@ -145,7 +145,7 @@ const GasDetailsItem = ({
                 }}
                 type={SECONDARY}
                 value={getTransactionFeeTotal}
-                hideLabel // Sending hideLabel true by default because this should no longer depend on useNativeCurrencyAsPrimaryCurrency and will always display fiat value
+                hideLabel // Label not required here as it will always display fiat value.
               />
             )}
           </div>
@@ -165,6 +165,7 @@ const GasDetailsItem = ({
             }}
             type={PRIMARY}
             value={getTransactionFeeTotal || draftHexMinimumTransactionFee}
+            // Label required here as it will always display crypto value
           />
         </div>
       }

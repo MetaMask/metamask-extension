@@ -107,7 +107,6 @@ export default class SettingsTab extends PureComponent {
           >
             {t('currencyConversion')}
           </Text>
-          {/*     <span>{t('currencyConversion')}</span> */}
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
