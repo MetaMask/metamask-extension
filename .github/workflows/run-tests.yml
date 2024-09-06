@@ -108,7 +108,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: lcov.info
-          path: coverage/lcon.info
+          path: coverage/lcov.info
 
       - name: SonarCloud Scan
         # This is SonarSource/sonarcloud-github-action@v2.0.0
