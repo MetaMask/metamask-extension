@@ -24,13 +24,6 @@ const ApproveInfo = () => {
 
   const [isOpenEditSpendingCapModal, setIsOpenEditSpendingCapModal] =
     useState(false);
-  const [customSpendingCap, setCustomSpendingCap] = useState('');
-
-  const setCustomSpendingCapCandidate = (newValue: string) => {
-    const value = parseInt(newValue, 10);
-    // coerce negative numbers to zero
-    setCustomSpendingCap(value < 0 ? '0' : newValue);
-  };
 
   if (!transactionMeta?.txParams) {
     return null;
@@ -43,7 +36,6 @@ const ApproveInfo = () => {
       {!isNFT && (
         <SpendingCap
           setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
-          customSpendingCap={customSpendingCap}
         />
       )}
       <GasFeesSection />
@@ -51,8 +43,6 @@ const ApproveInfo = () => {
       <EditSpendingCapModal
         isOpenEditSpendingCapModal={isOpenEditSpendingCapModal}
         setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
-        customSpendingCap={customSpendingCap}
-        setCustomSpendingCap={setCustomSpendingCapCandidate}
       />
     </>
   );

@@ -14,7 +14,6 @@ import {
   TextField,
   TextFieldType,
 } from '../../../../../../../components/component-library';
-import { updateCurrentConfirmation } from '../../../../../../../ducks/confirm/confirm';
 import {
   AlignItems,
   Display,
@@ -24,6 +23,7 @@ import {
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { updateEditableParams } from '../../../../../../../store/actions';
 import { getCustomTxParamsData } from '../../../../../confirm-approve/confirm-approve.util';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
@@ -38,13 +38,9 @@ export const getAccountBalance = (userBalance: string, decimals: string) =>
 export const EditSpendingCapModal = ({
   isOpenEditSpendingCapModal,
   setIsOpenEditSpendingCapModal,
-  customSpendingCap,
-  setCustomSpendingCap,
 }: {
   isOpenEditSpendingCapModal: boolean;
   setIsOpenEditSpendingCapModal: (newValue: boolean) => void;
-  customSpendingCap: string;
-  setCustomSpendingCap: (newValue: string) => void;
 }) => {
   const t = useI18nContext();
 
@@ -67,13 +63,19 @@ export const EditSpendingCapModal = ({
     decimals || '0',
   );
 
-  const [customSpendingCapCandidate, setCustomSpendingCapCandidate] =
+  const [customSpendingCapInputValue, setCustomSpendingCapInputValue] =
     useState('');
+  const [customSpendingCap, setCustomSpendingCap] = useState('');
+  const setPositiveSpendingCap = (newValue: string) => {
+    const parsedValue = parseInt(newValue, 10);
+    // coerce negative numbers to zero
+    setCustomSpendingCap(parsedValue < 0 ? '0' : newValue);
+  };
 
   const customTxParamsData = useMemo(() => {
     return getCustomTxParamsData(transactionMeta?.txParams?.data, {
       customPermissionAmount: customSpendingCap || '0',
-      decimals,
+      decimals: decimals || '0',
     });
   }, [customSpendingCap, transactionMeta?.txParams?.data, decimals]);
 
@@ -85,10 +87,12 @@ export const EditSpendingCapModal = ({
 
   useEffect(() => {
     if (customSpendingCap && estimatedGasLimit) {
-      transactionMeta.txParams.data = customTxParamsData;
-      transactionMeta.txParams.gas = hexToDecimal(estimatedGasLimit as string);
-
-      dispatch(updateCurrentConfirmation(transactionMeta));
+      dispatch(
+        updateEditableParams(transactionMeta.id, {
+          data: customTxParamsData,
+          gas: hexToDecimal(estimatedGasLimit as string),
+        }),
+      );
     }
   }, [
     customSpendingCap,
@@ -100,13 +104,13 @@ export const EditSpendingCapModal = ({
 
   const handleCancel = () => {
     setIsOpenEditSpendingCapModal(false);
-    setCustomSpendingCapCandidate('');
+    setCustomSpendingCapInputValue('');
   };
 
   function handleSubmit() {
     setIsOpenEditSpendingCapModal(false);
-    setCustomSpendingCapCandidate('');
-    setCustomSpendingCap(customSpendingCapCandidate);
+    setCustomSpendingCapInputValue('');
+    setPositiveSpendingCap(customSpendingCapInputValue);
   }
 
   return (
@@ -139,9 +143,9 @@ export const EditSpendingCapModal = ({
           </Text>
           <TextField
             type={TextFieldType.Number}
-            value={customSpendingCapCandidate}
+            value={customSpendingCapInputValue}
             onChange={(event) =>
-              setCustomSpendingCapCandidate(event.target.value)
+              setCustomSpendingCapInputValue(event.target.value)
             }
             placeholder={`${
               customSpendingCap === ''

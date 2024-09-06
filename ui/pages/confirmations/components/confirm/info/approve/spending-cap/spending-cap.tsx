@@ -77,10 +77,8 @@ const SpendingCapGroup = ({
 
 export const SpendingCap = ({
   setIsOpenEditSpendingCapModal,
-  customSpendingCap,
 }: {
   setIsOpenEditSpendingCapModal: (newValue: boolean) => void;
-  customSpendingCap: string;
 }) => {
   const t = useI18nContext();
 
@@ -96,10 +94,12 @@ export const SpendingCap = ({
 
   const accountBalance = getAccountBalance(userBalance || '0', decimals || '0');
 
-  const { pending } = useApproveTokenSimulation(
+  const { pending, spendingCap } = useApproveTokenSimulation(
     transactionMeta,
     decimals || '0',
   );
+
+  console.log({ transactionMeta, decodedSpendingCap: spendingCap });
 
   if (pending) {
     return <Container isLoading />;
@@ -115,7 +115,7 @@ export const SpendingCap = ({
         tokenSymbol={tokenSymbol || ''}
         decimals={decimals || '0'}
         setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
-        customSpendingCap={customSpendingCap}
+        customSpendingCap={spendingCap}
       />
     </ConfirmInfoSection>
   );
