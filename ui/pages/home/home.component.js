@@ -8,12 +8,15 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
-import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import SmartTransactionsOptInModal from '../../components/app/smart-transactions/smart-transactions-opt-in-modal';
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import InstitutionalNotificationsModal from '../../components/institutional/institutional-notifications-modal';
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
@@ -131,6 +134,7 @@ export default class Home extends PureComponent {
     hasWatchTokenPendingApprovals: PropTypes.bool,
     hasWatchNftPendingApprovals: PropTypes.bool,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
+    firstTimeFlowType: PropTypes.string,
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
@@ -147,14 +151,13 @@ export default class Home extends PureComponent {
         );
       }
     },
-    firstTimeFlowType: PropTypes.string,
     completedOnboarding: PropTypes.bool,
     showWhatsNewPopup: PropTypes.bool.isRequired,
-    hideWhatsNewPopup: PropTypes.func.isRequired,
     announcementsToShow: PropTypes.bool.isRequired,
     onboardedInThisUISession: PropTypes.bool,
-    isSmartTransactionsOptInModalAvailable: PropTypes.bool.isRequired,
     ///: END:ONLY_INCLUDE_IF
+    isSmartTransactionsOptInModalAvailable: PropTypes.bool.isRequired,
+    hideWhatsNewPopup: PropTypes.func.isRequired,
     newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
     firstPermissionsRequestId: PropTypes.string,
@@ -972,6 +975,12 @@ export default class Home extends PureComponent {
       forgottenPassword,
       participateInMetaMetrics,
       dataCollectionForMarketing,
+      completedOnboarding,
+      onboardedInThisUISession,
+      firstTimeFlowType,
+      newNetworkAddedConfigurationId,
+      hideWhatsNewPopup,
+      isSmartTransactionsOptInModalAvailable,
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       connectedStatusPopoverHasBeenShown,
       isPopup,
@@ -979,13 +988,7 @@ export default class Home extends PureComponent {
       showRecoveryPhraseReminder,
       showTermsOfUsePopup,
       showWhatsNewPopup,
-      hideWhatsNewPopup,
-      completedOnboarding,
-      onboardedInThisUISession,
       announcementsToShow,
-      firstTimeFlowType,
-      newNetworkAddedConfigurationId,
-      isSmartTransactionsOptInModalAvailable,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
@@ -995,13 +998,19 @@ export default class Home extends PureComponent {
       return null;
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     const canSeeModals =
       completedOnboarding &&
       (!onboardedInThisUISession ||
         firstTimeFlowType === FirstTimeFlowType.import) &&
       !process.env.IN_TEST &&
       !newNetworkAddedConfigurationId;
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    const showInstitutionalNotificationsModal =
+      canSeeModals && isSmartTransactionsOptInModalAvailable;
+    ///: END:ONLY_INCLUDE_IF
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 
     const showSmartTransactionsOptInModal =
       canSeeModals && isSmartTransactionsOptInModalAvailable;
@@ -1029,6 +1038,16 @@ export default class Home extends PureComponent {
           participateInMetaMetrics === true
             ? this.renderOnboardingPopover()
             : null}
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+          }
+          <InstitutionalNotificationsModal
+            isOpen={showInstitutionalNotificationsModal}
+            hideWhatsNewPopup={hideWhatsNewPopup}
+          />
+          {
+            ///: END:ONLY_INCLUDE_IF
+          }
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           }
