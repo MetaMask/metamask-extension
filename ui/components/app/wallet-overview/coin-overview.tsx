@@ -20,6 +20,9 @@ import {
   getDataCollectionForMarketing,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
+  getPreferences,
+  getSelectedAccount,
+  getShouldHideZeroBalanceTokens,
   getTokensMarketData,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   SwapsEthToken,
@@ -29,8 +32,10 @@ import Spinner from '../../ui/spinner';
 
 import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
+import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
+import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
 
 export type CoinOverviewProps = {
   balance: string;
@@ -76,6 +81,20 @@ export const CoinOverview = ({
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
+  const selectedAccount = useSelector(getSelectedAccount);
+  const shouldHideZeroBalanceTokens = useSelector(
+    getShouldHideZeroBalanceTokens,
+  );
+  const { totalFiatBalance } = useAccountTotalFiatBalance(
+    selectedAccount,
+    shouldHideZeroBalanceTokens,
+  );
+
+  const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
+  const balanceToDisplay = showNativeTokenAsMainBalance
+    ? balance
+    : totalFiatBalance;
+
   const isEvm = useSelector(getMultichainIsEvm);
 
   const tokensMarketData = useSelector(getTokensMarketData);
@@ -99,6 +118,20 @@ export const CoinOverview = ({
     });
   }, [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, trackEvent]);
 
+  const renderPercentageAndAmountChange = () => {
+    if (isEvm) {
+      if (showNativeTokenAsMainBalance) {
+        return (
+          <PercentageAndAmountChange
+            value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
+          />
+        );
+      }
+      return <AggregatedPercentageOverview />;
+    }
+    return null;
+  };
+
   return (
     <WalletOverview
       balance={
@@ -117,7 +150,7 @@ export const CoinOverview = ({
               <Icon name={IconName.Diagram} color={IconColor.primaryDefault} />
             </div>
             <div className={`${classPrefix}-overview__primary-container`}>
-              {balance ? (
+              {balanceToDisplay ? (
                 <UserPreferencedCurrencyDisplay
                   style={{ display: 'contents' }}
                   className={classnames(
@@ -128,11 +161,14 @@ export const CoinOverview = ({
                     },
                   )}
                   data-testid={`${classPrefix}-overview__primary-currency`}
-                  value={balance}
+                  value={balanceToDisplay}
                   type={PRIMARY}
                   ethNumberOfDecimals={4}
                   hideTitle
                   withCheckShowNativeToken
+                  isAggregatedFiatOverviewBalance={
+                    !showNativeTokenAsMainBalance
+                  }
                 />
               ) : (
                 <Spinner className="loading-overlay__spinner" />
@@ -143,11 +179,7 @@ export const CoinOverview = ({
                 </span>
               )}
             </div>
-            {isEvm && (
-              <PercentageAndAmountChange
-                value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
-              />
-            )}
+            {renderPercentageAndAmountChange()}
           </div>
         </Tooltip>
       }
