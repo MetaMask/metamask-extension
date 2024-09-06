@@ -8,10 +8,16 @@ import {
 } from '@reduxjs/toolkit';
 import { CaipAccountAddress, CaipChainId } from '@metamask/utils';
 import { CaipAssetId, InternalAccount } from '@metamask/keyring-api';
-import { Asset, SEND_STATUSES } from '../send';
+import { Json } from 'json-rpc-engine';
+import { SEND_STATUSES } from '../send';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { getMultichainNetwork } from '../../selectors/multichain';
 import { AssetType } from '../../../shared/constants/transaction';
+import { NativeAsset } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
+import {
+  INSUFFICIENT_FUNDS_ERROR,
+  NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
+} from '../../pages/confirmations/send/send.constants';
 import { TransactionBuilderFactory } from './transaction-builders/transaction-builder';
 import { SendManyTransaction } from './transaction-builders/bitcoin-transaction-builder';
 
@@ -52,6 +58,7 @@ Bitcoin: Fee (often calculated based on transaction size)
 - recipient
 - value
 - fee
+- optional data (e.g. memo and method for cosmos, data for ethereum, instructions for solana)
 */
 
 export enum FeeLevel {
@@ -79,7 +86,10 @@ export type TransactionParams = {
   sendAsset: {
     amount: string;
     asset: CaipAssetId;
-    assetDetails: Asset;
+    assetDetails: NativeAsset & {
+      balance: string;
+      details: { decimals: number };
+    };
     // Required for assets that require denominatinos (e.g. cosmos)
     denominatinon?: string;
     error: string;
@@ -92,6 +102,8 @@ export type TransactionParams = {
     denominatinon?: string;
     error: string;
   };
+  // options bag for additional data based on network
+  data: Json;
   recipient: {
     // CAIP-10 address
     address: CaipAccountAddress;
@@ -137,8 +149,9 @@ const initialDraftTransaction: DraftTransaction = {
       amount: '0',
       assetDetails: {
         type: AssetType.native,
-        balance: '0',
-        error: '',
+        // @ts-expect-error TODO: create placeholder
+        image: './images/placeholder.svg',
+        symbol: '',
       },
       asset: undefined,
       denominatinon: undefined,
@@ -164,6 +177,7 @@ const initialDraftTransaction: DraftTransaction = {
       feeInFiat: '',
       feeLevel: FeeLevel.Average,
     },
+    data: {},
     network: {
       network: MultichainNetworks.BITCOIN,
       error: '',
@@ -217,18 +231,21 @@ export const initializeSendState = createAsyncThunk<
 
     // set asset
     const sendAsset = transactionBuilder.setSendAsset();
-    console.log('sendAsset', sendAsset);
     // const fee = await transactionBuilder.setFee(FeeLevel.Average);
     // console.log('fee', fee);
     const balance = await transactionBuilder.queryAssetBalance(sendAsset.asset);
-    console.log('balance', balance);
 
-    const updatedTransactionParams = {
+    const updatedTransactionParams: DraftTransaction['transactionParams'] = {
       ...draftTransaction.transactionParams,
       sendAsset: {
         ...draftTransaction.transactionParams.sendAsset,
         ...sendAsset,
-        balance: balance.amount,
+        assetDetails: {
+          ...draftTransaction.transactionParams.sendAsset.assetDetails,
+          ...sendAsset.assetDetails,
+          balance: balance.amount,
+        },
+        amount: '0',
       },
       // fee: {
       //   ...draftTransaction.transactionParams.fee,
@@ -249,8 +266,9 @@ export const estimateFee = createAsyncThunk<
   {
     unit: string;
     fee: string;
+    confirmationTime: string;
   },
-  { account: InternalAccount; transactionParams: TransactionParams },
+  { account: InternalAccount; transactionId: string },
   {
     state: MultichainSendState;
     dispatch: Dispatch<AnyAction>;
@@ -258,17 +276,21 @@ export const estimateFee = createAsyncThunk<
   }
 >(
   'multichainSend/estimateFee',
-  async ({ account, transactionParams }, thunkApi) => {
+  async ({ account, transactionId }, thunkApi) => {
     const state = thunkApi.getState();
     // @ts-expect-error TODO: fix type error
     const multichainNetwork = getMultichainNetwork(state, account);
+
+    const transaction = state.multichainSend.draftTransactions[transactionId];
 
     const transactionBuilder = TransactionBuilderFactory.getBuilder(
       thunkApi,
       account,
       multichainNetwork.chainId,
-      transactionParams ?? initialDraftTransaction.transactionParams,
+      transaction.transactionParams,
     );
+
+    console.log('running estimate fee from slice');
 
     const fee = await transactionBuilder.estimateGas();
     return fee;
@@ -307,6 +329,47 @@ export const updateAndValidateRecipient = createAsyncThunk<
   },
 );
 
+export const signAndSend = createAsyncThunk<
+  void,
+  { account: InternalAccount; transactionId: string },
+  MultichainSendAsyncThunkConfig
+>(
+  'multichainSend/signAndSend',
+  async ({ account, transactionId }, thunkApi) => {
+    const state = thunkApi.getState();
+    const draftTransaction: DraftTransaction =
+      state.multichainSend.draftTransactions[transactionId];
+
+    const transactionBuilder = TransactionBuilderFactory.getBuilder(
+      thunkApi,
+      account,
+      draftTransaction.transactionParams.network.network,
+      draftTransaction.transactionParams,
+    );
+
+    console.log('building transaction');
+    await transactionBuilder.buildTransaction();
+    console.log('sending transaction');
+
+    // sign and send transaction
+    // send to keyring / snap
+    const txHash = await transactionBuilder.sendTransaction();
+    console.log('txHash', txHash);
+
+    // propagate to network
+    // thunkApi.dispatch(actions.updateStatus(SEND_STATUSES.SIGNING));
+
+    // update stage
+    // thunkApi.dispatch(actions.updateStage(SEND_STAGES.SIGNING));
+
+    // update status
+    // thunkApi.dispatch(actions.updateStatus(SEND_STATUSES.SENDING));
+
+    // update stage
+    // thunkApi.dispatch(actions.updateStage(SEND_STAGES.SENDING));
+  },
+);
+
 const slice = createSlice({
   name: 'multichainSend',
   initialState,
@@ -332,13 +395,11 @@ const slice = createSlice({
             network,
             error: '',
           },
+          sender: {
+            id: account.id,
+            address: account.address,
+          },
         },
-      };
-      state.draftTransactions[
-        state.currentTransactionUUID
-      ].transactionParams.sender = {
-        id: account.id,
-        address: account.address,
       };
     },
     editTransaction: (
@@ -376,6 +437,7 @@ const slice = createSlice({
             ...(action.payload?.fee ?? {}),
           },
         };
+      slice.caseReducers.validateChecks(state);
     },
     clearDraft: (state) => {
       state.draftTransactions = {};
@@ -388,9 +450,14 @@ const slice = createSlice({
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
 
-      draftTransaction.transactionParams.sendAsset.amount = action.payload;
+      // convert hex to decimal string
+      draftTransaction.transactionParams.sendAsset.amount = parseInt(
+        action.payload,
+        16,
+      ).toString();
       // Once amount has changed, validate the field
       slice.caseReducers.validateAmountField(state);
+      slice.caseReducers.validateChecks(state);
     },
     validateAmountField: (state) => {
       if (!state.currentTransactionUUID) {
@@ -401,14 +468,14 @@ const slice = createSlice({
 
       if (draftTransaction.transactionParams.sendAsset.amount === '') {
         draftTransaction.transactionParams.sendAsset.error =
-          'Amount cannot be empty';
+          NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR;
         draftTransaction.valid = false;
         return;
       }
 
       if (draftTransaction.transactionParams.sendAsset.amount === '0') {
         draftTransaction.transactionParams.sendAsset.error =
-          'Amount cannot be zero';
+          NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR;
         draftTransaction.valid = false;
         return;
       }
@@ -418,16 +485,40 @@ const slice = createSlice({
       );
       const balance = new BigNumber(
         draftTransaction.transactionParams.sendAsset.assetDetails.balance,
+      ).times(
+        new BigNumber(
+          draftTransaction.transactionParams.sendAsset.assetDetails.details.decimals,
+        ).pow(10),
       );
+
+      console.log('[validate]amount', amount.toString());
+      console.log('[validate]balance', balance.toString());
 
       if (amount.greaterThan(balance)) {
         draftTransaction.transactionParams.sendAsset.error =
-          'Insufficient balance';
+          INSUFFICIENT_FUNDS_ERROR;
         draftTransaction.valid = false;
         return;
       }
 
       draftTransaction.transactionParams.sendAsset.error = '';
+    },
+    validateChecks: (state) => {
+      if (!state.currentTransactionUUID) {
+        return;
+      }
+
+      // checks the transaction params for each field
+      const { transactionParams } =
+        state.draftTransactions[state.currentTransactionUUID];
+
+      if (
+        !transactionParams.sendAsset.error &&
+        !transactionParams.recipient.error &&
+        !transactionParams.fee.error
+      ) {
+        state.draftTransactions[state.currentTransactionUUID].valid = true;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -457,26 +548,24 @@ const slice = createSlice({
           isLoading: true,
         };
       })
-      .addCase(
-        estimateFee.fulfilled,
-        // (state, { payload }: PayloadAction<{ fee: string; unit: string }>) => {
-        (state, action) => {
-          if (!state.currentTransactionUUID) {
-            return;
-          }
+      .addCase(estimateFee.fulfilled, (state, action) => {
+        if (!state.currentTransactionUUID) {
+          return;
+        }
 
-          state.draftTransactions[
-            state.currentTransactionUUID
-          ].transactionParams.fee = {
-            ...state.draftTransactions[state.currentTransactionUUID]
-              .transactionParams.fee,
-            error: '',
-            isLoading: false,
-            fee: action.payload.fee,
-            unit: action.payload.unit,
-          };
-        },
-      )
+        state.draftTransactions[
+          state.currentTransactionUUID
+        ].transactionParams.fee = {
+          ...state.draftTransactions[state.currentTransactionUUID]
+            .transactionParams.fee,
+          error: '',
+          isLoading: false,
+          fee: action.payload.fee,
+          unit: action.payload.unit,
+          confirmationTime: action.payload.confirmationTime,
+        };
+        slice.caseReducers.validateChecks(state);
+      })
       .addCase(estimateFee.rejected, (state, action) => {
         if (!state.currentTransactionUUID) {
           return;
@@ -503,6 +592,8 @@ const slice = createSlice({
         state.draftTransactions[
           state.currentTransactionUUID
         ].transactionParams.recipient = action.payload;
+
+        slice.caseReducers.validateChecks(state);
       });
   },
 });

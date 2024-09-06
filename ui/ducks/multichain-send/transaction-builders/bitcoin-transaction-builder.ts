@@ -1,6 +1,12 @@
 import { CaipChainId } from '@metamask/utils';
 import { AnyAction, Dispatch } from 'redux';
-import { CaipAssetId, InternalAccount } from '@metamask/keyring-api';
+import { v4 as uuidv4 } from 'uuid';
+import {
+  BtcMethod,
+  CaipAssetId,
+  InternalAccount,
+  KeyringRpcMethod,
+} from '@metamask/keyring-api';
 import {
   record,
   object,
@@ -10,10 +16,12 @@ import {
   literal,
   Infer,
   is,
+  boolean,
 } from '@metamask/superstruct';
 import { GetThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk';
 import { HandlerType } from '@metamask/snaps-utils';
 import { validate } from 'bitcoin-address-validation';
+import BigNumber from 'bignumber.js';
 import {
   DraftTransaction,
   FeeLevel,
@@ -26,6 +34,8 @@ import { handleSnapRequest } from '../../../store/actions';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap';
 import { isBtcMainnetAddress } from '../../../../shared/lib/multichain';
 import { getBtcCachedBalance } from '../../../selectors/multichain';
+import { AssetType } from '../../../../shared/constants/transaction';
+import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../../pages/confirmations/send/send.constants';
 import { AbstractTransactionBuilder } from './abstract-transaction-builder';
 
 const SUPPORTED_BTC_NETWORKS = [
@@ -38,7 +48,7 @@ export const SendManyTransactionStruct = object({
   comment: optional(string()),
   subtractFeeFrom: optional(array(string())),
   replaceable: literal(true),
-  dryrun: literal(false),
+  dryrun: boolean(),
 });
 
 export const defaultSendManyTransaction: SendManyTransaction = {
@@ -46,7 +56,7 @@ export const defaultSendManyTransaction: SendManyTransaction = {
   comment: '',
   subtractFeeFrom: [],
   replaceable: true,
-  dryrun: false,
+  dryrun: true,
 };
 
 export type SendManyTransaction = Infer<typeof SendManyTransactionStruct>;
@@ -92,18 +102,19 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
   buildTransaction(): void {
     const sendManyTransaction: SendManyTransaction = {
       amounts: {
-        [this.transactionParams.recipient.address]:
+        [this.transactionParams.recipient.address]: new BigNumber(
           this.transactionParams.sendAsset.amount,
+        )
+          .div(new BigNumber(10).pow(8))
+          .toString(), // convert back to btc
       },
       comment: '', // Optional value. Default to empty.
       subtractFeeFrom: [], // Optional value. Default to sender if left empty.
       replaceable: true, // Default to true.
-      dryrun: false, // Default to false.
+      dryrun: true, // Default to false.
     };
 
     this.transaction = sendManyTransaction;
-
-    // validate transaction
   }
 
   async estimateGas(): Promise<DraftTransaction['transactionParams']['fee']> {
@@ -118,35 +129,48 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
       return this.transactionParams.fee;
     }
 
-    const estimatedFee = (await handleSnapRequest({
-      snapId: BITCOIN_WALLET_SNAP_ID,
-      origin: 'metamask',
-      handler: HandlerType.OnRpcRequest,
-      request: {
-        method: 'estimateFee',
-        params: {
-          account: this.account.id,
-          amount: this.transactionParams.sendAsset.amount,
+    console.log(
+      'running estimate gas',
+      this.transactionParams.sendAsset.amount,
+    );
+
+    try {
+      const estimatedFee = (await handleSnapRequest({
+        snapId: BITCOIN_WALLET_SNAP_ID,
+        origin: 'metamask',
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          method: 'estimateFee',
+          params: {
+            account: this.account.id,
+            amount: this.transactionParams.sendAsset.amount,
+          },
         },
-      },
-    })) as {
-      fee: {
-        amount: string;
-        unit: string;
+      })) as {
+        fee: {
+          amount: string;
+          unit: string;
+        };
       };
-    };
 
-    this.transactionParams = {
-      ...this.transactionParams,
-      fee: {
-        ...this.transactionParams.fee,
-        fee: estimatedFee.fee.amount,
-        unit: estimatedFee.fee.unit,
-        error: '',
-      },
-    };
+      this.transactionParams = {
+        ...this.transactionParams,
+        fee: {
+          ...this.transactionParams.fee,
+          fee: new BigNumber(estimatedFee.fee.amount)
+            .mul(new BigNumber(10).pow(8))
+            .toString(),
+          unit: estimatedFee.fee.unit,
+          error: '',
+          // TODO: remove hardcode
+          confirmationTime: '10 minutes',
+        },
+      };
 
-    return this.transactionParams.fee;
+      return this.transactionParams.fee;
+    } catch (e) {
+      console.log('error estimating fee', e);
+    }
   }
 
   async queryAssetBalance(): Promise<{
@@ -201,6 +225,17 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
             this.network === MultichainNetworks.BITCOIN
               ? MultichainNativeAssets.BITCOIN
               : MultichainNativeAssets.BITCOIN_TESTNET,
+          assetDetails: {
+            type: AssetType.native,
+            // TODO: allow btc logo
+            // @ts-expect-error image is not included
+            image: './images/bitcoin-logo.svg',
+            symbol: 'BTC',
+            balance: this.getCachedAccountBalance() ?? '0',
+            details: {
+              decimals: 8,
+            },
+          },
           error: '',
         },
       };
@@ -340,13 +375,11 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
           ...this.transactionParams.recipient,
           address: recipient,
           valid: false,
-          error: 'Invalid recipient address',
+          error: INVALID_RECIPIENT_ADDRESS_ERROR,
         },
       };
       return this.transactionParams.recipient;
     }
-    console.log('is valid address');
-
     this.transactionParams = {
       ...this.transactionParams,
       recipient: {
@@ -365,27 +398,41 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
       throw new Error('Invalid transaction');
     }
 
-    return (await handleSnapRequest({
+    const tx = (await handleSnapRequest({
       snapId: BITCOIN_WALLET_SNAP_ID,
       origin: 'metamask',
       handler: HandlerType.OnKeyringRequest,
       request: {
-        method: 'sendMany',
+        method: KeyringRpcMethod.SubmitRequest,
         params: {
+          id: uuidv4(),
+          scope: this.network,
           account: this.account.id,
-          params: this.transaction,
+          request: {
+            method: BtcMethod.SendMany,
+            params: this.transaction,
+          },
         },
       },
-    })) as string;
+    })) as {
+      txId: string;
+      transaction: string;
+    };
+
+    console.log('sign transaction result', tx);
+
+    return tx.transaction;
   }
 
   async sendTransaction(): Promise<string> {
-    throw new Error('Method not implemented.');
+    return await this.signTransaction();
   }
 
   getCachedAccountBalance(): string {
     const state = this.thunkApi.getState();
 
-    return getBtcCachedBalance(state);
+    // @ts-expect-error The root state type is incorrect.
+    const balance = getBtcCachedBalance(state);
+    return balance;
   }
 }

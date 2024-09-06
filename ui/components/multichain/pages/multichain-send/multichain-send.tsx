@@ -1,6 +1,5 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { InternalAccount } from '@metamask/keyring-api';
-import { useHistory, useLocation } from 'react-router-dom';
+import React, { useContext, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
@@ -21,7 +20,6 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { SendPageAccountPicker } from '../send/components';
-import { getSendStage, SEND_STAGES } from '../../../../ducks/send';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import {
   getCurrentMultichainDraftTransaction,
@@ -47,9 +45,6 @@ export const MultichainSendPage = () => {
     selectedAccount,
   );
   const dispatch = useDispatch();
-  // const history = useHistory();
-  // const location = useLocation();
-  // location.pathname;
   const draftTransactionExists = useSelector(
     getCurrentMultichainDraftTransactionId,
   );
@@ -72,8 +67,6 @@ export const MultichainSendPage = () => {
 
   console.log('draftTransaction', draftTransaction);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const onCancel = () => {
     dispatch(clearDraft());
     history.push('/home');
@@ -83,13 +76,8 @@ export const MultichainSendPage = () => {
     history.push(`/multichain-confirm-transaction/${draftTransactionExists}`);
   };
 
-  const sendStage = useSelector(getSendStage);
-
-  const submitDisabled = draftTransaction?.valid;
+  const submitDisabled = !draftTransaction?.valid;
   const isSendFormShown = draftTransactionExists;
-
-  const onAmountChange = (amount: string) => {};
-  const handleSelectSendToken = (asset: any) => {};
 
   return (
     <Page className="multichain-send-page">
@@ -126,6 +114,7 @@ export const MultichainSendPage = () => {
           </Box>
           {isSendFormShown && (
             <MultichainFee
+              asset={draftTransaction.transactionParams.sendAsset}
               backgroundColor={BackgroundColor.backgroundAlternative}
               estimatedFee={draftTransaction.transactionParams.fee}
             />
@@ -137,14 +126,14 @@ export const MultichainSendPage = () => {
       </Content>
       <Footer>
         <ButtonSecondary onClick={onCancel} size={ButtonSecondarySize.Lg} block>
-          {sendStage === SEND_STAGES.EDIT ? t('reject') : t('cancel')}
+          {t('cancel')}
         </ButtonSecondary>
 
         <ButtonPrimary
           onClick={onSubmit}
-          loading={isSubmitting}
+          // loading={isSubmitting}
           size={ButtonPrimarySize.Lg}
-          disabled={submitDisabled || isSubmitting}
+          disabled={submitDisabled}
           block
         >
           {t('review')}
