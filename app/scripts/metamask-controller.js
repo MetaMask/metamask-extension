@@ -6580,16 +6580,15 @@ export default class MetamaskController extends EventEmitter {
     let rpcPrefs = {};
 
     if (chainId) {
-      const { networkConfigurationsByChainId } = this.networkController.state;
+      const networkConfiguration =
+        this.networkController.state.networkConfigurationsByChainId?.[chainId];
 
-      const matchingNetworkConfig = Object.values(
-        networkConfigurationsByChainId,
-      ).find(
-        (networkConfiguration) => networkConfiguration.chainId === chainId,
-      );
+      const blockExplorerUrl =
+        networkConfiguration?.blockExplorerUrls?.[
+          networkConfiguration?.defaultBlockExplorerUrlIndex
+        ];
 
-      // todo
-      rpcPrefs = matchingNetworkConfig?.rpcPrefs ?? {};
+      rpcPrefs = { blockExplorerUrl };
     }
 
     try {
