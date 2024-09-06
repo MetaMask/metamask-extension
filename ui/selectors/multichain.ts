@@ -25,6 +25,7 @@ import {
   NETWORK_TYPES,
   TEST_NETWORK_IDS,
 } from '../../shared/constants/network';
+import { MultichainSendState } from '../ducks/multichain-send/multichain-send';
 import { AccountsState } from './accounts';
 import {
   getCurrentChainId,
@@ -386,7 +387,7 @@ export const getMultichainCoinRates = (state: MultichainState) => {
   return state.metamask.rates;
 };
 
-function getBtcCachedBalance(state: MultichainState) {
+export function getBtcCachedBalance(state: MultichainState) {
   const balances = getMultichainBalances(state);
   const account = getSelectedInternalAccount(state);
   const asset = getMultichainIsMainnet(state)
@@ -424,4 +425,30 @@ export function getMultichainConversionRate(
   return getMultichainIsEvm(state, account)
     ? getConversionRate(state)
     : getMultichainCoinRates(state)?.[ticker.toLowerCase()]?.conversionRate;
+}
+
+export function getCurrentMultichainDraftTransactionId(
+  state: MultichainSendState,
+) {
+  return state.multichainSend.currentTransactionUUID;
+}
+
+export function getCurrentMultichainDraftTransaction(
+  state: MultichainSendState,
+) {
+  const draftTransactionExists = getCurrentMultichainDraftTransactionId(state);
+  if (!draftTransactionExists) {
+    return null;
+  }
+
+  const draftTransaction =
+    state.multichainSend.draftTransactions[draftTransactionExists];
+  return draftTransaction;
+}
+
+export function getCurrentMultichainDraftTransactionRecipient(
+  state: MultichainSendState,
+) {
+  const draftTransaction = getCurrentMultichainDraftTransaction(state);
+  return draftTransaction?.transactionParams.recipient;
 }

@@ -97,6 +97,7 @@ export type CombinedBackgroundAndReduxState = RootReducerReturnType & {
   metamask: RootReducerReturnType['metamask'] & TemporaryBackgroundState;
   appState: RootReducerReturnType['appState'];
   send: RootReducerReturnType['send'];
+  multichainSend: RootReducerReturnType['multichainSend'];
   DNS: RootReducerReturnType['DNS'];
   history: RootReducerReturnType['history'];
   confirm: RootReducerReturnType['confirm'];
