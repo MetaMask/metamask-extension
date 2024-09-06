@@ -14,7 +14,7 @@ type MultichainAuthorizationConfirmationOptions = {
   driver: Driver;
   only?: string[];
 };
-// this rule makes sure that a multichain authorization confirmation dialog is shown and confirmed
+// this rule makes sure that a multichain authorization error codes are returned
 export class MultichainAuthorizationConfirmationErrors implements Rule {
   private driver: Driver;
 
