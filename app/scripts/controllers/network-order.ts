@@ -148,7 +148,7 @@ export class NetworkOrderController extends BaseController<
    * @param networkList - The list of networks to update in the state.
    */
 
-  updateNetworksList(chainIds: [Hex]) {
+  updateNetworksList(chainIds: Hex[]) {
     this.update((state) => {
       state.orderedNetworkList = chainIds.map((chainId) => ({
         networkId: chainId,
