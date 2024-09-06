@@ -6,13 +6,12 @@ import {
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import { tEn } from '../../../lib/i18n-helpers';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/home-page';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
-import ConfirmTransactionPage from '../../page-objects/pages/confirm-transaction-page';
-import AccountListPage from '../../page-objects/pages/account-list-page';
+import ConfirmTransactionPage from '../../page-objects/pages/confirm-transaction/confirm-transaction-page';
+import AccountListPage from '../../page-objects/pages/account/account-list-page';
 
 describe('Change assets', function (this: Suite) {
   it('sends the correct asset when switching from native currency to NFT', async function () {
