@@ -52,7 +52,7 @@ describe('ScrollToBottom', () => {
       expect(container.querySelector(buttonSelector)).not.toBeInTheDocument();
     });
 
-    it('sets isScrollToBottomNeeded to false', () => {
+    it('sets isScrollToBottomCompleted to true', () => {
       const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
       renderWithConfirmContextProvider(
         <ScrollToBottom>foobar</ScrollToBottom>,
@@ -60,7 +60,7 @@ describe('ScrollToBottom', () => {
       );
 
       expect(updateSpy).toHaveBeenCalledWith({
-        isScrollToBottomNeeded: false,
+        isScrollToBottomCompleted: true,
       });
     });
   });
@@ -86,7 +86,7 @@ describe('ScrollToBottom', () => {
       expect(container.querySelector(buttonSelector)).toBeInTheDocument();
     });
 
-    it('sets isScrollToBottomNeeded to true', () => {
+    it('sets isScrollToBottomCompleted to false', () => {
       const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
       renderWithConfirmContextProvider(
         <ScrollToBottom>foobar</ScrollToBottom>,
@@ -94,7 +94,7 @@ describe('ScrollToBottom', () => {
       );
 
       expect(updateSpy).toHaveBeenCalledWith({
-        isScrollToBottomNeeded: true,
+        isScrollToBottomCompleted: false,
       });
     });
 
@@ -144,6 +144,7 @@ describe('ScrollToBottom', () => {
     describe('when user has scrolled to the bottom', () => {
       beforeEach(() => {
         mockedUseScrollRequiredResult.isScrolledToBottom = true;
+        mockedUseScrollRequiredResult.hasScrolledToBottom = true;
       });
 
       it('hides the button', () => {
@@ -155,16 +156,15 @@ describe('ScrollToBottom', () => {
         expect(container.querySelector(buttonSelector)).not.toBeInTheDocument();
       });
 
-      it('sets isScrollToBottomNeeded to false', () => {
+      it('sets isScrollToBottomCompleted to true', () => {
         const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
-        const { container } = renderWithConfirmContextProvider(
+        renderWithConfirmContextProvider(
           <ScrollToBottom>foobar</ScrollToBottom>,
           configureMockStore([])(mockState),
         );
 
-        expect(container.querySelector(buttonSelector)).not.toBeInTheDocument();
         expect(updateSpy).toHaveBeenCalledWith({
-          isScrollToBottomNeeded: true,
+          isScrollToBottomCompleted: true,
         });
       });
     });
