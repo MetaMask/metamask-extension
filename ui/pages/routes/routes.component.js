@@ -584,7 +584,25 @@ export default class Routes extends Component {
         exact: false,
       }),
     );
-    if (isMultichainSend) {
+
+    const isMultichainSendConfirmation = Boolean(
+      matchPath(location.pathname, {
+        path: MULTICHAIN_SEND_ROUTE,
+        exact: false,
+      }),
+    );
+
+    const isMultichainSendPage = Boolean(
+      matchPath(location.pathname, {
+        path: MULTICHAIN_CONFIRM_TRANSACTION_ROUTE,
+        exact: false,
+      }),
+    );
+    if (
+      isMultichainSend ||
+      isMultichainSendConfirmation ||
+      isMultichainSendPage
+    ) {
       return true;
     }
 
