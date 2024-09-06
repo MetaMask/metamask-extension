@@ -2,7 +2,7 @@ import { isProduction } from '../../../shared/modules/environment';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from './constants';
 
-jest.mock('../modules/environment', () => ({
+jest.mock('../../../shared/modules/environment', () => ({
   isProduction: jest.fn(() => false), // Initially mock isProduction to return false
 }));
 
