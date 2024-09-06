@@ -18,6 +18,7 @@ export enum TraceName {
   SetupStore = 'Setup Store',
   Transaction = 'Transaction',
   UIStartup = 'UI Startup',
+  Signature = 'Signature',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');

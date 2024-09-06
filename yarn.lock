@@ -6201,20 +6201,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:^18.1.0":
-  version: 18.1.0
-  resolution: "@metamask/signature-controller@npm:18.1.0"
+"@metamask/signature-controller@npm:@metamask-previews/signature-controller@19.0.0-preview-39802fe2":
+  version: 19.0.0-preview-39802fe2
+  resolution: "@metamask-previews/signature-controller@npm:19.0.0-preview-39802fe2"
   dependencies:
-    "@metamask/base-controller": "npm:^6.0.2"
-    "@metamask/controller-utils": "npm:^11.0.2"
-    "@metamask/message-manager": "npm:^10.0.2"
+    "@metamask/base-controller": "npm:^7.0.0"
+    "@metamask/controller-utils": "npm:^11.2.0"
+    "@metamask/message-manager": "npm:^10.1.0"
     "@metamask/utils": "npm:^9.1.0"
     lodash: "npm:^4.17.21"
   peerDependencies:
     "@metamask/approval-controller": ^7.0.0
     "@metamask/keyring-controller": ^17.0.0
-    "@metamask/logging-controller": ^5.0.0
-  checksum: 10/250a21808de56b46ab853fcffcc3b1149b5fd751cf30ae6ce1b025bba5f8db661c3c90d9157208abac6f5f35d9d02835d93181f0f30b82f1181f967155f7b7f8
+    "@metamask/logging-controller": ^6.0.0
+  checksum: 10/e5655e328d8539844615a8e6ad8d5b39187e4a37544bf4d850b18e60d64d88b2a1cfb36ddd7b3b356b60ed25b5f3823c412d0c66cc82a9a1f1c35d72ee592acb
   languageName: node
   linkType: hard
 

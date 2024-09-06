@@ -4,6 +4,25 @@
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { trace, TraceName } from '../../../shared/lib/trace';
 
+async function handleTracing(
+  req: any,
+  id: any,
+  traceName: TraceName,
+  tags?: Record<string, string>,
+) {
+  req.traceContext = await trace({
+    name: traceName,
+    id,
+    tags,
+  });
+
+  await trace({
+    name: TraceName.Middleware,
+    id,
+    parentContext: req.traceContext,
+  });
+}
+
 export default function createTracingMiddleware() {
   return async function tracingMiddleware(
     req: any,
@@ -13,17 +32,11 @@ export default function createTracingMiddleware() {
     const { id, method } = req;
 
     if (method === MESSAGE_TYPE.ETH_SEND_TRANSACTION) {
-      req.traceContext = await trace({
-        name: TraceName.Transaction,
-        id,
-        tags: { source: 'dapp' },
-      });
+      await handleTracing(req, id, TraceName.Transaction, { source: 'dapp' });
+    }
 
-      await trace({
-        name: TraceName.Middleware,
-        id,
-        parentContext: req.traceContext,
-      });
+    if (method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
+      await handleTracing(req, id, TraceName.Signature);
     }
 
     next();
