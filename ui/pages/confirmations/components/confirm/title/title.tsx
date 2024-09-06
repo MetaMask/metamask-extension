@@ -38,7 +38,7 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   return (
     <Box marginTop={4}>
       <GeneralAlert
-        data-testid={'confirm-banner-alert'}
+        data-testid="confirm-banner-alert"
         title={
           hasMultipleAlerts
             ? t('alertBannerMultipleAlertsTitle')

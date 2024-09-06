@@ -303,4 +303,25 @@ describe('addEthereumChainHandler', () => {
     });
     expect(response.result).toBeNull();
   });
+
+  it('creates a new networkConfiguration when called without "blockExplorerUrls" property', async () => {
+    const { handler, mocks } = createMockedHandler();
+
+    await handler({
+      origin: 'example.com',
+      params: [
+        {
+          chainId: CHAIN_IDS.OPTIMISM,
+          chainName: 'Optimism Mainnet',
+          rpcUrls: ['https://optimism.llamarpc.com'],
+          nativeCurrency: {
+            symbol: 'ETH',
+            decimals: 18,
+          },
+          iconUrls: ['https://optimism.icon.com'],
+        },
+      ],
+    });
+    expect(mocks.upsertNetworkConfiguration).toHaveBeenCalledTimes(1);
+  });
 });

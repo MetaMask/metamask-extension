@@ -28,18 +28,8 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
       optionalScopes,
       sessionProperties,
       scopedProperties,
-      ...restParams
     },
   } = req;
-
-  if (Object.keys(restParams).length !== 0) {
-    return end(
-      new EthereumRpcError(
-        5301,
-        'Session Properties can only be optional and global',
-      ),
-    );
-  }
 
   const sessionId = '0xdeadbeef';
 
