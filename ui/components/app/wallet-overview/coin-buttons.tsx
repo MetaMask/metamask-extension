@@ -17,8 +17,6 @@ import {
 } from '@metamask/utils';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { BtcMethod, KeyringClient } from '@metamask/keyring-api';
-import { v4 as uuid } from 'uuid';
 import { ChainId } from '../../../../shared/constants/network';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -31,6 +29,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   BUILD_QUOTE_ROUTE,
+  MULTICHAIN_SEND_ROUTE,
   ///: END:ONLY_INCLUDE_IF
   SEND_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -69,8 +68,10 @@ import IconButton from '../../ui/icon-button';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { ReceiveModal } from '../../multichain/receive-modal';
-import { BitcoinWalletSnapSender } from '../../../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap';
 import { isBtcAccount } from '../../../selectors/accounts';
+import { startNewMultichainDraftTransaction } from '../../../ducks/multichain-send/multichain-send';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getMultichainProviderConfig } from '../../../selectors/multichain';
 ///: END:ONLY_INCLUDE_IF
 
 const CoinButtons = ({
@@ -108,6 +109,10 @@ const CoinButtons = ({
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   ///: END:ONLY_INCLUDE_IF
+  const multichainNetwork = useMultichainSelector(
+    getMultichainProviderConfig,
+    selectedAccount,
+  );
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
 
@@ -235,19 +240,26 @@ const CoinButtons = ({
       { excludeMetaMetricsId: false },
     );
     if (isBtcAccount(selectedAccount)) {
-      // Client to create the account using the Bitcoin Snap
-      const client = new KeyringClient(new BitcoinWalletSnapSender());
+      // // Client to create the account using the Bitcoin Snap
+      // const client = new KeyringClient(new BitcoinWalletSnapSender());
 
-      // This will trigger the Snap account creation flow (+ account renaming)
-      await client.submitRequest({
-        id: uuid(),
-        scope: chainId as CaipChainId,
-        account: selectedAccount.id,
-        request: {
-          method: BtcMethod.SendMany,
-          params: {},
-        },
-      });
+      // // This will trigger the Snap account creation flow (+ account renaming)
+      // await client.submitRequest({
+      //   id: uuid(),
+      //   scope: chainId as CaipChainId,
+      //   account: selectedAccount.id,
+      //   request: {
+      //     method: BtcMethod.SendMany,
+      //     params: {},
+      //   },
+      // });
+      await dispatch(
+        startNewMultichainDraftTransaction({
+          account: selectedAccount,
+          network: multichainNetwork.chainId as CaipChainId,
+        }),
+      );
+      history.push(MULTICHAIN_SEND_ROUTE);
     } else {
       await dispatch(startNewDraftTransaction({ type: AssetType.native }));
       history.push(SEND_ROUTE);

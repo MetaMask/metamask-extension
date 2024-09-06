@@ -39,6 +39,8 @@ const INTERACTIVE_REPLACEMENT_TOKEN_PAGE =
 const SRP_REMINDER = '/onboarding/remind-srp';
 ///: END:ONLY_INCLUDE_IF
 const SEND_ROUTE = '/send';
+const MULTICHAIN_SEND_ROUTE = '/multichain-send';
+const MULTICHAIN_CONFIRM_TRANSACTION_ROUTE = '/multichain-confirm-transaction';
 const CONNECTIONS = '/connections';
 const PERMISSIONS = '/permissions';
 const TOKEN_DETAILS = '/token-details';
@@ -157,6 +159,9 @@ const PATH_NAME_MAP = {
   [SRP_REMINDER]: 'Secret Recovery Phrase Reminder',
   ///: END:ONLY_INCLUDE_IF
   [SEND_ROUTE]: 'Send Page',
+  [MULTICHAIN_SEND_ROUTE]: 'Multichain Send Page',
+  [`${MULTICHAIN_CONFIRM_TRANSACTION_ROUTE}/:id`]:
+    'Multichain Confirm Transaction Page',
   [CONNECTIONS]: 'Connections',
   [PERMISSIONS]: 'Permissions',
   [`${TOKEN_DETAILS}/:address`]: 'Token Details Page',
@@ -220,6 +225,8 @@ export {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
   SEND_ROUTE,
+  MULTICHAIN_SEND_ROUTE,
+  MULTICHAIN_CONFIRM_TRANSACTION_ROUTE,
   CONNECTIONS,
   PERMISSIONS,
   TOKEN_DETAILS,

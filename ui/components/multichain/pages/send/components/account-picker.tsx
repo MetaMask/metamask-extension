@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType, InternalAccount } from '@metamask/keyring-api';
 import { getSelectedInternalAccount } from '../../../../../selectors';
 import { Label } from '../../../../component-library';
 import { AccountPicker } from '../../../account-picker';
@@ -16,7 +16,13 @@ import { AccountListMenu } from '../../..';
 import { SEND_STAGES, getSendStage } from '../../../../../ducks/send';
 import { SendPageRow } from '.';
 
-export const SendPageAccountPicker = () => {
+export type SendPageAccountPickerProps = {
+  allowedAccountTypes?: InternalAccount['type'][];
+};
+
+export const SendPageAccountPicker = ({
+  allowedAccountTypes,
+}: SendPageAccountPickerProps) => {
   const t = useContext(I18nContext);
   const internalAccount = useSelector(getSelectedInternalAccount);
 
@@ -67,7 +73,9 @@ export const SendPageAccountPicker = () => {
           accountListItemProps={accountListItemProps}
           showAccountCreation={false}
           onClose={onAccountListMenuClose}
-          allowedAccountTypes={[EthAccountType.Eoa, EthAccountType.Erc4337]}
+          allowedAccountTypes={
+            allowedAccountTypes ?? [EthAccountType.Eoa, EthAccountType.Erc4337]
+          }
         />
       ) : null}
     </SendPageRow>
