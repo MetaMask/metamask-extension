@@ -101,6 +101,8 @@ export const SpendingCap = ({
     decimals || '0',
   );
 
+  console.log({ transactionMeta, decodedSpendingCap: spendingCap });
+
   if (pending) {
     return <Container isLoading />;
   }
