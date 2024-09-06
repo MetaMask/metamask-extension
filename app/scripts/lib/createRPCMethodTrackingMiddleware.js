@@ -391,12 +391,6 @@ export default function createRPCMethodTrackingMiddleware({
         ...eventProperties,
         ...blockaidMetricProps,
         location,
-        // if security_alert_response from blockaidMetricProps is Benign, force set security_alert_reason to empty string
-        security_alert_reason:
-          blockaidMetricProps.security_alert_response ===
-          BlockaidResultType.Benign
-            ? ''
-            : blockaidMetricProps.security_alert_reason,
       };
 
       if (signatureUniqueId) {
