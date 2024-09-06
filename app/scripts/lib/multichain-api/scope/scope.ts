@@ -20,7 +20,6 @@ export const KnownWalletRpcMethods: string[] = [
 ];
 const WalletEip155Methods = [
   'wallet_addEthereumChain',
-  'wallet_watchAsset',
   'personal_sign',
   'eth_signTypedData',
   'eth_signTypedData_v1',
