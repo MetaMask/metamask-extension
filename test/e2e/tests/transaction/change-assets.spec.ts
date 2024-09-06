@@ -4,7 +4,7 @@ import {
   defaultGanacheOptions,
   withFixtures,
 } from '../../helpers';
-import { FixtureBuilder } from '../../fixture-builder';
+import FixtureBuilder = require('../../fixture-builder');
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
