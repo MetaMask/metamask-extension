@@ -5,7 +5,12 @@ import {
   parseCaipAccountId,
 } from '@metamask/utils';
 import { Caip25CaveatValue } from '../caip25permissions';
-import { mergeScopes, parseScopeString, ScopesObject } from '../scope';
+import {
+  mergeScopes,
+  parseScopeString,
+  ScopesObject,
+  ScopeString,
+} from '../scope';
 
 export const getEthAccounts = (caip25CaveatValue: Caip25CaveatValue) => {
   const ethAccounts: string[] = [];
@@ -40,7 +45,7 @@ const setEthAccountsForScopesObject = (
     const { namespace } = parseScopeString(scopeString);
 
     if (namespace !== KnownCaipNamespace.Eip155) {
-      updatedScopesObject[scopeString] = scopeObject;
+      updatedScopesObject[scopeString as ScopeString] = scopeObject;
       return;
     }
 
@@ -48,7 +53,7 @@ const setEthAccountsForScopesObject = (
       (account) => `${scopeString}:${account}` as CaipAccountId,
     );
 
-    updatedScopesObject[scopeString] = {
+    updatedScopesObject[scopeString as ScopeString] = {
       ...scopeObject,
       accounts: caipAccounts,
     };

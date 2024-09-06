@@ -1,7 +1,12 @@
 import { Hex, KnownCaipNamespace } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { Caip25CaveatValue } from '../caip25permissions';
-import { mergeScopes, parseScopeString, ScopesObject } from '../scope';
+import {
+  mergeScopes,
+  parseScopeString,
+  ScopesObject,
+  ScopeString,
+} from '../scope';
 
 export const getPermittedEthChainIds = (
   caip25CaveatValue: Caip25CaveatValue,
@@ -56,16 +61,16 @@ const filterEthScopesObjectByChainId = (
   Object.entries(scopesObject).forEach(([scopeString, scopeObject]) => {
     const { namespace, reference } = parseScopeString(scopeString);
     if (!reference) {
-      updatedScopesObject[scopeString] = scopeObject;
+      updatedScopesObject[scopeString as ScopeString] = scopeObject;
       return;
     }
     if (namespace === KnownCaipNamespace.Eip155) {
       const chainId = toHex(reference);
       if (chainIds.includes(chainId)) {
-        updatedScopesObject[scopeString] = scopeObject;
+        updatedScopesObject[scopeString as ScopeString] = scopeObject;
       }
     } else {
-      updatedScopesObject[scopeString] = scopeObject;
+      updatedScopesObject[scopeString as ScopeString] = scopeObject;
     }
   });
 

@@ -1,5 +1,5 @@
 import * as EthereumChainUtils from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
-import { ScopeObject } from './scope';
+import { ExternalScopeObject } from './scope';
 import {
   isValidScope,
   validateScopedPropertyEip3085,
@@ -12,7 +12,7 @@ jest.mock('../../rpc-method-middleware/handlers/ethereum-chain-utils', () => ({
 const MockEthereumChainUtils = jest.mocked(EthereumChainUtils);
 
 const validScopeString = 'eip155:1';
-const validScopeObject: ScopeObject = {
+const validScopeObject: ExternalScopeObject = {
   methods: [],
   notifications: [],
 };
@@ -152,7 +152,7 @@ describe('Scope Validation', () => {
         expected: boolean,
         _scenario: string,
         scopeString: string,
-        scopeObject: ScopeObject,
+        scopeObject: ExternalScopeObject,
       ) => {
         expect(isValidScope(scopeString, scopeObject)).toStrictEqual(expected);
       },
@@ -166,11 +166,16 @@ describe('Scope Validation', () => {
     };
 
     it('does not throw an error if required scopes are defined but none are valid', () => {
-      validateScopes({ 'eip155:1': {} as unknown as ScopeObject }, undefined);
+      validateScopes(
+        { 'eip155:1': {} as unknown as ExternalScopeObject },
+        undefined,
+      );
     });
 
     it('does not throw an error if optional scopes are defined but none are valid', () => {
-      validateScopes(undefined, { 'eip155:1': {} as unknown as ScopeObject });
+      validateScopes(undefined, {
+        'eip155:1': {} as unknown as ExternalScopeObject,
+      });
     });
 
     it('returns the valid required and optional scopes', () => {
@@ -178,10 +183,10 @@ describe('Scope Validation', () => {
         validateScopes(
           {
             'eip155:1': validScopeObjectWithAccounts,
-            'eip155:64': {} as unknown as ScopeObject,
+            'eip155:64': {} as unknown as ExternalScopeObject,
           },
           {
-            'eip155:2': {} as unknown as ScopeObject,
+            'eip155:2': {} as unknown as ExternalScopeObject,
             'eip155:5': validScopeObjectWithAccounts,
           },
         ),

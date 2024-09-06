@@ -3,14 +3,14 @@ import { NetworkController } from '@metamask/network-controller';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
 import { Hex, parseCaipChainId } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
-import { Scope } from './scope';
+import { ScopeString } from './scope';
 
 export type SubscriptionManager = {
   events: EventEmitter;
   destroy?: () => void;
 };
 
-type subscriptionNotificationEvent = {
+type SubscriptionNotificationEvent = {
   jsonrpc: '2.0';
   method: 'eth_subscription';
   params: {
@@ -30,7 +30,7 @@ type MultichainSubscriptionManagerOptions = {
 export default class MultichainSubscriptionManager extends SafeEventEmitter {
   private subscriptionsByChain: {
     [scope: string]: {
-      [domain: string]: (message: unknown) => void;
+      [domain: string]: (message: SubscriptionNotificationEvent) => void;
     };
   };
 
@@ -52,87 +52,90 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
   }
 
   onNotification(
-    scope: Scope,
+    scopeString: ScopeString,
     domain: string,
-    { method, params }: subscriptionNotificationEvent,
+    { method, params }: SubscriptionNotificationEvent,
   ) {
     this.emit('notification', domain, {
       method: 'wallet_notify',
       params: {
-        scope,
+        scope: scopeString,
         notification: { method, params },
       },
     });
   }
 
-  subscribe(scope: Scope, domain: string) {
+  subscribe(scopeString: ScopeString, domain: string) {
     let subscriptionManager;
-    if (this.subscriptionManagerByChain[scope]) {
-      subscriptionManager = this.subscriptionManagerByChain[scope];
+    if (this.subscriptionManagerByChain[scopeString]) {
+      subscriptionManager = this.subscriptionManagerByChain[scopeString];
     } else {
       const networkClientId = this.findNetworkClientIdByChainId(
-        toHex(parseCaipChainId(scope).reference),
+        toHex(parseCaipChainId(scopeString).reference),
       );
       const networkClient = this.getNetworkClientById(networkClientId);
       subscriptionManager = createSubscriptionManager({
         blockTracker: networkClient.blockTracker,
         provider: networkClient.provider,
       });
-      this.subscriptionManagerByChain[scope] = subscriptionManager;
+      this.subscriptionManagerByChain[scopeString] = subscriptionManager;
     }
-    this.subscriptionsByChain[scope] = this.subscriptionsByChain[scope] || {};
-    this.subscriptionsByChain[scope][domain] = (message) => {
-      this.onNotification(scope, domain, message);
+    this.subscriptionsByChain[scopeString] =
+      this.subscriptionsByChain[scopeString] || {};
+    this.subscriptionsByChain[scopeString][domain] = (
+      message: SubscriptionNotificationEvent,
+    ) => {
+      this.onNotification(scopeString, domain, message);
     };
     subscriptionManager.events.on(
       'notification',
-      this.subscriptionsByChain[scope][domain],
+      this.subscriptionsByChain[scopeString][domain],
     );
-    this.subscriptionsCountByScope[scope] ??= 0;
-    this.subscriptionsCountByScope[scope] += 1;
+    this.subscriptionsCountByScope[scopeString] ??= 0;
+    this.subscriptionsCountByScope[scopeString] += 1;
     return subscriptionManager;
   }
 
-  unsubscribe(scope: Scope, domain: string) {
+  unsubscribe(scopeString: ScopeString, domain: string) {
     const subscriptionManager: SubscriptionManager =
-      this.subscriptionManagerByChain[scope];
-    if (subscriptionManager && this.subscriptionsByChain[scope][domain]) {
+      this.subscriptionManagerByChain[scopeString];
+    if (subscriptionManager && this.subscriptionsByChain[scopeString][domain]) {
       subscriptionManager.events.off(
         'notification',
-        this.subscriptionsByChain[scope][domain],
+        this.subscriptionsByChain[scopeString][domain],
       );
-      delete this.subscriptionsByChain[scope][domain];
+      delete this.subscriptionsByChain[scopeString][domain];
     }
-    if (this.subscriptionsCountByScope[scope]) {
-      this.subscriptionsCountByScope[scope] -= 1;
-      if (this.subscriptionsCountByScope[scope] === 0) {
+    if (this.subscriptionsCountByScope[scopeString]) {
+      this.subscriptionsCountByScope[scopeString] -= 1;
+      if (this.subscriptionsCountByScope[scopeString] === 0) {
         // might be destroyed already
         if (subscriptionManager.destroy) {
           subscriptionManager.destroy();
         }
-        delete this.subscriptionsCountByScope[scope];
-        delete this.subscriptionManagerByChain[scope];
-        delete this.subscriptionsByChain[scope];
+        delete this.subscriptionsCountByScope[scopeString];
+        delete this.subscriptionManagerByChain[scopeString];
+        delete this.subscriptionsByChain[scopeString];
       }
     }
   }
 
   unsubscribeAll() {
     Object.entries(this.subscriptionsByChain).forEach(
-      ([scope, domainObject]) => {
+      ([scopeString, domainObject]) => {
         Object.entries(domainObject).forEach(([domain]) => {
-          this.unsubscribe(scope, domain);
+          this.unsubscribe(scopeString as ScopeString, domain);
         });
       },
     );
   }
 
-  unsubscribeScope(scope: string) {
+  unsubscribeScope(scopeString: ScopeString) {
     Object.entries(this.subscriptionsByChain).forEach(
-      ([_scope, domainObject]) => {
-        if (scope === _scope) {
-          Object.entries(domainObject).forEach(([_domain]) => {
-            this.unsubscribe(_scope, _domain);
+      ([_scopeString, domainObject]) => {
+        if (scopeString === _scopeString) {
+          Object.entries(domainObject).forEach(([domain]) => {
+            this.unsubscribe(scopeString, domain);
           });
         }
       },
@@ -141,10 +144,10 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
 
   unsubscribeDomain(domain: string) {
     Object.entries(this.subscriptionsByChain).forEach(
-      ([scope, domainObject]) => {
+      ([scopeString, domainObject]) => {
         Object.entries(domainObject).forEach(([_domain]) => {
           if (domain === _domain) {
-            this.unsubscribe(scope, _domain);
+            this.unsubscribe(scopeString as ScopeString, domain);
           }
         });
       },

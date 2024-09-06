@@ -36,7 +36,11 @@ describe('endowment:caip25', () => {
   });
 
   it('builds the expected permission specification', () => {
-    const specification = caip25EndowmentBuilder.specificationBuilder({});
+    const specification = caip25EndowmentBuilder.specificationBuilder({
+      methodHooks: {
+        findNetworkClientIdByChainId: jest.fn(),
+      },
+    });
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
       targetName: Caip25EndowmentPermissionName,
@@ -424,8 +428,18 @@ describe('endowment:caip25', () => {
 
     it('asserts the validated and flattened required scopes are supported', () => {
       MockScope.validateAndFlattenScopes.mockReturnValue({
-        flattenedRequiredScopes: 'flattenedRequiredScopes',
-        flattenedOptionalScopes: 'flattenedOptionalScopes',
+        flattenedRequiredScopes: {
+          'eip155:1': {
+            methods: ['flattened_required'],
+            notifications: [],
+          },
+        },
+        flattenedOptionalScopes: {
+          'eip155:1': {
+            methods: ['flattened_optional'],
+            notifications: [],
+          },
+        },
       });
       try {
         validator({
@@ -460,7 +474,12 @@ describe('endowment:caip25', () => {
         // noop
       }
       expect(MockScope.assertScopesSupported).toHaveBeenCalledWith(
-        'flattenedRequiredScopes',
+        {
+          'eip155:1': {
+            methods: ['flattened_required'],
+            notifications: [],
+          },
+        },
         expect.objectContaining({
           isChainIdSupported: expect.any(Function),
         }),
@@ -472,8 +491,18 @@ describe('endowment:caip25', () => {
 
     it('asserts the validated and flattened optional scopes are supported', () => {
       MockScope.validateAndFlattenScopes.mockReturnValue({
-        flattenedRequiredScopes: 'flattenedRequiredScopes',
-        flattenedOptionalScopes: 'flattenedOptionalScopes',
+        flattenedRequiredScopes: {
+          'eip155:1': {
+            methods: ['flattened_required'],
+            notifications: [],
+          },
+        },
+        flattenedOptionalScopes: {
+          'eip155:1': {
+            methods: ['flattened_optional'],
+            notifications: [],
+          },
+        },
       });
       try {
         validator({
@@ -508,7 +537,12 @@ describe('endowment:caip25', () => {
         // noop
       }
       expect(MockScope.assertScopesSupported).toHaveBeenCalledWith(
-        'flattenedOptionalScopes',
+        {
+          'eip155:1': {
+            methods: ['flattened_optional'],
+            notifications: [],
+          },
+        },
         expect.objectContaining({
           isChainIdSupported: expect.any(Function),
         }),

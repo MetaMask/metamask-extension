@@ -13,6 +13,7 @@ import {
 } from '@metamask/permission-controller';
 import {
   CaipAccountId,
+  Json,
   parseCaipAccountId,
   type Hex,
   type NonEmptyArray,
@@ -20,7 +21,7 @@ import {
 import { NetworkClientId } from '@metamask/network-controller';
 import { cloneDeep, isEqual } from 'lodash';
 import {
-  Scope,
+  ExternalScopeString,
   validateAndFlattenScopes,
   ScopesObject,
   ScopeObject,
@@ -30,7 +31,7 @@ import {
 export type Caip25CaveatValue = {
   requiredScopes: ScopesObject;
   optionalScopes: ScopesObject;
-  sessionProperties?: Record<string, unknown>;
+  sessionProperties?: Record<string, Json>;
   isMultichainOrigin: boolean;
 };
 
@@ -209,7 +210,7 @@ function removeAccount(
  * @param caip25CaveatValue - The CAIP-25 permission caveat value to remove the scope from.
  */
 export function removeScope(
-  targetScopeString: Scope,
+  targetScopeString: ExternalScopeString,
   caip25CaveatValue: Caip25CaveatValue,
 ) {
   const newRequiredScopes = Object.entries(

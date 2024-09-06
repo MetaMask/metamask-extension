@@ -1,11 +1,16 @@
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { validateAddEthereumChainParams } from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
-import { ScopeObject, Scope, parseScopeString, ScopesObject } from './scope';
+import {
+  ExternalScopeString,
+  parseScopeString,
+  ExternalScopeObject,
+  ExternalScopesObject,
+} from './scope';
 
 export const isValidScope = (
-  scopeString: Scope,
-  scopeObject: ScopeObject,
+  scopeString: ExternalScopeString,
+  scopeObject: ExternalScopeObject,
 ): boolean => {
   const { namespace, reference } = parseScopeString(scopeString);
 
@@ -69,10 +74,10 @@ export const isValidScope = (
 };
 
 export const validateScopes = (
-  requiredScopes?: ScopesObject,
-  optionalScopes?: ScopesObject,
+  requiredScopes?: ExternalScopesObject,
+  optionalScopes?: ExternalScopesObject,
 ) => {
-  const validRequiredScopes: ScopesObject = {};
+  const validRequiredScopes: ExternalScopesObject = {};
   for (const [scopeString, scopeObject] of Object.entries(
     requiredScopes || {},
   )) {
@@ -84,7 +89,7 @@ export const validateScopes = (
     }
   }
 
-  const validOptionalScopes: ScopesObject = {};
+  const validOptionalScopes: ExternalScopesObject = {};
   for (const [scopeString, scopeObject] of Object.entries(
     optionalScopes || {},
   )) {

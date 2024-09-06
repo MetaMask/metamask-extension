@@ -10,10 +10,10 @@ export const assignAccountsToScopes = (
   scopes: ScopesObject,
   accounts: Hex[],
 ) => {
-  Object.keys(scopes).forEach((scope) => {
-    if (scope !== 'wallet') {
-      scopes[scope].accounts = accounts.map(
-        (account) => `${scope}:${account}` as unknown as CaipAccountId, // do we need checks here?
+  Object.entries(scopes).forEach(([scopeString, scopeObject]) => {
+    if (scopeString !== 'wallet') {
+      scopeObject.accounts = accounts.map(
+        (account) => `${scopeString}:${account}` as unknown as CaipAccountId, // do we need checks here?
       );
     }
   });

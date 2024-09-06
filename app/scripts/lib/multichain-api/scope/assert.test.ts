@@ -179,7 +179,7 @@ describe('Scope Assert', () => {
       expect(() => {
         assertScopesSupported(
           {
-            scopeString: validScopeObject,
+            'eip155:1': validScopeObject,
           },
           {
             isChainIdSupported,
@@ -196,8 +196,8 @@ describe('Scope Assert', () => {
       expect(
         assertScopesSupported(
           {
-            scopeStringA: validScopeObject,
-            scopeStringB: validScopeObject,
+            'eip155:1': validScopeObject,
+            'eip155:2': validScopeObject,
           },
           {
             isChainIdSupported,

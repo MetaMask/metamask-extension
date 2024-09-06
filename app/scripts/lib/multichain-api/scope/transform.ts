@@ -1,5 +1,11 @@
 import { CaipChainId, isCaipChainId } from '@metamask/utils';
-import { ScopeObject, ScopesObject } from './scope';
+import {
+  ExternalScopeObject,
+  ExternalScopesObject,
+  ScopeString,
+  ScopeObject,
+  ScopesObject,
+} from './scope';
 
 // DRY THIS
 function unique<T>(list: T[]): T[] {
@@ -18,7 +24,7 @@ function unique<T>(list: T[]): T[] {
  */
 export const flattenScope = (
   scopeString: string,
-  scopeObject: ScopeObject,
+  scopeObject: ExternalScopeObject,
 ): ScopesObject => {
   const { scopes, ...restScopeObject } = scopeObject;
   const isChainScoped = isCaipChainId(scopeString);
@@ -27,12 +33,9 @@ export const flattenScope = (
     return { [scopeString]: scopeObject };
   }
 
-  // TODO: Either change `scopes` to `references` or do a namespace check here?
-  // Do we need to handle the case where chain scoped is passed in with `scopes` defined too?
-
-  const scopeMap: Record<CaipChainId, ScopeObject> = {};
-  scopes.forEach((scope) => {
-    scopeMap[scope] = restScopeObject;
+  const scopeMap: ScopesObject = {};
+  scopes.forEach((nestedScopeString: CaipChainId) => {
+    scopeMap[nestedScopeString] = restScopeObject;
   });
   return scopeMap;
 };
@@ -74,41 +77,25 @@ export const mergeScopeObject = (
 };
 
 export const mergeScopes = (
-  scopeA: Record<CaipChainId, ScopeObject>,
-  scopeB: Record<CaipChainId, ScopeObject>,
-): Record<CaipChainId, ScopeObject> => {
-  const scope: Record<CaipChainId, ScopeObject> = {};
+  scopeA: ScopesObject,
+  scopeB: ScopesObject,
+): ScopesObject => {
+  const scope: ScopesObject = {};
 
-  Object.entries(scopeA).forEach(([_, { scopes }]) => {
-    if (scopes) {
-      throw new Error('unexpected `scopes` property');
-    }
-  });
-
-  Object.entries(scopeB).forEach(([_, { scopes }]) => {
-    if (scopes) {
-      throw new Error('unexpected `scopes` property');
-    }
-  });
-
-  Object.keys(scopeA).forEach((_scopeString: string) => {
-    const scopeString = _scopeString as CaipChainId;
-    const scopeObjectA = scopeA[scopeString];
+  Object.entries(scopeA).forEach(([_scopeString, scopeObjectA]) => {
+    const scopeString = _scopeString as ScopeString;
     const scopeObjectB = scopeB[scopeString];
 
-    if (scopeObjectA && scopeObjectB) {
-      scope[scopeString] = mergeScopeObject(scopeObjectA, scopeObjectB);
-    } else {
-      scope[scopeString] = scopeObjectA;
-    }
+    scope[scopeString] = scopeObjectB
+      ? mergeScopeObject(scopeObjectA, scopeObjectB)
+      : scopeObjectA;
   });
 
-  Object.keys(scopeB).forEach((_scopeString: string) => {
-    const scopeString = _scopeString as CaipChainId;
+  Object.entries(scopeB).forEach(([_scopeString, scopeObjectB]) => {
+    const scopeString = _scopeString as ScopeString;
     const scopeObjectA = scopeA[scopeString];
-    const scopeObjectB = scopeB[scopeString];
 
-    if (!scopeObjectA && scopeObjectB) {
+    if (!scopeObjectA) {
       scope[scopeString] = scopeObjectB;
     }
   });
@@ -116,8 +103,10 @@ export const mergeScopes = (
   return scope;
 };
 
-export const flattenMergeScopes = (scopes: ScopesObject) => {
-  let flattenedScopes = {};
+export const flattenMergeScopes = (
+  scopes: ExternalScopesObject,
+): ScopesObject => {
+  let flattenedScopes: ScopesObject = {};
   Object.keys(scopes).forEach((scopeString) => {
     const flattenedScopeMap = flattenScope(scopeString, scopes[scopeString]);
     flattenedScopes = mergeScopes(flattenedScopes, flattenedScopeMap);
