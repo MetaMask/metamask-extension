@@ -397,11 +397,12 @@ const CoinButtons = ({
             label={t('receive')}
             onClick={() => {
               trackEvent({
+                event: MetaMetricsEventName.NavReceiveButtonClicked,
                 category: MetaMetricsEventCategory.Navigation,
-                event: MetaMetricsEventName.AccountDetailsOpened,
                 properties: {
                   location: 'Home',
-                  text: 'Account Details',
+                  text: 'Receive',
+                  chain_id: chainId,
                 },
               });
               setShowReceiveModal(true);
