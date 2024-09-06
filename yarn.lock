@@ -5674,7 +5674,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^10.0.1, @metamask/message-manager@npm:^10.0.2, @metamask/message-manager@npm:^10.1.0":
+"@metamask/message-manager@npm:^10.1.0":
   version: 10.1.0
   resolution: "@metamask/message-manager@npm:10.1.0"
   dependencies:
