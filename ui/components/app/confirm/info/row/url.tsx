@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Box,
   Icon,
@@ -27,17 +27,23 @@ export type ConfirmInfoRowUrlProps = {
 export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
   let urlObject;
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const handleOpenModal = useCallback(
+    () => setIsModalOpen(true),
+    [setIsModalOpen],
+  );
+  const handleCloseModal = useCallback(
+    () => setIsModalOpen(false),
+    [setIsModalOpen],
+  );
 
   if (isSnapId(url)) {
     return (
       <>
-        <SnapAuthorshipPill snapId={url} onClick={openModal} />
+        <SnapAuthorshipPill snapId={url} onClick={handleOpenModal} />
         <SnapMetadataModal
           snapId={url}
           isOpen={isModalOpen}
-          onClose={closeModal}
+          onClose={handleCloseModal}
         />
       </>
     );
