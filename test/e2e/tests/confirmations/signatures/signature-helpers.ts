@@ -35,6 +35,7 @@ type SignatureEventProperty = {
   chain_id: '0x539';
   environment_type: 'background';
   locale: 'en';
+  security_alert_reason: string;
   security_alert_response: 'NotApplicable';
   signature_type: string;
   eip712_primary_type?: string;
@@ -54,6 +55,7 @@ function getSignatureEventProperty(
     chain_id: '0x539',
     environment_type: 'background',
     locale: 'en',
+    security_alert_reason: 'NotApplicable',
     security_alert_response: 'NotApplicable',
     ui_customizations: uiCustomizations,
   };
