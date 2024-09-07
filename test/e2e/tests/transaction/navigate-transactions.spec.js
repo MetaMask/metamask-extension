@@ -5,8 +5,13 @@ const {
   locateAccountBalanceDOM,
   unlockWallet,
   generateGanacheOptions,
+  switchToNotificationWindow,
+  WINDOW_TITLES,
+  createDappTransactionTypeTwo,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+
+const TRANSACTION_COUNT = 4;
 
 describe('Navigate transactions', function () {
   it('should navigate the unapproved transactions', async function () {
@@ -14,19 +19,15 @@ describe('Navigate transactions', function () {
       {
         fixtures: new FixtureBuilder()
           .withPreferencesControllerTxSimulationsDisabled()
-          .withTransactionControllerMultipleTransactions()
+          .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
+        dapp: true,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        // Wait until total amount is loaded to mitigate flakiness on reject
-        await driver.findElement({
-          tag: 'span',
-          text: '3.0000315',
-        });
+        await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
         // navigate transactions
         await driver.clickElement('[data-testid="next-page"]');
@@ -110,19 +111,13 @@ describe('Navigate transactions', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesControllerTxSimulationsDisabled()
-          .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        // Wait until total amount is loaded to mitigate flakiness on reject
-        await driver.findElement({
-          tag: 'span',
-          text: '3.0000315',
-        });
+        await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
         await driver.clickElement('[data-testid="next-page"]');
         let navigationElement = await driver.findElement(
@@ -138,10 +133,7 @@ describe('Navigate transactions', function () {
         // add transaction
         await openDapp(driver);
         await driver.clickElement({ text: 'Send', tag: 'button' });
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        const extension = windowHandles[0];
-        await driver.switchToWindow(extension);
+        await switchToNotificationWindow(driver, TRANSACTION_COUNT + 3);
         navigationElement = await driver.waitForSelector({
           css: '.confirm-page-container-navigation',
           text: '2 of 5',
@@ -161,19 +153,15 @@ describe('Navigate transactions', function () {
       {
         fixtures: new FixtureBuilder()
           .withPreferencesControllerTxSimulationsDisabled()
-          .withTransactionControllerMultipleTransactions()
+          .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
+        dapp: true,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        // Wait until total amount is loaded to mitigate flakiness on reject
-        await driver.findElement({
-          tag: 'span',
-          text: '3.0000315',
-        });
+        await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
         // reject transaction
         await driver.clickElement({ text: 'Reject', tag: 'button' });
@@ -196,19 +184,15 @@ describe('Navigate transactions', function () {
       {
         fixtures: new FixtureBuilder()
           .withPreferencesControllerTxSimulationsDisabled()
-          .withTransactionControllerMultipleTransactions()
+          .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
+        dapp: true,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        // Wait until total amount is loaded to mitigate flakiness on reject
-        await driver.findElement({
-          tag: 'span',
-          text: '3.0000315',
-        });
+        await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
         // confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -231,25 +215,38 @@ describe('Navigate transactions', function () {
       {
         fixtures: new FixtureBuilder()
           .withPreferencesControllerTxSimulationsDisabled()
-          .withTransactionControllerMultipleTransactions()
+          .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
+        dapp: true,
       },
       async ({ driver, ganacheServer }) => {
         await unlockWallet(driver);
-
-        // Wait until total amount is loaded to mitigate flakiness on reject
-        await driver.findElement({
-          tag: 'span',
-          text: '3.0000315',
-        });
+        await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
         // reject transactions
         await driver.clickElement({ text: 'Reject 4', tag: 'a' });
         await driver.clickElement({ text: 'Reject all', tag: 'button' });
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await locateAccountBalanceDOM(driver, ganacheServer);
       },
     );
   });
 });
+
+async function createMultipleTransactions(driver, count) {
+  for (let i = 0; i < count; i++) {
+    await createDappTransactionTypeTwo(driver);
+  }
+
+  await switchToNotificationWindow(driver, count + 2);
+
+  // Wait until total amount is loaded to mitigate flakiness on reject
+  await driver.findElement({
+    tag: 'span',
+    text: '0.001',
+  });
+}
