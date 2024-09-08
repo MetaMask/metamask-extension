@@ -22,7 +22,11 @@ import {
   Page,
 } from '../../../components/multichain/pages/page/index';
 import { SiteCell } from '../../../components/multichain/pages/review-permissions-page/index';
-import { BlockSize, Display } from '../../../helpers/constants/design-system';
+import {
+  BlockSize,
+  Display,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 
 export const ConnectPage = ({
   request,
@@ -103,7 +107,7 @@ export const ConnectPage = ({
       className="main-container connections-page"
     >
       <Header>
-        <Text>Connect with MetaMask</Text>
+        <Text variant={TextVariant.headingLg}>{t('connectWithMetaMask')}</Text>
         <Text>This site wants to: </Text>
       </Header>
       <Content padding={0}>

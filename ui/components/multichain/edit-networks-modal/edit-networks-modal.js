@@ -20,6 +20,7 @@ import {
   ModalFooter,
   ButtonPrimary,
   ButtonPrimarySize,
+  ModalBody,
 } from '../../component-library';
 import { NetworkListItem } from '..';
 import {
@@ -104,84 +105,90 @@ export const EditNetworksModal = ({ onClose, onClick, currentTabHasNoAccounts })
         >
           {t('editNetworksTitle')}
         </ModalHeader>
-        <Box padding={4}>
-          <Checkbox
-            label={t('selectAll')}
-            isChecked={checked}
-            gap={4}
-            onClick={() => (allAreSelected() ? deselectAll() : selectAll())}
-            isIndeterminate={isIndeterminate}
-          />
-        </Box>
-        {nonTestNetworks.map((network) => (
-          <NetworkListItem
-            name={network.nickname}
-            iconSrc={network?.rpcPrefs?.imageUrl}
-            key={network.id}
-            onClick={() => {
-              handleAccountClick(network.chainId);
-            }}
-            startAccessory={
-              <Checkbox isChecked={selectedChains.includes(network.chainId)} />
-            }
-          />
-        ))}
-        <Box padding={4}>
-          <Text variant={TextVariant.bodyMdMedium}>{t('testnets')}</Text>
-        </Box>
-        {testNetworks.map((network) => (
-          <NetworkListItem
-            name={network.nickname}
-            iconSrc={network?.rpcPrefs?.imageUrl}
-            key={network.id}
-            onClick={() => {
-              handleAccountClick(network.chainId);
-            }}
-            startAccessory={
-              <Checkbox isChecked={selectedChains.includes(network.chainId)} />
-            }
-            showEndAccessory={false}
-          />
-        ))}
-        <ModalFooter>
-          {selectedChains.length === 0 ? (
-            <ButtonPrimary
-              data-testid="disconnect-chains-button"
+        <ModalBody paddingLeft={0} paddingRight={0}>
+          <Box padding={4}>
+            <Checkbox
+              label={t('selectAll')}
+              isChecked={checked}
+              gap={4}
+              onClick={() => (allAreSelected() ? deselectAll() : selectAll())}
+              isIndeterminate={isIndeterminate}
+            />
+          </Box>
+          {nonTestNetworks.map((network) => (
+            <NetworkListItem
+              name={network.nickname}
+              iconSrc={network?.rpcPrefs?.imageUrl}
+              key={network.id}
               onClick={() => {
-                // disconnectAllAccounts();
-                onClose();
+                handleAccountClick(network.chainId);
               }}
-              size={ButtonPrimarySize.Lg}
-              block
-              danger
-            >
-              {t('disconnect')}
-            </ButtonPrimary>
-          ) : (
-            <ButtonPrimary
-              data-testid="connect-more-accounts-button"
+              startAccessory={
+                <Checkbox
+                  isChecked={selectedChains.includes(network.chainId)}
+                />
+              }
+            />
+          ))}
+          <Box padding={4}>
+            <Text variant={TextVariant.bodyMdMedium}>{t('testnets')}</Text>
+          </Box>
+          {testNetworks.map((network) => (
+            <NetworkListItem
+              name={network.nickname}
+              iconSrc={network?.rpcPrefs?.imageUrl}
+              key={network.id}
               onClick={() => {
-                onClick();
-                onClose();
-                if (currentTabHasNoAccounts) {
-                  dispatch(
-                    setSelectedNetworksForDappConnection(selectedChains),
-                  );
-                } else {
-                  managePermittedChains(
-                    selectedChains,
-                    flattenedPermittedChains,
-                    activeTabOrigin,
-                  ); // Then call the managePermittedChains function
-                }
+                handleAccountClick(network.chainId);
               }}
-              size={ButtonPrimarySize.Lg}
-              block
-            >
-              {t('confirm')}
-            </ButtonPrimary>
-          )}
-        </ModalFooter>
+              startAccessory={
+                <Checkbox
+                  isChecked={selectedChains.includes(network.chainId)}
+                />
+              }
+              showEndAccessory={false}
+            />
+          ))}
+          <ModalFooter>
+            {selectedChains.length === 0 ? (
+              <ButtonPrimary
+                data-testid="disconnect-chains-button"
+                onClick={() => {
+                  // disconnectAllAccounts();
+                  onClose();
+                }}
+                size={ButtonPrimarySize.Lg}
+                block
+                danger
+              >
+                {t('disconnect')}
+              </ButtonPrimary>
+            ) : (
+              <ButtonPrimary
+                data-testid="connect-more-accounts-button"
+                onClick={() => {
+                  onClick();
+                  onClose();
+                  if (currentTabHasNoAccounts) {
+                    dispatch(
+                      setSelectedNetworksForDappConnection(selectedChains),
+                    );
+                  } else {
+                    managePermittedChains(
+                      selectedChains,
+                      flattenedPermittedChains,
+                      activeTabOrigin,
+                    ); // Then call the managePermittedChains function
+                  }
+                }}
+                size={ButtonPrimarySize.Lg}
+                block
+              >
+                {t('confirm')}
+              </ButtonPrimary>
+            )}
+          </ModalFooter>
+        </ModalBody>
       </ModalContent>
     </Modal>
   );

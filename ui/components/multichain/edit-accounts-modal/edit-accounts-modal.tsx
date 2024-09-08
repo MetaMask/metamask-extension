@@ -25,6 +25,7 @@ import {
   ButtonPrimary,
   ButtonPrimarySize,
   ButtonLink,
+  ModalBody,
 } from '../../component-library';
 import { AccountListItem } from '..';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
@@ -145,76 +146,78 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
     <>
       <Modal
         isOpen
-        onClose={onClose}
+        onClose={() => console.log('bb')}
         data-testid="edit-accounts-modal"
         className="edit-accounts-modal"
       >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader onClose={onClose}>{t('editAccounts')}</ModalHeader>
-          <Box
-            padding={4}
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-          >
-            <Checkbox label={t('selectAll')} isChecked gap={4} />
-            <ButtonLink onClick={() => setShowAddNewAccountsModal(true)}>
-              {t('newAccount')}
-            </ButtonLink>
-          </Box>
-          {mergedAccounts.map((account) => (
-            <AccountListItem
-              onClick={() => handleAccountClick(account.address)}
-              account={account}
-              key={account.address}
-              isPinned={Boolean(account.pinned)}
-              startAccessory={
-                <Checkbox
-                  isChecked={selectedAccounts.includes(account.address)}
-                />
-              }
-              selected={false}
-            />
-          ))}
+          <ModalBody paddingLeft={0} paddingRight={0}>
+            <Box
+              padding={4}
+              display={Display.Flex}
+              justifyContent={JustifyContent.spaceBetween}
+            >
+              <Checkbox label={t('selectAll')} isChecked gap={4} />
+              <ButtonLink onClick={() => setShowAddNewAccountsModal(true)}>
+                {t('newAccount')}
+              </ButtonLink>
+            </Box>
+            {mergedAccounts.map((account) => (
+              <AccountListItem
+                onClick={() => handleAccountClick(account.address)}
+                account={account}
+                key={account.address}
+                isPinned={Boolean(account.pinned)}
+                startAccessory={
+                  <Checkbox
+                    isChecked={selectedAccounts.includes(account.address)}
+                  />
+                }
+                selected={false}
+              />
+            ))}
 
-          <ModalFooter>
-            {selectedAccounts.length === 0 ? (
-              <ButtonPrimary
-                data-testid="disconnect-all-accounts-button"
-                onClick={() => {
-                  disconnectAllAccounts();
-                  onClose();
-                }}
-                size={ButtonPrimarySize.Lg}
-                block
-                danger
-              >
-                {t('disconnect')}
-              </ButtonPrimary>
-            ) : (
-              <ButtonPrimary
-                data-testid="confirm-selection-button"
-                onClick={() => {
-                  onClick();
-                  if (currentTabHasNoAccounts) {
-                    dispatch(
-                      setSelectedAccountsForDappConnection(selectedAccounts),
-                    );
-                  } else {
-                    managePermittedAccounts(
-                      selectedAccounts,
-                      connectedAccountsAddresses,
-                    );
-                  }
-                  onClose();
-                }}
-                size={ButtonPrimarySize.Lg}
-                block
-              >
-                {t('confirm')}
-              </ButtonPrimary>
-            )}
-          </ModalFooter>
+            <ModalFooter>
+              {selectedAccounts.length === 0 ? (
+                <ButtonPrimary
+                  data-testid="disconnect-all-accounts-button"
+                  onClick={() => {
+                    disconnectAllAccounts();
+                    onClose();
+                  }}
+                  size={ButtonPrimarySize.Lg}
+                  block
+                  danger
+                >
+                  {t('disconnect')}
+                </ButtonPrimary>
+              ) : (
+                <ButtonPrimary
+                  data-testid="confirm-selection-button"
+                  onClick={() => {
+                    onClick();
+                    if (currentTabHasNoAccounts) {
+                      dispatch(
+                        setSelectedAccountsForDappConnection(selectedAccounts),
+                      );
+                    } else {
+                      managePermittedAccounts(
+                        selectedAccounts,
+                        connectedAccountsAddresses,
+                      );
+                    }
+                    onClose();
+                  }}
+                  size={ButtonPrimarySize.Lg}
+                  block
+                >
+                  {t('confirm')}
+                </ButtonPrimary>
+              )}
+            </ModalFooter>
+          </ModalBody>
         </ModalContent>
       </Modal>
 

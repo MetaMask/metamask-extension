@@ -1149,6 +1149,9 @@
   "connectWithMetaMask": {
     "message": "Connect with MetaMask"
   },
+  "connectionDescription": {
+    "message": "This site wants to"
+  },
   "connectedAccounts": {
     "message": "Connected accounts"
   },
