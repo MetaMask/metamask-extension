@@ -13,6 +13,8 @@ const {
   DEFAULT_FEATURE_FLAGS_RESPONSE: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
 } = require('./tests/bridge/constants');
 
+const { WHITE_LISTED_MOCKS } = require('./mock-e2e-whitelisted');
+
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
 const CDN_STALE_PATH = 'test/e2e/mock-cdn/cdn-stale.txt';
@@ -90,20 +92,33 @@ async function setupMocking(
 ) {
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
-    beforeRequest: (req) => {
-      const { host } = req.headers;
+    beforeRequest: ({ headers: { host }, url }) => {
       if (blacklistedHosts.includes(host)) {
         return {
           url: 'http://localhost:8545',
         };
+      } else if (WHITE_LISTED_MOCKS.includes(url)) {
+        return {};
       }
-      return {};
+      return {
+        // if the request is not whitelisted nor blacklisted
+        // we sent it to a mocked endpoint with a 200 response
+        url: 'unresponsive-rpc.test',
+        method: 'GET',
+      };
     },
   });
 
   const mockedEndpoint = await testSpecificMock(server);
 
   // Mocks below this line can be overridden by test-specific mocks
+
+  // Catch-all mock for any request not whitelisted nor blacklisted
+  await server.forGet('unresponsive-rpc.test').thenCallback(() => {
+    return {
+      statusCode: 200,
+    };
+  });
 
   // Account link
   const accountLinkRegex =
@@ -679,13 +694,6 @@ async function setupMocking(
     ) {
       privacyReport.add(request.headers.host);
     }
-  });
-
-  // Catch-all mock for any request not covered by the above mocks
-  await server.forAnyRequest().thenCallback(() => {
-    return {
-      statusCode: 200,
-    };
   });
 
   return { mockedEndpoint, getPrivacyReport };
