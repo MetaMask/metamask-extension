@@ -5,6 +5,7 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
   MESSAGE_TYPE,
+  TRACE_ENABLED_SIGN_METHODS,
 } from '../../../../shared/constants/app';
 import Loading from '../../../components/ui/loading-screen';
 import {
@@ -106,7 +107,7 @@ const ConfirmTransaction = () => {
 
     let traceId = id;
 
-    if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
+    if (TRACE_ENABLED_SIGN_METHODS.includes(type)) {
       traceId = transaction.msgParams?.requestId?.toString();
     }
 

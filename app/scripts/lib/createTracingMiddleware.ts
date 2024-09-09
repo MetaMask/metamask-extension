@@ -1,7 +1,10 @@
 // Request and repsones are currently untyped.
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { MESSAGE_TYPE } from '../../../shared/constants/app';
+import {
+  MESSAGE_TYPE,
+  TRACE_ENABLED_SIGN_METHODS,
+} from '../../../shared/constants/app';
 import { trace, TraceName } from '../../../shared/lib/trace';
 
 async function handleTracing(
@@ -35,7 +38,7 @@ export default function createTracingMiddleware() {
       await handleTracing(req, id, TraceName.Transaction, { source: 'dapp' });
     }
 
-    if (method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
+    if (TRACE_ENABLED_SIGN_METHODS.includes(method)) {
       await handleTracing(req, id, TraceName.Signature);
     }
 
