@@ -104,9 +104,7 @@ describe('TokenListItem', () => {
     const warningScamModal = getByTestId('scam-warning');
     fireEvent.click(warningScamModal);
 
-    expect(
-      getByText('Incorrect Network Currency Symbol Entered'),
-    ).toBeInTheDocument();
+    expect(getByText('This is a potential scam')).toBeInTheDocument();
   });
 
   it('should render crypto balance if useNativeCurrencyAsPrimaryCurrency is false', () => {
