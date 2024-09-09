@@ -18,7 +18,10 @@ import {
   PRIMARY_TYPES_PERMIT,
 } from '../../../shared/constants/signatures';
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
-import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
+import {
+  generateSignatureUniqueId,
+  getBlockaidMetricsProps,
+} from '../../../ui/helpers/utils/metrics';
 import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
@@ -122,6 +125,52 @@ const TRANSFORM_PARAMS_MAP = {
 
 const rateLimitTimeoutsByMethod = {};
 let globalRateLimitCount = 0;
+
+/**
+ * Create signature request event fragment with an assigned unique identifier
+ *
+ * @param {MetaMetricsController} metaMetricsController
+ * @param {OriginalRequest} req
+ * @param {object} properties
+ */
+function createSignatureFragment(metaMetricsController, req, properties) {
+  metaMetricsController.createEventFragment({
+    category: MetaMetricsEventCategory.InpageProvider,
+    initialEvent: MetaMetricsEventName.SignatureRequested,
+    successEvent: MetaMetricsEventName.SignatureApproved,
+    failureEvent: MetaMetricsEventName.SignatureRejected,
+    uniqueIdentifier: generateSignatureUniqueId(req.id),
+    persist: true,
+    referrer: {
+      url: req.origin,
+    },
+    properties,
+  });
+}
+
+/**
+ * Updates and finalizes event fragment for signature requests
+ *
+ * @param {MetaMetricsController} metaMetricsController
+ * @param {OriginalRequest} req
+ * @param {object}  options
+ * @param {boolean} options.abandoned
+ * @param {object}  options.properties
+ */
+function finalizeSignatureFragment(
+  metaMetricsController,
+  req,
+  { abandoned, properties },
+) {
+  const signatureUniqueId = generateSignatureUniqueId(req.id);
+
+  metaMetricsController.updateEventFragment(signatureUniqueId, {
+    properties,
+  });
+  metaMetricsController.finalizeEventFragment(signatureUniqueId, {
+    abandoned,
+  });
+}
 
 /**
  * Returns a middleware that tracks inpage_provider usage using sampling for
@@ -319,20 +368,7 @@ export default function createRPCMethodTrackingMiddleware({
       }
 
       if (event === MetaMetricsEventName.SignatureRequested) {
-        signatureUniqueId = `signature-${req.id}`;
-
-        metaMetricsController.createEventFragment({
-          category: MetaMetricsEventCategory.InpageProvider,
-          initialEvent: event,
-          successEvent: 'Signature Approved',
-          failureEvent: 'Signature Rejected',
-          uniqueIdentifier: signatureUniqueId,
-          persist: true,
-          referrer: {
-            url: origin,
-          },
-          properties: eventProperties,
-        });
+        createSignatureFragment(metaMetricsController, req, eventProperties);
       } else {
         metaMetricsController.trackEvent({
           event,
@@ -394,15 +430,9 @@ export default function createRPCMethodTrackingMiddleware({
       };
 
       if (signatureUniqueId) {
-        metaMetricsController.updateEventFragment(signatureUniqueId, {
-          properties,
-        });
-
-        metaMetricsController.finalizeEventFragment(signatureUniqueId, {
+        finalizeSignatureFragment(metaMetricsController, req, {
           abandoned: event === eventType.REJECTED,
-          referrer: {
-            url: origin,
-          },
+          properties,
         });
       } else {
         metaMetricsController.trackEvent({

@@ -7,6 +7,7 @@ import { SignatureRequestType } from '../types/confirm';
 import { isSignatureTransactionType } from '../utils';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { useConfirmContext } from '../context/confirm';
+import { generateSignatureUniqueId } from '../../../helpers/utils/metrics';
 import { AlertsName } from './alerts/constants';
 import { useTransactionEventFragment } from './useTransactionEventFragment';
 
@@ -115,9 +116,9 @@ export function useConfirmationAlertMetrics() {
     }
 
     if (isSignatureTransactionType(currentConfirmation)) {
-      const requestId = (currentConfirmation as SignatureRequestType)?.msgParams
-        ?.requestId;
-      const fragmentUniqueId = `signature-${requestId}`;
+      const requestId = (currentConfirmation as SignatureRequestType).msgParams
+        ?.requestId as number;
+      const fragmentUniqueId = generateSignatureUniqueId(requestId);
       updateEventFragment(fragmentUniqueId, {
         properties,
       });
