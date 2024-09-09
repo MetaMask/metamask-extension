@@ -30,8 +30,8 @@ const parseContent = (content) => {
   // Ethereum address links - fox ex. ethereum:0x.....1111
   if (content.split('ethereum:').length > 1) {
     type = 'address';
-    values = { address: content.split('ethereum:')[1] };
-
+    // uses regex capture groups to match and extract address while ignoring everythign else
+    values = { address: content.match(/.*:(0x[0-9a-fA-F]{40})(?:@.*)?/)[1] }
     // Regular ethereum addresses - fox ex. 0x.....1111
   } else if (content.substring(0, 2).toLowerCase() === '0x') {
     type = 'address';
