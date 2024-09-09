@@ -1,37 +1,56 @@
 import { integrationTestRender } from '../../lib/render-helpers';
 import * as backgroundConnection from '../../../ui/store/background-connection';
-import * as actions from '../../../ui/store/actions';
 import mockMetaMaskState from '../data/integration-init-state.json';
+import { act, screen } from '@testing-library/react';
+import { createMockImplementation } from '../helpers';
 
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
+  callBackgroundMethod: jest.fn(),
 }));
 
-jest.mock('../../../ui/store/actions', () => ({
-  fetchAndUpdateMetamaskNotifications: jest.fn(),
-}));
 
-const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
 };
 
-const mockedActions = jest.mocked(actions);
+const mockedBackgroundConnection = jest.mocked(backgroundConnection);
+
+const setupSubmitRequestToBackgroundMocks = (
+  mockRequests?: Record<string, unknown>,
+) => {
+  mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
+    createMockImplementation({
+      ...(mockRequests ?? {}),
+    }),
+  );
+};
 
 describe('Notifications', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    setupSubmitRequestToBackgroundMocks();
   });
 
   it('should show badge with correct unread notifications', async () => {
-    const { queryByTestId } = await integrationTestRender({
-      preloadedState: mockMetaMaskState,
-      backgroundConnection: backgroundConnectionMocked,
-    });
+    const mockedRequests = {
+      getState: mockMetaMaskState,
+    };
+
+    setupSubmitRequestToBackgroundMocks(mockedRequests);
+
+    await act(async() => {
+      await integrationTestRender({
+        preloadedState: {
+          ...mockMetaMaskState,
+         },
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    })
 
     expect(
-      queryByTestId('notifications-tag-counter__unread-dot'),
+      screen.getByTestId('notifications-tag-counter__unread-dot'),
     ).toBeInTheDocument();
   });
 });
