@@ -2335,22 +2335,6 @@ describe('MetaMaskController', () => {
                 ).toHaveBeenCalledTimes(1);
               });
 
-              it('should call preferencesController.setAccountLabel', async () => {
-                jest.spyOn(
-                  metamaskController.preferencesController,
-                  'setAccountLabel',
-                );
-
-                await metamaskController.unlockHardwareWalletAccount(
-                  accountToUnlock,
-                  device,
-                );
-
-                expect(
-                  metamaskController.preferencesController.setAccountLabel,
-                ).toHaveBeenCalledTimes(1);
-              });
-
               it('should call accountsController.getAccountByAddress', async () => {
                 jest.spyOn(
                   metamaskController.accountsController,
@@ -2381,6 +2365,36 @@ describe('MetaMaskController', () => {
                 expect(
                   metamaskController.accountsController.setAccountName,
                 ).toHaveBeenCalledTimes(1);
+              });
+
+              it('should call twice getAccountLabel if accountsController.setAccountName throws an error', async () => {
+                jest
+                  .spyOn(
+                    metamaskController.accountsController,
+                    'setAccountName',
+                  )
+                  .mockImplementationOnce(() => {
+                    throw new Error();
+                  });
+                jest.spyOn(metamaskController, 'getAccountLabel');
+                await metamaskController.unlockHardwareWalletAccount(
+                  accountToUnlock,
+                  device,
+                );
+
+                expect(
+                  metamaskController.getAccountLabel,
+                ).toHaveBeenCalledTimes(2);
+                expect(metamaskController.getAccountLabel).toHaveBeenCalledWith(
+                  device,
+                  0,
+                  undefined,
+                );
+                expect(metamaskController.getAccountLabel).toHaveBeenCalledWith(
+                  device,
+                  1,
+                  undefined,
+                );
               });
             });
           },
