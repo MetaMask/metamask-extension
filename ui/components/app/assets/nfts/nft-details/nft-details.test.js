@@ -4,6 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import copyToClipboard from 'copy-to-clipboard';
 import { toHex } from '@metamask/controller-utils';
+import { act } from 'react-dom/test-utils';
 import { startNewDraftTransaction } from '../../../../../ducks/send';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
@@ -20,6 +21,17 @@ import {
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
 import NftDetails from './nft-details';
+
+import {
+  getAssetImageURL,
+  shortenAddress,
+} from '../../../../../helpers/utils/util';
+
+// Mock the fetchData function from util.js
+jest.mock('../../../../../helpers/utils/util', () => ({
+  getAssetImageURL: jest.fn(),
+  shortenAddress: jest.fn(),
+}));
 
 jest.mock('copy-to-clipboard');
 
@@ -62,13 +74,20 @@ describe('NFT Details', () => {
     jest.clearAllMocks();
   });
 
-  it('should match minimal props and state snapshot', () => {
+  it('should match minimal props and state snapshot', async () => {
+    getAssetImageURL.mockResolvedValue(
+      'https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link',
+    );
+    shortenAddress.mockReturnValue('0xDc738...06414');
+
     const { container } = renderWithProvider(
       <NftDetails {...props} />,
       mockStore,
     );
 
-    expect(container).toMatchSnapshot();
+    await waitFor(() => {
+      expect(container).toMatchSnapshot();
+    });
   });
 
   it(`should route to '/' route when the back button is clicked`, () => {
