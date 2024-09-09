@@ -51,6 +51,7 @@ develop_master_rc_only: &develop_master_rc_only
       only:
         - develop
         - master
+        - master-copy
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 
 aliases:
@@ -382,7 +383,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^master-copy$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -571,7 +572,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^master-copy$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -580,7 +581,7 @@ jobs:
       - when:
           condition:
             matches:
-              pattern: /^master$/
+              pattern: /^master-copy$/
               value: << pipeline.git.branch >>
           steps:
             - run:
@@ -608,7 +609,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^master-copy$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -617,7 +618,7 @@ jobs:
       - when:
           condition:
             matches:
-              pattern: /^master$/
+              pattern: /^master-copy$/
               value: << pipeline.git.branch >>
           steps:
             - run:
@@ -651,7 +652,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^master-copy$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -660,7 +661,7 @@ jobs:
       - when:
           condition:
             matches:
-              pattern: /^master$/
+              pattern: /^master-copy$/
               value: << pipeline.git.branch >>
           steps:
             - run:
@@ -695,7 +696,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^master-copy$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -704,7 +705,7 @@ jobs:
       - when:
           condition:
             matches:
-              pattern: /^master$/
+              pattern: /^master-copy$/
               value: << pipeline.git.branch >>
           steps:
             - run:
@@ -736,7 +737,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^master-copy$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -745,7 +746,7 @@ jobs:
       - when:
           condition:
             matches:
-              pattern: /^master$/
+              pattern: /^master-copy$/
               value: << pipeline.git.branch >>
           steps:
             - run:
