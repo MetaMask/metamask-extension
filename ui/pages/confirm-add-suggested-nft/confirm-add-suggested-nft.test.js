@@ -139,8 +139,10 @@ describe('ConfirmAddSuggestedNFT Component', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should render a list of suggested NFTs', () => {
-    renderComponent({ ...PENDING_NFT_APPROVALS, ...PENDING_TOKEN_APPROVALS });
+  it('should render a list of suggested NFTs', async () => {
+    await act(async () =>
+      renderComponent({ ...PENDING_NFT_APPROVALS, ...PENDING_TOKEN_APPROVALS }),
+    );
 
     for (const {
       requestData: { asset },
