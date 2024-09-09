@@ -13,10 +13,7 @@ import { useConfirmContext } from '../../../context/confirm';
 
 export function useGasTooLowAlerts(): Alert[] {
   const t = useI18nContext();
-
-  const { currentConfirmation } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta | undefined;
-  };
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const gas = currentConfirmation?.txParams?.gas;
 
