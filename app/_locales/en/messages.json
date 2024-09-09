@@ -136,6 +136,9 @@
   "accountActivityText": {
     "message": "Select the accounts you want to be notified about:"
   },
+  "accountBalance": {
+    "message": "Account balance"
+  },
   "accountDetails": {
     "message": "Account details"
   },
@@ -1072,6 +1075,9 @@
   "confirmTitleDescDeployContract": {
     "message": "This site wants you to deploy a contract"
   },
+  "confirmTitleDescERC20ApproveTransaction": {
+    "message": "This site wants permission to withdraw your tokens"
+  },
   "confirmTitleDescPermitSignature": {
     "message": "This site wants permission to spend your tokens."
   },
@@ -1165,6 +1171,9 @@
   "connectedSites": {
     "message": "Connected sites"
   },
+  "connectedSitesAndSnaps": {
+    "message": "Connected sites and Snaps"
+  },
   "connectedSitesDescription": {
     "message": "$1 is connected to these sites. They can view your account address.",
     "description": "$1 is the account name"
@@ -1175,6 +1184,9 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask is connected to this site, but no accounts are connected yet"
+  },
+  "connectedSnaps": {
+    "message": "Connected Snaps"
   },
   "connectedWith": {
     "message": "Connected with"
@@ -1689,6 +1701,9 @@
   },
   "editANickname": {
     "message": "Edit nickname"
+  },
+  "editAccounts": {
+    "message": "Edit accounts"
   },
   "editAddressNickname": {
     "message": "Edit address nickname"
@@ -3030,6 +3045,9 @@
   },
   "networkDetails": {
     "message": "Network details"
+  },
+  "networkFee": {
+    "message": "Network fee"
   },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
@@ -5214,6 +5232,9 @@
   "spendingCapRequest": {
     "message": "Spending cap request for your $1"
   },
+  "spendingCapTooltipDesc": {
+    "message": "This is the amount of tokens the spender will be able to access on your behalf."
+  },
   "srpInputNumberOfWords": {
     "message": "I have a $1-word phrase",
     "description": "This is the text for each option in the dropdown where a user selects how many words their secret recovery phrase has during import. The $1 is the number of words (either 12, 15, 18, 21, or 24)."
@@ -6254,6 +6275,9 @@
   },
   "unknown": {
     "message": "Unknown"
+  },
+  "unknownChainWarning": {
+    "message": "We can’t verify custom networks. To avoid malicious providers from recording your network activity, only add networks you trust."
   },
   "unknownCollection": {
     "message": "Unnamed collection"

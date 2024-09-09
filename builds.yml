@@ -92,8 +92,8 @@ buildTypes:
       - REQUIRE_SNAPS_ALLOWLIST: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.6.2/index.html
       - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
-      - SUPPORT_LINK: https://mmi-support.metamask.io/hc/en-us
-      - SUPPORT_REQUEST_LINK: https://mmi-support.metamask.io/hc/en-us/requests/new
+      - SUPPORT_LINK: https://support.metamask-institutional.io
+      - SUPPORT_REQUEST_LINK: https://support.metamask-institutional.io
       - SENTRY_DSN: SENTRY_MMI_DSN
     # For some reason, MMI uses this type of versioning
     # Leaving it on for backwards compatibility
