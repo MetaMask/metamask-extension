@@ -11,6 +11,7 @@ import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -1758,11 +1759,14 @@ export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
 }
 
 export const getCurrentNetwork = createDeepEqualSelector(
-  getProviderConfig,
+  getNetworkConfigurationsByChainId,
+  getCurrentChainId,
+
   /**
    * Get the current network configuration.
    *
-   * @param {Record<string, unknown>} providerConfig - The configuration for the current network's provider.
+   * @param networkConfigurationsByChainId
+   * @param currentChainId
    * @returns {{
    *   chainId: `0x${string}`;
    *   id?: string;
@@ -1773,21 +1777,31 @@ export const getCurrentNetwork = createDeepEqualSelector(
    *   ticker: string;
    * }} networkConfiguration - Configuration for the current network.
    */
-  (providerConfig) => {
+  (networkConfigurationsByChainId, currentChainId) => {
+    const currentNetwork = networkConfigurationsByChainId[currentChainId];
+
+    const rpcEndpoint =
+      currentNetwork.rpcEndpoints[currentNetwork.defaultRpcEndpointIndex];
+
+    const blockExplorerUrl =
+      currentNetwork.blockExplorerUrls?.[
+        currentNetwork.defaultBlockExplorerUrlIndex
+      ];
+
     return {
-      chainId: providerConfig.chainId,
-      nickname: providerConfig.nickname,
+      chainId: currentNetwork.chainId,
+      id: rpcEndpoint.networkClientId,
+      nickname: currentNetwork.name,
+      rpcUrl: rpcEndpoint.url,
+      ticker: currentNetwork.nativeCurrency,
+      blockExplorerUrl,
       rpcPrefs: {
-        ...providerConfig.rpcPrefs,
-        imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[providerConfig.chainId],
+        blockExplorerUrl,
+        imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[currentNetwork.chainId],
       },
-      id: providerConfig.id,
-      blockExplorerUrl: providerConfig.rpcPrefs.blockExplorerUrl,
-      ...(providerConfig.type !== 'rpc' && {
-        providerType: providerConfig.type,
+      ...(rpcEndpoint.type === RpcEndpointType.Infura && {
+        providerType: rpcEndpoint.networkClientId,
       }),
-      rpcUrl: providerConfig.rpcUrl,
-      ticker: providerConfig.ticker,
     };
   },
 );

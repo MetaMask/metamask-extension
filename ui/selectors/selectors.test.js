@@ -772,6 +772,7 @@ describe('Selectors', () => {
           "id": "mock-network-config-id",
           "nickname": undefined,
           "rpcPrefs": {
+            "blockExplorerUrl": undefined,
             "imageUrl": undefined,
           },
           "rpcUrl": "https://mock-rpc-endpoint.test",
