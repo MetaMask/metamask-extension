@@ -846,7 +846,10 @@ export default class MetamaskController extends EventEmitter {
     this.ppomController = new PPOMController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'PPOMController',
-        allowedEvents: ['NetworkController:stateChange'],
+        allowedEvents: [
+          'NetworkController:stateChange',
+          'NetworkController:networkDidChange',
+        ],
         allowedActions: ['NetworkController:getNetworkClientById'],
       }),
       storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
