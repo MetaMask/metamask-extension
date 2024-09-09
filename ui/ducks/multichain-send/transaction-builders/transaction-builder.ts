@@ -10,7 +10,7 @@ import { AbstractTransactionBuilder } from './abstract-transaction-builder';
 export class TransactionBuilderFactory {
   static getBuilder(
     thunkApi: GetThunkAPI<{
-      state: MultichainSendState;
+      state: { multichainSend: MultichainSendState };
       dispatch: (action: AnyAction) => void;
     }>,
     account: InternalAccount,

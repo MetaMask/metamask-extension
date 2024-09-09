@@ -15,7 +15,7 @@ export abstract class AbstractTransactionBuilder {
   protected account: InternalAccount;
 
   protected thunkApi: GetThunkAPI<{
-    state: MultichainSendState;
+    state: { multichainSend: MultichainSendState };
     dispatch: Dispatch<AnyAction>;
   }>;
 
@@ -25,7 +25,7 @@ export abstract class AbstractTransactionBuilder {
 
   constructor(
     thunkApi: GetThunkAPI<{
-      state: MultichainSendState;
+      state: { multichainSend: MultichainSendState };
       dispatch: Dispatch<AnyAction>;
     }>,
     account: InternalAccount,

@@ -117,6 +117,16 @@ export type TransactionParams = {
   };
 };
 
+export enum SendStage {
+  DRAFT = 'draft',
+  PUBLISHED = 'published',
+}
+
+export enum SendStatus {
+  VALID = 'valid',
+  INVALID = 'invalid',
+}
+
 export type DraftTransaction = {
   transactionParams: TransactionParams;
   transaction: SendManyTransaction | null;
@@ -128,15 +138,13 @@ export type MultichainSendState = {
   draftTransactions: {
     [key: string]: DraftTransaction;
   };
-  status: typeof SEND_STATUSES;
-  // stage: typeof SEND_STAGES;
+  stage: SendStage;
 };
 
 const initialState: MultichainSendState = {
   currentTransactionUUID: undefined,
   draftTransactions: {},
-  status: SEND_STATUSES,
-  // stage: SEND_STAGES.DRAFT,
+  stage: SendStage.DRAFT,
 };
 
 const initialDraftTransaction: DraftTransaction = {
@@ -153,13 +161,13 @@ const initialDraftTransaction: DraftTransaction = {
         image: './images/placeholder.svg',
         symbol: '',
       },
-      asset: undefined,
+      asset: '',
       denominatinon: undefined,
       error: '',
     },
     receiveAsset: {
       amount: '0',
-      asset: undefined,
+      asset: '',
       denominatinon: undefined,
       error: '',
     },
@@ -188,7 +196,9 @@ const initialDraftTransaction: DraftTransaction = {
 };
 
 export type MultichainSendAsyncThunkConfig = {
-  state: MultichainSendState;
+  state: {
+    multichainSend: MultichainSendState;
+  };
   dispatch: Dispatch<AnyAction>;
 };
 
@@ -196,7 +206,7 @@ export const initializeSendState = createAsyncThunk<
   { id: string; transactionParams: TransactionParams },
   { account: InternalAccount; network: CaipChainId },
   {
-    state: MultichainSendState;
+    state: { multichainSend: MultichainSendState };
     dispatch: Dispatch<AnyAction>;
     rejectValue: {
       error: string;
@@ -215,11 +225,19 @@ export const initializeSendState = createAsyncThunk<
       },
     });
 
-    const state = thunkApi.getState();
+    let state = thunkApi.getState();
+
+    if (!state.multichainSend.currentTransactionUUID) {
+      thunkApi.dispatch({
+        type: 'multichainSend/addNewDraft',
+        payload: { account, network },
+      });
+      state = thunkApi.getState();
+    }
 
     const draftTransaction =
       state.multichainSend.draftTransactions[
-        state.multichainSend.currentTransactionUUID
+        state.multichainSend.currentTransactionUUID as string // This was checked in the previous if statement
       ];
 
     const transactionBuilder = TransactionBuilderFactory.getBuilder(
@@ -256,7 +274,7 @@ export const initializeSendState = createAsyncThunk<
     console.log('updatedTransactionParams', updatedTransactionParams);
 
     return {
-      id: state.multichainSend.currentTransactionUUID,
+      id: state.multichainSend.currentTransactionUUID as string, // TODO: remove cast. This was checked in the beginning.
       transactionParams: updatedTransactionParams,
     };
   },
@@ -270,7 +288,7 @@ export const estimateFee = createAsyncThunk<
   },
   { account: InternalAccount; transactionId: string },
   {
-    state: MultichainSendState;
+    state: { multichainSend: MultichainSendState };
     dispatch: Dispatch<AnyAction>;
     rejectValue: { error: string };
   }
@@ -290,8 +308,6 @@ export const estimateFee = createAsyncThunk<
       transaction.transactionParams,
     );
 
-    console.log('running estimate fee from slice');
-
     const fee = await transactionBuilder.estimateGas();
     return fee;
   },
@@ -306,7 +322,7 @@ export const updateAndValidateRecipient = createAsyncThunk<
     recipient: string;
   },
   {
-    state: MultichainSendState;
+    state: { multichainSend: MultichainSendState };
     dispatch: Dispatch<AnyAction>;
     rejectValue: { error: string };
   }
@@ -347,14 +363,17 @@ export const signAndSend = createAsyncThunk<
       draftTransaction.transactionParams,
     );
 
-    console.log('building transaction');
     await transactionBuilder.buildTransaction();
-    console.log('sending transaction');
 
     // sign and send transaction
     // send to keyring / snap
     const txHash = await transactionBuilder.sendTransaction();
     console.log('txHash', txHash);
+
+    thunkApi.dispatch({
+      type: 'multichainSend/updateStage',
+      payload: { stage: SendStage.PUBLISHED },
+    });
 
     // propagate to network
     // thunkApi.dispatch(actions.updateStatus(SEND_STATUSES.SIGNING));
@@ -387,6 +406,7 @@ const slice = createSlice({
 
       const { account, network } = action.payload;
 
+      // @ts-expect-error TODO: fix type error
       state.draftTransactions[state.currentTransactionUUID] = {
         ...initialDraftTransaction,
         transactionParams: {
@@ -491,9 +511,6 @@ const slice = createSlice({
         ).pow(10),
       );
 
-      console.log('[validate]amount', amount.toString());
-      console.log('[validate]balance', balance.toString());
-
       if (amount.greaterThan(balance)) {
         draftTransaction.transactionParams.sendAsset.error =
           INSUFFICIENT_FUNDS_ERROR;
@@ -520,19 +537,15 @@ const slice = createSlice({
         state.draftTransactions[state.currentTransactionUUID].valid = true;
       }
     },
+    updateStage: (state, action: { payload: { stage: SendStage } }) => {
+      state.stage = action.payload.stage;
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(initializeSendState.fulfilled, (state, action) => {
-        console.log('initializeSendState.fulfilled', state, action);
         state.draftTransactions[action.payload.id].transactionParams =
           action.payload.transactionParams;
-      })
-      .addCase(initializeSendState.rejected, (state, action) => {
-        console.log('initializeSendState.rejected', state, action);
-      })
-      .addCase(initializeSendState.pending, (state, action) => {
-        console.log('initializeSendState.pending', state, action);
       })
       .addCase(estimateFee.pending, (state) => {
         if (!state.currentTransactionUUID) {
@@ -584,7 +597,6 @@ const slice = createSlice({
         // TODO:
       })
       .addCase(updateAndValidateRecipient.fulfilled, (state, action) => {
-        console.log('finished updating recipient', action);
         if (!state.currentTransactionUUID) {
           return;
         }
@@ -598,10 +610,15 @@ const slice = createSlice({
   },
 });
 
-const { actions, reducer } = slice;
+const { actions } = slice;
 
-export const { addNewDraft, editTransaction, clearDraft, updateSendAmount } =
-  actions;
+export const {
+  addNewDraft,
+  editTransaction,
+  clearDraft,
+  updateSendAmount,
+  updateStage,
+} = actions;
 export default slice.reducer;
 
 export const startNewMultichainDraftTransaction = ({

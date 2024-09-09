@@ -66,7 +66,7 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
 
   constructor(
     thunkApi: GetThunkAPI<{
-      state: MultichainSendState;
+      state: { multichainSend: MultichainSendState };
       dispatch: Dispatch<AnyAction>;
     }>,
     account: InternalAccount,
@@ -134,43 +134,39 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
       this.transactionParams.sendAsset.amount,
     );
 
-    try {
-      const estimatedFee = (await handleSnapRequest({
-        snapId: BITCOIN_WALLET_SNAP_ID,
-        origin: 'metamask',
-        handler: HandlerType.OnRpcRequest,
-        request: {
-          method: 'estimateFee',
-          params: {
-            account: this.account.id,
-            amount: this.transactionParams.sendAsset.amount,
-          },
+    const estimatedFee = (await handleSnapRequest({
+      snapId: BITCOIN_WALLET_SNAP_ID,
+      origin: 'metamask',
+      handler: HandlerType.OnRpcRequest,
+      request: {
+        method: 'estimateFee',
+        params: {
+          account: this.account.id,
+          amount: this.transactionParams.sendAsset.amount,
         },
-      })) as {
-        fee: {
-          amount: string;
-          unit: string;
-        };
+      },
+    })) as {
+      fee: {
+        amount: string;
+        unit: string;
       };
+    };
 
-      this.transactionParams = {
-        ...this.transactionParams,
-        fee: {
-          ...this.transactionParams.fee,
-          fee: new BigNumber(estimatedFee.fee.amount)
-            .mul(new BigNumber(10).pow(8))
-            .toString(),
-          unit: estimatedFee.fee.unit,
-          error: '',
-          // TODO: remove hardcode
-          confirmationTime: '10 minutes',
-        },
-      };
+    this.transactionParams = {
+      ...this.transactionParams,
+      fee: {
+        ...this.transactionParams.fee,
+        fee: new BigNumber(estimatedFee.fee.amount)
+          .mul(new BigNumber(10).pow(8))
+          .toString(),
+        unit: estimatedFee.fee.unit,
+        error: '',
+        // TODO: remove hardcode
+        confirmationTime: '10 minutes',
+      },
+    };
 
-      return this.transactionParams.fee;
-    } catch (e) {
-      console.log('error estimating fee', e);
-    }
+    return this.transactionParams.fee;
   }
 
   async queryAssetBalance(): Promise<{
@@ -255,7 +251,7 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
       ![
         MultichainNativeAssets.BITCOIN,
         MultichainNativeAssets.BITCOIN_TESTNET,
-      ].includes(asset)
+      ].includes(asset as MultichainNativeAssets)
     ) {
       this.transactionParams = {
         ...this.transactionParams,

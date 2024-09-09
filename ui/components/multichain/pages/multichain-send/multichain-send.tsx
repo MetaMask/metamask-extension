@@ -30,6 +30,7 @@ import { getSelectedInternalAccount } from '../../../../selectors';
 import {
   clearDraft,
   DraftTransaction,
+  startNewMultichainDraftTransaction,
 } from '../../../../ducks/multichain-send/multichain-send';
 import { TransactionNotice } from './components/transaction-notice';
 import { MultichainFee } from './components/fee';
@@ -51,13 +52,12 @@ export const MultichainSendPage = () => {
 
   useEffect(() => {
     if (!draftTransactionExists) {
-      dispatch({
-        type: 'multichainSend/addNewDraft',
-        payload: {
+      dispatch(
+        startNewMultichainDraftTransaction({
           account: selectedAccount,
-          multichainNetwork,
-        },
-      });
+          network: multichainNetwork.chainId,
+        }),
+      );
     }
   }, [draftTransactionExists]);
 
