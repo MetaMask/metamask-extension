@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
@@ -23,11 +24,10 @@ import {
 } from '../../../../component-library';
 import { AvatarGroup, EditAccountsModal, EditNetworksModal } from '../../..';
 import { AvatarType } from '../../../avatar-group/avatar-group.types';
-import { useSelector } from 'react-redux';
 import { getPermittedAccountsByOrigin } from '../../../../../selectors/permissions';
 import { SiteCellTooltip } from './site-cell-tooltip';
 
-interface SiteCellProps {
+type SiteCellProps = {
   networks: {
     rpcPrefs?: { imageUrl?: string };
     nickname: string;
@@ -38,7 +38,7 @@ interface SiteCellProps {
   onNetworksClick: () => void;
   approvedAccounts: { address: string }[];
   activeTabOrigin: string;
-}
+};
 
 export const SiteCell: React.FC<SiteCellProps> = ({
   networks,

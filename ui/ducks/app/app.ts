@@ -36,8 +36,8 @@ type AppState = {
   };
   showPermittedNetworkToastOpen: boolean;
   showIpfsModalOpen: boolean;
-  selectedAccountsForDappConnection: {};
-  selectedNetworksForDappConnection: {};
+  selectedAccountsForDappConnection: object;
+  selectedNetworksForDappConnection: object;
   keyringRemovalSnapModal: {
     snapName: string;
     result: 'success' | 'failure' | 'none';

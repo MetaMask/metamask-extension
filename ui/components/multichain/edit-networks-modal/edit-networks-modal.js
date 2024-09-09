@@ -29,7 +29,11 @@ import {
   setSelectedNetworksForDappConnection,
 } from '../../../store/actions';
 
-export const EditNetworksModal = ({ onClose, onClick, currentTabHasNoAccounts }) => {
+export const EditNetworksModal = ({
+  onClose,
+  onClick,
+  currentTabHasNoAccounts,
+}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const nonTestNetworks = useSelector(getNonTestNetworks);

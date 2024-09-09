@@ -103,7 +103,7 @@ const ChooseAccount = ({
             {t('connectWithMetaMask')}
           </Text>
           <Text variant={TextVariant.bodyMd}>{headerText}</Text>
-      </Box>
+        </Box>
         <AccountList
           accounts={accounts}
           selectNewAccountViaModal={selectNewAccountViaModal}

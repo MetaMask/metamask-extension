@@ -37,11 +37,11 @@ import {
   setSelectedAccountsForDappConnection,
 } from '../../../store/actions';
 import { SubjectsType } from '../pages/connections/components/connections.types';
-import { NewAccountModal } from './new-accounts-modal';
 import {
   JustifyContent,
   Display,
 } from '../../../helpers/constants/design-system';
+import { NewAccountModal } from './new-accounts-modal';
 
 const defaultAllowedAccountTypes = [EthAccountType.Eoa, EthAccountType.Erc4337];
 

@@ -14,14 +14,14 @@ import {
   ButtonSize,
   ButtonVariant,
   Text,
-} from '../../../components/component-library/index';
+} from '../../../components/component-library';
 import {
   Content,
   Footer,
   Header,
   Page,
-} from '../../../components/multichain/pages/page/index';
-import { SiteCell } from '../../../components/multichain/pages/review-permissions-page/index';
+} from '../../../components/multichain/pages/page';
+import { SiteCell } from '../../../components/multichain/pages/review-permissions-page';
 import {
   BlockSize,
   Display,
