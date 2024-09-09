@@ -74,6 +74,7 @@ export type AllowedActions =
  * Events that this controller is allowed to subscribe.
  */
 export type AllowedEvents = AccountsControllerChangeEvent;
+
 export type PreferencesControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
   PreferencesControllerActions | AllowedActions,
@@ -89,7 +90,7 @@ type PreferencesControllerOptions = {
   messenger: PreferencesControllerMessenger;
 };
 
-type Preferences = {
+export type Preferences = {
   autoLockTimeLimit?: number;
   showExtensionInFullSizeView: boolean;
   showFiatInTestnets: boolean;
@@ -169,7 +170,7 @@ export default class PreferencesController {
    */
   constructor(opts: PreferencesControllerOptions) {
     const addedNonMainNetwork: Record<Hex, boolean> = Object.values(
-      opts.networkConfigurations || {},
+      opts.networkConfigurations ?? {},
     ).reduce((acc: Record<Hex, boolean>, element) => {
       acc[element.chainId] = true;
       return acc;
@@ -211,7 +212,7 @@ export default class PreferencesController {
         ...testNetworks,
       },
       knownMethodData: {},
-      currentLocale: opts.initLangCode || '',
+      currentLocale: opts.initLangCode ?? '',
       identities: {},
       lostIdentities: {},
       forgottenPassword: false,
@@ -272,7 +273,7 @@ export default class PreferencesController {
       this.#handleAccountsControllerSync.bind(this),
     );
 
-    globalThis.setPreference = (key: string, value: boolean) => {
+    globalThis.setPreference = (key: keyof Preferences, value: boolean) => {
       return this.setFeatureFlag(key, value);
     };
   }
@@ -643,7 +644,10 @@ export default class PreferencesController {
    * @param value - Indicates whether or not the preference should be enabled or disabled.
    * @returns Promises a updated Preferences object.
    */
-  setPreference(preference: string, value: boolean | object): Preferences {
+  setPreference(
+    preference: keyof Preferences,
+    value: Preferences[typeof preference],
+  ): Preferences {
     const currentPreferences = this.getPreferences();
     const updatedPreferences = {
       ...currentPreferences,

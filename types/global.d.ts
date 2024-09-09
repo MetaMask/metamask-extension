@@ -21,6 +21,7 @@ import {
   OffscreenCommunicationTarget,
   TrezorAction,
 } from 'shared/constants/offscreen-communication';
+import type { Preferences } from '../app/scripts/controllers/preferences-controller';
 
 declare class Platform {
   openTab: (opts: { url: string }) => void;
@@ -279,5 +280,5 @@ export declare global {
    */
   type OverridingUnion<T, U> = Omit<T, keyof U> & U;
 
-  function setPreference(key: string, value: boolean);
+  function setPreference(key: keyof Preferences, value: boolean);
 }

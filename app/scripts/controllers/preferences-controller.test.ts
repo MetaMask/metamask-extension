@@ -14,12 +14,13 @@ import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { ThemeType } from '../../../shared/constants/preferences';
-import PreferencesController, {
+import type {
   AllowedActions,
   AllowedEvents,
   PreferencesControllerActions,
   PreferencesControllerEvents,
 } from './preferences-controller';
+import PreferencesController from './preferences-controller';
 
 const NETWORK_CONFIGURATION_DATA = mockNetworkState(
   {
