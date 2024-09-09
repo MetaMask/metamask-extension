@@ -21,6 +21,7 @@ const MOCK_ID = '123';
 const expectedUniqueIdentifier = `signature-${MOCK_ID}`;
 
 const metricsState = { participateInMetaMetrics: null };
+const getMetricsState = () => metricsState;
 
 const expectedMetametricsEventUndefinedProps = {
   actionId: undefined,
@@ -76,10 +77,10 @@ const metaMetricsController = new MetaMetricsController({
     },
   },
 });
-metaMetricsController.store.getMetricsState = () => metricsState;
 
 const createHandler = (opts) =>
   createRPCMethodTrackingMiddleware({
+    getMetricsState,
     rateLimitTimeout: 1000,
     rateLimitSamplePercent: 0.1,
     globalRateLimitTimeout: 0,
