@@ -98,11 +98,12 @@ async function setupMocking(
           url: 'http://localhost:8545',
         };
       } else if (WHITE_LISTED_MOCKS.includes(url)) {
+        // If the URL is whitelisted, we pass the request as it is, to the live server.
         return {};
       }
       return {
-        // if the request is not whitelisted nor blacklisted
-        // we sent it to a mocked endpoint with a 200 response
+        // If the URL is not whitelisted nor blacklisted, we send the request to a mocked endpoint.
+        // This URL is arbitrary, as we mock the response for it below.
         url: 'unresponsive-rpc.test',
         method: 'GET',
       };
