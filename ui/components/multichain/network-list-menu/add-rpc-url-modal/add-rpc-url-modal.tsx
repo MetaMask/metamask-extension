@@ -32,7 +32,7 @@ const AddRpcUrlModal = ({
   const nameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (url && url?.length > 0 && !isWebUrl(url)) {
+    if (url && !isWebUrl(url)) {
       setError(isWebUrl(`https://${url}`) ? t('urlErrorMsg') : t('invalidRPC'));
     } else {
       setError(undefined);
