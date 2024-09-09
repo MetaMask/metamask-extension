@@ -14,12 +14,8 @@ import { useConfirmContext } from '../../../context/confirm';
  */
 export default function useAccountMismatchAlerts(): Alert[] {
   const t = useI18nContext();
-
-  const { currentConfirmation } = useConfirmContext() as {
-    currentConfirmation: SignatureRequestType;
-  };
+  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const { from: fromAddress } = getConfirmationSender(currentConfirmation);
-
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
   const siweParsedAddress =
     currentConfirmation?.msgParams?.siwe?.parsedMessage?.address;
