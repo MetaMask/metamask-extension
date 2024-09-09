@@ -25,6 +25,7 @@ import { AvatarGroup, EditAccountsModal, EditNetworksModal } from '../../..';
 import { AvatarType } from '../../../avatar-group/avatar-group.types';
 import { useSelector } from 'react-redux';
 import { getPermittedAccountsByOrigin } from '../../../../../selectors/permissions';
+import { SiteCellTooltip } from './site-cell-tooltip';
 
 interface SiteCellProps {
   networks: {
@@ -109,12 +110,13 @@ export const SiteCell: React.FC<SiteCellProps> = ({
               color={TextColor.textAlternative}
               variant={TextVariant.bodyMd}
             >
-              {t('connectedWith')}
+              {currentTabHasNoAccounts
+                ? t('requestingFor')
+                : t('connectedWith')}
             </Text>
-            <AvatarGroup
-              avatarType={AvatarType.ACCOUNT}
-              members={avatarAccountsData}
-              limit={4}
+            <SiteCellTooltip
+              accounts={accounts}
+              avatarAccountsData={avatarAccountsData}
             />
           </Box>
         </Box>
@@ -180,12 +182,13 @@ export const SiteCell: React.FC<SiteCellProps> = ({
               color={TextColor.textAlternative}
               variant={TextVariant.bodyMd}
             >
-              {t('connectedWith')}
+              {currentTabHasNoAccounts
+                ? t('requestingFor')
+                : t('connectedWith')}
             </Text>
-            <AvatarGroup
-              avatarType={AvatarType.TOKEN}
-              members={avatarNetworksData}
-              limit={4}
+            <SiteCellTooltip
+              networks={networks}
+              avatarNetworksData={avatarNetworksData}
             />
           </Box>
         </Box>

@@ -1149,9 +1149,6 @@
   "connectWithMetaMask": {
     "message": "Connect with MetaMask"
   },
-  "connectionDescription": {
-    "message": "This site wants to"
-  },
   "connectedAccounts": {
     "message": "Connected accounts"
   },
@@ -1215,6 +1212,9 @@
   },
   "connectingToSepolia": {
     "message": "Connecting to Sepolia test network"
+  },
+  "connectionDescription": {
+    "message": "This site wants to"
   },
   "connectionFailed": {
     "message": "Connection failed"
@@ -2912,6 +2912,14 @@
   "more": {
     "message": "more"
   },
+  "moreAccounts": {
+    "message": "+ $1 more accounts",
+    "description": "$1 is the number of accounts"
+  },
+  "moreNetworks": {
+    "message": "+ $1 more networks",
+    "description": "$1 is the number of networks"
+  },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
   },
@@ -4421,6 +4429,9 @@
   },
   "requestNotVerifiedError": {
     "message": "Because of an error, this request was not verified by the security provider. Proceed with caution."
+  },
+  "requestingFor": {
+    "message": "Requesting for"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
