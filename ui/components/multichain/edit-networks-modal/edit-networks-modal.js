@@ -33,6 +33,7 @@ export const EditNetworksModal = ({
   onClose,
   onClick,
   currentTabHasNoAccounts,
+  combinedNetworks,
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -45,6 +46,17 @@ export const EditNetworksModal = ({
   const [selectedChains, setSelectedChains] = useState(
     flattenedPermittedChains,
   );
+
+  const selectAll = () => {
+    const newSelectedAccounts = combinedNetworks.map(
+      (network) => network.chainId,
+    );
+    setSelectedChains(newSelectedAccounts);
+  };
+
+    const deselectAll = () => {
+      setSelectedChains([]);
+    };
 
   const handleAccountClick = (chainId) => {
     const index = selectedChains.indexOf(chainId);
@@ -60,7 +72,7 @@ export const EditNetworksModal = ({
     setSelectedChains(newSelectedChains);
   };
   const allAreSelected = () => {
-    return nonTestNetworks.length === selectedChains.length;
+    return combinedNetworks.length === selectedChains.length;
   };
   let checked = false;
   let isIndeterminate = false;

@@ -23,8 +23,7 @@ import {
   IconSize,
   Text,
 } from '../../../../component-library';
-import { AvatarGroup, EditAccountsModal, EditNetworksModal } from '../../..';
-import { AvatarType } from '../../../avatar-group/avatar-group.types';
+import { EditAccountsModal, EditNetworksModal } from '../../..';
 import { getPermittedAccountsByOrigin } from '../../../../../selectors/permissions';
 import { SiteCellTooltip } from './site-cell-tooltip';
 
@@ -39,6 +38,7 @@ type SiteCellProps = {
   onNetworksClick: () => void;
   approvedAccounts: { address: string }[];
   activeTabOrigin: string;
+  combinedNetworks;
 };
 
 export const SiteCell: React.FC<SiteCellProps> = ({
@@ -48,6 +48,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   onNetworksClick,
   approvedAccounts,
   activeTabOrigin,
+  combinedNetworks,
 }) => {
   const t = useI18nContext();
   const avatarNetworksData = networks.map((network) => ({
@@ -121,7 +122,11 @@ export const SiteCell: React.FC<SiteCellProps> = ({
             />
           </Box>
         </Box>
-        {currentTabHasNoAccounts ? <ButtonLink onClick={() => setShowEditAccountsModal(true)}>{t('edit')}</ButtonLink> :
+        {currentTabHasNoAccounts ? (
+          <ButtonLink onClick={() => setShowEditAccountsModal(true)}>
+            {t('edit')}
+          </ButtonLink>
+        ) : (
           <Box
             display={Display.Flex}
             justifyContent={JustifyContent.flexEnd}
@@ -138,7 +143,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
               backgroundColor={BackgroundColor.backgroundDefault}
             />
           </Box>
-        }
+        )}
       </Box>
 
       <Box
@@ -195,7 +200,11 @@ export const SiteCell: React.FC<SiteCellProps> = ({
             />
           </Box>
         </Box>
-        {currentTabHasNoAccounts ? <ButtonLink onClick={() => setShowEditNetworksModal(true)}>{t('edit')}</ButtonLink> :
+        {currentTabHasNoAccounts ? (
+          <ButtonLink onClick={() => setShowEditNetworksModal(true)}>
+            {t('edit')}
+          </ButtonLink>
+        ) : (
           <Box
             display={Display.Flex}
             justifyContent={JustifyContent.flexEnd}
@@ -211,7 +220,8 @@ export const SiteCell: React.FC<SiteCellProps> = ({
               size={IconSize.Sm}
               backgroundColor={BackgroundColor.backgroundDefault}
             />
-          </Box>}
+          </Box>
+        )}
       </Box>
 
       {showEditNetworksModal && (
@@ -219,6 +229,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
           onClose={() => setShowEditNetworksModal(false)}
           onClick={onNetworksClick}
           currentTabHasNoAccounts={currentTabHasNoAccounts}
+          combinedNetworks={combinedNetworks}
         />
       )}
 

@@ -120,6 +120,7 @@ export const ConnectPage = ({
           onNetworksClick={() => console.log('testing')}
           approvedAccounts={approvedAccounts}
           activeTabOrigin={activeTabOrigin}
+          combinedNetworks={combinedNetworks}
         />
       </Content>
       <Footer>

@@ -182,6 +182,7 @@ export const ReviewPermissions = () => {
               onAccountsClick={() => setShowAccountToast(true)}
               onNetworksClick={() => setShowNetworkToast(true)}
               activeTabOrigin={activeTabOrigin}
+              combinedNetworks={combinedNetworks}
             />
           ) : (
             <NoConnectionContent />
