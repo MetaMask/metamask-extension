@@ -6,7 +6,6 @@ import type { Meta, StoryObj } from '@storybook/react';
 import ImportSRP from './import-srp';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import type { UITrackEventMethod } from '../../../contexts/metametrics';
-import { MetaMetricsEventCategory, MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 
 const mockStore = configureStore({
   reducer: {
