@@ -13,7 +13,10 @@ const {
   DEFAULT_FEATURE_FLAGS_RESPONSE: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
 } = require('./tests/bridge/constants');
 
-const { WHITE_LISTED_MOCKS } = require('./mock-e2e-whitelisted');
+const {
+  WHITE_LISTED_HOSTS,
+  WHITE_LISTED_URLS,
+} = require('./mock-e2e-whitelisted');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -97,10 +100,14 @@ async function setupMocking(
         return {
           url: 'http://localhost:8545',
         };
-      } else if (WHITE_LISTED_MOCKS.includes(url)) {
+      } else if (
+        WHITE_LISTED_URLS.includes(url) ||
+        WHITE_LISTED_HOSTS.includes(host) ||
+        host.includes('gvt1.com')
+      ) {
         // If the URL is whitelisted, we pass the request as it is, to the live server.
         return {};
-      }
+        }
       console.log("URL NOT WHITLISTED DEBUG===============", url)
       return {
         // If the URL is not whitelisted nor blacklisted, we send the request to a mocked endpoint.
