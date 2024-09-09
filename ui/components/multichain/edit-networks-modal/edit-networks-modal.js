@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import { Display, FlexDirection, IconColor, TextColor, TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getNonTestNetworks,
@@ -21,6 +21,9 @@ import {
   ButtonPrimary,
   ButtonPrimarySize,
   ModalBody,
+  Icon,
+  IconName,
+  IconSize,
 } from '../../component-library';
 import { NetworkListItem } from '..';
 import {
@@ -28,6 +31,7 @@ import {
   removePermittedChain,
   setSelectedNetworksForDappConnection,
 } from '../../../store/actions';
+import { getURLHost } from '../../../helpers/utils/util';
 
 export const EditNetworksModal = ({
   onClose,
@@ -104,6 +108,7 @@ export const EditNetworksModal = ({
       dispatch(removePermittedChain(activeTabOrigin, selectedChain));
     });
   };
+  const hostName = getURLHost(activeTabOrigin);
   return (
     <Modal
       isOpen
@@ -167,18 +172,41 @@ export const EditNetworksModal = ({
           ))}
           <ModalFooter>
             {selectedChains.length === 0 ? (
-              <ButtonPrimary
-                data-testid="disconnect-chains-button"
-                onClick={() => {
-                  // disconnectAllAccounts();
-                  onClose();
-                }}
-                size={ButtonPrimarySize.Lg}
-                block
-                danger
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                gap={4}
               >
-                {t('disconnect')}
-              </ButtonPrimary>
+                <Box
+                  display={Display.Flex}
+                  gap={1}
+                  alignItems={AlignItems.center}
+                >
+                  <Icon
+                    name={IconName.Danger}
+                    size={IconSize.Xs}
+                    color={IconColor.errorDefault}
+                  />
+                  <Text
+                    variant={TextVariant.bodySm}
+                    color={TextColor.errorDefault}
+                  >
+                    {t('disconnectMessage', [hostName])}
+                  </Text>
+                </Box>
+                <ButtonPrimary
+                  data-testid="disconnect-chains-button"
+                  onClick={() => {
+                    // disconnectAllAccounts();
+                    onClose();
+                  }}
+                  size={ButtonPrimarySize.Lg}
+                  block
+                  danger
+                >
+                  {t('disconnect')}
+                </ButtonPrimary>
+              </Box>
             ) : (
               <ButtonPrimary
                 data-testid="connect-more-accounts-button"

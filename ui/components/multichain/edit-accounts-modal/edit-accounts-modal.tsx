@@ -26,6 +26,10 @@ import {
   ButtonPrimarySize,
   ButtonLink,
   ModalBody,
+  Text,
+  IconSize,
+  IconName,
+  Icon,
 } from '../../component-library';
 import { AccountListItem } from '..';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
@@ -40,8 +44,14 @@ import { SubjectsType } from '../pages/connections/components/connections.types'
 import {
   JustifyContent,
   Display,
+  TextVariant,
+  TextColor,
+  IconColor,
+  FlexDirection,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { NewAccountModal } from './new-accounts-modal';
+import { getURLHost } from '../../../helpers/utils/util';
 
 const defaultAllowedAccountTypes = [EthAccountType.Eoa, EthAccountType.Erc4337];
 
@@ -66,6 +76,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   const accounts = useSelector(getUpdatedAndSortedAccounts);
   const internalAccounts = useSelector(getInternalAccounts);
   const dispatch = useDispatch();
+  const hostName = getURLHost(activeTabOrigin);
   const [showAddNewAccountsModal, setShowAddNewAccountsModal] = useState(false);
 
   const mergedAccounts: MergedInternalAccount[] = useMemo(() => {
@@ -141,6 +152,29 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
       dispatch(addMorePermittedAccounts(activeTabOrigin, newAccounts));
     }
   };
+  const selectAll = () => {
+    const newSelectedAccounts = accounts.map(
+      (account: { address: string }) => account.address,
+    );
+    setSelectedAccounts(newSelectedAccounts);
+  };
+
+  const deselectAll = () => {
+    setSelectedAccounts([]);
+  };
+
+  const allAreSelected = () => {
+    return accounts.length === selectedAccounts.length;
+  };
+  let checked = false;
+  let isIndeterminate = false;
+  if (allAreSelected()) {
+    checked = true;
+    isIndeterminate = false;
+  } else if (selectedAccounts.length > 0 && !allAreSelected()) {
+    checked = false;
+    isIndeterminate = true;
+  }
 
   return (
     <>
@@ -159,7 +193,13 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
               display={Display.Flex}
               justifyContent={JustifyContent.spaceBetween}
             >
-              <Checkbox label={t('selectAll')} isChecked gap={4} />
+              <Checkbox
+                label={t('selectAll')}
+                isChecked={checked}
+                gap={4}
+                onClick={() => (allAreSelected() ? deselectAll() : selectAll())}
+                isIndeterminate={isIndeterminate}
+              />
               <ButtonLink onClick={() => setShowAddNewAccountsModal(true)}>
                 {t('newAccount')}
               </ButtonLink>
@@ -181,18 +221,37 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
 
             <ModalFooter>
               {selectedAccounts.length === 0 ? (
-                <ButtonPrimary
-                  data-testid="disconnect-all-accounts-button"
-                  onClick={() => {
-                    disconnectAllAccounts();
-                    onClose();
-                  }}
-                  size={ButtonPrimarySize.Lg}
-                  block
-                  danger
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
+                  gap={4}
                 >
-                  {t('disconnect')}
-                </ButtonPrimary>
+                  <Box display={Display.Flex} gap={1} alignItems={AlignItems.center}>
+                    <Icon
+                      name={IconName.Danger}
+                      size={IconSize.Xs}
+                      color={IconColor.errorDefault}
+                    />
+                    <Text
+                      variant={TextVariant.bodySm}
+                      color={TextColor.errorDefault}
+                    >
+                      {t('disconnectMessage', [hostName])}
+                    </Text>
+                  </Box>
+                  <ButtonPrimary
+                    data-testid="disconnect-chains-button"
+                    onClick={() => {
+                      disconnectAllAccounts();
+                      onClose();
+                    }}
+                    size={ButtonPrimarySize.Lg}
+                    block
+                    danger
+                  >
+                    {t('disconnect')}
+                  </ButtonPrimary>
+                </Box>
               ) : (
                 <ButtonPrimary
                   data-testid="confirm-selection-button"

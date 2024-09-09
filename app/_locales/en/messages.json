@@ -2916,6 +2916,10 @@
     "message": "+ $1 more accounts",
     "description": "$1 is the number of accounts"
   },
+  "disconnectMessage": {
+    "message": "This will disconnect you from $1",
+    "description": "$1 is the name of the dapp"
+  },
   "moreNetworks": {
     "message": "+ $1 more networks",
     "description": "$1 is the number of networks"
