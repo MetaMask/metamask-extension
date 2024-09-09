@@ -32,7 +32,7 @@ const parseContent = (content) => {
   if (content.split('ethereum:').length > 1) {
     type = 'address';
     // uses regex capture groups to match and extract address while ignoring everything else
-    values = { address: parseScanContent(content) }
+    values = { address: parseScanContent(content) };
     // Regular ethereum addresses - fox ex. 0x.....1111
   } else if (content.substring(0, 2).toLowerCase() === '0x') {
     type = 'address';
