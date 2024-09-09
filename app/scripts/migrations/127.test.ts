@@ -18,17 +18,8 @@ describe(`migration #${version}`, () => {
     const oldState = {
       PreferencesController: {
         preferences: {
-          featureNotificationsEnabled: false,
           hideZeroBalanceTokens: false,
-          isRedesignedConfirmationsDeveloperEnabled: false,
-          petnamesEnabled: true,
-          redesignedConfirmationsEnabled: true,
-          redesignedTransactionsEnabled: true,
-          showConfirmationAdvancedDetails: false,
-          showExtensionInFullSizeView: false,
-          showFiatInTestnets: false,
           showTestNetworks: true,
-          smartTransactionsOptInStatus: null,
           useNativeCurrencyAsPrimaryCurrency: true,
         },
       },
@@ -38,8 +29,11 @@ describe(`migration #${version}`, () => {
       data: oldState,
     });
 
-    delete oldState.PreferencesController.preferences
-      .useNativeCurrencyAsPrimaryCurrency;
+    delete (
+      oldState.PreferencesController.preferences as {
+        useNativeCurrencyAsPrimaryCurrency?: boolean;
+      }
+    ).useNativeCurrencyAsPrimaryCurrency;
     expect(transformedState.data).toStrictEqual(oldState);
   });
 });
