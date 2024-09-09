@@ -1,11 +1,9 @@
-const { strict: assert } = require('assert');
 const {
   withFixtures,
   openDapp,
   locateAccountBalanceDOM,
   unlockWallet,
   generateGanacheOptions,
-  switchToNotificationWindow,
   WINDOW_TITLES,
   createDappTransactionTypeTwo,
 } = require('../../helpers');
@@ -29,77 +27,26 @@ describe('Navigate transactions', function () {
         await unlockWallet(driver);
         await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
-        // navigate transactions
-        await driver.clickElement('[data-testid="next-page"]');
-        let navigationElement = await driver.findElement(
-          '.confirm-page-container-navigation',
-        );
-        let navigationText = await navigationElement.getText();
-        assert.equal(
-          navigationText.includes('2 of 4'),
-          true,
-          'changed transaction right',
-        );
-        await driver.clickElement('[data-testid="next-page"]');
-        navigationElement = await driver.findElement(
-          '.confirm-page-container-navigation',
-        );
-        navigationText = await navigationElement.getText();
-        assert.equal(
-          navigationText.includes('3 of 4'),
-          true,
-          'changed transaction right',
-        );
-        await driver.clickElement('[data-testid="next-page"]');
-        navigationElement = await driver.findElement(
-          '.confirm-page-container-navigation',
-        );
-        navigationText = await navigationElement.getText();
-        assert.equal(
-          navigationText.includes('4 of 4'),
-          true,
-          'changed transaction right',
-        );
-        await driver.clickElement('[data-testid="first-page"]');
-        navigationElement = await driver.findElement(
-          '.confirm-page-container-navigation',
-        );
-        navigationText = await navigationElement.getText();
-        assert.equal(
-          navigationText.includes('1 of 4'),
-          true,
-          'navigate to first transaction',
-        );
-        await driver.clickElement('[data-testid="last-page"]');
-        navigationElement = await driver.findElement(
-          '.confirm-page-container-navigation',
-        );
-        navigationText = await navigationElement.getText();
-        assert.equal(
-          navigationText.includes('4 of 4'),
-          true,
-          'navigate to last transaction',
-        );
-        await driver.clickElement('[data-testid="previous-page"]');
-        navigationElement = await driver.findElement(
-          '.confirm-page-container-navigation',
-        );
-        navigationText = await navigationElement.getText();
-        assert.equal(
-          navigationText.includes('3 of 4'),
-          true,
-          'changed transaction left',
-        );
-        await driver.clickElement('[data-testid="previous-page"]');
-        navigationElement = await driver.findElement(
-          '.confirm-page-container-navigation',
-        );
-        navigationText = await navigationElement.getText();
-        assert.equal(
-          navigationText.includes('2 of 4'),
-          true,
-          'changed transaction left',
-        );
+        await clickNextPage(driver);
+        await expectPageNumber(driver, 2, 4);
+
+        await clickNextPage(driver);
+        await expectPageNumber(driver, 3, 4);
+
+        await clickNextPage(driver);
+        await expectPageNumber(driver, 4, 4);
+
+        await clickFirstPage(driver);
+        await expectPageNumber(driver, 1, 4);
+
+        await clickLastPage(driver);
+        await expectPageNumber(driver, 4, 4);
+
+        await clickPreviousPage(driver);
+        await expectPageNumber(driver, 3, 4);
+
+        await clickPreviousPage(driver);
+        await expectPageNumber(driver, 2, 4);
       },
     );
   });
@@ -119,31 +66,18 @@ describe('Navigate transactions', function () {
         await unlockWallet(driver);
         await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
-        await driver.clickElement('[data-testid="next-page"]');
-        let navigationElement = await driver.findElement(
-          '.confirm-page-container-navigation',
-        );
-        let navigationText = await navigationElement.getText();
-        assert.equal(
-          navigationText.includes('2 of 4'),
-          true,
-          'second transaction in focus',
+        await clickNextPage(driver);
+        await expectPageNumber(driver, 2, 4);
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // add transaction
         await openDapp(driver);
         await driver.clickElement({ text: 'Send', tag: 'button' });
-        await switchToNotificationWindow(driver, TRANSACTION_COUNT + 3);
-        navigationElement = await driver.waitForSelector({
-          css: '.confirm-page-container-navigation',
-          text: '2 of 5',
-        });
-        navigationText = await navigationElement.getText();
-        assert.equal(
-          navigationText.includes('2 of 5'),
-          true,
-          'correct (same) transaction in focus',
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await expectPageNumber(driver, 2, 5);
       },
     );
   });
@@ -165,16 +99,8 @@ describe('Navigate transactions', function () {
 
         // reject transaction
         await driver.clickElement({ text: 'Reject', tag: 'button' });
-        const navigationElement = await driver.waitForSelector({
-          css: '.confirm-page-container-navigation',
-          text: '1 of 3',
-        });
-        const navigationText = await navigationElement.getText();
-        assert.equal(
-          navigationText.includes('1 of 3'),
-          true,
-          'transaction rejected',
-        );
+
+        await expectPageNumber(driver, 1, 3);
       },
     );
   });
@@ -196,16 +122,8 @@ describe('Navigate transactions', function () {
 
         // confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        const navigationElement = await driver.waitForSelector({
-          css: '.confirm-page-container-navigation',
-          text: '1 of 3',
-        });
-        const navigationText = await navigationElement.getText();
-        assert.equal(
-          navigationText.includes('1 of 3'),
-          true,
-          'transaction confirmed',
-        );
+
+        await expectPageNumber(driver, 1, 3);
       },
     );
   });
@@ -242,11 +160,34 @@ async function createMultipleTransactions(driver, count) {
     await createDappTransactionTypeTwo(driver);
   }
 
-  await switchToNotificationWindow(driver, count + 2);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   // Wait until total amount is loaded to mitigate flakiness on reject
   await driver.findElement({
     tag: 'span',
     text: '0.001',
+  });
+}
+
+async function clickFirstPage(driver) {
+  await driver.clickElement('[data-testid="first-page"]');
+}
+
+async function clickLastPage(driver) {
+  await driver.clickElement('[data-testid="last-page"]');
+}
+
+async function clickNextPage(driver) {
+  await driver.clickElement('[data-testid="next-page"]');
+}
+
+async function clickPreviousPage(driver) {
+  await driver.clickElement('[data-testid="previous-page"]');
+}
+
+async function expectPageNumber(driver, current, total) {
+  await driver.findElement({
+    css: '.confirm-page-container-navigation',
+    text: `${current} of ${total}`,
   });
 }

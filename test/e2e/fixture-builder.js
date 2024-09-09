@@ -8,7 +8,7 @@ const { NetworkStatus } = require('@metamask/network-controller');
 
 const { CHAIN_IDS, NETWORK_TYPES } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
-const { DAPP_URL, DAPP_ONE_URL, ACCOUNT_1 } = require('./helpers');
+const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
 const { DEFAULT_FIXTURE_ACCOUNT, ERC_4337_ACCOUNT } = require('./constants');
 const {
   defaultFixture,
@@ -246,7 +246,7 @@ class FixtureBuilder {
           chainId: CHAIN_IDS.OPTIMISM,
           nickname: 'Localhost 8545',
           rpcPrefs: {},
-          rpcUrl: 'http://mainnet.infura.io',
+          rpcUrl: 'https://mainnet.infura.io',
           ticker: 'ETH',
           networkConfigurationId: 'networkConfigurationId',
           id: 'networkConfigurationId',
