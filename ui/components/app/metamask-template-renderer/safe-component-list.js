@@ -12,7 +12,12 @@ import TextField from '../../ui/text-field';
 import ConfirmationNetworkSwitch from '../../../pages/confirmations/confirmation/components/confirmation-network-switch';
 import UrlIcon from '../../ui/url-icon';
 import Tooltip from '../../ui/tooltip/tooltip';
-import { AvatarIcon, FormTextField, Text } from '../../component-library';
+import {
+  AvatarIcon,
+  FormTextField,
+  Text,
+  BannerAlert,
+} from '../../component-library';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import { AccountListItem } from '../../multichain';
 import {
@@ -34,7 +39,6 @@ import { SnapUIForm } from '../snaps/snap-ui-form';
 import { SnapUIButton } from '../snaps/snap-ui-button';
 import { SnapUIDropdown } from '../snaps/snap-ui-dropdown';
 import { SnapUIRadioGroup } from '../snaps/snap-ui-radio-group';
-import { BannerAlert } from '../../component-library';
 import { SnapUICheckbox } from '../snaps/snap-ui-checkbox';
 import { SnapUITooltip } from '../snaps/snap-ui-tooltip';
 import { SnapUICard } from '../snaps/snap-ui-card';
