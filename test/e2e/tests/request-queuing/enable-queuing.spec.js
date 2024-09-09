@@ -6,7 +6,7 @@ const {
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Toggle Request Queuing Setting', function () {
-  it('should enable the request queuing setting ', async function () {
+  it('enables the request queuing experimental setting', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -38,7 +38,9 @@ describe('Toggle Request Queuing Setting', function () {
         await driver.clickElement(securityAndPrivacyTabRawLocator);
 
         // Toggle request queue setting
-        await driver.clickElement('.request-queue-toggle');
+        await driver.clickElement(
+          '[data-testid="experimental-setting-toggle-request-queue"]',
+        );
       },
     );
   });

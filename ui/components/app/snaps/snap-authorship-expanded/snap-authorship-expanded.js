@@ -16,6 +16,7 @@ import {
   FontWeight,
   JustifyContent,
   OverflowWrap,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -179,7 +180,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
               flexDirection={FlexDirection.Column}
               alignItems={AlignItems.flexEnd}
             >
-              <Text>{installOrigin.host}</Text>
+              <Text textAlign={TextAlign.End}>{installOrigin.host}</Text>
               <Text color={Color.textMuted}>
                 {t('installedOn', [
                   formatDate(installInfo.date, 'dd MMM yyyy'),

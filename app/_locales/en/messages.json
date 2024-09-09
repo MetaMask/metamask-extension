@@ -278,7 +278,13 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "Add a new account"
+    "message": "Add a new Ethereum account"
+  },
+  "addNewBitcoinAccount": {
+    "message": "Add a new Bitcoin account (Beta)"
+  },
+  "addNewBitcoinTestnetAccount": {
+    "message": "Add a new Bitcoin account (Testnet)"
   },
   "addNewToken": {
     "message": "Add new token"
@@ -421,6 +427,9 @@
   "alertMessageSignInDomainMismatch": {
     "message": "The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials."
   },
+  "alertMessageSignInWrongAccount": {
+    "message": "This site is asking you to sign in using the wrong account."
+  },
   "alertMessageSigningOrSubmitting": {
     "message": "This transaction will only go through once your previous transaction is complete."
   },
@@ -456,6 +465,9 @@
   },
   "alertReasonSignIn": {
     "message": "Suspicious sign-in request"
+  },
+  "alertReasonWrongAccount": {
+    "message": "Wrong account"
   },
   "alertSettingsUnconnectedAccount": {
     "message": "Browsing a website with an unconnected account selected"
@@ -500,12 +512,6 @@
   },
   "allow": {
     "message": "Allow"
-  },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "Allow MetaMask to detect and display your NFTs with autodetection. You’ll be able to:"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "Allow MetaMask to detect and display your tokens with autodetection. You’ll be able to:"
   },
   "allowMmiToConnectToCustodian": {
     "message": "This will allow MMI to connect to $1 to import your accounts."
@@ -746,6 +752,25 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
+  },
+  "bitcoinActivityNotSupported": {
+    "message": "Bitcoin activity is not supported"
+  },
+  "bitcoinSupportSectionTitle": {
+    "message": "Bitcoin"
+  },
+  "bitcoinSupportToggleDescription": {
+    "message": "Turning on this feature will give you the option to add a Bitcoin Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk. To give us feedback on this new Bitcoin experience, please fill out this $1.",
+    "description": "$1 is the link to a product feedback form"
+  },
+  "bitcoinSupportToggleTitle": {
+    "message": "Enable \"Add a new Bitcoin account (Beta)\""
+  },
+  "bitcoinTestnetSupportToggleDescription": {
+    "message": "Turning on this feature will give you the option to add a Bitcoin Account for the test network."
+  },
+  "bitcoinTestnetSupportToggleTitle": {
+    "message": "Enable \"Add a new Bitcoin account (Testnet)\""
   },
   "blockExplorerAccountAction": {
     "message": "Account",
@@ -1503,6 +1528,12 @@
   "developerOptions": {
     "message": "Developer Options"
   },
+  "developerOptionsEnableConfirmationsRedesignDescription": {
+    "message": "Enables or disables the confirmations redesign feature currently in development"
+  },
+  "developerOptionsEnableConfirmationsRedesignTitle": {
+    "message": "Confirmations Redesign"
+  },
   "developerOptionsNetworkMenuRedesignDescription": {
     "message": "Toggles the new design of the Networks menu"
   },
@@ -1595,12 +1626,6 @@
   },
   "displayNftMediaDescription": {
     "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off."
-  },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "Dive straight into using your NFTs"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "Dive straight into using your tokens"
   },
   "doNotShare": {
     "message": "Do not share this with anyone"
@@ -1730,9 +1755,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Edit speed up gas fee"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "Effortlessly navigate your digital assets"
-  },
   "enable": {
     "message": "Enable"
   },
@@ -1742,18 +1764,12 @@
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
-  "enableNftAutoDetection": {
-    "message": "Enable NFT autodetection"
-  },
   "enableSnap": {
     "message": "Enable"
   },
   "enableToken": {
     "message": "enable $1",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "Enable token autodetection"
   },
   "enabled": {
     "message": "Enabled"
@@ -1864,6 +1880,9 @@
   },
   "estimatedFee": {
     "message": "Estimated fee"
+  },
+  "estimatedFeeTooltip": {
+    "message": "Amount paid to process the transaction on network."
   },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
@@ -1976,6 +1995,9 @@
   },
   "forgotPassword": {
     "message": "Forgot password?"
+  },
+  "form": {
+    "message": "form"
   },
   "from": {
     "message": "From"
@@ -2246,12 +2268,6 @@
   "imToken": {
     "message": "imToken"
   },
-  "immediateAccessToYourNFTs": {
-    "message": "Immediately access your NFTs"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "Immediate access to your tokens"
-  },
   "import": {
     "message": "Import",
     "description": "Button to import an account from a selected file"
@@ -2413,7 +2429,7 @@
     "message": "Interacting with"
   },
   "interactingWithTransactionDescription": {
-    "message": "This is the contract you're interacting with. Protect yourself from scammers by  verifying the details."
+    "message": "This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
   },
   "invalidAddress": {
     "message": "Invalid address"
@@ -2529,6 +2545,18 @@
   },
   "knownTokenWarning": {
     "message": "This action will edit tokens that are already listed in your wallet, which can be used to phish you. Only approve if you are certain that you mean to change what these tokens represent. Learn more about $1"
+  },
+  "l1Fee": {
+    "message": "L1 fee"
+  },
+  "l1FeeTooltip": {
+    "message": "L1 gas fee"
+  },
+  "l2Fee": {
+    "message": "L2 fee"
+  },
+  "l2FeeTooltip": {
+    "message": "L2 gas fee"
   },
   "lastConnected": {
     "message": "Last connected"
@@ -2722,6 +2750,9 @@
   "maxFee": {
     "message": "Max fee"
   },
+  "maxFeeTooltip": {
+    "message": "A maximum fee provided to pay for the transaction."
+  },
   "maxPriorityFee": {
     "message": "Max priority fee"
   },
@@ -2769,8 +2800,8 @@
   "methodData": {
     "message": "Method"
   },
-  "methodDataTransactionDescription": {
-    "message": "This is the specific action that will be taken. This data can be faked, so be sure you trust the site on the other end."
+  "methodDataTransactionDesc": {
+    "message": "Function executed based on decoded input data."
   },
   "methodNotSupported": {
     "message": "Not supported with this account."
@@ -3204,9 +3235,6 @@
   "notEnoughGas": {
     "message": "Not enough gas"
   },
-  "notRightNow": {
-    "message": "Not right now"
-  },
   "note": {
     "message": "Note"
   },
@@ -3602,15 +3630,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Explore Snaps"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Security alerts are no longer available on this network. Installing a Snap may improve your security."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Heads up!"
   },
   "operationFailed": {
     "message": "Operation Failed"
@@ -5043,6 +5062,9 @@
   "source": {
     "message": "Source"
   },
+  "speed": {
+    "message": "Speed"
+  },
   "speedUp": {
     "message": "Speed up"
   },
@@ -5976,6 +5998,9 @@
   },
   "transactionCreated": {
     "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDataFunction": {
+    "message": "Function"
   },
   "transactionDetailDappGasMoreInfo": {
     "message": "Site suggested"

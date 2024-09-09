@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import {
   NetworkConfiguration,
@@ -5,6 +6,8 @@ import {
 } from '@metamask/network-controller';
 import type { RatesControllerState } from '@metamask/assets-controllers';
 import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
+import { createSelector } from '@reduxjs/toolkit';
+import { Numeric } from '../../shared/modules/Numeric';
 import {
   MultichainProviderConfig,
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -64,6 +67,51 @@ export type MultichainNetwork = {
   chainId: CaipChainId;
   network: ProviderConfigWithImageUrlAndExplorerUrl | MultichainProviderConfig;
 };
+
+export const MultichainNetworkPropType = PropTypes.shape({
+  nickname: PropTypes.string.isRequired,
+  isEvmNetwork: PropTypes.bool.isRequired,
+  chainId: PropTypes.string,
+  network: PropTypes.oneOfType([
+    PropTypes.shape({
+      rpcUrl: PropTypes.string,
+      type: PropTypes.string.isRequired,
+      chainId: PropTypes.string.isRequired,
+      ticker: PropTypes.string.isRequired,
+      rpcPrefs: PropTypes.shape({
+        blockExplorerUrl: PropTypes.string,
+        imageUrl: PropTypes.string,
+      }),
+      nickname: PropTypes.string,
+      id: PropTypes.string,
+    }),
+    PropTypes.shape({
+      chainId: PropTypes.string.isRequired,
+      ticker: PropTypes.string.isRequired,
+      rpcPrefs: PropTypes.shape({
+        blockExplorerUrl: PropTypes.string,
+        imageUrl: PropTypes.string,
+      }),
+    }),
+  ]).isRequired,
+});
+
+export const InternalAccountPropType = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  address: PropTypes.string.isRequired,
+  metadata: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    snap: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string,
+      enabled: PropTypes.bool,
+    }),
+    keyring: PropTypes.shape({
+      type: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+  type: PropTypes.string.isRequired,
+});
 
 export function getMultichainNetworkProviders(
   _state: MultichainState,
@@ -181,6 +229,16 @@ export function getMultichainIsEvm(
   return (
     !isOnboarded || !selectedAccount || isEvmAccountType(selectedAccount.type)
   );
+}
+
+export function getMultichainIsBitcoin(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  const isEvm = getMultichainIsEvm(state, account);
+  const { symbol } = getMultichainDefaultToken(state, account);
+
+  return !isEvm && symbol === 'BTC';
 }
 
 /**
@@ -345,6 +403,15 @@ export function getMultichainSelectedAccountCachedBalance(
     ? getSelectedAccountCachedBalance(state)
     : getBtcCachedBalance(state);
 }
+
+export const getMultichainSelectedAccountCachedBalanceIsZero = createSelector(
+  [getMultichainIsEvm, getMultichainSelectedAccountCachedBalance],
+  (isEvm, balance) => {
+    const base = isEvm ? 16 : 10;
+    const numericBalance = new Numeric(balance, base);
+    return numericBalance.isZero();
+  },
+);
 
 export function getMultichainConversionRate(
   state: MultichainState,

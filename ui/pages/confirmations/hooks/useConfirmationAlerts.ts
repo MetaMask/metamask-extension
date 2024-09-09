@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import useBlockaidAlerts from './alerts/useBlockaidAlerts';
+import useAccountMismatchAlerts from './alerts/signatures/useAccountMismatchAlerts';
 import useDomainMismatchAlerts from './alerts/signatures/useDomainMismatchAlerts';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useGasEstimateFailedAlerts } from './alerts/transactions/useGasEstimateFailedAlerts';
@@ -12,9 +13,13 @@ import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
 import { useNetworkBusyAlerts } from './alerts/transactions/useNetworkBusyAlerts';
 
 function useSignatureAlerts(): Alert[] {
+  const accountMismatchAlerts = useAccountMismatchAlerts();
   const domainMismatchAlerts = useDomainMismatchAlerts();
 
-  return useMemo(() => [...domainMismatchAlerts], [domainMismatchAlerts]);
+  return useMemo(
+    () => [...accountMismatchAlerts, ...domainMismatchAlerts],
+    [accountMismatchAlerts, domainMismatchAlerts],
+  );
 }
 
 function useTransactionAlerts(): Alert[] {

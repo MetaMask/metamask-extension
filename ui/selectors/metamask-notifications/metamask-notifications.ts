@@ -84,6 +84,25 @@ export const getFeatureAnnouncementsUnreadCount = createSelector(
 );
 
 /**
+ * Selector to get the count of read feature announcement notifications.
+ *
+ * @param {AppState} state - The current state of the Redux store.
+ * @returns {number} The count of read feature announcement notifications.
+ */
+export const getFeatureAnnouncementsReadCount = createSelector(
+  [getMetamaskNotifications],
+  (notifications: Notification[]) => {
+    return notifications
+      ? notifications.filter(
+          (notification) =>
+            notification.isRead &&
+            notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+        ).length
+      : 0;
+  },
+);
+
+/**
  * Selector to get the count of unread non-feature announcement notifications.
  *
  * @param {AppState} state - The current state of the Redux store.
@@ -96,6 +115,25 @@ export const getOnChainMetamaskNotificationsUnreadCount = createSelector(
       ? notifications.filter(
           (notification) =>
             !notification.isRead &&
+            notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+        ).length
+      : 0;
+  },
+);
+
+/**
+ * Selector to get the count of read non-feature announcement notifications.
+ *
+ * @param {AppState} state - The current state of the Redux store.
+ * @returns {number} The count of read non-feature announcement notifications.
+ */
+export const getOnChainMetamaskNotificationsReadCount = createSelector(
+  [getMetamaskNotifications],
+  (notifications: Notification[]) => {
+    return notifications
+      ? notifications.filter(
+          (notification) =>
+            notification.isRead &&
             notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
         ).length
       : 0;

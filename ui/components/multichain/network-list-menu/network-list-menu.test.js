@@ -170,6 +170,24 @@ describe('NetworkListMenu', () => {
     ).toHaveLength(0);
   });
 
+  it('fires setNetworkClientIdForDomain when network item is clicked', () => {
+    const { getByText } = render();
+    fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
+    expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
+      MOCK_ORIGIN,
+      NETWORK_TYPES.MAINNET,
+    );
+  });
+
+  it('fires setNetworkClientIdForDomain when test network item is clicked', () => {
+    const { getByText } = render({ showTestNetworks: true });
+    fireEvent.click(getByText(SEPOLIA_DISPLAY_NAME));
+    expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
+      MOCK_ORIGIN,
+      NETWORK_TYPES.SEPOLIA,
+    );
+  });
+
   describe('NetworkListMenu with ENABLE_NETWORK_UI_REDESIGN', () => {
     // Set the environment variable before tests run
     beforeEach(() => {

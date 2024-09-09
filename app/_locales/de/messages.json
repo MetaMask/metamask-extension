@@ -1552,9 +1552,6 @@
     "message": "$1 aktivieren",
     "description": "$1 is a token symbol, e.g. ETH"
   },
-  "enableTokenAutoDetection": {
-    "message": "Automatische Token-Erkennung aktivieren"
-  },
   "enabled": {
     "message": "Aktiviert"
   },
@@ -2554,9 +2551,6 @@
   "methodData": {
     "message": "Methode"
   },
-  "methodDataTransactionDescription": {
-    "message": "Dies ist die konkrete Aktion, die durchgeführt wird. Diese Daten können gefälscht sein, daher sollten Sie der Website auf der anderen Seite vertrauen."
-  },
   "methodNotSupported": {
     "message": "Bei diesem Konto nicht unterstützt."
   },
@@ -3312,15 +3306,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Snaps entdecken"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Sicherheitsbenachrichtigungen sind in diesem Netzwerk nicht mehr verfügbar. Die Installation eines Snaps kann Ihre Sicherheit erhöhen."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Vorsicht!"
   },
   "operationFailed": {
     "message": "Vorgang fehlgeschlagen"

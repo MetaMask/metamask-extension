@@ -78,7 +78,6 @@ import { useMMICustodySignMessage } from '../../../../hooks/useMMICustodySignMes
 ///: END:ONLY_INCLUDE_IF
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
-import { BlockaidUnavailableBannerAlert } from '../blockaid-unavailable-banner-alert/blockaid-unavailable-banner-alert';
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
 
@@ -212,7 +211,6 @@ const SignatureRequest = ({ txData, warnings }) => {
             marginRight={4}
             marginBottom={4}
           />
-          <BlockaidUnavailableBannerAlert />
           {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
             txData?.securityProviderResponse?.flagAsDangerous !==
               SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS) ||

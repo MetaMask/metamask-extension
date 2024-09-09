@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.2.0]
+
 ## [12.1.3]
 ### Fixed
 - Fix `eth_signTypedData` error when `verifyingContract` is not provided ([#26914](https://github.com/MetaMask/metamask-extension/pull/26914))
@@ -5014,7 +5016,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.1.3...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.2.0...HEAD
+[12.2.0]: https://github.com/MetaMask/metamask-extension/compare/v12.1.3...v12.2.0
 [12.1.3]: https://github.com/MetaMask/metamask-extension/compare/v12.1.2...v12.1.3
 [12.1.2]: https://github.com/MetaMask/metamask-extension/compare/v12.1.1...v12.1.2
 [12.1.1]: https://github.com/MetaMask/metamask-extension/compare/v12.1.0...v12.1.1

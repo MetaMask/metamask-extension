@@ -16,7 +16,6 @@ import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { getCurrentChainId } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { SecurityAlertResponse } from '../../types/confirm';
 import {
   REDESIGN_TRANSACTION_TYPES,
   SIGNATURE_TRANSACTION_TYPES,
@@ -25,6 +24,7 @@ import {
   currentConfirmationSelector,
   currentSignatureRequestSecurityResponseSelector,
 } from '../../selectors';
+import { SecurityAlertResponse } from '../../types/confirm';
 import { normalizeProviderAlert } from './utils';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires

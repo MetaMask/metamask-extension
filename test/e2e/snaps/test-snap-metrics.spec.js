@@ -589,6 +589,12 @@ describe('Test Snap Metrics', function () {
 
         await driver.waitForSelector({ text: 'Confirm' });
 
+        // Wait for the permissions content to be rendered
+        await driver.waitForSelector({
+          text: 'Bitcoin Legacy',
+          tag: 'span',
+        });
+
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         await driver.clickElement({
@@ -733,6 +739,12 @@ describe('Test Snap Metrics', function () {
 
         await driver.waitForSelector({ text: 'Confirm' });
 
+        // Wait for the permissions content to be rendered
+        await driver.waitForSelector({
+          text: 'Bitcoin Legacy',
+          tag: 'span',
+        });
+
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         await driver.clickElement({
@@ -862,6 +874,12 @@ describe('Test Snap Metrics', function () {
         });
 
         await driver.waitForSelector({ text: 'Confirm' });
+
+        // Wait for the permissions content to be rendered
+        await driver.waitForSelector({
+          text: 'Bitcoin Legacy',
+          tag: 'span',
+        });
 
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 

@@ -85,6 +85,7 @@ type TemporaryBackgroundState = {
     };
     selectedAccount: string;
   };
+  keyrings: { type: string; accounts: string[] }[];
 };
 
 type RootReducerReturnType = ReturnType<typeof rootReducer>;
@@ -94,6 +95,16 @@ export type CombinedBackgroundAndReduxState = RootReducerReturnType & {
     origin: string;
   };
   metamask: RootReducerReturnType['metamask'] & TemporaryBackgroundState;
+  appState: RootReducerReturnType['appState'];
+  send: RootReducerReturnType['send'];
+  DNS: RootReducerReturnType['DNS'];
+  history: RootReducerReturnType['history'];
+  confirm: RootReducerReturnType['confirm'];
+  confirmAlerts: RootReducerReturnType['confirmAlerts'];
+  confirmTransaction: RootReducerReturnType['confirmTransaction'];
+  swaps: RootReducerReturnType['swaps'];
+  gas: RootReducerReturnType['gas'];
+  localeMessages: RootReducerReturnType['localeMessages'];
 };
 
 // TODO: Replace `any` with type

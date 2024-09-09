@@ -42,8 +42,9 @@ import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import {
   BalancesController as MultichainBalancesController,
-  BTC_AVG_BLOCK_TIME,
+  BALANCES_UPDATE_TIME as MULTICHAIN_BALANCES_UPDATE_TIME,
 } from './lib/accounts/BalancesController';
+import { BalancesTracker as MultichainBalancesTracker } from './lib/accounts/BalancesTracker';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
 
@@ -663,59 +664,46 @@ describe('MetaMaskController', () => {
       it('should clear previous identities after vault restoration', async () => {
         jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
 
-        let startTime = Date.now();
         await metamaskController.createNewVaultAndRestore(
           'foobar1337',
           TEST_SEED,
         );
-        let endTime = Date.now();
 
-        const firstVaultIdentities = cloneDeep(
-          metamaskController.getState().identities,
+        const firstVaultAccounts = cloneDeep(
+          metamaskController.accountsController.listAccounts(),
         );
-        expect(
-          firstVaultIdentities[TEST_ADDRESS].lastSelected >= startTime &&
-            firstVaultIdentities[TEST_ADDRESS].lastSelected <= endTime,
-        ).toStrictEqual(true);
-        delete firstVaultIdentities[TEST_ADDRESS].lastSelected;
-        expect(firstVaultIdentities).toStrictEqual({
-          [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
-        });
+        expect(firstVaultAccounts).toHaveLength(1);
+        expect(firstVaultAccounts[0].address).toBe(TEST_ADDRESS);
 
-        await metamaskController.preferencesController.setAccountLabel(
-          TEST_ADDRESS,
+        const selectedAccount =
+          metamaskController.accountsController.getSelectedAccount();
+        metamaskController.accountsController.setAccountName(
+          selectedAccount.id,
           'Account Foo',
         );
 
-        const labelledFirstVaultIdentities = cloneDeep(
-          metamaskController.getState().identities,
+        const labelledFirstVaultAccounts = cloneDeep(
+          metamaskController.accountsController.listAccounts(),
         );
-        delete labelledFirstVaultIdentities[TEST_ADDRESS].lastSelected;
-        expect(labelledFirstVaultIdentities).toStrictEqual({
-          [TEST_ADDRESS]: { address: TEST_ADDRESS, name: 'Account Foo' },
-        });
 
-        startTime = Date.now();
+        expect(labelledFirstVaultAccounts[0].address).toBe(TEST_ADDRESS);
+        expect(labelledFirstVaultAccounts[0].metadata.name).toBe('Account Foo');
+
         await metamaskController.createNewVaultAndRestore(
           'foobar1337',
           TEST_SEED_ALT,
         );
-        endTime = Date.now();
 
-        const secondVaultIdentities = cloneDeep(
-          metamaskController.getState().identities,
+        const secondVaultAccounts = cloneDeep(
+          metamaskController.accountsController.listAccounts(),
         );
+
+        expect(secondVaultAccounts).toHaveLength(1);
         expect(
-          secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected >= startTime &&
-            secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected <= endTime,
-        ).toStrictEqual(true);
-        delete secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected;
-        expect(secondVaultIdentities).toStrictEqual({
-          [TEST_ADDRESS_ALT]: {
-            address: TEST_ADDRESS_ALT,
-            name: DEFAULT_LABEL,
-          },
-        });
+          metamaskController.accountsController.getSelectedAccount().address,
+        ).toBe(TEST_ADDRESS_ALT);
+        expect(secondVaultAccounts[0].address).toBe(TEST_ADDRESS_ALT);
+        expect(secondVaultAccounts[0].metadata.name).toBe(DEFAULT_LABEL);
       });
 
       it('should restore any consecutive accounts with balances without extra zero balance accounts', async () => {
@@ -749,29 +737,29 @@ describe('MetaMaskController', () => {
             allDetectedTokens: { '0x1': { [TEST_ADDRESS_2]: [{}] } },
           });
 
-        const startTime = Date.now();
         await metamaskController.createNewVaultAndRestore(
           'foobar1337',
           TEST_SEED,
         );
 
         // Expect first account to be selected
-        const identities = cloneDeep(metamaskController.getState().identities);
-        expect(
-          identities[TEST_ADDRESS].lastSelected >= startTime &&
-            identities[TEST_ADDRESS].lastSelected <= Date.now(),
-        ).toStrictEqual(true);
+        const accounts = cloneDeep(
+          metamaskController.accountsController.listAccounts(),
+        );
 
-        // Expect first 2 accounts to be restored
-        delete identities[TEST_ADDRESS].lastSelected;
-        expect(identities).toStrictEqual({
-          [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
-          [TEST_ADDRESS_2]: {
-            address: TEST_ADDRESS_2,
-            name: 'Account 2',
-            lastSelected: expect.any(Number),
-          },
-        });
+        const selectedAccount =
+          metamaskController.accountsController.getSelectedAccount();
+
+        expect(selectedAccount.address).toBe(TEST_ADDRESS);
+        expect(accounts).toHaveLength(2);
+        expect(accounts[0].address).toBe(TEST_ADDRESS);
+        expect(accounts[0].metadata.name).toBe(DEFAULT_LABEL);
+        expect(accounts[1].address).toBe(TEST_ADDRESS_2);
+        expect(accounts[1].metadata.name).toBe('Account 2');
+        // TODO: Handle last selected in the update of the next accounts controller.
+        // expect(accounts[1].metadata.lastSelected).toBeGreaterThan(
+        //   accounts[0].metadata.lastSelected,
+        // );
       });
     });
 
@@ -1876,14 +1864,12 @@ describe('MetaMaskController', () => {
           symbol: 'FOO',
         };
 
-        metamaskController.tokensController.update((state) => {
-          state.tokens = [
-            {
-              address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-              ...tokenData,
-            },
-          ];
-        });
+        await metamaskController.tokensController.addTokens([
+          {
+            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+            ...tokenData,
+          },
+        ]);
 
         metamaskController.provider = provider;
         const tokenDetails =
@@ -2535,12 +2521,31 @@ describe('MetaMaskController', () => {
         type: BtcAccountType.P2wpkh,
         methods: [BtcMethod.SendMany],
         address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+        // We need to have a "Snap account" account here, since the MultichainBalancesController will
+        // filter it out otherwise!
+        metadata: {
+          name: 'Bitcoin Account',
+          importTime: Date.now(),
+          keyring: {
+            type: KeyringType.snap,
+          },
+          snap: {
+            id: 'npm:@metamask/bitcoin-wallet-snap',
+          },
+        },
       };
       let localMetamaskController;
+      let spyBalancesTrackerUpdateBalance;
 
       beforeEach(() => {
         jest.useFakeTimers();
         jest.spyOn(MultichainBalancesController.prototype, 'updateBalances');
+        jest
+          .spyOn(MultichainBalancesController.prototype, 'updateBalance')
+          .mockResolvedValue();
+        spyBalancesTrackerUpdateBalance = jest
+          .spyOn(MultichainBalancesTracker.prototype, 'updateBalance')
+          .mockResolvedValue();
         localMetamaskController = new MetaMaskController({
           showUserConfirmation: noop,
           encryptor: mockEncryptor,
@@ -2579,11 +2584,30 @@ describe('MetaMaskController', () => {
       });
 
       it('calls updateBalances after the interval has passed', async () => {
-        jest.advanceTimersByTime(BTC_AVG_BLOCK_TIME);
-        // 2 calls because 1 is during startup
+        // 1st call is during startup:
+        // updatesBalances is going to call updateBalance for the only non-EVM
+        // account that we have
         expect(
           localMetamaskController.multichainBalancesController.updateBalances,
-        ).toHaveBeenCalledTimes(2);
+        ).toHaveBeenCalledTimes(1);
+        expect(spyBalancesTrackerUpdateBalance).toHaveBeenCalledTimes(1);
+        expect(spyBalancesTrackerUpdateBalance).toHaveBeenCalledWith(
+          mockNonEvmAccount.id,
+        );
+
+        // Wait for "block time", so balances will have to be refreshed
+        jest.advanceTimersByTime(MULTICHAIN_BALANCES_UPDATE_TIME);
+
+        // Check that we tried to fetch the balances more than once
+        // NOTE: For now, this method might be called a lot more than just twice, but this
+        // method has some internal logic to prevent fetching the balance too often if we
+        // consider the balance to be "up-to-date"
+        expect(
+          spyBalancesTrackerUpdateBalance.mock.calls.length,
+        ).toBeGreaterThan(1);
+        expect(spyBalancesTrackerUpdateBalance).toHaveBeenLastCalledWith(
+          mockNonEvmAccount.id,
+        );
       });
     });
   });

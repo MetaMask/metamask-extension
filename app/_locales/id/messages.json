@@ -1552,9 +1552,6 @@
     "message": "aktifkan $1",
     "description": "$1 is a token symbol, e.g. ETH"
   },
-  "enableTokenAutoDetection": {
-    "message": "Aktifkan autodeteksi token"
-  },
   "enabled": {
     "message": "Diaktifkan"
   },
@@ -2554,9 +2551,6 @@
   "methodData": {
     "message": "Metode"
   },
-  "methodDataTransactionDescription": {
-    "message": "Ini merupakan tindakan khusus yang akan diambil. Data ini dapat dipalsukan, jadi pastikan Anda memercayai situs tersebut."
-  },
   "methodNotSupported": {
     "message": "Akun ini tidak mendukung."
   },
@@ -3312,15 +3306,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Jelajahi Snap"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Peringatan keamanan tidak lagi tersedia di jaringan ini. Menginstal Snap dapat meningkatkan keamanan Anda."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Perhatian!"
   },
   "operationFailed": {
     "message": "Pengoperasian Gagal"
