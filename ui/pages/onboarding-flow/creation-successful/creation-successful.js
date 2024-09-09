@@ -25,6 +25,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCreateSession } from '../../../hooks/metamask-notifications/useCreateSession';
 import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
+import { selectIsSignedIn } from '../../../selectors/metamask-notifications/authentication';
 
 export default function CreationSuccessful() {
   const history = useHistory();
@@ -35,6 +36,8 @@ export default function CreationSuccessful() {
   const { createSession } = useCreateSession();
 
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+
+  const isSignedIn = useSelector(selectIsSignedIn);
 
   return (
     <div className="creation-successful" data-testid="creation-successful">
@@ -115,6 +118,7 @@ export default function CreationSuccessful() {
               event: MetaMetricsEventName.OnboardingWalletCreationComplete,
               properties: {
                 method: firstTimeFlowType,
+                is_signed_in: isSignedIn,
                 is_profile_syncing_enabled: isProfileSyncingEnabled,
               },
             });
