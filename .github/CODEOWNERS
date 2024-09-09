@@ -9,7 +9,7 @@
 
 *                                    @MetaMask/extension-devs
 development/                         @MetaMask/extension-devs @kumavis
-lavamoat/                            @MetaMask/extension-devs @MetaMask/supply-chain @MetaMask/snaps-devs
+lavamoat/                            @MetaMask/extension-devs @MetaMask/supply-chain
 
 # The offscreen.ts script file that is included in the offscreen document html
 # file is responsible, at present, for loading the snaps execution environment
@@ -93,3 +93,24 @@ app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 shared/constants/permissions.ts      @MetaMask/snaps-devs
 ui/helpers/utils/permission.js       @MetaMask/snaps-devs
 ui/hooks/useTransactionInsights.js   @MetaMask/snaps-devs
+
+# Wallet UX
+ui/components/multichain              @MetaMask/wallet-ux
+ui/components/app/whats-new-popup     @MetaMask/wallet-ux
+ui/css                                @MetaMask/wallet-ux
+ui/pages/home                         @MetaMask/wallet-ux
+ui/pages/onboarding-flow              @MetaMask/wallet-ux
+
+# Assets
+ui/components/app/add-network                         @MetaMask/metamask-assets
+ui/components/app/auto-detect-nft                     @MetaMask/metamask-assets
+ui/components/app/auto-detect-token                   @MetaMask/metamask-assets
+ui/components/app/import-token                        @MetaMask/metamask-assets
+ui/components/app/nft-default-image                   @MetaMask/metamask-assets
+ui/components/app/nft-details                         @MetaMask/metamask-assets
+ui/components/app/nft-options                         @MetaMask/metamask-assets
+ui/components/app/nfts-detection-notice-import-nfts   @MetaMask/metamask-assets
+ui/components/app/nfts-items                          @MetaMask/metamask-assets
+ui/components/app/nfts-tab                            @MetaMask/metamask-assets
+ui/components/ui/deprecated-networks                  @MetaMask/metamask-assets
+ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets
