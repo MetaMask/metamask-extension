@@ -23,9 +23,7 @@ import { SIWESignInfo } from './siwe-sign';
 
 const PersonalSignInfo: React.FC = () => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext() as {
-    currentConfirmation: SignatureRequestType;
-  };
+  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const useTransactionSimulations = useSelector(
     selectUseTransactionSimulations,
   );
