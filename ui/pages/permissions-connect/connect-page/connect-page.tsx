@@ -36,6 +36,7 @@ export const ConnectPage = ({
   selectAccounts,
   selectedAccountAddresses,
   activeTabOrigin,
+  permissionsRequestId,
 }: {
   request: any;
   permissionsRequestId: string;
@@ -128,7 +129,7 @@ export const ConnectPage = ({
             variant={ButtonVariant.Secondary}
             size={ButtonSize.Lg}
             data-testid="cancel-btn"
-            onClick={rejectPermissionsRequest}
+            onClick={() => rejectPermissionsRequest(permissionsRequestId)}
           >
             {t('cancel')}
           </Button>

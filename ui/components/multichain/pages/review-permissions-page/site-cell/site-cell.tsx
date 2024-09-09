@@ -17,6 +17,7 @@ import {
   AvatarIcon,
   AvatarIconSize,
   Box,
+  ButtonLink,
   Icon,
   IconName,
   IconSize,
@@ -120,22 +121,24 @@ export const SiteCell: React.FC<SiteCellProps> = ({
             />
           </Box>
         </Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.flexEnd}
-          alignItems={AlignItems.center}
-          style={{ flex: 1, alignSelf: 'center' }}
-          gap={2}
-          onClick={() => setShowEditAccountsModal(true)}
-        >
-          <Icon
+        {currentTabHasNoAccounts ? <ButtonLink onClick={() => setShowEditAccountsModal(true)}>{t('edit')}</ButtonLink> :
+          <Box
             display={Display.Flex}
-            name={IconName.MoreVertical}
-            color={IconColor.iconDefault}
-            size={IconSize.Sm}
-            backgroundColor={BackgroundColor.backgroundDefault}
-          />
-        </Box>
+            justifyContent={JustifyContent.flexEnd}
+            alignItems={AlignItems.center}
+            style={{ flex: 1, alignSelf: 'center' }}
+            gap={2}
+            onClick={() => setShowEditAccountsModal(true)}
+          >
+            <Icon
+              display={Display.Flex}
+              name={IconName.MoreVertical}
+              color={IconColor.iconDefault}
+              size={IconSize.Sm}
+              backgroundColor={BackgroundColor.backgroundDefault}
+            />
+          </Box>
+        }
       </Box>
 
       <Box
@@ -192,22 +195,23 @@ export const SiteCell: React.FC<SiteCellProps> = ({
             />
           </Box>
         </Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.flexEnd}
-          alignItems={AlignItems.center}
-          style={{ flex: 1, alignSelf: 'center' }}
-          gap={2}
-          onClick={() => setShowEditNetworksModal(true)}
-        >
-          <Icon
+        {currentTabHasNoAccounts ? <ButtonLink onClick={() => setShowEditNetworksModal(true)}>{t('edit')}</ButtonLink> :
+          <Box
             display={Display.Flex}
-            name={IconName.MoreVertical}
-            color={IconColor.iconDefault}
-            size={IconSize.Sm}
-            backgroundColor={BackgroundColor.backgroundDefault}
-          />
-        </Box>
+            justifyContent={JustifyContent.flexEnd}
+            alignItems={AlignItems.center}
+            style={{ flex: 1, alignSelf: 'center' }}
+            gap={2}
+            onClick={() => setShowEditNetworksModal(true)}
+          >
+            <Icon
+              display={Display.Flex}
+              name={IconName.MoreVertical}
+              color={IconColor.iconDefault}
+              size={IconSize.Sm}
+              backgroundColor={BackgroundColor.backgroundDefault}
+            />
+          </Box>}
       </Box>
 
       {showEditNetworksModal && (
