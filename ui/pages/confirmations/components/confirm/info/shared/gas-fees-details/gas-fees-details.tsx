@@ -26,9 +26,8 @@ export const GasFeesDetails = ({
 }) => {
   const t = useI18nContext();
 
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const { maxFeePerGas, maxPriorityFeePerGas } =
     useEIP1559TxFees(transactionMeta);
