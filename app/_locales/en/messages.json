@@ -2994,10 +2994,12 @@
     "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningDescriptionExpectedTokenFallback": {
-    "message": "something else"
+    "message": "something else",
+    "description": "graceful fallback for when token symbol isn't found"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "Incorrect Network Currency Symbol Entered"
+    "message": "Incorrect Network Currency Symbol Entered",
+    "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
     "message": "Need help? Contact $1",
