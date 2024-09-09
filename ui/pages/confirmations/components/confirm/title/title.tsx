@@ -157,7 +157,13 @@ const ConfirmTitle: React.FC = memo(() => {
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
   let customSpendingCap = '';
-  if (isTransactionMeta(currentConfirmation)) {
+  if (
+    isTransactionMeta(currentConfirmation) &&
+    [
+      TransactionType.tokenMethodApprove,
+      TransactionType.tokenMethodIncreaseAllowance,
+    ].includes(currentConfirmation.type as TransactionType)
+  ) {
     const { decimals } = useAssetDetails(
       currentConfirmation.txParams.to,
       currentConfirmation.txParams.from,
