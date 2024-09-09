@@ -150,8 +150,6 @@ const MISMATCHED_NETWORK_RPC_CHAIN_ID = {
   },
 };
 
-const multichainFlag = process.env.CHAIN_PERMISSIONS;
-
 const ERROR_CONNECTING_TO_RPC = {
   id: 'ERROR_CONNECTING_TO_RPC',
   severity: Severity.Danger,
@@ -252,10 +250,10 @@ function getValues(pendingApproval, t, actions, history, data) {
           },
         ],
       },
-      multichainFlag && {
-        element: 'BannerAlert',
+      {
+        element: process.env.CHAIN_PERMISSIONS && 'BannerAlert',
         key: 'only-add-networks-you-trust',
-        children: [
+        children: process.env.CHAIN_PERMISSIONS && [
           {
             element: 'Typography',
             key: 'description',
