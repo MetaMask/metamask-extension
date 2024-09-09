@@ -1,5 +1,5 @@
 /* eslint-disable no-negated-condition */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import PropTypes from 'prop-types';
@@ -36,6 +36,7 @@ const ConfirmPageContainerSummary = (props) => {
   const ipfsGateway = useSelector(getIpfsGateway);
 
   const txData = useSelector(txDataSelector);
+  const [nftImageURL, setAssetImageUrl] = useState('');
   const { txParams = {} } = txData;
   const { to: txParamsToAddress } = txParams;
 
@@ -65,15 +66,22 @@ const ConfirmPageContainerSummary = (props) => {
   const { toName, isTrusted } = useAddressDetails(contractAddress);
   const checksummedAddress = toChecksumHexAddress(contractAddress);
 
-  const renderImage = () => {
-    const imagePath = getAssetImageURL(image, ipfsGateway);
+  useEffect(() => {
+    const getAssetImageUrl = async () => {
+      const assetImageUrl = await getAssetImageURL(image, ipfsGateway);
+      setAssetImageUrl(assetImageUrl);
+    };
 
+    getAssetImageUrl();
+  }, []);
+
+  const renderImage = () => {
     if (image) {
       return (
         <img
           className="confirm-page-container-summary__icon"
           width={36}
-          src={imagePath}
+          src={nftImageURL}
         />
       );
     } else if (contractAddress) {

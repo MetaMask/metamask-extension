@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -105,12 +105,12 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const trackEvent = useContext(MetaMetricsContext);
   const currency = useSelector(getCurrentCurrency);
   const selectedNativeConversionRate = useSelector(getConversionRate);
+  const [nftImageURL, setAssetImageUrl] = useState<string>('');
 
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
   const nftImageAlt = getNftImageAlt(nft);
   const nftSrcUrl = imageOriginal ?? image;
-  const nftImageURL = getAssetImageURL(imageOriginal ?? image, ipfsGateway);
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const isImageHosted = image?.startsWith('https:');
 
@@ -165,6 +165,19 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   };
 
   const { chainId } = currentChain;
+
+  useEffect(() => {
+    const getAssetImageUrl = async () => {
+      const assetImageUrl = await getAssetImageURL(
+        imageOriginal ?? image,
+        ipfsGateway,
+      );
+      setAssetImageUrl(assetImageUrl);
+    };
+
+    getAssetImageUrl();
+  }, []);
+
   useEffect(() => {
     trackEvent({
       event: MetaMetricsEventName.NftDetailsOpened,

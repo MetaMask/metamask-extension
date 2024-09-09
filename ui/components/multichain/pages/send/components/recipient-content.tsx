@@ -1,9 +1,11 @@
 import React, {
   useCallback,
+  useEffect,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   useMemo,
   ///: END:ONLY_INCLUDE_IF
   useRef,
+  useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -103,6 +105,7 @@ export const SendPageRecipientContent = ({
   ///: END:ONLY_INCLUDE_IF
 
   const bestQuote: Quote = useSelector(getBestQuote);
+  const [nftImageURL, setAssetImageUrl] = useState<string>('');
 
   const isLoadingInitialQuotes = !bestQuote && isSwapQuoteLoading;
 
@@ -129,6 +132,18 @@ export const SendPageRecipientContent = ({
 
   // Gas data
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getAssetImageUrl = async () => {
+      const assetImageUrl = await getAssetImageURL(
+        sendAsset.details?.image,
+        ipfsGateway,
+      );
+      setAssetImageUrl(assetImageUrl);
+    };
+
+    getAssetImageUrl();
+  }, []);
 
   return (
     <Box>
@@ -169,7 +184,7 @@ export const SendPageRecipientContent = ({
                   ? nativeCurrencyImageUrl
                   : tokenList &&
                     sendAsset.details &&
-                    (getAssetImageURL(sendAsset.details?.image, ipfsGateway) ||
+                    (nftImageURL ||
                       tokenList[sendAsset.details.address?.toLowerCase()]
                         ?.iconUrl),
               symbol: sendAsset?.details?.symbol || nativeCurrencySymbol,

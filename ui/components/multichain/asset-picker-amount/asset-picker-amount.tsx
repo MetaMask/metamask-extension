@@ -109,6 +109,7 @@ export const AssetPickerAmount = ({
 
   const [isFocused, setIsFocused] = useState(false);
   const [isNFTInputChanged, setIsTokenInputChanged] = useState(false);
+  const [nftImageURL, setAssetImageUrl] = useState<string>('');
 
   const handleChange = useCallback(
     (newAmountRaw, newAmountFormatted) => {
@@ -140,6 +141,18 @@ export const AssetPickerAmount = ({
     }
   }, [selectedAccount]);
 
+  useEffect(() => {
+    const getAssetImageUrl = async () => {
+      const assetImageUrl = await getAssetImageURL(
+        asset?.details?.image,
+        ipfsGateway,
+      );
+      setAssetImageUrl(assetImageUrl);
+    };
+
+    getAssetImageUrl();
+  }, []);
+
   let borderColor = BorderColor.borderMuted;
 
   if (isDisabled) {
@@ -168,7 +181,7 @@ export const AssetPickerAmount = ({
     standardizedAsset = {
       type: asset.type,
       image:
-        getAssetImageURL(asset.details.image, ipfsGateway) ||
+        nftImageURL ||
         (tokenList &&
           asset.details?.address &&
           tokenList[asset.details.address.toLowerCase()]?.iconUrl),

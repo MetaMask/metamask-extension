@@ -37,15 +37,27 @@ export default function NftFullImage() {
 
   const ipfsGateway = useSelector(getIpfsGateway);
   const currentChain = useSelector(getCurrentNetwork);
+  const [nftImageURL, setAssetImageUrl] = useState<string>('');
 
   const nftImageAlt = getNftImageAlt(nft);
   const nftSrcUrl = imageOriginal ?? image;
-  const nftImageURL = getAssetImageURL(imageOriginal ?? image, ipfsGateway);
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const isImageHosted = image?.startsWith('https:');
   const history = useHistory();
 
   const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const getAssetImageUrl = async () => {
+      const assetImageUrl = await getAssetImageURL(
+        imageOriginal ?? image,
+        ipfsGateway,
+      );
+      setAssetImageUrl(assetImageUrl);
+    };
+
+    getAssetImageUrl();
+  }, []);
 
   useEffect(() => {
     setVisible(true);
