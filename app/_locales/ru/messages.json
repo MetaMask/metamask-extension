@@ -513,12 +513,6 @@
   "allow": {
     "message": "Разрешить"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "Разрешите MetaMask обнаруживать и отображать ваши NFT-токены с помощью автоопределения. Вы сможете:"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "Разрешите MetaMask обнаруживать и отображать ваши токены с помощью автоопределения. Вы сможете:"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "Это позволит MMI подключиться к $1 для импорта ваших счетов."
   },
@@ -1606,12 +1600,6 @@
   "displayNftMediaDescription": {
     "message": "Отображение носителя и данных NFT раскрывает ваш IP-адрес для OpenSea или других третьих сторон. Это может позволить злоумышленникам связать ваш IP-адрес с вашим адресом Ethereum. Автоопределение NFT зависит от этого параметра и будет недоступно, если он отключен."
   },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "Перейдите прямо к использованию своих NFT-токенов"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "Перейдите прямо к использованию своих токенов"
-  },
   "doNotShare": {
     "message": "Не сообщайте ее никому"
   },
@@ -1743,9 +1731,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Изменить плату за газ за ускорение"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "Легко перемещайтесь по своим цифровым активам"
-  },
   "enable": {
     "message": "Включить"
   },
@@ -1755,21 +1740,12 @@
   "enableFromSettings": {
     "message": " Включите его в Настройках."
   },
-  "enableNftAutoDetection": {
-    "message": "Включить автоопределение NFT"
-  },
   "enableSnap": {
     "message": "Включить"
   },
   "enableToken": {
     "message": "активирует для $1",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "Включите автоопределение токена"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "Для пользователей, у которых включен переключатель базового функционала, он будет автоматически включен в расширении Metamask v12.3.0"
   },
   "enabled": {
     "message": "Включено"
@@ -2282,12 +2258,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "Немедленный доступ к вашим NFT-токенам"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "Немедленный доступ к вашим токенам"
   },
   "import": {
     "message": "Импорт",
@@ -3253,9 +3223,6 @@
   "notEnoughGas": {
     "message": "Недостаточно газа"
   },
-  "notRightNow": {
-    "message": "Не сейчас"
-  },
   "note": {
     "message": "Примечание"
   },
@@ -3525,9 +3492,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "Когда мы собираем показатели, они всегда будут..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "Нет, спасибо"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Мы сообщим вам, если решим использовать эти данные для других целей. Вы можете ознакомиться с нашей $1 для получения дополнительной информации. Помните, что вы можете перейти в настройки и отказаться в любой момент.",
