@@ -5,6 +5,7 @@ exports[`AssetPicker matches snapshot 1`] = `
   <button
     class="mm-box mm-text mm-button-base mm-button-base--size-md asset-picker mm-button-primary mm-text--body-md-medium mm-box--padding-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-transparent mm-box--rounded-pill"
     data-testid="asset-picker-button"
+    data-theme="light"
   >
     <span
       class="mm-box mm-text mm-text--inherit mm-box--color-primary-inverse"
@@ -33,7 +34,11 @@ exports[`AssetPicker matches snapshot 1`] = `
               <div
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
               >
-                ?
+                <img
+                  alt="Ethereum Mainnet logo"
+                  class="mm-avatar-network__network-image"
+                  src="./images/eth_logo.svg"
+                />
               </div>
             </div>
           </div>
@@ -69,6 +74,7 @@ exports[`AssetPicker render if disabled 1`] = `
   <button
     class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--disabled asset-picker mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-transparent mm-box--rounded-pill"
     data-testid="asset-picker-button"
+    data-theme="light"
     disabled=""
     title="[swapTokenNotAvailable]"
   >

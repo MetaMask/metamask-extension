@@ -8,9 +8,6 @@ const customData = {
   ...testData,
   metamask: {
     ...testData.metamask,
-    providerConfig: {
-      type: 'test',
-    },
     isUnlocked: true,
     interactiveReplacementToken: {
       oldRefreshToken:

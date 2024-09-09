@@ -1,4 +1,4 @@
-import { NetworkState, ProviderConfig } from '@metamask/network-controller';
+import { NetworkState } from '@metamask/network-controller';
 import { uniqBy } from 'lodash';
 import { getAllNetworks, getIsBridgeEnabled } from '../../selectors';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
@@ -22,10 +22,8 @@ type BridgeAppState = {
   bridge: BridgeState;
 };
 
-export const getFromChain = (state: BridgeAppState): ProviderConfig =>
-  getProviderConfig(state);
-export const getToChain = (state: BridgeAppState): ProviderConfig | null =>
-  state.bridge.toChain;
+export const getFromChain = (state: BridgeAppState) => getProviderConfig(state);
+export const getToChain = (state: BridgeAppState) => state.bridge.toChain;
 
 export const getAllBridgeableNetworks = createDeepEqualSelector(
   (state: BridgeAppState) =>
@@ -33,7 +31,7 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
     getAllNetworks({
       metamask: { networkConfigurations: state.metamask.networkConfigurations },
     }),
-  (allNetworks): (ProviderConfig | RPCDefinition)[] => {
+  (allNetworks): RPCDefinition[] => {
     return uniqBy([...allNetworks, ...FEATURED_RPCS], 'chainId').filter(
       ({ chainId }) => ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
     );
@@ -42,10 +40,7 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
 export const getFromChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
-  (
-    allBridgeableNetworks,
-    bridgeFeatureFlags,
-  ): (ProviderConfig | RPCDefinition)[] =>
+  (allBridgeableNetworks, bridgeFeatureFlags): RPCDefinition[] =>
     allBridgeableNetworks.filter(({ chainId }) =>
       bridgeFeatureFlags[BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST].includes(
         chainId,
@@ -55,10 +50,7 @@ export const getFromChains = createDeepEqualSelector(
 export const getToChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
-  (
-    allBridgeableNetworks,
-    bridgeFeatureFlags,
-  ): (ProviderConfig | RPCDefinition)[] =>
+  (allBridgeableNetworks, bridgeFeatureFlags): RPCDefinition[] =>
     allBridgeableNetworks.filter(({ chainId }) =>
       bridgeFeatureFlags[BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST].includes(
         chainId,

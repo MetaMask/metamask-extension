@@ -950,7 +950,7 @@ export function getShowExtensionInFullSizeView(state) {
 }
 
 export function getTestNetworkBackgroundColor(state) {
-  const currentNetwork = state.metamask.providerConfig.ticker;
+  const currentNetwork = getProviderConfig(state).ticker;
   switch (true) {
     case currentNetwork?.includes(GOERLI_DISPLAY_NAME):
       return BackgroundColor.goerli;
@@ -1749,6 +1749,13 @@ export function getUnreadNotifications(state) {
 
   return unreadNotificationCount;
 }
+
+export const getReadNotificationsCount = createSelector(
+  getNotifications,
+  (notifications) =>
+    notifications.filter((notification) => notification.readDate !== null)
+      .length,
+);
 
 export const getUnreadNotificationsCount = createSelector(
   getUnreadNotifications,

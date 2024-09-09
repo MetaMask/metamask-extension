@@ -41,6 +41,10 @@ export type NameProps = {
 };
 
 function formatValue(value: string, type: NameType): string {
+  if (!value.length) {
+    return value;
+  }
+
   switch (type) {
     case NameType.ETHEREUM_ADDRESS:
       return shortenAddress(toChecksumAddress(value));
