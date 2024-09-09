@@ -20,10 +20,14 @@ import {
   getNonTestNetworks,
   getOrderedConnectedAccountsForConnectedDapp,
   getPermissionSubjects,
+  getPermittedAccountsByOrigin,
   getPermittedChainsForSelectedTab,
   getTestNetworks,
 } from '../../../../selectors';
-import { removePermissionsFor } from '../../../../store/actions';
+import {
+  removePermissionsFor,
+  requestAccountsPermissionWithId,
+} from '../../../../store/actions';
 import {
   AvatarFavicon,
   AvatarFaviconSize,
@@ -31,6 +35,8 @@ import {
   Button,
   ButtonIcon,
   ButtonIconSize,
+  ButtonPrimary,
+  ButtonPrimarySize,
   ButtonSize,
   ButtonVariant,
   Icon,
@@ -43,6 +49,7 @@ import { NoConnectionContent } from '../connections/components/no-connection';
 import { Content, Footer, Header, Page } from '../page';
 import { SubjectsType } from '../connections/components/connections.types';
 import { SiteCell } from '.';
+import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -53,6 +60,12 @@ export const ReviewPermissions = () => {
   const [showAccountToast, setShowAccountToast] = useState(false);
   const [showNetworkToast, setShowNetworkToast] = useState(false);
   const activeTabOrigin: string = securedOrigin;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { openMetaMaskTabs } = useSelector((state: any) => state.appState);
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { id } = useSelector((state: any) => state.activeTab);
   const subjectMetadata: { [key: string]: any } = useSelector(
     getConnectedSitesList,
   );
@@ -60,6 +73,10 @@ export const ReviewPermissions = () => {
   const connectedNetworks = useSelector((state) =>
     getPermittedChainsForSelectedTab(state, activeTabOrigin),
   );
+  const permittedAccountsByOrigin = useSelector(
+    getPermittedAccountsByOrigin,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ) as { [key: string]: any[] };
   const networksList = useSelector(getNonTestNetworks);
   const testNetworks = useSelector(getTestNetworks);
   const combinedNetworks = [...networksList, ...testNetworks];
@@ -71,6 +88,23 @@ export const ReviewPermissions = () => {
     (net: { chainId: any }) => connectedNetworks.indexOf(net.chainId) !== -1,
   );
   const hostName = getURLHost(securedOrigin);
+
+  const currentTabHasNoAccounts =
+    !permittedAccountsByOrigin[activeTabOrigin]?.length;
+
+  let tabToConnect: { origin: any } = { origin: null };
+  if (activeTabOrigin && currentTabHasNoAccounts && !openMetaMaskTabs[id]) {
+    tabToConnect = {
+      origin: activeTabOrigin,
+    };
+  }
+  const requestAccountsPermission = async () => {
+    const requestId = await dispatch(
+      requestAccountsPermissionWithId(tabToConnect.origin),
+    );
+    history.push(`${CONNECT_ROUTE}/${requestId}`);
+  };
+
   const disconnectAllAccounts = () => {
     const subject = (subjects as SubjectsType)[activeTabOrigin];
 
@@ -97,51 +131,51 @@ export const ReviewPermissions = () => {
       data-testid="connections-page"
       className="main-container connections-page"
     >
-      {connectedAccounts.length > 0 ? (
-        <>
-          <Header
-            backgroundColor={BackgroundColor.backgroundDefault}
-            startAccessory={
-              <ButtonIcon
-                ariaLabel={t('back')}
-                iconName={IconName.ArrowLeft}
-                className="connections-header__start-accessory"
-                size={ButtonIconSize.Sm}
-                onClick={() => (history as any).goBack()}
-              />
-            }
+      <>
+        <Header
+          backgroundColor={BackgroundColor.backgroundDefault}
+          startAccessory={
+            <ButtonIcon
+              ariaLabel={t('back')}
+              iconName={IconName.ArrowLeft}
+              className="connections-header__start-accessory"
+              size={ButtonIconSize.Sm}
+              onClick={() => (history as any).goBack()}
+            />
+          }
+        >
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            gap={2}
+            justifyContent={JustifyContent.center}
+            className="connections-header__title"
           >
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              gap={2}
-              justifyContent={JustifyContent.center}
-              className="connections-header__title"
+            {connectedSubjectsMetadata?.iconUrl ? (
+              <AvatarFavicon
+                name={connectedSubjectsMetadata.name}
+                size={AvatarFaviconSize.Sm}
+                src={connectedSubjectsMetadata.iconUrl}
+              />
+            ) : (
+              <Icon
+                name={IconName.Global}
+                size={IconSize.Sm}
+                color={IconColor.iconDefault}
+              />
+            )}
+            <Text
+              as="span"
+              variant={TextVariant.headingMd}
+              textAlign={TextAlign.Center}
+              ellipsis
             >
-              {connectedSubjectsMetadata?.iconUrl ? (
-                <AvatarFavicon
-                  name={connectedSubjectsMetadata.name}
-                  size={AvatarFaviconSize.Sm}
-                  src={connectedSubjectsMetadata.iconUrl}
-                />
-              ) : (
-                <Icon
-                  name={IconName.Global}
-                  size={IconSize.Sm}
-                  color={IconColor.iconDefault}
-                />
-              )}
-              <Text
-                as="span"
-                variant={TextVariant.headingMd}
-                textAlign={TextAlign.Center}
-                ellipsis
-              >
-                {hostName}
-              </Text>
-            </Box>
-          </Header>
-          <Content padding={0}>
+              {hostName}
+            </Text>
+          </Box>
+        </Header>
+        <Content padding={0}>
+          {connectedAccounts.length > 0 ? (
             <SiteCell
               networks={grantedNetworks}
               accounts={connectedAccounts}
@@ -149,60 +183,73 @@ export const ReviewPermissions = () => {
               onNetworksClick={() => setShowNetworkToast(true)}
               activeTabOrigin={activeTabOrigin}
             />
-          </Content>
-          <Footer>
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              width={BlockSize.Full}
-              gap={2}
-            >
-              {showAccountToast ? (
-                <ToastContainer>
-                  <Toast
-                    text={t('accountPermissionToast', [hostName])}
-                    onClose={() => setShowAccountToast(false)}
-                    startAdornment={
-                      <AvatarFavicon
-                        name={connectedSubjectsMetadata?.name}
-                        size={AvatarFaviconSize.Sm}
-                        src={connectedSubjectsMetadata?.iconUrl}
-                      />
-                    }
-                  />
-                </ToastContainer>
-              ) : null}
-              {showNetworkToast ? (
-                <ToastContainer>
-                  <Toast
-                    text={t('networkPermissionToast', [hostName])}
-                    onClose={() => setShowNetworkToast(false)}
-                    startAdornment={
-                      <AvatarFavicon
-                        name={connectedSubjectsMetadata?.name}
-                        size={AvatarFaviconSize.Sm}
-                        src={connectedSubjectsMetadata?.iconUrl}
-                      />
-                    }
-                  />
-                </ToastContainer>
-              ) : null}
-              <Button
-                size={ButtonSize.Lg}
-                block
-                variant={ButtonVariant.Secondary}
-                startIconName={IconName.Logout}
-                danger
-                onClick={() => disconnectAllAccounts()}
+          ) : (
+            <NoConnectionContent />
+          )}
+        </Content>
+        <Footer>
+          <>
+            {connectedAccounts.length > 0 ? (
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                width={BlockSize.Full}
+                gap={2}
               >
-                {t('disconnectAllAccounts')}
-              </Button>
-            </Box>
-          </Footer>{' '}
-        </>
-      ) : (
-        <NoConnectionContent />
-      )}
+                {showAccountToast ? (
+                  <ToastContainer>
+                    <Toast
+                      text={t('accountPermissionToast', [hostName])}
+                      onClose={() => setShowAccountToast(false)}
+                      startAdornment={
+                        <AvatarFavicon
+                          name={connectedSubjectsMetadata?.name}
+                          size={AvatarFaviconSize.Sm}
+                          src={connectedSubjectsMetadata?.iconUrl}
+                        />
+                      }
+                    />
+                  </ToastContainer>
+                ) : null}
+                {showNetworkToast ? (
+                  <ToastContainer>
+                    <Toast
+                      text={t('networkPermissionToast', [hostName])}
+                      onClose={() => setShowNetworkToast(false)}
+                      startAdornment={
+                        <AvatarFavicon
+                          name={connectedSubjectsMetadata?.name}
+                          size={AvatarFaviconSize.Sm}
+                          src={connectedSubjectsMetadata?.iconUrl}
+                        />
+                      }
+                    />
+                  </ToastContainer>
+                ) : null}
+                <Button
+                  size={ButtonSize.Lg}
+                  block
+                  variant={ButtonVariant.Secondary}
+                  startIconName={IconName.Logout}
+                  danger
+                  onClick={() => disconnectAllAccounts()}
+                >
+                  {t('disconnectAllAccounts')}
+                </Button>
+              </Box>
+            ) : (
+              <ButtonPrimary
+                size={ButtonPrimarySize.Lg}
+                block
+                data-test-id="no-connections-button"
+                onClick={() => requestAccountsPermission()}
+              >
+                {t('connectAccounts')}
+              </ButtonPrimary>
+            )}
+          </>
+        </Footer>{' '}
+      </>
     </Page>
   );
 };
