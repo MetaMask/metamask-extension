@@ -2990,11 +2990,14 @@
     "message": "Edit network details"
   },
   "nativeTokenScamWarningDescription": {
-    "message": "This network doesn't match its associated chain ID or name. Many popular tokens use the name $1, making it a target for scams. Scammers may trick you into sending them more valuable currency in return. Verify everything before you continue.",
-    "description": "$1 represents the currency name"
+    "message": "The network currency symbol entered does not match it’s associated currency symbol on the current chain ID. You have entered $1 while the detected currency symbol should be $2. Please verify you are connected to the correct chain. ",
+    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
+  },
+  "nativeTokenScamWarningDescriptionExpectedTokenFallback": {
+    "message": "something else"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "This is a potential scam"
+    "message": "Incorrect Network Currency Symbol Entered"
   },
   "needHelp": {
     "message": "Need help? Contact $1",

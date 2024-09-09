@@ -54,6 +54,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
+import {
+  decimalToHex,
+  hexToDecimal,
+} from '../../../../shared/modules/conversion.utils';
 
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setSelectedNetworkConfigurationId } from '../../../store/actions';
@@ -61,6 +65,7 @@ import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 
 export const TokenListItem = ({
@@ -85,6 +90,13 @@ export const TokenListItem = ({
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
+  const { safeChains } = useSafeChains();
+
+  const decimalChainId = parseInt(hexToDecimal(chainId), 10);
+
+  const [safeChainDetails] = safeChains.filter((chain) => {
+    return chain.chainId === decimalChainId;
+  });
 
   // Scam warning
   const showScamWarning =
@@ -385,7 +397,11 @@ export const TokenListItem = ({
               {t('nativeTokenScamWarningTitle')}
             </ModalHeader>
             <Box marginTop={4} marginBottom={4}>
-              {t('nativeTokenScamWarningDescription', [tokenSymbol])}
+              {t('nativeTokenScamWarningDescription', [
+                tokenSymbol,
+                safeChainDetails?.nativeCurrency.symbol ||
+                  t('nativeTokenScamWarningDescriptionExpectedTokenFallback'), // never render "undefined" string value
+              ])}
             </Box>
             <Box>
               <ButtonSecondary
