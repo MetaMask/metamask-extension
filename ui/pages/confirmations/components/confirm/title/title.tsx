@@ -142,9 +142,12 @@ const getDescription = (
 };
 
 const isTransactionMeta = (
-  confirmation: Confirmation,
+  confirmation: Confirmation | undefined,
 ): confirmation is TransactionMeta => {
-  return (confirmation as TransactionMeta).txParams !== undefined;
+  return (
+    confirmation !== undefined &&
+    (confirmation as TransactionMeta).txParams !== undefined
+  );
 };
 
 const ConfirmTitle: React.FC = memo(() => {
