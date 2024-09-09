@@ -54,10 +54,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
-import {
-  decimalToHex,
-  hexToDecimal,
-} from '../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setSelectedNetworkConfigurationId } from '../../../store/actions';
@@ -92,7 +89,7 @@ export const TokenListItem = ({
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const { safeChains } = useSafeChains();
 
-  const decimalChainId = parseInt(hexToDecimal(chainId), 10);
+  const decimalChainId = isEvm && parseInt(hexToDecimal(chainId), 10);
 
   const [safeChainDetails] = safeChains.filter((chain) => {
     return chain.chainId === decimalChainId;
