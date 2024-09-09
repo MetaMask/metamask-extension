@@ -29,7 +29,9 @@
     "warning": null,
     "customTokenAmount": "10"
   },
-  "confirm": {},
+  "confirm": {
+    "isScrollToBottomCompleted": true
+  },
   "confirmAlerts": {
     "alerts": [],
     "confirmed": []
@@ -1976,6 +1978,24 @@
             "id": "R9tggB2pDzyCcbt6dIebN",
             "invoker": "npm:@metamask/test-snap-bip44",
             "parentCapability": "snap_getBip44Entropy"
+          }
+        }
+      },
+      "https://snaps.metamask.io": {
+        "origin": "https://snaps.metamask.io",
+        "permissions": {
+          "wallet_snap": {
+            "caveats": [
+              {
+                "type": "snapIds",
+                "value": {
+                  "npm:@metamask/test-snap-bip44": {}
+                }
+              }
+            ],
+            "date": 1718117256761,
+            "id": "sBxmdvnow7QiN9aS4uSdn",
+            "invoker": "https://snaps.metamask.io"
           }
         }
       }
