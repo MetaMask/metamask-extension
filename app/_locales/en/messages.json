@@ -2997,7 +2997,7 @@
     "message": "something else"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "This is a potential scam"
+    "message": "Incorrect Network Currency Symbol Entered"
   },
   "needHelp": {
     "message": "Need help? Contact $1",
