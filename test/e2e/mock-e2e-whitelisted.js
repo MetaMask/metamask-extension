@@ -260,6 +260,8 @@ const WHITE_LISTED_MOCKS = [
   'https://registry.npmjs.org/@metamask/insights-example-snap/-/insights-example-snap-2.2.2.tgz',
   'https://registry.npmjs.org/@metamask/images-example-snap/-/images-example-snap-1.1.0.tgz',
   'https://registry.npmjs.org/@metamask/wasm-example-snap/-/wasm-example-snap-2.1.3.tgz',
+  'https://acl.execution.metamask.io/latest/signature.json',
+  'https://accounts.google.com/ListAccounts?gpsia=1&source=ChromiumBrowser&json=standard',
 ];
 
 module.exports = { WHITE_LISTED_MOCKS };
