@@ -106,6 +106,19 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
       },
     };
   }
+
+  async ethereumSignTypedData() {
+    // TODO: add logic for signing typed data and remove hardcoded address and signature
+    return {
+      id: 1,
+      success: true,
+      payload: {
+        address: '0xF68464152d7289D7eA9a2bEC2E0035c45188223c',
+        signature:
+          '0x5f6bfaee5cf95ae9fd27758473eb2710738cb18f78cc4cbd9b89c596c987c35e0720c99d5a8791303f8b640af10206dab8084ef6fca94510b4f6c600d020d1631c',
+      }
+    };
+  }
 }
 
 export class FakeLedgerBridge extends FakeKeyringBridge {
