@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
 const {
+  createInternalTransaction,
+} = require('../../page-objects/flows/transaction');
+
+const {
   withFixtures,
   openDapp,
   unlockWallet,
@@ -12,20 +16,18 @@ describe('Editing Confirm Transaction', function () {
   it('allows selecting high, medium, low gas estimates on edit gas fee popover @no-mmi', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withTransactionControllerTypeTwoTransaction()
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await createInternalTransaction(driver);
 
-        const transactionAmounts = await driver.findElements(
-          '.currency-display-component__text',
-        );
-        const transactionAmount = transactionAmounts[0];
-        assert.equal(await transactionAmount.getText(), '1');
+        await driver.findElement({
+          css: '.currency-display-component__text',
+          text: '1',
+        });
 
         // update estimates to high
         await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
@@ -87,20 +89,18 @@ describe('Editing Confirm Transaction', function () {
   it('allows accessing advance gas fee popover from edit gas fee popover', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withTransactionControllerTypeTwoTransaction()
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await createInternalTransaction(driver);
 
-        const transactionAmounts = await driver.findElements(
-          '.currency-display-component__text',
-        );
-        const transactionAmount = transactionAmounts[0];
-        assert.equal(await transactionAmount.getText(), '1');
+        await driver.findElement({
+          css: '.currency-display-component__text',
+          text: '1',
+        });
 
         // update estimates to high
         await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
