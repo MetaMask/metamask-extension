@@ -46,7 +46,7 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
       cancelText={t('cancel')}
     >
       <div className="convert-token-to-nft-modal">
-        <Text variant="bodySm">
+        <Text>
           {tokenAddedAsNFT
             ? t('convertTokenToNFTExistDescription')
             : t('convertTokenToNFTDescription')}
