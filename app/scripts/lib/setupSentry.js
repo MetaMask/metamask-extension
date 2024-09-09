@@ -133,9 +133,8 @@ function getTracesSampleRate(sentryTarget) {
 function setCircleCiTags() {
   const { circleci } = getManifestFlags();
 
-  Sentry.setTag('circleci.enabled', Boolean(circleci?.enabled));
-
   if (circleci?.enabled) {
+    Sentry.setTag('circleci.enabled', Boolean(circleci.enabled));
     Sentry.setTag('circleci.branch', circleci.branch);
     Sentry.setTag('circleci.buildNum', circleci.buildNum);
     Sentry.setTag('circleci.job', circleci.job);
@@ -227,7 +226,10 @@ function getSentryEnvironment() {
 }
 
 function getSentryTarget() {
-  if (getManifestFlags().doNotForceSentryForThisTest) {
+  if (
+    getManifestFlags().doNotForceSentryForThisTest ||
+    (process.env.IN_TEST && !SENTRY_DSN_DEV)
+  ) {
     return SENTRY_DSN_FAKE;
   }
 
