@@ -101,10 +101,10 @@ async function setupMocking(
         // If the URL is whitelisted, we pass the request as it is, to the live server.
         return {};
       }
+      console.log("URL NOT WHITLISTED DEBUG===============", url)
       return {
         // If the URL is not whitelisted nor blacklisted, we send the request to a mocked endpoint.
-        // This URL is arbitrary, as we mock the response for it below.
-        url: 'unresponsive-rpc.test',
+        url: 'mock-all',
         method: 'GET',
       };
     },
@@ -115,7 +115,7 @@ async function setupMocking(
   // Mocks below this line can be overridden by test-specific mocks
 
   // Catch-all mock for any request not whitelisted nor blacklisted
-  await server.forGet('unresponsive-rpc.test').thenCallback(() => {
+  await server.forGet('mock-all').thenCallback(() => {
     return {
       statusCode: 200,
     };
