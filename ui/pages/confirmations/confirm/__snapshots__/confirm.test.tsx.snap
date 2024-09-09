@@ -187,6 +187,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           data-testid="confirm-footer-button"
+          data-theme="light"
         >
           Confirm
         </button>
@@ -1232,6 +1233,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           data-testid="confirm-footer-button"
+          data-theme="light"
         >
           Confirm
         </button>
@@ -2029,6 +2031,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           data-testid="confirm-footer-button"
+          data-theme="light"
         >
           Confirm
         </button>
@@ -2675,6 +2678,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           data-testid="confirm-footer-button"
+          data-theme="light"
         >
           Confirm
         </button>
@@ -3424,6 +3428,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           data-testid="confirm-footer-button"
+          data-theme="light"
         >
           Confirm
         </button>
@@ -4200,6 +4205,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           data-testid="confirm-footer-button"
+          data-theme="light"
         >
           Confirm
         </button>

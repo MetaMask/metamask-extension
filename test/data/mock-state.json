@@ -29,7 +29,9 @@
     "warning": null,
     "customTokenAmount": "10"
   },
-  "confirm": {},
+  "confirm": {
+    "isScrollToBottomCompleted": true
+  },
   "confirmAlerts": {
     "alerts": [],
     "confirmed": []

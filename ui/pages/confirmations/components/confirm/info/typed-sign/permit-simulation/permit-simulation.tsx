@@ -39,10 +39,7 @@ function extractTokenDetailsByPrimaryType(
 
 const PermitSimulation: React.FC<object> = () => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext() as {
-    currentConfirmation: SignatureRequestType;
-  };
-
+  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const msgData = currentConfirmation.msgParams?.data;
   const {
     domain: { verifyingContract },

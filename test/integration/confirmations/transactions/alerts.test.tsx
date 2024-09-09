@@ -1,4 +1,5 @@
-import { act, fireEvent } from '@testing-library/react';
+import { randomUUID } from 'crypto';
+import { act, fireEvent, screen } from '@testing-library/react';
 import { ApprovalType } from '@metamask/controller-utils';
 import nock from 'nock';
 import mockMetaMaskState from '../../data/integration-init-state.json';
@@ -273,5 +274,77 @@ describe('Contract Interaction Confirmation', () => {
     expect(
       await findByTestId('alert-modal-action-showAdvancedGasModal'),
     ).toHaveTextContent('Update fee');
+  });
+
+  it('displays the alert for pending transactions', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedApproveTransaction(account.address);
+    const unapprovedTransaction = mockedMetaMaskState.transactions[0];
+    const submittedTransaction = getUnapprovedApproveTransaction(
+      account.address,
+      randomUUID(),
+      pendingTransactionTime - 1000,
+    );
+    submittedTransaction.status = 'submitted';
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: {
+          ...mockedMetaMaskState,
+          gasEstimateType: 'none',
+          pendingApprovalCount: 2,
+          pendingApprovals: {
+            [pendingTransactionId]: {
+              id: pendingTransactionId,
+              origin: 'origin',
+              time: pendingTransactionTime,
+              type: ApprovalType.Transaction,
+              requestData: {
+                txId: pendingTransactionId,
+              },
+              requestState: null,
+              expectsResult: false,
+            },
+            [submittedTransaction.id]: {
+              id: submittedTransaction.id,
+              origin: 'origin',
+              time: pendingTransactionTime - 1000,
+              type: ApprovalType.Transaction,
+              requestData: {
+                txId: submittedTransaction.id,
+              },
+              requestState: null,
+              expectsResult: false,
+            },
+          },
+          transactions: [unapprovedTransaction, submittedTransaction],
+        },
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    expect(await screen.getByTestId('inline-alert')).toBeInTheDocument();
+
+    act(() => {
+      fireEvent.click(screen.getByTestId('inline-alert'));
+    });
+
+    expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
+
+    expect(
+      await screen.findByTestId('alert-modal__selected-alert'),
+    ).toBeInTheDocument();
+
+    expect(
+      await screen.findByTestId('alert-modal__selected-alert'),
+    ).toHaveTextContent(
+      'This transaction won’t go through until a previous transaction is complete. Learn how to cancel or speed up a transaction.',
+    );
   });
 });
