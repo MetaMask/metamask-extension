@@ -4,7 +4,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import copyToClipboard from 'copy-to-clipboard';
 import { toHex } from '@metamask/controller-utils';
-import { act } from 'react-dom/test-utils';
 import { startNewDraftTransaction } from '../../../../../ducks/send';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
@@ -20,12 +19,11 @@ import {
 } from '../../../../../store/actions';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
-import NftDetails from './nft-details';
-
 import {
   getAssetImageURL,
   shortenAddress,
 } from '../../../../../helpers/utils/util';
+import NftDetails from './nft-details';
 
 // Mock the fetchData function from util.js
 jest.mock('../../../../../helpers/utils/util', () => ({
