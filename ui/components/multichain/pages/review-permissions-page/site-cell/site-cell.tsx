@@ -36,6 +36,7 @@ type SiteCellProps = {
   accounts: { address: string }[];
   onAccountsClick: () => void;
   onNetworksClick: () => void;
+  onDisconnectClick: () => void;
   approvedAccounts: { address: string }[];
   activeTabOrigin: string;
   combinedNetworks;
@@ -49,6 +50,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   approvedAccounts,
   activeTabOrigin,
   combinedNetworks,
+  onDisconnectClick,
 }) => {
   const t = useI18nContext();
   const avatarNetworksData = networks.map((network) => ({
@@ -230,6 +232,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
           onClick={onNetworksClick}
           currentTabHasNoAccounts={currentTabHasNoAccounts}
           combinedNetworks={combinedNetworks}
+          onDisconnectClick={onDisconnectClick}
         />
       )}
 
@@ -241,6 +244,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
           approvedAccounts={approvedAccounts}
           activeTabOrigin={activeTabOrigin}
           currentTabHasNoAccounts={currentTabHasNoAccounts}
+          onDisconnectClick={onDisconnectClick}
         />
       )}
     </>

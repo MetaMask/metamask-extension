@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Display, FlexDirection, IconColor, TextColor, TextVariant } from '../../../helpers/constants/design-system';
+import { AlignItems, Display, FlexDirection, IconColor, TextColor, TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getNonTestNetworks,
@@ -38,6 +38,7 @@ export const EditNetworksModal = ({
   onClick,
   currentTabHasNoAccounts,
   combinedNetworks,
+  onDisconnectClick,
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -58,9 +59,9 @@ export const EditNetworksModal = ({
     setSelectedChains(newSelectedAccounts);
   };
 
-    const deselectAll = () => {
-      setSelectedChains([]);
-    };
+  const deselectAll = () => {
+    setSelectedChains([]);
+  };
 
   const handleAccountClick = (chainId) => {
     const index = selectedChains.indexOf(chainId);
@@ -197,7 +198,7 @@ export const EditNetworksModal = ({
                 <ButtonPrimary
                   data-testid="disconnect-chains-button"
                   onClick={() => {
-                    // disconnectAllAccounts();
+                    onDisconnectClick();
                     onClose();
                   }}
                   size={ButtonPrimarySize.Lg}

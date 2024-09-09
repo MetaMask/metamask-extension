@@ -50,6 +50,7 @@ import { Content, Footer, Header, Page } from '../page';
 import { SubjectsType } from '../connections/components/connections.types';
 import { SiteCell } from '.';
 import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
+import { DisconnectAllModal, DisconnectType } from '../../disconnect-all-modal/disconnect-all-modal';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -59,6 +60,7 @@ export const ReviewPermissions = () => {
   const securedOrigin = decodeURIComponent(urlParams.origin);
   const [showAccountToast, setShowAccountToast] = useState(false);
   const [showNetworkToast, setShowNetworkToast] = useState(false);
+  const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
   const activeTabOrigin: string = securedOrigin;
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -181,12 +183,21 @@ export const ReviewPermissions = () => {
               accounts={connectedAccounts}
               onAccountsClick={() => setShowAccountToast(true)}
               onNetworksClick={() => setShowNetworkToast(true)}
+              onDisconnectClick={() => setShowDisconnectAllModal(true)}
               activeTabOrigin={activeTabOrigin}
               combinedNetworks={combinedNetworks}
             />
           ) : (
             <NoConnectionContent />
           )}
+          {showDisconnectAllModal ? (
+            <DisconnectAllModal
+              type={DisconnectType.Account}
+              hostname={activeTabOrigin}
+              onClose={() => setShowDisconnectAllModal(false)}
+              onClick={() => { disconnectAllAccounts(); setShowDisconnectAllModal(false) } }
+            />
+          ) : null}
         </Content>
         <Footer>
           <>

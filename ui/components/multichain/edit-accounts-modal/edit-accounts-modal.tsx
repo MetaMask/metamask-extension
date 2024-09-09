@@ -58,6 +58,7 @@ const defaultAllowedAccountTypes = [EthAccountType.Eoa, EthAccountType.Erc4337];
 type EditAccountsModalProps = {
   onClose: () => void;
   onClick: () => void;
+  onDisconnectClick: () => void;
   allowedAccountTypes?: KeyringAccountType[];
   approvedAccounts: string[];
   activeTabOrigin: string;
@@ -67,6 +68,7 @@ type EditAccountsModalProps = {
 export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   onClose,
   onClick,
+  onDisconnectClick,
   allowedAccountTypes = defaultAllowedAccountTypes,
   approvedAccounts,
   activeTabOrigin,
@@ -226,7 +228,11 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                   flexDirection={FlexDirection.Column}
                   gap={4}
                 >
-                  <Box display={Display.Flex} gap={1} alignItems={AlignItems.center}>
+                  <Box
+                    display={Display.Flex}
+                    gap={1}
+                    alignItems={AlignItems.center}
+                  >
                     <Icon
                       name={IconName.Danger}
                       size={IconSize.Xs}
@@ -242,7 +248,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                   <ButtonPrimary
                     data-testid="disconnect-chains-button"
                     onClick={() => {
-                      disconnectAllAccounts();
+                      onDisconnectClick();
                       onClose();
                     }}
                     size={ButtonPrimarySize.Lg}
