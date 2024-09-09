@@ -25,7 +25,7 @@ export default function UserPreferencedCurrencyDisplay({
   showFiat,
   showNative,
   showCurrencySuffix,
-  withCheckShowNativeToken,
+  shouldCheckShowNativeToken,
   ...restProps
 }) {
   const currentNetwork = useMultichainSelector(
@@ -43,7 +43,7 @@ export default function UserPreferencedCurrencyDisplay({
     numberOfDecimals: propsNumberOfDecimals,
     showFiatOverride: showFiat,
     showNativeOverride: showNative,
-    withCheckShowNativeToken,
+    shouldCheckShowNativeToken,
   });
   const prefixComponent = useMemo(() => {
     return (
@@ -114,7 +114,7 @@ const UserPreferencedCurrencyDisplayPropTypes = {
   prefixComponentWrapperProps: PropTypes.object,
   textProps: PropTypes.object,
   suffixProps: PropTypes.object,
-  withCheckShowNativeToken: PropTypes.bool,
+  shouldCheckShowNativeToken: PropTypes.bool,
 };
 
 UserPreferencedCurrencyDisplay.propTypes =

@@ -75,7 +75,7 @@ const tests = [
     },
     params: {
       type: 'PRIMARY',
-      withCheckShowNativeToken: true,
+      shouldCheckShowNativeToken: true,
     },
     result: {
       currency: 'ETH',
@@ -166,7 +166,7 @@ const tests = [
     },
     params: {
       type: 'SECONDARY',
-      withCheckShowNativeToken: true,
+      shouldCheckShowNativeToken: true,
     },
     result: {
       currency: 'usd',
@@ -176,7 +176,7 @@ const tests = [
 ];
 describe('useUserPreferencedCurrency', () => {
   tests.forEach(({ params: { type, ...otherParams }, state, result }) => {
-    describe(`when showFiat is ${state.showFiat}, withCheckShowNativeToken is ${otherParams.withCheckShowNativeToken}, showNativeTokenAsMainBalance is ${state.showNativeTokenAsMainBalance} and type is ${type}`, () => {
+    describe(`when showFiat is ${state.showFiat}, shouldCheckShowNativeToken is ${otherParams.shouldCheckShowNativeToken}, showNativeTokenAsMainBalance is ${state.showNativeTokenAsMainBalance} and type is ${type}`, () => {
       const { result: hookResult } = renderUseUserPreferencedCurrency(
         state,
         type,

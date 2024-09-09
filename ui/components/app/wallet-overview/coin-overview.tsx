@@ -132,7 +132,7 @@ export const CoinOverview = ({
                   type={PRIMARY}
                   ethNumberOfDecimals={4}
                   hideTitle
-                  withCheckShowNativeToken
+                  shouldCheckShowNativeToken
                 />
               ) : (
                 <Spinner className="loading-overlay__spinner" />
