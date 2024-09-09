@@ -27,6 +27,7 @@ type AssertSignatureMetricsOptions = {
   primaryType?: string;
   uiCustomizations?: string[];
   location?: string;
+  expectedProps?: Record<string, unknown>;
 };
 
 type SignatureEventProperty = {
@@ -43,6 +44,13 @@ type SignatureEventProperty = {
   location?: string;
 };
 
+/**
+ * Generates expected signature metric properties
+ *
+ * @param signatureType
+ * @param primaryType
+ * @param uiCustomizations
+ */
 function getSignatureEventProperty(
   signatureType: string,
   primaryType: string,
@@ -113,6 +121,7 @@ export async function assertSignatureRejectedMetrics({
   primaryType = '',
   uiCustomizations = ['redesigned_confirmation'],
   location,
+  expectedProps = {},
 }: AssertSignatureMetricsOptions) {
   const events = await getEventPayloads(driver, mockedEndpoints);
   const signatureEventProperty = getSignatureEventProperty(
@@ -128,6 +137,7 @@ export async function assertSignatureRejectedMetrics({
     {
       ...signatureEventProperty,
       location,
+      ...expectedProps,
     },
     'Signature Rejected event properties do not match',
   );
