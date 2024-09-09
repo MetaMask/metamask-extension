@@ -1560,6 +1560,7 @@ export default class MetamaskController extends EventEmitter {
             'UserStorageController:performSetStorage',
             'NotificationServicesPushController:enablePushNotifications',
             'NotificationServicesPushController:disablePushNotifications',
+            'NotificationServicesPushController:subscribeToPushNotifications',
             'NotificationServicesPushController:updateTriggerPushNotifications',
           ],
           allowedEvents: [
