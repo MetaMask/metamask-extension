@@ -262,6 +262,20 @@ const WHITE_LISTED_MOCKS = [
   'https://registry.npmjs.org/@metamask/wasm-example-snap/-/wasm-example-snap-2.1.3.tgz',
   'https://acl.execution.metamask.io/latest/signature.json',
   'https://accounts.google.com/ListAccounts?gpsia=1&source=ChromiumBrowser&json=standard',
+  'https://metamask.github.io/snap-account-abstraction-keyring/0.4.1/',
+  'https://metamask.github.io/favicon.ico',
+  'https://registry.npmjs.org/@metamask/bip32-example-snap/-/bip32-example-snap-0.35.2-flask.1.tgz',
+  'https://execution.metamask.io/iframe/6.6.2/index.html',
+  'https://token.api.cx.metamask.io/tokens/0xa?occurrenceFloor=100&includeNativeAssets=false',
+  'https://firefox.settings.services.mozilla.com/v1/buckets/monitor/collections/changes/changeset?collection=query-stripping&bucket=main&_expected=0',
+  'https://firefox.settings.services.mozilla.com/v1/buckets/monitor/collections/changes/changeset?collection=fingerprinting-protection-overrides&bucket=main&_expected=0',
+  'https://shavar.services.mozilla.com/downloads?client=navclient-auto-ffox&appver=130.0&pver=2.2',
+  'https://metamask.github.io/snaps/test-snaps/2.12.0/assets/apple-touch-icon-1024x1024.png',
+  'https://metamask.github.io/snaps/test-snaps/2.12.0/assets/favicon-16x16.png',
+  'https://firefox.settings.services.mozilla.com/v1/buckets/monitor/collections/changes/changeset?_expected=0',
+  'https://firefox.settings.services.mozilla.com/v1/buckets/monitor/collections/changes/changeset?collection=query-stripping&bucket=main&_expected=0',
+  'https://firefox.settings.services.mozilla.com/v1/buckets/monitor/collections/changes/changeset?collection=fingerprinting-protection-overrides&bucket=main&_expected=0',
+  'https://shavar.services.mozilla.com/downloads?client=navclient-auto-ffox&appver=130.0&pver=2.2',
 ];
 
 module.exports = { WHITE_LISTED_MOCKS };
