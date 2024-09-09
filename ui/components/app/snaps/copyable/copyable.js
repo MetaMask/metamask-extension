@@ -9,7 +9,6 @@ import {
   Display,
   OverflowWrap,
   IconColor,
-  BorderColor,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { Icon, IconName, Box, Text } from '../../../component-library';
@@ -61,8 +60,6 @@ export const Copyable = ({
           : BackgroundColor.primaryMuted
       }
       borderRadius={BorderRadius.LG}
-      borderColor={BorderColor.borderMuted}
-      borderWidth={1}
       padding={2}
       marginTop={marginTop}
       marginBottom={marginBottom}
