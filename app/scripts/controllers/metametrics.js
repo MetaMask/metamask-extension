@@ -821,6 +821,7 @@ export default class MetaMetricsController {
         metamaskState.useTokenDetection,
       [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]:
         metamaskState.useNativeCurrencyAsPrimaryCurrency,
+      [MetaMetricsUserTrait.CurrentCurrency]: metamaskState.currentCurrency,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       [MetaMetricsUserTrait.MmiExtensionId]: this.extension?.runtime?.id,
       [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress,

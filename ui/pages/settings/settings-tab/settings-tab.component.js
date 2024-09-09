@@ -123,8 +123,8 @@ export default class SettingsTab extends PureComponent {
                 setCurrentCurrency(newCurrency);
                 this.context.trackEvent({
                   category: MetaMetricsEventCategory.Settings,
-                  event: MetaMetricsEventName.CurrentCurrencyChanged,
-                  sensitiveProperties: {
+                  event: MetaMetricsEventName.CurrentCurrency,
+                  properties: {
                     current_currency_changed: newCurrency,
                   },
                 });
