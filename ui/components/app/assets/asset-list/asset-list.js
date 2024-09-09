@@ -228,9 +228,9 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
       )}
-      {showReceiveModal && (
+      {showReceiveModal && selectedAccount?.address && (
         <ReceiveModal
-          address={selectedAccount?.address}
+          address={selectedAccount.address}
           onClose={() => setShowReceiveModal(false)}
         />
       )}
