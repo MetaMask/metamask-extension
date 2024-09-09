@@ -12,7 +12,7 @@ const {
 } = require('../../helpers');
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
-  it('should queue send tx after switch network confirmation and transaction should target the correct network after switch is confirmed', async function () {
+  it.only('should queue send tx after switch network confirmation and transaction should target the correct network after switch is confirmed', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -166,7 +166,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
     );
   });
 
-  it('should queue send tx after switch network confirmation and transaction should target the correct network after switch is cancelled.', async function () {
+  it.only('should queue send tx after switch network confirmation and transaction should target the correct network after switch is cancelled.', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
