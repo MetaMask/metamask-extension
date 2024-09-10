@@ -593,7 +593,6 @@ export async function getAssetImageURL(image, ipfsGateway) {
     // In the future, we can look into solving the root cause, which might require
     // no longer using multiform's CID.parse() method within the assets-controller
     try {
-      console.log('heeeereeee', image, ipfsGateway);
       return await getFormattedIpfsUrl(ipfsGateway, image, true);
     } catch (e) {
       logErrorWithMessage(e);
