@@ -24,15 +24,15 @@ type MockResponse = {
  *
  * @param server - server obj used to mock our endpoints
  */
-export function mockNotificationServices(server: Mockttp) {
+export async function mockNotificationServices(server: Mockttp) {
   // Auth
   mockAPICall(server, AuthMocks.getMockAuthNonceResponse());
   mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
 
   // Storage
-  mockAPICall(server, StorageMocks.getMockUserStorageGetResponse());
-  mockAPICall(server, StorageMocks.getMockUserStoragePutResponse());
+  mockAPICall(server, await StorageMocks.getMockUserStorageGetResponse());
+  mockAPICall(server, await StorageMocks.getMockUserStoragePutResponse());
 
   // Notifications
   mockAPICall(server, NotificationMocks.getMockFeatureAnnouncementResponse());
