@@ -686,9 +686,6 @@
   "back": {
     "message": "Back"
   },
-  "backup": {
-    "message": "Back up"
-  },
   "backupApprovalInfo": {
     "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
   },
@@ -700,12 +697,6 @@
   },
   "backupNow": {
     "message": "Back up now"
-  },
-  "backupUserData": {
-    "message": "Back up your data"
-  },
-  "backupUserDataDescription": {
-    "message": "You can back up data like your contacts and preferences."
   },
   "balance": {
     "message": "Balance"
@@ -1943,6 +1934,15 @@
   },
   "experimental": {
     "message": "Experimental"
+  },
+  "exportYourData": {
+    "message": "Export your data"
+  },
+  "exportYourDataButton": {
+    "message": "Download"
+  },
+  "exportYourDataDescription": {
+    "message": "You can export data like your contacts and preferences."
   },
   "extendWalletWithSnaps": {
     "message": "Explore community-built Snaps to customize your web3 experience",
@@ -4400,9 +4400,6 @@
   },
   "restoreUserData": {
     "message": "Restore user data"
-  },
-  "restoreUserDataDescription": {
-    "message": "You can restore data like contacts and preferences from a backup file."
   },
   "resultPageError": {
     "message": "Error"

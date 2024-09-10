@@ -650,9 +650,6 @@
   "back": {
     "message": "Volver"
   },
-  "backup": {
-    "message": "Respaldo"
-  },
   "backupApprovalInfo": {
     "message": "Este código secreto es necesario para que recupere la cartera en caso de que pierda el dispositivo, olvide su contraseña, tenga que volver a instalar MetaMask o quiera acceder a su monedero en otro dispositivo."
   },
@@ -661,15 +658,6 @@
   },
   "backupKeyringSnapReminder": {
     "message": "Asegúrese de poder acceder a cualquier cuenta creada por este Snap por si mismo antes de eliminarlo"
-  },
-  "backupNow": {
-    "message": "Respaldar ahora"
-  },
-  "backupUserData": {
-    "message": "Respalde sus datos"
-  },
-  "backupUserDataDescription": {
-    "message": "Puede hacer una copia de seguridad de datos tal y como sus contactos y preferencias."
   },
   "balance": {
     "message": "Saldo"
@@ -4294,9 +4282,6 @@
   },
   "restoreUserData": {
     "message": "Restaure sus datos de usuario"
-  },
-  "restoreUserDataDescription": {
-    "message": "Puede restaurar datos tal y como contactos y preferencias desde un archivo de copia de seguridad."
   },
   "resultPageError": {
     "message": "Error"
