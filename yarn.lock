@@ -4773,11 +4773,11 @@ __metadata:
   linkType: hard
 
 "@metamask/accounts-controller@npm:^18.1.0":
-  version: 18.1.1
-  resolution: "@metamask/accounts-controller@npm:18.1.1"
+  version: 18.1.0
+  resolution: "@metamask/accounts-controller@npm:18.1.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
-    "@metamask/base-controller": "npm:^7.0.0"
+    "@metamask/base-controller": "npm:^6.0.3"
     "@metamask/eth-snap-keyring": "npm:^4.3.1"
     "@metamask/keyring-api": "npm:^8.1.0"
     "@metamask/snaps-sdk": "npm:^6.1.1"
@@ -4790,7 +4790,7 @@ __metadata:
   peerDependencies:
     "@metamask/keyring-controller": ^17.0.0
     "@metamask/snaps-controllers": ^9.3.0
-  checksum: 10/15d02b265daea6bfc6a487ae9476bdbf4c26e2d4211542d8bdae9b3b3fcac3d7e6d161b0ab7e1967f9472eb18dd10b5f8fc49b9b89e6eaa690446dad53bc552b
+  checksum: 10/31885a06f394a36e90a941ab15ed96fae8a39f2c650ce7523489114af0df1acf522bb8b5275e5e572354cdb42b286be805c336718b721105a2888c8be695c616
   languageName: node
   linkType: hard
 
@@ -4814,10 +4814,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/api-specs@npm:^0.10.8":
-  version: 0.10.8
-  resolution: "@metamask/api-specs@npm:0.10.8"
-  checksum: 10/2daa426db88f4682f20cad7d8c10fa1197188f7394fbe8ba07fb5d8f9f15980bed9dc49b65fbb22c8080c056cb25a64a6ee84ce3db683476b3f0402284157482
+"@metamask/api-specs@npm:^0.10.10":
+  version: 0.10.10
+  resolution: "@metamask/api-specs@npm:0.10.10"
+  checksum: 10/0318b5b5e1fc39e3d0b7c9c44abd3b459bd15e7e8578c062d059806c12836975ef0a69fa090022eb87a372d766105b0bec222c13507d95eaea9f5b38dcfc7313
   languageName: node
   linkType: hard
 
@@ -4889,16 +4889,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^3.0.0":
-  version: 3.2.3
-  resolution: "@metamask/base-controller@npm:3.2.3"
-  dependencies:
-    "@metamask/utils": "npm:^8.1.0"
-    immer: "npm:^9.0.6"
-  checksum: 10/1a3005f4143f0a3e37094ce389ae9c2010194672d67c1b115a401379c1b712fb3d7ce8f1cbc8a4d21cffba61aafba6dc1aaae12172e57b9f14021a2505fadafe
-  languageName: node
-  linkType: hard
-
 "@metamask/base-controller@npm:^5.0.1":
   version: 5.0.2
   resolution: "@metamask/base-controller@npm:5.0.2"
@@ -4962,9 +4952,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.0.1, @metamask/controller-utils@npm:^11.0.2, @metamask/controller-utils@npm:^11.1.0":
-  version: 11.1.0
-  resolution: "@metamask/controller-utils@npm:11.1.0"
+"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.0.1, @metamask/controller-utils@npm:^11.0.2, @metamask/controller-utils@npm:^11.1.0, @metamask/controller-utils@npm:^11.2.0":
+  version: 11.2.0
+  resolution: "@metamask/controller-utils@npm:11.2.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/eth-query": "npm:^4.0.0"
@@ -26144,7 +26134,7 @@ __metadata:
     "@metamask/accounts-controller": "npm:^18.1.0"
     "@metamask/address-book-controller": "npm:^5.0.0"
     "@metamask/announcement-controller": "npm:^7.0.0"
-    "@metamask/api-specs": "npm:^0.10.8"
+    "@metamask/api-specs": "npm:^0.10.10"
     "@metamask/approval-controller": "npm:^7.0.0"
     "@metamask/assets-controllers": "npm:^36.0.0"
     "@metamask/auto-changelog": "npm:^2.1.0"

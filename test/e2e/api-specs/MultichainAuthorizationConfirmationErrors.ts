@@ -24,7 +24,7 @@ export class MultichainAuthorizationConfirmationErrors implements Rule {
 
   constructor(options: MultichainAuthorizationConfirmationOptions) {
     this.driver = options.driver;
-    this.only = options.only || ['provider_authorize'];
+    this.only = options.only || ['wallet_createSession'];
     this.errorCodesToHitCancel = [5001, 5002];
   }
 

@@ -114,6 +114,7 @@ export class MultichainAuthorizationConfirmation implements Rule {
         });
       }
     }
+    console.log('calls', calls);
     return calls;
   }
 
