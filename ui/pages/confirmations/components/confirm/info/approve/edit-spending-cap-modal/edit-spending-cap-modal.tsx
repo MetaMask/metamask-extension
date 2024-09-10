@@ -73,7 +73,10 @@ export const EditSpendingCapModal = ({
     setCustomSpendingCapInputValue('');
   }, [setIsOpenEditSpendingCapModal, setCustomSpendingCapInputValue]);
 
+  const [isModalSaving, setIsModalSaving] = useState(false);
+
   const handleSubmit = useCallback(async () => {
+    setIsModalSaving(true);
     const parsedValue = parseInt(customSpendingCapInputValue, 10);
 
     const customTxParamsData = getCustomTxParamsData(
@@ -100,6 +103,7 @@ export const EditSpendingCapModal = ({
       }),
     );
 
+    setIsModalSaving(false);
     setIsOpenEditSpendingCapModal(false);
     setCustomSpendingCapInputValue('');
   }, [customSpendingCapInputValue]);
@@ -156,7 +160,7 @@ export const EditSpendingCapModal = ({
         <ModalFooter
           onSubmit={handleSubmit}
           onCancel={handleCancel}
-          submitButtonProps={{ children: t('save') }}
+          submitButtonProps={{ children: t('save'), loading: isModalSaving }}
         />
       </ModalContent>
     </Modal>

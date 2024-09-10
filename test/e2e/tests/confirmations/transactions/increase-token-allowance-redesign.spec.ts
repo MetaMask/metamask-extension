@@ -38,14 +38,7 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
-          await createERC20IncreaseAllowanceTransaction(driver);
-
-          const NEW_SPENDING_CAP = '3';
-          await editSpendingCap(driver, NEW_SPENDING_CAP);
-
-          await scrollAndConfirmAndAssertConfirm(driver);
-
-          await assertChangedSpendingCap(driver, NEW_SPENDING_CAP);
+          await createAndAssertIncreaseAllowanceSubmission(driver, '3');
         },
       );
     });
@@ -71,14 +64,7 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
-          await createERC20IncreaseAllowanceTransaction(driver);
-
-          const NEW_SPENDING_CAP = '3';
-          await editSpendingCap(driver, NEW_SPENDING_CAP);
-
-          await scrollAndConfirmAndAssertConfirm(driver);
-
-          await assertChangedSpendingCap(driver, NEW_SPENDING_CAP);
+          await createAndAssertIncreaseAllowanceSubmission(driver, '3');
         },
       );
     });
@@ -104,14 +90,7 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
-          await createERC20IncreaseAllowanceTransaction(driver);
-
-          const NEW_SPENDING_CAP = '3000';
-          await editSpendingCap(driver, NEW_SPENDING_CAP);
-
-          await scrollAndConfirmAndAssertConfirm(driver);
-
-          await assertChangedSpendingCap(driver, NEW_SPENDING_CAP);
+          await createAndAssertIncreaseAllowanceSubmission(driver, '3000');
         },
       );
     });
@@ -137,14 +116,7 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
-          await createERC20IncreaseAllowanceTransaction(driver);
-
-          const NEW_SPENDING_CAP = '3000';
-          await editSpendingCap(driver, NEW_SPENDING_CAP);
-
-          await scrollAndConfirmAndAssertConfirm(driver);
-
-          await assertChangedSpendingCap(driver, NEW_SPENDING_CAP);
+          await createAndAssertIncreaseAllowanceSubmission(driver, '3000');
         },
       );
     });
@@ -181,6 +153,21 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
       });
   }
 });
+
+async function createAndAssertIncreaseAllowanceSubmission(
+  driver: Driver,
+  newSpendingCap: string,
+) {
+  await createERC20IncreaseAllowanceTransaction(driver);
+
+  await editSpendingCap(driver, newSpendingCap);
+
+  await driver.delay(1024 ** 2);
+
+  await scrollAndConfirmAndAssertConfirm(driver);
+
+  await assertChangedSpendingCap(driver, newSpendingCap);
+}
 
 async function createERC20IncreaseAllowanceTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
