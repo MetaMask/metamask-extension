@@ -15,12 +15,9 @@ import { useConfirmContext } from '../../../context/confirm';
 
 export default function useDomainMismatchAlerts(): Alert[] {
   const t = useI18nContext();
+  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
 
-  const { currentConfirmation } = useConfirmContext() as {
-    currentConfirmation: SignatureRequestType;
-  };
   const { msgParams } = currentConfirmation || {};
-
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
   const isInvalidSIWEDomain =
     isSIWE && !isValidSIWEOrigin(msgParams as WrappedSIWERequest);

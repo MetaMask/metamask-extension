@@ -12,9 +12,7 @@ import { useConfirmContext } from '../../../context/confirm';
 
 const SignatureMessage: React.FC = memo(() => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext() as {
-    currentConfirmation: SignatureRequestType;
-  };
+  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
 
   if (!currentConfirmation?.msgParams?.data) {
     return null;

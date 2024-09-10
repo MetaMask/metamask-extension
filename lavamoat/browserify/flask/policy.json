@@ -2213,8 +2213,7 @@
         "@metamask/smart-transactions-controller>bignumber.js": true,
         "browserify>buffer": true,
         "fast-json-patch": true,
-        "lodash": true,
-        "webpack>events": true
+        "lodash": true
       }
     },
     "@metamask/smart-transactions-controller>@babel/runtime": {
