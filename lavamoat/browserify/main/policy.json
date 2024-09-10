@@ -1605,14 +1605,22 @@
     },
     "@metamask/message-manager": {
       "packages": {
-        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-sig-util": true,
+        "@metamask/message-manager>@metamask/base-controller": true,
         "@metamask/message-manager>jsonschema": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
         "uuid": true,
         "webpack>events": true
+      }
+    },
+    "@metamask/message-manager>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/message-manager>jsonschema": {
@@ -2090,21 +2098,14 @@
         "crypto": true
       },
       "packages": {
+        "@metamask/base-controller": true,
         "@metamask/eth-query>json-rpc-random-id": true,
-        "@metamask/ppom-validator>@metamask/base-controller": true,
         "@metamask/ppom-validator>@metamask/controller-utils": true,
         "@metamask/ppom-validator>crypto-js": true,
         "@metamask/ppom-validator>elliptic": true,
+        "@metamask/rpc-errors": true,
         "await-semaphore": true,
         "browserify>buffer": true
-      }
-    },
-    "@metamask/ppom-validator>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/ppom-validator>@metamask/controller-utils": {
@@ -2365,8 +2366,7 @@
         "@metamask/smart-transactions-controller>bignumber.js": true,
         "browserify>buffer": true,
         "fast-json-patch": true,
-        "lodash": true,
-        "webpack>events": true
+        "lodash": true
       }
     },
     "@metamask/smart-transactions-controller>@babel/runtime": {
