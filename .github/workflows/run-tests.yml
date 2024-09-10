@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: test:unit:coverage
-        run: mkdir coverage/unit && echo '{}' > coverage/unit/coverage-final.json
+        run: mkdir -p coverage/unit && echo '{}' > coverage/unit/coverage-final.json
 
       - name: Rename coverage
         run: mv coverage/unit/coverage-final.json coverage/unit/coverage-unit-${{matrix.shard}}.json
@@ -41,7 +41,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: test:unit:webpack:coverage
-        run: mkdir coverage/webpack && echo '{}' > coverage/webpack/coverage-final.json
+        run: mkdir -p coverage/webpack && echo '{}' > coverage/webpack/coverage-final.json
 
       - name: Rename coverage
         run: mv coverage/webpack/coverage-final.json coverage/webpack/coverage-webpack.json
@@ -59,7 +59,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: test:integration:coverage
-        run: mkdir coverage/integration && echo '{}' > coverage/integration/coverage-final.json
+        run: mkdir -p coverage/integration && echo '{}' > coverage/integration/coverage-final.json
 
       - name: Rename coverage
         run: mv coverage/integration/coverage-final.json coverage/integration/coverage-integration.json
