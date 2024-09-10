@@ -18,7 +18,7 @@ import type { NotificationListItemTextProps } from '../notification-list-item-te
 import { NotificationListItemText } from '../notification-list-item-text';
 import { formatMenuItemDate } from '../../../helpers/utils/notification.util';
 import { SnapUIMarkdown } from '../../app/snaps/snap-ui-markdown';
-import SnapAvatar from '../../app/snaps/snap-avatar';
+import { SnapIcon } from '../../app/snaps/snap-icon';
 
 export type NotificationListItemSnapProps = {
   id: string;
@@ -107,11 +107,7 @@ export const NotificationListItemSnap = ({
         )}
 
         <Box height={BlockSize.Full} className="notification-list-item__icon">
-          <SnapAvatar
-            snapId={snapId}
-            badgeBackgroundColor={BackgroundColor.backgroundDefault}
-            avatarSize={IconSize.Md}
-          />
+          <SnapIcon snapId={snapId} avatarSize={IconSize.Md} />
         </Box>
 
         <Box
