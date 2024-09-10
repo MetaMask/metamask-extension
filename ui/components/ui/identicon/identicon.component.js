@@ -12,8 +12,7 @@ const getStyles = (diameter) => ({
   width: diameter,
   borderRadius: diameter / 2,
 });
-const fetchImage = async (image, ipfsGateway) => {
-  // Simulate an API request with a timeout
+const getImage = async (image, ipfsGateway) => {
   return await getAssetImageURL(image, ipfsGateway);
 };
 
@@ -85,7 +84,7 @@ export default class Identicon extends Component {
   };
 
   loadImage = async () => {
-    const result = await fetchImage(this.props.image, this.props.ipfsGateway);
+    const result = await getImage(this.props.image, this.props.ipfsGateway);
     this.setState({ imageUrl: result });
   };
 
