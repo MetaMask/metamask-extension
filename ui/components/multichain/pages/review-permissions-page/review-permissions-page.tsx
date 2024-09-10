@@ -189,7 +189,7 @@ export const ReviewPermissions = () => {
               onNetworksClick={() => setShowNetworkToast(true)}
               onDisconnectClick={() => setShowDisconnectAllModal(true)}
               activeTabOrigin={activeTabOrigin}
-              combinedNetworks={combinedNetworks}
+              combinedNetworks={networksList}
             />
           ) : (
             <NoConnectionContent />
