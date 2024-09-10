@@ -91,19 +91,17 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for better relevancy of analysis
 
-      - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
-
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           path: coverage
           merge-multiple: true
 
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+
       - name: Merge coverage reports
-        run: |
-          yarn nyc merge coverage .nyc_output/coverage-final.json
-          yarn nyc report --reporter lcov
+        run: bunx nyc merge coverage .nyc_output/coverage-final.json && bunx nyc report --reporter lcov
 
       - uses: actions/upload-artifact@v4
         with:
