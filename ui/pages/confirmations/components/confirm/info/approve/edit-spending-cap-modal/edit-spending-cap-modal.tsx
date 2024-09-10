@@ -1,6 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { hexToDecimal } from '../../../../../../../../shared/modules/conversion.utils';
 import {
@@ -23,12 +23,14 @@ import {
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { updateEditableParams } from '../../../../../../../store/actions';
+import {
+  estimateGas,
+  updateEditableParams,
+} from '../../../../../../../store/actions';
 import { getCustomTxParamsData } from '../../../../../confirm-approve/confirm-approve.util';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
-import { useTransactionGasEstimate } from '../hooks/use-transaction-gas-estimate';
 
 export const getAccountBalance = (userBalance: string, decimals: string) =>
   new BigNumber(userBalance)
@@ -65,58 +67,42 @@ export const EditSpendingCapModal = ({
 
   const [customSpendingCapInputValue, setCustomSpendingCapInputValue] =
     useState('');
-  const [customSpendingCap, setCustomSpendingCap] = useState('');
-  const setPositiveSpendingCap = (newValue: string) => {
-    const parsedValue = parseInt(newValue, 10);
-    // coerce negative numbers to zero
-    setCustomSpendingCap(parsedValue < 0 ? '0' : newValue);
-  };
-
-  const customTxParamsData = useMemo(() => {
-    return getCustomTxParamsData(transactionMeta?.txParams?.data, {
-      customPermissionAmount: customSpendingCap || '0',
-      decimals: decimals || '0',
-    });
-  }, [customSpendingCap, transactionMeta?.txParams?.data, decimals]);
-
-  const { estimatedGasLimit } = useTransactionGasEstimate(
-    transactionMeta,
-    customTxParamsData,
-    customSpendingCap,
-  );
-
-  useEffect(() => {
-    if (customSpendingCap && estimatedGasLimit) {
-      dispatch(
-        updateEditableParams(transactionMeta.id, {
-          data: customTxParamsData,
-          gas: hexToDecimal(estimatedGasLimit as string),
-        }),
-      );
-    }
-  }, [
-    customSpendingCap,
-    estimatedGasLimit,
-    customTxParamsData,
-    transactionMeta,
-    dispatch,
-  ]);
 
   const handleCancel = useCallback(() => {
     setIsOpenEditSpendingCapModal(false);
     setCustomSpendingCapInputValue('');
   }, [setIsOpenEditSpendingCapModal, setCustomSpendingCapInputValue]);
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
+    const parsedValue = parseInt(customSpendingCapInputValue, 10);
+
+    const customTxParamsData = getCustomTxParamsData(
+      transactionMeta?.txParams?.data,
+      {
+        customPermissionAmount:
+          // coerce negative numbers to zero
+          parsedValue < 0 ? '0' : customSpendingCapInputValue || '0',
+        decimals: decimals || '0',
+      },
+    );
+
+    const estimatedGasLimit = await estimateGas({
+      from: transactionMeta.txParams.from,
+      to: transactionMeta.txParams.to,
+      value: transactionMeta.txParams.value,
+      data: customTxParamsData,
+    });
+
+    dispatch(
+      updateEditableParams(transactionMeta.id, {
+        data: customTxParamsData,
+        gas: hexToDecimal(estimatedGasLimit as string),
+      }),
+    );
+
     setIsOpenEditSpendingCapModal(false);
-    setPositiveSpendingCap(customSpendingCapInputValue);
     setCustomSpendingCapInputValue('');
-  }, [
-    setIsOpenEditSpendingCapModal,
-    setCustomSpendingCapInputValue,
-    setPositiveSpendingCap,
-    customSpendingCapInputValue,
-  ]);
+  }, [customSpendingCapInputValue]);
 
   return (
     <Modal
