@@ -6064,6 +6064,10 @@
   "transactionCancelSuccess": {
     "message": "Transaction successfully cancelled at $2"
   },
+  "transactionConfirmationEstimate": {
+    "message": "Estimated transaction time is $1",
+    "description": "$1 is the estimated time in minutes for the transaction to be confirmed."
+  },
   "transactionConfirmed": {
     "message": "Transaction confirmed at $2."
   },
@@ -6150,6 +6154,9 @@
   },
   "transactionSubmitted": {
     "message": "Transaction submitted with estimated gas fee of $1 at $2."
+  },
+  "transactionSubmittedTitle": {
+    "message": "Transaction submitted"
   },
   "transactionUpdated": {
     "message": "Transaction updated at $2."
