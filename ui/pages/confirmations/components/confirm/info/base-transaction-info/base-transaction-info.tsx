@@ -11,9 +11,8 @@ import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import { TransactionDetails } from '../shared/transaction-details/transaction-details';
 
 const BaseTransactionInfo = () => {
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
