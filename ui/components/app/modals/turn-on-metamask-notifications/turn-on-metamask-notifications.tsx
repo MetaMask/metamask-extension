@@ -72,14 +72,16 @@ export default function TurnOnMetamaskNotifications() {
 
   const handleHideModal = () => {
     hideModal();
-    trackEvent({
-      category: MetaMetricsEventCategory.NotificationsActivationFlow,
-      event: MetaMetricsEventName.NotificationsActivated,
-      properties: {
-        is_profile_syncing_enabled: isProfileSyncingEnabled,
-        action_type: 'dismissed',
-      },
-    });
+    if (!isUpdatingMetamaskNotifications) {
+      trackEvent({
+        category: MetaMetricsEventCategory.NotificationsActivationFlow,
+        event: MetaMetricsEventName.NotificationsActivated,
+        properties: {
+          is_profile_syncing_enabled: isProfileSyncingEnabled,
+          action_type: 'dismissed',
+        },
+      });
+    }
   };
 
   useEffect(() => {
