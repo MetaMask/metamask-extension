@@ -7,24 +7,18 @@ import {
 } from '../../../shared/constants/app';
 import { trace, TraceName } from '../../../shared/lib/trace';
 
-async function handleTracing(
-  req: any,
-  id: any,
-  traceName: TraceName,
-  tags?: Record<string, string>,
-) {
-  req.traceContext = await trace({
-    name: traceName,
-    id,
-    tags,
-  });
+const METHOD_TYPE_TO_TRACE_NAME: Record<string, TraceName> = {
+  [MESSAGE_TYPE.ETH_SEND_TRANSACTION]: TraceName.Transaction,
+  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA]: TraceName.Signature,
+  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1]: TraceName.Signature,
+  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3]: TraceName.Signature,
+  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4]: TraceName.Signature,
+  [MESSAGE_TYPE.PERSONAL_SIGN]: TraceName.Signature,
+};
 
-  await trace({
-    name: TraceName.Middleware,
-    id,
-    parentContext: req.traceContext,
-  });
-}
+const METHOD_TYPE_TO_TAGS: Record<string, Record<string, string>> = {
+  [MESSAGE_TYPE.ETH_SEND_TRANSACTION]: { source: 'dapp' },
+};
 
 export default function createTracingMiddleware() {
   return async function tracingMiddleware(
@@ -34,12 +28,20 @@ export default function createTracingMiddleware() {
   ) {
     const { id, method } = req;
 
-    if (method === MESSAGE_TYPE.ETH_SEND_TRANSACTION) {
-      await handleTracing(req, id, TraceName.Transaction, { source: 'dapp' });
-    }
+    const traceName = METHOD_TYPE_TO_TRACE_NAME[method];
 
-    if (TRACE_ENABLED_SIGN_METHODS.includes(method)) {
-      await handleTracing(req, id, TraceName.Signature);
+    if (traceName) {
+      req.traceContext = await trace({
+        name: traceName,
+        id,
+        tags: METHOD_TYPE_TO_TAGS[method],
+      });
+
+      await trace({
+        name: traceName,
+        id,
+        parentContext: req.traceContext,
+      });
     }
 
     next();

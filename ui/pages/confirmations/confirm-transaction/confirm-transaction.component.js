@@ -105,11 +105,9 @@ const ConfirmTransaction = () => {
       return undefined;
     }
 
-    let traceId = id;
-
-    if (TRACE_ENABLED_SIGN_METHODS.includes(type)) {
-      traceId = transaction.msgParams?.requestId?.toString();
-    }
+    const traceId = TRACE_ENABLED_SIGN_METHODS.includes(type)
+      ? transaction.msgParams?.requestId?.toString()
+      : id;
 
     return await endBackgroundTrace({
       name: TraceName.NotificationDisplay,
