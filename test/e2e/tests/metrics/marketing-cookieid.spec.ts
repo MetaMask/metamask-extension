@@ -75,7 +75,7 @@ describe('Marketing cookieId', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // wait for state to update
+        // waiting for marketingCampaignCookieId to update in state
         await driver.delay(5000);
 
         const uiState = await getCleanAppState(driver);
@@ -118,7 +118,7 @@ describe('Marketing cookieId', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // wait for state to update
+        // waiting for marketingCampaignCookieId to update in state
         await driver.delay(5000);
 
         const uiState = await getCleanAppState(driver);
@@ -156,7 +156,7 @@ describe('Marketing cookieId', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // wait for state to update
+        // waiting for marketingCampaignCookieId to update in state
         await driver.delay(5000);
 
         const uiState = await getCleanAppState(driver);
@@ -198,7 +198,7 @@ describe('Marketing cookieId', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // wait for state to update
+        // waiting for marketingCampaignCookieId to update in state
         await driver.delay(5000);
 
         let uiState = await getCleanAppState(driver);
@@ -219,7 +219,7 @@ describe('Marketing cookieId', function (this: Suite) {
         await driver.clickElement(selectors.dataCollectionForMarketingToggle);
         await driver.clickElement(selectors.dataCollectionWarningAckButton);
 
-        // wait for state to update
+        // waiting for marketingCampaignCookieId to update in state
         await driver.delay(5000);
 
         uiState = await getCleanAppState(driver);
