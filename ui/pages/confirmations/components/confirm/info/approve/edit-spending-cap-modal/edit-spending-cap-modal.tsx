@@ -1,6 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { hexToDecimal } from '../../../../../../../../shared/modules/conversion.utils';
 import {
@@ -102,16 +102,21 @@ export const EditSpendingCapModal = ({
     dispatch,
   ]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     setIsOpenEditSpendingCapModal(false);
     setCustomSpendingCapInputValue('');
-  };
+  }, [setIsOpenEditSpendingCapModal, setCustomSpendingCapInputValue]);
 
-  function handleSubmit() {
+  const handleSubmit = useCallback(() => {
     setIsOpenEditSpendingCapModal(false);
-    setCustomSpendingCapInputValue('');
     setPositiveSpendingCap(customSpendingCapInputValue);
-  }
+    setCustomSpendingCapInputValue('');
+  }, [
+    setIsOpenEditSpendingCapModal,
+    setCustomSpendingCapInputValue,
+    setPositiveSpendingCap,
+    customSpendingCapInputValue,
+  ]);
 
   return (
     <Modal
