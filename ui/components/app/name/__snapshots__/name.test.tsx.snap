@@ -79,3 +79,21 @@ exports[`Name renders address with saved name 1`] = `
   </div>
 </div>
 `;
+
+exports[`Name renders when no address value is passed 1`] = `
+<div>
+  <div>
+    <div
+      class="name name__missing"
+    >
+      <span
+        class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/question.svg');"
+      />
+      <p
+        class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+      />
+    </div>
+  </div>
+</div>
+`;
