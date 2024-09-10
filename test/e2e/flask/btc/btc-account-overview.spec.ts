@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { withBtcAccountSnap } from './common-btc';
 
@@ -31,9 +30,7 @@ describe('BTC Account - Overview', function (this: Suite) {
         });
 
         // buy sell button
-        await driver.findClickableElement(
-          '[data-testid="coin-overview-buy"]',
-        );
+        await driver.findClickableElement('[data-testid="coin-overview-buy"]');
 
         // portfolio button
         await driver.findClickableElement(
