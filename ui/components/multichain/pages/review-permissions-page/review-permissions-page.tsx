@@ -78,6 +78,7 @@ export const ReviewPermissions = () => {
   const connectedNetworks = useSelector((state) =>
     getPermittedChainsForSelectedTab(state, activeTabOrigin),
   );
+
   const permittedAccountsByOrigin = useSelector(
     getPermittedAccountsByOrigin,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -93,7 +94,7 @@ export const ReviewPermissions = () => {
     (net: { chainId: any }) => connectedNetworks.indexOf(net.chainId) !== -1,
   );
   const hostName = getURLHost(securedOrigin);
-
+  console.log(connectedNetworks, grantedNetworks);
   const currentTabHasNoAccounts =
     !permittedAccountsByOrigin[activeTabOrigin]?.length;
 

@@ -72,6 +72,18 @@ export const SiteCell: React.FC<SiteCellProps> = ({
 
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
   const [showEditNetworksModal, setShowEditNetworksModal] = useState(false);
+  const accountMessageConnectedState =
+    accounts.length > 1
+      ? t('connectedWith')
+      : t('connectedWithAccount', [
+          accounts[0].label || accounts[0].metadata.name,
+        ]);
+  const accountMessageNotConnectedState =
+    accounts.length > 1
+      ? t('requestingFor')
+      : t('requestingForAccount', [
+          accounts[0].label || accounts[0].metadata.name,
+        ]);
 
   const permittedAccountsByOrigin = useSelector(getPermittedAccountsByOrigin);
   const currentTabHasNoAccounts =
@@ -122,10 +134,11 @@ export const SiteCell: React.FC<SiteCellProps> = ({
               width={BlockSize.Max}
               color={TextColor.textAlternative}
               variant={TextVariant.bodyMd}
+              ellipsis
             >
               {currentTabHasNoAccounts
-                ? t('requestingFor')
-                : t('connectedWith')}
+                ? accountMessageNotConnectedState
+                : accountMessageConnectedState}
             </Text>
             {accounts.length > 1 ? (
               <SiteCellTooltip
@@ -133,21 +146,11 @@ export const SiteCell: React.FC<SiteCellProps> = ({
                 avatarAccountsData={avatarAccountsData}
               />
             ) : (
-              <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
-                <Text
-                  as="span"
-                  width={BlockSize.Max}
-                  color={TextColor.textAlternative}
-                  variant={TextVariant.bodyMd}
-                >
-                  {accounts[0].label || accounts[0].metadata.name}
-                </Text>
-                <AvatarAccount
-                  address={accounts[0].address}
-                  size={AvatarAccountSize.Xs}
-                  borderColor={BorderColor.transparent}
-                />
-              </Box>
+              <AvatarAccount
+                address={accounts[0].address}
+                size={AvatarAccountSize.Xs}
+                borderColor={BorderColor.transparent}
+              />
             )}
           </Box>
         </Box>
