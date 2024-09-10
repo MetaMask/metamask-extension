@@ -32,10 +32,11 @@ import {
   DraftTransaction,
   startNewMultichainDraftTransaction,
 } from '../../../../ducks/multichain-send/multichain-send';
-import { TransactionNotice } from './components/transaction-notice';
 import { MultichainFee } from './components/fee';
 import { SendPageRecipientInput } from './components/recipient-input';
 import { MultichainAssetPickerAmount } from './components/asset-picker-amount';
+import { MultichainNotices } from './components/multichain-notices';
+import Spinner from '../../../ui/spinner';
 
 export const MultichainSendPage = () => {
   const t = useContext(I18nContext);
@@ -61,11 +62,7 @@ export const MultichainSendPage = () => {
     }
   }, [draftTransactionExists]);
 
-  const draftTransaction: DraftTransaction = useSelector(
-    getCurrentMultichainDraftTransaction,
-  );
-
-  console.log('draftTransaction', draftTransaction);
+  const draftTransaction = useSelector(getCurrentMultichainDraftTransaction);
 
   const onCancel = () => {
     dispatch(clearDraft());
@@ -96,34 +93,39 @@ export const MultichainSendPage = () => {
       >
         {t('send')}
       </Header>
-      <Content>
+      {draftTransaction ? (
         <Content>
-          <SendPageAccountPicker />
-          {isSendFormShown && (
-            <MultichainAssetPickerAmount
-              error={draftTransaction.transactionParams.sendAsset.error}
-              asset={draftTransaction.transactionParams.sendAsset.assetDetails}
-              amount={{
-                error: draftTransaction.transactionParams.sendAsset.error,
-                value: draftTransaction.transactionParams.sendAsset.amount,
-              }}
-            />
-          )}
-          <Box marginTop={6}>
-            {isSendFormShown && <SendPageRecipientInput />}
-          </Box>
-          {isSendFormShown && (
-            <MultichainFee
-              asset={draftTransaction.transactionParams.sendAsset}
-              backgroundColor={BackgroundColor.backgroundAlternative}
-              estimatedFee={draftTransaction.transactionParams.fee}
-            />
-          )}
-
-          {/* TODO: set notices to network specific components */}
-          <TransactionNotice notice={t('satProtection')} />
+          <Content>
+            <SendPageAccountPicker />
+            {isSendFormShown && (
+              <MultichainAssetPickerAmount
+                error={draftTransaction.transactionParams.sendAsset.error}
+                asset={
+                  draftTransaction.transactionParams.sendAsset.assetDetails
+                }
+                amount={{
+                  error: draftTransaction.transactionParams.sendAsset.error,
+                  value: draftTransaction.transactionParams.sendAsset.amount,
+                }}
+              />
+            )}
+            <Box marginTop={6}>
+              {isSendFormShown && <SendPageRecipientInput />}
+            </Box>
+            {isSendFormShown && (
+              <MultichainFee
+                asset={draftTransaction.transactionParams.sendAsset}
+                backgroundColor={BackgroundColor.backgroundAlternative}
+                estimatedFee={draftTransaction.transactionParams.fee}
+              />
+            )}
+            <MultichainNotices network={multichainNetwork.chainId} />
+          </Content>
         </Content>
-      </Content>
+      ) : (
+        <Spinner />
+      )}
+
       <Footer>
         <ButtonSecondary onClick={onCancel} size={ButtonSecondarySize.Lg} block>
           {t('cancel')}

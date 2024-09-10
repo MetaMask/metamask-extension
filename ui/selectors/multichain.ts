@@ -25,7 +25,10 @@ import {
   NETWORK_TYPES,
   TEST_NETWORK_IDS,
 } from '../../shared/constants/network';
-import { MultichainSendState } from '../ducks/multichain-send/multichain-send';
+import {
+  DraftTransaction,
+  MultichainSendState,
+} from '../ducks/multichain-send/multichain-send';
 import { AccountsState } from './accounts';
 import {
   getCurrentChainId,
@@ -71,6 +74,10 @@ export type MultichainNetwork = {
   chainId: CaipChainId;
   network: // TODO: Maybe updates ProviderConfig to add rpcPrefs.imageUrl field
   ProviderConfigWithImageUrlAndExplorerUrl | MultichainProviderConfig;
+};
+
+export type MultchainReduxSendState = {
+  multichainSend: MultichainSendState;
 };
 
 export const MultichainNetworkPropType = PropTypes.shape({
@@ -428,26 +435,25 @@ export function getMultichainConversionRate(
 }
 
 export function getCurrentMultichainDraftTransactionId(
-  state: MultichainSendState,
+  state: MultchainReduxSendState,
 ) {
   return state.multichainSend.currentTransactionUUID;
 }
 
 export function getCurrentMultichainDraftTransaction(
-  state: MultichainSendState,
-) {
+  state: MultchainReduxSendState,
+): DraftTransaction | null {
   const draftTransactionExists = getCurrentMultichainDraftTransactionId(state);
   if (!draftTransactionExists) {
     return null;
   }
-
   const draftTransaction =
     state.multichainSend.draftTransactions[draftTransactionExists];
   return draftTransaction;
 }
 
 export function getCurrentMultichainDraftTransactionRecipient(
-  state: MultichainSendState,
+  state: MultchainReduxSendState,
 ) {
   const draftTransaction = getCurrentMultichainDraftTransaction(state);
   return draftTransaction?.transactionParams.recipient;

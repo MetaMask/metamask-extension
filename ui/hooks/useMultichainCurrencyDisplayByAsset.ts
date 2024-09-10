@@ -30,8 +30,8 @@ export const useMultichainCurrencyDisplayByAsset = ({
     }
 
     // rates from the rates controller uses symbol as the key
-    const { conversionRate } =
-      conversionRates[assetDetails.symbol.toLowerCase()]; // asset.asset is a caip19 asset
+    const conversionRate =
+      conversionRates[assetDetails.symbol.toLowerCase()]?.conversionRate ?? '0';
 
     // rates are in the largest  denomination of the asset
     // e.g. 1 ETH = 1000000000000000000 wei

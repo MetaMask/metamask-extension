@@ -11,8 +11,6 @@ export const convertUnitToHighestDenomination = ({
   };
   amount: string;
 }): string => {
-  console.log('[convert]asset', asset);
-  console.log('[convert]amount', amount);
   const decimals = new BigNumber(10).pow(asset.details.decimals);
   const amountInHighestDenomination = new BigNumber(amount).div(decimals);
 
