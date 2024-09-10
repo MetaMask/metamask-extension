@@ -176,7 +176,7 @@ function getMissingProperties(complete, object) {
 }
 
 describe('Sentry errors', function () {
-  const sentryRegEx = /https:\/\/sentry.io\/api\/\d+\/envelope/gu;
+  const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
   const migrationError =
     process.env.SELENIUM_BROWSER === Browser.CHROME

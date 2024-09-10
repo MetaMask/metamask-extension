@@ -52,9 +52,17 @@ function backupManifest(newExtension = 'backup') {
 
 function restoreBackupManifest() {
   if (fs.existsSync(`${folder}/manifest.backup.json`)) {
-    fs.cpSync(`${folder}/manifest.backup.json`, `${folder}/manifest.json`, {
-      preserveTimestamps: true,
-    });
+    // There is technically a race condition here because the OS could allow IO changes from other applications
+    // between the `existsSync` call and the `cpSync` call, so wrap in a try/catch and ignore ENOENT errors
+    try {
+      fs.cpSync(`${folder}/manifest.backup.json`, `${folder}/manifest.json`, {
+        preserveTimestamps: true,
+      });
+    } catch (err: any) {
+      if (err.code !== 'ENOENT') {
+        throw err;
+      }
+    }
   }
 }
 
@@ -75,9 +83,9 @@ export function setManifestFlags(flags: ManifestFlags = {}) {
       branch: process.env.CIRCLE_BRANCH,
       buildNum: parseIntOrUndefined(process.env.CIRCLE_BUILD_NUM),
       job: process.env.CIRCLE_JOB,
-      nodeIndex: parseIntOrUndefined(process.env.CIRCLE_BUILD_NUM),
+      nodeIndex: parseIntOrUndefined(process.env.CIRCLE_NODE_INDEX),
       prNumber: parseIntOrUndefined(
-        process.env.CIRCLE_PULL_REQUEST?.split('/').pop(), // even though CIRCLE_PR_NUMBER is documented, it doesn't work
+        process.env.CIRCLE_PULL_REQUEST?.split('/').pop(), // The CIRCLE_PR_NUMBER variable is only available on forked Pull Requests
       ),
     };
   }
