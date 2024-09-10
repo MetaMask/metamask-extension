@@ -9,6 +9,7 @@ describe('Click bridge button @no-mmi', function (this: Suite) {
       async ({ driver, ganacheServer }) => {
         const bridgePage = new BridgePage(driver);
         await logInWithBalanceValidation(driver, ganacheServer);
+        await driver.delay(500);
         await bridgePage.navigateToBridgePage();
         await bridgePage.verifyPortfolioTab(2);
       },

@@ -18,7 +18,7 @@ describe('Lock and unlock', function () {
         await unlockWallet(driver);
 
         await driver.clickElement(
-          '[data-testid="account-options-menu-buttonsdffds"]',
+          '[data-testid="account-options-menu-button"]',
         );
         const lockButton = await driver.findClickableElement(
           '[data-testid="global-menu-lock"]',
