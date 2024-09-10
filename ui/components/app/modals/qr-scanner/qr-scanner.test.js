@@ -14,4 +14,11 @@ describe('Extract Address from string', () => {
     );
     expect(result).toStrictEqual('0xCf464B40cb2419944138F24514C9aE4D1889ccC1');
   });
+
+  it('should return null if there is no address to extract that matches the pattern', () => {
+    const result = parseScanContent(
+      'ethereum:0xCf464B40cb2419944138F24514C9aE4D1',
+    );
+    expect(result).toStrictEqual(null);
+  });
 });
