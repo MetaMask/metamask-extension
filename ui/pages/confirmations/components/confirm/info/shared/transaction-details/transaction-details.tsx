@@ -20,9 +20,7 @@ import { useFourByte } from '../../hooks/useFourByte';
 export const OriginRow = () => {
   const t = useI18nContext();
 
-  const { currentConfirmation } = useConfirmContext() as unknown as {
-    currentConfirmation: TransactionMeta | undefined;
-  };
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const origin = currentConfirmation?.origin;
 
@@ -45,10 +43,7 @@ export const OriginRow = () => {
 
 export const RecipientRow = () => {
   const t = useI18nContext();
-
-  const { currentConfirmation } = useConfirmContext() as unknown as {
-    currentConfirmation: TransactionMeta | undefined;
-  };
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   if (
     !currentConfirmation?.txParams?.to ||
@@ -70,11 +65,7 @@ export const RecipientRow = () => {
 
 export const MethodDataRow = () => {
   const t = useI18nContext();
-
-  const { currentConfirmation } = useConfirmContext() as unknown as {
-    currentConfirmation: TransactionMeta;
-  };
-
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const methodData = useFourByte(currentConfirmation);
 
   if (!methodData) {
@@ -94,10 +85,7 @@ export const MethodDataRow = () => {
 
 const PaymasterRow = () => {
   const t = useI18nContext();
-
-  const { currentConfirmation } = useConfirmContext() as unknown as {
-    currentConfirmation: TransactionMeta | undefined;
-  };
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const { id: userOperationId } = currentConfirmation ?? {};
   const isUserOperation = Boolean(currentConfirmation?.isUserOperation);

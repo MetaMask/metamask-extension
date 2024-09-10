@@ -17,9 +17,7 @@ import { BannerAlert } from '../../component-library';
 
 const MMISignatureMismatchBanner: React.FC = memo(() => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext() as {
-    currentConfirmation: SignatureRequestType;
-  };
+  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
 

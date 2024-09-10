@@ -1190,7 +1190,22 @@
     },
     "@metamask/build-utils": {
       "packages": {
-        "@metamask/utils": true
+        "@metamask/build-utils>@metamask/utils": true
+      }
+    },
+    "@metamask/build-utils>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/eth-token-tracker>deep-equal>is-date-object": {
@@ -1211,21 +1226,6 @@
     "@metamask/object-multiplex>once": {
       "packages": {
         "@metamask/object-multiplex>once>wrappy": true
-      }
-    },
-    "@metamask/utils": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "nock>debug": true,
-        "semver": true
       }
     },
     "@metamask/utils>@scure/base": {
@@ -6700,7 +6700,7 @@
         "tty.isatty": true
       },
       "globals": {
-        "process.argv": true,
+        "process.argv.includes": true,
         "process.env": true,
         "process.platform": true
       }

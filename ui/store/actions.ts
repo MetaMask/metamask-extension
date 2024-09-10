@@ -3141,11 +3141,6 @@ export async function forceUpdateMetamaskState(
     throw error;
   }
 
-  log.debug(
-    'Updated state with patches',
-    pendingPatches?.map((p) => p.path.join('.')),
-  );
-
   return dispatch(updateMetamaskState(pendingPatches));
 }
 
