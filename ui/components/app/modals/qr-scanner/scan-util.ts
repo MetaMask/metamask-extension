@@ -1,3 +1,7 @@
-export function parseScanContent(content: any): string {
-  return content.match(/.*:(0x[0-9a-fA-F]{40})(?:@.*)?/)[1];
+export function parseScanContent(content: string): string | null {
+  const matches = content.match(/.*:(0x[0-9a-fA-F]{40})(?:@.*)?/u);
+  if (!matches) {
+    return null;
+  }
+  return matches[1];
 }
