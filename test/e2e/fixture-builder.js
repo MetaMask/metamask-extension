@@ -8,7 +8,7 @@ const { mockNetworkState } = require('../stub/networks');
 
 const { CHAIN_IDS } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
-const { DAPP_URL, DAPP_ONE_URL, ACCOUNT_1 } = require('./helpers');
+const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
 const { DEFAULT_FIXTURE_ACCOUNT, ERC_4337_ACCOUNT } = require('./constants');
 const {
   defaultFixture,

@@ -4,6 +4,7 @@ import { openDapp, unlockWallet } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
+import { MockedEndpoint } from '../../../mock-e2e';
 import {
   assertAdvancedGasDetails,
   confirmDepositTransaction,
@@ -14,7 +15,6 @@ import {
   toggleAdvancedDetails,
   toggleOnHexData,
 } from './shared';
-import { MockedEndpoint } from '../../../mock-e2e';
 
 const { hexToNumber } = require('@metamask/utils');
 const {
@@ -94,7 +94,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
                 redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
-              useTransactionSimulations: false
+              useTransactionSimulations: false,
             })
             .withNetworkControllerOnOptimism()
             .build(),
@@ -105,7 +105,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           },
           smartContract,
           title: this.test?.fullTitle(),
-          testSpecificMock: mockOptimismOracle
+          testSpecificMock: mockOptimismOracle,
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await unlockWallet(driver);
@@ -117,9 +117,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 
           await openDapp(driver, contractAddress);
 
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.Dialog,
-          );
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           await toggleAdvancedDetails(driver);
 
