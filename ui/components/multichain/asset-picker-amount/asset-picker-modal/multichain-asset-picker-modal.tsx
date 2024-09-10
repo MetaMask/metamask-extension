@@ -1,13 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
-
-import { useSelector } from 'react-redux';
-import { isEqual, uniqBy } from 'lodash';
-import {
-  Token,
-  TokenListMap,
-  TokenListToken,
-} from '@metamask/assets-controllers';
-import { Hex } from '@metamask/utils';
+import React, { useState, useMemo } from 'react';
 import {
   Modal,
   ModalContent,
@@ -28,35 +19,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { AssetType } from '../../../../../shared/constants/transaction';
-
-import {
-  getAllTokens,
-  getCurrentChainId,
-  getCurrentCurrency,
-  getNativeCurrencyImage,
-  getSelectedAccountCachedBalance,
-  getSelectedInternalAccount,
-  getShouldHideZeroBalanceTokens,
-  getTokenExchangeRates,
-  getTokenList,
-} from '../../../../selectors';
-import {
-  getConversionRate,
-  getNativeCurrency,
-} from '../../../../ducks/metamask/metamask';
-import { useTokenTracker } from '../../../../hooks/useTokenTracker';
-import { getTopAssets } from '../../../../ducks/swaps/swaps';
-import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
-import { useEqualityCheck } from '../../../../hooks/useEqualityCheck';
-import { getSwapsBlockedTokens } from '../../../../ducks/send';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import {
-  ERC20Asset,
-  NativeAsset,
-  NFT,
-  AssetWithDisplayData,
-  TokenWithBalance,
-} from './types';
+import { ERC20Asset, NativeAsset, NFT, AssetWithDisplayData } from './types';
 import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 import AssetList from './AssetList';
@@ -133,7 +96,6 @@ export function MultichainAssetPickerModal({
       nativeToken,
     ];
     // undefined would be the native token address
-    const filteredTokensAddresses = new Set<string | undefined>();
 
     return filteredTokens;
   }, [
@@ -172,7 +134,7 @@ export function MultichainAssetPickerModal({
               src={sendingAsset.image}
               size={AvatarTokenSize.Xs}
             />
-            <Text variant={TextVariant.bodySm}>
+            <Text variant={TextVariant.bodySm} textAlign={TextAlign.Center}>
               {t('sendingAsset', [sendingAsset.symbol])}
             </Text>
           </Box>

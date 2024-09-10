@@ -159,7 +159,7 @@ export function AssetPicker({
       <Button
         data-testid="asset-picker-button"
         className="asset-picker"
-        disabled={isDisabled}
+        disabled={isDisabled || !isEvm}
         display={Display.Flex}
         alignItems={AlignItems.center}
         gap={2}
@@ -172,7 +172,7 @@ export function AssetPicker({
           setShowAssetPickerModal(true);
           onClick?.();
         }}
-        endIconName={IconName.ArrowDown}
+        endIconName={isEvm ? IconName.ArrowDown : undefined}
         endIconProps={{
           color: IconColor.iconDefault,
           marginInlineStart: 0,
