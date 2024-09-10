@@ -8,9 +8,10 @@ import {
   withFixtures,
   defaultGanacheOptions,
   unlockWallet,
-} from '../../../helpers';
-import { TestSuiteArguments } from '../../confirmations/transactions/shared';
-import FixtureBuilder from '../../../fixture-builder';
+  openDapp,
+} from '../../helpers';
+import { TestSuiteArguments } from '../confirmations/transactions/shared';
+import FixtureBuilder from '../../fixture-builder';
 
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
@@ -47,11 +48,11 @@ const mockSegment = async (mockServer: Mockttp) => {
 };
 
 describe('Marketing cookieId', function (this: Suite) {
-  it('update state when the script is executed and the metrics context is updated with the cookieId when an event is fired', async function () {
+  it('should be send to segment when preferences are enabled', async function () {
     await withFixtures(
       {
         dapp: true,
-        dappPaths: ['./tests/metrics/attribution/mock-page'],
+        dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: 'fake-metrics-id',
@@ -69,12 +70,13 @@ describe('Marketing cookieId', function (this: Suite) {
       }: TestSuiteArguments) => {
         await unlockWallet(driver);
 
-        await driver.openNewPage(`http://127.0.0.1:8080`);
-        // wait for state to update
-        await driver.delay(5000);
+        await openDapp(driver);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+
+        // wait for state to update
+        await driver.delay(5000);
 
         const uiState = await getCleanAppState(driver);
         assert.equal(uiState.metamask.marketingCampaignCookieId, 12345);
@@ -90,11 +92,11 @@ describe('Marketing cookieId', function (this: Suite) {
       },
     );
   });
-  it('doesnot update state when dataCollectionForMarketing is already false ', async function () {
+  it('should not be send to segment when dataCollectionForMarketing is never toggled on', async function () {
     await withFixtures(
       {
         dapp: true,
-        dappPaths: ['./tests/metrics/attribution/mock-page'],
+        dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: 'fake-metrics-id',
@@ -111,12 +113,13 @@ describe('Marketing cookieId', function (this: Suite) {
       }: TestSuiteArguments) => {
         await unlockWallet(driver);
 
-        await driver.openNewPage(`http://127.0.0.1:8080`);
-        // wait for state to update
-        await driver.delay(5000);
+        await openDapp(driver);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+
+        // wait for state to update
+        await driver.delay(5000);
 
         const uiState = await getCleanAppState(driver);
         assert.equal(uiState.metamask.marketingCampaignCookieId, null);
@@ -132,11 +135,11 @@ describe('Marketing cookieId', function (this: Suite) {
       },
     );
   });
-  it('doesnot update state when participateInMetaMetrics is already false ', async function () {
+  it('should not be send to segment when participateInMetaMetrics is never toggled on ', async function () {
     await withFixtures(
       {
         dapp: true,
-        dappPaths: ['./tests/metrics/attribution/mock-page'],
+        dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         fixtures: new FixtureBuilder().withMetaMetricsController().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
@@ -148,12 +151,13 @@ describe('Marketing cookieId', function (this: Suite) {
       }: TestSuiteArguments) => {
         await unlockWallet(driver);
 
-        await driver.openNewPage(`http://127.0.0.1:8080`);
-        // wait for state to update
-        await driver.delay(5000);
+        await openDapp(driver);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+
+        // wait for state to update
+        await driver.delay(5000);
 
         const uiState = await getCleanAppState(driver);
         assert.equal(uiState.metamask.marketingCampaignCookieId, null);
@@ -167,11 +171,11 @@ describe('Marketing cookieId', function (this: Suite) {
       },
     );
   });
-  it('updates to null when dataCollectionForMarketing is toggled off ', async function () {
+  it('should updates marketingCampaignCookieId to null when dataCollectionForMarketing is toggled off ', async function () {
     await withFixtures(
       {
         dapp: true,
-        dappPaths: ['./tests/metrics/attribution/mock-page'],
+        dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: 'fake-metrics-id',
@@ -189,12 +193,13 @@ describe('Marketing cookieId', function (this: Suite) {
       }: TestSuiteArguments) => {
         await unlockWallet(driver);
 
-        await driver.openNewPage(`http://127.0.0.1:8080`);
-        // wait for state to update
-        await driver.delay(5000);
+        await openDapp(driver);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+
+        // wait for state to update
+        await driver.delay(5000);
 
         let uiState = await getCleanAppState(driver);
         assert.equal(uiState.metamask.marketingCampaignCookieId, 12345);

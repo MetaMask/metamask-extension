@@ -5137,8 +5137,6 @@ export default class MetamaskController extends EventEmitter {
         METAMASK_COOKIE_HANDLER,
       );
       // set up postStream transport
-      // TODO: Add handler here to modify trackEvents metrics context
-      // Ideally take ga_client_id here from page message
       metamaskCookieHandlerStream.on(
         'data',
         createMetaRPCHandler(
