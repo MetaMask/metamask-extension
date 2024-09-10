@@ -1,7 +1,8 @@
 import mockState from '../../test/data/mock-state.json';
 
-import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import { unapprovedPersonalSignMsg } from '../../test/data/confirmations/personal_sign';
+import { getMockPersonalSignConfirmStateForRequest } from '../../test/data/confirmations/helper';
+import { renderHookWithConfirmContextProvider } from '../../test/lib/confirmations/render-helpers';
 import { useMMIConfirmations } from './useMMIConfirmations';
 
 const mockCustodySignFn = jest.fn();
@@ -10,19 +11,22 @@ jest.mock('./useMMICustodySignMessage', () => ({
 }));
 
 const render = () => {
-  const state = {
-    metamask: {
-      ...mockState.metamask,
+  const state = getMockPersonalSignConfirmStateForRequest(
+    {
+      ...unapprovedPersonalSignMsg,
+      custodyId: 'DUMMY_ID',
     },
-    confirm: {
-      currentConfirmation: {
-        ...unapprovedPersonalSignMsg,
-        custodyId: 'DUMMY_ID',
+    {
+      metamask: {
+        ...mockState.metamask,
       },
     },
-  };
+  );
 
-  return renderHookWithProvider(() => useMMIConfirmations(), state);
+  return renderHookWithConfirmContextProvider(
+    () => useMMIConfirmations(),
+    state,
+  );
 };
 
 describe('useMMIConfirmations', () => {
