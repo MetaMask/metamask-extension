@@ -4,7 +4,7 @@ import {
   startSpanManual,
   withIsolationScope,
 } from '@sentry/browser';
-import { endTrace, trace } from './trace';
+import { endTrace, trace, TraceName } from './trace';
 
 jest.mock('@sentry/browser', () => ({
   withIsolationScope: jest.fn(),
@@ -12,7 +12,7 @@ jest.mock('@sentry/browser', () => ({
   startSpanManual: jest.fn(),
 }));
 
-const NAME_MOCK = 'testName';
+const NAME_MOCK = TraceName.Transaction;
 const ID_MOCK = 'testId';
 const PARENT_CONTEXT_MOCK = {} as Span;
 
@@ -27,12 +27,6 @@ const DATA_MOCK = {
   data2: true,
   data3: 123,
 };
-
-function mockGetMetaMetricsEnabled(enabled: boolean) {
-  global.sentry = {
-    getMetaMetricsEnabled: () => Promise.resolve(enabled),
-  };
-}
 
 describe('Trace', () => {
   const startSpanMock = jest.mocked(startSpan);
@@ -52,53 +46,30 @@ describe('Trace', () => {
   });
 
   describe('trace', () => {
-    // @ts-expect-error This function is missing from the Mocha type definitions
-    it.each([
-      ['enabled', true],
-      ['disabled', false],
-    ])(
-      'executes callback if Sentry is %s',
-      async (_: string, sentryEnabled: boolean) => {
-        let callbackExecuted = false;
+    it('executes callback', () => {
+      let callbackExecuted = false;
 
-        mockGetMetaMetricsEnabled(sentryEnabled);
+      trace({ name: NAME_MOCK }, () => {
+        callbackExecuted = true;
+      });
 
-        await trace({ name: NAME_MOCK }, async () => {
-          callbackExecuted = true;
-        });
+      expect(callbackExecuted).toBe(true);
+    });
 
-        expect(callbackExecuted).toBe(true);
-      },
-    );
+    it('returns value from callback', () => {
+      const result = trace({ name: NAME_MOCK }, () => true);
+      expect(result).toBe(true);
+    });
 
-    // @ts-expect-error This function is missing from the Mocha type definitions
-    it.each([
-      ['enabled', true],
-      ['disabled', false],
-    ])(
-      'returns value from callback if Sentry is %s',
-      async (_: string, sentryEnabled: boolean) => {
-        mockGetMetaMetricsEnabled(sentryEnabled);
-
-        const result = await trace({ name: NAME_MOCK }, async () => {
-          return true;
-        });
-
-        expect(result).toBe(true);
-      },
-    );
-
-    it('invokes Sentry if callback provided and metrics enabled', async () => {
-      mockGetMetaMetricsEnabled(true);
-
-      await trace(
+    it('invokes Sentry if callback provided', () => {
+      trace(
         {
           name: NAME_MOCK,
           tags: TAGS_MOCK,
           data: DATA_MOCK,
           parentContext: PARENT_CONTEXT_MOCK,
         },
-        async () => Promise.resolve(),
+        () => true,
       );
 
       expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
@@ -109,6 +80,7 @@ describe('Trace', () => {
           name: NAME_MOCK,
           parentSpan: PARENT_CONTEXT_MOCK,
           attributes: DATA_MOCK,
+          op: 'custom',
         },
         expect.any(Function),
       );
@@ -117,10 +89,8 @@ describe('Trace', () => {
       expect(setTagsMock).toHaveBeenCalledWith(TAGS_MOCK);
     });
 
-    it('invokes Sentry if no callback provided and metrics enabled', async () => {
-      mockGetMetaMetricsEnabled(true);
-
-      await trace({
+    it('invokes Sentry if no callback provided', () => {
+      trace({
         id: ID_MOCK,
         name: NAME_MOCK,
         tags: TAGS_MOCK,
@@ -136,6 +106,7 @@ describe('Trace', () => {
           name: NAME_MOCK,
           parentSpan: PARENT_CONTEXT_MOCK,
           attributes: DATA_MOCK,
+          op: 'custom',
         },
         expect.any(Function),
       );
@@ -144,24 +115,37 @@ describe('Trace', () => {
       expect(setTagsMock).toHaveBeenCalledWith(TAGS_MOCK);
     });
 
-    it('does not invoke Sentry if no callback provided and no ID', async () => {
-      mockGetMetaMetricsEnabled(true);
-
-      await trace({
+    it('invokes Sentry if no callback provided with custom start time', () => {
+      trace({
+        id: ID_MOCK,
         name: NAME_MOCK,
         tags: TAGS_MOCK,
         data: DATA_MOCK,
         parentContext: PARENT_CONTEXT_MOCK,
+        startTime: 123,
       });
 
-      expect(withIsolationScopeMock).toHaveBeenCalledTimes(0);
-      expect(startSpanManualMock).toHaveBeenCalledTimes(0);
-      expect(setTagsMock).toHaveBeenCalledTimes(0);
+      expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
+
+      expect(startSpanManualMock).toHaveBeenCalledTimes(1);
+      expect(startSpanManualMock).toHaveBeenCalledWith(
+        {
+          name: NAME_MOCK,
+          parentSpan: PARENT_CONTEXT_MOCK,
+          attributes: DATA_MOCK,
+          op: 'custom',
+          startTime: 123,
+        },
+        expect.any(Function),
+      );
+
+      expect(setTagsMock).toHaveBeenCalledTimes(1);
+      expect(setTagsMock).toHaveBeenCalledWith(TAGS_MOCK);
     });
   });
 
   describe('endTrace', () => {
-    it('ends Sentry span matching name and ID', async () => {
+    it('ends Sentry span matching name and specified ID', () => {
       const spanEndMock = jest.fn();
       const spanMock = { end: spanEndMock } as unknown as Span;
 
@@ -171,7 +155,7 @@ describe('Trace', () => {
         }),
       );
 
-      await trace({
+      trace({
         name: NAME_MOCK,
         id: ID_MOCK,
         tags: TAGS_MOCK,
@@ -184,7 +168,7 @@ describe('Trace', () => {
       expect(spanEndMock).toHaveBeenCalledTimes(1);
     });
 
-    it('does not end Sentry span if name and ID does not match', async () => {
+    it('ends Sentry span matching name and default ID', () => {
       const spanEndMock = jest.fn();
       const spanMock = { end: spanEndMock } as unknown as Span;
 
@@ -194,7 +178,53 @@ describe('Trace', () => {
         }),
       );
 
-      await trace({
+      trace({
+        name: NAME_MOCK,
+        tags: TAGS_MOCK,
+        data: DATA_MOCK,
+        parentContext: PARENT_CONTEXT_MOCK,
+      });
+
+      endTrace({ name: NAME_MOCK });
+
+      expect(spanEndMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('ends Sentry span with custom timestamp', () => {
+      const spanEndMock = jest.fn();
+      const spanMock = { end: spanEndMock } as unknown as Span;
+
+      startSpanManualMock.mockImplementationOnce((_, fn) =>
+        fn(spanMock, () => {
+          // Intentionally empty
+        }),
+      );
+
+      trace({
+        name: NAME_MOCK,
+        id: ID_MOCK,
+        tags: TAGS_MOCK,
+        data: DATA_MOCK,
+        parentContext: PARENT_CONTEXT_MOCK,
+      });
+
+      endTrace({ name: NAME_MOCK, id: ID_MOCK, timestamp: 123 });
+
+      expect(spanEndMock).toHaveBeenCalledTimes(1);
+      expect(spanEndMock).toHaveBeenCalledWith(123);
+    });
+
+    it('does not end Sentry span if name and ID does not match', () => {
+      const spanEndMock = jest.fn();
+      const spanMock = { end: spanEndMock } as unknown as Span;
+
+      startSpanManualMock.mockImplementationOnce((_, fn) =>
+        fn(spanMock, () => {
+          // Intentionally empty
+        }),
+      );
+
+      trace({
         name: NAME_MOCK,
         id: ID_MOCK,
         tags: TAGS_MOCK,
