@@ -49,6 +49,9 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
+  // Debug: Log the GitHub context to see available information
+  console.log('GitHub context:', JSON.stringify(context, null, 2));
+
   // Initialise octokit, required to call Github GraphQL API
   const octokit: InstanceType<typeof GitHub> = getOctokit(personalAccessToken, {
     previews: ['bane'], // The "bane" preview is required for adding, updating, creating and deleting labels.
