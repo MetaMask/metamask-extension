@@ -183,10 +183,11 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   // Re-orders networks when the user drag + drops them
   const onDragEnd = (result: DropResult) => {
     if (result.destination) {
-      const [removed] = orderedNetworks.splice(result.source.index, 1);
-      orderedNetworks.splice(result.destination.index, 0, removed);
-      dispatch(updateNetworksList(orderedNetworks.map((n) => n.chainId)));
-      setOrderedNetworks(orderedNetworks);
+      const newOrderedNetworks = [...orderedNetworks];
+      const [removed] = newOrderedNetworks.splice(result.source.index, 1);
+      newOrderedNetworks.splice(result.destination.index, 0, removed);
+      dispatch(updateNetworksList(newOrderedNetworks.map((n) => n.chainId)));
+      setOrderedNetworks(newOrderedNetworks);
     }
   };
 
