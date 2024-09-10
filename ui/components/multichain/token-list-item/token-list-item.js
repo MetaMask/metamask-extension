@@ -91,9 +91,11 @@ export const TokenListItem = ({
 
   const decimalChainId = isEvm && parseInt(hexToDecimal(chainId), 10);
 
-  const [safeChainDetails] = safeChains.filter((chain) => {
-    return chain.chainId === decimalChainId;
-  });
+  const [safeChainDetails] =
+    safeChains &&
+    safeChains.filter((chain) => {
+      return chain.chainId === decimalChainId;
+    });
 
   // Scam warning
   const showScamWarning =
