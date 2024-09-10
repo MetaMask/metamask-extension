@@ -1153,15 +1153,6 @@ export default class SecurityTab extends PureComponent {
 
         <div>
           <span className="settings-page__security-tab-sub-header">
-            {this.context.t('alerts')}
-          </span>
-        </div>
-        <div className="settings-page__content-padded">
-          {this.renderPhishingDetectionToggle()}
-        </div>
-
-        <div>
-          <span className="settings-page__security-tab-sub-header">
             {this.context.t('smartContracts')}
           </span>
         </div>
