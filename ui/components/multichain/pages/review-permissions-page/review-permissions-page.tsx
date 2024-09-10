@@ -26,6 +26,7 @@ import {
 } from '../../../../selectors';
 import {
   removePermissionsFor,
+  requestAccountsAndChainPermissionsWithId,
   requestAccountsPermissionWithId,
 } from '../../../../store/actions';
 import {
@@ -104,9 +105,9 @@ export const ReviewPermissions = () => {
       origin: activeTabOrigin,
     };
   }
-  const requestAccountsPermission = async () => {
+  const requestAccountsAndChainPermissions = async () => {
     const requestId = await dispatch(
-      requestAccountsPermissionWithId(tabToConnect.origin),
+      requestAccountsAndChainPermissionsWithId(tabToConnect.origin),
     );
     history.push(`${CONNECT_ROUTE}/${requestId}`);
   };
@@ -251,7 +252,7 @@ export const ReviewPermissions = () => {
                   variant={ButtonVariant.Secondary}
                   startIconName={IconName.Logout}
                   danger
-                  onClick={() => disconnectAllAccounts()}
+                  onClick={disconnectAllAccounts}
                 >
                   {t('disconnectAllAccounts')}
                 </Button>
@@ -261,7 +262,7 @@ export const ReviewPermissions = () => {
                 size={ButtonPrimarySize.Lg}
                 block
                 data-test-id="no-connections-button"
-                onClick={() => requestAccountsPermission()}
+                onClick={requestAccountsAndChainPermissions}
               >
                 {t('connectAccounts')}
               </ButtonPrimary>

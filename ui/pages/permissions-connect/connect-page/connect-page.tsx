@@ -91,13 +91,7 @@ export const ConnectPage = ({
   // Handle confirmation
   const onConfirm = () => {
     const _request = {
-      request: {
-        ...request,
-        permissions: {
-          ...request.permissions,
-          [PermissionNames.permittedChains]: {},
-        },
-      },
+      ...request,
       approvedAccounts,
       approvedChainIds: filteredNetworks.map((network) => network.chainId),
     };

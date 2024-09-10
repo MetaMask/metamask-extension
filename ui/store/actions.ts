@@ -3891,6 +3891,19 @@ export function requestAccountsPermissionWithId(
   };
 }
 
+export function requestAccountsAndChainPermissionsWithId(
+  origin: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    const id = await submitRequestToBackground(
+      'requestAccountsAndChainPermissionsWithId',
+      [origin],
+    );
+    await forceUpdateMetamaskState(dispatch);
+    return id;
+  };
+}
+
 /**
  * Approves the permissions request.
  *

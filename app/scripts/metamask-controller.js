@@ -5576,6 +5576,19 @@ export default class MetamaskController extends EventEmitter {
               },
             },
           ),
+        grantPermittedChainsPermissionIncremental: (chainIds) =>
+          this.permissionController.grantPermissionsIncremental({
+            subject: { origin },
+            approvedPermissions: {
+              [PermissionNames.permittedChains]: {
+                caveats: [
+                  CaveatFactories[CaveatTypes.restrictNetworkSwitching](
+                    chainIds,
+                  ),
+                ],
+              },
+            },
+          }),
         requestPermissionsForOrigin: (requestedPermissions) => {
           this.permissionController.requestPermissions.bind(
             this.permissionController,
