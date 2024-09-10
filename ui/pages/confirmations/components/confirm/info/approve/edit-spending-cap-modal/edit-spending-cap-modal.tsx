@@ -164,7 +164,7 @@ export const EditSpendingCapModal = ({
         <ModalFooter
           onSubmit={handleSubmit}
           onCancel={handleCancel}
-          submitButtonProps={{ children: t('save') }}
+          submitButtonProps={{ children: t('save'), loading: isModalSaving }}
         />
       </ModalContent>
     </Modal>
