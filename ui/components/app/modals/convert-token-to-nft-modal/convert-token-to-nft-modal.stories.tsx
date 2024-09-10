@@ -65,9 +65,18 @@ const storeMock = configureStore({
 });
 
 const DebugWrapper = ({ children }) => {
+  return (
+    <>
+      <DebugContent />
+      {children}
+    </>
+  );
+};
+
+const DebugContent = () => {
   const allNfts = useSelector((state: any) => state.metamask.allNfts);
   console.log('allNfts:', allNfts);
-  return children;
+  return null;
 };
 
 const meta: Meta<typeof ConvertTokenToNFTModal> = {
@@ -79,13 +88,19 @@ const meta: Meta<typeof ConvertTokenToNFTModal> = {
     },
   },
   decorators: [
-    (Story) => (
-      <Provider store={storeMock}>
-        <DebugWrapper>
-          <Story />
-        </DebugWrapper>
-      </Provider>
-    ),
+    (Story) => {
+      const DebugWrapper = () => {
+        const allNfts = useSelector((state: any) => state.metamask.allNfts);
+        console.log('allNfts:', allNfts);
+        return <Story />;
+      };
+
+      return (
+        <Provider store={storeMock}>
+          <DebugWrapper />
+        </Provider>
+      );
+    },
   ],
   argTypes: {
     hideModal: { action: 'hideModal' },
