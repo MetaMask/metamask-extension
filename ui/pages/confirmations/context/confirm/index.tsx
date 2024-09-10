@@ -25,12 +25,12 @@ export const ConfirmContextProvider: React.FC<{
   );
 };
 
-export const useConfirmContext = () => {
+export const useConfirmContext = <T = Confirmation,>() => {
   const context = useContext(ConfirmContext);
   if (!context) {
     throw new Error(
       'useConfirmContext must be used within an ConfirmContextProvider',
     );
   }
-  return context;
+  return context as { currentConfirmation: T };
 };
