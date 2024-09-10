@@ -13,6 +13,7 @@
  * 5) A global afterEach hook restores the backup copy of the manifest, so that the next test gets the normal manifest
  */
 import fs from 'fs';
+import { hasProperty } from '@metamask/utils';
 import { ManifestFlags } from '../../app/scripts/lib/manifestFlags';
 
 const folder = `dist/${process.env.SELENIUM_BROWSER}`;
@@ -58,9 +59,17 @@ function restoreBackupManifest() {
       fs.cpSync(`${folder}/manifest.backup.json`, `${folder}/manifest.json`, {
         preserveTimestamps: true,
       });
-    } catch (err: any) {
-      if (err.code !== 'ENOENT') {
-        throw err;
+    } catch (error: unknown) {
+      if (
+        error instanceof Error &&
+        hasProperty(error, 'code') &&
+        error.code === 'ENOENT'
+      ) {
+        console.info(
+          'Ignoring ENOENT error when restoring manifest.json backup',
+        );
+      } else {
+        throw error;
       }
     }
   }
