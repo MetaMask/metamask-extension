@@ -78,7 +78,7 @@ export const ReviewPermissions = () => {
   const connectedNetworks = useSelector((state) =>
     getPermittedChainsForSelectedTab(state, activeTabOrigin),
   );
-
+  console.log(connectedNetworks, 'connectedNetworks');
   const permittedAccountsByOrigin = useSelector(
     getPermittedAccountsByOrigin,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

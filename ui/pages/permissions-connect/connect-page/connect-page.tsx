@@ -27,6 +27,7 @@ import {
   Display,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { PermissionNames } from '../../../../app/scripts/controllers/permissions/specifications';
 
 export const ConnectPage = ({
   request,
@@ -74,7 +75,6 @@ export const ConnectPage = ({
     }
     setSelectedAccounts(newSelectedAccounts);
   };
-
   // Filter networks based on chainId
   const filteredNetworks = Array.isArray(selectednetworksList)
     ? combinedNetworks.filter((network) =>
@@ -91,7 +91,13 @@ export const ConnectPage = ({
   // Handle confirmation
   const onConfirm = () => {
     const _request = {
-      ...request,
+      request: {
+        ...request,
+        permissions: {
+          ...request.permissions,
+          [PermissionNames.permittedChains]: {},
+        },
+      },
       approvedAccounts,
       approvedChainIds: filteredNetworks.map((network) => network.chainId),
     };

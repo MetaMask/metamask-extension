@@ -286,6 +286,7 @@ function getChainsFromSubject(subject) {
 }
 
 function getChainsPermissionFromSubject(subject = {}) {
+  console.log(subject.permissions?.['endowment:permitted-chains'], subject, "subject");
   return subject.permissions?.['endowment:permitted-chains'] || {};
 }
 
@@ -298,6 +299,7 @@ function getAccountsFromPermission(accountsPermission) {
 
 function getChainsFromPermission(chainsPermission) {
   const chainsCaveat = getChainsCaveatFromPermission(chainsPermission);
+  console.log(chainsCaveat, 'chainsCaveat');
   return chainsCaveat && Array.isArray(chainsCaveat.value)
     ? chainsCaveat.value
     : [];
