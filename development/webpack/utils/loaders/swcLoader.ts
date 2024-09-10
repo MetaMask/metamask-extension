@@ -113,7 +113,7 @@ const schema = {
                 importAssertions: {
                   default: false,
                   type: 'boolean',
-                }
+                },
               },
               additionalProperties: false,
               required: ['syntax'],
@@ -130,7 +130,7 @@ const schema = {
                 importAssertions: {
                   default: false,
                   type: 'boolean',
-                }
+                },
               },
               additionalProperties: false,
               required: ['syntax'],
@@ -219,11 +219,11 @@ export function getSwcLoader(
         parser: {
           syntax,
           [syntax === 'typescript' ? 'tsx' : 'jsx']: enableJsx,
-          importAssertions: true
+          importAssertions: true,
         },
         experimental: {
-          keepImportAttributes: false
-        }
+          keepImportAttributes: false,
+        },
       },
     } as const satisfies SwcLoaderOptions,
   };
