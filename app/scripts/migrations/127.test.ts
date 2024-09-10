@@ -712,6 +712,59 @@ describe(`migration #${version}`, () => {
   });
 });
 
+it('updates the selected network controller to point domains to the default RPC endpoint', async () => {
+  const untouchedChainId = '0x123';
+  const redirectedChainId = '0x456';
+
+  const oldState = {
+    meta: { version: oldVersion },
+    data: {
+      SelectedNetworkController: {
+        domains: {
+          'untouched.com': 'untouched-network-id',
+          'already-default.com': 'already-default-network-id',
+          'redirected.com': 'redirected-network-id',
+        },
+      },
+      NetworkController: {
+        selectedNetworkClientId: 'already-default-network-id',
+        networkConfigurations: {
+          'untouched-network-id': {
+            id: 'untouched-network-id',
+            chainId: untouchedChainId,
+            nickname: 'Untouched Network',
+            ticker: 'TICK',
+            rpcUrl: 'https://localhost/rpc/1',
+          },
+          'already-default-network-id': {
+            id: 'already-default-network-id',
+            chainId: redirectedChainId,
+            nickname: 'Default Network',
+            ticker: 'TICK',
+            rpcUrl: 'https://localhost/rpc/2',
+          },
+          'redirected-network-id': {
+            id: 'redirected-network-id',
+            chainId: redirectedChainId,
+            nickname: 'Redirected Network',
+            ticker: 'TICK',
+            rpcUrl: 'https://localhost/rpc/3',
+          },
+        },
+      },
+    },
+  };
+
+  const newState = await migrate(oldState);
+  expect(newState.data.SelectedNetworkController).toStrictEqual({
+    domains: {
+      'untouched.com': 'untouched-network-id',
+      'already-default.com': 'already-default-network-id',
+      'redirected.com': 'already-default-network-id',
+    },
+  });
+});
+
 // The state of the network controller post migration for just the
 // built-in networks. As if there were no custom networks defined.
 function defaultPostMigrationState() {

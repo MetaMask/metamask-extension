@@ -287,26 +287,19 @@ function transformState(
     return acc;
   }, {});
 
-  const allRpcEndpoints = Object.values(networkConfigurationsByChainId).flatMap(
-    (n) => (isObject(n) && Array.isArray(n.rpcEndpoints) ? n.rpcEndpoints : []),
-  );
-
   // Ensure that selectedNetworkClientId points to some endpoint of
   // some network configuration. It may not, if its endpoint was not
   // well formed or a duplicate.  In that case, fallback to mainnet.
   const selectedNetworkClientId =
-    allRpcEndpoints.find(
-      (e) => e.networkClientId === networkState.selectedNetworkClientId,
-    )?.networkClientId ?? 'mainnet';
+    Object.values(networkConfigurationsByChainId)
+      .flatMap((n) =>
+        isObject(n) && Array.isArray(n.rpcEndpoints) ? n.rpcEndpoints : [],
+      )
+      .find((e) => e.networkClientId === networkState.selectedNetworkClientId)
+      ?.networkClientId ?? 'mainnet';
 
-  state.NetworkController = {
-    selectedNetworkClientId,
-    networkConfigurationsByChainId,
-    networksMetadata: networkState.networksMetadata ?? {},
-  };
-
-  // Remove any entries in the selected network controller pointing to
-  // network client ids that no longer exist due to duplicates/invalidity.
+  // Redirect domains in the selected network controller to
+  // point to the default RPC endpoint for the corresponding chain
   if (
     hasProperty(state, 'SelectedNetworkController') &&
     isObject(state.SelectedNetworkController) &&
@@ -316,11 +309,49 @@ function transformState(
     for (const [domain, networkClientId] of Object.entries(
       state.SelectedNetworkController.domains,
     )) {
-      if (!allRpcEndpoints.some((e) => e.networkClientId === networkClientId)) {
+      let newNetworkClientId;
+
+      // Fetch the chain id associated with the domain's network client
+      const oldNetworkConfiguration =
+        isObject(networkState.networkConfigurations) &&
+        typeof networkClientId === 'string'
+          ? networkState.networkConfigurations[networkClientId]
+          : undefined;
+
+      const chainId = isObject(oldNetworkConfiguration)
+        ? oldNetworkConfiguration?.chainId
+        : undefined;
+
+      // Fetch the default rpc endpoint associated with that chain id
+      if (chainId && typeof chainId === 'string') {
+        const networkConfiguration = networkConfigurationsByChainId[chainId];
+        if (
+          isObject(networkConfiguration) &&
+          Array.isArray(networkConfiguration.rpcEndpoints) &&
+          typeof networkConfiguration.defaultRpcEndpointIndex === 'number'
+        ) {
+          newNetworkClientId =
+            networkConfiguration.rpcEndpoints[
+              networkConfiguration.defaultRpcEndpointIndex
+            ].networkClientId;
+        }
+      }
+
+      // Point the domain to the chain's default rpc endpoint, or remove the
+      // entry if the whole chain had to be deleted due to duplicates/invalidity.
+      if (newNetworkClientId) {
+        state.SelectedNetworkController.domains[domain] = newNetworkClientId;
+      } else {
         delete state.SelectedNetworkController.domains[domain];
       }
     }
   }
+
+  state.NetworkController = {
+    selectedNetworkClientId,
+    networkConfigurationsByChainId,
+    networksMetadata: networkState.networksMetadata ?? {},
+  };
 
   // Set `showMultiRpcModal` based on whether there are any networks with multiple rpc endpoints
   if (
