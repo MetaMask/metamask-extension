@@ -26,8 +26,8 @@ import {
   Text,
 } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
-import SnapAvatar from '../../../app/snaps/snap-avatar/snap-avatar';
 import { getAvatarNetworkColor } from '../../../../helpers/utils/accounts';
+import { SnapIcon } from '../../../app/snaps/snap-icon';
 import { ConnectionListTooltip } from './connection-list-tooltip/connection-list-tooltip';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
@@ -54,12 +54,10 @@ export const ConnectionListItem = ({ connection, onClick }) => {
         style={{ alignSelf: 'center' }}
       >
         {isSnap ? (
-          <SnapAvatar
+          <SnapIcon
             className="connection-list-item__snap-avatar"
             snapId={connection.id}
-            badgeSize={IconSize.Xs}
             avatarSize={IconSize.Md}
-            borderWidth={0}
           />
         ) : (
           <BadgeWrapper
