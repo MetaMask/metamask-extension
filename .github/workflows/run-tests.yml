@@ -22,8 +22,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
       - name: test:unit:coverage
-        run: mkdir -p coverage/unit && echo '{}' > coverage/unit/coverage-final.json
+        run: yarn test:unit:coverage --shard=${{ matrix.shard }}/${{ strategy.job-total }}
 
       - name: Rename coverage
         run: mv coverage/unit/coverage-final.json coverage/unit/coverage-unit-${{matrix.shard}}.json
@@ -40,8 +43,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
       - name: test:unit:webpack:coverage
-        run: mkdir -p coverage/webpack && echo '{}' > coverage/webpack/coverage-final.json
+        run: yarn test:unit:webpack:coverage
 
       - name: Rename coverage
         run: mv coverage/webpack/coverage-final.json coverage/webpack/coverage-webpack.json
@@ -58,8 +64,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
       - name: test:integration:coverage
-        run: mkdir -p coverage/integration && echo '{}' > coverage/integration/coverage-final.json
+        run: yarn test:integration:coverage
 
       - name: Rename coverage
         run: mv coverage/integration/coverage-final.json coverage/integration/coverage-integration.json
@@ -91,7 +100,7 @@ jobs:
           path: coverage
           merge-multiple: true
 
-      - name: Debug
+      - name: Debug 1
         run: ls coverage
 
       - name: Merge coverage reports
