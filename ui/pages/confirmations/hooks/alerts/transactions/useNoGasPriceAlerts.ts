@@ -4,26 +4,22 @@ import {
   UserFeeLevel,
 } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import {
-  currentConfirmationSelector,
-  getNoGasPriceFetched,
-} from '../../../../../selectors';
+
 import { txParamsAreDappSuggested } from '../../../../../../shared/modules/transaction.utils';
+import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
+import { getNoGasPriceFetched } from '../../../../../selectors';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useConfirmContext } from '../../../context/confirm';
 
 export function useNoGasPriceAlerts(): Alert[] {
   const t = useI18nContext();
   const isNoGasPriceFetched = useSelector(getNoGasPriceFetched);
-
-  const currentConfirmation = useSelector(currentConfirmationSelector) as
-    | TransactionMeta
-    | undefined;
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const isNotCustomGasPrice =
     currentConfirmation?.userFeeLevel &&

@@ -14,6 +14,7 @@ import {
   fetchTradesInfo,
   shouldEnableDirectWrapping,
   calculateMaxGasLimit,
+  calcTokenValue,
 } from './swaps-utils';
 
 jest.mock('./storage-helpers', () => ({
@@ -268,6 +269,15 @@ describe('Swaps Utils', () => {
         customMaxGas,
       );
       expect(result).toStrictEqual(expectedMaxGas);
+    });
+  });
+
+  describe('calcTokenValue', () => {
+    it('should be possible to calculate very big values', () => {
+      let result = calcTokenValue(1, 20);
+      expect(result.toString()).toStrictEqual('100000000000000000000');
+      result = calcTokenValue(1, 30);
+      expect(result.toString()).toStrictEqual('1e+30');
     });
   });
 });

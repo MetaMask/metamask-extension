@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "Conecte su monedero físico QR"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "La dirección de la solicitud de inicio de sesión no coincide con la dirección de la cuenta que está utilizando para iniciar sesión."
   },
@@ -195,6 +192,9 @@
   "addAccount": {
     "message": "Añadir cuenta"
   },
+  "addAccountToMetaMask": {
+    "message": "Añadir cuenta a MetaMask"
+  },
   "addAcquiredTokens": {
     "message": "Agregar los tokens que adquirió con MetaMask"
   },
@@ -319,6 +319,9 @@
   },
   "addUrl": {
     "message": "Agregar URL"
+  },
+  "addingAccount": {
+    "message": "Añadiendo cuenta"
   },
   "addingCustomNetwork": {
     "message": "Agregando red"
@@ -663,9 +666,6 @@
   "back": {
     "message": "Volver"
   },
-  "backup": {
-    "message": "Respaldo"
-  },
   "backupApprovalInfo": {
     "message": "Este código secreto es necesario para que recupere la cartera en caso de que pierda el dispositivo, olvide su contraseña, tenga que volver a instalar MetaMask o quiera acceder a su monedero en otro dispositivo."
   },
@@ -674,15 +674,6 @@
   },
   "backupKeyringSnapReminder": {
     "message": "Asegúrese de poder acceder a cualquier cuenta creada por este Snap por si mismo antes de eliminarlo"
-  },
-  "backupNow": {
-    "message": "Respaldar ahora"
-  },
-  "backupUserData": {
-    "message": "Respalde sus datos"
-  },
-  "backupUserDataDescription": {
-    "message": "Puede hacer una copia de seguridad de datos tal y como sus contactos y preferencias."
   },
   "balance": {
     "message": "Saldo"
@@ -1537,6 +1528,9 @@
   "details": {
     "message": "Detalles"
   },
+  "developerOptions": {
+    "message": "Opciones de desarrollador"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” está desactivado porque no cumple el mínimo de un aumento del 10 % respecto a la tarifa de gas original.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1878,6 +1872,9 @@
   },
   "existingChainId": {
     "message": "La información que ha ingresado está asociada con un ID de cadena existente."
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "Para ver y confirmar su solicitud más reciente, primero deberá aprobar o rechazar las solicitudes existentes."
   },
   "existingRpcUrl": {
     "message": "Esta URL está asociada a otro ID de cadena."
@@ -2901,6 +2898,10 @@
     "message": "Elija un apodo...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1 solicita su aprobación para:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "¿Desea que este sitio haga lo siguiente?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3513,6 +3514,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opcionales:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Descubra cómo protegemos su privacidad al recopilar datos de uso para su perfil."
   },
   "onboardingMetametricsTitle": {
     "message": "Ayúdenos a mejorar MetaMask"
@@ -4194,6 +4198,12 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "Active esta opción para ver las solicitudes de firma en un formato mejorado."
   },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "Solicitudes de transacción mejoradas"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "Active esta opción para ver las solicitudes de transacciones en un formato mejorado."
+  },
   "refreshList": {
     "message": "Actualizar lista"
   },
@@ -4330,9 +4340,6 @@
   "restoreUserData": {
     "message": "Restaure sus datos de usuario"
   },
-  "restoreUserDataDescription": {
-    "message": "Puede restaurar datos tal y como contactos y preferencias desde un archivo de copia de seguridad."
-  },
   "resultPageError": {
     "message": "Error"
   },
@@ -4393,6 +4400,9 @@
   },
   "reviewAlerts": {
     "message": "Revisar alertas"
+  },
+  "reviewPermissions": {
+    "message": "Revisar permisos"
   },
   "revokeAllTokensTitle": {
     "message": "¿Revocar el permiso para acceder y transferir todos sus $1?",

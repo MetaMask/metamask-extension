@@ -3,9 +3,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { memo, useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
-import { getHighestSeverity } from '../../../../../components/app/alert-system/utils';
+
 import { Box, Text } from '../../../../../components/component-library';
 import {
   TextAlign,
@@ -14,12 +12,14 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../../selectors';
+import { getHighestSeverity } from '../../../../../components/app/alert-system/utils';
+import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 import { Confirmation, SignatureRequestType } from '../../../types/confirm';
 import {
   isPermitSignatureRequest,
   isSIWESignatureRequest,
 } from '../../../utils';
+import { useConfirmContext } from '../../../context/confirm';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
@@ -38,7 +38,7 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   return (
     <Box marginTop={4}>
       <GeneralAlert
-        data-testid={'confirm-banner-alert'}
+        data-testid="confirm-banner-alert"
         title={
           hasMultipleAlerts
             ? t('alertBannerMultipleAlertsTitle')
@@ -120,7 +120,7 @@ const getDescription = (
 
 const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { currentConfirmation } = useConfirmContext();
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
