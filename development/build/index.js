@@ -143,7 +143,6 @@ async function defineAndRunBuildTasks() {
       'stateHooks',
       'sentryHooks',
       'sentry',
-      'chrome',
     ];
 
     if (

@@ -16,7 +16,7 @@ const { PAGES } = require('./webdriver/driver');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
-const { setManifestFlags } = require('./alterBuiltManifest');
+const { setManifestFlags } = require('./set-manifest-flags');
 const {
   ERC_4337_ACCOUNT,
   DEFAULT_GANACHE_ETH_BALANCE_DEC,

@@ -471,7 +471,7 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
-          ignoredConsoleErrors: ['SES_UNHANDLED_REJECTION: (TestError#1)'],
+          ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
             doNotForceSentryForThisTest: true,
           },
@@ -517,7 +517,7 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
-          ignoredConsoleErrors: ['SES_UNHANDLED_REJECTION: (TestError#1)'],
+          ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
             doNotForceSentryForThisTest: true,
           },
@@ -582,7 +582,6 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
-          ignoredConsoleErrors: ['SES_UNHANDLED_REJECTION: (TestError#1)'],
           manifestFlags: {
             doNotForceSentryForThisTest: true,
           },
@@ -618,7 +617,7 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
-          ignoredConsoleErrors: ['SES_UNHANDLED_REJECTION: (TestError#1)'],
+          ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
             doNotForceSentryForThisTest: true,
           },
@@ -654,7 +653,6 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
-          ignoredConsoleErrors: ['SES_UNHANDLED_REJECTION: (TestError#1)'],
           manifestFlags: {
             doNotForceSentryForThisTest: true,
           },
@@ -701,7 +699,6 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
-          ignoredConsoleErrors: ['SES_UNHANDLED_REJECTION: (TestError#1)'],
           manifestFlags: {
             doNotForceSentryForThisTest: true,
           },
@@ -765,7 +762,7 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
-          ignoredConsoleErrors: ['SES_UNHANDLED_REJECTION: (TestError#1)'],
+          ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
             doNotForceSentryForThisTest: true,
           },
@@ -809,7 +806,7 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
-          ignoredConsoleErrors: ['SES_UNHANDLED_REJECTION: (TestError#1)'],
+          ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
             doNotForceSentryForThisTest: true,
           },

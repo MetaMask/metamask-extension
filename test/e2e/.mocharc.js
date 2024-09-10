@@ -6,5 +6,5 @@ module.exports = {
   require: ['tsx/esm'],
   'node-option': ['import=tsx'],
   // Alter the built manifest before any test runs, and establish beforeEach and afterEach hooks.
-  file: ['test/e2e/alterBuiltManifest.ts'],
+  file: ['test/e2e/manifest-flag-mocha-hooks.ts'],
 };
