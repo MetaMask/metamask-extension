@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NFT full image should match minimal props and state snapshot 1`] = `
+exports[`NFT full image should match snapshot 1`] = `
 <div>
   <div
     class="mm-box main-container asset__container"
@@ -81,4 +81,4 @@ exports[`NFT full image should match minimal props and state snapshot 1`] = `
 </div>
 `;
 
-exports[`NFT full image should match minimal props and state snapshot 2`] = `<div />`;
+exports[`NFT full image should match snapshot 2`] = `<div />`;
