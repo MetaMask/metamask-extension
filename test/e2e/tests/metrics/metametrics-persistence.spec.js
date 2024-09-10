@@ -35,6 +35,7 @@ describe('MetaMetrics ID persistence', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await driver.delay(500);
 
         let uiState = await getCleanAppState(driver);
 
