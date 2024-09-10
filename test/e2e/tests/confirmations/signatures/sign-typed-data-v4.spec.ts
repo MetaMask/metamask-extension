@@ -10,6 +10,7 @@ import {
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import {
+<<<<<<< HEAD
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
@@ -22,6 +23,33 @@ import {
 } from './signature-helpers';
 
 describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: Suite) {
+||||||| merged common ancestors
+  DAPP_HOST_ADDRESS,
+  WINDOW_TITLES,
+  openDapp,
+  switchToNotificationWindow,
+  unlockWallet,
+} from '../../../helpers';
+import { Ganache } from '../../../seeder/ganache';
+import { Driver } from '../../../webdriver/driver';
+
+describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
+  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
+    return;
+  }
+
+=======
+  DAPP_HOST_ADDRESS,
+  WINDOW_TITLES,
+  openDapp,
+  switchToNotificationWindow,
+  unlockWallet,
+} from '../../../helpers';
+import { Ganache } from '../../../seeder/ganache';
+import { Driver } from '../../../webdriver/driver';
+
+describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: Suite) {
+>>>>>>> master
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),

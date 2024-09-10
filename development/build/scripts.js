@@ -717,9 +717,26 @@ function createFactoredBuild({
               browserPlatforms,
               shouldIncludeSnow,
               applyLavaMoat,
+<<<<<<< HEAD
               scripts,
             });
             if (isManifestV3) {
+||||||| merged common ancestors
+            });
+            renderJavaScriptLoader({
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              shouldIncludeSnow,
+              applyLavaMoat,
+              destinationFileName: 'load-background.js',
+            });
+            if (isEnableMV3) {
+=======
+              scripts,
+            });
+            if (isEnableMV3) {
+>>>>>>> master
               const jsBundles = [
                 ...commonSet.values(),
                 ...groupSet.values(),
@@ -1215,6 +1232,7 @@ function renderHtmlFile({
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
 
   const eta = new Eta();
+<<<<<<< HEAD
   const htmlOutput = eta
     .renderString(htmlTemplate, { isMMI, isTest, shouldIncludeSnow })
     // these replacements are added to support the webpack build's automatic
@@ -1228,6 +1246,28 @@ function renderHtmlFile({
     .replace('<script src="./load-offscreen.js" defer></script>', scriptTags)
     .replace('../ui/css/index.scss', './index.css')
     .replace('@lavamoat/snow/snow.prod.js', './scripts/snow.js');
+||||||| merged common ancestors
+  const htmlOutput = eta.renderString(htmlTemplate, {
+    isMMI,
+    isTest,
+    shouldIncludeSnow,
+  });
+=======
+  const htmlOutput = eta
+    .renderString(htmlTemplate, {
+      isMMI,
+      isTest,
+      shouldIncludeSnow,
+    })
+    // these replacements are added to support the webpack build's automatic
+    // compilation of html files, which the gulp-based process doesn't support.
+    .replace('<script src="./load-app.js" defer></script>', scriptTags)
+    .replace(
+      '<script src="./load-background.js" defer></script>',
+      `${scriptTags}\n    <script src="./chromereload.js" async></script>`,
+    )
+    .replace('<script src="./load-offscreen.js" defer></script>', scriptTags);
+>>>>>>> master
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

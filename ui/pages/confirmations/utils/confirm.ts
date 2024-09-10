@@ -2,10 +2,17 @@ import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
+<<<<<<< HEAD
 import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
 } from '../../../../shared/constants/signatures';
+||||||| merged common ancestors
+
+import { EIP712_PRIMARY_TYPE_PERMIT } from '../../../../shared/constants/transaction';
+=======
+import { EIP712_PRIMARY_TYPE_PERMIT } from '../../../../shared/constants/transaction';
+>>>>>>> master
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { sanitizeMessage } from '../../../helpers/utils/util';
 import { SignatureRequestType } from '../types/confirm';
@@ -16,6 +23,7 @@ export const REDESIGN_APPROVAL_TYPES = [
   ApprovalType.PersonalSign,
 ];
 
+<<<<<<< HEAD
 export const REDESIGN_USER_TRANSACTION_TYPES = [
   TransactionType.contractInteraction,
   TransactionType.deployContract,
@@ -25,6 +33,15 @@ export const REDESIGN_DEV_TRANSACTION_TYPES = [
   ...REDESIGN_USER_TRANSACTION_TYPES,
   TransactionType.tokenMethodApprove,
 ];
+||||||| merged common ancestors
+export const REDESIGN_TRANSACTION_TYPES = [
+  ...(process.env.ENABLE_CONFIRMATION_REDESIGN
+    ? [TransactionType.contractInteraction]
+    : []),
+] as const;
+=======
+export const REDESIGN_TRANSACTION_TYPES = [TransactionType.contractInteraction];
+>>>>>>> master
 
 const SIGNATURE_APPROVAL_TYPES = [
   ApprovalType.PersonalSign,

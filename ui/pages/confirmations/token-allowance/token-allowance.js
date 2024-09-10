@@ -87,6 +87,12 @@ import {
 } from '../../../../shared/constants/custody';
 ///: END:ONLY_INCLUDE_IF
 
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import { getAccountType } from '../../../selectors/selectors';
+import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
+///: END:ONLY_INCLUDE_IF
+
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
 export default function TokenAllowance({
@@ -242,6 +248,7 @@ export default function TokenAllowance({
     });
   };
 
+<<<<<<< HEAD
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiApprovalFlow = () => {
     if (accountType === AccountType.CUSTODY) {
@@ -279,6 +286,46 @@ export default function TokenAllowance({
   };
   ///: END:ONLY_INCLUDE_IF
 
+||||||| merged common ancestors
+=======
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  const mmiApprovalFlow = () => {
+    if (accountType === 'custody') {
+      fullTxData.custodyStatus = 'created';
+      fullTxData.metadata = fullTxData.metadata || {};
+
+      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
+
+      const txId = fullTxData.id;
+      const fromAddress = fullTxData.txParams.from;
+      const closeNotification = false;
+      dispatch(updateAndApproveTx(customNonceMerge(fullTxData))).then(() => {
+        showCustodianDeepLink({
+          dispatch,
+          mmiActions,
+          txId,
+          fromAddress,
+          closeNotification,
+          onDeepLinkFetched: () => undefined,
+          onDeepLinkShown: () => {
+            dispatch(clearConfirmTransaction());
+            history.push(mostRecentOverviewPage);
+          },
+          showCustodyConfirmLink,
+        });
+        history.push(mostRecentOverviewPage);
+      });
+    } else {
+      // Non Custody accounts follow normal flow
+      dispatch(updateAndApproveTx(customNonceMerge(fullTxData))).then(() => {
+        dispatch(clearConfirmTransaction());
+        history.push(mostRecentOverviewPage);
+      });
+    }
+  };
+  ///: END:ONLY_INCLUDE_IF
+
+>>>>>>> master
   const handleApprove = () => {
     const { name } = methodData;
 

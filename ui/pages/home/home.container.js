@@ -69,6 +69,15 @@ import {
   setNewTokensImported,
   setActiveNetwork,
   setNewTokensImportedError,
+<<<<<<< HEAD
+||||||| merged common ancestors
+  setShowTokenAutodetectModal,
+  setShowTokenAutodetectModalOnUpgrade,
+  setShowNftAutodetectModal,
+  setEditedNetwork,
+=======
+  setEditedNetwork,
+>>>>>>> master
   setDataCollectionForMarketing,
   setEditedNetwork,
 } from '../../store/actions';

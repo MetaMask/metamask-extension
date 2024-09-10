@@ -8,6 +8,7 @@ import {
   IconColor,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
+<<<<<<< HEAD
 import {
   Box,
   ButtonIcon,
@@ -15,6 +16,31 @@ import {
   IconName,
   Text,
 } from '../../../../component-library';
+||||||| merged common ancestors
+import { Box, ButtonIcon, IconName, Text } from '../../../../component-library';
+<<<<<<<<< Temporary merge branch 1
+import Tooltip from '../../../../ui/tooltip';
+
+const InfoText = ({
+  isEllipsis,
+  text,
+}: {
+  isEllipsis: boolean;
+  text: string;
+}) => (
+  <Text
+    color={TextColor.inherit}
+    style={isEllipsis ? {} : { whiteSpace: 'pre-wrap' }}
+    ellipsis={isEllipsis}
+  >
+    {text}
+  </Text>
+);
+||||||||| 1f74b08fc1
+=========
+=======
+import { Box, ButtonIcon, IconName, Text } from '../../../../component-library';
+>>>>>>> master
 import Tooltip from '../../../../ui/tooltip';
 
 const InfoText = ({ text }: { text: string }) => (
@@ -28,7 +54,15 @@ export type ConfirmInfoRowTextProps = {
   onEditClick?: () => void;
   editIconClassName?: string;
   tooltip?: string;
+<<<<<<< HEAD
   'data-testid'?: string;
+||||||| merged common ancestors
+||||||||| 1f74b08fc1
+=========
+  tooltip?: string;
+>>>>>>>>> Temporary merge branch 2
+=======
+>>>>>>> master
 };
 
 export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({

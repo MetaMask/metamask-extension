@@ -1027,6 +1027,49 @@ class Driver {
   }
 
   /**
+   * Waits until the current URL matches the specified URL.
+   *
+   * @param {object} options - Parameters for the function.
+   * @param {string} options.url - URL to wait for.
+   * @param {int} options.delayStep - optional delay between retries, defaults to 1000 milliseconds.
+   * @param {int} options.timeout - optional timeout period, defaults to this.timeout.
+   * @param {int} options.retries - optional number of retries for the URL fetch operation, defaults to 8.
+   * @param {int} options.retryDelay - optional delay between retries for the URL fetch operation, defaults to 2500 milliseconds.
+   * @returns {Promise<void>} Promise that resolves once the URL matches.
+   * @throws {Error} Throws an error if the URL does not match within the timeout period.
+   */
+  async waitForUrl({
+    url,
+    delayStep = 1000,
+    timeout = this.timeout,
+    retries = 8,
+    retryDelay = 2500,
+  }) {
+    let timeElapsed = 0;
+
+    while (timeElapsed <= timeout) {
+      const currentUrl = await retry(
+        {
+          retries,
+          delay: retryDelay,
+        },
+        async () => {
+          return await this.driver.getCurrentUrl();
+        },
+      );
+
+      if (currentUrl === url) {
+        return;
+      }
+
+      await this.delay(delayStep);
+      timeElapsed += delayStep;
+    }
+
+    throw new Error(`URL did not match: ${url} within ${timeout} ms`);
+  }
+
+  /**
    * Closes the current window tab in the browser session
    *
    *  @returns {Promise<void>} promise resolving after closing the current window

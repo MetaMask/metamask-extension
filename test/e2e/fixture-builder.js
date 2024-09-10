@@ -70,8 +70,14 @@ function onboardingFixture() {
           smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
+<<<<<<< HEAD
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
+||||||| merged common ancestors
+          showTokenAutodetectModal: false,
+=======
+          isRedesignedConfirmationsDeveloperEnabled: false,
+>>>>>>> master
         },
         useExternalServices: true,
         theme: 'light',

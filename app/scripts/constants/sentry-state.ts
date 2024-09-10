@@ -95,6 +95,7 @@ export const SENTRY_BACKGROUND_STATE = {
   MultichainBalancesController: {
     balances: false,
   },
+<<<<<<< HEAD
   BridgeController: {
     bridgeState: {
       bridgeFeatureFlags: {
@@ -104,6 +105,16 @@ export const SENTRY_BACKGROUND_STATE = {
       },
     },
   },
+||||||| merged common ancestors
+=======
+  BridgeController: {
+    bridgeState: {
+      bridgeFeatureFlags: {
+        extensionSupport: false,
+      },
+    },
+  },
+>>>>>>> master
   CronjobController: {
     jobs: false,
   },
@@ -213,16 +224,27 @@ export const SENTRY_BACKGROUND_STATE = {
     preferences: {
       autoLockTimeLimit: true,
       hideZeroBalanceTokens: true,
+<<<<<<< HEAD
       redesignedConfirmationsEnabled: true,
       redesignedTransactionsEnabled: false,
       isRedesignedConfirmationsDeveloperEnabled: false,
+||||||| merged common ancestors
+=======
+      redesignedConfirmationsEnabled: true,
+      isRedesignedConfirmationsDeveloperEnabled: false,
+>>>>>>> master
       showExtensionInFullSizeView: true,
       showFiatInTestnets: true,
       showTestNetworks: true,
       smartTransactionsOptInStatus: true,
       useNativeCurrencyAsPrimaryCurrency: true,
       petnamesEnabled: true,
+<<<<<<< HEAD
       showConfirmationAdvancedDetails: true,
+||||||| merged common ancestors
+      showTokenAutodetectModal: false,
+=======
+>>>>>>> master
     },
     useExternalServices: false,
     selectedAddress: false,
@@ -396,9 +418,15 @@ export const SENTRY_UI_STATE = {
     welcomeScreenSeen: true,
     confirmationExchangeRates: true,
     useSafeChainsListValidation: true,
+<<<<<<< HEAD
     watchEthereumAccountEnabled: false,
     bitcoinSupportEnabled: false,
     bitcoinTestnetSupportEnabled: false,
+||||||| merged common ancestors
+=======
+    bitcoinSupportEnabled: false,
+    bitcoinTestnetSupportEnabled: false,
+>>>>>>> master
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,

@@ -6,6 +6,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.2.2]
+### Fixed
+- This build was needed to fix release publishing on our master branch. It also includes the addition of the missing v12.2.0 changelog. Functionality and code is equivalent to v12.2.0.
+
+## [12.2.1]
+### Fixed
+- This build was needed to fix release publishing on our master branch. It also includes the addition of the missing v12.2.0 changelog. Functionality and code is equivalent to v12.2.0.
+
+## [12.2.0]
+### Added
+- Enabled the redesigned SIWE (Sign-In with Ethereum) signature pages ([#25660](https://github.com/MetaMask/metamask-extension/pull/25660))
+- Added support for security alerts on zkSync, Berachain, Scroll, and Metachain One networks ([#25555](https://github.com/MetaMask/metamask-extension/pull/25555))
+- Added an account mismatch warning alert to the SIWE redesign page ([#25613](https://github.com/MetaMask/metamask-extension/pull/25613))
+
+### Changed
+- Improved the display of large and small token values on the permit signature page ([#25438](https://github.com/MetaMask/metamask-extension/pull/25438))
+- Removed the modals prompting users to enable token and NFT detection ([#26403](https://github.com/MetaMask/metamask-extension/pull/26403))
+- Enabled the redesigned confirmations by default ([#25769](https://github.com/MetaMask/metamask-extension/pull/25769))
+- Improved error messaging during Ledger pairing to guide users when the device is locked or the Ethereum app is not open ([#25462](https://github.com/MetaMask/metamask-extension/pull/25462))
+
+### Fixed
+- Fixed an issue where removing non-EVM accounts was broken if there was an existing EVM dapp permission ([#25739](https://github.com/MetaMask/metamask-extension/pull/25739))
+- Fixed the issue to show the connected toast only for EVM accounts, hiding it for non-EVM accounts ([#25628](https://github.com/MetaMask/metamask-extension/pull/25628))
+- Fixed an issue where the connected account was missing on the connection page ([#25500](https://github.com/MetaMask/metamask-extension/pull/25500))
+- Fixed an issue where the account name was out of sync in the account list during the connect account flow ([#26542](https://github.com/MetaMask/metamask-extension/pull/26542))
+- Fixed the display of decimal places for token values on permit pages ([#25410](https://github.com/MetaMask/metamask-extension/pull/25410))
+- Fixed the page width for the send page in fullscreen mode ([#25639](https://github.com/MetaMask/metamask-extension/pull/25639))
+- Updated the accounts mismatch banner on the signature page to the new design ([#25626](https://github.com/MetaMask/metamask-extension/pull/25626))
+- Fixed the alignment of the install origin text in the expanded authorship view for Snaps ([#25583](https://github.com/MetaMask/metamask-extension/pull/25583))
+
+## [12.1.3]
+### Fixed
+- Fix `eth_signTypedData` error when `verifyingContract` is not provided ([#26914](https://github.com/MetaMask/metamask-extension/pull/26914))
+
+## [12.1.2]
+### Fixed
+- Fix Trezor signing and connecting accounts ([#26882](https://github.com/MetaMask/metamask-extension/pull/26882))
+
+## [12.1.1]
+### Changed
+- Update Polygon from MATIC to POL ([#26671](https://github.com/MetaMask/metamask-extension/pull/26671))
+
+### Fixed
+- Fix signature confirmation UI crash ([#26143](https://github.com/MetaMask/metamask-extension/pull/26143))
+- Update current selected account when selected account is removed ([#26573](https://github.com/MetaMask/metamask-extension/pull/26573), [#26742](https://github.com/MetaMask/metamask-extension/pull/26742), [#26773](https://github.com/MetaMask/metamask-extension/pull/26773))
+  - This also includes a migration to reset the selected account if it's currently invalid
+- Prevent pending confirmations from being inaccessible after attempting to add currently selected chain ([#26726](https://github.com/MetaMask/metamask-extension/pull/26726))
+
 ## [12.1.0]
 ### Added
 - Launched a feature displaying the percentage increase or decrease for tokens within the UI ([#24223](https://github.com/MetaMask/metamask-extension/pull/24223))
@@ -4996,7 +5044,13 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.2.2...HEAD
+[12.2.2]: https://github.com/MetaMask/metamask-extension/compare/v12.2.1...v12.2.2
+[12.2.1]: https://github.com/MetaMask/metamask-extension/compare/v12.2.0...v12.2.1
+[12.2.0]: https://github.com/MetaMask/metamask-extension/compare/v12.1.3...v12.2.0
+[12.1.3]: https://github.com/MetaMask/metamask-extension/compare/v12.1.2...v12.1.3
+[12.1.2]: https://github.com/MetaMask/metamask-extension/compare/v12.1.1...v12.1.2
+[12.1.1]: https://github.com/MetaMask/metamask-extension/compare/v12.1.0...v12.1.1
 [12.1.0]: https://github.com/MetaMask/metamask-extension/compare/v12.0.6...v12.1.0
 [12.0.6]: https://github.com/MetaMask/metamask-extension/compare/v12.0.5...v12.0.6
 [12.0.5]: https://github.com/MetaMask/metamask-extension/compare/v12.0.4...v12.0.5

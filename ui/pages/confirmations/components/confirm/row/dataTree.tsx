@@ -134,6 +134,7 @@ function isTokenUnitsField(label: string, primaryType?: PrimaryType) {
   );
 }
 
+<<<<<<< HEAD
 const DataField = memo(
   ({
     label,
@@ -163,6 +164,142 @@ const DataField = memo(
     }
 
     if (isTokenUnitsField(label, primaryType)) {
+||||||| merged common ancestors
+<<<<<<<<< Temporary merge branch 1
+const DataField = memo(
+  ({
+    label,
+    isPermit,
+    type,
+    value,
+    tokenDecimals,
+  }: {
+    label: string;
+    isPermit: boolean;
+    type: string;
+    value: ValueType;
+    tokenDecimals: number;
+  }) => {
+    if (typeof value === 'object' && value !== null) {
+      return (
+        <DataTree
+          data={value}
+          isPermit={isPermit}
+          tokenDecimals={tokenDecimals}
+        />
+      );
+    }
+    if (isPermit && label === 'value') {
+      const valueBN = new BigNumber(value);
+      const diviserBN = new BigNumber(10).pow(tokenDecimals);
+      const resultBn = valueBN.div(diviserBN);
+
+      // FIXME - Precision may be lost for large values when using formatAmount
+      /** @see {@link https://github.com/MetaMask/metamask-extension/issues/25755} */
+      const tokenValue = formatAmount('en-US', resultBn);
+      const tokenValueMaxPrecision = formatAmountMaxPrecision('en-US', valueBN);
+
+      return (
+        <ConfirmInfoRowText
+          isEllipsis={true}
+          text={tokenValue}
+          tooltip={tokenValueMaxPrecision}
+        />
+      );
+    }
+    if (isPermit && label === 'deadline') {
+      return <ConfirmInfoRowDate date={parseInt(value, 10)} />;
+    }
+    if (
+      type === 'address' &&
+      isValidHexAddress(value, {
+        mixedCaseUseChecksum: true,
+      })
+    ) {
+      return <ConfirmInfoRowAddress address={value} />;
+    }
+    return <ConfirmInfoRowText text={sanitizeString(value)} />;
+  },
+);
+||||||||| 1f74b08fc1
+const DataField = ({
+  label,
+  isPermit,
+  type,
+  value,
+}: {
+  label: string;
+  isPermit: boolean;
+  type: string;
+  value: ValueType;
+}) => {
+  if (typeof value === 'object' && value !== null) {
+    return <DataTree data={value} isPermit={isPermit} />;
+  }
+  if (isPermit && label === 'deadline') {
+    return <ConfirmInfoRowDate date={parseInt(value, 10)} />;
+  }
+  if (
+    type === 'address' &&
+    isValidHexAddress(value, {
+      mixedCaseUseChecksum: true,
+    })
+  ) {
+    return <ConfirmInfoRowAddress address={value} />;
+  }
+  return <ConfirmInfoRowText text={sanitizeString(value)} />;
+};
+=========
+const DataField = memo(
+  ({
+    label,
+    isPermit,
+    type,
+    value,
+    tokenDecimals,
+  }: {
+    label: string;
+    isPermit: boolean;
+    type: string;
+    value: ValueType;
+    tokenDecimals: number;
+  }) => {
+    if (typeof value === 'object' && value !== null) {
+      return (
+        <DataTree
+          data={value}
+          isPermit={isPermit}
+          tokenDecimals={tokenDecimals}
+        />
+      );
+    }
+    if (isPermit && label === 'value') {
+=======
+const DataField = memo(
+  ({
+    label,
+    isPermit,
+    type,
+    value,
+    tokenDecimals,
+  }: {
+    label: string;
+    isPermit: boolean;
+    type: string;
+    value: ValueType;
+    tokenDecimals: number;
+  }) => {
+    if (typeof value === 'object' && value !== null) {
+      return (
+        <DataTree
+          data={value}
+          isPermit={isPermit}
+          tokenDecimals={tokenDecimals}
+        />
+      );
+    }
+    if (isPermit && label === 'value') {
+>>>>>>> master
       return (
         <ConfirmInfoRowTextTokenUnits value={value} decimals={tokenDecimals} />
       );

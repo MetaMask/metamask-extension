@@ -97,10 +97,17 @@ export type TransactionMetricsRequest = {
   getSmartTransactionByMinedTxHash: (
     txhash: string | undefined,
   ) => SmartTransaction;
+<<<<<<< HEAD
   getRedesignedTransactionsEnabled: () => boolean;
   getMethodData: (data: string) => Promise<{ name: string }>;
   getIsRedesignedConfirmationsDeveloperEnabled: () => boolean;
   getIsConfirmationAdvancedDetailsOpen: () => boolean;
+||||||| merged common ancestors
+  getRedesignedConfirmationsEnabled: () => boolean;
+=======
+  getRedesignedConfirmationsEnabled: () => boolean;
+  getIsRedesignedConfirmationsDeveloperEnabled: () => boolean;
+>>>>>>> master
 };
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
@@ -999,8 +1006,15 @@ async function buildEventFragmentProperties({
     uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
   }
   const isRedesignedConfirmationsDeveloperSettingEnabled =
+<<<<<<< HEAD
     transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled() ||
     Boolean(process.env.ENABLE_CONFIRMATION_REDESIGN);
+||||||| merged common ancestors
+    process.env.ENABLE_CONFIRMATION_REDESIGN;
+=======
+    transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled() ||
+    process.env.ENABLE_CONFIRMATION_REDESIGN;
+>>>>>>> master
 
   const isRedesignedTransactionsUserSettingEnabled =
     transactionMetricsRequest.getRedesignedTransactionsEnabled();

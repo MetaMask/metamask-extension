@@ -110,8 +110,14 @@
         "smartTransactionsOptInStatus": false,
         "useNativeCurrencyAsPrimaryCurrency": true,
         "petnamesEnabled": true,
+<<<<<<< HEAD
         "showConfirmationAdvancedDetails": false,
         "isRedesignedConfirmationsDeveloperEnabled": "boolean"
+||||||| merged common ancestors
+        "showTokenAutodetectModal": "boolean"
+=======
+        "isRedesignedConfirmationsDeveloperEnabled": "boolean"
+>>>>>>> master
       },
       "selectedAddress": "string",
       "theme": "light",

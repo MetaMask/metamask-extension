@@ -24,8 +24,13 @@ function getProxyServer(proxyPort) {
 class ChromeDriver {
   static async build({
     openDevToolsForTabs,
+<<<<<<< HEAD
     responsive,
     constrainWindowSize,
+||||||| merged common ancestors
+=======
+    constrainWindowSize,
+>>>>>>> master
     port,
     proxyPort,
   }) {

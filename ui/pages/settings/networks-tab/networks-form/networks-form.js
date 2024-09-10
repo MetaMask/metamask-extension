@@ -199,31 +199,48 @@ const NetworksForm = ({
   const safeChainsList = useRef([]);
 
   useEffect(() => {
-    Object.values(BUILT_IN_NETWORKS).forEach((network) => {
-      const index = safeChains.findIndex(
-        (chain) =>
-          chain.chainId.toString() === getDisplayChainId(network.chainId),
-      );
-      if (network.ticker && index !== -1) {
-        safeChains[index].nativeCurrency.symbol = network.ticker;
+    async function fetchChainList() {
+      try {
+        const chainList = await fetchWithCache({
+          url: 'https://chainid.network/chains.json',
+          functionName: 'getSafeChainsList',
+        });
+        Object.values(BUILT_IN_NETWORKS).forEach((network) => {
+          const index = chainList.findIndex(
+            (chain) =>
+              chain.chainId.toString() === getDisplayChainId(network.chainId),
+          );
+          if (network.ticker && index !== -1) {
+            chainList[index].nativeCurrency.symbol = network.ticker;
+          }
+        });
+        safeChainsList.current = [
+          ...chainList,
+          {
+            chainId: 137,
+            nativeCurrency: {
+              symbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.MATIC,
+            },
+          },
+          {
+            chainId: 78,
+            nativeCurrency: {
+              symbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.WETHIO,
+            },
+          },
+          {
+            chainId: 88888,
+            nativeCurrency: {
+              symbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.CHZ,
+            },
+          },
+        ];
+      } catch (error) {
+        log.warn('Failed to fetch chainList from chainid.network', error);
       }
-    });
-    safeChainsList.current = [
-      ...safeChains,
-      {
-        chainId: 78,
-        nativeCurrency: {
-          symbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.WETHIO,
-        },
-      },
-      {
-        chainId: 88888,
-        nativeCurrency: {
-          symbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.CHZ,
-        },
-      },
-    ];
-  }, [safeChains]);
+    }
+    fetchChainList();
+  }, []);
 
   const resetForm = useCallback(() => {
     setNetworkName(selectedNetworkName || '');

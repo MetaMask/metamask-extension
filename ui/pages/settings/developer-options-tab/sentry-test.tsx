@@ -16,6 +16,7 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { trace, TraceName } from '../../../../shared/lib/trace';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export function SentryTest() {
   return (

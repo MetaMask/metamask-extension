@@ -1,6 +1,5 @@
 import { type Hex, JsonRpcResponseStruct } from '@metamask/utils';
 import * as ControllerUtils from '@metamask/controller-utils';
-
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 import {
@@ -8,8 +7,14 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
+<<<<<<< HEAD
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { createPPOMMiddleware, PPOMMiddlewareRequest } from './ppom-middleware';
+||||||| merged common ancestors
+import { createPPOMMiddleware } from './ppom-middleware';
+=======
+import { createPPOMMiddleware, PPOMMiddlewareRequest } from './ppom-middleware';
+>>>>>>> master
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -213,6 +218,7 @@ describe('PPOMMiddleware', () => {
 
     await middlewareFunction(
       req,
+<<<<<<< HEAD
       { ...JsonRpcResponseStruct.TYPE },
       () => undefined,
     );
@@ -234,6 +240,11 @@ describe('PPOMMiddleware', () => {
     await middlewareFunction(
       req,
       { ...JsonRpcResponseStruct.TYPE },
+||||||| merged common ancestors
+      { ...JsonRpcResponseStruct },
+=======
+      { ...JsonRpcResponseStruct.TYPE },
+>>>>>>> master
       () => undefined,
     );
 

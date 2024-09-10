@@ -1152,6 +1152,7 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
   }
 }
 
+<<<<<<< HEAD
 async function removeSelectedAccount(driver) {
   await driver.clickElement('[data-testid="account-menu-icon"]');
   await driver.clickElement(
@@ -1226,6 +1227,42 @@ async function openMenuSafe(driver) {
   }
 }
 
+||||||| merged common ancestors
+=======
+/**
+ * Rather than using the FixtureBuilder#withPreferencesController to set the setting
+ * we need to manually set the setting because the migration #122 overrides this.
+ * We should be able to remove this when we delete the redesignedConfirmationsEnabled setting.
+ *
+ * @param driver
+ */
+async function tempToggleSettingRedesignedConfirmations(driver) {
+  // Ensure we are on the extension window
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+
+  // Open settings menu button
+  const accountOptionsMenuSelector =
+    '[data-testid="account-options-menu-button"]';
+  await driver.waitForSelector(accountOptionsMenuSelector);
+  await driver.clickElement(accountOptionsMenuSelector);
+
+  // Click settings from dropdown menu
+  await driver.clickElement('[data-testid="global-menu-settings"]');
+
+  // Click Experimental tab
+  const experimentalTabRawLocator = {
+    text: 'Experimental',
+    tag: 'div',
+  };
+  await driver.clickElement(experimentalTabRawLocator);
+
+  // Click redesignedConfirmationsEnabled toggle
+  await driver.clickElement(
+    '[data-testid="toggle-redesigned-confirmations-container"]',
+  );
+}
+
+>>>>>>> master
 module.exports = {
   DAPP_HOST_ADDRESS,
   DAPP_URL,
@@ -1294,8 +1331,15 @@ module.exports = {
   getCleanAppState,
   editGasFeeForm,
   clickNestedButton,
+<<<<<<< HEAD
   removeSelectedAccount,
   getSelectedAccountAddress,
   tempToggleSettingRedesignedConfirmations,
   openMenuSafe,
+||||||| merged common ancestors
+  defaultGanacheOptionsForType2Transactions,
+=======
+  defaultGanacheOptionsForType2Transactions,
+  tempToggleSettingRedesignedConfirmations,
+>>>>>>> master
 };

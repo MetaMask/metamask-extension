@@ -66,7 +66,7 @@ describe('TokenInput Component', () => {
         metamask: {
           ...mockState.metamask,
           currencyRates: {
-            [CURRENCY_SYMBOLS.MATIC]: {
+            [CURRENCY_SYMBOLS.POL]: {
               conversionRate: 1,
             },
           },
@@ -74,7 +74,21 @@ describe('TokenInput Component', () => {
             ...mockState.metamask.preferences,
             showFiatInTestnets: true,
           },
+<<<<<<< HEAD
           ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
+||||||| merged common ancestors
+          providerConfig: {
+            chainId: CHAIN_IDS.POLYGON,
+            type: NETWORK_TYPES.MAINNET,
+            ticker: CURRENCY_SYMBOLS.MATIC,
+          },
+=======
+          providerConfig: {
+            chainId: CHAIN_IDS.POLYGON,
+            type: NETWORK_TYPES.MAINNET,
+            ticker: CURRENCY_SYMBOLS.POL,
+          },
+>>>>>>> master
         },
       };
       const mockStore = configureMockStore()(showFiatState);
@@ -84,7 +98,7 @@ describe('TokenInput Component', () => {
         mockStore,
       );
 
-      expect(queryByTitle('0 MATIC')).toBeInTheDocument();
+      expect(queryByTitle('0 POL')).toBeInTheDocument();
     });
 
     it('should render showFiat', () => {

@@ -308,8 +308,17 @@ describe('Sentry errors', function () {
           testSpecificMock: mockSentryMigratorError,
         },
         async ({ driver, mockedEndpoint }) => {
+<<<<<<< HEAD
           // we don't wait for the controllers to be loaded
           await driver.navigate(PAGES.HOME, { waitForControllers: false });
+||||||| merged common ancestors
+          await driver.navigate();
+
+=======
+          // we don't wait for the controllers to be loaded
+          await driver.navigate(PAGES.HOME, { waitForControllers: false });
+
+>>>>>>> master
           // Wait for Sentry request
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();

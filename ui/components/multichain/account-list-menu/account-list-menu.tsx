@@ -1,9 +1,16 @@
+<<<<<<< HEAD
 import React, { useContext, useState, useMemo, useCallback } from 'react';
+||||||| merged common ancestors
+import React, { useContext, useState } from 'react';
+=======
+import React, { useContext, useState, useMemo } from 'react';
+>>>>>>> master
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+<<<<<<< HEAD
   BtcAccountType,
   EthAccountType,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -21,6 +28,17 @@ import {
 } from '../../../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import {
+||||||| merged common ancestors
+=======
+  BtcAccountType,
+  EthAccountType,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  InternalAccount,
+  KeyringAccountType,
+  ///: END:ONLY_INCLUDE_IF
+} from '@metamask/keyring-api';
+import {
+>>>>>>> master
   Box,
   ButtonLink,
   ButtonLinkSize,
@@ -88,6 +106,7 @@ import {
 } from '../../../selectors/accounts';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
+<<<<<<< HEAD
 import {
   InternalAccountWithBalance,
   AccountConnections,
@@ -97,6 +116,14 @@ import {
   ACCOUNT_WATCHER_NAME,
   ACCOUNT_WATCHER_SNAP_ID,
 } from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
+||||||| merged common ancestors
+=======
+import {
+  InternalAccountWithBalance,
+  AccountConnections,
+  MergedInternalAccount,
+} from '../../../selectors/selectors.types';
+>>>>>>> master
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -137,7 +164,17 @@ export const getActionTitle = (
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     case ACTION_MODES.ADD_BITCOIN:
       return t('addAccount');
+<<<<<<< HEAD
     case ACTION_MODES.ADD_BITCOIN_TESTNET:
+||||||| merged common ancestors
+    ///: END:ONLY_INCLUDE_IF
+    case ACTION_MODES.MENU:
+=======
+    case ACTION_MODES.ADD_BITCOIN_TESTNET:
+      return t('addAccount');
+    ///: END:ONLY_INCLUDE_IF
+    case ACTION_MODES.MENU:
+>>>>>>> master
       return t('addAccount');
     ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.IMPORT:
@@ -187,6 +224,7 @@ type AccountListMenuProps = {
 export const AccountListMenu = ({
   onClose,
   showAccountCreation = true,
+<<<<<<< HEAD
   accountListItemProps,
   allowedAccountTypes = [
     EthAccountType.Eoa,
@@ -194,6 +232,18 @@ export const AccountListMenu = ({
     BtcAccountType.P2wpkh,
   ],
 }: AccountListMenuProps) => {
+||||||| merged common ancestors
+  accountListItemProps = {},
+}) => {
+=======
+  accountListItemProps = {},
+  allowedAccountTypes = [
+    EthAccountType.Eoa,
+    EthAccountType.Erc4337,
+    BtcAccountType.P2wpkh,
+  ],
+}: AccountListMenuProps) => {
+>>>>>>> master
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const accounts: InternalAccountWithBalance[] = useSelector(
@@ -250,6 +300,7 @@ export const AccountListMenu = ({
   const isBtcMainnetAccountAlreadyCreated = useSelector(
     hasCreatedBtcMainnetAccount,
   );
+<<<<<<< HEAD
   const isBtcTestnetAccountAlreadyCreated = useSelector(
     hasCreatedBtcTestnetAccount,
   );
@@ -263,6 +314,12 @@ export const AccountListMenu = ({
       scope,
     });
   };
+||||||| merged common ancestors
+=======
+  const isBtcTestnetAccountAlreadyCreated = useSelector(
+    hasCreatedBtcTestnetAccount,
+  );
+>>>>>>> master
   ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -283,10 +340,16 @@ export const AccountListMenu = ({
   }
   searchResults = mergeAccounts(searchResults, filteredAccounts);
 
+<<<<<<< HEAD
   const title = useMemo(
     () => getActionTitle(t as (text: string) => string, actionMode),
     [actionMode, t],
   );
+||||||| merged common ancestors
+  const title = getActionTitle(t, actionMode);
+=======
+  const title = getActionTitle(t as (text: string) => string, actionMode);
+>>>>>>> master
 
   // eslint-disable-next-line no-empty-function
   let onBack = () => {};
@@ -343,6 +406,68 @@ export const AccountListMenu = ({
             />
           </Box>
         ) : null}
+<<<<<<< HEAD
+||||||| merged common ancestors
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          bitcoinSupportEnabled && actionMode === ACTION_MODES.ADD_BITCOIN ? (
+            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+              <CreateBtcAccount
+                onActionComplete={(confirmed) => {
+                  if (confirmed) {
+                    onClose();
+                  } else {
+                    setActionMode(ACTION_MODES.LIST);
+                  }
+                }}
+              />
+            </Box>
+          ) : null
+          ///: END:ONLY_INCLUDE_IF
+        }
+=======
+        {
+          // Bitcoin mainnet:
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          bitcoinSupportEnabled && actionMode === ACTION_MODES.ADD_BITCOIN ? (
+            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+              <CreateBtcAccount
+                defaultAccountName="Bitcoin Account"
+                network={MultichainNetworks.BITCOIN}
+                onActionComplete={async (confirmed) => {
+                  if (confirmed) {
+                    onClose();
+                  } else {
+                    setActionMode(ACTION_MODES.LIST);
+                  }
+                }}
+              />
+            </Box>
+          ) : null
+          ///: END:ONLY_INCLUDE_IF
+        }
+        {
+          // Bitcoin testnet:
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          bitcoinTestnetSupportEnabled &&
+          actionMode === ACTION_MODES.ADD_BITCOIN_TESTNET ? (
+            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+              <CreateBtcAccount
+                defaultAccountName="Bitcoin Testnet Account"
+                network={MultichainNetworks.BITCOIN_TESTNET}
+                onActionComplete={async (confirmed) => {
+                  if (confirmed) {
+                    onClose();
+                  } else {
+                    setActionMode(ACTION_MODES.LIST);
+                  }
+                }}
+              />
+            </Box>
+          ) : null
+          ///: END:ONLY_INCLUDE_IF
+        }
+>>>>>>> master
         {actionMode === ACTION_MODES.IMPORT ? (
           <Box
             paddingLeft={4}
@@ -437,6 +562,25 @@ export const AccountListMenu = ({
                       );
                     }}
                     data-testid="multichain-account-menu-popover-add-btc-account-testnet"
+                  >
+                    {t('addNewBitcoinTestnetAccount')}
+                  </ButtonLink>
+                </Box>
+              ) : null
+              ///: END:ONLY_INCLUDE_IF
+            }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              bitcoinTestnetSupportEnabled ? (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    disabled={isBtcTestnetAccountAlreadyCreated}
+                    size={ButtonLinkSize.Sm}
+                    startIconName={IconName.Add}
+                    onClick={() => {
+                      setActionMode(ACTION_MODES.ADD_BITCOIN_TESTNET);
+                    }}
+                    data-testid="multichain-account-menu-popover-add-account-testnet"
                   >
                     {t('addNewBitcoinTestnetAccount')}
                   </ButtonLink>

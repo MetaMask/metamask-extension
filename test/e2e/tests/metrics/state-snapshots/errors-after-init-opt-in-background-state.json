@@ -208,9 +208,16 @@
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
+<<<<<<< HEAD
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean"
+||||||| merged common ancestors
+      "showTokenAutodetectModal": "boolean"
+=======
+      "isRedesignedConfirmationsDeveloperEnabled": "boolean",
+      "redesignedConfirmationsEnabled": true
+>>>>>>> master
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",

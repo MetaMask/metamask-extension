@@ -194,8 +194,16 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     handleInputChangeDebounced(name, value);
   };
 
+<<<<<<< HEAD
   const uploadFile = (name: string, file: FileObject | null) => {
     handleSnapRequest<Parameters<HandleEvent>[0]>({
+||||||| merged common ancestors
+  const uploadFile = (name: string, file: File | null) => {
+    handleSnapRequest({
+=======
+  const uploadFile = (name: string, file: FileObject | null) => {
+    handleSnapRequest({
+>>>>>>> master
       snapId,
       origin: '',
       handler: 'onUserInput',

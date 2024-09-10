@@ -44,7 +44,7 @@ export const SendPageYourAccounts = ({
     return mergeAccounts(accounts, internalAccounts).filter(
       (account: InternalAccount) => allowedAccountTypes.includes(account.type),
     );
-  }, [accounts, internalAccounts]);
+  }, [accounts, internalAccounts, allowedAccountTypes]);
   const selectedAccount = useSelector(getSelectedInternalAccount);
 
   return (

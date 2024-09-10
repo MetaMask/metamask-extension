@@ -56,6 +56,9 @@ export const GasFeesDetails = ({
     return null;
   }
 
+  const maxFeePerGasNumber = typeof maxFeePerGas === 'string' ? parseFloat(maxFeePerGas) : maxFeePerGas;
+  const maxPriorityFeePerGasNumber = typeof maxPriorityFeePerGas === 'string' ? parseFloat(maxPriorityFeePerGas) : maxPriorityFeePerGas;
+
   return (
     <>
       <EditGasFeesRow
@@ -90,8 +93,8 @@ export const GasFeesDetails = ({
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             <GasTiming
-              maxFeePerGas={maxFeePerGas}
-              maxPriorityFeePerGas={maxPriorityFeePerGas}
+              maxFeePerGas={maxFeePerGasNumber}
+              maxPriorityFeePerGas={maxPriorityFeePerGasNumber}
             />
           </Box>
         </ConfirmInfoRow>

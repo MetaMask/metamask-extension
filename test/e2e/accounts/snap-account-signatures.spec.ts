@@ -1,8 +1,18 @@
 import { Suite } from 'mocha';
+<<<<<<< HEAD
 import {
   tempToggleSettingRedesignedConfirmations,
   withFixtures,
 } from '../helpers';
+||||||| merged common ancestors
+import { openDapp, withFixtures } from '../helpers';
+=======
+import {
+  openDapp,
+  tempToggleSettingRedesignedConfirmations,
+  withFixtures,
+} from '../helpers';
+>>>>>>> master
 import { Driver } from '../webdriver/driver';
 import {
   accountSnapFixtures,
@@ -30,7 +40,15 @@ describe('Snap Account Signatures', function (this: Suite) {
 
           const newPublicKey = await makeNewAccountAndSwitch(driver);
 
+<<<<<<< HEAD
           await tempToggleSettingRedesignedConfirmations(driver);
+||||||| merged common ancestors
+          await openDapp(driver);
+=======
+          await tempToggleSettingRedesignedConfirmations(driver);
+
+          await openDapp(driver);
+>>>>>>> master
 
           // Run all 5 signature types
           const locatorIDs = [

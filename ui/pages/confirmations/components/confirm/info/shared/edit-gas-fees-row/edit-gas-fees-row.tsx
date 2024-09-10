@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { BigNumber } from '@ethersproject/bignumber';
 import { Box, Text } from '../../../../../../../components/component-library';
 import {
   AlignItems,
@@ -25,8 +26,8 @@ export const EditGasFeesRow = ({
   supportsEIP1559,
   setShowCustomizeGasPopover,
 }: {
-  fiatFee: string;
-  nativeFee: string;
+  fiatFee: string | BigNumber;
+  nativeFee: string | BigNumber;
   supportsEIP1559: boolean;
   setShowCustomizeGasPopover: Dispatch<SetStateAction<boolean>>;
 }) => {
@@ -38,6 +39,16 @@ export const EditGasFeesRow = ({
   const transactionMeta = useSelector(
     currentConfirmationSelector,
   ) as TransactionMeta;
+
+  const formatFee = (fee: string | BigNumber): string => {
+    if (BigNumber.isBigNumber(fee)) {
+      return fee.toString();
+    }
+    return fee;
+  };
+
+  const formattedFiatFee = formatFee(fiatFee);
+  const formattedNativeFee = formatFee(nativeFee);
 
   return (
     <ConfirmInfoAlertRow
@@ -59,14 +70,14 @@ export const EditGasFeesRow = ({
           color={TextColor.textDefault}
           data-testid="first-gas-field"
         >
-          {isNativeCurrencyUsed ? nativeFee : fiatFee}
+          {isNativeCurrencyUsed ? formattedNativeFee : formattedFiatFee}
         </Text>
         <Text
           marginRight={2}
           color={TextColor.textAlternative}
           data-testid="native-currency"
         >
-          {isNativeCurrencyUsed ? fiatFee : nativeFee}
+          {isNativeCurrencyUsed ? formattedFiatFee : formattedNativeFee}
         </Text>
         <EditGasIconButton
           supportsEIP1559={supportsEIP1559}

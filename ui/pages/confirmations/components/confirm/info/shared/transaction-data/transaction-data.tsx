@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { hexStripZeros } from '@ethersproject/bytes';
+import { BigNumber } from '@ethersproject/bignumber';
 import _ from 'lodash';
 import { Hex } from '@metamask/utils';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
@@ -186,11 +187,17 @@ function ParamValue({
     return <UniswapPath pathPools={value} />;
   }
 
-  let valueString = value.toString();
+  const formatValue = (val: any): string => {
+    if (BigNumber.isBigNumber(val)) {
+      return val.toString();
+    }
+    if (typeof val === 'string' && val.startsWith('0x')) {
+      return hexStripZeros(val);
+    }
+    return val.toString();
+  };
 
-  if (!Array.isArray(value) && valueString.startsWith('0x')) {
-    valueString = hexStripZeros(valueString);
-  }
+  const valueString = formatValue(value);
 
   return <ConfirmInfoRowText text={valueString} />;
 }

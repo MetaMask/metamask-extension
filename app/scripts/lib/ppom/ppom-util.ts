@@ -118,6 +118,7 @@ export function handlePPOMError(
   };
 }
 
+<<<<<<< HEAD
 export async function isChainSupported(chainId: Hex): Promise<boolean> {
   let supportedChainIds = SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS;
 
@@ -142,6 +143,19 @@ function normalizePPOMRequest(
       request,
     )
   ) {
+||||||| merged common ancestors
+function normalizePPOMRequest(request: JsonRpcRequest): JsonRpcRequest {
+  if (request.method !== METHOD_SEND_TRANSACTION) {
+=======
+function normalizePPOMRequest(
+  request: PPOMRequest | JsonRpcRequest,
+): PPOMRequest | JsonRpcRequest {
+  if (
+    !((req): req is PPOMRequest => req.method === METHOD_SEND_TRANSACTION)(
+      request,
+    )
+  ) {
+>>>>>>> master
     return request;
   }
 

@@ -227,8 +227,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-        style="align-items: center;"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -287,8 +286,14 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
+<<<<<<< HEAD:ui/pages/confirmations/components/confirm/info/base-transaction-info/__snapshots__/base-transaction-info.test.tsx.snap
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
         style="align-items: center;"
+||||||| merged common ancestors:ui/pages/confirmations/components/confirm/info/contract-interaction/__snapshots__/contract-interaction.test.tsx.snap
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+=======
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+>>>>>>> master:ui/pages/confirmations/components/confirm/info/contract-interaction/__snapshots__/contract-interaction.test.tsx.snap
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -454,8 +459,14 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
+<<<<<<< HEAD:ui/pages/confirmations/components/confirm/info/base-transaction-info/__snapshots__/base-transaction-info.test.tsx.snap
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
         style="align-items: center;"
+||||||| merged common ancestors:ui/pages/confirmations/components/confirm/info/contract-interaction/__snapshots__/contract-interaction.test.tsx.snap
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+=======
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+>>>>>>> master:ui/pages/confirmations/components/confirm/info/contract-interaction/__snapshots__/contract-interaction.test.tsx.snap
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -494,8 +505,14 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
+<<<<<<< HEAD:ui/pages/confirmations/components/confirm/info/base-transaction-info/__snapshots__/base-transaction-info.test.tsx.snap
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
         style="align-items: center;"
+||||||| merged common ancestors:ui/pages/confirmations/components/confirm/info/contract-interaction/__snapshots__/contract-interaction.test.tsx.snap
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+=======
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+>>>>>>> master:ui/pages/confirmations/components/confirm/info/contract-interaction/__snapshots__/contract-interaction.test.tsx.snap
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -587,8 +604,14 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
+<<<<<<< HEAD:ui/pages/confirmations/components/confirm/info/base-transaction-info/__snapshots__/base-transaction-info.test.tsx.snap
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
         style="align-items: center;"
+||||||| merged common ancestors:ui/pages/confirmations/components/confirm/info/contract-interaction/__snapshots__/contract-interaction.test.tsx.snap
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+=======
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+>>>>>>> master:ui/pages/confirmations/components/confirm/info/contract-interaction/__snapshots__/contract-interaction.test.tsx.snap
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -647,8 +670,14 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
+<<<<<<< HEAD:ui/pages/confirmations/components/confirm/info/base-transaction-info/__snapshots__/base-transaction-info.test.tsx.snap
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
         style="align-items: center;"
+||||||| merged common ancestors:ui/pages/confirmations/components/confirm/info/contract-interaction/__snapshots__/contract-interaction.test.tsx.snap
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+=======
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+>>>>>>> master:ui/pages/confirmations/components/confirm/info/contract-interaction/__snapshots__/contract-interaction.test.tsx.snap
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -811,8 +840,14 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
+<<<<<<< HEAD:ui/pages/confirmations/components/confirm/info/base-transaction-info/__snapshots__/base-transaction-info.test.tsx.snap
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
         style="align-items: center;"
+||||||| merged common ancestors:ui/pages/confirmations/components/confirm/info/contract-interaction/__snapshots__/contract-interaction.test.tsx.snap
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+=======
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+>>>>>>> master:ui/pages/confirmations/components/confirm/info/contract-interaction/__snapshots__/contract-interaction.test.tsx.snap
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -851,8 +886,14 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
+<<<<<<< HEAD:ui/pages/confirmations/components/confirm/info/base-transaction-info/__snapshots__/base-transaction-info.test.tsx.snap
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
         style="align-items: center;"
+||||||| merged common ancestors:ui/pages/confirmations/components/confirm/info/contract-interaction/__snapshots__/contract-interaction.test.tsx.snap
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+=======
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+>>>>>>> master:ui/pages/confirmations/components/confirm/info/contract-interaction/__snapshots__/contract-interaction.test.tsx.snap
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -944,8 +985,14 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
+<<<<<<< HEAD:ui/pages/confirmations/components/confirm/info/base-transaction-info/__snapshots__/base-transaction-info.test.tsx.snap
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
         style="align-items: center;"
+||||||| merged common ancestors:ui/pages/confirmations/components/confirm/info/contract-interaction/__snapshots__/contract-interaction.test.tsx.snap
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+=======
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+>>>>>>> master:ui/pages/confirmations/components/confirm/info/contract-interaction/__snapshots__/contract-interaction.test.tsx.snap
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1004,8 +1051,14 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
+<<<<<<< HEAD:ui/pages/confirmations/components/confirm/info/base-transaction-info/__snapshots__/base-transaction-info.test.tsx.snap
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
         style="align-items: center;"
+||||||| merged common ancestors:ui/pages/confirmations/components/confirm/info/contract-interaction/__snapshots__/contract-interaction.test.tsx.snap
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+=======
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+>>>>>>> master:ui/pages/confirmations/components/confirm/info/contract-interaction/__snapshots__/contract-interaction.test.tsx.snap
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"

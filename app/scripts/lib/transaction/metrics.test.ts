@@ -72,10 +72,17 @@ const mockTransactionMetricsRequest = {
   trackEvent: jest.fn(),
   getIsSmartTransaction: jest.fn(),
   getSmartTransactionByMinedTxHash: jest.fn(),
+<<<<<<< HEAD
   getRedesignedTransactionsEnabled: jest.fn(),
   getMethodData: jest.fn(),
   getIsRedesignedConfirmationsDeveloperEnabled: jest.fn(),
   getIsConfirmationAdvancedDetailsOpen: jest.fn(),
+||||||| merged common ancestors
+  getRedesignedConfirmationsEnabled: jest.fn(),
+=======
+  getRedesignedConfirmationsEnabled: jest.fn(),
+  getIsRedesignedConfirmationsDeveloperEnabled: jest.fn(),
+>>>>>>> master
 } as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {

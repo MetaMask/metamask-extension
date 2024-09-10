@@ -157,11 +157,20 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
+<<<<<<< HEAD
               preferences: {
                 redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
               useNonceField: true,
+||||||| merged common ancestors
+              preferences: { redesignedConfirmationsEnabled: true },
+=======
+              preferences: {
+                redesignedConfirmationsEnabled: true,
+                isRedesignedConfirmationsDeveloperEnabled: true,
+              },
+>>>>>>> master
             })
             .build(),
           ganacheOptions: defaultGanacheOptionsForType2Transactions,
@@ -220,11 +229,20 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
+<<<<<<< HEAD
               preferences: {
                 redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
               useNonceField: true,
+||||||| merged common ancestors
+              preferences: { redesignedConfirmationsEnabled: true },
+=======
+              preferences: {
+                redesignedConfirmationsEnabled: true,
+                isRedesignedConfirmationsDeveloperEnabled: true,
+              },
+>>>>>>> master
             })
             .build(),
           ganacheOptions: defaultGanacheOptionsForType2Transactions,

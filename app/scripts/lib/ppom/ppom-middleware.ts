@@ -30,6 +30,7 @@ const CONFIRMATION_METHODS = Object.freeze([
   ...SIGNING_METHODS,
 ]);
 
+<<<<<<< HEAD
 export type PPOMMiddlewareRequest<
   Params extends JsonRpcParams = JsonRpcParams,
 > = Required<JsonRpcRequest<Params>> & {
@@ -37,6 +38,15 @@ export type PPOMMiddlewareRequest<
   traceContext?: TraceContext;
 };
 
+||||||| merged common ancestors
+=======
+export type PPOMMiddlewareRequest<
+  Params extends JsonRpcParams = JsonRpcParams,
+> = Required<JsonRpcRequest<Params>> & {
+  securityAlertResponse?: SecurityAlertResponse | undefined;
+};
+
+>>>>>>> master
 /**
  * Middleware function that handles JSON RPC requests.
  * This function will be called for every JSON RPC request.

@@ -199,8 +199,14 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
+<<<<<<< HEAD
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
+||||||| merged common ancestors
+          showTokenAutodetectModal: false,
+=======
+          isRedesignedConfirmationsDeveloperEnabled: false,
+>>>>>>> master
         },
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',

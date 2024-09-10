@@ -10,7 +10,7 @@ import { capitalize, isEqual } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import type { Hex, Json } from '@metamask/utils';
+import type { Hex, Json, JsonRpcRequest } from '@metamask/utils';
 import {
   AssetsContractController,
   BalanceMap,
@@ -1241,13 +1241,28 @@ export function removeSnap(
   };
 }
 
+<<<<<<< HEAD
 export async function handleSnapRequest<
   Params extends JsonRpcParams = JsonRpcParams,
 >(args: {
+||||||| merged common ancestors
+export async function handleSnapRequest(args: {
+=======
+export async function handleSnapRequest<
+  Params extends Record<string, unknown> = JsonRpcParams,
+>(args: {
+>>>>>>> master
   snapId: string;
   origin: string;
   handler: string;
+<<<<<<< HEAD
   request: JsonRpcRequest<Params>;
+||||||| merged common ancestors
+  request: JsonRpcRequest;
+=======
+  request: Pick<JsonRpcRequest, 'jsonrpc' | 'method'> &
+    Partial<Pick<JsonRpcRequest<Params>, 'id' | 'params'>>;
+>>>>>>> master
 }): Promise<unknown> {
   return submitRequestToBackground('handleSnapRequest', [args]);
 }
@@ -4018,6 +4033,7 @@ export function rejectAllMessages(
 
 export function setFirstTimeFlowType(
   type: FirstTimeFlowType,
+<<<<<<< HEAD
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -4033,6 +4049,60 @@ export function setFirstTimeFlowType(
   };
 }
 
+||||||| merged common ancestors
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setFirstTimeFlowType`);
+    callBackgroundMethod('setFirstTimeFlowType', [type], (err) => {
+      if (err) {
+        dispatch(displayWarning(err));
+      }
+    });
+    dispatch({
+      type: actionConstants.SET_FIRST_TIME_FLOW_TYPE,
+      value: type,
+    });
+  };
+}
+
+export function setShowTokenAutodetectModalOnUpgrade(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setShowTokenAutodetectModalOnUpgrade`);
+    callBackgroundMethod(
+      'setShowTokenAutodetectModalOnUpgrade',
+      [val],
+      (err) => {
+        if (err) {
+          dispatch(displayWarning(err));
+        }
+      },
+    );
+    dispatch({
+      type: actionConstants.SET_SHOW_TOKEN_AUTO_DETECT_MODAL_UPGRADE,
+      value: val,
+    });
+  };
+}
+
+=======
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setFirstTimeFlowType`);
+    callBackgroundMethod('setFirstTimeFlowType', [type], (err) => {
+      if (err) {
+        dispatch(displayWarning(err));
+      }
+    });
+    dispatch({
+      type: actionConstants.SET_FIRST_TIME_FLOW_TYPE,
+      value: type,
+    });
+  };
+}
+
+>>>>>>> master
 export function setSelectedNetworkConfigurationId(
   networkConfigurationId: string,
 ): PayloadAction<string> {
@@ -5543,6 +5613,7 @@ export function setIsProfileSyncingEnabled(
   };
 }
 
+<<<<<<< HEAD
 export function setConfirmationAdvancedDetailsOpen(value: boolean) {
   return setPreference('showConfirmationAdvancedDetails', value);
 }
@@ -5550,6 +5621,15 @@ export function setConfirmationAdvancedDetailsOpen(value: boolean) {
 export async function getNextAvailableAccountName(
   keyring?: KeyringTypes,
 ): Promise<string> {
+||||||| merged common ancestors
+export function setShowNftAutodetectModal(value: boolean) {
+  return setPreference('showNftAutodetectModal', value);
+}
+
+export async function getNextAvailableAccountName(): Promise<string> {
+=======
+export async function getNextAvailableAccountName(): Promise<string> {
+>>>>>>> master
   return await submitRequestToBackground<string>(
     'getNextAvailableAccountName',
     [keyring],
@@ -5573,6 +5653,7 @@ export async function decodeTransactionData({
     },
   ]);
 }
+<<<<<<< HEAD
 
 export async function multichainUpdateBalance(
   accountId: string,
@@ -5614,3 +5695,18 @@ export async function endBackgroundTrace(request: EndTraceRequest) {
     { ...request, timestamp },
   ]);
 }
+||||||| merged common ancestors
+=======
+
+export async function multichainUpdateBalance(
+  accountId: string,
+): Promise<void> {
+  return await submitRequestToBackground<void>('multichainUpdateBalance', [
+    accountId,
+  ]);
+}
+
+export async function multichainUpdateBalances(): Promise<void> {
+  return await submitRequestToBackground<void>('multichainUpdateBalances', []);
+}
+>>>>>>> master

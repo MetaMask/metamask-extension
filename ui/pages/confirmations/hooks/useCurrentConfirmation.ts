@@ -36,10 +36,17 @@ const useCurrentConfirmation = () => {
   const latestPendingApproval = useSelector(latestPendingConfirmationSelector);
   const confirmationId = paramsConfirmationId ?? latestPendingApproval?.id;
 
+<<<<<<< HEAD
   const isRedesignedSignaturesUserSettingEnabled = useSelector(
+||||||| merged common ancestors
+  const redesignedConfirmationsEnabled = useSelector(
+=======
+  const isRedesignedConfirmationsUserSettingEnabled = useSelector(
+>>>>>>> master
     getRedesignedConfirmationsEnabled,
   );
 
+<<<<<<< HEAD
   const isRedesignedTransactionsUserSettingEnabled = useSelector(
     getRedesignedTransactionsEnabled,
   );
@@ -52,6 +59,17 @@ const useCurrentConfirmation = () => {
     process.env.ENABLE_CONFIRMATION_REDESIGN === 'true' ||
     isRedesignedConfirmationsDeveloperEnabled;
 
+||||||| merged common ancestors
+=======
+  const isRedesignedConfirmationsDeveloperEnabled = useSelector(
+    getIsRedesignedConfirmationsDeveloperEnabled,
+  );
+
+  const isRedesignedConfirmationsDeveloperSettingEnabled =
+    process.env.ENABLE_CONFIRMATION_REDESIGN === 'true' ||
+    isRedesignedConfirmationsDeveloperEnabled;
+
+>>>>>>> master
   const pendingApproval = useSelector((state) =>
     selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),
   );
@@ -65,9 +83,21 @@ const useCurrentConfirmation = () => {
     selectUnapprovedMessage(state, confirmationId),
   );
 
+<<<<<<< HEAD
   const isCorrectUserTransactionType = REDESIGN_USER_TRANSACTION_TYPES.includes(
     transactionMetadata?.type as TransactionType,
   );
+||||||| merged common ancestors
+  const isCorrectTransactionType = REDESIGN_TRANSACTION_TYPES.includes(
+    transactionMetadata?.type as TransactionType,
+  );
+=======
+  const isCorrectTransactionType =
+    isRedesignedConfirmationsDeveloperSettingEnabled &&
+    REDESIGN_TRANSACTION_TYPES.includes(
+      transactionMetadata?.type as TransactionType,
+    );
+>>>>>>> master
 
   const isCorrectDeveloperTransactionType =
     REDESIGN_DEV_TRANSACTION_TYPES.includes(
@@ -78,6 +108,7 @@ const useCurrentConfirmation = () => {
     pendingApproval?.type as ApprovalType,
   );
 
+<<<<<<< HEAD
   const shouldUseRedesignForSignatures =
     (isRedesignedSignaturesUserSettingEnabled && isCorrectApprovalType) ||
     (isRedesignedConfirmationsDeveloperSettingEnabled && isCorrectApprovalType);
@@ -98,6 +129,13 @@ const useCurrentConfirmation = () => {
     shouldUseRedesignForSignatures ||
     (!isMMI() && shouldUseRedesignForTransactions);
 
+||||||| merged common ancestors
+=======
+  const shouldUseRedesign =
+    isRedesignedConfirmationsUserSettingEnabled &&
+    (isCorrectApprovalType || isCorrectTransactionType);
+
+>>>>>>> master
   return useMemo(() => {
     if (!shouldUseRedesign) {
       return { currentConfirmation: undefined };
