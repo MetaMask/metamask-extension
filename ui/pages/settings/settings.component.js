@@ -342,7 +342,7 @@ class SettingsPage extends PureComponent {
     if (useExternalServices) {
       tabs.splice(4, 0, {
         content: t('notifications'),
-        icon: <i className="fa fa-bell" />,
+        icon: <Icon name={IconName.Notification} />,
         key: NOTIFICATIONS_SETTINGS_ROUTE,
       });
     }
