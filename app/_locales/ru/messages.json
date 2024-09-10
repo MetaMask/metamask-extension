@@ -1552,9 +1552,6 @@
     "message": "активирует для $1",
     "description": "$1 is a token symbol, e.g. ETH"
   },
-  "enableTokenAutoDetection": {
-    "message": "Включите автоопределение токена"
-  },
   "enabled": {
     "message": "Включено"
   },
@@ -2554,9 +2551,6 @@
   "methodData": {
     "message": "Метод"
   },
-  "methodDataTransactionDescription": {
-    "message": "Это конкретные действия, которые будут предприняты. Эти данные могут быть подделаны, поэтому убедитесь, что вы доверяете сайту на другом конце."
-  },
   "methodNotSupported": {
     "message": "Не поддерживается с этим счётом."
   },
@@ -3312,15 +3306,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Обзор Snaps"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Оповещения безопасности больше не доступны в этой сети. Установка Snap может повысить вашу безопасность."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Внимание!"
   },
   "operationFailed": {
     "message": "Операция не удалась"

@@ -19,6 +19,10 @@ import {
   getMultichainCurrencyImage,
   getMultichainIsMainnet,
   getMultichainSelectedAccountCachedBalance,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  getMultichainIsBitcoin,
+  ///: END:ONLY_INCLUDE_IF
+  getMultichainSelectedAccountCachedBalanceIsZero,
 } from '../../../selectors/multichain';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -98,23 +102,32 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
 
-  const { tokensWithBalances, totalFiatBalance, loading } =
-    useAccountTotalFiatBalance(selectedAccount, shouldHideZeroBalanceTokens);
+  const { tokensWithBalances, loading } = useAccountTotalFiatBalance(
+    selectedAccount,
+    shouldHideZeroBalanceTokens,
+  );
   tokensWithBalances.forEach((token) => {
     // token.string is the balance displayed in the TokenList UI
     token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
   });
-  const balanceIsZero = Number(totalFiatBalance) === 0;
+
+  const balanceIsZero = useSelector(
+    getMultichainSelectedAccountCachedBalanceIsZero,
+  );
+
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
   ///: END:ONLY_INCLUDE_IF
 
   const isEvm = useSelector(getMultichainIsEvm);
-
   // NOTE: Since we can parametrize it now, we keep the original behavior
   // for EVM assets
   const shouldShowTokensLinks = showTokensLinks ?? isEvm;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  const isBtc = useSelector(getMultichainIsBitcoin);
+  ///: END:ONLY_INCLUDE_IF
 
   let isStakeable = isMainnet && isEvm;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -133,7 +146,13 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         shouldShowBuy ? (
-          <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.TOKEN} />
+          <RampsCard
+            variant={
+              isBtc
+                ? RAMPS_CARD_VARIANT_TYPES.BTC
+                : RAMPS_CARD_VARIANT_TYPES.TOKEN
+            }
+          />
         ) : null
         ///: END:ONLY_INCLUDE_IF
       }

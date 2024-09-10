@@ -51,11 +51,7 @@ import {
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
-import {
-  getIsShowTokenAutodetectModal,
-  getIsSmartTransactionsOptInModalAvailable,
-  getIsShowNftAutodetectModal,
-} from '../../../shared/modules/selectors';
+import { getIsSmartTransactionsOptInModalAvailable } from '../../../shared/modules/selectors';
 
 import {
   closeNotificationPopup,
@@ -73,9 +69,6 @@ import {
   setNewTokensImported,
   setActiveNetwork,
   setNewTokensImportedError,
-  setShowTokenAutodetectModal,
-  setShowTokenAutodetectModalOnUpgrade,
-  setShowNftAutodetectModal,
   setEditedNetwork,
   setDataCollectionForMarketing,
 } from '../../store/actions';
@@ -157,6 +150,8 @@ const mapStateToProps = (state) => {
 
   const hasAllowedPopupRedirectApprovals = hasPendingApprovals(state, [
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
+    SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
     ///: END:ONLY_INCLUDE_IF
   ]);
@@ -226,8 +221,6 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IF
     isSmartTransactionsOptInModalAvailable:
       getIsSmartTransactionsOptInModalAvailable(state),
-    isShowTokenAutodetectModal: getIsShowTokenAutodetectModal(state),
-    isShowNftAutodetectModal: getIsShowNftAutodetectModal(state),
   };
 };
 
@@ -280,15 +273,6 @@ const mapDispatchToProps = (dispatch) => {
     },
     setActiveNetwork: (networkConfigurationId) => {
       dispatch(setActiveNetwork(networkConfigurationId));
-    },
-    setTokenAutodetectModal: (val) => {
-      dispatch(setShowTokenAutodetectModal(val));
-    },
-    setShowTokenAutodetectModalOnUpgrade: (val) => {
-      dispatch(setShowTokenAutodetectModalOnUpgrade(val));
-    },
-    setNftAutodetectModal: (val) => {
-      dispatch(setShowNftAutodetectModal(val));
     },
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     setWaitForConfirmDeepLinkDialog: (wait) =>

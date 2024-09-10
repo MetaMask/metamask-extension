@@ -1,0 +1,14 @@
+diff --git a/dist/chunk-E52MHHG4.js b/dist/chunk-E52MHHG4.js
+index d34a3ded85472b86d0905ab14c0a69b9bfe4851b..7a7dfcd288bf7888eb29e4533662237a53335e17 100644
+--- a/dist/chunk-E52MHHG4.js
++++ b/dist/chunk-E52MHHG4.js
+@@ -1668,6 +1668,9 @@ handlePreinstalledSnaps_fn = function(preinstalledSnaps) {
+     _chunkEXN2TFDJjs.__privateMethod.call(void 0, this, _validateSnapPermissions, validateSnapPermissions_fn).call(this, processedPermissions);
+     const { newPermissions, unusedPermissions } = _chunkEXN2TFDJjs.__privateMethod.call(void 0, this, _calculatePermissionsChange, calculatePermissionsChange_fn).call(this, snapId, processedPermissions);
+     _chunkEXN2TFDJjs.__privateMethod.call(void 0, this, _updatePermissions, updatePermissions_fn).call(this, { snapId, newPermissions, unusedPermissions });
++    if (manifest.initialConnections) {
++      _chunkEXN2TFDJjs.__privateMethod.call(void 0, this, _handleInitialConnections, handleInitialConnections_fn).call(this, snapId, existingSnap?.initialConnections ?? null, manifest.initialConnections);
++    }
+     this.update((state) => {
+       state.snaps[snapId].status = _snapsutils.SnapStatus.Stopped;
+     });

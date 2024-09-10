@@ -126,7 +126,10 @@ export default class DomainInput extends Component {
         >
           {hasSelectedAddress ? (
             <>
-              <div className="ens-input__wrapper__input ens-input__wrapper__input--selected">
+              <div
+                className="ens-input__wrapper__input ens-input__wrapper__input--selected"
+                data-testid="ens-input-selected"
+              >
                 <AvatarAccount
                   variant={
                     useBlockie

@@ -14,6 +14,7 @@ export enum RampsMetaMaskEntry {
   NftBanner = 'ext_buy_banner_nfts',
   TokensBanner = 'ext_buy_banner_tokens',
   ActivityBanner = 'ext_buy_banner_activity',
+  BtcBanner = 'ext_buy_banner_btc',
 }
 
 const portfolioUrl = process.env.PORTFOLIO_URL;

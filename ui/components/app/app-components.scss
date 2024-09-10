@@ -46,7 +46,6 @@
 @import 'recovery-phrase-reminder/index';
 @import 'step-progress-bar/index.scss';
 @import 'selected-account/index';
-@import 'auto-detect-token/index';
 @import 'smart-transactions/index';
 @import 'srp-input/srp-input';
 @import 'snaps/snap-privacy-warning/index';
@@ -72,6 +71,7 @@
 @import 'network-account-balance-header/index';
 @import 'name/index';
 @import 'name/name-details/index';
+@import 'confirm/info/row/index';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 @import '../institutional/interactive-replacement-token-notification/index';
 @import '../institutional/confirm-remove-jwt-modal/index';

@@ -24,6 +24,7 @@ import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import { getErrorHtml } from '../../shared/lib/error-utils';
+import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -43,6 +44,24 @@ let extensionPort;
 start().catch(log.error);
 
 async function start() {
+  const startTime = performance.now();
+
+  const traceContext = trace({
+    name: TraceName.UIStartup,
+    startTime: performance.timeOrigin,
+  });
+
+  trace({
+    name: TraceName.LoadScripts,
+    startTime: performance.timeOrigin,
+    parentContext: traceContext,
+  });
+
+  endTrace({
+    name: 'Load Scripts',
+    timestamp: performance.timeOrigin + startTime,
+  });
+
   // create platform global
   global.platform = new ExtensionPlatform();
 
@@ -74,6 +93,7 @@ async function start() {
           // in later version we might try to improve it by reviving same streams.
           updateUiStreams();
         } else {
+          endTrace({ name: TraceName.BackgroundConnect });
           initializeUiWithTab(activeTab);
         }
         await loadPhishingWarningPage();
@@ -189,24 +209,40 @@ async function start() {
 
     extensionPort.onMessage.addListener(messageListener);
     extensionPort.onDisconnect.addListener(resetExtensionStreamAndListeners);
+
+    trace({
+      name: TraceName.BackgroundConnect,
+      parentContext: traceContext,
+    });
   } else {
     const messageListener = async (message) => {
       if (message?.data?.method === 'startUISync') {
+        endTrace({ name: TraceName.BackgroundConnect });
         initializeUiWithTab(activeTab);
         extensionPort.onMessage.removeListener(messageListener);
       }
     };
+
     extensionPort.onMessage.addListener(messageListener);
+
+    trace({
+      name: TraceName.BackgroundConnect,
+      parentContext: traceContext,
+    });
   }
 
   function initializeUiWithTab(tab) {
-    initializeUi(tab, connectionStream, (err, store) => {
+    initializeUi(tab, connectionStream, traceContext, (err, store) => {
       if (err) {
         // if there's an error, store will be = metamaskState
         displayCriticalError('troubleStarting', err, store);
         return;
       }
       isUIInitialised = true;
+
+      if (process.env.IN_TEST) {
+        window.document?.documentElement?.classList.add('controller-loaded');
+      }
 
       const state = store.getState();
       const { metamask: { completedOnboarding } = {} } = state;
@@ -272,7 +308,7 @@ async function queryCurrentActiveTab(windowType) {
   return { id, title, origin, protocol, url };
 }
 
-function initializeUi(activeTab, connectionStream, cb) {
+function initializeUi(activeTab, connectionStream, traceContext, cb) {
   connectToAccountManager(connectionStream, (err, backgroundConnection) => {
     if (err) {
       cb(err, null);
@@ -284,6 +320,7 @@ function initializeUi(activeTab, connectionStream, cb) {
         activeTab,
         container,
         backgroundConnection,
+        traceContext,
       },
       cb,
     );

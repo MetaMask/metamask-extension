@@ -101,6 +101,7 @@ const Nav = () => {
       <Box alignItems={AlignItems.center} display={Display.Flex}>
         <ButtonIcon
           ariaLabel="Previous Confirmation"
+          data-testid="confirm-nav__previous-confirmation"
           backgroundColor={BackgroundColor.backgroundAlternative}
           borderRadius={BorderRadius.full}
           className="confirm_nav__left_btn"
@@ -119,6 +120,7 @@ const Nav = () => {
         </Text>
         <ButtonIcon
           ariaLabel="Next Confirmation"
+          data-testid="confirm-nav__next-confirmation"
           backgroundColor={BackgroundColor.backgroundAlternative}
           borderRadius={BorderRadius.full}
           className="confirm_nav__right_btn"
@@ -134,6 +136,7 @@ const Nav = () => {
       <Button
         borderRadius={BorderRadius.XL}
         className="confirm_nav__reject_all"
+        data-testid="confirm-nav__reject-all"
         fontWeight={FontWeight.Normal}
         onClick={onRejectAll}
         paddingLeft={3}

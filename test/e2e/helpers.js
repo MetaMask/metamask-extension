@@ -16,7 +16,10 @@ const { PAGES } = require('./webdriver/driver');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
-const { ERC_4337_ACCOUNT } = require('./constants');
+const {
+  ERC_4337_ACCOUNT,
+  DEFAULT_GANACHE_ETH_BALANCE_DEC,
+} = require('./constants');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -738,25 +741,36 @@ const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
 
 const defaultGanacheOptions = {
-  accounts: [{ secretKey: PRIVATE_KEY, balance: convertETHToHexGwei(25) }],
+  accounts: [
+    {
+      secretKey: PRIVATE_KEY,
+      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
+    },
+  ],
+};
+
+const defaultGanacheOptionsForType2Transactions = {
+  ...defaultGanacheOptions,
+  // EVM version that supports type 2 transactions (EIP1559)
+  hardfork: 'london',
 };
 
 const multipleGanacheOptions = {
   accounts: [
     {
       secretKey: PRIVATE_KEY,
-      balance: convertETHToHexGwei(25),
+      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
     },
     {
       secretKey: PRIVATE_KEY_TWO,
-      balance: convertETHToHexGwei(25),
+      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
     },
   ],
 };
 
 const generateGanacheOptions = ({
   secretKey = PRIVATE_KEY,
-  balance = convertETHToHexGwei(25),
+  balance = convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
   ...otherProps
 }) => {
   const accounts = [
@@ -1126,6 +1140,39 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
   }
 }
 
+/**
+ * Rather than using the FixtureBuilder#withPreferencesController to set the setting
+ * we need to manually set the setting because the migration #122 overrides this.
+ * We should be able to remove this when we delete the redesignedConfirmationsEnabled setting.
+ *
+ * @param driver
+ */
+async function tempToggleSettingRedesignedConfirmations(driver) {
+  // Ensure we are on the extension window
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+
+  // Open settings menu button
+  const accountOptionsMenuSelector =
+    '[data-testid="account-options-menu-button"]';
+  await driver.waitForSelector(accountOptionsMenuSelector);
+  await driver.clickElement(accountOptionsMenuSelector);
+
+  // Click settings from dropdown menu
+  await driver.clickElement('[data-testid="global-menu-settings"]');
+
+  // Click Experimental tab
+  const experimentalTabRawLocator = {
+    text: 'Experimental',
+    tag: 'div',
+  };
+  await driver.clickElement(experimentalTabRawLocator);
+
+  // Click redesignedConfirmationsEnabled toggle
+  await driver.clickElement(
+    '[data-testid="toggle-redesigned-confirmations-container"]',
+  );
+}
+
 module.exports = {
   DAPP_HOST_ADDRESS,
   DAPP_URL,
@@ -1192,4 +1239,6 @@ module.exports = {
   getCleanAppState,
   editGasFeeForm,
   clickNestedButton,
+  defaultGanacheOptionsForType2Transactions,
+  tempToggleSettingRedesignedConfirmations,
 };

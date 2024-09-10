@@ -344,6 +344,27 @@ class Driver {
   }
 
   /**
+   * Waits for multiple elements that match the given locators to reach the specified state within the timeout period.
+   *
+   * @param {Array<string | object>} rawLocators - Array of element locators
+   * @param {number} timeout - Optional parameter that specifies the maximum amount of time (in milliseconds)
+   * to wait for the condition to be met and desired state of the elements to wait for.
+   * It defaults to 'visible', indicating that the method will wait until the elements are visible on the page.
+   * The other supported state is 'detached', which means waiting until the elements are removed from the DOM.
+   * @returns {Promise<Array<WebElement>>} Promise resolving when all elements meet the state or timeout occurs.
+   * @throws {Error} Will throw an error if any of the elements do not reach the specified state within the timeout period.
+   */
+  async waitForMultipleSelectors(
+    rawLocators,
+    { timeout = this.timeout, state = 'visible' } = {},
+  ) {
+    const promises = rawLocators.map((rawLocator) =>
+      this.waitForSelector(rawLocator, { timeout, state }),
+    );
+    return Promise.all(promises);
+  }
+
+  /**
    * Waits for an element that matches the given locator to become non-empty within the timeout period.
    * This is particularly useful for waiting for elements that are dynamically populated with content.
    *
@@ -728,16 +749,21 @@ class Driver {
    *
    * @param {string} [page] - its optional parameter to specify the page you want to navigate.
    * Defaults to home if no other page is specified.
+   * @param {object} [options] - optional parameter to specify additional options.
+   * @param {boolean} [options.waitForControllers] - optional parameter to specify whether to wait for the controllers to be loaded.
+   * Defaults to true.
    * @returns {Promise} promise resolves when the page has finished loading
    * @throws {Error} Will throw an error if the navigation fails or the page does not load within the timeout period.
    */
-  async navigate(page = PAGES.HOME) {
+  async navigate(page = PAGES.HOME, { waitForControllers = true } = {}) {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
     // Wait for asynchronous JavaScript to load
-    await this.driver.wait(
-      until.elementLocated(this.buildLocator('.metamask-loaded')),
-      10 * 1000,
-    );
+    if (waitForControllers) {
+      await this.driver.wait(
+        until.elementLocated(this.buildLocator('.controller-loaded')),
+        10 * 1000,
+      );
+    }
     return response;
   }
 
@@ -772,7 +798,7 @@ class Driver {
    * Opens a new window or tab in the browser session and navigates to the given URL.
    *
    * @param {string} url - The URL to navigate to in the new window tab.
-   * @returns {newHandle} The handle of the new window or tab.
+   * @returns {Promise<string>} The handle of the new window or tab.
    * This handle can be used later to switch between different tabs in window during the test.
    */
   async openNewPage(url) {
@@ -848,13 +874,17 @@ class Driver {
     let windowHandles = [];
     while (timeElapsed <= timeout) {
       windowHandles = await this.getAllWindowHandles();
+
       if (windowHandles.length === x) {
         return windowHandles;
       }
       await this.delay(delayStep);
       timeElapsed += delayStep;
     }
-    throw new Error('waitUntilXWindowHandles timed out polling window handles');
+
+    throw new Error(
+      `waitUntilXWindowHandles timed out polling window handles. Expected: ${x}, Actual: ${windowHandles.length}`,
+    );
   }
 
   /**
@@ -976,6 +1006,49 @@ class Driver {
     }
 
     throw new Error(`No window with url: ${url}`);
+  }
+
+  /**
+   * Waits until the current URL matches the specified URL.
+   *
+   * @param {object} options - Parameters for the function.
+   * @param {string} options.url - URL to wait for.
+   * @param {int} options.delayStep - optional delay between retries, defaults to 1000 milliseconds.
+   * @param {int} options.timeout - optional timeout period, defaults to this.timeout.
+   * @param {int} options.retries - optional number of retries for the URL fetch operation, defaults to 8.
+   * @param {int} options.retryDelay - optional delay between retries for the URL fetch operation, defaults to 2500 milliseconds.
+   * @returns {Promise<void>} Promise that resolves once the URL matches.
+   * @throws {Error} Throws an error if the URL does not match within the timeout period.
+   */
+  async waitForUrl({
+    url,
+    delayStep = 1000,
+    timeout = this.timeout,
+    retries = 8,
+    retryDelay = 2500,
+  }) {
+    let timeElapsed = 0;
+
+    while (timeElapsed <= timeout) {
+      const currentUrl = await retry(
+        {
+          retries,
+          delay: retryDelay,
+        },
+        async () => {
+          return await this.driver.getCurrentUrl();
+        },
+      );
+
+      if (currentUrl === url) {
+        return;
+      }
+
+      await this.delay(delayStep);
+      timeElapsed += delayStep;
+    }
+
+    throw new Error(`URL did not match: ${url} within ${timeout} ms`);
   }
 
   /**
@@ -1103,6 +1176,8 @@ class Driver {
   }
 
   async checkBrowserForConsoleErrors(_ignoredConsoleErrors) {
+    const ignoreAllErrors = _ignoredConsoleErrors.includes('ignore-all');
+
     const ignoredConsoleErrors = _ignoredConsoleErrors.concat([
       // Third-party Favicon 404s show up as errors
       'favicon.ico - Failed to load resource: the server responded with a status of 404',
@@ -1129,7 +1204,7 @@ class Driver {
             eventDescription?.description,
           );
 
-          if (!ignored) {
+          if (!ignored && !ignoreAllErrors) {
             this.errors.push(eventDescription?.description);
           }
         } else if (event.args.length !== 0) {
@@ -1137,7 +1212,7 @@ class Driver {
 
           const ignored = logBrowserError(ignoredConsoleErrors, newError);
 
-          if (!ignored) {
+          if (!ignored && !ignoreAllErrors) {
             this.errors.push(newError);
           }
         }

@@ -5,6 +5,18 @@ import {
 import { KeyringRpcMethod } from '@metamask/keyring-api';
 
 /**
+ * The origins of the Portfolio dapp.
+ */
+const PORTFOLIO_ORIGINS: string[] = [
+  'https://portfolio.metamask.io',
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  'https://dev.portfolio.metamask.io',
+  'https://stage.portfolio.metamask.io',
+  'https://ramps-dev.portfolio.metamask.io',
+  ///: END:ONLY_INCLUDE_IF
+];
+
+/**
  * List of keyring methods MetaMask can call.
  */
 const METAMASK_ALLOWED_METHODS: string[] = [
@@ -20,6 +32,7 @@ const METAMASK_ALLOWED_METHODS: string[] = [
 
 /**
  * List of keyring methods a dapp can call.
+ * !NOTE: DO NOT INCLUDE `KeyringRpcMethod.SubmitRequest` IN THIS LIST.
  */
 const WEBSITE_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ListAccounts,
@@ -33,6 +46,15 @@ const WEBSITE_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.GetRequest,
   KeyringRpcMethod.ApproveRequest,
   KeyringRpcMethod.RejectRequest,
+];
+
+/**
+ * List of keyring methods that Portfolio can call.
+ */
+const PORTFOLIO_ALLOWED_METHODS: string[] = [
+  KeyringRpcMethod.ListAccounts,
+  KeyringRpcMethod.GetAccount,
+  KeyringRpcMethod.GetAccountBalances,
   KeyringRpcMethod.SubmitRequest,
 ];
 
@@ -77,6 +99,10 @@ export function keyringSnapPermissionsBuilder(
   return () => {
     if (origin === 'metamask') {
       return METAMASK_ALLOWED_METHODS;
+    }
+
+    if (PORTFOLIO_ORIGINS.includes(origin)) {
+      return PORTFOLIO_ALLOWED_METHODS;
     }
 
     const originMetadata = controller.getSubjectMetadata(origin);
