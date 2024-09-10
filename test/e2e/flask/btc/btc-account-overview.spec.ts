@@ -32,7 +32,7 @@ describe('BTC Account - Overview', function (this: Suite) {
         // buy sell button
         await driver.findClickableElement('[data-testid="coin-overview-buy"]');
 
-        // portfolio button
+        // receive button
         await driver.findClickableElement(
           '[data-testid="coin-overview-receive"]',
         );
