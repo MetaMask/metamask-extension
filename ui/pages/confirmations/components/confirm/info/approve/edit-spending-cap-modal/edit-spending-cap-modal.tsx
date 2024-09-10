@@ -152,11 +152,7 @@ export const EditSpendingCapModal = ({
             onChange={(event) =>
               setCustomSpendingCapInputValue(event.target.value)
             }
-            placeholder={`${
-              customSpendingCap === ''
-                ? formattedSpendingCap
-                : customSpendingCap
-            } ${tokenSymbol}`}
+            placeholder={`${formattedSpendingCap} ${tokenSymbol}`}
             style={{ width: '100%' }}
             inputProps={{ 'data-testid': 'custom-spending-cap-input' }}
           />
