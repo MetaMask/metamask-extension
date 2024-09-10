@@ -16,6 +16,7 @@ describe('Lock and unlock', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await driver.delay(1000);
 
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
