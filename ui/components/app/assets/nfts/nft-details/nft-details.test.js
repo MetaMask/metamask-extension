@@ -25,7 +25,6 @@ import {
 } from '../../../../../helpers/utils/util';
 import NftDetails from './nft-details';
 
-// Mock the fetchData function from util.js
 jest.mock('../../../../../helpers/utils/util', () => ({
   getAssetImageURL: jest.fn(),
   shortenAddress: jest.fn(),
