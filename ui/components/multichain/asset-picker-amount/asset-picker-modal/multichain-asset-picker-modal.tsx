@@ -19,11 +19,6 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { AssetType } from '../../../../../shared/constants/transaction';
-import { ERC20Asset, NativeAsset, NFT, AssetWithDisplayData } from './types';
-import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
-import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
-import AssetList from './AssetList';
-import { Search } from './asset-picker-modal-search';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import {
   getMultichainConversionRate,
@@ -33,6 +28,11 @@ import {
   getMultichainNativeCurrencyImage,
   getMultichainSelectedAccountCachedBalance,
 } from '../../../../selectors/multichain';
+import { ERC20Asset, NativeAsset, NFT, AssetWithDisplayData } from './types';
+import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
+import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
+import AssetList from './AssetList';
+import { Search } from './asset-picker-modal-search';
 
 type AssetPickerModalProps = {
   header: JSX.Element | string | null;
@@ -50,8 +50,6 @@ type AssetPickerModalProps = {
   React.ComponentProps<typeof AssetPickerModalTabs>,
   'visibleTabs' | 'defaultActiveTabKey'
 >;
-
-const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
 export function MultichainAssetPickerModal({
   header,
@@ -77,7 +75,7 @@ export function MultichainAssetPickerModal({
   const currentCurrency = useMultichainSelector(getMultichainCurrentCurrency);
 
   const handleAssetChange = () => {
-    //TODO: Implement
+    // TODO: Implement
   };
 
   const filteredTokenList = useMemo(() => {

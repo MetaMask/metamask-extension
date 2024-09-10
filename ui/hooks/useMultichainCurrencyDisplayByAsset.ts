@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-named-as-default
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
@@ -5,8 +6,8 @@ import {
   getMultichainCoinRates,
   getMultichainCurrentCurrency,
 } from '../selectors/multichain';
-import { useMultichainSelector } from './useMultichainSelector';
 import { NativeAsset } from '../components/multichain/asset-picker-amount/asset-picker-modal/types';
+import { useMultichainSelector } from './useMultichainSelector';
 
 export const useMultichainCurrencyDisplayByAsset = ({
   assetDetails,

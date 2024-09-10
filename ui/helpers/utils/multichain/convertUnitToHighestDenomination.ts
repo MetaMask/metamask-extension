@@ -1,5 +1,6 @@
+// eslint-disable-next-line import/no-named-as-default
 import BigNumber from 'bignumber.js';
-import { NativeAsset } from '/Users/montelai/consensys/metamask-extension-new/ui/components/multichain/asset-picker-amount/asset-picker-modal/types';
+import { NativeAsset } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 
 export const convertUnitToHighestDenomination = ({
   asset,

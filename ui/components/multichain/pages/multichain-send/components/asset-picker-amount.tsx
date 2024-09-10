@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box } from '../../../../component-library';
 import {
@@ -18,7 +18,10 @@ import {
   estimateFee,
   updateSendAmount,
 } from '../../../../../ducks/multichain-send/multichain-send';
-import { NativeAsset } from '../../../asset-picker-amount/asset-picker-modal/types';
+import {
+  AssetWithDisplayData,
+  NativeAsset,
+} from '../../../asset-picker-amount/asset-picker-modal/types';
 import { I18nContext } from '../../../../../contexts/i18n';
 import { getCurrentMultichainDraftTransactionId } from '../../../../../selectors/multichain';
 import { getSelectedInternalAccount } from '../../../../../selectors';
@@ -41,7 +44,6 @@ export const MultichainAssetPickerAmount = ({
   const currentTransactionId = useSelector(
     getCurrentMultichainDraftTransactionId,
   );
-  const [isFocused, setIsFocused] = useState(false);
 
   // TODO: fix border color based on errors
   const borderColor = BorderColor.borderMuted;
@@ -57,13 +59,14 @@ export const MultichainAssetPickerAmount = ({
   }, []);
 
   // TODO: fix when there are more than only native assets
-  const onAssetChange = (asset) => {};
+  // eslint-disable-next-line @typescript-eslint/no-shadow, @typescript-eslint/no-unused-vars
+  const onAssetChange = (asset: AssetWithDisplayData<NativeAsset>) => {
+    // TODO: implement when there are more than only native assets
+  };
 
   return (
     <Box className="asset-picker-amount">
       <Box
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
         display={Display.Flex}
         alignItems={AlignItems.center}
         backgroundColor={BackgroundColor.backgroundDefault}

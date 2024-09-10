@@ -102,7 +102,9 @@ export const MultichainConfirmTransactionPage = () => {
           marginBottom={4}
         >
           <SenderToRecipient
+            // eslint-disable-next-line no-empty-function
             onRecipientClick={function noRefCheck() {}}
+            // eslint-disable-next-line no-empty-function
             onSenderClick={function noRefCheck() {}}
             recipientAddress={transaction.transactionParams.recipient.address}
             senderAddress={selectedAccount.address}

@@ -1,4 +1,6 @@
 import React from 'react';
+// eslint-disable-next-line import/no-named-as-default
+import BigNumber from 'bignumber.js';
 import { AvatarToken, Box, Text } from '../../../../component-library';
 import {
   AlignItems,
@@ -9,7 +11,6 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { DraftTransaction } from '../../../../../ducks/multichain-send/multichain-send';
-import BigNumber from 'bignumber.js';
 
 export type MultichainConfirmationAssetTotalProps = {
   sendAsset: DraftTransaction['transactionParams']['sendAsset'];

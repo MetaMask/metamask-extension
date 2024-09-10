@@ -24,6 +24,7 @@ import {
   Network as BitcoinNetwork,
   validate,
 } from 'bitcoin-address-validation';
+// eslint-disable-next-line import/no-named-as-default
 import BigNumber from 'bignumber.js';
 import {
   DraftTransaction,
@@ -360,8 +361,6 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
   setRecipient(
     recipient: string,
   ): DraftTransaction['transactionParams']['recipient'] {
-    console.log('recipient', recipient);
-    console.log(this.network);
     if (
       (this.network === MultichainNetworks.BITCOIN &&
         !isBtcMainnetAddress(recipient)) ||

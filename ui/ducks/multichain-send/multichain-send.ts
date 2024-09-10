@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+// eslint-disable-next-line import/no-named-as-default
 import BigNumber from 'bignumber.js';
 import {
   AnyAction,
@@ -118,6 +119,7 @@ export type TransactionParams = {
 
 export enum SendStage {
   DRAFT = 'draft',
+  PUBLISHING = 'publishing',
   PUBLISHED = 'published',
 }
 
@@ -589,9 +591,6 @@ const slice = createSlice({
           error: `[Multichain Send Fee Error]: ${action.error}`,
           isLoading: false,
         };
-      })
-      .addCase(updateAndValidateRecipient.pending, (state) => {
-        // TODO:
       })
       .addCase(updateAndValidateRecipient.fulfilled, (state, action) => {
         if (!state.currentTransactionUUID) {

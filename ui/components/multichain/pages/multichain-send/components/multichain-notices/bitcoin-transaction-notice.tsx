@@ -1,5 +1,4 @@
-import React from 'react';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { TransactionNotice } from '../transaction-notice';
 import { I18nContext } from '../../../../../../contexts/i18n';
 
