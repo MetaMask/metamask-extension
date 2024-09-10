@@ -278,7 +278,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                   size={ButtonPrimarySize.Lg}
                   block
                 >
-                  {t('confirm')}
+                  {t('update')}
                 </ButtonPrimary>
               )}
             </ModalFooter>

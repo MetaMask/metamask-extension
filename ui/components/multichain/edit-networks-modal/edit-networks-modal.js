@@ -44,16 +44,15 @@ export const EditNetworksModal = ({
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const nonTestNetworks = useSelector(getNonTestNetworks);
   const testNetworks = useSelector(getTestNetworks);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
       const connectedNetworks = useSelector((state) =>
         getPermittedChainsForSelectedTab(state, activeTabOrigin),
       );
+  const combinedNetworksIds = combinedNetworks.map((network) => network.chainId);
   const selectedPermittedChains =
-    connectedNetworks.length > 0 ? connectedNetworks : nonTestNetworks;
+    connectedNetworks.length > 0 ? connectedNetworks : combinedNetworksIds;
   const [selectedChains, setSelectedChains] = useState(selectedPermittedChains);
-
   const selectAll = () => {
     const newSelectedAccounts = combinedNetworks.map(
       (network) => network.chainId,
@@ -65,21 +64,18 @@ export const EditNetworksModal = ({
     setSelectedChains([]);
   };
 
-  const handleAccountClick = (chainId) => {
-    const index = selectedChains.indexOf(chainId);
-    let newSelectedChains = [];
+const handleAccountClick = (chainId) => {
+  if (selectedChains.includes(chainId)) {
+    // Remove the chainId from the selectedChains
+    setSelectedChains(selectedChains.filter((id) => id !== chainId));
+  } else {
+    // Add the chainId to selectedChains
+    setSelectedChains([...selectedChains, chainId]);
+  }
+};
 
-    if (index === -1) {
-      // If chainId is not already selected, add it to the selectedChains array
-      newSelectedChains = [...selectedChains, chainId];
-    } else {
-      // If chainId is already selected, remove it from the selectedChains array
-      newSelectedChains = selectedChains.filter((_item, idx) => idx !== index);
-    }
-    setSelectedChains(newSelectedChains);
-  };
   const allAreSelected = () => {
-    return combinedNetworks.length === selectedChains.length;
+    return combinedNetworksIds.length === selectedChains.length;
   };
   let checked = false;
   let isIndeterminate = false;
@@ -139,7 +135,7 @@ export const EditNetworksModal = ({
               isIndeterminate={isIndeterminate}
             />
           </Box>
-          {nonTestNetworks.map((network) => (
+          {combinedNetworks.map((network) => (
             <NetworkListItem
               name={network.nickname}
               iconSrc={network?.rpcPrefs?.imageUrl}
@@ -231,7 +227,7 @@ export const EditNetworksModal = ({
                 size={ButtonPrimarySize.Lg}
                 block
               >
-                {t('confirm')}
+                {t('update')}
               </ButtonPrimary>
             )}
           </ModalFooter>

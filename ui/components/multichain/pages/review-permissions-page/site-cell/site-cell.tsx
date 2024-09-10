@@ -4,6 +4,7 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
+  BorderColor,
   Display,
   FlexDirection,
   IconColor,
@@ -14,6 +15,8 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
+  AvatarAccount,
+  AvatarAccountSize,
   AvatarIcon,
   AvatarIconSize,
   Box,
@@ -33,7 +36,13 @@ type SiteCellProps = {
     nickname: string;
     chainId?: string;
   }[];
-  accounts: { address: string }[];
+  accounts: {
+    address: string;
+    label: string;
+    metadata: {
+      name: string;
+    };
+  }[];
   onAccountsClick: () => void;
   onNetworksClick: () => void;
   onDisconnectClick: () => void;
@@ -118,10 +127,28 @@ export const SiteCell: React.FC<SiteCellProps> = ({
                 ? t('requestingFor')
                 : t('connectedWith')}
             </Text>
-            <SiteCellTooltip
-              accounts={accounts}
-              avatarAccountsData={avatarAccountsData}
-            />
+            {accounts.length > 1 ? (
+              <SiteCellTooltip
+                accounts={accounts}
+                avatarAccountsData={avatarAccountsData}
+              />
+            ) : (
+              <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
+                <Text
+                  as="span"
+                  width={BlockSize.Max}
+                  color={TextColor.textAlternative}
+                  variant={TextVariant.bodyMd}
+                >
+                  {accounts[0].label || accounts[0].metadata.name}
+                </Text>
+                <AvatarAccount
+                  address={accounts[0].address}
+                  size={AvatarAccountSize.Xs}
+                  borderColor={BorderColor.transparent}
+                />
+              </Box>
+            )}
           </Box>
         </Box>
         {currentTabHasNoAccounts ? (
@@ -228,7 +255,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
 
       {showEditNetworksModal && (
         <EditNetworksModal
-          defaultNetworks = {networks}
+          defaultNetworks={networks}
           onClose={() => setShowEditNetworksModal(false)}
           onClick={onNetworksClick}
           currentTabHasNoAccounts={currentTabHasNoAccounts}
