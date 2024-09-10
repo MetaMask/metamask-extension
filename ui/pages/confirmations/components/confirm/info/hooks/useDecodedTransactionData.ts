@@ -12,9 +12,7 @@ import { useConfirmContext } from '../../../../context/confirm';
 export function useDecodedTransactionData(): AsyncResult<
   DecodedTransactionDataResponse | undefined
 > {
-  const { currentConfirmation } = useConfirmContext() as unknown as {
-    currentConfirmation: TransactionMeta | undefined;
-  };
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const chainId = currentConfirmation?.chainId as Hex;
   const contractAddress = currentConfirmation?.txParams?.to as Hex;
