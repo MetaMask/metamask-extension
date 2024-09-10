@@ -30,15 +30,15 @@ describe('BTC Account - Overview', function (this: Suite) {
           css: '[disabled]',
         });
 
-        const buySellButton = await driver.waitForSelector(
+        // buy sell button
+        await driver.findClickableElement(
           '[data-testid="coin-overview-buy"]',
         );
-        assert.equal(await buySellButton.isEnabled(), true);
 
-        const portfolioButton = await driver.waitForSelector(
+        // portfolio button
+        await driver.findClickableElement(
           '[data-testid="coin-overview-receive"]',
         );
-        assert.equal(await portfolioButton.isEnabled(), true);
       },
     );
   });
