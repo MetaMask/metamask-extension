@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // useFetchData.test.js
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
@@ -27,7 +28,9 @@ describe('useGetAssetImageUrl', () => {
       );
     });
 
-    expect(result.result.current).toEqual(expectedRes);
+    expect((result as unknown as Record<string, any>).result.current).toEqual(
+      expectedRes,
+    );
   });
 
   it('should return data successfully when image is null', async () => {
@@ -39,6 +42,8 @@ describe('useGetAssetImageUrl', () => {
         useGetAssetImageUrl(testImage, testIpfsGateway),
       );
     });
-    expect(result.result.current).toEqual('');
+    expect((result as unknown as Record<string, any>).result.current).toEqual(
+      '',
+    );
   });
 });
