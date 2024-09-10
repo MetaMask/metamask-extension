@@ -14,7 +14,8 @@
       background: linear-gradient(90deg, transparent 0%, var(--color-background-primary-muted) 33%);
     }
 
-    p, .copyable__icon {
+    p,
+    .copyable__icon {
       color: var(--color-primary-default);
     }
 
@@ -58,7 +59,8 @@
           background: linear-gradient(90deg, transparent 0%, var(--color-error-muted-hover) 33%);
         }
 
-        p, .copyable__icon {
+        p,
+        .copyable__icon {
           color: var(--color-error-default);
         }
 
