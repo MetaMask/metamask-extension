@@ -1752,13 +1752,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@contentful/content-source-maps@npm:^0.6.0":
-  version: 0.6.1
-  resolution: "@contentful/content-source-maps@npm:0.6.1"
+"@contentful/content-source-maps@npm:^0.11.0":
+  version: 0.11.2
+  resolution: "@contentful/content-source-maps@npm:0.11.2"
   dependencies:
     "@vercel/stega": "npm:^0.1.2"
     json-pointer: "npm:^0.6.2"
-  checksum: 10/c29ae369959504f6e57912d1419c76c9e42549588f560f5f3b105fafd39ee709d57dc73d85afaf122acb5aa7964c301831292c654985133737592bb3d4f47482
+  checksum: 10/1a148b680582a69935dc2551b0c3bc58554ca92375316bb4e3f2ef58f34c1e8117ca3959e2843607cd07ff5f861978c7d5be24a47c611ea76341b48ea7c9ced0
   languageName: node
   linkType: hard
 
@@ -5775,22 +5775,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "@metamask/notification-services-controller@npm:0.2.1"
+"@metamask/notification-services-controller@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "@metamask/notification-services-controller@npm:0.4.1"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
-    "@metamask/base-controller": "npm:^6.0.2"
-    "@metamask/controller-utils": "npm:^11.0.2"
+    "@metamask/base-controller": "npm:^7.0.0"
+    "@metamask/controller-utils": "npm:^11.2.0"
     bignumber.js: "npm:^4.1.0"
-    contentful: "npm:^10.3.6"
+    contentful: "npm:^10.15.0"
     firebase: "npm:^10.11.0"
     loglevel: "npm:^1.8.1"
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/keyring-controller": ^17.0.0
-    "@metamask/profile-sync-controller": ^0.2.1
-  checksum: 10/f2969150edcd91bda44b46baee977d45ab6f0a23b9d34e5212b37aed462e36b2af99a7983e3585f0be6d4a5c32336acdab4e48d96fb3772fcdc1bd2524e09326
+    "@metamask/profile-sync-controller": ^0.4.0
+  checksum: 10/d9b7f146289d78bdb7d37999e390baa6614a722e61490c3828b993c62fb094a418e906d0a53216b04392ba565abdeb9ebe41fbffa8f150cac67c7f42c942c2bd
   languageName: node
   linkType: hard
 
@@ -15384,18 +15384,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"contentful@npm:^10.3.6":
-  version: 10.14.0
-  resolution: "contentful@npm:10.14.0"
+"contentful@npm:^10.15.0":
+  version: 10.15.0
+  resolution: "contentful@npm:10.15.0"
   dependencies:
-    "@contentful/content-source-maps": "npm:^0.6.0"
+    "@contentful/content-source-maps": "npm:^0.11.0"
     "@contentful/rich-text-types": "npm:^16.0.2"
     axios: "npm:^1.7.4"
     contentful-resolve-response: "npm:^1.9.0"
     contentful-sdk-core: "npm:^8.3.1"
     json-stringify-safe: "npm:^5.0.1"
     type-fest: "npm:^4.0.0"
-  checksum: 10/93d6268150b4ae28c85e718b70c6fff8b0a2c4c9ecad4d5f88d775fee0ee2382f00d267f2a30456be962c010af731962491413bccdf07be8c8632aa979fb77a6
+  checksum: 10/b57c51faa99074a2f60c930c4827d1f8fe9867a359e53738532bbe859f5d72e750645fa4e195e65ad015811f344d95a0b3cebe6debef7d4e92ce9510bd55939e
   languageName: node
   linkType: hard
 
@@ -26126,7 +26126,7 @@ __metadata:
     "@metamask/name-controller": "npm:^8.0.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A20.2.0#~/.yarn/patches/@metamask-network-controller-npm-20.2.0-98b1a5ae59.patch"
     "@metamask/notification-controller": "npm:^6.0.0"
-    "@metamask/notification-services-controller": "npm:^0.2.1"
+    "@metamask/notification-services-controller": "npm:^0.4.1"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^10.0.0"

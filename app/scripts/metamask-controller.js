@@ -148,7 +148,7 @@ import {
   UserStorageController,
 } from '@metamask/profile-sync-controller';
 import {
-  NotificationsServicesPushController,
+  NotificationServicesPushController,
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
 import {
@@ -1496,9 +1496,9 @@ export default class MetamaskController extends EventEmitter {
         allowedEvents: [],
       });
     this.notificationServicesPushController =
-      new NotificationsServicesPushController.Controller({
+      new NotificationServicesPushController.Controller({
         messenger: notificationServicesPushControllerMessenger,
-        state: initState.NotificationsServicesPushController,
+        state: initState.NotificationServicesPushController,
         env: {
           apiKey: process.env.FIREBASE_API_KEY ?? '',
           authDomain: process.env.FIREBASE_AUTH_DOMAIN ?? '',
