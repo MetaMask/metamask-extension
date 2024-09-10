@@ -62,11 +62,7 @@ async function main() {
               value: {
                 eip155: {
                   scopes: ['eip155:1'],
-                  methods: [
-                    'eth_sendTransaction',
-                    'eth_getBalance',
-                    'personal_sign',
-                  ],
+                  methods: ['eth_sendTransaction', 'eth_getBalance'],
                   notifications: [],
                 },
               },
@@ -75,11 +71,7 @@ async function main() {
               name: 'optionalScopes',
               value: {
                 'eip155:1337': {
-                  methods: [
-                    'eth_sendTransaction',
-                    'eth_getBalance',
-                    'personal_sign',
-                  ],
+                  methods: ['eth_sendTransaction', 'eth_getBalance'],
                   notifications: [],
                 },
               },
@@ -92,20 +84,12 @@ async function main() {
               sessionScopes: {
                 'eip155:1': {
                   accounts: [`eip155:1:${ACCOUNT_1}`],
-                  methods: [
-                    'eth_sendTransaction',
-                    'eth_getBalance',
-                    'personal_sign',
-                  ],
+                  methods: ['eth_sendTransaction', 'eth_getBalance'],
                   notifications: [],
                 },
                 [`eip155:${chainId}`]: {
                   accounts: [`eip155:${chainId}:${ACCOUNT_1}`],
-                  methods: [
-                    'eth_sendTransaction',
-                    'eth_getBalance',
-                    'personal_sign',
-                  ],
+                  methods: ['eth_sendTransaction', 'eth_getBalance'],
                   notifications: [],
                 },
               },
