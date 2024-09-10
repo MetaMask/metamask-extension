@@ -50,7 +50,7 @@
     "test:unit:webpack:coverage": "nyc --reporter=html --reporter=json --reporter=text tsx --test development/webpack/test/*.test.ts",
     "test:integration": "jest --config jest.integration.config.js",
     "test:integration:coverage": "jest --config jest.integration.config.js --coverage",
-    "test:e2e:chrome": "DEBUG='metamask:*' SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
+    "test:e2e:chrome": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
     "test:e2e:chrome:mmi": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mmi",
     "test:e2e:chrome:flask": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --build-type flask",
     "test:e2e:chrome:webpack": "ENABLE_MV3=false SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
