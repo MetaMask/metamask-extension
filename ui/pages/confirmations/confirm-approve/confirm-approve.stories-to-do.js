@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { updateMetamaskState } from '../../../store/actions';
 import { getCurrentNetworkTransactions } from '../../../selectors/transactions';
-import { store, getNewState } from '../../../../.storybook/preview';
+import { store } from '../../../../.storybook/preview';
 
 import { subjectMetadata } from '../../../../.storybook/initial-states/approval-screens/token-approval';
 import ConfirmApprove from '.';
