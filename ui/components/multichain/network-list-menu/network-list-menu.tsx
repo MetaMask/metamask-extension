@@ -51,7 +51,9 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
+  TextAlign,
   TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
@@ -577,7 +579,13 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           onClose={onClose}
           onBack={onBack}
         >
-          {title}
+          <Text
+            ellipsis
+            variant={TextVariant.headingSm}
+            textAlign={TextAlign.Center}
+          >
+            {title}
+          </Text>
         </ModalHeader>
         {render()}
       </ModalContent>
