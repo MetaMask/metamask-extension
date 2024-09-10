@@ -81,10 +81,15 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  // If author is not part of the MetaMask organisation
-  if (!knownBots.includes(labelable?.author) && !(await userBelongsToMetaMaskOrg(octokit, labelable?.author))) {
-    // Add external contributor label to the issue
-    await addLabelToLabelable(octokit, labelable, externalContributorLabel);
+  // Check if the author is a known bot
+  if (knownBots.includes(labelable?.author)) {
+    console.log(`${labelable.type === LabelableType.PullRequest ? 'PR' : 'Issue'} was created by a known bot (${labelable.author}). Skipping organization check and external contributor labeling.`);
+  } else {
+    // If author is not part of the MetaMask organisation
+    if (!(await userBelongsToMetaMaskOrg(octokit, labelable?.author))) {
+      // Add external contributor label to the issue
+      await addLabelToLabelable(octokit, labelable, externalContributorLabel);
+    }
   }
 
   // Check if labelable's body matches one of the issue or PR templates ('general-issue.yml' or 'bug-report.yml' or 'pull-request-template.md').
