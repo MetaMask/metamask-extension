@@ -7,6 +7,7 @@ import {
   getNonTestNetworks,
   getOriginOfCurrentTab,
   getPermittedChainsByOrigin,
+  getPermittedChainsForSelectedTab,
   getTestNetworks,
 } from '../../../selectors';
 import {
@@ -39,18 +40,19 @@ export const EditNetworksModal = ({
   currentTabHasNoAccounts,
   combinedNetworks,
   onDisconnectClick,
+  defaultNetworks,
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const nonTestNetworks = useSelector(getNonTestNetworks);
   const testNetworks = useSelector(getTestNetworks);
-  const chains = useSelector(getPermittedChainsByOrigin);
-  const permittedChains = Object.values(chains);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-  const flattenedPermittedChains = permittedChains.flat();
-  const [selectedChains, setSelectedChains] = useState(
-    flattenedPermittedChains,
-  );
+      const connectedNetworks = useSelector((state) =>
+        getPermittedChainsForSelectedTab(state, activeTabOrigin),
+      );
+  const selectedPermittedChains =
+    connectedNetworks.length > 0 ? connectedNetworks : nonTestNetworks;
+  const [selectedChains, setSelectedChains] = useState(selectedPermittedChains);
 
   const selectAll = () => {
     const newSelectedAccounts = combinedNetworks.map(
@@ -90,7 +92,7 @@ export const EditNetworksModal = ({
   }
   const managePermittedChains = (
     selectedChains,
-    flattenedPermittedChains,
+    selectedPermittedChains,
     activeTabOrigin,
   ) => {
     if (!Array.isArray(selectedChains)) {
@@ -99,7 +101,7 @@ export const EditNetworksModal = ({
     }
     dispatch(grantPermittedChains(activeTabOrigin, selectedChains));
 
-    const removedElements = flattenedPermittedChains.filter(
+    const removedElements = selectedPermittedChains.filter(
       (chain) => !selectedChains.includes(chain),
     );
 
@@ -221,7 +223,7 @@ export const EditNetworksModal = ({
                   } else {
                     managePermittedChains(
                       selectedChains,
-                      flattenedPermittedChains,
+                      selectedPermittedChains,
                       activeTabOrigin,
                     ); // Then call the managePermittedChains function
                   }

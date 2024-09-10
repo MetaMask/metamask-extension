@@ -228,6 +228,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
 
       {showEditNetworksModal && (
         <EditNetworksModal
+          defaultNetworks = {networks}
           onClose={() => setShowEditNetworksModal(false)}
           onClick={onNetworksClick}
           currentTabHasNoAccounts={currentTabHasNoAccounts}

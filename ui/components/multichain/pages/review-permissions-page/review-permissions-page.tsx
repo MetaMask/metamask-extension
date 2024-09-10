@@ -50,7 +50,10 @@ import { Content, Footer, Header, Page } from '../page';
 import { SubjectsType } from '../connections/components/connections.types';
 import { SiteCell } from '.';
 import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
-import { DisconnectAllModal, DisconnectType } from '../../disconnect-all-modal/disconnect-all-modal';
+import {
+  DisconnectAllModal,
+  DisconnectType,
+} from '../../disconnect-all-modal/disconnect-all-modal';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -195,7 +198,10 @@ export const ReviewPermissions = () => {
               type={DisconnectType.Account}
               hostname={activeTabOrigin}
               onClose={() => setShowDisconnectAllModal(false)}
-              onClick={() => { disconnectAllAccounts(); setShowDisconnectAllModal(false) } }
+              onClick={() => {
+                disconnectAllAccounts();
+                setShowDisconnectAllModal(false);
+              }}
             />
           ) : null}
         </Content>
