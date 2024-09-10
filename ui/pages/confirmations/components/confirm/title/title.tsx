@@ -3,7 +3,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { memo, useMemo } from 'react';
-
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 import { getHighestSeverity } from '../../../../../components/app/alert-system/utils';
 import { Box, Text } from '../../../../../components/component-library';
