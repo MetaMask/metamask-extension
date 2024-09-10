@@ -24,7 +24,7 @@ function getNestedValue<T>(obj: T, keyPath: string): any {
 export function sortAssets<T>(array: T[], criteria: SortCriteria<T>): T[] {
   const { key, order = 'asc', sortCallback } = criteria;
 
-  return array.sort((a, b) => {
+  return [...array].sort((a, b) => {
     const aValue = getNestedValue(a, key);
     const bValue = getNestedValue(b, key);
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button } from '../../../../component-library';
 import { TokenWithBalance } from '../asset-list';
 import { SortOrder, sortAssets } from '../../util/sort';
@@ -27,6 +27,7 @@ const SortControl = ({
   setTokenList,
   setLoading,
 }: SortControlProps) => {
+  const [sorted, setSorted] = useState(false);
   const selectedAccount = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -52,42 +53,45 @@ const SortControl = ({
   const { loading } = accountTotalFiatBalance;
 
   useEffect(() => {
-    setLoading(loading);
-    const tokensWithBalances =
-      accountTotalFiatBalance.tokensWithBalances as TokenWithBalance[];
+    if (!sorted) {
+      console.log('hello world');
+      setLoading(loading);
+      const tokensWithBalances =
+        accountTotalFiatBalance.tokensWithBalances as TokenWithBalance[];
 
-    tokensWithBalances.forEach((token) => {
-      // token.string is the balance displayed in the TokenList UI
-      token.string = roundToDecimalPlacesRemovingExtraZeroes(
-        token.string,
-        5,
-      ) as string;
-    });
+      tokensWithBalances.forEach((token) => {
+        // token.string is the balance displayed in the TokenList UI
+        token.string = roundToDecimalPlacesRemovingExtraZeroes(
+          token.string,
+          5,
+        ) as string;
+      });
 
-    // to sort by fiat balance, we need to compute this at this level
-    // should this get passed down as props to token-cell as props, rather than recomputing there?
-    tokensWithBalances.forEach((token) => {
-      const contractExchangeTokenKey = Object.keys(mergedRates).find((key) =>
-        isEqualCaseInsensitive(key, token.address),
-      );
+      // to sort by fiat balance, we need to compute this at this level
+      // should this get passed down as props to token-cell as props, rather than recomputing there?
+      tokensWithBalances.forEach((token) => {
+        const contractExchangeTokenKey = Object.keys(mergedRates).find((key) =>
+          isEqualCaseInsensitive(key, token.address),
+        );
 
-      const tokenExchangeRate =
-        contractExchangeTokenKey && mergedRates[contractExchangeTokenKey];
+        const tokenExchangeRate =
+          contractExchangeTokenKey && mergedRates[contractExchangeTokenKey];
 
-      token.tokenFiatAmount =
-        getTokenFiatAmount(
-          tokenExchangeRate,
-          conversionRate,
-          currentCurrency,
-          token.string, // tokenAmount
-          token.symbol, // tokenSymbol
-          false, // no currency symbol prefix
-          false, // no ticker symbol suffix
-        ) || '0';
-    });
+        token.tokenFiatAmount =
+          getTokenFiatAmount(
+            tokenExchangeRate,
+            conversionRate,
+            currentCurrency,
+            token.string, // tokenAmount
+            token.symbol, // tokenSymbol
+            false, // no currency symbol prefix
+            false, // no ticker symbol suffix
+          ) || '0';
+      });
 
-    setTokenList(tokensWithBalances);
-    setLoading(loading);
+      setTokenList(tokensWithBalances);
+      setLoading(loading);
+    }
   }, [accountTotalFiatBalance]);
 
   const handleSort = (key: string, sortCallback: string, order: SortOrder) => {
@@ -96,6 +100,8 @@ const SortControl = ({
       sortCallback,
       order,
     });
+    console.log('SORTED', sorted);
+    setSorted(true);
     setTokenList(sorted);
   };
 
