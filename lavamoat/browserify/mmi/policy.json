@@ -1131,8 +1131,8 @@
         "@metamask/eth-json-rpc-middleware>klona": true,
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true,
         "@metamask/eth-sig-util": true,
+        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/utils": true
       }
     },
@@ -1786,8 +1786,8 @@
         "@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
+        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/utils": true,
         "browserify>assert": true,
         "uuid": true
@@ -1873,9 +1873,9 @@
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
       "packages": {
+        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "uuid": true
       }
     },
@@ -2074,8 +2074,8 @@
         "@metamask/controller-utils": true,
         "@metamask/permission-controller>@metamask/utils": true,
         "@metamask/permission-controller>nanoid": true,
+        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "deep-freeze-strict": true,
         "immer": true
       }
@@ -2331,13 +2331,31 @@
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/binary>@stablelib/int": true
       }
     },
+    "@metamask/providers>@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/providers>@metamask/json-rpc-middleware-stream": {
+      "globals": {
+        "console.warn": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true,
+        "readable-stream": true
+      }
+    },
     "@metamask/queued-request-controller": {
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/queued-request-controller>@metamask/utils": true,
         "@metamask/rpc-errors": true,
-        "@metamask/selected-network-controller": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true
+        "@metamask/selected-network-controller": true
       }
     },
     "@metamask/queued-request-controller>@metamask/utils": {
@@ -2664,9 +2682,9 @@
         "@metamask/base-controller": true,
         "@metamask/object-multiplex": true,
         "@metamask/post-message-stream": true,
+        "@metamask/providers>@metamask/json-rpc-engine": true,
+        "@metamask/providers>@metamask/json-rpc-middleware-stream": true,
         "@metamask/rpc-errors": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream": true,
         "@metamask/snaps-controllers>@metamask/permission-controller": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "@metamask/snaps-controllers>concat-stream": true,
@@ -2689,24 +2707,6 @@
         "crypto.getRandomValues": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/json-rpc-engine": {
-      "packages": {
-        "@metamask/rpc-errors": true,
-        "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream": {
-      "globals": {
-        "console.warn": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true,
-        "readable-stream": true
-      }
-    },
     "@metamask/snaps-controllers>@metamask/permission-controller": {
       "globals": {
         "console.error": true
@@ -2714,8 +2714,8 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/snaps-controllers>nanoid": true,
         "@metamask/utils": true,
         "deep-freeze-strict": true,
@@ -2820,8 +2820,8 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/snaps-execution-environments>nanoid": true,
         "@metamask/utils": true,
         "deep-freeze-strict": true,
@@ -2852,8 +2852,8 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/snaps-rpc-methods>@metamask/permission-controller>nanoid": true,
         "@metamask/utils": true,
         "deep-freeze-strict": true,
@@ -2926,8 +2926,8 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/snaps-utils>@metamask/permission-controller>nanoid": true,
         "@metamask/utils": true,
         "deep-freeze-strict": true,
