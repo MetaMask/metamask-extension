@@ -239,11 +239,12 @@ describe('Navigate transactions', function () {
       async ({ driver, ganacheServer }) => {
         await unlockWallet(driver);
 
-        // Wait until total amount is loaded to mitigate flakiness on reject
+        // Wait until total amount and gas timing is loaded to mitigate flakiness on reject
         await driver.findElement({
           tag: 'span',
           text: '3.0000315',
         });
+        await driver.findElement('[data-testid="gas-timing-time"]');
 
         // reject transactions
         await driver.clickElement({ text: 'Reject 4', tag: 'a' });
