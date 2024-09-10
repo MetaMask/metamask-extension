@@ -244,6 +244,12 @@ function setSentryClient() {
    */
   globalThis.nw = {};
 
+  /**
+   * Sentry checks session tracking support by looking for global history object and functions inside it.
+   * Scuttling sets this property to undefined which breaks Sentry logic and crashes background.
+   */
+  globalThis.history ??= {};
+
   log('Updating client', {
     environment,
     dsn,
