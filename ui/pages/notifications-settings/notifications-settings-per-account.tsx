@@ -74,7 +74,7 @@ export const NotificationsSettingsPerAccount = ({
       category: MetaMetricsEventCategory.NotificationSettings,
       event: MetaMetricsEventName.NotificationsSettingsUpdated,
       properties: {
-        setting_type: 'account_notifications',
+        settings_type: 'account_notifications',
         old_value: isEnabled,
         new_value: !isEnabled,
       },
