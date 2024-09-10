@@ -39,6 +39,7 @@ describe('Trezor Hardware', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await driver.delay(200);
         await connectTrezor(driver);
 
         // Check that the first page of accounts is correct
