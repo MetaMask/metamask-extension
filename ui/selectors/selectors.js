@@ -1854,13 +1854,17 @@ export function getNetworkToAutomaticallySwitchTo(state) {
     numberOfUnapprovedTx === 0
   ) {
     const domainNetworks = getAllDomains(state);
-    const networkIdForThisDomain = domainNetworks[selectedTabOrigin];
+    const chainIdForThisDomain = domainNetworks[selectedTabOrigin];
+    if (!chainIdForThisDomain) {
+      return null
+    }
+    const {rpcEndpoints, defaultRpcEndpointIndex} = getNetworkConfigurationsByChainId(state)[chainIdForThisDomain]
+    const networkIdForThisDomain = rpcEndpoints[defaultRpcEndpointIndex].networkClientId
     const currentNetwork = getCurrentNetwork(state);
 
     // If we have a match, "silently" switch networks if the network differs
     // from the current network
     if (
-      networkIdForThisDomain &&
       currentNetwork.id !== networkIdForThisDomain
     ) {
       return networkIdForThisDomain;

@@ -464,7 +464,8 @@ export default class MetamaskController extends EventEmitter {
         allowedActions: [
           'NetworkController:getState',
           'NetworkController:setActiveNetwork',
-          'SelectedNetworkController:getNetworkClientIdForDomain',
+          'SelectedNetworkController:getChainIdForDomain',
+          'NetworkController:getDefaultNetworkClientIdForChainId',
         ],
         allowedEvents: ['SelectedNetworkController:stateChange'],
       }),
@@ -1229,6 +1230,8 @@ export default class MetamaskController extends EventEmitter {
         name: 'SelectedNetworkController',
         allowedActions: [
           'NetworkController:getNetworkClientById',
+          'NetworkController:getDefaultNetworkClientIdForChainId',
+          'NetworkController:getNetworkConfigurationByNetworkClientId',
           'NetworkController:getState',
           'NetworkController:getSelectedNetworkClient',
           'PermissionController:hasPermissions',
@@ -3019,17 +3022,20 @@ export default class MetamaskController extends EventEmitter {
    * @returns {object} An object containing important network state properties, including chainId and networkVersion.
    */
   async getProviderNetworkState(origin = METAMASK_DOMAIN) {
-    const networkClientId = this.controllerMessenger.call(
-      'SelectedNetworkController:getNetworkClientIdForDomain',
+    const chainId = this.controllerMessenger.call(
+      'SelectedNetworkController:getChainIdForDomain',
       origin,
+    );
+
+    const networkClientId = this.controllerMessenger.call(
+      'NetworkController:getDefaultNetworkClientIdForChainId',
+      chainId,
     );
 
     const networkClient = this.controllerMessenger.call(
       'NetworkController:getNetworkClientById',
       networkClientId,
     );
-
-    const { chainId } = networkClient.configuration;
 
     const { completedOnboarding } = this.onboardingController.store.getState();
 
@@ -3292,9 +3298,10 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.setActiveNetwork(networkConfigurationId);
       },
       setNetworkClientIdForDomain: (origin, networkClientId) => {
-        return this.selectedNetworkController.setNetworkClientIdForDomain(
+        const { chainId } = this.networkController.getNetworkConfigurationByNetworkClientId(networkClientId)
+        return this.selectedNetworkController.setChainIdForDomain(
           origin,
-          networkClientId,
+          chainId
         );
       },
       rollbackToPreviousProvider:
@@ -5626,9 +5633,10 @@ export default class MetamaskController extends EventEmitter {
               PermissionNames.eth_accounts,
             )
           ) {
-            this.selectedNetworkController.setNetworkClientIdForDomain(
+            const { chainId } = this.networkController.getNetworkConfigurationByNetworkClientId(networkClientId)
+            this.selectedNetworkController.setChainIdForDomain(
               origin,
-              networkClientId,
+              chainId,
             );
           }
         },
@@ -5645,13 +5653,7 @@ export default class MetamaskController extends EventEmitter {
         getCurrentChainId: () =>
           getCurrentChainId({ metamask: this.networkController.state }),
         getCurrentChainIdForDomain: (domain) => {
-          const networkClientId =
-            this.selectedNetworkController.getNetworkClientIdForDomain(domain);
-          const { chainId } =
-            this.networkController.getNetworkConfigurationByNetworkClientId(
-              networkClientId,
-            );
-          return chainId;
+          return this.selectedNetworkController.getChainIdForDomain(domain);
         },
 
         // Web3 shim-related
