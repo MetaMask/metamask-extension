@@ -10,7 +10,10 @@ export const section: UIComponentFactory<SectionElement> = ({
   element,
   ...params
 }) => {
-  const { children, props } = box({ element, ...params } as unknown as UIComponentParams<BoxElement>);
+  const { children, props } = box({
+    element,
+    ...params,
+  } as unknown as UIComponentParams<BoxElement>);
   return {
     element: 'Box',
     children,
@@ -21,5 +24,5 @@ export const section: UIComponentFactory<SectionElement> = ({
       backgroundColor: BackgroundColor.backgroundDefault,
       borderRadius: BorderRadius.LG,
     },
-  }
+  };
 };
