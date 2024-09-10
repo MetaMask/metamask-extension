@@ -17,6 +17,7 @@ import { Content, Footer, Header, Page } from '../page';
 
 import {
   BackgroundColor,
+  JustifyContent,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { SendPageAccountPicker } from '../send/components';
@@ -29,14 +30,13 @@ import {
 import { getSelectedInternalAccount } from '../../../../selectors';
 import {
   clearDraft,
-  DraftTransaction,
   startNewMultichainDraftTransaction,
 } from '../../../../ducks/multichain-send/multichain-send';
+import Spinner from '../../../ui/spinner';
 import { MultichainFee } from './components/fee';
 import { SendPageRecipientInput } from './components/recipient-input';
 import { MultichainAssetPickerAmount } from './components/asset-picker-amount';
 import { MultichainNotices } from './components/multichain-notices';
-import Spinner from '../../../ui/spinner';
 
 export const MultichainSendPage = () => {
   const t = useContext(I18nContext);
@@ -82,6 +82,7 @@ export const MultichainSendPage = () => {
         textProps={{
           variant: TextVariant.headingSm,
         }}
+        justifyContent={JustifyContent.center}
         startAccessory={
           <ButtonIcon
             size={ButtonIconSize.Sm}

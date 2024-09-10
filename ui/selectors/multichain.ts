@@ -454,7 +454,16 @@ export function getCurrentMultichainDraftTransaction(
 
 export function getCurrentMultichainDraftTransactionRecipient(
   state: MultchainReduxSendState,
-) {
+): DraftTransaction['transactionParams']['recipient'] {
   const draftTransaction = getCurrentMultichainDraftTransaction(state);
-  return draftTransaction?.transactionParams.recipient;
+
+  if (!draftTransaction) {
+    return {
+      address: '',
+      valid: false,
+      error: '',
+    };
+  }
+
+  return draftTransaction.transactionParams.recipient;
 }
