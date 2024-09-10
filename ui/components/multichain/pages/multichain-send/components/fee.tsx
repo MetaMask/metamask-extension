@@ -1,6 +1,5 @@
 import React from 'react';
 
-import BigNumber from 'bignumber.js';
 import { Box, Text } from '../../../../component-library';
 import {
   AlignItems,
@@ -14,6 +13,8 @@ import {
   DraftTransaction,
   MulitichainFeeEstimate,
 } from '../../../../../ducks/multichain-send/multichain-send';
+import { convertUnitToHighestDenomination } from '../../../../../helpers/utils/multichain/convertUnitToHighestDenomination';
+import { useMultichainCurrencyDisplayByAsset } from '../../../../../hooks/useMultichainCurrencyDisplayByAsset';
 import { FeeRow } from './fee-row';
 
 export type MultichainFeeProps = {
@@ -27,11 +28,16 @@ export const MultichainFee = ({
   estimatedFee,
   backgroundColor,
 }: MultichainFeeProps) => {
-  // TODO: fee to fiat conversion
   // fee is always in the smallest unit of the asset
-  const fee = new BigNumber(estimatedFee?.fee || 0)
-    .div(new BigNumber(10).pow(asset.assetDetails.details.decimals))
-    .toString();
+  const fee = convertUnitToHighestDenomination({
+    asset: asset.assetDetails,
+    amount: estimatedFee.fee,
+  });
+
+  const { feeInFiat, displayValueFee } = useMultichainCurrencyDisplayByAsset({
+    assetDetails: asset.assetDetails,
+    amount: fee,
+  });
 
   return (
     <Box
@@ -50,22 +56,24 @@ export const MultichainFee = ({
         value={
           <>
             <Text color={TextColor.textAlternative} marginRight={2}>
-              {estimatedFee?.feeInFiat}
+              {feeInFiat}
             </Text>
-            <Text>{`${fee} ${estimatedFee?.unit}`}</Text>
+            <Text>{displayValueFee}</Text>
           </>
         }
         tooltipText="The fee is an estimate and may vary based on network conditions."
       />
-      <FeeRow
-        isLoading={estimatedFee.isLoading}
-        title="Speed"
-        value={
-          <Text color={TextColor.textDefault}>
-            {estimatedFee?.confirmationTime}
-          </Text>
-        }
-      />
+      {estimatedFee?.confirmationTime && (
+        <FeeRow
+          isLoading={estimatedFee.isLoading}
+          title="Speed"
+          value={
+            <Text color={TextColor.textDefault}>
+              {estimatedFee.confirmationTime}
+            </Text>
+          }
+        />
+      )}
     </Box>
   );
 };

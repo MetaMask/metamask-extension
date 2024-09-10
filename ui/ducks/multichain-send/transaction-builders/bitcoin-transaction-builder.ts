@@ -20,7 +20,10 @@ import {
 } from '@metamask/superstruct';
 import { GetThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk';
 import { HandlerType } from '@metamask/snaps-utils';
-import { validate } from 'bitcoin-address-validation';
+import {
+  Network as BitcoinNetwork,
+  validate,
+} from 'bitcoin-address-validation';
 import BigNumber from 'bignumber.js';
 import {
   DraftTransaction,
@@ -363,7 +366,7 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
       (this.network === MultichainNetworks.BITCOIN &&
         !isBtcMainnetAddress(recipient)) ||
       (this.network === MultichainNetworks.BITCOIN_TESTNET &&
-        !validate(recipient, 'testnet'))
+        !validate(recipient, BitcoinNetwork.testnet))
     ) {
       this.transactionParams = {
         ...this.transactionParams,

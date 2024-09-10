@@ -9,7 +9,6 @@ import {
 import { CaipAccountAddress, CaipChainId } from '@metamask/utils';
 import { CaipAssetId, InternalAccount } from '@metamask/keyring-api';
 import { Json } from 'json-rpc-engine';
-import { SEND_STATUSES } from '../send';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { getMultichainNetwork } from '../../selectors/multichain';
 import { AssetType } from '../../../shared/constants/transaction';
@@ -160,6 +159,10 @@ const initialDraftTransaction: DraftTransaction = {
         // @ts-expect-error TODO: create placeholder
         image: './images/placeholder.svg',
         symbol: '',
+        balance: '0',
+        details: {
+          decimals: 8,
+        },
       },
       asset: '',
       denominatinon: undefined,
@@ -178,8 +181,8 @@ const initialDraftTransaction: DraftTransaction = {
     },
     fee: {
       error: '',
-      isLoading: false,
-      fee: '',
+      isLoading: true,
+      fee: '0',
       unit: '',
       confirmationTime: '',
       feeInFiat: '',
@@ -265,13 +268,7 @@ export const initializeSendState = createAsyncThunk<
         },
         amount: '0',
       },
-      // fee: {
-      //   ...draftTransaction.transactionParams.fee,
-      //   ...fee,
-      // },
     };
-
-    console.log('updatedTransactionParams', updatedTransactionParams);
 
     return {
       id: state.multichainSend.currentTransactionUUID as string, // TODO: remove cast. This was checked in the beginning.
