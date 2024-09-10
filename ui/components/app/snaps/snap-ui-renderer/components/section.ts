@@ -12,7 +12,7 @@ export const section: UIComponentFactory<SectionElement> = ({
 }) => {
   const { children, props } = box({ element, ...params } as unknown as UIComponentParams<BoxElement>);
   return {
-    element: 'Section',
+    element: 'Box',
     children,
     props: {
       ...props,
