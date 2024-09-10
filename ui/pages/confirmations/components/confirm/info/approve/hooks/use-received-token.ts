@@ -18,9 +18,8 @@ export type TokenWithBalance = {
 };
 
 export const useReceivedToken = () => {
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const selectedAccount = useSelector(getSelectedAccount);
 
