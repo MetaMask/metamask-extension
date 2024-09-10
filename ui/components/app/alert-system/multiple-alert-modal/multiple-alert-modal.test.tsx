@@ -60,14 +60,6 @@ describe('MultipleAlertModal', () => {
         },
       },
     },
-    confirm: {
-      currentConfirmation: {
-        id: OWNER_ID_MOCK,
-        status: 'unapproved',
-        time: new Date().getTime(),
-        type: 'personal_sign',
-      },
-    },
   };
   const mockStore = configureMockStore([])(STATE_MOCK);
 

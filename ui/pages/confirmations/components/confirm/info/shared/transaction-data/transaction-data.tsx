@@ -1,11 +1,9 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { hexStripZeros } from '@ethersproject/bytes';
 import _ from 'lodash';
 import { Hex } from '@metamask/utils';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
-import { currentConfirmationSelector } from '../../../../../selectors';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import {
   ConfirmInfoRow,
@@ -28,11 +26,10 @@ import {
   DecodedTransactionDataSource,
 } from '../../../../../../../../shared/types/transaction-decode';
 import { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transaction/decode/uniswap';
+import { useConfirmContext } from '../../../../../context/confirm';
 
 export const TransactionData = () => {
-  const currentConfirmation = useSelector(currentConfirmationSelector) as
-    | TransactionMeta
-    | undefined;
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const transactionData = currentConfirmation?.txParams?.data as Hex;
   const decodeResponse = useDecodedTransactionData();
@@ -76,7 +73,7 @@ export const TransactionData = () => {
   );
 };
 
-function Container({
+export function Container({
   children,
   isLoading,
   transactionData,

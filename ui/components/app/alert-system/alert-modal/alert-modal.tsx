@@ -166,13 +166,18 @@ function AlertDetails({
     >
       {customDetails ?? (
         <Box>
-          <Text variant={TextVariant.bodyMd}>{selectedAlert.message}</Text>
+          <Text
+            variant={TextVariant.bodyMd}
+            data-testid="alert-modal__selected-alert"
+          >
+            {selectedAlert.message}
+          </Text>
           {selectedAlert.alertDetails?.length ? (
             <Text variant={TextVariant.bodyMdBold} marginTop={1}>
               {t('alertModalDetails')}
             </Text>
           ) : null}
-          <Box as="ul" className={'alert-modal__alert-details'} paddingLeft={6}>
+          <Box as="ul" className="alert-modal__alert-details" paddingLeft={6}>
             {selectedAlert.alertDetails?.map((detail, index) => (
               <Box as="li" key={`${selectedAlert.key}-detail-${index}`}>
                 <Text variant={TextVariant.bodyMd}>{detail}</Text>
@@ -214,11 +219,11 @@ export function AcknowledgeCheckboxBase({
     >
       <Checkbox
         label={label ?? t('alertModalAcknowledge')}
-        data-testid={'alert-modal-acknowledge-checkbox'}
+        data-testid="alert-modal-acknowledge-checkbox"
         isChecked={isConfirmed}
         onChange={onCheckboxClick}
         alignItems={AlignItems.flexStart}
-        className={'alert-modal__acknowledge-checkbox'}
+        className="alert-modal__acknowledge-checkbox"
       />
     </Box>
   );
@@ -282,9 +287,11 @@ function ActionButton({
   }
 
   const { key, label } = action;
+  const dataTestId = `alert-modal-action-${key}`;
 
   return (
     <Button
+      data-testid={dataTestId}
       key={key}
       variant={ButtonVariant.Primary}
       width={BlockSize.Full}
@@ -337,7 +344,7 @@ export function AlertModal({
   }, [isConfirmed, selectedAlert.key, setAlertConfirmed]);
 
   return (
-    <Modal isOpen onClose={handleClose}>
+    <Modal isOpen onClose={handleClose} data-testid="alert-modal">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader
@@ -345,6 +352,9 @@ export function AlertModal({
           startAccessory={headerStartAccessory}
           paddingBottom={0}
           display={headerStartAccessory ? Display.InlineFlex : Display.Block}
+          closeButtonProps={{
+            'data-testid': 'alert-modal-close-button',
+          }}
         />
         <AlertHeader selectedAlert={selectedAlert} customTitle={customTitle} />
         <ModalBody>

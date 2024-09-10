@@ -64,6 +64,7 @@ import {
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
+  getIsWatchEthereumAccountEnabled,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -92,6 +93,10 @@ import {
   AccountConnections,
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
+import {
+  ACCOUNT_WATCHER_NAME,
+  ACCOUNT_WATCHER_SNAP_ID,
+} from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -101,6 +106,8 @@ const ACTION_MODES = {
   MENU: 'menu',
   // Displays the add account form controls
   ADD: 'add',
+  // Displays the add account form controls (for watch-only account)
+  ADD_WATCH_ONLY: 'add-watch-only',
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // Displays the add account form controls (for bitcoin account)
   ADD_BITCOIN: 'add-bitcoin',
@@ -124,6 +131,8 @@ export const getActionTitle = (
 ) => {
   switch (actionMode) {
     case ACTION_MODES.ADD:
+    case ACTION_MODES.MENU:
+    case ACTION_MODES.ADD_WATCH_ONLY:
       return t('addAccount');
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     case ACTION_MODES.ADD_BITCOIN:
@@ -131,8 +140,6 @@ export const getActionTitle = (
     case ACTION_MODES.ADD_BITCOIN_TESTNET:
       return t('addAccount');
     ///: END:ONLY_INCLUDE_IF
-    case ACTION_MODES.MENU:
-      return t('addAccount');
     case ACTION_MODES.IMPORT:
       return t('importAccount');
     default:
@@ -218,6 +225,23 @@ export const AccountListMenu = ({
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
+  const isAddWatchEthereumAccountEnabled = useSelector(
+    getIsWatchEthereumAccountEnabled,
+  );
+  const handleAddWatchAccount = useCallback(async () => {
+    await trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.AccountAddSelected,
+      properties: {
+        account_type: MetaMetricsEventAccountType.Snap,
+        snap_id: ACCOUNT_WATCHER_SNAP_ID,
+        snap_name: ACCOUNT_WATCHER_NAME,
+        location: 'Main Menu',
+      },
+    });
+    onClose();
+    history.push(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
+  }, [trackEvent, onClose, history]);
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
   const bitcoinTestnetSupportEnabled = useSelector(
@@ -265,7 +289,7 @@ export const AccountListMenu = ({
   );
 
   // eslint-disable-next-line no-empty-function
-  let onBack = () => {};
+  let onBack;
   if (actionMode !== ACTION_MODES.LIST) {
     if (actionMode === ACTION_MODES.MENU) {
       onBack = () => setActionMode(ACTION_MODES.LIST);
@@ -520,6 +544,19 @@ export const AccountListMenu = ({
               </Box>
               ///: END:ONLY_INCLUDE_IF
             }
+            {isAddWatchEthereumAccountEnabled && (
+              <Box marginTop={4}>
+                <ButtonLink
+                  disabled={!isAddWatchEthereumAccountEnabled}
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Eye}
+                  onClick={handleAddWatchAccount}
+                  data-testid="multichain-account-menu-popover-add-watch-only-account"
+                >
+                  {t('addEthereumWatchOnlyAccount')}
+                </ButtonLink>
+              </Box>
+            )}
           </Box>
         ) : null}
         {actionMode === ACTION_MODES.LIST ? (

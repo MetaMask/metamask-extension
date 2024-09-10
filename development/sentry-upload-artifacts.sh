@@ -23,6 +23,7 @@ Upload JavaScript bundles and sourcemaps to Sentry
 Options:
   -h, --help               Show help text
   -r, --release <release>  Sentry release to upload files to (defaults to 'VERSION' environment variable)
+  -d, --dist <dist>        Sentry distribution (typically used to identify MV2 builds)
   --dist-directory <path>  The 'dist' directory to use. Defaults to 'dist'.
 EOF
 }
@@ -30,13 +31,15 @@ EOF
 function upload_sourcemaps {
   local release="${1}"; shift
   local dist_directory="${1}"; shift
+  local dist="${1}"; shift
 
-  sentry-cli releases files "${release}" upload-sourcemaps "${dist_directory}"/chrome/ "${dist_directory}"/sourcemaps/ --rewrite --url-prefix '/metamask'
+  sentry-cli releases files "${release}" upload-sourcemaps --dist "${dist}" "${dist_directory}"/chrome/ "${dist_directory}"/sourcemaps/ --rewrite --url-prefix '/metamask'
 }
 
 function main {
   local release=VERSION
   local dist_directory='dist'
+  local dist="mv3"
 
   while :; do
     case "${1-default}" in
@@ -52,6 +55,16 @@ function main {
           exit 1
         fi
         release="${2}"
+        shift
+        ;;
+      -d|--dist)
+        if [[ -z $2 ]]
+        then
+          printf "'dist' option requires an argument.\\n" >&2
+          printf '%s\n' "${__SEE_HELP_MESSAGE__}" >&2
+          exit 1
+        fi
+        dist="${2}"
         shift
         ;;
       --dist-directory)
@@ -83,7 +96,7 @@ function main {
   fi
 
   printf 'uploading source files and sourcemaps for Sentry release "%s"...\n' "${release}"
-  upload_sourcemaps "${release}" "${dist_directory}"
+  upload_sourcemaps "${release}" "${dist_directory}" "${dist}"
   printf 'all done!\n'
 }
 

@@ -12,7 +12,12 @@ import TextField from '../../ui/text-field';
 import ConfirmationNetworkSwitch from '../../../pages/confirmations/confirmation/components/confirmation-network-switch';
 import UrlIcon from '../../ui/url-icon';
 import Tooltip from '../../ui/tooltip/tooltip';
-import { AvatarIcon, FormTextField, Text } from '../../component-library';
+import {
+  AvatarIcon,
+  FormTextField,
+  Text,
+  BannerAlert,
+} from '../../component-library';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import { AccountListItem } from '../../multichain';
 import {
@@ -26,6 +31,7 @@ import Spinner from '../../ui/spinner';
 import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
 import { SnapUILink } from '../snaps/snap-ui-link';
 import { SmartTransactionStatusPage } from '../../../pages/smart-transactions/smart-transaction-status-page';
+import { SnapUIIcon } from '../snaps/snap-ui-icon';
 import { SnapUIImage } from '../snaps/snap-ui-image';
 import { SnapUIFileInput } from '../snaps/snap-ui-file-input';
 import { SnapUIInput } from '../snaps/snap-ui-input';
@@ -35,6 +41,8 @@ import { SnapUIDropdown } from '../snaps/snap-ui-dropdown';
 import { SnapUIRadioGroup } from '../snaps/snap-ui-radio-group';
 import { SnapUICheckbox } from '../snaps/snap-ui-checkbox';
 import { SnapUITooltip } from '../snaps/snap-ui-tooltip';
+import { SnapUICard } from '../snaps/snap-ui-card';
+import { SnapUISelector } from '../snaps/snap-ui-selector';
 import { SnapFooterButton } from '../snaps/snap-footer-button';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
@@ -79,7 +87,9 @@ export const safeComponentList = {
   SnapDelineator,
   SnapUIMarkdown,
   SnapUILink,
+  SnapUIIcon,
   SnapUIImage,
+  BannerAlert,
   Spinner,
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -92,6 +102,8 @@ export const safeComponentList = {
   SnapUIRadioGroup,
   SnapUICheckbox,
   SnapUITooltip,
+  SnapUICard,
+  SnapUISelector,
   SnapFooterButton,
   FormTextField,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
