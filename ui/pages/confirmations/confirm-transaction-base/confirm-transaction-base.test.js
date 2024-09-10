@@ -161,6 +161,8 @@ const baseStore = {
     tokenList: {},
     ensResolutionsByAddress: {},
     snaps: {},
+    useNonceField: true,
+    customNonceValue: '70',
   },
   confirmTransaction: {
     txData: {
