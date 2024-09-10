@@ -100,9 +100,6 @@ jobs:
           path: coverage
           merge-multiple: true
 
-      - name: Debug 1
-        run: ls coverage
-
       - name: Merge coverage reports
         run: yarn nyc merge coverage .nyc_output/coverage-final.json && yarn nyc report --reporter lcov
 
@@ -110,9 +107,6 @@ jobs:
         with:
           name: lcov.info
           path: coverage/lcov.info
-
-      - name: Debug 2
-        run: ls coverage
 
       - name: SonarCloud Scan
         # This is SonarSource/sonarcloud-github-action@v2.0.0
