@@ -1,5 +1,5 @@
 /* eslint-disable no-negated-condition */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import PropTypes from 'prop-types';
@@ -16,7 +16,7 @@ import InfoTooltip from '../../../../../../components/ui/info-tooltip';
 import NicknamePopovers from '../../../../../../components/app/modals/nickname-popovers';
 import { ORIGIN_METAMASK } from '../../../../../../../shared/constants/app';
 import SiteOrigin from '../../../../../../components/ui/site-origin';
-import { getAssetImageURL } from '../../../../../../helpers/utils/util';
+import useGetAssetImageUrl from '../../../../../../hooks/useGetAssetImageUrl';
 
 const ConfirmPageContainerSummary = (props) => {
   const {
@@ -36,7 +36,7 @@ const ConfirmPageContainerSummary = (props) => {
   const ipfsGateway = useSelector(getIpfsGateway);
 
   const txData = useSelector(txDataSelector);
-  const [nftImageURL, setAssetImageUrl] = useState('');
+  const nftImageURL = useGetAssetImageUrl(image, ipfsGateway);
   const { txParams = {} } = txData;
   const { to: txParamsToAddress } = txParams;
 
@@ -65,15 +65,6 @@ const ConfirmPageContainerSummary = (props) => {
 
   const { toName, isTrusted } = useAddressDetails(contractAddress);
   const checksummedAddress = toChecksumHexAddress(contractAddress);
-
-  useEffect(() => {
-    const getAssetImageUrl = async () => {
-      const assetImageUrl = await getAssetImageURL(image, ipfsGateway);
-      setAssetImageUrl(assetImageUrl);
-    };
-
-    getAssetImageUrl();
-  }, []);
 
   const renderImage = () => {
     if (image) {

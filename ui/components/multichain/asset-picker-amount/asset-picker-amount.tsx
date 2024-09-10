@@ -32,8 +32,8 @@ import {
   type Asset,
 } from '../../../ducks/send';
 import { NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR } from '../../../pages/confirmations/send/send.constants';
-import { getAssetImageURL } from '../../../helpers/utils/util';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import useGetAssetImageUrl from '../../../hooks/useGetAssetImageUrl';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -109,7 +109,10 @@ export const AssetPickerAmount = ({
 
   const [isFocused, setIsFocused] = useState(false);
   const [isNFTInputChanged, setIsTokenInputChanged] = useState(false);
-  const [nftImageURL, setAssetImageUrl] = useState<string>('');
+  const nftImageURL = useGetAssetImageUrl(
+    asset?.details?.image ?? null,
+    ipfsGateway,
+  );
 
   const handleChange = useCallback(
     (newAmountRaw, newAmountFormatted) => {
@@ -140,18 +143,6 @@ export const AssetPickerAmount = ({
       throw new Error('No asset is drafted for sending');
     }
   }, [selectedAccount]);
-
-  useEffect(() => {
-    const getAssetImageUrl = async () => {
-      const assetImageUrl = await getAssetImageURL(
-        asset?.details?.image,
-        ipfsGateway,
-      );
-      setAssetImageUrl(assetImageUrl);
-    };
-
-    getAssetImageUrl();
-  }, []);
 
   let borderColor = BorderColor.borderMuted;
 

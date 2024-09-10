@@ -1,11 +1,9 @@
 import React, {
   useCallback,
-  useEffect,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   useMemo,
   ///: END:ONLY_INCLUDE_IF
   useRef,
-  useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -53,7 +51,7 @@ import type { Quote } from '../../../../../ducks/send/swap-and-send-utils';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { AssetPicker } from '../../../asset-picker-amount/asset-picker';
 import { TabName } from '../../../asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
-import { getAssetImageURL } from '../../../../../helpers/utils/util';
+import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { SendHexData, SendPageRow, QuoteCard } from '.';
 
 export const SendPageRecipientContent = ({
@@ -105,7 +103,10 @@ export const SendPageRecipientContent = ({
   ///: END:ONLY_INCLUDE_IF
 
   const bestQuote: Quote = useSelector(getBestQuote);
-  const [nftImageURL, setAssetImageUrl] = useState<string>('');
+  const nftImageURL = useGetAssetImageUrl(
+    sendAsset.details?.image ?? null,
+    ipfsGateway,
+  );
 
   const isLoadingInitialQuotes = !bestQuote && isSwapQuoteLoading;
 
@@ -132,18 +133,6 @@ export const SendPageRecipientContent = ({
 
   // Gas data
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    const getAssetImageUrl = async () => {
-      const assetImageUrl = await getAssetImageURL(
-        sendAsset.details?.image,
-        ipfsGateway,
-      );
-      setAssetImageUrl(assetImageUrl);
-    };
-
-    getAssetImageUrl();
-  }, []);
 
   return (
     <Box>

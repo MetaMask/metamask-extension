@@ -135,7 +135,8 @@ export default function NftsItems({
         for (const singleNft of nfts) {
           const { image, imageOriginal } = singleNft;
 
-          const isImageHosted = image?.startsWith('https:');
+          const isImageHosted =
+            image?.startsWith('https:') || image?.startsWith('http:');
           if (!isImageHosted) {
             promisesArr.push(
               getAssetImageUrlAndUpdate(imageOriginal ?? image, singleNft),
@@ -249,7 +250,8 @@ export default function NftsItems({
               const { image, address, tokenId, name, imageOriginal, tokenURI } =
                 nft;
               const nftImageAlt = getNftImageAlt(nft);
-              const isImageHosted = image?.startsWith('https:');
+              const isImageHosted =
+                image?.startsWith('https:') || image?.startsWith('http:');
 
               const getSource = () => {
                 if (!isImageHosted) {

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { getAssetImageURL } from '../../../../../helpers/utils/util';
 import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import { getCurrentNetwork, getIpfsGateway } from '../../../../../selectors';
 
@@ -23,6 +22,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
+import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 
 export default function NftFullImage() {
   const t = useI18nContext();
@@ -37,7 +37,7 @@ export default function NftFullImage() {
 
   const ipfsGateway = useSelector(getIpfsGateway);
   const currentChain = useSelector(getCurrentNetwork);
-  const [nftImageURL, setAssetImageUrl] = useState<string>('');
+  const nftImageURL = useGetAssetImageUrl(imageOriginal ?? image, ipfsGateway);
 
   const nftImageAlt = getNftImageAlt(nft);
   const nftSrcUrl = imageOriginal ?? image;
@@ -46,18 +46,6 @@ export default function NftFullImage() {
   const history = useHistory();
 
   const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const getAssetImageUrl = async () => {
-      const assetImageUrl = await getAssetImageURL(
-        imageOriginal ?? image,
-        ipfsGateway,
-      );
-      setAssetImageUrl(assetImageUrl);
-    };
-
-    getAssetImageUrl();
-  }, []);
 
   useEffect(() => {
     setVisible(true);

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { useSelector } from 'react-redux';
 
 import Box from '../../../../ui/box';
 
 import { getIpfsGateway, getOpenSeaEnabled } from '../../../../../selectors';
-import { getAssetImageURL } from '../../../../../helpers/utils/util';
+import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 
 export const CollectionImageComponent = ({
   collectionImage,
@@ -16,19 +16,7 @@ export const CollectionImageComponent = ({
 }) => {
   const ipfsGateway = useSelector(getIpfsGateway);
   const openSeaEnabled = useSelector(getOpenSeaEnabled);
-  const [nftImageURL, setAssetImageUrl] = useState<string>('');
-
-  useEffect(() => {
-    const getAssetImageUrl = async () => {
-      const assetImageUrl = await getAssetImageURL(
-        collectionImage,
-        ipfsGateway,
-      );
-      setAssetImageUrl(assetImageUrl);
-    };
-
-    getAssetImageUrl();
-  }, []);
+  const nftImageURL = useGetAssetImageUrl(collectionImage, ipfsGateway);
 
   const renderCollectionImage = () => {
     if (collectionImage?.startsWith('ipfs') && !ipfsGateway) {
