@@ -1,21 +1,17 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+import FixtureBuilder from '../../../fixture-builder';
 import {
+  defaultGanacheOptions,
+  defaultGanacheOptionsForType2Transactions,
   largeDelayMs,
   veryLargeDelayMs,
   WINDOW_TITLES,
+  withFixtures,
 } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
+import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import { openDAppWithContract, TestSuiteArguments } from './shared';
-
-const {
-  defaultGanacheOptions,
-  defaultGanacheOptionsForType2Transactions,
-  withFixtures,
-} = require('../../../helpers');
-const FixtureBuilder = require('../../../fixture-builder');
-const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign ERC20 Increase Allowance', function () {
   const smartContract = SMART_CONTRACTS.HST;
