@@ -1,6 +1,10 @@
 import { ApprovalType } from '@metamask/controller-utils';
+import { merge } from 'lodash';
 
-import { Confirmation } from '../../../ui/pages/confirmations/types/confirm';
+import {
+  Confirmation,
+  SignatureRequestType,
+} from '../../../ui/pages/confirmations/types/confirm';
 import mockState from '../mock-state.json';
 import {
   genUnapprovedApproveConfirmation,
@@ -40,6 +44,33 @@ export const getMockTypedSignConfirmState = (
   },
 });
 
+export const getMockTypedSignConfirmStateForRequest = (
+  signature: SignatureRequestType,
+  args: RootState = { metamask: {} },
+) => ({
+  ...mockState,
+  ...args,
+  metamask: {
+    ...mockState.metamask,
+    ...args.metamask,
+    preferences: {
+      ...mockState.metamask.preferences,
+      redesignedTransactionsEnabled: true,
+      redesignedConfirmationsEnabled: true,
+      isRedesignedConfirmationsDeveloperEnabled: true,
+    },
+    pendingApprovals: {
+      [signature.id]: {
+        id: signature.id,
+        type: ApprovalType.EthSignTypedData,
+      },
+    },
+    unapprovedTypedMessages: {
+      [signature.id]: signature,
+    },
+  },
+});
+
 export const getMockPersonalSignConfirmState = (
   args: RootState = { metamask: {} },
 ) => ({
@@ -66,6 +97,33 @@ export const getMockPersonalSignConfirmState = (
   },
 });
 
+export const getMockPersonalSignConfirmStateForRequest = (
+  signature: SignatureRequestType,
+  args: RootState = { metamask: {} },
+) => ({
+  ...mockState,
+  ...args,
+  metamask: {
+    ...mockState.metamask,
+    ...args.metamask,
+    preferences: {
+      ...mockState.metamask.preferences,
+      redesignedTransactionsEnabled: true,
+      redesignedConfirmationsEnabled: true,
+      isRedesignedConfirmationsDeveloperEnabled: true,
+    },
+    pendingApprovals: {
+      [signature.id]: {
+        id: signature.id,
+        type: ApprovalType.PersonalSign,
+      },
+    },
+    unapprovedPersonalMsgs: {
+      [signature.id]: signature,
+    },
+  },
+});
+
 export const getMockConfirmState = (args: RootState = { metamask: {} }) => ({
   ...mockState,
   ...args,
@@ -85,30 +143,38 @@ export const getMockConfirmStateForTransaction = (
   transaction: Confirmation,
   args: RootState = { metamask: {} },
 ) =>
-  getMockConfirmState({
-    ...args,
-    metamask: {
-      ...args.metamask,
-      pendingApprovals: {
-        [transaction.id]: {
-          id: transaction.id,
-          type: ApprovalType.Transaction,
+  getMockConfirmState(
+    merge(
+      {
+        metamask: {
+          ...args.metamask,
+          pendingApprovals: {
+            [transaction.id]: {
+              id: transaction.id,
+              type: ApprovalType.Transaction,
+            },
+          },
+          transactions: [transaction],
+        },
+        confirm: {
+          currentConfirmation: transaction,
         },
       },
-      transactions: [transaction],
-    },
-    confirm: {
-      currentConfirmation: transaction,
-    },
-  });
+      args,
+    ),
+  );
 
-export const getMockContractInteractionConfirmState = () => {
+export const getMockContractInteractionConfirmState = (
+  args: RootState = { metamask: {} },
+) => {
   const contractInteraction = genUnapprovedContractInteractionConfirmation({
     chainId: mockState.metamask.networkConfigurations.goerli.chainId,
   });
-  return getMockConfirmStateForTransaction(contractInteraction);
+  return getMockConfirmStateForTransaction(contractInteraction, args);
 };
 
 export const getMockApproveConfirmState = () => {
-  return getMockConfirmStateForTransaction(genUnapprovedApproveConfirmation());
+  return getMockConfirmStateForTransaction(
+    genUnapprovedApproveConfirmation({ chainId: '0x5' }),
+  );
 };

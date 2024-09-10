@@ -4,7 +4,7 @@
   }
 
   &__container {
-    & > div:first-child {
+    & > *:first-child {
       padding: 16px;
     }
   }
@@ -20,6 +20,10 @@
   &__divider {
     width: 100%;
     height: 1px;
+  }
+
+  &__input > .mm-text-field {
+    border-color: var(--color-border-muted);
   }
 
   &__panel {

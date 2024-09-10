@@ -18,7 +18,7 @@ import {
 
 import { Box, Text } from '../../../component-library';
 import { getSnapMetadata } from '../../../../selectors';
-import SnapAvatar from '../snap-avatar';
+import { SnapIcon } from '../snap-icon';
 
 const SnapLegacyAuthorshipHeader = ({
   snapId,
@@ -45,7 +45,7 @@ const SnapLegacyAuthorshipHeader = ({
       marginRight={marginRight}
     >
       <Box>
-        <SnapAvatar snapId={snapId} />
+        <SnapIcon snapId={snapId} />
       </Box>
       <Box
         marginLeft={4}
