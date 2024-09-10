@@ -26,9 +26,7 @@ import { PermitSimulation } from './permit-simulation';
 
 const TypedSignInfo: React.FC = () => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext() as {
-    currentConfirmation: SignatureRequestType;
-  };
+  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const useTransactionSimulations = useSelector(
     selectUseTransactionSimulations,
   );

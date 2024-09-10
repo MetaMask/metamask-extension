@@ -25,7 +25,7 @@ export interface ModalHeaderProps extends HeaderBaseStyleUtilityProps {
    * The onClick handler for the back `ButtonIcon`
    * When passed this will allow for the back `ButtonIcon` to show
    */
-  onBack?: () => void;
+  onBack?: () => void | undefined;
   /**
    * The props to pass to the back `ButtonIcon`
    */
