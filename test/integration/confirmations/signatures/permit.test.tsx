@@ -235,12 +235,13 @@ describe('Permit Confirmation', () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedMetaMaskState,
+          selectedNetworkClientId: 'testNetworkConfigurationId',
           providerConfig: {
             type: 'rpc',
-            nickname: 'goerli',
+            nickname: 'test mainnet',
             chainId: '0x1',
             ticker: 'ETH',
-            id: 'chain5',
+            id: 'chain1',
           },
         },
         backgroundConnection: backgroundConnectionMocked,
@@ -264,7 +265,7 @@ describe('Permit Confirmation', () => {
     const individualFiatDisplay = await screen.findByTestId(
       'individual-fiat-display',
     );
-    expect(individualFiatDisplay).toHaveTextContent('$16,683,600.00');
+    expect(individualFiatDisplay).toHaveTextContent('$166,836.00');
 
     scope.done();
     expect(scope.isDone()).toBe(true);
