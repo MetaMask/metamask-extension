@@ -133,6 +133,7 @@ export const components: NotificationComponent<ERC20Notification> = {
           detail={t('notificationItemConfirmed') || ''}
           action={
             <NotificationDetailCopyButton
+              notification={notification}
               text={notification.tx_hash}
               displayText={t('notificationItemTransactionId') || ''}
             />

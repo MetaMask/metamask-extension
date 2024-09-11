@@ -1,8 +1,12 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import IconButton from './icon-button';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import {
+  IconColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip/tooltip';
+import { Icon, IconName } from '../../component-library';
 
 const meta: Meta<typeof IconButton> = {
   title: 'Components/UI/IconButton',
@@ -17,7 +21,7 @@ const meta: Meta<typeof IconButton> = {
   },
   args: {
     onClick: () => {},
-    Icon: <div>Icon</div>,
+    Icon: <Icon name={IconName.Add} color={IconColor.primaryInverse} />,
     disabled: false,
     label: 'Icon Button',
     tooltipRender: undefined,
