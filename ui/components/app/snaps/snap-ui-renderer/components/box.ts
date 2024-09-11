@@ -4,6 +4,7 @@ import { NonEmptyArray } from '@metamask/utils';
 import {
   Display,
   FlexDirection,
+  JustifyContent,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
 import { mapToTemplate } from '../utils';
@@ -13,19 +14,19 @@ function generateJustifyContent(alignment?: BoxProps['alignment']) {
   switch (alignment) {
     default:
     case 'start':
-      return 'flex-start';
+      return JustifyContent.flexStart;
 
     case 'center':
-      return 'center';
+      return JustifyContent.center;
 
     case 'end':
-      return 'flex-end';
+      return JustifyContent.flexEnd;
 
     case 'space-between':
-      return 'space-between';
+      return JustifyContent.spaceBetween;
 
     case 'space-around':
-      return 'space-around';
+      return JustifyContent.spaceAround;
   }
 }
 
