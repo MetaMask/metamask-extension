@@ -315,7 +315,7 @@
     "@metamask/eth-ledger-bridge-keyring": "^3.0.1",
     "@metamask/eth-query": "^4.0.0",
     "@metamask/eth-sig-util": "^7.0.1",
-    "@metamask/eth-snap-keyring": "^4.3.1",
+    "@metamask/eth-snap-keyring": "^4.3.3",
     "@metamask/eth-token-tracker": "^8.0.0",
     "@metamask/eth-trezor-keyring": "^3.1.0",
     "@metamask/etherscan-link": "^3.0.0",
