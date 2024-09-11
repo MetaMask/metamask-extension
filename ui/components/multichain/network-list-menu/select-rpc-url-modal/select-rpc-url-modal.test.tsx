@@ -4,7 +4,6 @@ import configureMockStore from 'redux-mock-store';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import {
-  updateNetwork,
   setActiveNetwork,
   setEditedNetwork,
   toggleNetworkMenu,
@@ -20,7 +19,6 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('../../../../store/actions', () => ({
-  updateNetwork: jest.fn(),
   setActiveNetwork: jest.fn(),
   setEditedNetwork: jest.fn(),
   toggleNetworkMenu: jest.fn(),
@@ -103,12 +101,6 @@ describe('SelectRpcUrlModal Component', () => {
     );
     fireEvent.click(rpcEndpoint);
 
-    expect(mockDispatch).toHaveBeenCalledWith(
-      updateNetwork({
-        ...networkConfiguration,
-        defaultRpcEndpointIndex: 1,
-      }),
-    );
     expect(mockDispatch).toHaveBeenCalledWith(setActiveNetwork('flashbots'));
     expect(mockDispatch).toHaveBeenCalledWith(setEditedNetwork());
     expect(mockDispatch).toHaveBeenCalledWith(toggleNetworkMenu());
@@ -152,12 +144,6 @@ describe('SelectRpcUrlModal Component', () => {
       screen.getByText(stripProtocol(networkConfiguration.rpcEndpoints[1].url)),
     );
 
-    expect(mockDispatch).toHaveBeenCalledWith(
-      updateNetwork({
-        ...networkConfiguration,
-        defaultRpcEndpointIndex: 1,
-      }),
-    );
     expect(mockDispatch).toHaveBeenCalledWith(
       setActiveNetwork(networkConfiguration.rpcEndpoints[1].networkClientId),
     );
