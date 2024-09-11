@@ -5,6 +5,7 @@ import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import NetworkListItem from './network-list-item'; // Adjust the path as needed
 import '@testing-library/jest-dom/extend-expect';
+import { RpcEndpointType } from '@metamask/network-controller';
 
 const mockStore = configureMockStore([thunk]);
 
@@ -63,6 +64,7 @@ describe('NetworkListItem', () => {
         rpcEndpoints: [
           {
             name: 'Infura Mainnet',
+            type: RpcEndpointType.Infura,
             url: 'https://mainnet.infura.io/v3/YOUR_INFURA_KEY',
           },
         ],
