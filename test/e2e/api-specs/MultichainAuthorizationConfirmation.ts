@@ -1,5 +1,5 @@
 import Rule from '@open-rpc/test-coverage/build/rules/rule';
-import { Call, IOptions } from '@open-rpc/test-coverage/build/coverage';
+import { Call } from '@open-rpc/test-coverage/build/coverage';
 import {
   ContentDescriptorObject,
   ExampleObject,
