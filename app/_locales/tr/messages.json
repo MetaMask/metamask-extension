@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "QR donanım cüzdanınızı bağlayın"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "Giriş talebindeki adres, giriş yapmak için kullandığınız hesapla uyumlu değil."
   },
@@ -195,6 +192,9 @@
   "addAccount": {
     "message": "Hesap ekleyin"
   },
+  "addAccountToMetaMask": {
+    "message": "MetaMask'e hesap ekle"
+  },
   "addAcquiredTokens": {
     "message": "MetaMask kullanarak elde ettiğiniz tokenleri ekleyin"
   },
@@ -319,6 +319,9 @@
   },
   "addUrl": {
     "message": "URL ekle"
+  },
+  "addingAccount": {
+    "message": "Hesap ekleniyor"
   },
   "addingCustomNetwork": {
     "message": "Ağ Ekleniyor"
@@ -663,9 +666,6 @@
   "back": {
     "message": "Geri"
   },
-  "backup": {
-    "message": "Yedekle"
-  },
   "backupApprovalInfo": {
     "message": "Bu gizli kod, cihazınızı kaybetmeniz, şifrenizi unutmanız, MetaMask'ı yeniden kurmanızın gerektiği ya da cüzdanınıza başka bir cihazdan oturum açmak istemeniz durumunda cüzdanınıza erişim sağlamak için gereklidir."
   },
@@ -677,12 +677,6 @@
   },
   "backupNow": {
     "message": "Şimdi yedekle"
-  },
-  "backupUserData": {
-    "message": "Verilerini yedekle"
-  },
-  "backupUserDataDescription": {
-    "message": "Kişileriniz ve tercihleriniz gibi verileri yedekleyebilirsiniz."
   },
   "balance": {
     "message": "Bakiye"
@@ -1537,6 +1531,9 @@
   "details": {
     "message": "Ayrıntılar"
   },
+  "developerOptions": {
+    "message": "Geliştirici Seçenekleri"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "Orijinal gaz ücretinden minimum %10'luk bir artışı karşılamadığı için \"$1\" devre dışı bırakıldı.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1878,6 +1875,9 @@
   },
   "existingChainId": {
     "message": "Girdiğiniz bilgiler mevcut bir zincir kimliği ile ilişkilidir."
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "En son talebinizi görüntülemek ve onaylamak için önce mevcut taleplerinizi onaylamanız veya reddetmeniz gereklidir."
   },
   "existingRpcUrl": {
     "message": "Bu URL adresi başka bir zincir kimliği ile ilişkilidir."
@@ -2905,6 +2905,10 @@
     "message": "Bir takma ad seçin...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1 sizden şunun için onay istiyor:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "Bu sitenin aşağıdakileri yapmasına izin vermek istiyor musunuz?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3520,6 +3524,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "İsteğe bağlı:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Profiliniz için kullanım verilerini toplarken gizliliğinizi nasıl koruduğumuzu öğrenin."
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMask'i iyileştirmemize yardımcı olun"
@@ -4201,6 +4208,12 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "İmza taleplerini geliştirilmiş bir biçimde görmek için bunu açın."
   },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "İşlem talepleri iyileştirildi"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "İşlem taleplerini gelişmiş bir biçimde görmek için bunu açın."
+  },
   "refreshList": {
     "message": "Listeyi yenile"
   },
@@ -4337,9 +4350,6 @@
   "restoreUserData": {
     "message": "Kullanıcı verilerini geri yükle"
   },
-  "restoreUserDataDescription": {
-    "message": "Kişiler ve tercihler gibi verileri yedek bir dosyadan geri yükleyebilirsiniz."
-  },
   "resultPageError": {
     "message": "Hata"
   },
@@ -4400,6 +4410,9 @@
   },
   "reviewAlerts": {
     "message": "Uyarıları incele"
+  },
+  "reviewPermissions": {
+    "message": "İzinleri incele"
   },
   "revokeAllTokensTitle": {
     "message": "Tüm $1 için izin erişim ve transfer izni geri çekilsin mi?",

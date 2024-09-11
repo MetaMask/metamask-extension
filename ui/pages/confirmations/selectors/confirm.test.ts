@@ -1,9 +1,7 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { TransactionType } from '@metamask/transaction-controller';
 
 import { ConfirmMetamaskState } from '../types/confirm';
 import {
-  currentConfirmationSelector,
   getIsRedesignedConfirmationsDeveloperEnabled,
   latestPendingConfirmationSelector,
   pendingConfirmationsSelector,
@@ -11,12 +9,7 @@ import {
 
 describe('confirm selectors', () => {
   const mockedState: ConfirmMetamaskState = {
-    confirm: {
-      currentConfirmation: {
-        id: '1',
-        type: TransactionType.contractInteraction,
-      },
-    },
+    confirm: {},
     metamask: {
       pendingApprovals: {
         '1': {
@@ -67,14 +60,6 @@ describe('confirm selectors', () => {
       const result = latestPendingConfirmationSelector(mockedState);
 
       expect(result).toStrictEqual(mockedState.metamask.pendingApprovals[2]);
-    });
-  });
-
-  describe('currentConfirmationSelector', () => {
-    it('should return curently active confirmation from state', () => {
-      const result = currentConfirmationSelector(mockedState);
-
-      expect(result).toStrictEqual(mockedState.confirm.currentConfirmation);
     });
   });
 

@@ -1,3 +1,4 @@
+import { promisify } from 'util';
 import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
 import { clone } from 'lodash';
@@ -13,7 +14,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
 import { COPY_OPTIONS } from '../shared/constants/copy';
 import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
-import { endTrace, trace, TraceName } from '../shared/lib/trace';
+import { trace, TraceName } from '../shared/lib/trace';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -59,34 +60,19 @@ export const updateBackgroundConnection = (backgroundConnection) => {
   });
 };
 
-export default function launchMetamaskUi(opts, cb) {
+export default async function launchMetamaskUi(opts) {
   const { backgroundConnection, traceContext } = opts;
 
-  trace({
-    name: TraceName.GetState,
-    parentContext: traceContext,
-  });
+  const metamaskState = await trace(
+    { name: TraceName.GetState, parentContext: traceContext },
+    () => promisify(backgroundConnection.getState.bind(backgroundConnection))(),
+  );
 
-  // check if we are unlocked first
-  backgroundConnection.getState(function (err, metamaskState) {
-    endTrace({ name: TraceName.GetState });
+  const store = await startApp(metamaskState, backgroundConnection, opts);
 
-    if (err) {
-      cb(
-        err,
-        {
-          ...metamaskState,
-        },
-        backgroundConnection,
-      );
-      return;
-    }
+  setupStateHooks(store);
 
-    startApp(metamaskState, backgroundConnection, opts).then((store) => {
-      setupStateHooks(store);
-      cb(null, store);
-    });
-  });
+  return store;
 }
 
 /**
@@ -206,48 +192,50 @@ async function startApp(metamaskState, backgroundConnection, opts) {
 
   await trace(
     { name: TraceName.InitialActions, parentContext: traceContext },
-    async () => {
-      // This block autoswitches chains based on the last chain used
-      // for a given dapp, when there are no pending confimrations
-      // This allows the user to be connected on one chain
-      // for one dapp, and automatically change for another
-      const state = store.getState();
-      const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(state);
-      if (networkIdToSwitchTo) {
-        await store.dispatch(
-          actions.automaticallySwitchNetwork(
-            networkIdToSwitchTo,
-            getOriginOfCurrentTab(state),
-          ),
-        );
-      } else if (getSwitchedNetworkDetails(state)) {
-        // It's possible that old details could exist if the user
-        // opened the toast but then didn't close it
-        // Clear out any existing switchedNetworkDetails
-        // if the user didn't just change the dapp network
-        await store.dispatch(actions.clearSwitchedNetworkDetails());
-      }
-
-      // Register this window as the current popup
-      // and set in background state
-      if (
-        getUseRequestQueue(state) &&
-        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-      ) {
-        const thisPopupId = Date.now();
-        global.metamask.id = thisPopupId;
-        await store.dispatch(actions.setCurrentExtensionPopupId(thisPopupId));
-      }
-    },
+    () => runInitialActions(store),
   );
 
   trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
     render(<Root store={store} />, opts.container),
   );
 
-  endTrace({ name: TraceName.UIStartup });
-
   return store;
+}
+
+async function runInitialActions(store) {
+  const state = store.getState();
+
+  // This block autoswitches chains based on the last chain used
+  // for a given dapp, when there are no pending confimrations
+  // This allows the user to be connected on one chain
+  // for one dapp, and automatically change for another
+  const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(state);
+
+  if (networkIdToSwitchTo) {
+    await store.dispatch(
+      actions.automaticallySwitchNetwork(
+        networkIdToSwitchTo,
+        getOriginOfCurrentTab(state),
+      ),
+    );
+  } else if (getSwitchedNetworkDetails(state)) {
+    // It's possible that old details could exist if the user
+    // opened the toast but then didn't close it
+    // Clear out any existing switchedNetworkDetails
+    // if the user didn't just change the dapp network
+    await store.dispatch(actions.clearSwitchedNetworkDetails());
+  }
+
+  // Register this window as the current popup
+  // and set in background state
+  if (
+    getUseRequestQueue(state) &&
+    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+  ) {
+    const thisPopupId = Date.now();
+    global.metamask.id = thisPopupId;
+    await store.dispatch(actions.setCurrentExtensionPopupId(thisPopupId));
+  }
 }
 
 /**

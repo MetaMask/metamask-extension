@@ -1,11 +1,11 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { validate as isUuid } from 'uuid';
-import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
+
 import useAlerts from '../../../hooks/useAlerts';
-import { confirmSelector } from '../../../selectors';
 import { REDESIGN_DEV_TRANSACTION_TYPES } from '../utils';
+import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
+import { useConfirmContext } from '../context/confirm';
 import { AlertsName } from './alerts/constants';
 import { useTransactionEventFragment } from './useTransactionEventFragment';
 
@@ -43,7 +43,7 @@ function getAlertName(alertKey: string): string {
 }
 
 export function useConfirmationAlertMetrics() {
-  const { currentConfirmation } = useSelector(confirmSelector);
+  const { currentConfirmation } = useConfirmContext();
   const ownerId = currentConfirmation?.id ?? '';
   const { alerts, isAlertConfirmed } = useAlerts(ownerId);
   const { updateTransactionEventFragment } = useTransactionEventFragment();
