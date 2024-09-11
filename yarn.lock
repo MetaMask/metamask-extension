@@ -6163,7 +6163,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/selected-network-controller@npm:^18.0.0":
+"@metamask/selected-network-controller@npm:18.0.0":
   version: 18.0.0
   resolution: "@metamask/selected-network-controller@npm:18.0.0"
   dependencies:
@@ -6175,6 +6175,21 @@ __metadata:
     "@metamask/network-controller": ^21.0.0
     "@metamask/permission-controller": ^11.0.0
   checksum: 10/2135e2971604b817238ff7a91ccb7624d024e50e96bc6171bc4a5375df0f4f55353f79f40d2a2a4ba6b01f957441cdc40089b9904ab14bcd905c64251127efae
+  languageName: node
+  linkType: hard
+
+"@metamask/selected-network-controller@patch:@metamask/selected-network-controller@npm%3A18.0.0#~/.yarn/patches/@metamask-selected-network-controller-npm-18.0.0-2e967a6d5c.patch":
+  version: 18.0.0
+  resolution: "@metamask/selected-network-controller@patch:@metamask/selected-network-controller@npm%3A18.0.0#~/.yarn/patches/@metamask-selected-network-controller-npm-18.0.0-2e967a6d5c.patch::version=18.0.0&hash=8adf16"
+  dependencies:
+    "@metamask/base-controller": "npm:^7.0.0"
+    "@metamask/json-rpc-engine": "npm:^9.0.2"
+    "@metamask/swappable-obj-proxy": "npm:^2.2.0"
+    "@metamask/utils": "npm:^9.1.0"
+  peerDependencies:
+    "@metamask/network-controller": ^21.0.0
+    "@metamask/permission-controller": ^11.0.0
+  checksum: 10/2b1aabadb0103120396cec50b11bcd75d059df21b59ecda6897a7d3d535420c4713df4b177bd390b3fea5db53c48fd36d63bddc3a049a381783d4e9c05740ff4
   languageName: node
   linkType: hard
 
@@ -26159,7 +26174,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/selected-network-controller": "npm:^18.0.0"
+    "@metamask/selected-network-controller": "patch:@metamask/selected-network-controller@npm%3A18.0.0#~/.yarn/patches/@metamask-selected-network-controller-npm-18.0.0-2e967a6d5c.patch"
     "@metamask/signature-controller": "npm:^18.1.0"
     "@metamask/smart-transactions-controller": "npm:^13.0.0"
     "@metamask/snaps-controllers": "npm:^9.5.0"
