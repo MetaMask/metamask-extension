@@ -5631,14 +5631,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/logging-controller@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@metamask/logging-controller@npm:5.0.0"
+"@metamask/logging-controller@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/logging-controller@npm:6.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^6.0.0"
-    "@metamask/controller-utils": "npm:^11.0.0"
+    "@metamask/base-controller": "npm:^7.0.0"
+    "@metamask/controller-utils": "npm:^11.1.0"
     uuid: "npm:^8.3.2"
-  checksum: 10/21956cb2bdea333289c1ba9dfad536df7abe9088fea93db3eb3a9a3a37198304d866aa663492f42154bdfd5359d12f1e8c6e825581d5608682cfbdb47b04572b
+  checksum: 10/945dd0a4ab30cba39f46dcd962fd49a7e6c044b953d6896a1c4240de4c8f05baffd24de90de4cd9a9c6ab6e425db0a301b992091280916b8598d8411e1a91868
   languageName: node
   linkType: hard
 
@@ -6180,20 +6180,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:^18.1.0":
-  version: 18.1.0
-  resolution: "@metamask/signature-controller@npm:18.1.0"
+"@metamask/signature-controller@npm:^19.0.0":
+  version: 19.0.0
+  resolution: "@metamask/signature-controller@npm:19.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^6.0.2"
-    "@metamask/controller-utils": "npm:^11.0.2"
-    "@metamask/message-manager": "npm:^10.0.2"
+    "@metamask/base-controller": "npm:^7.0.0"
+    "@metamask/controller-utils": "npm:^11.1.0"
+    "@metamask/message-manager": "npm:^10.0.3"
     "@metamask/utils": "npm:^9.1.0"
     lodash: "npm:^4.17.21"
   peerDependencies:
     "@metamask/approval-controller": ^7.0.0
     "@metamask/keyring-controller": ^17.0.0
-    "@metamask/logging-controller": ^5.0.0
-  checksum: 10/250a21808de56b46ab853fcffcc3b1149b5fd751cf30ae6ce1b025bba5f8db661c3c90d9157208abac6f5f35d9d02835d93181f0f30b82f1181f967155f7b7f8
+    "@metamask/logging-controller": ^6.0.0
+  checksum: 10/9eec874bddee00a969a0231367c55c2b1768ad029c8125929603544ddc94b1e7c833457e39aa0aa5fed19608cb68633f0a90ca40a5639a8d6e2c84dbf9756feb
   languageName: node
   linkType: hard
 
@@ -26137,7 +26137,7 @@ __metadata:
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/keyring-api": "npm:^8.0.0"
     "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A17.1.1#~/.yarn/patches/@metamask-keyring-controller-npm-17.1.1-098cb41930.patch"
-    "@metamask/logging-controller": "npm:^5.0.0"
+    "@metamask/logging-controller": "npm:^6.0.0"
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^10.1.0"
     "@metamask/message-signing-snap": "npm:^0.3.3"
@@ -26162,7 +26162,7 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^15.0.2"
-    "@metamask/signature-controller": "npm:^18.1.0"
+    "@metamask/signature-controller": "npm:^19.0.0"
     "@metamask/smart-transactions-controller": "npm:^13.0.0"
     "@metamask/snaps-controllers": "npm:^9.5.0"
     "@metamask/snaps-execution-environments": "npm:^6.6.2"
