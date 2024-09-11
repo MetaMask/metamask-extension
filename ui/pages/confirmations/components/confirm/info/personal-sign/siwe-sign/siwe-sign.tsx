@@ -15,9 +15,7 @@ import { useConfirmContext } from '../../../../../context/confirm';
 
 const SIWESignInfo: React.FC = () => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext() as {
-    currentConfirmation: SignatureRequestType;
-  };
+  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
 
   const siweMessage = currentConfirmation?.msgParams?.siwe?.parsedMessage;
 

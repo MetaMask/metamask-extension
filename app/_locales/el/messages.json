@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "Συνδέστε το πορτοφόλι υλικού μέσω QR"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "Η διεύθυνση στο αίτημα σύνδεσης δεν ταιριάζει με τη διεύθυνση του λογαριασμού που χρησιμοποιείτε για να συνδεθείτε."
   },
@@ -195,6 +192,9 @@
   "addAccount": {
     "message": "Προσθήκη λογαριασμού"
   },
+  "addAccountToMetaMask": {
+    "message": "Προσθήκη λογαριασμού στο MetaMask"
+  },
   "addAcquiredTokens": {
     "message": "Προσθέστε τα tokens που αποκτήσατε χρησιμοποιώντας το MetaMask"
   },
@@ -319,6 +319,9 @@
   },
   "addUrl": {
     "message": "Προσθήκη διεύθυνσης URL"
+  },
+  "addingAccount": {
+    "message": "Προσθήκη λογαριασμού"
   },
   "addingCustomNetwork": {
     "message": "Προσθήκη δικτύου"
@@ -663,9 +666,6 @@
   "back": {
     "message": "Πίσω"
   },
-  "backup": {
-    "message": "Αντίγραφο ασφαλείας"
-  },
   "backupApprovalInfo": {
     "message": "Αυτός ο μυστικός κωδικός απαιτείται για ανάκτηση του πορτοφολιού σας σε περίπτωση που χάσετε τη συσκευή σας, ξεχάσετε τον κωδικό πρόσβασης, πρέπει να κάνετε επανεγκατάσταση του MetaMask, ή θέλετε να έχετε πρόσβαση στο πορτοφόλι σας από μια άλλη συσκευή."
   },
@@ -677,12 +677,6 @@
   },
   "backupNow": {
     "message": "Δημιουργήστε αντίγραφο ασφαλείας τώρα"
-  },
-  "backupUserData": {
-    "message": "Κάντε αντίγραφο ασφαλείας των δεδομένων σας"
-  },
-  "backupUserDataDescription": {
-    "message": "Μπορείτε να κάνετε αντίγραφο ασφαλείας των ρυθμίσεων χρήστη που περιλαμβάνουν τις προτιμήσεις και τις διευθύνσεις λογαριασμών σε ένα αρχείο JSON."
   },
   "balance": {
     "message": "Υπόλοιπο"
@@ -1537,6 +1531,9 @@
   "details": {
     "message": "Λεπτομέρειες"
   },
+  "developerOptions": {
+    "message": "Επιλογές προγραμματιστών"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "Το \"1$\" είναι απενεργοποιημένο επειδή δεν πληροί την ελάχιστη αύξηση 10% σε σχέση με τα αρχικά τέλη συναλλαγής.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1878,6 +1875,9 @@
   },
   "existingChainId": {
     "message": "Οι πληροφορίες που έχετε εισάγει συνδέονται με ένα υπάρχον αναγνωριστικό αλυσίδας."
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "Για να προβάλετε και να επιβεβαιώσετε το πιο πρόσφατο αίτημά σας, θα πρέπει πρώτα να εγκρίνετε ή να απορρίψετε τα υπάρχοντα αιτήματα."
   },
   "existingRpcUrl": {
     "message": "Αυτή η διεύθυνση URL συνδέεται με ένα άλλο αναγνωριστικό αλυσίδας."
@@ -2905,6 +2905,10 @@
     "message": "Επιλέξτε ένα ψευδώνυμο...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "Το $1 ζητάει την έγκρισή σας για:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "Θέλετε αυτός ο ιστότοπος να κάνει τα εξής;",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3520,6 +3524,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Προαιρετικές:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Μάθετε πώς προστατεύουμε το απόρρητό σας ενώ συλλέγουμε δεδομένα χρήσης για το προφίλ σας."
   },
   "onboardingMetametricsTitle": {
     "message": "Βοηθήστε μας να βελτιώσουμε το MetaMask"
@@ -4201,6 +4208,12 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "Ενεργοποιήστε το για να δείτε αιτήματα υπογραφών σε βελτιωμένη μορφή."
   },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "Βελτιωμένα αιτήματα συναλλαγών"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "Ενεργοποιήστε το για να δείτε τα αιτήματα συναλλαγών σε βελτιωμένη μορφή."
+  },
   "refreshList": {
     "message": "Ανανέωση λίστας"
   },
@@ -4337,9 +4350,6 @@
   "restoreUserData": {
     "message": "Επαναφορά δεδομένων χρήστη"
   },
-  "restoreUserDataDescription": {
-    "message": "Μπορείτε να επαναφέρετε τις ρυθμίσεις χρήστη που περιλαμβάνουν τις προτιμήσεις και τις διευθύνσεις λογαριασμών από ένα αρχείο JSON για το οποίο έχει δημιουργηθεί στο παρελθόν αντίγραφο ασφαλείας."
-  },
   "resultPageError": {
     "message": "Σφάλμα"
   },
@@ -4400,6 +4410,9 @@
   },
   "reviewAlerts": {
     "message": "Έλεγχος ειδοποιήσεων"
+  },
+  "reviewPermissions": {
+    "message": "Έλεγχος αδειών"
   },
   "revokeAllTokensTitle": {
     "message": "Ανάκληση της άδειας πρόσβασης και μεταφοράς όλων των $1;",

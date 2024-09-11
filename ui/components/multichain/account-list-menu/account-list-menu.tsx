@@ -289,7 +289,7 @@ export const AccountListMenu = ({
   );
 
   // eslint-disable-next-line no-empty-function
-  let onBack = () => {};
+  let onBack;
   if (actionMode !== ACTION_MODES.LIST) {
     if (actionMode === ACTION_MODES.MENU) {
       onBack = () => setActionMode(ACTION_MODES.LIST);

@@ -1,10 +1,9 @@
 import React from 'react';
-import SnapAvatar from '.';
+import SnapAuthorshipPill from './snap-authorship-pill'
 
 export default {
-  title: 'Components/App/Snaps/SnapAvatar',
-
-  component: SnapAvatar,
+  title: 'Components/App/Snaps/SnapAuthorshipPill',
+  component: SnapAuthorshipPill,
   argTypes: {
     snapId: {
       control: 'text',
@@ -12,7 +11,7 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <SnapAvatar {...args} />;
+export const DefaultStory = (args) => <SnapAuthorshipPill {...args} />;
 
 DefaultStory.storyName = 'Default';
 
