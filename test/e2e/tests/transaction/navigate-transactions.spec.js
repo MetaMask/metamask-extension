@@ -239,10 +239,18 @@ describe('Navigate transactions', function () {
       async ({ driver, ganacheServer }) => {
         await unlockWallet(driver);
 
-        // Wait until total amount is loaded to mitigate flakiness on reject
+        // Wait until the confirmation screen is stabilized to mitigate flakiness on reject:
+        // 1. Total amount is loaded
         await driver.findElement({
           tag: 'span',
           text: '3.0000315',
+        });
+        // 2. Gas timing is loaded
+        await driver.findElement('[data-testid="gas-timing-time"]');
+        // 3. Insufficient funds warning is not present
+        await driver.assertElementNotPresent({
+          text: 'You do not have enough ETH',
+          tag: 'p',
         });
 
         // reject transactions
