@@ -1,0 +1,14 @@
+.multi-rpc-edit-modal {
+  &__benefit {
+    flex: 1;
+  }
+
+  &__dialog {
+    background-position: -80px 16px;
+    background-repeat: no-repeat;
+  }
+
+  &__button {
+    margin-left: 100%;
+  }
+}

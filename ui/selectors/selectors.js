@@ -2051,6 +2051,16 @@ export function getUseNftDetection(state) {
 }
 
 /**
+ * Returns an object mapping chain IDs to network configurations.
+ *
+ * @param state
+ * @returns {Record<string, any>} An object mapping chain IDs to network configurations.
+ */
+export function getNetworkConfigurationsByChainId(state) {
+  return state.metamask?.networkConfigurationsByChainId ?? {};
+}
+
+/**
  * To get the useBlockie flag which determines whether we show blockies or Jazzicons
  *
  * @param {*} state
