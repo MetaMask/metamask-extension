@@ -28,7 +28,6 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { setEditedNetwork, toggleNetworkMenu } from '../../../../store/actions';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
-import { stripKeyFromInfuraUrl } from '../../../multichain/network-list-menu/rpc-list-item';
 
 const NetworkListItem = ({
   networkConfiguration,
