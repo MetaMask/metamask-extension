@@ -19,7 +19,6 @@ const addEthereumChain = {
     requestUserApproval: true,
     startApprovalFlow: true,
     endApprovalFlow: true,
-    getCurrentChainId: true,
     getCurrentChainIdForDomain: true,
     getCaveat: true,
     requestPermittedChainsPermission: true,
@@ -42,7 +41,6 @@ async function addEthereumChainHandler(
     requestUserApproval,
     startApprovalFlow,
     endApprovalFlow,
-    getCurrentChainId,
     getCurrentChainIdForDomain,
     getCaveat,
     requestPermittedChainsPermission,
@@ -65,7 +63,6 @@ async function addEthereumChainHandler(
   } = validParams;
   const { origin } = req;
 
-  const currentChainId = getCurrentChainId();
   const currentChainIdForDomain = getCurrentChainIdForDomain(origin);
   const currentNetworkConfiguration = getNetworkConfigurationByChainId(
     currentChainIdForDomain,
@@ -158,7 +155,7 @@ async function addEthereumChainHandler(
         updatedNetwork = await updateNetwork(
           clonedNetwork.chainId,
           clonedNetwork,
-          currentChainId === chainId
+          currentChainIdForDomain === chainId
             ? {
                 replacementSelectedRpcEndpointIndex:
                   clonedNetwork.defaultRpcEndpointIndex,
@@ -194,7 +191,7 @@ async function addEthereumChainHandler(
   }
 
   // If the added or updated network is not the current chain, prompt the user to switch
-  if (chainId !== currentChainId) {
+  if (chainId !== currentChainIdForDomain) {
     const { networkClientId } =
       updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
 

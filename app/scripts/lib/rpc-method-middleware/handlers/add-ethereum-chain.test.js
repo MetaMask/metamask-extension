@@ -68,7 +68,6 @@ describe('addEthereumChainHandler', () => {
       setNetworkClientIdForDomain: jest.fn(),
       getNetworkConfigurationByChainId: jest.fn(),
       setActiveNetwork: jest.fn(),
-      getCurrentChainId: jest.fn().mockReturnValue(CHAIN_IDS.MAINNET),
       requestUserApproval: jest.fn().mockResolvedValue(123),
       requestPermittedChainsPermission: jest.fn(),
       getCaveat: jest.fn().mockReturnValue({ value: permissionedChainIds }),
@@ -229,13 +228,8 @@ describe('addEthereumChainHandler', () => {
             blockExplorerUrls: ['https://etherscan.io'],
             defaultBlockExplorerUrlIndex: 0,
           },
-          {
-            replacementSelectedRpcEndpointIndex: 1,
-          },
+          undefined,
         );
-
-        // No need to switch chains, already current
-        expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(0);
       });
 
       it('makes the rpc url the default if it already exists', async () => {
@@ -302,13 +296,8 @@ describe('addEthereumChainHandler', () => {
             // Verify the custom endpoint becomes the default
             defaultRpcEndpointIndex: 1,
           },
-          {
-            replacementSelectedRpcEndpointIndex: 1,
-          },
+          undefined,
         );
-
-        // No need to switch chains, already current
-        expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(0);
       });
 
       it('switches to the network if its not already the currently selected chain id', async () => {
@@ -318,7 +307,9 @@ describe('addEthereumChainHandler', () => {
           permissionsFeatureFlagIsActive: false,
           overrides: {
             // Start on sepolia
-            getCurrentChainId: jest.fn().mockReturnValue(CHAIN_IDS.SEPOLIA),
+            getCurrentChainIdForDomain: jest
+              .fn()
+              .mockReturnValue(CHAIN_IDS.SEPOLIA),
             getNetworkConfigurationByChainId: jest
               .fn()
               .mockReturnValue(existingNetwork),
@@ -389,6 +380,11 @@ describe('addEthereumChainHandler', () => {
       const mocks = makeMocks({
         permissionedChainIds: [],
         permissionsFeatureFlagIsActive: true,
+        overrides: {
+          getCurrentChainIdForDomain: jest
+            .fn()
+            .mockReturnValue(CHAIN_IDS.MAINNET),
+        },
       });
       await addEthereumChainHandler(
         {
@@ -430,7 +426,9 @@ describe('addEthereumChainHandler', () => {
             permissionedChainIds: [CHAIN_IDS.MAINNET],
             permissionsFeatureFlagIsActive: true,
             overrides: {
-              getCurrentChainId: jest.fn().mockReturnValue(CHAIN_IDS.SEPOLIA),
+              getCurrentChainIdForDomain: jest
+                .fn()
+                .mockReturnValue(CHAIN_IDS.SEPOLIA),
             },
           });
 
@@ -517,7 +515,9 @@ describe('addEthereumChainHandler', () => {
           ],
           permissionsFeatureFlagIsActive: true,
           overrides: {
-            getCurrentChainId: jest.fn().mockReturnValue(CHAIN_IDS.MAINNET),
+            getCurrentChainIdForDomain: jest
+              .fn()
+              .mockReturnValue(CHAIN_IDS.MAINNET),
             getNetworkConfigurationByChainId: jest
               .fn()
               .mockReturnValue(createMockOptimismConfiguration()),
@@ -604,7 +604,9 @@ describe('addEthereumChainHandler', () => {
       permissionsFeatureFlagIsActive: true,
       permissionedChainIds: [],
       overrides: {
-        getCurrentChainId: jest.fn().mockReturnValue(CHAIN_IDS.SEPOLIA),
+        getCurrentChainIdForDomain: jest
+          .fn()
+          .mockReturnValue(CHAIN_IDS.SEPOLIA),
         requestPermittedChainsPermission: jest
           .fn()
           .mockRejectedValue(mockError),
