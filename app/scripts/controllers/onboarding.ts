@@ -1,9 +1,17 @@
-import { ObservableStore } from '@metamask/obs-store';
+import {
+  BaseController,
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+  RestrictedControllerMessenger,
+} from '@metamask/base-controller';
 import log from 'loglevel';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 
+// Unique name for the controller
+const controllerName = 'OnboardingController';
+
 /**
- * The state of the OnboardingController
+ * The state of the {@link OnboardingController}
  */
 export type OnboardingControllerState = {
   seedPhraseBackedUp: boolean | null;
@@ -12,41 +20,125 @@ export type OnboardingControllerState = {
   onboardingTabs?: Record<string, string>;
 };
 
+/**
+ * Function to get default state of the {@link OnboardingController}.
+ */
+export const getDefaultOnboardingControllerState = () => ({
+  seedPhraseBackedUp: null,
+  firstTimeFlowType: null,
+  completedOnboarding: false,
+});
+
 const defaultTransientState = {
   onboardingTabs: {},
 } satisfies Pick<OnboardingControllerState, 'onboardingTabs'>;
 
-const defaultState = {
-  seedPhraseBackedUp: null,
-  firstTimeFlowType: null,
-  completedOnboarding: false,
-} satisfies OnboardingControllerState;
+/**
+ * {@link OnboardingController}'s metadata.
+ *
+ * This allows us to choose if fields of the state should be persisted or not
+ * using the `persist` flag; and if they can be sent to Sentry or not, using
+ * the `anonymous` flag.
+ */
+const controllerMetadata = {
+  seedPhraseBackedUp: {
+    persist: true,
+    anonymous: true,
+  },
+  firstTimeFlowType: {
+    persist: true,
+    anonymous: true,
+  },
+  completedOnboarding: {
+    persist: true,
+    anonymous: true,
+  },
+  onboardingTabs: {
+    persist: true,
+    anonymous: true,
+  },
+};
+
+/**
+ * Returns the state of the {@link OnboardingController}.
+ */
+export type OnboardingControllerGetStateAction = ControllerGetStateAction<
+  typeof controllerName,
+  OnboardingControllerState
+>;
+
+/**
+ * Actions exposed by the {@link OnboardingController}.
+ */
+export type OnboardingControllerActions = OnboardingControllerGetStateAction;
+
+/**
+ * Event emitted when the state of the {@link OnboardingController} changes.
+ */
+export type OnboardingControllerStateChangeEvent = ControllerStateChangeEvent<
+  typeof controllerName,
+  OnboardingControllerState
+>;
+
+/**
+ * Events emitted by {@link OnboardingController}.
+ */
+export type OnboardingControllerControllerEvents =
+  OnboardingControllerStateChangeEvent;
+
+/**
+ * Actions that this controller is allowed to call.
+ */
+export type AllowedActions = never;
+
+/**
+ * Events that this controller is allowed to subscribe.
+ */
+export type AllowedEvents = never;
+
+/**
+ * Messenger type for the {@link OnboardingController}.
+ */
+export type OnboardingControllerMessenger = RestrictedControllerMessenger<
+  typeof controllerName,
+  OnboardingControllerActions | AllowedActions,
+  OnboardingControllerControllerEvents | AllowedEvents,
+  AllowedActions['type'],
+  AllowedEvents['type']
+>;
 
 /**
  * Controller responsible for maintaining
  * state related to onboarding
  */
-export default class OnboardingController {
-  /**
-   * Observable store containing controller data.
-   */
-  store: ObservableStore<OnboardingControllerState>;
-
+export default class OnboardingController extends BaseController<
+  typeof controllerName,
+  OnboardingControllerState,
+  OnboardingControllerMessenger
+> {
   /**
    * Constructs a Onboarding  controller.
    *
    * @param options - the controller options
-   * @param options.initState - Initial controller state.
+   * @param options.messenger - Messenger used to communicate with BaseV2 controller.
+   * @param options.state - Initial controller state.
    */
   constructor({
-    initState,
+    messenger,
+    state,
   }: {
-    initState: Partial<OnboardingControllerState>;
+    messenger: OnboardingControllerMessenger;
+    state: Partial<Omit<OnboardingControllerState, 'onboardingTabs'>>;
   }) {
-    this.store = new ObservableStore({
-      ...defaultState,
-      ...initState,
-      ...defaultTransientState,
+    super({
+      messenger,
+      metadata: controllerMetadata,
+      name: controllerName,
+      state: {
+        ...getDefaultOnboardingControllerState(),
+        ...state,
+        ...defaultTransientState,
+      },
     });
   }
 
@@ -56,8 +148,8 @@ export default class OnboardingController {
    * @param newSeedPhraseBackUpState - Indicates if the seedphrase is backup by the user or not
    */
   setSeedPhraseBackedUp(newSeedPhraseBackUpState: boolean): void {
-    this.store.updateState({
-      seedPhraseBackedUp: newSeedPhraseBackUpState,
+    this.update((state) => {
+      state.seedPhraseBackedUp = newSeedPhraseBackUpState;
     });
   }
 
@@ -66,8 +158,8 @@ export default class OnboardingController {
    * onboarding process.
    */
   async completeOnboarding(): Promise<boolean> {
-    this.store.updateState({
-      completedOnboarding: true,
+    this.update((state) => {
+      state.completedOnboarding = true;
     });
     return true;
   }
@@ -78,7 +170,9 @@ export default class OnboardingController {
    * @param type - Indicates the type of first time flow - create or import - the user wishes to follow
    */
   setFirstTimeFlowType(type: FirstTimeFlowType): void {
-    this.store.updateState({ firstTimeFlowType: type });
+    this.update((state) => {
+      state.firstTimeFlowType = type;
+    });
   }
 
   /**
@@ -91,11 +185,11 @@ export default class OnboardingController {
     location: string,
     tabId: string,
   ): Promise<void> => {
-    if (this.store.getState().completedOnboarding) {
+    if (this.state.completedOnboarding) {
       log.debug('Ignoring registerOnboarding; user already onboarded');
       return;
     }
-    const { onboardingTabs } = { ...(this.store.getState() ?? {}) };
+    const { onboardingTabs } = { ...(this.state ?? {}) };
 
     if (!onboardingTabs) {
       return;
@@ -105,8 +199,12 @@ export default class OnboardingController {
       log.debug(
         `Registering onboarding tab at location '${location}' with tabId '${tabId}'`,
       );
-      onboardingTabs[location] = tabId;
-      this.store.updateState({ onboardingTabs });
+      this.update((state) => {
+        state.onboardingTabs = {
+          ...onboardingTabs,
+          [location]: tabId,
+        };
+      });
     }
   };
 }

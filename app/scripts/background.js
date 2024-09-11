@@ -225,8 +225,8 @@ function maybeDetectPhishing(theController) {
         return {};
       }
 
-      const onboardState = theController.onboardingController.store.getState();
-      if (!onboardState.completedOnboarding) {
+      const { completedOnboarding } = theController.onboardingController.state;
+      if (!completedOnboarding) {
         return {};
       }
 
