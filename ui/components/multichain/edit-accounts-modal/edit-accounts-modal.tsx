@@ -50,8 +50,8 @@ import {
   FlexDirection,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import { NewAccountModal } from './new-accounts-modal';
 import { getURLHost } from '../../../helpers/utils/util';
+import { NewAccountModal } from './new-accounts-modal';
 
 const defaultAllowedAccountTypes = [EthAccountType.Eoa, EthAccountType.Erc4337];
 

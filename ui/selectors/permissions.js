@@ -286,7 +286,11 @@ function getChainsFromSubject(subject) {
 }
 
 function getChainsPermissionFromSubject(subject = {}) {
-  console.log(subject.permissions?.['endowment:permitted-chains'], subject, "subject");
+  console.log(
+    subject.permissions?.['endowment:permitted-chains'],
+    subject,
+    'subject',
+  );
   return subject.permissions?.['endowment:permitted-chains'] || {};
 }
 

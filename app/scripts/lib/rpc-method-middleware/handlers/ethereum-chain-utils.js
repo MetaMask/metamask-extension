@@ -194,7 +194,7 @@ export async function switchChain(
     requestUserApproval,
     getCaveat,
     requestPermittedChainsPermission,
-    grantPermittedChainsPermissionIncremental
+    grantPermittedChainsPermissionIncremental,
   },
 ) {
   try {

@@ -1,7 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AlignItems, Display, FlexDirection, IconColor, TextColor, TextVariant } from '../../../helpers/constants/design-system';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+  IconColor,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getNonTestNetworks,
@@ -46,10 +53,12 @@ export const EditNetworksModal = ({
   const dispatch = useDispatch();
   const testNetworks = useSelector(getTestNetworks);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-      const connectedNetworks = useSelector((state) =>
-        getPermittedChainsForSelectedTab(state, activeTabOrigin),
-      );
-  const combinedNetworksIds = combinedNetworks.map((network) => network.chainId);
+  const connectedNetworks = useSelector((state) =>
+    getPermittedChainsForSelectedTab(state, activeTabOrigin),
+  );
+  const combinedNetworksIds = combinedNetworks.map(
+    (network) => network.chainId,
+  );
   const selectedPermittedChains =
     connectedNetworks.length > 0 ? connectedNetworks : combinedNetworksIds;
   const [selectedChains, setSelectedChains] = useState(selectedPermittedChains);
@@ -64,15 +73,15 @@ export const EditNetworksModal = ({
     setSelectedChains([]);
   };
 
-const handleAccountClick = (chainId) => {
-  if (selectedChains.includes(chainId)) {
-    // Remove the chainId from the selectedChains
-    setSelectedChains(selectedChains.filter((id) => id !== chainId));
-  } else {
-    // Add the chainId to selectedChains
-    setSelectedChains([...selectedChains, chainId]);
-  }
-};
+  const handleAccountClick = (chainId) => {
+    if (selectedChains.includes(chainId)) {
+      // Remove the chainId from the selectedChains
+      setSelectedChains(selectedChains.filter((id) => id !== chainId));
+    } else {
+      // Add the chainId to selectedChains
+      setSelectedChains([...selectedChains, chainId]);
+    }
+  };
 
   const allAreSelected = () => {
     return combinedNetworksIds.length === selectedChains.length;
