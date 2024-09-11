@@ -5,7 +5,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import { Box, Text } from '../../../../components/component-library';
-import Typography from '../../../../components/ui/typography/typography';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
@@ -19,7 +18,6 @@ import {
   FontWeight,
   TextColor,
   TextVariant,
-  TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 import {
   GAS_FORM_ERRORS,
@@ -113,13 +111,13 @@ export default function GasTiming({
     gasWarnings?.maxFee === GAS_FORM_ERRORS.MAX_FEE_TOO_LOW
   ) {
     return (
-      <Typography
-        variant={TypographyVariant.H7}
+      <Text
+        variant={TextVariant.bodySm}
         fontWeight={FontWeight.Bold}
         className={classNames('gas-timing', 'gas-timing--negative')}
       >
         {t('editGasTooLow')}
-      </Typography>
+      </Text>
     );
   }
 
@@ -178,16 +176,12 @@ export default function GasTiming({
 
   return (
     <Box display={Display.Flex} flexWrap={FlexWrap.Wrap}>
-      <Text
-        color={TextColor.textAlternative}
-        variant={TextVariant.bodyMd}
-        paddingInlineEnd={1}
-      >
+      <Text color={TextColor.textAlternative} paddingInlineEnd={1}>
         {text}
       </Text>
 
       {time && (
-        <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+        <Text>
           <span data-testid="gas-timing-time">~{time}</span>
         </Text>
       )}
