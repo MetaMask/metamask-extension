@@ -3,7 +3,7 @@
 exports[`AddRpcUrlModal should render correctly 1`] = `
 <div>
   <div
-    class="mm-box networks-tab__scrollable mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--height-full"
+    class="mm-box add-rpc-modal mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--height-full"
   >
     <div
       class="mm-box mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
@@ -58,7 +58,7 @@ exports[`AddRpcUrlModal should render correctly 1`] = `
       </div>
     </div>
     <div
-      class="mm-box networks-tab__network-form__footer mm-box--padding-4 mm-box--width-full mm-box--background-color-background-default"
+      class="mm-box add-rpc-modal__footer mm-box--padding-4 mm-box--width-full mm-box--background-color-background-default"
     >
       <button
         class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
