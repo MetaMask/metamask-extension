@@ -2,11 +2,11 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { screen } from '@testing-library/react';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
-import { CollectionImageComponent } from './collection-image.component';
 import { getIpfsGateway, getOpenSeaEnabled } from '../../../../../selectors';
-import { screen } from '@testing-library/react';
+import { CollectionImageComponent } from './collection-image.component';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
