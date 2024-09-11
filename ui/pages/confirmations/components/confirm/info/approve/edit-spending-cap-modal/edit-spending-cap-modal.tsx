@@ -1,7 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { BigNumber } from 'bignumber.js';
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { hexToDecimal } from '../../../../../../../../shared/modules/conversion.utils';
 import {
   Modal,
@@ -32,11 +32,6 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
 
-export const getAccountBalance = (userBalance: string, decimals: string) =>
-  new BigNumber(userBalance)
-    .dividedBy(new BigNumber(10).pow(Number(decimals)))
-    .toNumber();
-
 export const EditSpendingCapModal = ({
   isOpenEditSpendingCapModal,
   setIsOpenEditSpendingCapModal,
@@ -58,7 +53,9 @@ export const EditSpendingCapModal = ({
     transactionMeta.txParams.data,
   );
 
-  const accountBalance = getAccountBalance(userBalance || '0', decimals || '0');
+  const accountBalance = Number(
+    calcTokenAmount(userBalance || '0', Number(decimals || '0')),
+  );
 
   const { formattedSpendingCap } = useApproveTokenSimulation(
     transactionMeta,

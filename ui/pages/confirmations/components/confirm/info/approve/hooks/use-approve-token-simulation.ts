@@ -3,10 +3,9 @@ import { BigNumber } from 'bignumber.js';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
+import { UNLIMITED_MSG } from '../../../../../constants';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { useIsNFT } from './use-is-nft';
-
-export const UNLIMITED_MSG = 'UNLIMITED MESSAGE';
 
 const UNLIMITED_THRESHOLD = 10 ** 15;
 

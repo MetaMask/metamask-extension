@@ -1,5 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
+import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowDivider,
@@ -8,14 +9,11 @@ import {
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { UNLIMITED_MSG } from '../../../../../constants';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { Container } from '../../shared/transaction-data/transaction-data';
-import { getAccountBalance } from '../edit-spending-cap-modal/edit-spending-cap-modal';
-import {
-  UNLIMITED_MSG,
-  useApproveTokenSimulation,
-} from '../hooks/use-approve-token-simulation';
+import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
 
 const SpendingCapGroup = ({
   tokenSymbol,
@@ -92,7 +90,10 @@ export const SpendingCap = ({
     transactionMeta.txParams.data,
   );
 
-  const accountBalance = getAccountBalance(userBalance || '0', decimals || '0');
+  const accountBalance = calcTokenAmount(
+    userBalance || '0',
+    Number(decimals || '0'),
+  );
 
   const { pending, spendingCap } = useApproveTokenSimulation(
     transactionMeta,

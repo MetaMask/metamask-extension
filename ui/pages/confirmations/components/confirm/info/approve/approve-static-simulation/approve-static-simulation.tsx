@@ -13,14 +13,12 @@ import {
   TextAlign,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { UNLIMITED_MSG } from '../../../../../constants';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import StaticSimulation from '../../shared/static-simulation/static-simulation';
 import { Container } from '../../shared/transaction-data/transaction-data';
-import {
-  UNLIMITED_MSG,
-  useApproveTokenSimulation,
-} from '../hooks/use-approve-token-simulation';
+import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
 import { useIsNFT } from '../hooks/use-is-nft';
 
 export const ApproveStaticSimulation = () => {

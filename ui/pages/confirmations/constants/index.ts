@@ -7,3 +7,5 @@ export const TYPED_SIGNATURE_VERSIONS = {
   V3: 'V3',
   V4: 'V4',
 };
+
+export const UNLIMITED_MSG = 'UNLIMITED MESSAGE';

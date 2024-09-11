@@ -174,8 +174,6 @@ async function createAndAssertIncreaseAllowanceSubmission(
 
   await editSpendingCap(driver, newSpendingCap);
 
-  await driver.delay(1024 ** 2);
-
   await scrollAndConfirmAndAssertConfirm(driver);
 
   await assertChangedSpendingCap(driver, newSpendingCap);

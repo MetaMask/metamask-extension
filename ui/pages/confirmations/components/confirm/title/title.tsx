@@ -73,6 +73,8 @@ const getTitle = (
         return t('confirmTitleApproveTransaction');
       }
       return t('confirmTitlePermitSignature');
+    case TransactionType.tokenMethodIncreaseAllowance:
+      return t('confirmTitlePermitSignature');
     case TransactionType.deployContract:
       return t('confirmTitleDeployContract');
     case TransactionType.personalSign:
@@ -102,6 +104,8 @@ const getDescription = (
         return t('confirmTitleDescApproveTransaction');
       }
       return t('confirmTitleDescERC20ApproveTransaction');
+    case TransactionType.tokenMethodIncreaseAllowance:
+      return t('confirmTitleDescPermitSignature');
     case TransactionType.deployContract:
       return t('confirmTitleDescDeployContract');
     case TransactionType.personalSign:
