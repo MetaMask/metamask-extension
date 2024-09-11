@@ -513,12 +513,6 @@
   "allow": {
     "message": "허용"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "자동 감지를 통해 MetaMask가 NFT를 감지하고 표시하도록 허용합니다. 다음과 같은 작업을 할 수 있습니다."
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "자동 감지를 통해 MetaMask가 토큰을 감지하고 표시하도록 허용합니다. 다음과 같은 작업을 할 수 있습니다."
-  },
   "allowMmiToConnectToCustodian": {
     "message": "허용할 경우, MMI가 $1에 연결하여 계정을 가져올 수 있습니다."
   },
@@ -1606,12 +1600,6 @@
   "displayNftMediaDescription": {
     "message": "NFT 미디어와 데이터를 표시하면 IP 주소가 OpenSea나 기타 제삼자에게 노출될 수 있습니다. 공격자는 이를 통해 회원님의 IP 주소와 이더리움 주소를 연결할 수 있습니다. NFT 자동 감지는 이 설정을 사용하며, 이 설정이 꺼져 있는 경우 사용할 수 없습니다."
   },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "NFT 바로 사용"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "토큰 바로 사용"
-  },
   "doNotShare": {
     "message": "누구와도 공유하지 마세요"
   },
@@ -1743,9 +1731,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "가스비 가속 편집"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "디지털 자산을 손쉽게 탐색"
-  },
   "enable": {
     "message": "활성화"
   },
@@ -1755,21 +1740,12 @@
   "enableFromSettings": {
     "message": " 설정에서 이 기능을 활성화합니다."
   },
-  "enableNftAutoDetection": {
-    "message": "NFT 자동 감지 활성화"
-  },
   "enableSnap": {
     "message": "활성화"
   },
   "enableToken": {
     "message": "$1 활성화",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "토큰 자동 감지 활성화"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "기본 기능을 사용하면 Metamask 확장 v12.3.0에서 이 기능이 자동으로 켜집니다"
   },
   "enabled": {
     "message": "활성화됨"
@@ -2282,12 +2258,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "NFT에 즉시 액세스"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "토큰에 즉시 액세스"
   },
   "import": {
     "message": "가져오기",
@@ -3253,9 +3223,6 @@
   "notEnoughGas": {
     "message": "가스 부족"
   },
-  "notRightNow": {
-    "message": "나중에"
-  },
   "note": {
     "message": "메모"
   },
@@ -3525,9 +3492,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "메트릭을 수집할 때는 항상..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "괜찮습니다"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "이 데이터를 다른 목적으로 사용하기로 결정하면 알려드리겠습니다. 자세한 내용은 $1을(를) 참고하세요. 언제든지 설정으로 이동하여 해제할 수 있습니다.",

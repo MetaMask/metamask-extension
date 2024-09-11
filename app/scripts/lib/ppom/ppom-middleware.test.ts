@@ -222,7 +222,7 @@ describe('PPOMMiddleware', () => {
     const middlewareFunction = createMiddleware();
 
     const req = {
-      ...JsonRpcRequestStruct,
+      ...REQUEST_MOCK,
       params: [{ to: INTERNAL_ACCOUNT_ADDRESS }],
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,

@@ -513,12 +513,6 @@
   "allow": {
     "message": "Permitir"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "Permita que a MetaMask detecte e exiba seus NFTs com detecção automática. Você será capaz de:"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "Permita que MetaMask detecte e exiba seus tokens com detecção automática. Você será capaz de:"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "Isso permite que o MMI se conecte ao $1 para importar suas contas."
   },
@@ -1606,12 +1600,6 @@
   "displayNftMediaDescription": {
     "message": "Exibir arquivos de mídia e dados de NFTs expõe seu endereço IP à OpenSea ou outros terceiros. Isso pode possibilitar que invasores associem seu endereço IP ao seu endereço Ethereum. A detecção automática de NFTs depende dessa configuração e ficará indisponível quando ela estiver desativada."
   },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "Acessar diretamente e começar a usar seus NFTs"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "Vá direto aos seus tokens e comece a usá-los"
-  },
   "doNotShare": {
     "message": "Não compartilhe isso com ninguém"
   },
@@ -1743,9 +1731,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Editar taxa de gás para aceleração"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "Navegue sem esforço em seus ativos digitais"
-  },
   "enable": {
     "message": "Ativar"
   },
@@ -1755,21 +1740,12 @@
   "enableFromSettings": {
     "message": " Ative nas Configurações."
   },
-  "enableNftAutoDetection": {
-    "message": "Ativar detecção automática de NFTs"
-  },
   "enableSnap": {
     "message": "Ativar"
   },
   "enableToken": {
     "message": "ativar $1",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "Ativar detecção automática de tokens"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "Essa opção estará automaticamente ativada na extensão da Metamask v12.3.0 para usuários que tenham a funcionalidade básica ativada"
   },
   "enabled": {
     "message": "Ativado"
@@ -2282,12 +2258,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "Acessar suas NFTs imediatamente"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "Acesso imediato aos seus tokens"
   },
   "import": {
     "message": "Importar",
@@ -3253,9 +3223,6 @@
   "notEnoughGas": {
     "message": "Não há gás suficiente"
   },
-  "notRightNow": {
-    "message": "Agora não"
-  },
   "note": {
     "message": "Observação"
   },
@@ -3525,9 +3492,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "Quando coletamos as métricas, elas sempre são..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "Não, obrigado"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Informaremos a você se decidirmos usar esses dados para outras finalidades. Você pode analisar nossa $1 para obter mais informações. Lembre-se: você pode acessar as configurações e revogar a permissão a qualquer momento.",

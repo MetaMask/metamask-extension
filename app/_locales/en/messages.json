@@ -1549,24 +1549,6 @@
   "developerOptions": {
     "message": "Developer Options"
   },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Enables or disables the confirmations redesign feature currently in development"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Confirmations Redesign"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Toggles the new design of the Networks menu"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Network Menu Redesign"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Resets various states related to onboarding and redirects to the \"Secure Your Wallet\" onboarding page."
-  },
   "developerOptionsSentryButtonGenerateBackgroundError": {
     "message": "Generate Background Error"
   },
@@ -1584,9 +1566,6 @@
   },
   "developerOptionsSentryDescriptionGenerateUIError": {
     "message": "Generate an unhandled $1 in this window."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Results in a timestamp being continuously saved to session.storage"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
@@ -1794,12 +1773,6 @@
   "enableToken": {
     "message": "enable $1",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "Enable token autodetection"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "Users with the Basic Functionality toggle on will have this automatically turned on in the Metamask Extension v12.3.0"
   },
   "enabled": {
     "message": "Enabled"
@@ -3561,9 +3534,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "When we gather metrics, it will always be..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "No thanks"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "We’ll let you know if we decide to use this data for other purposes. You can review our $1 for more information. Remember, you can go to settings and opt out at any time.",

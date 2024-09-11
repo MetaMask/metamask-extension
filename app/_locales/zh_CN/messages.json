@@ -513,12 +513,6 @@
   "allow": {
     "message": "允许"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "允许 MetaMask 使用自动检测功能检测并显示您的 NFT。您将能够："
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "允许 MetaMask 使用自动检测功能检测并显示您的代币。您将能够："
-  },
   "allowMmiToConnectToCustodian": {
     "message": "这将允许 MMI 连接到 $1，以导入您的账户。"
   },
@@ -1606,12 +1600,6 @@
   "displayNftMediaDescription": {
     "message": "显示 NFT 媒体和数据会将您的 IP 地址暴露给 OpenSea 或其他第三方。这可以让攻击者将您的 IP 地址与您的以太坊地址相关联。NFT 自动检测依赖于此设置，当此设置关闭时将无法使用。"
   },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "直接开始使用您的 NFT"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "直接开始使用您的代币"
-  },
   "doNotShare": {
     "message": "请勿与任何人分享此信息"
   },
@@ -1743,9 +1731,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "编辑加速燃料费用"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "轻松浏览您的数字资产"
-  },
   "enable": {
     "message": "启用"
   },
@@ -1755,21 +1740,12 @@
   "enableFromSettings": {
     "message": " 从设置中启用它。"
   },
-  "enableNftAutoDetection": {
-    "message": "启用 NFT 自动检测"
-  },
   "enableSnap": {
     "message": "启用"
   },
   "enableToken": {
     "message": "启用 $1",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "启用代币自动检测"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "启用基本功能的用户将在 MetaMask Extension v12.3.0 中自动启用此功能"
   },
   "enabled": {
     "message": "已启用"
@@ -2282,12 +2258,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "立即访问您的 NFT"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "即时访问您的代币"
   },
   "import": {
     "message": "导入",
@@ -3253,9 +3223,6 @@
   "notEnoughGas": {
     "message": "燃料不足"
   },
-  "notRightNow": {
-    "message": "暂时不"
-  },
   "note": {
     "message": "单据"
   },
@@ -3525,9 +3492,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "当我们收集指标时，总是..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "不，谢谢"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "如果我们决定将这些数据用于其他目的，我们会通知您。您可以查看我们的 $1 以了解更多信息。请记住，您可以随时转到设置并选择退出。",

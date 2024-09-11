@@ -5549,6 +5549,10 @@ export function setIsProfileSyncingEnabled(
   };
 }
 
+export function setConfirmationAdvancedDetailsOpen(value: boolean) {
+  return setPreference('showConfirmationAdvancedDetails', value);
+}
+
 export async function getNextAvailableAccountName(
   keyring?: KeyringTypes,
 ): Promise<string> {

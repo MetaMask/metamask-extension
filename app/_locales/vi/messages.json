@@ -513,12 +513,6 @@
   "allow": {
     "message": "Cho phép"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "Cho phép MetaMask phát hiện và hiển thị NFT của bạn bằng tính năng tự động phát hiện. Bạn sẽ có thể:"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "Cho phép MetaMask phát hiện và hiển thị token của bạn bằng tính năng tự động phát hiện. Bạn sẽ có thể:"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "Điều này sẽ cho phép MMI kết nối với $1 để nhập tài khoản của bạn."
   },
@@ -1606,12 +1600,6 @@
   "displayNftMediaDescription": {
     "message": "Việc hiển thị dữ liệu và phương tiện NFT sẽ làm lộ địa chỉ IP của bạn với OpenSea hoặc các bên thứ ba khác. Điều này có thể cho phép kẻ tấn công liên kết địa chỉ IP với địa chỉ Ethereum của bạn. Tính năng tự động phát hiện NFT dựa trên chế độ cài đặt này và sẽ không khả dụng khi chế độ cài đặt này bị tắt."
   },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "Bắt đầu sử dụng NFT của bạn ngay lập tức"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "Bắt đầu sử dụng token của bạn ngay lập tức"
-  },
   "doNotShare": {
     "message": "Không chia sẻ thông tin này với bất kỳ ai"
   },
@@ -1743,9 +1731,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Chỉnh sửa phí gas tăng tốc"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "Dễ dàng quản lý tài sản kỹ thuật số của bạn"
-  },
   "enable": {
     "message": "Bật"
   },
@@ -1755,21 +1740,12 @@
   "enableFromSettings": {
     "message": " Bật trong Cài Đặt."
   },
-  "enableNftAutoDetection": {
-    "message": "Bật tính năng tự động phát hiện NFT"
-  },
   "enableSnap": {
     "message": "Bật"
   },
   "enableToken": {
     "message": "bật $1",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "Bật tính năng tự động phát hiện token"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "Người dùng đã bật công tắc Chức năng cơ bản sẽ tự động bật tính năng này trong Tiện ích mở rộng Metamask v12.3.0"
   },
   "enabled": {
     "message": "Đã bật"
@@ -2282,12 +2258,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "Truy cập ngay lập tức vào NFT của bạn"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "Truy cập ngay vào các token của bạn"
   },
   "import": {
     "message": "Nhập",
@@ -3253,9 +3223,6 @@
   "notEnoughGas": {
     "message": "Không đủ phí gas"
   },
-  "notRightNow": {
-    "message": "Không phải bây giờ"
-  },
   "note": {
     "message": "Ghi chú"
   },
@@ -3525,9 +3492,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "Khi thu thập số liệu, chúng tôi sẽ luôn cam kết điều này..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "Không, cảm ơn"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Chúng tôi sẽ thông báo cho bạn nếu chúng tôi quyết định sử dụng dữ liệu này cho các mục đích khác. Bạn có thể xem lại $1 của chúng tôi để biết thêm thông tin. Lưu ý, bạn có thể truy cập cài đặt và chọn không tham gia bất kỳ lúc nào.",
