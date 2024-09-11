@@ -51,14 +51,14 @@ export default function TurnOnMetamaskNotifications() {
   );
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
 
-  const [loadingState, setLoadingState] = useState<boolean>(
+  const [isLoading, setIsLoading] = useState<boolean>(
     isUpdatingMetamaskNotifications,
   );
 
   const { createNotifications, error } = useCreateNotifications();
 
   const handleTurnOnNotifications = async () => {
-    setLoadingState(true);
+    setIsLoading(true);
     await createNotifications();
     trackEvent({
       category: MetaMetricsEventCategory.NotificationsActivationFlow,
@@ -72,7 +72,7 @@ export default function TurnOnMetamaskNotifications() {
 
   const handleHideModal = () => {
     hideModal();
-    setLoadingState((prevLoadingState) => {
+    setIsLoading((prevLoadingState) => {
       if (!prevLoadingState) {
         trackEvent({
           category: MetaMetricsEventCategory.NotificationsActivationFlow,
@@ -154,8 +154,8 @@ export default function TurnOnMetamaskNotifications() {
           }}
           submitButtonProps={{
             children: t('turnOnMetamaskNotificationsButton'),
-            loading: loadingState,
-            disabled: loadingState,
+            loading: isLoading,
+            disabled: isLoading,
             'data-testid': 'turn-on-notifications-button',
           }}
         />
