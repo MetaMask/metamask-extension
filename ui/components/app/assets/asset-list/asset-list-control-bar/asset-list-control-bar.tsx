@@ -55,10 +55,16 @@ const AssetListControlBar = ({
           Import
         </Button>
         <Popover
-          isOpen={isPopoverOpen}
+          isOpen={true}
           position={PopoverPosition.BottomStart}
           referenceElement={controlBarRef.current}
-          style={{ zIndex: 10, display: 'flex', flexDirection: 'column' }}
+          matchWidth={true}
+          style={{
+            zIndex: 10,
+            display: 'flex',
+            flexDirection: 'column',
+            padding: 0,
+          }}
         >
           <SortControl
             tokenList={tokenList}

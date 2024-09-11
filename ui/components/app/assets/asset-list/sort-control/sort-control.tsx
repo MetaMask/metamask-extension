@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Button } from '../../../../component-library';
+import { Box, Button, Text } from '../../../../component-library';
 import { TokenWithBalance } from '../asset-list';
 import { SortOrder, sortAssets } from '../../util/sort';
 import { useAccountTotalFiatBalance } from '../../../../../hooks/useAccountTotalFiatBalance';
@@ -15,6 +15,12 @@ import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../../helpers/
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { getConversionRate } from '../../../../../ducks/metamask/metamask';
 import { getTokenFiatAmount } from '../../../../../helpers/utils/token-util';
+import {
+  BackgroundColor,
+  BorderRadius,
+} from '../../../../../helpers/constants/design-system';
+import { ReactNode } from 'react-markdown';
+import classnames from 'classnames';
 
 type SortControlProps = {
   tokenList: TokenWithBalance[];
@@ -27,6 +33,7 @@ const SortControl = ({
   setTokenList,
   setLoading,
 }: SortControlProps) => {
+  const [sortKey, setSortKey] = useState<string | null>(null);
   const [sorted, setSorted] = useState(false);
   const selectedAccount = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
@@ -54,7 +61,6 @@ const SortControl = ({
 
   useEffect(() => {
     if (!sorted) {
-      console.log('hello world');
       setLoading(loading);
       const tokensWithBalances =
         accountTotalFiatBalance.tokensWithBalances as TokenWithBalance[];
@@ -95,6 +101,7 @@ const SortControl = ({
   }, [accountTotalFiatBalance]);
 
   const handleSort = (key: string, sortCallback: string, order: SortOrder) => {
+    setSortKey(key);
     const sorted = sortAssets(tokenList, {
       key,
       sortCallback,
@@ -106,19 +113,54 @@ const SortControl = ({
 
   return (
     <>
-      <Box
-        className="selectable-list-item"
+      <SelectableListItem
+        isSelected={sortKey === 'symbol'}
         onClick={() => handleSort('symbol', 'alphanumeric', 'asc')}
       >
-        Sort by Symbol
-      </Box>
-      <Box
-        className="selectable-list-item"
+        Alphabetically (A-Z)
+      </SelectableListItem>
+      <SelectableListItem
+        isSelected={sortKey === 'tokenFiatAmount'}
         onClick={() => handleSort('tokenFiatAmount', 'stringNumeric', 'dsc')}
       >
-        Sort by Balance
-      </Box>
+        Declining balance ($ high-low)
+      </SelectableListItem>
     </>
+  );
+};
+
+// intentionally used generic naming convention for styled selectable list item
+// inspired from ui/components/multichain/network-list-item
+// should probably be broken out into component library
+type SelectableListItemProps = {
+  isSelected: boolean;
+  onClick?: React.MouseEventHandler<HTMLSpanElement>;
+  children: ReactNode;
+};
+
+export const SelectableListItem = ({
+  isSelected,
+  onClick,
+  children,
+}: SelectableListItemProps) => {
+  return (
+    <Box className="selectable-list-item-wrapper">
+      <Box
+        className={classnames('selectable-list-item', {
+          'selectable-list-item--selected': isSelected,
+        })}
+        onClick={onClick}
+      >
+        {children}
+      </Box>
+      {isSelected && (
+        <Box
+          className="selectable-list-item__selected-indicator"
+          borderRadius={BorderRadius.pill}
+          backgroundColor={BackgroundColor.primaryDefault}
+        />
+      )}
+    </Box>
   );
 };
 

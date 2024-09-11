@@ -1,0 +1,33 @@
+// intentionally used generic naming convention for styled selectable list item
+// inspired from ui/components/multichain/network-list-item/index.scss
+// should probably be broken out into component library
+.selectable-list-item-wrapper {
+  position: relative;
+}
+
+.selectable-list-item {
+  cursor: pointer;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+
+  &--selected {
+    background: var(--color-primary-muted);
+  }
+
+  &:not(.selectable-list-item--selected) {
+    &:hover,
+    &:focus-within {
+      background: var(--color-background-default-hover);
+    }
+  }
+
+  &__selected-indicator {
+    width: 4px;
+    height: calc(100% - 8px);
+    position: absolute;
+    top: 4px;
+    left: 4px;
+  }
+}
