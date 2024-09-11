@@ -51,8 +51,6 @@ const defaultState = {
 };
 const mockStore = (state = defaultState) => configureStore(middleware)(state);
 
-const baseMockState = defaultState.metamask;
-
 describe('Actions', () => {
   let background;
 

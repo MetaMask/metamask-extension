@@ -12,7 +12,7 @@ export class PatchStore {
 
   private observableStore: ComposableObservableStore;
 
-  private pendingPatches: Patch[] = [];
+  private pendingPatches: Map<string, Patch> = new Map();
 
   private listener: (request: {
     controllerKey: string;
@@ -30,13 +30,14 @@ export class PatchStore {
     log('Created', this.id);
   }
 
-  flushPendingPatches() {
-    const patches = this.pendingPatches;
-    this.pendingPatches = [];
+  flushPendingPatches(): Patch[] {
+    const patches = [...this.pendingPatches.values()];
 
-    patches.forEach((patch) => {
+    this.pendingPatches.clear();
+
+    for (const patch of patches) {
       log('Flushed', patch.path.join('.'), this.id, patch);
-    });
+    }
 
     return patches;
   }
@@ -65,19 +66,19 @@ export class PatchStore {
       });
     }
 
-    const finalPatches = patches.filter(
-      (patch) => !IGNORE_KEYS.includes((patch.path as string[])?.[0]),
-    );
+    const finalPatches = this._sanitizePatches(patches);
 
     if (!finalPatches.length) {
       return;
     }
 
-    finalPatches.forEach((patch) => {
-      log('Added', patch.path.join('.'), this.id, patch);
-    });
+    for (const patch of finalPatches) {
+      const path = patch.path.join('.');
 
-    this.pendingPatches.push(...finalPatches);
+      this.pendingPatches.set(path, patch);
+
+      log('Updated', path, this.id, patch);
+    }
   }
 
   private _generatePatches(
@@ -100,5 +101,30 @@ export class PatchStore {
         };
       })
       .filter(Boolean) as Patch[];
+  }
+
+  private _sanitizePatches(patches: Patch[]): Patch[] {
+    return patches
+      .filter((patch) => !IGNORE_KEYS.includes(patch.path.join('.')))
+      .map(this._stripLargeSnapData);
+  }
+
+  private _stripLargeSnapData(patch: Patch): Patch {
+    const path = patch.path.join('.');
+
+    if (path !== 'snaps') {
+      return patch;
+    }
+
+    const newValue = {
+      ...patch.value,
+      sourceCode: undefined,
+      auxiliaryFiles: undefined,
+    };
+
+    return {
+      ...patch,
+      value: newValue,
+    };
   }
 }

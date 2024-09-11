@@ -1,3 +1,4 @@
+import { value } from '../../../ui/components/app/snaps/snap-ui-renderer/components/value';
 import ComposableObservableStore from './ComposableObservableStore';
 import { PatchStore } from './PatchStore';
 
@@ -112,6 +113,71 @@ describe('PatchStore', () => {
 
       expect(patches1).toHaveLength(1);
       expect(patches2).toHaveLength(0);
+    });
+
+    it('ignores insecure properties', () => {
+      const composableStoreMock = createComposableStoreMock();
+      const patchStore = new PatchStore(composableStoreMock);
+
+      triggerStateChange(
+        composableStoreMock,
+        { snapStates: true },
+        { snapStates: false },
+      );
+
+      triggerStateChange(
+        composableStoreMock,
+        { unencryptedSnapStates: true },
+        { unencryptedSnapStates: false },
+      );
+
+      triggerStateChange(
+        composableStoreMock,
+        { vault: true },
+        { vault: false },
+      );
+
+      const patches = patchStore.flushPendingPatches();
+
+      expect(patches).toEqual([]);
+    });
+
+    it('strips large properties from snaps state', () => {
+      const composableStoreMock = createComposableStoreMock();
+      const patchStore = new PatchStore(composableStoreMock);
+
+      triggerStateChange(
+        composableStoreMock,
+        { snaps: false },
+        { snaps: { test: 'value', sourceCode: '123', auxiliaryFiles: '456' } },
+      );
+
+      const patches = patchStore.flushPendingPatches();
+
+      expect(patches).toEqual([
+        {
+          op: 'replace',
+          path: ['snaps'],
+          value: { test: 'value' },
+        },
+      ]);
+    });
+
+    it('adds isInitialized patch if vault in new state', () => {
+      const composableStoreMock = createComposableStoreMock();
+      const patchStore = new PatchStore(composableStoreMock);
+
+      triggerStateChange(composableStoreMock, { vault: 0 }, { vault: 123 });
+
+      const patches = patchStore.flushPendingPatches();
+
+      expect(patches).toEqual([
+        {
+          op: 'replace',
+          path: ['isInitialized'],
+          value: true,
+        },
+      ]);
     });
   });
 
