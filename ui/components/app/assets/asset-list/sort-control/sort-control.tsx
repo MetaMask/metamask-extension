@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button } from '../../../../component-library';
+import { Box, Button } from '../../../../component-library';
 import { TokenWithBalance } from '../asset-list';
 import { SortOrder, sortAssets } from '../../util/sort';
 import { useAccountTotalFiatBalance } from '../../../../../hooks/useAccountTotalFiatBalance';
@@ -100,21 +100,24 @@ const SortControl = ({
       sortCallback,
       order,
     });
-    console.log('SORTED', sorted);
     setSorted(true);
     setTokenList(sorted);
   };
 
   return (
     <>
-      <Button onClick={() => handleSort('symbol', 'alphanumeric', 'asc')}>
+      <Box
+        className="selectable-list-item"
+        onClick={() => handleSort('symbol', 'alphanumeric', 'asc')}
+      >
         Sort by Symbol
-      </Button>
-      <Button
+      </Box>
+      <Box
+        className="selectable-list-item"
         onClick={() => handleSort('tokenFiatAmount', 'stringNumeric', 'dsc')}
       >
         Sort by Balance
-      </Button>
+      </Box>
     </>
   );
 };

@@ -45,6 +45,7 @@ import {
 } from '../../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 import SortControl from './sort-control';
+import AssetListControlBar from './asset-list-control-bar';
 ///: END:ONLY_INCLUDE_IF
 
 export type TokenWithBalance = {
@@ -154,7 +155,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         ) : null
         ///: END:ONLY_INCLUDE_IF
       }
-      <SortControl
+      <AssetListControlBar
         tokenList={tokenList}
         setTokenList={setTokenList}
         setLoading={setLoading}
