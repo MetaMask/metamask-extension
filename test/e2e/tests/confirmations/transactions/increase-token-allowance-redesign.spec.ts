@@ -8,6 +8,7 @@ import {
   withFixtures,
 } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
+import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
@@ -36,9 +37,11 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
-
-          await createAndAssertIncreaseAllowanceSubmission(driver, '3');
+          await createAndAssertIncreaseAllowanceSubmission(
+            driver,
+            '3',
+            contractRegistry,
+          );
         },
       );
     });
@@ -62,9 +65,11 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
-
-          await createAndAssertIncreaseAllowanceSubmission(driver, '3');
+          await createAndAssertIncreaseAllowanceSubmission(
+            driver,
+            '3',
+            contractRegistry,
+          );
         },
       );
     });
@@ -88,9 +93,11 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
-
-          await createAndAssertIncreaseAllowanceSubmission(driver, '3000');
+          await createAndAssertIncreaseAllowanceSubmission(
+            driver,
+            '3000',
+            contractRegistry,
+          );
         },
       );
     });
@@ -114,9 +121,11 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
-
-          await createAndAssertIncreaseAllowanceSubmission(driver, '3000');
+          await createAndAssertIncreaseAllowanceSubmission(
+            driver,
+            '3000',
+            contractRegistry,
+          );
         },
       );
     });
@@ -157,7 +166,10 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
 async function createAndAssertIncreaseAllowanceSubmission(
   driver: Driver,
   newSpendingCap: string,
+  contractRegistry?: GanacheContractAddressRegistry,
 ) {
+  await openDAppWithContract(driver, contractRegistry, SMART_CONTRACTS.HST);
+
   await createERC20IncreaseAllowanceTransaction(driver);
 
   await editSpendingCap(driver, newSpendingCap);
