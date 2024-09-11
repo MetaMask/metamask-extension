@@ -1,6 +1,8 @@
-import { value } from '../../../ui/components/app/snaps/snap-ui-renderer/components/value';
 import ComposableObservableStore from './ComposableObservableStore';
 import { PatchStore } from './PatchStore';
+import { sanitizeUIState } from './state-utils';
+
+jest.mock('./state-utils');
 
 function createComposableStoreMock() {
   return {
@@ -22,6 +24,13 @@ function triggerStateChange(
 }
 
 describe('PatchStore', () => {
+  const sanitizeUIStateMock = jest.mocked(sanitizeUIState);
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    sanitizeUIStateMock.mockImplementation((state) => state);
+  });
+
   describe('flushPendingPatches', () => {
     it('returns pending patches created by composable store events', () => {
       const composableStoreMock = createComposableStoreMock();
@@ -115,41 +124,16 @@ describe('PatchStore', () => {
       expect(patches2).toHaveLength(0);
     });
 
-    it('ignores insecure properties', () => {
+    it('sanitizes state in patches', () => {
       const composableStoreMock = createComposableStoreMock();
       const patchStore = new PatchStore(composableStoreMock);
 
-      triggerStateChange(
-        composableStoreMock,
-        { snapStates: true },
-        { snapStates: false },
-      );
+      sanitizeUIStateMock.mockReturnValueOnce({ test2: 'value' });
 
       triggerStateChange(
         composableStoreMock,
-        { unencryptedSnapStates: true },
-        { unencryptedSnapStates: false },
-      );
-
-      triggerStateChange(
-        composableStoreMock,
-        { vault: true },
-        { vault: false },
-      );
-
-      const patches = patchStore.flushPendingPatches();
-
-      expect(patches).toEqual([]);
-    });
-
-    it('strips large properties from snaps state', () => {
-      const composableStoreMock = createComposableStoreMock();
-      const patchStore = new PatchStore(composableStoreMock);
-
-      triggerStateChange(
-        composableStoreMock,
-        { snaps: false },
-        { snaps: { test: 'value', sourceCode: '123', auxiliaryFiles: '456' } },
+        { test1: false },
+        { test1: true },
       );
 
       const patches = patchStore.flushPendingPatches();
@@ -157,8 +141,8 @@ describe('PatchStore', () => {
       expect(patches).toEqual([
         {
           op: 'replace',
-          path: ['snaps'],
-          value: { test: 'value' },
+          path: ['test2'],
+          value: 'value',
         },
       ]);
     });
@@ -172,6 +156,11 @@ describe('PatchStore', () => {
       const patches = patchStore.flushPendingPatches();
 
       expect(patches).toEqual([
+        {
+          op: 'replace',
+          path: ['vault'],
+          value: 123,
+        },
         {
           op: 'replace',
           path: ['isInitialized'],

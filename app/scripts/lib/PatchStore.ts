@@ -2,6 +2,7 @@ import { createProjectLogger } from '@metamask/utils';
 import { Patch } from 'immer';
 import { v4 as uuid } from 'uuid';
 import ComposableObservableStore from './ComposableObservableStore';
+import { sanitizeUIState } from './state-utils';
 
 const log = createProjectLogger('patch-store');
 
@@ -55,7 +56,8 @@ export class PatchStore {
     oldState: Record<string, unknown>;
     newState: Record<string, unknown>;
   }) {
-    const patches = this._generatePatches(oldState, newState);
+    const sanitizedNewState = sanitizeUIState(newState);
+    const patches = this._generatePatches(oldState, sanitizedNewState);
     const isInitialized = Boolean(newState.vault);
 
     if (isInitialized) {
@@ -66,13 +68,11 @@ export class PatchStore {
       });
     }
 
-    const finalPatches = this._sanitizePatches(patches);
-
-    if (!finalPatches.length) {
+    if (!patches.length) {
       return;
     }
 
-    for (const patch of finalPatches) {
+    for (const patch of patches) {
       const path = patch.path.join('.');
 
       this.pendingPatches.set(path, patch);
@@ -101,30 +101,5 @@ export class PatchStore {
         };
       })
       .filter(Boolean) as Patch[];
-  }
-
-  private _sanitizePatches(patches: Patch[]): Patch[] {
-    return patches
-      .filter((patch) => !IGNORE_KEYS.includes(patch.path.join('.')))
-      .map(this._stripLargeSnapData);
-  }
-
-  private _stripLargeSnapData(patch: Patch): Patch {
-    const path = patch.path.join('.');
-
-    if (path !== 'snaps') {
-      return patch;
-    }
-
-    const newValue = {
-      ...patch.value,
-      sourceCode: undefined,
-      auxiliaryFiles: undefined,
-    };
-
-    return {
-      ...patch,
-      value: newValue,
-    };
   }
 }
