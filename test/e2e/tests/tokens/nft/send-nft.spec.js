@@ -85,7 +85,7 @@ describe('Send NFT', function () {
     );
   });
 
-  it.only('should be able to send ERC1155 NFT', async function () {
+  it('should be able to send ERC1155 NFT', async function () {
     await withFixtures(
       {
         dapp: true,
