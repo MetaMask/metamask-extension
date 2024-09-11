@@ -82,7 +82,7 @@ export enum EditGasModes {
 export enum NetworkCongestionThresholds {
   notBusy = 0,
   stable = 0.33,
-  busy = 0.66,
+  busy = 0.9,
 }
 
 export type TxGasFees = {
