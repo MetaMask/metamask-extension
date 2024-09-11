@@ -21,6 +21,7 @@ import {
 } from './helpers';
 import { MultichainAuthorizationConfirmation } from './api-specs/MultichainAuthorizationConfirmation';
 import transformOpenRPCDocument from './api-specs/transform';
+import { MultichainAuthorizationConfirmationErrors } from './api-specs/MultichainAuthorizationConfirmationErrors';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -60,12 +61,8 @@ async function main() {
               name: 'requiredScopes',
               value: {
                 eip155: {
-                  scopes: ['eip155:1337'],
-                  methods: [
-                    'eth_sendTransaction',
-                    'eth_getBalance',
-                    'personal_sign',
-                  ],
+                  scopes: ['eip155:1'],
+                  methods: ['eth_sendTransaction', 'eth_getBalance'],
                   notifications: [],
                 },
               },
@@ -74,28 +71,25 @@ async function main() {
               name: 'optionalScopes',
               value: {
                 'eip155:1337': {
-                  methods: [
-                    'eth_sendTransaction',
-                    'eth_getBalance',
-                    'personal_sign',
-                  ],
+                  methods: ['eth_sendTransaction', 'eth_getBalance'],
                   notifications: [],
                 },
               },
             },
           ],
           result: {
-            name: 'provider_authorizationResultExample',
+            name: 'wallet_createSessionResultExample',
             value: {
               sessionId: '0xdeadbeef',
               sessionScopes: {
-                'eip155:1337': {
+                'eip155:1': {
+                  accounts: [`eip155:1:${ACCOUNT_1}`],
+                  methods: ['eth_sendTransaction', 'eth_getBalance'],
+                  notifications: [],
+                },
+                [`eip155:${chainId}`]: {
                   accounts: [`eip155:${chainId}:${ACCOUNT_1}`],
-                  methods: [
-                    'eth_sendTransaction',
-                    'eth_getBalance',
-                    'personal_sign',
-                  ],
+                  methods: ['eth_sendTransaction', 'eth_getBalance'],
                   notifications: [],
                 },
               },
@@ -129,6 +123,9 @@ async function main() {
         skip: ['wallet_invokeMethod'],
         rules: [
           new MultichainAuthorizationConfirmation({
+            driver,
+          }),
+          new MultichainAuthorizationConfirmationErrors({
             driver,
           }),
         ],

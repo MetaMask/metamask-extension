@@ -35,7 +35,7 @@ export async function walletCreateSessionHandler(req, res, _next, end, hooks) {
 
   if (sessionProperties && Object.keys(sessionProperties).length === 0) {
     return end(
-      new EthereumRpcError(5300, 'Invalid Session Properties requested'),
+      new EthereumRpcError(5302, 'Invalid sessionProperties requested'),
     );
   }
 
