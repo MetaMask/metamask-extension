@@ -13,7 +13,7 @@ import {
   PHISHING_SAFELIST,
   PHISHING_WARNING_PAGE,
 } from '../constants/stream';
-import { logStreamDisconnectWarning } from './stream-utils';
+import { logStreamDisconnectWarning, MessageType } from './stream-utils';
 
 const phishingPageUrl = new URL(
   process.env.PHISHING_WARNING_PAGE_URL as string,
@@ -139,9 +139,9 @@ const onDisconnectDestroyPhishingStreams = (): void => {
  * @param msg - The message object
  * @param msg.name - Custom property and name to identify the message received
  */
-const onMessageSetUpPhishingStreams = (msg: {
-  name: string;
-}): Promise<string | undefined> | undefined => {
+const onMessageSetUpPhishingStreams = (
+  msg: MessageType,
+): Promise<string | undefined> | undefined => {
   if (msg.name === EXTENSION_MESSAGES.READY) {
     if (!phishingExtStream) {
       setupPhishingExtStreams();

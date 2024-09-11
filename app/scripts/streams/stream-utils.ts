@@ -13,3 +13,14 @@ export function logStreamDisconnectWarning(
     error,
   );
 }
+
+export type MessageType = {
+  name: string;
+  data: {
+    jsonrpc: string;
+    method: string;
+    params?: Record<string, unknown>[];
+    id: string;
+    origin?: string;
+  };
+};

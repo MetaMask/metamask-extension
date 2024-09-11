@@ -17,19 +17,9 @@ import {
 } from '../constants/stream';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
-import { logStreamDisconnectWarning } from './stream-utils';
+import { logStreamDisconnectWarning, MessageType } from './stream-utils';
 import { connectPhishingChannelToWarningSystem } from './phishing-stream';
 
-type MessageType = {
-  name: string;
-  data: {
-    jsonrpc: string;
-    method: string;
-    params?: Record<string, unknown> | null;
-    id: string;
-    origin?: string;
-  };
-};
 let legacyExtMux: ObjectMultiplex,
   legacyExtChannel: Substream,
   legacyExtPublicConfigChannel: Substream,
