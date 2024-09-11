@@ -2,10 +2,9 @@ import React from 'react';
 
 import { useSelector } from 'react-redux';
 
-import Box from '../../../../ui/box';
-
 import { getIpfsGateway, getOpenSeaEnabled } from '../../../../../selectors';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
+import { Box } from '../../../../component-library';
 
 export const CollectionImageComponent = ({
   collectionImage,

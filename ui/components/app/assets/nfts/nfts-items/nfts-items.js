@@ -201,6 +201,19 @@ export default function NftsItems({
     if (!nfts.length) {
       return null;
     }
+    const getSource = (isImageHosted, nft) => {
+      if (!isImageHosted) {
+        const found = updatedNfts.find(
+          (elm) =>
+            elm.tokenId === nft.tokenId &&
+            isEqualCaseInsensitive(elm.address, nft.address),
+        );
+        if (found) {
+          return found.ipfsImageUpdated;
+        }
+      }
+      return nft.image;
+    };
 
     const isExpanded = nftsDropdownState[selectedAddress]?.[chainId]?.[key];
     return (
@@ -253,19 +266,7 @@ export default function NftsItems({
               const isImageHosted =
                 image?.startsWith('https:') || image?.startsWith('http:');
 
-              const getSource = () => {
-                if (!isImageHosted) {
-                  const found = updatedNfts.find(
-                    (elm) =>
-                      elm.tokenId === nft.tokenId &&
-                      isEqualCaseInsensitive(elm.address, nft.address),
-                  );
-                  if (found) {
-                    return found.ipfsImageUpdated;
-                  }
-                }
-                return image;
-              };
+              const source = getSource(isImageHosted, nft);
 
               const isIpfsURL = (
                 imageOriginal ??
@@ -287,7 +288,7 @@ export default function NftsItems({
                 >
                   <NftItem
                     alt={nftImageAlt}
-                    src={getSource()}
+                    src={source}
                     name={name}
                     tokenId={tokenId}
                     networkName={currentChain.nickname}
