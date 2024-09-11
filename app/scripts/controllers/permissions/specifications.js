@@ -1,7 +1,6 @@
 import {
   constructPermission,
   PermissionType,
-  SubjectType,
 } from '@metamask/permission-controller';
 import {
   caveatSpecifications as snapsCaveatsSpecifications,
