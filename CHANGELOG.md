@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.3.0]
-### Uncategorized
+### Fixed
 - Merge branch 'Version-v12.2.0' into Version-v12.3.0
 - Merge remote-tracking branch 'origin/master' into Version-v12.2.0
 - CherryPick: "fix: issue where `wallet_addEtherumChain` was incorrectly enforcing inclusion of a blockExplorerUrls property which is not required (#26938)" ([#26938](https://github.com/MetaMask/metamask-extension/pull/26938))
