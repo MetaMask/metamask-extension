@@ -62,9 +62,12 @@ import RpcListItem, {
   stripKeyFromInfuraUrl,
   stripProtocol,
 } from '../../../../components/multichain/network-list-menu/rpc-list-item';
+import {
+  DropdownEditor,
+  DropdownEditorStyle,
+} from '../../../../components/multichain/dropdown-editor/dropdown-editor';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
-import { DropdownEditor, DropdownEditorStyle } from './dropdown-editor';
 
 export const NetworksForm = ({
   networkFormState,
@@ -391,7 +394,7 @@ export const NetworksForm = ({
           itemKey={(endpoint) => endpoint.url}
           selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
           error={Boolean(errors.rpcUrl)}
-          isRpc
+          buttonDataTestId="test-add-rpc-drop-down"
           renderItem={(item, isList) =>
             isList || item?.name || item?.type === RpcEndpointType.Infura ? (
               <RpcListItem rpcEndpoint={item} />
@@ -569,7 +572,7 @@ export const NetworksForm = ({
           selectedItemIndex={blockExplorers.defaultBlockExplorerUrlIndex}
           addButtonText={t('addBlockExplorerUrl')}
           onItemAdd={onBlockExplorerAdd}
-          isRpc={false}
+          buttonDataTestId="test-explorer-drop-down"
           onItemSelected={(index) =>
             setBlockExplorers((state) => ({
               ...state,

@@ -12,7 +12,7 @@ import {
   Popover,
   PopoverPosition,
   Text,
-} from '../../../../components/component-library';
+} from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -23,9 +23,9 @@ import {
   JustifyContent,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Tooltip from '../../../../components/ui/tooltip';
+} from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import Tooltip from '../../ui/tooltip';
 
 export enum DropdownEditorStyle {
   /** When open, the dropdown overlays elements that follow  */
@@ -35,7 +35,6 @@ export enum DropdownEditorStyle {
 }
 
 // A dropdown for selecting, adding, and deleting items.
-// Currently used for managing RPC endpoints and block explorers for a network.
 export const DropdownEditor = <Item,>({
   title,
   placeholder,
@@ -44,7 +43,6 @@ export const DropdownEditor = <Item,>({
   addButtonText,
   error,
   style,
-  isRpc,
   onItemSelected,
   onItemDeleted,
   onItemAdd,
@@ -53,6 +51,7 @@ export const DropdownEditor = <Item,>({
   itemIsDeletable = () => true,
   renderItem,
   renderTooltip,
+  buttonDataTestId,
 }: {
   title: string;
   placeholder: string;
@@ -60,7 +59,6 @@ export const DropdownEditor = <Item,>({
   selectedItemIndex?: number;
   addButtonText: string;
   error?: boolean;
-  isRpc?: boolean;
   style: DropdownEditorStyle;
   onItemSelected: (index: number) => void;
   onItemDeleted: (deletedIndex: number, newSelectedIndex?: number) => void;
@@ -70,6 +68,7 @@ export const DropdownEditor = <Item,>({
   itemIsDeletable?: (item: Item, items: Item[]) => boolean;
   renderItem: (item: Item, isList: boolean) => string | ReactNode;
   renderTooltip: (item: Item, isList: boolean) => string | undefined;
+  buttonDataTestId: string;
 }) => {
   const t = useI18nContext();
   const dropdown = useRef(null);
@@ -90,13 +89,13 @@ export const DropdownEditor = <Item,>({
               onItemSelected(index);
               setIsDropdownOpen(false);
             }}
-            className={classnames('networks-tab__item', {
-              'networks-tab__item--selected': index === selectedItemIndex,
+            className={classnames('dropdown-editor__item', {
+              'dropdown-editor__item--selected': index === selectedItemIndex,
             })}
           >
             {index === selectedItemIndex && (
               <Box
-                className="networks-tab__item-selected-pill"
+                className="dropdown-editor__item-selected-pill"
                 borderRadius={BorderRadius.pill}
                 backgroundColor={BackgroundColor.primaryDefault}
               />
@@ -146,7 +145,7 @@ export const DropdownEditor = <Item,>({
         padding={4}
         display={Display.Flex}
         alignItems={AlignItems.center}
-        className="networks-tab__item"
+        className="dropdown-editor__item"
       >
         <Icon
           color={IconColor.primaryDefault}
@@ -188,7 +187,7 @@ export const DropdownEditor = <Item,>({
       onClick={() => {
         setIsDropdownOpen(!isDropdownOpen);
       }}
-      className="networks-tab__item-dropdown"
+      className="dropdown-editor__item-dropdown"
       display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
@@ -203,7 +202,7 @@ export const DropdownEditor = <Item,>({
         renderItem(selectedItem, false)
       ) : (
         <Input
-          className="networks-tab__item-placeholder"
+          className="dropdown-editor__item-placeholder"
           placeholder={placeholder}
           readOnly
           tabIndex={-1}
@@ -216,9 +215,7 @@ export const DropdownEditor = <Item,>({
         iconName={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
         ariaLabel={title}
         size={ButtonIconSize.Md}
-        data-testid={
-          isRpc ? 'test-add-rpc-drop-down' : 'test-explorer-drop-down'
-        }
+        data-testid={buttonDataTestId}
       />
     </Box>
   );
@@ -240,7 +237,7 @@ export const DropdownEditor = <Item,>({
           paddingLeft={0}
           matchWidth={true}
           paddingRight={0}
-          className="networks-tab__item-popover"
+          className="dropdown-editor__item-popover"
           referenceElement={dropdown.current}
           position={PopoverPosition.Bottom}
           isOpen={isDropdownOpen}
@@ -261,5 +258,3 @@ export const DropdownEditor = <Item,>({
     </Box>
   );
 };
-
-export default DropdownEditor;
