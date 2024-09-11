@@ -3,7 +3,6 @@
   "activeTab": "object",
   "appState": "object",
   "bridge": "object",
-  "confirm": "object",
   "confirmAlerts": "object",
   "confirmTransaction": "object",
   "gas": { "customData": { "price": null, "limit": null } },
