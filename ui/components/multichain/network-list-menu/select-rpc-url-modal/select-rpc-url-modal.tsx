@@ -83,14 +83,14 @@ export const SelectRpcUrlModal = ({
               dispatch(setEditedNetwork());
               dispatch(toggleNetworkMenu());
             }}
-            className={classnames('networks-tab__item', {
-              'networks-tab__item--selected':
+            className={classnames('select-rpc-url__item', {
+              'select-rpc-url__item--selected':
                 index === networkConfiguration.defaultRpcEndpointIndex,
             })}
           >
             {index === networkConfiguration.defaultRpcEndpointIndex && (
               <Box
-                className="networks-tab__item-selected-pill"
+                className="select-rpc-url__item-selected-pill"
                 borderRadius={BorderRadius.pill}
                 backgroundColor={BackgroundColor.primaryDefault}
               />
