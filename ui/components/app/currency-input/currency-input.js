@@ -53,7 +53,7 @@ export default function CurrencyInput({
   isSkeleton,
   isMatchingUpstream,
 }) {
-  const assetDecimals = Number(asset?.decimals) || NATIVE_CURRENCY_DECIMALS;
+  const assetDecimals = Number(asset?.decimals) ?? NATIVE_CURRENCY_DECIMALS;
 
   const preferredCurrency = useSelector(getNativeCurrency);
   const secondaryCurrency = useSelector(getCurrentCurrency);
