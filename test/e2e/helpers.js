@@ -16,6 +16,7 @@ const { PAGES } = require('./webdriver/driver');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
+const { setManifestFlags } = require('./set-manifest-flags');
 const {
   ERC_4337_ACCOUNT,
   DEFAULT_GANACHE_ETH_BALANCE_DEC,
@@ -48,6 +49,7 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
  * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
  * @property {Bundler} bundlerServer - The bundler server.
  * @property {mockttp.Mockttp} mockServer - The mock server.
+ * @property {object} manifestFlags - Flags to add to the manifest in order to change things at runtime.
  */
 
 /**
@@ -75,6 +77,7 @@ async function withFixtures(options, testSuite) {
     useBundler,
     usePaymaster,
     ethConversionInUsd,
+    manifestFlags,
   } = options;
 
   const fixtureServer = new FixtureServer();
@@ -178,6 +181,8 @@ async function withFixtures(options, testSuite) {
       );
     }
     await mockServer.start(8000);
+
+    setManifestFlags(manifestFlags);
 
     driver = (await buildWebDriver(driverOptions)).driver;
     webDriver = driver.driver;
