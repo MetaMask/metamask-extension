@@ -28,6 +28,10 @@
 
   &__panel {
     gap: 8px;
+
+    .mm-icon--size-inherit {
+      top: 0;
+    }
   }
 
   &__text {
