@@ -87,6 +87,7 @@ describe('Wallet Created Events @no-mmi', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'fullscreen',
+          is_profile_syncing_enabled: null,
         });
       },
     );

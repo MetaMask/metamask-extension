@@ -6,10 +6,11 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
     class="confirmation-page"
   >
     <div
-      class="confirmation-page__content"
+      class="mm-box confirmation-page__content mm-box--padding-0"
+      style="margin-top: 0px; overflow-y: auto;"
     >
       <div
-        class="box box--margin-top-2 box--flex-direction-row box--justify-content-center box--display-flex"
+        class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--justify-content-center"
       >
         <div
           class="mm-box mm-picker-network network-display mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-border-muted mm-box--border-width-0 box--border-style-solid box--border-width-1"
@@ -17,12 +18,14 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
           <div
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
           >
-            ?
+            T
           </div>
           <span
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
             data-testid="network-display"
-          />
+          >
+            Test initial state
+          </span>
           <span
             class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-none mm-box--color-icon-default"
             style="mask-image: url('./images/icons/arrow-down.svg');"
@@ -120,10 +123,11 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
     class="confirmation-page"
   >
     <div
-      class="confirmation-page__content"
+      class="mm-box confirmation-page__content mm-box--padding-0"
+      style="margin-top: 0px; overflow-y: auto;"
     >
       <div
-        class="box box--margin-top-2 box--flex-direction-row box--justify-content-center box--display-flex"
+        class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--justify-content-center"
       >
         <div
           class="mm-box mm-picker-network network-display mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-border-muted mm-box--border-width-0 box--border-style-solid box--border-width-1"
@@ -131,12 +135,14 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
           <div
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
           >
-            ?
+            T
           </div>
           <span
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
             data-testid="network-display"
-          />
+          >
+            Test initial state
+          </span>
           <span
             class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-none mm-box--color-icon-default"
             style="mask-image: url('./images/icons/arrow-down.svg');"

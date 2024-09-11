@@ -23,7 +23,9 @@
 @import 'snaps/snap-ui-renderer/index';
 @import 'snaps/snap-ui-markdown/index';
 @import 'snaps/snap-ui-button/index';
+@import 'snaps/snap-ui-input/index';
 @import 'snaps/snap-ui-file-input/index';
+@import 'snaps/snap-ui-selector/index';
 @import 'snaps/snap-delineator/index';
 @import 'snaps/snap-home-menu/index';
 @import 'snaps/snap-list-item/index';
@@ -32,6 +34,8 @@
 @import 'snaps/show-more/index';
 @import 'snaps/insight-warnings/index';
 @import 'snaps/snap-authorship-header/index';
+@import 'snaps/snap-authorship-pill/index';
+@import 'snaps/snap-footer-button/index';
 @import 'hold-to-reveal-button/index';
 @import 'home-notification/index';
 @import 'info-box/index';
@@ -47,7 +51,6 @@
 @import 'recovery-phrase-reminder/index';
 @import 'step-progress-bar/index.scss';
 @import 'selected-account/index';
-@import 'assets/auto-detect-token/index';
 @import 'smart-transactions/index';
 @import 'srp-input/srp-input';
 @import 'snaps/snap-privacy-warning/index';

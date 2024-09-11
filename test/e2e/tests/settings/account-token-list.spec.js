@@ -57,6 +57,16 @@ describe('Settings', function () {
           tag: 'div',
         });
         await driver.clickElement({ text: 'Fiat', tag: 'label' });
+        // We now need to enable "Show fiat on testnet" if we are using testnets (and since our custom
+        // network during test is using a testnet chain ID, it will be considered as a test network)
+        await driver.clickElement({
+          text: 'Advanced',
+          tag: 'div',
+        });
+        await driver.clickElement('.show-fiat-on-testnets-toggle');
+        // Looks like when enabling the "Show fiat on testnet" it takes some time to re-update the
+        // overview screen, so just wait a bit here:
+        await driver.delay(1000);
 
         await driver.clickElement(
           '.settings-page__header__title-container__close-button',
@@ -68,7 +78,7 @@ describe('Settings', function () {
         const tokenListAmount = await driver.findElement(
           '.eth-overview__primary-container',
         );
-        assert.equal(await tokenListAmount.getText(), '25\nETH');
+        assert.equal(await tokenListAmount.getText(), '$42,500.00\nUSD');
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountTokenValue = await driver.waitForSelector(
           '.multichain-account-list-item .multichain-account-list-item__asset',

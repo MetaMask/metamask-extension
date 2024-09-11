@@ -17,6 +17,7 @@ export default class ExtensionStore {
     // data persistence errors to sentry
     this.dataPersistenceFailing = false;
     this.mostRecentRetrievedState = null;
+    this.isExtensionInitialized = false;
   }
 
   setMetadata(initMetaData) {
@@ -51,6 +52,8 @@ export default class ExtensionStore {
         captureException(err);
       }
       log.error('error setting state in local store:', err);
+    } finally {
+      this.isExtensionInitialized = true;
     }
   }
 
@@ -63,6 +66,7 @@ export default class ExtensionStore {
     if (!this.isSupported) {
       return undefined;
     }
+
     const result = await this._get();
     // extension.storage.local always returns an obj
     // if the object is empty, treat it as undefined
@@ -70,7 +74,9 @@ export default class ExtensionStore {
       this.mostRecentRetrievedState = null;
       return undefined;
     }
-    this.mostRecentRetrievedState = result;
+    if (!this.isExtensionInitialized) {
+      this.mostRecentRetrievedState = result;
+    }
     return result;
   }
 
@@ -113,6 +119,12 @@ export default class ExtensionStore {
         }
       });
     });
+  }
+
+  cleanUpMostRecentRetrievedState() {
+    if (this.mostRecentRetrievedState) {
+      this.mostRecentRetrievedState = null;
+    }
   }
 }
 

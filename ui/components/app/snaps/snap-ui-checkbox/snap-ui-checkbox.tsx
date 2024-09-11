@@ -1,6 +1,7 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import {
+  BorderColor,
   Display,
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
@@ -33,7 +34,7 @@ export const SnapUICheckbox: FunctionComponent<SnapUICheckboxProps> = ({
 }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
-  const initialValue = getValue<boolean>(name, form);
+  const initialValue = getValue(name, form) as boolean;
 
   const [value, setValue] = useState(initialValue ?? false);
 
@@ -68,6 +69,9 @@ export const SnapUICheckbox: FunctionComponent<SnapUICheckboxProps> = ({
           onChange={handleChange}
           isChecked={value}
           label={label}
+          inputProps={{
+            borderColor: BorderColor.borderMuted,
+          }}
           {...props}
         />
       )}

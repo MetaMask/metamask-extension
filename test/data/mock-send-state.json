@@ -64,9 +64,6 @@
   "metamask": {
     "ipfsGateway": "",
     "dismissSeedBackUpReminder": false,
-    "disabledRpcMethodPreferences": {
-      "eth_sign": false
-    },
     "usePhishDetect": true,
     "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",
@@ -147,17 +144,17 @@
       "0x539": true
     },
     "showTestnetMessageInDropdown": true,
-    "networkConfigurations": {},
+    "networkConfigurations": {
+      "goerli": {
+        "id": "goerli",
+        "chainId": "0x5"
+      }
+    },
     "alertEnabledness": {
       "unconnectedAccount": true
     },
     "featureFlags": {},
     "network": "5",
-    "providerConfig": {
-      "type": "rpc",
-      "chainId": "0x5",
-      "ticker": "ETH"
-    },
     "internalAccounts": {
       "accounts": {
         "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3": {
@@ -173,7 +170,6 @@
           "methods": [
             "personal_sign",
             "eth_sendTransaction",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v2",
@@ -195,7 +191,6 @@
           "methods": [
             "personal_sign",
             "eth_sendTransaction",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v2",
@@ -217,7 +212,6 @@
           "methods": [
             "personal_sign",
             "eth_sendTransaction",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v2",
@@ -239,7 +233,6 @@
           "methods": [
             "personal_sign",
             "eth_sendTransaction",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v2",
@@ -393,8 +386,6 @@
         }
       }
     },
-    "unapprovedMsgs": {},
-    "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgs": {},
     "unapprovedPersonalMsgCount": 0,
     "unapprovedDecryptMsgs": {},

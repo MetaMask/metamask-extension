@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { ButtonVariant } from '@metamask/snaps-sdk';
 
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';
@@ -36,6 +36,7 @@ import useAlerts from '../../../../hooks/useAlerts';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { useAlertActionHandler } from '../contexts/alertActionHandler';
 import { AlertProvider } from '../alert-provider';
+import { useAlertMetrics } from '../contexts/alertMetricsContext';
 
 export type AlertModalProps = {
   /**
@@ -165,13 +166,18 @@ function AlertDetails({
     >
       {customDetails ?? (
         <Box>
-          <Text variant={TextVariant.bodyMd}>{selectedAlert.message}</Text>
+          <Text
+            variant={TextVariant.bodyMd}
+            data-testid="alert-modal__selected-alert"
+          >
+            {selectedAlert.message}
+          </Text>
           {selectedAlert.alertDetails?.length ? (
             <Text variant={TextVariant.bodyMdBold} marginTop={1}>
               {t('alertModalDetails')}
             </Text>
           ) : null}
-          <Box as="ul" className={'alert-modal__alert-details'} paddingLeft={6}>
+          <Box as="ul" className="alert-modal__alert-details" paddingLeft={6}>
             {selectedAlert.alertDetails?.map((detail, index) => (
               <Box as="li" key={`${selectedAlert.key}-detail-${index}`}>
                 <Text variant={TextVariant.bodyMd}>{detail}</Text>
@@ -213,11 +219,11 @@ export function AcknowledgeCheckboxBase({
     >
       <Checkbox
         label={label ?? t('alertModalAcknowledge')}
-        data-testid={'alert-modal-acknowledge-checkbox'}
+        data-testid="alert-modal-acknowledge-checkbox"
         isChecked={isConfirmed}
         onChange={onCheckboxClick}
         alignItems={AlignItems.flexStart}
-        className={'alert-modal__acknowledge-checkbox'}
+        className="alert-modal__acknowledge-checkbox"
       />
     </Box>
   );
@@ -257,29 +263,35 @@ function AcknowledgeButton({
 function ActionButton({
   action,
   onClose,
+  alertKey,
 }: {
   action?: { key: string; label: string };
   onClose: (request: { recursive?: boolean } | void) => void;
+  alertKey: string;
 }) {
   const { processAction } = useAlertActionHandler();
+  const { trackAlertActionClicked } = useAlertMetrics();
 
   const handleClick = useCallback(() => {
     if (!action) {
       return;
     }
+    trackAlertActionClicked(alertKey);
 
     processAction(action.key);
     onClose({ recursive: true });
-  }, [action, onClose, processAction]);
+  }, [action, onClose, processAction, trackAlertActionClicked, alertKey]);
 
   if (!action) {
     return null;
   }
 
   const { key, label } = action;
+  const dataTestId = `alert-modal-action-${key}`;
 
   return (
     <Button
+      data-testid={dataTestId}
       key={key}
       variant={ButtonVariant.Primary}
       width={BlockSize.Full}
@@ -304,6 +316,7 @@ export function AlertModal({
   enableProvider = true,
 }: AlertModalProps) {
   const { isAlertConfirmed, setAlertConfirmed, alerts } = useAlerts(ownerId);
+  const { trackAlertRender } = useAlertMetrics();
 
   const handleClose = useCallback(
     (...args) => {
@@ -314,6 +327,12 @@ export function AlertModal({
 
   const selectedAlert = alerts.find((alert: Alert) => alert.key === alertKey);
 
+  useEffect(() => {
+    if (selectedAlert) {
+      trackAlertRender(selectedAlert.key);
+    }
+  }, [selectedAlert, trackAlertRender]);
+
   if (!selectedAlert) {
     return null;
   }
@@ -322,10 +341,10 @@ export function AlertModal({
 
   const handleCheckboxClick = useCallback(() => {
     return setAlertConfirmed(selectedAlert.key, !isConfirmed);
-  }, [isConfirmed, selectedAlert.key]);
+  }, [isConfirmed, selectedAlert.key, setAlertConfirmed]);
 
   return (
-    <Modal isOpen onClose={handleClose}>
+    <Modal isOpen onClose={handleClose} data-testid="alert-modal">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader
@@ -333,6 +352,9 @@ export function AlertModal({
           startAccessory={headerStartAccessory}
           paddingBottom={0}
           display={headerStartAccessory ? Display.InlineFlex : Display.Block}
+          closeButtonProps={{
+            'data-testid': 'alert-modal-close-button',
+          }}
         />
         <AlertHeader selectedAlert={selectedAlert} customTitle={customTitle} />
         <ModalBody>
@@ -380,6 +402,7 @@ export function AlertModal({
                       key={action.key}
                       action={action}
                       onClose={handleClose}
+                      alertKey={selectedAlert.key}
                     />
                   ),
                 )}

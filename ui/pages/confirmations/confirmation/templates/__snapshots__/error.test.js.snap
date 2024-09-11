@@ -6,7 +6,8 @@ exports[`error template matches the snapshot 1`] = `
     class="confirmation-page"
   >
     <div
-      class="confirmation-page__content"
+      class="mm-box confirmation-page__content mm-box--padding-0"
+      style="margin-top: 0px; overflow-y: auto;"
     >
       <h2
         class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h2 typography--weight-normal typography--style-normal typography--color-text-default"

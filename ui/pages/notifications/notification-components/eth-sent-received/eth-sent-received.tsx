@@ -1,6 +1,6 @@
 import React from 'react';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { t } from '../../../../../app/scripts/translate';
-import { TRIGGER_TYPES } from '../../../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import type { NotificationComponent } from '../types/notifications/notifications';
@@ -35,8 +35,11 @@ import {
   IconName,
 } from '../../../../components/component-library';
 
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
+
 type ETHNotification = ExtractedNotification<
-  TRIGGER_TYPES.ETH_RECEIVED | TRIGGER_TYPES.ETH_SENT
+  | NotificationServicesController.Constants.TRIGGER_TYPES.ETH_RECEIVED
+  | NotificationServicesController.Constants.TRIGGER_TYPES.ETH_SENT
 >;
 const isETHNotification = isOfTypeNodeGuard([
   TRIGGER_TYPES.ETH_RECEIVED,
@@ -143,6 +146,7 @@ export const components: NotificationComponent<ETHNotification> = {
           detail={t('notificationItemConfirmed') || ''}
           action={
             <NotificationDetailCopyButton
+              notification={notification}
               text={notification.tx_hash}
               displayText={t('notificationItemTransactionId') || ''}
             />

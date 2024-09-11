@@ -6,18 +6,21 @@ exports[`<GasFeesSection /> renders component for gas fees section 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="gas-fee-section"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      data-testid="edit-gas-fees-row"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
         >
-          Estimated fee
+          Network fee
         </p>
         <div>
           <div
@@ -46,6 +49,7 @@ exports[`<GasFeesSection /> renders component for gas fees section 1`] = `
         </p>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
+          data-testid="native-currency"
         >
           $2.20
         </p>
@@ -66,10 +70,12 @@ exports[`<GasFeesSection /> renders component for gas fees section 1`] = `
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      data-testid="gas-fee-details-speed"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-info-default"
+        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -84,12 +90,12 @@ exports[`<GasFeesSection /> renders component for gas fees section 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
         >
           <p
-            class="mm-box mm-text mm-text--body-sm mm-box--padding-inline-end-1 mm-box--color-text-muted"
+            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-1 mm-box--color-text-alternative"
           >
             🦊 Market
           </p>
           <p
-            class="mm-box mm-text mm-text--body-sm mm-box--color-success-default"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
             <span
               data-testid="gas-timing-time"

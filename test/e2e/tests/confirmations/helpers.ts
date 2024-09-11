@@ -1,10 +1,10 @@
 import FixtureBuilder from '../../fixture-builder';
 import { defaultGanacheOptions, withFixtures } from '../../helpers';
-import { Mockttp } from '../../mock-e2e';
+import { MockedEndpoint, Mockttp } from '../../mock-e2e';
 import { Driver } from '../../webdriver/driver';
 
 export async function scrollAndConfirmAndAssertConfirm(driver: Driver) {
-  await driver.clickElement('.confirm-scroll-to-bottom__button');
+  await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
   await driver.clickElement('[data-testid="confirm-footer-button"]');
 }
 
@@ -15,6 +15,7 @@ export function withRedesignConfirmationFixtures(
   // eslint-disable-next-line @typescript-eslint/default-param-last
   title: string = '',
   testFunction: Parameters<typeof withFixtures>[1],
+  mockSegment?: (mockServer: Mockttp) => Promise<MockedEndpoint[]>, // Add mockSegment as an optional parameter
 ) {
   return withFixtures(
     {
@@ -42,7 +43,7 @@ export function withRedesignConfirmationFixtures(
   );
 }
 
-async function mockSegment(mockServer: Mockttp) {
+export async function mockSignatureApproved(mockServer: Mockttp) {
   return [
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
@@ -67,7 +68,22 @@ async function mockSegment(mockServer: Mockttp) {
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Signature Rejected' }],
+        batch: [{ type: 'track', event: 'Account Details Opened' }],
+      })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+        };
+      }),
+  ];
+}
+
+export async function mockSignatureRejected(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forPost('https://api.segment.io/v1/batch')
+      .withJsonBodyIncluding({
+        batch: [{ type: 'track', event: 'Signature Requested' }],
       })
       .thenCallback(() => {
         return {
@@ -77,7 +93,7 @@ async function mockSegment(mockServer: Mockttp) {
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Account Details Opened' }],
+        batch: [{ type: 'track', event: 'Signature Rejected' }],
       })
       .thenCallback(() => {
         return {

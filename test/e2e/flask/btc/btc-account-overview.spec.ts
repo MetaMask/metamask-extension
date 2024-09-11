@@ -1,29 +1,11 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import {
-  withFixtures,
-  defaultGanacheOptions,
-  unlockWallet,
-} from '../../helpers';
-import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
-import { createBtcAccount } from '../../accounts/common';
+import { withBtcAccountSnap } from './common-btc';
 
 describe('BTC Account - Overview', function (this: Suite) {
   it('has portfolio button enabled for BTC accounts', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerAndFeatureFlag({
-            bitcoinSupportEnabled: true,
-          })
-          .build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await createBtcAccount(driver);
+    await withBtcAccountSnap(
+      { title: this.test?.fullTitle() },
+      async (driver) => {
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
           text: 'Bitcoin Account',
@@ -47,17 +29,13 @@ describe('BTC Account - Overview', function (this: Suite) {
           css: '[disabled]',
         });
 
-        const buySellButton = await driver.waitForSelector(
-          '[data-testid="coin-overview-buy"]',
-        );
-        // Ramps now support buyable chains dynamically (https://github.com/MetaMask/metamask-extension/pull/24041), for now it's
-        // disabled for Bitcoin
-        assert.equal(await buySellButton.isEnabled(), false);
+        // buy sell button
+        await driver.findClickableElement('[data-testid="coin-overview-buy"]');
 
-        const portfolioButton = await driver.waitForSelector(
-          '[data-testid="coin-overview-portfolio"]',
+        // receive button
+        await driver.findClickableElement(
+          '[data-testid="coin-overview-receive"]',
         );
-        assert.equal(await portfolioButton.isEnabled(), true);
       },
     );
   });

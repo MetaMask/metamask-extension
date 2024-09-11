@@ -51,11 +51,6 @@ jobs:
     outputs:
       COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
     steps:
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-      - run: corepack enable
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Checkout pull request
@@ -63,13 +58,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
-      - name: Install Yarn dependencies
-        run: yarn --immutable
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
       - name: Get commit SHA
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
@@ -80,11 +70,6 @@ jobs:
     needs:
       - prepare
     steps:
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-      - run: corepack enable
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Checkout pull request
@@ -92,17 +77,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
-      - name: Install dependencies from cache
-        run: yarn --immutable --immutable-cache
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
       - name: Update LavaMoat build policy
         run: yarn lavamoat:build:auto
       - name: Cache build policy
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: lavamoat/build-system
           key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -119,11 +99,6 @@ jobs:
       - prepare
       - update-lavamoat-build-policy
     steps:
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-      - run: corepack enable
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Checkout pull request
@@ -131,15 +106,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
-      - name: Install dependencies from cache
-        run: yarn --immutable --immutable-cache
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
       - name: Restore build policy
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: lavamoat/build-system
           key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -149,7 +119,7 @@ jobs:
         env:
           INFURA_PROJECT_ID: 00000000000
       - name: Cache ${{ matrix.build-type }} application policy
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: lavamoat/browserify/${{ matrix.build-type }}
           key: cache-${{ matrix.build-type }}-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -179,7 +149,7 @@ jobs:
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
       - name: Restore build policy
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: lavamoat/build-system
           key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -188,25 +158,25 @@ jobs:
       # Ensure this is synchronized with the list above in the "update-lavamoat-webapp-policy" job
       # and with the build type list in `builds.yml`
       - name: Restore main application policy
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: lavamoat/browserify/main
           key: cache-main-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
       - name: Restore beta application policy
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: lavamoat/browserify/beta
           key: cache-beta-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
       - name: Restore flask application policy
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: lavamoat/browserify/flask
           key: cache-flask-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
       - name: Restore mmi application policy
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: lavamoat/browserify/mmi
           key: cache-mmi-${{ needs.prepare.outputs.COMMIT_SHA }}

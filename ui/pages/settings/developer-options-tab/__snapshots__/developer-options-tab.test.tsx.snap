@@ -38,6 +38,7 @@ exports[`Develop options tab should match snapshot 1`] = `
         >
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            data-theme="light"
           >
             Reset
           </button>
@@ -78,6 +79,7 @@ exports[`Develop options tab should match snapshot 1`] = `
         >
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            data-theme="light"
           >
             Reset
           </button>
@@ -305,6 +307,144 @@ exports[`Develop options tab should match snapshot 1`] = `
               </span>
             </div>
           </label>
+        </div>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text settings-page__security-tab-sub-header__bold mm-text--body-md mm-box--color-text-default"
+    >
+      Sentry
+    </p>
+    <div
+      class="settings-page__content-padded"
+    >
+      <div
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      >
+        <div
+          class="settings-page__content-item"
+        >
+          <div
+            class="settings-page__content-description"
+          >
+            <span>
+              Generate an unhandled 
+              <b>
+                TestError
+              </b>
+               in this window.
+            </span>
+          </div>
+        </div>
+        <div
+          class="settings-page__content-item-col"
+        >
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            data-theme="light"
+          >
+            Generate UI Error
+          </button>
+        </div>
+        <div
+          class="settings-page__content-item-col"
+        >
+          <div
+            class="mm-box mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--align-items-center"
+            style="height: 40px; width: 40px;"
+          >
+            <span
+              class="mm-box settings-page-developer-options__icon-check mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-success-default"
+              hidden=""
+              style="mask-image: url('./images/icons/check.svg');"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      >
+        <div
+          class="settings-page__content-item"
+        >
+          <div
+            class="settings-page__content-description"
+          >
+            <span>
+              Generate an unhandled 
+              <b>
+                TestError
+              </b>
+               in the service worker.
+            </span>
+          </div>
+        </div>
+        <div
+          class="settings-page__content-item-col"
+        >
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            data-theme="light"
+          >
+            Generate Background Error
+          </button>
+        </div>
+        <div
+          class="settings-page__content-item-col"
+        >
+          <div
+            class="mm-box mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--align-items-center"
+            style="height: 40px; width: 40px;"
+          >
+            <span
+              class="mm-box settings-page-developer-options__icon-check mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-success-default"
+              hidden=""
+              style="mask-image: url('./images/icons/check.svg');"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      >
+        <div
+          class="settings-page__content-item"
+        >
+          <div
+            class="settings-page__content-description"
+          >
+            <span>
+              Generate a 
+              <b>
+                Developer Test
+              </b>
+               Sentry trace.
+            </span>
+          </div>
+        </div>
+        <div
+          class="settings-page__content-item-col"
+        >
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            data-theme="light"
+          >
+            Generate Trace
+          </button>
+        </div>
+        <div
+          class="settings-page__content-item-col"
+        >
+          <div
+            class="mm-box mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--align-items-center"
+            style="height: 40px; width: 40px;"
+          >
+            <span
+              class="mm-box settings-page-developer-options__icon-check mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-success-default"
+              hidden=""
+              style="mask-image: url('./images/icons/check.svg');"
+            />
+          </div>
         </div>
       </div>
     </div>

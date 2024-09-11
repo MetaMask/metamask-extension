@@ -3,6 +3,7 @@ import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
+import { QueueType } from '../../../../../../shared/constants/metametrics';
 import {
   Box,
   Button,
@@ -29,19 +30,20 @@ import {
   SIGNATURE_REQUEST_PATH,
 } from '../../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  currentConfirmationSelector,
-  pendingConfirmationsSortedSelector,
-} from '../../../../../selectors';
+import { pendingConfirmationsSortedSelector } from '../../../../../selectors';
 import { rejectPendingApproval } from '../../../../../store/actions';
+import { useQueuedConfirmationsEvent } from '../../../hooks/useQueuedConfirmationEvents';
 import { isSignatureApprovalRequest } from '../../../utils';
+import { useConfirmContext } from '../../../context/confirm';
 
 const Nav = () => {
   const history = useHistory();
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
-  const pendingConfirmations = useSelector(pendingConfirmationsSortedSelector);
   const dispatch = useDispatch();
+
+  const { currentConfirmation } = useConfirmContext();
+
+  const pendingConfirmations = useSelector(pendingConfirmationsSortedSelector);
 
   const currentConfirmationPosition = useMemo(() => {
     if (pendingConfirmations?.length <= 0 || !currentConfirmation) {
@@ -81,6 +83,8 @@ const Nav = () => {
       );
     });
   }, [pendingConfirmations]);
+
+  useQueuedConfirmationsEvent(QueueType.NavigationHeader);
 
   if (pendingConfirmations.length <= 1) {
     return null;

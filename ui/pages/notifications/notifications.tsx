@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   IconName,
@@ -16,19 +17,14 @@ import {
 import { NotificationsPage } from '../../components/multichain';
 import { Content, Header } from '../../components/multichain/pages/page';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
-import { useCounter } from '../../hooks/metamask-notifications/useCounter';
+import { useUnreadNotificationsCounter } from '../../hooks/metamask-notifications/useCounter';
 import { getNotifications, getNotifySnaps } from '../../selectors';
 import {
   selectIsFeatureAnnouncementsEnabled,
   selectIsMetamaskNotificationsEnabled,
   getMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import type { Notification } from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import { deleteExpiredNotifications } from '../../store/actions';
-import {
-  TRIGGER_TYPES,
-  TRIGGER_TYPES_WALLET_SET,
-} from '../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
 import {
   AlignItems,
   Display,
@@ -38,6 +34,11 @@ import { NotificationsList } from './notifications-list';
 import { processSnapNotifications } from './snap/utils/utils';
 import { SnapNotification } from './snap/types/types';
 import { NewFeatureTag } from './NewFeatureTag';
+
+type Notification = NotificationServicesController.Types.INotification;
+
+const { TRIGGER_TYPES, TRIGGER_TYPES_WALLET_SET } =
+  NotificationServicesController.Constants;
 
 export type NotificationType = Notification | SnapNotification;
 
@@ -166,7 +167,7 @@ export default function Notifications() {
 
   const [activeTab, setActiveTab] = useState<TAB_KEYS>(TAB_KEYS.ALL);
   const combinedNotifications = useCombinedNotifications();
-  const { notificationsCount } = useCounter();
+  const { notificationsUnreadCount } = useUnreadNotificationsCounter();
   const filteredNotifications = useMemo(
     () => filterNotifications(activeTab, combinedNotifications),
     [activeTab, combinedNotifications],
@@ -250,7 +251,7 @@ export default function Notifications() {
           notifications={filteredNotifications}
           isLoading={isLoading}
           isError={Boolean(error)}
-          notificationsCount={notificationsCount}
+          notificationsCount={notificationsUnreadCount}
         />
       </Content>
     </NotificationsPage>

@@ -7,24 +7,36 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
     data-testid="onboarding-metametrics"
   >
     <h2
-      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h2 typography--weight-bold typography--style-normal typography--align-center typography--color-text-default"
+      class="mm-box mm-text mm-text--heading-lg mm-text--font-weight-bold mm-text--text-align-center mm-box--color-text-default"
     >
       Help us improve MetaMask
     </h2>
     <p
-      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography onboarding-metametrics__desc typography--p typography--weight-normal typography--style-normal typography--align-left typography--color-text-default"
+      class="mm-box mm-text onboarding-metametrics__desc mm-text--body-md mm-text--text-align-left mm-box--color-text-default"
     >
       We’d like to gather basic usage and diagnostics data to improve MetaMask. Know that we never sell the data you provide here.
     </p>
+    <div
+      class="mm-box mm-box--padding-top-2 mm-box--padding-bottom-2"
+    >
+      <a
+        class="mm-box mm-text mm-text--body-md mm-box--color-primary-default"
+        href="https://support.metamask.io/privacy-and-security/profile-privacy#how-is-the-profile-created"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        Learn how we protect your privacy while collecting usage data for your profile.
+      </a>
+    </div>
     <p
-      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography onboarding-metametrics__desc typography--p typography--weight-normal typography--style-normal typography--align-left typography--color-text-default"
+      class="mm-box mm-text onboarding-metametrics__desc mm-text--body-md mm-text--text-align-left mm-box--color-text-default"
     >
       When we gather metrics, it will always be...
     </p>
     <ul>
       <li>
         <div
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-success-default"
@@ -34,7 +46,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
              
             
             <span
-              class="box box--margin-bottom-1 box--flex-direction-row typography typography--span typography--weight-bold typography--style-normal typography--color-text-default"
+              class="mm-box mm-text mm-text--inherit mm-text--font-weight-bold mm-box--margin-top-0 mm-box--color-text-default"
             >
               Private:
             </span>
@@ -45,7 +57,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
       </li>
       <li>
         <div
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-success-default"
@@ -55,7 +67,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
              
             
             <span
-              class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--span typography--weight-bold typography--style-normal typography--color-text-default"
+              class="mm-box mm-text mm-text--inherit mm-text--font-weight-bold mm-box--color-text-default"
             >
               General:
             </span>
@@ -66,7 +78,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
       </li>
       <li>
         <div
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-success-default"
@@ -76,7 +88,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
              
             
             <span
-              class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--span typography--weight-bold typography--style-normal typography--color-text-default"
+              class="mm-box mm-text mm-text--inherit mm-text--font-weight-bold mm-box--color-text-default"
             >
               Optional:
             </span>
@@ -105,8 +117,8 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
         We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features).
       </span>
     </label>
-    <h6
-      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography onboarding-metametrics__terms typography--h6 typography--weight-normal typography--style-normal typography--align-left typography--color-text-alternative"
+    <p
+      class="mm-box mm-text onboarding-metametrics__terms mm-text--body-sm mm-text--text-align-left mm-box--color-text-alternative"
     >
       <span>
          
@@ -121,21 +133,22 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
          for more information. Remember, you can go to settings and opt out at any time.
          
       </span>
-    </h6>
+    </p>
     <div
-      class="onboarding-metametrics__buttons"
+      class="mm-box onboarding-metametrics__buttons mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
     >
       <button
-        class="button btn--rounded btn-primary btn--large"
-        data-testid="metametrics-i-agree"
-      >
-        I agree
-      </button>
-      <button
-        class="button btn--rounded btn-secondary btn--large"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
         data-testid="metametrics-no-thanks"
       >
         No thanks
+      </button>
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+        data-testid="metametrics-i-agree"
+        data-theme="light"
+      >
+        I agree
       </button>
     </div>
   </div>
@@ -149,24 +162,36 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
     data-testid="onboarding-metametrics"
   >
     <h2
-      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h2 typography--weight-bold typography--style-normal typography--align-center typography--color-text-default"
+      class="mm-box mm-text mm-text--heading-lg mm-text--font-weight-bold mm-text--text-align-center mm-box--color-text-default"
     >
       Help us improve MetaMask
     </h2>
     <p
-      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography onboarding-metametrics__desc typography--p typography--weight-normal typography--style-normal typography--align-left typography--color-text-default"
+      class="mm-box mm-text onboarding-metametrics__desc mm-text--body-md mm-text--text-align-left mm-box--color-text-default"
     >
       We’d like to gather basic usage and diagnostics data to improve MetaMask. Know that we never sell the data you provide here.
     </p>
+    <div
+      class="mm-box mm-box--padding-top-2 mm-box--padding-bottom-2"
+    >
+      <a
+        class="mm-box mm-text mm-text--body-md mm-box--color-primary-default"
+        href="https://support.metamask.io/privacy-and-security/profile-privacy#how-is-the-profile-created"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        Learn how we protect your privacy while collecting usage data for your profile.
+      </a>
+    </div>
     <p
-      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography onboarding-metametrics__desc typography--p typography--weight-normal typography--style-normal typography--align-left typography--color-text-default"
+      class="mm-box mm-text onboarding-metametrics__desc mm-text--body-md mm-text--text-align-left mm-box--color-text-default"
     >
       When we gather metrics, it will always be...
     </p>
     <ul>
       <li>
         <div
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-success-default"
@@ -176,7 +201,7 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
              
             
             <span
-              class="box box--margin-bottom-1 box--flex-direction-row typography typography--span typography--weight-bold typography--style-normal typography--color-text-default"
+              class="mm-box mm-text mm-text--inherit mm-text--font-weight-bold mm-box--margin-top-0 mm-box--color-text-default"
             >
               Private:
             </span>
@@ -187,7 +212,7 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
       </li>
       <li>
         <div
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-success-default"
@@ -197,7 +222,7 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
              
             
             <span
-              class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--span typography--weight-bold typography--style-normal typography--color-text-default"
+              class="mm-box mm-text mm-text--inherit mm-text--font-weight-bold mm-box--color-text-default"
             >
               General:
             </span>
@@ -208,7 +233,7 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
       </li>
       <li>
         <div
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-success-default"
@@ -218,7 +243,7 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
              
             
             <span
-              class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--span typography--weight-bold typography--style-normal typography--color-text-default"
+              class="mm-box mm-text mm-text--inherit mm-text--font-weight-bold mm-box--color-text-default"
             >
               Optional:
             </span>
@@ -247,8 +272,8 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
         We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features).
       </span>
     </label>
-    <h6
-      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography onboarding-metametrics__terms typography--h6 typography--weight-normal typography--style-normal typography--align-left typography--color-text-alternative"
+    <p
+      class="mm-box mm-text onboarding-metametrics__terms mm-text--body-sm mm-text--text-align-left mm-box--color-text-alternative"
     >
       <span>
          
@@ -263,21 +288,22 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
          for more information. Remember, you can go to settings and opt out at any time.
          
       </span>
-    </h6>
+    </p>
     <div
-      class="onboarding-metametrics__buttons"
+      class="mm-box onboarding-metametrics__buttons mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
     >
       <button
-        class="button btn--rounded btn-primary btn--large"
-        data-testid="metametrics-i-agree"
-      >
-        I agree
-      </button>
-      <button
-        class="button btn--rounded btn-secondary btn--large"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
         data-testid="metametrics-no-thanks"
       >
         No thanks
+      </button>
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+        data-testid="metametrics-i-agree"
+        data-theme="light"
+      >
+        I agree
       </button>
     </div>
   </div>

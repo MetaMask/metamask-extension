@@ -1,15 +1,15 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { currentConfirmationSelector } from '../../../../../selectors';
 import { SignatureRequestType } from '../../../types/confirm';
-import ContractInteractionInfo from './contract-interaction/contract-interaction';
+import { useConfirmContext } from '../../../context/confirm';
+import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
 import PersonalSignInfo from './personal-sign/personal-sign';
 import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
 import TypedSignInfo from './typed-sign/typed-sign';
+import ApproveInfo from './approve/approve';
 
 const Info = () => {
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { currentConfirmation } = useConfirmContext();
 
   const ConfirmationInfoComponentMap = useMemo(
     () => ({
@@ -22,7 +22,9 @@ const Info = () => {
         }
         return TypedSignInfo;
       },
-      [TransactionType.contractInteraction]: () => ContractInteractionInfo,
+      [TransactionType.contractInteraction]: () => BaseTransactionInfo,
+      [TransactionType.deployContract]: () => BaseTransactionInfo,
+      [TransactionType.tokenMethodApprove]: () => ApproveInfo,
     }),
     [currentConfirmation],
   );

@@ -231,7 +231,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         class="settings-page__content-item-col"
       >
         <label
-          class="toggle-button toggle-button--off"
+          class="toggle-button toggle-button--off show-fiat-on-testnets-toggle"
           tabindex="0"
         >
           <div
@@ -534,12 +534,12 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         class="settings-page__content-item"
       >
         <span>
-          Back up your data
+          Export your data
         </span>
         <span
           class="settings-page__content-description"
         >
-          You can back up data like your contacts and preferences.
+          You can export data like your contacts and preferences.
         </span>
       </div>
       <div
@@ -550,48 +550,10 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         >
           <button
             class="button btn--rounded btn-secondary btn--large"
-            data-testid="backup-button"
+            data-testid="export-data-button"
           >
-            Back up
+            Download
           </button>
-        </div>
-      </div>
-    </div>
-    <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-column"
-      data-testid="advanced-setting-data-restore"
-    >
-      <div
-        class="settings-page__content-item"
-      >
-        <span>
-          Restore user data
-        </span>
-        <span
-          class="settings-page__content-description"
-        >
-          You can restore data like contacts and preferences from a backup file.
-        </span>
-      </div>
-      <div
-        class="settings-page__content-item"
-      >
-        <div
-          class="settings-page__content-item-col"
-        >
-          <label
-            class="button btn btn--rounded btn-secondary btn--large settings-page__button"
-            for="restore-file"
-          >
-            Restore
-          </label>
-          <input
-            accept=".json"
-            data-testid="restore-file"
-            id="restore-file"
-            style="visibility: hidden;"
-            type="file"
-          />
         </div>
       </div>
     </div>
@@ -656,72 +618,6 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
               class="toggle-button__label-on"
             >
               On
-            </span>
-          </div>
-        </label>
-      </div>
-    </div>
-    <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-column"
-      data-testid="advanced-setting-toggle-ethsign"
-    >
-      <div
-        class="settings-page__content-item"
-      >
-        <span>
-          Eth_sign requests
-        </span>
-        <div
-          class="settings-page__content-description"
-        >
-          If you enable this setting, you might get signature requests that aren’t readable. By signing a message you don't understand, you could be agreeing to give away your funds and NFTs.
-        </div>
-      </div>
-      <div
-        class="settings-page__content-item-col"
-      >
-        <label
-          class="toggle-button toggle-button--off eth-sign-toggle"
-          tabindex="0"
-        >
-          <div
-            style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
-          >
-            <div
-              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(132, 140, 150);"
-            >
-              <div
-                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
-              />
-              <div
-                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
-              />
-            </div>
-            <div
-              style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-            >
-              <div
-                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
-              />
-            </div>
-            <input
-              style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-              type="checkbox"
-              value="false"
-            />
-          </div>
-          <div
-            class="toggle-button__status"
-          >
-            <span
-              class="toggle-button__label-off"
-            >
-              OFF (Recommended)
-            </span>
-            <span
-              class="toggle-button__label-on"
-            >
-              ON (Not recommended)
             </span>
           </div>
         </label>

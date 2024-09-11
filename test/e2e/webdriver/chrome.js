@@ -24,6 +24,7 @@ function getProxyServer(proxyPort) {
 class ChromeDriver {
   static async build({
     openDevToolsForTabs,
+    responsive,
     constrainWindowSize,
     port,
     proxyPort,
@@ -43,7 +44,9 @@ class ChromeDriver {
       args.push(`load-extension=${process.cwd()}/dist/chrome`);
     }
 
-    if (openDevToolsForTabs) {
+    // When "responsive" is enabled, open dev tools to force a smaller viewport
+    // The minimum window width on Chrome is too large, this is how we're forcing the viewport to be smaller
+    if (openDevToolsForTabs || responsive) {
       args.push('--auto-open-devtools-for-tabs');
     }
 
@@ -71,6 +74,9 @@ class ChromeDriver {
     options.setUserPreferences({
       'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
     });
+
+    // Temporarily lock to version 126
+    options.setBrowserVersion('126');
 
     // Allow disabling DoT local testing
     if (process.env.SELENIUM_USE_SYSTEM_DN) {
