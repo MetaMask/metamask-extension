@@ -10,7 +10,6 @@ describe('isBlockedUrl', () => {
     allowedEvents: [],
   });
   const phishingController = new PhishingController({
-    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     messenger: phishingControllerMessenger,
     state: {
       phishingLists: [
