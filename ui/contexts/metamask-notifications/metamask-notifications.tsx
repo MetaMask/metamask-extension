@@ -6,6 +6,7 @@ import { useAccountSyncing } from '../../hooks/metamask-notifications/useProfile
 import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import { getUseExternalServices } from '../../selectors';
+import { getIsUnlocked } from '../../ducks/metamask/metamask';
 
 type Notification = NotificationServicesController.Types.INotification;
 
@@ -36,7 +37,7 @@ export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
     selectIsMetamaskNotificationsEnabled,
   );
   const basicFunctionality = useSelector(getUseExternalServices);
-
+  const isUnlocked = useSelector(getIsUnlocked);
   const { listNotifications, notificationsData, isLoading, error } =
     useListNotifications();
   const { setupAccountSyncingEffect } = useAccountSyncing();
@@ -49,10 +50,15 @@ export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
   setupAccountSyncingEffect();
 
   useEffect(() => {
-    if (basicFunctionality && shouldFetchNotifications) {
+    if (basicFunctionality && shouldFetchNotifications && isUnlocked) {
       listNotifications();
     }
-  }, [shouldFetchNotifications, listNotifications, basicFunctionality]);
+  }, [
+    shouldFetchNotifications,
+    listNotifications,
+    basicFunctionality,
+    isUnlocked,
+  ]);
 
   return (
     <MetamaskNotificationsContext.Provider
