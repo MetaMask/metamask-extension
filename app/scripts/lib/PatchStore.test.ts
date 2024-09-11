@@ -1,4 +1,3 @@
-import { on } from 'events';
 import ComposableObservableStore from './ComposableObservableStore';
 import { PatchStore } from './PatchStore';
 

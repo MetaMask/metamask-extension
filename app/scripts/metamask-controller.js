@@ -5137,13 +5137,15 @@ export default class MetamaskController extends EventEmitter {
    */
   setupControllerConnection(outStream) {
     const patchStore = new PatchStore(this.memStore);
+    let uiReady = false;
 
-    const handleUpdate = (_state) => {
-      if (!isStreamWritable(outStream)) {
+    const handleUpdate = () => {
+      if (!isStreamWritable(outStream) || !uiReady) {
         return;
       }
+
       const patches = patchStore.flushPendingPatches();
-      // send notification to client-side
+
       outStream.write({
         jsonrpc: '2.0',
         method: 'sendUpdate',
@@ -5154,10 +5156,13 @@ export default class MetamaskController extends EventEmitter {
     const api = {
       ...this.getApi(),
       startPatches: () => {
-        this.on('update', handleUpdate);
+        uiReady = true;
+        handleUpdate();
       },
-      getStatePatches: patchStore.flushPendingPatches.bind(patchStore),
+      getStatePatches: () => patchStore.flushPendingPatches(),
     };
+
+    this.on('update', handleUpdate);
 
     // report new active controller connection
     this.activeControllerConnections += 1;

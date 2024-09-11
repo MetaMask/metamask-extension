@@ -3128,8 +3128,6 @@ export function setServiceWorkerKeepAlivePreference(
 export async function forceUpdateMetamaskState(
   dispatch: MetaMaskReduxDispatch,
 ) {
-  log.debug(`background.getState`);
-
   let pendingPatches: Patch[] | undefined;
 
   try {
