@@ -6,8 +6,6 @@ import { sanitizeUIState } from './state-utils';
 
 const log = createProjectLogger('patch-store');
 
-const IGNORE_KEYS = ['snapStates', 'unencryptedSnapStates', 'vault'];
-
 export class PatchStore {
   private id: string;
 
