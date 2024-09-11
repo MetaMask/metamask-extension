@@ -6,7 +6,7 @@ const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { loadBuildTypesConfig } = require('../../development/lib/build-type');
-const { filterE2eChangedFiles } = require('./changedFilesUtil');
+const { filterE2eChangedFiles, checkOnlyMdOrCsvFiles } = require('./changedFilesUtil');
 
 // These tests should only be run on Flask for now.
 const FLASK_ONLY_TESTS = [];
@@ -66,6 +66,14 @@ async function applyQualityGate(fullTestList, changedOrNewTests) {
 async function runningOnCircleCI(testPaths) {
   const changedOrNewTests = await filterE2eChangedFiles();
   console.log('Changed or new test list:', changedOrNewTests);
+
+  const hasOnlyMdOrCsvChanges = await checkOnlyMdOrCsvFiles();
+  if (hasOnlyMdOrCsvChanges) {
+    console.log(
+      'run-all.js info: Skipping test runs because run only has changes for MD or CSV files'
+    )
+    return {fullTestList: []};
+  }
 
   const fullTestList = await applyQualityGate(
     testPaths.join('\n'),

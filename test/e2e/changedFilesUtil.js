@@ -41,4 +41,17 @@ async function filterE2eChangedFiles() {
   return e2eChangedFiles;
 }
 
-module.exports = { filterE2eChangedFiles, readChangedFiles };
+/**
+ * Checks if all changed files have either .md or .csv extensions.
+ *
+ * @returns {Promise<boolean>} True if all changed files have .md or .csv extensions, otherwise false.
+ */
+async function checkOnlyMdOrCsvFiles() {
+  const changedFiles = await readChangedFiles();
+  const allMdOrCsvFiles = changedFiles.every(
+    (file) => file.endsWith('.md') || file.endsWith('.csv')
+  );
+  return allMdOrCsvFiles;
+}
+
+module.exports = { filterE2eChangedFiles, readChangedFiles, checkOnlyMdOrCsvFiles };
