@@ -1,4 +1,5 @@
 import { Hex, JsonRpcRequest } from '@metamask/utils';
+import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { SecurityAlertResponse } from './types';
 
 const ENDPOINT_VALIDATE = 'validate';
@@ -14,6 +15,12 @@ export type SecurityAlertsAPIRequest = Omit<
   'method' | 'params'
 > &
   SecurityAlertsAPIRequestBody;
+
+type RequestOptions = {
+  useCache?: boolean;
+  functionName?: string;
+  cacheOptions?: Record<string, unknown>;
+};
 
 export function isSecurityAlertsAPIEnabled() {
   const isEnabled = process.env.SECURITY_ALERTS_API_ENABLED;
@@ -37,13 +44,37 @@ export async function validateWithSecurityAlertsAPI(
 }
 
 export async function getSecurityAlertsAPISupportedChainIds(): Promise<Hex[]> {
-  return request(ENDPOINT_SUPPORTED_CHAINS);
+  return request(
+    ENDPOINT_SUPPORTED_CHAINS,
+    { method: 'GET' },
+    {
+      useCache: true,
+      functionName: 'getSecurityAlertsAPISupportedChainIds',
+      cacheOptions: { cacheRefreshTime: 60000 },
+    },
+  );
 }
 
-async function request(endpoint: string, options?: RequestInit) {
+async function request(
+  endpoint: string,
+  options?: RequestInit,
+  requestOptions?: RequestOptions,
+) {
+  const {
+    useCache = false,
+    functionName = 'SecurityAlertsAPI',
+    cacheOptions,
+  } = requestOptions ?? {};
   const url = getUrl(endpoint);
 
-  const response = await fetch(url, options);
+  const response = useCache
+    ? await fetchWithCache({
+        url,
+        fetchOptions: options,
+        cacheOptions,
+        functionName,
+      })
+    : await fetch(url, options);
 
   if (!response.ok) {
     throw new Error(
