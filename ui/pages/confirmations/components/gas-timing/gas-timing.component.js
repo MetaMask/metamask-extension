@@ -114,6 +114,7 @@ export default function GasTiming({
       <Text
         variant={TextVariant.bodySm}
         fontWeight={FontWeight.Bold}
+        color={TextColor.textAlternative}
         className={classNames('gas-timing', 'gas-timing--negative')}
       >
         {t('editGasTooLow')}
