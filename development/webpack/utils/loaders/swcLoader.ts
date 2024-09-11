@@ -145,6 +145,10 @@ const schema = {
               type: 'boolean',
               default: false,
             },
+            emitAssertForImportAttributes: {
+              type: 'boolean',
+              default: false,
+            },
           },
         },
       },
@@ -223,6 +227,7 @@ export function getSwcLoader(
         },
         experimental: {
           keepImportAttributes: true,
+          emitAssertForImportAttributes: true,
         },
       },
     } as const satisfies SwcLoaderOptions,
