@@ -2,7 +2,7 @@ import {
   ETH_TOKEN_IMAGE_URL,
   TEST_ETH_TOKEN_IMAGE_URL,
   BNB_TOKEN_IMAGE_URL,
-  MATIC_TOKEN_IMAGE_URL,
+  POL_TOKEN_IMAGE_URL,
   AVAX_TOKEN_IMAGE_URL,
   CURRENCY_SYMBOLS,
   CHAIN_IDS,
@@ -70,11 +70,11 @@ export const BNB_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
 } as const;
 
 export const MATIC_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
-  symbol: CURRENCY_SYMBOLS.MATIC,
-  name: 'Matic',
+  symbol: CURRENCY_SYMBOLS.POL,
+  name: 'Polygon',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
-  iconUrl: MATIC_TOKEN_IMAGE_URL,
+  iconUrl: POL_TOKEN_IMAGE_URL,
 } as const;
 
 export const AVAX_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {

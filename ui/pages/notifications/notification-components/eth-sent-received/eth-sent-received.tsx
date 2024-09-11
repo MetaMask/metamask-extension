@@ -146,6 +146,7 @@ export const components: NotificationComponent<ETHNotification> = {
           detail={t('notificationItemConfirmed') || ''}
           action={
             <NotificationDetailCopyButton
+              notification={notification}
               text={notification.tx_hash}
               displayText={t('notificationItemTransactionId') || ''}
             />

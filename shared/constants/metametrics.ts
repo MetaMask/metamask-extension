@@ -704,10 +704,13 @@ export enum MetaMetricsEventName {
   TurnOnMetaMetrics = 'MetaMetrics Turned On',
   TurnOffMetaMetrics = 'MetaMetrics Turned Off',
   // Notifications
-  NotificationReceived = 'Notification Received',
-  NotificationsSettingsUpdated = 'Notifications Settings Updated',
   NotificationClicked = 'Notification Clicked',
-  NotificationMenuOpened = 'Notification Menu Opened',
+  NotificationDetailClicked = 'Notification Detail Clicked',
+  NotificationsMenuOpened = 'Notifications Menu Opened',
+  NotificationsSettingsUpdated = 'Notifications Settings Updated',
+  NotificationsActivated = 'Notifications Activated',
+  PushNotificationReceived = 'Push Notification Received',
+  PushNotificationClicked = 'Push Notification Clicked',
 
   // Send
   sendAssetSelected = 'Send Asset Selected',
@@ -755,6 +758,7 @@ export enum MetaMetricsEventCategory {
   Network = 'Network',
   Onboarding = 'Onboarding',
   NotificationInteraction = 'Notification Interaction',
+  NotificationsActivationFlow = 'Notifications Activation Flow',
   NotificationSettings = 'Notification Settings',
   Petnames = 'Petnames',
   Phishing = 'Phishing',
@@ -816,6 +820,8 @@ export enum MetaMetricsTransactionEventSource {
 }
 
 export enum MetaMetricsEventLocation {
+  AlertFrictionModal = 'alert_friction_modal',
+  Confirmation = 'confirmation',
   SignatureConfirmation = 'signature_confirmation',
   TokenDetails = 'token_details',
   TokenDetection = 'token_detection',

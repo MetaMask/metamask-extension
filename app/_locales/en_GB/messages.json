@@ -675,9 +675,6 @@
   "back": {
     "message": "Back"
   },
-  "backup": {
-    "message": "Back up"
-  },
   "backupApprovalInfo": {
     "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
   },
@@ -689,12 +686,6 @@
   },
   "backupNow": {
     "message": "Back up now"
-  },
-  "backupUserData": {
-    "message": "Back up your data"
-  },
-  "backupUserDataDescription": {
-    "message": "You can back up data like your contacts and preferences."
   },
   "balance": {
     "message": "Balance"
@@ -1038,9 +1029,6 @@
   },
   "confirmRpcUrlDeletionMessage": {
     "message": "Are you sure you want to delete the RPC URL? Your information will not be saved for this network."
-  },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
   },
   "confirmTitleDescPermitSignature": {
     "message": "This site wants permission to spend your tokens."

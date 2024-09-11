@@ -261,10 +261,26 @@ function maybeDetectPhishing(theController) {
       }
 
       theController.phishingController.maybeUpdateState();
-      const phishingTestResponse =
-        theController.phishingController.test(hostname);
-      if (!phishingTestResponse?.result) {
+      const phishingTestResponse = theController.phishingController.test(
+        details.url,
+      );
+
+      const blockedRequestResponse =
+        theController.phishingController.isBlockedRequest(details.url);
+
+      // if the request is not blocked, and the phishing test is not blocked, return and don't show the phishing screen
+      if (!phishingTestResponse?.result && !blockedRequestResponse.result) {
         return {};
+      }
+
+      // Determine the block reason based on the type
+      let blockReason;
+      if (phishingTestResponse?.result && blockedRequestResponse.result) {
+        blockReason = `${phishingTestResponse.type} and ${blockedRequestResponse.type}`;
+      } else if (phishingTestResponse?.result) {
+        blockReason = phishingTestResponse.type;
+      } else {
+        blockReason = blockedRequestResponse.type;
       }
 
       theController.metaMetricsController.trackEvent({
@@ -273,6 +289,7 @@ function maybeDetectPhishing(theController) {
         category: MetaMetricsEventCategory.Phishing,
         properties: {
           url: hostname,
+          reason: blockReason,
         },
       });
       const querystring = new URLSearchParams({ hostname, href });
@@ -297,7 +314,10 @@ function maybeDetectPhishing(theController) {
       redirectTab(details.tabId, redirectHref);
       return {};
     },
-    { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },
+    {
+      types: ['main_frame', 'sub_frame', 'xmlhttprequest'],
+      urls: ['http://*/*', 'https://*/*'],
+    },
     isManifestV2 ? ['blocking'] : [],
   );
 }

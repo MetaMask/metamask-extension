@@ -1,1 +1,1 @@
-export { default } from './connected-sites-list.component';
+export { default } from './connected-sites-list';

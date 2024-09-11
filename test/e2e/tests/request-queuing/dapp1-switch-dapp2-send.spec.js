@@ -135,6 +135,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // Wait for switch confirmation to close then tx confirmation to show.
         await driver.waitUntilXWindowHandles(3);
+        await driver.delay(regularDelayMs);
 
         await switchToNotificationWindow(driver, 4);
 
@@ -289,6 +290,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // Wait for switch confirmation to close then tx confirmation to show.
         await driver.waitUntilXWindowHandles(3);
+        await driver.delay(regularDelayMs);
 
         await switchToNotificationWindow(driver, 4);
 

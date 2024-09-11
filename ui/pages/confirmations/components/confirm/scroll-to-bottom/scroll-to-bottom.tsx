@@ -19,7 +19,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useScrollRequired } from '../../../../../hooks/useScrollRequired';
-import { currentConfirmationSelector } from '../../../selectors';
+import { useConfirmContext } from '../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
 
 type ContentProps = {
@@ -32,7 +32,7 @@ type ContentProps = {
 const ScrollToBottom = ({ children }: ContentProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { currentConfirmation } = useConfirmContext();
   const previousId = usePrevious(currentConfirmation?.id);
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
@@ -74,7 +74,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
   useEffect(() => {
     dispatch(
       updateConfirm({
-        isScrollToBottomNeeded: isScrollable && !hasScrolledToBottom,
+        isScrollToBottomCompleted: !isScrollable || hasScrolledToBottom,
       }),
     );
   }, [isScrollable, hasScrolledToBottom]);
@@ -111,7 +111,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
 
         {isScrollable && !isScrolledToBottom && (
           <ButtonIcon
-            className={'confirm-scroll-to-bottom__button'}
+            className="confirm-scroll-to-bottom__button"
             onClick={scrollToBottom}
             iconName={IconName.Arrow2Down}
             ariaLabel={t('scrollDown')}

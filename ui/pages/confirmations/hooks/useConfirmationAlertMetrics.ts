@@ -1,11 +1,11 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { validate as isUuid } from 'uuid';
+
 import useAlerts from '../../../hooks/useAlerts';
-import { REDESIGN_TRANSACTION_TYPES } from '../utils';
+import { REDESIGN_DEV_TRANSACTION_TYPES } from '../utils';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
-import { confirmSelector } from '../../../selectors';
+import { useConfirmContext } from '../context/confirm';
 import { AlertsName } from './alerts/constants';
 import { useTransactionEventFragment } from './useTransactionEventFragment';
 
@@ -43,7 +43,7 @@ function getAlertName(alertKey: string): string {
 }
 
 export function useConfirmationAlertMetrics() {
-  const { currentConfirmation } = useSelector(confirmSelector);
+  const { currentConfirmation } = useConfirmContext();
   const ownerId = currentConfirmation?.id ?? '';
   const { alerts, isAlertConfirmed } = useAlerts(ownerId);
   const { updateTransactionEventFragment } = useTransactionEventFragment();
@@ -57,7 +57,7 @@ export function useConfirmationAlertMetrics() {
     });
 
   // Temporary measure to track metrics only for redesign transaction types
-  const isValidType = REDESIGN_TRANSACTION_TYPES.includes(
+  const isValidType = REDESIGN_DEV_TRANSACTION_TYPES.includes(
     currentConfirmation?.type as TransactionType,
   );
 
