@@ -5152,21 +5152,7 @@ export default class MetamaskController extends EventEmitter {
 
   getCookieFromMarketingPage(data) {
     const { ga_client_id: cookieId } = data;
-    const {
-      metaMetricsId,
-      dataCollectionForMarketing,
-      participateInMetaMetrics,
-    } = this.metaMetricsController.store.getState();
-
-    if (
-      metaMetricsId &&
-      dataCollectionForMarketing &&
-      participateInMetaMetrics
-    ) {
-      this.metaMetricsController.setMarketingCampaignCookieId(cookieId);
-    } else {
-      this.metaMetricsController.setMarketingCampaignCookieId(null);
-    }
+    this.metaMetricsController.setMarketingCampaignCookieId(cookieId);
   }
 
   /**
