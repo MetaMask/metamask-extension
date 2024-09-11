@@ -5570,28 +5570,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:17.1.1":
-  version: 17.1.1
-  resolution: "@metamask/keyring-controller@npm:17.1.1"
-  dependencies:
-    "@ethereumjs/util": "npm:^8.1.0"
-    "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
-    "@metamask/base-controller": "npm:^6.0.1"
-    "@metamask/browser-passworder": "npm:^4.3.0"
-    "@metamask/eth-hd-keyring": "npm:^7.0.1"
-    "@metamask/eth-sig-util": "npm:^7.0.1"
-    "@metamask/eth-simple-keyring": "npm:^6.0.1"
-    "@metamask/keyring-api": "npm:^8.0.0"
-    "@metamask/message-manager": "npm:^10.0.1"
-    "@metamask/utils": "npm:^9.0.0"
-    async-mutex: "npm:^0.5.0"
-    ethereumjs-wallet: "npm:^1.0.1"
-    immer: "npm:^9.0.6"
-  checksum: 10/441bd01b42658819281ef45ebfb214d3282db2cf523284314ca8e6786e7c06fa564a6799e506edc67153d2b51126a8aca3b67762bbb5221c382f70c81a81db29
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-controller@npm:^17.2.0":
+"@metamask/keyring-controller@npm:17.2.0":
   version: 17.2.0
   resolution: "@metamask/keyring-controller@npm:17.2.0"
   dependencies:
@@ -5612,24 +5591,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A17.1.1#~/.yarn/patches/@metamask-keyring-controller-npm-17.1.1-098cb41930.patch":
-  version: 17.1.1
-  resolution: "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A17.1.1#~/.yarn/patches/@metamask-keyring-controller-npm-17.1.1-098cb41930.patch::version=17.1.1&hash=1c0f1d"
+"@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A17.2.0#~/.yarn/patches/@metamask-keyring-controller-npm-17.2.0-667fdd6864.patch":
+  version: 17.2.0
+  resolution: "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A17.2.0#~/.yarn/patches/@metamask-keyring-controller-npm-17.2.0-667fdd6864.patch::version=17.2.0&hash=5bed03"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
-    "@metamask/base-controller": "npm:^6.0.1"
+    "@metamask/base-controller": "npm:^7.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/eth-hd-keyring": "npm:^7.0.1"
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-simple-keyring": "npm:^6.0.1"
-    "@metamask/keyring-api": "npm:^8.0.0"
-    "@metamask/message-manager": "npm:^10.0.1"
-    "@metamask/utils": "npm:^9.0.0"
+    "@metamask/keyring-api": "npm:^8.1.0"
+    "@metamask/message-manager": "npm:^10.0.3"
+    "@metamask/utils": "npm:^9.1.0"
     async-mutex: "npm:^0.5.0"
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
-  checksum: 10/ea04fde80dd6f1bc9f7ee4c4631aeaeb149c8fd16bb8879f5d9edaf077a655866deef31d95357f152558fcc22c993ae1a8a42533ebc6b66fe60897b83a2e8d39
+  checksum: 10/8f5044032c893ac6646cfbd689d0074db160a44b043ee23d18f610b4118479d3eae888efc8a84bc6b0277b741b6aef1f7b984cda821eab3bd40d6e168ef4bd58
   languageName: node
   linkType: hard
 
@@ -26138,7 +26117,7 @@ __metadata:
     "@metamask/gas-fee-controller": "npm:^18.0.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/keyring-api": "npm:^8.1.0"
-    "@metamask/keyring-controller": "npm:^17.2.0"
+    "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A17.2.0#~/.yarn/patches/@metamask-keyring-controller-npm-17.2.0-667fdd6864.patch"
     "@metamask/logging-controller": "npm:^5.0.0"
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^10.1.0"
