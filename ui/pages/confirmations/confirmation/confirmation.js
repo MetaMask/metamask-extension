@@ -42,7 +42,11 @@ import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IF
 import { DAY } from '../../../../shared/constants/time';
-import { BlockSize, Display } from '../../../helpers/constants/design-system';
+import {
+  BlockSize,
+  Display,
+  BackgroundColor,
+} from '../../../helpers/constants/design-system';
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
@@ -466,10 +470,25 @@ export default function ConfirmationPage({
       ? handleSubmit
       : null);
 
+  const NAVIGATION_CONTROLS_HEIGHT = 32;
+  const SNAP_DIALOG_HEADER_HEIGHT = 64;
+
+  let contentMargin = 0;
+  if (pendingConfirmations.length > 1) {
+    contentMargin += NAVIGATION_CONTROLS_HEIGHT;
+  }
+  if (isSnapCustomUIDialog) {
+    contentMargin += SNAP_DIALOG_HEADER_HEIGHT;
+  }
+
   return (
     <div className="confirmation-page">
       {pendingConfirmations.length > 1 && (
-        <div className="confirmation-page__navigation">
+        <Box
+          className="confirmation-page__navigation"
+          style={{ position: 'fixed', zIndex: 1 }}
+          width={BlockSize.Screen}
+        >
           <p>
             {t('xOfYPending', [
               currentPendingConfirmation + 1,
@@ -497,20 +516,31 @@ export default function ConfirmationPage({
           >
             <Icon name={IconName.ArrowRight} />
           </button>
-        </div>
+        </Box>
+      )}
+      {isSnapCustomUIDialog && (
+        <Box
+          width={BlockSize.Screen}
+          style={{
+            position: 'fixed',
+            zIndex: 1,
+            marginTop: pendingConfirmations.length > 1 ? '32px' : 'initial',
+          }}
+        >
+          <SnapAuthorshipHeader
+            snapId={pendingConfirmation?.origin}
+            onCancel={handleSnapDialogCancel}
+          />
+        </Box>
       )}
       <Box
         className="confirmation-page__content"
-        paddingTop={process.env.CHAIN_PERMISSIONS ? 4 : 0}
+        padding={process.env.CHAIN_PERMISSIONS ? 4 : 0}
+        style={{
+          marginTop: `${contentMargin}px`,
+          overflowY: 'auto',
+        }}
       >
-        {isSnapCustomUIDialog && (
-          <Box width={BlockSize.Screen}>
-            <SnapAuthorshipHeader
-              snapId={pendingConfirmation?.origin}
-              onCancel={handleSnapDialogCancel}
-            />
-          </Box>
-        )}
         {templatedValues.networkDisplay && !process.env.CHAIN_PERMISSIONS ? (
           <Box justifyContent="center" marginTop={2} display={Display.Flex}>
             <NetworkDisplay />
@@ -529,6 +559,7 @@ export default function ConfirmationPage({
             useDelineator={false}
             onCancel={handleSnapDialogCancel}
             useFooter={isSnapDefaultDialog}
+            contentBackgroundColor={BackgroundColor.backgroundAlternative}
           />
         ) : (
           <MetaMaskTemplateRenderer sections={templatedValues.content} />
