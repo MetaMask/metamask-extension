@@ -30,7 +30,7 @@ exports[`NetworkListItem renders correctly with required props 1`] = `
           </p>
         </div>
         <div
-          class="mm-box multichain-network-list-item__rpc-endpoint mm-box--margin-left-4 mm-box--display-flex mm-box--align-items-center"
+          class="mm-box mm-box--margin-left-4 mm-box--display-flex mm-box--align-items-center"
         >
           <button
             class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--color-text-alternative mm-box--background-color-transparent"
@@ -45,8 +45,7 @@ exports[`NetworkListItem renders correctly with required props 1`] = `
       class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
     >
       <button
-        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-        data-testid="test-add-button"
+        class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
         type="button"
       >
         [edit]
