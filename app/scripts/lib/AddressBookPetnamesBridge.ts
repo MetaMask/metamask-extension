@@ -1,9 +1,14 @@
-import { AddressBookController } from '@metamask/address-book-controller';
+import {
+  AddressBookController,
+  AddressBookControllerStateChangeEvent,
+  AddressBookControllerActions,
+} from '@metamask/address-book-controller';
 import {
   NameController,
   NameType,
   NameOrigin,
 } from '@metamask/name-controller';
+import type { Hex } from '@metamask/utils';
 import {
   AbstractPetnamesBridge,
   PetnamesBridgeMessenger,
@@ -11,7 +16,19 @@ import {
   PetnameEntry,
 } from './AbstractPetnamesBridge';
 
-export class AddressBookPetnamesBridge extends AbstractPetnamesBridge {
+export type AddressBookPetnamesBridgeEvens =
+  AddressBookControllerStateChangeEvent;
+export type AddressBookPetnamesBridgeActions = AddressBookControllerActions;
+
+export type AddressBookPetnamesBridgeMessenger = PetnamesBridgeMessenger<
+  AddressBookPetnamesBridgeEvens,
+  AddressBookPetnamesBridgeActions
+>;
+
+export class AddressBookPetnamesBridge extends AbstractPetnamesBridge<
+  AddressBookPetnamesBridgeEvens,
+  AddressBookPetnamesBridgeActions
+> {
   #addressBookController: AddressBookController;
 
   constructor({
@@ -21,7 +38,7 @@ export class AddressBookPetnamesBridge extends AbstractPetnamesBridge {
   }: {
     addressBookController: AddressBookController;
     nameController: NameController;
-    messenger: PetnamesBridgeMessenger<never, never>;
+    messenger: AddressBookPetnamesBridgeMessenger;
   }) {
     super({ isTwoWay: true, nameController, messenger });
 
@@ -35,9 +52,7 @@ export class AddressBookPetnamesBridge extends AbstractPetnamesBridge {
     const entries: PetnameEntry[] = [];
     const { state } = this.#addressBookController;
     for (const chainId of Object.keys(state.addressBook)) {
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const chainEntries = state.addressBook[chainId as any];
+      const chainEntries = state.addressBook[chainId as Hex];
 
       for (const address of Object.keys(chainEntries)) {
         // TODO: Replace `any` with type
@@ -88,6 +103,6 @@ export class AddressBookPetnamesBridge extends AbstractPetnamesBridge {
    * @override
    */
   onSourceChange(listener: () => void): void {
-    this.#addressBookController.subscribe(listener);
+    this.messenger.subscribe('AddressBookController:stateChange', listener);
   }
 }
