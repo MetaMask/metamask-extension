@@ -3,9 +3,9 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
-import NetworkListItem from './network-list-item'; // Adjust the path as needed
-import '@testing-library/jest-dom/extend-expect';
 import { RpcEndpointType } from '@metamask/network-controller';
+import NetworkListItem from './network-list-item';
+import '@testing-library/jest-dom/extend-expect';
 
 const mockStore = configureMockStore([thunk]);
 
