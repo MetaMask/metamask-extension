@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.2.3]
+### Fixed
+- Fixes dapps integrating with the cosmos chain that rely on setting the `verifyingContract` field of a signature to `"cosmos"`
 
 ## [12.2.2]
 ### Fixed
