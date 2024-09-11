@@ -131,7 +131,7 @@ function getTracesSampleRate(sentryTarget) {
  * and give them to the Sentry client.
  */
 function setCircleCiTags() {
-  const { circleci: ManifestFlags } = getManifestFlags();
+  const { circleci } = getManifestFlags();
 
   if (circleci?.enabled) {
     Sentry.setTag('circleci.enabled', circleci.enabled);
