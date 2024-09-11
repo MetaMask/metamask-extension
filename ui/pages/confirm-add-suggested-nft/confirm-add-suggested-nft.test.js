@@ -87,23 +87,25 @@ describe('ConfirmAddSuggestedNFT Component', () => {
     jest.clearAllMocks();
   });
 
-  it('should render one suggested NFT', () => {
-    renderComponent({
-      1: {
-        id: '1',
-        origin: 'https://www.opensea.io',
-        time: 1,
-        type: ApprovalType.WatchAsset,
-        requestData: {
-          asset: {
-            address: '0x8b175474e89094c44da98b954eedeac495271d0a',
-            name: 'CryptoKitty',
-            tokenId: '15',
-            standard: 'ERC721',
+  it('should render one suggested NFT', async () => {
+    await act(async () =>
+      renderComponent({
+        1: {
+          id: '1',
+          origin: 'https://www.opensea.io',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0x8b175474e89094c44da98b954eedeac495271d0a',
+              name: 'CryptoKitty',
+              tokenId: '15',
+              standard: 'ERC721',
+            },
           },
         },
-      },
-    });
+      }),
+    );
 
     expect(screen.getByText('Add suggested NFTs')).toBeInTheDocument();
     expect(screen.getByText('https://www.opensea.io')).toBeInTheDocument();
@@ -118,23 +120,27 @@ describe('ConfirmAddSuggestedNFT Component', () => {
     expect(screen.getByRole('button', { name: 'Add NFT' })).toBeInTheDocument();
   });
 
-  it('should match snapshot', () => {
-    const container = renderComponent({
-      1: {
-        id: '1',
-        origin: 'https://www.opensea.io',
-        time: 1,
-        type: ApprovalType.WatchAsset,
-        requestData: {
-          asset: {
-            address: '0x8b175474e89094c44da98b954eedeac495271d0a',
-            name: 'CryptoKitty',
-            tokenId: '15',
-            standard: 'ERC721',
+  it('should match snapshot', async () => {
+    let container;
+    await act(
+      async () =>
+        (container = renderComponent({
+          1: {
+            id: '1',
+            origin: 'https://www.opensea.io',
+            time: 1,
+            type: ApprovalType.WatchAsset,
+            requestData: {
+              asset: {
+                address: '0x8b175474e89094c44da98b954eedeac495271d0a',
+                name: 'CryptoKitty',
+                tokenId: '15',
+                standard: 'ERC721',
+              },
+            },
           },
-        },
-      },
-    });
+        })),
+    );
 
     expect(container).toMatchSnapshot();
   });
