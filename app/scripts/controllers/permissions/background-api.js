@@ -3,7 +3,7 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
-import { CaveatFactories } from './specifications';
+import { CaveatFactories, PermissionNames } from './specifications';
 
 export function getPermissionBackgroundApiMethods(permissionController) {
   const addMoreAccounts = (origin, accountOrAccounts) => {
@@ -84,6 +84,19 @@ export function getPermissionBackgroundApiMethods(permissionController) {
           remainingChains,
         );
       }
+    },
+
+    requestAccountsAndChainPermissionsWithId: async (origin) => {
+      const id = nanoid();
+      permissionController.requestPermissions(
+        { origin },
+        {
+          [PermissionNames.eth_accounts]: {},
+          [PermissionNames.permittedChains]: {},
+        },
+        { id },
+      );
+      return id;
     },
 
     requestAccountsPermissionWithId: async (origin) => {

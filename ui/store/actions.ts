@@ -3227,6 +3227,20 @@ export function setAccountDetailsAddress(address: string) {
   };
 }
 
+export function setSelectedAccountsForDappConnection(addresses: []) {
+  return {
+    type: actionConstants.SET_SELECTED_ACCOUNTS_FOR_DAPP_CONNECTIONS,
+    payload: addresses,
+  };
+}
+
+export function setSelectedNetworksForDappConnection(addresses: []) {
+  return {
+    type: actionConstants.SET_SELECTED_NETWORKS_FOR_DAPP_CONNECTIONS,
+    payload: addresses,
+  };
+}
+
 export function setParticipateInMetaMetrics(
   participationPreference: boolean,
 ): ThunkAction<
@@ -3870,6 +3884,19 @@ export function requestAccountsPermissionWithId(
   return async (dispatch: MetaMaskReduxDispatch) => {
     const id = await submitRequestToBackground(
       'requestAccountsPermissionWithId',
+      [origin],
+    );
+    await forceUpdateMetamaskState(dispatch);
+    return id;
+  };
+}
+
+export function requestAccountsAndChainPermissionsWithId(
+  origin: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    const id = await submitRequestToBackground(
+      'requestAccountsAndChainPermissionsWithId',
       [origin],
     );
     await forceUpdateMetamaskState(dispatch);

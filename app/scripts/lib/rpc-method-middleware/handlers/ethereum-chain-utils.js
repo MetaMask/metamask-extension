@@ -194,12 +194,14 @@ export async function switchChain(
   networkClientId,
   approvalFlowId,
   {
+    isAddFlow,
     getChainPermissionsFeatureFlag,
     setActiveNetwork,
     endApprovalFlow,
     requestUserApproval,
     getCaveat,
     requestPermittedChainsPermission,
+    grantPermittedChainsPermissionIncremental
   },
 ) {
   try {
@@ -214,7 +216,11 @@ export async function switchChain(
         permissionedChainIds === undefined ||
         !permissionedChainIds.includes(chainId)
       ) {
-        await requestPermittedChainsPermission([chainId]);
+        if (isAddFlow) {
+          await grantPermittedChainsPermissionIncremental([chainId]);
+        } else {
+          await requestPermittedChainsPermission([chainId]);
+        }
       }
     } else {
       await requestUserApproval({

@@ -18,21 +18,23 @@ import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
+  AvatarNetwork,
+  AvatarNetworkSize,
   Box,
   Text,
 } from '../../../../component-library';
 import { getUseBlockie } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
-export const ConnectionListTooltip = ({ connection }) => {
+export const SiteCellTooltip = ({
+  accounts,
+  avatarAccountsData,
+  networks,
+  avatarNetworksData,
+}) => {
   const t = useI18nContext();
   const AVATAR_GROUP_LIMIT = 4;
   const TOOLTIP_LIMIT = 4;
-  const addressIconList = connection.addresses
-    ?.slice(0, TOOLTIP_LIMIT)
-    .map((address) => ({
-      avatarValue: address,
-    }));
   const useBlockie = useSelector(getUseBlockie);
   const avatarAccountVariant = useBlockie
     ? AvatarAccountVariant.Blockies
@@ -43,44 +45,67 @@ export const ConnectionListTooltip = ({ connection }) => {
       position="bottom"
       html={
         <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-          <Text
-            color={TextColor.overlayInverse}
-            variant={TextVariant.headingSm}
-            paddingInline={10}
-          >
-            {t('connectedAccounts')}
-          </Text>
           <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-            {connection.addresses?.slice(0, TOOLTIP_LIMIT).map((address) => {
+            {accounts?.slice(0, TOOLTIP_LIMIT).map((acc) => {
               return (
                 <Box
                   display={Display.Flex}
                   flexDirection={FlexDirection.Row}
                   alignItems={AlignItems.center}
                   textAlign={TextAlign.Left}
-                  key={`cl-tooltip-${connection.addressToNameMap[address]}-${address}`}
+                  key={acc.address}
                   padding={1}
                   paddingInline={2}
                   gap={2}
                 >
                   <AvatarAccount
                     size={AvatarAccountSize.Xs}
-                    address={address}
+                    address={acc.address}
                     variant={avatarAccountVariant}
                     borderStyle={BorderStyle.none}
                   />
                   <Text
                     color={TextColor.overlayInverse}
                     variant={TextVariant.bodyMdMedium}
-                    data-testid="connection-list-item-connected-account-name"
+                    data-testid="accounts-list-item-connected-account-name"
                     ellipsis
                   >
-                    {connection.addressToNameMap[address]}
+                    {acc.label || acc.metadata.name}
                   </Text>
                 </Box>
               );
             })}
-            {connection.addresses?.length > TOOLTIP_LIMIT && (
+            {networks?.slice(0, TOOLTIP_LIMIT).map((network) => {
+              return (
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Row}
+                  alignItems={AlignItems.center}
+                  textAlign={TextAlign.Left}
+                  key={network.chainId}
+                  padding={1}
+                  paddingInline={2}
+                  gap={2}
+                >
+                  <AvatarNetwork
+                    size={AvatarNetworkSize.Xs}
+                    src={network.rpcPrefs?.imageUrl || ''}
+                    name={network.nickname}
+                    borderStyle={BorderStyle.none}
+                  />
+                  <Text
+                    color={TextColor.overlayInverse}
+                    variant={TextVariant.bodyMdMedium}
+                    data-testid="accounts-list-item-connected-account-name"
+                    ellipsis
+                  >
+                    {network.nickname}
+                  </Text>
+                </Box>
+              );
+            })}
+            {accounts?.length > TOOLTIP_LIMIT ||
+            networks?.length > TOOLTIP_LIMIT ? (
               <Box
                 display={Display.Flex}
                 alignItems={AlignItems.center}
@@ -90,14 +115,14 @@ export const ConnectionListTooltip = ({ connection }) => {
                 <Text
                   color={TextColor.textMuted}
                   variant={TextVariant.bodyMdMedium}
-                  data-testid="connection-list-item-plus-more-tooltip"
+                  data-testid="accounts-list-item-plus-more-tooltip"
                 >
-                  {t('plusMore', [
-                    connection.addresses?.length - TOOLTIP_LIMIT,
-                  ])}
+                  {accounts?.length > 0
+                    ? t('moreAccounts', [accounts?.length - TOOLTIP_LIMIT])
+                    : t('moreNetworks', [networks.length - TOOLTIP_LIMIT])}
                 </Text>
               </Box>
-            )}
+            ) : null}
           </Box>
         </Box>
       }
@@ -111,18 +136,26 @@ export const ConnectionListTooltip = ({ connection }) => {
       theme="dark"
       tag="div"
     >
-      <AvatarGroup
-        members={addressIconList}
-        limit={AVATAR_GROUP_LIMIT}
-        avatarType={AvatarType.ACCOUNT}
-        borderColor={BackgroundColor.backgroundDefault}
-      />
+      {accounts?.length > 0 ? (
+        <AvatarGroup
+          members={avatarAccountsData}
+          limit={AVATAR_GROUP_LIMIT}
+          avatarType={AvatarType.ACCOUNT}
+          borderColor={BackgroundColor.backgroundDefault}
+        />
+      ) : (
+        <AvatarGroup
+          avatarType={AvatarType.TOKEN}
+          members={avatarNetworksData}
+          limit={AVATAR_GROUP_LIMIT}
+        />
+      )}
     </Tooltip>
   );
 };
-ConnectionListTooltip.propTypes = {
+SiteCellTooltip.propTypes = {
   /**
-   * The connection data to display
+   * The accounts data to display
    */
-  connection: PropTypes.object.isRequired,
+  accounts: PropTypes.object.isRequired,
 };

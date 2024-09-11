@@ -5561,7 +5561,7 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController.requestPermissions.bind(
             this.permissionController,
             { origin },
-            { eth_accounts: {} },
+            { eth_accounts: {}, [PermissionNames.permittedChains]: {} },
           ),
         requestPermittedChainsPermission: (chainIds) =>
           this.permissionController.requestPermissionsIncremental(
@@ -5576,11 +5576,26 @@ export default class MetamaskController extends EventEmitter {
               },
             },
           ),
-        requestPermissionsForOrigin:
+        grantPermittedChainsPermissionIncremental: (chainIds) =>
+          this.permissionController.grantPermissionsIncremental({
+            subject: { origin },
+            approvedPermissions: {
+              [PermissionNames.permittedChains]: {
+                caveats: [
+                  CaveatFactories[CaveatTypes.restrictNetworkSwitching](
+                    chainIds,
+                  ),
+                ],
+              },
+            },
+          }),
+        requestPermissionsForOrigin: (requestedPermissions) => {
           this.permissionController.requestPermissions.bind(
             this.permissionController,
             { origin },
-          ),
+            { [PermissionNames.permittedChains]: {}, ...requestedPermissions },
+          );
+        },
         revokePermissionsForOrigin: (permissionKeys) => {
           try {
             this.permissionController.revokePermissions({

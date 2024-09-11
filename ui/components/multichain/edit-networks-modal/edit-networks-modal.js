@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import { AlignItems, Display, FlexDirection, IconColor, TextColor, TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getNonTestNetworks,
   getOriginOfCurrentTab,
   getPermittedChainsByOrigin,
+  getPermittedChainsForSelectedTab,
   getTestNetworks,
 } from '../../../selectors';
 import {
@@ -20,41 +21,61 @@ import {
   ModalFooter,
   ButtonPrimary,
   ButtonPrimarySize,
+  ModalBody,
+  Icon,
+  IconName,
+  IconSize,
 } from '../../component-library';
 import { NetworkListItem } from '..';
 import {
   grantPermittedChains,
   removePermittedChain,
+  setSelectedNetworksForDappConnection,
 } from '../../../store/actions';
+import { getURLHost } from '../../../helpers/utils/util';
 
-export const EditNetworksModal = ({ onClose, onClick }) => {
+export const EditNetworksModal = ({
+  onClose,
+  onClick,
+  currentTabHasNoAccounts,
+  combinedNetworks,
+  onDisconnectClick,
+  defaultNetworks,
+}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const nonTestNetworks = useSelector(getNonTestNetworks);
   const testNetworks = useSelector(getTestNetworks);
-  const chains = useSelector(getPermittedChainsByOrigin);
-  const permittedChains = Object.values(chains);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-  const flattenedPermittedChains = permittedChains.flat();
-  const [selectedChains, setSelectedChains] = useState(
-    flattenedPermittedChains,
-  );
-
-  const handleAccountClick = (chainId) => {
-    const index = selectedChains.indexOf(chainId);
-    let newSelectedChains = [];
-
-    if (index === -1) {
-      // If chainId is not already selected, add it to the selectedChains array
-      newSelectedChains = [...selectedChains, chainId];
-    } else {
-      // If chainId is already selected, remove it from the selectedChains array
-      newSelectedChains = selectedChains.filter((_item, idx) => idx !== index);
-    }
-    setSelectedChains(newSelectedChains);
+      const connectedNetworks = useSelector((state) =>
+        getPermittedChainsForSelectedTab(state, activeTabOrigin),
+      );
+  const combinedNetworksIds = combinedNetworks.map((network) => network.chainId);
+  const selectedPermittedChains =
+    connectedNetworks.length > 0 ? connectedNetworks : combinedNetworksIds;
+  const [selectedChains, setSelectedChains] = useState(selectedPermittedChains);
+  const selectAll = () => {
+    const newSelectedAccounts = combinedNetworks.map(
+      (network) => network.chainId,
+    );
+    setSelectedChains(newSelectedAccounts);
   };
+
+  const deselectAll = () => {
+    setSelectedChains([]);
+  };
+
+const handleAccountClick = (chainId) => {
+  if (selectedChains.includes(chainId)) {
+    // Remove the chainId from the selectedChains
+    setSelectedChains(selectedChains.filter((id) => id !== chainId));
+  } else {
+    // Add the chainId to selectedChains
+    setSelectedChains([...selectedChains, chainId]);
+  }
+};
+
   const allAreSelected = () => {
-    return nonTestNetworks.length === selectedChains.length;
+    return combinedNetworksIds.length === selectedChains.length;
   };
   let checked = false;
   let isIndeterminate = false;
@@ -67,7 +88,7 @@ export const EditNetworksModal = ({ onClose, onClick }) => {
   }
   const managePermittedChains = (
     selectedChains,
-    flattenedPermittedChains,
+    selectedPermittedChains,
     activeTabOrigin,
   ) => {
     if (!Array.isArray(selectedChains)) {
@@ -76,7 +97,7 @@ export const EditNetworksModal = ({ onClose, onClick }) => {
     }
     dispatch(grantPermittedChains(activeTabOrigin, selectedChains));
 
-    const removedElements = flattenedPermittedChains.filter(
+    const removedElements = selectedPermittedChains.filter(
       (chain) => !selectedChains.includes(chain),
     );
 
@@ -86,6 +107,7 @@ export const EditNetworksModal = ({ onClose, onClick }) => {
       dispatch(removePermittedChain(activeTabOrigin, selectedChain));
     });
   };
+  const hostName = getURLHost(activeTabOrigin);
   return (
     <Modal
       isOpen
@@ -103,78 +125,113 @@ export const EditNetworksModal = ({ onClose, onClick }) => {
         >
           {t('editNetworksTitle')}
         </ModalHeader>
-        <Box padding={4}>
-          <Checkbox
-            label={t('selectAll')}
-            isChecked={checked}
-            gap={4}
-            onClick={() => (allAreSelected() ? deselectAll() : selectAll())}
-            isIndeterminate={isIndeterminate}
-          />
-        </Box>
-        {nonTestNetworks.map((network) => (
-          <NetworkListItem
-            name={network.nickname}
-            iconSrc={network?.rpcPrefs?.imageUrl}
-            key={network.id}
-            onClick={() => {
-              handleAccountClick(network.chainId);
-            }}
-            startAccessory={
-              <Checkbox isChecked={selectedChains.includes(network.chainId)} />
-            }
-          />
-        ))}
-        <Box padding={4}>
-          <Text variant={TextVariant.bodyMdMedium}>{t('testnets')}</Text>
-        </Box>
-        {testNetworks.map((network) => (
-          <NetworkListItem
-            name={network.nickname}
-            iconSrc={network?.rpcPrefs?.imageUrl}
-            key={network.id}
-            onClick={() => {
-              handleAccountClick(network.chainId);
-            }}
-            startAccessory={
-              <Checkbox isChecked={selectedChains.includes(network.chainId)} />
-            }
-            showEndAccessory={false}
-          />
-        ))}
-        <ModalFooter>
-          {selectedChains.length === 0 ? (
-            <ButtonPrimary
-              data-testid="disconnect-chains-button"
+        <ModalBody paddingLeft={0} paddingRight={0}>
+          <Box padding={4}>
+            <Checkbox
+              label={t('selectAll')}
+              isChecked={checked}
+              gap={4}
+              onClick={() => (allAreSelected() ? deselectAll() : selectAll())}
+              isIndeterminate={isIndeterminate}
+            />
+          </Box>
+          {combinedNetworks.map((network) => (
+            <NetworkListItem
+              name={network.nickname}
+              iconSrc={network?.rpcPrefs?.imageUrl}
+              key={network.id}
               onClick={() => {
-                // disconnectAllAccounts();
-                onClose();
+                handleAccountClick(network.chainId);
               }}
-              size={ButtonPrimarySize.Lg}
-              block
-              danger
-            >
-              {t('disconnect')}
-            </ButtonPrimary>
-          ) : (
-            <ButtonPrimary
-              data-testid="connect-more-accounts-button"
+              startAccessory={
+                <Checkbox
+                  isChecked={selectedChains.includes(network.chainId)}
+                />
+              }
+            />
+          ))}
+          <Box padding={4}>
+            <Text variant={TextVariant.bodyMdMedium}>{t('testnets')}</Text>
+          </Box>
+          {testNetworks.map((network) => (
+            <NetworkListItem
+              name={network.nickname}
+              iconSrc={network?.rpcPrefs?.imageUrl}
+              key={network.id}
               onClick={() => {
-                onClick();
-                onClose();
-                managePermittedChains(
-                  selectedChains,
-                  flattenedPermittedChains,
-                  activeTabOrigin,
-                ); // Then call the managePermittedChains function
+                handleAccountClick(network.chainId);
               }}
-              size={ButtonPrimarySize.Lg}
-              block
-            >
-              {t('confirm')}
-            </ButtonPrimary>
-          )}
-        </ModalFooter>
+              startAccessory={
+                <Checkbox
+                  isChecked={selectedChains.includes(network.chainId)}
+                />
+              }
+              showEndAccessory={false}
+            />
+          ))}
+          <ModalFooter>
+            {selectedChains.length === 0 ? (
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                gap={4}
+              >
+                <Box
+                  display={Display.Flex}
+                  gap={1}
+                  alignItems={AlignItems.center}
+                >
+                  <Icon
+                    name={IconName.Danger}
+                    size={IconSize.Xs}
+                    color={IconColor.errorDefault}
+                  />
+                  <Text
+                    variant={TextVariant.bodySm}
+                    color={TextColor.errorDefault}
+                  >
+                    {t('disconnectMessage', [hostName])}
+                  </Text>
+                </Box>
+                <ButtonPrimary
+                  data-testid="disconnect-chains-button"
+                  onClick={() => {
+                    onDisconnectClick();
+                    onClose();
+                  }}
+                  size={ButtonPrimarySize.Lg}
+                  block
+                  danger
+                >
+                  {t('disconnect')}
+                </ButtonPrimary>
+              </Box>
+            ) : (
+              <ButtonPrimary
+                data-testid="connect-more-accounts-button"
+                onClick={() => {
+                  onClick();
+                  onClose();
+                  if (currentTabHasNoAccounts) {
+                    dispatch(
+                      setSelectedNetworksForDappConnection(selectedChains),
+                    );
+                  } else {
+                    managePermittedChains(
+                      selectedChains,
+                      selectedPermittedChains,
+                      activeTabOrigin,
+                    ); // Then call the managePermittedChains function
+                  }
+                }}
+                size={ButtonPrimarySize.Lg}
+                block
+              >
+                {t('update')}
+              </ButtonPrimary>
+            )}
+          </ModalFooter>
+        </ModalBody>
       </ModalContent>
     </Modal>
   );

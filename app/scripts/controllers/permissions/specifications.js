@@ -209,7 +209,6 @@ export const getPermissionSpecifications = ({
       permissionType: PermissionType.Endowment,
       targetName: PermissionNames.permittedChains,
       allowedCaveats: [CaveatTypes.restrictNetworkSwitching],
-      subjectTypes: [SubjectType.Website],
 
       factory: (permissionOptions, requestData) => {
         if (requestData === undefined) {
