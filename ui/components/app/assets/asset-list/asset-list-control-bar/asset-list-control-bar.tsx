@@ -162,7 +162,6 @@ const AssetListControlBar = ({
           <SortControl
             tokenList={tokenList}
             setTokenList={setTokenList}
-            setLoading={setLoading}
             setSorted={setSorted}
           />
         </Popover>

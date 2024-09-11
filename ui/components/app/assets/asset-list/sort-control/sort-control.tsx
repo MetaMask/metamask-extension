@@ -12,14 +12,12 @@ import classnames from 'classnames';
 type SortControlProps = {
   tokenList: TokenWithBalance[];
   setTokenList: (arg: TokenWithBalance[]) => void;
-  setLoading: (arg: boolean) => void;
   setSorted: (arg: boolean) => void;
 };
 
 const SortControl = ({
   tokenList,
   setTokenList,
-  setLoading,
   setSorted,
 }: SortControlProps) => {
   const [sortKey, setSortKey] = useState<string | null>(null);

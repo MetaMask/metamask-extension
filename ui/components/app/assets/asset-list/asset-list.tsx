@@ -44,7 +44,6 @@ import {
   RampsCard,
 } from '../../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
-import SortControl from './sort-control';
 import AssetListControlBar from './asset-list-control-bar';
 ///: END:ONLY_INCLUDE_IF
 
@@ -161,7 +160,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         setLoading={setLoading}
       />
 
-      {/* <TokenListItem
+      <TokenListItem
         onClick={() => onClickAsset(nativeCurrency)}
         title={nativeCurrency}
         // The primary and secondary currencies are subject to change based on the user's settings
@@ -193,7 +192,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         isNativeCurrency
         isStakeable={isStakeable}
         showPercentage
-      /> */}
+      />
       <TokenList
         tokens={tokenList}
         loading={loading}
