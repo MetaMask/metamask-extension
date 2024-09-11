@@ -41,7 +41,7 @@ const AddRpcUrlModal = ({
 
   return (
     <Box
-      className="networks-tab__scrollable"
+      className="add-rpc-modal"
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.spaceBetween}
@@ -86,7 +86,7 @@ const AddRpcUrlModal = ({
       </Box>
 
       <Box
-        className="networks-tab__network-form__footer"
+        className="add-rpc-modal__footer"
         backgroundColor={BackgroundColor.backgroundDefault}
         padding={4}
         width={BlockSize.Full}

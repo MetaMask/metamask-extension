@@ -39,7 +39,7 @@ const AddBlockExplorerModal = ({
 
   return (
     <Box
-      className="networks-tab__scrollable"
+      className="add-block-explorer-modal"
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.spaceBetween}
@@ -66,7 +66,7 @@ const AddBlockExplorerModal = ({
         )}
       </Box>
       <Box
-        className="networks-tab__network-form__footer"
+        className="add-block-explorer-modal__footer"
         backgroundColor={BackgroundColor.backgroundDefault}
         padding={4}
         width={BlockSize.Full}
