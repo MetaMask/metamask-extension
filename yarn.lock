@@ -6299,7 +6299,7 @@ __metadata:
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^9.2.1"
     "@noble/hashes": "npm:^1.3.1"
-  checksum: 10/e23279dabc6f4ffe2c6c4a7003a624cd5e79b558d7981ec12c23e54a5da25cb7be9bc7bddfa8b2ce84af28a89b42076a2c14ab004b7a976a4426bf1e1de71b5b
+  checksum: 10/96c068ce171553b743287237fc5f382234ed1e00d028e16b7f9779a8681317145cf89bc88e5fec6e2ea7edb0dc5d2b76c415a3116b1a4254c0173cb65c149a09
   languageName: node
   linkType: hard
 
