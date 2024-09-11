@@ -59,7 +59,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           '.currency-display-component__text',
         );
         assert.notEqual(
-          await estimatedGasFee[0].getText(),
+          await estimatedGasFee[1].getText(),
           '0',
           'Estimated gas fee should not be 0',
         );
