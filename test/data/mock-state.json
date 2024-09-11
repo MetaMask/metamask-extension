@@ -391,6 +391,7 @@
         "defaultRpcEndpointIndex": 0,
         "rpcEndpoints": [
           {
+            "type": "custom",
             "url": "https://testrpc.com",
             "networkClientId": "testNetworkConfigurationId"
           }
@@ -403,8 +404,9 @@
         "defaultRpcEndpointIndex": 0,
         "rpcEndpoints": [
           {
-            "networkClientId": "goerli",
-            "type": "custom"
+            "type": "custom",
+            "url": "https://goerli.com",
+            "networkClientId": "goerli"
           }
         ]
       }
