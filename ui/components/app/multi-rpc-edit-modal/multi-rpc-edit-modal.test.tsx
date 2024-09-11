@@ -90,11 +90,11 @@ describe('MultiRpcEditModal', () => {
   it('renders correctly with required props', () => {
     const onCloseMock = jest.fn();
 
-    const { container } = setup({
+    const { baseElement } = setup({
       isOpen: true,
       onClose: onCloseMock,
     });
-    expect(container).toMatchSnapshot();
+    expect(baseElement).toMatchSnapshot();
   });
 
   it('renders the modal and displays the network information', () => {
