@@ -157,7 +157,7 @@ export default class OnboardingController extends BaseController<
    * Sets the completedOnboarding state to true, indicating that the user has completed the
    * onboarding process.
    */
-  async completeOnboarding(): Promise<boolean> {
+  completeOnboarding(): boolean {
     this.update((state) => {
       state.completedOnboarding = true;
     });
