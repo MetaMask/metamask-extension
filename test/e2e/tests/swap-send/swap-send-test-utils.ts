@@ -266,7 +266,6 @@ export const getSwapSendFixtures = (
 ) => {
   const ETH_CONVERSION_RATE_USD = 3010;
   return {
-    driverOptions: { responsive: true },
     fixtures: new FixtureBuilder()
       .withPreferencesController({
         featureFlags: {},
