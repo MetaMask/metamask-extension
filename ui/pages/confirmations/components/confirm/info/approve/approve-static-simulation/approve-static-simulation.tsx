@@ -39,7 +39,7 @@ export const ApproveStaticSimulation = () => {
   const decimals = initialDecimals || '0';
 
   const { spendingCap, formattedSpendingCap, value, pending } =
-    useApproveTokenSimulation(transactionMeta, decimals || '0');
+    useApproveTokenSimulation(transactionMeta, decimals);
 
   const { isNFT } = useIsNFT(transactionMeta);
 
