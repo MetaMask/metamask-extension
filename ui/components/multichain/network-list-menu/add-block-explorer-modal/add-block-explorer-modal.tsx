@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   ButtonPrimary,
@@ -20,20 +20,18 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { isWebUrl } from '../../../../../app/scripts/lib/util';
 
-const AddRpcUrlModal = ({
+const AddBlockExplorerModal = ({
   onAdded,
 }: {
-  onAdded: (url: string, name?: string) => void;
+  onAdded: (url: string) => void;
 }) => {
   const t = useI18nContext();
-
   const [url, setUrl] = useState<string>();
   const [error, setError] = useState<string>();
-  const nameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (url && !isWebUrl(url)) {
-      setError(isWebUrl(`https://${url}`) ? t('urlErrorMsg') : t('invalidRPC'));
+    if (url && url?.length > 0 && !isWebUrl(url)) {
+      setError(t('urlErrorMsg'));
     } else {
       setError(undefined);
     }
@@ -41,52 +39,34 @@ const AddRpcUrlModal = ({
 
   return (
     <Box
-      className="add-rpc-modal"
+      className="add-block-explorer-modal"
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.spaceBetween}
       height={BlockSize.Full}
     >
-      <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
+      <Box paddingLeft={4} paddingRight={4}>
         <FormTextField
-          id="rpcUrl"
           size={FormTextFieldSize.Lg}
-          error={Boolean(error)}
-          label={t('rpcUrl')}
-          placeholder={t('enterRpcUrl')}
           textFieldProps={{ borderRadius: BorderRadius.LG }}
+          error={Boolean(error)}
+          id="additional-rpc-url"
+          label={t('blockExplorerUrl')}
+          inputProps={{
+            'data-testid': 'explorer-url-input',
+          }}
           labelProps={{
             children: undefined,
             variant: TextVariant.bodyMdMedium,
-          }}
-          inputProps={{
-            'data-testid': 'rpc-url-input-test',
           }}
           onChange={(e) => setUrl(e.target.value)}
         />
         {error && (
           <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>
         )}
-        <FormTextField
-          id="rpcName"
-          size={FormTextFieldSize.Lg}
-          inputProps={{
-            'data-testid': 'rpc-name-input-test',
-          }}
-          placeholder={t('enterANameToIdentifyTheUrl')}
-          paddingTop={4}
-          inputRef={nameRef}
-          label={t('rpcNameOptional')}
-          textFieldProps={{ borderRadius: BorderRadius.LG }}
-          labelProps={{
-            children: undefined,
-            variant: TextVariant.bodyMdMedium,
-          }}
-        />
       </Box>
-
       <Box
-        className="add-rpc-modal__footer"
+        className="add-block-explorer-modal__footer"
         backgroundColor={BackgroundColor.backgroundDefault}
         padding={4}
         width={BlockSize.Full}
@@ -96,8 +76,8 @@ const AddRpcUrlModal = ({
           disabled={Boolean(error)}
           size={ButtonPrimarySize.Lg}
           onClick={async () => {
-            if (url && !error && nameRef.current) {
-              onAdded(url, nameRef.current.value || undefined);
+            if (url) {
+              onAdded(url);
             }
           }}
         >
@@ -108,4 +88,4 @@ const AddRpcUrlModal = ({
   );
 };
 
-export default AddRpcUrlModal;
+export default AddBlockExplorerModal;
