@@ -222,7 +222,7 @@ export function getSwcLoader(
           importAssertions: true,
         },
         experimental: {
-          keepImportAttributes: false,
+          keepImportAttributes: true,
         },
       },
     } as const satisfies SwcLoaderOptions,
