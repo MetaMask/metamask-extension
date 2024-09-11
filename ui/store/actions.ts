@@ -5362,6 +5362,31 @@ export function fetchAndUpdateMetamaskNotifications(): ThunkAction<
 }
 
 /**
+ * Account syncing test.
+ *
+ *
+ * @returns A thunk action that, when dispatched, attempts to fetch and update MetaMask notifications.
+ */
+export function syncInternalAccountsWithUserStorage(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      const response = await submitRequestToBackground(
+        'syncInternalAccountsWithUserStorage',
+      );
+      return response;
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
  * Marks MetaMask notifications as read.
  *
  * This function sends a request to the background script to mark the specified notifications as read.

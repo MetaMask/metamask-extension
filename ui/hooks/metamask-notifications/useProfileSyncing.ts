@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import type { InternalAccount } from '@metamask/keyring-api';
 import log from 'loglevel';
 import {
@@ -7,7 +7,12 @@ import {
   enableProfileSyncing as enableProfileSyncingAction,
   setIsProfileSyncingEnabled as setIsProfileSyncingEnabledAction,
   hideLoadingIndication,
+  syncInternalAccountsWithUserStorage,
 } from '../../store/actions';
+
+import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
+import { getUseExternalServices } from '../../selectors';
+import { getIsUnlocked } from '../../ducks/metamask/metamask';
 
 // Define KeyringType interface
 export type KeyringType = {
@@ -112,3 +117,41 @@ export function useSetIsProfileSyncingEnabled(): {
 
   return { setIsProfileSyncingEnabled, error };
 }
+
+export const useAccountSyncing = () => {
+  const dispatch = useDispatch();
+
+  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const basicFunctionality = useSelector(getUseExternalServices);
+  const isUnlocked = useSelector(getIsUnlocked);
+
+  const shouldDispatchAccountSyncing = useMemo(
+    () => basicFunctionality && isProfileSyncingEnabled && isUnlocked,
+    [basicFunctionality, isProfileSyncingEnabled, isUnlocked],
+  );
+
+  const dispatchAccountSyncing = useCallback(async () => {
+    try {
+      if (!shouldDispatchAccountSyncing) {
+        return;
+      }
+
+      await dispatch(syncInternalAccountsWithUserStorage());
+    } catch (e) {
+      log.error(e);
+      throw e;
+    }
+  }, [dispatch, shouldDispatchAccountSyncing]);
+
+  const setupAccountSyncingEffect = () => {
+    useEffect(() => {
+      dispatchAccountSyncing();
+    }, [shouldDispatchAccountSyncing, dispatchAccountSyncing]);
+  };
+
+  return {
+    dispatchAccountSyncing,
+    setupAccountSyncingEffect,
+    shouldDispatchAccountSyncing,
+  };
+};

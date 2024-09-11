@@ -1472,10 +1472,14 @@ export default class MetamaskController extends EventEmitter {
       getMetaMetricsState: () =>
         this.metaMetricsController.state.participateInMetaMetrics ?? false,
       state: initState.UserStorageController,
+      env: {
+        isAccountSyncingEnabled: true,
+      },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
         allowedActions: [
           'KeyringController:getState',
+          'KeyringController:addNewAccount',
           'SnapController:handleRequest',
           'AuthenticationController:getBearerToken',
           'AuthenticationController:getSessionProfile',
@@ -1484,8 +1488,16 @@ export default class MetamaskController extends EventEmitter {
           'AuthenticationController:performSignIn',
           'NotificationServicesController:disableNotificationServices',
           'NotificationServicesController:selectIsNotificationServicesEnabled',
+          'AccountsController:listAccounts',
+          'AccountsController:updateAccountMetadata',
+          'AccountsController:getAccountByAddress',
         ],
-        allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
+        allowedEvents: [
+          'KeyringController:lock',
+          'KeyringController:unlock',
+          'AccountsController:accountAdded',
+          'AccountsController:accountRenamed',
+        ],
       }),
     });
 
@@ -3875,6 +3887,10 @@ export default class MetamaskController extends EventEmitter {
       ),
       setIsProfileSyncingEnabled:
         userStorageController.setIsProfileSyncingEnabled.bind(
+          userStorageController,
+        ),
+      syncInternalAccountsWithUserStorage:
+        userStorageController.syncInternalAccountsWithUserStorage.bind(
           userStorageController,
         ),
 
