@@ -58,7 +58,9 @@ export const MultichainFee = ({
             <Text color={TextColor.textAlternative} marginRight={2}>
               {feeInFiat}
             </Text>
-            <Text>{displayValueFee}</Text>
+            <Text data-testid="multichain-confirmation-fee">
+              {displayValueFee}
+            </Text>
           </>
         }
         tooltipText="The fee is an estimate and may vary based on network conditions."

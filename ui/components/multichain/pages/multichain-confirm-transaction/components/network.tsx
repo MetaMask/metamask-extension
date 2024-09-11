@@ -47,7 +47,12 @@ export const MultichainTransactionNetwork = ({
           size={AvatarNetworkSize.Xs}
           marginRight={2}
         />
-        <Text color={TextColor.textDefault}>{network.nickname}</Text>
+        <Text
+          color={TextColor.textDefault}
+          data-testid="multichain-confirmation-destination-network"
+        >
+          {network.nickname}
+        </Text>
       </Box>
     </Box>
   );

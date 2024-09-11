@@ -1,6 +1,5 @@
 import React from 'react';
-// eslint-disable-next-line import/no-named-as-default
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 import { AvatarToken, Box, Text } from '../../../../component-library';
 import {
   AlignItems,
@@ -11,6 +10,7 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { DraftTransaction } from '../../../../../ducks/multichain-send/multichain-send';
+import { useMultichainCurrencyDisplayByAsset } from '../../../../../hooks/useMultichainCurrencyDisplayByAsset';
 
 export type MultichainConfirmationAssetTotalProps = {
   sendAsset: DraftTransaction['transactionParams']['sendAsset'];
@@ -26,6 +26,11 @@ export const MultichainConfirmationAssetTotal = ({
     .div(new BigNumber(10).pow(sendAsset.assetDetails.details.decimals))
     .toString();
 
+  const { feeInFiat: totalFiatBalance } = useMultichainCurrencyDisplayByAsset({
+    assetDetails: sendAsset.assetDetails,
+    amount: totalBalance,
+  });
+
   return (
     <Box
       display={Display.Flex}
@@ -39,13 +44,20 @@ export const MultichainConfirmationAssetTotal = ({
         src={sendAsset.assetDetails.image}
         marginBottom={2}
       />
-      <Text variant={TextVariant.headingLg} marginBottom={2}>
+      <Text
+        variant={TextVariant.headingLg}
+        marginBottom={2}
+        data-testid="multichain-confirmation-total-balance"
+      >
         {`${totalBalance} ${sendAsset.assetDetails.symbol}`}
       </Text>
       <Text
         variant={TextVariant.bodyMdMedium}
         color={TextColor.textAlternative}
-      ></Text>
+        data-testid="multichain-confirmation-total-fiat-balance"
+      >
+        {totalFiatBalance}
+      </Text>
     </Box>
   );
 };

@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-// eslint-disable-next-line import/no-named-as-default
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 import {
   AnyAction,
   createAsyncThunk,
@@ -118,9 +117,9 @@ export type TransactionParams = {
 };
 
 export enum SendStage {
-  DRAFT = 'draft',
-  PUBLISHING = 'publishing',
-  PUBLISHED = 'published',
+  DRAFT = 'DRAFT',
+  PUBLISHING = 'PUBLISHING',
+  PUBLISHED = 'PUBLISHED',
 }
 
 export enum SendStatus {

@@ -27,6 +27,7 @@ import {
 } from '../../shared/constants/network';
 import {
   DraftTransaction,
+  FeeLevel,
   MultichainSendState,
 } from '../ducks/multichain-send/multichain-send';
 import { AccountsState } from './accounts';
@@ -76,7 +77,7 @@ export type MultichainNetwork = {
   ProviderConfigWithImageUrlAndExplorerUrl | MultichainProviderConfig;
 };
 
-export type MultchainReduxSendState = {
+export type MultichainReduxSendState = {
   multichainSend: MultichainSendState;
 };
 
@@ -435,13 +436,13 @@ export function getMultichainConversionRate(
 }
 
 export function getCurrentMultichainDraftTransactionId(
-  state: MultchainReduxSendState,
+  state: MultichainReduxSendState,
 ) {
   return state.multichainSend.currentTransactionUUID;
 }
 
 export function getCurrentMultichainDraftTransaction(
-  state: MultchainReduxSendState,
+  state: MultichainReduxSendState,
 ): DraftTransaction | null {
   const draftTransactionExists = getCurrentMultichainDraftTransactionId(state);
   if (!draftTransactionExists) {
@@ -453,7 +454,7 @@ export function getCurrentMultichainDraftTransaction(
 }
 
 export function getCurrentMultichainDraftTransactionRecipient(
-  state: MultchainReduxSendState,
+  state: MultichainReduxSendState,
 ): DraftTransaction['transactionParams']['recipient'] {
   const draftTransaction = getCurrentMultichainDraftTransaction(state);
 
@@ -466,4 +467,24 @@ export function getCurrentMultichainDraftTransactionRecipient(
   }
 
   return draftTransaction.transactionParams.recipient;
+}
+
+export function getMultichainDraftTransactionFee(
+  state: MultichainReduxSendState,
+): DraftTransaction['transactionParams']['fee'] {
+  const draftTransaction = getCurrentMultichainDraftTransaction(state);
+
+  if (!draftTransaction) {
+    return {
+      fee: '0',
+      unit: '',
+      feeInFiat: '',
+      feeLevel: FeeLevel.Average,
+      confirmationTime: '',
+      error: '',
+      isLoading: false,
+    };
+  }
+
+  return draftTransaction.transactionParams.fee;
 }

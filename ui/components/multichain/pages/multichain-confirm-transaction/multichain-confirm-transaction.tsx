@@ -19,7 +19,6 @@ import {
 import SenderToRecipient from '../../../ui/sender-to-recipient';
 import {
   clearDraft,
-  DraftTransaction,
   signAndSend,
 } from '../../../../ducks/multichain-send/multichain-send';
 import { MultichainFee } from '../multichain-send/components/fee';
@@ -40,12 +39,14 @@ export const MultichainConfirmTransactionPage = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const transactionId: string = useSelector(
-    getCurrentMultichainDraftTransactionId,
-  );
-  const transaction: DraftTransaction = useSelector(
-    getCurrentMultichainDraftTransaction,
-  );
+  const transactionId = useSelector(getCurrentMultichainDraftTransactionId);
+  const transaction = useSelector(getCurrentMultichainDraftTransaction);
+
+  if (!transaction || !transactionId) {
+    history.push('/multichain-send');
+    return null;
+  }
+
   const selectedAccount = useSelector((state) =>
     getInternalAccount(state, transaction.transactionParams.sender.id),
   );

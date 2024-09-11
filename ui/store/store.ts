@@ -86,6 +86,13 @@ type TemporaryBackgroundState = {
     selectedAccount: string;
   };
   keyrings: { type: string; accounts: string[] }[];
+  rates: {
+    [key: string]: {
+      conversionDate: number;
+      conversionRate: number;
+      usdConversionRate: number;
+    };
+  };
 };
 
 type RootReducerReturnType = ReturnType<typeof rootReducer>;

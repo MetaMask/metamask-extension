@@ -24,8 +24,7 @@ import {
   Network as BitcoinNetwork,
   validate,
 } from 'bitcoin-address-validation';
-// eslint-disable-next-line import/no-named-as-default
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 import {
   DraftTransaction,
   FeeLevel,
@@ -132,11 +131,6 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
       };
       return this.transactionParams.fee;
     }
-
-    console.log(
-      'running estimate gas',
-      this.transactionParams.sendAsset.amount,
-    );
 
     const estimatedFee = (await handleSnapRequest({
       snapId: BITCOIN_WALLET_SNAP_ID,
@@ -416,8 +410,6 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
       txId: string;
       transaction: string;
     };
-
-    console.log('sign transaction result', tx);
 
     return tx.transaction;
   }

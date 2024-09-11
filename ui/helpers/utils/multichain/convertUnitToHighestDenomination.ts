@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/no-named-as-default
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 import { NativeAsset } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 
 export const convertUnitToHighestDenomination = ({
