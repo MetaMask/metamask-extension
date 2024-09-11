@@ -5145,6 +5145,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-json-rpc-middleware@npm:^12.1.1":
+  version: 12.1.2
+  resolution: "@metamask/eth-json-rpc-middleware@npm:12.1.2"
+  dependencies:
+    "@metamask/eth-block-tracker": "npm:^9.0.3"
+    "@metamask/eth-json-rpc-provider": "npm:^3.0.2"
+    "@metamask/eth-sig-util": "npm:^7.0.0"
+    "@metamask/json-rpc-engine": "npm:^8.0.2"
+    "@metamask/rpc-errors": "npm:^6.0.0"
+    "@metamask/utils": "npm:^8.1.0"
+    klona: "npm:^2.0.6"
+    pify: "npm:^5.0.0"
+    safe-stable-stringify: "npm:^2.4.3"
+  checksum: 10/1c0f186a35765394a28695bcade84c636b0c92cf3252219d1e9cbdd31231ad09fea5ec7bff7d31e2c7fe4d2158f15b54a5e42166549b69af1f7e475a1c7ae536
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-json-rpc-middleware@patch:@metamask/eth-json-rpc-middleware@npm%3A14.0.1#~/.yarn/patches/@metamask-eth-json-rpc-middleware-npm-14.0.1-b6c2ccbe8c.patch":
   version: 14.0.1
   resolution: "@metamask/eth-json-rpc-middleware@patch:@metamask/eth-json-rpc-middleware@npm%3A14.0.1#~/.yarn/patches/@metamask-eth-json-rpc-middleware-npm-14.0.1-b6c2ccbe8c.patch::version=14.0.1&hash=96e7e0"
