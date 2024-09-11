@@ -1,46 +1,15 @@
-import { ApprovalType } from '@metamask/controller-utils';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { TransactionMeta } from '@metamask/transaction-controller';
+
 import mockState from '../../../../../test/data/mock-state.json';
+import {
+  getMockConfirmStateForTransaction,
+  getMockPersonalSignConfirmStateForRequest,
+} from '../../../../../test/data/confirmations/helper';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
+import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+import { unapprovedPersonalSignMsg } from '../../../../../test/data/confirmations/personal_sign';
+import { SignatureRequestType } from '../../types/confirm';
 import useConfirmationOriginAlerts from './useConfirmationOriginAlerts';
-
-const signatureConfirmationMock = {
-  id: '1',
-  status: 'unapproved',
-  time: new Date().getTime(),
-  type: ApprovalType.PersonalSign,
-  msgParams: {
-    origin: 'https://iոfura.io/gnosis',
-  },
-};
-
-const transactionConfirmationMock = {
-  id: '1',
-  status: 'unapproved',
-  time: new Date().getTime(),
-  type: ApprovalType.Transaction,
-  origin: 'https://iոfura.io/gnosis',
-};
-
-const getMockExpectedState = (confirmationMock: Record<string, unknown>) => ({
-  ...mockState,
-  metamask: {
-    ...mockState.metamask,
-    unapprovedPersonalMsgs: {
-      '1': { ...confirmationMock },
-    },
-    pendingApprovals: {
-      '1': {
-        ...confirmationMock,
-        origin: 'origin',
-        requestData: {},
-        requestState: null,
-        expectsResult: false,
-      },
-    },
-    preferences: { redesignedConfirmationsEnabled: true },
-  },
-  confirm: { currentConfirmation: confirmationMock },
-});
 
 const expectedAlert = [
   {
@@ -59,7 +28,7 @@ const expectedAlert = [
 
 describe('useConfirmationOriginAlerts', () => {
   it('returns an empty array when there is no current confirmation', () => {
-    const { result } = renderHookWithProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationOriginAlerts(),
       mockState,
     );
@@ -67,17 +36,29 @@ describe('useConfirmationOriginAlerts', () => {
   });
 
   it('returns an alert for signature with special characters in origin', () => {
-    const { result } = renderHookWithProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationOriginAlerts(),
-      getMockExpectedState(signatureConfirmationMock),
+      getMockPersonalSignConfirmStateForRequest({
+        ...unapprovedPersonalSignMsg,
+        msgParams: {
+          ...unapprovedPersonalSignMsg.msgParams,
+          origin: 'https://iոfura.io/gnosis',
+        },
+      } as SignatureRequestType),
     );
     expect(result.current).toEqual(expectedAlert);
   });
 
   it('returns an alert for transaction with special characters in origin', () => {
-    const { result } = renderHookWithProvider(
+    const contractInteraction = genUnapprovedContractInteractionConfirmation({
+      chainId: mockState.metamask.networkConfigurations.goerli.chainId,
+    });
+    const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationOriginAlerts(),
-      getMockExpectedState(transactionConfirmationMock),
+      getMockConfirmStateForTransaction({
+        ...contractInteraction,
+        origin: 'https://iոfura.io/gnosis',
+      } as TransactionMeta),
     );
     expect(result.current).toEqual(expectedAlert);
   });
