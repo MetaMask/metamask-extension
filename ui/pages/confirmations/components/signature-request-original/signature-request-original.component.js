@@ -16,10 +16,9 @@ import {
 } from '../../../../helpers/utils/util';
 import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
 import SiteOrigin from '../../../../components/ui/site-origin';
-import Typography from '../../../../components/ui/typography/typography';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import {
-  TypographyVariant,
+  TextVariant,
   FontWeight,
   TextAlign,
   TextColor,
@@ -28,17 +27,16 @@ import {
   IconColor,
   Display,
   BlockSize,
-  TextVariant,
   BackgroundColor,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/constants/design-system';
 import {
   ButtonLink,
+  Text,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   Box,
   Icon,
   IconName,
-  Text,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../components/component-library';
 
@@ -199,24 +197,24 @@ export default class SignatureRequestOriginal extends Component {
             )
           }
         </div>
-        <Typography
+        <Text
           className="request-signature__content__title"
-          variant={TypographyVariant.H3}
+          variant={TextVariant.headingMd}
           fontWeight={FontWeight.Bold}
         >
           {this.context.t('sigRequest')}
-        </Typography>
-        <Typography
+        </Text>
+        <Text
           className="request-signature__content__subtitle"
-          variant={TypographyVariant.H7}
+          variant={TextVariant.bodySm}
           color={TextColor.textAlternative}
-          align={TextAlign.Center}
+          textAlign={TextAlign.Center}
           margin={12}
           marginTop={3}
         >
           {this.context.t('signatureRequestGuidance')}
-        </Typography>
-        <div className={classnames('request-signature__notice')}>{notice}</div>
+        </Text>
+        <Text className="request-signature__notice">{notice}</Text>
         <div className="request-signature__rows">
           {rows.map(({ name, value }, index) => {
             if (typeof value === 'boolean') {
@@ -228,12 +226,12 @@ export default class SignatureRequestOriginal extends Component {
                 className="request-signature__row"
                 key={`request-signature-row-${index}`}
               >
-                <div className="request-signature__row-title">
+                <Text className="request-signature__row-title" variant={TextVariant.bodyMd}>
                   {sanitizeString(`${name}:`)}
-                </div>
-                <div className="request-signature__row-value">
+                </Text>
+                <Text className="request-signature__row-value" variant={TextVariant.bodyMd}>
                   {sanitizeString(value)}
-                </div>
+                </Text>
               </div>
             );
           })}
