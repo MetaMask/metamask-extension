@@ -1,0 +1,11 @@
+diff --git a/dist/extension-provider/createExternalExtensionProvider.mjs b/dist/extension-provider/createExternalExtensionProvider.mjs
+index f2aa9285d84cd5e25c20f5202437c476cdacc326..121a9099e456d3444d8aae79574ba9c53e7f2699 100644
+--- a/dist/extension-provider/createExternalExtensionProvider.mjs
++++ b/dist/extension-provider/createExternalExtensionProvider.mjs
+@@ -1,5 +1,4 @@
+-import $detectbrowser from "detect-browser";
+-const { detect } = $detectbrowser;
++import { detect } from "detect-browser";
+ import $extensionportstream from "extension-port-stream";
+ const { PortDuplexStream: PortStream } = $extensionportstream;
+ import config from "./external-extension-config.json" assert { type: "json" };
