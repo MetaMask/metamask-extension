@@ -39,8 +39,6 @@ export const latestPendingConfirmationSelector = createDeepEqualSelector(
   (latestPendingConfirmation) => latestPendingConfirmation,
 );
 
-export const confirmSelector = (state: ConfirmMetamaskState) => state.confirm;
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getIsRedesignedConfirmationsDeveloperEnabled(state: any) {
   return getPreferences(state).isRedesignedConfirmationsDeveloperEnabled;

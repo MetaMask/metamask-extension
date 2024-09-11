@@ -25,6 +25,8 @@ import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { SignatureRequestType } from '../../../types/confirm';
+import * as confirmContext from '../../../context/confirm';
+
 import Footer from './footer';
 
 jest.mock('react-redux', () => ({
@@ -56,14 +58,7 @@ describe('ConfirmFooter', () => {
   });
 
   it('should match snapshot with transaction confirmation', () => {
-    const { container } = render(
-      getMockContractInteractionConfirmState({
-        confirm: {
-          isScrollToBottomCompleted: true,
-        },
-        metamask: {},
-      }),
-    );
+    const { container } = render(getMockContractInteractionConfirmState());
     expect(container).toMatchSnapshot();
   });
 
@@ -77,12 +72,7 @@ describe('ConfirmFooter', () => {
 
   describe('renders enabled "Confirm" Button', () => {
     it('when isScrollToBottomCompleted is true', () => {
-      const mockStateTypedSign = getMockTypedSignConfirmState({
-        confirm: {
-          isScrollToBottomCompleted: true,
-        },
-        metamask: {},
-      });
+      const mockStateTypedSign = getMockTypedSignConfirmState();
       const { getByText } = render(mockStateTypedSign);
 
       const confirmButton = getByText('Confirm');
@@ -90,15 +80,13 @@ describe('ConfirmFooter', () => {
     });
 
     it('when the confirmation is a Sign-in With Ethereum (SIWE) request', () => {
-      const mockStateSIWE = getMockPersonalSignConfirmStateForRequest(
-        signatureRequestSIWE,
-        {
-          confirm: {
-            isScrollToBottomCompleted: false,
-          },
-          metamask: {},
-        },
-      );
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: signatureRequestSIWE,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: () => undefined,
+      });
+      const mockStateSIWE =
+        getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
       const { getByText } = render(mockStateSIWE);
 
       const confirmButton = getByText('Confirm');
@@ -106,17 +94,8 @@ describe('ConfirmFooter', () => {
     });
 
     it('when the confirmation is a Permit with the transaction simulation setting enabled', () => {
-      const mockStatePermit = getMockTypedSignConfirmStateForRequest(
-        permitSignatureMsg,
-        {
-          confirm: {
-            isScrollToBottomCompleted: false,
-          },
-          metamask: {
-            useTransactionSimulations: true,
-          },
-        },
-      );
+      const mockStatePermit =
+        getMockTypedSignConfirmStateForRequest(permitSignatureMsg);
       const { getByText } = render(mockStatePermit);
 
       const confirmButton = getByText('Confirm');
@@ -126,12 +105,14 @@ describe('ConfirmFooter', () => {
 
   describe('renders disabled "Confirm" Button', () => {
     it('when isScrollToBottomCompleted is false', () => {
-      const mockStateTypedSign = getMockTypedSignConfirmState({
-        confirm: {
-          isScrollToBottomCompleted: false,
-        },
-        metamask: {},
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: unapprovedPersonalSignMsg,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: () => undefined,
       });
+      const mockStateTypedSign = getMockPersonalSignConfirmStateForRequest(
+        unapprovedPersonalSignMsg,
+      );
       const { getByText } = render(mockStateTypedSign);
 
       const confirmButton = getByText('Confirm');
@@ -139,17 +120,13 @@ describe('ConfirmFooter', () => {
     });
 
     it('when the confirmation is a Permit with the transaction simulation setting disabled', () => {
-      const mockStatePermit = getMockTypedSignConfirmStateForRequest(
-        permitSignatureMsg,
-        {
-          confirm: {
-            isScrollToBottomCompleted: false,
-          },
-          metamask: {
-            useTransactionSimulations: false,
-          },
-        },
-      );
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: permitSignatureMsg,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: () => undefined,
+      });
+      const mockStatePermit =
+        getMockTypedSignConfirmStateForRequest(permitSignatureMsg);
       const { getByText } = render(mockStatePermit);
 
       const confirmButton = getByText('Confirm');
