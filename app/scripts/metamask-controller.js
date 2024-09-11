@@ -5642,8 +5642,6 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.getNetworkConfigurationByChainId.bind(
             this.networkController,
           ),
-        getCurrentChainId: () =>
-          getCurrentChainId({ metamask: this.networkController.state }),
         getCurrentChainIdForDomain: (domain) => {
           const networkClientId =
             this.selectedNetworkController.getNetworkClientIdForDomain(domain);
