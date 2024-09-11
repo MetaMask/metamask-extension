@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.2.3]
+### Fixed
+- Fixes dapps integrating with the cosmos chain that rely on setting the `verifyingContract` field of a signature to `"cosmos"`
+
 ## [12.2.2]
 ### Fixed
 - This build was needed to fix release publishing on our master branch. It also includes the addition of the missing v12.2.0 changelog. Functionality and code is equivalent to v12.2.0.
@@ -5044,7 +5048,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.2.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.2.3...HEAD
+[12.2.3]: https://github.com/MetaMask/metamask-extension/compare/v12.2.2...v12.2.3
 [12.2.2]: https://github.com/MetaMask/metamask-extension/compare/v12.2.1...v12.2.2
 [12.2.1]: https://github.com/MetaMask/metamask-extension/compare/v12.2.0...v12.2.1
 [12.2.0]: https://github.com/MetaMask/metamask-extension/compare/v12.1.3...v12.2.0
