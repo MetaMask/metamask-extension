@@ -177,12 +177,16 @@ export default function GasTiming({
 
   return (
     <Box display={Display.Flex} flexWrap={FlexWrap.Wrap}>
-      <Text color={TextColor.textAlternative} paddingInlineEnd={1}>
+      <Text
+        color={TextColor.textAlternative}
+        variant={TextVariant.bodyMd}
+        paddingInlineEnd={1}
+      >
         {text}
       </Text>
 
       {time && (
-        <Text>
+        <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
           <span data-testid="gas-timing-time">~{time}</span>
         </Text>
       )}
