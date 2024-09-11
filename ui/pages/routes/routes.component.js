@@ -780,7 +780,7 @@ export default class Routes extends Component {
               <AvatarNetwork
                 size={AvatarAccountSize.Md}
                 borderColor={BorderColor.transparent}
-                src={currentNetwork?.rpcPrefs.imageUrl}
+                src={currentNetwork?.rpcPrefs.imageUrl || ''}
                 name={currentNetwork?.nickname}
               />
             }
