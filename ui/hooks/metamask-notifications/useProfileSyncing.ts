@@ -10,6 +10,7 @@ import {
   syncInternalAccountsWithUserStorage,
 } from '../../store/actions';
 
+import { selectIsSignedIn } from '../../selectors/metamask-notifications/authentication';
 import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
 import { getUseExternalServices } from '../../selectors';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
@@ -124,10 +125,12 @@ export const useAccountSyncing = () => {
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
   const basicFunctionality = useSelector(getUseExternalServices);
   const isUnlocked = useSelector(getIsUnlocked);
+  const isSignedIn = useSelector(selectIsSignedIn);
 
   const shouldDispatchAccountSyncing = useMemo(
-    () => basicFunctionality && isProfileSyncingEnabled && isUnlocked,
-    [basicFunctionality, isProfileSyncingEnabled, isUnlocked],
+    () =>
+      basicFunctionality && isProfileSyncingEnabled && isUnlocked && isSignedIn,
+    [basicFunctionality, isProfileSyncingEnabled, isUnlocked, isSignedIn],
   );
 
   const dispatchAccountSyncing = useCallback(async () => {
@@ -143,15 +146,15 @@ export const useAccountSyncing = () => {
     }
   }, [dispatch, shouldDispatchAccountSyncing]);
 
-  const setupAccountSyncingEffect = () => {
-    useEffect(() => {
-      dispatchAccountSyncing();
-    }, [shouldDispatchAccountSyncing, dispatchAccountSyncing]);
-  };
-
   return {
     dispatchAccountSyncing,
-    setupAccountSyncingEffect,
-    shouldDispatchAccountSyncing,
   };
+};
+
+export const useAccountSyncingEffect = () => {
+  const { dispatchAccountSyncing } = useAccountSyncing();
+
+  useEffect(() => {
+    dispatchAccountSyncing();
+  }, [dispatchAccountSyncing]);
 };

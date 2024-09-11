@@ -29,6 +29,11 @@ jest.mock('./useProfileSyncing', () => ({
   useEnableProfileSyncing: jest.fn(() => ({
     enableProfileSyncing: jest.fn(),
   })),
+  useAccountSyncing: jest.fn(() => ({
+    dispatchAccountSyncing: jest.fn(),
+    setupAccountSyncingEffect: jest.fn(),
+    shouldDispatchAccountSyncing: jest.fn(),
+  })),
 }));
 
 describe('useNotifications', () => {

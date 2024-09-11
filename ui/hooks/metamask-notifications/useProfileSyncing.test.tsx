@@ -4,10 +4,12 @@ import { renderHook, act } from '@testing-library/react-hooks';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { Store } from 'redux';
+import { waitFor } from '@testing-library/react';
 import * as actions from '../../store/actions';
 import {
   useEnableProfileSyncing,
   useDisableProfileSyncing,
+  useAccountSyncingEffect,
 } from './useProfileSyncing';
 
 const middlewares = [thunk];
@@ -20,6 +22,7 @@ jest.mock('../../store/actions', () => ({
   disableProfileSyncing: jest.fn(),
   showLoadingIndication: jest.fn(),
   hideLoadingIndication: jest.fn(),
+  syncInternalAccountsWithUserStorage: jest.fn(),
 }));
 
 describe('useProfileSyncing', () => {
@@ -78,5 +81,89 @@ describe('useProfileSyncing', () => {
     });
 
     expect(actions.disableProfileSyncing).toHaveBeenCalled();
+  });
+
+  it('should dispatch account syncing when conditions are met', async () => {
+    store = mockStore({
+      metamask: {
+        isProfileSyncingEnabled: true,
+        isSignedIn: true,
+        isUnlocked: true,
+        useExternalServices: true,
+        participateInMetaMetrics: false,
+        internalAccounts: {
+          accounts: {
+            '0x123': {
+              address: '0x123',
+              id: 'account1',
+              metadata: {},
+              options: {},
+              methods: [],
+              type: 'eip155:eoa',
+            },
+          },
+        },
+      },
+    });
+
+    store.dispatch = jest.fn().mockImplementation((action) => {
+      if (typeof action === 'function') {
+        return action(store.dispatch, store.getState);
+      }
+      return Promise.resolve();
+    });
+
+    jest.clearAllMocks();
+
+    renderHook(() => useAccountSyncingEffect(), {
+      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+    });
+
+    await waitFor(() => {
+      expect(actions.syncInternalAccountsWithUserStorage).toHaveBeenCalled();
+    });
+  });
+
+  it('should not dispatch account syncing when conditions are not met', async () => {
+    store = mockStore({
+      metamask: {
+        isProfileSyncingEnabled: false,
+        isSignedIn: false,
+        isUnlocked: false,
+        useExternalServices: true,
+        participateInMetaMetrics: false,
+        internalAccounts: {
+          accounts: {
+            '0x123': {
+              address: '0x123',
+              id: 'account1',
+              metadata: {},
+              options: {},
+              methods: [],
+              type: 'eip155:eoa',
+            },
+          },
+        },
+      },
+    });
+
+    store.dispatch = jest.fn().mockImplementation((action) => {
+      if (typeof action === 'function') {
+        return action(store.dispatch, store.getState);
+      }
+      return Promise.resolve();
+    });
+
+    jest.clearAllMocks();
+
+    renderHook(() => useAccountSyncingEffect(), {
+      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+    });
+
+    await waitFor(() => {
+      expect(
+        actions.syncInternalAccountsWithUserStorage,
+      ).not.toHaveBeenCalled();
+    });
   });
 });
