@@ -467,6 +467,8 @@ export default class MetaMetricsController {
     if (participateInMetaMetrics) {
       this.trackEventsAfterMetricsOptIn();
       this.clearEventsAfterMetricsOptIn();
+    } else if (this.state.marketingCampaignCookieId) {
+      this.setMarketingCampaignCookieId(null);
     }
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -481,7 +483,7 @@ export default class MetaMetricsController {
 
     this.store.updateState({ dataCollectionForMarketing });
 
-    if (!dataCollectionForMarketing) {
+    if (!dataCollectionForMarketing && this.state.marketingCampaignCookieId) {
       this.setMarketingCampaignCookieId(null);
     }
 
