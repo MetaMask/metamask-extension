@@ -38,14 +38,11 @@ function MultiRpcEditModal() {
       onClose={() => dispatch(setShowMultiRpcModal(false))}
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
-      className="mm-modal__custom-scrollbar auto-detect-in-modal"
       data-testid="multi-rpc-edit-modal"
       autoFocus={false}
     >
       <ModalOverlay />
-      <ModalContent
-        modalDialogProps={{ className: 'multi-rpc-edit-modal__dialog' }}
-      >
+      <ModalContent>
         <ModalBody display={Display.Flex} flexDirection={FlexDirection.Column}>
           <Box
             display={Display.Flex}
@@ -67,7 +64,7 @@ function MultiRpcEditModal() {
             {t('supportMultiRpcInformation')}
           </Text>
 
-          <Box className="new-network-list__networks-container">
+          <Box paddingBottom={6}>
             <Box marginTop={isPopUp ? 0 : 4} marginBottom={1}>
               {Object.values(networkConfigurations).map(
                 (networkConfiguration: NetworkConfiguration) =>

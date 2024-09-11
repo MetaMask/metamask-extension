@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { NetworkConfiguration } from '@metamask/network-controller';
+import {
+  NetworkConfiguration,
+  RpcEndpointType,
+} from '@metamask/network-controller';
 import {
   Box,
   Text,
@@ -93,7 +96,6 @@ const NetworkListItem = ({
             </Text>
           </Box>
           <Box
-            className="multichain-network-list-item__rpc-endpoint"
             display={Display.Flex}
             alignItems={AlignItems.center}
             marginLeft={4}
@@ -117,15 +119,15 @@ const NetworkListItem = ({
               referenceElement={referenceElement}
               position={PopoverPosition.Bottom}
               isOpen={isOpenTooltip}
-              matchWidth
               hasArrow
-              flip
               backgroundColor={BackgroundColor.backgroundAlternative}
               paddingTop={2}
               paddingBottom={2}
             >
               <Text variant={TextVariant.bodyXsMedium} ellipsis>
-                {stripKeyFromInfuraUrl(rpcEndpoint.url)}
+                {rpcEndpoint.type === RpcEndpointType.Infura
+                  ? rpcEndpoint.url.replace('/v3/{infuraProjectId}', '')
+                  : rpcEndpoint.url}
               </Text>
             </Popover>
           </Box>
@@ -135,9 +137,7 @@ const NetworkListItem = ({
       <Box display={Display.Flex} alignItems={AlignItems.center} marginLeft={1}>
         <Button
           type="button"
-          className="add-network__add-button"
           variant={ButtonVariant.Link}
-          data-testid="test-add-button"
           onClick={() => {
             dispatch(
               toggleNetworkMenu({
