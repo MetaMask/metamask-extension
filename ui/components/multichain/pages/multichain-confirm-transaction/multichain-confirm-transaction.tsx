@@ -62,6 +62,10 @@ export const MultichainConfirmTransactionPage = () => {
     history.push('/home');
   };
 
+  const onBack = () => {
+    history.push('/multichain-send');
+  };
+
   const confirmTranasction = async () => {
     await dispatch(
       signAndSend({
@@ -86,7 +90,8 @@ export const MultichainConfirmTransactionPage = () => {
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={onCancel}
+            data-testid="multichain-confirm-transaction-back-button"
+            onClick={onBack}
           />
         }
       >

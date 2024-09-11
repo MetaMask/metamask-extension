@@ -1,6 +1,9 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { BigNumber } from 'bignumber.js';
+import { fireEvent } from '@testing-library/react';
+import { cloneDeep } from 'lodash';
+import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockMultichainSendState from '../../../../../test/data/mock-multichain-send-state.json';
 import {
@@ -16,7 +19,17 @@ import { convertUnitToHighestDenomination } from '../../../../helpers/utils/mult
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
 import { getSelectedInternalAccount } from '../../../../selectors';
 import { shortenAddress } from '../../../../helpers/utils/util';
+import messages from '../../../../../app/_locales/en/messages.json';
 import { MultichainConfirmTransactionPage } from './multichain-confirm-transaction';
+
+const mockHistoryPush = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: () => ({
+    push: mockHistoryPush,
+  }),
+}));
 
 const baseStore = {
   ...mockMultichainSendState,
@@ -92,13 +105,19 @@ const render = (state: any) => {
   const mockState = {
     ...state,
   };
-  const store = configureMockStore()(mockState);
-  return renderWithProvider(<MultichainConfirmTransactionPage />, store);
+  const middlewares = [thunk];
+  const store = configureMockStore(middlewares)(mockState);
+  return {
+    result: renderWithProvider(<MultichainConfirmTransactionPage />, store),
+    store,
+  };
 };
 
 describe('MultichainConfirmTransactionPage', () => {
   it('renders', () => {
-    const { getByTestId } = render(baseStore);
+    const {
+      result: { getByTestId },
+    } = render(baseStore);
 
     const {
       expectedSender,
@@ -125,5 +144,63 @@ describe('MultichainConfirmTransactionPage', () => {
     expect(getByTestId('sender-to-recipient__name')).toHaveTextContent(
       expectedRecipient,
     );
+  });
+
+  it('redirects to send page if there is no draft transaction', () => {
+    const storeWithoutDraft = cloneDeep(baseStore);
+    storeWithoutDraft.multichainSend.currentTransactionUUID = '';
+    render(storeWithoutDraft);
+
+    expect(mockHistoryPush).toHaveBeenCalledWith('/multichain-send');
+  });
+
+  it('redirects to the send page when the back button is clicked', () => {
+    const {
+      result: { getByTestId },
+    } = render(baseStore);
+
+    const backButton = getByTestId(
+      'multichain-confirm-transaction-back-button',
+    );
+    fireEvent.click(backButton);
+
+    expect(mockHistoryPush).toHaveBeenCalledWith('/multichain-send');
+  });
+
+  it('redirects to home when cancel is clicked', () => {
+    const {
+      result: { getByText },
+    } = render(baseStore);
+
+    const cancelButton = getByText(messages.cancel.message);
+    fireEvent.click(cancelButton);
+
+    expect(mockHistoryPush).toHaveBeenCalledWith('/home');
+  });
+
+  it('triggers the signAndSend action when the confirm button is clicked', async () => {
+    const {
+      result: { getByText },
+      store,
+    } = render(baseStore);
+
+    const confirmButton = getByText(messages.confirm.message);
+    fireEvent.click(confirmButton);
+
+    const dispatchedActions = store.getActions();
+
+    expect(dispatchedActions).toHaveLength(1);
+    expect(dispatchedActions[0]).toStrictEqual({
+      type: 'multichainSend/signAndSend/pending',
+      meta: {
+        requestId: expect.any(String),
+        requestStatus: 'pending',
+        arg: {
+          account: getSelectedInternalAccount(baseStore),
+          transactionId: baseStore.multichainSend.currentTransactionUUID,
+        },
+      },
+      payload: undefined,
+    });
   });
 });
