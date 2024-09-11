@@ -17,8 +17,8 @@ import {
 } from '../../../component-library';
 import Tooltip from '../../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import SnapAvatar from '../snap-avatar/snap-avatar';
 import { getSnapMetadata } from '../../../../selectors';
+import { SnapIcon } from '../snap-icon';
 
 export default function SnapConnectCell({ origin, snapId }) {
   const t = useI18nContext();
@@ -33,7 +33,7 @@ export default function SnapConnectCell({ origin, snapId }) {
       paddingTop={2}
       paddingBottom={2}
     >
-      <SnapAvatar snapId={snapId} />
+      <SnapIcon snapId={snapId} />
       <Box width="full" paddingLeft={4} paddingRight={4}>
         <Text>
           {t('connectSnap', [
