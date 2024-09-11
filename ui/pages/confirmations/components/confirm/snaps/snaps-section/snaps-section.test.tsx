@@ -1,12 +1,15 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { Text } from '@metamask/snaps-sdk/jsx';
-
 import { fireEvent } from '@testing-library/react';
-import mockState from '../../../../../../../test/data/mock-state.json';
+
+import {
+  getMockPersonalSignConfirmState,
+  getMockTypedSignConfirmStateForRequest,
+} from '../../../../../../../test/data/confirmations/helper';
 import { unapprovedPersonalSignMsg } from '../../../../../../../test/data/confirmations/personal_sign';
 import { unapprovedTypedSignMsgV3 } from '../../../../../../../test/data/confirmations/typed_sign';
-import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
+import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { SnapsSection } from './snaps-section';
 
 const additionalMockState = {
@@ -44,18 +47,13 @@ const additionalMockState = {
 
 describe('SnapsSection', () => {
   it('renders section personal sign request', () => {
-    const state = {
-      ...mockState,
-      confirm: {
-        currentConfirmation: unapprovedPersonalSignMsg,
-      },
+    const state = getMockPersonalSignConfirmState({
       metamask: {
-        ...mockState.metamask,
         ...additionalMockState,
       },
-    };
+    });
     const mockStore = configureMockStore([])(state);
-    const { container, getByText } = renderWithProvider(
+    const { container, getByText } = renderWithConfirmContextProvider(
       <SnapsSection />,
       mockStore,
     );
@@ -67,18 +65,16 @@ describe('SnapsSection', () => {
   });
 
   it('renders section for typed sign request', () => {
-    const state = {
-      ...mockState,
-      confirm: {
-        currentConfirmation: unapprovedTypedSignMsgV3,
+    const state = getMockTypedSignConfirmStateForRequest(
+      unapprovedTypedSignMsgV3,
+      {
+        metamask: {
+          ...additionalMockState,
+        },
       },
-      metamask: {
-        ...mockState.metamask,
-        ...additionalMockState,
-      },
-    };
+    );
     const mockStore = configureMockStore([])(state);
-    const { container, getByText } = renderWithProvider(
+    const { container, getByText } = renderWithConfirmContextProvider(
       <SnapsSection />,
       mockStore,
     );

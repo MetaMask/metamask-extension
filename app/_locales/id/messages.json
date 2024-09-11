@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "Hubungkan dompet perangkat keras QR Anda"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "Alamat pada permintaan masuk tidak sesuai dengan alamat akun yang Anda gunakan untuk masuk."
   },
@@ -195,6 +192,9 @@
   "addAccount": {
     "message": "Tambahkan akun"
   },
+  "addAccountToMetaMask": {
+    "message": "Tambahkan akun ke MetaMask"
+  },
   "addAcquiredTokens": {
     "message": "Tambahkan token yang Anda peroleh menggunakan MetaMask"
   },
@@ -319,6 +319,9 @@
   },
   "addUrl": {
     "message": "Tambahkan URL"
+  },
+  "addingAccount": {
+    "message": "Menambahkan akun"
   },
   "addingCustomNetwork": {
     "message": "Menambahkan Jaringan"
@@ -663,9 +666,6 @@
   "back": {
     "message": "Kembali"
   },
-  "backup": {
-    "message": "Cadangkan"
-  },
   "backupApprovalInfo": {
     "message": "Kode rahasia ini diperlukan untuk memulihkan dompet seandainya perangkat Anda hilang, lupa kata sandi, harus memasang kembali MetaMask, atau ingin mengakses dompet Anda di perangkat lain."
   },
@@ -677,12 +677,6 @@
   },
   "backupNow": {
     "message": "Cadangkan sekarang"
-  },
-  "backupUserData": {
-    "message": "Cadangkan data Anda"
-  },
-  "backupUserDataDescription": {
-    "message": "Anda dapat mencadangkan data seperti kontak dan preferensi Anda."
   },
   "balance": {
     "message": "Saldo"
@@ -1537,6 +1531,9 @@
   "details": {
     "message": "Detail"
   },
+  "developerOptions": {
+    "message": "Opsi Pengembang"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” dinonaktifkan karena tidak memenuhi kenaikan minimum 10% dari biaya gas asli.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1878,6 +1875,9 @@
   },
   "existingChainId": {
     "message": "Informasi yang Anda masukkan terhubung dengan ID chain yang ada."
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "Untuk melihat dan mengonfirmasi permintaan terkini, Anda harus menyetujui atau menolak permintaan yang ada terlebih dahulu."
   },
   "existingRpcUrl": {
     "message": "URL ini terhubung dengan ID chain lain."
@@ -2905,6 +2905,10 @@
     "message": "Pilih nama panggilan...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1 meminta persetujuan Anda untuk:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "Ingin situs ini melakukan hal berikut?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3520,6 +3524,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opsional:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Pelajari cara kami melindungi privasi Anda saat mengumpulkan data penggunaan untuk profil Anda."
   },
   "onboardingMetametricsTitle": {
     "message": "Bantu kami meningkatkan MetaMask"
@@ -4201,6 +4208,12 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "Aktifkan ini untuk melihat permintaan tanda tangan dalam format yang disempurnakan."
   },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "Penyempurnaan permintaan transaksi"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "Aktifkan ini untuk melihat permintaan transaksi dalam format yang disempurnakan."
+  },
   "refreshList": {
     "message": "Segarkan daftar"
   },
@@ -4337,9 +4350,6 @@
   "restoreUserData": {
     "message": "Pulihkan data pengguna"
   },
-  "restoreUserDataDescription": {
-    "message": "Anda dapat memulihkan data seperti kontak dan preferensi dari file cadangan."
-  },
   "resultPageError": {
     "message": "Kesalahan"
   },
@@ -4400,6 +4410,9 @@
   },
   "reviewAlerts": {
     "message": "Tinjau peringatan"
+  },
+  "reviewPermissions": {
+    "message": "Tinjau izin"
   },
   "revokeAllTokensTitle": {
     "message": "Cabut izin untuk mengakses dan mentransfer seluruh $1 Anda?",
