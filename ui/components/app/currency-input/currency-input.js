@@ -55,7 +55,7 @@ export default function CurrencyInput({
 }) {
   const assetDecimals = isNaN(Number(asset?.decimals))
     ? NATIVE_CURRENCY_DECIMALS
-    : Number(asset?.decimals)
+    : Number(asset?.decimals);
 
   const preferredCurrency = useSelector(getNativeCurrency);
   const secondaryCurrency = useSelector(getCurrentCurrency);
