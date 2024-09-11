@@ -51,7 +51,7 @@ import type { Quote } from '../../../../../ducks/send/swap-and-send-utils';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { AssetPicker } from '../../../asset-picker-amount/asset-picker';
 import { TabName } from '../../../asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
-import { getAssetImageURL } from '../../../../../helpers/utils/util';
+import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { SendHexData, SendPageRow, QuoteCard } from '.';
 
 export const SendPageRecipientContent = ({
@@ -103,6 +103,10 @@ export const SendPageRecipientContent = ({
   ///: END:ONLY_INCLUDE_IF
 
   const bestQuote: Quote = useSelector(getBestQuote);
+  const nftImageURL = useGetAssetImageUrl(
+    sendAsset.details?.image ?? null,
+    ipfsGateway,
+  );
 
   const isLoadingInitialQuotes = !bestQuote && isSwapQuoteLoading;
 
@@ -169,7 +173,7 @@ export const SendPageRecipientContent = ({
                   ? nativeCurrencyImageUrl
                   : tokenList &&
                     sendAsset.details &&
-                    (getAssetImageURL(sendAsset.details?.image, ipfsGateway) ||
+                    (nftImageURL ||
                       tokenList[sendAsset.details.address?.toLowerCase()]
                         ?.iconUrl),
               symbol: sendAsset?.details?.symbol || nativeCurrencySymbol,

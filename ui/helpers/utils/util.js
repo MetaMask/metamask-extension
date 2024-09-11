@@ -562,7 +562,7 @@ export const sanitizeMessage = (msg, primaryType, types) => {
   return { value: sanitizedStruct, type: primaryType };
 };
 
-export function getAssetImageURL(image, ipfsGateway) {
+export async function getAssetImageURL(image, ipfsGateway) {
   if (!image || typeof image !== 'string') {
     return '';
   }
@@ -593,7 +593,7 @@ export function getAssetImageURL(image, ipfsGateway) {
     // In the future, we can look into solving the root cause, which might require
     // no longer using multiform's CID.parse() method within the assets-controller
     try {
-      return getFormattedIpfsUrl(ipfsGateway, image, true);
+      return await getFormattedIpfsUrl(ipfsGateway, image, true);
     } catch (e) {
       logErrorWithMessage(e);
       return '';

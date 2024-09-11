@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { getAssetImageURL } from '../../../../../helpers/utils/util';
 import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import { getCurrentNetwork, getIpfsGateway } from '../../../../../selectors';
 
@@ -23,6 +22,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
+import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 
 export default function NftFullImage() {
   const t = useI18nContext();
@@ -40,7 +40,7 @@ export default function NftFullImage() {
 
   const nftImageAlt = getNftImageAlt(nft);
   const nftSrcUrl = imageOriginal ?? image;
-  const nftImageURL = getAssetImageURL(imageOriginal ?? image, ipfsGateway);
+  const nftImageURL = useGetAssetImageUrl(imageOriginal ?? image, ipfsGateway);
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const isImageHosted = image?.startsWith('https:');
   const history = useHistory();
