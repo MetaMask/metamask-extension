@@ -24,6 +24,9 @@
 
   &__input > .mm-text-field {
     border-color: var(--color-border-muted);
+    .mm-text--overflow-wrap-anywhere {
+      overflow-wrap: normal;
+    }
   }
 
   &__panel {
