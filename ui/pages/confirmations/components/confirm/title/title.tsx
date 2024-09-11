@@ -108,6 +108,16 @@ const getDescription = (
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
       return '';
+<<<<<<< HEAD
+=======
+    case TransactionType.tokenMethodApprove:
+      if (isNFT) {
+        return t('confirmTitleDescApproveTransaction');
+      }
+      return t('confirmTitleDescERC20ApproveTransaction');
+    case TransactionType.tokenMethodIncreaseAllowance:
+      return t('confirmTitleDescPermitSignature');
+>>>>>>> 754fe6cadd (wip)
     case TransactionType.deployContract:
       return t('confirmTitleDescDeployContract');
     case TransactionType.personalSign:
