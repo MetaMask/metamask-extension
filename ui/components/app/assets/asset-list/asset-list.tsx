@@ -161,7 +161,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         setLoading={setLoading}
       />
 
-      <TokenListItem
+      {/* <TokenListItem
         onClick={() => onClickAsset(nativeCurrency)}
         title={nativeCurrency}
         // The primary and secondary currencies are subject to change based on the user's settings
@@ -193,7 +193,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         isNativeCurrency
         isStakeable={isStakeable}
         showPercentage
-      />
+      /> */}
       <TokenList
         tokens={tokenList}
         loading={loading}
