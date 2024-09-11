@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 123.1;
+export const version = 125.1;
 
 /**
  * This migration enables token auto-detection if the basic functionality toggle is on.
