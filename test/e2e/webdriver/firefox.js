@@ -43,13 +43,20 @@ class FirefoxDriver {
    * Builds a {@link FirefoxDriver} instance
    *
    * @param {object} options - the options for the build
-   * @param options.responsive
-   * @param options.port
    * @param options.constrainWindowSize
+   * @param options.driverService
+   * @param options.port
    * @param options.proxyPort
+   * @param options.responsive
    * @returns {Promise<{driver: !ThenableWebDriver, extensionUrl: string, extensionId: string}>}
    */
-  static async build({ responsive, port, constrainWindowSize, proxyPort }) {
+  static async build({
+    constrainWindowSize,
+    driverService,
+    port,
+    proxyPort,
+    responsive,
+  }) {
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX);
     const options = new firefox.Options().setProfile(templateProfile);
 
@@ -85,9 +92,11 @@ class FirefoxDriver {
 
     // For cases where Firefox is installed as snap (Linux)
     const FF_SNAP_GECKO_PATH = '/snap/bin/geckodriver';
-    const service = process.env.FIREFOX_SNAP
-      ? new firefox.ServiceBuilder(FF_SNAP_GECKO_PATH)
-      : new firefox.ServiceBuilder();
+    const service =
+      driverService ||
+      (process.env.FIREFOX_SNAP
+        ? new firefox.ServiceBuilder(FF_SNAP_GECKO_PATH)
+        : new firefox.ServiceBuilder());
 
     if (port) {
       service.setPort(port);

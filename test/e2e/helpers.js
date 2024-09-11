@@ -7,11 +7,11 @@ const detectPort = require('detect-port');
 const { difference } = require('lodash');
 const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
+const { createDriver } = require('./global-hooks-setup/webdriver-lifecycle');
 const { setupMocking } = require('./mock-e2e');
 const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
-const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
@@ -97,6 +97,7 @@ async function withFixtures(options, testSuite) {
   let webDriver;
   let driver;
   let failed = false;
+
   try {
     if (!disableGanache) {
       await ganacheServer.start(ganacheOptions);
@@ -179,7 +180,7 @@ async function withFixtures(options, testSuite) {
     }
     await mockServer.start(8000);
 
-    driver = (await buildWebDriver(driverOptions)).driver;
+    driver = await createDriver(driverOptions);
     webDriver = driver.driver;
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {

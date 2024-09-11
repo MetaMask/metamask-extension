@@ -23,11 +23,12 @@ function getProxyServer(proxyPort) {
  */
 class ChromeDriver {
   static async build({
-    openDevToolsForTabs,
-    responsive,
     constrainWindowSize,
+    driverService,
+    openDevToolsForTabs,
     port,
     proxyPort,
+    responsive,
   }) {
     const args = [
       `--proxy-server=${getProxyServer(proxyPort)}`, // Set proxy in the way that doesn't interfere with Selenium Manager
@@ -89,8 +90,7 @@ class ChromeDriver {
     const builder = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(options);
-    const service = new chrome.ServiceBuilder();
-
+    const service = driverService || new chrome.ServiceBuilder();
     // Enables Chrome logging. Default: enabled
     // Especially useful for discovering why Chrome has crashed, but can also
     // be useful for revealing console errors (from the page or background).

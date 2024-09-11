@@ -129,6 +129,7 @@ async function main() {
     }
 
     const configFile = path.join(__dirname, '.mocharc.js');
+    const hooksFile = path.join(__dirname, '/global-hooks-setup/hooks.js');
     const extraArgs = process.env.E2E_ARGS?.split(' ') || [];
 
     // If mmi flag is passed
@@ -146,6 +147,7 @@ async function main() {
       await runInShell('yarn', [
         'mocha',
         `--config=${configFile}`,
+        `--require=${hooksFile}`,
         `--timeout=${testTimeoutInMilliseconds}`,
         '--reporter=mocha-junit-reporter',
         '--reporter-options',
