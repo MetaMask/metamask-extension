@@ -5303,7 +5303,7 @@
         "react-router-dom>react-router>mini-create-react-context": true,
         "react-router-dom>tiny-invariant": true,
         "react-router-dom>tiny-warning": true,
-        "sinon>nise>path-to-regexp": true
+        "serve-handler>path-to-regexp": true
       }
     },
     "react-router-dom>react-router>history": {
@@ -5453,9 +5453,9 @@
         "process": true
       }
     },
-    "sinon>nise>path-to-regexp": {
+    "serve-handler>path-to-regexp": {
       "packages": {
-        "sinon>nise>path-to-regexp>isarray": true
+        "serve-handler>path-to-regexp>isarray": true
       }
     },
     "stream-browserify": {
