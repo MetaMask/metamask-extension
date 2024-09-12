@@ -2,7 +2,7 @@ import {
   FALLBACK_SMART_TRANSACTIONS_DEADLINE,
   FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-} from '../../../../ui/pages/smart-transactions/constants';
+} from '../../../../shared/constants/smartTransactions';
 import { MINUTE } from '../../../../shared/constants/time';
 
 import type { SwapsControllerState } from './swaps.types';

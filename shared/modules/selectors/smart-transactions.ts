@@ -2,7 +2,7 @@ import type { Hex } from '@metamask/utils';
 import {
   getAllowedSmartTransactionsChainIds,
   SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
-} from '../../../ui/pages/smart-transactions/constants';
+} from '../../constants/smartTransactions';
 import {
   getCurrentChainId,
   getCurrentNetwork,

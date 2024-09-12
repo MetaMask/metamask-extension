@@ -171,7 +171,7 @@ import {
   NETWORK_TYPES,
   NetworkStatus,
 } from '../../shared/constants/network';
-import { getAllowedSmartTransactionsChainIds } from '../../ui/pages/smart-transactions/constants';
+import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
 
 import {
   HardwareDeviceNames,
@@ -226,7 +226,7 @@ import {
 import { getCurrentChainId } from '../../ui/selectors';
 import { getProviderConfig } from '../../ui/ducks/metamask/metamask';
 import { endTrace, trace } from '../../shared/lib/trace';
-import { submitSmartTransactionHook } from '../../ui/pages/smart-transactions/lib/smart-transaction-submit-hook';
+import { submitSmartTransactionHook } from './lib/transaction/smart-transactions';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

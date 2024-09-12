@@ -29,7 +29,7 @@ import {
   IconName,
 } from '../../../components/component-library';
 import { setSmartTransactionsOptInStatus } from '../../../store/actions';
-import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../constants';
+import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
 
 export type SmartTransactionsOptInModalProps = {
   isOpen: boolean;
