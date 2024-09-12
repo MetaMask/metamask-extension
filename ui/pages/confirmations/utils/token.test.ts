@@ -13,7 +13,7 @@ describe('fetchErc20Decimals', () => {
   afterEach(() => {
     jest.clearAllMocks();
 
-    /** Reset memoized function for each test */
+    /** Reset memoized function using getTokenStandardAndDetails for each test */
     fetchErc20Decimals?.cache?.clear?.();
   });
 
