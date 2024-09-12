@@ -1,6 +1,7 @@
 import React from 'react';
 import { PrimaryType } from '../../../../../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../../../../../shared/modules/transaction.utils';
+import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
 import { Box } from '../../../../../../../components/component-library';
 import {
   Display,
@@ -53,34 +54,37 @@ const PermitSimulation: React.FC<object> = () => {
       title={t('simulationDetailsTitle')}
       titleTooltip={t('simulationDetailsTitleTooltip')}
       description={t('permitSimulationDetailInfo')}
-      simulationHeading={t('spendingCap')}
       simulationElements={
-        Array.isArray(tokenDetails) ? (
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            gap={2}
-          >
-            {tokenDetails.map(
-              (
-                { token, amount }: { token: string; amount: string },
-                i: number,
-              ) => (
-                <PermitSimulationValueDisplay
-                  key={`${token}-${i}`}
-                  primaryType={primaryType}
-                  tokenContract={token}
-                  value={amount}
-                />
-              ),
+        <ConfirmInfoRow label={t('spendingCap')}>
+          <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
+            {Array.isArray(tokenDetails) ? (
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                gap={2}
+              >
+                {tokenDetails.map(
+                  (
+                    { token, amount }: { token: string; amount: string },
+                    i: number,
+                  ) => (
+                    <PermitSimulationValueDisplay
+                      key={`${token}-${i}`}
+                      primaryType={primaryType}
+                      tokenContract={token}
+                      value={amount}
+                    />
+                  ),
+                )}
+              </Box>
+            ) : (
+              <PermitSimulationValueDisplay
+                tokenContract={verifyingContract}
+                value={message.value}
+              />
             )}
           </Box>
-        ) : (
-          <PermitSimulationValueDisplay
-            tokenContract={verifyingContract}
-            value={message.value}
-          />
-        )
+        </ConfirmInfoRow>
       }
     />
   );
