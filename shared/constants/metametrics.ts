@@ -855,12 +855,12 @@ export enum MetaMetricsContextProp {
  * Mentioned here: https://docs.segmentapis.com/tag/Deletion-and-Suppression#operation/listRegulationsFromSource
  */
 export enum DeleteRegulationStatus {
-  failed = 'FAILED',
-  finished = 'FINISHED',
-  initialized = 'INITIALIZED',
-  invalid = 'INVALID',
-  notSupported = 'NOT_SUPPORTED',
-  partialSuccess = 'PARTIAL_SUCCESS',
-  running = 'RUNNING',
-  unknown = 'UNKNOWN',
+  Failed = 'FAILED',
+  Finished = 'FINISHED',
+  Initialized = 'INITIALIZED',
+  Invalid = 'INVALID',
+  NotSupported = 'NOT_SUPPORTED',
+  PartialSuccess = 'PARTIAL_SUCCESS',
+  Running = 'RUNNING',
+  Unknown = 'UNKNOWN',
 }

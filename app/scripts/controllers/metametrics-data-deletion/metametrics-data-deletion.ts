@@ -2,20 +2,12 @@ import {
   BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
+import { PublicInterface } from '@metamask/utils';
 import type { DataDeletionService } from '../../services/data-deletion-service';
 import { DeleteRegulationStatus } from '../../../../shared/constants/metametrics';
 
 // Unique name for the controller
 const controllerName = 'MetaMetricsDataDeletionController';
-
-/**
- * Get a type representing the public interface of the given type. The
- * returned type will have all public properties, but will omit private
- * properties.
- *
- * @template Interface - The interface to return a public representation of.
- */
-type PublicInterface<Interface> = Pick<Interface, keyof Interface>;
 
 /**
  * Timestamp at which regulation response is returned.
