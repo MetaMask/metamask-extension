@@ -345,9 +345,6 @@
   "additionalNetworks": {
     "message": "Additional networks"
   },
-  "additionalRpcUrl": {
-    "message": "Additional RPC URL"
-  },
   "address": {
     "message": "Address"
   },
@@ -1851,6 +1848,9 @@
   "ensUnknownError": {
     "message": "ENS lookup failed."
   },
+  "enterANameToIdentifyTheUrl": {
+    "message": "Enter a name to identify the URL"
+  },
   "enterANumber": {
     "message": "Enter a number"
   },
@@ -1865,6 +1865,9 @@
   },
   "enterPasswordContinue": {
     "message": "Enter password to continue"
+  },
+  "enterRpcUrl": {
+    "message": "Enter RPC URL"
   },
   "enterTokenNameOrAddress": {
     "message": "Enter token name or paste address"
@@ -4549,6 +4552,9 @@
   "revokeSpendingCapTooltipText": {
     "message": "This third party will be unable to spend any more of your current or future tokens."
   },
+  "rpcNameOptional": {
+    "message": "RPC Name (Optional)"
+  },
   "rpcUrl": {
     "message": "New RPC URL"
   },
@@ -5459,6 +5465,9 @@
   "supportCenter": {
     "message": "Visit our support center"
   },
+  "supportMultiRpcInformation": {
+    "message": "We now support multiple RPCs for a single network. Your most recent RPC has been selected as the default one to resolve conflicting information."
+  },
   "surveyConversion": {
     "message": "Take our survey"
   },
@@ -6323,6 +6332,9 @@
   },
   "updateRequest": {
     "message": "Update request"
+  },
+  "updatedRpcForNetworks": {
+    "message": "Network RPCs Updated"
   },
   "updatedWithDate": {
     "message": "Updated $1"
