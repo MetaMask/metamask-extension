@@ -6,6 +6,7 @@ import { isSignatureTransactionType } from '../utils';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { useConfirmContext } from '../context/confirm';
 import { AlertsName } from './alerts/constants';
+import { useSignatureEventFragment } from './useSignatureEventFragment';
 import { useTransactionEventFragment } from './useTransactionEventFragment';
 
 export type AlertMetricsProperties = {

@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "其他网络"
   },
-  "additionalRpcUrl": {
-    "message": "其他 RPC（远程过程调用）URL"
-  },
   "address": {
     "message": "地址"
   },
@@ -666,9 +663,6 @@
   "back": {
     "message": "返回"
   },
-  "backup": {
-    "message": "备份"
-  },
   "backupApprovalInfo": {
     "message": "如果不慎丢失个人设备，忘记密码，需要重新安装 MetaMask，或者需在另一台设备上访问钱包，使用此助记词才能恢复您的钱包。"
   },
@@ -680,12 +674,6 @@
   },
   "backupNow": {
     "message": "立即备份"
-  },
-  "backupUserData": {
-    "message": "将您的数据备份"
-  },
-  "backupUserDataDescription": {
-    "message": "您可以备份联系人和首选项等数据。"
   },
   "balance": {
     "message": "余额"
@@ -4358,9 +4346,6 @@
   },
   "restoreUserData": {
     "message": "恢复用户数据"
-  },
-  "restoreUserDataDescription": {
-    "message": "您可以从备份文件中恢复联系人和首选项等数据。"
   },
   "resultPageError": {
     "message": "错误"
