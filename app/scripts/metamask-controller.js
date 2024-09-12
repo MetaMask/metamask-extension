@@ -5587,13 +5587,11 @@ export default class MetamaskController extends EventEmitter {
               },
             },
           }),
-        requestPermissionsForOrigin: (requestedPermissions) => {
-          this.permissionController.requestPermissions.bind(
-            this.permissionController,
+        requestPermissionsForOrigin: (requestedPermissions) =>
+          this.permissionController.requestPermissions(
             { origin },
             { [PermissionNames.permittedChains]: {}, ...requestedPermissions },
-          );
-        },
+          ),
         revokePermissionsForOrigin: (permissionKeys) => {
           try {
             this.permissionController.revokePermissions({
