@@ -153,10 +153,9 @@ export const useAccountSyncing = () => {
 };
 
 export const useAccountSyncingEffect = () => {
-  const { dispatchAccountSyncing, shouldDispatchAccountSyncing } =
-    useAccountSyncing();
+  const { dispatchAccountSyncing } = useAccountSyncing();
 
   useEffect(() => {
     dispatchAccountSyncing();
-  }, [dispatchAccountSyncing, shouldDispatchAccountSyncing]);
+  }, [dispatchAccountSyncing]);
 };
