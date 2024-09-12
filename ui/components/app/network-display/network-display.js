@@ -5,26 +5,18 @@ import {
   BorderColor,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
-import {
-  getCurrentNetwork,
-  getNetworkConfigurationsByChainId,
-} from '../../../selectors';
+import { getCurrentNetwork } from '../../../selectors';
 import { PickerNetwork, AvatarNetworkSize } from '../../component-library';
 
 export default function NetworkDisplay() {
-  const networkConfigurationsByChainId = useSelector(
-    getNetworkConfigurationsByChainId,
-  );
-
-  const { chainId, rpcPrefs } = useSelector(getCurrentNetwork);
-  const networkName = networkConfigurationsByChainId?.[chainId]?.name ?? '';
+  const currentNetwork = useSelector(getCurrentNetwork);
 
   return (
     <PickerNetwork
       className="network-display"
-      label={networkName}
+      label={currentNetwork?.nickname}
       labelProps={{ 'data-testid': 'network-display' }}
-      src={rpcPrefs?.imageUrl}
+      src={currentNetwork?.rpcPrefs?.imageUrl}
       iconProps={{ display: 'none' }} // do not show the dropdown icon
       avatarNetworkProps={{ size: AvatarNetworkSize.Xs }}
       as="div" // do not render as a button
