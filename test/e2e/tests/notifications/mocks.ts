@@ -20,18 +20,18 @@ type MockResponse = {
 };
 
 /**
- * E2E mock setup for notification APIs (Auth, Storage, Notifications, Push Notifications)
+ * E2E mock setup for notification APIs (Auth, Storage, Notifications, Push Notifications, Profile syncing)
  *
  * @param server - server obj used to mock our endpoints
  */
-export function mockNotificationServices(server: Mockttp) {
+export async function mockNotificationServices(server: Mockttp) {
   // Auth
   mockAPICall(server, AuthMocks.getMockAuthNonceResponse());
   mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
 
   // Storage
-  mockAPICall(server, StorageMocks.getMockUserStorageGetResponse());
+  mockAPICall(server, await StorageMocks.getMockUserStorageGetResponse());
   mockAPICall(server, StorageMocks.getMockUserStoragePutResponse());
 
   // Notifications
