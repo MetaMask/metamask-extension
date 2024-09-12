@@ -115,7 +115,6 @@ export const ConnectPage = ({
         <SiteCell
           networks={filteredNetworks}
           accounts={filterAccountsByAddress}
-          handleAccountClick={handleAccountClick}
           onAccountsClick={() => selectAccounts(Array.from(selectedAccounts))}
           onNetworksClick={() => console.log('testing')}
           approvedAccounts={approvedAccounts}

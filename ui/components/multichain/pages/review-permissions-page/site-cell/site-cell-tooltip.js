@@ -155,7 +155,53 @@ export const SiteCellTooltip = ({
 };
 SiteCellTooltip.propTypes = {
   /**
-   * The accounts data to display
+   * An array of account objects to be displayed in the tooltip.
+   * Each object should contain `address`, `label`, and `metadata.name`.
    */
-  accounts: PropTypes.object.isRequired,
+  accounts: PropTypes.arrayOf(
+    PropTypes.shape({
+      address: PropTypes.string.isRequired, // The unique address of the account.
+      label: PropTypes.string, // Optional label for the account.
+      metadata: PropTypes.shape({
+        name: PropTypes.string.isRequired, // Account's name from metadata.
+      }).isRequired,
+    }),
+  ).isRequired,
+
+  /**
+   * Data for the avatar group component related to accounts.
+   * This array contains account avatar data to be rendered in the group.
+   */
+  avatarAccountsData: PropTypes.arrayOf(
+    PropTypes.shape({
+      address: PropTypes.string.isRequired, // The account address to display.
+      name: PropTypes.string, // The account's name.
+      avatarUrl: PropTypes.string, // Optional URL for the avatar image.
+    }),
+  ).isRequired,
+
+  /**
+   * An array of network objects to display in the tooltip.
+   */
+  networks: PropTypes.arrayOf(
+    PropTypes.shape({
+      chainId: PropTypes.string.isRequired, // The unique chain ID of the network.
+      nickname: PropTypes.string.isRequired, // The network's name.
+      rpcPrefs: PropTypes.shape({
+        imageUrl: PropTypes.string, // Optional URL for the network's image.
+      }),
+    }),
+  ).isRequired,
+
+  /**
+   * Data for the avatar group component related to networks.
+   */
+  avatarNetworksData: PropTypes.arrayOf(
+    PropTypes.shape({
+      chainId: PropTypes.string.isRequired, // The unique chain ID of the network.
+      name: PropTypes.string, // The network's name.
+      avatarUrl: PropTypes.string, // Optional URL for the network's avatar image.
+    }),
+  ).isRequired,
 };
+

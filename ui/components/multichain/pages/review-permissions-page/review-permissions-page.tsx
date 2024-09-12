@@ -27,7 +27,6 @@ import {
 import {
   removePermissionsFor,
   requestAccountsAndChainPermissionsWithId,
-  requestAccountsPermissionWithId,
 } from '../../../../store/actions';
 import {
   AvatarFavicon,
@@ -48,7 +47,7 @@ import {
 import { ToastContainer, Toast } from '../..';
 import { NoConnectionContent } from '../connections/components/no-connection';
 import { Content, Footer, Header, Page } from '../page';
-import { SubjectsType } from '../connections/components/connections.types';
+import { AccountType, SubjectsType } from '../connections/components/connections.types';
 import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
 import {
   DisconnectAllModal,
@@ -56,60 +55,82 @@ import {
 } from '../../disconnect-all-modal/disconnect-all-modal';
 import { SiteCell } from '.';
 
+interface UrlParams {
+  origin: string;
+}
+
+interface PermittedAccountsByOrigin {
+  [key: string]: Array<{ address: string }>;
+}
+
 export const ReviewPermissions = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
-  const urlParams: { origin: string } = useParams();
+  const urlParams = useParams<UrlParams>();
   const securedOrigin = decodeURIComponent(urlParams.origin);
   const [showAccountToast, setShowAccountToast] = useState(false);
   const [showNetworkToast, setShowNetworkToast] = useState(false);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
   const activeTabOrigin: string = securedOrigin;
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { openMetaMaskTabs } = useSelector((state: any) => state.appState);
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { id } = useSelector((state: any) => state.activeTab);
+
+  // Define types for state
+  const { openMetaMaskTabs }: { openMetaMaskTabs: Record<string, boolean> } =
+    useSelector(
+      (state: { appState: { openMetaMaskTabs: Record<string, boolean> } }) =>
+        state.appState,
+    );
+
+  const { id }: { id: string } = useSelector(
+    (state: { activeTab: { id: string } }) => state.activeTab,
+  );
+
   const subjectMetadata: { [key: string]: any } = useSelector(
     getConnectedSitesList,
   );
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
+
   const connectedNetworks = useSelector((state) =>
     getPermittedChainsForSelectedTab(state, activeTabOrigin),
-  );
-  console.log(connectedNetworks, 'connectedNetworks');
+  ) as string[];
+
   const permittedAccountsByOrigin = useSelector(
     getPermittedAccountsByOrigin,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ) as { [key: string]: any[] };
+  ) as PermittedAccountsByOrigin;
   const networksList = useSelector(getNonTestNetworks);
   const testNetworks = useSelector(getTestNetworks);
   const combinedNetworks = [...networksList, ...testNetworks];
+
   const connectedAccounts = useSelector((state) =>
     getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin),
-  );
+  ) as AccountType[];
+
   const subjects = useSelector(getPermissionSubjects);
   const grantedNetworks = combinedNetworks.filter(
     (net: { chainId: any }) => connectedNetworks.indexOf(net.chainId) !== -1,
   );
+
   const hostName = getURLHost(securedOrigin);
-  console.log(connectedNetworks, grantedNetworks);
   const currentTabHasNoAccounts =
     !permittedAccountsByOrigin[activeTabOrigin]?.length;
 
-  let tabToConnect: { origin: any } = { origin: null };
+  let tabToConnect: { origin: string | null } = { origin: null };
   if (activeTabOrigin && currentTabHasNoAccounts && !openMetaMaskTabs[id]) {
     tabToConnect = {
       origin: activeTabOrigin,
     };
   }
+
   const requestAccountsAndChainPermissions = async () => {
-    const requestId = await dispatch(
-      requestAccountsAndChainPermissionsWithId(tabToConnect.origin),
-    );
-    history.push(`${CONNECT_ROUTE}/${requestId}`);
+    if (tabToConnect.origin) {
+      // Ensure origin is not null
+      const requestId = await dispatch(
+        requestAccountsAndChainPermissionsWithId(tabToConnect.origin),
+      );
+      history.push(`${CONNECT_ROUTE}/${requestId}`);
+    } else {
+      console.error('Tab origin is null.');
+    }
   };
 
   const disconnectAllAccounts = () => {
@@ -133,6 +154,7 @@ export const ReviewPermissions = () => {
       }
     }
   };
+
   return (
     <Page
       data-testid="connections-page"
@@ -147,6 +169,7 @@ export const ReviewPermissions = () => {
               iconName={IconName.ArrowLeft}
               className="connections-header__start-accessory"
               size={ButtonIconSize.Sm}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               onClick={() => (history as any).goBack()}
             />
           }
@@ -191,7 +214,7 @@ export const ReviewPermissions = () => {
               onDisconnectClick={() => setShowDisconnectAllModal(true)}
               activeTabOrigin={activeTabOrigin}
               combinedNetworks={networksList}
-            />
+              approvedAccounts={[]} />
           ) : (
             <NoConnectionContent />
           )}

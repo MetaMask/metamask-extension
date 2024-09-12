@@ -293,7 +293,6 @@ export default class PermissionConnect extends Component {
 
   approveConnection = (...args) => {
     const { approvePermissionsRequest } = this.props;
-    console.log('testing', approvePermissionsRequest, ...args);
     approvePermissionsRequest(...args);
     this.redirect(true);
   };
