@@ -27,7 +27,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getMetaMaskAccounts } from '../../../selectors';
 import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
-import { getSelectedInternalAccount } from '../../../selectors/selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
