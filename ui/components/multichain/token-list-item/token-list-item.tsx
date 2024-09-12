@@ -132,10 +132,9 @@ export const TokenListItem = ({
 
   const tokensMarketData = useSelector(getTokensMarketData);
 
-  const tokenPercentageChange =
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    tokensMarketData?.[address]?.pricePercentChange1d;
+  const tokenPercentageChange = address
+    ? tokensMarketData?.[address]?.pricePercentChange1d
+    : null;
 
   const tokenTitle = getTokenTitle();
   const tokenMainTitleToDisplay = showPercentage ? tokenTitle : tokenSymbol;

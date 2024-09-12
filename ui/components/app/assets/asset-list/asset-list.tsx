@@ -123,10 +123,10 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const { loading } = accountTotalFiatBalance;
 
   tokensWithBalances.forEach((token) => {
-    // token.string is the balance displayed in the TokenList UI
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
+    token.string = roundToDecimalPlacesRemovingExtraZeroes(
+      token.string,
+      5,
+    ) as string;
   });
 
   const balanceIsZero = useSelector(

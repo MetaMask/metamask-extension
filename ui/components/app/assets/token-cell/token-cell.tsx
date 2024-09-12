@@ -30,9 +30,7 @@ export default function TokenCell({
   );
   const title = tokenData?.name || symbol;
   const tokenImage = tokenData?.iconUrl || image;
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const formattedFiat = useTokenFiatAmount(address, string, symbol);
+  const formattedFiat = useTokenFiatAmount(address, string, symbol, {}, false);
   const locale = useSelector(getIntlLocale);
   const primary = new Intl.NumberFormat(locale, {
     minimumSignificantDigits: 1,
