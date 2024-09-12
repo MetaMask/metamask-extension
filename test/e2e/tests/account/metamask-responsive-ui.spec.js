@@ -11,7 +11,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('MetaMask Responsive UI', function () {
   it('Creating a new wallet @no-mmi', async function () {
-    const driverOptions = { openDevToolsForTabs: true };
+    const driverOptions = { responsive: true };
 
     await withFixtures(
       {
@@ -81,7 +81,7 @@ describe('MetaMask Responsive UI', function () {
   });
 
   it('Importing existing wallet from lock page', async function () {
-    const driverOptions = { openDevToolsForTabs: true };
+    const driverOptions = { responsive: true };
 
     await withFixtures(
       {
@@ -115,7 +115,7 @@ describe('MetaMask Responsive UI', function () {
   });
 
   it('Send Transaction from responsive window', async function () {
-    const driverOptions = { openDevToolsForTabs: true };
+    const driverOptions = { responsive: true };
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),

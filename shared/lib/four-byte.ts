@@ -1,3 +1,4 @@
+import { MethodRegistry } from 'eth-method-registry';
 import fetchWithCache from './fetch-with-cache';
 
 type FourByteResult = {
@@ -30,4 +31,53 @@ export async function getMethodFrom4Byte(
   });
 
   return fourByteResponse.results[0].text_signature;
+}
+
+let registry: MethodRegistry | undefined;
+
+type HttpProvider = {
+  host: string;
+  timeout: number;
+};
+
+type MethodRegistryArgs = {
+  network: string;
+  provider: HttpProvider;
+};
+
+export async function getMethodDataAsync(
+  fourBytePrefix: string,
+  allow4ByteRequests: boolean,
+  provider?: unknown,
+) {
+  try {
+    let fourByteSig = null;
+    if (allow4ByteRequests) {
+      fourByteSig = await getMethodFrom4Byte(fourBytePrefix).catch((e) => {
+        console.error(e);
+        return null;
+      });
+      console.log('fourByteSig = ', fourByteSig);
+    }
+
+    if (!registry) {
+      registry = new MethodRegistry({
+        provider: provider ?? global.ethereumProvider,
+      } as MethodRegistryArgs);
+    }
+
+    if (!fourByteSig) {
+      return {};
+    }
+
+    const parsedResult = registry.parse(fourByteSig);
+
+    return {
+      name: parsedResult.name,
+      params: parsedResult.args,
+    };
+  } catch (error) {
+    console.error(error);
+    return {};
+  }
 }

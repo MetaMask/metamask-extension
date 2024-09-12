@@ -23,7 +23,6 @@ import {
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import TextField from '../../../components/ui/text-field';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getMethodName } from '../../../helpers/utils/metrics';
 import {
@@ -34,11 +33,15 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import NoteToTrader from '../../../components/institutional/note-to-trader';
 ///: END:ONLY_INCLUDE_IF
+import {
+  AccountType,
+  CustodyStatus,
+} from '../../../../shared/constants/custody';
 
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
 import TransactionDetail from '../components/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../components/transaction-detail-item/transaction-detail-item.component';
-import { Text } from '../../../components/component-library';
+import { Text, TextField } from '../../../components/component-library';
 import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
 import LedgerInstructionField from '../components/ledger-instruction-field';
 import {
@@ -69,6 +72,7 @@ import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 import { SimulationDetails } from '../components/simulation-details';
 import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
+import { NetworkChangeToastLegacy } from '../components/confirm/network-change-toast';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -426,6 +430,19 @@ export default class ConfirmTransactionBase extends Component {
       );
     };
 
+    const handleNonceChange = ({ target: { value } }) => {
+      const inputValue = Number(value);
+
+      if (inputValue < 0 || isNaN(inputValue)) {
+        updateCustomNonce(undefined);
+        return;
+      }
+
+      updateCustomNonce(inputValue);
+
+      getNextNonce();
+    };
+
     const renderTotalMaxAmount = ({
       useMaxFee,
       isBoldTextAndNotOverridden = false,
@@ -491,36 +508,34 @@ export default class ConfirmTransactionBase extends Component {
         : primaryTotalTextOverride;
     };
 
-    const nonceField =
-      useNonceField && !isSigningOrSubmitting ? (
-        <div>
-          <div className="confirm-detail-row">
-            <div className="confirm-detail-row__label">
-              {t('nonceFieldHeading')}
-            </div>
-            <div className="custom-nonce-input">
-              <TextField
-                type="number"
-                min={0}
-                placeholder={
-                  typeof nextNonce === 'number' ? nextNonce.toString() : null
-                }
-                onChange={({ target: { value } }) => {
-                  if (!value.length || Number(value) < 0) {
-                    updateCustomNonce('');
-                  } else {
-                    updateCustomNonce(String(Math.floor(value)));
-                  }
-                  getNextNonce();
-                }}
-                fullWidth
-                margin="dense"
-                value={customNonceValue || ''}
-              />
-            </div>
+    const nextNonceValue =
+      typeof nextNonce === 'number' ? nextNonce.toString() : null;
+    const renderNonceField = useNonceField && !isSigningOrSubmitting;
+
+    if (renderNonceField && !customNonceValue && nextNonceValue) {
+      updateCustomNonce(nextNonceValue);
+    }
+
+    const nonceField = renderNonceField ? (
+      <div>
+        <div className="confirm-detail-row">
+          <div className="confirm-detail-row__label">
+            {t('nonceFieldHeading')}
+          </div>
+          <div className="custom-nonce-input">
+            <TextField
+              type="number"
+              min={0}
+              placeholder={nextNonceValue}
+              onChange={handleNonceChange}
+              fullWidth
+              margin="dense"
+              value={customNonceValue ?? ''}
+            />
           </div>
         </div>
-      ) : null;
+      </div>
+    ) : null;
 
     const { simulationData } = txData;
 
@@ -841,8 +856,8 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
     const { noteText } = this.state;
 
-    if (accountType === 'custody') {
-      txData.custodyStatus = 'created';
+    if (accountType === AccountType.CUSTODY) {
+      txData.custodyStatus = CustodyStatus.CREATED;
       txData.metadata = txData.metadata || {};
 
       if (isNoteToTraderSupported) {
@@ -1165,7 +1180,7 @@ export default class ConfirmTransactionBase extends Component {
           noteComponent={
             isNoteToTraderSupported && (
               <NoteToTrader
-                maxLength="280"
+                maxLength={280}
                 placeholder={t('notePlaceholder')}
                 onChange={(value) => this.setState({ noteText: value })}
                 noteText={this.state.noteText}
@@ -1208,6 +1223,7 @@ export default class ConfirmTransactionBase extends Component {
           txData={txData}
           displayAccountBalanceHeader={displayAccountBalanceHeader}
         />
+        <NetworkChangeToastLegacy confirmation={txData} />
       </TransactionModalContextProvider>
     );
   }

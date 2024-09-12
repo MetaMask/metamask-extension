@@ -73,7 +73,7 @@ describe('addEthereumChainHandler', () => {
     jest.clearAllMocks();
   });
 
-  describe('with permittedChains permissioning inactive', () => {
+  describe('with `endowment:permitted-chains` permissioning inactive', () => {
     it('creates a new network configuration for the given chainid and switches to it if none exists', async () => {
       const mocks = makeMocks({
         permissionsFeatureFlagIsActive: false,
@@ -282,8 +282,8 @@ describe('addEthereumChainHandler', () => {
     });
   });
 
-  describe('with permittedChains permissioning active', () => {
-    it('creates a new network configuration for the given chainid, requests permittedChains permission and switches to it if no networkConfigurations with the same chainId exist', async () => {
+  describe('with `endowment:permitted-chains` permissioning active', () => {
+    it('creates a new network configuration for the given chainid, requests `endowment:permitted-chains` permission and switches to it if no networkConfigurations with the same chainId exist', async () => {
       const mocks = makeMocks({
         permissionedChainIds: [],
         permissionsFeatureFlagIsActive: true,
@@ -326,7 +326,7 @@ describe('addEthereumChainHandler', () => {
 
     describe('if a networkConfiguration for the given chainId already exists', () => {
       describe('if the proposed networkConfiguration has a different rpcUrl from the one already in state', () => {
-        it('create a new networkConfiguration and switches to it without requesting permissions, if the requested chainId has permittedChains permission granted for requesting origin', async () => {
+        it('create a new networkConfiguration and switches to it without requesting permissions, if the requested chainId has `endowment:permitted-chains` permission granted for requesting origin', async () => {
           const mocks = makeMocks({
             permissionedChainIds: [CHAIN_IDS.MAINNET],
             permissionsFeatureFlagIsActive: true,

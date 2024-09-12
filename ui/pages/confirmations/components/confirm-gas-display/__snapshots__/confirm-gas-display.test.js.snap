@@ -82,12 +82,12 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
         >
           <p
-            class="mm-box mm-text mm-text--body-sm mm-box--padding-inline-end-1 mm-box--color-text-muted"
+            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-1 mm-box--color-text-alternative"
           >
             🦊 Market
           </p>
           <p
-            class="mm-box mm-text mm-text--body-sm mm-box--color-success-default"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
             <span
               data-testid="gas-timing-time"

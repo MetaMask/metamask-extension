@@ -14,6 +14,7 @@
 @import 'confirm/header/header.scss';
 @import 'confirm/scroll-to-bottom';
 @import 'confirm/nav/nav.scss';
+@import "confirm/network-change-toast/index";
 @import 'contract-details-modal/index';
 @import 'custom-nonce/index';
 @import 'edit-gas-display/index';
@@ -30,8 +31,8 @@
 @import 'review-spending-cap/index';
 @import 'set-approval-for-all-warning/index';
 @import 'signature-request/index';
-@import 'signature-request-siwe/index';
 @import 'signature-request-original/index';
+@import 'signature-request-siwe/index';
 @import 'transaction-alerts/transaction-alerts';
 @import 'transaction-decoding/index';
 @import 'transaction-detail/index';

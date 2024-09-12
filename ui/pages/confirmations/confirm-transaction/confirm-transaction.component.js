@@ -1,7 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Switch, useHistory, useParams } from 'react-router-dom';
-import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ORIGIN_METAMASK,
+} from '../../../../shared/constants/app';
 import Loading from '../../../components/ui/loading-screen';
 import {
   clearConfirmTransaction,
@@ -29,6 +32,7 @@ import {
   use4ByteResolutionSelector,
 } from '../../../selectors';
 import {
+  endBackgroundTrace,
   gasFeeStartPollingByNetworkClientId,
   gasFeeStopPollingByPollingToken,
   getContractMethodData,
@@ -43,6 +47,9 @@ import ConfirmSignatureRequest from '../confirm-signature-request';
 import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 import Confirm from '../confirm/confirm';
 import useCurrentConfirmation from '../hooks/useCurrentConfirmation';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { useAsyncResult } from '../../../hooks/useAsyncResult';
+import { TraceName } from '../../../../shared/lib/trace';
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
 const ConfirmTransaction = () => {
@@ -88,6 +95,20 @@ const ConfirmTransaction = () => {
   ]);
 
   const { id, type } = transaction;
+
+  const isNotification = getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION;
+
+  useAsyncResult(async () => {
+    if (!isNotification) {
+      return undefined;
+    }
+
+    return await endBackgroundTrace({
+      name: TraceName.NotificationDisplay,
+      id,
+    });
+  }, [id, isNotification]);
+
   const transactionId = id;
   const isValidTokenMethod = isTokenMethodAction(type);
   const isValidTransactionId =

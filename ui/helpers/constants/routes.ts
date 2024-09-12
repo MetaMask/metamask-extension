@@ -54,6 +54,7 @@ const NOTIFICATIONS_ROUTE = '/notifications';
 const NOTIFICATIONS_SETTINGS_ROUTE = '/notifications/settings';
 const CONNECTED_ROUTE = '/connected';
 const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
+const CROSS_CHAIN_SWAP_ROUTE = '/cross-chain';
 const SWAPS_ROUTE = '/swaps';
 const PREPARE_SWAP_ROUTE = '/swaps/prepare-swap-page';
 const SWAPS_NOTIFICATION_ROUTE = '/swaps/notification-page';
@@ -109,6 +110,7 @@ const PATH_NAME_MAP = {
   [UNLOCK_ROUTE]: 'Unlock Page',
   [LOCK_ROUTE]: 'Lock Page',
   [`${ASSET_ROUTE}/:asset/:id`]: `Asset Page`,
+  [`${ASSET_ROUTE}/image/:asset/:id`]: `Nft Image Page`,
   [SETTINGS_ROUTE]: 'Settings Page',
   [GENERAL_ROUTE]: 'General Settings Page',
   [ADVANCED_ROUTE]: 'Advanced Settings Page',
@@ -267,6 +269,7 @@ export {
   NOTIFICATIONS_SETTINGS_ROUTE,
   SNAPS_ROUTE,
   SNAPS_VIEW_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   PATH_NAME_MAP,

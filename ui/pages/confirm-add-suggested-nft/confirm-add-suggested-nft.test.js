@@ -9,6 +9,8 @@ import {
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../test/jest/rendering';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { mockNetworkState } from '../../../test/stub/networks';
 import ConfirmAddSuggestedNFT from '.';
 
 const PENDING_NFT_APPROVALS = {
@@ -71,7 +73,7 @@ const renderComponent = (pendingNfts = {}) => {
     metamask: {
       ...mockState.metamask,
       pendingApprovals: pendingNfts,
-      providerConfig: { chainId: '0x1' },
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     },
     history: {
       mostRecentOverviewPage: '/',

@@ -7,7 +7,7 @@ import {
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
-import { loginWithBalanceValidaiton } from '../../page-objects/processes/login.process';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/homepage';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 
@@ -81,9 +81,9 @@ describe('ENS', function (this: Suite) {
         testSpecificMock: mockInfura,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidaiton(driver, WALLET_PASSWORD, '<0.000001');
+        await loginWithBalanceValidation(driver, WALLET_PASSWORD, '<0.000001');
 
-        // click send button on homepage to start send process
+        // click send button on homepage to start send flow
         await new HomePage(driver).startSendFlow();
 
         // fill ens address as recipient when user lands on send token screen

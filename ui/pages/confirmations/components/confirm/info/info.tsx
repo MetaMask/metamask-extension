@@ -1,23 +1,15 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { currentConfirmationSelector } from '../../../../../selectors';
 import { SignatureRequestType } from '../../../types/confirm';
-import ContractInteractionInfo from './contract-interaction/contract-interaction';
+import { useConfirmContext } from '../../../context/confirm';
+import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
 import PersonalSignInfo from './personal-sign/personal-sign';
 import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
 import TypedSignInfo from './typed-sign/typed-sign';
+import ApproveInfo from './approve/approve';
 
-type InfoProps = {
-  showAdvancedDetails: boolean;
-};
-
-const Info: React.FC<InfoProps> = ({
-  showAdvancedDetails,
-}: {
-  showAdvancedDetails: boolean;
-}) => {
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+const Info = () => {
+  const { currentConfirmation } = useConfirmContext();
 
   const ConfirmationInfoComponentMap = useMemo(
     () => ({
@@ -30,7 +22,9 @@ const Info: React.FC<InfoProps> = ({
         }
         return TypedSignInfo;
       },
-      [TransactionType.contractInteraction]: () => ContractInteractionInfo,
+      [TransactionType.contractInteraction]: () => BaseTransactionInfo,
+      [TransactionType.deployContract]: () => BaseTransactionInfo,
+      [TransactionType.tokenMethodApprove]: () => ApproveInfo,
     }),
     [currentConfirmation],
   );
@@ -39,12 +33,12 @@ const Info: React.FC<InfoProps> = ({
     return null;
   }
 
-  const InfoComponent: React.FC<InfoProps> =
+  const InfoComponent =
     ConfirmationInfoComponentMap[
       currentConfirmation?.type as keyof typeof ConfirmationInfoComponentMap
     ]();
 
-  return <InfoComponent showAdvancedDetails={showAdvancedDetails} />;
+  return <InfoComponent />;
 };
 
 export default Info;

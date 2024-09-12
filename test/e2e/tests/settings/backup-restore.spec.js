@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { promises: fs } = require('fs');
+
 const {
   defaultGanacheOptions,
   withFixtures,
@@ -60,10 +61,7 @@ describe('Backup and Restore', function () {
         );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
-        await driver.clickElement({
-          text: 'Back up',
-          tag: 'button',
-        });
+        await driver.clickElement('[data-testid="export-data-button"]');
 
         // Verify download
         let info;

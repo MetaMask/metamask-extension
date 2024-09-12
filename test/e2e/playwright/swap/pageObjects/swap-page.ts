@@ -3,8 +3,6 @@ import { type Locator, type Page } from '@playwright/test';
 export class SwapPage {
   private page: Page;
 
-  readonly manageSettingsButton: Locator;
-
   readonly toggleSmartSwap: Locator;
 
   readonly updateSettingsButton: Locator;
@@ -31,9 +29,6 @@ export class SwapPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.manageSettingsButton = this.page.getByRole('button', {
-      name: 'Manage in settings',
-    });
     this.toggleSmartSwap = this.page.locator('text="On"');
     this.updateSettingsButton = this.page.getByTestId(
       'update-transaction-settings-button',
@@ -75,9 +70,6 @@ export class SwapPage {
     await this.swapToDropDown.click();
     await this.tokenSearch.fill(options.to);
     await this.selectTokenFromList(options.to);
-
-    // Wait for swap button to appear
-    await this.swapTokenButton.waitFor();
   }
 
   async swap() {
@@ -92,6 +84,8 @@ export class SwapPage {
   }
 
   async switchTokens() {
+    // Wait for swap button to appear
+    await this.swapTokenButton.waitFor();
     await this.switchTokensButton.click();
     await this.waitForCountDown();
   }

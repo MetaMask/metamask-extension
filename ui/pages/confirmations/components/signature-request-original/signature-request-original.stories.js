@@ -73,7 +73,6 @@ export default {
     },
     mostRecentOverviewPage: '/',
     nativeCurrency: 'ETH',
-    providerConfig: { name: 'Goerli ETH' },
     selectedAccount: MOCK_PRIMARY_ACCOUNT,
   },
 };
@@ -94,21 +93,6 @@ DefaultStory.args = {
       origin: 'https://happydapp.website/governance?futarchy=true',
     },
     type: MESSAGE_TYPE.PERSONAL_SIGN,
-  },
-};
-
-export const ETHSignStory = Template.bind({});
-
-ETHSignStory.storyName = 'eth_sign Type';
-
-ETHSignStory.args = {
-  txData: {
-    msgParams: {
-      from: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
-      data: MOCK_SIGN_DATA,
-      origin: 'https://happydapp.website/governance?futarchy=true',
-    },
-    type: MESSAGE_TYPE.ETH_SIGN,
   },
 };
 

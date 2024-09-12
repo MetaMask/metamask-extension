@@ -570,7 +570,6 @@ export enum MetaMetricsEventName {
   OnboardingWalletCreationComplete = 'Wallet Created',
   OnboardingWalletSetupComplete = 'Application Opened',
   OnboardingWalletAdvancedSettings = 'Settings Updated',
-  OnboardingWalletAdvancedSettingsTurnOnProfileSyncing = 'Turn On Profile Syncing',
   OnboardingWalletImportAttempted = 'Wallet Import Attempted',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingTwitterClick = 'External Link Clicked',
@@ -628,6 +627,7 @@ export enum MetaMetricsEventName {
   WalletSetupCanceled = 'Wallet Setup Canceled',
   WalletSetupFailed = 'Wallet Setup Failed',
   WalletCreated = 'Wallet Created',
+  WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   DeeplinkClicked = 'Deeplink Clicked',
   ConnectCustodialAccountClicked = 'Connect Custodial Account Clicked',
@@ -669,6 +669,7 @@ export enum MetaMetricsEventName {
   TransactionApproved = 'Transaction Approved',
   SwapCompleted = 'Swap Completed',
   TransactionFinalized = 'Transaction Finalized',
+  ConfirmationQueued = 'Confirmation Queued',
   ExitedSwaps = 'Exited Swaps',
   SwapError = 'Swap Error',
   SnapInstallStarted = 'Snap Install Started',
@@ -727,6 +728,11 @@ export enum MetaMetricsEventAccountType {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   Snap = 'snap',
   ///: END:ONLY_INCLUDE_IF
+}
+
+export enum QueueType {
+  NavigationHeader = 'navigation_header',
+  QueueController = 'queue_controller',
 }
 
 export enum MetaMetricsEventAccountImportType {
@@ -814,6 +820,8 @@ export enum MetaMetricsTransactionEventSource {
 }
 
 export enum MetaMetricsEventLocation {
+  AlertFrictionModal = 'alert_friction_modal',
+  Confirmation = 'confirmation',
   SignatureConfirmation = 'signature_confirmation',
   TokenDetails = 'token_details',
   TokenDetection = 'token_detection',
@@ -826,6 +834,7 @@ export enum MetaMetricsEventUiCustomization {
   FlaggedAsSafetyUnknown = 'flagged_as_safety_unknown',
   FlaggedAsWarning = 'flagged_as_warning',
   GasEstimationFailed = 'gas_estimation_failed',
+  Order = 'order',
   RedesignedConfirmation = 'redesigned_confirmation',
   SecurityAlertError = 'security_alert_error',
   Siwe = 'sign_in_with_ethereum',

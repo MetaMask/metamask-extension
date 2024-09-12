@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { JsonRpcProvider } from '@ethersproject/providers';
+import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { TextVariant } from '../constants/design-system';
 import {
   CHAIN_IDS,
@@ -17,16 +18,17 @@ import {
 } from '../../../shared/constants/network';
 import { SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS } from '../constants/metamask-notifications/metamask-notifications';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
-import type {
-  OnChainRawNotification,
-  OnChainRawNotificationsWithNetworkFields,
-} from '../../../app/scripts/controllers/metamask-notifications/types/on-chain-notification/on-chain-notification';
 import type { BlockExplorerConfig } from '../constants/metamask-notifications/metamask-notifications';
 import {
   hexWEIToDecGWEI,
   hexWEIToDecETH,
   decimalToHex,
 } from '../../../shared/modules/conversion.utils';
+
+type OnChainRawNotification =
+  NotificationServicesController.Types.OnChainRawNotification;
+type OnChainRawNotificationsWithNetworkFields =
+  NotificationServicesController.Types.OnChainRawNotificationsWithNetworkFields;
 
 /**
  * Type guard to ensure a key is present in an object.
@@ -429,9 +431,11 @@ export const getNetworkFees = async (notification: OnChainRawNotification) => {
   }
 
   try {
-    const receipt = await provider.getTransactionReceipt(notification.tx_hash);
-    const transaction = await provider.getTransaction(notification.tx_hash);
-    const block = await provider.getBlock(notification.block_number);
+    const [receipt, transaction, block] = await Promise.all([
+      provider.getTransactionReceipt(notification.tx_hash),
+      provider.getTransaction(notification.tx_hash),
+      provider.getBlock(notification.block_number),
+    ]);
 
     const calculateUsdAmount = (value: string, decimalPlaces?: number) =>
       formatAmount(

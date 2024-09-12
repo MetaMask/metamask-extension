@@ -14,6 +14,7 @@ default: &default main
 # Note: These build types should be kept in sync with the list in `.github/workflows/update-lavamoat-policies.yml`
 buildTypes:
   main:
+    id: 10
     features:
       - build-main
       - keyring-snaps
@@ -25,7 +26,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.5.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.6.2/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Main build uses the default browser manifest
     manifestOverrides: false
@@ -34,6 +35,7 @@ buildTypes:
     buildNameOverride: MetaMask
 
   beta:
+    id: 11
     features:
       - build-beta
       - keyring-snaps
@@ -44,7 +46,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_BETA_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.5.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.6.2/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
@@ -54,6 +56,7 @@ buildTypes:
     buildNameOverride: MetaMask Beta
 
   flask:
+    id: 15
     # Code surrounded using code fences for that feature
     # will not be removed
     features:
@@ -64,7 +67,7 @@ buildTypes:
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.5.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.6.2/index.html
       - SUPPORT_LINK: https://support.metamask.io/
       - SUPPORT_REQUEST_LINK: https://support.metamask.io/
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
@@ -76,6 +79,7 @@ buildTypes:
     buildNameOverride: MetaMask Flask
 
   mmi:
+    id: 20
     features:
       - build-mmi
     env:
@@ -86,10 +90,10 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.5.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.6.2/index.html
       - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
-      - SUPPORT_LINK: https://mmi-support.metamask.io/hc/en-us
-      - SUPPORT_REQUEST_LINK: https://mmi-support.metamask.io/hc/en-us/requests/new
+      - SUPPORT_LINK: https://support.metamask-institutional.io
+      - SUPPORT_REQUEST_LINK: https://support.metamask-institutional.io
       - SENTRY_DSN: SENTRY_MMI_DSN
     # For some reason, MMI uses this type of versioning
     # Leaving it on for backwards compatibility
@@ -147,6 +151,7 @@ env:
   - SUPPORT_LINK: https://support.metamask.io
   - SUPPORT_REQUEST_LINK: https://support.metamask.io
   - SKIP_BACKGROUND_INITIALIZATION: false
+  - PPOM_URI: ./ppom_bg.wasm
   # CDN for blockaid files
   - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
   # Blockaid public key for verifying signatures of data files downloaded from CDN
@@ -283,3 +288,8 @@ env:
   ###
 
   - EIP_4337_ENTRYPOINT: null
+  ###
+  # Enable/disable why did you render debug tool: https://github.com/welldone-software/why-did-you-render
+  # This should NEVER be enabled in production since it slows down react
+  ###
+  - ENABLE_WHY_DID_YOU_RENDER: false

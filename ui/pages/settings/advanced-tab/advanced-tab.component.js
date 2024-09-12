@@ -7,7 +7,6 @@ import {
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
 import {
-  BannerAlert,
   Box,
   ButtonLink,
   ButtonLinkSize,
@@ -19,7 +18,6 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  Severity,
   TextVariant,
   AlignItems,
 } from '../../../helpers/constants/design-system';
@@ -44,7 +42,6 @@ export default class AdvancedTab extends PureComponent {
     setHexDataFeatureFlag: PropTypes.func,
     displayWarning: PropTypes.func,
     showResetAccountConfirmationModal: PropTypes.func,
-    showEthSignModal: PropTypes.func,
     warning: PropTypes.string,
     sendHexData: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
@@ -58,10 +55,6 @@ export default class AdvancedTab extends PureComponent {
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
     backupUserData: PropTypes.func.isRequired,
-    setDisabledRpcMethodPreference: PropTypes.func.isRequired,
-    disabledRpcMethodPreferences: PropTypes.shape({
-      eth_sign: PropTypes.bool.isRequired,
-    }),
     showExtensionInFullSizeView: PropTypes.bool,
     setShowExtensionInFullSizeView: PropTypes.func.isRequired,
   };
@@ -284,6 +277,7 @@ export default class AdvancedTab extends PureComponent {
             onToggle={(value) => setHexDataFeatureFlag(!value)}
             offLabel={t('off')}
             onLabel={t('on')}
+            className="hex-data-toggle"
           />
         </div>
       </Box>
@@ -411,7 +405,7 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('nonceField')}</span>
           <div className="settings-page__content-description">
-            {t('nonceFieldDescription')}
+            {t('nonceFieldDesc')}
           </div>
         </div>
 
@@ -511,64 +505,6 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderToggleEthSignControl() {
-    const { t, trackEvent } = this.context;
-    const {
-      disabledRpcMethodPreferences,
-      showEthSignModal,
-      setDisabledRpcMethodPreference,
-    } = this.props;
-    const toggleOff = (value) => {
-      setDisabledRpcMethodPreference('eth_sign', !value);
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
-        properties: {
-          location: 'Settings',
-          enable_eth_sign: false,
-        },
-      });
-    };
-    return (
-      <Box
-        ref={this.settingsRefs[10]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-toggle-ethsign"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('toggleEthSignField')}</span>
-          <div className="settings-page__content-description">
-            {t('toggleEthSignDescriptionField')}
-          </div>
-        </div>
-        {disabledRpcMethodPreferences?.eth_sign ? (
-          <BannerAlert
-            severity={Severity.Danger}
-            marginTop={3}
-            marginBottom={4}
-            descriptionProps={{ variant: TextVariant.bodyMd }}
-          >
-            {t('toggleEthSignBannerDescription')}
-          </BannerAlert>
-        ) : null}
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            className="eth-sign-toggle"
-            value={disabledRpcMethodPreferences?.eth_sign || false}
-            onToggle={(value) => {
-              value ? toggleOff(value) : showEthSignModal();
-            }}
-            offLabel={t('toggleEthSignOff')}
-            onLabel={t('toggleEthSignOn')}
-          />
-        </div>
-      </Box>
-    );
-  }
-
   handleLockChange(autoLockTimeLimitBeforeNormalization) {
     const { t } = this.context;
 
@@ -611,27 +547,27 @@ export default class AdvancedTab extends PureComponent {
     const { t } = this.context;
     return (
       <Box
-        ref={this.settingsRefs[11]}
+        ref={this.settingsRefs[10]}
         className="settings-page__content-row"
         data-testid="advanced-setting-data-backup"
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
       >
         <div className="settings-page__content-item">
-          <span>{t('backupUserData')}</span>
+          <span>{t('exportYourData')}</span>
           <span className="settings-page__content-description">
-            {t('backupUserDataDescription')}
+            {t('exportYourDataDescription')}
           </span>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <Button
-              data-testid="backup-button"
+              data-testid="export-data-button"
               type="secondary"
               large
-              onClick={() => this.backupUserData()}
+              onClick={this.backupUserData}
             >
-              {t('backup')}
+              {t('exportYourDataButton')}
             </Button>
           </div>
         </div>
@@ -641,7 +577,7 @@ export default class AdvancedTab extends PureComponent {
 
   render() {
     const { warning } = this.props;
-
+    // When adding/removing/editing the order of renders, double-check the order of the settingsRefs. This affects settings-search.js
     return (
       <div className="settings-page__body">
         {warning ? <div className="settings-tab__error">{warning}</div> : null}
@@ -656,7 +592,6 @@ export default class AdvancedTab extends PureComponent {
         {this.renderAutoLockTimeLimit()}
         {this.renderUserDataBackup()}
         {this.renderDismissSeedBackupReminderControl()}
-        {this.renderToggleEthSignControl()}
       </div>
     );
   }

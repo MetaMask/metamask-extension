@@ -101,9 +101,6 @@ describe('Send NFT', function () {
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
 
         await driver.clickElement('[data-testid="nft-network-badge"]');
-        await driver.clickElement(
-          '.nft-item__container .mm-badge-wrapper__badge-container',
-        );
 
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.fill(

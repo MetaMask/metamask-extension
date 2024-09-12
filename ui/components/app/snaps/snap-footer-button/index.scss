@@ -1,0 +1,45 @@
+.snap-footer-button {
+  &.mm-button-primary {
+    box-shadow: none;
+    color: var(--color-text-alternative);
+    background-color: var(--color-icon-default);
+
+    &:hover:not(&--disabled) {
+      opacity: 80%;
+      box-shadow: none;
+    }
+
+    &:active:not(&--disabled) {
+      opacity: 60%;
+    }
+  }
+
+  &.mm-button-secondary {
+    border-color: var(--color-icon-default);
+    color: var(--color-icon-default);
+
+    & span {
+      color: var(--color-icon-default);
+    }
+
+    &:hover:not(&--disabled) {
+      border-color: var(--color-icon-default);
+      color: var(--color-background-default);
+      background-color: var(--color-background-default-hover);
+      box-shadow: none;
+
+      & span {
+        color: var(--color-icon-default);
+      }
+    }
+
+    &:active:not(&--disabled) {
+      border-color: var(--color-icon-default);
+      opacity: 60%;
+
+      & span {
+        color: var(--color-icon-default);
+      }
+    }
+  }
+}

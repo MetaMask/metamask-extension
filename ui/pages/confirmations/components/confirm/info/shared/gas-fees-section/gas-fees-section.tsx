@@ -1,9 +1,8 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback, useState } from 'react';
 import { EditGasModes } from '../../../../../../../../shared/constants/gas';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import { currentConfirmationSelector } from '../../../../../../../selectors';
+import { useConfirmContext } from '../../../../../context/confirm';
 import EditGasPopover from '../../../../edit-gas-popover';
 import { useSupportsEIP1559 } from '../../hooks/useSupportsEIP1559';
 import { GasFeesDetails } from '../gas-fees-details/gas-fees-details';
@@ -24,17 +23,15 @@ const LegacyTransactionGasModal = ({
   );
 };
 
-export const GasFeesSection = ({
-  showAdvancedDetails,
-}: {
-  showAdvancedDetails: boolean;
-}) => {
-  const transactionMeta = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+export const GasFeesSection = () => {
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const [showCustomizeGasPopover, setShowCustomizeGasPopover] = useState(false);
-  const closeCustomizeGasPopover = () => setShowCustomizeGasPopover(false);
+  const closeCustomizeGasPopover = useCallback(
+    () => setShowCustomizeGasPopover(false),
+    [setShowCustomizeGasPopover],
+  );
 
   const { supportsEIP1559 } = useSupportsEIP1559(transactionMeta);
 
@@ -43,11 +40,8 @@ export const GasFeesSection = ({
   }
 
   return (
-    <ConfirmInfoSection>
-      <GasFeesDetails
-        setShowCustomizeGasPopover={setShowCustomizeGasPopover}
-        showAdvancedDetails={showAdvancedDetails}
-      />
+    <ConfirmInfoSection data-testid="gas-fee-section">
+      <GasFeesDetails setShowCustomizeGasPopover={setShowCustomizeGasPopover} />
       {!supportsEIP1559 && showCustomizeGasPopover && (
         <LegacyTransactionGasModal
           closeCustomizeGasPopover={closeCustomizeGasPopover}

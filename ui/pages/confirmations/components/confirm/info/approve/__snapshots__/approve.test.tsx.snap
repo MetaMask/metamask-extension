@@ -1,0 +1,282 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ApproveInfo /> does not render if required data is not present in the transaction 1`] = `<div />`;
+
+exports[`<ApproveInfo /> renders component for approve request 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="advanced-details-data-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Data
+        </p>
+      </div>
+      <div
+        class="mm-box"
+      >
+        <svg
+          class="preloader__icon"
+          fill="none"
+          height="20"
+          viewBox="0 0 16 16"
+          width="20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            clip-rule="evenodd"
+            d="M8 13.7143C4.84409 13.7143 2.28571 11.1559 2.28571 8C2.28571 4.84409 4.84409 2.28571 8 2.28571C11.1559 2.28571 13.7143 4.84409 13.7143 8C13.7143 11.1559 11.1559 13.7143 8 13.7143ZM8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 12.4183 12.4183 16 8 16Z"
+            fill="var(--color-primary-muted)"
+            fill-rule="evenodd"
+          />
+          <mask
+            height="16"
+            id="mask0"
+            mask-type="alpha"
+            maskUnits="userSpaceOnUse"
+            width="16"
+            x="0"
+            y="0"
+          >
+            <path
+              clip-rule="evenodd"
+              d="M8 13.7143C4.84409 13.7143 2.28571 11.1559 2.28571 8C2.28571 4.84409 4.84409 2.28571 8 2.28571C11.1559 2.28571 13.7143 4.84409 13.7143 8C13.7143 11.1559 11.1559 13.7143 8 13.7143ZM8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 12.4183 12.4183 16 8 16Z"
+              fill="var(--color-primary-default)"
+              fill-rule="evenodd"
+            />
+          </mask>
+          <g
+            mask="url(#mask0)"
+          >
+            <path
+              d="M6.85718 17.9999V11.4285V8.28564H-4.85711V17.9999H6.85718Z"
+              fill="var(--color-primary-default)"
+            />
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+  >
+    <div
+      class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+      data-testid="advanced-details-data-section"
+    >
+      <div
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          style="align-items: center;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Data
+          </p>
+        </div>
+        <div
+          class="mm-box"
+        >
+          <svg
+            class="preloader__icon"
+            fill="none"
+            height="20"
+            viewBox="0 0 16 16"
+            width="20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clip-rule="evenodd"
+              d="M8 13.7143C4.84409 13.7143 2.28571 11.1559 2.28571 8C2.28571 4.84409 4.84409 2.28571 8 2.28571C11.1559 2.28571 13.7143 4.84409 13.7143 8C13.7143 11.1559 11.1559 13.7143 8 13.7143ZM8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 12.4183 12.4183 16 8 16Z"
+              fill="var(--color-primary-muted)"
+              fill-rule="evenodd"
+            />
+            <mask
+              height="16"
+              id="mask0"
+              mask-type="alpha"
+              maskUnits="userSpaceOnUse"
+              width="16"
+              x="0"
+              y="0"
+            >
+              <path
+                clip-rule="evenodd"
+                d="M8 13.7143C4.84409 13.7143 2.28571 11.1559 2.28571 8C2.28571 4.84409 4.84409 2.28571 8 2.28571C11.1559 2.28571 13.7143 4.84409 13.7143 8C13.7143 11.1559 11.1559 13.7143 8 13.7143ZM8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 12.4183 12.4183 16 8 16Z"
+                fill="var(--color-primary-default)"
+                fill-rule="evenodd"
+              />
+            </mask>
+            <g
+              mask="url(#mask0)"
+            >
+              <path
+                d="M6.85718 17.9999V11.4285V8.28564H-4.85711V17.9999H6.85718Z"
+                fill="var(--color-primary-default)"
+              />
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="transaction-details-origin-row"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        style="align-items: center;"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Request from
+        </p>
+        <div>
+          <div
+            aria-describedby="tippy-tooltip-1"
+            class=""
+            data-original-title="This is the site asking for your confirmation."
+            data-tooltipped=""
+            style="display: flex;"
+            tabindex="0"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+        >
+          metamask.github.io
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="gas-fee-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="edit-gas-fees-row"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        style="align-items: center;"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Network fee
+        </p>
+        <div>
+          <div
+            aria-describedby="tippy-tooltip-2"
+            class=""
+            data-original-title="Amount paid to process the transaction on network."
+            data-tooltipped=""
+            style="display: flex;"
+            tabindex="0"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
+          data-testid="first-gas-field"
+        >
+          0.004 ETH
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
+          data-testid="native-currency"
+        >
+          $2.20
+        </p>
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          data-testid="edit-gas-fee-icon"
+          style="text-decoration: none;"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/edit.svg');"
+          />
+          <span
+            class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="gas-fee-details-speed"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-info-default"
+        style="align-items: center;"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Speed
+        </p>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-1 mm-box--color-text-alternative"
+          >
+            🦊 Market
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            <span
+              data-testid="gas-timing-time"
+            >
+              ~
+              0 sec
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -8,6 +8,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { useDisplayName } from '../../../hooks/useDisplayName';
+import { mockNetworkState } from '../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import Name from './name';
 
 jest.mock('../../../hooks/useDisplayName');
@@ -19,14 +21,11 @@ jest.mock('react-redux', () => ({
 
 const ADDRESS_NO_SAVED_NAME_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54977';
 const ADDRESS_SAVED_NAME_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54979';
-const CHAIN_ID_MOCK = '0x1';
 const SAVED_NAME_MOCK = 'TestName';
 
 const STATE_MOCK = {
   metamask: {
-    providerConfig: {
-      chainId: CHAIN_ID_MOCK,
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
   },
 };
 
@@ -36,6 +35,20 @@ describe('Name', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+  });
+
+  it('renders when no address value is passed', () => {
+    useDisplayNameMock.mockReturnValue({
+      name: null,
+      hasPetname: false,
+    });
+
+    const { container } = renderWithProvider(
+      <Name type={NameType.ETHEREUM_ADDRESS} value={''} />,
+      store,
+    );
+
+    expect(container).toMatchSnapshot();
   });
 
   it('renders address with no saved name', () => {

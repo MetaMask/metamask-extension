@@ -3,13 +3,13 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor, act } from '@testing-library/react';
 
-import { NetworkStatus } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 import Confirmation from '../confirmation';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 
 jest.mock('../../../../../shared/lib/fetch-with-cache');
 
@@ -38,19 +38,11 @@ const mockBaseStore = {
     },
     approvalFlows: [{ id: mockApprovalId, loadingText: null }],
     subjectMetadata: {},
-    providerConfig: {
-      type: 'rpc',
+    ...mockNetworkState({
       rpcUrl: 'http://example-custom-rpc.metamask.io',
       chainId: '0x9999',
       nickname: 'Test initial state',
-    },
-    selectedNetworkClientId: 'test-network-client-id',
-    networksMetadata: {
-      'test-network-client-id': {
-        EIPS: {},
-        status: NetworkStatus.Available,
-      },
-    },
+    }),
     snaps: {},
   },
 };
@@ -147,6 +139,33 @@ describe('add-ethereum-chain confirmation', () => {
     const { getByText } = renderWithProvider(<Confirmation />, store);
     await waitFor(() => {
       expect(getByText('https://rpcurl.test.chain')).toBeInTheDocument();
+    });
+  });
+
+  it('should show warning if RPC URL has special characters', async () => {
+    const testStore = {
+      metamask: {
+        ...mockBaseStore.metamask,
+        pendingApprovals: {
+          [mockApprovalId]: {
+            ...mockApproval,
+            type: MESSAGE_TYPE.ADD_ETHEREUM_CHAIN,
+            requestData: {
+              ...mockApproval.requestData,
+              rpcUrl: 'https://iոfura.io/gnosis',
+            },
+          },
+        },
+      },
+    };
+    const store = configureMockStore(middleware)(testStore);
+    const { getByText } = renderWithProvider(<Confirmation />, store);
+    await waitFor(() => {
+      expect(
+        getByText(
+          "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue. Punycode version: https://xn--ifura-dig.io/gnosis",
+        ),
+      ).toBeInTheDocument();
     });
   });
 });

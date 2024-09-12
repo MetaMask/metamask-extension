@@ -1,10 +1,13 @@
 import React, { createContext, useContext, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { useListNotifications } from '../../hooks/metamask-notifications/useNotifications';
 import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
-import type { Notification } from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import { getUseExternalServices } from '../../selectors';
+import { getIsUnlocked } from '../../ducks/metamask/metamask';
+
+type Notification = NotificationServicesController.Types.INotification;
 
 type MetamaskNotificationsContextType = {
   listNotifications: () => void;
@@ -33,7 +36,7 @@ export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
     selectIsMetamaskNotificationsEnabled,
   );
   const basicFunctionality = useSelector(getUseExternalServices);
-
+  const isUnlocked = useSelector(getIsUnlocked);
   const { listNotifications, notificationsData, isLoading, error } =
     useListNotifications();
 
@@ -43,10 +46,15 @@ export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
   );
 
   useEffect(() => {
-    if (basicFunctionality && shouldFetchNotifications) {
+    if (basicFunctionality && shouldFetchNotifications && isUnlocked) {
       listNotifications();
     }
-  }, [shouldFetchNotifications, listNotifications, basicFunctionality]);
+  }, [
+    shouldFetchNotifications,
+    listNotifications,
+    basicFunctionality,
+    isUnlocked,
+  ]);
 
   return (
     <MetamaskNotificationsContext.Provider

@@ -3,6 +3,7 @@ import { BN, toChecksumAddress } from 'ethereumjs-util';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
+import { MinPermissionAbstractionDisplayCount } from '../../../shared/constants/permissions';
 import * as util from './util';
 
 describe('util', () => {
@@ -1091,6 +1092,138 @@ describe('util', () => {
           skipCharacterInEnd: true,
         }),
       ).toStrictEqual('0x12...');
+    });
+  });
+
+  describe('getFilteredSnapPermissions', () => {
+    it('should return permission filtered by weight', () => {
+      const WEIGHT_THRESHOLD = 3;
+      const mockPermissions = [
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+        {
+          label: 'Permission C',
+          weight: 1,
+        },
+        {
+          label: 'Permission D',
+          weight: 5,
+        },
+        {
+          label: 'Permission E',
+          weight: 2,
+        },
+      ];
+      expect(
+        util.getFilteredSnapPermissions(mockPermissions, WEIGHT_THRESHOLD, 2),
+      ).toStrictEqual([
+        {
+          label: 'Permission C',
+          weight: 1,
+        },
+        {
+          label: 'Permission E',
+          weight: 2,
+        },
+      ]);
+    });
+
+    it('should return the first three permissions because none matches the filter criteria', () => {
+      const WEIGHT_THRESHOLD = 3;
+      const mockPermissions = [
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+        {
+          label: 'Permission C',
+          weight: 5,
+        },
+        {
+          label: 'Permission D',
+          weight: 5,
+        },
+        {
+          label: 'Permission E',
+          weight: 6,
+        },
+      ];
+      expect(
+        util.getFilteredSnapPermissions(
+          mockPermissions,
+          WEIGHT_THRESHOLD,
+          MinPermissionAbstractionDisplayCount,
+        ),
+      ).toStrictEqual([
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+        {
+          label: 'Permission C',
+          weight: 5,
+        },
+      ]);
+    });
+
+    it('should return permissions filtered by weight and gap filled with other permissions', () => {
+      const WEIGHT_THRESHOLD = 3;
+      const mockPermissions = [
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+        {
+          label: 'Permission C',
+          weight: 1,
+        },
+        {
+          label: 'Permission D',
+          weight: 5,
+        },
+        {
+          label: 'Permission E',
+          weight: 6,
+        },
+      ];
+      expect(
+        util.getFilteredSnapPermissions(
+          mockPermissions,
+          WEIGHT_THRESHOLD,
+          MinPermissionAbstractionDisplayCount,
+        ),
+      ).toStrictEqual([
+        {
+          label: 'Permission C',
+          weight: 1,
+        },
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+      ]);
     });
   });
 });

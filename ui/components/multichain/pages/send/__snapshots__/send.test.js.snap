@@ -28,11 +28,11 @@ exports[`SendPage render and initialization should render correctly even when a 
         <div
           class="mm-box"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+          <h4
+            class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
           >
-            Send a token
-          </p>
+            Send
+          </h4>
         </div>
       </div>
       <div
@@ -232,8 +232,11 @@ exports[`SendPage render and initialization should render correctly even when a 
                   class="mm-box mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
-                    class="mm-box multichain-account-list-item multichain-account-list-item--clickable mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
+                    class="mm-box multichain-account-list-item multichain-account-list-item--selected multichain-account-list-item--clickable mm-box--padding-4 mm-box--display-flex mm-box--background-color-primary-muted"
                   >
+                    <div
+                      class="mm-box multichain-account-list-item__selected-indicator mm-box--background-color-primary-default mm-box--rounded-pill"
+                    />
                     <div
                       class="mm-box mm-box--display-flex mm-box--sm:display-none"
                       data-testid="account-list-item-badge"
@@ -549,6 +552,7 @@ exports[`SendPage render and initialization should render correctly even when a 
         >
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            data-theme="light"
           >
             Continue
           </button>

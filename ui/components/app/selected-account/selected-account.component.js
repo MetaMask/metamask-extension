@@ -9,6 +9,7 @@ import { SECOND } from '../../../../shared/constants/time';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { AccountType } from '../../../../shared/constants/custody';
 import CustodyLabels from '../../institutional/custody-labels/custody-labels';
 ///: END:ONLY_INCLUDE_IF
 import { Icon, IconName, IconSize, Text } from '../../component-library';
@@ -81,7 +82,7 @@ class SelectedAccount extends Component {
 
     const showCustodyLabels =
       getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP &&
-      accountType === 'custody' &&
+      accountType === AccountType.CUSTODY &&
       custodyLabels;
 
     const tooltipText = this.state.copied

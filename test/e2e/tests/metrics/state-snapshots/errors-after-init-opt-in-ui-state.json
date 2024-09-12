@@ -35,7 +35,8 @@
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
-      "redesignedConfirmationsEnabled": true
+      "redesignedConfirmationsEnabled": true,
+      "redesignedTransactionsEnabled": "boolean"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
@@ -50,15 +51,6 @@
         "conversionRate": 1700,
         "usdConversionRate": 1700
       }
-    },
-    "providerConfig": {
-      "chainId": "0x539",
-      "nickname": "Localhost 8545",
-      "rpcPrefs": "object",
-      "rpcUrl": "string",
-      "ticker": "ETH",
-      "type": "rpc",
-      "id": "networkConfigurationId"
     },
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
@@ -76,7 +68,7 @@
     "showNetworkBanner": true,
     "showAccountBanner": true,
     "trezorModel": null,
-    "onboardingDate": "object",
+    "onboardingDate": null,
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -87,7 +79,7 @@
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
     "signatureSecurityAlertResponses": "object",
-    "switchedNetworkDetails": "object",
+    "switchedNetworkDetails": null,
     "switchedNetworkNeverShowMessage": "boolean",
     "currentExtensionPopupId": "number",
     "currentAppVersion": "string",
@@ -106,7 +98,6 @@
     "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
-    "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
     "useSafeChainsListValidation": true,
     "useTokenDetection": false,
@@ -115,6 +106,7 @@
     "useRequestQueue": true,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
+    "watchEthereumAccountEnabled": "boolean",
     "bitcoinSupportEnabled": "boolean",
     "bitcoinTestnetSupportEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
@@ -188,11 +180,12 @@
     "snapStates": "object",
     "unencryptedSnapStates": "object",
     "jobs": "object",
-    "database": "object",
-    "lastUpdated": "object",
+    "database": null,
+    "lastUpdated": null,
     "databaseUnavailable": "boolean",
     "notifications": "object",
     "interfaces": "object",
+    "insights": "object",
     "names": "object",
     "nameSources": "object",
     "userOperations": "object",
@@ -201,7 +194,7 @@
     "isProfileSyncingUpdateLoading": "boolean",
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
-    "isMetamaskNotificationsEnabled": "boolean",
+    "isNotificationServicesEnabled": "boolean",
     "isFeatureAnnouncementsEnabled": "boolean",
     "metamaskNotificationsList": "object",
     "metamaskNotificationsReadList": "object",
@@ -218,19 +211,17 @@
     "unapprovedDecryptMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object",
     "unapprovedEncryptionPublicKeyMsgCount": 0,
-    "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",
     "unapprovedTypedMessages": "object",
-    "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgCount": 0,
     "unapprovedTypedMessagesCount": 0,
     "swapsState": {
       "quotes": "object",
       "quotesPollingLimitEnabled": false,
       "fetchParams": null,
-      "tokens": "object",
-      "tradeTxId": "object",
-      "approveTxId": "object",
+      "tokens": null,
+      "tradeTxId": null,
+      "approveTxId": null,
       "quotesLastFetched": null,
       "customMaxGas": "",
       "customGasPrice": null,
@@ -240,7 +231,7 @@
       "selectedAggId": null,
       "customApproveTxData": "string",
       "errorKey": "",
-      "topAggId": "object",
+      "topAggId": null,
       "routeState": "",
       "swapsFeatureIsLive": true,
       "saveFetchedQuotes": false,
@@ -249,9 +240,24 @@
       "swapsStxBatchStatusRefreshTime": 10000,
       "swapsStxStatusDeadline": 180,
       "swapsStxGetTransactionsRefreshTime": 10000,
-      "swapsStxMaxFeeMultiplier": 2
+      "swapsStxMaxFeeMultiplier": 2,
+      "swapsFeatureFlags": {}
     },
-    "bridgeState": { "bridgeFeatureFlags": { "extensionSupport": "boolean" } },
+    "bridgeState": {
+      "bridgeFeatureFlags": {
+        "extensionSupport": "boolean",
+        "srcNetworkAllowlist": {
+          "0": "string",
+          "1": "string",
+          "2": "string"
+        },
+        "destNetworkAllowlist": {
+          "0": "string",
+          "1": "string",
+          "2": "string"
+        }
+      }
+    },
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",

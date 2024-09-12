@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 
 import { ApprovalType } from '@metamask/controller-utils';
 import { BtcAccountType } from '@metamask/keyring-api';
+import { fireEvent } from '@testing-library/react';
 import messages from '../../../app/_locales/en/messages.json';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import mockState from '../../../test/data/mock-state.json';
@@ -16,6 +17,7 @@ const mockPermissionRequestId = '0cbc1f26-8772-4512-8ad7-f547d6e8b72c';
 
 jest.mock('../../store/actions', () => {
   return {
+    ...jest.requireActual('../../store/actions'),
     getRequestAccountTabIds: jest.fn().mockReturnValue({
       type: 'SET_REQUEST_ACCOUNT_TABS',
       payload: {},
@@ -110,24 +112,31 @@ const render = (
   const mockStore = configureStore(middlewares);
   const store = mockStore(state);
 
-  return renderWithProvider(
-    <PermissionApprovalContainer {...props} />,
+  return {
+    render: renderWithProvider(
+      <PermissionApprovalContainer {...props} />,
+      store,
+      `${CONNECT_ROUTE}/${mockPermissionRequestId}`,
+    ),
     store,
-    `${CONNECT_ROUTE}/${mockPermissionRequestId}`,
-  );
+  };
 };
 
 describe('PermissionApprovalContainer', () => {
   describe('ConnectPath', () => {
     it('renders correctly', () => {
-      const { container, getByText } = render();
+      const {
+        render: { container, getByText },
+      } = render();
       expect(getByText(messages.next.message)).toBeInTheDocument();
       expect(getByText(messages.cancel.message)).toBeInTheDocument();
       expect(container).toMatchSnapshot();
     });
 
     it('renders the list without BTC accounts', async () => {
-      const { getByText, queryByText } = render();
+      const {
+        render: { getByText, queryByText },
+      } = render();
       expect(
         getByText(
           `${mockAccount.metadata.name} (${shortenAddress(
@@ -142,6 +151,28 @@ describe('PermissionApprovalContainer', () => {
           )})`,
         ),
       ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Add new account', () => {
+    it('displays the correct account number', async () => {
+      const {
+        render: { getByText },
+        store,
+      } = render();
+      fireEvent.click(getByText(messages.newAccount.message));
+
+      const dispatchedActions = store.getActions();
+
+      expect(dispatchedActions).toHaveLength(2); // first action is 'SET_REQUEST_ACCOUNT_TABS'
+      expect(dispatchedActions[1]).toStrictEqual({
+        type: 'UI_MODAL_OPEN',
+        payload: {
+          name: 'NEW_ACCOUNT',
+          onCreateNewAccount: expect.any(Function),
+          newAccountNumber: 2,
+        },
+      });
     });
   });
 });

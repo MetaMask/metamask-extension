@@ -9,6 +9,7 @@ import { UserOperationController } from '@metamask/user-operation-controller';
 import { cloneDeep } from 'lodash';
 import {
   generateSecurityAlertId,
+  isChainSupported,
   validateRequestWithPPOM,
 } from '../ppom/ppom-util';
 import {
@@ -17,6 +18,7 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { SecurityAlertResponse } from '../ppom/types';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import {
   AddDappTransactionRequest,
   AddTransactionOptions,
@@ -37,6 +39,11 @@ jest.mock('uuid', () => {
 });
 
 const SECURITY_ALERT_ID_MOCK = '123';
+
+const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
+const INTERNAL_ACCOUNT = createMockInternalAccount({
+  address: INTERNAL_ACCOUNT_ADDRESS,
+});
 
 const TRANSACTION_PARAMS_MOCK: TransactionParams = {
   from: '0x1',
@@ -69,7 +76,8 @@ const TRANSACTION_REQUEST_MOCK: AddTransactionRequest = {
   transactionParams: TRANSACTION_PARAMS_MOCK,
   transactionOptions: TRANSACTION_OPTIONS_MOCK,
   waitForSubmit: false,
-} as AddTransactionRequest;
+  internalAccounts: [],
+} as unknown as AddTransactionRequest;
 
 const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
   result_type: BlockaidResultType.Malicious,
@@ -97,6 +105,7 @@ describe('Transaction Utils', () => {
   let userOperationController: jest.Mocked<UserOperationController>;
   const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
+  const isChainSupportedMock = jest.mocked(isChainSupported);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -121,6 +130,7 @@ describe('Transaction Utils', () => {
     });
 
     generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
+    isChainSupportedMock.mockResolvedValue(true);
 
     request.transactionController = transactionController;
     request.userOperationController = userOperationController;
@@ -466,7 +476,38 @@ describe('Transaction Utils', () => {
         expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
       });
 
+      it('send to users own account', async () => {
+        const sendRequest = {
+          ...request,
+          transactionParams: {
+            ...request.transactionParams,
+            to: INTERNAL_ACCOUNT_ADDRESS,
+          },
+        };
+        await addTransaction({
+          ...sendRequest,
+          securityAlertsEnabled: false,
+          chainId: '0x1',
+          internalAccounts: [INTERNAL_ACCOUNT],
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(
+          sendRequest.transactionParams,
+          TRANSACTION_OPTIONS_MOCK,
+        );
+
+        expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
+      });
+
       it('unless chain is not supported', async () => {
+        isChainSupportedMock.mockResolvedValue(false);
+
         await addTransaction({
           ...request,
           securityAlertsEnabled: true,

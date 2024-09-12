@@ -9,7 +9,7 @@
   },
   "engines": {
     "node": ">= 20",
-    "yarn": "^4.0.2"
+    "yarn": "^4.4.1"
   },
   "lavamoat": {
     "allowScripts": {

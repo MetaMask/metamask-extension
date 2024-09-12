@@ -1,9 +1,10 @@
 import React from 'react';
 import { act, screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import FeeDetailsComponent from './fee-details-component';
 
 jest.mock('../../../../store/actions', () => ({
@@ -38,9 +39,7 @@ describe('FeeDetailsComponent', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        providerConfig: {
-          chainId: CHAIN_IDS.OPTIMISM,
-        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
       },
     });
     expect(screen.queryByText('Fee details')).toBeInTheDocument();
@@ -51,9 +50,7 @@ describe('FeeDetailsComponent', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        providerConfig: {
-          chainId: CHAIN_IDS.OPTIMISM,
-        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
       },
     });
     expect(screen.queryByTitle('0 ETH')).not.toBeInTheDocument();
@@ -74,17 +71,7 @@ describe('FeeDetailsComponent', () => {
             1559: false,
           },
         },
-        networksMetadata: {
-          goerli: {
-            EIPS: {
-              1559: false,
-            },
-            status: 'available',
-          },
-        },
-        providerConfig: {
-          chainId: CHAIN_IDS.OPTIMISM,
-        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
       },
     });
     expect(screen.queryByText('Fee details')).toBeInTheDocument();
@@ -100,17 +87,7 @@ describe('FeeDetailsComponent', () => {
             1559: false,
           },
         },
-        networksMetadata: {
-          goerli: {
-            EIPS: {
-              1559: false,
-            },
-            status: 'available',
-          },
-        },
-        providerConfig: {
-          chainId: CHAIN_IDS.OPTIMISM,
-        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
       },
     });
     await act(async () => {

@@ -37,7 +37,7 @@
     "showNetworkBanner": true,
     "showAccountBanner": true,
     "trezorModel": null,
-    "onboardingDate": "object",
+    "onboardingDate": null,
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -48,7 +48,7 @@
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
     "signatureSecurityAlertResponses": "object",
-    "switchedNetworkDetails": "object",
+    "switchedNetworkDetails": null,
     "switchedNetworkNeverShowMessage": "boolean",
     "currentExtensionPopupId": "number"
   },
@@ -59,7 +59,21 @@
   },
   "AuthenticationController": { "isSignedIn": "boolean" },
   "BridgeController": {
-    "bridgeState": { "bridgeFeatureFlags": { "extensionSupport": "boolean" } }
+    "bridgeState": {
+      "bridgeFeatureFlags": {
+        "extensionSupport": "boolean",
+        "srcNetworkAllowlist": {
+          "0": "string",
+          "1": "string",
+          "2": "string"
+        },
+        "destNetworkAllowlist": {
+          "0": "string",
+          "1": "string",
+          "2": "string"
+        }
+      }
+    }
   },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
@@ -107,20 +121,7 @@
     "traits": "object",
     "previousUserTraits": "object",
     "fragments": "object",
-    "dataCollectionForMarketing": "boolean",
     "segmentApiCalls": "object"
-  },
-  "MetamaskNotificationsController": {
-    "subscriptionAccountsSeen": "object",
-    "isMetamaskNotificationsFeatureSeen": "boolean",
-    "isMetamaskNotificationsEnabled": "boolean",
-    "isFeatureAnnouncementsEnabled": "boolean",
-    "metamaskNotificationsList": "object",
-    "metamaskNotificationsReadList": "object",
-    "isUpdatingMetamaskNotifications": "boolean",
-    "isFetchingMetamaskNotifications": "boolean",
-    "isUpdatingMetamaskNotificationsAccount": "object",
-    "isCheckingAccountsPresence": "boolean"
   },
   "MultichainBalancesController": { "balances": "object" },
   "MultichainRatesController": {
@@ -131,15 +132,6 @@
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
     "selectedNetworkClientId": "string",
-    "providerConfig": {
-      "chainId": "0x539",
-      "nickname": "Localhost 8545",
-      "rpcPrefs": "object",
-      "rpcUrl": "string",
-      "ticker": "ETH",
-      "type": "rpc",
-      "id": "networkConfigurationId"
-    },
     "networksMetadata": {
       "networkConfigurationId": {
         "EIPS": { "1559": false },
@@ -157,6 +149,19 @@
     "ignoredNfts": "object"
   },
   "NotificationController": { "notifications": "object" },
+  "NotificationServicesController": {
+    "subscriptionAccountsSeen": "object",
+    "isMetamaskNotificationsFeatureSeen": "boolean",
+    "isNotificationServicesEnabled": "boolean",
+    "isFeatureAnnouncementsEnabled": "boolean",
+    "metamaskNotificationsList": "object",
+    "metamaskNotificationsReadList": "object",
+    "isUpdatingMetamaskNotifications": "boolean",
+    "isFetchingMetamaskNotifications": "boolean",
+    "isUpdatingMetamaskNotificationsAccount": "object",
+    "isCheckingAccountsPresence": "boolean"
+  },
+  "NotificationServicesPushController": { "fcmToken": "string" },
   "OnboardingController": {
     "seedPhraseBackedUp": true,
     "firstTimeFlowType": "import",
@@ -174,7 +179,6 @@
     "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
-    "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": false,
@@ -184,6 +188,7 @@
     "useRequestQueue": true,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
+    "watchEthereumAccountEnabled": "boolean",
     "bitcoinSupportEnabled": "boolean",
     "bitcoinTestnetSupportEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
@@ -204,7 +209,8 @@
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
-      "redesignedConfirmationsEnabled": true
+      "redesignedConfirmationsEnabled": true,
+      "redesignedTransactionsEnabled": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
@@ -219,14 +225,11 @@
     "useExternalServices": "boolean",
     "selectedAddress": "string"
   },
-  "PushPlatformNotificationsController": { "fcmToken": "string" },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
-    "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",
     "unapprovedTypedMessages": "object",
-    "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgCount": 0,
     "unapprovedTypedMessagesCount": 0
   },
@@ -242,10 +245,11 @@
     "snapStates": "object",
     "unencryptedSnapStates": "object"
   },
-  "SnapInterfaceController": "object",
+  "SnapInsightsController": { "insights": "object" },
+  "SnapInterfaceController": { "interfaces": "object" },
   "SnapsRegistry": {
-    "database": "object",
-    "lastUpdated": "object",
+    "database": null,
+    "lastUpdated": null,
     "databaseUnavailable": "boolean"
   },
   "SubjectMetadataController": { "subjectMetadata": "object" },
@@ -254,9 +258,9 @@
       "quotes": "object",
       "quotesPollingLimitEnabled": false,
       "fetchParams": null,
-      "tokens": "object",
-      "tradeTxId": "object",
-      "approveTxId": "object",
+      "tokens": null,
+      "tradeTxId": null,
+      "approveTxId": null,
       "quotesLastFetched": null,
       "customMaxGas": "",
       "customGasPrice": null,
@@ -266,7 +270,7 @@
       "selectedAggId": null,
       "customApproveTxData": "string",
       "errorKey": "",
-      "topAggId": "object",
+      "topAggId": null,
       "routeState": "",
       "swapsFeatureIsLive": true,
       "saveFetchedQuotes": false,
@@ -275,7 +279,8 @@
       "swapsStxBatchStatusRefreshTime": 10000,
       "swapsStxStatusDeadline": 180,
       "swapsStxGetTransactionsRefreshTime": 10000,
-      "swapsStxMaxFeeMultiplier": 2
+      "swapsStxMaxFeeMultiplier": 2,
+      "swapsFeatureFlags": {}
     }
   },
   "TokenListController": {

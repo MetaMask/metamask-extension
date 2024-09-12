@@ -53,8 +53,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setProviderType: (type) => {
-      dispatch(actions.setProviderType(type));
+    setActiveNetwork: (type) => {
+      dispatch(actions.setActiveNetwork(type));
     },
     rollbackToPreviousProvider: () =>
       dispatch(actions.rollbackToPreviousProvider()),

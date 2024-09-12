@@ -9,6 +9,14 @@ import {
   MultipleAlertModalProps,
 } from './multiple-alert-modal';
 
+jest.mock('../contexts/alertMetricsContext', () => ({
+  useAlertMetrics: jest.fn(() => ({
+    trackInlineAlertClicked: jest.fn(),
+    trackAlertRender: jest.fn(),
+    trackAlertActionClicked: jest.fn(),
+  })),
+}));
+
 describe('MultipleAlertModal', () => {
   const OWNER_ID_MOCK = '123';
   const FROM_ALERT_KEY_MOCK = 'from';
@@ -50,14 +58,6 @@ describe('MultipleAlertModal', () => {
           [DATA_ALERT_KEY_MOCK]: false,
           [CONTRACT_ALERT_KEY_MOCK]: false,
         },
-      },
-    },
-    confirm: {
-      currentConfirmation: {
-        id: OWNER_ID_MOCK,
-        status: 'unapproved',
-        time: new Date().getTime(),
-        type: 'personal_sign',
       },
     },
   };

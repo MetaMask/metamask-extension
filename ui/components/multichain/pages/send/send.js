@@ -55,9 +55,10 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import { AssetPickerAmount } from '../..';
-import useUpdateSwapsState from '../../../../hooks/useUpdateSwapsState';
+import useUpdateSwapsState from '../../../../pages/swaps/hooks/useUpdateSwapsState';
 import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
 import { smartTransactionsListSelector } from '../../../../selectors';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
 import {
   SendPageAccountPicker,
@@ -145,9 +146,45 @@ export const SendPage = () => {
           }),
         );
       }
+
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendAssetSelected,
+          category: MetaMetricsEventCategory.Send,
+          properties: {
+            is_destination_asset_picker_modal: Boolean(isReceived),
+            is_nft: false,
+          },
+          sensitiveProperties: {
+            ...sendAnalytics,
+            new_asset_symbol: token.symbol,
+            new_asset_address: token.address,
+          },
+        },
+        { excludeMetaMetricsId: false },
+      );
       history.push(SEND_ROUTE);
     },
-    [dispatch, history],
+    [dispatch, history, sendAnalytics, trackEvent],
+  );
+
+  const handleAssetPickerClick = useCallback(
+    (isDest) => {
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendTokenModalOpened,
+          category: MetaMetricsEventCategory.Send,
+          properties: {
+            is_destination_asset_picker_modal: Boolean(isDest),
+          },
+          sensitiveProperties: {
+            ...sendAnalytics,
+          },
+        },
+        { excludeMetaMetricsId: false },
+      );
+    },
+    [sendAnalytics, trackEvent],
   );
 
   const cleanup = useCallback(() => {
@@ -320,6 +357,9 @@ export const SendPage = () => {
   return (
     <Page className="multichain-send-page">
       <Header
+        textProps={{
+          variant: TextVariant.headingSm,
+        }}
         startAccessory={
           <ButtonIcon
             size={ButtonIconSize.Sm}
@@ -329,17 +369,19 @@ export const SendPage = () => {
           />
         }
       >
-        {t('sendAToken')}
+        {t('send')}
       </Header>
       <Content>
         <SendPageAccountPicker />
         {isSendFormShown && (
           <AssetPickerAmount
             error={error}
+            header={t('sendSelectSendAsset')}
             asset={transactionAsset}
             amount={amount}
             onAssetChange={handleSelectSendToken}
             onAmountChange={onAmountChange}
+            onClick={() => handleAssetPickerClick(false)}
           />
         )}
         <Box marginTop={6}>
@@ -350,6 +392,7 @@ export const SendPage = () => {
                 requireContractAddressAcknowledgement
               }
               onAssetChange={handleSelectToken}
+              onClick={() => handleAssetPickerClick(true)}
             />
           ) : (
             <SendPageRecipient />

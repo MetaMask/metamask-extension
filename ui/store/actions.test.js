@@ -3,28 +3,32 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import enLocale from '../../app/_locales/en/messages.json';
 import MetaMaskController from '../../app/scripts/metamask-controller';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
 import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametrics';
-import { TRIGGER_TYPES } from '../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../test/stub/networks';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
+
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 const middleware = [thunk];
 const defaultState = {
   metamask: {
     currentLocale: 'test',
-    providerConfig: { chainId: '0x1' },
     accounts: {
       '0xFirstAddress': {
         balance: '0x0',
       },
     },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -244,10 +248,8 @@ describe('Actions', () => {
 
       background.getState.callsFake((cb) =>
         cb(null, {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           currentLocale: 'test',
-          providerConfig: {
-            chainId: '0x1',
-          },
           accounts: {
             '0xAnotherAddress': {
               balance: '0x0',
@@ -819,7 +821,6 @@ describe('Actions', () => {
                 options: {},
                 methods: [
                   'personal_sign',
-                  'eth_sign',
                   'eth_signTransaction',
                   'eth_signTypedData_v1',
                   'eth_signTypedData_v3',
@@ -867,7 +868,6 @@ describe('Actions', () => {
                 options: {},
                 methods: [
                   'personal_sign',
-                  'eth_sign',
                   'eth_signTransaction',
                   'eth_signTypedData_v1',
                   'eth_signTypedData_v3',
@@ -1021,49 +1021,6 @@ describe('Actions', () => {
         actions.ignoreTokens({ tokensToIgnore: '0x0000001' }),
       );
 
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
-  describe('#setProviderType', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls setProviderType', async () => {
-      const store = mockStore();
-
-      const setProviderTypeStub = sinon.stub().callsFake((_, cb) => cb());
-
-      background.getApi.returns({
-        setProviderType: setProviderTypeStub,
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      await store.dispatch(actions.setProviderType());
-      expect(setProviderTypeStub.callCount).toStrictEqual(1);
-    });
-
-    it('displays warning when setProviderType throws', async () => {
-      const store = mockStore();
-
-      background.getApi.returns({
-        setProviderType: sinon
-          .stub()
-          .callsFake((_, cb) => cb(new Error('error'))),
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      const expectedActions = [
-        {
-          type: 'DISPLAY_WARNING',
-          payload: 'Had a problem changing networks!',
-        },
-      ];
-
-      await store.dispatch(actions.setProviderType());
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
@@ -1962,10 +1919,8 @@ describe('Actions', () => {
         }),
         getState: sinon.stub().callsFake((cb) =>
           cb(null, {
+            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
             currentLocale: 'test',
-            providerConfig: {
-              chainId: '0x1',
-            },
             accounts: {
               '0xFirstAddress': {
                 balance: '0x0',
@@ -2574,27 +2529,6 @@ describe('Actions', () => {
       ];
 
       expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
-  describe('#setBridgeFeatureFlags', () => {
-    it('calls setBridgeFeatureFlags in the background', async () => {
-      const store = mockStore();
-      background.setBridgeFeatureFlags = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
-      setBackgroundConnection(background);
-
-      await store.dispatch(
-        actions.setBridgeFeatureFlags({ extensionSupport: true }),
-      );
-
-      expect(background.setBridgeFeatureFlags.callCount).toStrictEqual(1);
-      expect(background.setBridgeFeatureFlags.getCall(0).args[0]).toStrictEqual(
-        {
-          extensionSupport: true,
-        },
-      );
     });
   });
 });

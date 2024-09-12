@@ -30,28 +30,28 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
       </ul>
     </div>
     <div
-      class="box box--margin-bottom-4 box--flex-direction-row box--justify-content-center box--text-align-center box--display-flex"
+      class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-center mm-box--text-align-center"
     >
       <h2
-        class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography recovery-phrase__header typography--h2 typography--weight-bold typography--style-normal typography--color-text-default"
+        class="mm-box mm-text recovery-phrase__header mm-text--heading-lg mm-text--font-weight-bold mm-box--color-text-default"
       >
         Write down your Secret Recovery Phrase
       </h2>
     </div>
     <div
-      class="box box--margin-bottom-4 box--flex-direction-row box--justify-content-center box--text-align-center box--display-flex"
+      class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-center mm-box--text-align-center"
     >
       <h4
-        class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
+        class="mm-box mm-text mm-text--heading-sm mm-text--font-weight-normal mm-box--color-text-default"
       >
         Write down this 12-word Secret Recovery Phrase and save it in a place that you trust and only you can access.
       </h4>
     </div>
     <div
-      class="box recovery-phrase__tips box--margin-bottom-4 box--flex-direction-row box--text-align-left"
+      class="mm-box recovery-phrase__tips mm-box--margin-bottom-4 mm-box--text-align-left"
     >
       <h4
-        class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-bold typography--style-normal typography--color-text-default"
+        class="mm-box mm-text mm-text--heading-sm mm-box--color-text-default"
       >
         Tips
         :
@@ -59,23 +59,16 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
       <ul>
         <li>
           <h4
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
-          >
-            Save in a password manager
-          </h4>
-        </li>
-        <li>
-          <h4
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
-          >
-            Store in a safe deposit box
-          </h4>
-        </li>
-        <li>
-          <h4
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
+            class="mm-box mm-text mm-text--heading-sm mm-text--font-weight-normal mm-box--color-text-default"
           >
             Write down and store in multiple secret places
+          </h4>
+        </li>
+        <li>
+          <h4
+            class="mm-box mm-text mm-text--heading-sm mm-text--font-weight-normal mm-box--color-text-default"
+          >
+            Store in a safe deposit box
           </h4>
         </li>
       </ul>
@@ -326,28 +319,28 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
       </ul>
     </div>
     <div
-      class="box box--margin-bottom-4 box--flex-direction-row box--justify-content-center box--text-align-center box--display-flex"
+      class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-center mm-box--text-align-center"
     >
       <h2
-        class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography recovery-phrase__header typography--h2 typography--weight-bold typography--style-normal typography--color-text-default"
+        class="mm-box mm-text recovery-phrase__header mm-text--heading-lg mm-text--font-weight-bold mm-box--color-text-default"
       >
         Write down your Secret Recovery Phrase
       </h2>
     </div>
     <div
-      class="box box--margin-bottom-4 box--flex-direction-row box--justify-content-center box--text-align-center box--display-flex"
+      class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-center mm-box--text-align-center"
     >
       <h4
-        class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
+        class="mm-box mm-text mm-text--heading-sm mm-text--font-weight-normal mm-box--color-text-default"
       >
         Write down this 12-word Secret Recovery Phrase and save it in a place that you trust and only you can access.
       </h4>
     </div>
     <div
-      class="box recovery-phrase__tips box--margin-bottom-4 box--flex-direction-row box--text-align-left"
+      class="mm-box recovery-phrase__tips mm-box--margin-bottom-4 mm-box--text-align-left"
     >
       <h4
-        class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-bold typography--style-normal typography--color-text-default"
+        class="mm-box mm-text mm-text--heading-sm mm-box--color-text-default"
       >
         Tips
         :
@@ -355,23 +348,16 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
       <ul>
         <li>
           <h4
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
-          >
-            Save in a password manager
-          </h4>
-        </li>
-        <li>
-          <h4
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
-          >
-            Store in a safe deposit box
-          </h4>
-        </li>
-        <li>
-          <h4
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
+            class="mm-box mm-text mm-text--heading-sm mm-text--font-weight-normal mm-box--color-text-default"
           >
             Write down and store in multiple secret places
+          </h4>
+        </li>
+        <li>
+          <h4
+            class="mm-box mm-text mm-text--heading-sm mm-text--font-weight-normal mm-box--color-text-default"
+          >
+            Store in a safe deposit box
           </h4>
         </li>
       </ul>

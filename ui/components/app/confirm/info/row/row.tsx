@@ -21,6 +21,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import { CopyIcon } from './copy-icon';
 
 export enum ConfirmInfoRowVariant {
   Default = 'default',
@@ -36,6 +37,9 @@ export type ConfirmInfoRowProps = {
   style?: React.CSSProperties;
   labelChildren?: React.ReactNode;
   color?: TextColor;
+  copyEnabled?: boolean;
+  copyText?: string;
+  'data-testid'?: string;
 };
 
 const BACKGROUND_COLORS = {
@@ -74,9 +78,13 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   style,
   labelChildren,
   color,
+  copyEnabled = false,
+  copyText = undefined,
+  'data-testid': dataTestId,
 }) => (
   <ConfirmInfoRowContext.Provider value={{ variant }}>
     <Box
+      data-testid={dataTestId}
       className="confirm-info-row"
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
@@ -87,20 +95,23 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
       marginTop={2}
       marginBottom={2}
       paddingLeft={2}
-      paddingRight={2}
+      paddingRight={copyEnabled ? 5 : 2}
       color={TEXT_COLORS[variant] as TextColor}
       style={{
         overflowWrap: OverflowWrap.Anywhere,
         minHeight: '24px',
+        position: 'relative',
         ...style,
       }}
     >
+      {copyEnabled && <CopyIcon copyText={copyText ?? ''} />}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.flexStart}
         color={color}
+        style={{ alignItems: AlignItems.center }}
       >
         <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
           {label}
@@ -122,7 +133,9 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         )}
       </Box>
       {typeof children === 'string' ? (
-        <Text color={TextColor.inherit}>{children}</Text>
+        <Text marginRight={copyEnabled ? 3 : 0} color={TextColor.inherit}>
+          {children}
+        </Text>
       ) : (
         children
       )}

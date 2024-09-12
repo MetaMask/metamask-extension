@@ -33,6 +33,7 @@ const AddRpcUrlModal = () => {
         marginTop={8}
         marginLeft={'auto'}
         marginRight={'auto'}
+        onClick={() => ({})}
       >
         {t('addUrl')}
       </ButtonPrimary>

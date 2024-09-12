@@ -63,6 +63,30 @@ export function formatDateWithYearContext(
     now.year === dateTime.year ? formatThisYear : fallback,
   );
 }
+
+export function formatDateWithSuffix(timestamp) {
+  const date = DateTime.fromMillis(timestamp * 1000); // Convert to milliseconds
+  const { day } = date;
+  const suffix = getOrdinalSuffix(day);
+
+  return date.toFormat(`MMM d'${suffix}', yyyy`);
+}
+
+function getOrdinalSuffix(day) {
+  if (day > 3 && day < 21) {
+    return 'th';
+  } // because 11th, 12th, 13th
+  switch (day % 10) {
+    case 1:
+      return 'st';
+    case 2:
+      return 'nd';
+    case 3:
+      return 'rd';
+    default:
+      return 'th';
+  }
+}
 /**
  * Determines if the provided chainId is a default MetaMask chain
  *
@@ -756,4 +780,40 @@ export const hexToText = (hex) => {
  */
 export const getAvatarFallbackLetter = (subjectName) => {
   return subjectName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
+};
+
+/**
+ * Get abstracted Snap permissions filtered by weight.
+ *
+ * @param weightedPermissions - Set of Snap permissions that have 'weight' property assigned.
+ * @param weightThreshold - Number that represents weight threshold for filtering.
+ * @param minPermissionCount - Minimum number of permissions to show,
+ * if filtered permissions count are less than the value specified.
+ * @returns Subset of permissions passing weight criteria.
+ */
+export const getFilteredSnapPermissions = (
+  weightedPermissions,
+  weightThreshold = Infinity,
+  minPermissionCount = 3,
+) => {
+  const filteredPermissions = weightedPermissions.filter(
+    (permission) => permission.weight <= weightThreshold,
+  );
+
+  // If there are not enough permissions that fall into desired set filtered by weight,
+  // then fill the gap, no matter what the weight is
+  if (minPermissionCount && filteredPermissions.length < minPermissionCount) {
+    const remainingPermissions = weightedPermissions.filter(
+      (permission) => permission.weight > weightThreshold,
+    );
+    // Add permissions until desired count is reached
+    return filteredPermissions.concat(
+      remainingPermissions.slice(
+        0,
+        minPermissionCount - filteredPermissions.length,
+      ),
+    );
+  }
+
+  return filteredPermissions;
 };

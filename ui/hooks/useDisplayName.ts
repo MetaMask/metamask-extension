@@ -1,6 +1,6 @@
 import { NameType } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
-import { getMemoizedMetadataContracts } from '../selectors';
+import { getRemoteTokens } from '../selectors';
 import { getNftContractsByAddressOnCurrentChain } from '../selectors/nft';
 import { useNames } from './useName';
 import { useFirstPartyContractNames } from './useFirstPartyContractName';
@@ -32,7 +32,7 @@ export function useDisplayNames(
   const contractInfo = useSelector((state) =>
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (getMemoizedMetadataContracts as any)(state, values, true),
+    (getRemoteTokens as any)(state, values),
   );
 
   const watchedNftNames = useSelector(getNftContractsByAddressOnCurrentChain);

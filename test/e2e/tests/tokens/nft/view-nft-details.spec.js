@@ -26,31 +26,27 @@ describe('View NFT details', function () {
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
         await driver.clickElement('.nft-item__container');
 
-        const detailsPageTitle = await driver.findElement('.asset-breadcrumb');
-        assert.equal(
-          await detailsPageTitle.getText(),
-          'Account 1 / TestDappNFTs',
-        );
+        await driver.findElement('[data-testid="nft__back"]');
 
         // Check the displayed NFT details
-        const nftName = await driver.findElement('.nft-details__info h4');
-        assert.equal(await nftName.getText(), 'Test Dapp NFTs #1');
 
-        const nftDescription = await driver.findElement(
-          '.nft-details__info h6:nth-of-type(2)',
-        );
-        assert.equal(
-          await nftDescription.getText(),
-          'Test Dapp NFTs for testing.',
-        );
+        await driver.findElement({
+          css: '[data-testid="nft-details__name"]',
+          text: 'Test Dapp NFTs #1',
+        });
+
+        await driver.findElement({
+          css: '[data-testid="nft-details__description"]',
+          text: 'Test Dapp NFTs for testing.',
+        });
 
         const nftImage = await driver.findElement('.nft-item__container');
         assert.equal(await nftImage.isDisplayed(), true);
 
-        const nftContract = await driver.findElement(
-          '.nft-details__contract-wrapper',
-        );
-        assert.equal(await nftContract.getText(), '0x581c3...45947');
+        await driver.findElement({
+          css: '.nft-details__addressButton',
+          text: '0x581c3...45947',
+        });
       },
     );
   });

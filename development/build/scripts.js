@@ -29,6 +29,7 @@ const terser = require('terser');
 const bifyModuleGroups = require('bify-module-groups');
 
 const { streamFlatMap } = require('../stream-flat-map');
+const { isManifestV3 } = require('../../shared/modules/mv3.utils');
 const { setEnvironmentVariables } = require('./set-environment-variables');
 const { BUILD_TARGETS } = require('./constants');
 const { getConfig } = require('./config');
@@ -51,9 +52,6 @@ const {
 const {
   createRemoveFencedCodeTransform,
 } = require('./transforms/remove-fenced-code');
-
-const isEnableMV3 =
-  process.env.ENABLE_MV3 === 'true' || process.env.ENABLE_MV3 === undefined;
 
 // map dist files to bag of needed native APIs against LM scuttling
 const scuttlingConfigBase = {
@@ -194,7 +192,7 @@ function createScriptTasks({
 
     // In MV3 we will need to build our offscreen entry point bundle and any
     // entry points for iframes that we want to lockdown with LavaMoat.
-    if (isEnableMV3) {
+    if (isManifestV3) {
       standardEntryPoints.push('offscreen');
     }
 
@@ -355,7 +353,7 @@ function createScriptTasks({
       () => {
         // MV3 injects inpage into the tab's main world, but in MV2 we need
         // to do it manually:
-        if (isEnableMV3) {
+        if (isManifestV3) {
           return;
         }
         // stringify scripts/inpage.js into itself, and then make it inject itself into the page
@@ -721,7 +719,7 @@ function createFactoredBuild({
               applyLavaMoat,
               scripts,
             });
-            if (isEnableMV3) {
+            if (isManifestV3) {
               const jsBundles = [
                 ...commonSet.values(),
                 ...groupSet.values(),
@@ -935,7 +933,11 @@ function setupBundlerDefaults(
       [
         babelify,
         {
-          only: ['./**/node_modules/firebase', './**/node_modules/@firebase'],
+          only: [
+            './**/node_modules/firebase',
+            './**/node_modules/@firebase',
+            './**/node_modules/marked',
+          ],
           global: true,
         },
       ],
@@ -980,7 +982,7 @@ function setupBundlerDefaults(
     // Setup source maps
     setupSourcemaps(buildConfiguration, { buildTarget });
     // Setup wrapping of code against scuttling (before sourcemaps generation)
-    setupScuttlingWrapping(buildConfiguration, applyLavaMoat, envVars);
+    setupScuttlingWrapping(buildConfiguration, applyLavaMoat);
   }
 }
 
@@ -1034,13 +1036,10 @@ function setupMinification(buildConfiguration) {
   });
 }
 
-function setupScuttlingWrapping(buildConfiguration, applyLavaMoat, envVars) {
-  const scuttlingConfig =
-    envVars.ENABLE_MV3 === 'true' ||
-    envVars.ENABLE_MV3 === undefined ||
-    envVars.ENABLE_MV3 === true
-      ? mv3ScuttlingConfig
-      : standardScuttlingConfig;
+function setupScuttlingWrapping(buildConfiguration, applyLavaMoat) {
+  const scuttlingConfig = isManifestV3
+    ? mv3ScuttlingConfig
+    : standardScuttlingConfig;
   const { events } = buildConfiguration;
   events.on('configurePipeline', ({ pipeline }) => {
     pipeline.get('scuttle').push(
@@ -1217,19 +1216,18 @@ function renderHtmlFile({
 
   const eta = new Eta();
   const htmlOutput = eta
-    .renderString(htmlTemplate, {
-      isMMI,
-      isTest,
-      shouldIncludeSnow,
-    })
+    .renderString(htmlTemplate, { isMMI, isTest, shouldIncludeSnow })
     // these replacements are added to support the webpack build's automatic
     // compilation of html files, which the gulp-based process doesn't support.
-    .replace('<script src="./load-app.js" defer></script>', scriptTags)
+    .replace('./scripts/load/background.ts', './load-background.js')
     .replace(
       '<script src="./load-background.js" defer></script>',
       `${scriptTags}\n    <script src="./chromereload.js" async></script>`,
     )
-    .replace('<script src="./load-offscreen.js" defer></script>', scriptTags);
+    .replace('<script src="./scripts/load/ui.ts" defer></script>', scriptTags)
+    .replace('<script src="./load-offscreen.js" defer></script>', scriptTags)
+    .replace('../ui/css/index.scss', './index.css')
+    .replace('@lavamoat/snow/snow.prod.js', './scripts/snow.js');
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

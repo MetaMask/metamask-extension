@@ -12,7 +12,7 @@ const logOutputFolder = './public/playwright/playwright-reports';
 const config: PlaywrightTestConfig = {
   testDir: 'test/e2e/playwright',
   /* Maximum time one test can run for. */
-  timeout: 210 * 1000,
+  timeout: 300 * 1000,
   expect: {
     timeout: 30 * 1000,
   },
@@ -67,6 +67,15 @@ const config: PlaywrightTestConfig = {
     {
       name: 'swap',
       testMatch: '/swap/specs/*swap.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        headless: true,
+      },
+    },
+    // Global: universal, common, shared, and non feature related tests
+    {
+      name: 'global',
+      testMatch: '/global/specs/**.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
         headless: true,

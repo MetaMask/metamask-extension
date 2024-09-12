@@ -1,4 +1,6 @@
 import { TransactionType } from '@metamask/transaction-controller';
+import { CHAIN_IDS } from '../../shared/constants/network';
+import { mockNetworkState } from '../../test/stub/networks';
 import {
   sendTokenTokenAmountAndToAddressSelector,
   contractExchangeRateSelector,
@@ -48,9 +50,7 @@ describe('Confirm Transaction Selector', () => {
             '0xTokenAddress': { price: '10' },
           },
         },
-        providerConfig: {
-          chainId: '0x5',
-        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
       },
       confirmTransaction: {
         txData: {
@@ -75,7 +75,7 @@ describe('Confirm Transaction Selector', () => {
               conversionRate: 556.12,
             },
           },
-          providerConfig: { ticker: 'ETH' },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
       };
       expect(conversionRateSelector(state)).toStrictEqual(556.12);

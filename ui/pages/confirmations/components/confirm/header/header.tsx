@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -18,13 +18,7 @@ import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInf
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 import HeaderInfo from './header-info';
 
-const Header = ({
-  showAdvancedDetails,
-  setShowAdvancedDetails,
-}: {
-  showAdvancedDetails: boolean;
-  setShowAdvancedDetails: Dispatch<SetStateAction<boolean>>;
-}) => {
+const Header = () => {
   const { networkImageUrl, networkDisplayName } = useConfirmationNetworkInfo();
   const { senderAddress: fromAddress, senderName: fromName } =
     useConfirmationRecipientInfo();
@@ -35,7 +29,7 @@ const Header = ({
       className="confirm_header__wrapper"
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
-      data-testid={'confirm-header'}
+      data-testid="confirm-header"
     >
       <Box alignItems={AlignItems.flexStart} display={Display.Flex} padding={4}>
         <Box display={Display.Flex} marginTop={2}>
@@ -52,23 +46,20 @@ const Header = ({
           <Text
             color={TextColor.textDefault}
             variant={TextVariant.bodyMdMedium}
-            data-testid={'header-account-name'}
+            data-testid="header-account-name"
           >
             {fromName}
           </Text>
           <Text
             color={TextColor.textAlternative}
-            data-testid={'header-network-display-name'}
+            data-testid="header-network-display-name"
           >
             {networkDisplayName}
           </Text>
         </Box>
       </Box>
       <Box alignItems={AlignItems.flexEnd} display={Display.Flex} padding={4}>
-        <HeaderInfo
-          showAdvancedDetails={showAdvancedDetails}
-          setShowAdvancedDetails={setShowAdvancedDetails}
-        />
+        <HeaderInfo />
       </Box>
     </Box>
   );

@@ -9,7 +9,7 @@ const { loadBuildTypesConfig } = require('../../development/lib/build-type');
 const { filterE2eChangedFiles } = require('./changedFilesUtil');
 
 // These tests should only be run on Flask for now.
-const FLASK_ONLY_TESTS = ['test-snap-namelookup.spec.js'];
+const FLASK_ONLY_TESTS = [];
 
 const getTestPathsForTestDir = async (testDir) => {
   const testFilenames = await fs.promises.readdir(testDir, {

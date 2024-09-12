@@ -21,8 +21,9 @@ import { getDedupedSnaps } from '../../../../helpers/utils/util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import SnapPrivacyWarning from '../../../../components/app/snaps/snap-privacy-warning/snap-privacy-warning';
 import { getPermissions, getSnapMetadata } from '../../../../selectors';
-import SnapAvatar from '../../../../components/app/snaps/snap-avatar/snap-avatar';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
+import { isSnapId } from '../../../../helpers/utils/snaps';
+import { SnapIcon } from '../../../../components/app/snaps/snap-icon';
 
 export default function SnapsConnect({
   request,
@@ -57,7 +58,15 @@ export default function SnapsConnect({
   const snaps = getDedupedSnaps(request, currentPermissions);
 
   const SnapsConnectContent = () => {
-    const { hostname: trimmedOrigin } = useOriginMetadata(origin) || {};
+    let trimmedOrigin = (useOriginMetadata(origin) || {})?.hostname;
+    const { name } = useSelector((state) =>
+      // hack around the selector throwing
+      getSnapMetadata(state, isSnapId(origin) ? origin : `npm:${origin}`),
+    );
+
+    if (isSnapId(origin)) {
+      trimmedOrigin = name;
+    }
 
     const snapId = snaps[0];
     const { name: snapName } = useSelector((state) =>
@@ -149,12 +158,7 @@ export default function SnapsConnect({
           backgroundColor={BackgroundColor.backgroundAlternative}
         >
           <Box paddingBottom={2}>
-            <SnapAvatar
-              snapId={snaps[0]}
-              badgeSize={IconSize.Md}
-              avatarSize={IconSize.Xl}
-              borderWidth={3}
-            />
+            <SnapIcon snapId={snaps[0]} avatarSize={IconSize.Xl} />
           </Box>
           <Text paddingBottom={2} variant={TextVariant.headingMd}>
             {t('connectionRequest')}

@@ -10,6 +10,7 @@ import {
   getSelectedAccount,
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
 import { isProduction } from '../environment';
+
 import { MultichainState } from '../../../ui/selectors/multichain';
 
 type SmartTransactionsMetaMaskState = {
@@ -28,9 +29,6 @@ type SmartTransactionsMetaMaskState = {
           };
         };
       };
-    };
-    providerConfig: {
-      chainId: Hex;
     };
     swapsState: {
       swapsFeatureFlags: {
@@ -52,7 +50,8 @@ type SmartTransactionsMetaMaskState = {
     smartTransactionsState: {
       liveness: boolean;
     };
-    networkConfigurations: {
+    selectedNetworkClientId: string;
+    networkConfigurations?: {
       [key: string]: {
         chainId: Hex;
         rpcUrl: string;

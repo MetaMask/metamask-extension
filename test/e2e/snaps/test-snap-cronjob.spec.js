@@ -68,7 +68,7 @@ describe('Test Snap Cronjob', function () {
 
         // look for the dialog popup to verify cronjob fired
         await driver.waitForSelector({
-          css: '.snap-delineator__content',
+          css: '.snap-ui-renderer__content',
           text: 'This dialog was triggered by a cronjob',
         });
 

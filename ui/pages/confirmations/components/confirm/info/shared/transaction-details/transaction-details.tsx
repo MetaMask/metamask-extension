@@ -8,18 +8,19 @@ import {
   ConfirmInfoRowText,
   ConfirmInfoRowUrl,
 } from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { selectPaymasterAddress } from '../../../../../../../selectors/account-abstraction';
-import { currentConfirmationSelector } from '../../../../../selectors';
+import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
+import { useConfirmContext } from '../../../../../context/confirm';
 import { useFourByte } from '../../hooks/useFourByte';
 
-const OriginRow = () => {
+export const OriginRow = () => {
   const t = useI18nContext();
 
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const origin = currentConfirmation?.origin;
 
@@ -28,21 +29,21 @@ const OriginRow = () => {
   }
 
   return (
-    <ConfirmInfoRow
+    <ConfirmInfoAlertRow
+      alertKey={RowAlertKey.RequestFrom}
+      ownerId={currentConfirmation.id}
+      data-testid="transaction-details-origin-row"
       label={t('requestFrom')}
       tooltip={t('requestFromTransactionDescription')}
     >
       <ConfirmInfoRowUrl url={origin} />
-    </ConfirmInfoRow>
+    </ConfirmInfoAlertRow>
   );
 };
 
-const RecipientRow = () => {
+export const RecipientRow = () => {
   const t = useI18nContext();
-
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   if (
     !currentConfirmation?.txParams?.to ||
@@ -53,6 +54,7 @@ const RecipientRow = () => {
 
   return (
     <ConfirmInfoRow
+      data-testid="transaction-details-recipient-row"
       label={t('interactingWith')}
       tooltip={t('interactingWithTransactionDescription')}
     >
@@ -61,13 +63,9 @@ const RecipientRow = () => {
   );
 };
 
-const MethodDataRow = () => {
+export const MethodDataRow = () => {
   const t = useI18nContext();
-
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
-
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const methodData = useFourByte(currentConfirmation);
 
   if (!methodData) {
@@ -76,6 +74,7 @@ const MethodDataRow = () => {
 
   return (
     <ConfirmInfoRow
+      data-testid="transaction-details-method-data-row"
       label={t('methodData')}
       tooltip={t('methodDataTransactionDesc')}
     >
@@ -86,10 +85,7 @@ const MethodDataRow = () => {
 
 const PaymasterRow = () => {
   const t = useI18nContext();
-
-  const currentConfirmation = useSelector(currentConfirmationSelector) as
-    | TransactionMeta
-    | undefined;
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const { id: userOperationId } = currentConfirmation ?? {};
   const isUserOperation = Boolean(currentConfirmation?.isUserOperation);
@@ -106,6 +102,7 @@ const PaymasterRow = () => {
   return (
     <ConfirmInfoSection>
       <ConfirmInfoRow
+        data-testid="transaction-details-paymaster-row"
         label={t('confirmFieldPaymaster')}
         tooltip={t('confirmFieldTooltipPaymaster')}
       >
@@ -116,12 +113,16 @@ const PaymasterRow = () => {
 };
 
 export const TransactionDetails = () => {
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
+  );
+
   return (
     <>
-      <ConfirmInfoSection>
+      <ConfirmInfoSection data-testid="transaction-details-section">
         <OriginRow />
         <RecipientRow />
-        <MethodDataRow />
+        {showAdvancedDetails && <MethodDataRow />}
       </ConfirmInfoSection>
       <PaymasterRow />
     </>

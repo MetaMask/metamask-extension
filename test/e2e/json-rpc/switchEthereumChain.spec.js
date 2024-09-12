@@ -9,6 +9,7 @@ const {
   switchToNotificationWindow,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 
 describe('Switch Ethereum Chain for two dapps', function () {
   it('switches the chainId of two dapps when switchEthereumChain of one dapp is confirmed', async function () {
@@ -281,11 +282,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         // if this is an MV3 build(3 or 4 total)
         await driver.wait(async () => {
           const windowHandles = await driver.getAllWindowHandles();
-          const numberOfWindowHandlesToExpect =
-            process.env.ENABLE_MV3 === 'true' ||
-            process.env.ENABLE_MV3 === undefined
-              ? 4
-              : 3;
+          const numberOfWindowHandlesToExpect = isManifestV3 ? 4 : 3;
           return windowHandles.length === numberOfWindowHandlesToExpect;
         });
       },

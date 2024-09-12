@@ -556,9 +556,6 @@
     "message": "$1 and $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
-  "announcements": {
-    "message": "Announcements"
-  },
   "appDescription": {
     "message": "An Ethereum Wallet in your Browser",
     "description": "The description of the application"
@@ -678,9 +675,6 @@
   "back": {
     "message": "Back"
   },
-  "backup": {
-    "message": "Back up"
-  },
   "backupApprovalInfo": {
     "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
   },
@@ -692,12 +686,6 @@
   },
   "backupNow": {
     "message": "Back up now"
-  },
-  "backupUserData": {
-    "message": "Back up your data"
-  },
-  "backupUserDataDescription": {
-    "message": "You can back up data like your contacts and preferences."
   },
   "balance": {
     "message": "Balance"
@@ -1041,9 +1029,6 @@
   },
   "confirmRpcUrlDeletionMessage": {
     "message": "Are you sure you want to delete the RPC URL? Your information will not be saved for this network."
-  },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
   },
   "confirmTitleDescPermitSignature": {
     "message": "This site wants permission to spend your tokens."
@@ -1554,30 +1539,6 @@
   },
   "details": {
     "message": "Details"
-  },
-  "developerOptions": {
-    "message": "Developer Options"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Enables or disables the confirmations redesign feature currently in development"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Confirmations Redesign"
-  },
-  "developerOptionsNetworkMenuRedesignDescription": {
-    "message": "Toggles the new design of the Networks menu"
-  },
-  "developerOptionsNetworkMenuRedesignTitle": {
-    "message": "Network Menu Redesign"
-  },
-  "developerOptionsResetStatesAnnouncementsDescription": {
-    "message": "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal."
-  },
-  "developerOptionsResetStatesOnboarding": {
-    "message": "Resets various states related to onboarding and redirects to the \"Secure Your Wallet\" onboarding page."
-  },
-  "developerOptionsServiceWorkerKeepAlive": {
-    "message": "Results in a timestamp being continuously saved to session.storage"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
@@ -3526,9 +3487,6 @@
   "onboardedMetametricsTitle": {
     "message": "Help us enhance your experience"
   },
-  "onboarding": {
-    "message": "Onboarding"
-  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "The IPFS gateway makes it possible to access and view data hosted by third parties. You can add a custom IPFS gateway or continue using the default."
   },
@@ -4240,9 +4198,6 @@
   "receive": {
     "message": "Receive"
   },
-  "receiveTokensCamelCase": {
-    "message": "Receive tokens"
-  },
   "recipientAddressPlaceholder": {
     "message": "Enter public address (0x) or ENS name"
   },
@@ -4396,9 +4351,6 @@
   },
   "reset": {
     "message": "Reset"
-  },
-  "resetStates": {
-    "message": "Reset States"
   },
   "resetWallet": {
     "message": "Reset wallet"
@@ -4722,9 +4674,6 @@
   "sepolia": {
     "message": "Sepolia test network"
   },
-  "serviceWorkerKeepAlive": {
-    "message": "Service Worker Keep Alive"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask uses these trusted third-party services to enhance product usability and safety."
   },
@@ -4813,9 +4762,6 @@
   },
   "signatureRequestGuidance": {
     "message": "Only sign this message if you fully understand the content and trust the requesting site."
-  },
-  "signatureRequestWarning": {
-    "message": "Signing this message could be dangerous. You may be giving total control of your account and assets to the party on the other end of this message. That means they could drain your account at any time. Proceed with caution. $1."
   },
   "signed": {
     "message": "Signed"
@@ -5290,9 +5236,6 @@
   },
   "stateLogsDescription": {
     "message": "State logs contain your public account addresses and sent transactions."
-  },
-  "states": {
-    "message": "States"
   },
   "status": {
     "message": "Status"
@@ -6567,9 +6510,6 @@
   },
   "yourBalance": {
     "message": "Your balance"
-  },
-  "yourFundsMayBeAtRisk": {
-    "message": "Your funds may be at risk"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"

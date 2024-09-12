@@ -22,6 +22,8 @@ import {
 import { buildQuote, reviewQuote } from '../tests/swaps/shared';
 import { Driver } from '../webdriver/driver';
 import { Bundler } from '../bundler';
+import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
+import { Mockttp } from '../mock-e2e';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -31,17 +33,19 @@ enum TransactionDetailRowIndex {
 async function installExampleSnap(driver: Driver) {
   await driver.openNewPage(ERC_4337_ACCOUNT_SNAP_URL);
   await driver.clickElement('#connectButton');
-  await switchToNotificationWindow(driver);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({
     text: 'Connect',
     tag: 'button',
   });
   await driver.findElement({ text: 'Add to MetaMask', tag: 'h3' });
-  await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+  await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 200);
+  await driver.waitForSelector({ text: 'Confirm' });
   await driver.clickElement({
     text: 'Confirm',
     tag: 'button',
   });
+  await driver.waitForSelector({ text: 'OK' });
   await driver.clickElement({
     text: 'OK',
     tag: 'button',
@@ -60,6 +64,7 @@ async function createSnapAccount(
   await driver.clickElement({ text: 'Create Account', tag: 'button' });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({ text: 'Create', tag: 'button' });
+  await driver.clickElement({ text: 'Add account', tag: 'button' });
   await driver.clickElement({ text: 'Ok', tag: 'button' });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ERC4337Snap);
 }
@@ -116,6 +121,7 @@ async function createSwap(driver: Driver) {
     swapFrom: 'TESTETH',
     swapTo: 'USDC',
   });
+
   await driver.clickElement({ text: 'Swap', tag: 'button' });
   await driver.clickElement({ text: 'Close', tag: 'button' });
 }
@@ -181,6 +187,17 @@ async function expectTransactionDetailsMatchReceipt(
   );
 }
 
+async function mockSwapsTransactionQuote(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: SWAP_TEST_ETH_USDC_TRADES_MOCK,
+      })),
+  ];
+}
+
 async function withAccountSnap(
   { title, paymaster }: { title?: string; paymaster?: string },
   test: (driver: Driver, bundlerServer: Bundler) => Promise<void>,
@@ -197,6 +214,7 @@ async function withAccountSnap(
       ganacheOptions: {
         hardfork: 'london',
       },
+      testSpecificMock: mockSwapsTransactionQuote,
     },
     async ({
       driver,

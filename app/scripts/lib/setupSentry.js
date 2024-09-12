@@ -3,12 +3,11 @@ import { createModuleLogger, createProjectLogger } from '@metamask/utils';
 import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
-import { filterEvents } from './sentry-filter-events';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
-
-let installType = 'unknown';
+import { filterEvents } from './sentry-filter-events';
 
 const projectLogger = createProjectLogger('sentry');
+let installType = 'unknown';
 
 export const log = createModuleLogger(
   projectLogger,
@@ -48,6 +47,18 @@ export default function setupSentry() {
 
   log('Initializing');
 
+  // Normally this would be awaited, but getSelf should be available by the time the report is finalized.
+  // If it's not, we still get the extensionId, but the installType will default to "unknown"
+  browser.management
+    .getSelf()
+    .then((extensionInfo) => {
+      if (extensionInfo.installType) {
+        installType = extensionInfo.installType;
+      }
+    })
+    .catch((error) => {
+      log('Error getting extension installType', error);
+    });
   integrateLogging();
   setSentryClient();
 
@@ -65,8 +76,8 @@ function getClientOptions() {
     beforeBreadcrumb: beforeBreadcrumb(),
     beforeSend: (report) => rewriteReport(report),
     debug: METAMASK_DEBUG,
-    dsn: sentryTarget,
     dist: isManifestV3 ? 'mv3' : 'mv2',
+    dsn: sentryTarget,
     environment,
     integrations: [
       Sentry.dedupeIntegration(),
@@ -224,19 +235,6 @@ async function getMetaMetricsEnabled() {
 function setSentryClient() {
   const clientOptions = getClientOptions();
   const { dsn, environment, release } = clientOptions;
-
-  // Normally this would be awaited, but getSelf should be available by the time the report is finalized.
-  // If it's not, we still get the extensionId, but the installType will default to "unknown"
-  browser.management
-    .getSelf()
-    .then((extensionInfo) => {
-      if (extensionInfo.installType) {
-        installType = extensionInfo.installType;
-      }
-    })
-    .catch((error) => {
-      console.log('Error getting extension installType', error);
-    });
 
   /**
    * Sentry throws on initialization as it wants to avoid polluting the global namespace and
