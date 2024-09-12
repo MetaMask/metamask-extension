@@ -11,13 +11,13 @@ jest.mock('../../../store/actions', () => ({
 
 describe('fetchErc20Decimals', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    // jest.clearAllMocks();
 
     /** Reset memoized function for each test */
-    fetchErc20Decimals?.cache?.clear?.();
+    // fetchErc20Decimals?.cache?.clear?.();
   });
 
-  it(`should return the default number ${ERC20_DEFAULT_DECIMALS} is no decimals were found from details`, async () => {
+  it(`should return the default number, ${ERC20_DEFAULT_DECIMALS}, if no decimals were found from details`, async () => {
     (getTokenStandardAndDetails as jest.Mock).mockResolvedValue({});
     const decimals = await fetchErc20Decimals(MOCK_ADDRESS);
 
