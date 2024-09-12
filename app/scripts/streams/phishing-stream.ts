@@ -10,7 +10,12 @@ import { checkForLastError } from '../../../shared/modules/browser-runtime.utils
 import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
 import {
   CONTENT_SCRIPT,
+  LEGACY_PROVIDER,
+  LEGACY_PUBLIC_CONFIG,
+  METAMASK_COOKIE_HANDLER,
+  METAMASK_PROVIDER,
   PHISHING_SAFELIST,
+  PHISHING_STREAM,
   PHISHING_WARNING_PAGE,
 } from '../constants/stream';
 import { logStreamDisconnectWarning, MessageType } from './stream-utils';
@@ -47,6 +52,11 @@ function setupPhishingPageStreams(): void {
   );
 
   phishingPageChannel = phishingPageMux.createStream(PHISHING_SAFELIST);
+  phishingPageMux.ignoreStream(METAMASK_COOKIE_HANDLER);
+  phishingPageMux.ignoreStream(LEGACY_PUBLIC_CONFIG);
+  phishingPageMux.ignoreStream(LEGACY_PROVIDER);
+  phishingPageMux.ignoreStream(METAMASK_PROVIDER);
+  phishingPageMux.ignoreStream(PHISHING_STREAM);
 }
 
 /** Destroys all of the phishing extension streams */
@@ -101,6 +111,12 @@ export const setupPhishingExtStreams = (): void => {
         error,
       ),
   );
+
+  phishingExtMux.ignoreStream(METAMASK_COOKIE_HANDLER);
+  phishingExtMux.ignoreStream(LEGACY_PUBLIC_CONFIG);
+  phishingExtMux.ignoreStream(LEGACY_PROVIDER);
+  phishingExtMux.ignoreStream(METAMASK_PROVIDER);
+  phishingExtMux.ignoreStream(PHISHING_STREAM);
 
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   phishingExtPort.onDisconnect.addListener(onDisconnectDestroyPhishingStreams);
@@ -185,7 +201,10 @@ export function connectPhishingChannelToWarningSystem(
   extensionMux: ObjectMultiplex,
 ): void {
   // create a stream specifically for handling phishing-related communications
-  extensionPhishingStream = extensionMux.createStream('phishing');
+  extensionPhishingStream = extensionMux.createStream(PHISHING_STREAM);
+  extensionMux.ignoreStream(METAMASK_COOKIE_HANDLER);
+  extensionMux.ignoreStream(LEGACY_PROVIDER);
+  extensionMux.ignoreStream(PHISHING_SAFELIST);
   // an event listener for the first piece of data received on this "phishing" channel.
   // Once data is received, it triggers the redirectToPhishingWarning function
   extensionPhishingStream.once('data', redirectToPhishingWarning);

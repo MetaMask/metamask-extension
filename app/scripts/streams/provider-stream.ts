@@ -12,8 +12,11 @@ import {
   LEGACY_INPAGE,
   LEGACY_PROVIDER,
   LEGACY_PUBLIC_CONFIG,
+  METAMASK_COOKIE_HANDLER,
   METAMASK_INPAGE,
   METAMASK_PROVIDER,
+  PHISHING_SAFELIST,
+  PHISHING_STREAM,
 } from '../constants/stream';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
@@ -52,6 +55,11 @@ const setupPageStreams = () => {
   );
 
   pageChannel = pageMux.createStream(METAMASK_PROVIDER);
+  pageMux.ignoreStream(METAMASK_COOKIE_HANDLER);
+  pageMux.ignoreStream(LEGACY_PROVIDER);
+  pageMux.ignoreStream(LEGACY_PUBLIC_CONFIG);
+  pageMux.ignoreStream(PHISHING_SAFELIST);
+  pageMux.ignoreStream(PHISHING_STREAM);
 };
 
 // The field below is used to ensure that replay is done only once for each restart.
@@ -127,6 +135,11 @@ const setupLegacyPageStreams = () => {
     legacyPageMux.createStream(LEGACY_PROVIDER);
   legacyPagePublicConfigChannel =
     legacyPageMux.createStream(LEGACY_PUBLIC_CONFIG);
+
+  legacyPageMux.ignoreStream(METAMASK_COOKIE_HANDLER);
+  legacyPageMux.ignoreStream(METAMASK_PROVIDER);
+  legacyPageMux.ignoreStream(PHISHING_SAFELIST);
+  legacyPageMux.ignoreStream(PHISHING_STREAM);
 };
 
 // TODO:LegacyProvider: Delete
@@ -170,6 +183,10 @@ const setupLegacyExtensionStreams = () => {
         error,
       ),
   );
+  legacyExtMux.ignoreStream(METAMASK_COOKIE_HANDLER);
+  legacyExtMux.ignoreStream(LEGACY_PROVIDER);
+  legacyExtMux.ignoreStream(PHISHING_SAFELIST);
+  legacyExtMux.ignoreStream(PHISHING_STREAM);
 };
 
 /**
