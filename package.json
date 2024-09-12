@@ -228,7 +228,7 @@
     "semver@7.3.8": "^7.5.4",
     "@trezor/schema-utils@npm:1.0.2": "patch:@trezor/schema-utils@npm%3A1.0.2#~/.yarn/patches/@trezor-schema-utils-npm-1.0.2-7dd48689b2.patch",
     "lavamoat-core@npm:^15.1.1": "patch:lavamoat-core@npm%3A15.1.1#~/.yarn/patches/lavamoat-core-npm-15.1.1-51fbe39988.patch",
-    "@metamask/snaps-sdk": "^6.4.0",
+    "@metamask/snaps-sdk": "^6.5.0",
     "@swc/types@0.1.5": "^0.1.6",
     "@babel/runtime@npm:^7.7.6": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
     "@babel/runtime@npm:^7.9.2": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
