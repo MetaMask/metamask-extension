@@ -9,9 +9,11 @@ const render = (
   props: {
     onClose: () => void;
     allowedAccountTypes: KeyringAccountType[];
+    activeTabOrigin: string;
   } = {
     onClose: () => jest.fn(),
     allowedAccountTypes: [EthAccountType.Eoa, EthAccountType.Erc4337],
+    activeTabOrigin: "https://test.dapp",
   },
   state = {},
 ) => {
@@ -34,7 +36,11 @@ const render = (
       origin: 'https://test.dapp',
     },
   });
-  return renderWithProvider(<EditAccountsModal {...props} />, store);
+  return renderWithProvider(<EditAccountsModal onClick={function (): void {
+    throw new Error('Function not implemented.');
+  } } onDisconnectClick={function (): void {
+    throw new Error('Function not implemented.');
+  } } approvedAccounts={[]} currentTabHasNoAccounts={false} {...props} />, store);
 };
 describe('EditAccountsModal', () => {
   it('should render correctly', () => {
