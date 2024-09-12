@@ -27,30 +27,40 @@ import {
   Display,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { PermissionNames } from '../../../../app/scripts/controllers/permissions/specifications';
+import { AccountType } from '../../../components/multichain/pages/connections/components/connections.types';
 
-export const ConnectPage = ({
+interface Request {
+  id: string;
+  origin: string;
+  [key: string]: any; // Adjust this if you have a more specific shape for the request
+}
+
+interface ConnectPageProps {
+  request: Request;
+  permissionsRequestId: string;
+  rejectPermissionsRequest: (id: string) => void;
+  approveConnection: (request: Request) => void;
+  accounts: AccountType[];
+  selectAccounts: (addresses: string[]) => void;
+  selectedAccountAddresses: Set<string>;
+  activeTabOrigin: string;
+}
+
+export const ConnectPage: React.FC<ConnectPageProps> = ({
   request,
+  permissionsRequestId,
   rejectPermissionsRequest,
   approveConnection,
   accounts,
   selectAccounts,
   selectedAccountAddresses,
   activeTabOrigin,
-  permissionsRequestId,
-}: {
-  request: any;
-  permissionsRequestId: string;
-  rejectPermissionsRequest: () => void;
-  approveConnection: (request: any) => void;
-  accounts: any[];
-  selectAccounts: (addresses: any[]) => void;
-  selectedAccountAddresses: Set<string>;
-  activeTabOrigin: string;
 }) => {
   const t = useI18nContext();
+
+  // Get networks and accounts from Redux
   const networksList = useSelector(getNonTestNetworks);
-  const selectednetworksList = useSelector(
+  const selectedNetworksList = useSelector(
     getSelectedNetworksForDappConnection,
   );
   const testNetworks = useSelector(getTestNetworks);
@@ -65,20 +75,11 @@ export const ConnectPage = ({
     getSelectedAccountsForDappConnection,
   );
 
-  // Handle account selection/deselection
-  const handleAccountClick = (address: string) => {
-    const newSelectedAccounts = new Set(selectedAccounts);
-    if (newSelectedAccounts.has(address)) {
-      newSelectedAccounts.delete(address);
-    } else {
-      newSelectedAccounts.add(address);
-    }
-    setSelectedAccounts(newSelectedAccounts);
-  };
+
   // Filter networks based on chainId
-  const filteredNetworks = Array.isArray(selectednetworksList)
+  const filteredNetworks = Array.isArray(selectedNetworksList)
     ? combinedNetworks.filter((network) =>
-        selectednetworksList.includes(network.chainId),
+        selectedNetworksList.includes(network.chainId),
       )
     : networksList;
 
@@ -86,7 +87,7 @@ export const ConnectPage = ({
   const approvedAccounts =
     selectedAccountsForDappConnection.length > 0
       ? selectedAccountsForDappConnection
-      : [currentAccount.address];
+      : [currentAccount?.address];
 
   // Handle confirmation
   const onConfirm = () => {
@@ -98,6 +99,7 @@ export const ConnectPage = ({
     approveConnection(_request);
   };
 
+  // Filter accounts by address
   const filterAccountsByAddress = accounts.filter((account) =>
     approvedAccounts.includes(account.address),
   );
@@ -120,6 +122,7 @@ export const ConnectPage = ({
           approvedAccounts={approvedAccounts}
           activeTabOrigin={activeTabOrigin}
           combinedNetworks={networksList}
+          onDisconnectClick={() => null}
         />
       </Content>
       <Footer>

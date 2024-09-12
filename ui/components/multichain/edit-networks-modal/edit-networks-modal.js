@@ -45,7 +45,6 @@ export const EditNetworksModal = ({
   currentTabHasNoAccounts,
   combinedNetworks,
   onDisconnectClick,
-  defaultNetworks,
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -97,24 +96,24 @@ export const EditNetworksModal = ({
   }
 
   const managePermittedChains = (
-    selectedChains,
-    selectedPermittedChains,
-    activeTabOrigin,
+    chains,
+    permittedChains,
+    tabOrigin,
   ) => {
-    if (!Array.isArray(selectedChains)) {
-      console.error('selectedChains is not an array:', selectedChains);
-      selectedChains = [];
+    if (!Array.isArray(chains)) {
+      console.error('selectedChains is not an array:', chains);
+      chains = [];
     }
-    dispatch(grantPermittedChains(activeTabOrigin, selectedChains));
+    dispatch(grantPermittedChains(activeTabOrigin, chains));
 
-    const removedElements = selectedPermittedChains.filter(
-      (chain) => !selectedChains.includes(chain),
+    const removedElements = permittedChains.filter(
+      (chain) => !chains.includes(chain),
     );
 
     // Dispatch removePermittedChains for each removed element
     removedElements.forEach((chain) => {
       const selectedChain = [chain];
-      dispatch(removePermittedChain(activeTabOrigin, selectedChain));
+      dispatch(removePermittedChain(tabOrigin, selectedChain));
     });
   };
 
@@ -282,14 +281,4 @@ EditNetworksModal.propTypes = {
    * Function to execute when the disconnect button is clicked.
    */
   onDisconnectClick: PropTypes.func.isRequired,
-
-  /**
-   * Array of network objects representing default networks.
-   */
-  defaultNetworks: PropTypes.arrayOf(
-    PropTypes.shape({
-      chainId: PropTypes.string.isRequired, // The chain ID of the default network
-      nickname: PropTypes.string.isRequired, // Display name of the default network
-    }),
-  ),
 };

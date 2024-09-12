@@ -84,8 +84,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
         allowedAccountTypes.includes(account.type as KeyringAccountType),
     );
   }, [accounts, internalAccounts, allowedAccountTypes]);
-
-  const connectedAccounts = useSelector((state: any) =>
+  const connectedAccounts = useSelector((state) =>
     getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin).filter(
       (account: InternalAccount) => isEvmAccountType(account.type),
     ),
@@ -113,23 +112,24 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   };
 
   const managePermittedAccounts = (
-    selectedAccounts,
-    connectedAccountsAddresses,
+    accounts: string[],
+    accountsAddresses: string[],
   ) => {
-    const removedAccounts = connectedAccountsAddresses.filter(
-      (acc) => !selectedAccounts.includes(acc),
+    const removedAccounts = accountsAddresses.filter(
+      (acc) => !accounts.includes(acc),
     );
     removedAccounts.forEach((account) => {
       dispatch(removePermittedAccount(activeTabOrigin, account));
     });
 
-    const newAccounts = selectedAccounts.filter(
-      (acc) => !connectedAccountsAddresses.includes(acc),
+    const newAccounts = accounts.filter(
+      (acc) => !accountsAddresses.includes(acc),
     );
     if (newAccounts.length > 0) {
       dispatch(addMorePermittedAccounts(activeTabOrigin, newAccounts));
     }
   };
+
   const selectAll = () => {
     const newSelectedAccounts = accounts.map(
       (account: { address: string }) => account.address,
