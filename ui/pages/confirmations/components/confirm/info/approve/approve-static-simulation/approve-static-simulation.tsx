@@ -13,7 +13,7 @@ import {
   TextAlign,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { UNLIMITED_MSG } from '../../../../../constants';
+import { SPENDING_CAP_UNLIMITED_MSG } from '../../../../../constants';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import StaticSimulation from '../../shared/static-simulation/static-simulation';
@@ -58,7 +58,9 @@ export const ApproveStaticSimulation = () => {
       textAlign={TextAlign.Center}
       alignItems={AlignItems.center}
     >
-      {spendingCap === UNLIMITED_MSG ? t('unlimited') : spendingCap}
+      {spendingCap === SPENDING_CAP_UNLIMITED_MSG
+        ? t('unlimited')
+        : spendingCap}
     </Text>
   );
 
@@ -69,7 +71,7 @@ export const ApproveStaticSimulation = () => {
         marginInlineEnd={1}
         minWidth={BlockSize.Zero}
       >
-        {spendingCap === UNLIMITED_MSG ? (
+        {spendingCap === SPENDING_CAP_UNLIMITED_MSG ? (
           <Tooltip title={formattedSpendingCap}>{formattedTokenText}</Tooltip>
         ) : (
           formattedTokenText

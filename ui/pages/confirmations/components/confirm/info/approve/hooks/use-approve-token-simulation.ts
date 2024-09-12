@@ -3,7 +3,7 @@ import { BigNumber } from 'bignumber.js';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
-import { UNLIMITED_MSG } from '../../../../../constants';
+import { SPENDING_CAP_UNLIMITED_MSG } from '../../../../../constants';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { useIsNFT } from './use-is-nft';
 
@@ -38,7 +38,7 @@ export const useApproveTokenSimulation = (
 
   const spendingCap = useMemo(() => {
     if (!isNFT && isSpendingCapUnlimited(decodedSpendingCap)) {
-      return UNLIMITED_MSG;
+      return SPENDING_CAP_UNLIMITED_MSG;
     }
     const tokenPrefix = isNFT ? '#' : '';
     return `${tokenPrefix}${formattedSpendingCap}`;

@@ -9,7 +9,7 @@ import {
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { UNLIMITED_MSG } from '../../../../../constants';
+import { SPENDING_CAP_UNLIMITED_MSG } from '../../../../../constants';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { Container } from '../../shared/transaction-data/transaction-data';
@@ -41,7 +41,7 @@ const SpendingCapGroup = ({
   const SpendingCapElement = (
     <ConfirmInfoRowText
       text={
-        spendingCap === UNLIMITED_MSG
+        spendingCap === SPENDING_CAP_UNLIMITED_MSG
           ? `${t('unlimited')} ${tokenSymbol}`
           : `${spendingCapValue} ${tokenSymbol}`
       }
@@ -63,7 +63,7 @@ const SpendingCapGroup = ({
         label={t('spendingCap')}
         tooltip={t('spendingCapTooltipDesc')}
       >
-        {spendingCap === UNLIMITED_MSG ? (
+        {spendingCap === SPENDING_CAP_UNLIMITED_MSG ? (
           <Tooltip title={formattedSpendingCap}>{SpendingCapElement}</Tooltip>
         ) : (
           SpendingCapElement
