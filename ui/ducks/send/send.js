@@ -3556,7 +3556,7 @@ export const getIsSwapAndSendDisabledForNetwork = createSelector(
 );
 
 export const getSendAnalyticProperties = createSelector(
-  getProviderConfig,
+  (state) => getProviderConfig(state),
   getCurrentDraftTransaction,
   getBestQuote,
   ({ chainId, ticker: nativeCurrencySymbol }, draftTransaction, bestQuote) => {

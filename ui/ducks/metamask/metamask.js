@@ -24,6 +24,7 @@ import {
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
+import { createDeepEqualSelector } from '../../selectors/util';
 
 const initialState = {
   isInitialized: false,
@@ -280,35 +281,35 @@ export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
  *
  * @param {object} state - Redux state object.
  */
-export function getProviderConfig(state) {
-  const selectedNetworkClientId = getSelectedNetworkClientId(state);
-  const networkConfigurationsByChainId =
-    getNetworkConfigurationsByChainId(state);
+export const getProviderConfig = createDeepEqualSelector(
+  (state) => getNetworkConfigurationsByChainId(state),
+  (state) => getSelectedNetworkClientId(state),
+  (networkConfigurationsByChainId, selectedNetworkClientId) => {
+    for (const network of Object.values(networkConfigurationsByChainId)) {
+      for (const rpcEndpoint of network.rpcEndpoints) {
+        if (rpcEndpoint.networkClientId === selectedNetworkClientId) {
+          const blockExplorerUrl =
+            network.blockExplorerUrls?.[network.defaultBlockExplorerUrlIndex];
 
-  for (const network of Object.values(networkConfigurationsByChainId)) {
-    for (const rpcEndpoint of network.rpcEndpoints) {
-      if (rpcEndpoint.networkClientId === selectedNetworkClientId) {
-        const blockExplorerUrl =
-          network.blockExplorerUrls?.[network.defaultBlockExplorerUrlIndex];
-
-        return {
-          chainId: network.chainId,
-          ticker: network.nativeCurrency,
-          rpcPrefs: { ...(blockExplorerUrl && { blockExplorerUrl }) },
-          type:
-            rpcEndpoint.type === RpcEndpointType.Custom
-              ? 'rpc'
-              : rpcEndpoint.networkClientId,
-          ...(rpcEndpoint.type === RpcEndpointType.Custom && {
-            id: rpcEndpoint.networkClientId,
-            nickname: network.name,
-            rpcUrl: rpcEndpoint.url,
-          }),
-        };
+          return {
+            chainId: network.chainId,
+            ticker: network.nativeCurrency,
+            rpcPrefs: { ...(blockExplorerUrl && { blockExplorerUrl }) },
+            type:
+              rpcEndpoint.type === RpcEndpointType.Custom
+                ? 'rpc'
+                : rpcEndpoint.networkClientId,
+            ...(rpcEndpoint.type === RpcEndpointType.Custom && {
+              id: rpcEndpoint.networkClientId,
+              nickname: network.name,
+              rpcUrl: rpcEndpoint.url,
+            }),
+          };
+        }
       }
     }
-  }
-}
+  },
+);
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>
   getAlertEnabledness(state)[AlertTypes.unconnectedAccount];
