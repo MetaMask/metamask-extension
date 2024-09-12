@@ -568,7 +568,6 @@ export enum MetaMetricsEventName {
   OnboardingWalletSecurityPhraseWrittenDown = 'SRP Backup Confirm Display',
   OnboardingWalletSecurityPhraseConfirmed = 'SRP Backup Confirmed',
   OnboardingWalletCreationComplete = 'Wallet Created',
-  OnboardingWalletSetupComplete = 'Application Opened',
   OnboardingWalletAdvancedSettings = 'Settings Updated',
   OnboardingWalletImportAttempted = 'Wallet Import Attempted',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
