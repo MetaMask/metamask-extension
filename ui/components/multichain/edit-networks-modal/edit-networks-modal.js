@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AlignItems,
@@ -11,9 +11,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getNonTestNetworks,
   getOriginOfCurrentTab,
-  getPermittedChainsByOrigin,
   getPermittedChainsForSelectedTab,
   getTestNetworks,
 } from '../../../selectors';
@@ -62,6 +60,7 @@ export const EditNetworksModal = ({
   const selectedPermittedChains =
     connectedNetworks.length > 0 ? connectedNetworks : combinedNetworksIds;
   const [selectedChains, setSelectedChains] = useState(selectedPermittedChains);
+
   const selectAll = () => {
     const newSelectedAccounts = combinedNetworks.map(
       (network) => network.chainId,
@@ -86,6 +85,7 @@ export const EditNetworksModal = ({
   const allAreSelected = () => {
     return combinedNetworksIds.length === selectedChains.length;
   };
+
   let checked = false;
   let isIndeterminate = false;
   if (allAreSelected()) {
@@ -95,6 +95,7 @@ export const EditNetworksModal = ({
     checked = false;
     isIndeterminate = true;
   }
+
   const managePermittedChains = (
     selectedChains,
     selectedPermittedChains,
@@ -116,7 +117,9 @@ export const EditNetworksModal = ({
       dispatch(removePermittedChain(activeTabOrigin, selectedChain));
     });
   };
+
   const hostName = getURLHost(activeTabOrigin);
+
   return (
     <Modal
       isOpen
@@ -230,7 +233,7 @@ export const EditNetworksModal = ({
                       selectedChains,
                       selectedPermittedChains,
                       activeTabOrigin,
-                    ); // Then call the managePermittedChains function
+                    );
                   }
                 }}
                 size={ButtonPrimarySize.Lg}
@@ -248,11 +251,45 @@ export const EditNetworksModal = ({
 
 EditNetworksModal.propTypes = {
   /**
-   * Executes when the modal closes
+   * Function to execute when the modal is closed.
    */
   onClose: PropTypes.func.isRequired,
+
   /**
-   * Executes when the permissions are updated to show the toggle
+   * Function to execute when an update action is triggered.
    */
   onClick: PropTypes.func.isRequired,
+
+  /**
+   * Boolean indicating if the current tab has no associated accounts.
+   */
+  currentTabHasNoAccounts: PropTypes.bool.isRequired,
+
+  /**
+   * Array of network objects representing available networks to choose from.
+   */
+  combinedNetworks: PropTypes.arrayOf(
+    PropTypes.shape({
+      chainId: PropTypes.string.isRequired, // The chain ID of the network
+      nickname: PropTypes.string.isRequired, // Display name of the network
+      rpcPrefs: PropTypes.shape({
+        imageUrl: PropTypes.string, // Optional image URL for the network icon
+      }),
+    }),
+  ).isRequired,
+
+  /**
+   * Function to execute when the disconnect button is clicked.
+   */
+  onDisconnectClick: PropTypes.func.isRequired,
+
+  /**
+   * Array of network objects representing default networks.
+   */
+  defaultNetworks: PropTypes.arrayOf(
+    PropTypes.shape({
+      chainId: PropTypes.string.isRequired, // The chain ID of the default network
+      nickname: PropTypes.string.isRequired, // Display name of the default network
+    }),
+  ),
 };

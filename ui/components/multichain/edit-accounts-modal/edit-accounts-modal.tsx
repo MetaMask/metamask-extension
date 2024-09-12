@@ -6,12 +6,10 @@ import {
   isEvmAccountType,
   KeyringAccountType,
 } from '@metamask/keyring-api';
-import { NonEmptyArray } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getInternalAccounts,
   getOrderedConnectedAccountsForConnectedDapp,
-  getPermissionSubjects,
   getUpdatedAndSortedAccounts,
 } from '../../../selectors';
 import {
@@ -34,13 +32,12 @@ import {
 import { AccountListItem } from '..';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { mergeAccounts } from '../account-list-menu/account-list-menu';
+
 import {
   addMorePermittedAccounts,
-  removePermissionsFor,
   removePermittedAccount,
   setSelectedAccountsForDappConnection,
 } from '../../../store/actions';
-import { SubjectsType } from '../pages/connections/components/connections.types';
 import {
   JustifyContent,
   Display,
@@ -83,11 +80,11 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
 
   const mergedAccounts: MergedInternalAccount[] = useMemo(() => {
     return mergeAccounts(accounts, internalAccounts).filter(
-      (account: InternalAccount) => allowedAccountTypes.includes(account.type),
+      (account: InternalAccount) =>
+        allowedAccountTypes.includes(account.type as KeyringAccountType),
     );
   }, [accounts, internalAccounts, allowedAccountTypes]);
 
-  const subjects = useSelector(getPermissionSubjects);
   const connectedAccounts = useSelector((state: any) =>
     getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin).filter(
       (account: InternalAccount) => isEvmAccountType(account.type),
@@ -113,27 +110,6 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
         ? prevSelectedAccounts.filter((acc) => acc !== address)
         : [...prevSelectedAccounts, address],
     );
-  };
-
-  const disconnectAllAccounts = () => {
-    const subject = (subjects as SubjectsType)[activeTabOrigin];
-    if (subject) {
-      const permissionMethodNames = Object.values(subject.permissions).map(
-        ({ parentCapability }: { parentCapability: string }) =>
-          parentCapability,
-      ) as string[];
-      if (permissionMethodNames.length > 0) {
-        const permissionsRecord: Record<string, string[]> = {
-          [activeTabOrigin]: permissionMethodNames,
-        };
-
-        dispatch(
-          removePermissionsFor(
-            permissionsRecord as Record<string, NonEmptyArray<string>>,
-          ),
-        );
-      }
-    }
   };
 
   const managePermittedAccounts = (
@@ -168,6 +144,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   const allAreSelected = () => {
     return accounts.length === selectedAccounts.length;
   };
+
   let checked = false;
   let isIndeterminate = false;
   if (allAreSelected()) {
@@ -182,7 +159,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
     <>
       <Modal
         isOpen
-        onClose={() => console.log('bb')}
+        onClose={onClose}
         data-testid="edit-accounts-modal"
         className="edit-accounts-modal"
       >

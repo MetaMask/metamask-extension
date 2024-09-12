@@ -3220,14 +3220,16 @@ export function toggleNetworkMenu() {
   };
 }
 
-export function setAccountDetailsAddress(address: string) {
+export function setAccountDetailsAddress(address: string[]) {
   return {
     type: actionConstants.SET_ACCOUNT_DETAILS_ADDRESS,
     payload: address,
   };
 }
 
-export function setSelectedAccountsForDappConnection(addresses: []) {
+export function setSelectedAccountsForDappConnection(
+  addresses: string[],
+): void {
   return {
     type: actionConstants.SET_SELECTED_ACCOUNTS_FOR_DAPP_CONNECTIONS,
     payload: addresses,
