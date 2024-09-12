@@ -88,7 +88,9 @@ describe('useBalanceChanges', () => {
       [ERC20_TOKEN_ADDRESS_1_MOCK]: ERC20_TO_FIAT_RATE_1_MOCK,
       [ERC20_TOKEN_ADDRESS_2_MOCK]: ERC20_TO_FIAT_RATE_2_MOCK,
     });
+  });
 
+  afterEach(() => {
     /** Reset memoized function for each test */
     fetchErc20Decimals?.cache?.clear?.();
   });
