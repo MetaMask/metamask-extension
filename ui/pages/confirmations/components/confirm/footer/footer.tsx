@@ -28,7 +28,6 @@ import {
   updateAndApproveTx,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../../store/actions';
-import { confirmSelector } from '../../../selectors';
 import { selectUseTransactionSimulations } from '../../../selectors/preferences';
 
 import {
@@ -113,14 +112,12 @@ const ConfirmButton = ({
 const Footer = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const confirm = useSelector(confirmSelector);
   const customNonceValue = useSelector(getCustomNonceValue);
   const useTransactionSimulations = useSelector(
     selectUseTransactionSimulations,
   );
-
-  const { currentConfirmation } = useConfirmContext();
-  const { isScrollToBottomCompleted } = confirm;
+  const { currentConfirmation, isScrollToBottomCompleted } =
+    useConfirmContext();
   const { from } = getConfirmationSender(currentConfirmation);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
