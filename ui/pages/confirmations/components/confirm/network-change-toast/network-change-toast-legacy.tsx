@@ -19,7 +19,7 @@ const NetworkChangeToastLegacy = ({
   confirmation: { id: string; chainId: string };
 }) => {
   const chainId = useSelector(getCurrentChainId);
-  const newChainId = confirmation.chainId ?? chainId;
+  const newChainId = confirmation?.chainId ?? chainId;
   const [toastVisible, setToastVisible] = useState(false);
   const t = useI18nContext();
   const networkInfo = useSelector((state) =>
