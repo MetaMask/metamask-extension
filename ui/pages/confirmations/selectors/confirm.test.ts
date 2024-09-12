@@ -9,7 +9,6 @@ import {
 
 describe('confirm selectors', () => {
   const mockedState: ConfirmMetamaskState = {
-    confirm: {},
     metamask: {
       pendingApprovals: {
         '1': {
