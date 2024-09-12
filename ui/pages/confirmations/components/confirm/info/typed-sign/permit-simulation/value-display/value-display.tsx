@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { NameType } from '@metamask/name-controller';
+import { Hex } from '@metamask/utils';
 import { captureException } from '@sentry/browser';
-import { getTokenStandardAndDetails } from '../../../../../../../../store/actions';
 import { shortenString } from '../../../../../../../../helpers/utils/util';
 
 import { calcTokenAmount } from '../../../../../../../../../shared/lib/transactions-controller-utils';
@@ -27,23 +27,17 @@ import {
   TextAlign,
 } from '../../../../../../../../helpers/constants/design-system';
 import Name from '../../../../../../../../components/app/name/name';
-
-const getTokenDecimals = async (tokenContract: string) => {
-  const tokenDetails = await getTokenStandardAndDetails(tokenContract);
-  const tokenDecimals = tokenDetails?.decimals;
-
-  return parseInt(tokenDecimals ?? '0', 10);
-};
+import { fetchErc20Decimals } from '../../../../../../utils/token';
 
 const PermitSimulationValueDisplay: React.FC<{
   primaryType?: string;
-  tokenContract: string;
+  tokenContract: Hex;
   value: number | string;
 }> = ({ primaryType, tokenContract, value }) => {
   const exchangeRate = useTokenExchangeRate(tokenContract);
 
   const { value: tokenDecimals } = useAsyncResult(
-    async () => await getTokenDecimals(tokenContract),
+    async () => await fetchErc20Decimals(tokenContract),
     [tokenContract],
   );
 
