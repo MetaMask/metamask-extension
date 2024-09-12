@@ -6021,9 +6021,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@metamask/profile-sync-controller@npm:0.5.0"
+"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@0.5.0-preview-53d228a":
+  version: 0.5.0-preview-53d228a
+  resolution: "@metamask-previews/profile-sync-controller@npm:0.5.0-preview-53d228a"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.0"
     "@metamask/snaps-sdk": "npm:^6.1.1"
@@ -6037,7 +6037,7 @@ __metadata:
     "@metamask/accounts-controller": ^18.1.1
     "@metamask/keyring-controller": ^17.2.0
     "@metamask/snaps-controllers": ^9.3.0
-  checksum: 10/96a31ca2692af85100bd690aa290d6c954378aa14be0dd507afda46c37d761c5e398da4e93ed0f6f7f97267a82def7f4b12b45805cd7673381a6404f810511ff
+  checksum: 10/cd54d72a519b75b7040be8af90c4812b82d680f85c10adb709256e14af824ac1571123795c4fa851929bbcb32962890e3e225bce2b1ada2d7afdf5c527f6227d
   languageName: node
   linkType: hard
 
@@ -6658,10 +6658,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/ciphers@npm:^0.5.1, @noble/ciphers@npm:^0.5.2":
+"@noble/ciphers@npm:^0.5.1":
   version: 0.5.2
   resolution: "@noble/ciphers@npm:0.5.2"
   checksum: 10/47a5958954249d5edb49aff48ae6fbfff4d4e5a6bb221c010ebc8e7470c410e9208a2f3f6bf8b7eca83057277478f4ccbdbdcf1bfd324608b334b9f9d28a9fbb
+  languageName: node
+  linkType: hard
+
+"@noble/ciphers@npm:^0.5.2":
+  version: 0.5.3
+  resolution: "@noble/ciphers@npm:0.5.3"
+  checksum: 10/af0ad96b5807feace93e63549e05de6f5e305b36e2e95f02d90532893fbc3af3f19b9621b6de4caa98303659e5df2e7aa082064e5d4a82e6f38c728d48dfae5d
   languageName: node
   linkType: hard
 
@@ -26155,7 +26162,7 @@ __metadata:
     "@metamask/phishing-warning": "npm:^4.0.0"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:0.34.0"
-    "@metamask/profile-sync-controller": "npm:^0.5.0"
+    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@0.5.0-preview-53d228a"
     "@metamask/providers": "npm:^14.0.2"
     "@metamask/queued-request-controller": "npm:^2.0.0"
     "@metamask/rate-limit-controller": "npm:^6.0.0"
