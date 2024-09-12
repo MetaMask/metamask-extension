@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import { generateSignatureUniqueId } from '../../../helpers/utils/metrics';
-import { useConfirmContext } from '../../../pages/confirmations/context/confirm';
-import { SignatureRequestType } from '../../../pages/confirmations/types/confirm';
 import { updateEventFragment } from '../../../store/actions';
+import { useConfirmContext } from '../context/confirm';
+import { SignatureRequestType } from '../types/confirm';
 import { isSignatureTransactionType } from '../utils';
 
 /**
