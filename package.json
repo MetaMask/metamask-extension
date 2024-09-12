@@ -10,7 +10,7 @@
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "rimraf node_modules/.cache/webpack",
     "postinstall": "yarn webpack:clearcache",
-    "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' SENTRY_DSN_DEV=https://fake@sentry.io/0000000 yarn",
+    "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",
     "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
     "start:skip-onboarding": "SKIP_ONBOARDING=true yarn start",
     "start:mv2": "ENABLE_MV3=false yarn build:dev dev --apply-lavamoat=false --snow=false",
