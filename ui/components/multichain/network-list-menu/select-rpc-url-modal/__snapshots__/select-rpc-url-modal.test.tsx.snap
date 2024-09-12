@@ -28,10 +28,10 @@ exports[`SelectRpcUrlModal Component renders select rpc url 1`] = `
       </div>
     </div>
     <div
-      class="mm-box networks-tab__item networks-tab__item--selected mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--align-items-center"
+      class="mm-box select-rpc-url__item select-rpc-url__item--selected mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--align-items-center"
     >
       <div
-        class="mm-box networks-tab__item-selected-pill mm-box--background-color-primary-default mm-box--rounded-pill"
+        class="mm-box select-rpc-url__item-selected-pill mm-box--background-color-primary-default mm-box--rounded-pill"
       />
       <div
         class="mm-box rpc-list-item mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--border-style-solid mm-box--border-color-transparent mm-box--border-width-2"
@@ -48,7 +48,7 @@ exports[`SelectRpcUrlModal Component renders select rpc url 1`] = `
       </div>
     </div>
     <div
-      class="mm-box networks-tab__item mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--align-items-center"
+      class="mm-box select-rpc-url__item mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--align-items-center"
     >
       <div
         class="mm-box rpc-list-item mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--border-style-solid mm-box--border-color-transparent mm-box--border-width-2"

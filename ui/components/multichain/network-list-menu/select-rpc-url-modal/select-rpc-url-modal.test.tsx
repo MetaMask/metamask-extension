@@ -87,9 +87,9 @@ describe('SelectRpcUrlModal Component', () => {
 
     const selectedItem = getByText(
       stripProtocol(networkConfiguration.rpcEndpoints[0].url),
-    ).closest('.networks-tab__item');
+    ).closest('.select-rpc-url__item');
 
-    expect(selectedItem).toHaveClass('networks-tab__item--selected');
+    expect(selectedItem).toHaveClass('select-rpc-url__item--selected');
   });
 
   it('should dispatch the correct actions when an RPC endpoint is clicked', () => {
@@ -121,7 +121,7 @@ describe('SelectRpcUrlModal Component', () => {
     );
 
     const selectedPill = container.querySelector(
-      '.networks-tab__item-selected-pill',
+      '.select-rpc-url__item-selected-pill',
     );
     expect(selectedPill).toBeInTheDocument();
   });
