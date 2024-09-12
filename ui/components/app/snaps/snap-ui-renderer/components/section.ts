@@ -21,6 +21,7 @@ export const section: UIComponentFactory<SectionElement> = ({
       ...props,
       className: 'snap-ui-renderer__section',
       padding: 4,
+      gap: 2,
       backgroundColor: BackgroundColor.backgroundDefault,
       borderRadius: BorderRadius.LG,
     },
