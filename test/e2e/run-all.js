@@ -64,21 +64,20 @@ async function applyQualityGate(fullTestList, changedOrNewTests) {
 
 // For running E2Es in parallel in CI
 async function runningOnCircleCI(testPaths) {
-  const changedOrNewTests = await filterE2eChangedFiles();
-  console.log('Changed or new test list:', changedOrNewTests);
-
-  const hasOnlyMdOrCsvChanges = await checkOnlyMdOrCsvFiles();
-  if (hasOnlyMdOrCsvChanges) {
+  const { changedOrNewTests, hasOnlyMdOrCsvFiles } = await filterE2eChangedFiles();
+  if (hasOnlyMdOrCsvFiles) {
     console.log(
       'run-all.js info: Skipping test runs because run only has changes for MD or CSV files'
     )
     return {fullTestList: []};
   }
+  console.log('Changed or new test list:', changedOrNewTests);
 
   const fullTestList = await applyQualityGate(
     testPaths.join('\n'),
     changedOrNewTests,
   );
+
 
   console.log('Full test list:', fullTestList);
   fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);
