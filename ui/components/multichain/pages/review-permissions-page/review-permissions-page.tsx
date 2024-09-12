@@ -296,7 +296,7 @@ export const ReviewPermissions = () => {
               </ButtonPrimary>
             )}
           </>
-        </Footer>{' '}
+        </Footer>
       </>
     </Page>
   );

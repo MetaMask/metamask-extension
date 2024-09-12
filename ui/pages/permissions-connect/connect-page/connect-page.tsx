@@ -75,7 +75,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     getSelectedAccountsForDappConnection,
   );
 
-
   // Filter networks based on chainId
   const filteredNetworks = Array.isArray(selectedNetworksList)
     ? combinedNetworks.filter((network) =>
@@ -111,7 +110,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     >
       <Header>
         <Text variant={TextVariant.headingLg}>{t('connectWithMetaMask')}</Text>
-        <Text>This site wants to: </Text>
+        <Text>{t('connectionDescription')}: </Text>
       </Header>
       <Content padding={0}>
         <SiteCell
