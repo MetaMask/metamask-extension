@@ -1140,6 +1140,16 @@ export const getAnySnapUpdateAvailable = createSelector(
 );
 
 /**
+ * Return if the snap branding should show in the UI.
+ */
+export const getHideSnapBranding = createSelector(
+  [selectInstalledSnaps, selectSnapId],
+  (installedSnaps, snapId) => {
+    return installedSnaps[snapId]?.hideSnapBranding;
+  },
+);
+
+/**
  * Get a memoized version of the target subject metadata.
  */
 export const getMemoizedTargetSubjectMetadata = createDeepEqualSelector(

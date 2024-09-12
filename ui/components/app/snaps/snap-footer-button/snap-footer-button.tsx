@@ -4,6 +4,7 @@ import {
   ButtonVariant,
   UserInputEventType,
 } from '@metamask/snaps-sdk';
+import { useSelector } from 'react-redux';
 import {
   Button,
   ButtonLinkProps,
@@ -17,6 +18,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { SnapIcon } from '../snap-icon';
+import { getHideSnapBranding } from '../../../../selectors';
 
 type SnapFooterButtonProps = {
   name?: string;
@@ -36,6 +38,9 @@ export const SnapFooterButton: FunctionComponent<
   ...props
 }) => {
   const { handleEvent, snapId } = useSnapInterfaceContext();
+  const hideSnapBranding = useSelector((state) =>
+    getHideSnapBranding(state, snapId),
+  );
 
   const handleSnapAction = (event: ReactMouseEvent<HTMLElement>) => {
     if (type === ButtonType.Button) {
@@ -66,7 +71,7 @@ export const SnapFooterButton: FunctionComponent<
         flexDirection: FlexDirection.Row,
       }}
     >
-      {isSnapAction && (
+      {isSnapAction && !hideSnapBranding && (
         <SnapIcon snapId={snapId} avatarSize={IconSize.Sm} marginRight={2} />
       )}
       {children}
