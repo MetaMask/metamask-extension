@@ -8,10 +8,7 @@ import {
   getMultichainConversionRate,
 } from '../selectors/multichain';
 
-import {
-  decimalToHex,
-  getValueFromWeiHex,
-} from '../../shared/modules/conversion.utils';
+import { getValueFromWeiHex } from '../../shared/modules/conversion.utils';
 import { TEST_NETWORK_TICKER_MAP } from '../../shared/constants/network';
 import { Numeric } from '../../shared/modules/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';

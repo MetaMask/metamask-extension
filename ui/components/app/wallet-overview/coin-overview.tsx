@@ -91,11 +91,10 @@ export const CoinOverview = ({
   );
 
   const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
-  const balanceToDisplay = showNativeTokenAsMainBalance
-    ? balance
-    : totalFiatBalance;
 
   const isEvm = useSelector(getMultichainIsEvm);
+  const balanceToDisplay =
+    showNativeTokenAsMainBalance || !isEvm ? balance : totalFiatBalance;
 
   const tokensMarketData = useSelector(getTokensMarketData);
 
