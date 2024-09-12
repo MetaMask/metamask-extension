@@ -403,31 +403,6 @@ export const AccountListMenu = ({
                     disabled={isBtcTestnetAccountAlreadyCreated}
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
-                    onClick={async () => {
-                      // The account creation + renaming is handled by the Snap account bridge, so
-                      // we need to close the current model
-                      onClose();
-
-                      await createBitcoinAccount(
-                        MultichainNetworks.BITCOIN_TESTNET,
-                      );
-                    }}
-                    data-testid="multichain-account-menu-popover-add-btc-account-testnet"
-                  >
-                    {t('addNewBitcoinTestnetAccount')}
-                  </ButtonLink>
-                </Box>
-              ) : null
-              ///: END:ONLY_INCLUDE_IF
-            }
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-              bitcoinTestnetSupportEnabled ? (
-                <Box marginTop={4}>
-                  <ButtonLink
-                    disabled={isBtcTestnetAccountAlreadyCreated}
-                    size={ButtonLinkSize.Sm}
-                    startIconName={IconName.Add}
                     onClick={() => {
                       setActionMode(ACTION_MODES.ADD_BITCOIN_TESTNET);
                     }}
