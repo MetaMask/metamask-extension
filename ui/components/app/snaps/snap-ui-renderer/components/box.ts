@@ -2,6 +2,7 @@ import { BoxElement, JSXElement, BoxProps } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import { NonEmptyArray } from '@metamask/utils';
 import {
+  AlignItems,
   Display,
   FlexDirection,
   JustifyContent,
@@ -45,6 +46,7 @@ export const box: UIComponentFactory<BoxElement> = ({
         ? FlexDirection.Row
         : FlexDirection.Column,
     justifyContent: generateJustifyContent(element.props.alignment),
+    alignItems: element.props.center && AlignItems.center,
     className: 'snap-ui-renderer__panel',
     color: TextColor.textDefault,
   },
