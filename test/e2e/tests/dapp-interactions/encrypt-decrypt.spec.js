@@ -195,7 +195,7 @@ describe('Encrypt Decrypt', function () {
     );
   });
 
-  it('should show balance correctly as Native', async function () {
+  it('should show balance correctly in native tokens', async function () {
     // In component ui/pages/confirm-encryption-public-key/confirm-encryption-public-key.container.js, after removing useNativeCurrencyAsPrimaryCurrency;
     // We will display native balance in the confirm-encryption-public-key.component.js
     await withFixtures(

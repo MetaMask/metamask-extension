@@ -136,6 +136,9 @@
   "accountActivityText": {
     "message": "Select the accounts you want to be notified about:"
   },
+  "accountBalance": {
+    "message": "Account balance"
+  },
   "accountDetails": {
     "message": "Account details"
   },
@@ -690,9 +693,6 @@
   "back": {
     "message": "Back"
   },
-  "backup": {
-    "message": "Back up"
-  },
   "backupApprovalInfo": {
     "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
   },
@@ -704,12 +704,6 @@
   },
   "backupNow": {
     "message": "Back up now"
-  },
-  "backupUserData": {
-    "message": "Back up your data"
-  },
-  "backupUserDataDescription": {
-    "message": "You can back up data like your contacts and preferences."
   },
   "balance": {
     "message": "Balance"
@@ -1066,6 +1060,9 @@
   "confirmTitleDescDeployContract": {
     "message": "This site wants you to deploy a contract"
   },
+  "confirmTitleDescERC20ApproveTransaction": {
+    "message": "This site wants permission to withdraw your tokens"
+  },
   "confirmTitleDescPermitSignature": {
     "message": "This site wants permission to spend your tokens."
   },
@@ -1159,6 +1156,9 @@
   "connectedSites": {
     "message": "Connected sites"
   },
+  "connectedSitesAndSnaps": {
+    "message": "Connected sites and Snaps"
+  },
   "connectedSitesDescription": {
     "message": "$1 is connected to these sites. They can view your account address.",
     "description": "$1 is the account name"
@@ -1169,6 +1169,9 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask is connected to this site, but no accounts are connected yet"
+  },
+  "connectedSnaps": {
+    "message": "Connected Snaps"
   },
   "connectedWith": {
     "message": "Connected with"
@@ -1681,6 +1684,9 @@
   "editANickname": {
     "message": "Edit nickname"
   },
+  "editAccounts": {
+    "message": "Edit accounts"
+  },
   "editAddressNickname": {
     "message": "Edit address nickname"
   },
@@ -1938,6 +1944,15 @@
   },
   "experimental": {
     "message": "Experimental"
+  },
+  "exportYourData": {
+    "message": "Export your data"
+  },
+  "exportYourDataButton": {
+    "message": "Download"
+  },
+  "exportYourDataDescription": {
+    "message": "You can export data like your contacts and preferences."
   },
   "extendWalletWithSnaps": {
     "message": "Explore community-built Snaps to customize your web3 experience",
@@ -3008,6 +3023,9 @@
   },
   "networkDetails": {
     "message": "Network details"
+  },
+  "networkFee": {
+    "message": "Network fee"
   },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
@@ -4413,9 +4431,6 @@
   "restoreUserData": {
     "message": "Restore user data"
   },
-  "restoreUserDataDescription": {
-    "message": "You can restore data like contacts and preferences from a backup file."
-  },
   "resultPageError": {
     "message": "Error"
   },
@@ -5185,6 +5200,9 @@
   },
   "spendingCapRequest": {
     "message": "Spending cap request for your $1"
+  },
+  "spendingCapTooltipDesc": {
+    "message": "This is the amount of tokens the spender will be able to access on your behalf."
   },
   "srpInputNumberOfWords": {
     "message": "I have a $1-word phrase",
@@ -6223,6 +6241,9 @@
   },
   "unknown": {
     "message": "Unknown"
+  },
+  "unknownChainWarning": {
+    "message": "We can’t verify custom networks. To avoid malicious providers from recording your network activity, only add networks you trust."
   },
   "unknownCollection": {
     "message": "Unnamed collection"

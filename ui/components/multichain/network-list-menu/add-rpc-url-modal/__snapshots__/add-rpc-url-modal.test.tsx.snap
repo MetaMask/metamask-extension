@@ -29,6 +29,7 @@ exports[`AddRpcUrlModal should render correctly 1`] = `
     </div>
     <button
       class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--margin-top-8 mm-box--margin-right-auto mm-box--margin-left-auto mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-block mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+      data-theme="light"
     >
       addUrl
     </button>

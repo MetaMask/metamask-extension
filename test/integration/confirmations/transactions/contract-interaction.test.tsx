@@ -271,7 +271,7 @@ describe('Contract Interaction Confirmation', () => {
 
     const editGasFeesRow =
       within(gasFeesSection).getByTestId('edit-gas-fees-row');
-    expect(editGasFeesRow).toHaveTextContent('Estimated fee');
+    expect(editGasFeesRow).toHaveTextContent('Network fee');
 
     const firstGasField = within(editGasFeesRow).getByTestId('first-gas-field');
     expect(firstGasField).toHaveTextContent('0.0084 ETH');
