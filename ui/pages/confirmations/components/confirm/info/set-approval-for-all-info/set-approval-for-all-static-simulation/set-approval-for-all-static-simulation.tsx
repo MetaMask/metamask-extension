@@ -1,10 +1,6 @@
 import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
-<<<<<<< HEAD
-=======
-import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
->>>>>>> b3fd9d5b4e (feat: Redesigned setApprovalForAll confirmations)
 import Name from '../../../../../../../components/app/name';
 import { Box, Text } from '../../../../../../../components/component-library';
 import {
