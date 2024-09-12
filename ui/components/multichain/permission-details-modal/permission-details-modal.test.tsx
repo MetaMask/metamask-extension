@@ -1,6 +1,7 @@
 import React from 'react';
 import configureStore from 'redux-mock-store';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
+import { EthMethod } from '@metamask/keyring-internal-api';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { PermissionDetailsModal } from '.';

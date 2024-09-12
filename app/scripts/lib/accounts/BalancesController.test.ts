@@ -1,10 +1,6 @@
 import { ControllerMessenger } from '@metamask/base-controller';
-import {
-  Balance,
-  BtcAccountType,
-  CaipAssetType,
-  InternalAccount,
-} from '@metamask/keyring-api';
+import { Balance, BtcAccountType, CaipAssetType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import {
   BalancesController,

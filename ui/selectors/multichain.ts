@@ -1,5 +1,8 @@
 import PropTypes from 'prop-types';
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
+import {
+  InternalAccount,
+  isEvmAccountType,
+} from '@metamask/keyring-internal-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import type { RatesControllerState } from '@metamask/assets-controllers';
 import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';

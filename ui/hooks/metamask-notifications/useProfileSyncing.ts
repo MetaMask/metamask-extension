@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import type { InternalAccount } from '@metamask/keyring-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import log from 'loglevel';
 import {
   disableProfileSyncing as disableProfileSyncingAction,

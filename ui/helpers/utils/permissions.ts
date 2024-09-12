@@ -1,4 +1,7 @@
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
+import {
+  InternalAccount,
+  isEvmAccountType,
+} from '@metamask/keyring-internal-api';
 import { RestrictedEthMethods } from '../../../shared/constants/permissions';
 
 export const containsEthPermissionsAndNonEvmAccount = (

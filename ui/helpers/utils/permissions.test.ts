@@ -1,8 +1,5 @@
-import {
-  BtcAccountType,
-  BtcMethod,
-  InternalAccount,
-} from '@metamask/keyring-api';
+import { BtcAccountType } from '@metamask/keyring-api';
+import { BtcMethod, InternalAccount } from '@metamask/keyring-internal-api';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { containsEthPermissionsAndNonEvmAccount } from './permissions';
 

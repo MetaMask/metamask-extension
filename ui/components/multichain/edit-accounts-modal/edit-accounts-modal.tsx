@@ -1,10 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  EthAccountType,
-  InternalAccount,
-  KeyringAccountType,
-} from '@metamask/keyring-api';
+import { EthAccountType, KeyringAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getInternalAccounts,

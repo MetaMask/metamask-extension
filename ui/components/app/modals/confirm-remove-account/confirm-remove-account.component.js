@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-internal-api';
 import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
 import Modal from '../../modal';
 import { addressSummary, getURLHostName } from '../../../../helpers/utils/util';

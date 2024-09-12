@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { EthMethod } from '@metamask/keyring-api';
+import { EthMethod } from '@metamask/keyring-internal-api';
 import { isEqual } from 'lodash';
 import {
   isBalanceCached,

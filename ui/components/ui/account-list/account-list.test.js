@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import { BtcAccountType, BtcMethod } from '@metamask/keyring-api';
+import { BtcAccountType } from '@metamask/keyring-api';
+import { BtcMethod } from '@metamask/keyring-internal-api';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';

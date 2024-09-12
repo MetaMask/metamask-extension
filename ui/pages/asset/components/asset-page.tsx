@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
-import { EthMethod } from '@metamask/keyring-api';
+import { EthMethod } from '@metamask/keyring-internal-api';
 import { isEqual } from 'lodash';
 import {
   getCurrentCurrency,

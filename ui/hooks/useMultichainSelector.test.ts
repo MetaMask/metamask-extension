@@ -1,4 +1,4 @@
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import { getSelectedNetworkClientId } from '../selectors';

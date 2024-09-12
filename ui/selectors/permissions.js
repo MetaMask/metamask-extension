@@ -1,6 +1,6 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-internal-api';
 import { CaveatTypes } from '../../shared/constants/permissions';
 import { getApprovalRequestsByType } from './approvals';
 import { createDeepEqualSelector } from './util';

@@ -2,7 +2,7 @@ import {
   SubjectMetadataController,
   SubjectType,
 } from '@metamask/permission-controller';
-import { KeyringRpcMethod } from '@metamask/keyring-api';
+import { KeyringRpcMethod } from '@metamask/keyring-internal-api';
 import {
   isProtocolAllowed,
   keyringSnapPermissionsBuilder,

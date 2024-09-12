@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { SubjectType } from '@metamask/permission-controller';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-internal-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 import AccountList from '../../../components/ui/account-list';

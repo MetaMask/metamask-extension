@@ -1,6 +1,7 @@
 import { deepClone } from '@metamask/snaps-utils';
 import { ApprovalType } from '@metamask/controller-utils';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
+import { EthMethod } from '@metamask/keyring-internal-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';

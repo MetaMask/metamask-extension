@@ -142,7 +142,7 @@ import {
 
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-internal-api';
 import {
   AuthenticationController,
   UserStorageController,

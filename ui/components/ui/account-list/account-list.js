@@ -2,7 +2,7 @@ import React, { memo, useLayoutEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-internal-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Identicon from '../identicon';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display';

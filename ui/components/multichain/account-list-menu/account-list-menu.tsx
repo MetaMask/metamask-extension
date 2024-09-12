@@ -7,12 +7,12 @@ import {
   BtcAccountType,
   EthAccountType,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  InternalAccount,
   KeyringAccountType,
-  KeyringClient,
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { KeyringClient } from '@metamask/keyring-snap-client';
 import { CaipChainId } from '@metamask/utils';
 import {
   BITCOIN_WALLET_NAME,

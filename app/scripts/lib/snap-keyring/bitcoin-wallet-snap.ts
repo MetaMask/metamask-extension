@@ -1,5 +1,5 @@
 import { SnapId } from '@metamask/snaps-sdk';
-import { Sender } from '@metamask/keyring-api';
+import { Sender } from '@metamask/keyring-snap-client';
 import { HandlerType } from '@metamask/snaps-utils';
 import { Json, JsonRpcRequest } from '@metamask/utils';
 // This dependency is still installed as part of the `package.json`, however

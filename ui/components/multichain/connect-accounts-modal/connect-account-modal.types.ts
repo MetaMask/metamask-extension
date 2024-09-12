@@ -1,4 +1,4 @@
-import { type InternalAccount } from '@metamask/keyring-api';
+import { type InternalAccount } from '@metamask/keyring-internal-api';
 
 export enum ConnectAccountsType {
   Account = 'disconnectAllAccountsText',

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { matchPath, Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-internal-api';
 
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirmations/confirm-transaction';

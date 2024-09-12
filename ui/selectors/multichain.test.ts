@@ -1,5 +1,5 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   getNativeCurrency,
   getProviderConfig,

@@ -8,12 +8,14 @@ import {
 } from '@metamask/base-controller';
 import {
   BtcAccountType,
-  KeyringClient,
   type Balance,
   type CaipAssetType,
+} from '@metamask/keyring-api';
+import {
   type InternalAccount,
   isEvmAccountType,
-} from '@metamask/keyring-api';
+} from '@metamask/keyring-internal-api';
+import { KeyringClient } from '@metamask/keyring-snap-client';
 import type { HandleSnapRequest } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';

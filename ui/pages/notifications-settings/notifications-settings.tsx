@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import type { InternalAccount } from '@metamask/keyring-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import {

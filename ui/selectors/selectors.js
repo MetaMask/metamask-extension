@@ -10,7 +10,7 @@ import semver from 'semver';
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-internal-api';
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -358,6 +358,7 @@ export function getMaybeSelectedInternalAccount(state) {
 
 export function getSelectedInternalAccount(state) {
   const accountId = state.metamask.internalAccounts.selectedAccount;
+  console.log('@@', accountId, state.metamask.internalAccounts.accounts);
   return state.metamask.internalAccounts.accounts[accountId];
 }
 

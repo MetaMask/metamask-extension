@@ -1,5 +1,6 @@
 import React from 'react';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
+import { EthMethod } from '@metamask/keyring-internal-api';
 import {
   unapprovedPersonalSignMsg,
   signatureRequestSIWE,

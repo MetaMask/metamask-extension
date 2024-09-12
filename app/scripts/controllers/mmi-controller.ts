@@ -25,7 +25,7 @@ import {
   PersonalMessageParams,
 } from '@metamask/message-manager';
 import { NetworkController } from '@metamask/network-controller';
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { CONNECT_HARDWARE_ROUTE } from '../../../ui/helpers/constants/routes';

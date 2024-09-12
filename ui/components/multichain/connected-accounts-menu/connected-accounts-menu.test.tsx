@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
+import { EthMethod } from '@metamask/keyring-internal-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';

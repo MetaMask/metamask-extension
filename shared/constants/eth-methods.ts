@@ -1,4 +1,4 @@
-import { EthMethod } from '@metamask/keyring-api';
+import { EthMethod } from '@metamask/keyring-internal-api';
 
 export const ETH_EOA_METHODS = [
   EthMethod.PersonalSign,

@@ -1,4 +1,4 @@
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-internal-api';
 import { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { JsonRpcMiddleware } from 'json-rpc-engine';

@@ -1,5 +1,8 @@
 import { useSelector } from 'react-redux';
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
+import {
+  InternalAccount,
+  isEvmAccountType,
+} from '@metamask/keyring-internal-api';
 import {
   getMultichainCurrencyImage,
   getMultichainBalances,
