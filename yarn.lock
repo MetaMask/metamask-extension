@@ -28899,26 +28899,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-to-regexp@npm:0.1.7":
-  version: 0.1.7
-  resolution: "path-to-regexp@npm:0.1.7"
-  checksum: 10/701c99e1f08e3400bea4d701cf6f03517474bb1b608da71c78b1eb261415b645c5670dfae49808c89e12cea2dccd113b069f040a80de012da0400191c6dbd1c8
-  languageName: node
-  linkType: hard
-
-"path-to-regexp@npm:2.2.1":
-  version: 2.2.1
-  resolution: "path-to-regexp@npm:2.2.1"
-  checksum: 10/1a7125f8c1b5904d556a29722333219df4aa779039e903efe2fbfe0cc3ae9246672846fc8ad285664020b70e434347e0bc9af691fd7d61df8eaa7b018dcd56fb
-  languageName: node
-  linkType: hard
-
-"path-to-regexp@npm:^1.7.0":
-  version: 1.7.0
-  resolution: "path-to-regexp@npm:1.7.0"
+"path-to-regexp@npm:1.9.0":
+  version: 1.9.0
+  resolution: "path-to-regexp@npm:1.9.0"
   dependencies:
     isarray: "npm:0.0.1"
-  checksum: 10/7e1275a34fcfed7ba9d0d82ea7149f0c87d8c941c9b34109ab455cceb783b6387ce9275deeb6519eb0f880777a44bcb387cd579d3bb0cfbf4e7fe93c0e3b1a69
+  checksum: 10/67f0f4823f7aab356523d93a83f9f8222bdd119fa0b27a8f8b587e8e6c9825294bb4ccd16ae619def111ff3fe5d15ff8f658cdd3b0d58b9c882de6fd15bc1b76
   languageName: node
   linkType: hard
 

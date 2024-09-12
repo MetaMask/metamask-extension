@@ -1,4 +1,4 @@
-const { strict: assert } = require('assert');
+const { By } = require('selenium-webdriver');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -124,13 +124,9 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
 
         await switchToNotificationWindow(driver, 4);
 
-        let navigationElement = await driver.findElement(
-          '.confirm-page-container-navigation',
+        await driver.findElement(
+          By.xpath("//div[normalize-space(.)='1 of 2']"),
         );
-
-        let navigationText = await navigationElement.getText();
-
-        assert.equal(navigationText.includes('1 of 2'), true);
 
         // Check correct network on confirm tx.
         await driver.findElement({
@@ -149,13 +145,9 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         // Wait for new confirmations queued from second dapp to open
         await switchToNotificationWindow(driver, 4);
 
-        navigationElement = await driver.findElement(
-          '.confirm-page-container-navigation',
+        await driver.findElement(
+          By.xpath("//div[normalize-space(.)='1 of 2']"),
         );
-
-        navigationText = await navigationElement.getText();
-
-        assert.equal(navigationText.includes('1 of 2'), true);
 
         // Check correct network on confirm tx.
         await driver.findElement({
