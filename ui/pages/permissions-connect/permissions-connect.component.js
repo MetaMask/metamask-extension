@@ -318,6 +318,7 @@ export default class PermissionConnect extends Component {
       approvePendingApproval,
       rejectPendingApproval,
       setSnapsInstallPrivacyWarningShownStatus,
+      approvePermissionsRequest,
     } = this.props;
     const {
       selectedAccountAddresses,

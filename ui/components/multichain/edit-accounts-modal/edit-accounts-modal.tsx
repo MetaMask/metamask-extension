@@ -113,8 +113,8 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   };
 
   const managePermittedAccounts = (
-    selectedAccounts: string[],
-    connectedAccountsAddresses: string[],
+    selectedAccounts,
+    connectedAccountsAddresses,
   ) => {
     const removedAccounts = connectedAccountsAddresses.filter(
       (acc) => !selectedAccounts.includes(acc),

@@ -204,4 +204,3 @@ SiteCellTooltip.propTypes = {
     }),
   ).isRequired,
 };
-

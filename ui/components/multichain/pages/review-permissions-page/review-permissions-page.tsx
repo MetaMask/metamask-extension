@@ -47,7 +47,10 @@ import {
 import { ToastContainer, Toast } from '../..';
 import { NoConnectionContent } from '../connections/components/no-connection';
 import { Content, Footer, Header, Page } from '../page';
-import { AccountType, SubjectsType } from '../connections/components/connections.types';
+import {
+  AccountType,
+  SubjectsType,
+} from '../connections/components/connections.types';
 import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
 import {
   DisconnectAllModal,
@@ -55,13 +58,13 @@ import {
 } from '../../disconnect-all-modal/disconnect-all-modal';
 import { SiteCell } from '.';
 
-interface UrlParams {
+type UrlParams = {
   origin: string;
-}
+};
 
-interface PermittedAccountsByOrigin {
-  [key: string]: Array<{ address: string }>;
-}
+type PermittedAccountsByOrigin = {
+  [key: string]: { address: string }[];
+};
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -85,6 +88,7 @@ export const ReviewPermissions = () => {
     (state: { activeTab: { id: string } }) => state.activeTab,
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const subjectMetadata: { [key: string]: any } = useSelector(
     getConnectedSitesList,
   );
@@ -107,7 +111,7 @@ export const ReviewPermissions = () => {
 
   const subjects = useSelector(getPermissionSubjects);
   const grantedNetworks = combinedNetworks.filter(
-    (net: { chainId: any }) => connectedNetworks.indexOf(net.chainId) !== -1,
+    (net: { chainId: string }) => connectedNetworks.indexOf(net.chainId) !== -1,
   );
 
   const hostName = getURLHost(securedOrigin);
@@ -214,7 +218,8 @@ export const ReviewPermissions = () => {
               onDisconnectClick={() => setShowDisconnectAllModal(true)}
               activeTabOrigin={activeTabOrigin}
               combinedNetworks={networksList}
-              approvedAccounts={[]} />
+              approvedAccounts={[]}
+            />
           ) : (
             <NoConnectionContent />
           )}
