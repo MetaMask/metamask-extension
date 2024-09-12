@@ -29,11 +29,24 @@ import {
 import Name from '../../../../../../../../components/app/name/name';
 import { fetchErc20Decimals } from '../../../../../../utils/token';
 
-const PermitSimulationValueDisplay: React.FC<{
+type PermitSimulationValueDisplayParams = {
+  /** The primaryType of the typed sign message */
   primaryType?: string;
-  tokenContract: Hex;
+
+  /**
+   * The ethereum token contract address. It is expected to be in hex format.
+   * We currently accept strings since we have a patch that accepts a custom string
+   * {@see .yarn/patches/@metamask-eth-json-rpc-middleware-npm-14.0.1-b6c2ccbe8c.patch}
+   */
+  tokenContract: Hex | string;
+
+  /** The token amount */
   value: number | string;
-}> = ({ primaryType, tokenContract, value }) => {
+};
+
+const PermitSimulationValueDisplay: React.FC<
+  PermitSimulationValueDisplayParams
+> = ({ primaryType, tokenContract, value }) => {
   const exchangeRate = useTokenExchangeRate(tokenContract);
 
   const { value: tokenDecimals } = useAsyncResult(
