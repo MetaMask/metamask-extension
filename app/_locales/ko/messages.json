@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "추가 네트워크"
   },
-  "additionalRpcUrl": {
-    "message": "추가 RPC URL"
-  },
   "address": {
     "message": "주소"
   },
