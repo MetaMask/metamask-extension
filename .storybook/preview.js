@@ -35,7 +35,7 @@ export const parameters = {
   },
   docs: {
     container: (context) => {
-      const { theme } = context.globals;
+      const theme = context?.globals?.theme || 'both';
       const systemPrefersDark = window.matchMedia(
         '(prefers-color-scheme: dark)',
       ).matches;
@@ -95,7 +95,7 @@ export const globalTypes = {
       items: [
         { value: 'light', title: 'Light', icon: 'sun' },
         { value: 'dark', title: 'Dark', icon: 'moon' },
-        { value: 'both', title: 'Both', icon: 'paintbrush' },
+        { value: 'both', title: 'Light/Dark', icon: 'paintbrush' },
       ],
       dynamicTitle: true,
     },
@@ -177,6 +177,8 @@ const withColorScheme = (Story, context) => {
     '(prefers-color-scheme: dark)',
   ).matches;
 
+  const isDark = theme === 'dark' || (theme === 'both' && systemPrefersDark);
+
   function Wrapper(props) {
     return (
       <div
@@ -185,6 +187,7 @@ const withColorScheme = (Story, context) => {
           display: 'flex',
           padding: '1rem',
           backgroundColor: 'var(--color-background-default)',
+          color: 'var(--color-text-default)',
         }}
       />
     );
@@ -207,7 +210,7 @@ const withColorScheme = (Story, context) => {
   }
 
   return (
-    <div data-theme={systemPrefersDark ? 'dark' : 'light'}>
+    <div data-theme={isDark ? 'dark' : 'light'}>
       <Wrapper data-theme="light">
         <Story />
       </Wrapper>
