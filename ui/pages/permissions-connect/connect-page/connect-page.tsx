@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -29,13 +29,14 @@ import {
 } from '../../../helpers/constants/design-system';
 import { AccountType } from '../../../components/multichain/pages/connections/components/connections.types';
 
-interface Request {
+type Request = {
   id: string;
   origin: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any; // Adjust this if you have a more specific shape for the request
-}
+};
 
-interface ConnectPageProps {
+type ConnectPageProps = {
   request: Request;
   permissionsRequestId: string;
   rejectPermissionsRequest: (id: string) => void;
@@ -44,7 +45,7 @@ interface ConnectPageProps {
   selectAccounts: (addresses: string[]) => void;
   selectedAccountAddresses: Set<string>;
   activeTabOrigin: string;
-}
+};
 
 export const ConnectPage: React.FC<ConnectPageProps> = ({
   request,
@@ -67,9 +68,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const combinedNetworks = [...networksList, ...testNetworks];
 
   const currentAccount = useSelector(getSelectedInternalAccount);
-  const [selectedAccounts, setSelectedAccounts] = useState(
-    selectedAccountAddresses,
-  );
 
   const selectedAccountsForDappConnection = useSelector(
     getSelectedAccountsForDappConnection,
@@ -116,8 +114,10 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         <SiteCell
           networks={filteredNetworks}
           accounts={filterAccountsByAddress}
-          onAccountsClick={() => selectAccounts(Array.from(selectedAccounts))}
-          onNetworksClick={() => console.log('testing')}
+          onAccountsClick={() =>
+            selectAccounts(Array.from(selectedAccountAddresses))
+          }
+          onNetworksClick={() => null}
           approvedAccounts={approvedAccounts}
           activeTabOrigin={activeTabOrigin}
           combinedNetworks={networksList}

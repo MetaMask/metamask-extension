@@ -117,8 +117,8 @@ export const ReviewPermissions = () => {
   const hostName = getURLHost(securedOrigin);
   const currentTabHasNoAccounts =
     !permittedAccountsByOrigin[activeTabOrigin]?.length;
-
-  let tabToConnect: { origin: string | null } = { origin: null };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let tabToConnect: { origin: any } = { origin: null }; // origin could be null or a string based on the connection status or screen view
   if (activeTabOrigin && currentTabHasNoAccounts && !openMetaMaskTabs[id]) {
     tabToConnect = {
       origin: activeTabOrigin,
@@ -126,15 +126,10 @@ export const ReviewPermissions = () => {
   }
 
   const requestAccountsAndChainPermissions = async () => {
-    if (tabToConnect.origin) {
-      // Ensure origin is not null
-      const requestId = await dispatch(
-        requestAccountsAndChainPermissionsWithId(tabToConnect.origin),
-      );
-      history.push(`${CONNECT_ROUTE}/${requestId}`);
-    } else {
-      console.error('Tab origin is null.');
-    }
+    const requestId = await dispatch(
+      requestAccountsAndChainPermissionsWithId(tabToConnect.origin),
+    );
+    history.push(`${CONNECT_ROUTE}/${requestId}`);
   };
 
   const disconnectAllAccounts = () => {

@@ -352,9 +352,6 @@
   "additionalNetworks": {
     "message": "Additional networks"
   },
-  "additionalRpcUrl": {
-    "message": "Additional RPC URL"
-  },
   "address": {
     "message": "Address"
   },
@@ -894,6 +891,12 @@
   "buyAsset": {
     "message": "Buy $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
+  "buyCrypto": {
+    "message": "Buy crypto"
+  },
+  "buyFirstCrypto": {
+    "message": "Buy your first crypto with a debit or credit card."
   },
   "buyMoreAsset": {
     "message": "Buy more $1",
@@ -1574,6 +1577,9 @@
   "deposit": {
     "message": "Deposit"
   },
+  "depositCrypto": {
+    "message": "Deposit crypto from another account with a wallet address or QR code."
+  },
   "deprecatedGoerliNtwrkMsg": {
     "message": "Because of updates to the Ethereum system, the Goerli test network will be phased out soon."
   },
@@ -1863,6 +1869,9 @@
   "ensUnknownError": {
     "message": "ENS lookup failed."
   },
+  "enterANameToIdentifyTheUrl": {
+    "message": "Enter a name to identify the URL"
+  },
   "enterANumber": {
     "message": "Enter a number"
   },
@@ -1877,6 +1886,9 @@
   },
   "enterPasswordContinue": {
     "message": "Enter password to continue"
+  },
+  "enterRpcUrl": {
+    "message": "Enter RPC URL"
   },
   "enterTokenNameOrAddress": {
     "message": "Enter token name or paste address"
@@ -2179,6 +2191,12 @@
   },
   "genericExplorerView": {
     "message": "View account on $1"
+  },
+  "getStarted": {
+    "message": "Get Started"
+  },
+  "getStartedByFundingWallet": {
+    "message": "Get started by adding some crypto to your wallet."
   },
   "getStartedWithNFTs": {
     "message": "Get $1 to buy NFTs",
@@ -2746,6 +2764,9 @@
   },
   "link": {
     "message": "Link"
+  },
+  "linkCentralizedExchanges": {
+    "message": "Link your Coinbase or Binance accounts to transfer crypto to MetaMask for free."
   },
   "links": {
     "message": "Links"
@@ -4293,6 +4314,9 @@
   "receive": {
     "message": "Receive"
   },
+  "receiveCrypto": {
+    "message": "Receive crypto"
+  },
   "recipientAddressPlaceholder": {
     "message": "Enter public address (0x) or ENS name"
   },
@@ -4571,6 +4595,9 @@
   "revokeSpendingCapTooltipText": {
     "message": "This third party will be unable to spend any more of your current or future tokens."
   },
+  "rpcNameOptional": {
+    "message": "RPC Name (Optional)"
+  },
   "rpcUrl": {
     "message": "New RPC URL"
   },
@@ -4711,6 +4738,9 @@
   },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Turn on Display NFT Media"
+  },
+  "selectFundingMethod": {
+    "message": "Select a funding method"
   },
   "selectHdPath": {
     "message": "Select HD path"
@@ -5478,6 +5508,9 @@
   "supportCenter": {
     "message": "Visit our support center"
   },
+  "supportMultiRpcInformation": {
+    "message": "We now support multiple RPCs for a single network. Your most recent RPC has been selected as the default one to resolve conflicting information."
+  },
   "surveyConversion": {
     "message": "Take our survey"
   },
@@ -6192,6 +6225,9 @@
   "transfer": {
     "message": "Transfer"
   },
+  "transferCrypto": {
+    "message": "Transfer crypto"
+  },
   "transferFrom": {
     "message": "Transfer from"
   },
@@ -6339,6 +6375,9 @@
   },
   "updateRequest": {
     "message": "Update request"
+  },
+  "updatedRpcForNetworks": {
+    "message": "Network RPCs Updated"
   },
   "updatedWithDate": {
     "message": "Updated $1"

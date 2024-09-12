@@ -5,9 +5,11 @@ export default {
   title: 'Components/Multichain/EditAccountsModal',
   argTypes: {
     onClose: { action: 'onClose' },
+    activeTabOrigin: { control: 'text' },
   },
   args: {
     onClose: () => undefined,
+    activeTabOrigin: 'https://test.dapp',
   },
 };
 
