@@ -17,6 +17,9 @@ const expectedMaliciousTitle = 'This is a deceptive request';
 const expectedMaliciousDescription =
   'If you approve this request, a third party known for scams will take all your assets.';
 
+const SECURITY_ALERTS_API_URL =
+  'https://security-alerts.dev-api.cx.metamask.io';
+
 async function mockInfura(mockServer) {
   await mockServerJsonRpc(mockServer, [
     ['eth_blockNumber'],
@@ -31,75 +34,63 @@ async function mockInfura(mockServer) {
   ]);
 }
 
+async function mockRequest(server, request, response) {
+  await server
+    .forPost(`${SECURITY_ALERTS_API_URL}/validate/0x1`)
+    .withJsonBodyIncluding(request)
+    .thenJson(201, response);
+}
+
 async function mockInfuraWithBenignResponses(mockServer) {
   await mockInfura(mockServer);
 
-  await mockServer
-    .forPost()
-    .withJsonBodyIncluding({
-      method: 'debug_traceCall',
-    })
-    .thenCallback(async (req) => {
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: (await req.body.getJson()).id,
-          result: {
-            type: 'CALL',
-            from: '0x0000000000000000000000000000000000000000',
-            to: '0xd46e8dd67c5d32be8058bb8eb970870f07244567',
-            value: '0xde0b6b3a7640000',
-            gas: '0x16c696eb7',
-            gasUsed: '0x0',
-            input: '0x',
-            output: '0x',
-          },
+  await mockRequest(
+    mockServer,
+    {
+      method: 'eth_sendTransaction',
+      params: [
+        {
+          from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          data: '0x',
+          to: '0x5fbdb2315678afecb367f032d93f642f64180aa3',
+          value: '0xde0b6b3a7640000',
         },
-      };
-    });
+      ],
+    },
+    {
+      block: 20733513,
+      result_type: 'Benign',
+      reason: '',
+      description: '',
+      features: [],
+    },
+  );
 }
 
 async function mockInfuraWithMaliciousResponses(mockServer) {
   await mockInfura(mockServer);
 
-  await mockServer
-    .forPost()
-    .withJsonBodyIncluding({
-      method: 'debug_traceCall',
-      params: [{ accessList: [], data: '0x00000000' }],
-    })
-    .thenCallback(async (req) => {
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: (await req.body.getJson()).id,
-          result: {
-            calls: [
-              {
-                error: 'execution reverted',
-                from: '0x0000000000000000000000000000000000000000',
-                gas: '0x1d55c2cb',
-                gasUsed: '0x39c',
-                input: '0x00000000',
-                to: mockMaliciousAddress,
-                type: 'DELEGATECALL',
-                value: '0x0',
-              },
-            ],
-            error: 'execution reverted',
-            from: '0x0000000000000000000000000000000000000000',
-            gas: '0x1dcd6500',
-            gasUsed: '0x721e',
-            input: '0x00000000',
-            to: mockMaliciousAddress,
-            type: 'CALL',
-            value: '0x0',
-          },
+  await mockRequest(
+    mockServer,
+    {
+      method: 'eth_sendTransaction',
+      params: [
+        {
+          from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          data: '0x',
+          to: '0x5fbdb2315678afecb367f032d93f642f64180aa3',
+          value: '0xde0b6b3a7640000',
         },
-      };
-    });
+      ],
+    },
+    {
+      block: 20733277,
+      result_type: 'Malicious',
+      reason: 'transfer_farming',
+      description: '',
+      features: ['Interaction with a known malicious address'],
+    },
+  );
 }
 
 async function mockInfuraWithFailedResponses(mockServer) {
@@ -126,7 +117,7 @@ async function mockInfuraWithFailedResponses(mockServer) {
  * @see {@link https://wobbly-nutmeg-8a5.notion.site/MM-E2E-Testing-1e51b617f79240a49cd3271565c6e12d}
  */
 describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
-  it('should not show security alerts for benign requests', async function () {
+  it.only('should not show security alerts for benign requests', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -147,7 +138,7 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
         await sendScreenToConfirmScreen(driver, mockBenignAddress, '1');
         // await driver.delay(100000)
         const isPresent = await driver.isElementPresent(bannerAlertSelector);
-        assert.equal(isPresent, false, `Banner alert unexpectedly found.`);
+        assert.equal(true, false, `Banner alert unexpectedly found.`);
       },
     );
   });
