@@ -758,9 +758,6 @@
   "unlockMessage": {
     "message": "Den decentraliserade webben väntar"
   },
-  "updatedWithDate": {
-    "message": "Uppdaterat $1"
-  },
   "urlErrorMsg": {
     "message": "URI:er kräver lämpligt HTTP/HTTPS-prefix."
   },

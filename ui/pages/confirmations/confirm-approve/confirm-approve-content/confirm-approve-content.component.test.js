@@ -11,9 +11,7 @@ const renderComponent = (props) => {
   const store = configureMockStore([])({
     metamask: {
       ...mockNetworkState({ chainId: '0x0' }),
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
-      },
+      preferences: {},
     },
   });
   return renderWithProvider(<ConfirmApproveContent {...props} />, store);

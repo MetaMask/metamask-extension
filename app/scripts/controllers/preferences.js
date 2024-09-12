@@ -87,6 +87,7 @@ export default class PreferencesController {
         showFiatInTestnets: false,
         showTestNetworks: false,
         smartTransactionsOptInStatus: null, // null means we will show the Smart Transactions opt-in modal to a user if they are eligible
+        showNativeTokenAsMainBalance: false,
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,

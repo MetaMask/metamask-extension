@@ -695,9 +695,6 @@
   "unlockMessage": {
     "message": "Naghihintay ang decentralized web"
   },
-  "updatedWithDate": {
-    "message": "Na-update ang $1"
-  },
   "urlErrorMsg": {
     "message": "Kinakailangan ng mga URI ang naaangkop na HTTP/HTTPS prefix."
   },

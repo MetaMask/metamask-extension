@@ -247,10 +247,6 @@
   "fast": {
     "message": "Брзо"
   },
-  "fiat": {
-    "message": "Dekret",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Uvoz datoteke ne radi? Kliknite ovde!",
     "description": "Helps user import their account from a JSON file"
@@ -770,9 +766,6 @@
   },
   "unlockMessage": {
     "message": "Decentralizovani veb čeka"
-  },
-  "updatedWithDate": {
-    "message": "Ažuriran $1"
   },
   "urlErrorMsg": {
     "message": "URI-ovi zahtevaju odgovarajući prefiks HTTP / HTTPS."

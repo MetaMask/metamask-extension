@@ -56,7 +56,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
   const nativeCurrency = useSelector(getMultichainNativeCurrency);
   const showFiat = useSelector(getMultichainShouldShowFiat);
   const isMainnet = useSelector(getMultichainIsMainnet);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+  const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
   const { chainId, ticker, type, rpcUrl } = useSelector(
     getMultichainCurrentNetwork,
   );
@@ -77,11 +77,17 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
   const {
     currency: primaryCurrency,
     numberOfDecimals: primaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(PRIMARY, { ethNumberOfDecimals: 4 });
+  } = useUserPreferencedCurrency(PRIMARY, {
+    ethNumberOfDecimals: 4,
+    shouldCheckShowNativeToken: true,
+  });
   const {
     currency: secondaryCurrency,
     numberOfDecimals: secondaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 });
+  } = useUserPreferencedCurrency(SECONDARY, {
+    ethNumberOfDecimals: 4,
+    shouldCheckShowNativeToken: true,
+  });
 
   const [primaryCurrencyDisplay, primaryCurrencyProperties] =
     useCurrencyDisplay(balance, {
@@ -163,13 +169,13 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
         primary={
           showSecondaryCurrency(
             isOriginalNativeSymbol,
-            useNativeCurrencyAsPrimaryCurrency,
+            showNativeTokenAsMainBalance,
           )
             ? secondaryCurrencyDisplay
             : undefined
         }
         tokenSymbol={
-          useNativeCurrencyAsPrimaryCurrency
+          showNativeTokenAsMainBalance
             ? primaryCurrencyProperties.suffix
             : secondaryCurrencyProperties.suffix
         }
@@ -177,7 +183,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
           showFiat &&
           showPrimaryCurrency(
             isOriginalNativeSymbol,
-            useNativeCurrencyAsPrimaryCurrency,
+            showNativeTokenAsMainBalance,
           )
             ? primaryCurrencyDisplay
             : undefined

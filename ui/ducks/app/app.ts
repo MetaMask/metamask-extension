@@ -101,7 +101,7 @@ type AppState = {
   snapsInstallPrivacyWarningShown: boolean;
 };
 
-type AppSliceState = {
+export type AppSliceState = {
   appState: AppState;
 };
 

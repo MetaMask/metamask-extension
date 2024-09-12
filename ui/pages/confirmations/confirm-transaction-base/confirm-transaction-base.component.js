@@ -144,7 +144,6 @@ export default class ConfirmTransactionBase extends Component {
     secondaryTotalTextOverride: PropTypes.string,
     gasIsLoading: PropTypes.bool,
     primaryTotalTextOverrideMaxAmount: PropTypes.string,
-    useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
     maxFeePerGas: PropTypes.string,
     maxPriorityFeePerGas: PropTypes.string,
     baseFeePerGas: PropTypes.string,
@@ -397,7 +396,6 @@ export default class ConfirmTransactionBase extends Component {
       nextNonce,
       getNextNonce,
       txData,
-      useNativeCurrencyAsPrimaryCurrency,
       primaryTotalTextOverrideMaxAmount,
       showLedgerSteps,
       nativeCurrency,
@@ -457,7 +455,6 @@ export default class ConfirmTransactionBase extends Component {
             type={PRIMARY}
             key="total-max-amount"
             value={getTotalAmount(useMaxFee)}
-            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
           />
         );
       }
@@ -466,9 +463,8 @@ export default class ConfirmTransactionBase extends Component {
       const primaryTotal = useMaxFee
         ? primaryTotalTextOverrideMaxAmount
         : primaryTotalTextOverride;
-      const totalMaxAmount = useNativeCurrencyAsPrimaryCurrency
-        ? primaryTotal
-        : secondaryTotalTextOverride;
+
+      const totalMaxAmount = primaryTotal;
 
       return isBoldTextAndNotOverridden ? (
         <Text variant={TextVariant.bodyMdBold}>{totalMaxAmount}</Text>
@@ -498,14 +494,12 @@ export default class ConfirmTransactionBase extends Component {
                 color: TextColor.textDefault,
                 variant: TextVariant.bodyMdBold,
               }}
-              hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+              hideLabel
             />
           </div>
         );
       }
-      return useNativeCurrencyAsPrimaryCurrency
-        ? secondaryTotalTextOverride
-        : primaryTotalTextOverride;
+      return secondaryTotalTextOverride;
     };
 
     const nextNonceValue =

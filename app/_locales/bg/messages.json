@@ -779,9 +779,6 @@
   "unlockMessage": {
     "message": "Децентрализираната мрежа очаква"
   },
-  "updatedWithDate": {
-    "message": "Актуализирано $1 "
-  },
   "urlErrorMsg": {
     "message": "URI изискват съответния HTTP / HTTPS префикс."
   },

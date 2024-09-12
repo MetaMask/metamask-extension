@@ -1928,10 +1928,6 @@
   "feeDetails": {
     "message": "Details zur Gebühr"
   },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Dateiimport fehlgeschlagen? Bitte hier klicken!",
     "description": "Helps user import their account from a JSON file"
@@ -3163,9 +3159,6 @@
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask ist nicht mit dieser Website verbunden"
-  },
-  "noConversionDateAvailable": {
-    "message": "Kein Umrechnungskursdaten verfügbar"
   },
   "noConversionRateAvailable": {
     "message": "Kein Umrechnungskurs verfügbar"
@@ -6186,9 +6179,6 @@
   },
   "updateRequest": {
     "message": "Aktualisierungsanfrage"
-  },
-  "updatedWithDate": {
-    "message": "$1 aktualisiert"
   },
   "uploadDropFile": {
     "message": "Legen Sie Ihre Datei hier ab"

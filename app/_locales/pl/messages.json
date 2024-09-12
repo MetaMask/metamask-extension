@@ -250,10 +250,6 @@
   "fast": {
     "message": "Szybko"
   },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Importowanie pliku nie działa? Kliknij tutaj!",
     "description": "Helps user import their account from a JSON file"
@@ -770,9 +766,6 @@
   },
   "unlockMessage": {
     "message": "Zdecentralizowana sieć oczekuje"
-  },
-  "updatedWithDate": {
-    "message": "Zaktualizowano $1"
   },
   "urlErrorMsg": {
     "message": "URI wymaga prawidłowego prefiksu HTTP/HTTPS."

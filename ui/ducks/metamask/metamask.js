@@ -51,7 +51,6 @@ const initialState = {
     showFiatInTestnets: false,
     showTestNetworks: false,
     smartTransactionsOptInStatus: false,
-    useNativeCurrencyAsPrimaryCurrency: true,
     petnamesEnabled: true,
     featureNotificationsEnabled: false,
   },

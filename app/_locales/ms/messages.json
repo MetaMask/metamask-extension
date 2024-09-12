@@ -760,9 +760,6 @@
   "unlockMessage": {
     "message": "Web ternyahpusat menanti"
   },
-  "updatedWithDate": {
-    "message": "Dikemaskini $1"
-  },
   "urlErrorMsg": {
     "message": "URI memerlukan awalan HTTP/HTTPS yang sesuai."
   },

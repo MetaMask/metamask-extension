@@ -1928,10 +1928,6 @@
   "feeDetails": {
     "message": "Ücret bilgileri"
   },
-  "fiat": {
-    "message": "Fiat Para",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Dosya içe aktarma çalışmıyor mu? Buraya tıklayın!",
     "description": "Helps user import their account from a JSON file"
@@ -3163,9 +3159,6 @@
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask bu siteye bağlı değil"
-  },
-  "noConversionDateAvailable": {
-    "message": "Para birimi dönüşüm tarihi mevcut değil"
   },
   "noConversionRateAvailable": {
     "message": "Dönüşüm oranı mevcut değil"
@@ -6186,9 +6179,6 @@
   },
   "updateRequest": {
     "message": "Talebi güncelle"
-  },
-  "updatedWithDate": {
-    "message": "$1 güncellendi"
   },
   "uploadDropFile": {
     "message": "Dosyanızı buraya sürükleyin"

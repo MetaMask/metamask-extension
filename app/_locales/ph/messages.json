@@ -519,10 +519,6 @@
   "feeAssociatedRequest": {
     "message": "May nauugnay na bayarin para sa request na ito."
   },
-  "fiat": {
-    "message": "Fiat",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
     "description": "Helps user import their account from a JSON file"
@@ -1678,9 +1674,6 @@
   "unrecognizedChain": {
     "message": "Hindi kinikilala ang custom na network na ito. Inirerekomenda naming $1 ka bago magpatuloy",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "updatedWithDate": {
-    "message": "Na-update noong $1"
   },
   "urlErrorMsg": {
     "message": "Kinakailangan ng mga URL ang naaangkop na HTTP/HTTPS prefix."

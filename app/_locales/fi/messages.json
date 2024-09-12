@@ -250,10 +250,6 @@
   "fast": {
     "message": "Nopea"
   },
-  "fiat": {
-    "message": "Kiinteä",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Eikö tiedoston tuominen onnistu? Klikkaa tästä!",
     "description": "Helps user import their account from a JSON file"
@@ -779,9 +775,6 @@
   },
   "unlockMessage": {
     "message": "Hajautettu verkko odottaa"
-  },
-  "updatedWithDate": {
-    "message": "$1 päivitetty"
   },
   "urlErrorMsg": {
     "message": "URI:t vaativat asianmukaisen HTTP/HTTPS-etuliitteen."

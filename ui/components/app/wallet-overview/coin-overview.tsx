@@ -15,26 +15,20 @@ import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { I18nContext } from '../../../contexts/i18n';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
-import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
+import { PRIMARY } from '../../../helpers/constants/common';
 import {
   getDataCollectionForMarketing,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
-  getPreferences,
   getTokensMarketData,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   SwapsEthToken,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
-import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
-import { showPrimaryCurrency } from '../../../../shared/modules/currency-display.utils';
+
 import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
-import {
-  getMultichainIsEvm,
-  getMultichainProviderConfig,
-  getMultichainShouldShowFiat,
-} from '../../../selectors/multichain';
+import { getMultichainIsEvm } from '../../../selectors/multichain';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 
@@ -83,15 +77,7 @@ export const CoinOverview = ({
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const isEvm = useSelector(getMultichainIsEvm);
-  const showFiat = useSelector(getMultichainShouldShowFiat);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  const { ticker, type, rpcUrl } = useSelector(getMultichainProviderConfig);
-  const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
-    chainId,
-    ticker,
-    type,
-    rpcUrl,
-  );
+
   const tokensMarketData = useSelector(getTokensMarketData);
 
   const handlePortfolioOnClick = useCallback(() => {
@@ -135,16 +121,10 @@ export const CoinOverview = ({
                   )}
                   data-testid={`${classPrefix}-overview__primary-currency`}
                   value={balance}
-                  type={
-                    showPrimaryCurrency(
-                      isOriginalNativeSymbol,
-                      useNativeCurrencyAsPrimaryCurrency,
-                    )
-                      ? PRIMARY
-                      : SECONDARY
-                  }
+                  type={PRIMARY}
                   ethNumberOfDecimals={4}
                   hideTitle
+                  shouldCheckShowNativeToken
                 />
               ) : (
                 <Spinner className="loading-overlay__spinner" />
@@ -156,20 +136,6 @@ export const CoinOverview = ({
               )}
             </div>
             <div className="wallet-overview__currency-wrapper">
-              {showFiat && isOriginalNativeSymbol && balance && (
-                <UserPreferencedCurrencyDisplay
-                  className={classnames({
-                    [`${classPrefix}__cached-secondary-balance`]:
-                      balanceIsCached,
-                    [`${classPrefix}__secondary-balance`]: !balanceIsCached,
-                  })}
-                  data-testid={`${classPrefix}-overview__secondary-currency`}
-                  value={balance}
-                  type={SECONDARY}
-                  ethNumberOfDecimals={4}
-                  hideTitle
-                />
-              )}
               <div
                 onClick={handlePortfolioOnClick}
                 className="wallet-overview__portfolio_button"

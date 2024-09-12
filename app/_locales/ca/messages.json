@@ -758,9 +758,6 @@
   "unlockMessage": {
     "message": "La web descentralitzada està esperant"
   },
-  "updatedWithDate": {
-    "message": "Actualitzat $1"
-  },
   "urlErrorMsg": {
     "message": "Els URIs requereixen el prefix HTTP/HTTPS  apropiat."
   },

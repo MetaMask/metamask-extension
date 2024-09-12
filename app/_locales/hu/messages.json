@@ -773,9 +773,6 @@
   "unlockMessage": {
     "message": "A decentralizált hálózat csak önre vár"
   },
-  "updatedWithDate": {
-    "message": "$1 frissítve"
-  },
   "urlErrorMsg": {
     "message": "Az URI-hez szükség van a megfelelő HTTP/HTTPS előtagra."
   },

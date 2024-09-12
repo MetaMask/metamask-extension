@@ -1323,7 +1323,7 @@
     "message": "CryptoCompare"
   },
   "currencyConversion": {
-    "message": "Currency conversion"
+    "message": "Currency"
   },
   "currencyRateCheckToggle": {
     "message": "Show balance and token price checker"
@@ -1993,10 +1993,6 @@
   },
   "feeDetails": {
     "message": "Fee details"
-  },
-  "fiat": {
-    "message": "Fiat",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "File import not working? Click here!",
@@ -3243,9 +3239,6 @@
   },
   "noConnectedAccountTitle": {
     "message": "MetaMask isn’t connected to this site"
-  },
-  "noConversionDateAvailable": {
-    "message": "No currency conversion date available"
   },
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
@@ -4802,6 +4795,9 @@
   "showMore": {
     "message": "Show more"
   },
+  "showNativeTokenAsMainBalance": {
+    "message": "Show native token as main balance"
+  },
   "showNft": {
     "message": "Show NFT"
   },
@@ -6296,9 +6292,6 @@
   },
   "updateRequest": {
     "message": "Update request"
-  },
-  "updatedWithDate": {
-    "message": "Updated $1"
   },
   "uploadDropFile": {
     "message": "Drop your file here"
