@@ -78,7 +78,6 @@ async function runningOnCircleCI(testPaths) {
     changedOrNewTests,
   );
 
-
   console.log('Full test list:', fullTestList);
   fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);
 
