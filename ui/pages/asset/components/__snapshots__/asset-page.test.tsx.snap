@@ -511,12 +511,14 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 >
                   TEST
                 </span>
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-alternative"
-                  data-testid="multichain-token-list-item-token-name"
+                <div
+                  class="mm-box mm-box--display-flex"
                 >
-                  TEST
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-box--color-text-default"
+                    data-testid="token-increase-decrease-percentage-0x309375769E79382beFDEc5bdab51063AeBDC4936"
+                  />
+                </div>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-2/3"
@@ -992,12 +994,14 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 >
                   TEST
                 </span>
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-alternative"
-                  data-testid="multichain-token-list-item-token-name"
+                <div
+                  class="mm-box mm-box--display-flex"
                 >
-                  TEST
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-box--color-text-default"
+                    data-testid="token-increase-decrease-percentage-0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55"
+                  />
+                </div>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-2/3"
