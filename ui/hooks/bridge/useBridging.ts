@@ -43,6 +43,7 @@ const useBridging = () => {
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const chainId = useSelector(getCurrentChainId);
   const keyring = useSelector(getCurrentKeyring);
+  // @ts-expect-error keyring type is wrong maybe?
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
 
   const isBridgeSupported = useSelector(getIsBridgeEnabled);
