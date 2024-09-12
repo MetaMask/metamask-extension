@@ -118,7 +118,7 @@ export const ReviewPermissions = () => {
   const currentTabHasNoAccounts =
     !permittedAccountsByOrigin[activeTabOrigin]?.length;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let tabToConnect: { origin: any} = { origin: null }; // origin could be null or a string based on the connection status or screen view
+  let tabToConnect: { origin: any } = { origin: null }; // origin could be null or a string based on the connection status or screen view
   if (activeTabOrigin && currentTabHasNoAccounts && !openMetaMaskTabs[id]) {
     tabToConnect = {
       origin: activeTabOrigin,
