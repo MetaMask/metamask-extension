@@ -6458,9 +6458,6 @@
   "whatsThis": {
     "message": "What's this?"
   },
-  "wrongChainId": {
-    "message": "This chain ID doesn’t match the network name."
-  },
   "wrongNetworkName": {
     "message": "According to our records, the network name may not correctly match this chain ID."
   },

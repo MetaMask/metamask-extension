@@ -19,7 +19,11 @@ import {
 } from '../../shared/transaction-details/transaction-details';
 import { useIsNFT } from '../hooks/use-is-nft';
 
-const Spender = () => {
+const Spender = ({
+  isSetApprovalForAll,
+}: {
+  isSetApprovalForAll?: boolean;
+}) => {
   const t = useI18nContext();
 
   const { currentConfirmation: transactionMeta } =
@@ -44,7 +48,7 @@ const Spender = () => {
   return (
     <>
       <ConfirmInfoRow
-        label={t('spender')}
+        label={t(isSetApprovalForAll ? 'permissionFor' : 'spender')}
         tooltip={t(
           isNFT ? 'spenderTooltipDesc' : 'spenderTooltipERC20ApproveDesc',
         )}
@@ -58,14 +62,18 @@ const Spender = () => {
   );
 };
 
-export const ApproveDetails = () => {
+export const ApproveDetails = ({
+  isSetApprovalForAll,
+}: {
+  isSetApprovalForAll?: boolean;
+}) => {
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
 
   return (
     <ConfirmInfoSection data-testid="confirmation__approve-details">
-      <Spender />
+      <Spender isSetApprovalForAll={isSetApprovalForAll} />
       <OriginRow />
       {showAdvancedDetails && (
         <>
