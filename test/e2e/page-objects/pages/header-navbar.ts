@@ -10,9 +10,9 @@ class HeaderNavbar {
 
   constructor(driver: Driver) {
     this.driver = driver;
+    this.lockMetaMaskButton = testId('global-menu-lock');
     this.accountMenuButton = testId('account-menu-icon');
     this.accountOptionsMenuButton = testId('account-options-menu-button');
-    this.lockMetaMaskButton = testId('global-menu-lock');
   }
 
   async openAccountMenu(): Promise<void> {
