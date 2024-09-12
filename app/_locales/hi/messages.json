@@ -513,12 +513,6 @@
   "allow": {
     "message": "अनुमति दें"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "MetaMask को ऑटोडिटेक्शन के साथ आपके NFT का पता लगाने और प्रदर्शित करने की अनुमति दें। आप यह कर सकेंगे:"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "MetaMask को ऑटोडिटेक्शन के साथ आपके टोकन का पता लगाने और प्रदर्शित करने की अनुमति दें। आप यह कर सकेंगे:"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "यह आपके एकाउंट्स को इम्पोर्ट करने के लिए MMI को $1 से कनेक्ट करने की अनुमति देगा।"
   },
@@ -1606,12 +1600,6 @@
   "displayNftMediaDescription": {
     "message": "NFT मीडिया और डेटा दिखाने से आपका IP एड्रेस OpenSea या अन्य थर्ड पार्टियों के सामने आ जाता है। ऐसा होने पर, हमला करने वाले आपके IP एड्रेस को आपके Ethereum एड्रेस के साथ जोड़ पाते हैं। NFT ऑटोडिटेक्शन की सुविधा इस सेटिंग पर निर्भर करती है, और इस सेटिंग को बंद किए जाने पर उपलब्ध नहीं रहेगी।"
   },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "अपने NFT का उपयोग करने के लिए सीधे प्रवेश करें"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "अपने टोकन का उपयोग करने के लिए सीधे प्रवेश करें"
-  },
   "doNotShare": {
     "message": "इसे किसी के साथ शेयर न करें।"
   },
@@ -1743,9 +1731,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "गैस फ़ीस स्पीड अप को बदलें"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "अपनी डिजिटल एसेट को आसानी से नेविगेट करें"
-  },
   "enable": {
     "message": "चालू करें"
   },
@@ -1755,21 +1740,12 @@
   "enableFromSettings": {
     "message": " इसे सेटिंग्स से इनेबल करें।"
   },
-  "enableNftAutoDetection": {
-    "message": "NFT ऑटोडिटेक्शन चालू करें"
-  },
   "enableSnap": {
     "message": "इनेबल करें"
   },
   "enableToken": {
     "message": "$1 इनेबल करें",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "टोकन ऑटोडिटेक्शन चालू करें"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "बेसिक फ़ंक्शनैलिटी टॉगल को चालू रखने वाले उपयोगकर्ताओं के लिए MetaMask एक्सटेंशन v12.3.0 में यह स्वचालित रूप से चालू हो जाएगा"
   },
   "enabled": {
     "message": "इनेबल किया गया"
@@ -2282,12 +2258,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "तुरंत अपने NFT तक पहुंचें"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "आपके टोकन तक तत्काल पहुंच"
   },
   "import": {
     "message": "इम्पोर्ट करें",
@@ -3253,9 +3223,6 @@
   "notEnoughGas": {
     "message": "गैस कम है"
   },
-  "notRightNow": {
-    "message": "अभी नहीं"
-  },
   "note": {
     "message": "टिप्पणी"
   },
@@ -3525,9 +3492,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "जब हम मेट्रिक्स इकट्ठा करते हैं, तो यह हमेशा... रहेगा"
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "जी नहीं, धन्यवाद"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "यदि हम इस डेटा का उपयोग अन्य उद्देश्यों के लिए करने का निर्णय लेते हैं तो हम आपको बताएंगे। अधिक जानकारी के लिए आप हमारे $1 की समीक्षा कर सकते हैं। याद रखें, आप किसी भी समय सेटिंग्स में जाकर ऑप्ट आउट कर सकते हैं।",

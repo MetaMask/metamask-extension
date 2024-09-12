@@ -1,4 +1,4 @@
-import { InternalAccount } from '@metamask/keyring-api';
+import { EthAccountType, InternalAccount } from '@metamask/keyring-api';
 import { TransactionParams } from '@metamask/eth-json-rpc-middleware';
 import {
   TransactionController,
@@ -40,6 +40,24 @@ jest.mock('uuid', () => {
 const SECURITY_ALERT_ID_MOCK = '123';
 
 const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
+
+const mockAccount = {
+  type: EthAccountType.Eoa,
+  id: '3afa663e-0600-4d93-868a-61c2e553013b',
+  address: INTERNAL_ACCOUNT_ADDRESS,
+  methods: [],
+  options: {},
+};
+const mockInternalAccount = {
+  ...mockAccount,
+  metadata: {
+    name: `Account 1`,
+    importTime: Date.now(),
+    keyring: {
+      type: '',
+    },
+  },
+};
 
 const TRANSACTION_PARAMS_MOCK: TransactionParams = {
   from: '0x1',
@@ -484,9 +502,7 @@ describe('Transaction Utils', () => {
           ...sendRequest,
           securityAlertsEnabled: false,
           chainId: '0x1',
-          internalAccounts: {
-            address: INTERNAL_ACCOUNT_ADDRESS,
-          } as InternalAccount,
+          internalAccounts: [mockInternalAccount],
         });
 
         expect(

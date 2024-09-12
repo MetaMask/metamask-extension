@@ -33,9 +33,7 @@ describe('BTC Account - Overview', function (this: Suite) {
         const buySellButton = await driver.waitForSelector(
           '[data-testid="coin-overview-buy"]',
         );
-        // Ramps now support buyable chains dynamically (https://github.com/MetaMask/metamask-extension/pull/24041), for now it's
-        // disabled for Bitcoin
-        assert.equal(await buySellButton.isEnabled(), false);
+        assert.equal(await buySellButton.isEnabled(), true);
 
         const portfolioButton = await driver.waitForSelector(
           '[data-testid="coin-overview-portfolio"]',
