@@ -181,7 +181,7 @@
     "dismissSeedBackUpReminder": true,
     "useMultiAccountBalanceChecker": true,
     "useSafeChainsListValidation": "boolean",
-    "useTokenDetection": false,
+    "useTokenDetection": true,
     "useNftDetection": false,
     "use4ByteResolution": true,
     "useCurrencyRateCheck": true,
