@@ -6021,9 +6021,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@0.5.0-preview-53d228a":
-  version: 0.5.0-preview-53d228a
-  resolution: "@metamask-previews/profile-sync-controller@npm:0.5.0-preview-53d228a"
+"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@0.5.0-preview-c1e764d":
+  version: 0.5.0-preview-c1e764d
+  resolution: "@metamask-previews/profile-sync-controller@npm:0.5.0-preview-c1e764d"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.0"
     "@metamask/snaps-sdk": "npm:^6.1.1"
@@ -6037,7 +6037,7 @@ __metadata:
     "@metamask/accounts-controller": ^18.1.1
     "@metamask/keyring-controller": ^17.2.0
     "@metamask/snaps-controllers": ^9.3.0
-  checksum: 10/cd54d72a519b75b7040be8af90c4812b82d680f85c10adb709256e14af824ac1571123795c4fa851929bbcb32962890e3e225bce2b1ada2d7afdf5c527f6227d
+  checksum: 10/278465863f2ac29f070b0a67f0b37503332832b80e353347bc61e29fe9e86d2b77bcf2b1a4fca7f11eef4e655eeb51d70dc683fd59b2f46d550c1cd9bf7a95a3
   languageName: node
   linkType: hard
 
@@ -26155,7 +26155,7 @@ __metadata:
     "@metamask/phishing-warning": "npm:^4.0.0"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:0.34.0"
-    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@0.5.0-preview-53d228a"
+    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@0.5.0-preview-c1e764d"
     "@metamask/providers": "npm:^14.0.2"
     "@metamask/queued-request-controller": "npm:^2.0.0"
     "@metamask/rate-limit-controller": "npm:^6.0.0"

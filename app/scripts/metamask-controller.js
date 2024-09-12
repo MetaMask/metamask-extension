@@ -1490,7 +1490,6 @@ export default class MetamaskController extends EventEmitter {
           'NotificationServicesController:selectIsNotificationServicesEnabled',
           'AccountsController:listAccounts',
           'AccountsController:updateAccountMetadata',
-          'AccountsController:getAccountByAddress',
         ],
         allowedEvents: [
           'KeyringController:lock',
