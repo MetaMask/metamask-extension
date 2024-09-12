@@ -111,7 +111,7 @@ describe('SelectedAccount Component', () => {
 
     const tooltipTitle = await waitFor(() =>
       container.querySelector(
-        '[data-original-title="This account is not set up for use with goerli"]',
+        '[data-original-title="This account is not set up for use with Goerli"]',
       ),
     );
 

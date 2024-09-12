@@ -1,3 +1,5 @@
+import { EthAccountType } from '@metamask/keyring-api';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import {
   MOCK_ACCOUNTS,
   MOCK_ACCOUNT_EOA,
@@ -5,12 +7,14 @@ import {
   MOCK_ACCOUNT_BIP122_P2WPKH,
   MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
 } from '../../test/data/mock-accounts';
+import mockState from '../../test/data/mock-state.json';
 import {
   AccountsState,
   isSelectedInternalAccountEth,
   isSelectedInternalAccountBtc,
   hasCreatedBtcMainnetAccount,
   hasCreatedBtcTestnetAccount,
+  getSelectedInternalAccount,
 } from './accounts';
 
 const MOCK_STATE: AccountsState = {
@@ -23,6 +27,75 @@ const MOCK_STATE: AccountsState = {
 };
 
 describe('Accounts Selectors', () => {
+  describe('#getSelectedInternalAccount', () => {
+    it('returns selected internalAccount', () => {
+      expect(
+        getSelectedInternalAccount(mockState as AccountsState),
+      ).toStrictEqual({
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        metadata: {
+          importTime: 0,
+          name: 'Test Account',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {},
+        methods: [
+          'personal_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
+      });
+    });
+
+    it('returns undefined if selectedAccount is undefined', () => {
+      expect(
+        getSelectedInternalAccount({
+          metamask: {
+            internalAccounts: {
+              accounts: {},
+              selectedAccount: '',
+            },
+          },
+        }),
+      ).toBeUndefined();
+    });
+
+    it('returns selectedAccount', () => {
+      const mockInternalAccount = {
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        metadata: {
+          importTime: 0,
+          name: 'Test Account',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {},
+        methods: ETH_EOA_METHODS,
+        type: EthAccountType.Eoa,
+      };
+      expect(
+        getSelectedInternalAccount({
+          metamask: {
+            internalAccounts: {
+              accounts: {
+                [mockInternalAccount.id]: mockInternalAccount,
+              },
+              selectedAccount: mockInternalAccount.id,
+            },
+          },
+        }),
+      ).toStrictEqual(mockInternalAccount);
+    });
+  });
+
   describe('isSelectedInternalAccountEth', () => {
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
