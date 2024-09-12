@@ -213,7 +213,7 @@ export function getSwcLoader(
         parser: {
           syntax,
           [syntax === 'typescript' ? 'tsx' : 'jsx']: enableJsx,
-          importAttributes: true
+          importAttributes: true,
         },
       },
     } as const satisfies SwcLoaderOptions,
