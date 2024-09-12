@@ -214,7 +214,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
-          showTokenAutodetectModal: false,
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
         },

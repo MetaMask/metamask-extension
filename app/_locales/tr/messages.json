@@ -513,12 +513,6 @@
   "allow": {
     "message": "İzin Ver"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "MetaMask'in otomatik algılama ile NFT'lerinizi algılamasına ve göstermesine izin verin. Şunları yapabileceksiniz:"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "MetaMask'in otomatik algılama ile token'lerinizi algılamasına ve göstermesine izin verin. Şunları yapabileceksiniz:"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "MMI'nin hesaplarınızı içe aktarmak için $1 ile bağlantı kurmasına izin verir."
   },
@@ -1606,12 +1600,6 @@
   "displayNftMediaDescription": {
     "message": "NFT medyasının ve verilerin gösterilmesi IP adresinizin OpenSea veya diğer üçüncü taraflarla paylaşılmasına neden olur. Bu durum, saldırganların IP adresinizi Ethereum adresinizle ilişkilendirmesini sağlayabilir. NFT otomatik algılama bu ayara dayalıdır ve bu ayar kapatıldığında kullanılamaz olur."
   },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "Doğrudan NFT'lerinizi kullanmaya başlayın"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "Doğrudan token'lerinizi kullanmaya başlayın"
-  },
   "doNotShare": {
     "message": "Bunu hiç kimseyle paylaşmayın"
   },
@@ -1743,9 +1731,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Hızlandırma gaz ücretini düzenle"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "Dijital varlıklarınızda zahmetsizce gezinin"
-  },
   "enable": {
     "message": "Etkinleştir"
   },
@@ -1755,21 +1740,12 @@
   "enableFromSettings": {
     "message": " Ayarlardan etkinleştir."
   },
-  "enableNftAutoDetection": {
-    "message": "NFT otomatik algılamayı etkinleştir"
-  },
   "enableSnap": {
     "message": "Etkinleştir"
   },
   "enableToken": {
     "message": "şunu etkinleştir: $1",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "Otomatik token algılamayı etkinleştir"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "Temel İşlevsellik seçeneği açık olan kullanıcılarda bu seçenek MetaMask Uzantısı 12.3.0 sürümünde otomatik olarak açık olacaktır"
   },
   "enabled": {
     "message": "Etkinleştirildi"
@@ -2282,12 +2258,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "NFT'lerinize anında erişin"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "Token'lerinize derhal erişim"
   },
   "import": {
     "message": "İçe Aktar",
@@ -3253,9 +3223,6 @@
   "notEnoughGas": {
     "message": "Yeterli gaz yok"
   },
-  "notRightNow": {
-    "message": "Şimdi değil"
-  },
   "note": {
     "message": "Not"
   },
@@ -3525,9 +3492,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "Ölçümleri toplarken bu her zaman aşağıdaki gibi olacaktır..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "Hayır, istemiyorum"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Bu verileri başka amaçlar için kullanmaya karar vermemiz durumunda sizi bilgilendireceğiz. Daha fazla bilgi için $1 bölümümüzü inceleyebilirsiniz. Unutmayın, dilediğiniz zaman ayarlar kısmına giderek vazgeçebilirsiniz.",

@@ -513,12 +513,6 @@
   "allow": {
     "message": "Izinkan"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "Izinkan MetaMask mendeteksi dan menampilkan NFT dengan autodeteksi. Anda dapat:"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "Izinkan MetaMask mendeteksi dan menampilkan token dengan autodeteksi. Anda dapat:"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "Ini akan memungkinkan MMI terhubung ke $1 untuk mengimpor akun Anda."
   },
@@ -1606,12 +1600,6 @@
   "displayNftMediaDescription": {
     "message": "Alamat IP dapat diketahui oleh OpenSea atau pihak ketiga lainnya saat menampilkan media dan data NFT. Ini memungkinkan penyerang menghubungkan alamat IP dengan alamat Ethereum Anda. Deteksi otomatis NFT bergantung pada pengaturan ini, dan tidak akan tersedia saat dinonaktifkan."
   },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "Gunakan NFT secara langsung"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "Gunakan token secara langsung"
-  },
   "doNotShare": {
     "message": "Jangan bagikan ini kepada siapa pun"
   },
@@ -1743,9 +1731,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Edit biaya gas percepatan"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "Navigasikan aset digital Anda dengan mudah"
-  },
   "enable": {
     "message": "Aktifkan"
   },
@@ -1755,21 +1740,12 @@
   "enableFromSettings": {
     "message": " Aktifkan dari Pengaturan."
   },
-  "enableNftAutoDetection": {
-    "message": "Aktifkan autodeteksi NFT"
-  },
   "enableSnap": {
     "message": "Aktifkan"
   },
   "enableToken": {
     "message": "aktifkan $1",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "Aktifkan autodeteksi token"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "Pengguna dengan Fungsionalitas Dasar yang diaktifkan akan mengaktifkannya secara otomatis di Ekstensi MetaMask v12.3.0"
   },
   "enabled": {
     "message": "Diaktifkan"
@@ -2282,12 +2258,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "Akses NFT secara langsung"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "Akses langsung ke token Anda"
   },
   "import": {
     "message": "Impor",
@@ -3253,9 +3223,6 @@
   "notEnoughGas": {
     "message": "Gas tidak cukup"
   },
-  "notRightNow": {
-    "message": "Tidak sekarang"
-  },
   "note": {
     "message": "Catatan"
   },
@@ -3525,9 +3492,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "Saat kami mengumpulkan metrik, maka akan selalu..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "Tidak, terima kasih"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Kami akan memberitahukan keputusan untuk menggunakan data ini dengan tujuan lain. Anda dapat meninjau $1 kami untuk informasi selengkapnya. Ingat, Anda dapat membuka pengaturan dan memilih keluar setiap saat.",

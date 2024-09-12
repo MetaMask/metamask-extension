@@ -10,7 +10,7 @@ const runtimeManifest =
  * unavailable. That's why we have a fallback using the ENABLE_MV3 constant. The fallback is also
  * used in unit tests.
  */
-export const isManifestV3 = runtimeManifest
+const isManifestV3 = runtimeManifest
   ? runtimeManifest.manifest_version === 3
   : // Our build system sets this as a boolean, but in a Node.js context (e.g. unit tests) it will
     // always be a string
@@ -31,8 +31,7 @@ const isOffscreenAvailable = Boolean(global.chrome?.offscreen);
  * happen to users on MetaMask versions 11.16.7 and higher, who are using a
  * chromium browser with a version below 109.
  */
-export const isMv3ButOffscreenDocIsMissing =
-  isManifestV3 && !isOffscreenAvailable;
+const isMv3ButOffscreenDocIsMissing = isManifestV3 && !isOffscreenAvailable;
 
 module.exports = {
   isManifestV3,

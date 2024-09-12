@@ -61,7 +61,7 @@ function getClientOptions() {
     // we can safely turn them off by setting the `sendClientReports` option to
     // `false`.
     sendClientReports: false,
-    tracesSampleRate: 0.01,
+    tracesSampleRate: METAMASK_DEBUG ? 1.0 : 0.01,
     transport: makeTransport,
   };
 }

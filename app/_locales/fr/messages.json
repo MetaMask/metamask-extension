@@ -513,12 +513,6 @@
   "allow": {
     "message": "Autoriser"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "Autorisez MetaMask à détecter et à afficher vos NFT grâce à la détection automatique des NFT. Vous pourrez ainsi :"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "Autorisez MetaMask à détecter et à afficher vos jetons grâce à la détection automatique des jetons. Vous pourrez ainsi :"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "Cela permettra à MMI de se connecter à $1 pour importer vos comptes."
   },
@@ -1606,12 +1600,6 @@
   "displayNftMediaDescription": {
     "message": "L’affichage des médias et des données NFT expose votre adresse IP à OpenSea ou à d’autres fournisseurs de services tiers. Cela permet à des hackers d’associer votre adresse IP à votre adresse Ethereum. La détection automatique des NFT dépend de ce paramètre et ne sera pas disponible lorsque celui-ci est désactivé."
   },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "Commencer à utiliser vos NFT"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "Commencez à utiliser vos jetons"
-  },
   "doNotShare": {
     "message": "Ne partagez ceci avec personne"
   },
@@ -1743,9 +1731,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Modifier les gas fees d’accélération"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "Gérez facilement à vos actifs numériques"
-  },
   "enable": {
     "message": "Activer"
   },
@@ -1755,21 +1740,12 @@
   "enableFromSettings": {
     "message": " Activez-la depuis les Paramètres."
   },
-  "enableNftAutoDetection": {
-    "message": "Activer la détection automatique des NFT"
-  },
   "enableSnap": {
     "message": "Activer"
   },
   "enableToken": {
     "message": "activer $1",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "Activer la détection automatique des jetons"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "Cette option sera automatiquement activée dans l’extension Metamask v12.3.0 si l’option « Fonctionnalité de base » est déjà activée"
   },
   "enabled": {
     "message": "Activé"
@@ -2282,12 +2258,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "Accéder immédiatement à vos NFT"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "Accès immédiat à vos jetons"
   },
   "import": {
     "message": "Importer",
@@ -3253,9 +3223,6 @@
   "notEnoughGas": {
     "message": "Pas assez de gaz"
   },
-  "notRightNow": {
-    "message": "Pas maintenant"
-  },
   "note": {
     "message": "Note"
   },
@@ -3525,9 +3492,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "Lorsque nous recueillons des données, elles sont toujours…"
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "Non merci"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Nous vous informerons si nous décidons d’utiliser ces données à d’autres fins. Pour plus d’informations, vous pouvez consulter notre $1. N’oubliez pas que vous pouvez aller dans les paramètres et vous désinscrire à tout moment.",

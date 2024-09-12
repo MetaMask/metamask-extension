@@ -513,12 +513,6 @@
   "allow": {
     "message": "Permitir"
   },
-  "allowMetaMaskToDetectNFTs": {
-    "message": "Permita que MetaMask detecte y muestre sus NFT con autodetección. Podrá:"
-  },
-  "allowMetaMaskToDetectTokens": {
-    "message": "Permita que MetaMask detecte y muestre sus tokens con autodetección. Podrá:"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "Esto permitirá que MMI se conecte a $1 para importar sus cuentas."
   },
@@ -1606,12 +1600,6 @@
   "displayNftMediaDescription": {
     "message": "Mostrar los medios y datos NFT expone su dirección IP a OpenSea u otros terceros. Esto puede permitir que los atacantes asocien su dirección IP con su dirección Ethereum. La detección automática de NFT se basa en esta configuración y no estará disponible cuando esté desactivada."
   },
-  "diveStraightIntoUsingYourNFTs": {
-    "message": "Comience a utilizar sus NFT"
-  },
-  "diveStraightIntoUsingYourTokens": {
-    "message": "Comience a utilizar sus tokens"
-  },
   "doNotShare": {
     "message": "No comparta esto con nadie"
   },
@@ -1743,9 +1731,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Editar la tarifa de aceleración de gas"
   },
-  "effortlesslyNavigateYourDigitalAssets": {
-    "message": "Navegue sin esfuerzo por sus activos digitales"
-  },
   "enable": {
     "message": "Habilitar"
   },
@@ -1755,21 +1740,12 @@
   "enableFromSettings": {
     "message": " Actívela en Configuración."
   },
-  "enableNftAutoDetection": {
-    "message": "Habilite la autodetección de NFT"
-  },
   "enableSnap": {
     "message": "Activar"
   },
   "enableToken": {
     "message": "activar $1",
     "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "enableTokenAutoDetection": {
-    "message": "Activar la autodetección de tokens"
-  },
-  "enable_auto_detection_toggle_automatically": {
-    "message": "Esta opción estará activada automáticamente en la extensión Metamask v12.3.0 para los usuarios que tengan activada la funcionalidad básica"
   },
   "enabled": {
     "message": "Activado"
@@ -2282,12 +2258,6 @@
   },
   "imToken": {
     "message": "imToken"
-  },
-  "immediateAccessToYourNFTs": {
-    "message": "Acceda inmediatamente a sus NFT"
-  },
-  "immediateAccessToYourTokens": {
-    "message": "Acceso inmediato a sus tokens"
   },
   "import": {
     "message": "Importar",
@@ -3253,9 +3223,6 @@
   "notEnoughGas": {
     "message": "No hay gas suficiente"
   },
-  "notRightNow": {
-    "message": "Ahora no"
-  },
   "note": {
     "message": "Nota"
   },
@@ -3525,9 +3492,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "Al recopilar métricas, siempre será..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "No, gracias"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Le informaremos si decidimos usar estos datos para otros fines. Puede consultar $1 para obtener más información. Recuerde que puede acceder a la configuración y excluirse en cualquier momento.",
