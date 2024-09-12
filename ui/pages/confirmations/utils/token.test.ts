@@ -25,14 +25,18 @@ describe('fetchErc20Decimals', () => {
   });
 
   it('should return the decimals for a given token address', async () => {
-    (getTokenStandardAndDetails as jest.Mock).mockResolvedValue({decimals: MOCK_DECIMALS});
+    (getTokenStandardAndDetails as jest.Mock).mockResolvedValue({
+      decimals: MOCK_DECIMALS,
+    });
     const decimals = await fetchErc20Decimals(MOCK_ADDRESS);
 
     expect(decimals).toBe(MOCK_DECIMALS);
   });
 
   it('should memoize the result for the same token addresses', async () => {
-    (getTokenStandardAndDetails as jest.Mock).mockResolvedValue({decimals: MOCK_DECIMALS});
+    (getTokenStandardAndDetails as jest.Mock).mockResolvedValue({
+      decimals: MOCK_DECIMALS,
+    });
 
     const firstCallResult = await fetchErc20Decimals(MOCK_ADDRESS);
     const secondCallResult = await fetchErc20Decimals(MOCK_ADDRESS);
