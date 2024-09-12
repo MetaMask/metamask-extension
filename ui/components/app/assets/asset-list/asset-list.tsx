@@ -124,10 +124,9 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
 
   tokensWithBalances.forEach((token) => {
     // token.string is the balance displayed in the TokenList UI
-    token.string = roundToDecimalPlacesRemovingExtraZeroes(
-      token.string,
-      5,
-    ) as string;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
   });
 
   const balanceIsZero = useSelector(

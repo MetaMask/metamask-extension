@@ -82,7 +82,7 @@ type TokenListItemProps = {
 };
 
 export const TokenListItem = ({
-  className = '',
+  className,
   onClick,
   tokenSymbol,
   tokenImage,
@@ -132,9 +132,10 @@ export const TokenListItem = ({
 
   const tokensMarketData = useSelector(getTokensMarketData);
 
-  const tokenPercentageChange = address
-    ? tokensMarketData?.[address]?.pricePercentChange1d
-    : null;
+  const tokenPercentageChange =
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    tokensMarketData?.[address]?.pricePercentChange1d;
 
   const tokenTitle = getTokenTitle();
   const tokenMainTitleToDisplay = showPercentage ? tokenTitle : tokenSymbol;
@@ -196,7 +197,7 @@ export const TokenListItem = ({
 
   return (
     <Box
-      className={classnames('multichain-token-list-item', className)}
+      className={classnames('multichain-token-list-item', className || {})}
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       gap={4}

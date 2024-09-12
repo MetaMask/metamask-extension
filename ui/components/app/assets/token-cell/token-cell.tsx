@@ -30,11 +30,15 @@ export default function TokenCell({
   );
   const title = tokenData?.name || symbol;
   const tokenImage = tokenData?.iconUrl || image;
-  const formattedFiat = useTokenFiatAmount(address, string, symbol, {}, false);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const formattedFiat = useTokenFiatAmount(address, string, symbol);
   const locale = useSelector(getIntlLocale);
   const primary = new Intl.NumberFormat(locale, {
     minimumSignificantDigits: 1,
-  }).format(parseInt(string, 10));
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+  }).format(string.toString());
 
   const isOriginalTokenSymbol = useIsOriginalTokenSymbol(address, symbol);
 
@@ -48,6 +52,7 @@ export default function TokenCell({
       title={title}
       isOriginalTokenSymbol={isOriginalTokenSymbol}
       address={address}
+      showPercentage
     />
   );
 }

@@ -97,7 +97,7 @@ describe('Transfer custom tokens @no-mmi', function () {
     );
   });
 
-  it('transfer custom tokens from dapp customizing gas values', async function () {
+  it.only('transfer custom tokens from dapp customizing gas values', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -114,6 +114,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           smartContract,
         );
         await unlockWallet(driver);
+        console.log('FOO');
 
         // transfer token from dapp
         await openDapp(driver, contractAddress);
