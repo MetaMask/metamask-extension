@@ -111,6 +111,10 @@ workflows:
       - check-pr-tag
       - prep-deps
       - get-changed-files-with-git-diff:
+          filters:
+              branches:
+                ignore:
+                  - master
           requires:
             - prep-deps
       - test-deps-audit:

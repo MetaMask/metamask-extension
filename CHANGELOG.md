@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.3.0]
-### Uncategorized
+### Fixed
 - Merge branch 'Version-v12.2.0' into Version-v12.3.0
 - Merge remote-tracking branch 'origin/master' into Version-v12.2.0
 - CherryPick: "fix: issue where `wallet_addEtherumChain` was incorrectly enforcing inclusion of a blockExplorerUrls property which is not required (#26938)" ([#26938](https://github.com/MetaMask/metamask-extension/pull/26938))
@@ -364,7 +364,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - chore: add bridge controller, store and api utils ([#25044](https://github.com/MetaMask/metamask-extension/pull/25044))
 - fix: add eth_signTypedData and eth_signTypedData_v3 to `methodsRequiringNetworkSwitch` ([#25562](https://github.com/MetaMask/metamask-extension/pull/25562))
 
+## [12.2.2]
+### Fixed
+- This build was needed to fix release publishing on our master branch. It also includes the addition of the missing v12.2.0 changelog. Functionality and code is equivalent to v12.2.0.
+
+## [12.2.1]
+### Fixed
+- This build was needed to fix release publishing on our master branch. It also includes the addition of the missing v12.2.0 changelog. Functionality and code is equivalent to v12.2.0.
+
 ## [12.2.0]
+### Added
+- Enabled the redesigned SIWE (Sign-In with Ethereum) signature pages ([#25660](https://github.com/MetaMask/metamask-extension/pull/25660))
+- Added support for security alerts on zkSync, Berachain, Scroll, and Metachain One networks ([#25555](https://github.com/MetaMask/metamask-extension/pull/25555))
+- Added an account mismatch warning alert to the SIWE redesign page ([#25613](https://github.com/MetaMask/metamask-extension/pull/25613))
+
+### Changed
+- Improved the display of large and small token values on the permit signature page ([#25438](https://github.com/MetaMask/metamask-extension/pull/25438))
+- Removed the modals prompting users to enable token and NFT detection ([#26403](https://github.com/MetaMask/metamask-extension/pull/26403))
+- Enabled the redesigned confirmations by default ([#25769](https://github.com/MetaMask/metamask-extension/pull/25769))
+- Improved error messaging during Ledger pairing to guide users when the device is locked or the Ethereum app is not open ([#25462](https://github.com/MetaMask/metamask-extension/pull/25462))
+
+### Fixed
+- Fixed an issue where removing non-EVM accounts was broken if there was an existing EVM dapp permission ([#25739](https://github.com/MetaMask/metamask-extension/pull/25739))
+- Fixed the issue to show the connected toast only for EVM accounts, hiding it for non-EVM accounts ([#25628](https://github.com/MetaMask/metamask-extension/pull/25628))
+- Fixed an issue where the connected account was missing on the connection page ([#25500](https://github.com/MetaMask/metamask-extension/pull/25500))
+- Fixed an issue where the account name was out of sync in the account list during the connect account flow ([#26542](https://github.com/MetaMask/metamask-extension/pull/26542))
+- Fixed the display of decimal places for token values on permit pages ([#25410](https://github.com/MetaMask/metamask-extension/pull/25410))
+- Fixed the page width for the send page in fullscreen mode ([#25639](https://github.com/MetaMask/metamask-extension/pull/25639))
+- Updated the accounts mismatch banner on the signature page to the new design ([#25626](https://github.com/MetaMask/metamask-extension/pull/25626))
+- Fixed the alignment of the install origin text in the expanded authorship view for Snaps ([#25583](https://github.com/MetaMask/metamask-extension/pull/25583))
 
 ## [12.1.3]
 ### Fixed
@@ -5375,7 +5403,9 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.3.0...HEAD
-[12.3.0]: https://github.com/MetaMask/metamask-extension/compare/v12.2.0...v12.3.0
+[12.3.0]: https://github.com/MetaMask/metamask-extension/compare/v12.2.2...v12.3.0
+[12.2.2]: https://github.com/MetaMask/metamask-extension/compare/v12.2.1...v12.2.2
+[12.2.1]: https://github.com/MetaMask/metamask-extension/compare/v12.2.0...v12.2.1
 [12.2.0]: https://github.com/MetaMask/metamask-extension/compare/v12.1.3...v12.2.0
 [12.1.3]: https://github.com/MetaMask/metamask-extension/compare/v12.1.2...v12.1.3
 [12.1.2]: https://github.com/MetaMask/metamask-extension/compare/v12.1.1...v12.1.2

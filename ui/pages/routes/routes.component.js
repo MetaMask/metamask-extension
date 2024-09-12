@@ -646,6 +646,9 @@ export default class Routes extends Component {
     const onAutoHideToast = () => {
       setHideNftEnablementToast(false);
     };
+    if (!this.onHomeScreen()) {
+      return null;
+    }
 
     return (
       <ToastContainer>
