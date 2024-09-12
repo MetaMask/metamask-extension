@@ -15,3 +15,5 @@ export const filterAndShapeUnapprovedTransactions = (transactions) => {
       return result;
     }, {});
 };
+
+export const testId = (id) => `[data-testid=${id}]`;

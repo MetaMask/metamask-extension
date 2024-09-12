@@ -2,6 +2,7 @@ import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
 import HeaderNavbar from './header-navbar';
+import AccountOptionsMenu from './account-options-menu';
 
 class HomePage {
   private driver: Driver;
@@ -21,10 +22,12 @@ class HomePage {
   private transactionAmountsInActivity: string;
 
   public headerNavbar: HeaderNavbar;
+  public accountOptionsMenu: AccountOptionsMenu;
 
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
+    this.accountOptionsMenu = new AccountOptionsMenu(driver);
     this.sendButton = '[data-testid="eth-overview-send"]';
     this.activityTab = '[data-testid="account-overview__activity-tab"]';
     this.tokensTab = '[data-testid="account-overview__asset-tab"]';
@@ -79,6 +82,11 @@ class HomePage {
   async goToActivityList(): Promise<void> {
     console.log(`Open activity tab on homepage`);
     await this.driver.clickElement(this.activityTab);
+  }
+
+  async goToNotifiationsList(): Promise<void> {
+    this.headerNavbar.openAccountOptionsMenu();
+    this.accountOptionsMenu.clickNotificationsMenuItem();
   }
 
   /**

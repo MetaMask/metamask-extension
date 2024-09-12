@@ -9,7 +9,6 @@ import {
 } from '@metamask/notification-services-controller';
 
 const AuthMocks = AuthenticationController.Mocks;
-const StorageMocks = UserStorageController.Mocks;
 const NotificationMocks = NotificationServicesController.Mocks;
 const PushMocks = NotificationsServicesPushController.Mocks;
 
@@ -31,8 +30,22 @@ export function mockNotificationServices(server: Mockttp) {
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
 
   // Storage
-  mockAPICall(server, StorageMocks.getMockUserStorageGetResponse());
-  mockAPICall(server, StorageMocks.getMockUserStoragePutResponse());
+  const NOTIFICATIONS_USER_STORAGE_ENDPOINT =
+    'https://user-storage.api.cx.metamask.io/api/v1/userstorage/notifications';
+  const NOTIFICATION_USER_STORAGE_ID =
+    'd1d70f77627f7e33a42734be088b316e9f8762c00ab91c91996a5893640d259c';
+
+  mockAPICall(server, {
+    url: `${NOTIFICATIONS_USER_STORAGE_ENDPOINT}/${NOTIFICATION_USER_STORAGE_ID}`,
+    requestMethod: 'GET',
+    response: NotificationMocks.createMockFullUserStorage(),
+  });
+
+  mockAPICall(server, {
+    url: `${NOTIFICATIONS_USER_STORAGE_ENDPOINT}/${NOTIFICATION_USER_STORAGE_ID}`,
+    requestMethod: 'PUT',
+    response: null,
+  });
 
   // Notifications
   mockAPICall(server, NotificationMocks.getMockFeatureAnnouncementResponse());
@@ -43,11 +56,12 @@ export function mockNotificationServices(server: Mockttp) {
     server,
     NotificationMocks.getMockMarkNotificationsAsReadResponse(),
   );
-
   // Push Notifications
   mockAPICall(server, PushMocks.getMockRetrievePushNotificationLinksResponse());
   mockAPICall(server, PushMocks.getMockUpdatePushNotificationLinksResponse());
   mockAPICall(server, PushMocks.getMockCreateFCMRegistrationTokenResponse());
+  mockAPICall(server, PushMocks.getMockDeleteFCMRegistrationTokenResponse());
+
   mockAPICall(server, PushMocks.getMockDeleteFCMRegistrationTokenResponse());
 }
 
