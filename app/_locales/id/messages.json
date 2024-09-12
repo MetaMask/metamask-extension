@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "Jaringan tambahan"
   },
-  "additionalRpcUrl": {
-    "message": "URL RPC Tambahan"
-  },
   "address": {
     "message": "Alamat"
   },
@@ -666,9 +663,6 @@
   "back": {
     "message": "Kembali"
   },
-  "backup": {
-    "message": "Cadangkan"
-  },
   "backupApprovalInfo": {
     "message": "Kode rahasia ini diperlukan untuk memulihkan dompet seandainya perangkat Anda hilang, lupa kata sandi, harus memasang kembali MetaMask, atau ingin mengakses dompet Anda di perangkat lain."
   },
@@ -680,12 +674,6 @@
   },
   "backupNow": {
     "message": "Cadangkan sekarang"
-  },
-  "backupUserData": {
-    "message": "Cadangkan data Anda"
-  },
-  "backupUserDataDescription": {
-    "message": "Anda dapat mencadangkan data seperti kontak dan preferensi Anda."
   },
   "balance": {
     "message": "Saldo"
@@ -4358,9 +4346,6 @@
   },
   "restoreUserData": {
     "message": "Pulihkan data pengguna"
-  },
-  "restoreUserDataDescription": {
-    "message": "Anda dapat memulihkan data seperti kontak dan preferensi dari file cadangan."
   },
   "resultPageError": {
     "message": "Kesalahan"

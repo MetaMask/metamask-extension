@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "Mạng bổ sung"
   },
-  "additionalRpcUrl": {
-    "message": "URL RPC Bổ sung"
-  },
   "address": {
     "message": "Địa chỉ"
   },
@@ -666,9 +663,6 @@
   "back": {
     "message": "Quay lại"
   },
-  "backup": {
-    "message": "Sao lưu"
-  },
   "backupApprovalInfo": {
     "message": "Đây là mã bí mật bắt buộc phải dùng để khôi phục ví trong trường hợp bạn bị mất thiết bị, quên mật khẩu, phải cài đặt lại MetaMask hoặc muốn truy cập ví của mình trên một thiết bị khác."
   },
@@ -680,12 +674,6 @@
   },
   "backupNow": {
     "message": "Sao lưu ngay"
-  },
-  "backupUserData": {
-    "message": "Sao lưu dữ liệu của bạn"
-  },
-  "backupUserDataDescription": {
-    "message": "Bạn có thể sao lưu các dữ liệu như địa chỉ liên hệ và tùy chọn của mình."
   },
   "balance": {
     "message": "Số dư"
@@ -4358,9 +4346,6 @@
   },
   "restoreUserData": {
     "message": "Khôi phục dữ liệu người dùng"
-  },
-  "restoreUserDataDescription": {
-    "message": "Bạn có thể khôi phục các dữ liệu như địa chỉ liên hệ và tùy chọn từ tập tin sao lưu."
   },
   "resultPageError": {
     "message": "Lỗi"

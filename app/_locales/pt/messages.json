@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "Redes adicionais"
   },
-  "additionalRpcUrl": {
-    "message": "URL da RPC adicional"
-  },
   "address": {
     "message": "Endereço"
   },
@@ -666,9 +663,6 @@
   "back": {
     "message": "Voltar"
   },
-  "backup": {
-    "message": "Backup"
-  },
   "backupApprovalInfo": {
     "message": "Esse código secreto é obrigatório para recuperar sua carteira caso você perca seu dispositivo, esqueça sua senha, precise reinstalar a MetaMask ou queira acessar sua carteira em outro dispositivo."
   },
@@ -680,12 +674,6 @@
   },
   "backupNow": {
     "message": "Fazer backup agora"
-  },
-  "backupUserData": {
-    "message": "Faça backup dos seus dados"
-  },
-  "backupUserDataDescription": {
-    "message": "Você pode fazer backup de dados como seus contatos e preferências."
   },
   "balance": {
     "message": "Saldo"
@@ -4358,9 +4346,6 @@
   },
   "restoreUserData": {
     "message": "Restaurar dados do usuário"
-  },
-  "restoreUserDataDescription": {
-    "message": "Você pode restaurar dados como contatos e preferências a partir de um arquivo de backup."
   },
   "resultPageError": {
     "message": "Erro"

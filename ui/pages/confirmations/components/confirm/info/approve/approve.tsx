@@ -41,9 +41,8 @@ import { useIsNFT } from './hooks/use-is-nft';
 const ApproveStaticSimulation = () => {
   const t = useI18nContext();
 
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const { decimals } = useAssetDetails(
     transactionMeta.txParams.to,
@@ -121,9 +120,8 @@ const SpendingCapGroup = ({
 }) => {
   const t = useI18nContext();
 
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const { tokenAmount, formattedTokenNum, value } = useApproveTokenSimulation(
     transactionMeta,
@@ -171,9 +169,8 @@ const SpendingCapGroup = ({
 const SpendingCap = () => {
   const t = useI18nContext();
 
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const { userBalance, tokenSymbol, decimals } = useAssetDetails(
     transactionMeta.txParams.to,
@@ -209,9 +206,8 @@ const SpendingCap = () => {
 };
 
 const ApproveInfo = () => {
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
