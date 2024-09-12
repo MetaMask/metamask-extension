@@ -117,7 +117,7 @@ async function mockInfuraWithFailedResponses(mockServer) {
  * @see {@link https://wobbly-nutmeg-8a5.notion.site/MM-E2E-Testing-1e51b617f79240a49cd3271565c6e12d}
  */
 describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
-  it.only('should not show security alerts for benign requests', async function () {
+  it('should not show security alerts for benign requests', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -138,7 +138,7 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
         await sendScreenToConfirmScreen(driver, mockBenignAddress, '1');
         // await driver.delay(100000)
         const isPresent = await driver.isElementPresent(bannerAlertSelector);
-        assert.equal(true, false, `Banner alert unexpectedly found.`);
+        assert.equal(isPresent, false, `Banner alert unexpectedly found.`);
       },
     );
   });
