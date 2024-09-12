@@ -1,10 +1,7 @@
 // Request and repsones are currently untyped.
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import {
-  MESSAGE_TYPE,
-  TRACE_ENABLED_SIGN_METHODS,
-} from '../../../shared/constants/app';
+import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { trace, TraceName } from '../../../shared/lib/trace';
 
 const METHOD_TYPE_TO_TRACE_NAME: Record<string, TraceName> = {
