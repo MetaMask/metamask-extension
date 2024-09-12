@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import type { InternalAccount } from '@metamask/keyring-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import log from 'loglevel';
 
