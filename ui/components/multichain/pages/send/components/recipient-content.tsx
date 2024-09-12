@@ -94,6 +94,11 @@ export const SendPageRecipientContent = ({
   const tokenList = useSelector(getTokenList) as TokenListMap;
   const ipfsGateway = useSelector(getIpfsGateway);
 
+  const nftImageURL = useGetAssetImageUrl(
+    sendAsset.details?.image ?? null,
+    ipfsGateway,
+  );
+
   isSwapAllowed =
     isSwapsChain &&
     !isSwapAndSendDisabledForNetwork &&
@@ -103,10 +108,6 @@ export const SendPageRecipientContent = ({
   ///: END:ONLY_INCLUDE_IF
 
   const bestQuote: Quote = useSelector(getBestQuote);
-  const nftImageURL = useGetAssetImageUrl(
-    sendAsset.details?.image ?? null,
-    ipfsGateway,
-  );
 
   const isLoadingInitialQuotes = !bestQuote && isSwapQuoteLoading;
 
