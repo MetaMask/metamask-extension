@@ -54,8 +54,8 @@ const controllerMetadata = {
     anonymous: true,
   },
   onboardingTabs: {
-    persist: true,
-    anonymous: true,
+    persist: false,
+    anonymous: false,
   },
 };
 

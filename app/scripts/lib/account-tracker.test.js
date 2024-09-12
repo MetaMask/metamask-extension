@@ -2,7 +2,6 @@ import EventEmitter from 'events';
 import { ControllerMessenger } from '@metamask/base-controller';
 
 import { flushPromises } from '../../../test/lib/timer-helpers';
-import OnboardingController from '../controllers/onboarding';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import AccountTracker from './account-tracker';
 
@@ -95,17 +94,6 @@ function buildAccountTracker({
     }),
   );
 
-  const onboardingController = new OnboardingController({
-    messenger: controllerMessenger.getRestricted({
-      name: 'OnboardingController',
-      allowedActions: [],
-      allowedEvents: [],
-    }),
-    state: {
-      completedOnboarding,
-    },
-  });
-
   const accountTracker = new AccountTracker({
     provider,
     blockTracker: blockTrackerStub,
@@ -119,7 +107,11 @@ function buildAccountTracker({
         subscribe: noop,
       },
     },
-    onboardingController,
+    onboardingController: {
+      state: {
+        completedOnboarding,
+      },
+    },
     controllerMessenger,
     onAccountRemoved: noop,
     getCurrentChainId: () => currentChainId,
