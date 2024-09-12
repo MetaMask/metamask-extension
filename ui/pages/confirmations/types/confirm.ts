@@ -31,6 +31,7 @@ export type SignatureRequestType = {
     origin: string;
     data: string | TypedSignDataV1Type;
     version?: string;
+    requestId?: number;
     signatureMethod?: string;
     siwe?: SIWEMessage;
   };
