@@ -1826,7 +1826,6 @@ export function removePermittedAccount(
   origin: string,
   address: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  console.log('removed is done');
   return async (dispatch: MetaMaskReduxDispatch) => {
     await new Promise<void>((resolve, reject) => {
       callBackgroundMethod(

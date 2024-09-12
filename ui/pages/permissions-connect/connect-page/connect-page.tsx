@@ -117,7 +117,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           onAccountsClick={() =>
             selectAccounts(Array.from(selectedAccountAddresses))
           }
-          onNetworksClick={() => console.log('testing')}
+          onNetworksClick={() => null}
           approvedAccounts={approvedAccounts}
           activeTabOrigin={activeTabOrigin}
           combinedNetworks={networksList}
