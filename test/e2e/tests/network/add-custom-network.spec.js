@@ -511,18 +511,9 @@ describe('Custom network', function () {
           await driver.clickElement({ tag: 'button', text: 'Close' });
           await driver.clickElement({ tag: 'button', text: 'Approve' });
 
-          await driver.delay(regularDelayMs);
-
           // verify network switched
-          const networkDisplayed = await driver.findElement({
-            tag: 'span',
-            text: 'Arbitrum One',
-          });
-
-          assert.equal(
-            await networkDisplayed.getText(),
-            'Arbitrum One',
-            'You have not switched to Arbitrum Network',
+          await driver.waitForSelector(
+            'button[data-testid="network-display"][aria-label="Network Menu Arbitrum One"]',
           );
         },
       );
