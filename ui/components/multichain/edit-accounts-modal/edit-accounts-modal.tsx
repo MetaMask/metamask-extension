@@ -112,17 +112,17 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   };
 
   const managePermittedAccounts = (
-    accounts: string[],
+    selectedAcc: string[],
     accountsAddresses: string[],
   ) => {
     const removedAccounts = accountsAddresses.filter(
-      (acc) => !accounts.includes(acc),
+      (acc) => !selectedAcc.includes(acc),
     );
     removedAccounts.forEach((account) => {
       dispatch(removePermittedAccount(activeTabOrigin, account));
     });
 
-    const newAccounts = accounts.filter(
+    const newAccounts = selectedAcc.filter(
       (acc) => !accountsAddresses.includes(acc),
     );
     if (newAccounts.length > 0) {

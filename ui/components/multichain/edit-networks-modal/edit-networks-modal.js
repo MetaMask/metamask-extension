@@ -95,15 +95,7 @@ export const EditNetworksModal = ({
     isIndeterminate = true;
   }
 
-  const managePermittedChains = (
-    chains,
-    permittedChains,
-    tabOrigin,
-  ) => {
-    if (!Array.isArray(chains)) {
-      console.error('selectedChains is not an array:', chains);
-      chains = [];
-    }
+  const managePermittedChains = (chains, permittedChains, tabOrigin) => {
     dispatch(grantPermittedChains(activeTabOrigin, chains));
 
     const removedElements = permittedChains.filter(

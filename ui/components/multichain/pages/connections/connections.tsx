@@ -131,7 +131,7 @@ export const Connections = () => {
       origin: activeTabOrigin,
     };
   }
-  const requestAccountsAndChainPermissionsWithId = async () => {
+  const requestAccountsAndChainPermissions = async () => {
     const requestId = await dispatch(
       requestAccountsAndChainPermissionsWithId(tabToConnect.origin),
     );
@@ -396,7 +396,7 @@ export const Connections = () => {
               size={ButtonPrimarySize.Lg}
               block
               data-test-id="no-connections-button"
-              onClick={requestAccountsAndChainPermissionsWithId}
+              onClick={requestAccountsAndChainPermissions}
             >
               {t('connectAccounts')}
             </ButtonPrimary>
