@@ -56,7 +56,7 @@ export default function NotificationsSettings() {
   const isUpdatingMetamaskNotifications = useSelector(
     getIsUpdatingMetamaskNotifications,
   );
-  const accounts: AccountType[] = useSelector(getInternalAccounts);
+  const accounts = useSelector(getInternalAccounts) as AccountType[];
 
   // States
   const [loadingAllowNotifications, setLoadingAllowNotifications] =
