@@ -154,6 +154,7 @@ const InteractiveReplacementTokenPage: React.FC = () => {
 
         const filteredAccounts = custodianAccounts.filter(
           (account: TokenAccount) =>
+            // @ts-expect-error metaMaskAccounts isn't a real type
             metaMaskAccounts[account.address.toLowerCase()],
         );
 
@@ -163,6 +164,7 @@ const InteractiveReplacementTokenPage: React.FC = () => {
             name: account.name,
             labels: account.labels,
             balance:
+              // @ts-expect-error metaMaskAccounts isn't a real type
               metaMaskAccounts[account.address.toLowerCase()]?.balance || 0,
           }),
         );
