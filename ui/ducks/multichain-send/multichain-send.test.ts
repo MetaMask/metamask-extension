@@ -1,4 +1,3 @@
-import { AnyAction, configureStore, Dispatch } from '@reduxjs/toolkit';
 import { BtcAccountType } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
 import {
@@ -122,20 +121,7 @@ jest.mock('./transaction-builders/transaction-builder.ts', () => {
   };
 });
 
-// eslint-disable-next-line import/first
-import { TransactionBuilderFactory } from './transaction-builders/transaction-builder';
-
 describe('multichain-send slice', () => {
-  let store: ReturnType<typeof configureStore>;
-
-  beforeEach(() => {
-    store = configureStore({
-      reducer: {
-        multichainSend: multichainSendReducer,
-      },
-    });
-  });
-
   describe('Reducers', () => {
     describe('addNewDraft', () => {
       it('should add a new draft transaction', () => {
@@ -545,7 +531,6 @@ describe('multichain-send slice', () => {
   describe('Extra Reducers', () => {
     describe('initializeSendState', () => {
       let dispatchSpy: jest.Mock;
-      let getState;
 
       beforeEach(() => {
         dispatchSpy = jest.fn();
@@ -556,7 +541,6 @@ describe('multichain-send slice', () => {
       });
 
       it('should dispatch async action thunk first with pending, then finally fulfilling from minimal state', async () => {
-        const getState = {};
         const action = initializeSendState({
           account: mockBtcAccount,
           network,
@@ -577,8 +561,6 @@ describe('multichain-send slice', () => {
         expect(dispatchSpy.mock.calls[2][0].type).toStrictEqual(
           'multichainSend/initializeSendState/fulfilled',
         );
-
-        expect();
       });
     });
     describe('estimateFee', () => {});
