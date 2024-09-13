@@ -36,6 +36,27 @@ jobs:
           name: coverage-unit-${{matrix.shard}}
           path: coverage/unit/coverage-unit-${{matrix.shard}}.json
 
+  test-webpack:
+    name: Webpack tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: test:unit:webpack:coverage
+        run: yarn test:unit:webpack:coverage
+
+      - name: Rename coverage
+        run: mv coverage/webpack/coverage-final.json coverage/webpack/coverage-webpack.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-webpack
+          path: coverage/webpack/coverage-webpack.json
+
   test-integration:
     name: Integration tests
     runs-on: ubuntu-latest
@@ -62,6 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - test-unit
+      - test-webpack
       - test-integration
     steps:
       - name: Checkout repository
@@ -92,6 +114,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.verbose=true
