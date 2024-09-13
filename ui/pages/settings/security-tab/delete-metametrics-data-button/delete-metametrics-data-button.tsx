@@ -60,9 +60,9 @@ const DeleteMetaMetricsDataButton = ({
   if (!dataDeletionButtonDisabled && metaMetricsDataDeletionStatus) {
     dataDeletionButtonDisabled =
       [
-        DeleteRegulationStatus.initialized,
-        DeleteRegulationStatus.running,
-        DeleteRegulationStatus.finished,
+        DeleteRegulationStatus.Initialized,
+        DeleteRegulationStatus.Running,
+        DeleteRegulationStatus.Finished,
       ].includes(metaMetricsDataDeletionStatus) &&
       metaMetricsDataDeletionTimestamp > latestMetricsEventTimestamp;
   }
