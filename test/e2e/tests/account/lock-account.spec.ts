@@ -1,9 +1,7 @@
 import { Suite } from 'mocha';
-import { WebDriver } from 'selenium-webdriver';
 import {
   defaultGanacheOptions,
   withFixtures,
-  unlockWallet,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import HomePage from '../../page-objects/pages/homepage';
