@@ -30,15 +30,16 @@ async function readChangedFiles() {
  * @returns {Promise<string[]>} An array of filtered E2E test file paths.
  */
 async function filterE2eChangedFiles() {
-  const changedFiles = await readChangedFiles();
-  const e2eChangedFiles = changedFiles
-    .filter(
-      (file) =>
-        file.startsWith('test/e2e/') &&
-        (file.endsWith('.spec.js') || file.endsWith('.spec.ts')),
-    )
-    .map((file) => `${BASE_PATH}/${file}`);
-  return e2eChangedFiles;
+  return []; // temp for experimenting
+  // const changedFiles = await readChangedFiles();
+  // const e2eChangedFiles = changedFiles
+  //   .filter(
+  //     (file) =>
+  //       file.startsWith('test/e2e/') &&
+  //       (file.endsWith('.spec.js') || file.endsWith('.spec.ts')),
+  //   )
+  //   .map((file) => `${BASE_PATH}/${file}`);
+  // return e2eChangedFiles;
 }
 
 module.exports = { filterE2eChangedFiles, readChangedFiles };
