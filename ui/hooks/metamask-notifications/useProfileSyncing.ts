@@ -119,8 +119,17 @@ export function useSetIsProfileSyncingEnabled(): {
   return { setIsProfileSyncingEnabled, error };
 }
 
+/**
+ * Custom hook to dispatch account syncing.
+ *
+ * @returns An object containing the `dispatchAccountSyncing` function, boolean `shouldDispatchAccountSyncing`,
+ * loading state, and error state.
+ */
 export const useAccountSyncing = () => {
   const dispatch = useDispatch();
+
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<unknown>(null);
 
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
   const basicFunctionality = useSelector(getUseExternalServices);
@@ -134,24 +143,34 @@ export const useAccountSyncing = () => {
   );
 
   const dispatchAccountSyncing = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
     try {
       if (!shouldDispatchAccountSyncing) {
         return;
       }
-
       await dispatch(syncInternalAccountsWithUserStorage());
     } catch (e) {
       log.error(e);
+      setError(e instanceof Error ? e.message : 'An unexpected error occurred');
       throw e;
+    } finally {
+      setLoading(false);
     }
   }, [dispatch, shouldDispatchAccountSyncing]);
 
   return {
     dispatchAccountSyncing,
     shouldDispatchAccountSyncing,
+    isLoading,
+    error,
   };
 };
 
+/**
+ * Custom hook to apply account syncing effect.
+ */
 export const useAccountSyncingEffect = () => {
   const { dispatchAccountSyncing } = useAccountSyncing();
 

@@ -5371,10 +5371,13 @@ export function fetchAndUpdateMetamaskNotifications(): ThunkAction<
 }
 
 /**
- * Account syncing test.
+ * Synchronizes accounts data with user storage between devices.
  *
+ * This function sends a request to the background script to sync accounts data and update the state accordingly.
+ * Upon success, it dispatches an action with type `SYNC_INTERNAL_ACCOUNTS_WITH_USER_STORAGE` to update the Redux state.
+ * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
  *
- * @returns A thunk action that, when dispatched, attempts to fetch and update MetaMask notifications.
+ * @returns A thunk action that, when dispatched, attempts to synchronize accounts data with user storage between devices.
  */
 export function syncInternalAccountsWithUserStorage(): ThunkAction<
   void,
