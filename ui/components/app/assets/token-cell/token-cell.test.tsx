@@ -110,7 +110,7 @@ describe('Token Cell', () => {
 
     const targetElem = queryByTestId('multichain-token-list-button');
 
-    if (targetElem) fireEvent.click(targetElem);
+    targetElem && fireEvent.click(targetElem);
 
     expect(props.onClick).toHaveBeenCalled();
   });
