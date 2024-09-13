@@ -1,4 +1,4 @@
-import { Hex } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import {
   SimulationBalanceChange,
@@ -74,7 +74,7 @@ async function fetchAllErc20Decimals(
 async function fetchTokenFiatRates(
   fiatCurrency: string,
   erc20TokenAddresses: Hex[],
-  chainId: Hex,
+  chainId: Hex | CaipChainId,
 ): Promise<ContractExchangeRates> {
   const tokenRates = await fetchTokenExchangeRates(
     fiatCurrency,

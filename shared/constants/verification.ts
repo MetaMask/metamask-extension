@@ -1,4 +1,4 @@
-import { Hex } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,
@@ -14,12 +14,12 @@ export const TRUSTED_SIGNERS: Partial<Record<EXPERIENCES_TYPE, Hex>> = {
 // look up the corresponding experience provided an address on a chain id
 export const getExperience = (
   address: Hex,
-  chainId: Hex,
+  chainId: Hex | CaipChainId,
 ): EXPERIENCES_TYPE | undefined =>
   (
     Object.entries(FIRST_PARTY_CONTRACT_NAMES) as [
       EXPERIENCES_TYPE,
-      Record<Hex, Hex>,
+      Record<Hex | CaipChainId, Hex>,
     ][]
   ).find(
     ([, chainMap]) =>

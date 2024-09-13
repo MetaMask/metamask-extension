@@ -14,7 +14,6 @@ import {
   getCompletedOnboarding,
   getConversionRate,
   getNativeCurrency,
-  getProviderConfig,
 } from '../ducks/metamask/metamask';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -24,6 +23,11 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   TEST_NETWORK_IDS,
 } from '../../shared/constants/network';
+import {
+  getProviderConfig,
+  NetworkState,
+  getNetworkConfigurationsByChainId,
+} from './networks';
 import { AccountsState, getSelectedInternalAccount } from './accounts';
 import {
   getCurrentChainId,
@@ -31,7 +35,6 @@ import {
   getIsMainnet,
   getMaybeSelectedInternalAccount,
   getNativeCurrencyImage,
-  getNetworkConfigurationsByChainId,
   getSelectedAccountCachedBalance,
   getShouldShowFiat,
   getShowFiatInTestnets,
@@ -45,7 +48,10 @@ export type BalancesState = {
   metamask: BalancesControllerState;
 };
 
-export type MultichainState = AccountsState & RatesState & BalancesState;
+export type MultichainState = AccountsState &
+  RatesState &
+  BalancesState &
+  NetworkState;
 
 // TODO: Remove after updating to @metamask/network-controller 20.0.0
 export type ProviderConfigWithImageUrlAndExplorerUrl = {

@@ -24,7 +24,7 @@ export const mockNetworkStateOld = (
     blockExplorerUrl?: string;
     metadata?: NetworkMetadata;
   }[]
-) => {
+): NetworkState => {
   const networkConfigurations = networks.map((network) => ({
     id: network.id ?? uuidv4(),
     chainId: network.chainId,
@@ -64,7 +64,7 @@ export const mockNetworkStateOld = (
 
   return {
     selectedNetworkClientId: networkConfigurations[0].id,
-    networkConfigurations: networkConfigurations.reduce(
+    networkConfigurationsByChainId: networkConfigurations.reduce(
       (acc, network) => ({ ...acc, [network.id]: network }),
       {},
     ),

@@ -1,13 +1,12 @@
-import {
-  NetworkConfiguration,
-  NetworkState,
-} from '@metamask/network-controller';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { uniqBy } from 'lodash';
 import {
   getNetworkConfigurationsByChainId,
   getIsBridgeEnabled,
   getSwapsDefaultToken,
   SwapsEthToken,
+  getProviderConfig,
+  NetworkState,
 } from '../../selectors';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import {
@@ -17,12 +16,12 @@ import {
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/bridge/types';
 import { createDeepEqualSelector } from '../../selectors/util';
-import { getProviderConfig } from '../metamask/metamask';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { BridgeState } from './bridge';
 
-type BridgeAppState = {
-  metamask: NetworkState & { bridgeState: BridgeControllerState } & {
+// TODO add swaps state
+type BridgeAppState = NetworkState & {
+  metamask: { bridgeState: BridgeControllerState } & {
     useExternalServices: boolean;
   };
   bridge: BridgeState;

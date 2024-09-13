@@ -1,7 +1,6 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
 import { createSelector } from 'reselect';
 import { mergeGasFeeEstimates } from '@metamask/transaction-controller';
-import { RpcEndpointType } from '@metamask/network-controller';
 import { AlertTypes } from '../../../shared/constants/alerts';
 import {
   GasEstimateTypes,
@@ -16,9 +15,11 @@ import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
   getAddressBook,
-  getSelectedNetworkClientId,
-  getNetworkConfigurationsByChainId,
 } from '../../selectors/selectors';
+import {
+  getProviderConfig,
+  getSelectedNetworkClientId,
+} from '../../selectors/networks';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
@@ -272,42 +273,6 @@ export function updateGasFees({
 // Selectors
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
-
-/**
- * Get the provider configuration for the current selected network.
- *
- * @param {object} state - Redux state object.
- */
-export const getProviderConfig = createSelector(
-  (state) => getNetworkConfigurationsByChainId(state),
-  (state) => getSelectedNetworkClientId(state),
-  (networkConfigurationsByChainId, selectedNetworkClientId) => {
-    for (const network of Object.values(networkConfigurationsByChainId)) {
-      for (const rpcEndpoint of network.rpcEndpoints) {
-        if (rpcEndpoint.networkClientId === selectedNetworkClientId) {
-          const blockExplorerUrl =
-            network.blockExplorerUrls?.[network.defaultBlockExplorerUrlIndex];
-
-          return {
-            chainId: network.chainId,
-            ticker: network.nativeCurrency,
-            rpcPrefs: { ...(blockExplorerUrl && { blockExplorerUrl }) },
-            type:
-              rpcEndpoint.type === RpcEndpointType.Custom
-                ? 'rpc'
-                : rpcEndpoint.networkClientId,
-            ...(rpcEndpoint.type === RpcEndpointType.Custom && {
-              id: rpcEndpoint.networkClientId,
-              nickname: network.name,
-              rpcUrl: rpcEndpoint.url,
-            }),
-          };
-        }
-      }
-    }
-    return undefined; // should not be reachable
-  },
-);
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>
   getAlertEnabledness(state)[AlertTypes.unconnectedAccount];

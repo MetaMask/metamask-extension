@@ -4,7 +4,7 @@ import {
   TransactionParams,
   normalizeTransactionParams,
 } from '@metamask/transaction-controller';
-import { Hex, JsonRpcRequest } from '@metamask/utils';
+import { CaipChainId, Hex, JsonRpcRequest } from '@metamask/utils';
 import { v4 as uuid } from 'uuid';
 import { PPOM } from '@blockaid/ppom_release';
 import { SignatureController } from '@metamask/signature-controller';
@@ -46,7 +46,7 @@ export async function validateRequestWithPPOM({
   ppomController: PPOMController;
   request: JsonRpcRequest;
   securityAlertId: string;
-  chainId: Hex;
+  chainId: Hex | CaipChainId;
 }): Promise<SecurityAlertResponse> {
   try {
     const normalizedRequest = normalizePPOMRequest(request);
@@ -122,7 +122,9 @@ export function handlePPOMError(
   };
 }
 
-export async function isChainSupported(chainId: Hex): Promise<boolean> {
+export async function isChainSupported(
+  chainId: Hex | CaipChainId,
+): Promise<boolean> {
   let supportedChainIds = SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS;
 
   try {
@@ -135,7 +137,7 @@ export async function isChainSupported(chainId: Hex): Promise<boolean> {
       `Error fetching supported chains from security alerts API`,
     );
   }
-  return supportedChainIds.includes(chainId);
+  return supportedChainIds.includes(chainId as Hex);
 }
 
 function normalizePPOMRequest(
