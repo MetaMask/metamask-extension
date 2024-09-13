@@ -8,7 +8,7 @@ import {
   getIsCustodianSupportedChain,
   getCustodianIconForAddress,
 } from '../../../selectors/institutional/selectors';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../selectors/networks';
 ///: END:ONLY_INCLUDE_IF
 import { ButtonBase, IconName, Box } from '../../component-library';
 import {

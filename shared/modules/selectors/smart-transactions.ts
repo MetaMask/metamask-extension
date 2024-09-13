@@ -13,6 +13,10 @@ import {
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
 import { isProduction } from '../environment';
 
+// TODO: Remove restricted imports
+// eslint-disable-next-line import/no-restricted-paths
+import { NetworkState } from '../../../ui/selectors/networks';
+
 type SmartTransactionsMetaMaskState = {
   metamask: {
     preferences: {
@@ -113,9 +117,7 @@ export const getCurrentChainSupportsSmartTransactions = (
   return getAllowedSmartTransactionsChainIds().includes(chainId);
 };
 
-const getIsAllowedRpcUrlForSmartTransactions = (
-  state: SmartTransactionsMetaMaskState,
-) => {
+const getIsAllowedRpcUrlForSmartTransactions = (state: NetworkState) => {
   const chainId = getCurrentChainId(state);
   if (!isProduction() || SKIP_STX_RPC_URL_CHECK_CHAIN_IDS.includes(chainId)) {
     // Allow any STX RPC URL in development and testing environments or for specific chain IDs.
@@ -131,7 +133,7 @@ const getIsAllowedRpcUrlForSmartTransactions = (
 };
 
 export const getSmartTransactionsEnabled = (
-  state: SmartTransactionsMetaMaskState,
+  state: SmartTransactionsMetaMaskState & NetworkState,
 ): boolean => {
   const supportedAccount = accountSupportsSmartTx(state);
   // TODO: Create a new proxy service only for MM feature flags.
@@ -150,7 +152,7 @@ export const getSmartTransactionsEnabled = (
 };
 
 export const getIsSmartTransaction = (
-  state: SmartTransactionsMetaMaskState,
+  state: SmartTransactionsMetaMaskState & NetworkState,
 ): boolean => {
   const smartTransactionsPreferenceEnabled =
     getSmartTransactionsPreferenceEnabled(state);

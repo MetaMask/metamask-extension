@@ -11,10 +11,8 @@ import {
   getShouldShowFiat,
 } from '../../../selectors';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
-import {
-  getNativeCurrency,
-  getProviderConfig,
-} from '../../../ducks/metamask/metamask';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../selectors/networks';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';

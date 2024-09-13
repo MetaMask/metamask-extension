@@ -31,10 +31,8 @@ import {
 
 import { INSUFFICIENT_TOKENS_ERROR } from '../send.constants';
 import { getCurrentDraftTransaction } from '../../../../ducks/send';
-import {
-  getNativeCurrency,
-  getProviderConfig,
-} from '../../../../ducks/metamask/metamask';
+import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../../selectors/networks';
 import { showModal } from '../../../../store/actions';
 import {
   addHexes,

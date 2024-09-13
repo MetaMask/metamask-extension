@@ -5,7 +5,7 @@ import {
   getAddressBookEntry,
   getInternalAccountByAddress,
 } from '../../../../selectors';
-import { getProviderConfig } from '../../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../../selectors/networks';
 import {
   CONTACT_VIEW_ROUTE,
   CONTACT_LIST_ROUTE,

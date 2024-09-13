@@ -16,14 +16,17 @@ import {
   ButtonIconSize,
   IconName,
 } from '../../components/component-library';
-import { getIsBridgeChain, getIsBridgeEnabled } from '../../selectors';
+import {
+  getIsBridgeChain,
+  getIsBridgeEnabled,
+  getProviderConfig,
+} from '../../selectors';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
   Footer,
   Header,
 } from '../../components/multichain/pages/page';
-import { getProviderConfig } from '../../ducks/metamask/metamask';
 import { resetInputFields, setFromChain } from '../../ducks/bridge/actions';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import { BridgeCTAButton } from './prepare/bridge-cta-button';

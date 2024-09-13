@@ -30,7 +30,7 @@ import { isHardwareKeyring } from '../../helpers/utils/hardware';
 import { getPortfolioUrl } from '../../helpers/utils/portfolio';
 import { setSwapsFromToken } from '../../ducks/swaps/swaps';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
-import { getProviderConfig } from '../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../selectors/networks';
 ///: END:ONLY_INCLUDE_IF
 
 const useBridging = () => {

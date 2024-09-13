@@ -19,8 +19,10 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constan
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: END:ONLY_INCLUDE_IF
 import { NetworkListItem } from '../../network-list-item';
-import { getNetworkConfigurationsByChainId } from '../../../../selectors';
-import { getProviderConfig } from '../../../../ducks/metamask/metamask';
+import {
+  getNetworkConfigurationsByChainId,
+  getProviderConfig,
+} from '../../../../selectors';
 
 /**
  * AssetPickerModalNetwork component displays a modal for selecting a network in the asset picker.

@@ -32,7 +32,7 @@ import {
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
 } from '../../helpers/constants/routes';
-import { getProviderConfig } from '../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
 import Settings from './settings.component';
 
