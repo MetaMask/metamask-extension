@@ -1497,15 +1497,6 @@ export default class MetamaskController extends EventEmitter {
           'AccountsController:accountAdded',
           'AccountsController:accountRenamed',
         ],
-<<<<<<< HEAD
-=======
-        allowedEvents: [
-          'KeyringController:lock',
-          'KeyringController:unlock',
-          'AccountsController:accountAdded',
-          'AccountsController:accountRenamed',
-        ],
->>>>>>> develop
       }),
     });
 
