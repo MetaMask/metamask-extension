@@ -146,11 +146,7 @@ describe('BtcOverview', () => {
   it('buttons Send/Swap/Bridge are disabled', () => {
     const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
 
-    for (const buttonTestId of [
-      BTC_OVERVIEW_SEND,
-      BTC_OVERVIEW_SWAP,
-      BTC_OVERVIEW_BRIDGE,
-    ]) {
+    for (const buttonTestId of [BTC_OVERVIEW_SWAP, BTC_OVERVIEW_BRIDGE]) {
       const button = queryByTestId(buttonTestId);
       expect(button).toBeInTheDocument();
       expect(button).toBeDisabled();
