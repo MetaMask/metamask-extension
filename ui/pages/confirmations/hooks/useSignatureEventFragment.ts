@@ -5,6 +5,8 @@ import { useConfirmContext } from '../context/confirm';
 import { SignatureRequestType } from '../types/confirm';
 import { isSignatureTransactionType } from '../utils';
 
+import type { MetaMetricsEventFragment } from '../../../../shared/constants/metametrics';
+
 /**
  * When a signature has been requested, there should be an event fragment created for it in
  * {@see {@link app/scripts/lib/createRPCMethodTrackingMiddleware.js}.
@@ -19,11 +21,11 @@ export const useSignatureEventFragment = () => {
   const fragmentId = requestId ? generateSignatureUniqueId(requestId) : null;
 
   const updateSignatureEventFragment = useCallback(
-    async (params) => {
+    async (eventFragmentPayload: Partial<MetaMetricsEventFragment>) => {
       if (!isSignatureTransactionType(currentConfirmation) || !fragmentId) {
         return;
       }
-      updateEventFragment(fragmentId, params);
+      updateEventFragment(fragmentId, eventFragmentPayload);
     },
     [fragmentId],
   );
