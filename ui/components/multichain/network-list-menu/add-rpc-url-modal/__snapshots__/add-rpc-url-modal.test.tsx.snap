@@ -3,35 +3,70 @@
 exports[`AddRpcUrlModal should render correctly 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-4"
+    class="mm-box add-rpc-modal mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--height-full"
   >
     <div
-      class="mm-box mm-form-text-field mm-box--display-flex mm-box--flex-direction-column"
+      class="mm-box mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
     >
-      <label
-        class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-sm-medium mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
-        for="additional-rpc-url"
-      >
-        additionalRpcUrl
-      </label>
       <div
-        class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+        class="mm-box mm-form-text-field mm-box--display-flex mm-box--flex-direction-column"
       >
-        <input
-          autocomplete="off"
-          class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-          focused="false"
-          id="additional-rpc-url"
-          type="text"
-          value=""
-        />
+        <label
+          class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md-medium mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+          for="rpcUrl"
+        >
+          rpcUrl
+        </label>
+        <div
+          class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+        >
+          <input
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            data-testid="rpc-url-input-test"
+            focused="false"
+            id="rpcUrl"
+            placeholder="enterRpcUrl"
+            type="text"
+            value=""
+          />
+        </div>
+      </div>
+      <div
+        class="mm-box mm-form-text-field mm-box--padding-top-4 mm-box--display-flex mm-box--flex-direction-column"
+      >
+        <label
+          class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md-medium mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+          for="rpcName"
+        >
+          rpcNameOptional
+        </label>
+        <div
+          class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+        >
+          <input
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            data-testid="rpc-name-input-test"
+            focused="false"
+            id="rpcName"
+            placeholder="enterANameToIdentifyTheUrl"
+            type="text"
+            value=""
+          />
+        </div>
       </div>
     </div>
-    <button
-      class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--margin-top-8 mm-box--margin-right-auto mm-box--margin-left-auto mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-block mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+    <div
+      class="mm-box add-rpc-modal__footer mm-box--padding-4 mm-box--width-full mm-box--background-color-background-default"
     >
-      addUrl
-    </button>
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+        data-theme="light"
+      >
+        addUrl
+      </button>
+    </div>
   </div>
 </div>
 `;
