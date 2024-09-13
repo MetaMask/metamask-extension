@@ -15,27 +15,10 @@ import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import { openDAppWithContract, TestSuiteArguments } from './shared';
 
 describe('Confirmation Redesign ERC20 Increase Allowance', function () {
-  const smartContract = SMART_CONTRACTS.HST;
-
   describe('Submit an increase allowance transaction @no-mmi', function () {
     it('Sends a type 0 transaction (Legacy) with a small spending cap', async function () {
       await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
-            .build(),
-          ganacheOptions: defaultGanacheOptions,
-          smartContract,
-          testSpecificMock: mocks,
-          title: this.test?.fullTitle(),
-        },
+        generateFixtureOptionsForLegacyTx(this),
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await createAndAssertIncreaseAllowanceSubmission(
             driver,
@@ -48,22 +31,7 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
 
     it('Sends a type 2 transaction (EIP1559) with a small spending cap', async function () {
       await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
-            .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
-          smartContract,
-          testSpecificMock: mocks,
-          title: this.test?.fullTitle(),
-        },
+        generateFixtureOptionsForEIP1559Tx(this),
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await createAndAssertIncreaseAllowanceSubmission(
             driver,
@@ -76,22 +44,7 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
 
     it('Sends a type 0 transaction (Legacy) with a large spending cap', async function () {
       await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
-            .build(),
-          ganacheOptions: defaultGanacheOptions,
-          smartContract,
-          testSpecificMock: mocks,
-          title: this.test?.fullTitle(),
-        },
+        generateFixtureOptionsForLegacyTx(this),
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await createAndAssertIncreaseAllowanceSubmission(
             driver,
@@ -104,22 +57,7 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
 
     it('Sends a type 2 transaction (EIP1559) with a large spending cap', async function () {
       await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
-            .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
-          smartContract,
-          testSpecificMock: mocks,
-          title: this.test?.fullTitle(),
-        },
+        generateFixtureOptionsForEIP1559Tx(this),
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await createAndAssertIncreaseAllowanceSubmission(
             driver,
@@ -130,38 +68,76 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
       );
     });
   });
-
-  async function mocks(server: Mockttp) {
-    return [await mocked4BytesIncreaseAllowance(server)];
-  }
-
-  async function mocked4BytesIncreaseAllowance(mockServer: Mockttp) {
-    return await mockServer
-      .forGet('https://www.4byte.directory/api/v1/signatures/')
-      .always()
-      .withQuery({ hex_signature: '0x39509351' })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            count: 1,
-            next: null,
-            previous: null,
-            results: [
-              {
-                id: 46002,
-                created_at: '2018-06-24T21:43:27.354648Z',
-                text_signature: 'increaseAllowance(address,uint256)',
-                hex_signature: '0x39509351',
-                bytes_signature: '9PQ',
-                test: 'Priya',
-              },
-            ],
-          },
-        };
-      });
-  }
 });
+
+function generateFixtureOptionsForLegacyTx(mochaContext: Mocha.Context) {
+  return {
+    dapp: true,
+    fixtures: new FixtureBuilder()
+      .withPermissionControllerConnectedToTestDapp()
+      .withPreferencesController({
+        preferences: {
+          redesignedConfirmationsEnabled: true,
+          isRedesignedConfirmationsDeveloperEnabled: true,
+        },
+      })
+      .build(),
+    ganacheOptions: defaultGanacheOptions,
+    smartContract: SMART_CONTRACTS.HST,
+    testSpecificMock: mocks,
+    title: mochaContext.test?.fullTitle(),
+  };
+}
+
+function generateFixtureOptionsForEIP1559Tx(mochaContext: Mocha.Context) {
+  return {
+    dapp: true,
+    fixtures: new FixtureBuilder()
+      .withPermissionControllerConnectedToTestDapp()
+      .withPreferencesController({
+        preferences: {
+          redesignedConfirmationsEnabled: true,
+          isRedesignedConfirmationsDeveloperEnabled: true,
+        },
+      })
+      .build(),
+    ganacheOptions: defaultGanacheOptionsForType2Transactions,
+    smartContract: SMART_CONTRACTS.HST,
+    testSpecificMock: mocks,
+    title: mochaContext.test?.fullTitle(),
+  };
+}
+
+async function mocks(server: Mockttp) {
+  return [await mocked4BytesIncreaseAllowance(server)];
+}
+
+async function mocked4BytesIncreaseAllowance(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://www.4byte.directory/api/v1/signatures/')
+    .always()
+    .withQuery({ hex_signature: '0x39509351' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          count: 1,
+          next: null,
+          previous: null,
+          results: [
+            {
+              id: 46002,
+              created_at: '2018-06-24T21:43:27.354648Z',
+              text_signature: 'increaseAllowance(address,uint256)',
+              hex_signature: '0x39509351',
+              bytes_signature: '9PQ',
+              test: 'Priya',
+            },
+          ],
+        },
+      };
+    });
+}
 
 async function createAndAssertIncreaseAllowanceSubmission(
   driver: Driver,

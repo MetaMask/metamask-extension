@@ -23,6 +23,8 @@ const PAGES = {
   POPUP: 'popup',
 };
 
+const artifactDir = (title) => `./test-artifacts/${this.browser}/${title}`;
+
 /**
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
@@ -589,10 +591,10 @@ class Driver {
     }
   }
 
+  /** @param {string} title - The title of the window or tab the screenshot is being taken in */
   async takeScreenshot(title) {
-    const artifactDir = `./test-artifacts/${this.browser}/${title}`;
-    const filepathBase = `${artifactDir}/test-screenshot`;
-    await fs.mkdir(artifactDir, { recursive: true });
+    const filepathBase = `${artifactDir(title)}/test-screenshot`;
+    await fs.mkdir(artifactDir(title), { recursive: true });
 
     const screenshot = await this.driver.takeScreenshot();
     await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
@@ -1098,9 +1100,8 @@ class Driver {
     );
     console.error(`${error}\n`);
 
-    const artifactDir = `./test-artifacts/${this.browser}/${title}`;
-    const filepathBase = `${artifactDir}/test-failure`;
-    await fs.mkdir(artifactDir, { recursive: true });
+    const filepathBase = `${artifactDir(title)}/test-failure`;
+    await fs.mkdir(artifactDir(title), { recursive: true });
     // On occasion there may be a bug in the offscreen document which does
     // not render visibly to the user and therefore no screenshot can be
     // taken. In this case we skip the screenshot and log the error.

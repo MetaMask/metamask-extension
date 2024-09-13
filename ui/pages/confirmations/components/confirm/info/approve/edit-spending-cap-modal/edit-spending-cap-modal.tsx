@@ -53,9 +53,10 @@ export const EditSpendingCapModal = ({
     transactionMeta.txParams.data,
   );
 
-  const accountBalance = Number(
-    calcTokenAmount(userBalance || '0', Number(decimals || '0')),
-  );
+  const accountBalance = calcTokenAmount(
+    userBalance ?? '0',
+    decimals,
+  ).toFixed();
 
   const { formattedSpendingCap } = useApproveTokenSimulation(
     transactionMeta,
