@@ -1,32 +1,33 @@
-export type SortOrder = 'asc' | 'dsc';
+import { get } from 'lodash';
 
-type SortingType = number | string | Date;
-type SortingCallbacks = {
+export type SortOrder = 'asc' | 'dsc';
+export type SortCriteria = {
+  key: string;
+  order?: 'asc' | 'dsc';
+  sortCallback: SortCallbackKeys;
+};
+
+export type SortingType = number | string | Date;
+type SortCallbackKeys = keyof SortingCallbacksT;
+
+export type SortingCallbacksT = {
   numeric: (a: number, b: number) => number;
   stringNumeric: (a: string, b: string) => number;
   alphaNumeric: (a: string, b: string) => number;
   date: (a: Date, b: Date) => number;
 };
-type SortCallbackKeys = keyof SortingCallbacks;
-type SortCriteria = {
-  key: string;
-  order?: 'asc' | 'desc';
-  sortCallback: SortCallbackKeys;
-};
 
 // All sortingCallbacks should be asc order, sortAssets function handles asc/dsc
-const sortingCallbacks: SortingCallbacks = {
+const sortingCallbacks: SortingCallbacksT = {
   numeric: (a: number, b: number) => a - b,
-  stringNumeric: (a: string, b: string) => parseInt(a) - parseInt(b),
+  stringNumeric: (a: string, b: string) => parseInt(a, 10) - parseInt(b, 10),
   alphaNumeric: (a: string, b: string) => a.localeCompare(b),
   date: (a: Date, b: Date) => a.getTime() - b.getTime(),
 };
 
 // Utility function to access nested properties by key path
 function getNestedValue<T>(obj: T, keyPath: string): SortingType {
-  return keyPath
-    .split('.')
-    .reduce((value: any, key: string) => value[key], obj);
+  return get(obj, keyPath) as SortingType;
 }
 
 export function sortAssets<T>(array: T[], criteria: SortCriteria): T[] {
@@ -36,17 +37,34 @@ export function sortAssets<T>(array: T[], criteria: SortCriteria): T[] {
     const aValue = getNestedValue(a, key);
     const bValue = getNestedValue(b, key);
 
+    // Always move undefined values to the end, regardless of sort order
+    if (aValue === undefined) return 1;
+    if (bValue === undefined) return -1;
+
     let comparison: number;
 
-    let callback = sortingCallbacks[sortCallback];
-
-    if (sortCallback && callback) {
-      comparison = callback(aValue, bValue);
-    } else {
-      comparison = aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+    switch (sortCallback) {
+      case 'stringNumeric':
+      case 'alphaNumeric':
+        comparison = sortingCallbacks[sortCallback](
+          aValue as string,
+          bValue as string,
+        );
+        break;
+      case 'numeric':
+        comparison = sortingCallbacks.numeric(
+          aValue as number,
+          bValue as number,
+        );
+        break;
+      case 'date':
+        comparison = sortingCallbacks.date(aValue as Date, bValue as Date);
+        break;
+      default:
+        comparison = aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
     }
 
-    // modify to sort in asc or dsc order
+    // Modify to sort in ascending or descending order
     return order === 'asc' ? comparison : -comparison;
   });
 }

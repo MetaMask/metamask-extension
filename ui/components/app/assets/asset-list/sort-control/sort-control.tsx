@@ -2,7 +2,7 @@ import React, { useState, ReactNode } from 'react';
 import classnames from 'classnames';
 import { Box } from '../../../../component-library';
 import { TokenWithBalance } from '../asset-list';
-import { SortOrder, sortAssets } from '../../util/sort';
+import { SortOrder, SortingCallbacksT, sortAssets } from '../../util/sort';
 import {
   BackgroundColor,
   BorderRadius,
@@ -56,7 +56,11 @@ const SortControl = ({
 }: SortControlProps) => {
   const [sortKey, setSortKey] = useState<string | null>(null);
 
-  const handleSort = (key: string, sortCallback: string, order: SortOrder) => {
+  const handleSort = (
+    key: string,
+    sortCallback: keyof SortingCallbacksT,
+    order: SortOrder,
+  ) => {
     setSortKey(key);
     const sorted = sortAssets(tokenList, {
       key,
@@ -71,7 +75,7 @@ const SortControl = ({
     <>
       <SelectableListItem
         isSelected={sortKey === 'symbol'}
-        onClick={() => handleSort('symbol', 'alphanumeric', 'asc')}
+        onClick={() => handleSort('symbol', 'alphaNumeric', 'asc')}
       >
         Alphabetically (A-Z)
       </SelectableListItem>
