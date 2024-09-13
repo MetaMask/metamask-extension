@@ -6303,15 +6303,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
 "@metamask/snaps-sdk@npm:^6.5.0":
   version: 6.5.0
   resolution: "@metamask/snaps-sdk@npm:6.5.0"
-=======
-"@metamask/snaps-sdk@npm:^6.4.0":
-  version: 6.4.0
-  resolution: "@metamask/snaps-sdk@npm:6.4.0"
->>>>>>> fa6c827e59 (Bump `@metamask/eth-snap-keyring` and fix Webpack build)
   dependencies:
     "@metamask/key-tree": "npm:^9.1.2"
     "@metamask/providers": "npm:^17.1.2"
