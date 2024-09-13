@@ -34,6 +34,22 @@ class AccountListPage {
   async assertAccountExists(): Promise<void> {
     await this.driver.waitForSelector('[data-testid="account-menu-item"]');
   }
+
+  async pinAccount(): Promise<void> {
+    await this.driver.clickElement('[data-testid="account-list-menu-pin"]');
+  }
+
+  async unpinAccount(): Promise<void> {
+    await this.driver.clickElement('[data-testid="account-list-menu-pin"]');
+  }
+
+  async assertAccountIsPinned(): Promise<void> {
+    await this.driver.waitForSelector('.account-pinned-icon');
+  }
+
+  async assertAccountIsUnpinned(): Promise<void> {
+    await this.driver.assertElementNotPresent('.account-pinned-icon');
+  }
 }
 
 export default AccountListPage;
