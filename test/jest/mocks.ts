@@ -14,6 +14,10 @@ import {
   initialState,
 } from '../../ui/ducks/send';
 import { MetaMaskReduxState } from '../../ui/store/store';
+import {
+  initialMultichainDraftTransaction,
+  initialMultichainSendState,
+} from '../../ui/ducks/multichain-send/multichain-send';
 
 export const MOCK_DEFAULT_ADDRESS =
   '0xd5e099c71b797516c10ed0f0d895f429c2781111';
@@ -241,4 +245,14 @@ export const getSelectedInternalAccountFromMockState = (
   return state.metamask.internalAccounts.accounts[
     state.metamask.internalAccounts.selectedAccount
   ];
+};
+
+export const INITIAL_MULTICHAIN_SEND_STATE_FOR_EXISTING_DRAFT = {
+  ...initialMultichainSendState,
+  currentTransactionUUID: 'test-uuid',
+  draftTransactions: {
+    'test-uuid': {
+      ...initialMultichainDraftTransaction,
+    },
+  },
 };

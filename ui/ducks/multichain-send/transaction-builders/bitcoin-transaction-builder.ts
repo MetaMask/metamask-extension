@@ -176,29 +176,6 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
       amount: balance,
       unit: 'BTC',
     };
-    // const maxSpendableBalance = (await handleSnapRequest({
-    //   snapId: BITCOIN_WALLET_SNAP_ID,
-    //   origin: 'metamask',
-    //   handler: HandlerType.OnKeyringRequest,
-    //   request: {
-    //     method: 'keyring_getAccountBalances',
-    //     params: {
-    //       account: this.account.id,
-    //       assets: [this.transactionParams.sendAsset.asset],
-    //       // amount: this.transactionParams.sendAsset.amount,
-    //     },
-    //   },
-    // })) as {
-    //   balance: {
-    //     amount: string;
-    //     unit: string;
-    //   };
-    //   fee: {
-    //     amount: string;
-    //     unit: string;
-    //   };
-    // };
-    // return maxSpendableBalance.balance;
   }
 
   validateTransaction(): boolean {
@@ -231,6 +208,7 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
             },
           },
           error: '',
+          valid: true,
         },
       };
       return this.transactionParams.sendAsset;
@@ -242,6 +220,7 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
         ...this.transactionParams.sendAsset,
         asset,
         error: '',
+        valid: true,
       },
     };
 
@@ -256,6 +235,7 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
         sendAsset: {
           ...this.transactionParams.sendAsset,
           error: `Invalid asset: ${asset}`,
+          valid: false,
         },
       };
     }
@@ -335,6 +315,7 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
           unit: estimatedFee.fee.unit,
           error: '',
           feeLevel: fee,
+          valid: true,
         },
       };
     } catch (e) {
@@ -345,6 +326,7 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
           fee: '',
           unit: '',
           error: `Error estimating fee: ${e}`,
+          valid: false,
         },
       };
     }
@@ -357,7 +339,7 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
   ): DraftTransaction['transactionParams']['recipient'] {
     if (
       (this.network === MultichainNetworks.BITCOIN &&
-        !isBtcMainnetAddress(recipient)) ||
+        validate(recipient, BitcoinNetwork.mainnet)) ||
       (this.network === MultichainNetworks.BITCOIN_TESTNET &&
         !validate(recipient, BitcoinNetwork.testnet))
     ) {
@@ -424,5 +406,36 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
     // @ts-expect-error The root state type is incorrect.
     const balance = getBtcCachedBalance(state);
     return balance;
+  }
+
+  async setMaxSendAmount(): Promise<string> {
+    const maxAmount = (await handleSnapRequest({
+      snapId: BITCOIN_WALLET_SNAP_ID,
+      origin: 'metamask',
+      handler: HandlerType.OnRpcRequest,
+      request: {
+        method: 'getMaxSpendableBalance',
+        params: {
+          account: this.account.id,
+        },
+      },
+    })) as {
+      fee: {
+        amount: string;
+        unit: string;
+      };
+      balance: {
+        amount: string;
+        unit: string; // Bitcoin Manager returns btc
+      };
+    };
+
+    console.log('maxAmount returned', maxAmount);
+
+    const maxAmountInSats = new BigNumber(maxAmount.balance.amount)
+      .mul(new BigNumber(10).pow(8))
+      .toString();
+
+    return maxAmountInSats;
   }
 }
