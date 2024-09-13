@@ -123,12 +123,11 @@ export function useSetIsProfileSyncingEnabled(): {
  * Custom hook to dispatch account syncing.
  *
  * @returns An object containing the `dispatchAccountSyncing` function, boolean `shouldDispatchAccountSyncing`,
- * loading state, and error state.
+ * and error state.
  */
 export const useAccountSyncing = () => {
   const dispatch = useDispatch();
 
-  const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<unknown>(null);
 
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
@@ -143,7 +142,6 @@ export const useAccountSyncing = () => {
   );
 
   const dispatchAccountSyncing = useCallback(async () => {
-    setLoading(true);
     setError(null);
 
     try {
@@ -155,15 +153,12 @@ export const useAccountSyncing = () => {
       log.error(e);
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
       throw e;
-    } finally {
-      setLoading(false);
     }
   }, [dispatch, shouldDispatchAccountSyncing]);
 
   return {
     dispatchAccountSyncing,
     shouldDispatchAccountSyncing,
-    isLoading,
     error,
   };
 };
