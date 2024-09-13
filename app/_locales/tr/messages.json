@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "İlave ağlar"
   },
-  "additionalRpcUrl": {
-    "message": "Diğer RPC URL"
-  },
   "address": {
     "message": "Adres"
   },
@@ -666,9 +663,6 @@
   "back": {
     "message": "Geri"
   },
-  "backup": {
-    "message": "Yedekle"
-  },
   "backupApprovalInfo": {
     "message": "Bu gizli kod, cihazınızı kaybetmeniz, şifrenizi unutmanız, MetaMask'ı yeniden kurmanızın gerektiği ya da cüzdanınıza başka bir cihazdan oturum açmak istemeniz durumunda cüzdanınıza erişim sağlamak için gereklidir."
   },
@@ -680,12 +674,6 @@
   },
   "backupNow": {
     "message": "Şimdi yedekle"
-  },
-  "backupUserData": {
-    "message": "Verilerini yedekle"
-  },
-  "backupUserDataDescription": {
-    "message": "Kişileriniz ve tercihleriniz gibi verileri yedekleyebilirsiniz."
   },
   "balance": {
     "message": "Bakiye"
@@ -4358,9 +4346,6 @@
   },
   "restoreUserData": {
     "message": "Kullanıcı verilerini geri yükle"
-  },
-  "restoreUserDataDescription": {
-    "message": "Kişiler ve tercihler gibi verileri yedek bir dosyadan geri yükleyebilirsiniz."
   },
   "resultPageError": {
     "message": "Hata"

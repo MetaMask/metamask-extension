@@ -9,7 +9,7 @@
 
 *                                    @MetaMask/extension-devs
 development/                         @MetaMask/extension-devs @kumavis
-lavamoat/                            @MetaMask/extension-devs @MetaMask/supply-chain @MetaMask/snaps-devs
+lavamoat/                            @MetaMask/extension-devs @MetaMask/supply-chain
 
 # The offscreen.ts script file that is included in the offscreen document html
 # file is responsible, at present, for loading the snaps execution environment

@@ -6,19 +6,27 @@ import {
 } from '../../../../../../shared/constants/hardware-wallets';
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
 import {
+  signatureRequestSIWE,
+  unapprovedPersonalSignMsg,
+} from '../../../../../../test/data/confirmations/personal_sign';
+import { permitSignatureMsg } from '../../../../../../test/data/confirmations/typed_sign';
+import {
   getMockContractInteractionConfirmState,
   getMockPersonalSignConfirmState,
   getMockPersonalSignConfirmStateForRequest,
+  getMockTypedSignConfirmState,
+  getMockTypedSignConfirmStateForRequest,
 } from '../../../../../../test/data/confirmations/helper';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { fireEvent } from '../../../../../../test/jest';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
 import * as MMIConfirmations from '../../../../../hooks/useMMIConfirmations';
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { SignatureRequestType } from '../../../types/confirm';
+import * as confirmContext from '../../../context/confirm';
+
 import Footer from './footer';
 
 jest.mock('react-redux', () => ({
@@ -60,6 +68,70 @@ describe('ConfirmFooter', () => {
     expect(buttons).toHaveLength(2);
     expect(getByText('Confirm')).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
+  });
+
+  describe('renders enabled "Confirm" Button', () => {
+    it('when isScrollToBottomCompleted is true', () => {
+      const mockStateTypedSign = getMockTypedSignConfirmState();
+      const { getByText } = render(mockStateTypedSign);
+
+      const confirmButton = getByText('Confirm');
+      expect(confirmButton).not.toBeDisabled();
+    });
+
+    it('when the confirmation is a Sign-in With Ethereum (SIWE) request', () => {
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: signatureRequestSIWE,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: () => undefined,
+      });
+      const mockStateSIWE =
+        getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
+      const { getByText } = render(mockStateSIWE);
+
+      const confirmButton = getByText('Confirm');
+      expect(confirmButton).not.toBeDisabled();
+    });
+
+    it('when the confirmation is a Permit with the transaction simulation setting enabled', () => {
+      const mockStatePermit =
+        getMockTypedSignConfirmStateForRequest(permitSignatureMsg);
+      const { getByText } = render(mockStatePermit);
+
+      const confirmButton = getByText('Confirm');
+      expect(confirmButton).not.toBeDisabled();
+    });
+  });
+
+  describe('renders disabled "Confirm" Button', () => {
+    it('when isScrollToBottomCompleted is false', () => {
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: unapprovedPersonalSignMsg,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: () => undefined,
+      });
+      const mockStateTypedSign = getMockPersonalSignConfirmStateForRequest(
+        unapprovedPersonalSignMsg,
+      );
+      const { getByText } = render(mockStateTypedSign);
+
+      const confirmButton = getByText('Confirm');
+      expect(confirmButton).toBeDisabled();
+    });
+
+    it('when the confirmation is a Permit with the transaction simulation setting disabled', () => {
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: permitSignatureMsg,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: () => undefined,
+      });
+      const mockStatePermit =
+        getMockTypedSignConfirmStateForRequest(permitSignatureMsg);
+      const { getByText } = render(mockStatePermit);
+
+      const confirmButton = getByText('Confirm');
+      expect(confirmButton).toBeDisabled();
+    });
   });
 
   it('invoke action rejectPendingApproval when cancel button is clicked', () => {

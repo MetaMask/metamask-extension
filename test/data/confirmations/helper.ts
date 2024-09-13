@@ -1,4 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
+import { merge } from 'lodash';
 
 import {
   Confirmation,
@@ -142,19 +143,23 @@ export const getMockConfirmStateForTransaction = (
   transaction: Confirmation,
   args: RootState = { metamask: {} },
 ) =>
-  getMockConfirmState({
-    ...args,
-    metamask: {
-      ...args.metamask,
-      pendingApprovals: {
-        [transaction.id]: {
-          id: transaction.id,
-          type: ApprovalType.Transaction,
+  getMockConfirmState(
+    merge(
+      {
+        metamask: {
+          ...args.metamask,
+          pendingApprovals: {
+            [transaction.id]: {
+              id: transaction.id,
+              type: ApprovalType.Transaction,
+            },
+          },
+          transactions: [transaction],
         },
       },
-      transactions: [transaction],
-    },
-  });
+      args,
+    ),
+  );
 
 export const getMockContractInteractionConfirmState = (
   args: RootState = { metamask: {} },
