@@ -6,11 +6,10 @@ import {
   AvatarToken,
   Text,
   Box,
-  Button,
   ButtonBase,
   AvatarNetworkSize,
   BadgeWrapper,
-  AvatarNetwork
+  AvatarNetwork,
 } from '../../../component-library';
 import {
   AlignItems,
