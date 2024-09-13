@@ -330,7 +330,7 @@ export default class MetaMetricsController {
    * Updates an event fragment in state
    *
    * @param {string} id - The fragment id to update
-   * @param {MetaMetricsEventFragment} payload - Fragment settings and
+   * @param {Partial<MetaMetricsEventFragment>} payload - Fragment settings and
    *  properties to initiate the fragment with.
    */
   updateEventFragment(id, payload) {
