@@ -354,18 +354,22 @@ export default class MetaMetricsController {
   }
 
   /**
+   * @typedef {object} MetaMetricsFinalizeEventFragmentOptions
+   * @property {boolean} [options.abandoned] - if true track the failure
+   * event instead of the success event
+   * @property {MetaMetricsContext.page} [options.page] - page the final event
+   * occurred on. This will override whatever is set on the fragment
+   * @property {MetaMetricsContext.referrer} [options.referrer] - Dapp that
+   * originated the fragment. This is for fallback only, the fragment referrer
+   * property will take precedence.
+   */
+
+  /**
    * Finalizes a fragment, tracking either a success event or failure Event
    * and then removes the fragment from state.
    *
    * @param {string} id - UUID of the event fragment to be closed
-   * @param {object} options
-   * @param {boolean} [options.abandoned] - if true track the failure
-   *  event instead of the success event
-   * @param {MetaMetricsContext.page} [options.page] - page the final event
-   *  occurred on. This will override whatever is set on the fragment
-   * @param {MetaMetricsContext.referrer} [options.referrer] - Dapp that
-   *  originated the fragment. This is for fallback only, the fragment referrer
-   *  property will take precedence.
+   * @param {MetaMetricsFinalizeEventFragmentOptions} options
    */
   finalizeEventFragment(id, { abandoned = false, page, referrer } = {}) {
     const fragment = this.store.getState().fragments[id];
