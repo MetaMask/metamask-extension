@@ -2050,6 +2050,9 @@
   "from": {
     "message": "From"
   },
+  "fromAccountLabel": {
+    "message": "From account"
+  },
   "fromAddress": {
     "message": "From: $1",
     "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
@@ -2910,7 +2913,7 @@
   },
   "multichainRecipientAddressPlaceholder": {
     "message": "Enter a valid $1 address",
-    "description": "$1 is the network name"
+    "description": "$1 is the network name."
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 wants to use $2 Snaps",
@@ -3037,6 +3040,9 @@
   },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
+  },
+  "networkLabel": {
+    "message": "Network"
   },
   "networkMenu": {
     "message": "Network Menu"
@@ -4266,6 +4272,9 @@
   },
   "recipientAddressPlaceholderFlask": {
     "message": "Enter public address (0x) or domain name"
+  },
+  "recipientLabel": {
+    "message": "Recipient"
   },
   "recommendedGasLabel": {
     "message": "Recommended"
