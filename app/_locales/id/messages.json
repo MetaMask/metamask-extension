@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "Jaringan tambahan"
   },
-  "additionalRpcUrl": {
-    "message": "URL RPC Tambahan"
-  },
   "address": {
     "message": "Alamat"
   },

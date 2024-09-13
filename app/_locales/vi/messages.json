@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "Mạng bổ sung"
   },
-  "additionalRpcUrl": {
-    "message": "URL RPC Bổ sung"
-  },
   "address": {
     "message": "Địa chỉ"
   },

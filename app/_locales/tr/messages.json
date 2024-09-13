@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "İlave ağlar"
   },
-  "additionalRpcUrl": {
-    "message": "Diğer RPC URL"
-  },
   "address": {
     "message": "Adres"
   },

@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "其他网络"
   },
-  "additionalRpcUrl": {
-    "message": "其他 RPC（远程过程调用）URL"
-  },
   "address": {
     "message": "地址"
   },
