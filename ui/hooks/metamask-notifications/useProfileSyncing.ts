@@ -152,7 +152,6 @@ export const useAccountSyncing = () => {
     } catch (e) {
       log.error(e);
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
-      throw e;
     }
   }, [dispatch, shouldDispatchAccountSyncing]);
 
