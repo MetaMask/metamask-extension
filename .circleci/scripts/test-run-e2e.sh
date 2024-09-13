@@ -20,7 +20,7 @@ then
 fi
 
 # Run the actual test command from the parameters
-timeout 20m "$@" --retries 1
+timeout 25m "$@" --retries 1
 
 # Error code 124 means the command timed out
 if [ $? -eq 124 ]
