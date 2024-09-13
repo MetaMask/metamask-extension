@@ -1,11 +1,9 @@
-// Import necessary modules (assuming your function is in 'sort.ts')
 import { sortAssets } from './sort';
 
-// Define the MockAsset type for the test
 type MockAsset = {
   name: string;
   balance: string;
-  createdAt: Date; // Added date for testing date sorting
+  createdAt: Date;
   profile: {
     id: string;
     info?: {
@@ -14,25 +12,23 @@ type MockAsset = {
   };
 };
 
-// Test data with profile.id as a nested value in MockAsset
-// Test data with profile.id as a nested value in MockAsset and createdAt as a date
 const mockAssets: MockAsset[] = [
   {
     name: 'Asset Z',
     balance: '500',
-    createdAt: new Date('2023-01-01'), // Added date
+    createdAt: new Date('2023-01-01'),
     profile: { id: '1', info: { category: 'gold' } },
   },
   {
     name: 'Asset A',
     balance: '600',
-    createdAt: new Date('2022-05-15'), // Added date
+    createdAt: new Date('2022-05-15'),
     profile: { id: '4', info: { category: 'silver' } },
   },
   {
     name: 'Asset B',
     balance: '400',
-    createdAt: new Date('2021-07-20'), // Added date
+    createdAt: new Date('2021-07-20'),
     profile: { id: '2', info: { category: 'bronze' } },
   },
 ];
@@ -138,7 +134,7 @@ describe('sortAssets function - nested value handling with dates and numeric sor
     const invlaidAsset = {
       name: 'Asset Y',
       balance: '600',
-      createdAt: new Date('2024-01-01'), // Added date
+      createdAt: new Date('2024-01-01'),
       profile: { id: '3' }, // No category info
     };
     const sortedByCategory = sortAssets([...mockAssets, invlaidAsset], {
@@ -194,7 +190,7 @@ describe('sortAssets function - large dataset handling', () => {
 
     expect(sortedByName[0].name).toBe('Asset A');
     expect(sortedByName[sortedByName.length - 1].name).toBe('Asset Z');
-    expect(executionTime).toBeLessThan(MAX_EXECUTION_TIME_MS); // Ensure execution time is under limit
+    expect(executionTime).toBeLessThan(MAX_EXECUTION_TIME_MS);
   });
 
   test('sorts large dataset by balance in ascending order', () => {
@@ -212,7 +208,7 @@ describe('sortAssets function - large dataset handling', () => {
     expect(balances).toEqual(
       balances.slice().sort((a, b) => parseInt(a, 10) - parseInt(b, 10)),
     );
-    expect(executionTime).toBeLessThan(MAX_EXECUTION_TIME_MS); // Ensure execution time is under limit
+    expect(executionTime).toBeLessThan(MAX_EXECUTION_TIME_MS);
   });
 
   test('sorts large dataset by balance in descending order', () => {
@@ -230,7 +226,7 @@ describe('sortAssets function - large dataset handling', () => {
     expect(balances).toEqual(
       balances.slice().sort((a, b) => parseInt(b, 10) - parseInt(a, 10)),
     );
-    expect(executionTime).toBeLessThan(MAX_EXECUTION_TIME_MS); // Ensure execution time is under limit
+    expect(executionTime).toBeLessThan(MAX_EXECUTION_TIME_MS);
   });
 
   test('sorts large dataset by createdAt (date) in ascending order', () => {
@@ -246,7 +242,7 @@ describe('sortAssets function - large dataset handling', () => {
 
     const dates = sortedByDate.map((asset) => asset.createdAt.getTime());
     expect(dates).toEqual(dates.slice().sort((a, b) => a - b));
-    expect(executionTime).toBeLessThan(MAX_EXECUTION_TIME_MS); // Ensure execution time is under limit
+    expect(executionTime).toBeLessThan(MAX_EXECUTION_TIME_MS);
   });
 
   test('sorts large dataset by createdAt (date) in descending order', () => {
@@ -262,6 +258,6 @@ describe('sortAssets function - large dataset handling', () => {
 
     const dates = sortedByDate.map((asset) => asset.createdAt.getTime());
     expect(dates).toEqual(dates.slice().sort((a, b) => b - a));
-    expect(executionTime).toBeLessThan(MAX_EXECUTION_TIME_MS); // Ensure execution time is under limit
+    expect(executionTime).toBeLessThan(MAX_EXECUTION_TIME_MS);
   });
 });
