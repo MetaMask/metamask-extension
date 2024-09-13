@@ -117,6 +117,7 @@
     "participateInMetaMetrics": true,
     "metaMetricsId": "fake-metrics-id",
     "dataCollectionForMarketing": "boolean",
+    "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "previousUserTraits": "object",

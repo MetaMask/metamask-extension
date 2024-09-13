@@ -129,6 +129,7 @@
     "useExternalServices": "boolean",
     "selectedAddress": "string",
     "metaMetricsId": "fake-metrics-id",
+    "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "previousUserTraits": "object",

@@ -1008,7 +1008,7 @@
   "confirmTitleDescSignature": {
     "message": "Kumpirmahin lamang ang mensaheng ito kung ganap mong nauunawaan ang nilalaman at nagtitiwala sa site na humihiling."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Hiling sa limitasyon ng paggastos"
   },
   "confirmTitleSIWESignature": {

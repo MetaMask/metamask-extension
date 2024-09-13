@@ -1008,7 +1008,7 @@
   "confirmTitleDescSignature": {
     "message": "Chỉ xác nhận thông báo này nếu bạn chấp thuận nội dung và tin tưởng trang web yêu cầu."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Yêu cầu hạn mức chi tiêu"
   },
   "confirmTitleSIWESignature": {

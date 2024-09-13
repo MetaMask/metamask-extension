@@ -2,36 +2,59 @@
  * @jest-environment node
  */
 import { ControllerMessenger } from '@metamask/base-controller';
-import { TokenListController } from '@metamask/assets-controllers';
 import { AccountsController } from '@metamask/accounts-controller';
+import {
+  KeyringControllerGetAccountsAction,
+  KeyringControllerGetKeyringsByTypeAction,
+  KeyringControllerGetKeyringForAccountAction,
+  KeyringControllerStateChangeEvent,
+  KeyringControllerAccountRemovedEvent,
+} from '@metamask/keyring-controller';
+import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
+import { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
-import PreferencesController from './preferences';
+import { ThemeType } from '../../../shared/constants/preferences';
+import type {
+  AllowedActions,
+  AllowedEvents,
+  PreferencesControllerActions,
+  PreferencesControllerEvents,
+} from './preferences-controller';
+import PreferencesController from './preferences-controller';
 
 const NETWORK_CONFIGURATION_DATA = mockNetworkState(
   {
     id: 'test-networkConfigurationId-1',
     rpcUrl: 'https://testrpc.com',
     chainId: CHAIN_IDS.GOERLI,
-    name: '0X5',
     blockExplorerUrl: 'https://etherscan.io',
-    rpcEndpoints: [{ networkClientId: 'test-networkConfigurationId-1' }],
+    nickname: '0X5',
   },
   {
     id: 'test-networkConfigurationId-2',
     rpcUrl: 'http://localhost:8545',
     chainId: '0x539',
-    nativeCurrency: 'ETH',
-    name: 'Localhost 8545',
-    rpcEndpoints: [{ networkClientId: 'test-networkConfigurationId-2' }],
+    ticker: 'ETH',
+    nickname: 'Localhost 8545',
   },
 ).networkConfigurationsByChainId;
 
 describe('preferences controller', () => {
-  let controllerMessenger;
-  let preferencesController;
-  let accountsController;
-  let tokenListController;
+  let controllerMessenger: ControllerMessenger<
+    | PreferencesControllerActions
+    | AllowedActions
+    | KeyringControllerGetAccountsAction
+    | KeyringControllerGetKeyringsByTypeAction
+    | KeyringControllerGetKeyringForAccountAction,
+    | PreferencesControllerEvents
+    | KeyringControllerStateChangeEvent
+    | KeyringControllerAccountRemovedEvent
+    | SnapControllerStateChangeEvent
+    | AllowedEvents
+  >;
+  let preferencesController: PreferencesController;
+  let accountsController: AccountsController;
 
   beforeEach(() => {
     controllerMessenger = new ControllerMessenger();
@@ -50,19 +73,15 @@ describe('preferences controller', () => {
       ],
     });
 
+    const mockAccountsControllerState = {
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
+    };
     accountsController = new AccountsController({
       messenger: accountsControllerMessenger,
-    });
-
-    const tokenListMessenger = controllerMessenger.getRestricted({
-      name: 'TokenListController',
-    });
-    tokenListController = new TokenListController({
-      chainId: '1',
-      preventPollingOnNetworkRestart: false,
-      onNetworkStateChange: jest.fn(),
-      onPreferencesStateChange: jest.fn(),
-      messenger: tokenListMessenger,
+      state: mockAccountsControllerState,
     });
 
     const preferencesMessenger = controllerMessenger.getRestricted({
@@ -77,7 +96,6 @@ describe('preferences controller', () => {
 
     preferencesController = new PreferencesController({
       initLangCode: 'en_US',
-      tokenListController,
       networkConfigurationsByChainId: NETWORK_CONFIGURATION_DATA,
       messenger: preferencesMessenger,
     });
@@ -117,20 +135,22 @@ describe('preferences controller', () => {
     const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
 
     it('updating name from preference controller will update the name in accounts controller and preferences controller', () => {
-      controllerMessenger.publish('KeyringController:stateChange', {
-        isUnlocked: true,
-        keyrings: [
-          {
-            type: 'HD Key Tree',
-            accounts: [firstAddress, secondAddress],
-          },
-        ],
-      });
+      controllerMessenger.publish(
+        'KeyringController:stateChange',
+        {
+          isUnlocked: true,
+          keyrings: [
+            {
+              type: 'HD Key Tree',
+              accounts: [firstAddress, secondAddress],
+            },
+          ],
+        },
+        [],
+      );
 
       let [firstAccount, secondAccount] = accountsController.listAccounts();
-
       const { identities } = preferencesController.store.getState();
-
       const firstPreferenceAccount = identities[firstAccount.address];
       const secondPreferenceAccount = identities[secondAccount.address];
 
@@ -161,15 +181,19 @@ describe('preferences controller', () => {
     });
 
     it('updating name from accounts controller updates the name in preferences controller', () => {
-      controllerMessenger.publish('KeyringController:stateChange', {
-        isUnlocked: true,
-        keyrings: [
-          {
-            type: 'HD Key Tree',
-            accounts: [firstAddress, secondAddress],
-          },
-        ],
-      });
+      controllerMessenger.publish(
+        'KeyringController:stateChange',
+        {
+          isUnlocked: true,
+          keyrings: [
+            {
+              type: 'HD Key Tree',
+              accounts: [firstAddress, secondAddress],
+            },
+          ],
+        },
+        [],
+      );
 
       let [firstAccount, secondAccount] = accountsController.listAccounts();
 
@@ -208,15 +232,19 @@ describe('preferences controller', () => {
     it('updating selectedAddress from preferences controller updates the selectedAccount in accounts controller and preferences controller', () => {
       const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
       const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
-      controllerMessenger.publish('KeyringController:stateChange', {
-        isUnlocked: true,
-        keyrings: [
-          {
-            type: 'HD Key Tree',
-            accounts: [firstAddress, secondAddress],
-          },
-        ],
-      });
+      controllerMessenger.publish(
+        'KeyringController:stateChange',
+        {
+          isUnlocked: true,
+          keyrings: [
+            {
+              type: 'HD Key Tree',
+              accounts: [firstAddress, secondAddress],
+            },
+          ],
+        },
+        [],
+      );
 
       const selectedAccount = accountsController.getSelectedAccount();
 
@@ -238,15 +266,19 @@ describe('preferences controller', () => {
     it('updating selectedAccount from accounts controller updates the selectedAddress in preferences controller', () => {
       const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
       const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
-      controllerMessenger.publish('KeyringController:stateChange', {
-        isUnlocked: true,
-        keyrings: [
-          {
-            type: 'HD Key Tree',
-            accounts: [firstAddress, secondAddress],
-          },
-        ],
-      });
+      controllerMessenger.publish(
+        'KeyringController:stateChange',
+        {
+          isUnlocked: true,
+          keyrings: [
+            {
+              type: 'HD Key Tree',
+              accounts: [firstAddress, secondAddress],
+            },
+          ],
+        },
+        [],
+      );
 
       const selectedAccount = accountsController.getSelectedAccount();
       const accounts = accountsController.listAccounts();
@@ -356,9 +388,20 @@ describe('preferences controller', () => {
     });
 
     it('should keep initial value of useTokenDetection for existing users', function () {
+      // TODO: Remove unregisterActionHandler and clearEventSubscriptions once the PreferencesController has been refactored to use the withController pattern.
+      controllerMessenger.unregisterActionHandler(
+        'PreferencesController:getState',
+      );
+      controllerMessenger.clearEventSubscriptions(
+        'PreferencesController:stateChange',
+      );
       const preferencesControllerExistingUser = new PreferencesController({
+        messenger: controllerMessenger.getRestricted({
+          name: 'PreferencesController',
+          allowedActions: [],
+          allowedEvents: ['AccountsController:stateChange'],
+        }),
         initLangCode: 'en_US',
-        tokenListController,
         initState: {
           useTokenDetection: false,
         },
@@ -447,7 +490,7 @@ describe('preferences controller', () => {
     });
 
     it('should set the setTheme property in state', () => {
-      preferencesController.setTheme('dark');
+      preferencesController.setTheme(ThemeType.dark);
       expect(preferencesController.store.getState().theme).toStrictEqual(
         'dark',
       );
@@ -473,12 +516,16 @@ describe('preferences controller', () => {
     const addedNonTestNetworks = Object.keys(NETWORK_CONFIGURATION_DATA);
 
     it('should have default value combined', () => {
-      const state = preferencesController.store.getState();
+      const state: {
+        incomingTransactionsPreferences: Record<string, boolean>;
+      } = preferencesController.store.getState();
       expect(state.incomingTransactionsPreferences).toStrictEqual({
         [CHAIN_IDS.MAINNET]: true,
         [CHAIN_IDS.LINEA_MAINNET]: true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[0]].chainId]: true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1]].chainId]: true,
+        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[0] as Hex].chainId]:
+          true,
+        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1] as Hex].chainId]:
+          true,
         [CHAIN_IDS.GOERLI]: true,
         [CHAIN_IDS.SEPOLIA]: true,
         [CHAIN_IDS.LINEA_SEPOLIA]: true,
@@ -487,15 +534,19 @@ describe('preferences controller', () => {
 
     it('should update incomingTransactionsPreferences with given value set', () => {
       preferencesController.setIncomingTransactionsPreferences(
-        [CHAIN_IDS.LINEA_MAINNET],
+        CHAIN_IDS.LINEA_MAINNET,
         false,
       );
-      const state = preferencesController.store.getState();
+      const state: {
+        incomingTransactionsPreferences: Record<string, boolean>;
+      } = preferencesController.store.getState();
       expect(state.incomingTransactionsPreferences).toStrictEqual({
         [CHAIN_IDS.MAINNET]: true,
         [CHAIN_IDS.LINEA_MAINNET]: false,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[0]].chainId]: true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1]].chainId]: true,
+        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[0] as Hex].chainId]:
+          true,
+        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1] as Hex].chainId]:
+          true,
         [CHAIN_IDS.GOERLI]: true,
         [CHAIN_IDS.SEPOLIA]: true,
         [CHAIN_IDS.LINEA_SEPOLIA]: true,
@@ -507,15 +558,19 @@ describe('preferences controller', () => {
     it('sync the identities with the accounts in the accounts controller', () => {
       const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
       const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
-      controllerMessenger.publish('KeyringController:stateChange', {
-        isUnlocked: true,
-        keyrings: [
-          {
-            type: 'HD Key Tree',
-            accounts: [firstAddress, secondAddress],
-          },
-        ],
-      });
+      controllerMessenger.publish(
+        'KeyringController:stateChange',
+        {
+          isUnlocked: true,
+          keyrings: [
+            {
+              type: 'HD Key Tree',
+              accounts: [firstAddress, secondAddress],
+            },
+          ],
+        },
+        [],
+      );
 
       const accounts = accountsController.listAccounts();
 

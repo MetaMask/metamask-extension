@@ -1008,7 +1008,7 @@
   "confirmTitleDescSignature": {
     "message": "Ne confirmez ce message que si vous approuvez son contenu et faites confiance au site demandeur."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Demande de plafonnement des dépenses"
   },
   "confirmTitleSIWESignature": {

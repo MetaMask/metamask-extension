@@ -1008,7 +1008,7 @@
   "confirmTitleDescSignature": {
     "message": "このメッセージの内容を承認し、要求元のサイトを信頼する場合にのみ確定してください。"
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "使用上限リクエスト"
   },
   "confirmTitleSIWESignature": {

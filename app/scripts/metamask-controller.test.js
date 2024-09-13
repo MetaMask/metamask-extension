@@ -115,11 +115,11 @@ const rpcMethodMiddlewareMock = {
 jest.mock('./lib/rpc-method-middleware', () => rpcMethodMiddlewareMock);
 
 jest.mock(
-  './controllers/preferences',
+  './controllers/preferences-controller',
   () =>
     function (...args) {
       const PreferencesController = jest.requireActual(
-        './controllers/preferences',
+        './controllers/preferences-controller',
       ).default;
       const controller = new PreferencesController(...args);
       // jest.spyOn gets hoisted to the top of this function before controller is initialized.
