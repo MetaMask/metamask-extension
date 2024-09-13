@@ -2669,7 +2669,7 @@ export function updateSendAsset(
 
       if (details.standard === TokenStandard.ERC20) {
         asset.balance =
-          details.balance && details.decimals
+          details.balance && typeof details.decimals === 'number'
             ? addHexPrefix(
                 calcTokenAmount(details.balance, details.decimals).toString(16),
               )
