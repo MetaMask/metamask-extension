@@ -18,13 +18,13 @@ export const useMultichainCurrencyDisplayByAsset = ({
   };
   amount: string;
 }): {
-  feeInFiat: string;
-  displayValueFee: string;
+  fiatValue: string;
+  displayValue: string;
 } => {
   const conversionRates = useMultichainSelector(getMultichainCoinRates);
   const currency = useMultichainSelector(getMultichainCurrentCurrency);
 
-  const feeInFiat = useMemo(() => {
+  const fiatValue = useMemo(() => {
     if (!conversionRates || !amount) {
       return '';
     }
@@ -36,13 +36,15 @@ export const useMultichainCurrencyDisplayByAsset = ({
     // rates are in the largest  denomination of the asset
     // e.g. 1 ETH = 1000000000000000000 wei
     // e.g. 1 BTC = 100000000 satoshis
-    const fiatValue = new BigNumber(amount).mul(new BigNumber(conversionRate));
-    const formattedValue = formatCurrency(fiatValue.toString(), currency);
+    const fiatValueBN = new BigNumber(amount).mul(
+      new BigNumber(conversionRate),
+    );
+    const formattedValue = formatCurrency(fiatValueBN.toString(), currency);
 
     return formattedValue;
   }, [amount, conversionRates]);
 
-  const displayValueFee = `${amount} ${assetDetails.symbol}`;
+  const displayValue = `${amount} ${assetDetails.symbol}`;
 
-  return { feeInFiat, displayValueFee };
+  return { fiatValue, displayValue };
 };

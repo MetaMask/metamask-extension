@@ -1,13 +1,13 @@
 import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
+import { BtcAccountType } from '@metamask/keyring-api';
 import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
-import { useMultichainCurrencyDisplayByAsset } from './useMultichainCurrencyDisplayByAsset';
 import { NativeAsset } from '../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { AssetType } from '../../shared/constants/transaction';
 import { createMockInternalAccount } from '../../test/jest/mocks';
-import { BtcAccountType } from '@metamask/keyring-api';
+import { useMultichainCurrencyDisplayByAsset } from './useMultichainCurrencyDisplayByAsset';
 
 const mockAsset: NativeAsset & {
   balance: string;
@@ -75,8 +75,8 @@ describe('useMultichainCurrencyDisplayByAsset', () => {
       amount,
     );
 
-    expect(result.current.feeInFiat).toBe('$0.00');
-    expect(result.current.displayValueFee).toBe(`0 ${mockAsset.symbol}`);
+    expect(result.current.fiatValue).toBe('$0.00');
+    expect(result.current.displayValue).toBe(`0 ${mockAsset.symbol}`);
   });
 
   // @ts-expect-error This function is missing from the Mocha type definitions
@@ -117,8 +117,8 @@ describe('useMultichainCurrencyDisplayByAsset', () => {
         amount,
       );
 
-      expect(result.current.feeInFiat).toBe(expectedFeeInFiat);
-      expect(result.current.displayValueFee).toBe(expectedDisplayValueFee);
+      expect(result.current.fiatValue).toBe(expectedFeeInFiat);
+      expect(result.current.displayValue).toBe(expectedDisplayValueFee);
     },
   );
 });
