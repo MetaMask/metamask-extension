@@ -331,6 +331,7 @@ export const NetworksForm = ({
           size={FormTextFieldSize.Lg}
           placeholder={t('enterNetworkName')}
           data-testid="network-form-name-input"
+          autoFocus
           helpText={
             ((name && warnings?.name?.msg) || suggestedName) && (
               <>
@@ -339,7 +340,7 @@ export const NetworksForm = ({
                     variant={TextVariant.bodySm}
                     severity={HelpTextSeverity.Warning}
                   >
-                    {warnings?.name?.msg}
+                    {warnings.name.msg}
                   </HelpText>
                 )}
 
