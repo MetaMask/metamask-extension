@@ -37,8 +37,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   SwapsEthToken,
   getCurrentKeyring,
-  getSelectedInternalAccount,
   ///: END:ONLY_INCLUDE_IF
+  getSelectedInternalAccount,
   getUseExternalServices,
   getSelectedAccount,
 } from '../../../selectors';
@@ -240,19 +240,6 @@ const CoinButtons = ({
       { excludeMetaMetricsId: false },
     );
     if (isBtcAccount(selectedAccount)) {
-      // // Client to create the account using the Bitcoin Snap
-      // const client = new KeyringClient(new BitcoinWalletSnapSender());
-
-      // // This will trigger the Snap account creation flow (+ account renaming)
-      // await client.submitRequest({
-      //   id: uuid(),
-      //   scope: chainId as CaipChainId,
-      //   account: selectedAccount.id,
-      //   request: {
-      //     method: BtcMethod.SendMany,
-      //     params: {},
-      //   },
-      // });
       await dispatch(
         startNewMultichainDraftTransaction({
           account: selectedAccount,
