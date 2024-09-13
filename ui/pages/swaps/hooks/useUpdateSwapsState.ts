@@ -18,6 +18,7 @@ import {
   getIsSwapsChain,
   getUseExternalServices,
 } from '../../../selectors';
+import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
 
 export default function useUpdateSwapsState() {
   const dispatch = useDispatch();
@@ -35,7 +36,7 @@ export default function useUpdateSwapsState() {
       return undefined;
     }
 
-    fetchTokens(chainId)
+    fetchTokens(chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP)
       .then((tokens) => {
         dispatch(setSwapsTokens(tokens));
       })

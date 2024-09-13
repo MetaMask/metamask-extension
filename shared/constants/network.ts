@@ -87,6 +87,8 @@ export const NETWORK_TYPES = {
   LINEA_MAINNET: 'linea-mainnet',
 } as const;
 
+export type NetworkTypes = (typeof NETWORK_TYPES)[keyof typeof NETWORK_TYPES];
+
 /**
  * An object containing shortcut names for any non-builtin network. We need
  * this to be able to differentiate between networks that require custom

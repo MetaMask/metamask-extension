@@ -16,6 +16,9 @@ import {
   SwapsEthToken,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { getProviderConfig } from '../../selectors/networks';
+///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -33,7 +36,6 @@ import { isHardwareKeyring } from '../../helpers/utils/hardware';
 import { getPortfolioUrl } from '../../helpers/utils/portfolio';
 import { setSwapsFromToken } from '../../ducks/swaps/swaps';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
-import { getProviderConfig } from '../../ducks/metamask/metamask';
 ///: END:ONLY_INCLUDE_IF
 
 const useBridging = () => {

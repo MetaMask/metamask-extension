@@ -1,4 +1,5 @@
 import { SUPPORTED_CHAIN_IDS } from '@metamask/assets-controllers';
+import { Hex } from '@metamask/utils';
 
 /** Formats a datetime in a short human readable format like 'Feb 8, 12:11 PM' */
 export const getShortDateFormatter = () =>
@@ -59,7 +60,7 @@ export const getPricePrecision = (price: number) => {
  *
  * @param chainId - The hexadecimal chain id.
  */
-export const chainSupportsPricing = (chainId: `0x${string}`) =>
+export const chainSupportsPricing = (chainId: Hex) =>
   (SUPPORTED_CHAIN_IDS as readonly string[]).includes(chainId);
 
 /** The opacity components should set during transition */
