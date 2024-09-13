@@ -9,7 +9,10 @@ import { useSignatureEventFragment } from './useSignatureEventFragment';
 const renderUseSignatureEventFragment = (signature: SignatureRequestType) => {
   const mockState = getMockTypedSignConfirmStateForRequest(signature);
 
-  return renderHookWithConfirmContextProvider(() => useSignatureEventFragment(), mockState);
+  return renderHookWithConfirmContextProvider(
+    () => useSignatureEventFragment(),
+    mockState,
+  );
 };
 
 jest.mock('../../../store/actions', () => ({
@@ -25,14 +28,19 @@ describe('useSignatureEventFragment', () => {
         event_name1: 'test_event 1',
         event_name2: 'test_event 2',
       };
-      const expectedFragmentId = generateSignatureUniqueId(orderSignatureMsg.msgParams.requestId);
+      const expectedFragmentId = generateSignatureUniqueId(
+        orderSignatureMsg.msgParams.requestId,
+      );
 
       const { result } = renderUseSignatureEventFragment(orderSignatureMsg);
       const { updateSignatureEventFragment } = result.current;
 
       updateSignatureEventFragment(mockUpdateProps);
 
-      expect(updateEventFragment).toHaveBeenCalledWith(expectedFragmentId, mockUpdateProps);
+      expect(updateEventFragment).toHaveBeenCalledWith(
+        expectedFragmentId,
+        mockUpdateProps,
+      );
     });
 
     it('should not call updateEventFragment if no signature requestId was found', () => {
@@ -46,7 +54,9 @@ describe('useSignatureEventFragment', () => {
           origin: '`https:///example.com`',
         },
       };
-      const { result } = renderUseSignatureEventFragment(mockSignatureWithoutRequestId);
+      const { result } = renderUseSignatureEventFragment(
+        mockSignatureWithoutRequestId,
+      );
       const { updateSignatureEventFragment } = result.current;
 
       updateSignatureEventFragment();
