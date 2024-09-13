@@ -7,9 +7,10 @@ import {
   Text,
   Box,
   Button,
+  ButtonBase,
   AvatarNetworkSize,
   BadgeWrapper,
-  AvatarNetwork,
+  AvatarNetwork
 } from '../../../component-library';
 import {
   AlignItems,
@@ -130,7 +131,7 @@ export function AssetPicker({
         }
       />
 
-      <Button
+      <ButtonBase
         data-testid="asset-picker-button"
         className="asset-picker"
         disabled={isDisabled}
@@ -181,8 +182,13 @@ export function AssetPicker({
             </BadgeWrapper>
           </Box>
 
-          <Tooltip disabled={!isSymbolLong} title={symbol} position="bottom">
-            <Text className="asset-picker__symbol" variant={TextVariant.bodyMd}>
+          <Tooltip
+            disabled={!isSymbolLong}
+            title={symbol}
+            position="bottom"
+            wrapperClassName="mm-box"
+          >
+            <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
               {formattedSymbol}
             </Text>
             {isNFT && asset?.tokenId && (
@@ -198,7 +204,7 @@ export function AssetPicker({
             )}
           </Tooltip>
         </Box>
-      </Button>
+      </ButtonBase>
     </>
   );
 }
