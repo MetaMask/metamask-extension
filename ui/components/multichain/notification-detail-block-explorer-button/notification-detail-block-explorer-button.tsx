@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { NetworkConfiguration } from '@metamask/network-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { getAllNetworks } from '../../../selectors';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -32,7 +31,7 @@ export const NotificationDetailBlockExplorerButton = ({
     `0x${chainIdHex}` as keyof typeof CHAIN_IDS,
   );
 
-  const defaultNetworks: NetworkConfiguration[] = useSelector(getAllNetworks);
+  const defaultNetworks = useSelector(getAllNetworks);
   const defaultNetwork = useMemo(() => {
     return defaultNetworks.find((n) => n.chainId === chainIdHex);
   }, [defaultNetworks]);

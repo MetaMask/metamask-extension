@@ -11,15 +11,12 @@ import {
 import { getSelectedAccountCachedBalance } from '../../../selectors';
 import { getIsCustodianSupportedChain } from '../../../selectors/institutional/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../selectors/networks';
 import { Icon, IconName, IconSize, Box, Text } from '../../component-library';
 
 const WrongNetworkNotification: React.FC = () => {
   const t = useI18nContext();
-  const providerConfig = useSelector<
-    object,
-    { nickname: string; type: string }
-  >(getProviderConfig);
+  const providerConfig = useSelector(getProviderConfig);
   const balance = useSelector<string | null>(getSelectedAccountCachedBalance);
 
   const isCustodianSupportedChain = useSelector(getIsCustodianSupportedChain);

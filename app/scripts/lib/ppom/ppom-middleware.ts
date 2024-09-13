@@ -14,7 +14,7 @@ import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences';
 import { AppStateController } from '../../controllers/app-state';
 import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
-import { getProviderConfig } from '../../../../ui/ducks/metamask/metamask';
+import { getProviderConfig } from '../../../../ui/selectors/networks';
 import { trace, TraceContext } from '../../../../shared/lib/trace';
 import {
   generateSecurityAlertId,

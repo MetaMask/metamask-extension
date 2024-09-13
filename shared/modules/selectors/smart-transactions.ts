@@ -12,6 +12,7 @@ import {
 import { isProduction } from '../environment';
 
 import { MultichainState } from '../../../ui/selectors/multichain';
+import { NetworkState } from '../../../ui/selectors/networks';
 
 type SmartTransactionsMetaMaskState = {
   metamask: {
@@ -73,9 +74,7 @@ export const getCurrentChainSupportsSmartTransactions = (
   return getAllowedSmartTransactionsChainIds().includes(chainId);
 };
 
-const getIsAllowedRpcUrlForSmartTransactions = (
-  state: SmartTransactionsMetaMaskState,
-) => {
+const getIsAllowedRpcUrlForSmartTransactions = (state: NetworkState) => {
   const chainId = getCurrentChainId(state);
   if (!isProduction() || SKIP_STX_RPC_URL_CHECK_CHAIN_IDS.includes(chainId)) {
     // Allow any STX RPC URL in development and testing environments or for specific chain IDs.
@@ -104,7 +103,7 @@ const hasNonZeroBalance = (state: SmartTransactionsMetaMaskState) => {
 };
 
 export const getIsSmartTransactionsOptInModalAvailable = (
-  state: SmartTransactionsMetaMaskState,
+  state: SmartTransactionsMetaMaskState & NetworkState,
 ) => {
   return (
     getCurrentChainSupportsSmartTransactions(state) &&
@@ -115,7 +114,7 @@ export const getIsSmartTransactionsOptInModalAvailable = (
 };
 
 export const getSmartTransactionsEnabled = (
-  state: SmartTransactionsMetaMaskState,
+  state: SmartTransactionsMetaMaskState & NetworkState,
 ): boolean => {
   const supportedAccount = accountSupportsSmartTx(state);
   // TODO: Create a new proxy service only for MM feature flags.
@@ -134,7 +133,7 @@ export const getSmartTransactionsEnabled = (
 };
 
 export const getIsSmartTransaction = (
-  state: SmartTransactionsMetaMaskState,
+  state: SmartTransactionsMetaMaskState & NetworkState,
 ): boolean => {
   const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
   const smartTransactionsEnabled = getSmartTransactionsEnabled(state);

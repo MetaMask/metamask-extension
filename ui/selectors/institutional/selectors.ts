@@ -1,7 +1,7 @@
 import { toChecksumAddress } from 'ethereumjs-util';
 import { getAccountType } from '../selectors';
 import { getSelectedInternalAccount } from '../accounts';
-import { getProviderConfig } from '../../ducks/metamask/metamask';
+import { getProviderConfig } from '../networks';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 import { AccountType } from '../../../shared/constants/custody';
@@ -167,6 +167,7 @@ export function getIsCustodianSupportedChain(state: State) {
     // @ts-expect-error state types don't match
     const selectedAccount = getSelectedInternalAccount(state);
     const accountType = getAccountType(state);
+    // @ts-expect-error state is a poorly typed object?
     const providerConfig = getProviderConfig(state);
 
     if (!selectedAccount || !accountType || !providerConfig) {

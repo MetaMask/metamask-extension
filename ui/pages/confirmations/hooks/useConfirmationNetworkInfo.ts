@@ -9,7 +9,7 @@ import {
   currentConfirmationSelector,
   getAllNetworks,
 } from '../../../selectors';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../selectors/networks';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 

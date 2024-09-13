@@ -61,6 +61,18 @@ export type AssetPickerProps = {
   isDisabled?: boolean;
 };
 
+/**
+ * Formats long symbols by truncating them, when `truncate` is true, otherwise
+ * returns the symbol as is.
+ *
+ * @param symbol - The symbol to format
+ * @param truncate - Whether to truncate the symbol
+ * @returns a string truncated to `LARGE_SYMBOL_LENGTH` characters followed by `...`
+ */
+function formatSymbol(symbol: string, truncate: boolean) {
+  return truncate ? `${symbol.slice(0, LARGE_SYMBOL_LENGTH - 1)}...` : symbol;
+}
+
 // A component that lets the user pick from a list of assets.
 export function AssetPicker({
   asset,
@@ -106,18 +118,27 @@ export function AssetPicker({
     }
   }
 
-  const symbol =
-    asset.type === AssetType.native
-      ? nativeCurrencySymbol
-      : asset.details?.symbol;
-
-  const isSymbolLong = symbol?.length > LARGE_SYMBOL_LENGTH;
-  const isNFT = asset.type === AssetType.NFT;
-
-  const formattedSymbol =
-    isSymbolLong && !isNFT
-      ? `${symbol.substring(0, LARGE_SYMBOL_LENGTH - 1)}...`
-      : symbol;
+  // formatting the symbol
+  let symbol: string | undefined;
+  let formattedSymbol: string | undefined;
+  let isNFT = false;
+  let isSymbolLong = false;
+  if (asset.type === AssetType.native) {
+    symbol = nativeCurrencySymbol;
+    if (symbol) {
+      isSymbolLong = symbol.length > LARGE_SYMBOL_LENGTH;
+      formattedSymbol = formatSymbol(symbol, isSymbolLong && !isNFT);
+    }
+  } else {
+    if (asset.type === AssetType.NFT) {
+      isNFT = true;
+    }
+    symbol = asset.details?.symbol;
+    if (symbol) {
+      isSymbolLong = symbol.length > LARGE_SYMBOL_LENGTH;
+      formattedSymbol = formatSymbol(symbol, isSymbolLong && !isNFT);
+    }
+  }
 
   // Badge details
   const currentNetwork = useSelector(getCurrentNetwork);

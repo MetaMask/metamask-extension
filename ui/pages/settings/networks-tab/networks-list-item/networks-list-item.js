@@ -12,7 +12,7 @@ import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { setSelectedNetworkConfigurationId } from '../../../../store/actions';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
-import { getProviderConfig } from '../../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../../selectors/networks';
 import Identicon from '../../../../components/ui/identicon';
 import UrlIcon from '../../../../components/ui/url-icon';
 

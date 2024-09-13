@@ -60,8 +60,8 @@ import { getSendStage } from '../../ducks/send';
 import {
   getAlertEnabledness,
   getIsUnlocked,
-  getProviderConfig,
 } from '../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../selectors/networks';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import Routes from './routes.component';
 

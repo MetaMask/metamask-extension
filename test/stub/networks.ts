@@ -9,6 +9,7 @@ import {
   NETWORK_TO_NAME_MAP,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
 } from '../../shared/constants/network';
+import { NetworkState as NetworkState2 } from '../../ui/selectors/networks';
 
 export const mockNetworkState = (
   ...networks: {
@@ -21,7 +22,7 @@ export const mockNetworkState = (
     blockExplorerUrl?: string;
     metadata?: NetworkMetadata;
   }[]
-): NetworkState => {
+): NetworkState & NetworkState2['metamask'] => {
   const networkConfigurations = networks.map((network) => ({
     id: network.id ?? uuidv4(),
     chainId: network.chainId,

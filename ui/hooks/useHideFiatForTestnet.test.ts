@@ -51,7 +51,7 @@ describe('useHideFiatForTestnet', () => {
 
   it('returns false if current network is not a testnet', () => {
     mockGetShowFiatInTestnets.mockReturnValue(false);
-    mockGetCurrentChainId.mockReturnValue('1');
+    mockGetCurrentChainId.mockReturnValue('0x1');
 
     const { result } = renderHook(() => useHideFiatForTestnet());
 
@@ -60,7 +60,7 @@ describe('useHideFiatForTestnet', () => {
 
   it('returns false if current network is not a testnet but showFiatInTestnets is true', () => {
     mockGetShowFiatInTestnets.mockReturnValue(true);
-    mockGetCurrentChainId.mockReturnValue('1');
+    mockGetCurrentChainId.mockReturnValue('0x1');
 
     const { result } = renderHook(() => useHideFiatForTestnet());
 

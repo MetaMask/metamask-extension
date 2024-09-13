@@ -14,6 +14,7 @@ import {
 import { Line } from 'react-chartjs-2';
 import classnames from 'classnames';
 import { brandColor } from '@metamask/design-tokens';
+import { CaipChainId, Hex } from '@metamask/utils';
 import { useTheme } from '../../../../hooks/useTheme';
 import {
   BackgroundColor,
@@ -80,7 +81,7 @@ const AssetChart = ({
   currentPrice,
   currency,
 }: {
-  chainId: `0x${string}`;
+  chainId: Hex | CaipChainId;
   address: string;
   currentPrice?: number;
   currency: string;

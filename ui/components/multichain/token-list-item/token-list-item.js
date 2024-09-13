@@ -59,7 +59,7 @@ import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setSelectedNetworkConfigurationId } from '../../../store/actions';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../selectors/networks';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 

@@ -387,7 +387,8 @@
         "chainId": "0x1",
         "nickname": "Custom Mainnet RPC",
         "type": "rpc",
-        "id": "testNetworkConfigurationId"
+        "id": "testNetworkConfigurationId",
+        "ticker": "ETH"
       },
       "goerli": {
         "type": "rpc",

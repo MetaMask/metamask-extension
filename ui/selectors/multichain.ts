@@ -15,7 +15,6 @@ import {
   getCompletedOnboarding,
   getConversionRate,
   getNativeCurrency,
-  getProviderConfig,
 } from '../ducks/metamask/metamask';
 import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
@@ -25,6 +24,11 @@ import {
   NETWORK_TYPES,
   TEST_NETWORK_IDS,
 } from '../../shared/constants/network';
+import {
+  getProviderConfig,
+  NetworkState,
+  getNetworkConfigurations,
+} from './networks';
 import { AccountsState, getSelectedInternalAccount } from './accounts';
 import {
   getCurrentChainId,
@@ -32,7 +36,6 @@ import {
   getIsMainnet,
   getMaybeSelectedInternalAccount,
   getNativeCurrencyImage,
-  getNetworkConfigurations,
   getSelectedAccountCachedBalance,
   getShouldShowFiat,
   getShowFiatInTestnets,
@@ -46,7 +49,10 @@ export type BalancesState = {
   metamask: BalancesControllerState;
 };
 
-export type MultichainState = AccountsState & RatesState & BalancesState;
+export type MultichainState = AccountsState &
+  RatesState &
+  BalancesState &
+  NetworkState;
 
 // TODO: Remove after updating to @metamask/network-controller 20.0.0
 export type ProviderConfigWithImageUrlAndExplorerUrl = {
@@ -136,8 +142,9 @@ export function getMultichainNetwork(
     // TODO: Update to use network configurations when @metamask/network-controller is updated to 20.0.0
     // ProviderConfig will be deprecated to use NetworkConfigurations
     // When a user updates a network name its only updated in the NetworkConfigurations.
-    const evmNetwork: ProviderConfigWithImageUrlAndExplorerUrl =
-      getProviderConfig(state);
+    const evmNetwork = getProviderConfig(
+      state,
+    ) as ProviderConfigWithImageUrlAndExplorerUrl;
     // Fallback to a known network image if network configuration does not defined it
     const evmChainIdKey =
       evmChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;

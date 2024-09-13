@@ -15,17 +15,15 @@ import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
   getAddressBook,
-  getSelectedNetworkClientId,
-  getNetworkConfigurations,
 } from '../../selectors/selectors';
+import {
+  getProviderConfig,
+  getSelectedNetworkClientId,
+} from '../../selectors/networks';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
-import {
-  BUILT_IN_INFURA_NETWORKS,
-  NETWORK_TYPES,
-} from '../../../shared/constants/network';
 
 const initialState = {
   isInitialized: false,
@@ -275,26 +273,6 @@ export function updateGasFees({
 // Selectors
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
-
-/**
- * Get the provider configuration for the current selected network.
- *
- * @param {object} state - Redux state object.
- */
-export function getProviderConfig(state) {
-  const networkClientId = getSelectedNetworkClientId(state);
-  const builtInNetwork = BUILT_IN_INFURA_NETWORKS[networkClientId];
-  return builtInNetwork
-    ? {
-        ...builtInNetwork,
-        type: networkClientId,
-        rpcPrefs: { blockExplorerUrl: builtInNetwork.blockExplorerUrl },
-      }
-    : {
-        ...getNetworkConfigurations(state)[networkClientId],
-        type: NETWORK_TYPES.RPC,
-      };
-}
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>
   getAlertEnabledness(state)[AlertTypes.unconnectedAccount];

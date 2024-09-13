@@ -18,7 +18,7 @@ import {
   getNetworkConfigurations,
   getNetworksTabSelectedNetworkConfigurationId,
 } from '../../../selectors';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../selectors/networks';
 import {
   NETWORK_TYPES,
   TEST_CHAINS,

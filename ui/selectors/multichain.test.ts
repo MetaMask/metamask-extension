@@ -1,9 +1,6 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-api';
-import {
-  getNativeCurrency,
-  getProviderConfig,
-} from '../ducks/metamask/metamask';
+import { getNativeCurrency } from '../ducks/metamask/metamask';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
@@ -23,6 +20,7 @@ import {
 } from '../../shared/constants/network';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import { mockNetworkState } from '../../test/stub/networks';
+import { getProviderConfig } from './networks';
 import { AccountsState } from './accounts';
 import {
   MultichainState,

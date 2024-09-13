@@ -572,40 +572,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getNetworkConfigurations', () => {
-    it('returns undefined if state.metamask.networkConfigurations is undefined', () => {
-      expect(
-        selectors.getNetworkConfigurations({
-          metamask: {},
-        }),
-      ).toBeUndefined();
-    });
-
-    it('returns networkConfigurations', () => {
-      const networkConfigurations = {
-        testNetworkConfigurationId1: {
-          rpcUrl: 'https://mock-rpc-url-1',
-          chainId: '0xtest',
-          ticker: 'TEST',
-          id: 'testNetworkConfigurationId1',
-        },
-        testNetworkConfigurationId2: {
-          rpcUrl: 'https://mock-rpc-url-2',
-          chainId: '0x1337',
-          ticker: 'RPC',
-          id: 'testNetworkConfigurationId2',
-        },
-      };
-      expect(
-        selectors.getNetworkConfigurations({
-          metamask: {
-            networkConfigurations,
-          },
-        }),
-      ).toStrictEqual(networkConfigurations);
-    });
-  });
-
   describe('#getNonTestNetworks', () => {
     it('returns nonTestNetworks', () => {
       const nonTestNetworks = selectors.getNonTestNetworks({
@@ -1186,24 +1152,6 @@ describe('Selectors', () => {
 
     mockState.metamask.snapsInstallPrivacyWarningShown = null;
     expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
-  });
-
-  it('#getInfuraBlocked', () => {
-    let isInfuraBlocked = selectors.getInfuraBlocked(mockState);
-    expect(isInfuraBlocked).toBe(false);
-
-    const modifiedMockState = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        ...mockNetworkState({
-          chainId: CHAIN_IDS.GOERLI,
-          metadata: { status: 'blocked' },
-        }),
-      },
-    };
-    isInfuraBlocked = selectors.getInfuraBlocked(modifiedMockState);
-    expect(isInfuraBlocked).toBe(true);
   });
 
   it('#getSnapRegistryData', () => {

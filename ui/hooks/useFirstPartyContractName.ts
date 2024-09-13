@@ -1,5 +1,6 @@
 import { NameType } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
+import { type Hex } from '@metamask/utils';
 import { getCurrentChainId } from '../selectors';
 import {
   EXPERIENCES_TYPE,
@@ -28,8 +29,8 @@ export function useFirstPartyContractNames(
     return (
       Object.keys(FIRST_PARTY_CONTRACT_NAMES).find(
         (name) =>
-          FIRST_PARTY_CONTRACT_NAMES[name as EXPERIENCES_TYPE]?.[
-            chainId
+          FIRST_PARTY_CONTRACT_NAMES[name as EXPERIENCES_TYPE][
+            chainId as Hex
           ]?.toLowerCase() === normalizedValue,
       ) ?? null
     );

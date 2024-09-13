@@ -224,7 +224,7 @@ import {
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
 import { getCurrentChainId } from '../../ui/selectors';
-import { getProviderConfig } from '../../ui/ducks/metamask/metamask';
+import { getProviderConfig } from '../../ui/selectors/networks';
 import { endTrace, trace } from '../../shared/lib/trace';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {

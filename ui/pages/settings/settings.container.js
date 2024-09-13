@@ -28,7 +28,7 @@ import {
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
 } from '../../helpers/constants/routes';
-import { getProviderConfig } from '../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../selectors/networks';
 import Settings from './settings.component';
 
 const ROUTES_TO_I18N_KEYS = {

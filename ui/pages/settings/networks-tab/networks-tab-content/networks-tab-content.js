@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import NetworksForm from '../networks-form';
 import NetworksList from '../networks-list';
-import { getProviderConfig } from '../../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../../selectors/networks';
 
 import {
   DEFAULT_ROUTE,

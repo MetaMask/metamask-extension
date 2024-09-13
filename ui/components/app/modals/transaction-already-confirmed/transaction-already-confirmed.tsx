@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { type TransactionMeta } from '@metamask/transaction-controller';
-import { type NetworkClientConfiguration } from '@metamask/network-controller';
 import {
   getRpcPrefsForCurrentProvider,
   getTransaction,
@@ -38,9 +37,7 @@ export default function TransactionAlreadyConfirmed() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (getTransaction as any)(state, originalTransactionId),
   );
-  const rpcPrefs: NetworkClientConfiguration = useSelector(
-    getRpcPrefsForCurrentProvider,
-  );
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
 
   const viewTransaction = () => {
     // TODO: Fix getBlockExplorerLink arguments compatible with the actual controller types
@@ -48,9 +45,7 @@ export default function TransactionAlreadyConfirmed() {
       // TODO: Replace `any` with type
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transaction as any,
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      rpcPrefs as any,
+      rpcPrefs,
     );
     global.platform.openTab({
       url: blockExplorerLink,

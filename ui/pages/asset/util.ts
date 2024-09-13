@@ -1,4 +1,5 @@
 import { SUPPORTED_CHAIN_IDS } from '@metamask/assets-controllers';
+import { CaipChainId, Hex } from '@metamask/utils';
 
 /** Formats a datetime in a short human readable format like 'Feb 8, 12:11 PM' */
 export const getShortDateFormatter = () =>
@@ -57,9 +58,9 @@ export const getPricePrecision = (price: number) => {
 /**
  * Returns true if the price api supports the chain id.
  *
- * @param chainId - The hexadecimal chain id.
+ * @param chainId - The hexadecimal or CAIP chain id.
  */
-export const chainSupportsPricing = (chainId: `0x${string}`) =>
+export const chainSupportsPricing = (chainId: Hex | CaipChainId) =>
   (SUPPORTED_CHAIN_IDS as readonly string[]).includes(chainId);
 
 /** The opacity components should set during transition */
