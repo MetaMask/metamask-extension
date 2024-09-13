@@ -15,7 +15,7 @@ export const useSignatureEventFragment = () => {
     currentConfirmation: SignatureRequestType;
   };
 
-  const requestId = currentConfirmation.msgParams?.requestId as number;
+  const requestId = currentConfirmation?.msgParams?.requestId as number;
   const fragmentId = requestId ? generateSignatureUniqueId(requestId) : null;
 
   const updateSignatureEventFragment = useCallback(
