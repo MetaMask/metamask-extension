@@ -1,13 +1,21 @@
-interface SortCriteria<T> {
-  key: string; // Deeply nested keys supported: 'profile.balance'
-  order?: SortOrder;
-  sortCallback?: string;
-}
-
 export type SortOrder = 'asc' | 'dsc';
 
+type SortingType = number | string | Date;
+type SortingCallbacks = {
+  numeric: (a: number, b: number) => number;
+  stringNumeric: (a: string, b: string) => number;
+  alphaNumeric: (a: string, b: string) => number;
+  date: (a: Date, b: Date) => number;
+};
+type SortCallbackKeys = keyof SortingCallbacks;
+type SortCriteria = {
+  key: string;
+  order?: 'asc' | 'desc';
+  sortCallback: SortCallbackKeys;
+};
+
 // All sortingCallbacks should be asc order, sortAssets function handles asc/dsc
-const sortingCallbacks: { [key: string]: (a: any, b: any) => number } = {
+const sortingCallbacks: SortingCallbacks = {
   numeric: (a: number, b: number) => a - b,
   stringNumeric: (a: string, b: string) => parseInt(a) - parseInt(b),
   alphaNumeric: (a: string, b: string) => a.localeCompare(b),
@@ -15,13 +23,13 @@ const sortingCallbacks: { [key: string]: (a: any, b: any) => number } = {
 };
 
 // Utility function to access nested properties by key path
-function getNestedValue<T>(obj: T, keyPath: string): any {
+function getNestedValue<T>(obj: T, keyPath: string): SortingType {
   return keyPath
     .split('.')
     .reduce((value: any, key: string) => value[key], obj);
 }
 
-export function sortAssets<T>(array: T[], criteria: SortCriteria<T>): T[] {
+export function sortAssets<T>(array: T[], criteria: SortCriteria): T[] {
   const { key, order = 'asc', sortCallback } = criteria;
 
   return [...array].sort((a, b) => {
@@ -30,8 +38,10 @@ export function sortAssets<T>(array: T[], criteria: SortCriteria<T>): T[] {
 
     let comparison: number;
 
-    if (sortCallback && sortingCallbacks[sortCallback]) {
-      comparison = sortingCallbacks[sortCallback](aValue, bValue);
+    let callback = sortingCallbacks[sortCallback];
+
+    if (sortCallback && callback) {
+      comparison = callback(aValue, bValue);
     } else {
       comparison = aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
     }

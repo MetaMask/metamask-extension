@@ -1,17 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { shallowEqual, useSelector } from 'react-redux';
 import {
   Box,
-  Button,
   ButtonBase,
   ButtonBaseSize,
-  ButtonSize,
   IconName,
   Popover,
   PopoverPosition,
 } from '../../../../component-library';
 import { TokenWithBalance } from '../asset-list';
 import { useAccountTotalFiatBalance } from '../../../../../hooks/useAccountTotalFiatBalance';
-import { shallowEqual, useSelector } from 'react-redux';
 import {
   getConfirmationExchangeRates,
   getCurrentCurrency,
@@ -28,7 +26,6 @@ import {
   BackgroundColor,
   BorderColor,
   BorderStyle,
-  FontStyle,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
 

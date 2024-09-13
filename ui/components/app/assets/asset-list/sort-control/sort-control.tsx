@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, ReactNode } from 'react';
+import classnames from 'classnames';
 import { Box } from '../../../../component-library';
 import { TokenWithBalance } from '../asset-list';
 import { SortOrder, sortAssets } from '../../util/sort';
@@ -6,8 +7,41 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../helpers/constants/design-system';
-import { ReactNode } from 'react-markdown';
-import classnames from 'classnames';
+
+// intentionally used generic naming convention for styled selectable list item
+// inspired from ui/components/multichain/network-list-item
+// should probably be broken out into component library
+type SelectableListItemProps = {
+  isSelected: boolean;
+  onClick?: React.MouseEventHandler<HTMLSpanElement>;
+  children: ReactNode;
+};
+
+export const SelectableListItem = ({
+  isSelected,
+  onClick,
+  children,
+}: SelectableListItemProps) => {
+  return (
+    <Box className="selectable-list-item-wrapper">
+      <Box
+        className={classnames('selectable-list-item', {
+          'selectable-list-item--selected': isSelected,
+        })}
+        onClick={onClick}
+      >
+        {children}
+      </Box>
+      {isSelected && (
+        <Box
+          className="selectable-list-item__selected-indicator"
+          borderRadius={BorderRadius.pill}
+          backgroundColor={BackgroundColor.primaryDefault}
+        />
+      )}
+    </Box>
+  );
+};
 
 type SortControlProps = {
   tokenList: TokenWithBalance[];
@@ -48,41 +82,6 @@ const SortControl = ({
         Declining balance ($ high-low)
       </SelectableListItem>
     </>
-  );
-};
-
-// intentionally used generic naming convention for styled selectable list item
-// inspired from ui/components/multichain/network-list-item
-// should probably be broken out into component library
-type SelectableListItemProps = {
-  isSelected: boolean;
-  onClick?: React.MouseEventHandler<HTMLSpanElement>;
-  children: ReactNode;
-};
-
-export const SelectableListItem = ({
-  isSelected,
-  onClick,
-  children,
-}: SelectableListItemProps) => {
-  return (
-    <Box className="selectable-list-item-wrapper">
-      <Box
-        className={classnames('selectable-list-item', {
-          'selectable-list-item--selected': isSelected,
-        })}
-        onClick={onClick}
-      >
-        {children}
-      </Box>
-      {isSelected && (
-        <Box
-          className="selectable-list-item__selected-indicator"
-          borderRadius={BorderRadius.pill}
-          backgroundColor={BackgroundColor.primaryDefault}
-        />
-      )}
-    </Box>
   );
 };
 
