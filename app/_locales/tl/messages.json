@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "Mga karagdagang network"
   },
-  "additionalRpcUrl": {
-    "message": "Karagdagang RPC URL"
-  },
   "address": {
     "message": "Address"
   },

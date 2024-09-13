@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "Дополнительные сети"
   },
-  "additionalRpcUrl": {
-    "message": "Дополнительный URL-адрес RPC"
-  },
   "address": {
     "message": "Адрес"
   },

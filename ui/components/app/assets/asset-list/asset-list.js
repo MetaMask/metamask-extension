@@ -35,14 +35,17 @@ import {
   DetectedTokensBanner,
   TokenListItem,
   ImportTokenLink,
+  ReceiveModal,
 } from '../../../multichain';
 import { useAccountTotalFiatBalance } from '../../../../hooks/useAccountTotalFiatBalance';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   showPrimaryCurrency,
   showSecondaryCurrency,
 } from '../../../../../shared/modules/currency-display.utils';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../helpers/utils/util';
+import { FundingMethodModal } from '../../../multichain/funding-method-modal/funding-method-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
   RAMPS_CARD_VARIANT_TYPES,
@@ -66,6 +69,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
     type,
     rpcUrl,
   );
+  const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
@@ -106,6 +110,14 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
   const isTokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
+
+  const [showFundingMethodModal, setShowFundingMethodModal] = useState(false);
+  const [showReceiveModal, setShowReceiveModal] = useState(false);
+
+  const onClickReceive = () => {
+    setShowFundingMethodModal(false);
+    setShowReceiveModal(true);
+  };
 
   const { tokensWithBalances, loading } = useAccountTotalFiatBalance(
     selectedAccount,
@@ -156,6 +168,9 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
               isBtc
                 ? RAMPS_CARD_VARIANT_TYPES.BTC
                 : RAMPS_CARD_VARIANT_TYPES.TOKEN
+            }
+            handleOnClick={
+              isBtc ? undefined : () => setShowFundingMethodModal(true)
             }
           />
         ) : null
@@ -218,6 +233,20 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
       )}
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
+      )}
+      {showReceiveModal && selectedAccount?.address && (
+        <ReceiveModal
+          address={selectedAccount.address}
+          onClose={() => setShowReceiveModal(false)}
+        />
+      )}
+      {showFundingMethodModal && (
+        <FundingMethodModal
+          isOpen={showFundingMethodModal}
+          onClose={() => setShowFundingMethodModal(false)}
+          title={t('selectFundingMethod')}
+          onClickReceive={onClickReceive}
+        />
       )}
     </>
   );

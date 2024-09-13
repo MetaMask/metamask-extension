@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "Επιπλέον δίκτυα"
   },
-  "additionalRpcUrl": {
-    "message": "Επιπλέον διεύθυνση URL RPC"
-  },
   "address": {
     "message": "Διεύθυνση"
   },
