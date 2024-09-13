@@ -32,11 +32,7 @@ export async function mockNotificationServices(server: Mockttp) {
 
   // Storage
   mockAPICall(server, await StorageMocks.getMockUserStorageGetResponse());
-<<<<<<< HEAD
-  mockAPICall(server, StorageMocks.getMockUserStoragePutResponse());
-=======
   mockAPICall(server, await StorageMocks.getMockUserStoragePutResponse());
->>>>>>> develop
 
   // Notifications
   mockAPICall(server, NotificationMocks.getMockFeatureAnnouncementResponse());
