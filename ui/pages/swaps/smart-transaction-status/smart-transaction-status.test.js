@@ -147,20 +147,34 @@ describe('SmartTransactionStatusLabel', () => {
     expect(getByText('Close')).toBeInTheDocument();
   });
 
-  it('cancels a transaction', () => {
+  // Commenting this out; cancels are currently not working so the button is being temporarily removed
+  // it('cancels a transaction', () => {
+  //   const store = configureMockStore(middleware)(createSwapsMockStore());
+  //   const { getByText } = renderWithProvider(
+  //     <SmartTransactionStatusLabel />,
+  //     store,
+  //   );
+  //   expect(getByText('Publicly submitting your Swap...')).toBeInTheDocument();
+  //   const cancelLink = getByText('Attempt to cancel swap for free');
+  //   expect(cancelLink).toBeInTheDocument();
+  //   fireEvent.click(cancelLink);
+  //   expect(
+  //     getByText('Trying to cancel your transaction...'),
+  //   ).toBeInTheDocument();
+  //   expect(cancelLink).not.toBeInTheDocument();
+  // });
+
+  // When cancels are re-introduced, we can delete this test
+  it('does not show the user a button to cancel their transaction', () => {
     const store = configureMockStore(middleware)(createSwapsMockStore());
-    const { getByText } = renderWithProvider(
+    const { getByText, queryByText } = renderWithProvider(
       <SmartTransactionStatusLabel />,
       store,
     );
     expect(getByText('Publicly submitting your Swap...')).toBeInTheDocument();
-    const cancelLink = getByText('Attempt to cancel swap for free');
-    expect(cancelLink).toBeInTheDocument();
-    fireEvent.click(cancelLink);
     expect(
-      getByText('Trying to cancel your transaction...'),
-    ).toBeInTheDocument();
-    expect(cancelLink).not.toBeInTheDocument();
+      queryByText('Attempt to cancel swap for free'),
+    ).not.toBeInTheDocument();
   });
 
   it('clicks on the Close button', () => {

@@ -263,8 +263,9 @@ export default function SmartTransactionStatusPage() {
     );
   }
 
-  const showCancelSwapLink =
-    latestSmartTransaction.cancellable && !cancelSwapLinkClicked;
+  // Keeping this code in here since swaps will be cancel-able, but hardcoding to false since they currently are not
+  const showCancelSwapLink = false;
+  // latestSmartTransaction.cancellable && !cancelSwapLinkClicked;
 
   const CancelSwap = () => {
     return (
