@@ -9,6 +9,7 @@ import {
 import FixtureBuilder from '../../fixture-builder';
 import { AccountOptionsMenu } from '../../page-objects/account-options-menu';
 import HomePage from '../../page-objects/home-page';
+import { WebDriver } from 'selenium-webdriver';
 
 describe('Lock and unlock', function (this: Suite) {
   it('successfully unlocks after lock', async function () {
@@ -18,7 +19,7 @@ describe('Lock and unlock', function (this: Suite) {
         ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle() || '',
       },
-      async ({ driver }: Fixtures) => {
+      async ({ driver }: { driver: WebDriver }) => {
         const accountOptionsMenu = new AccountOptionsMenu(driver);
         const homePage = new HomePage(driver);
 
