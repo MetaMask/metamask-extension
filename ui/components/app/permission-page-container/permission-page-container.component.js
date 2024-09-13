@@ -146,12 +146,6 @@ export default class PermissionPageContainer extends Component {
           (selectedAccount) => selectedAccount.address,
         ),
       }),
-      ...(_request.permissions[PermissionNames.permittedChains] && {
-        approvedChainIds: _request.permissions?.[
-          PermissionNames.permittedChains
-        ]?.caveats?.find((caveat) => caveat.type === 'restrictNetworkSwitching')
-          ?.value,
-      }),
     };
 
     if (Object.keys(request.permissions).length > 0) {
