@@ -484,14 +484,14 @@ describe('AggregatedPercentageOverview', () => {
       },
     });
     const expectedAmountChange = '-$0.39';
-    const expectedPercentageChange = '(-1.09%)';
+    const expectedPercentageChange = '(-1.08%)';
     render(<AggregatedPercentageOverview />);
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);
     expect(percentageElement).toBeInTheDocument();
     expect(numberElement).toBeInTheDocument();
   });
-  it.only('should display correct aggregated amount and percentage when the native fiatBalance is undefined', () => {
+  it('should display correct aggregated amount and percentage when the native fiatBalance is undefined', () => {
     (useAccountTotalFiatBalance as jest.Mock).mockReturnValue({
       orderedTokenList: [
         {

@@ -20,6 +20,7 @@ import {
   FontWeight,
 } from '../../../helpers/constants/design-system';
 import { Box, Text } from '../../component-library';
+import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 
 export const AggregatedPercentageOverview = () => {
   const tokensMarketData = useSelector(getTokensMarketData);
@@ -52,22 +53,20 @@ export const AggregatedPercentageOverview = () => {
           found = tokensMarketData[key];
         }
       }
-
-      const tokenFiat1dAgo =
-        found?.pricePercentChange1d !== undefined && token?.fiatBalance
-          ? token?.fiatBalance / (1 + found?.pricePercentChange1d / 100)
-          : token?.fiatBalance ?? 0;
-
+      const tokenFiat1dAgo = getCalculatedTokenAmount1dAgo(
+        token?.fiatBalance,
+        found?.pricePercentChange1d,
+      );
       totalFiat1dAgo += Number(tokenFiat1dAgo);
     } else {
       // native token
       const nativePricePercentChange1d =
         tokensMarketData?.[zeroAddress()]?.pricePercentChange1d;
 
-      const nativeFiat1dAgo =
-        nativePricePercentChange1d !== undefined && token?.fiatBalance
-          ? token.fiatBalance / (1 + nativePricePercentChange1d / 100)
-          : token?.fiatBalance ?? 0;
+      const nativeFiat1dAgo = getCalculatedTokenAmount1dAgo(
+        token?.fiatBalance,
+        nativePricePercentChange1d,
+      );
 
       totalFiat1dAgo += Number(nativeFiat1dAgo);
     }

@@ -817,3 +817,21 @@ export const getFilteredSnapPermissions = (
 
   return filteredPermissions;
 };
+/**
+ * Helper function to calculate the token amount 1dAgo using price percentage a day ago.
+ *
+ * @param {*} tokenFiatBalance - current token fiat balance
+ * @param {*} tokenPricePercentChange1dAgo - price percentage 1day ago
+ * @returns token amount 1day ago
+ */
+export const getCalculatedTokenAmount1dAgo = (
+  tokenFiatBalance,
+  tokenPricePercentChange1dAgo,
+) => {
+  const tokenFiat1dAgo =
+    tokenPricePercentChange1dAgo !== undefined && tokenFiatBalance
+      ? tokenFiatBalance / (1 + tokenPricePercentChange1dAgo / 100)
+      : tokenFiatBalance ?? 0;
+
+  return tokenFiat1dAgo;
+};
