@@ -266,7 +266,8 @@
     "@metamask/snaps-controllers@npm:^9.5.0": "patch:@metamask/snaps-controllers@npm%3A9.5.0#~/.yarn/patches/@metamask-snaps-controllers-npm-9.5.0-8b21e3c072.patch",
     "@metamask/nonce-tracker@npm:^5.0.0": "patch:@metamask/nonce-tracker@npm%3A5.0.0#~/.yarn/patches/@metamask-nonce-tracker-npm-5.0.0-d81478218e.patch",
     "@trezor/connect-web@npm:^9.1.11": "patch:@trezor/connect-web@npm%3A9.3.0#~/.yarn/patches/@trezor-connect-web-npm-9.3.0-040ab10d9a.patch",
-    "@metamask/keyring-controller@npm:^17.1.0": "patch:@metamask/keyring-controller@npm%3A17.2.0#~/.yarn/patches/@metamask-keyring-controller-npm-17.2.0-667fdd6864.patch"
+    "@metamask/keyring-controller@npm:^17.1.0": "patch:@metamask/keyring-controller@npm%3A17.2.0#~/.yarn/patches/@metamask-keyring-controller-npm-17.2.0-667fdd6864.patch",
+    "path-to-regexp": "1.9.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
