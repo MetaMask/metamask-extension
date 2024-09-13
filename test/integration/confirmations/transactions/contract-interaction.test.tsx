@@ -46,12 +46,12 @@ const getMetaMaskStateWithUnapprovedContractInteraction = ({
     },
     nextNonce: '8',
     currencyRates: {
-      ETH: {
+      SepoliaETH: {
         conversionDate: 1721392020.645,
         conversionRate: 3404.13,
         usdConversionRate: 3404.13,
       },
-      SepoliaETH: {
+      ETH: {
         conversionDate: 1721393858.083,
         conversionRate: 3414.67,
         usdConversionRate: 3414.67,
@@ -174,7 +174,7 @@ describe('Contract Interaction Confirmation', () => {
 
     expect(getByTestId('header-account-name')).toHaveTextContent(accountName);
     expect(getByTestId('header-network-display-name')).toHaveTextContent(
-      'Chain 5',
+      'Sepolia',
     );
 
     fireEvent.click(getByTestId('header-info__account-details-button'));
@@ -187,7 +187,7 @@ describe('Contract Interaction Confirmation', () => {
     );
     expect(
       getByTestId('confirmation-account-details-modal__account-balance'),
-    ).toHaveTextContent('1.5827157ETH');
+    ).toHaveTextContent('1.582717SepoliaETH');
 
     let confirmAccountDetailsModalMetricsEvent;
 
@@ -360,7 +360,7 @@ describe('Contract Interaction Confirmation', () => {
           transactionData:
             '0x3b4b13810000000000000000000000000000000000000000000000000000000000000001',
           contractAddress: '0x076146c765189d51be3160a2140cf80bfc73ad68',
-          chainId: '0x5',
+          chainId: '0xaa36a7',
         },
       ]);
     });

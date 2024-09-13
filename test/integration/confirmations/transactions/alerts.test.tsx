@@ -75,7 +75,7 @@ const setupSubmitRequestToBackgroundMocks = (
   );
 };
 
-describe('Contract Interaction Confirmation', () => {
+describe('Contract Interaction Confirmation Alerts', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks();
@@ -102,7 +102,7 @@ describe('Contract Interaction Confirmation', () => {
         preloadedState: {
           ...mockedMetaMaskState,
           gasFeeEstimatesByChainId: {
-            '0x5': {
+            '0xaa36a7': {
               gasFeeEstimates: {
                 networkCongestion: 1.0005,
               },
@@ -348,7 +348,7 @@ describe('Contract Interaction Confirmation', () => {
     );
   });
 
-  it('displays the alert for gas fees too', async () => {
+  it('displays the alert for gas fees too low', async () => {
     const account =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
