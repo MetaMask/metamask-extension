@@ -70,6 +70,7 @@ import { ReceiveModal } from '../../multichain/receive-modal';
 
 const CoinButtons = ({
   chainId,
+  trackingLocation,
   isSwapsChain,
   isSigningEnabled,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -80,6 +81,7 @@ const CoinButtons = ({
   classPrefix = 'coin',
 }: {
   chainId: `0x${string}` | CaipChainId | number;
+  trackingLocation: string;
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -400,8 +402,8 @@ const CoinButtons = ({
                 event: MetaMetricsEventName.NavReceiveButtonClicked,
                 category: MetaMetricsEventCategory.Navigation,
                 properties: {
-                  location: 'Home',
                   text: 'Receive',
+                  location: trackingLocation,
                   chain_id: chainId,
                 },
               });
