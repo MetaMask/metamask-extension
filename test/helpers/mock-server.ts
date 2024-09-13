@@ -1,6 +1,6 @@
+import { strict as assert } from 'assert';
 import { MockedEndpoint } from '../e2e/mock-e2e';
 import { Driver } from '../e2e/webdriver/driver';
-import { strict as assert } from 'assert';
 
 const TIMEOUT_DEFAULT = 10 * 1000; // 10 Seconds
 
