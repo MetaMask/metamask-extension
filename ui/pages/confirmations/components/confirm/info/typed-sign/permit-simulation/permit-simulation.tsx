@@ -1,66 +1,52 @@
-import { NameType } from '@metamask/name-controller';
-import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-
-import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
+import React from 'react';
+import { PrimaryType } from '../../../../../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../../../../../shared/modules/transaction.utils';
-import useTokenExchangeRate from '../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
-import Name from '../../../../../../../components/app/name/name';
-import { Box, Text } from '../../../../../../../components/component-library';
-import Tooltip from '../../../../../../../components/ui/tooltip';
+import { Box } from '../../../../../../../components/component-library';
 import {
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
   Display,
-  TextAlign,
+  FlexDirection,
 } from '../../../../../../../helpers/constants/design-system';
-import { shortenString } from '../../../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../../../../selectors';
+import { useConfirmContext } from '../../../../../context/confirm';
 import { SignatureRequestType } from '../../../../../types/confirm';
-import { IndividualFiatDisplay } from '../../../../simulation-details/fiat-display';
-import {
-  formatAmount,
-  formatAmountMaxPrecision,
-} from '../../../../simulation-details/formatAmount';
 import StaticSimulation from '../../shared/static-simulation/static-simulation';
+import PermitSimulationValueDisplay from './value-display/value-display';
 
-const PermitSimulation: React.FC<{
-  tokenDecimals: number;
-}> = ({ tokenDecimals }) => {
+function extractTokenDetailsByPrimaryType(
+  message: Record<string, unknown>,
+  primaryType: PrimaryType,
+): object[] | unknown {
+  let tokenDetails;
+
+  switch (primaryType) {
+    case PrimaryType.PermitBatch:
+    case PrimaryType.PermitSingle:
+      tokenDetails = message?.details;
+      break;
+    case PrimaryType.PermitBatchTransferFrom:
+    case PrimaryType.PermitTransferFrom:
+      tokenDetails = message?.permitted;
+      break;
+    default:
+      break;
+  }
+
+  const isNonArrayObject = tokenDetails && !Array.isArray(tokenDetails);
+
+  return isNonArrayObject ? [tokenDetails] : tokenDetails;
+}
+
+const PermitSimulation: React.FC<object> = () => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as SignatureRequestType;
-
+  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
+  const msgData = currentConfirmation.msgParams?.data;
   const {
     domain: { verifyingContract },
-    message: { value },
-  } = parseTypedDataMessage(currentConfirmation.msgParams?.data as string);
+    message,
+    primaryType,
+  } = parseTypedDataMessage(msgData as string);
 
-  const exchangeRate = useTokenExchangeRate(verifyingContract);
-
-  const fiatValue = useMemo(() => {
-    if (exchangeRate && value) {
-      const tokenAmount = calcTokenAmount(value, tokenDecimals);
-      return exchangeRate.times(tokenAmount).toNumber();
-    }
-    return undefined;
-  }, [exchangeRate, value]);
-
-  const { tokenValue, tokenValueMaxPrecision } = useMemo(() => {
-    if (!value) {
-      return { tokenValue: null, tokenValueMaxPrecision: null };
-    }
-
-    const tokenAmount = calcTokenAmount(value, tokenDecimals);
-
-    return {
-      tokenValue: formatAmount('en-US', tokenAmount),
-      tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', tokenAmount),
-    };
-  }, [tokenDecimals, value]);
+  const tokenDetails = extractTokenDetailsByPrimaryType(message, primaryType);
 
   return (
     <StaticSimulation
@@ -69,44 +55,32 @@ const PermitSimulation: React.FC<{
       description={t('permitSimulationDetailInfo')}
       simulationHeading={t('spendingCap')}
       simulationElements={
-        <>
-          <Box display={Display.Flex}>
-            <Box
-              display={Display.Inline}
-              marginInlineEnd={1}
-              minWidth={BlockSize.Zero}
-            >
-              <Tooltip
-                position="bottom"
-                title={tokenValueMaxPrecision}
-                wrapperStyle={{ minWidth: 0 }}
-                interactive
-              >
-                <Text
-                  data-testid="simulation-token-value"
-                  backgroundColor={BackgroundColor.backgroundAlternative}
-                  borderRadius={BorderRadius.XL}
-                  paddingInline={2}
-                  style={{ paddingTop: '1px', paddingBottom: '1px' }}
-                  textAlign={TextAlign.Center}
-                >
-                  {shortenString(tokenValue || '', {
-                    truncatedCharLimit: 15,
-                    truncatedStartChars: 15,
-                    truncatedEndChars: 0,
-                    skipCharacterInEnd: true,
-                  })}
-                </Text>
-              </Tooltip>
-            </Box>
-            <Name value={verifyingContract} type={NameType.ETHEREUM_ADDRESS} />
-          </Box>
-          <Box>
-            {fiatValue && (
-              <IndividualFiatDisplay fiatAmount={fiatValue} shorten />
+        Array.isArray(tokenDetails) ? (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={2}
+          >
+            {tokenDetails.map(
+              (
+                { token, amount }: { token: string; amount: string },
+                i: number,
+              ) => (
+                <PermitSimulationValueDisplay
+                  key={`${token}-${i}`}
+                  primaryType={primaryType}
+                  tokenContract={token}
+                  value={amount}
+                />
+              ),
             )}
           </Box>
-        </>
+        ) : (
+          <PermitSimulationValueDisplay
+            tokenContract={verifyingContract}
+            value={message.value}
+          />
+        )
       }
     />
   );

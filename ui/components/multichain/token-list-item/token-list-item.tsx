@@ -82,7 +82,7 @@ type TokenListItemProps = {
 };
 
 export const TokenListItem = ({
-  className = '',
+  className,
   onClick,
   tokenSymbol,
   tokenImage,
@@ -196,7 +196,7 @@ export const TokenListItem = ({
 
   return (
     <Box
-      className={classnames('multichain-token-list-item', className)}
+      className={classnames('multichain-token-list-item', className || {})}
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       gap={4}

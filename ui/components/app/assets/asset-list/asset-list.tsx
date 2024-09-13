@@ -7,6 +7,7 @@ import {
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getPreferences,
+  getSelectedAccount,
 } from '../../../../selectors';
 import {
   getMultichainCurrentNetwork,
@@ -32,12 +33,15 @@ import {
   DetectedTokensBanner,
   TokenListItem,
   ImportTokenLink,
+  ReceiveModal,
 } from '../../../multichain';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   showPrimaryCurrency,
   showSecondaryCurrency,
 } from '../../../../../shared/modules/currency-display.utils';
+import { FundingMethodModal } from '../../../multichain/funding-method-modal/funding-method-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
   RAMPS_CARD_VARIANT_TYPES,
@@ -64,6 +68,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const [tokenList, setTokenList] = useState<TokenWithBalance[]>([]);
   const [loading, setLoading] = useState(false);
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
+  const selectedAccount = useSelector(getSelectedAccount);
   const nativeCurrency = useSelector(getMultichainNativeCurrency);
   const showFiat = useSelector(getMultichainShouldShowFiat);
   const isMainnet = useSelector(getMultichainIsMainnet);
@@ -77,6 +82,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
     type,
     rpcUrl,
   );
+  const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
@@ -107,6 +113,14 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const isTokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
+
+  const [showFundingMethodModal, setShowFundingMethodModal] = useState(false);
+  const [showReceiveModal, setShowReceiveModal] = useState(false);
+
+  const onClickReceive = () => {
+    setShowFundingMethodModal(false);
+    setShowReceiveModal(true);
+  };
 
   const balanceIsZero = useSelector(
     getMultichainSelectedAccountCachedBalanceIsZero,
@@ -149,6 +163,9 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
               isBtc
                 ? RAMPS_CARD_VARIANT_TYPES.BTC
                 : RAMPS_CARD_VARIANT_TYPES.TOKEN
+            }
+            handleOnClick={
+              isBtc ? undefined : () => setShowFundingMethodModal(true)
             }
           />
         ) : null
@@ -217,6 +234,20 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
       )}
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
+      )}
+      {showReceiveModal && selectedAccount?.address && (
+        <ReceiveModal
+          address={selectedAccount.address}
+          onClose={() => setShowReceiveModal(false)}
+        />
+      )}
+      {showFundingMethodModal && (
+        <FundingMethodModal
+          isOpen={showFundingMethodModal}
+          onClose={() => setShowFundingMethodModal(false)}
+          title={t('selectFundingMethod')}
+          onClickReceive={onClickReceive}
+        />
       )}
     </>
   );

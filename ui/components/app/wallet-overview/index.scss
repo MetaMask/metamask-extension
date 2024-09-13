@@ -35,6 +35,12 @@
     align-items: center;
     color: var(--color-primary-default);
   }
+
+  &__currency-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }
 }
 
 %asset-buttons {

@@ -34,7 +34,9 @@ export default function TokenCell({
   const locale = useSelector(getIntlLocale);
   const primary = new Intl.NumberFormat(locale, {
     minimumSignificantDigits: 1,
-  }).format(parseInt(string, 10));
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+  }).format(string.toString());
 
   const isOriginalTokenSymbol = useIsOriginalTokenSymbol(address, symbol);
 
@@ -48,6 +50,7 @@ export default function TokenCell({
       title={title}
       isOriginalTokenSymbol={isOriginalTokenSymbol}
       address={address}
+      showPercentage
     />
   );
 }

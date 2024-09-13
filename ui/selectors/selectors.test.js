@@ -216,6 +216,28 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#getNetworkDetails', () => {
+    it('returns no details when chainId is undefined', () => {
+      expect(selectors.getNetworkDetails(mockState, undefined)).toStrictEqual(
+        null,
+      );
+    });
+
+    it('returns network information when valid chainId is present', () => {
+      expect(
+        selectors.getNetworkDetails(
+          mockState,
+          mockState.metamask.networkConfigurations.testNetworkConfigurationId
+            .chainId,
+        ),
+      ).toStrictEqual({
+        imageUrl: './images/eth_logo.svg',
+        nickname: 'Ethereum Mainnet',
+        origin: undefined,
+      });
+    });
+  });
+
   describe('#getNumberOfAllUnapprovedTransactionsAndMessages', () => {
     it('returns no unapproved transactions and messages', () => {
       expect(
@@ -1150,6 +1172,11 @@ describe('Selectors', () => {
       mockState.metamask.notifications.test,
       mockState.metamask.notifications.test2,
     ]);
+  });
+  it('#getReadNotificationsCount', () => {
+    const readNotificationsCount =
+      selectors.getReadNotificationsCount(mockState);
+    expect(readNotificationsCount).toStrictEqual(1);
   });
   it('#getUnreadNotificationsCount', () => {
     const unreadNotificationCount =
