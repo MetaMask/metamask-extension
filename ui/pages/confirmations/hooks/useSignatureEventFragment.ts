@@ -21,11 +21,11 @@ export const useSignatureEventFragment = () => {
   const fragmentId = requestId ? generateSignatureUniqueId(requestId) : null;
 
   const updateSignatureEventFragment = useCallback(
-    async (eventFragmentPayload: Partial<MetaMetricsEventFragment>) => {
+    async (fragmentPayload: Partial<MetaMetricsEventFragment>) => {
       if (!isSignatureTransactionType(currentConfirmation) || !fragmentId) {
         return;
       }
-      updateEventFragment(fragmentId, eventFragmentPayload);
+      updateEventFragment(fragmentId, fragmentPayload);
     },
     [fragmentId],
   );
