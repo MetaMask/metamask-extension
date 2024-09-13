@@ -1,15 +1,12 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import {
   defaultGanacheOptions,
   withFixtures,
-  unlockWallet,
-  Fixtures,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { AccountOptionsMenu } from '../../page-objects/account-options-menu';
-import HomePage from '../../page-objects/home-page';
-import { WebDriver } from 'selenium-webdriver';
+import HomePage from '../../page-objects/pages/homepage';
+import { Driver } from '../../webdriver/driver';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Lock and unlock', function (this: Suite) {
   it('successfully unlocks after lock', async function () {
@@ -17,22 +14,13 @@ describe('Lock and unlock', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle() || '',
+        title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: WebDriver }) => {
-        const accountOptionsMenu = new AccountOptionsMenu(driver);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
-
-        await unlockWallet(driver);
-
-        await accountOptionsMenu.clickAccountOptionsMenuButton();
-        const lockButton = await accountOptionsMenu.findLockButton();
-        assert.equal(await lockButton.getText(), 'Lock MetaMask');
-        await lockButton.click();
-        await unlockWallet(driver);
-
-        const walletBalance = await homePage.getPrimaryBalance();
-        assert.equal(/^25\s*ETH$/u.test(walletBalance), true);
+        await homePage.headerNavbar.lockMetaMask();
+        await loginWithBalanceValidation(driver);
       },
     );
   });
