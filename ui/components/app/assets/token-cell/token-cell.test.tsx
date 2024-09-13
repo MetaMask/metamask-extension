@@ -47,7 +47,7 @@ describe('Token Cell', () => {
     },
   };
 
-  useIsOriginalTokenSymbol.mockReturnValue(true);
+  (useIsOriginalTokenSymbol as jest.Mock).mockReturnValue(true);
 
   // two tokens with the same symbol but different addresses
   const MOCK_GET_TOKEN_LIST = {
@@ -78,6 +78,7 @@ describe('Token Cell', () => {
     symbol: 'TEST',
     string: '5.000',
     currentCurrency: 'usd',
+    image: '',
     onClick: jest.fn(),
   };
 
@@ -86,10 +87,11 @@ describe('Token Cell', () => {
     symbol: 'TEST',
     string: '5000000',
     currentCurrency: 'usd',
+    image: '',
     onClick: jest.fn(),
   };
-  useSelector.mockReturnValue(MOCK_GET_TOKEN_LIST);
-  useTokenFiatAmount.mockReturnValue('5.00');
+  (useSelector as jest.Mock).mockReturnValue(MOCK_GET_TOKEN_LIST);
+  (useTokenFiatAmount as jest.Mock).mockReturnValue('5.00');
 
   it('should match snapshot', () => {
     const { container } = renderWithProvider(
@@ -106,7 +108,9 @@ describe('Token Cell', () => {
       mockStore,
     );
 
-    fireEvent.click(queryByTestId('multichain-token-list-button'));
+    const targetElem = queryByTestId('multichain-token-list-button');
+
+    if (targetElem) fireEvent.click(targetElem);
 
     expect(props.onClick).toHaveBeenCalled();
   });
