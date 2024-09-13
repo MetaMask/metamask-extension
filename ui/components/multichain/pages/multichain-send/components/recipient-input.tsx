@@ -18,6 +18,7 @@ import { shortenAddress } from '../../../../../helpers/utils/util';
 import { SendPageRow } from '../../send/components';
 import {
   AlignItems,
+  BackgroundColor,
   BlockSize,
   BorderColor,
   BorderRadius,
@@ -36,7 +37,7 @@ import {
   getCurrentMultichainDraftTransactionRecipient,
 } from '../../../../../selectors/multichain';
 import { getSelectedInternalAccount } from '../../../../../selectors';
-import { MULTICHAIN_CAIP_19_TO_NETWORK_NAME } from '../../../../../../shared/constants/multichain/assets';
+import { MULTICHAIN_CAIP_19_TO_NETWORK_NAME } from '../../../../../../shared/constants/multichain/networks';
 
 export const SendPageRecipientInput = () => {
   const ref = useRef<HTMLInputElement>(null);
@@ -92,12 +93,13 @@ export const SendPageRecipientInput = () => {
         borderRadius={BorderRadius.MD}
         borderStyle={BorderStyle.solid}
         borderColor={BorderColor.borderMuted}
+        backgroundColor={BackgroundColor.backgroundDefault}
         padding={[4, 3, 4, 3]}
       >
         {validRecipient ? (
           <>
             <AvatarAccount
-              variant={AvatarAccountVariant.Blockies}
+              variant={AvatarAccountVariant.Jazzicon}
               address={recipientAddress}
               size={AvatarAccountSize.Md}
               borderColor={BorderColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border

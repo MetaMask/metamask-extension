@@ -1,10 +1,15 @@
 import React, { useCallback, useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { EthAccountType, InternalAccount } from '@metamask/keyring-api';
+import {
+  EthAccountType,
+  InternalAccount,
+  KeyringAccountType,
+} from '@metamask/keyring-api';
 import { getSelectedInternalAccount } from '../../../../../selectors';
 import { Label } from '../../../../component-library';
 import { AccountPicker } from '../../../account-picker';
 import {
+  BackgroundColor,
   BlockSize,
   BorderColor,
   Display,
@@ -44,6 +49,19 @@ export const SendPageAccountPicker = ({
         name={internalAccount.metadata.name}
         onClick={() => setShowAccountPicker(true)}
         showAddress
+        backgroundColor={
+          allowedAccountTypes?.some(
+            (type) =>
+              !(
+                [
+                  EthAccountType.Eoa,
+                  EthAccountType.Erc4337,
+                ] as KeyringAccountType[]
+              ).includes(type),
+          )
+            ? BackgroundColor.backgroundAlternative
+            : BackgroundColor.backgroundDefault
+        }
         borderColor={BorderColor.borderMuted}
         borderWidth={1}
         paddingTop={4}

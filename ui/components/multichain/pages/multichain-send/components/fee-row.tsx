@@ -35,6 +35,7 @@ export const FeeRow = ({
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.spaceBetween}
+      marginBottom={2}
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
         <Tooltip title={tooltipText} disabled={!tooltipText} position="top">

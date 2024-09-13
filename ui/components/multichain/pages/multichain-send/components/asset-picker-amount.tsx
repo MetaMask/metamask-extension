@@ -11,21 +11,25 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { SwappableCurrencyInput } from '../../../asset-picker-amount/swappable-currency-input';
 import { AssetBalance } from '../../../asset-picker-amount/asset-balance';
-import MaxClearButton from '../../../asset-picker-amount/max-clear-button';
 import { AssetPicker } from '../../../asset-picker-amount/asset-picker';
 import type { Amount } from '../../../../../ducks/send';
 import {
   estimateFee,
   updateSendAmount,
+  validateAmountField,
 } from '../../../../../ducks/multichain-send/multichain-send';
 import {
   AssetWithDisplayData,
   NativeAsset,
 } from '../../../asset-picker-amount/asset-picker-modal/types';
 import { I18nContext } from '../../../../../contexts/i18n';
-import { getCurrentMultichainDraftTransactionId } from '../../../../../selectors/multichain';
+import {
+  getCurrentMultichainDraftTransaction,
+  getCurrentMultichainDraftTransactionId,
+} from '../../../../../selectors/multichain';
 import { getSelectedInternalAccount } from '../../../../../selectors';
 import { decimalToHex } from '../../../../../../shared/modules/conversion.utils';
+import { MultichainMaxClearButton } from './max-clear-button';
 
 export type MultichainAssetPickerAmountProps = {
   asset: NativeAsset & { balance: string };
@@ -44,9 +48,13 @@ export const MultichainAssetPickerAmount = ({
   const currentTransactionId = useSelector(
     getCurrentMultichainDraftTransactionId,
   );
+  const currentDraftTransaction = useSelector(
+    getCurrentMultichainDraftTransaction,
+  );
 
-  // TODO: fix border color based on errors
-  const borderColor = BorderColor.borderMuted;
+  const borderColor = amount.error
+    ? BorderColor.errorDefault
+    : BorderColor.borderMuted;
 
   const onAmountChange = useCallback(async (sendAmount) => {
     dispatch(updateSendAmount(sendAmount));
@@ -56,11 +64,14 @@ export const MultichainAssetPickerAmount = ({
         transactionId: currentTransactionId,
       }),
     );
+    dispatch(validateAmountField());
   }, []);
 
   // TODO: fix when there are more than only native assets
-  // eslint-disable-next-line @typescript-eslint/no-shadow, @typescript-eslint/no-unused-vars
-  const onAssetChange = (asset: AssetWithDisplayData<NativeAsset>) => {
+  const onAssetChange = (
+    // eslint-disable-next-line @typescript-eslint/no-shadow, @typescript-eslint/no-unused-vars
+    newAsset: AssetWithDisplayData<NativeAsset>,
+  ) => {
     // TODO: implement when there are more than only native assets
   };
 
@@ -83,6 +94,7 @@ export const MultichainAssetPickerAmount = ({
         <AssetPicker
           header={t('sendSelectSendAsset')}
           asset={asset}
+          // @ts-expect-error only native assets are supported for multichain
           onAssetChange={onAssetChange}
           sendingAsset={asset}
         />
@@ -101,7 +113,11 @@ export const MultichainAssetPickerAmount = ({
         {/* Only show balance if mutable */}
         <AssetBalance asset={asset} error={error} />
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        <MaxClearButton asset={asset} />
+        {currentDraftTransaction && (
+          <MultichainMaxClearButton
+            draftTransaction={currentDraftTransaction}
+          />
+        )}
       </Box>
     </Box>
   );
