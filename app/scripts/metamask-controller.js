@@ -5557,7 +5557,12 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController.requestPermissions.bind(
             this.permissionController,
             { origin },
-            { eth_accounts: {}, [PermissionNames.permittedChains]: {} },
+            {
+              eth_accounts: {},
+              ...(process.env.CHAIN_PERMISSIONS && {
+                [PermissionNames.permittedChains]: {},
+              }),
+            },
           ),
         requestPermittedChainsPermission: (chainIds) =>
           this.permissionController.requestPermissionsIncremental(
@@ -5588,7 +5593,13 @@ export default class MetamaskController extends EventEmitter {
         requestPermissionsForOrigin: (requestedPermissions) =>
           this.permissionController.requestPermissions(
             { origin },
-            { [PermissionNames.permittedChains]: {}, ...requestedPermissions },
+            {
+              ...(process.env.CHAIN_PERMISSIONS &&
+                requestedPermissions[RestrictedMethods.eth_accounts] && {
+                  [PermissionNames.permittedChains]: {},
+                }),
+              ...requestedPermissions,
+            },
           ),
         revokePermissionsForOrigin: (permissionKeys) => {
           try {
