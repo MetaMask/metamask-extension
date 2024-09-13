@@ -633,9 +633,12 @@ async function setupMocking(
     `${SECURITY_ALERTS_PROD_API_BASE_URL}/supportedChains`,
   ].forEach(
     async (url) =>
-      await server
-        .forGet(url)
-        .thenCallback(() => [SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS]),
+      await server.forGet(url).thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
+        };
+      }),
   );
 
   await mockLensNameProvider(server);

@@ -20,6 +20,18 @@ const expectedMaliciousDescription =
 const SECURITY_ALERTS_API_URL =
   'https://security-alerts.dev-api.cx.metamask.io';
 
+const SEND_REQUEST_BASE_MOCK = {
+  method: 'eth_sendTransaction',
+  params: [
+    {
+      from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+      data: '0x',
+      to: '0x5fbdb2315678afecb367f032d93f642f64180aa3',
+      value: '0xde0b6b3a7640000',
+    },
+  ],
+};
+
 async function mockInfura(mockServer) {
   await mockServerJsonRpc(mockServer, [
     ['eth_blockNumber'],
@@ -44,69 +56,45 @@ async function mockRequest(server, request, response) {
 async function mockInfuraWithBenignResponses(mockServer) {
   await mockInfura(mockServer);
 
-  await mockRequest(
-    mockServer,
-    {
-      method: 'eth_sendTransaction',
-      params: [
-        {
-          from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-          data: '0x',
-          to: '0x5fbdb2315678afecb367f032d93f642f64180aa3',
-          value: '0xde0b6b3a7640000',
-        },
-      ],
-    },
-    {
-      block: 20733513,
-      result_type: 'Benign',
-      reason: '',
-      description: '',
-      features: [],
-    },
-  );
+  await mockRequest(mockServer, SEND_REQUEST_BASE_MOCK, {
+    block: 20733513,
+    result_type: 'Benign',
+    reason: '',
+    description: '',
+    features: [],
+  });
 }
 
 async function mockInfuraWithMaliciousResponses(mockServer) {
   await mockInfura(mockServer);
 
-  await mockRequest(
-    mockServer,
-    {
-      method: 'eth_sendTransaction',
-      params: [
-        {
-          from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-          data: '0x',
-          to: '0x5fbdb2315678afecb367f032d93f642f64180aa3',
-          value: '0xde0b6b3a7640000',
-        },
-      ],
-    },
-    {
-      block: 20733277,
-      result_type: 'Malicious',
-      reason: 'transfer_farming',
-      description: '',
-      features: ['Interaction with a known malicious address'],
-    },
-  );
+  await mockRequest(mockServer, SEND_REQUEST_BASE_MOCK, {
+    block: 20733277,
+    result_type: 'Malicious',
+    reason: 'transfer_farming',
+    description: '',
+    features: ['Interaction with a known malicious address'],
+  });
 }
 
 async function mockInfuraWithFailedResponses(mockServer) {
   await mockInfura(mockServer);
 
-  await mockServer
-    .forPost()
-    .withJsonBodyIncluding({
-      method: 'debug_traceCall',
-      params: [{ accessList: [], data: '0x00000000' }],
-    })
-    .thenCallback(() => {
-      return {
-        statusCode: 500,
-      };
-    });
+  await mockRequest(
+    mockServer,
+    {
+      ...SEND_REQUEST_BASE_MOCK,
+      params: [
+        {
+          from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          data: '0x',
+          to: '0xb8c77482e45f1f44de1745f52c74426c631bdd52',
+          value: '0xf43fc2c04ee0000',
+        },
+      ],
+    },
+    { statusCode: 500, message: 'Internal server error' },
+  );
 }
 
 /**

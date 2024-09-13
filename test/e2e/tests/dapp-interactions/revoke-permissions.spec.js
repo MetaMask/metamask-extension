@@ -38,9 +38,13 @@ describe('Wallet Revoke Permissions', function () {
         // Get new allowed permissions
         await driver.clickElement('#getPermissions');
 
+        const newPermissionsResult = await driver.findElement(
+          '#permissionsResult',
+        );
+
         // Eth_accounts permissions removed
         assert.equal(
-          await permissionsResult.getText(),
+          await newPermissionsResult.getText(),
           'No permissions found.',
         );
       },
