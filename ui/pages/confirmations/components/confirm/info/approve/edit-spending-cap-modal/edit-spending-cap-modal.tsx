@@ -55,7 +55,7 @@ export const EditSpendingCapModal = ({
 
   const accountBalance = calcTokenAmount(
     userBalance ?? '0',
-    decimals,
+    Number(decimals ?? '0'),
   ).toFixed();
 
   const { formattedSpendingCap } = useApproveTokenSimulation(

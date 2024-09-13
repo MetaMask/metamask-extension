@@ -92,7 +92,7 @@ export const SpendingCap = ({
 
   const accountBalance = calcTokenAmount(
     userBalance ?? '0',
-    decimals,
+    Number(decimals ?? '0'),
   ).toFixed();
 
   const { pending, spendingCap } = useApproveTokenSimulation(
