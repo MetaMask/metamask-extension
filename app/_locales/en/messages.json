@@ -4263,11 +4263,11 @@
   "receive": {
     "message": "Receive"
   },
-  "recipientAddressPlaceholderNew": {
-    "message": "Enter public address (0x) or domain name"
-  },
   "receiveCrypto": {
     "message": "Receive crypto"
+  },
+  "recipientAddressPlaceholderNew": {
+    "message": "Enter public address (0x) or domain name"
   },
   "recommendedGasLabel": {
     "message": "Recommended"
