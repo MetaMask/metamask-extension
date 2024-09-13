@@ -26,7 +26,7 @@ export const MultichainConfirmationAssetTotal = ({
     .div(new BigNumber(10).pow(sendAsset.assetDetails.details.decimals))
     .toString();
 
-  const { feeInFiat: totalFiatBalance } = useMultichainCurrencyDisplayByAsset({
+  const { fiatValue: totalFiatBalance } = useMultichainCurrencyDisplayByAsset({
     assetDetails: sendAsset.assetDetails,
     amount: totalBalance,
   });

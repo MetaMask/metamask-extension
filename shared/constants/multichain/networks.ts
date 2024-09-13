@@ -23,6 +23,11 @@ export enum MultichainNetworks {
   BITCOIN_TESTNET = 'bip122:000000000933ea01ad0ee984209779ba',
 }
 
+export const MULTICHAIN_CAIP_19_TO_NETWORK_NAME = {
+  [MultichainNetworks.BITCOIN]: 'Bitcoin',
+  [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
+};
+
 export const BITCOIN_TOKEN_IMAGE_URL = './images/bitcoin-logo.svg';
 
 export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP = {
@@ -43,7 +48,7 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     chainId: MultichainNetworks.BITCOIN,
     rpcUrl: '', // not used
     ticker: 'BTC',
-    nickname: 'Bitcoin',
+    nickname: MULTICHAIN_CAIP_19_TO_NETWORK_NAME[MultichainNetworks.BITCOIN],
     id: 'btc-mainnet',
     type: 'rpc',
     rpcPrefs: {
@@ -57,7 +62,8 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     chainId: MultichainNetworks.BITCOIN_TESTNET,
     rpcUrl: '', // not used
     ticker: 'BTC',
-    nickname: 'Bitcoin (testnet)',
+    nickname:
+      MULTICHAIN_CAIP_19_TO_NETWORK_NAME[MultichainNetworks.BITCOIN_TESTNET],
     id: 'btc-testnet',
     type: 'rpc',
     rpcPrefs: {

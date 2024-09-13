@@ -74,7 +74,7 @@ export function SenderAddress({
         containerClassName="sender-to-recipient__tooltip-container"
         onHidden={() => setAddressCopied(false)}
       >
-        <div className="sender-to-recipient__name" data-testId="sender-address">
+        <div className="sender-to-recipient__name" data-testid="sender-address">
           {addressOnly ? (
             <span>
               {`${senderName || shortenAddress(checksummedSenderAddress)}`}
@@ -109,6 +109,7 @@ export function RecipientWithAddress({
   recipientName,
   recipientMetadataName,
   recipientIsOwnedAccount,
+  recipientType,
 }) {
   const t = useI18nContext();
   const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
@@ -135,6 +136,8 @@ export function RecipientWithAddress({
       recipientEns ||
       shortenAddress(checksummedRecipientAddress)) ??
     (!addressOnly && t('newContract'));
+
+  const isEvmType = recipientType === NameType.ETHEREUM_ADDRESS;
 
   return (
     <>
@@ -168,7 +171,7 @@ export function RecipientWithAddress({
           {petnamesEnabled ? (
             <Name
               value={checksummedRecipientAddress}
-              type={NameType.ETHEREUM_ADDRESS}
+              type={recipientType ?? NameType.ETHEREUM_ADDRESS}
             />
           ) : (
             <div
@@ -180,7 +183,7 @@ export function RecipientWithAddress({
           )}
         </Tooltip>
       </div>
-      {showNicknamePopovers && !petnamesEnabled ? (
+      {showNicknamePopovers && !petnamesEnabled && isEvmType ? (
         <NicknamePopovers
           onClose={() => setShowNicknamePopovers(false)}
           address={checksummedRecipientAddress}
@@ -199,6 +202,7 @@ RecipientWithAddress.propTypes = {
   addressOnly: PropTypes.bool,
   onRecipientClick: PropTypes.func,
   recipientIsOwnedAccount: PropTypes.bool,
+  recipientType: PropTypes.string,
 };
 
 function Arrow({ variant }) {
@@ -242,7 +246,6 @@ export default function SenderToRecipient({
     <Box
       className={classnames('sender-to-recipient', variantHash[variant])}
       data-testid="sender-to-recipient"
-      padding={4}
     >
       <SenderAddress
         checksummedSenderAddress={checksummedSenderAddress}
@@ -263,6 +266,7 @@ export default function SenderToRecipient({
           recipientName={recipientName}
           recipientMetadataName={recipientMetadataName}
           recipientIsOwnedAccount={recipientIsOwnedAccount}
+          recipientType="nonEvm"
         />
       ) : (
         <div className="sender-to-recipient__party sender-to-recipient__party--recipient">

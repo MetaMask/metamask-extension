@@ -8,8 +8,3 @@ export enum MultichainNativeAssets {
   BITCOIN = `${MultichainNetworks.BITCOIN}/slip44:0`,
   BITCOIN_TESTNET = `${MultichainNetworks.BITCOIN_TESTNET}/slip44:0`,
 }
-
-export const MULTICHAIN_CAIP_19_TO_NETWORK_NAME = {
-  [MultichainNetworks.BITCOIN]: 'Bitcoin',
-  [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
-};

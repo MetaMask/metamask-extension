@@ -6,8 +6,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Content, Header, Page } from '../page';
 import {
   BackgroundColor,
-  BorderRadius,
-  BorderStyle,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
@@ -16,23 +14,20 @@ import {
   ButtonIconSize,
   IconName,
 } from '../../../component-library';
-import SenderToRecipient from '../../../ui/sender-to-recipient';
 import {
   clearDraft,
   signAndSend,
 } from '../../../../ducks/multichain-send/multichain-send';
 import { MultichainFee } from '../multichain-send/components/fee';
-import {
-  MULTICHAIN_PROVIDER_CONFIGS,
-  MultichainNetworks,
-} from '../../../../../shared/constants/multichain/networks';
+import { MULTICHAIN_PROVIDER_CONFIGS } from '../../../../../shared/constants/multichain/networks';
 import {
   getCurrentMultichainDraftTransaction,
   getCurrentMultichainDraftTransactionId,
+  getMultichainSendStage,
 } from '../../../../selectors/multichain';
 import { getInternalAccount } from '../../../../selectors';
-import { MultichainTransactionNetwork } from './components/network';
 import { MultichainConfirmationAssetTotal } from './components/confirmation-asset';
+import { SenderRecipientNetworkSummary } from './components/sender-recipient-network-summary';
 
 export const MultichainConfirmTransactionPage = () => {
   const t = useI18nContext();
@@ -41,6 +36,7 @@ export const MultichainConfirmTransactionPage = () => {
 
   const transactionId = useSelector(getCurrentMultichainDraftTransactionId);
   const transaction = useSelector(getCurrentMultichainDraftTransaction);
+  const sendStage = useSelector(getMultichainSendStage);
 
   if (!transaction || !transactionId) {
     history.push('/multichain-send');
@@ -81,7 +77,7 @@ export const MultichainConfirmTransactionPage = () => {
       backgroundColor={BackgroundColor.backgroundAlternative}
     >
       <Header
-        backgroundColor={BackgroundColor.backgroundDefault}
+        backgroundColor={BackgroundColor.backgroundAlternative}
         textProps={{
           variant: TextVariant.headingSm,
         }}
@@ -102,37 +98,21 @@ export const MultichainConfirmTransactionPage = () => {
           fee={estimateFee}
           sendAsset={transaction.transactionParams.sendAsset}
         />
-        <Box
-          backgroundColor={BackgroundColor.backgroundDefault}
-          borderRadius={BorderRadius.LG}
-          marginBottom={4}
-        >
-          <SenderToRecipient
-            // eslint-disable-next-line no-empty-function
-            onRecipientClick={function noRefCheck() {}}
-            // eslint-disable-next-line no-empty-function
-            onSenderClick={function noRefCheck() {}}
-            recipientAddress={transaction.transactionParams.recipient.address}
-            senderAddress={selectedAccount.address}
-            senderName={selectedAccount.metadata.name}
-          />
-        </Box>
-        <Box
-          backgroundColor={BackgroundColor.backgroundDefault}
-          borderStyle={BorderStyle.solid}
-          borderRadius={BorderRadius.LG}
-          marginBottom={4}
-        >
-          <MultichainTransactionNetwork
-            network={MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN]}
-          />
-        </Box>
+        <SenderRecipientNetworkSummary
+          transactionParams={transaction.transactionParams}
+          network={
+            MULTICHAIN_PROVIDER_CONFIGS[
+              transaction.transactionParams.network.network
+            ]
+          }
+        />
         {estimateFee && (
           <Box marginBottom={4}>
             <MultichainFee
               asset={transaction.transactionParams.sendAsset}
               backgroundColor={BackgroundColor.backgroundDefault}
               estimatedFee={estimateFee}
+              sendStage={sendStage}
             />
           </Box>
         )}

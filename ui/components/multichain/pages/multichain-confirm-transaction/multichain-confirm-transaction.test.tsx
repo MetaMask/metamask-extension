@@ -141,7 +141,7 @@ describe('MultichainConfirmTransactionPage', () => {
       getByTestId('multichain-confirmation-destination-network'),
     ).toHaveTextContent(expectedNetwork);
     expect(getByTestId('sender-address')).toHaveTextContent(expectedSender);
-    expect(getByTestId('sender-to-recipient__name')).toHaveTextContent(
+    expect(getByTestId('recipient-address')).toHaveTextContent(
       expectedRecipient,
     );
   });

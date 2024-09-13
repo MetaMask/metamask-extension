@@ -46,6 +46,7 @@ function formatValue(value: string, type: NameType): string {
   }
 
   switch (type) {
+    case 'multichainAddress' as NameType:
     case NameType.ETHEREUM_ADDRESS:
       return shortenAddress(normalizeSafeAddress(value));
 
@@ -121,11 +122,19 @@ const Name = memo(
             />
           )}
           {hasDisplayName ? (
-            <Text className="name__name" variant={TextVariant.bodyMd}>
+            <Text
+              className="name__name"
+              variant={TextVariant.bodyMd}
+              data-testid="sender-name"
+            >
               {name}
             </Text>
           ) : (
-            <Text className="name__value" variant={TextVariant.bodyMd}>
+            <Text
+              className="name__value"
+              variant={TextVariant.bodyMd}
+              data-testid="sender-address"
+            >
               {formattedValue}
             </Text>
           )}

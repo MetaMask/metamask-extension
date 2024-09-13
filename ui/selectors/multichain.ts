@@ -488,3 +488,9 @@ export function getMultichainDraftTransactionFee(
 
   return draftTransaction.transactionParams.fee;
 }
+
+export function getMultichainSendStage(
+  state: MultichainReduxSendState,
+): MultichainReduxSendState['multichainSend']['stage'] {
+  return state.multichainSend.stage;
+}
