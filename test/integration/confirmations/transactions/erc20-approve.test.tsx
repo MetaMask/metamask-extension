@@ -1,27 +1,19 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { waitFor } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import nock from 'nock';
-import { useIsNFT } from '../../../../ui/pages/confirmations/components/confirm/info/approve/hooks/use-is-nft';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
 import { getUnapprovedApproveTransaction } from './transactionDataHelpers';
+import { TokenStandard } from '../../../../shared/constants/transaction';
+import { createTestProviderTools } from '../../../stub/provider';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
+  callBackgroundMethod: jest.fn(),
 }));
-
-jest.mock(
-  '../../../../ui/pages/confirmations/components/confirm/info/approve/hooks/use-is-nft',
-  () => ({
-    ...jest.requireActual(
-      '../../../../ui/pages/confirmations/components/confirm/info/approve/hooks/use-is-nft',
-    ),
-    useIsNFT: jest.fn(),
-  }),
-);
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 
@@ -98,6 +90,9 @@ const advancedDetailsMockedRequests = {
     ],
     source: 'FourByte',
   },
+  getTokenStandardAndDetails: {
+    standard: TokenStandard.ERC20,
+  },
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -111,24 +106,39 @@ const setupSubmitRequestToBackgroundMocks = (
   );
 };
 
-describe('ERC721 Approve Confirmation', () => {
-  let useIsNFTMock;
+describe('ERC20 Approve Confirmation', () => {
+  beforeAll(() => {
+    const { provider } = createTestProviderTools({
+      networkId: 'sepolia',
+      chainId: '0xaa36a7',
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    global.ethereumProvider = provider as any;
+  });
+
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks();
-    const APPROVE_NFT_HEX_SIG = '0x095ea7b3';
-    mock4byte(APPROVE_NFT_HEX_SIG);
-    useIsNFTMock = jest
-      .fn()
-      .mockImplementation(() => ({ isNFT: false, decimals: '18' }));
-    (useIsNFT as jest.Mock).mockImplementation(useIsNFTMock);
+    const APPROVE_ERC20_HEX_SIG = '0x095ea7b3';
+    const APPROVE_ERC20_TEXT_SIG = 'approve(address,uint256)';
+    mock4byte(APPROVE_ERC20_HEX_SIG, APPROVE_ERC20_TEXT_SIG);
   });
 
   afterEach(() => {
     nock.cleanAll();
   });
 
+  afterAll(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (global as any).ethereumProvider;
+  });
+
   it('displays approve details with correct data', async () => {
+    mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
+      createMockImplementation({ addKnownMethodData: {} }),
+    );
+
     const account =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
@@ -138,17 +148,19 @@ describe('ERC721 Approve Confirmation', () => {
     const mockedMetaMaskState =
       getMetaMaskStateWithUnapprovedApproveTransaction(account.address);
 
-    const { getByText } = await integrationTestRender({
-      preloadedState: mockedMetaMaskState,
-      backgroundConnection: backgroundConnectionMocked,
+    let testContainer;
+    await act(async () => {
+      const { container } = await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
+
+      testContainer = container;
     });
 
-    await waitFor(() => {
-      expect(getByText('Spending cap request')).toBeInTheDocument();
-    });
+    expect(await screen.findByText('Spending cap request')).toBeInTheDocument();
+    expect(await screen.findByText('Request from')).toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(getByText('Request from')).toBeInTheDocument();
-    });
+    expect(nock.isDone()).toBe(true);
   });
 });
