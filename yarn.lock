@@ -4923,7 +4923,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.0.1, @metamask/controller-utils@npm:^11.0.2, @metamask/controller-utils@npm:^11.2.0":
+"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.0.1, @metamask/controller-utils@npm:^11.0.2, @metamask/controller-utils@npm:^11.1.0, @metamask/controller-utils@npm:^11.2.0":
   version: 11.2.0
   resolution: "@metamask/controller-utils@npm:11.2.0"
   dependencies:
@@ -5993,6 +5993,15 @@ __metadata:
   peerDependencies:
     "@metamask/keyring-controller": ^17.0.0
   checksum: 10/99d39de8adb9a43bbb5972d70feabfba6bac0c1d71d1567838e506e661f7fd293205e2c83361f7166ce72b38437d79cd0da8a7a14dd584f59b5f583dcb4d769b
+  languageName: node
+  linkType: hard
+
+"@metamask/preinstalled-example-snap@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/preinstalled-example-snap@npm:0.1.0"
+  dependencies:
+    "@metamask/snaps-sdk": "npm:^6.5.0"
+  checksum: 10/0540aa6c20b17171f3a3bcf9ea2a7be551d6abbf16de9bd55dce038c5602c62a3921c7e840b82a325b0db00f26b96f54568854bdcd091558bd3b8fa8c6188023
   languageName: node
   linkType: hard
 
@@ -25982,6 +25991,7 @@ __metadata:
     "@metamask/phishing-warning": "npm:^4.0.0"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:0.34.0"
+    "@metamask/preinstalled-example-snap": "npm:^0.1.0"
     "@metamask/profile-sync-controller": "npm:^0.5.0"
     "@metamask/providers": "npm:^14.0.2"
     "@metamask/queued-request-controller": "npm:^2.0.0"
