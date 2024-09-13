@@ -78,6 +78,7 @@ const CoinButtons = ({
   defaultSwapsToken,
   ///: END:ONLY_INCLUDE_IF
   classPrefix = 'coin',
+  iconButtonClassName = '',
 }: {
   chainId: `0x${string}` | CaipChainId | number;
   isSwapsChain: boolean;
@@ -88,6 +89,7 @@ const CoinButtons = ({
   defaultSwapsToken?: SwapsEthToken;
   ///: END:ONLY_INCLUDE_IF
   classPrefix?: string;
+  iconButtonClassName?: string;
 }) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -189,6 +191,7 @@ const CoinButtons = ({
       <>
         <IconButton
           className={`${classPrefix}-overview__button`}
+          iconButtonClassName={iconButtonClassName}
           Icon={<Icon name={IconName.Stake} color={IconColor.primaryInverse} />}
           label={t('stake')}
           onClick={handleMmiStakingOnClick}
@@ -196,6 +199,7 @@ const CoinButtons = ({
         {mmiPortfolioEnabled && (
           <IconButton
             className={`${classPrefix}-overview__button`}
+            iconButtonClassName={iconButtonClassName}
             Icon={
               <Icon name={IconName.Diagram} color={IconColor.primaryInverse} />
             }
@@ -306,6 +310,7 @@ const CoinButtons = ({
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <IconButton
           className={`${classPrefix}-overview__button`}
+          iconButtonClassName={iconButtonClassName}
           Icon={
             <Icon name={IconName.PlusMinus} color={IconColor.primaryInverse} />
           }
@@ -328,6 +333,7 @@ const CoinButtons = ({
 
       <IconButton
         className={`${classPrefix}-overview__button`}
+        iconButtonClassName={iconButtonClassName}
         data-testid={`${classPrefix}-overview-send`}
         Icon={
           <Icon
@@ -344,6 +350,7 @@ const CoinButtons = ({
       />
       <IconButton
         className={`${classPrefix}-overview__button`}
+        iconButtonClassName={iconButtonClassName}
         disabled={
           !isSwapsChain || !isSigningEnabled || !isExternalServicesEnabled
         }
@@ -364,6 +371,7 @@ const CoinButtons = ({
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <IconButton
           className={`${classPrefix}-overview__button`}
+          iconButtonClassName={iconButtonClassName}
           disabled={!isBridgeChain || !isSigningEnabled}
           data-testid={`${classPrefix}-overview-bridge`}
           Icon={
@@ -387,6 +395,7 @@ const CoinButtons = ({
           )}
           <IconButton
             className={`${classPrefix}-overview__button`}
+            iconButtonClassName={iconButtonClassName}
             data-testid={`${classPrefix}-overview-receive`}
             Icon={
               <Icon

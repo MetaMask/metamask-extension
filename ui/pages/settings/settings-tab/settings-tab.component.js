@@ -68,6 +68,8 @@ export default class SettingsTab extends PureComponent {
     tokenList: PropTypes.object,
     theme: PropTypes.string,
     setTheme: PropTypes.func,
+    hideAggregatedBalancePopover: PropTypes.func,
+    shouldShowAggregatedBalancePopover: PropTypes.bool,
   };
 
   settingsRefs = Array(
@@ -117,7 +119,6 @@ export default class SettingsTab extends PureComponent {
               options={currencyOptions}
               selectedOption={currentCurrency}
               onChange={(newCurrency) => setCurrentCurrency(newCurrency)}
-              className="settings-page__content-item__dropdown"
             />
           </div>
         </div>
@@ -232,7 +233,7 @@ export default class SettingsTab extends PureComponent {
             {t('accountIdenticon')}
           </Text>
           <Text
-            variant={TextVariant.bodySm}
+            variant={TextVariant.bodyMd}
             color={TextColor.textAlternative}
             className="settings-page__content-item__description"
           >
@@ -314,6 +315,8 @@ export default class SettingsTab extends PureComponent {
 
   renderShowNativeTokenAsMainBalance() {
     const { t } = this.context;
+    const { hideAggregatedBalancePopover, shouldShowAggregatedBalancePopover } =
+      this.props;
     const geShowNativeTokenAsMainBalanceForMetrics = (value) => {
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Settings,
@@ -352,6 +355,9 @@ export default class SettingsTab extends PureComponent {
             className="show-native-token-as-main-balance"
             value={showNativeTokenAsMainBalance}
             onToggle={(value) => {
+              if (value && shouldShowAggregatedBalancePopover === true) {
+                hideAggregatedBalancePopover();
+              }
               setShowNativeTokenAsMainBalancePreference(!value);
               geShowNativeTokenAsMainBalanceForMetrics(!value);
             }}

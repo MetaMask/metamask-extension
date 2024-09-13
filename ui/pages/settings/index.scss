@@ -296,10 +296,6 @@
       margin-top: 10px;
     }
 
-    &__dropdown {
-      height: auto;
-    }
-
     &__title {
       font-size: 14px;
       font-weight: 500;
@@ -336,10 +332,10 @@
     &__description {
       @include design-system.H6;
 
-      font-size: 12px;
-      line-height: 20px;
-      letter-spacing: 0.25px;
-      margin-top: 8px;
+      font-size: 14px;
+      line-height: 22px;
+      letter-spacing: 0px;
+      margin-top: 0px;
       margin-bottom: 12px;
       font-weight: 400;
     }

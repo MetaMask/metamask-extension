@@ -396,6 +396,10 @@
   "advancedPriorityFeeToolTip": {
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
+  "aggregatedBalancePopover": {
+    "message": "This reflects the value of all tokens you own on a given network. If you prefer seeing this value in ETH or other currencies, go to $1.",
+    "description": "$1 represents the settings page"
+  },
   "agreeTermsOfUse": {
     "message": "I agree to MetaMask's $1",
     "description": "$1 is the `terms` link"
@@ -6534,6 +6538,9 @@
   },
   "yourBalance": {
     "message": "Your balance"
+  },
+  "yourBalanceIsAggregated": {
+    "message": "Your balance is aggregated"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"

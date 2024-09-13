@@ -3,11 +3,9 @@
 .wallet-overview {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: start;
   flex: 1;
-  min-height: 209px;
   min-width: 0;
-  padding-top: 10px;
   flex-direction: column;
   width: 100%;
 
@@ -16,15 +14,20 @@
     display: flex;
     gap: 4px;
     flex-direction: column;
-    align-items: center;
+    align-items: start;
     width: 100%;
+  }
+
+  &__icon_button {
+    margin-top: 0px !important;
   }
 
   &__buttons {
     display: flex;
     flex-direction: row;
-    height: 68px;
-    margin-bottom: 24px;
+    height: 100%;
+    margin-bottom: 16px;
+    padding: 0 16px;
   }
 
   &__portfolio_button {
@@ -34,6 +37,12 @@
     cursor: pointer;
     align-items: center;
     color: var(--color-primary-default);
+  }
+
+  &__currency-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
   }
 }
 
@@ -57,10 +66,14 @@
     min-width: 0;
     gap: 4px;
     position: relative;
-    align-items: center;
+    align-items: start;
     margin: 16px 0;
     padding: 0 16px;
     max-width: 326px;
+  }
+
+  &__icon-button {
+    margin-top: 0px !important;
   }
 
   &__primary-container {
@@ -74,6 +87,8 @@
     @include design-system.H2;
 
     color: var(--color-text-default);
+
+    font-weight: 700;
   }
 
   &__cached-star {
@@ -159,5 +174,16 @@
 
   &__button:last-of-type {
     margin-right: 0;
+  }
+}
+
+.balance-popover {
+  &__text {
+    font-size: 12px;
+    line-height: 20px;
+    letter-spacing: 0.25px;
+  }
+  &__container {
+    width: 248px !important;
   }
 }

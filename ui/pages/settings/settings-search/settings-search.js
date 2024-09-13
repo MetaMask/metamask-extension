@@ -6,7 +6,11 @@ import TextField from '../../../components/ui/text-field';
 import { I18nContext } from '../../../contexts/i18n';
 import SearchIcon from '../../../components/ui/icon/search-icon';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { Icon, IconName } from '../../../components/component-library';
+import {
+  Icon,
+  IconName,
+  IconSize,
+} from '../../../components/component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 
 export default function SettingsSearch({
@@ -19,6 +23,10 @@ export default function SettingsSearch({
   const [searchQuery, setSearchQuery] = useState('');
   const [searchIconColor, setSearchIconColor] = useState(
     'var(--color-icon-muted)',
+  );
+
+  const [searchIconColorV2, setSearchIconColorV2] = useState(
+    IconColor.iconMuted,
   );
 
   const settingsRoutesListArray = Object.values(settingsRoutesList);
@@ -38,8 +46,10 @@ export default function SettingsSearch({
     setSearchQuery(sanitizedSearchQuery);
     if (sanitizedSearchQuery === '') {
       setSearchIconColor('var(--color-icon-muted)');
+      setSearchIconColorV2(IconColor.iconMuted);
     } else {
       setSearchIconColor('var(--color-icon-default)');
+      setSearchIconColorV2(IconColor.iconDefault);
     }
 
     const fuseSearchResult = settingsSearchFuse.search(sanitizedSearchQuery);
@@ -58,7 +68,11 @@ export default function SettingsSearch({
   const renderStartAdornment = () => {
     return (
       <InputAdornment position="start" style={{ marginRight: '12px' }}>
-        <SearchIcon color={searchIconColor} />
+        <Icon
+          size={IconSize.Sm}
+          name={IconName.Search}
+          color={searchIconColorV2}
+        />
       </InputAdornment>
     );
   };
@@ -93,6 +107,7 @@ export default function SettingsSearch({
       autoComplete="off"
       startAdornment={renderStartAdornment()}
       endAdornment={renderEndAdornment()}
+      theme="bordered"
     />
   );
 }

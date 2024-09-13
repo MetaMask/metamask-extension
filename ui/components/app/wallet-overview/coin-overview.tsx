@@ -1,11 +1,32 @@
-import React, { useContext, useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useContext, useCallback, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { zeroAddress } from 'ethereumjs-util';
 import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
-import { Icon, IconName } from '../../component-library';
-import { IconColor } from '../../../helpers/constants/design-system';
+import {
+  Box,
+  ButtonIcon,
+  ButtonIconSize,
+  ButtonLink,
+  ButtonLinkSize,
+  Icon,
+  IconName,
+  IconSize,
+  Popover,
+  PopoverPosition,
+  Text,
+} from '../../component-library';
+import {
+  AlignItems,
+  BackgroundColor,
+  Display,
+  IconColor,
+  JustifyContent,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -18,6 +39,7 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import { PRIMARY } from '../../../helpers/constants/common';
 import {
   getDataCollectionForMarketing,
+  getShouldShowAggregatedBalancePopover,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   getPreferences,
@@ -33,9 +55,11 @@ import Spinner from '../../ui/spinner';
 import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
+import { GENERAL_ROUTE } from '../../../helpers/constants/routes';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
+import { setAggregatedBalancePopover } from '../../../store/actions';
 
 export type CoinOverviewProps = {
   balance: string;
@@ -75,11 +99,15 @@ export const CoinOverview = ({
   ///: END:ONLY_INCLUDE_IF
 
   const t = useContext(I18nContext);
+  const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
+
+  const shouldShowPopover = useSelector(getShouldShowAggregatedBalancePopover);
+  console.log('🚀 ~ shouldShowPopover:', shouldShowPopover);
 
   const selectedAccount = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
@@ -98,6 +126,23 @@ export const CoinOverview = ({
   const isEvm = useSelector(getMultichainIsEvm);
 
   const tokensMarketData = useSelector(getTokensMarketData);
+  const [isOpen, setIsOpen] = useState(true);
+
+  const handleMouseEnter = () => {
+    setIsOpen(true);
+  };
+
+  const handleClick = () => {
+    // todo call dispatch here to isPopoverAlreadyShown to true
+    setIsOpen(!isOpen);
+    dispatch(setAggregatedBalancePopover());
+  };
+
+  const [referenceElement, setReferenceElement] = useState();
+
+  const setBoxRef = (ref) => {
+    setReferenceElement(ref);
+  };
 
   const handlePortfolioOnClick = useCallback(() => {
     const url = getPortfolioUrl(
@@ -122,12 +167,51 @@ export const CoinOverview = ({
     if (isEvm) {
       if (showNativeTokenAsMainBalance) {
         return (
-          <PercentageAndAmountChange
-            value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
-          />
+          <Box className="wallet-overview__currency-wrapper">
+            <PercentageAndAmountChange
+              value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
+            />
+            <Box
+              onClick={handlePortfolioOnClick}
+              className="wallet-overview__portfolio_button"
+              data-testid="portfolio-link"
+            >
+              <Text
+                variant={TextVariant.bodyMd}
+                color={TextColor.primaryDefault}
+              >
+                {t('portfolio')}
+              </Text>
+
+              <Icon
+                size={IconSize.Sm}
+                name={IconName.Export}
+                color={IconColor.primaryDefault}
+              />
+            </Box>
+          </Box>
         );
       }
-      return <AggregatedPercentageOverview />;
+      return (
+        <Box className="wallet-overview__currency-wrapper">
+          <AggregatedPercentageOverview />
+          <Box
+            onClick={handlePortfolioOnClick}
+            className="wallet-overview__portfolio_button"
+            data-testid="portfolio-link"
+          >
+            <Text variant={TextVariant.bodyMd} color={TextColor.primaryDefault}>
+              {t('portfolio')}
+            </Text>
+
+            <Icon
+              size={IconSize.Sm}
+              name={IconName.Export}
+              color={IconColor.primaryDefault}
+            />
+          </Box>
+        </Box>
+      );
     }
     return null;
   };
@@ -141,35 +225,100 @@ export const CoinOverview = ({
           disabled={!balanceIsCached}
         >
           <div className={`${classPrefix}-overview__balance`}>
-            <div
-              onClick={handlePortfolioOnClick}
-              className="wallet-overview__portfolio_button"
-              data-testid="portfolio-link"
-            >
-              {t('portfolio')}
-              <Icon name={IconName.Diagram} color={IconColor.primaryDefault} />
-            </div>
             <div className={`${classPrefix}-overview__primary-container`}>
               {balanceToDisplay ? (
-                <UserPreferencedCurrencyDisplay
-                  style={{ display: 'contents' }}
-                  className={classnames(
-                    `${classPrefix}-overview__primary-balance`,
-                    {
-                      [`${classPrefix}-overview__cached-balance`]:
-                        balanceIsCached,
-                    },
-                  )}
-                  data-testid={`${classPrefix}-overview__primary-currency`}
-                  value={balanceToDisplay}
-                  type={PRIMARY}
-                  ethNumberOfDecimals={4}
-                  hideTitle
-                  withCheckShowNativeToken
-                  isAggregatedFiatOverviewBalance={
-                    !showNativeTokenAsMainBalance
-                  }
-                />
+                <>
+                  <Box onMouseEnter={handleMouseEnter} ref={setBoxRef}>
+                    <UserPreferencedCurrencyDisplay
+                      style={{ display: 'contents' }}
+                      className={classnames(
+                        `${classPrefix}-overview__primary-balance`,
+                        {
+                          [`${classPrefix}-overview__cached-balance`]:
+                            balanceIsCached,
+                        },
+                      )}
+                      data-testid={`${classPrefix}-overview__primary-currency`}
+                      value={balanceToDisplay}
+                      type={PRIMARY}
+                      ethNumberOfDecimals={4}
+                      hideTitle
+                      withCheckShowNativeToken
+                      isAggregatedFiatOverviewBalance={
+                        !showNativeTokenAsMainBalance
+                      }
+                    />
+                  </Box>
+                  {shouldShowPopover && // make this === null to correct behavior
+                  !showNativeTokenAsMainBalance ? (
+                    <Popover
+                      referenceElement={referenceElement}
+                      isOpen={isOpen}
+                      position={PopoverPosition.BottomStart} // TODO ask george about this bottom start issue
+                      hasArrow
+                      flip
+                      backgroundColor={BackgroundColor.overlayAlternative} // TODO check with george on this opacity issue
+                      className="balance-popover__container"
+                      padding={3}
+                      onClickOutside={handleClick}
+                      onPressEscKey={handleClick}
+                      preventOverflow
+                      style={{
+                        zIndex: 66,
+                      }}
+                    >
+                      <Box>
+                        <Box
+                          display={Display.Flex}
+                          justifyContent={JustifyContent.spaceBetween}
+                        >
+                          <Text
+                            variant={TextVariant.bodySmBold}
+                            color={TextColor.overlayInverse}
+                            textAlign={TextAlign.Left}
+                            alignItems={AlignItems.flexStart}
+                            className="balance-popover__text"
+                          >
+                            {t('yourBalanceIsAggregated')}
+                          </Text>
+                          <ButtonIcon
+                            size={ButtonIconSize.Sm}
+                            color={IconColor.infoInverse}
+                            onClick={handleClick}
+                            iconName={IconName.Close}
+                            justifyContent={JustifyContent.flexEnd}
+                          />
+                        </Box>
+
+                        <Text
+                          variant={TextVariant.bodySm}
+                          color={TextColor.overlayInverse}
+                          className="balance-popover__text"
+                        >
+                          {
+                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                            // @ts-ignore: Expected 0-1 arguments, but got 2.
+                            t('aggregatedBalancePopover', [
+                              <ButtonLink
+                                size={ButtonLinkSize.Inherit}
+                                textProps={{
+                                  variant: TextVariant.bodyMd,
+                                  alignItems: AlignItems.flexStart,
+                                }}
+                                as="a"
+                                href={`#${GENERAL_ROUTE}`}
+                                // target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {t('settings')}
+                              </ButtonLink>,
+                            ])
+                          }
+                        </Text>
+                      </Box>
+                    </Popover>
+                  ) : null}
+                </>
               ) : (
                 <Spinner className="loading-overlay__spinner" />
               )}
@@ -195,6 +344,7 @@ export const CoinOverview = ({
             defaultSwapsToken,
             ///: END:ONLY_INCLUDE_IF
             classPrefix,
+            iconButtonClassName: `${classPrefix}-overview__icon-button`,
           }}
         />
       }

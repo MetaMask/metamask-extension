@@ -16,6 +16,7 @@ export default function IconButton(props) {
     label,
     tooltipRender,
     className,
+    iconButtonClassName = '',
     ...otherProps
   } = props;
   const renderWrapper = tooltipRender ?? defaultRender;
@@ -31,7 +32,9 @@ export default function IconButton(props) {
     >
       {renderWrapper(
         <>
-          <div className="icon-button__circle">{Icon}</div>
+          <div className={`icon-button__circle ${iconButtonClassName}`}>
+            {Icon}
+          </div>
           {label.length > 10 ? (
             <Tooltip title={label} position="bottom">
               <Text
@@ -64,5 +67,6 @@ IconButton.propTypes = {
   label: PropTypes.string.isRequired,
   tooltipRender: PropTypes.func,
   className: PropTypes.string,
+  iconButtonClassName: PropTypes.string,
   'data-testid': PropTypes.string,
 };

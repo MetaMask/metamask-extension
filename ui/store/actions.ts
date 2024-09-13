@@ -4840,6 +4840,10 @@ export function neverShowSwitchedNetworkMessage() {
   ]);
 }
 
+export function setAggregatedBalancePopover() {
+  return submitRequestToBackground('setAggregatedBalancePopoverShown');
+}
+
 /**
  * Sends the background state the networkClientId and domain upon network switch
  *

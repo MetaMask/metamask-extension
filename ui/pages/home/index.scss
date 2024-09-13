@@ -20,6 +20,13 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
+
+    padding-top: 8px;
+
+    @include design-system.screen-sm-min {
+      padding: 16px 128px; //TODO verify with design team if this would be okay
+    }
+
   }
 
   &__connect-status-text {
