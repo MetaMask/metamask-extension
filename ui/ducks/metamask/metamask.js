@@ -24,7 +24,6 @@ import {
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
-import { createDeepEqualSelector } from '../../selectors/util';
 
 const initialState = {
   isInitialized: false,
@@ -281,7 +280,7 @@ export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
  *
  * @param {object} state - Redux state object.
  */
-export const getProviderConfig = createDeepEqualSelector(
+export const getProviderConfig = createSelector(
   (state) => getNetworkConfigurationsByChainId(state),
   (state) => getSelectedNetworkClientId(state),
   (networkConfigurationsByChainId, selectedNetworkClientId) => {
