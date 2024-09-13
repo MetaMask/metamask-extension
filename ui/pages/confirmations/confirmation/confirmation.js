@@ -482,7 +482,7 @@ export default function ConfirmationPage({
   if (pendingConfirmations.length > 1) {
     contentMargin += NAVIGATION_CONTROLS_HEIGHT;
   }
-  if (isSnapCustomUIDialog) {
+  if (isSnapCustomUIDialog && !hideSnapBranding) {
     contentMargin += SNAP_DIALOG_HEADER_HEIGHT;
   }
 
