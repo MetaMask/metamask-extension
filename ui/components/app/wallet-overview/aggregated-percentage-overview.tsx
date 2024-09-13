@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { zeroAddress } from 'ethereumjs-util';
@@ -22,8 +22,16 @@ import {
 import { Box, Text } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 
+// core already has this exported type but its not yet available in this version
+// todo remove this and use core type once available
+type MarketDataDetails = {
+  tokenAddress: string;
+  pricePercentChange1d: number;
+};
+
 export const AggregatedPercentageOverview = () => {
-  const tokensMarketData = useSelector(getTokensMarketData);
+  const tokensMarketData: Record<string, MarketDataDetails> =
+    useSelector(getTokensMarketData);
   const locale = useSelector(getIntlLocale);
   const fiatCurrency = useSelector(getCurrentCurrency);
   const selectedAccount = useSelector(getSelectedAccount);
@@ -36,41 +44,33 @@ export const AggregatedPercentageOverview = () => {
     shouldHideZeroBalanceTokens,
   );
 
-  let totalFiat1dAgo = 0;
-  orderedTokenList.forEach((token) => {
-    if (token.address) {
-      // This is a regular ERC20 token
-      // find the relevant pricePercentChange1d in tokensMarketData
-      // Iterate through the keys of the record
-      let found;
-      for (const key in tokensMarketData) {
-        if (
-          isEqualCaseInsensitive(
-            tokensMarketData[key].tokenAddress,
-            token.address,
-          )
-        ) {
-          found = tokensMarketData[key];
-        }
+  // Memoize the calculation to avoid recalculating unless orderedTokenList or tokensMarketData changes
+  const totalFiat1dAgo = useMemo(() => {
+    return orderedTokenList.reduce((total1dAgo, item) => {
+      if (item.address) {
+        // This is a regular ERC20 token
+        // find the relevant pricePercentChange1d in tokensMarketData
+        // Find the corresponding market data for the token by filtering the values of the tokensMarketData object
+        const found = Object.values(tokensMarketData).find(
+          (data: MarketDataDetails) =>
+            isEqualCaseInsensitive(data.tokenAddress, item.address),
+        );
+        const tokenFiat1dAgo = getCalculatedTokenAmount1dAgo(
+          item.fiatBalance,
+          found?.pricePercentChange1d,
+        );
+        return total1dAgo + Number(tokenFiat1dAgo);
       }
-      const tokenFiat1dAgo = getCalculatedTokenAmount1dAgo(
-        token?.fiatBalance,
-        found?.pricePercentChange1d,
-      );
-      totalFiat1dAgo += Number(tokenFiat1dAgo);
-    } else {
       // native token
       const nativePricePercentChange1d =
         tokensMarketData?.[zeroAddress()]?.pricePercentChange1d;
-
       const nativeFiat1dAgo = getCalculatedTokenAmount1dAgo(
-        token?.fiatBalance,
+        item.fiatBalance,
         nativePricePercentChange1d,
       );
-
-      totalFiat1dAgo += Number(nativeFiat1dAgo);
-    }
-  });
+      return total1dAgo + Number(nativeFiat1dAgo);
+    }, 0); // Initial total1dAgo is 0
+  }, [orderedTokenList, tokensMarketData]); // Dependencies: recalculate if orderedTokenList or tokensMarketData changes
 
   const totalBalance: number = Number(totalFiatBalance);
   const totalBalance1dAgo = totalFiat1dAgo;
