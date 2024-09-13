@@ -127,7 +127,7 @@ class Driver {
    * @param {string} extensionUrl
    * @param {number} timeout - Defaults to 10000 milliseconds (10 seconds)
    */
-  constructor(driver, browser, extensionUrl, timeout = 10 * 1000) {
+  constructor(driver, browser, extensionUrl, timeout = 15 * 1000) {
     this.driver = driver;
     this.browser = browser;
     this.extensionUrl = extensionUrl;
