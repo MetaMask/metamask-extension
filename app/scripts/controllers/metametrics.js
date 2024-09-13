@@ -355,11 +355,11 @@ export default class MetaMetricsController {
 
   /**
    * @typedef {object} MetaMetricsFinalizeEventFragmentOptions
-   * @property {boolean} [options.abandoned] - if true track the failure
+   * @property {boolean} [abandoned = false] - if true track the failure
    * event instead of the success event
-   * @property {MetaMetricsContext.page} [options.page] - page the final event
+   * @property {MetaMetricsContext.page} [page] - page the final event
    * occurred on. This will override whatever is set on the fragment
-   * @property {MetaMetricsContext.referrer} [options.referrer] - Dapp that
+   * @property {MetaMetricsContext.referrer} [referrer] - Dapp that
    * originated the fragment. This is for fallback only, the fragment referrer
    * property will take precedence.
    */
