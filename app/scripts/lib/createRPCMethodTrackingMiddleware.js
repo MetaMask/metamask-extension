@@ -86,6 +86,9 @@ const EVENT_NAME_MAP = {
     APPROVED: MetaMetricsEventName.SignatureApproved,
     REJECTED: MetaMetricsEventName.SignatureRejected,
     REQUESTED: MetaMetricsEventName.SignatureRequested,
+    APPROVED_ANON: MetaMetricsEventName.SignatureApprovedAnon,
+    REJECTED_ANON: MetaMetricsEventName.SignatureRejectedAnon,
+    REQUESTED_ANON: MetaMetricsEventName.SignatureRequestedAnon,
   },
   [MESSAGE_TYPE.PERSONAL_SIGN]: {
     APPROVED: MetaMetricsEventName.SignatureApproved,
@@ -132,13 +135,21 @@ let globalRateLimitCount = 0;
  * @param {MetaMetricsController} metaMetricsController
  * @param {OriginalRequest} req
  * @param {object} properties
+ * @param {object} sensitiveProperties
  */
-function createSignatureFragment(metaMetricsController, req, properties) {
+function createSignatureFragment(
+  metaMetricsController,
+  req,
+  properties,
+  sensitiveProperties,
+) {
   metaMetricsController.createEventFragment({
     category: MetaMetricsEventCategory.InpageProvider,
+
     initialEvent: MetaMetricsEventName.SignatureRequested,
     successEvent: MetaMetricsEventName.SignatureApproved,
     failureEvent: MetaMetricsEventName.SignatureRejected,
+
     uniqueIdentifier: generateSignatureUniqueId(req.id),
     persist: true,
     referrer: {
@@ -146,6 +157,24 @@ function createSignatureFragment(metaMetricsController, req, properties) {
     },
     properties,
   });
+
+  if (req.method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4) {
+    metaMetricsController.createEventFragment({
+      category: MetaMetricsEventCategory.InpageProvider,
+
+      initialEvent: MetaMetricsEventName.SignatureRequestedAnon,
+      successEvent: MetaMetricsEventName.SignatureApprovedAnon,
+      failureEvent: MetaMetricsEventName.SignatureRejectedAnon,
+
+      uniqueIdentifier: generateSignatureUniqueId(req.id),
+      persist: true,
+      referrer: {
+        url: req.origin,
+      },
+      properties,
+      sensitiveProperties,
+    });
+  }
 }
 
 /**
@@ -156,16 +185,18 @@ function createSignatureFragment(metaMetricsController, req, properties) {
  * @param {object}  options
  * @param {boolean} options.abandoned
  * @param {object}  options.properties
+ * @param {object} options.sensitiveProperties
  */
 function finalizeSignatureFragment(
   metaMetricsController,
   req,
-  { abandoned, properties },
+  { abandoned, properties, sensitiveProperties },
 ) {
   const signatureUniqueId = generateSignatureUniqueId(req.id);
 
   metaMetricsController.updateEventFragment(signatureUniqueId, {
     properties,
+    sensitiveProperties,
   });
   metaMetricsController.finalizeEventFragment(signatureUniqueId, {
     abandoned,
@@ -253,6 +284,7 @@ export default function createRPCMethodTrackingMiddleware({
     const eventType = EVENT_NAME_MAP[method];
 
     const eventProperties = {};
+    const sensitiveEventProperties = {};
 
     // Boolean variable that reduces code duplication and increases legibility
     const shouldTrackEvent =
@@ -341,14 +373,24 @@ export default function createRPCMethodTrackingMiddleware({
               ];
             }
           } else if (method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4) {
-            const { primaryType } = parseTypedDataMessage(data);
-            eventProperties.eip712_primary_type = primaryType;
-            if (PRIMARY_TYPES_PERMIT.includes(primaryType)) {
+            const parsedMessageData = parseTypedDataMessage(data);
+
+            eventProperties.eip712_primary_type = parsedMessageData.primaryType;
+            sensitiveEventProperties.eip712_verifyingContract =
+              parsedMessageData.domain.verifyingContract;
+            sensitiveEventProperties.eip712_domain_version =
+              parsedMessageData.domain.version;
+            sensitiveEventProperties.eip712_domain_name =
+              parsedMessageData.domain.name;
+
+            if (PRIMARY_TYPES_PERMIT.includes(parsedMessageData.primaryType)) {
               eventProperties.ui_customizations = [
                 ...(eventProperties.ui_customizations || []),
                 MetaMetricsEventUiCustomization.Permit,
               ];
-            } else if (PRIMARY_TYPES_ORDER.includes(primaryType)) {
+            } else if (
+              PRIMARY_TYPES_ORDER.includes(parsedMessageData.primaryType)
+            ) {
               eventProperties.ui_customizations = [
                 ...(eventProperties.ui_customizations || []),
                 MetaMetricsEventUiCustomization.Order,
@@ -368,7 +410,12 @@ export default function createRPCMethodTrackingMiddleware({
       }
 
       if (event === MetaMetricsEventName.SignatureRequested) {
-        createSignatureFragment(metaMetricsController, req, eventProperties);
+        createSignatureFragment(
+          metaMetricsController,
+          req,
+          eventProperties,
+          sensitiveEventProperties,
+        );
       } else {
         metaMetricsController.trackEvent({
           event,
@@ -377,6 +424,7 @@ export default function createRPCMethodTrackingMiddleware({
             url: origin,
           },
           properties: eventProperties,
+          sensitiveProperties: sensitiveEventProperties,
         });
       }
 
@@ -443,6 +491,33 @@ export default function createRPCMethodTrackingMiddleware({
           },
           properties,
         });
+      }
+
+      if (req.method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4) {
+        let anonEvent;
+        if (event === eventType.APPROVED) {
+          anonEvent = eventType.APPROVED_ANON;
+        } else if (event === eventType.REJECTED) {
+          anonEvent = eventType.REJECTED_ANON;
+        }
+
+        if (anonEvent) {
+          finalizeSignatureFragment(metaMetricsController, req, {
+            abandoned: event === eventType.REJECTED_ANON,
+            properties,
+            sensitiveProperties: sensitiveEventProperties,
+          });
+        } else {
+          metaMetricsController.trackEvent({
+            event,
+            category: MetaMetricsEventCategory.InpageProvider,
+            referrer: {
+              url: origin,
+            },
+            properties,
+            sensitiveProperties: sensitiveEventProperties,
+          });
+        }
       }
 
       return callback();

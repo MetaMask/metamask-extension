@@ -267,6 +267,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         id: MOCK_ID,
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         origin: 'some.dapp',
+        params: [undefined, permitSignatureMsg.msgParams.data],
       };
 
       const res = {
@@ -276,10 +277,20 @@ describe('createRPCMethodTrackingMiddleware', () => {
       const handler = createHandler();
       await handler(req, res, next);
       await executeMiddlewareStack();
-      expect(trackEventSpy).toHaveBeenCalledTimes(2);
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      console.log(trackEventSpy.mock.calls);
+      expect(trackEventSpy).toHaveBeenCalledTimes(4);
+      expect(trackEventSpy.mock.calls[2][0]).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
+        properties: {
+          signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+        },
+        referrer: { url: 'some.dapp' },
+      });
+
+      expect(trackEventSpy.mock.calls[3][0]).toMatchObject({
+        category: MetaMetricsEventCategory.InpageProvider,
+        event: MetaMetricsEventName.SignatureApprovedAnon,
         properties: {
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         },
