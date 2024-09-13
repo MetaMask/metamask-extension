@@ -3,14 +3,12 @@
     gap: 8px;
   }
 
-  & .snap-ui-button {
-    display: flex;
-    padding-inline: 0px;
+
 
     & .snap-ui-renderer__image {
       vertical-align: middle;
       max-height: 20px;
       max-width: 20px;
     }
-  }
+
 }
