@@ -828,10 +828,7 @@ export const getCalculatedTokenAmount1dAgo = (
   tokenFiatBalance,
   tokenPricePercentChange1dAgo,
 ) => {
-  const tokenFiat1dAgo =
-    tokenPricePercentChange1dAgo !== undefined && tokenFiatBalance
-      ? tokenFiatBalance / (1 + tokenPricePercentChange1dAgo / 100)
-      : tokenFiatBalance ?? 0;
-
-  return tokenFiat1dAgo;
+  return tokenPricePercentChange1dAgo !== undefined && tokenFiatBalance
+    ? tokenFiatBalance / (1 + tokenPricePercentChange1dAgo / 100)
+    : tokenFiatBalance ?? 0;
 };
