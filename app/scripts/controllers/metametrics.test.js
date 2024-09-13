@@ -116,6 +116,7 @@ const SAMPLE_NON_PERSISTED_EVENT = {
 function getMetaMetricsController({
   participateInMetaMetrics = true,
   metaMetricsId = TEST_META_METRICS_ID,
+  marketingCampaignCookieId = null,
   preferencesStore = getMockPreferencesStore(),
   getCurrentChainId = () => FAKE_CHAIN_ID,
   onNetworkDidChange = () => {
@@ -133,6 +134,7 @@ function getMetaMetricsController({
     initState: {
       participateInMetaMetrics,
       metaMetricsId,
+      marketingCampaignCookieId,
       fragments: {
         testid: SAMPLE_PERSISTED_EVENT,
         testid2: SAMPLE_NON_PERSISTED_EVENT,
@@ -344,6 +346,21 @@ describe('MetaMetricsController', function () {
       expect(metaMetricsController.state.metaMetricsId).toStrictEqual(
         TEST_META_METRICS_ID,
       );
+    });
+    it('should nullify the marketingCampaignCookieId when participateInMetaMetrics is toggled off', async function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+        metaMetricsId: TEST_META_METRICS_ID,
+        dataCollectionForMarketing: true,
+        marketingCampaignCookieId: TEST_GA_COOKIE_ID,
+      });
+      expect(
+        metaMetricsController.state.marketingCampaignCookieId,
+      ).toStrictEqual(TEST_GA_COOKIE_ID);
+      await metaMetricsController.setParticipateInMetaMetrics(false);
+      expect(
+        metaMetricsController.state.marketingCampaignCookieId,
+      ).toStrictEqual(null);
     });
   });
 
@@ -1289,28 +1306,15 @@ describe('MetaMetricsController', function () {
         spy.mock.calls[0][1],
       );
     });
-    it('should update the value of marketingCampaignCookieId based on participateInMetaMetrics', async function () {
+  });
+  describe('setDataCollectionForMarketing', function () {
+    it('should nullify the marketingCampaignCookieId when Data collection for marketing is toggled off', async function () {
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: true,
         metaMetricsId: TEST_META_METRICS_ID,
         dataCollectionForMarketing: true,
+        marketingCampaignCookieId: TEST_GA_COOKIE_ID,
       });
-      metaMetricsController.setMarketingCampaignCookieId(TEST_GA_COOKIE_ID);
-      expect(
-        metaMetricsController.state.marketingCampaignCookieId,
-      ).toStrictEqual(TEST_GA_COOKIE_ID);
-      await metaMetricsController.setParticipateInMetaMetrics(false);
-      expect(
-        metaMetricsController.state.marketingCampaignCookieId,
-      ).toStrictEqual(null);
-    });
-    it('should update the value of marketingCampaignCookieId based on dataCollectionForMarketing', async function () {
-      const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: true,
-        metaMetricsId: TEST_META_METRICS_ID,
-        dataCollectionForMarketing: true,
-      });
-      metaMetricsController.setMarketingCampaignCookieId(TEST_GA_COOKIE_ID);
       expect(
         metaMetricsController.state.marketingCampaignCookieId,
       ).toStrictEqual(TEST_GA_COOKIE_ID);
