@@ -26,7 +26,7 @@ import {
   isValidAmount,
 } from '../../../../../../app/scripts/lib/util';
 
-const renderPercentageWithNumber = (
+export const renderPercentageWithNumber = (
   value: string,
   formattedValuePrice: string,
   color: TextColor,

@@ -6332,9 +6332,6 @@
   "updatedRpcForNetworks": {
     "message": "Network RPCs Updated"
   },
-  "updatedWithDate": {
-    "message": "Updated $1"
-  },
   "uploadDropFile": {
     "message": "Drop your file here"
   },
