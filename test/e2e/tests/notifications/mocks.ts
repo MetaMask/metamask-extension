@@ -5,13 +5,13 @@ import {
 } from '@metamask/profile-sync-controller';
 import {
   NotificationServicesController,
-  NotificationsServicesPushController,
+  NotificationServicesPushController,
 } from '@metamask/notification-services-controller';
 
 const AuthMocks = AuthenticationController.Mocks;
 const StorageMocks = UserStorageController.Mocks;
 const NotificationMocks = NotificationServicesController.Mocks;
-const PushMocks = NotificationsServicesPushController.Mocks;
+const PushMocks = NotificationServicesPushController.Mocks;
 
 type MockResponse = {
   url: string | RegExp;
@@ -32,7 +32,11 @@ export async function mockNotificationServices(server: Mockttp) {
 
   // Storage
   mockAPICall(server, await StorageMocks.getMockUserStorageGetResponse());
+<<<<<<< HEAD
   mockAPICall(server, StorageMocks.getMockUserStoragePutResponse());
+=======
+  mockAPICall(server, await StorageMocks.getMockUserStoragePutResponse());
+>>>>>>> develop
 
   // Notifications
   mockAPICall(server, NotificationMocks.getMockFeatureAnnouncementResponse());
