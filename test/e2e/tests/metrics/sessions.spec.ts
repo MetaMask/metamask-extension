@@ -48,7 +48,7 @@ describe('Sessions', function () {
     );
   });
 
-  it('does not send session in UI if metrics disabled', async function () {
+  it('does not send session in UI if metrics disabled @no-mmi', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
