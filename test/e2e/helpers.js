@@ -889,6 +889,9 @@ const sendTransaction = async (
 };
 
 const createInternalTransaction = async (driver) => {
+  // Firefox has incorrect balance if send flow started too quickly.
+  await driver.delay(1000);
+
   await sendTransaction(
     driver,
     '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
