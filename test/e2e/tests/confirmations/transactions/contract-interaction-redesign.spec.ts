@@ -1,13 +1,9 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { Mockttp } from 'mockttp';
-import {
-  createDappTransaction,
-  openDapp,
-  unlockWallet,
-} from '../../../helpers';
-import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
+import { createDappTransaction, unlockWallet } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import { MockedEndpoint } from '../../../mock-e2e';
+import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
 import {
   assertAdvancedGasDetails,
   confirmDepositTransaction,
@@ -18,7 +14,6 @@ import {
   toggleAdvancedDetails,
   toggleOnHexData,
 } from './shared';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
 
 const { hexToNumber } = require('@metamask/utils');
 const {
