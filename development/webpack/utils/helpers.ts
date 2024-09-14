@@ -201,12 +201,12 @@ export function logStats(err?: Error | null, stats?: Stats) {
     return;
   }
 
-  if (!stats) {
+  if (!stats || !stats.compilation) {
     // technically this shouldn't happen, but webpack's TypeScript interface
     // doesn't enforce that `err` and `stats` are mutually exclusive.
     return;
   }
-
+console.log('comp', stats.compilation)
   const { options } = stats.compilation;
   // orange for production builds, purple for development
   const colorFn = options.mode === 'production' ? toOrange : toPurple;

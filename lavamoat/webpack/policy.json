@@ -2279,32 +2279,6 @@
         "ethereumjs-util>ethereum-cryptography>hash.js": true
       }
     },
-    "@metamask/providers": {
-      "globals": {
-        "CustomEvent": true,
-        "Event": true,
-        "addEventListener": true,
-        "console": true,
-        "dispatchEvent": true,
-        "document.createElement": true,
-        "document.readyState": true,
-        "ethereum": "write",
-        "location.hostname": true,
-        "removeEventListener": true,
-        "web3": true
-      },
-      "packages": {
-        "@metamask/object-multiplex": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
-        "@metamask/providers>is-stream": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true,
-        "eslint>fast-deep-equal": true,
-        "json-rpc-middleware-stream": true,
-        "readable-stream": true
-      }
-    },
     "@metamask/providers>@metamask/json-rpc-engine": {
       "packages": {
         "@metamask/rpc-errors": true,

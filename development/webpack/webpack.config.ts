@@ -20,6 +20,7 @@ import {
   type Chunk,
   type MemoryCacheOptions,
   type FileCacheOptions,
+  ProgressPlugin,
 } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
@@ -74,32 +75,35 @@ const webAccessibleResources =
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
     : [];
 
+const mainEntry = Object.fromEntries(Object.entries(entry).filter(([k]) => !k.includes('inpage')));
+
+
 // #region cache
 const cache = args.cache
   ? ({
-      type: 'filesystem',
-      name: `MetaMask—${args.env}`,
-      version: cacheKey,
-      idleTimeout: 0,
-      idleTimeoutForInitialStore: 0,
-      idleTimeoutAfterLargeChanges: 0,
-      // small performance gain by increase memory generations
-      maxMemoryGenerations: Infinity,
-      // Disable allowCollectingMemory because it can slow the build by 10%!
-      allowCollectingMemory: false,
-      buildDependencies: {
-        defaultConfig: [__filename],
-        // Invalidates the build cache when the listed files change.
-        // `__filename` makes all `require`d dependencies of *this* file
-        // `buildDependencies`
-        config: [
-          __filename,
-          join(context, '../.metamaskrc'),
-          join(context, '../builds.yml'),
-          browsersListPath,
-        ],
-      },
-    } as const satisfies FileCacheOptions)
+    type: 'filesystem',
+    name: `MetaMask—${args.env}`,
+    version: cacheKey,
+    idleTimeout: 0,
+    idleTimeoutForInitialStore: 0,
+    idleTimeoutAfterLargeChanges: 0,
+    // small performance gain by increase memory generations
+    maxMemoryGenerations: Infinity,
+    // Disable allowCollectingMemory because it can slow the build by 10%!
+    allowCollectingMemory: false,
+    buildDependencies: {
+      defaultConfig: [__filename],
+      // Invalidates the build cache when the listed files change.
+      // `__filename` makes all `require`d dependencies of *this* file
+      // `buildDependencies`
+      config: [
+        __filename,
+        join(context, '../.metamaskrc'),
+        join(context, '../builds.yml'),
+        browsersListPath,
+      ],
+    },
+  } as const satisfies FileCacheOptions)
   : ({ type: 'memory' } as const satisfies MemoryCacheOptions);
 // #endregion cache
 
@@ -107,7 +111,7 @@ const cache = args.cache
 const commitHash = isDevelopment ? getLatestCommit().hash() : null;
 const plugins: WebpackPluginInstance[] = [
   // TODO: we need to have a separate config for inpage because it (and its dependencies) are not supposed to be wrapped with LavaMoat
-  new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }),
+  // new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }),
   // HtmlBundlerPlugin treats HTML files as entry points
   new HtmlBundlerPlugin({
     preprocessorOptions: { useWith: false },
@@ -133,14 +137,14 @@ const plugins: WebpackPluginInstance[] = [
     zip: args.zip,
     ...(args.zip
       ? {
-          zipOptions: {
-            outFilePath: `../../builds/metamask-[browser]-${version.versionName}.zip`, // relative to output.path
-            mtime: getLatestCommit().timestamp(),
-            excludeExtensions: ['.map'],
-            // `level: 9` is the highest; it may increase build time by ~5% over level 1
-            level: 9,
-          },
-        }
+        zipOptions: {
+          outFilePath: `../../builds/metamask-[browser]-${version.versionName}.zip`, // relative to output.path
+          mtime: getLatestCommit().timestamp(),
+          excludeExtensions: ['.map'],
+          // `level: 9` is the highest; it may increase build time by ~5% over level 1
+          level: 9,
+        },
+      }
       : {}),
   }),
   // use ProvidePlugin to polyfill *global* node variables
@@ -190,8 +194,10 @@ const tsxLoader = getSwcLoader('typescript', true, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, swcConfig);
 const ecmaLoader = getSwcLoader('ecmascript', false, swcConfig);
 
+console.log(entry, mainEntry)
+
 const config = {
-  entry,
+  entry: mainEntry,
   cache,
   plugins,
   context,
@@ -406,4 +412,120 @@ const config = {
   },
 } as const satisfies Configuration;
 
-export default config;
+
+// inpage ------
+
+const inpageConfig = {
+  entry: {
+    'scripts/inpage.js': entry['scripts/inpage.js'],
+  },
+  cache,
+  plugins: [
+    new ProgressPlugin(),
+    // new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }),
+    new ProvidePlugin({
+      // Make a global `Buffer` variable that points to the `buffer` package.
+      Buffer: ['buffer', 'Buffer'],
+      // Make a global `process` variable that points to the `process` package.
+      process: 'process/browser',
+    }),
+  ],
+  context,
+  mode: args.env,
+  stats: 'verbose', //args.stats ? 'normal' : 'none',
+  name: `MetaMask inpage.js – ${args.env}`,
+  // use the `.browserlistrc` file directly to avoid browserslist searching
+  target: `browserslist:${browsersListPath}:defaults`,
+  // TODO: look into using SourceMapDevToolPlugin and its exclude option to speed up the build
+  // TODO: put source maps in an upper level directory (like the gulp build does now)
+  // see: https://webpack.js.org/plugins/source-map-dev-tool-plugin/#host-source-maps-externally
+  devtool: args.devtool === 'none' ? false : args.devtool,
+  output: {
+    filename: '[name].[contenthash].js',
+    path: join(context, '..', 'dist'),
+    // Clean the output directory before emit, so that only the latest build
+    // files remain. Nearly 0 performance penalty for this clean up step.
+    clean: true,
+    // relative to HTML page. This value is essentially prepended to asset URLs
+    // in the output HTML, i.e., `<script src="<publicPath><resourcePath>">`.
+    publicPath: '',
+    // disabling pathinfo makes reading the bundle harder, but reduces build
+    // time by 500ms+
+    pathinfo: false,
+  },
+  resolve: config.resolve,
+  // note: loaders in a `use` array are applied in *reverse* order, i.e., bottom
+  // to top, (or right to left depending on the current formatting of the file)
+  module: {
+    // don't parse lodash, as it's large and already minified
+    noParse: /^lodash$/u,
+    rules: [
+      // json
+      { test: /\.json$/u, type: 'json' },
+      // own typescript, and own typescript with jsx
+      {
+        test: /\.(?:ts|mts|tsx)$/u,
+        exclude: NODE_MODULES_RE,
+        use: [tsxLoader, codeFenceLoader],
+      },
+      // own javascript, and own javascript with jsx
+      {
+        test: /\.(?:js|mjs|jsx)$/u,
+        exclude: NODE_MODULES_RE,
+        use: [jsxLoader, codeFenceLoader],
+      },
+      // vendor javascript
+      {
+        test: /\.(?:js|mjs)$/u,
+        include: NODE_MODULES_RE,
+        // never process `@lavamoat/snow/**.*`
+        exclude: /^.*\/node_modules\/@lavamoat\/snow\/.*$/u,
+        // can be removed once https://github.com/MetaMask/key-tree/issues/152 is resolved
+        resolve: { fullySpecified: false },
+        use: ecmaLoader,
+      },
+    ],
+  },
+  node: {
+    // eventually we should avoid any code that uses node globals `__dirname`
+    // and `__filename``. But for now, just warn about their use.
+    __dirname: 'warn-mock',
+    __filename: 'warn-mock',
+    // Hopefully in the the future we won't need to polyfill node `global`, as
+    // a browser version, `globalThis`, already exists and we should use it
+    // instead.
+    global: true,
+  },
+  optimization: {
+    // only enable sideEffects, providedExports, removeAvailableModules, and
+    // usedExports for production, as these options slow down the build
+    sideEffects: !isDevelopment,
+    providedExports: !isDevelopment,
+    removeAvailableModules: !isDevelopment,
+    usedExports: !isDevelopment,
+    // 'deterministic' results in faster recompilations in cases where a child
+    // chunk changes, but the parent chunk does not.
+    moduleIds: 'deterministic',
+    chunkIds: 'deterministic',
+    ...(args.minify ? { minimize: true, minimizer: getMinimizers() } : {}),
+    // Make most chunks share a single runtime file, which contains the
+    // webpack "runtime". The exception is @lavamoat/snow and all scripts
+    // found in the extension manifest; these scripts must be self-contained
+    // and cannot share code with other scripts - as the browser extension
+    // platform is responsible for loading them and splitting these files
+    // would require updating the manifest to include the other chunks.
+    runtimeChunk: {
+      name: (chunk: Chunk) => (canBeChunked(chunk) ? 'runtime' : false),
+    },
+    splitChunks: false,
+  },
+  // don't warn about large JS assets, unless they are going to be too big for Firefox
+  performance: { maxAssetSize: 1 << 22 },
+  watch: args.watch,
+  watchOptions: {
+    aggregateTimeout: 5, // ms
+    ignored: NODE_MODULES_RE, // avoid `fs.inotify.max_user_watches` issues
+  },
+} as const satisfies Configuration;
+
+export default [config, inpageConfig];

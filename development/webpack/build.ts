@@ -1,4 +1,4 @@
-import { webpack } from 'webpack';
+import { webpack, MultiCompiler } from 'webpack';
 import type WebpackDevServerType from 'webpack-dev-server';
 import { noop, logStats, __HMR_READY__ } from './utils/helpers';
 import config from './webpack.config.js';
@@ -13,10 +13,26 @@ require('browserslist/node').getStat = noop;
  * @param onComplete
  */
 export function build(onComplete: () => void = noop) {
-  const isDevelopment = config.mode === 'development';
+  let mainConfig: WebpackDevServerType.Configuration;
+  let otherConfigs: Array<WebpackDevServerType.Configuration>;
+  if (Array.isArray(config)) {
+    mainConfig = config.shift();
+    otherConfigs = config;
+  } else {
+    mainConfig = config;
+    otherConfigs = [];
+  }
+  const isDevelopment = mainConfig.mode === 'development';
 
-  const { watch, ...options } = config;
-  const compiler = webpack(options);
+
+  console.log({
+    mainConfig: mainConfig.entry,
+    otherConfigs: otherConfigs.map(c=>c.entry)
+  })
+
+  const { watch, ...options } = mainConfig;
+  // const compiler = webpack([options, ...otherConfigs])
+  const compiler = new MultiCompiler([/*webpack(options),*/ ...otherConfigs.map(c => webpack(c))], {parallelism:2});
   if (__HMR_READY__ && watch) {
     // DISABLED BECAUSE WE AREN'T `__HMR_READY__` YET
     // Use `webpack-dev-server` to enable HMR
