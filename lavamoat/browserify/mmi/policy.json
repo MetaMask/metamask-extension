@@ -587,6 +587,11 @@
         "react": true
       }
     },
+    "@lavamoat/lavapack>readable-stream>abort-controller": {
+      "globals": {
+        "AbortController": true
+      }
+    },
     "@material-ui/core": {
       "globals": {
         "Image": true,
@@ -4662,20 +4667,18 @@
     "extension-port-stream>readable-stream": {
       "globals": {
         "AbortController": true,
+        "AbortSignal": true,
         "AggregateError": true,
-        "Blob": true
+        "Blob": true,
+        "ERR_INVALID_ARG_TYPE": true,
+        "queueMicrotask": true
       },
       "packages": {
+        "@lavamoat/lavapack>readable-stream>abort-controller": true,
         "browserify>buffer": true,
         "browserify>string_decoder": true,
-        "extension-port-stream>readable-stream>abort-controller": true,
         "process": true,
         "webpack>events": true
-      }
-    },
-    "extension-port-stream>readable-stream>abort-controller": {
-      "globals": {
-        "AbortController": true
       }
     },
     "fast-json-patch": {

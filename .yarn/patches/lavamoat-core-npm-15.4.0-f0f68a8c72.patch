@@ -1,0 +1,141 @@
+diff --git a/src/kernelCoreTemplate.js b/src/kernelCoreTemplate.js
+index bd85db32c488c755559aa910f146c759662b3204..78c85d158890bd9194cf2b5e85571bceb5c2bea6 100644
+--- a/src/kernelCoreTemplate.js
++++ b/src/kernelCoreTemplate.js
+@@ -71,6 +71,8 @@
+     const { strictScopeTerminator } = templateRequire('strict-scope-terminator')
+     const { scuttle } = templateRequire('scuttle')
+
++    // cache regular expressions to work around https://github.com/MetaMask/metamask-extension/issues/21006
++    const regexCache = new Map()
+     const moduleCache = new Map()
+     const packageCompartmentCache = new Map()
+     const globalStore = new Map()
+@@ -78,7 +80,7 @@
+     const rootPackageName = '$root$'
+     const rootPackageCompartment = createRootPackageCompartment(globalRef)
+
+-    scuttle(globalRef, scuttleGlobalThis)
++    scuttle(globalRef, regexCache, scuttleGlobalThis)
+
+     const kernel = {
+       internalRequire,
+diff --git a/src/loadPolicy.js b/src/loadPolicy.js
+index ecf01903dc913f0646f7456de0c3b48261c7f72a..e7eb1a624d49009365e739b9b1ffb1fbe0a6039c 100644
+--- a/src/loadPolicy.js
++++ b/src/loadPolicy.js
+@@ -101,10 +101,9 @@ async function loadPolicyAndApplyOverrides({
+
+   const finalPolicy = mergePolicy(policy, policyOverride)
+
+-  // TODO: Only write if merge results in changes.
+-  // Would have to make a deep equal check on whole policy, which is a waste of time.
+-  // mergePolicy() should be able to do it in one pass.
+-  await fs.writeFile(policyPath, jsonStringify(finalPolicy, { space: 2 }))
++  // Skip policy write step to prevent intermittent build failures
++  // The extension validates the policy in a separate step, we don't need it
++  // to be written to disk here.
+
+   return finalPolicy
+ }
+diff --git a/src/scuttle.js b/src/scuttle.js
+index c096a1fbf0bfe8a8f22290852881598f74fff4b1..709c4e642b173d23a25cf640153b5ac57f916ecb 100644
+--- a/src/scuttle.js
++++ b/src/scuttle.js
+@@ -33,13 +33,13 @@ function generateInvokers(prop) {
+   function set() {
+     warn(
+       `LavaMoat - property "${prop}" of globalThis cannot be set under scuttling mode. ` +
+-        'To learn more visit https://github.com/LavaMoat/LavaMoat/pull/360.'
++      'To learn more visit https://github.com/LavaMoat/LavaMoat/pull/360.'
+     )
+   }
+   function get() {
+     throw new Error(
+       `LavaMoat - property "${prop}" of globalThis is inaccessible under scuttling mode. ` +
+-        'To learn more visit https://github.com/LavaMoat/LavaMoat/pull/360.'
++      'To learn more visit https://github.com/LavaMoat/LavaMoat/pull/360.'
+     )
+   }
+ }
+@@ -51,8 +51,8 @@ function generateInvokers(prop) {
+  * @param {GlobalRef} globalRef - Reference to the global object.
+  * @param {ScuttleOpts} opts - Scuttling options.
+  */
+-function scuttle(globalRef, opts) {
+-  const scuttleOpts = generateScuttleOpts(globalRef, opts)
++function scuttle(globalRef, regexCache, opts) {
++  const scuttleOpts = generateScuttleOpts(globalRef, regexCache, opts)
+
+   if (scuttleOpts.enabled) {
+     if (!isArray(scuttleOpts.exceptions)) {
+@@ -71,7 +71,7 @@ function scuttle(globalRef, opts) {
+  * @param {ScuttleOpts|boolean} originalOpts - Scuttling options. Accepts `true` for backwards compatibility.
+  * @returns {ScuttleOpts} - Final scuttling options.
+  */
+-function generateScuttleOpts(globalRef, originalOpts = create(null)) {
++function generateScuttleOpts(globalRef, regexCache, originalOpts = create(null)) {
+   const defaultOpts = {
+     enabled: true,
+     exceptions: [],
+@@ -85,7 +85,7 @@ function generateScuttleOpts(globalRef, originalOpts = create(null)) {
+     },
+     {
+       exceptions: (originalOpts?.exceptions || defaultOpts.exceptions).map(
+-        (e) => toRE(e)
++        (e) => toRE(e, regexCache)
+       ),
+     }
+   )
+@@ -93,7 +93,7 @@ function generateScuttleOpts(globalRef, originalOpts = create(null)) {
+     if (!globalRef[opts.scuttlerName]) {
+       throw new Error(
+         `LavaMoat - 'scuttlerName' function "${opts.scuttlerName}" expected on globalRef.` +
+-          'To learn more visit https://github.com/LavaMoat/LavaMoat/pull/462.'
++        'To learn more visit https://github.com/LavaMoat/LavaMoat/pull/462.'
+       )
+     }
+     opts.scuttlerFunc = globalRef[opts.scuttlerName]
+@@ -104,15 +104,20 @@ function generateScuttleOpts(globalRef, originalOpts = create(null)) {
+    * @param {string|RegExp} except - Exception to convert to RegExp.
+    * @returns {string|RegExp} - Converted exception.
+    */
+-  function toRE(except) {
++  function toRE(except, regexCache) {
+     // turn scuttleGlobalThis.exceptions regexes strings to actual regexes
+     if (!except.startsWith('/')) {
+       return except
+     }
++    if (regexCache.has(except)) {
++      return regexCache.get(except)
++    }
+     const parts = except.split('/')
+     const pattern = parts.slice(1, -1).join('/')
+     const flags = parts[parts.length - 1]
+-    return new RegExp(pattern, flags)
++    const re = new RegExp(pattern, flags)
++    regexCache.set(except, re)
++    return re
+   }
+ }
+
+diff --git a/src/makePrepareRealmGlobalFromConfig.js b/src/makePrepareRealmGlobalFromConfig.js
+index 98b11c4b36ec4ae25482c376a1f451938b183d68..95f10520376fa13ead5e5d2cc4918c794e48b946 100644
+--- a/src/makePrepareRealmGlobalFromConfig.js
++++ b/src/makePrepareRealmGlobalFromConfig.js
+@@ -68,10 +68,11 @@ function makePrepareRealmGlobalFromConfig({ createFunctionWrapper }) {
+           }
+         },
+         set() {
+-          // TODO: there should be a config to throw vs silently ignore
+-          console.warn(
+-            `LavaMoat: ignoring write attempt to read-access global "${key}"`
+-          )
++          if (!['__SENTRY__'].includes(key)) {
++            console.warn(
++              `LavaMoat: ignoring write attempt to read-access global "${key}"`
++            )
++          }
+         },
+       })
+     })
