@@ -347,4 +347,52 @@ describe('Contract Interaction Confirmation', () => {
       'This transaction won’t go through until a previous transaction is complete. Learn how to cancel or speed up a transaction.',
     );
   });
+
+  it('displays the alert for gas fees too', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedApproveTransaction(account.address);
+
+    const transaction = mockedMetaMaskState.transactions[0];
+    transaction.defaultGasEstimates.estimateType = 'low';
+    transaction.userFeeLevel = 'low';
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: {
+          ...mockedMetaMaskState,
+          transactions: [transaction],
+        },
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    act(() => {
+      fireEvent.click(screen.getByTestId('inline-alert'));
+    });
+
+    expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
+
+    expect(
+      await screen.findByTestId('alert-modal__selected-alert'),
+    ).toBeInTheDocument();
+
+    expect(
+      await screen.findByTestId('alert-modal__selected-alert'),
+    ).toHaveTextContent(
+      'When choosing a low fee, expect slower transactions and longer wait times. For faster transactions, choose Market or Aggressive fee options.',
+    );
+
+    expect(
+      await screen.findByTestId('alert-modal-action-showGasFeeModal'),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('alert-modal-action-showGasFeeModal'),
+    ).toHaveTextContent('Update gas options');
+  });
 });
