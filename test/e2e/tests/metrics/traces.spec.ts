@@ -5,7 +5,10 @@ import {
   unlockWallet,
   withFixtures,
 } from '../../helpers';
-import { expectMockRequest, expectNoMockRequest } from '../../helpers/mock-server';
+import {
+  expectMockRequest,
+  expectNoMockRequest,
+} from '../../helpers/mock-server';
 
 async function mockSentryCustomTrace(mockServer: MockttpServer) {
   return [
