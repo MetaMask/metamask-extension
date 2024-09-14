@@ -156,9 +156,6 @@ export const getMockConfirmStateForTransaction = (
           },
           transactions: [transaction],
         },
-        confirm: {
-          currentConfirmation: transaction,
-        },
       },
       args,
     ),

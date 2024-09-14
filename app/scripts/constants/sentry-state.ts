@@ -158,6 +158,7 @@ export const SENTRY_BACKGROUND_STATE = {
     segmentApiCalls: false,
     traits: false,
     dataCollectionForMarketing: false,
+    marketingCampaignCookieId: true,
   },
   NameController: {
     names: false,

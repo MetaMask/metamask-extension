@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "अतिरिक्त नेटवर्क"
   },
-  "additionalRpcUrl": {
-    "message": "अतिरिक्त RPC URL"
-  },
   "address": {
     "message": "एड्रेस"
   },
@@ -1030,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "इस संदेश को केवल तभी कन्फर्म करें जब आप कंटेंट को एप्रूव करते हैं और अनुरोध करने वाली साइट पर भरोसा करते हैं।"
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "खर्च करने की सीमा का अनुरोध"
   },
   "confirmTitleSIWESignature": {
