@@ -14,6 +14,7 @@ describe('Simple send eth', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
+        driver.navigate();
         const homePage = await loginWithBalanceValidation(driver);
         await sendTransaction(
           homePage,

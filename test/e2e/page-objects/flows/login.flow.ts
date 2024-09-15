@@ -17,8 +17,7 @@ export const loginWithBalanceValidation = async (
   expectedBalance: string = DEFAULT_GANACHE_ETH_BALANCE_DEC,
 ): Promise<HomePage> => {
   console.log('Navigate to unlock page and try to login with pasword');
-  const app = await getApp(driver);
-  const loginPage = await app.getLoginPage();
+  const loginPage = await getApp(driver).getLoginPage();
   const homePage = await loginPage.login(password);
   await homePage.check_expectedBalanceIsDisplayed(expectedBalance);
   return homePage;

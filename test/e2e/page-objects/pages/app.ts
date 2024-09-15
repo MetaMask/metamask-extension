@@ -1,4 +1,5 @@
 import { Driver } from '../../webdriver/driver';
+import { WALLET_PASSWORD } from '../../helpers';
 import { BasePage } from './base-page';
 import HeaderNavbar from './header-navbar';
 import { SettingsPage } from './settings-page';
@@ -21,7 +22,7 @@ class App extends BasePage {
     return headerNavbar.openSettings();
   }
 
-  async login(password: string): Promise<HomePage> {
+  async login(password: string = WALLET_PASSWORD): Promise<HomePage> {
     const loginPage = await this.getLoginPage();
     return loginPage.login(password);
   }

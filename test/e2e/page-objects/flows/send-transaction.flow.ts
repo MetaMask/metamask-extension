@@ -1,5 +1,4 @@
 import HomePage from '../pages/homepage';
-import { Driver } from '../../webdriver/driver';
 
 /**
  * This function initiates the steps required to send a transaction from the homepage to final confirmation.
