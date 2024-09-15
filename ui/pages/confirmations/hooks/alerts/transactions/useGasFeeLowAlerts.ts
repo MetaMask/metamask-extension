@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -10,11 +9,11 @@ import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
-import { currentConfirmationSelector } from '../../../selectors';
+import { useConfirmContext } from '../../../context/confirm';
 
 export function useGasFeeLowAlerts(): Alert[] {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { currentConfirmation } = useConfirmContext();
   const { id: transactionId } = (currentConfirmation ?? {}) as TransactionMeta;
 
   const { estimateUsed, transaction } = useGasFeeContext() as {

@@ -1,11 +1,10 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
+
 import { normalizeSafeAddress } from '../../../../../../../../app/scripts/lib/multichain/address';
 import { useAccountTotalFiatBalance } from '../../../../../../../hooks/useAccountTotalFiatBalance';
-import {
-  currentConfirmationSelector,
-  getSelectedAccount,
-} from '../../../../../../../selectors';
+import { getSelectedAccount } from '../../../../../../../selectors';
+import { useConfirmContext } from '../../../../../context/confirm';
 
 export type TokenWithBalance = {
   address: string;
@@ -19,9 +18,8 @@ export type TokenWithBalance = {
 };
 
 export const useReceivedToken = () => {
-  const transactionMeta = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const selectedAccount = useSelector(getSelectedAccount);
 

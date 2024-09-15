@@ -39,15 +39,6 @@ export const latestPendingConfirmationSelector = createDeepEqualSelector(
   (latestPendingConfirmation) => latestPendingConfirmation,
 );
 
-export const confirmSelector = (state: ConfirmMetamaskState) => state.confirm;
-
-/**
- * @param state
- * @deprecated get current confirmation using new hook useConfirmContext().
- */
-export const currentConfirmationSelector = (state: ConfirmMetamaskState) =>
-  state.confirm.currentConfirmation;
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getIsRedesignedConfirmationsDeveloperEnabled(state: any) {
   return getPreferences(state).isRedesignedConfirmationsDeveloperEnabled;
