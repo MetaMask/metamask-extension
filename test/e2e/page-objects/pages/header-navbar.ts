@@ -1,20 +1,13 @@
-import { Driver } from '../../webdriver/driver';
 import { BasePage } from './base-page';
 import { SettingsPage } from './settings-page';
 
 class HeaderNavbar extends BasePage {
-  private accountMenuButton: string;
+  private accountMenuButton: string = '[data-testid="account-menu-icon"]';
 
-  private settingsMenuButton: string;
+  private settingsMenuButton: string = '[data-testid="global-menu-settings"]';
 
-  private globalMenuButton: string;
-
-  constructor(driver: Driver) {
-    super(driver);
-    this.accountMenuButton = '[data-testid="account-menu-icon"]';
-    this.globalMenuButton = '[data-testid="account-options-menu-button"]';
-    this.settingsMenuButton = '[data-testid="global-menu-settings"]';
-  }
+  private globalMenuButton: string =
+    '[data-testid="account-options-menu-button"]';
 
   async openAccountMenu(): Promise<void> {
     await this.driver.clickElement(this.accountMenuButton);
