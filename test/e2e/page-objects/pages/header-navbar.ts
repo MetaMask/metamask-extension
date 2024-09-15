@@ -1,7 +1,7 @@
 import { BasePage } from './base-page';
 import { SettingsPage } from './settings-page';
 
-class HeaderNavbar extends BasePage {
+export class HeaderNavbar extends BasePage {
   private accountMenuButton: string = '[data-testid="account-menu-icon"]';
 
   private settingsMenuButton: string = '[data-testid="global-menu-settings"]';
@@ -23,5 +23,3 @@ class HeaderNavbar extends BasePage {
     return new SettingsPage(this.driver);
   }
 }
-
-export default HeaderNavbar;
