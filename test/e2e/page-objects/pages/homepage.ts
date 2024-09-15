@@ -1,44 +1,28 @@
 import { strict as assert } from 'assert';
-import { Driver } from '../../webdriver/driver';
 import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
-import HeaderNavbar from './header-navbar';
+import SendTokenPage from './send/send-token-page';
+import { BasePage } from './base-page';
 
-class HomePage {
-  private driver: Driver;
+export default class HomePage extends BasePage {
+  private sendButton = '[data-testid="eth-overview-send"]';
 
-  private sendButton: string;
+  private activityTab = '[data-testid="account-overview__activity-tab"]';
 
-  private activityTab: string;
+  private tokensTab = '[data-testid="account-overview__asset-tab"]';
 
-  private tokensTab: string;
+  private confirmedTransactions = {
+    text: 'Confirmed',
+    css: '.transaction-status-label--confirmed',
+  };
 
-  private balance: string;
+  private balance = '[data-testid="eth-overview__primary-currency"]';
 
-  private completedTransactions: string;
+  private completedTransactions = '[data-testid="activity-list-item"]';
 
-  private confirmedTransactions: object;
+  private transactionAmountsInActivity =
+    '[data-testid="transaction-list-item-primary-currency"]';
 
-  private transactionAmountsInActivity: string;
-
-  public headerNavbar: HeaderNavbar;
-
-  constructor(driver: Driver) {
-    this.driver = driver;
-    this.headerNavbar = new HeaderNavbar(driver);
-    this.sendButton = '[data-testid="eth-overview-send"]';
-    this.activityTab = '[data-testid="account-overview__activity-tab"]';
-    this.tokensTab = '[data-testid="account-overview__asset-tab"]';
-    this.confirmedTransactions = {
-      text: 'Confirmed',
-      css: '.transaction-status-label--confirmed',
-    };
-    this.balance = '[data-testid="eth-overview__primary-currency"]';
-    this.completedTransactions = '[data-testid="activity-list-item"]';
-    this.transactionAmountsInActivity =
-      '[data-testid="transaction-list-item-primary-currency"]';
-  }
-
-  async check_pageIsLoaded(): Promise<void> {
+  async check_pageIsLoaded(): Promise<HomePage> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.sendButton,
@@ -50,6 +34,7 @@ class HomePage {
       throw e;
     }
     console.log('Home page is loaded');
+    return this;
   }
 
   async check_expectedBalanceIsDisplayed(
@@ -72,8 +57,9 @@ class HomePage {
     );
   }
 
-  async startSendFlow(): Promise<void> {
+  async startSendFlow(): Promise<SendTokenPage> {
     await this.driver.clickElement(this.sendButton);
+    return new SendTokenPage(this.driver);
   }
 
   async goToActivityList(): Promise<void> {
@@ -161,5 +147,3 @@ class HomePage {
     );
   }
 }
-
-export default HomePage;

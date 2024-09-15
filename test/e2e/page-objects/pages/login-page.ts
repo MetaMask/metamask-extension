@@ -1,25 +1,17 @@
-import { Driver } from '../../webdriver/driver';
+import HomePage from './homepage';
+import { BasePage } from './base-page';
 
-class LoginPage {
-  private driver: Driver;
+class LoginPage extends BasePage {
+  private passwordInput = '[data-testid="unlock-password"]';
 
-  private passwordInput: string;
+  private unlockButton = '[data-testid="unlock-submit"]';
 
-  private unlockButton: string;
+  private welcomeBackMessage = {
+    css: '[data-testid="unlock-page-title"]',
+    text: 'Welcome back!',
+  };
 
-  private welcomeBackMessage: object;
-
-  constructor(driver: Driver) {
-    this.driver = driver;
-    this.passwordInput = '[data-testid="unlock-password"]';
-    this.unlockButton = '[data-testid="unlock-submit"]';
-    this.welcomeBackMessage = {
-      css: '[data-testid="unlock-page-title"]',
-      text: 'Welcome back!',
-    };
-  }
-
-  async check_pageIsLoaded(): Promise<void> {
+  async check_pageIsLoaded(): Promise<LoginPage> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.welcomeBackMessage,
@@ -31,6 +23,7 @@ class LoginPage {
       throw e;
     }
     console.log('Login page is loaded');
+    return this;
   }
 
   async fillPassword(password: string): Promise<void> {
@@ -39,6 +32,13 @@ class LoginPage {
 
   async clickUnlockButton(): Promise<void> {
     await this.driver.clickElement(this.unlockButton);
+  }
+
+  // user lands on homepage after logging in with password
+  async login(password: string): Promise<HomePage> {
+    await this.fillPassword(password);
+    await this.clickUnlockButton();
+    return new HomePage(this.driver).check_pageIsLoaded();
   }
 }
 

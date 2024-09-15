@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
+import ConfirmTxPage from './confirm-tx-page';
 
 class SendTokenPage {
   private driver: Driver;
@@ -74,6 +75,11 @@ class SendTokenPage {
 
   async goToNextScreen(): Promise<void> {
     await this.driver.clickElement(this.continueButton);
+  }
+
+  async continueToConfirmation(): Promise<ConfirmTxPage> {
+    await this.goToNextScreen();
+    return new ConfirmTxPage(this.driver);
   }
 
   /**

@@ -706,6 +706,18 @@ class Driver {
   }
 
   /**
+   * Scrolls to an element and clicks it.
+   *
+   * @param {string | object} locator - Element locator
+   * @returns {Promise<void>} promise that resolves after scrolling and clicking the element.
+   */
+  async scrollToAndClickElement(locator) {
+    const element = await this.findElement(locator);
+    await this.scrollToElement(element);
+    await this.clickElement(element);
+  }
+
+  /**
    * Checks if an element that matches the given locator is present on the page.
    *
    * @param {string | object} rawLocator - Element locator
