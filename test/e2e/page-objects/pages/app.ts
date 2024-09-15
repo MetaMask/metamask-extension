@@ -1,7 +1,7 @@
 import { Driver } from '../../webdriver/driver';
 import { WALLET_PASSWORD } from '../../helpers';
 import { BasePage } from './base-page';
-import HeaderNavbar from './header-navbar';
+import { HeaderNavbar } from './header-navbar';
 import { SettingsPage } from './settings-page';
 import HomePage from './homepage';
 import LoginPage from './login-page';

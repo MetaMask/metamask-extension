@@ -3,7 +3,6 @@ import HomePage from '../pages/homepage';
 /**
  * This function initiates the steps required to send a transaction from the homepage to final confirmation.
  *
- * @param driver - The webdriver instance.
  * @param homePage
  * @param recipientAddress - The recipient address.
  * @param amount - The amount of the asset to be sent in the transaction.
