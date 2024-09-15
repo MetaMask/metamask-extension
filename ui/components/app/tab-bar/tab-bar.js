@@ -18,6 +18,7 @@ const TabBar = (props) => {
         <Box
           as="button"
           key={key}
+          data-testid={key}
           paddingTop={5}
           paddingBottom={5}
           paddingLeft={4}

@@ -180,6 +180,7 @@ class SettingsPage extends PureComponent {
               className="settings-page__header__title-container__close-button"
               iconName={IconName.Close}
               ariaLabel={t('close')}
+              data-testid="close-settings"
               onClick={() => {
                 if (addNewNetwork) {
                   history.push(NETWORKS_ROUTE);
