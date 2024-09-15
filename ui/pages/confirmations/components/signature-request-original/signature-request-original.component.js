@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
@@ -32,11 +31,11 @@ import {
 } from '../../../../helpers/constants/design-system';
 import {
   ButtonLink,
-  Text,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   Box,
   Icon,
   IconName,
+  Text,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../components/component-library';
 
@@ -200,21 +199,25 @@ export default class SignatureRequestOriginal extends Component {
         <Text
           className="request-signature__content__title"
           variant={TextVariant.headingMd}
-          fontWeight={FontWeight.Bold}
         >
           {this.context.t('sigRequest')}
         </Text>
         <Text
           className="request-signature__content__subtitle"
-          variant={TextVariant.bodySm}
           color={TextColor.textAlternative}
           textAlign={TextAlign.Center}
-          margin={12}
-          marginTop={3}
+          margin={4}
         >
           {this.context.t('signatureRequestGuidance')}
         </Text>
-        <Text className="request-signature__notice">{notice}</Text>
+        <Text
+          className="request-signature__notice"
+          color={TextColor.textAlternative}
+          textAlign={TextAlign.Center}
+          marginBottom={4}
+        >
+          {notice}
+        </Text>
         <div className="request-signature__rows">
           {rows.map(({ name, value }, index) => {
             if (typeof value === 'boolean') {
@@ -226,10 +229,13 @@ export default class SignatureRequestOriginal extends Component {
                 className="request-signature__row"
                 key={`request-signature-row-${index}`}
               >
-                <Text className="request-signature__row-title" variant={TextVariant.bodyMd}>
+                <Text className="request-signature__row-title">
                   {sanitizeString(`${name}:`)}
                 </Text>
-                <Text className="request-signature__row-value" variant={TextVariant.bodyMd}>
+                <Text
+                  variant={TextVariant.bodySm}
+                  className="request-signature__row-value"
+                >
                   {sanitizeString(value)}
                 </Text>
               </div>
