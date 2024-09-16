@@ -87,6 +87,7 @@
     "currentMigrationVersion": "number",
     "balances": "object",
     "selectedNetworkClientId": "string",
+    "shouldShowAggregatedBalancePopover": "boolean",
     "networksMetadata": {
       "networkConfigurationId": {
         "EIPS": { "1559": false },
