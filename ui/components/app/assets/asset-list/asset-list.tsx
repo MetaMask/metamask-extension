@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import TokenList from '../token-list';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
@@ -35,14 +34,17 @@ import {
   DetectedTokensBanner,
   TokenListItem,
   ImportTokenLink,
+  ReceiveModal,
 } from '../../../multichain';
 import { useAccountTotalFiatBalance } from '../../../../hooks/useAccountTotalFiatBalance';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   showPrimaryCurrency,
   showSecondaryCurrency,
 } from '../../../../../shared/modules/currency-display.utils';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../helpers/utils/util';
+import { FundingMethodModal } from '../../../multichain/funding-method-modal/funding-method-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
   RAMPS_CARD_VARIANT_TYPES,
@@ -51,7 +53,19 @@ import {
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 
-const AssetList = ({ onClickAsset, showTokensLinks }) => {
+export type TokenWithBalance = {
+  address: string;
+  symbol: string;
+  string: string;
+  image: string;
+};
+
+type AssetListProps = {
+  onClickAsset: (arg: string) => void;
+  showTokensLinks: boolean;
+};
+
+const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const nativeCurrency = useSelector(getMultichainNativeCurrency);
   const showFiat = useSelector(getMultichainShouldShowFiat);
@@ -66,6 +80,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
     type,
     rpcUrl,
   );
+  const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
@@ -101,13 +116,29 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
 
-  const { tokensWithBalances, loading } = useAccountTotalFiatBalance(
+  const [showFundingMethodModal, setShowFundingMethodModal] = useState(false);
+  const [showReceiveModal, setShowReceiveModal] = useState(false);
+
+  const onClickReceive = () => {
+    setShowFundingMethodModal(false);
+    setShowReceiveModal(true);
+  };
+
+  const accountTotalFiatBalance = useAccountTotalFiatBalance(
     selectedAccount,
     shouldHideZeroBalanceTokens,
   );
+
+  const tokensWithBalances =
+    accountTotalFiatBalance.tokensWithBalances as TokenWithBalance[];
+
+  const { loading } = accountTotalFiatBalance;
+
   tokensWithBalances.forEach((token) => {
-    // token.string is the balance displayed in the TokenList UI
-    token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
+    token.string = roundToDecimalPlacesRemovingExtraZeroes(
+      token.string,
+      5,
+    ) as string;
   });
 
   const balanceIsZero = useSelector(
@@ -138,6 +169,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
       {detectedTokens.length > 0 &&
         !isTokenDetectionInactiveOnNonMainnetSupportedNetwork && (
           <DetectedTokensBanner
+            className=""
             actionButtonOnClick={() => setShowDetectedTokens(true)}
             margin={4}
           />
@@ -150,6 +182,9 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
               isBtc
                 ? RAMPS_CARD_VARIANT_TYPES.BTC
                 : RAMPS_CARD_VARIANT_TYPES.TOKEN
+            }
+            handleOnClick={
+              isBtc ? undefined : () => setShowFundingMethodModal(true)
             }
           />
         ) : null
@@ -191,7 +226,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
       <TokenList
         tokens={tokensWithBalances}
         loading={loading}
-        onTokenClick={(tokenAddress) => {
+        onTokenClick={(tokenAddress: string) => {
           onClickAsset(tokenAddress);
           trackEvent({
             event: MetaMetricsEventName.TokenScreenOpened,
@@ -213,13 +248,22 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
       )}
+      {showReceiveModal && selectedAccount?.address && (
+        <ReceiveModal
+          address={selectedAccount.address}
+          onClose={() => setShowReceiveModal(false)}
+        />
+      )}
+      {showFundingMethodModal && (
+        <FundingMethodModal
+          isOpen={showFundingMethodModal}
+          onClose={() => setShowFundingMethodModal(false)}
+          title={t('selectFundingMethod')}
+          onClickReceive={onClickReceive}
+        />
+      )}
     </>
   );
-};
-
-AssetList.propTypes = {
-  onClickAsset: PropTypes.func.isRequired,
-  showTokensLinks: PropTypes.bool,
 };
 
 export default AssetList;
