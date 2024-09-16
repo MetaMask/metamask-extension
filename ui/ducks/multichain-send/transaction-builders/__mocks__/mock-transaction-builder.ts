@@ -1,6 +1,5 @@
 import { CaipAssetId, InternalAccount } from '@metamask/keyring-api';
 import { GetThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk';
-import { Dispatch, AnyAction } from 'redux';
 import {
   MultichainSendState,
   TransactionParams,
@@ -23,7 +22,7 @@ export class MockTransactionBuilder extends AbstractTransactionBuilder {
     return {
       fee: '222222',
       unit: 'mock',
-      feeInFiat: '$1.00',
+      feeInFiat: '',
       feeLevel: FeeLevel.Average,
       confirmationTime: '1 minute',
       isLoading: false,
@@ -33,7 +32,7 @@ export class MockTransactionBuilder extends AbstractTransactionBuilder {
   }
 
   async queryAssetBalance(
-    address: string,
+    _address: string,
   ): Promise<{ amount: string; unit: string }> {
     return {
       amount: '222222',
@@ -46,7 +45,7 @@ export class MockTransactionBuilder extends AbstractTransactionBuilder {
   }
 
   setSendAsset(
-    asset?: CaipAssetId,
+    _asset?: CaipAssetId,
   ): DraftTransaction['transactionParams']['sendAsset'] {
     return {
       amount: '0',
@@ -55,6 +54,7 @@ export class MockTransactionBuilder extends AbstractTransactionBuilder {
         type: AssetType.native,
         balance: '10000000',
         details: { decimals: 8 },
+        // @ts-expect-error no image for mock
         image: '',
         symbol: 'mock-ticker',
       },
@@ -64,33 +64,50 @@ export class MockTransactionBuilder extends AbstractTransactionBuilder {
   }
 
   setNetwork(
-    network: string,
+    _network: string,
   ): DraftTransaction['transactionParams']['network'] {
     throw new Error('Method not implemented.');
   }
 
   setFee(
-    fee: FeeLevel,
+    _fee: FeeLevel,
   ): Promise<
     MultichainSendState['draftTransactions'][string]['transactionParams']['fee']
   > {
-    throw new Error('Method not implemented.');
+    return Promise.resolve({
+      fee: '222222',
+      unit: 'mock',
+      feeInFiat: '',
+      feeLevel: FeeLevel.Average,
+      confirmationTime: '1 minute',
+      isLoading: false,
+      error: '',
+      valid: true,
+    });
   }
 
   setRecipient(
     recipient: string,
   ): DraftTransaction['transactionParams']['recipient'] {
-    throw new Error('Method not implemented.');
+    if (recipient === 'mock') {
+      throw new Error('Invalid recipient');
+    }
+
+    return {
+      address: recipient,
+      valid: true,
+      error: '',
+    };
   }
 
   setAmount(
-    amount: string,
+    _amount: string,
   ): DraftTransaction['transactionParams']['sendAsset'] {
     throw new Error('Method not implemented.');
   }
 
   buildTransaction(): void {
-    throw new Error('Method not implemented.');
+    // do nothing
   }
 
   signTransaction(): Promise<string> {
@@ -102,6 +119,6 @@ export class MockTransactionBuilder extends AbstractTransactionBuilder {
   }
 
   setMaxSendAmount(): Promise<string> {
-    throw new Error('Method not implemented.');
+    return Promise.resolve('333333');
   }
 }
