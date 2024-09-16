@@ -1027,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "Konfirmasikan pesan ini hanya jika Anda menyetujui isinya dan memercayai situs yang memintanya."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Permintaan batas penggunaan"
   },
   "confirmTitleSIWESignature": {
