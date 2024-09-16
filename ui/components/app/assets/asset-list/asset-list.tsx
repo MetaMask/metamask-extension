@@ -54,9 +54,15 @@ import AssetListControlBar from './asset-list-control-bar';
 export type TokenWithBalance = {
   address: string;
   symbol: string;
-  string: string;
+  string?: string;
   image: string;
   tokenFiatAmount?: string;
+  // bottom is for Native token
+  title?: string;
+  isOriginalTokenSymbol?: boolean | null;
+  isNativeCurrency?: boolean;
+  isStakeable?: boolean;
+  showPercentage?: boolean;
 };
 
 type AssetListProps = {
@@ -145,6 +151,33 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   isStakeable = false;
   ///: END:ONLY_INCLUDE_IF
 
+  const nativeTokenWithBalance: TokenWithBalance = {
+    title: nativeCurrency,
+    address: '',
+    symbol: nativeCurrency,
+    string: showSecondaryCurrency(
+      isOriginalNativeSymbol,
+      useNativeCurrencyAsPrimaryCurrency,
+    )
+      ? secondaryCurrencyDisplay
+      : undefined,
+    image: primaryTokenImage,
+    tokenFiatAmount:
+      showFiat &&
+      showPrimaryCurrency(
+        isOriginalNativeSymbol,
+        useNativeCurrencyAsPrimaryCurrency,
+      )
+        ? primaryCurrencyDisplay
+        : undefined,
+    isOriginalTokenSymbol: isOriginalNativeSymbol,
+    isNativeCurrency: true,
+    isStakeable: isStakeable,
+    showPercentage: true,
+  };
+
+  console.log('nativeTokenWithBalance: ', nativeTokenWithBalance);
+
   return (
     <>
       {detectedTokens.length > 0 &&
@@ -211,7 +244,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         showPercentage
       />
       <TokenList
-        tokens={tokenList}
+        tokens={[nativeTokenWithBalance, ...tokenList]}
         loading={loading}
         onTokenClick={(tokenAddress: string) => {
           onClickAsset(tokenAddress);

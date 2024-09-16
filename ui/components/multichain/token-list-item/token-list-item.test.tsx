@@ -51,11 +51,13 @@ describe('TokenListItem', () => {
   });
   const props = {
     onClick: jest.fn(),
+    tokenImage: '',
+    title: '',
   };
   it('should render correctly', () => {
     const store = configureMockStore()(state);
     const { getByTestId, container } = renderWithProvider(
-      <TokenListItem onClick={() => undefined} tokenImage="" title="" />,
+      <TokenListItem {...props} />,
       store,
     );
     expect(getByTestId('multichain-token-list-item')).toBeDefined();
@@ -65,11 +67,7 @@ describe('TokenListItem', () => {
   it('should render with custom className', () => {
     const store = configureMockStore()(state);
     const { getByTestId } = renderWithProvider(
-      <TokenListItem
-        className="multichain-token-list-item-test"
-        tokenImage=""
-        title=""
-      />,
+      <TokenListItem className="multichain-token-list-item-test" {...props} />,
       store,
     );
     expect(getByTestId('multichain-token-list-item')).toHaveClass(
@@ -83,9 +81,11 @@ describe('TokenListItem', () => {
       primary: '11.9751 ETH',
       isNativeCurrency: true,
       isOriginalTokenSymbol: false,
+      tokenImage: '',
+      title: '',
     };
     const { getByText } = renderWithProvider(
-      <TokenListItem {...propsToUse} tokenImage="" title="" />,
+      <TokenListItem {...propsToUse} />,
       store,
     );
     expect(getByText('11.9751 ETH')).toBeInTheDocument();
@@ -98,9 +98,11 @@ describe('TokenListItem', () => {
       isNativeCurrency: true,
       isOriginalTokenSymbol: false,
       showPercentage: true,
+      tokenImage: '',
+      title: '',
     };
     const { getByTestId, getByText } = renderWithProvider(
-      <TokenListItem {...propsToUse} tokenImage="" title="" />,
+      <TokenListItem {...propsToUse} />,
       store,
     );
 
@@ -121,10 +123,12 @@ describe('TokenListItem', () => {
       primary: '11.9751 ETH',
       isNativeCurrency: true,
       isOriginalTokenSymbol: false,
+      tokenImage: '',
+      title: '',
     };
 
     const { getByText } = renderWithProvider(
-      <TokenListItem {...propsToUse} tokenImage="" title="" />,
+      <TokenListItem {...propsToUse} />,
       store,
     );
     expect(getByText('11.9751 ETH')).toBeInTheDocument();
@@ -133,7 +137,7 @@ describe('TokenListItem', () => {
   it('handles click action and fires onClick', () => {
     const store = configureMockStore()(state);
     const { queryByTestId } = renderWithProvider(
-      <TokenListItem {...props} tokenImage="" title="" />,
+      <TokenListItem {...props} />,
       store,
     );
 
@@ -147,7 +151,7 @@ describe('TokenListItem', () => {
   it('handles clicking staking opens tab', async () => {
     const store = configureMockStore()(state);
     const { queryByTestId } = renderWithProvider(
-      <TokenListItem isStakeable {...props} tokenImage="" title="" />,
+      <TokenListItem isStakeable {...props} />,
       store,
     );
 
