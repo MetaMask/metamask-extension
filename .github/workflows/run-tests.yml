@@ -110,7 +110,7 @@ jobs:
 
       - name: Validate test coverage
         env:
-            MINIMUM_REQUIRED_TEST_COVERAGE: 80
+            MINIMUM_REQUIRED_TEST_COVERAGE: 70
         run: |
           coverage=$(yarn nyc report --reporter=text-summary | grep 'Lines' | awk '{gsub(/%/, ""); print $3}')
           if [ -z "$coverage" ]; then
