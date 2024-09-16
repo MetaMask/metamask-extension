@@ -7,14 +7,12 @@ import {
   setParticipateInMetaMetrics,
   setTheme,
   setShowNativeTokenAsMainBalancePreference,
-  setAggregatedBalancePopover,
 } from '../../../store/actions';
 import {
   getTokenList,
   getPreferences,
   getTheme,
   getSelectedInternalAccount,
-  getShouldShowAggregatedBalancePopover,
 } from '../../../selectors';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import SettingsTab from './settings-tab.component';
@@ -26,8 +24,6 @@ const mapStateToProps = (state) => {
   } = state;
   const { currentCurrency, useBlockie, currentLocale } = metamask;
   const { ticker: nativeCurrency } = getProviderConfig(state);
-  const shouldShowAggregatedBalancePopover =
-    getShouldShowAggregatedBalancePopover(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { hideZeroBalanceTokens, showNativeTokenAsMainBalance } =
     getPreferences(state);
@@ -45,7 +41,6 @@ const mapStateToProps = (state) => {
     selectedAddress,
     tokenList,
     theme: getTheme(state),
-    shouldShowAggregatedBalancePopover,
   };
 };
 
@@ -62,7 +57,6 @@ const mapDispatchToProps = (dispatch) => {
     setHideZeroBalanceTokens: (value) =>
       dispatch(setHideZeroBalanceTokens(value)),
     setTheme: (val) => dispatch(setTheme(val)),
-    hideAggregatedBalancePopover: () => dispatch(setAggregatedBalancePopover()),
   };
 };
 
