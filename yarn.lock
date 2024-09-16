@@ -26128,6 +26128,7 @@ __metadata:
     chart.js: "npm:^4.4.1"
     chokidar: "npm:^3.6.0"
     classnames: "npm:^2.2.6"
+    cockatiel: "npm:^3.1.2"
     concurrently: "npm:^8.2.2"
     copy-to-clipboard: "npm:^3.3.3"
     copy-webpack-plugin: "npm:^12.0.2"
