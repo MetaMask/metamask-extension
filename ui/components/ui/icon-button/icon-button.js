@@ -34,7 +34,7 @@ export default function IconButton(props) {
         <>
           <div
             data-theme="light"
-            className={`icon-button__circle ${iconButtonClassName}`}
+            className={classNames('icon-button__circle', iconButtonClassName)}
           >
             {Icon}
           </div>
