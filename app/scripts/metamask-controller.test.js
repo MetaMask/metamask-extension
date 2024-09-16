@@ -695,7 +695,7 @@ describe('MetaMaskController', () => {
           });
 
         jest
-          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
 
         // Give account 2 a token
@@ -1175,7 +1175,7 @@ describe('MetaMaskController', () => {
           false,
         );
         jest
-          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
         metamaskController.preferencesController.setUsePhishDetect(true);
       });
@@ -1566,7 +1566,7 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController, 'triggerNetworkrequests')
           .mockImplementation();
         jest
-          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
         const mockControllerConnectionChangedHandler = jest.fn();
 
