@@ -108,6 +108,20 @@ jobs:
           name: lcov.info
           path: coverage/lcov.info
 
+      - name: Validate test coverage
+        run: |
+          coverage=$(yarn nyc report --reporter=text-summary | grep 'Lines' | awk '{gsub(/%/, ""); print $3}')
+          if [ -z "$coverage" ]; then
+            echo "::error::Could not retrieve test coverage."
+            exit 1
+          fi
+          if (( $(echo "$coverage < 70" | bc -l) )); then
+            echo "::error::Quality gate failed for test coverage. The current test coverage is $coverage%, please increase coverage to at least 70%."
+            exit 1
+          else
+            echo "Test coverage is $coverage%. Quality gate passed."
+          fi
+
       - name: SonarCloud Scan
         # This is SonarSource/sonarcloud-github-action@v2.0.0
         uses: SonarSource/sonarcloud-github-action@4b4d7634dab97dcee0b75763a54a6dc92a9e6bc1
