@@ -16,6 +16,7 @@ import {
 } from '../../../component-library';
 import {
   clearDraft,
+  SendStage,
   signAndSend,
 } from '../../../../ducks/multichain-send/multichain-send';
 import { MultichainFee } from '../multichain-send/components/fee';
@@ -26,6 +27,10 @@ import {
   getMultichainSendStage,
 } from '../../../../selectors/multichain';
 import { getInternalAccount } from '../../../../selectors';
+import {
+  DEFAULT_ROUTE,
+  MULTICHAIN_SEND_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { MultichainConfirmationAssetTotal } from './components/confirmation-asset';
 import { SenderRecipientNetworkSummary } from './components/sender-recipient-network-summary';
 
@@ -38,8 +43,8 @@ export const MultichainConfirmTransactionPage = () => {
   const transaction = useSelector(getCurrentMultichainDraftTransaction);
   const sendStage = useSelector(getMultichainSendStage);
 
-  if (!transaction || !transactionId) {
-    history.push('/multichain-send');
+  if (!transaction) {
+    history.push(MULTICHAIN_SEND_ROUTE);
     return null;
   }
 
@@ -48,14 +53,10 @@ export const MultichainConfirmTransactionPage = () => {
   );
   const { fee: estimateFee } = transaction.transactionParams;
 
-  if (!transaction) {
-    history.push('/multichain-send');
-  }
-
   const onCancel = () => {
     // remove draft
     dispatch(clearDraft());
-    history.push('/home');
+    history.push(DEFAULT_ROUTE);
   };
 
   const onBack = () => {
@@ -69,7 +70,7 @@ export const MultichainConfirmTransactionPage = () => {
         transactionId,
       }),
     );
-    history.push('/');
+    history.push(DEFAULT_ROUTE);
   };
 
   return (
@@ -107,16 +108,14 @@ export const MultichainConfirmTransactionPage = () => {
             ]
           }
         />
-        {estimateFee && (
-          <Box marginBottom={4}>
-            <MultichainFee
-              asset={transaction.transactionParams.sendAsset}
-              backgroundColor={BackgroundColor.backgroundDefault}
-              estimatedFee={estimateFee}
-              sendStage={sendStage}
-            />
-          </Box>
-        )}
+        <Box marginBottom={4}>
+          <MultichainFee
+            asset={transaction.transactionParams.sendAsset}
+            backgroundColor={BackgroundColor.backgroundDefault}
+            estimatedFee={estimateFee}
+            sendStage={sendStage}
+          />
+        </Box>
       </Content>
       <PageContainerFooter
         onCancel={onCancel}
