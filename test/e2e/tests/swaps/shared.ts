@@ -1,27 +1,54 @@
-const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
-const { regularDelayMs, veryLargeDelayMs } = require('../../helpers');
+import { strict as assert } from 'assert';
+import { ServerOptions } from 'ganache';
+import { MockttpServer } from 'mockttp';
+import { Driver } from '../../webdriver/driver';
+import FixtureBuilder from '../../fixture-builder';
+import { regularDelayMs, veryLargeDelayMs } from '../../helpers';
+import { SWAP_TEST_ETH_DAI_TRADES_MOCK } from '../../../data/mock-data';
 
-const ganacheOptions = {
-  accounts: [
-    {
-      secretKey:
-        '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-      balance: 25000000000000000000,
+export async function mockEthDaiTrade(mockServer: MockttpServer) {
+  return [
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: SWAP_TEST_ETH_DAI_TRADES_MOCK,
+        };
+      }),
+  ];
+}
+
+export const ganacheOptions: ServerOptions & { miner: { blockTime?: number } } =
+  {
+    wallet: {
+      accounts: [
+        {
+          secretKey:
+            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+          balance: 25000000000000000000n,
+        },
+      ],
     },
-  ],
-};
+    miner: {},
+  };
 
-const withFixturesOptions = {
+export const withFixturesOptions = {
   fixtures: new FixtureBuilder().build(),
   ganacheOptions,
 };
 
-const buildQuote = async (driver, options) => {
+type SwapOptions = {
+  amount: number;
+  swapTo?: string;
+  swapToContractAddress?: string;
+};
+
+export const buildQuote = async (driver: Driver, options: SwapOptions) => {
   await driver.clickElement('[data-testid="token-overview-button-swap"]');
   await driver.fill(
     'input[data-testid="prepare-swap-page-from-token-amount"]',
-    options.amount,
+    options.amount.toString(),
   );
   await driver.delay(veryLargeDelayMs); // Need an extra delay after typing an amount.
   await driver.clickElement('[data-testid="prepare-swap-page-swap-to"]');
@@ -29,7 +56,7 @@ const buildQuote = async (driver, options) => {
 
   await driver.fill(
     'input[id="list-with-search__text-search"]',
-    options.swapTo || options.swapToContractAddress,
+    options.swapTo || options.swapToContractAddress || '',
   );
 
   await driver.delay(veryLargeDelayMs); // Need an extra delay after typing an amount.
@@ -55,11 +82,23 @@ const buildQuote = async (driver, options) => {
   );
 };
 
-const reviewQuote = async (driver, options) => {
+export const reviewQuote = async (
+  driver: Driver,
+  options: {
+    swapFrom: string;
+    swapTo: string;
+    amount: number;
+    skipCounter?: boolean;
+  },
+) => {
   const summary = await driver.waitForSelector(
     '[data-testid="exchange-rate-display-quote-rate"]',
   );
   const summaryText = await summary.getText();
+  console.log('============\nsummaryText\n============', {
+    summaryText,
+    options,
+  });
   assert.equal(summaryText.includes(options.swapFrom), true);
   assert.equal(summaryText.includes(options.swapTo), true);
   const quote = summaryText.split(`\n`);
@@ -68,7 +107,7 @@ const reviewQuote = async (driver, options) => {
     '[data-testid="prepare-swap-page-receive-amount"]',
   );
   const swapToAmount = await elementSwapToAmount.getText();
-  const expectedAmount = parseFloat(quote[3]) * options.amount;
+  const expectedAmount = Number(quote[3]) * options.amount;
   const dotIndex = swapToAmount.indexOf('.');
   const decimals = dotIndex === -1 ? 0 : swapToAmount.length - dotIndex - 1;
   assert.equal(
@@ -91,7 +130,10 @@ const reviewQuote = async (driver, options) => {
   }
 };
 
-const waitForTransactionToComplete = async (driver, options) => {
+export const waitForTransactionToComplete = async (
+  driver: Driver,
+  options: { tokenName: string },
+) => {
   await driver.waitForSelector({
     css: '[data-testid="awaiting-swap-header"]',
     text: 'Processing',
@@ -114,7 +156,10 @@ const waitForTransactionToComplete = async (driver, options) => {
   await driver.waitForSelector('[data-testid="account-overview__asset-tab"]');
 };
 
-const checkActivityTransaction = async (driver, options) => {
+export const checkActivityTransaction = async (
+  driver: Driver,
+  options: { index: number; swapFrom: string; swapTo: string; amount: string },
+) => {
   await driver.clickElement('[data-testid="account-overview__activity-tab"]');
   await driver.waitForSelector('.activity-list-item');
 
@@ -149,7 +194,10 @@ const checkActivityTransaction = async (driver, options) => {
   await driver.clickElement('[data-testid="popover-close"]');
 };
 
-const checkNotification = async (driver, options) => {
+export const checkNotification = async (
+  driver: Driver,
+  options: { title: string; text: string },
+) => {
   const isExpectedBoxTitlePresentAndVisible =
     await driver.isElementPresentAndVisible({
       css: '[data-testid="swaps-banner-title"]',
@@ -171,7 +219,7 @@ const checkNotification = async (driver, options) => {
   );
 };
 
-const changeExchangeRate = async (driver) => {
+export const changeExchangeRate = async (driver: Driver) => {
   await driver.clickElement('[data-testid="review-quote-view-all-quotes"]');
   await driver.waitForSelector({ text: 'Quote details', tag: 'h2' });
 
@@ -181,14 +229,4 @@ const changeExchangeRate = async (driver) => {
   const random = Math.floor(Math.random() * networkFees.length);
   await networkFees[random].click();
   await driver.clickElement({ text: 'Select', tag: 'button' });
-};
-
-module.exports = {
-  withFixturesOptions,
-  buildQuote,
-  reviewQuote,
-  waitForTransactionToComplete,
-  checkActivityTransaction,
-  checkNotification,
-  changeExchangeRate,
 };

@@ -1,5 +1,5 @@
 import { WALLET_PASSWORD } from '../../helpers';
-import HomePage from './homepage';
+import HomePage from './home/home-page';
 import { BasePage } from './base-page';
 
 class LoginPage extends BasePage {

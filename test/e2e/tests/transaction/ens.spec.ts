@@ -8,7 +8,7 @@ import {
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/home-page';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 
 describe('ENS', function (this: Suite) {

@@ -3,7 +3,7 @@ import { withFixtures, generateGanacheOptions } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/home-page';
 
 describe('Editing Confirm Transaction', function (this: Suite) {
   it('approves a transaction stuck in approved state on boot', async function () {

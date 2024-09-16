@@ -2,7 +2,7 @@ import { Driver } from '../../webdriver/driver';
 import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
 import { WALLET_PASSWORD } from '../../helpers';
 import { getApp } from '../pages/app';
-import HomePage from '../pages/homepage';
+import HomePage from '../pages/home/home-page';
 
 /**
  * This method unlocks the wallet and verifies that the user lands on the homepage with the expected balance. It is designed to be the initial step in setting up a test environment.

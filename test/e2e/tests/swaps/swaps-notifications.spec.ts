@@ -1,13 +1,14 @@
-const { withFixtures, unlockWallet } = require('../../helpers');
-const {
+import { Mockttp } from 'mockttp';
+import { withFixtures, unlockWallet } from '../../helpers';
+import {
   withFixturesOptions,
   buildQuote,
   reviewQuote,
   checkNotification,
-} = require('./shared');
+} from './shared';
 
 describe('Swaps - notifications @no-mmi', function () {
-  async function mockTradesApiPriceSlippageError(mockServer) {
+  async function mockTradesApiPriceSlippageError(mockServer: Mockttp) {
     await mockServer
       .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
       .thenCallback(() => {
@@ -59,7 +60,7 @@ describe('Swaps - notifications @no-mmi', function () {
       {
         ...withFixturesOptions,
         testSpecificMock: mockTradesApiPriceSlippageError,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -98,7 +99,7 @@ describe('Swaps - notifications @no-mmi', function () {
     await withFixtures(
       {
         ...withFixturesOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -128,7 +129,7 @@ describe('Swaps - notifications @no-mmi', function () {
     await withFixtures(
       {
         ...withFixturesOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -150,12 +151,12 @@ describe('Swaps - notifications @no-mmi', function () {
     await withFixtures(
       {
         ...withFixturesOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
         await buildQuote(driver, {
-          amount: '.0001',
+          amount: 0.0001,
           swapTo: 'DAI',
         });
         await driver.clickElement('[title="Transaction settings"]');

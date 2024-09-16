@@ -23,8 +23,11 @@ describe('Simple send eth', function (this: Suite) {
           '0.000042',
           '1.000042',
         );
-        await homePage.check_confirmedTxNumberDisplayedInActivity();
-        await homePage.check_txAmountInActivity();
+        const activityPage = await homePage.gotoActivityTab();
+        const txNumber = await activityPage.get_confirmedTxNumber();
+        const txAmount = await activityPage.get_txAmount();
+        expect(txNumber).to.equal('1');
+        expect(txAmount).to.equal('0.000042');
       },
     );
   });

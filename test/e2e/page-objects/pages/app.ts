@@ -3,7 +3,7 @@ import { WALLET_PASSWORD } from '../../helpers';
 import { BasePage } from './base-page';
 import { HeaderNavbar } from './header-navbar';
 import { SettingsPage } from './settings-page';
-import HomePage from './homepage';
+import HomePage from './home/home-page';
 import LoginPage from './login-page';
 
 // Top level page object for the app.

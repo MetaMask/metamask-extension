@@ -1,4 +1,4 @@
-import HomePage from '../pages/homepage';
+import HomePage from '../pages/home/home-page';
 
 /**
  * This function initiates the steps required to send a transaction from the homepage to final confirmation.
