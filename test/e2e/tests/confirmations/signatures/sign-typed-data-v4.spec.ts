@@ -1,3 +1,4 @@
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
@@ -27,6 +28,7 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         ganacheServer,
@@ -75,6 +77,7 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
   it('initiates and rejects', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,

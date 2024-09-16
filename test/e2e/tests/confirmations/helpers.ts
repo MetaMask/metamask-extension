@@ -1,7 +1,14 @@
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import FixtureBuilder from '../../fixture-builder';
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import {
+  defaultGanacheOptions,
+  defaultGanacheOptionsForType2Transactions,
+  withFixtures,
+} from '../../helpers';
 import { MockedEndpoint, Mockttp } from '../../mock-e2e';
 import { Driver } from '../../webdriver/driver';
+
+const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 
 export async function scrollAndConfirmAndAssertConfirm(driver: Driver) {
   await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
@@ -14,15 +21,15 @@ export function withRedesignConfirmationFixtures(
   // title. It's optional because it's sometimes unset.
   // eslint-disable-next-line @typescript-eslint/default-param-last
   title: string = '',
+  transactionEnvelopeType: TransactionEnvelopeType,
   testFunction: Parameters<typeof withFixtures>[1],
-  mockSegment?: (mockServer: Mockttp) => Promise<MockedEndpoint[]>, // Add mockSegment as an optional parameter
+  mocks?: (mockServer: Mockttp) => Promise<MockedEndpoint[]>, // Add mocks as an optional parameter
+  smartContract?: typeof SMART_CONTRACTS,
 ) {
   return withFixtures(
     {
       dapp: true,
-      driverOptions: {
-        timeOut: 20000,
-      },
+      driverOptions: { timeOut: 20000 },
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
         .withMetaMetricsController({
@@ -32,12 +39,17 @@ export function withRedesignConfirmationFixtures(
         .withPreferencesController({
           preferences: {
             redesignedConfirmationsEnabled: true,
+            isRedesignedConfirmationsDeveloperEnabled: true,
           },
         })
         .build(),
-      ganacheOptions: defaultGanacheOptions,
+      ganacheOptions:
+        transactionEnvelopeType === TransactionEnvelopeType.legacy
+          ? defaultGanacheOptions
+          : defaultGanacheOptionsForType2Transactions,
+      smartContract,
+      testSpecificMock: mocks,
       title,
-      testSpecificMock: mockSegment,
     },
     testFunction,
   );

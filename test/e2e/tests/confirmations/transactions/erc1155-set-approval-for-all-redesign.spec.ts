@@ -1,78 +1,58 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-import { MockttpServer } from 'mockttp';
-import { WINDOW_TITLES } from '../../../helpers';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
+import { unlockWallet } from '../../../helpers';
+import { Mockttp } from '../../../mock-e2e';
+import {
+  assertSetApprovalForAllTitle,
+  createERC1155SetApprovalForAllTransaction,
+  scrollToBottomOfConfirmationAndConfirm,
+} from '../../../page-objects/flows/transaction-redesign.flow';
 import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
-import { scrollAndConfirmAndAssertConfirm } from '../helpers';
-import { openDAppWithContract, TestSuiteArguments } from './shared';
+import { withRedesignConfirmationFixtures } from '../helpers';
+import { TestSuiteArguments } from './shared';
 
-const {
-  defaultGanacheOptions,
-  defaultGanacheOptionsForType2Transactions,
-  withFixtures,
-} = require('../../../helpers');
-const FixtureBuilder = require('../../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign ERC1155 setApprovalForAll', function () {
-  const smartContract = SMART_CONTRACTS.NFTS;
-
-  describe('Submit an revoke transaction @no-mmi', function () {
+  describe('Submit a transaction @no-mmi', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
-            .build(),
-          ganacheOptions: defaultGanacheOptions,
-          smartContract,
-          testSpecificMock: mocks,
-          title: this.test?.fullTitle(),
-        },
+      await withRedesignConfirmationFixtures(
+        this.test?.fullTitle(),
+        TransactionEnvelopeType.legacy,
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await createTransactionAndAssertDetails(driver, contractRegistry);
+          await createTransactionAssertDetailsAndConfirm(
+            driver,
+            contractRegistry,
+          );
         },
+        mocks,
+        SMART_CONTRACTS.NFTS,
       );
     });
 
     it('Sends a type 2 transaction (EIP1559)', async function () {
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
-            .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
-          smartContract,
-          testSpecificMock: mocks,
-          title: this.test?.fullTitle(),
-        },
+      await withRedesignConfirmationFixtures(
+        this.test?.fullTitle(),
+        TransactionEnvelopeType.feeMarket,
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await createTransactionAndAssertDetails(driver, contractRegistry);
+          await createTransactionAssertDetailsAndConfirm(
+            driver,
+            contractRegistry,
+          );
         },
+        mocks,
+        SMART_CONTRACTS.NFTS,
       );
     });
   });
 });
 
-async function mocks(server: MockttpServer) {
+async function mocks(server: Mockttp) {
   return [await mocked4BytesSetApprovalForAll(server)];
 }
 
-export async function mocked4BytesSetApprovalForAll(mockServer: MockttpServer) {
+export async function mocked4BytesSetApprovalForAll(mockServer: Mockttp) {
   return await mockServer
     .forGet('https://www.4byte.directory/api/v1/signatures/')
     .withQuery({ hex_signature: '0xa22cb465' })
@@ -96,30 +76,19 @@ export async function mocked4BytesSetApprovalForAll(mockServer: MockttpServer) {
     }));
 }
 
-async function createTransactionAndAssertDetails(
+async function createTransactionAssertDetailsAndConfirm(
   driver: Driver,
   contractRegistry?: GanacheContractAddressRegistry,
 ) {
-  await openDAppWithContract(driver, contractRegistry, SMART_CONTRACTS.NFTS);
+  await unlockWallet(driver);
 
-  await createERC1155SetApprovalForAllTransaction(driver);
+  const contractAddress = await (
+    contractRegistry as GanacheContractAddressRegistry
+  ).getContractAddress(SMART_CONTRACTS.NFTS);
 
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await createERC1155SetApprovalForAllTransaction(driver, contractAddress);
 
-  await driver.waitForSelector({
-    css: 'h2',
-    text: 'Withdrawal request',
-  });
+  await assertSetApprovalForAllTitle(driver);
 
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'This site wants permission to withdraw your NFTs',
-  });
-
-  await scrollAndConfirmAndAssertConfirm(driver);
-}
-
-async function createERC1155SetApprovalForAllTransaction(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#setApprovalForAllERC1155Button');
+  await scrollToBottomOfConfirmationAndConfirm(driver);
 }
