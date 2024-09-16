@@ -19,6 +19,8 @@ const {
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
+// Temp comment to trigger extra CI run for testing
+
 // Window handle adjustments will need to be made for Non-MV3 Firefox
 // due to OffscreenDocument.  Additionally Firefox continually bombs
 // with a "NoSuchWindowError: Browsing context has been discarded" whenever

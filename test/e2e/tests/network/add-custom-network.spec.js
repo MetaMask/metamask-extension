@@ -12,6 +12,8 @@ const {
   WINDOW_TITLES,
 } = require('../../helpers');
 
+// Temp comment to trigger extra CI run for testing
+
 const TEST_CHAIN_ID = toHex(100);
 const TEST_COLLISION_CHAIN_ID = toHex(78);
 

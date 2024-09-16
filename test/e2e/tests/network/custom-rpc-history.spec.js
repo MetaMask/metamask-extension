@@ -10,6 +10,8 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
+// Temp comment to trigger extra CI run for testing
+
 describe('Custom RPC history', function () {
   it(`creates first custom RPC entry`, async function () {
     const port = 8546;
