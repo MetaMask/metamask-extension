@@ -65,12 +65,6 @@ export const EditSpendingCapModal = ({
 
   const [customSpendingCapInputValue, setCustomSpendingCapInputValue] =
     useState('');
-  const [customSpendingCap, setCustomSpendingCap] = useState('');
-  const setPositiveSpendingCap = (newValue: string) => {
-    const parsedValue = parseInt(newValue, 10);
-    // coerce negative numbers to zero
-    setCustomSpendingCap(parsedValue < 0 ? '0' : newValue);
-  };
 
   const handleCancel = useCallback(() => {
     setIsOpenEditSpendingCapModal(false);

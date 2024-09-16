@@ -88,6 +88,9 @@ const getTitle = (
       if (isNFT) {
         return t('confirmTitleApproveTransaction');
       }
+      if (customSpendingCap) {
+        return t('confirmTitleRevokeApproveTransaction');
+      }
       return t('confirmTitlePermitTokens');
     case TransactionType.tokenMethodIncreaseAllowance:
       return t('confirmTitlePermitTokens');
@@ -126,6 +129,9 @@ const getDescription = (
       if (isNFT) {
         return t('confirmTitleDescApproveTransaction');
       }
+      if (customSpendingCap) {
+        return '';
+      }
       return t('confirmTitleDescERC20ApproveTransaction');
     case TransactionType.tokenMethodIncreaseAllowance:
       return t('confirmTitleDescPermitSignature');
@@ -155,25 +161,32 @@ const ConfirmTitle: React.FC = memo(() => {
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
-  let customSpendingCap = '';
-  if (
+  const isTxWithSpendingCap =
     isTransactionMeta(currentConfirmation) &&
     [
       TransactionType.tokenMethodApprove,
       TransactionType.tokenMethodIncreaseAllowance,
-    ].includes(currentConfirmation.type as TransactionType)
-  ) {
-    const { decimals } = useAssetDetails(
-      currentConfirmation.txParams.to,
-      currentConfirmation.txParams.from,
-      currentConfirmation.txParams.data,
-    );
+    ].includes(currentConfirmation.type as TransactionType);
 
-    const { spendingCap } = useApproveTokenSimulation(
-      currentConfirmation,
-      decimals || '0',
-    );
+  const txParamsTo = isTxWithSpendingCap
+    ? currentConfirmation.txParams.to
+    : null;
+  const txParamsFrom = isTxWithSpendingCap
+    ? currentConfirmation.txParams.from
+    : null;
+  const txParamsData = isTxWithSpendingCap
+    ? currentConfirmation.txParams.data
+    : null;
 
+  const { decimals } = useAssetDetails(txParamsTo, txParamsFrom, txParamsData);
+
+  const { spendingCap } = useApproveTokenSimulation(
+    currentConfirmation as TransactionMeta,
+    decimals || '0',
+  );
+
+  let customSpendingCap = '';
+  if (isTxWithSpendingCap) {
     customSpendingCap = spendingCap;
   }
 
