@@ -290,6 +290,7 @@ export const CoinOverview = ({
                             onClick={handleClick}
                             iconName={IconName.Close}
                             justifyContent={JustifyContent.flexEnd}
+                            ariaLabel="close"
                           />
                         </Box>
 
