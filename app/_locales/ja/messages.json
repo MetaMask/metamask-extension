@@ -3992,12 +3992,6 @@
   "priceUnavailable": {
     "message": "価格が利用できません"
   },
-  "primaryCurrencySetting": {
-    "message": "プライマリ通貨"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "チェーンのネイティブ通貨 (ETHなど) による値の表示を優先するには、「ネイティブ」を選択します。選択した法定通貨による値の表示を優先するには、「法定通貨」を選択します。"
-  },
   "primaryType": {
     "message": "基本型"
   },

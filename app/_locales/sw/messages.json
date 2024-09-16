@@ -501,12 +501,6 @@
   "prev": {
     "message": "Hakiki"
   },
-  "primaryCurrencySetting": {
-    "message": "Sarafu ya Msingi"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Chagua mzawa ili kuweka kipaumbele kuonyesha thamani kwenye sarafu mzawa ya mnyororo (k.m ETH). Chagua Fiat ili uwelke kipaumbale kuonyesha thamani kwenye sarafu yako ya fiat uliyoichagua."
-  },
   "privacyMsg": {
     "message": "Sera ya Faragha"
   },

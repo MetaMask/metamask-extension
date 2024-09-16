@@ -507,12 +507,6 @@
   "prev": {
     "message": "Prej"
   },
-  "primaryCurrencySetting": {
-    "message": "Glavna valuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Izberite Native za prikaz vrednosti v privzeti valuti verige (npr. ETH). Izberite Klasične za prikaz vrednosti v izbrani klasični valuti."
-  },
   "privacyMsg": {
     "message": "Zasebnost"
   },

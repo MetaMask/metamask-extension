@@ -4117,12 +4117,6 @@
   "priceUnavailable": {
     "message": "price unavailable"
   },
-  "primaryCurrencySetting": {
-    "message": "Primary currency"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
-  },
   "primaryType": {
     "message": "Primary type"
   },

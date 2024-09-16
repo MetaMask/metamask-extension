@@ -507,12 +507,6 @@
   "prev": {
     "message": "Föregående"
   },
-  "primaryCurrencySetting": {
-    "message": "Primär valuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Välj native för att prioritera visning av värden i den ursprungliga valutan i kedjan (t.ex. ETH). Välj Fiat för att prioritera visning av värden i din valda fiatvaluta."
-  },
   "privacyMsg": {
     "message": "Integritetspolicy"
   },

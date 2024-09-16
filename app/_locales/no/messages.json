@@ -507,12 +507,6 @@
   "prev": {
     "message": "Tidligere"
   },
-  "primaryCurrencySetting": {
-    "message": "Hovedvaluta "
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Velg nasjonal for å prioritere å vise verdier i nasjonal valuta i kjeden (f.eks. ETH). Velg Fiat for å prioritere visning av verdier i den valgte fiat-valutaen."
-  },
   "privacyMsg": {
     "message": "Personvernerklæring"
   },

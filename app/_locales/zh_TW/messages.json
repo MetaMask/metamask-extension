@@ -964,12 +964,6 @@
   "prev": {
     "message": "前一頁"
   },
-  "primaryCurrencySetting": {
-    "message": "主要貨幣"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "選擇原生來優先使用鏈上原生貨幣 (例如 ETH) 顯示金額。選擇法定貨幣來優先使用您選擇的法定貨幣顯示金額。"
-  },
   "privacyMsg": {
     "message": "隱私政策"
   },

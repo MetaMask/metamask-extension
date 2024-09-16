@@ -516,12 +516,6 @@
   "prev": {
     "message": "הקודם"
   },
-  "primaryCurrencySetting": {
-    "message": "מטבע ראשי"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "בחר/י 'מקומי' כדי לתעדף הצגת ערכים במטבע המקומי של הצ'יין (למשל ETH). בחר/י פיאט כדי לתעדף הצגת ערכים במטבע הפיאט שבחרת."
-  },
   "privacyMsg": {
     "message": "מדיניות הפרטיות"
   },

@@ -3992,12 +3992,6 @@
   "priceUnavailable": {
     "message": "价格不可用"
   },
-  "primaryCurrencySetting": {
-    "message": "主要货币"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "选择原生以优先显示链的原生货币（例如 ETH）的值。选择法币以优先显示以您所选法币显示的值。"
-  },
   "primaryType": {
     "message": "主要类型"
   },

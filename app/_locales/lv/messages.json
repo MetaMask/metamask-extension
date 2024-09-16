@@ -519,12 +519,6 @@
   "prev": {
     "message": "Iepr."
   },
-  "primaryCurrencySetting": {
-    "message": "Primārā valūta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Atlasīt vietējo, lai piešķirtu attēlotajām vērtībām prioritātes ķēdes vietējā vērtībā (piemēram, ETH). Atlasiet Fiat, lai piešķirtu augstāku prioritāti vērtībām jūsu atlasītajā fiat valūtā."
-  },
   "privacyMsg": {
     "message": "Privātuma politika"
   },

@@ -3992,12 +3992,6 @@
   "priceUnavailable": {
     "message": "harga tidak tersedia"
   },
-  "primaryCurrencySetting": {
-    "message": "Mata uang primer"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Pilih asal untuk memprioritaskan nilai yang ditampilkan dalam mata uang asal chain (contoh, ETH). Pilih Fiat untuk memprioritaskan nilai yang ditampilkan dalam mata uang fiat yang Anda pilih."
-  },
   "primaryType": {
     "message": "Tipe primer"
   },

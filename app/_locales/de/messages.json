@@ -3992,12 +3992,6 @@
   "priceUnavailable": {
     "message": "Preis nicht verfügbar"
   },
-  "primaryCurrencySetting": {
-    "message": "Hauptwährung"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Wählen Sie 'Nativ', um dem Anzeigen von Werten in der nativen Währung der Chain (z. B. ETH) Vorrang zu geben. Wählen Sie 'Fiat', um dem Anzeigen von Werten in Ihrer gewählten Fiat-Währung Vorrang zu geben."
-  },
   "primaryType": {
     "message": "Primärer Typ"
   },

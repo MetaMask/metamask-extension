@@ -519,12 +519,6 @@
   "prev": {
     "message": "قبلی"
   },
-  "primaryCurrencySetting": {
-    "message": "واحد پول اصلی"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "برای اولویت دهی نمایش قیمت ها در واحد پولی اصلی زنجیره (مثلًا ETH)، اصلی را انتخاب کنید. برای اولویت دهی نمایش قیمت ها در فیات واحد پولی شما، فیات را انتخاب کنید."
-  },
   "privacyMsg": {
     "message": "خط‌مشی رازداری"
   },

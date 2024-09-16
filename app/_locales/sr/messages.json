@@ -510,12 +510,6 @@
   "prev": {
     "message": "Prethodno"
   },
-  "primaryCurrencySetting": {
-    "message": "Primarna valuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Izaberite primarnu da biste postavili prioritete u prikazivanju vrednosti u primarnoj valuti lanca (npr. ETH). Izaberite Fiat da biste postavili prioritete u prikazivanju vrednosti u vašoj izabranoj fiat valuti."
-  },
   "privacyMsg": {
     "message": "Smernice za privatnost"
   },

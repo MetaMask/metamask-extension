@@ -3992,12 +3992,6 @@
   "priceUnavailable": {
     "message": "가격 사용 불가"
   },
-  "primaryCurrencySetting": {
-    "message": "기본 통화"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "체인의 고유 통화(예: ETH)로 값을 우선 표시하려면 고유를 선택합니다. 선택한 명목 통화로 값을 우선 표시하려면 명목을 선택합니다."
-  },
   "primaryType": {
     "message": "기본 유형"
   },

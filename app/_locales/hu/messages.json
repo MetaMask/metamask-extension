@@ -516,12 +516,6 @@
   "prev": {
     "message": "Előző"
   },
-  "primaryCurrencySetting": {
-    "message": "Elsődleges pénznem"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Válaszd a helyit, hogy az értékek elsősorban a helyi pénznemben jelenjenek meg (pl. ETH). Válaszd a Fiatot, hogy az értékek elsősorban a választott fiat pénznemben jelenjenek meg."
-  },
   "privacyMsg": {
     "message": "Adatvédelmi szabályzat"
   },
