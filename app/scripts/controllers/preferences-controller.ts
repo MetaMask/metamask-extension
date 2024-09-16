@@ -96,6 +96,7 @@ export type Preferences = {
   showFiatInTestnets: boolean;
   showTestNetworks: boolean;
   smartTransactionsOptInStatus: boolean | null;
+  showNativeTokenAsMainBalance: boolean;
   useNativeCurrencyAsPrimaryCurrency: boolean;
   hideZeroBalanceTokens: boolean;
   petnamesEnabled: boolean;
