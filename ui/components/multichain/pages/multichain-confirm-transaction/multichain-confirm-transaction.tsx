@@ -16,7 +16,6 @@ import {
 } from '../../../component-library';
 import {
   clearDraft,
-  SendStage,
   signAndSend,
 } from '../../../../ducks/multichain-send/multichain-send';
 import { MultichainFee } from '../multichain-send/components/fee';
