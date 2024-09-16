@@ -104,12 +104,11 @@ export default class SettingsTab extends PureComponent {
         <div className="settings-page__content-item">
           <Text
             variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
+            color={TextColor.textDefault}
             className="settings-page__content-item__title"
           >
             {t('currencyConversion')}
           </Text>
-          {/*     <span>{t('currencyConversion')}</span> */}
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
@@ -144,7 +143,7 @@ export default class SettingsTab extends PureComponent {
         <div className="settings-page__content-item">
           <Text
             variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
+            color={TextColor.textDefault}
             className="settings-page__content-item__title"
           >
             {t('currentLanguage')}
@@ -186,7 +185,7 @@ export default class SettingsTab extends PureComponent {
         <div className="settings-page__content-item">
           <Text
             variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
+            color={TextColor.textDefault}
             className="settings-page__content-item__title"
           >
             {t('hideZeroBalanceTokens')}
@@ -227,7 +226,7 @@ export default class SettingsTab extends PureComponent {
         <div className="settings-page__content-item">
           <Text
             variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
+            color={TextColor.textDefault}
             className="settings-page__content-item__title"
           >
             {t('accountIdenticon')}
@@ -343,7 +342,7 @@ export default class SettingsTab extends PureComponent {
         <div className="settings-page__content-item">
           <Text
             variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
+            color={TextColor.textDefault}
             className="settings-page__content-item__title"
           >
             {t('showNativeTokenAsMainBalance')}
@@ -407,7 +406,7 @@ export default class SettingsTab extends PureComponent {
         <div className="settings-page__content-item">
           <Text
             variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
+            color={TextColor.textDefault}
             className="settings-page__content-item__title"
           >
             {this.context.t('theme')}
