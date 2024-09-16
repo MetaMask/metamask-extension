@@ -116,7 +116,7 @@ jobs:
           organization=$(grep 'sonar.organization=' sonar-project.properties | cut -d'=' -f2)
           projectKey=$(grep 'sonar.projectKey=' sonar-project.properties | cut -d'=' -f2)
           component="${organization}_${projectKey}"
-          current_coverage=$(curl --header "Authorization: Bearer $SONAR_TOKEN" "https://sonarcloud.io/api/measures/component?component=$component&metricKeys=coverage" | jq -r '.component.measures[0].value // 0')
+          current_coverage=$(curl --header "Authorization: Bearer $SONAR_TOKEN" 'https://sonarcloud.io/api/measures/component?component='$component'&metricKeys=coverage' | jq -r '.component.measures[0].value // 0')
           echo 'CURRENT_COVERAGE='"$current_coverage" >> "$GITHUB_OUTPUT"
 
       - name: Validate test coverage
