@@ -15,15 +15,18 @@ import type { MetaMetricsEventFragment } from '../../../../shared/constants/meta
 export const useSignatureEventFragment = () => {
   const { currentConfirmation } = useConfirmContext();
 
-  const requestId = (currentConfirmation as SignatureRequestType)?.msgParams
-    ?.requestId as number;
+  const requestId =
+    isSignatureTransactionType(currentConfirmation) &&
+    ((currentConfirmation as SignatureRequestType)?.msgParams
+      ?.requestId as number);
   const fragmentId = requestId ? generateSignatureUniqueId(requestId) : null;
 
   const updateSignatureEventFragment = useCallback(
     async (fragmentPayload: Partial<MetaMetricsEventFragment>) => {
-      if (!isSignatureTransactionType(currentConfirmation) || !fragmentId) {
+      if (!fragmentId) {
         return;
       }
+
       updateEventFragment(fragmentId, fragmentPayload);
     },
     [fragmentId],
