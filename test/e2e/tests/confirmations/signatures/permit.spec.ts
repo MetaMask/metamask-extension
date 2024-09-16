@@ -10,6 +10,8 @@ import {
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
+  mockSignatureApproved,
+  mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
   withRedesignConfirmationFixtures,
 } from '../helpers';
@@ -66,6 +68,7 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
 
         await assertVerifiedResults(driver, publicAddress);
       },
+      mockSignatureApproved,
     );
   });
 
@@ -102,6 +105,7 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
           location: 'confirmation',
         });
       },
+      mockSignatureRejected,
     );
   });
 });

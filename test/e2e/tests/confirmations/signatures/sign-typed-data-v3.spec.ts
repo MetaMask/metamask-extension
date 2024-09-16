@@ -5,6 +5,8 @@ import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
+  mockSignatureApproved,
+  mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
   withRedesignConfirmationFixtures,
 } from '../helpers';
@@ -60,6 +62,7 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
         });
         await assertVerifiedResults(driver, publicAddress);
       },
+      mockSignatureApproved,
     );
   });
 
@@ -98,6 +101,7 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
           'Error: User rejected the request.',
         );
       },
+      mockSignatureRejected,
     );
   });
 });

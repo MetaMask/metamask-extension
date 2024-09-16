@@ -4,6 +4,8 @@ import { MockedEndpoint } from 'mockttp';
 import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
+  mockSignatureApproved,
+  mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
   withRedesignConfirmationFixtures,
 } from '../helpers';
@@ -59,6 +61,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
           ],
         });
       },
+      mockSignatureApproved,
     );
   });
 
@@ -94,6 +97,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
           location: 'confirmation',
         });
       },
+      mockSignatureRejected,
     );
   });
 });

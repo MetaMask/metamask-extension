@@ -210,11 +210,12 @@ export default function PrivacySettings() {
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
       properties: {
+        settings_group: 'onboarding_advanced_configuration',
         is_profile_syncing_enabled: profileSyncingProps.isProfileSyncingEnabled,
+        is_basic_functionality_enabled: externalServicesOnboardingToggleState,
         show_incoming_tx: incomingTransactionsPreferences,
         use_phising_detection: usePhishingDetection,
         turnon_token_detection: turnOnTokenDetection,
-        settings_group: 'advanced',
       },
     });
 
@@ -228,31 +229,11 @@ export default function PrivacySettings() {
           name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
           turnOffProfileSyncing: () => {
             profileSyncingProps.setIsProfileSyncingEnabled(false);
-            trackEvent({
-              category: MetaMetricsEventCategory.Onboarding,
-              event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
-              properties: {
-                settings_group: 'advanced',
-                settings_type: 'profile_syncing',
-                old_value: true,
-                new_value: false,
-              },
-            });
           },
         }),
       );
     } else {
       profileSyncingProps.setIsProfileSyncingEnabled(true);
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
-        properties: {
-          settings_group: 'advanced',
-          settings_type: 'profile_syncing',
-          old_value: false,
-          new_value: true,
-        },
-      });
     }
   };
 
@@ -292,6 +273,16 @@ export default function PrivacySettings() {
                 dispatch(openBasicFunctionalityModal());
               } else {
                 dispatch(onboardingToggleBasicFunctionalityOn());
+                trackEvent({
+                  category: MetaMetricsEventCategory.Onboarding,
+                  event: MetaMetricsEventName.SettingsUpdated,
+                  properties: {
+                    settings_group: 'advanced',
+                    settings_type: 'basic_functionality',
+                    old_value: false,
+                    new_value: true,
+                  },
+                });
               }
             }}
             title={t('basicConfigurationLabel')}

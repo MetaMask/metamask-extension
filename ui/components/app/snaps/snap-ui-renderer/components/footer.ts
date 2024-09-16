@@ -7,7 +7,8 @@ import {
   Display,
   FlexDirection,
 } from '../../../../../helpers/constants/design-system';
-import { UIComponentFactory } from './types';
+import { UIComponentFactory, UIComponentParams } from './types';
+import { button as buttonFn } from './button';
 
 export const DEFAULT_FOOTER = {
   element: 'Box',
@@ -20,7 +21,10 @@ export const DEFAULT_FOOTER = {
     className: 'snap-ui-renderer__footer',
     backgroundColor: BackgroundColor.backgroundDefault,
     style: {
-      boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
+      boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
+      height: '74px',
+      position: 'fixed',
+      bottom: 0,
     },
   },
 };
@@ -52,20 +56,24 @@ export const footer: UIComponentFactory<FooterElement> = ({
   element,
   t,
   onCancel,
+  ...params
 }) => {
   const defaultButtons = getDefaultButtons(element, t, onCancel);
 
   const footerChildren = (getJsxChildren(element) as ButtonElement[]).map(
-    (children) => {
-      const { children: buttonChildren, ...props } = children.props;
+    (children, index) => {
+      const buttonMapped = buttonFn({
+        ...params,
+        element: children,
+      } as UIComponentParams<ButtonElement>);
       return {
         element: 'SnapFooterButton',
-        key: `snap-footer-button-${props.name}`,
+        key: `snap-footer-button-${buttonMapped.props?.name ?? index}`,
         props: {
-          ...props,
+          ...buttonMapped.props,
           isSnapAction: true,
         },
-        children: buttonChildren,
+        children: buttonMapped.children,
       };
     },
   );

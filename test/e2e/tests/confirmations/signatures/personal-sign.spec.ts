@@ -4,7 +4,11 @@ import { MockedEndpoint } from 'mockttp';
 import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
-import { withRedesignConfirmationFixtures } from '../helpers';
+import {
+  mockSignatureApproved,
+  mockSignatureRejected,
+  withRedesignConfirmationFixtures,
+} from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import {
   assertAccountDetailsMetrics,
@@ -54,6 +58,7 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
           signatureType: 'personal_sign',
         });
       },
+      mockSignatureApproved,
     );
   });
 
@@ -85,6 +90,7 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
           location: 'confirmation',
         });
       },
+      mockSignatureRejected,
     );
   });
 });

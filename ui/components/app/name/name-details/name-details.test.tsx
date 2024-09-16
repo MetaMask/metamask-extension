@@ -152,6 +152,19 @@ describe('NameDetails', () => {
     useDispatchMock.mockReturnValue(jest.fn());
   });
 
+  it('renders when no address value is passed', () => {
+    const { baseElement } = renderWithProvider(
+      <NameDetails
+        type={NameType.ETHEREUM_ADDRESS}
+        value={''}
+        onClose={() => undefined}
+      />,
+      store,
+    );
+
+    expect(baseElement).toMatchSnapshot();
+  });
+
   it('renders with no saved name', () => {
     const { baseElement } = renderWithProvider(
       <NameDetails

@@ -50,7 +50,7 @@ export const SnapFooterButton: FunctionComponent<SnapFooterButtonProps> = ({
       }}
     >
       {isSnapAction && (
-        <SnapIcon snapId={snapId} avatarSize={IconSize.Xs} marginRight={2} />
+        <SnapIcon snapId={snapId} avatarSize={IconSize.Sm} marginRight={2} />
       )}
       {children}
     </Button>

@@ -82,6 +82,8 @@ import { createOffscreen } from './offscreen';
 
 /* eslint-enable import/first */
 
+import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
+
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
@@ -124,6 +126,7 @@ if (inTest || process.env.METAMASK_DEBUG) {
 }
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
+
 // normalized (adds a trailing slash to the end of the domain if it's missing)
 // the URL once and reuse it:
 const phishingPageHref = phishingPageUrl.toString();
@@ -261,10 +264,26 @@ function maybeDetectPhishing(theController) {
       }
 
       theController.phishingController.maybeUpdateState();
-      const phishingTestResponse =
-        theController.phishingController.test(hostname);
-      if (!phishingTestResponse?.result) {
+      const phishingTestResponse = theController.phishingController.test(
+        details.url,
+      );
+
+      const blockedRequestResponse =
+        theController.phishingController.isBlockedRequest(details.url);
+
+      // if the request is not blocked, and the phishing test is not blocked, return and don't show the phishing screen
+      if (!phishingTestResponse?.result && !blockedRequestResponse.result) {
         return {};
+      }
+
+      // Determine the block reason based on the type
+      let blockReason;
+      if (phishingTestResponse?.result && blockedRequestResponse.result) {
+        blockReason = `${phishingTestResponse.type} and ${blockedRequestResponse.type}`;
+      } else if (phishingTestResponse?.result) {
+        blockReason = phishingTestResponse.type;
+      } else {
+        blockReason = blockedRequestResponse.type;
       }
 
       theController.metaMetricsController.trackEvent({
@@ -273,6 +292,7 @@ function maybeDetectPhishing(theController) {
         category: MetaMetricsEventCategory.Phishing,
         properties: {
           url: hostname,
+          reason: blockReason,
         },
       });
       const querystring = new URLSearchParams({ hostname, href });
@@ -297,7 +317,10 @@ function maybeDetectPhishing(theController) {
       redirectTab(details.tabId, redirectHref);
       return {};
     },
-    { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },
+    {
+      types: ['main_frame', 'sub_frame', 'xmlhttprequest'],
+      urls: ['http://*/*', 'https://*/*'],
+    },
     isManifestV2 ? ['blocking'] : [],
   );
 }
@@ -863,10 +886,10 @@ export function setupController(
       senderUrl.origin === phishingPageUrl.origin &&
       senderUrl.pathname === phishingPageUrl.pathname
     ) {
-      const portStream =
+      const portStreamForPhishingPage =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
       controller.setupPhishingCommunication({
-        connectionStream: portStream,
+        connectionStream: portStreamForPhishingPage,
       });
     } else {
       // this is triggered when a new tab is opened, or origin(url) is changed
@@ -884,6 +907,18 @@ export function setupController(
           ) {
             requestAccountTabIds[origin] = tabId;
           }
+        });
+      }
+      if (
+        senderUrl &&
+        COOKIE_ID_MARKETING_WHITELIST_ORIGINS.some(
+          (origin) => origin === senderUrl.origin,
+        )
+      ) {
+        const portStreamForCookieHandlerPage =
+          overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        controller.setUpCookieHandlerCommunication({
+          connectionStream: portStreamForCookieHandlerPage,
         });
       }
       connectExternalExtension(remotePort);

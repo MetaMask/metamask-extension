@@ -4,6 +4,7 @@ import { MockedEndpoint } from 'mockttp';
 import { WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
+  mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
   withRedesignConfirmationFixtures,
 } from '../helpers';
@@ -67,8 +68,19 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
             'sign_in_with_ethereum',
           ],
           location: 'confirmation',
+          expectedProps: {
+            alert_action_clicked: [],
+            alert_key_clicked: [],
+            alert_resolved: [],
+            alert_resolved_count: 0,
+            alert_triggered: ['requestFrom'],
+            alert_triggered_count: 1,
+            alert_visualized: [],
+            alert_visualized_count: 0,
+          },
         });
       },
+      mockSignatureRejected,
     );
   });
 
@@ -103,8 +115,19 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
             'sign_in_with_ethereum',
           ],
           location: 'alert_friction_modal',
+          expectedProps: {
+            alert_action_clicked: [],
+            alert_key_clicked: [],
+            alert_resolved: [],
+            alert_resolved_count: 0,
+            alert_triggered: ['requestFrom'],
+            alert_triggered_count: 1,
+            alert_visualized: ['requestFrom'],
+            alert_visualized_count: 1,
+          },
         });
       },
+      mockSignatureRejected,
     );
   });
 });
