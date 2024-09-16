@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { NameType } from '@metamask/name-controller';
 import { DraftTransaction } from '../../../../../ducks/multichain-send/multichain-send';
 import {
   AvatarNetwork,
@@ -14,23 +15,17 @@ import {
   AlignItems,
   BackgroundColor,
   BorderRadius,
-  Color,
   Display,
   FlexDirection,
-  FontWeight,
   IconColor,
   JustifyContent,
-  Size,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-import { SummaryRow } from './summary-row';
-import { useSelector } from 'react-redux';
-import { getInternalAccount } from '../../../../../selectors';
 import { MultichainProviderConfig } from '../../../../../../shared/constants/multichain/networks';
 import Jazzicon from '../../../../ui/jazzicon';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import Name from '../../../../app/name';
-import { NameType } from '@metamask/name-controller';
+import { SummaryRow } from './summary-row';
 
 export type SenderRecipientNetworkSummaryProps = {
   transactionParams: DraftTransaction['transactionParams'];
@@ -42,12 +37,6 @@ export const SenderRecipientNetworkSummary = ({
   network,
 }: SenderRecipientNetworkSummaryProps) => {
   const t = useContext(I18nContext);
-
-  const {
-    metadata: { name },
-  } = useSelector((state) =>
-    getInternalAccount(state, transactionParams.sender.id),
-  );
 
   const handleRecipientLinkClick = () => {
     global.platform.openTab({
