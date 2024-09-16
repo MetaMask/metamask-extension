@@ -118,6 +118,7 @@ export default class SettingsTab extends PureComponent {
               options={currencyOptions}
               selectedOption={currentCurrency}
               onChange={(newCurrency) => setCurrentCurrency(newCurrency)}
+              className="settings-page__content-item__dropdown"
             />
           </div>
         </div>
@@ -234,6 +235,7 @@ export default class SettingsTab extends PureComponent {
           <Text
             variant={TextVariant.bodyMd}
             color={TextColor.textAlternative}
+            marginBottom={3}
             className="settings-page__content-item__description"
           >
             {t('jazzAndBlockies')}

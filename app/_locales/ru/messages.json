@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "Подключите свой аппаратный кошелек на основе QR-кодов"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "Адрес в запросе на вход не соответствует адресу счета, который вы используете для входа."
   },
@@ -195,6 +192,9 @@
   "addAccount": {
     "message": "Добавить счет"
   },
+  "addAccountToMetaMask": {
+    "message": "Добавить счет в MetaMask"
+  },
   "addAcquiredTokens": {
     "message": "Добавьте токены, которые вы приобрели с помощью MetaMask"
   },
@@ -320,6 +320,9 @@
   "addUrl": {
     "message": "Добавить URL-адрес"
   },
+  "addingAccount": {
+    "message": "Добавление счет..."
+  },
   "addingCustomNetwork": {
     "message": "Добавление сети"
   },
@@ -328,9 +331,6 @@
   },
   "additionalNetworks": {
     "message": "Дополнительные сети"
-  },
-  "additionalRpcUrl": {
-    "message": "Дополнительный URL-адрес RPC"
   },
   "address": {
     "message": "Адрес"
@@ -663,9 +663,6 @@
   "back": {
     "message": "Назад"
   },
-  "backup": {
-    "message": "Создать резервную копию"
-  },
   "backupApprovalInfo": {
     "message": "Этот секретный код необходим для восстановления вашего кошелька в случае, если вы потеряете свое устройство, забудете пароль, вам придется переустановить MetaMask или захотите получить доступ к своему кошельку на другом устройстве."
   },
@@ -677,12 +674,6 @@
   },
   "backupNow": {
     "message": "Создать резервную копию сейчас"
-  },
-  "backupUserData": {
-    "message": "Создайте резервную копию своих данных"
-  },
-  "backupUserDataDescription": {
-    "message": "Вы можете создавать резервные копии таких данных, как ваши контакты и настройки."
   },
   "balance": {
     "message": "Баланс"
@@ -1036,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "Подтверждайте это сообщение только в том случае, если вы одобряете его содержание и доверяете запрашивающему сайту."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Запрос лимита расходов"
   },
   "confirmTitleSIWESignature": {
@@ -1537,6 +1528,9 @@
   "details": {
     "message": "Подробности"
   },
+  "developerOptions": {
+    "message": "Параметры разработчика"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "$1 отключена, поскольку не соответствует минимальному увеличению на 10% от первоначальной платы за газ.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1878,6 +1872,9 @@
   },
   "existingChainId": {
     "message": "Введенная вами информация связана с существующим ID блокчейна."
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "Чтобы просмотреть и подтвердить свой последний запрос, вам необходимо сначала утвердить или отклонить существующие запросы."
   },
   "existingRpcUrl": {
     "message": "Этот URL-адрес связан с другим ID блокчейна."
@@ -2901,6 +2898,10 @@
     "message": "Выберите псевдоним...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1 запрашивает ваше одобрение на:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "Вы хотите, чтобы этот сайт делал следующее?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3513,6 +3514,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Необязательными:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Узнайте, как мы защищаем вашу конфиденциальность при сборе данных об использовании вашего профиля."
   },
   "onboardingMetametricsTitle": {
     "message": "Помогите нам улучшить MetaMask"
@@ -4194,6 +4198,12 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "Включите эту опцию, чтобы видеть запросы на подпись в расширенном формате."
   },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "Улучшенные запросы транзакций"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "Включите эту опцию, чтобы видеть запросы транзакций в расширенном формате."
+  },
   "refreshList": {
     "message": "Обновить список"
   },
@@ -4330,9 +4340,6 @@
   "restoreUserData": {
     "message": "Восстановить пользовательские данные"
   },
-  "restoreUserDataDescription": {
-    "message": "Вы можете восстановить пользовательские настройки, содержащие настройки и адреса счетов, из ранее сохраненного файла JSON."
-  },
   "resultPageError": {
     "message": "Ошибка"
   },
@@ -4393,6 +4400,9 @@
   },
   "reviewAlerts": {
     "message": "Просмотреть оповещения"
+  },
+  "reviewPermissions": {
+    "message": "Проверить разрешения"
   },
   "revokeAllTokensTitle": {
     "message": "Отозвать разрешение на доступ ко всем вашим $1 и их перевод?",

@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "Kết nối với ví cứng QR của bạn"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "Địa chỉ trong yêu cầu đăng nhập không trùng khớp với địa chỉ của tài khoản bạn đang sử dụng để đăng nhập."
   },
@@ -195,6 +192,9 @@
   "addAccount": {
     "message": "Thêm tài khoản"
   },
+  "addAccountToMetaMask": {
+    "message": "Thêm tài khoản vào MetaMask"
+  },
   "addAcquiredTokens": {
     "message": "Thêm token mà bạn đã mua bằng MetaMask"
   },
@@ -320,6 +320,9 @@
   "addUrl": {
     "message": "Thêm URL"
   },
+  "addingAccount": {
+    "message": "Thêm tài khoản"
+  },
   "addingCustomNetwork": {
     "message": "Thêm mạng"
   },
@@ -328,9 +331,6 @@
   },
   "additionalNetworks": {
     "message": "Mạng bổ sung"
-  },
-  "additionalRpcUrl": {
-    "message": "URL RPC Bổ sung"
   },
   "address": {
     "message": "Địa chỉ"
@@ -663,9 +663,6 @@
   "back": {
     "message": "Quay lại"
   },
-  "backup": {
-    "message": "Sao lưu"
-  },
   "backupApprovalInfo": {
     "message": "Đây là mã bí mật bắt buộc phải dùng để khôi phục ví trong trường hợp bạn bị mất thiết bị, quên mật khẩu, phải cài đặt lại MetaMask hoặc muốn truy cập ví của mình trên một thiết bị khác."
   },
@@ -677,12 +674,6 @@
   },
   "backupNow": {
     "message": "Sao lưu ngay"
-  },
-  "backupUserData": {
-    "message": "Sao lưu dữ liệu của bạn"
-  },
-  "backupUserDataDescription": {
-    "message": "Bạn có thể sao lưu các dữ liệu như địa chỉ liên hệ và tùy chọn của mình."
   },
   "balance": {
     "message": "Số dư"
@@ -1036,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "Chỉ xác nhận thông báo này nếu bạn chấp thuận nội dung và tin tưởng trang web yêu cầu."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Yêu cầu hạn mức chi tiêu"
   },
   "confirmTitleSIWESignature": {
@@ -1537,6 +1528,9 @@
   "details": {
     "message": "Chi tiết"
   },
+  "developerOptions": {
+    "message": "Tùy chọn Nhà phát triển"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” bị vô hiệu hóa vì không đạt mức tăng tối thiểu 10% so với phí gas ban đầu.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1878,6 +1872,9 @@
   },
   "existingChainId": {
     "message": "Thông tin bạn đã nhập được liên kết với một ID chuỗi hiện có."
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "Để xem và xác nhận yêu cầu gần đây nhất của bạn, trước tiên bạn cần phải chấp thuận hoặc từ chối các yêu cầu hiện có."
   },
   "existingRpcUrl": {
     "message": "URL này được liên kết với một ID chuỗi khác."
@@ -2901,6 +2898,10 @@
     "message": "Chọn một biệt danh...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1 đang yêu cầu sự chấp thuận của bạn cho:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "Bạn có muốn trang web này thực hiện những điều sau không?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3513,6 +3514,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Không bắt buộc:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn khi thu thập dữ liệu sử dụng cho hồ sơ của bạn."
   },
   "onboardingMetametricsTitle": {
     "message": "Giúp chúng tôi cải thiện MetaMask"
@@ -4194,6 +4198,12 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "Bật tính năng này để xem các yêu cầu chữ ký ở định dạng nâng cao."
   },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "Yêu cầu giao dịch được cải thiện"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "Bật tính năng này để xem các yêu cầu giao dịch ở định dạng nâng cao."
+  },
   "refreshList": {
     "message": "Làm mới danh sách"
   },
@@ -4330,9 +4340,6 @@
   "restoreUserData": {
     "message": "Khôi phục dữ liệu người dùng"
   },
-  "restoreUserDataDescription": {
-    "message": "Bạn có thể khôi phục các dữ liệu như địa chỉ liên hệ và tùy chọn từ tập tin sao lưu."
-  },
   "resultPageError": {
     "message": "Lỗi"
   },
@@ -4393,6 +4400,9 @@
   },
   "reviewAlerts": {
     "message": "Xem lại cảnh báo"
+  },
+  "reviewPermissions": {
+    "message": "Xem lại quyền"
   },
   "revokeAllTokensTitle": {
     "message": "Thu hồi quyền truy cập và chuyển tất cả $1 của bạn?",

@@ -32,7 +32,10 @@ export default function IconButton(props) {
     >
       {renderWrapper(
         <>
-          <div className={`icon-button__circle ${iconButtonClassName}`}>
+          <div
+            data-theme="light"
+            className={`icon-button__circle ${iconButtonClassName}`}
+          >
             {Icon}
           </div>
           {label.length > 10 ? (

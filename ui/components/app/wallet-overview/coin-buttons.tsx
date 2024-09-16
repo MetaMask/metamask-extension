@@ -70,6 +70,7 @@ import { ReceiveModal } from '../../multichain/receive-modal';
 
 const CoinButtons = ({
   chainId,
+  trackingLocation,
   isSwapsChain,
   isSigningEnabled,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -81,6 +82,7 @@ const CoinButtons = ({
   iconButtonClassName = '',
 }: {
   chainId: `0x${string}` | CaipChainId | number;
+  trackingLocation: string;
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -385,6 +387,22 @@ const CoinButtons = ({
         />
         ///: END:ONLY_INCLUDE_IF
       }
+      <IconButton
+        className={`${classPrefix}-overview__button`}
+        data-testid={`${classPrefix}-overview-send`}
+        Icon={
+          <Icon
+            name={IconName.Arrow2UpRight}
+            color={IconColor.primaryInverse}
+          />
+        }
+        disabled={!isSigningEnabled}
+        label={t('send')}
+        onClick={handleSendOnClick}
+        tooltipRender={(contents: React.ReactElement) =>
+          generateTooltip('sendButton', contents)
+        }
+      />
       {
         <>
           {showReceiveModal && (
@@ -405,6 +423,15 @@ const CoinButtons = ({
             }
             label={t('receive')}
             onClick={() => {
+              trackEvent({
+                event: MetaMetricsEventName.NavReceiveButtonClicked,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  text: 'Receive',
+                  location: trackingLocation,
+                  chain_id: chainId,
+                },
+              });
               setShowReceiveModal(true);
             }}
           />

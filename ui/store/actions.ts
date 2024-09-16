@@ -3065,6 +3065,10 @@ export function setSmartTransactionsOptInStatus(
   };
 }
 
+export function setShowMultiRpcModal(value: boolean) {
+  return setPreference('showMultiRpcModal', value);
+}
+
 export function setAutoLockTimeLimit(value: number | null) {
   return setPreference('autoLockTimeLimit', value);
 }
@@ -3176,9 +3180,13 @@ export function toggleAccountMenu() {
   };
 }
 
-export function toggleNetworkMenu() {
+export function toggleNetworkMenu(payload?: {
+  isAddingNewNetwork: boolean;
+  isMultiRpcOnboarding: boolean;
+}) {
   return {
     type: actionConstants.TOGGLE_NETWORK_MENU,
+    payload,
   };
 }
 
@@ -4056,9 +4064,10 @@ export function setNewNetworkAdded({
 export function setEditedNetwork(
   payload:
     | {
-        networkConfigurationId: string;
+        chainId: string;
+        networkConfigurationId?: string;
         nickname: string;
-        editCompleted: boolean;
+        editCompleted?: boolean;
       }
     | undefined = undefined,
 ): PayloadAction<object> {

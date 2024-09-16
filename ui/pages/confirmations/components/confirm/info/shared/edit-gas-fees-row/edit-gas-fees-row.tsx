@@ -1,5 +1,4 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Box, Text } from '../../../../../../../components/component-library';
 import {
@@ -11,7 +10,7 @@ import {
   TextColor,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../../../../selectors';
+import { useConfirmContext } from '../../../../../context/confirm';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
@@ -29,16 +28,15 @@ export const EditGasFeesRow = ({
 }) => {
   const t = useI18nContext();
 
-  const transactionMeta = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   return (
     <ConfirmInfoAlertRow
       alertKey={RowAlertKey.EstimatedFee}
       ownerId={transactionMeta.id}
       data-testid="edit-gas-fees-row"
-      label={t('estimatedFee')}
+      label={t('networkFee')}
       tooltip={t('estimatedFeeTooltip')}
     >
       <Box

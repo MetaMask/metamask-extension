@@ -175,7 +175,7 @@ export function useCurrencyDisplay(
     }
 
     if (isAggregatedFiatOverviewBalance) {
-      return inputValue;
+      return formatCurrency(inputValue, currency);
     }
 
     return formatEthCurrencyDisplay({

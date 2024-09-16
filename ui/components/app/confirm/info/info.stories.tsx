@@ -17,7 +17,7 @@ const mockRowConfigs: ConfirmInfoRowConfig[] = [
     label: 'Origin',
     type: ConfirmInfoRowType.UrlType,
     rowProps: {
-      address: 'https://metamask.github.io',
+      url: 'https://metamask.github.io',
     },
   },
   {

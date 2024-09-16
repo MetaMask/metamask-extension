@@ -36,7 +36,7 @@ const mockGetSelectedAccount = getSelectedAccount as unknown as jest.Mock;
 const mockGetShouldHideZeroBalanceTokens =
   getShouldHideZeroBalanceTokens as jest.Mock;
 
-const mockGetTOkensMarketData = getTokensMarketData as jest.Mock;
+const mockGetTokensMarketData = getTokensMarketData as jest.Mock;
 
 const selectedAccountMock = {
   id: 'd51c0116-de36-4e77-b35b-408d4ea82d01',
@@ -161,7 +161,7 @@ describe('AggregatedPercentageOverview', () => {
     mockGetCurrentCurrency.mockReturnValue('USD');
     mockGetSelectedAccount.mockReturnValue(selectedAccountMock);
     mockGetShouldHideZeroBalanceTokens.mockReturnValue(false);
-    mockGetTOkensMarketData.mockReturnValue(marketDataMock);
+    mockGetTokensMarketData.mockReturnValue(marketDataMock);
 
     jest.clearAllMocks();
   });
@@ -311,7 +311,7 @@ describe('AggregatedPercentageOverview', () => {
       ],
       totalFiatBalance: 32.13,
     });
-    mockGetTOkensMarketData.mockReturnValue(positiveMarketDataMock);
+    mockGetTokensMarketData.mockReturnValue(positiveMarketDataMock);
     const expectedAmountChange = '+$0.09';
     const expectedPercentageChange = '(+0.29%)';
     render(<AggregatedPercentageOverview />);
@@ -371,7 +371,7 @@ describe('AggregatedPercentageOverview', () => {
       ],
       totalFiatBalance: 32.13,
     });
-    mockGetTOkensMarketData.mockReturnValue(mixedMarketDataMock);
+    mockGetTokensMarketData.mockReturnValue(mixedMarketDataMock);
     const expectedAmountChange = '-$0.07';
     const expectedPercentageChange = '(-0.23%)';
     render(<AggregatedPercentageOverview />);
@@ -429,7 +429,7 @@ describe('AggregatedPercentageOverview', () => {
       ],
       totalFiatBalance: 35.52,
     });
-    mockGetTOkensMarketData.mockReturnValue({
+    mockGetTokensMarketData.mockReturnValue({
       '0x0000000000000000000000000000000000000000': {
         tokenAddress: '0x0000000000000000000000000000000000000000',
         currency: 'ETH',
@@ -484,14 +484,14 @@ describe('AggregatedPercentageOverview', () => {
       },
     });
     const expectedAmountChange = '-$0.39';
-    const expectedPercentageChange = '(-1.09%)';
+    const expectedPercentageChange = '(-1.08%)';
     render(<AggregatedPercentageOverview />);
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);
     expect(percentageElement).toBeInTheDocument();
     expect(numberElement).toBeInTheDocument();
   });
-  it.only('should display correct aggregated amount and percentage when the native fiatBalance is undefined', () => {
+  it('should display correct aggregated amount and percentage when the native fiatBalance is undefined', () => {
     (useAccountTotalFiatBalance as jest.Mock).mockReturnValue({
       orderedTokenList: [
         {
@@ -527,7 +527,7 @@ describe('AggregatedPercentageOverview', () => {
       ],
       totalFiatBalance: 31.4,
     });
-    mockGetTOkensMarketData.mockReturnValue({
+    mockGetTokensMarketData.mockReturnValue({
       '0x0000000000000000000000000000000000000000': {
         tokenAddress: '0x0000000000000000000000000000000000000000',
         currency: 'ETH',

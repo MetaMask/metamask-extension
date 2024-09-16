@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "QRハードウェアウォレットを接続"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "サインインリクエストのアドレスが、サインインに使用しているアカウントのアドレスと一致していません。"
   },
@@ -195,6 +192,9 @@
   "addAccount": {
     "message": "アカウントを追加"
   },
+  "addAccountToMetaMask": {
+    "message": "MetaMaskにアカウントを追加する"
+  },
   "addAcquiredTokens": {
     "message": "MetaMaskを使用して取得したトークンを追加します"
   },
@@ -320,6 +320,9 @@
   "addUrl": {
     "message": "URLを追加"
   },
+  "addingAccount": {
+    "message": "アカウントの追加"
+  },
   "addingCustomNetwork": {
     "message": "ネットワークを追加中"
   },
@@ -328,9 +331,6 @@
   },
   "additionalNetworks": {
     "message": "他のネットワーク"
-  },
-  "additionalRpcUrl": {
-    "message": "他のRPC URL"
   },
   "address": {
     "message": "アドレス"
@@ -663,9 +663,6 @@
   "back": {
     "message": "戻る"
   },
-  "backup": {
-    "message": "バックアップ"
-  },
   "backupApprovalInfo": {
     "message": "このシークレット コードは、デバイスをなくしたとき、パスワードを忘れたとき、MetaMaskの再インストールが必要なとき、または別のデバイスでウォレットにアクセスするときに必要です。"
   },
@@ -677,12 +674,6 @@
   },
   "backupNow": {
     "message": "今すぐバックアップ"
-  },
-  "backupUserData": {
-    "message": "データをバックアップ"
-  },
-  "backupUserDataDescription": {
-    "message": "設定とアカウントアドレスを含むユーザー設定を、JSONファイルにバックアップできます。"
   },
   "balance": {
     "message": "残高"
@@ -1036,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "このメッセージの内容を承認し、要求元のサイトを信頼する場合にのみ確定してください。"
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "使用上限リクエスト"
   },
   "confirmTitleSIWESignature": {
@@ -1537,6 +1528,9 @@
   "details": {
     "message": "詳細"
   },
+  "developerOptions": {
+    "message": "開発者用オプション"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "元のガス代の10%以上という増額の条件を満たしていないため、「$1」は無効になっています。",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1878,6 +1872,9 @@
   },
   "existingChainId": {
     "message": "入力された情報は、既存のチェーンIDと関連付けられています。"
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "一番最近の要求を表示して確定するには、はじめに既存の要求を承認または拒否する必要があります。"
   },
   "existingRpcUrl": {
     "message": "このURLは別のチェーンIDに関連付けられています。"
@@ -2901,6 +2898,10 @@
     "message": "ニックネームを選択...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1が次の承認を求めています:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "このサイトに次のことを希望しますか？",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3513,6 +3514,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "任意:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "当社がプロファイル用に使用状況データを収集しつつ、どのようにユーザーのプライバシーを守るのかご覧ください。"
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMaskの改善にご協力ください"
@@ -4194,6 +4198,12 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "この機能をオンにすると、強化された形式で署名要求が表示されます。"
   },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "改善されたトランザクション要求"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "トランザクション要求を強化された形式で表示するには、この機能をオンにします。"
+  },
   "refreshList": {
     "message": "リストを更新"
   },
@@ -4330,9 +4340,6 @@
   "restoreUserData": {
     "message": "ユーザーデータの復元"
   },
-  "restoreUserDataDescription": {
-    "message": "以前バックアップされたJSONファイルから、設定とアカウントアドレスを含むユーザー設定を復元できます。"
-  },
   "resultPageError": {
     "message": "エラー"
   },
@@ -4393,6 +4400,9 @@
   },
   "reviewAlerts": {
     "message": "アラートを確認する"
+  },
+  "reviewPermissions": {
+    "message": " アクセス許可を確認する"
   },
   "revokeAllTokensTitle": {
     "message": "すべての$1へのアクセスおよび転送許可を取り消しますか？",

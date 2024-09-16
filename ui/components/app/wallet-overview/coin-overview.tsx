@@ -48,6 +48,7 @@ import {
   getTokensMarketData,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   SwapsEthToken,
+  getIsTestnet,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
@@ -56,10 +57,10 @@ import { PercentageAndAmountChange } from '../../multichain/token-list-item/pric
 import { getMultichainIsEvm } from '../../../selectors/multichain';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { GENERAL_ROUTE } from '../../../helpers/constants/routes';
+import { setAggregatedBalancePopover } from '../../../store/actions';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
-import { setAggregatedBalancePopover } from '../../../store/actions';
 
 export type CoinOverviewProps = {
   balance: string;
@@ -107,7 +108,7 @@ export const CoinOverview = ({
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const shouldShowPopover = useSelector(getShouldShowAggregatedBalancePopover);
-  console.log('🚀 ~ shouldShowPopover:', shouldShowPopover);
+  const isTestnet = useSelector(getIsTestnet);
 
   const selectedAccount = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
@@ -119,11 +120,12 @@ export const CoinOverview = ({
   );
 
   const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
-  const balanceToDisplay = showNativeTokenAsMainBalance
-    ? balance
-    : totalFiatBalance;
 
   const isEvm = useSelector(getMultichainIsEvm);
+  const balanceToDisplay =
+    showNativeTokenAsMainBalance || isTestnet || !isEvm
+      ? balance
+      : totalFiatBalance;
 
   const tokensMarketData = useSelector(getTokensMarketData);
   const [isOpen, setIsOpen] = useState(true);
@@ -133,14 +135,14 @@ export const CoinOverview = ({
   };
 
   const handleClick = () => {
-    // todo call dispatch here to isPopoverAlreadyShown to true
     setIsOpen(!isOpen);
     dispatch(setAggregatedBalancePopover());
   };
 
   const [referenceElement, setReferenceElement] = useState();
 
-  const setBoxRef = (ref) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const setBoxRef = (ref: any) => {
     setReferenceElement(ref);
   };
 
@@ -243,21 +245,22 @@ export const CoinOverview = ({
                       type={PRIMARY}
                       ethNumberOfDecimals={4}
                       hideTitle
-                      withCheckShowNativeToken
+                      shouldCheckShowNativeToken
                       isAggregatedFiatOverviewBalance={
-                        !showNativeTokenAsMainBalance
+                        !showNativeTokenAsMainBalance && !isTestnet
                       }
                     />
                   </Box>
-                  {shouldShowPopover && // make this === null to correct behavior
+                  {shouldShowPopover &&
+                  !isTestnet &&
                   !showNativeTokenAsMainBalance ? (
                     <Popover
                       referenceElement={referenceElement}
                       isOpen={isOpen}
-                      position={PopoverPosition.BottomStart} // TODO ask george about this bottom start issue
+                      position={PopoverPosition.BottomStart} // TODO check with design-team about this bottom start issue
                       hasArrow
                       flip
-                      backgroundColor={BackgroundColor.overlayAlternative} // TODO check with george on this opacity issue
+                      backgroundColor={BackgroundColor.overlayAlternative} // TODO check with DS on this opacity issue
                       className="balance-popover__container"
                       padding={3}
                       onClickOutside={handleClick}
@@ -335,6 +338,7 @@ export const CoinOverview = ({
       buttons={
         <CoinButtons
           {...{
+            trackingLocation: 'home',
             chainId,
             isSwapsChain,
             isSigningEnabled,

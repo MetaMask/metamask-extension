@@ -19,7 +19,7 @@
   }
 
   &__icon_button {
-    margin-top: 0px !important;
+    margin-top: 0 !important;
   }
 
   &__buttons {
@@ -73,7 +73,7 @@
   }
 
   &__icon-button {
-    margin-top: 0px !important;
+    margin-top: 0 !important;
   }
 
   &__primary-container {
@@ -87,7 +87,6 @@
     @include design-system.H2;
 
     color: var(--color-text-default);
-
     font-weight: 700;
   }
 
@@ -183,6 +182,7 @@
     line-height: 20px;
     letter-spacing: 0.25px;
   }
+
   &__container {
     width: 248px !important;
   }

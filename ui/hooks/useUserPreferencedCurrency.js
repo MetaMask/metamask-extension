@@ -37,6 +37,7 @@ import { useMultichainSelector } from './useMultichainSelector';
  * on whether the user needs to check showNativeTokenAsMainBalance setting, as well as the significant number of decimals
  * to display based on the currency
  *
+ *
  * @param {"PRIMARY" | "SECONDARY"} type - what display type is being rendered
  * @param {UseUserPreferencedCurrencyOptions} opts - options to override default values
  * @returns {UserPreferredCurrency}
@@ -77,8 +78,8 @@ export function useUserPreferencedCurrency(type, opts = {}) {
   } else if (!showFiat) {
     return nativeReturn;
   } else if (
-    (opts.withCheckShowNativeToken && showNativeTokenAsMainBalance) ||
-    !opts.withCheckShowNativeToken
+    (opts.shouldCheckShowNativeToken && showNativeTokenAsMainBalance) ||
+    !opts.shouldCheckShowNativeToken
   ) {
     return type === PRIMARY ? nativeReturn : fiatReturn;
   }
