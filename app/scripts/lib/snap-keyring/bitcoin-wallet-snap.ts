@@ -7,8 +7,8 @@ import { Json, JsonRpcRequest } from '@metamask/utils';
 import BitcoinWalletSnap from '@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json';
 import { handleSnapRequest } from '../../../../ui/store/actions';
 
-export const BITCOIN_WALLET_SNAP_ID: SnapId = 'local:http://localhost:8080';
-// BitcoinWalletSnap.snapId as SnapId;
+export const BITCOIN_WALLET_SNAP_ID: SnapId =
+  BitcoinWalletSnap.snapId as SnapId;
 
 export const BITCOIN_WALLET_NAME: string =
   BitcoinWalletSnap.manifest.proposedName;
