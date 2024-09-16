@@ -31,12 +31,7 @@
   }
 
   &__portfolio_button {
-    display: flex;
-    flex-direction: row;
-    gap: 6px;
-    cursor: pointer;
-    align-items: center;
-    color: var(--color-primary-default);
+    margin-left: 6px;
   }
 
   &__currency-wrapper {
@@ -185,5 +180,6 @@
 
   &__container {
     width: 248px !important;
+    z-index: design-system.$modal-z-index;
   }
 }

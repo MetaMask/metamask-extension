@@ -10,7 +10,6 @@ import {
   ButtonIconSize,
   ButtonLink,
   ButtonLinkSize,
-  Icon,
   IconName,
   IconSize,
   Popover,
@@ -19,12 +18,10 @@ import {
 } from '../../component-library';
 import {
   AlignItems,
-  BackgroundColor,
   Display,
   IconColor,
   JustifyContent,
   TextAlign,
-  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -58,6 +55,7 @@ import { getMultichainIsEvm } from '../../../selectors/multichain';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { GENERAL_ROUTE } from '../../../helpers/constants/routes';
 import { setAggregatedBalancePopover } from '../../../store/actions';
+import { useTheme } from '../../../hooks/useTheme';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
@@ -106,6 +104,7 @@ export const CoinOverview = ({
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
+  const theme = useTheme();
 
   const shouldShowPopover = useSelector(getShouldShowAggregatedBalancePopover);
   const isTestnet = useSelector(getIsTestnet);
@@ -173,45 +172,44 @@ export const CoinOverview = ({
             <PercentageAndAmountChange
               value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
             />
-            <Box
+            <ButtonLink
+              endIconName={IconName.Export}
+              endIconProps={{
+                size: IconSize.Sm,
+                color: IconColor.primaryDefault,
+                className: 'wallet-overview__portfolio_button',
+              }}
+              size={ButtonLinkSize.Inherit}
+              textProps={{
+                variant: TextVariant.bodyMd,
+              }}
               onClick={handlePortfolioOnClick}
-              className="wallet-overview__portfolio_button"
-              data-testid="portfolio-link"
+              as="a"
             >
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.primaryDefault}
-              >
-                {t('portfolio')}
-              </Text>
-
-              <Icon
-                size={IconSize.Sm}
-                name={IconName.Export}
-                color={IconColor.primaryDefault}
-              />
-            </Box>
+              {t('portfolio')}
+            </ButtonLink>
           </Box>
         );
       }
       return (
         <Box className="wallet-overview__currency-wrapper">
           <AggregatedPercentageOverview />
-          <Box
+          <ButtonLink
+            endIconName={IconName.Export}
+            endIconProps={{
+              size: IconSize.Sm,
+              color: IconColor.primaryDefault,
+              className: 'wallet-overview__portfolio_button',
+            }}
+            size={ButtonLinkSize.Inherit}
+            textProps={{
+              variant: TextVariant.bodyMd,
+            }}
             onClick={handlePortfolioOnClick}
-            className="wallet-overview__portfolio_button"
-            data-testid="portfolio-link"
+            as="a"
           >
-            <Text variant={TextVariant.bodyMd} color={TextColor.primaryDefault}>
-              {t('portfolio')}
-            </Text>
-
-            <Icon
-              size={IconSize.Sm}
-              name={IconName.Export}
-              color={IconColor.primaryDefault}
-            />
-          </Box>
+            {t('portfolio')}
+          </ButtonLink>
         </Box>
       );
     }
@@ -260,15 +258,12 @@ export const CoinOverview = ({
                       position={PopoverPosition.BottomStart} // TODO check with design-team about this bottom start issue
                       hasArrow
                       flip
-                      backgroundColor={BackgroundColor.overlayAlternative} // TODO check with DS on this opacity issue
+                      data-theme={theme === 'light' ? 'dark' : 'light'}
                       className="balance-popover__container"
                       padding={3}
                       onClickOutside={handleClick}
                       onPressEscKey={handleClick}
                       preventOverflow
-                      style={{
-                        zIndex: 66,
-                      }}
                     >
                       <Box>
                         <Box
@@ -277,7 +272,6 @@ export const CoinOverview = ({
                         >
                           <Text
                             variant={TextVariant.bodySmBold}
-                            color={TextColor.overlayInverse}
                             textAlign={TextAlign.Left}
                             alignItems={AlignItems.flexStart}
                             className="balance-popover__text"
@@ -286,7 +280,6 @@ export const CoinOverview = ({
                           </Text>
                           <ButtonIcon
                             size={ButtonIconSize.Sm}
-                            color={IconColor.overlayInverse}
                             onClick={handleClick}
                             iconName={IconName.Close}
                             justifyContent={JustifyContent.flexEnd}
@@ -296,7 +289,6 @@ export const CoinOverview = ({
 
                         <Text
                           variant={TextVariant.bodySm}
-                          color={TextColor.overlayInverse}
                           className="balance-popover__text"
                         >
                           {
