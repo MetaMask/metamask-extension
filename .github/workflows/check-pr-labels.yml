@@ -26,10 +26,4 @@ jobs:
       - name: Check PR has required labels
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_PR_USER: ${{ github.event.pull_request.user.login }}
-        run: |
-          if [[ "$GITHUB_PR_USER" == "devin-ai-integration" ]]; then
-            echo "Skipping label check for known bot: $GITHUB_PR_USER"
-            exit 0
-          fi
-          yarn run check-pr-has-required-labels
+        run: yarn run check-pr-has-required-labels
