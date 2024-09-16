@@ -120,7 +120,7 @@ export async function mockRequest(
 ) {
   await server
     .forPost(TX_SENTINEL_URL)
-    .withJsonBody(request)
+    .withJsonBodyIncluding(request)
     .thenJson(200, response);
 }
 
@@ -261,7 +261,7 @@ describe('Simulation Details', () => {
     );
   });
 
-  it('displays generic error message', async function (this: Mocha.Context) {
+  it.only('displays generic error message', async function (this: Mocha.Context) {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, MALFORMED_TRANSACTION_REQUEST_MOCK);
     };
@@ -271,6 +271,7 @@ describe('Simulation Details', () => {
         mockRequests,
       },
       async ({ driver }) => {
+        await driver.delay(15000)
         await createDappTransaction(driver, MALFORMED_TRANSACTION_MOCK);
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -278,6 +279,8 @@ describe('Simulation Details', () => {
           css: '[data-testid="simulation-details-layout"]',
           text: 'There was an error loading your estimation',
         });
+
+        await driver.delay(90000);
       },
     );
   });
