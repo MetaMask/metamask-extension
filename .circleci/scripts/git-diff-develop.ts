@@ -112,10 +112,12 @@ async function storeGitDiffOutput() {
     if (baseRef === null) {
       console.log("Not a PR, skipping git diff");
       return;
-    } else if (baseRef !== MAIN_BRANCH) {
-      console.log(`This is for a PR targeting '${baseRef}', skipping git diff`);
-      return;
     }
+    // temporarily comment out to test file diff on test branch
+    // else if (baseRef !== MAIN_BRANCH) {
+    //   console.log(`This is for a PR targeting '${baseRef}', skipping git diff`);
+    //   return;
+    // }
 
     console.log("Attempting to get git diff...");
     const diffOutput = await gitDiff();
