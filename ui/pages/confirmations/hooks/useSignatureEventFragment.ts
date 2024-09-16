@@ -24,10 +24,9 @@ export const useSignatureEventFragment = () => {
       if (!isSignatureTransactionType(currentConfirmation) || !fragmentId) {
         return;
       }
-
       updateEventFragment(fragmentId, fragmentPayload);
     },
-    [currentConfirmation, fragmentId],
+    [fragmentId],
   );
 
   return { updateSignatureEventFragment };
