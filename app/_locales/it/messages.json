@@ -1631,8 +1631,8 @@
   "symbol": {
     "message": "Simbolo"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Il simbolo deve essere lungo tra 0 e 12 caratteri."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "Il simbolo deve essere lungo tra 0 e 64 caratteri."
   },
   "terms": {
     "message": "Termini di Uso"

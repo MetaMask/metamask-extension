@@ -5789,8 +5789,8 @@
   "symbol": {
     "message": "Символ"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Символ должен состоять из 11 или менее знаков."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "Символ должен состоять из 64 или менее знаков."
   },
   "tenPercentIncreased": {
     "message": "Увеличение на 10%"

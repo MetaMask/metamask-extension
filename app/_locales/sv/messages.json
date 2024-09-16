@@ -668,8 +668,8 @@
   "switchNetworks": {
     "message": "Växla nätverk"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Symbolen måste vara 11 tecken eller färre."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "Symbolen måste vara 64 tecken eller färre."
   },
   "terms": {
     "message": "Användarvillkor"

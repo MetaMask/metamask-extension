@@ -5789,8 +5789,8 @@
   "symbol": {
     "message": "Simbolo"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Dapat ay 11 character o mas kaunti ang simbolo."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "Dapat ay 64 character o mas kaunti ang simbolo."
   },
   "tenPercentIncreased": {
     "message": "10% na dagdag"

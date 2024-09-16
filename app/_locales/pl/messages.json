@@ -678,8 +678,8 @@
   "switchNetworks": {
     "message": "Zmień sieci"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Symbol musi mieć maksymalnie 11 znaków."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "Symbol musi mieć maksymalnie 64 znaków."
   },
   "terms": {
     "message": "Regulamin"

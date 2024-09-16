@@ -5818,8 +5818,8 @@
   "symbol": {
     "message": "Symbol"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Symbol must be 11 characters or fewer."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "Symbol must be 64 characters or fewer."
   },
   "tenPercentIncreased": {
     "message": "10% increase"

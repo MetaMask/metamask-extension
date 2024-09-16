@@ -687,8 +687,8 @@
   "symbol": {
     "message": "Символ"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Символ повинен містити 11 символів або менше."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "Символ повинен містити 64 символів або менше."
   },
   "terms": {
     "message": "Умови використання"

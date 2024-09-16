@@ -683,8 +683,8 @@
   "symbol": {
     "message": "Символ"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Символът трябва да е 11 символа или по-малко."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "Символът трябва да е 64 символа или по-малко."
   },
   "terms": {
     "message": "Условия за ползване"

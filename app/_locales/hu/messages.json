@@ -680,8 +680,8 @@
   "symbol": {
     "message": "Szimbólum"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "A szimbólum 0 és 12 karakter között kell legyen."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "A szimbólum 0 és 64 karakter között kell legyen."
   },
   "terms": {
     "message": "Használati feltételek"

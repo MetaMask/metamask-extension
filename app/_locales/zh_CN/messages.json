@@ -5789,8 +5789,8 @@
   "symbol": {
     "message": "符号"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "符号不得超过11个字符。"
+  "symbolBetweenZeroSixtyFour": {
+    "message": "符号不得超过64个字符。"
   },
   "tenPercentIncreased": {
     "message": "增加10%"

@@ -5789,8 +5789,8 @@
   "symbol": {
     "message": "Simbol"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Simbol harus terdiri dari 11 karakter atau lebih sedikit."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "Simbol harus terdiri dari 64 karakter atau lebih sedikit."
   },
   "tenPercentIncreased": {
     "message": "Meningkat 10%"

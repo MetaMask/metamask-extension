@@ -5789,8 +5789,8 @@
   "symbol": {
     "message": "प्रतीक"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "प्रतीक 11 करैक्टर या उससे कम का होना चाहिए।"
+  "symbolBetweenZeroSixtyFour": {
+    "message": "प्रतीक 64 करैक्टर या उससे कम का होना चाहिए।"
   },
   "tenPercentIncreased": {
     "message": "10% बढ़ोत्तरी"

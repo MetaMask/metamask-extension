@@ -687,8 +687,8 @@
   "symbol": {
     "message": "ಚಿಹ್ನೆ"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "ಚಿಹ್ನೆಯು 0 ಮತ್ತು 12 ಅಕ್ಷರಗಳ ನಡುವೆ ಇರಬೇಕು."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "ಚಿಹ್ನೆಯು 0 ಮತ್ತು 64 ಅಕ್ಷರಗಳ ನಡುವೆ ಇರಬೇಕು."
   },
   "terms": {
     "message": "ಬಳಕೆಯ ನಿಯಮಗಳು"

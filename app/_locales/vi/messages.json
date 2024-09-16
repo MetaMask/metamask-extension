@@ -5789,8 +5789,8 @@
   "symbol": {
     "message": "Ký hiệu"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Ký hiệu không được dài quá 11 ký tự."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "Ký hiệu không được dài quá 64 ký tự."
   },
   "tenPercentIncreased": {
     "message": "Tăng 10%"

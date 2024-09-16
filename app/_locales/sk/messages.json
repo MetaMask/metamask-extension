@@ -656,8 +656,8 @@
   "switchNetworks": {
     "message": "Prepnúť siete"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Symbol musí být mezi 0 a 12 znaky."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "Symbol musí být mezi 0 a 64 znaky."
   },
   "terms": {
     "message": "Podmínky použití"

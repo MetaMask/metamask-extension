@@ -687,8 +687,8 @@
   "symbol": {
     "message": "Simbolis"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Simbolis turi būti ne ilgesnis nei 11 simbolių."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "Simbolis turi būti ne ilgesnis nei 64 simbolių."
   },
   "terms": {
     "message": "Naudojimo sąlygos"

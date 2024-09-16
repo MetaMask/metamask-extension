@@ -5789,8 +5789,8 @@
   "symbol": {
     "message": "Σύμβολο"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Το σύμβολο πρέπει να αποτελείται από 11 ή λιγότερους χαρακτήρες."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "Το σύμβολο πρέπει να αποτελείται από 64 ή λιγότερους χαρακτήρες."
   },
   "tenPercentIncreased": {
     "message": "10% αύξηση"

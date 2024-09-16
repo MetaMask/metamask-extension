@@ -5789,8 +5789,8 @@
   "symbol": {
     "message": "기호"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "기호는 11자 이하여야 합니다."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "기호는 64자 이하여야 합니다."
   },
   "tenPercentIncreased": {
     "message": "10% 인상"

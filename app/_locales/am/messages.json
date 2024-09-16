@@ -672,8 +672,8 @@
   "symbol": {
     "message": "ምልክት"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "ምልክቱ 11 ቁምፊዎች ወይም ከዚያ ያነሰ መሆን አለበት።"
+  "symbolBetweenZeroSixtyFour": {
+    "message": "ምልክቱ 64 ቁምፊዎች ወይም ከዚያ ያነሰ መሆን አለበት።"
   },
   "terms": {
     "message": "የአጠቃቀም ደንቦች"

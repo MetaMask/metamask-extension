@@ -678,8 +678,8 @@
   "symbol": {
     "message": "Simbol"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Simbol mora biti 11 znakova ili manje."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "Simbol mora biti 64 znakova ili manje."
   },
   "terms": {
     "message": "Uslovi korišćenja"

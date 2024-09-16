@@ -5789,8 +5789,8 @@
   "symbol": {
     "message": "Sembol"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Sembol en fazla 11 karakter olmalıdır."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "Sembol en fazla 64 karakter olmalıdır."
   },
   "tenPercentIncreased": {
     "message": "%10 artış"

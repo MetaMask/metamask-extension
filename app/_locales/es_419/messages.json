@@ -2241,8 +2241,8 @@
   "symbol": {
     "message": "Símbolo"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "El símbolo debe tener 11 caracteres o menos."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "El símbolo debe tener 64 caracteres o menos."
   },
   "tenPercentIncreased": {
     "message": "10% de aumento"

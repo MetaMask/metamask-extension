@@ -667,8 +667,8 @@
   "symbol": {
     "message": "Simbol"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Simbol mestilah 11 aksara atau kurang."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "Simbol mestilah 64 aksara atau kurang."
   },
   "terms": {
     "message": "Syarat-syarat Penggunaan"

@@ -684,8 +684,8 @@
   "symbol": {
     "message": "رمز"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "يجب أن يكون الرمز 11 حرفًا أو أقل."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "يجب أن يكون الرمز 64 حرفًا أو أقل."
   },
   "terms": {
     "message": "شروط الاستخدام"

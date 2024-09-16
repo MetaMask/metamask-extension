@@ -350,8 +350,8 @@
   "symbol": {
     "message": "เครื่องหมาย"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "สัญลักษณ์จะต้องมีความยาว 11 ตัวอักษร"
+  "symbolBetweenZeroSixtyFour": {
+    "message": "สัญลักษณ์จะต้องมีความยาว 64 ตัวอักษร"
   },
   "terms": {
     "message": "ข้อตกลงในการใช้งาน"

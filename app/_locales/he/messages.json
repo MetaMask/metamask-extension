@@ -684,8 +684,8 @@
   "symbol": {
     "message": "סמל"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "הסמל חייב להיות 11 תווים או פחות."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "הסמל חייב להיות 64 תווים או פחות."
   },
   "terms": {
     "message": "תנאי שימוש"

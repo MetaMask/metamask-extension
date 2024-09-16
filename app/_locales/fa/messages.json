@@ -687,8 +687,8 @@
   "symbol": {
     "message": "سمبول"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "نماد باید 11 کاراکتر یا کمتر باشد."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "نماد باید 64 کاراکتر یا کمتر باشد."
   },
   "terms": {
     "message": "شرایط استفاده"
