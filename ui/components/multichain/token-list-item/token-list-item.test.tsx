@@ -137,7 +137,7 @@ describe('TokenListItem', () => {
   it('handles click action and fires onClick', () => {
     const store = configureMockStore()(state);
     const { queryByTestId } = renderWithProvider(
-      <TokenListItem {...props} />,
+      <TokenListItem {...props} tokenImage="" title="" />,
       store,
     );
 
