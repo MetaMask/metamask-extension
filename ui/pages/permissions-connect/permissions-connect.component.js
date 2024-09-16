@@ -363,7 +363,7 @@ export default class PermissionConnect extends Component {
               path={confirmPermissionPath}
               exact
               render={() =>
-                process.env.CHAIN_PERMISSIONS ? (
+                process.env.CHAIN_PERMISSIONS && !permissionsRequest?.diff ? (
                   <ConnectPage
                     accounts={accounts}
                     rejectPermissionsRequest={(requestId) =>
