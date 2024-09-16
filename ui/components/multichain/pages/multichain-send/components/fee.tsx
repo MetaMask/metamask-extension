@@ -49,6 +49,7 @@ export const MultichainFee = ({
       assetDetails: asset.assetDetails,
       amount: new BigNumber(asset.amount)
         .plus(new BigNumber(estimatedFee.fee))
+        .div(new BigNumber(10).pow(asset.assetDetails.details.decimals))
         .toString(),
     });
 
@@ -89,7 +90,7 @@ export const MultichainFee = ({
           }
         />
       )}
-      {sendStage === SendStage.PUBLISHING && (
+      {sendStage !== SendStage.DRAFT && (
         <FeeRow
           isLoading={estimatedFee.isLoading}
           title="Total"
