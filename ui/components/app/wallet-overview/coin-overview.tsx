@@ -286,7 +286,7 @@ export const CoinOverview = ({
                           </Text>
                           <ButtonIcon
                             size={ButtonIconSize.Sm}
-                            color={IconColor.infoInverse}
+                            color={IconColor.overlayInverse}
                             onClick={handleClick}
                             iconName={IconName.Close}
                             justifyContent={JustifyContent.flexEnd}
