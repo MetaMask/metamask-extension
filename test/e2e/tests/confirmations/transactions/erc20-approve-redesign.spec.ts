@@ -114,7 +114,7 @@ async function mocks(server: MockttpServer) {
   return [await mocked4Bytes(server)];
 }
 
-async function importTST(driver: Driver) {
+export async function importTST(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await driver.clickElement('[data-testid="import-token-button"]');
 
@@ -145,7 +145,7 @@ async function importTST(driver: Driver) {
   });
 }
 
-async function createERC20ApproveTransaction(driver: Driver) {
+export async function createERC20ApproveTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#approveTokens');
 }
@@ -213,7 +213,8 @@ async function assertApproveDetails(driver: Driver) {
   });
 }
 
-async function confirmApproveTransaction(driver: Driver) {
+export async function confirmApproveTransaction(driver: Driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await scrollAndConfirmAndAssertConfirm(driver);
 
   await driver.delay(veryLargeDelayMs);
