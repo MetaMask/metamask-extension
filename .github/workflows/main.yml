@@ -2,7 +2,7 @@ name: Main
 
 on:
   push:
-    branches: [merge-queue-test, master]
+    branches: [develop, master]
   pull_request:
 
 jobs:

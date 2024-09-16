@@ -5,6 +5,7 @@ on:
     branches: [merge-queue-test, master]
   pull_request:
     types: [opened,reopened,synchronize]
+  merge_group:
 
 jobs:
   test-integration:
