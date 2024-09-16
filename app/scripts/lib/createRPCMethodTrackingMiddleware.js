@@ -86,10 +86,6 @@ const EVENT_NAME_MAP = {
     APPROVED: MetaMetricsEventName.SignatureApproved,
     REJECTED: MetaMetricsEventName.SignatureRejected,
     REQUESTED: MetaMetricsEventName.SignatureRequested,
-
-    APPROVED_ANON: MetaMetricsEventName.SignatureApprovedAnon,
-    REJECTED_ANON: MetaMetricsEventName.SignatureRejectedAnon,
-    REQUESTED_ANON: MetaMetricsEventName.SignatureRequestedAnon,
   },
   [MESSAGE_TYPE.PERSONAL_SIGN]: {
     APPROVED: MetaMetricsEventName.SignatureApproved,
@@ -136,14 +132,8 @@ let globalRateLimitCount = 0;
  * @param {MetaMetricsController} metaMetricsController
  * @param {OriginalRequest} req
  * @param {Partial<MetaMetricsEventFragment>} fragmentPayload
- * @param {object} sensitiveEventProperties
  */
-function createSignatureFragment(
-  metaMetricsController,
-  req,
-  fragmentPayload,
-  sensitiveEventProperties,
-) {
+function createSignatureFragment(metaMetricsController, req, fragmentPayload) {
   metaMetricsController.createEventFragment({
     category: MetaMetricsEventCategory.InpageProvider,
 
@@ -158,28 +148,6 @@ function createSignatureFragment(
     },
     ...fragmentPayload,
   });
-
-  if (req.method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4) {
-    const payload = {
-      ...fragmentPayload,
-      sensitiveProperties: sensitiveEventProperties,
-    };
-
-    metaMetricsController.createEventFragment({
-      category: MetaMetricsEventCategory.InpageProvider,
-
-      initialEvent: MetaMetricsEventName.SignatureRequestedAnon,
-      successEvent: MetaMetricsEventName.SignatureApprovedAnon,
-      failureEvent: MetaMetricsEventName.SignatureRejectedAnon,
-
-      uniqueIdentifier: generateSignatureUniqueId(req.id),
-      persist: true,
-      referrer: {
-        url: req.origin,
-      },
-      ...payload,
-    });
-  }
 }
 
 /**
@@ -418,14 +386,12 @@ export default function createRPCMethodTrackingMiddleware({
       }
 
       if (event === MetaMetricsEventName.SignatureRequested) {
-        createSignatureFragment(
-          metaMetricsController,
-          req,
-          {
-            properties: eventProperties,
-          },
-          sensitiveEventProperties,
-        );
+        const fragmentPayload = {
+          properties: eventProperties,
+          sensitiveProperties: sensitiveEventProperties,
+        };
+
+        createSignatureFragment(metaMetricsController, req, fragmentPayload);
       } else {
         metaMetricsController.trackEvent({
           event,
@@ -492,6 +458,7 @@ export default function createRPCMethodTrackingMiddleware({
         };
         const fragmentPayload = {
           properties,
+          sensitiveProperties: sensitiveEventProperties,
         };
 
         finalizeSignatureFragment(
@@ -510,37 +477,6 @@ export default function createRPCMethodTrackingMiddleware({
           properties,
         });
       }
-
-      if (req.method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4) {
-        let anonEvent;
-        if (event === eventType.APPROVED) {
-          anonEvent = eventType.APPROVED_ANON;
-        } else if (event === eventType.REJECTED) {
-          anonEvent = eventType.REJECTED_ANON;
-        }
-
-        if (anonEvent) {
-          finalizeSignatureFragment(
-            metaMetricsController,
-            req,
-            { abandoned: event === eventType.REJECTED },
-            {
-              properties,
-              sensitiveProperties: sensitiveEventProperties,
-            },
-          );
-        } else {
-          metaMetricsController.trackEvent({
-            event,
-            category: MetaMetricsEventCategory.InpageProvider,
-            referrer: {
-              url: origin,
-            },
-            properties,
-          });
-        }
-      }
-
       return callback();
     });
   };
