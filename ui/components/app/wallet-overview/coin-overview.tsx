@@ -46,9 +46,9 @@ import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
+  getIsTestnet,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   SwapsEthToken,
-  getIsTestnet,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';

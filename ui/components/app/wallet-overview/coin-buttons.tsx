@@ -332,24 +332,6 @@ const CoinButtons = ({
         renderInstitutionalButtons()
         ///: END:ONLY_INCLUDE_IF
       }
-
-      <IconButton
-        className={`${classPrefix}-overview__button`}
-        iconButtonClassName={iconButtonClassName}
-        data-testid={`${classPrefix}-overview-send`}
-        Icon={
-          <Icon
-            name={IconName.Arrow2UpRight}
-            color={IconColor.primaryInverse}
-          />
-        }
-        disabled={!isSigningEnabled}
-        label={t('send')}
-        onClick={handleSendOnClick}
-        tooltipRender={(contents: React.ReactElement) =>
-          generateTooltip('sendButton', contents)
-        }
-      />
       <IconButton
         className={`${classPrefix}-overview__button`}
         iconButtonClassName={iconButtonClassName}
@@ -389,6 +371,7 @@ const CoinButtons = ({
       }
       <IconButton
         className={`${classPrefix}-overview__button`}
+        iconButtonClassName={iconButtonClassName}
         data-testid={`${classPrefix}-overview-send`}
         Icon={
           <Icon
