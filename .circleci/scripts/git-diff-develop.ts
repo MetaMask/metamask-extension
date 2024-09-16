@@ -35,7 +35,7 @@ async function getBaseRef(): Promise<string | null> {
  */
 async function fetchWithDepth(depth: number): Promise<boolean> {
   try {
-    await exec(`git fetch --depth ${depth} origin develop`);
+    await exec(`git fetch --depth ${depth} origin ${MAIN_BRANCH}`);
     await exec(`git fetch --depth ${depth} origin ${process.env.CIRCLE_BRANCH}`);
     return true;
   } catch (error: unknown) {
@@ -57,7 +57,7 @@ async function fetchUntilMergeBaseFound() {
     await fetchWithDepth(depth);
 
     try {
-      await exec(`git merge-base origin/HEAD HEAD`);
+      await exec(`git merge-base origin/${MAIN_BRANCH} HEAD`);
       return;
     } catch (error: unknown) {
       if (
@@ -71,7 +71,7 @@ async function fetchUntilMergeBaseFound() {
       }
     }
   }
-  await exec(`git fetch --unshallow origin develop`);
+  await exec(`git fetch --unshallow origin ${MAIN_BRANCH}`);
 }
 
 /**
@@ -83,7 +83,7 @@ async function fetchUntilMergeBaseFound() {
  */
 async function gitDiff(): Promise<string> {
   await fetchUntilMergeBaseFound();
-  const { stdout: diffResult } = await exec(`git diff --name-only origin/HEAD...${process.env.CIRCLE_BRANCH}`);
+  const { stdout: diffResult } = await exec(`git diff --name-only origin/${MAIN_BRANCH}...${process.env.CIRCLE_BRANCH}`);
   if (!diffResult) {
       throw new Error('Unable to get diff after full checkout.');
   }
@@ -103,7 +103,7 @@ async function storeGitDiffOutput() {
     const outputDir = 'changed-files';
     fs.mkdirSync(outputDir, { recursive: true });
 
-    console.log(`Determining whether this run is for a PR targetting ${MAIN_BRANCH}`)
+    console.log(`Determining whether this run is for a PR targeting ${MAIN_BRANCH}`)
     if (!process.env.CIRCLE_PULL_REQUEST) {
       console.log("Not a PR, skipping git diff");
       return;
