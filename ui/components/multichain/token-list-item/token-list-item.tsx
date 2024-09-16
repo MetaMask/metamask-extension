@@ -422,10 +422,7 @@ export const TokenListItem = ({
                   if (isFullScreen) {
                     history.push(NETWORKS_ROUTE);
                   } else {
-                    global.platform &&
-                      typeof global.platform.openExtensionInBrowser ===
-                        'function' &&
-                      global.platform.openExtensionInBrowser(NETWORKS_ROUTE);
+                    global.platform.openExtensionInBrowser?.(NETWORKS_ROUTE);
                   }
                 }}
                 block
