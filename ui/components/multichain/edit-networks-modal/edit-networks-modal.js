@@ -35,7 +35,6 @@ import { NetworkListItem } from '..';
 import {
   grantPermittedChains,
   removePermittedChain,
-  setSelectedNetworksForDappConnection,
 } from '../../../store/actions';
 import { getURLHost } from '../../../helpers/utils/util';
 
@@ -43,6 +42,8 @@ export const EditNetworksModal = ({
   onClose,
   onClick,
   currentTabHasNoAccounts,
+  selectedChainIds,
+  setSelectedChainIds,
   combinedNetworks,
   onDisconnectClick,
 }) => {
@@ -58,31 +59,26 @@ export const EditNetworksModal = ({
   );
   const selectedPermittedChains =
     connectedNetworks.length > 0 ? connectedNetworks : combinedNetworksIds;
-  const [selectedChains, setSelectedChains] = useState(selectedPermittedChains);
 
   const selectAll = () => {
-    const newSelectedAccounts = combinedNetworks.map(
-      (network) => network.chainId,
-    );
-    setSelectedChains(newSelectedAccounts);
+    const chainIds = combinedNetworks.map((network) => network.chainId);
+    setSelectedChainIds(chainIds);
   };
 
   const deselectAll = () => {
-    setSelectedChains([]);
+    setSelectedChainIds([]);
   };
 
-  const handleAccountClick = (chainId) => {
-    if (selectedChains.includes(chainId)) {
-      // Remove the chainId from the selectedChains
-      setSelectedChains(selectedChains.filter((id) => id !== chainId));
+  const handleNetworkClick = (chainId) => {
+    if (selectedChainIds.includes(chainId)) {
+      setSelectedChainIds(selectedChainIds.filter((id) => id !== chainId));
     } else {
-      // Add the chainId to selectedChains
-      setSelectedChains([...selectedChains, chainId]);
+      setSelectedChainIds([...selectedChainIds, chainId]);
     }
   };
 
   const allAreSelected = () => {
-    return combinedNetworksIds.length === selectedChains.length;
+    return combinedNetworksIds.length === selectedChainIds.length;
   };
 
   let checked = false;
@@ -90,24 +86,10 @@ export const EditNetworksModal = ({
   if (allAreSelected()) {
     checked = true;
     isIndeterminate = false;
-  } else if (selectedChains.length > 0 && !allAreSelected()) {
+  } else if (selectedChainIds.length > 0 && !allAreSelected()) {
     checked = false;
     isIndeterminate = true;
   }
-
-  const managePermittedChains = (chains, permittedChains, tabOrigin) => {
-    dispatch(grantPermittedChains(activeTabOrigin, chains));
-
-    const removedElements = permittedChains.filter(
-      (chain) => !chains.includes(chain),
-    );
-
-    // Dispatch removePermittedChains for each removed element
-    removedElements.forEach((chain) => {
-      const selectedChain = [chain];
-      dispatch(removePermittedChain(tabOrigin, selectedChain));
-    });
-  };
 
   const hostName = getURLHost(activeTabOrigin);
 
@@ -144,11 +126,11 @@ export const EditNetworksModal = ({
               iconSrc={network?.rpcPrefs?.imageUrl}
               key={network.id}
               onClick={() => {
-                handleAccountClick(network.chainId);
+                handleNetworkClick(network.chainId);
               }}
               startAccessory={
                 <Checkbox
-                  isChecked={selectedChains.includes(network.chainId)}
+                  isChecked={selectedChainIds.includes(network.chainId)}
                 />
               }
             />
@@ -162,18 +144,18 @@ export const EditNetworksModal = ({
               iconSrc={network?.rpcPrefs?.imageUrl}
               key={network.id}
               onClick={() => {
-                handleAccountClick(network.chainId);
+                handleNetworkClick(network.chainId);
               }}
               startAccessory={
                 <Checkbox
-                  isChecked={selectedChains.includes(network.chainId)}
+                  isChecked={selectedChainIds.includes(network.chainId)}
                 />
               }
               showEndAccessory={false}
             />
           ))}
           <ModalFooter>
-            {selectedChains.length === 0 ? (
+            {selectedChainIds.length === 0 ? (
               <Box
                 display={Display.Flex}
                 flexDirection={FlexDirection.Column}
@@ -216,15 +198,17 @@ export const EditNetworksModal = ({
                   onClick();
                   onClose();
                   if (currentTabHasNoAccounts) {
-                    dispatch(
-                      setSelectedNetworksForDappConnection(selectedChains),
-                    );
+                    // dispatch(
+                    //   // TODO set this via hook
+                    //   setSelectedNetworksForDappConnection(selectedChains),
+                    // );
                   } else {
-                    managePermittedChains(
-                      selectedChains,
-                      selectedPermittedChains,
-                      activeTabOrigin,
-                    );
+                    // fix this
+                    // managePermittedChains(
+                    //   selectedChainIds,
+                    //   selectedPermittedChains,
+                    //   activeTabOrigin,
+                    // );
                   }
                 }}
                 size={ButtonPrimarySize.Lg}
@@ -250,6 +234,10 @@ EditNetworksModal.propTypes = {
    * Function to execute when an update action is triggered.
    */
   onClick: PropTypes.func.isRequired,
+
+  selectedChainIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+
+  setSelectedChainIds: PropTypes.func.isRequired,
 
   /**
    * Boolean indicating if the current tab has no associated accounts.

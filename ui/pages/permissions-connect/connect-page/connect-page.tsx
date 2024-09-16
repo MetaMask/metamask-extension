@@ -3,9 +3,7 @@ import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getNonTestNetworks,
-  getSelectedAccountsForDappConnection,
   getSelectedInternalAccount,
-  getSelectedNetworksForDappConnection,
   getTestNetworks,
 } from '../../../selectors';
 import {
@@ -42,8 +40,10 @@ type ConnectPageProps = {
   rejectPermissionsRequest: (id: string) => void;
   approveConnection: (request: Request) => void;
   accounts: AccountType[];
-  selectAccounts: (addresses: string[]) => void;
-  selectedAccountAddresses: Set<string>;
+  selectAccounts: (addresses: Set<string>) => void;
+  selectedAccounts: Set<string>;
+  selectChainIds: (chainIds: Set<string>) => void;
+  selectedChainIds: Set<string>;
   activeTabOrigin: string;
 };
 
@@ -54,44 +54,47 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   approveConnection,
   accounts,
   selectAccounts,
-  selectedAccountAddresses,
+  selectedAccounts,
+  selectChainIds,
+  selectedChainIds,
   activeTabOrigin,
 }) => {
   const t = useI18nContext();
 
   // Get networks and accounts from Redux
   const networksList = useSelector(getNonTestNetworks);
-  const selectedNetworksList = useSelector(
-    getSelectedNetworksForDappConnection,
-  );
+  // const selectedNetworksList = useSelector(
+  //   getSelectedNetworksForDappConnection,
+  // );
   const testNetworks = useSelector(getTestNetworks);
   const combinedNetworks = [...networksList, ...testNetworks];
 
   const currentAccount = useSelector(getSelectedInternalAccount);
 
-  const selectedAccountsForDappConnection = useSelector(
-    getSelectedAccountsForDappConnection,
-  );
+  // const selectedAccountsForDappConnection = useSelector(
+  //   getSelectedAccountsForDappConnection,
+  // );
 
   // Filter networks based on chainId
-  const filteredNetworks = Array.isArray(selectedNetworksList)
-    ? combinedNetworks.filter((network) =>
-        selectedNetworksList.includes(network.chainId),
-      )
-    : networksList;
+  const filteredNetworks = combinedNetworks.filter((network) =>
+    selectedChainIds.has(network.chainId),
+  );
 
   // Select approved accounts and networks
+  const _selectedAccounts = Array.from(selectedAccounts);
   const approvedAccounts =
-    selectedAccountsForDappConnection.length > 0
-      ? selectedAccountsForDappConnection
+    _selectedAccounts.length > 0
+      ? _selectedAccounts
       : [currentAccount?.address];
+
+  const approvedChainIds = filteredNetworks.map((network) => network.chainId);
 
   // Handle confirmation
   const onConfirm = () => {
     const _request = {
       ...request,
       approvedAccounts,
-      approvedChainIds: filteredNetworks.map((network) => network.chainId),
+      approvedChainIds,
     };
     approveConnection(_request);
   };
@@ -114,11 +117,12 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         <SiteCell
           networks={filteredNetworks}
           accounts={filterAccountsByAddress}
-          onAccountsClick={() =>
-            selectAccounts(Array.from(selectedAccountAddresses))
-          }
-          onNetworksClick={() => null}
-          approvedAccounts={approvedAccounts}
+          onAccountsClick={() => {}}
+          onNetworksClick={() => {}}
+          setSelectedAccounts={(accounts) => selectAccounts(new Set(accounts))}
+          setSelectedChainIds={(chainIds) => selectChainIds(new Set(chainIds))}
+          selectedAccounts={approvedAccounts}
+          selectedChainIds={approvedChainIds}
           activeTabOrigin={activeTabOrigin}
           combinedNetworks={networksList}
           onDisconnectClick={() => null}

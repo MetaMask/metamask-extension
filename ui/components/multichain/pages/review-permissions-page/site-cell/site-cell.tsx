@@ -45,8 +45,11 @@ type SiteCellProps = {
   }[];
   onAccountsClick: () => void;
   onNetworksClick: () => void;
+  setSelectedAccounts: (accounts: string[]) => void;
+  setSelectedChainIds: (chainIds: string[]) => void;
   onDisconnectClick: () => void;
-  approvedAccounts: { address: string }[];
+  selectedAccounts: string[];
+  selectedChainIds: string[];
   activeTabOrigin: string;
   combinedNetworks;
 };
@@ -56,7 +59,10 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   accounts,
   onAccountsClick,
   onNetworksClick,
-  approvedAccounts,
+  selectedAccounts,
+  setSelectedAccounts,
+  selectedChainIds,
+  setSelectedChainIds,
   activeTabOrigin,
   combinedNetworks,
   onDisconnectClick,
@@ -258,9 +264,10 @@ export const SiteCell: React.FC<SiteCellProps> = ({
 
       {showEditNetworksModal && (
         <EditNetworksModal
-          defaultNetworks={networks}
           onClose={() => setShowEditNetworksModal(false)}
           onClick={onNetworksClick}
+          selectedChainIds={selectedChainIds}
+          setSelectedChainIds={setSelectedChainIds}
           currentTabHasNoAccounts={currentTabHasNoAccounts}
           combinedNetworks={combinedNetworks}
           onDisconnectClick={onDisconnectClick}
@@ -271,8 +278,8 @@ export const SiteCell: React.FC<SiteCellProps> = ({
         <EditAccountsModal
           onClose={() => setShowEditAccountsModal(false)}
           onClick={onAccountsClick}
-          selAccounts={accounts}
-          approvedAccounts={approvedAccounts}
+          selectedAccounts={selectedAccounts}
+          setSelectedAccounts={setSelectedAccounts}
           activeTabOrigin={activeTabOrigin}
           currentTabHasNoAccounts={currentTabHasNoAccounts}
           onDisconnectClick={onDisconnectClick}

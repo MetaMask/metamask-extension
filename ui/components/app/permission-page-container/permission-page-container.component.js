@@ -157,6 +157,7 @@ export default class PermissionPageContainer extends Component {
 
   onLeftFooterClick = () => {
     const requestedPermissions = this.getRequestedPermissions();
+    // figure this out
     if (requestedPermissions[PermissionNames.permittedChains] === undefined) {
       this.goBack();
     } else {
@@ -185,6 +186,7 @@ export default class PermissionPageContainer extends Component {
       this.props.setSnapsInstallPrivacyWarningShownStatus(true);
     };
 
+    // figure this out
     const footerLeftActionText = requestedPermissions[
       PermissionNames.permittedChains
     ]

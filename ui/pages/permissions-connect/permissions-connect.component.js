@@ -43,6 +43,23 @@ function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
   return new Set(isEthAddress(currentAddress) ? [currentAddress] : []);
 }
 
+function getDefaultChainIds(currentChainId, permissionsRequest) {
+  const permission =
+    permissionsRequest?.permissions?.[PermissionNames.permittedChains];
+  const requestedChainIds = permission?.caveats?.find(
+    (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+  )?.value;
+
+  console.log({ requestedChainIds });
+
+  if (requestedChainIds) {
+    return new Set(requestedChainIds.map((address) => address.toLowerCase()));
+  }
+
+  console.log({ currentChainId });
+  return new Set([currentChainId]);
+}
+
 export default class PermissionConnect extends Component {
   static propTypes = {
     approvePermissionsRequest: PropTypes.func.isRequired,
@@ -69,6 +86,7 @@ export default class PermissionConnect extends Component {
       }),
     ).isRequired,
     currentAddress: PropTypes.string.isRequired,
+    currentChainId: PropTypes.string.isRequired,
     origin: PropTypes.string,
     showNewAccountModal: PropTypes.func.isRequired,
     newAccountNumber: PropTypes.number.isRequired,
@@ -116,6 +134,10 @@ export default class PermissionConnect extends Component {
     redirecting: false,
     selectedAccountAddresses: getDefaultSelectedAccounts(
       this.props.currentAddress,
+      this.props.permissionsRequest,
+    ),
+    selectedChainIds: getDefaultChainIds(
+      this.props.currentChainId,
       this.props.permissionsRequest,
     ),
     permissionsApproved: null,
@@ -225,6 +247,13 @@ export default class PermissionConnect extends Component {
     );
   };
 
+  selectChainIds = (chainIds) => {
+    // Is this right? or do we need to push a route like above
+    this.setState({
+      selectedChainIds: chainIds,
+    });
+  };
+
   redirect(approved) {
     const { history, permissionsRequest } = this.props;
 
@@ -322,6 +351,7 @@ export default class PermissionConnect extends Component {
     } = this.props;
     const {
       selectedAccountAddresses,
+      selectedChainIds,
       permissionsApproved,
       redirecting,
       snapsInstallPrivacyWarningShown,
@@ -376,7 +406,9 @@ export default class PermissionConnect extends Component {
                     selectAccounts={(addresses) =>
                       this.selectAccounts(addresses)
                     }
-                    selectedAccountAddresses={selectedAccountAddresses}
+                    selectedAccounts={selectedAccountAddresses}
+                    selectChainIds={(chainIds) => this.selectChainIds(chainIds)}
+                    selectedChainIds={selectedChainIds}
                   />
                 ) : (
                   <PermissionPageContainer

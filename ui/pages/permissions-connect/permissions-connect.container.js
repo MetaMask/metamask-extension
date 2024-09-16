@@ -13,6 +13,7 @@ import {
   getSnapsInstallPrivacyWarningShown,
   getRequestType,
   getTargetSubjectMetadata,
+  getCurrentNetwork,
 } from '../../selectors';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
 
@@ -49,6 +50,8 @@ const mapStateToProps = (state, ownProps) => {
     ...getSnapInstallOrUpdateRequests(state),
   ];
   const { address: currentAddress } = getSelectedInternalAccount(state);
+
+  const currentChainId = getCurrentNetwork(state).chainId;
 
   const permissionsRequest = permissionsRequests.find(
     (req) => req.metadata.id === permissionsRequestId,
@@ -143,6 +146,7 @@ const mapStateToProps = (state, ownProps) => {
     permissionsRequestId,
     accounts: accountsWithLabels,
     currentAddress,
+    currentChainId,
     origin,
     newAccountNumber: accountsWithLabels.length + 1,
     nativeCurrency,

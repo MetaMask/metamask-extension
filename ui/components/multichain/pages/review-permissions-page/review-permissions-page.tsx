@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { NonEmptyArray } from '@metamask/utils';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   AlignItems,
   BackgroundColor,
@@ -16,6 +17,7 @@ import {
 import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
+  getAccountsWithLabels,
   getConnectedSitesList,
   getNonTestNetworks,
   getOrderedConnectedAccountsForConnectedDapp,
@@ -25,7 +27,11 @@ import {
   getTestNetworks,
 } from '../../../../selectors';
 import {
+  addMorePermittedAccounts,
+  grantPermittedChains,
   removePermissionsFor,
+  removePermittedAccount,
+  removePermittedChain,
   requestAccountsAndChainPermissionsWithId,
 } from '../../../../store/actions';
 import {
@@ -105,13 +111,27 @@ export const ReviewPermissions = () => {
   const testNetworks = useSelector(getTestNetworks);
   const combinedNetworks = [...networksList, ...testNetworks];
 
+  const accountsWithLabels = useSelector(getAccountsWithLabels).filter(
+    (account) => isEvmAccountType(account.type),
+  );
+
   const connectedAccounts = useSelector((state) =>
     getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin),
   ) as AccountType[];
+  const connectedAccountAddresses = connectedAccounts.map((v) => v.address);
+
+  const [selectedAccounts, setSelectedAccounts] = useState(
+    connectedAccountAddresses,
+  );
+  const filterAccountsByAddress = accountsWithLabels.filter((account) =>
+    selectedAccounts.includes(account.address),
+  );
 
   const subjects = useSelector(getPermissionSubjects);
-  const grantedNetworks = combinedNetworks.filter(
-    (net: { chainId: string }) => connectedNetworks.indexOf(net.chainId) !== -1,
+
+  const [selectedChainIds, setSelectedChainIds] = useState(connectedNetworks);
+  const filteredNetworks = combinedNetworks.filter((network) =>
+    selectedChainIds.includes(network.chainId),
   );
 
   const hostName = getURLHost(securedOrigin);
@@ -152,6 +172,41 @@ export const ReviewPermissions = () => {
         );
       }
     }
+  };
+
+  const managePermittedAccounts = () => {
+    const removedAccounts = connectedAccountAddresses.filter(
+      (acc) => !selectedAccounts.includes(acc),
+    );
+    removedAccounts.forEach((account) => {
+      dispatch(removePermittedAccount(activeTabOrigin, account));
+    });
+
+    const newAccounts = selectedAccounts.filter(
+      (acc) => !connectedAccountAddresses.includes(acc),
+    );
+    if (newAccounts.length > 0) {
+      dispatch(addMorePermittedAccounts(activeTabOrigin, newAccounts));
+    }
+  };
+
+  const managePermittedChains = () => {
+    grantPermittedChains(activeTabOrigin, selectedChainIds);
+
+    const removedElements = connectedNetworks.filter(
+      (chain) => !selectedChainIds.includes(chain),
+    );
+
+    // Dispatch removePermittedChains for each removed element
+    removedElements.forEach((chain) => {
+      removePermittedChain(activeTabOrigin, chain);
+    });
+  };
+
+  const selectAccounts = (accounts) => {
+    setSelectedAccounts(
+      accounts.length > 0 ? accounts : [connectedAccountAddresses[0]],
+    );
   };
 
   return (
@@ -206,14 +261,24 @@ export const ReviewPermissions = () => {
         <Content padding={0}>
           {connectedAccounts.length > 0 ? (
             <SiteCell
-              networks={grantedNetworks}
-              accounts={connectedAccounts}
-              onAccountsClick={() => setShowAccountToast(true)}
-              onNetworksClick={() => setShowNetworkToast(true)}
-              onDisconnectClick={() => setShowDisconnectAllModal(true)}
+              networks={filteredNetworks}
+              accounts={filterAccountsByAddress}
+              onAccountsClick={() => {
+                managePermittedAccounts();
+                setShowAccountToast(true);
+              }}
+              onNetworksClick={() => {
+                managePermittedChains();
+                setShowNetworkToast(true);
+              }}
+              // fix this
+              selectedAccounts={selectedAccounts}
+              selectedChainIds={selectedChainIds}
+              setSelectedAccounts={selectAccounts}
+              setSelectedChainIds={setSelectedChainIds}
               activeTabOrigin={activeTabOrigin}
               combinedNetworks={networksList}
-              approvedAccounts={[]}
+              onDisconnectClick={() => setShowDisconnectAllModal(true)}
             />
           ) : (
             <NoConnectionContent />

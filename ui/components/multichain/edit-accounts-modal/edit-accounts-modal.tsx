@@ -34,11 +34,6 @@ import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { mergeAccounts } from '../account-list-menu/account-list-menu';
 
 import {
-  addMorePermittedAccounts,
-  removePermittedAccount,
-  setSelectedAccountsForDappConnection,
-} from '../../../store/actions';
-import {
   JustifyContent,
   Display,
   TextVariant,
@@ -57,9 +52,10 @@ type EditAccountsModalProps = {
   onClick: () => void;
   onDisconnectClick: () => void;
   allowedAccountTypes?: KeyringAccountType[];
-  approvedAccounts: string[];
   activeTabOrigin: string;
   currentTabHasNoAccounts: boolean;
+  selectedAccounts: string[];
+  setSelectedAccounts: (acccounts: string[]) => void;
 };
 
 export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
@@ -67,14 +63,14 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   onClick,
   onDisconnectClick,
   allowedAccountTypes = defaultAllowedAccountTypes,
-  approvedAccounts,
   activeTabOrigin,
   currentTabHasNoAccounts,
+  selectedAccounts,
+  setSelectedAccounts,
 }) => {
   const t = useI18nContext();
   const accounts = useSelector(getUpdatedAndSortedAccounts);
   const internalAccounts = useSelector(getInternalAccounts);
-  const dispatch = useDispatch();
   const hostName = getURLHost(activeTabOrigin);
   const [showAddNewAccountsModal, setShowAddNewAccountsModal] = useState(false);
 
@@ -90,44 +86,12 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
     ),
   );
 
-  const connectedAccountsAddresses = connectedAccounts.map(
-    (account: InternalAccount) => account.address,
-  );
-
-  const defaultAccountsAddresses =
-    connectedAccountsAddresses.length > 0
-      ? connectedAccountsAddresses
-      : approvedAccounts;
-
-  const [selectedAccounts, setSelectedAccounts] = useState<string[]>(
-    defaultAccountsAddresses,
-  );
-
   const handleAccountClick = (address: string) => {
-    setSelectedAccounts((prevSelectedAccounts) =>
-      prevSelectedAccounts.includes(address)
-        ? prevSelectedAccounts.filter((acc) => acc !== address)
-        : [...prevSelectedAccounts, address],
+    setSelectedAccounts(
+      selectedAccounts.includes(address)
+        ? selectedAccounts.filter((acc) => acc !== address)
+        : [...selectedAccounts, address],
     );
-  };
-
-  const managePermittedAccounts = (
-    selectedAcc: string[],
-    accountsAddresses: string[],
-  ) => {
-    const removedAccounts = accountsAddresses.filter(
-      (acc) => !selectedAcc.includes(acc),
-    );
-    removedAccounts.forEach((account) => {
-      dispatch(removePermittedAccount(activeTabOrigin, account));
-    });
-
-    const newAccounts = selectedAcc.filter(
-      (acc) => !accountsAddresses.includes(acc),
-    );
-    if (newAccounts.length > 0) {
-      dispatch(addMorePermittedAccounts(activeTabOrigin, newAccounts));
-    }
   };
 
   const selectAll = () => {
@@ -241,14 +205,15 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                   onClick={() => {
                     onClick();
                     if (currentTabHasNoAccounts) {
-                      dispatch(
-                        setSelectedAccountsForDappConnection(selectedAccounts),
-                      );
+                      // this is being communicated via setSelectedAccounts
+                      // dispatch(
+                      // setSelectedAccountsForDappConnection(selectedAccounts),
+                      // );
                     } else {
-                      managePermittedAccounts(
-                        selectedAccounts,
-                        connectedAccountsAddresses,
-                      );
+                      // managePermittedAccounts(
+                      //   selectedAccounts,
+                      //   connectedAccountsAddresses,
+                      // );
                     }
                     onClose();
                   }}
