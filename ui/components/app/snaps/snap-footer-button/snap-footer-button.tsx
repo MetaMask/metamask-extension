@@ -1,6 +1,15 @@
 import React, { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
-import { ButtonVariant, UserInputEventType } from '@metamask/snaps-sdk';
-import { Button, ButtonSize, IconSize } from '../../../component-library';
+import {
+  ButtonType,
+  ButtonVariant,
+  UserInputEventType,
+} from '@metamask/snaps-sdk';
+import {
+  Button,
+  ButtonLinkProps,
+  ButtonSize,
+  IconSize,
+} from '../../../component-library';
 import {
   AlignItems,
   Display,
@@ -15,17 +24,23 @@ type SnapFooterButtonProps = {
   onCancel?: () => void;
 };
 
-export const SnapFooterButton: FunctionComponent<SnapFooterButtonProps> = ({
+export const SnapFooterButton: FunctionComponent<
+  SnapFooterButtonProps & ButtonLinkProps<'button'>
+> = ({
   onCancel,
   name,
   children,
   isSnapAction = false,
+  type,
+  form,
   ...props
 }) => {
   const { handleEvent, snapId } = useSnapInterfaceContext();
 
   const handleSnapAction = (event: ReactMouseEvent<HTMLElement>) => {
-    event.preventDefault();
+    if (type === ButtonType.Button) {
+      event.preventDefault();
+    }
 
     handleEvent({
       event: UserInputEventType.ButtonClickEvent,
@@ -38,6 +53,8 @@ export const SnapFooterButton: FunctionComponent<SnapFooterButtonProps> = ({
   return (
     <Button
       className="snap-footer-button"
+      type={type}
+      form={form}
       {...props}
       size={ButtonSize.Lg}
       block
