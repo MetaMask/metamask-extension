@@ -117,6 +117,7 @@ describe('AccountListMenu', () => {
 
     expect(getByPlaceholderText('Search accounts')).toBeInTheDocument();
     expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
+    expect(document.querySelector('[aria-label="Back"]')).toStrictEqual(null);
   });
 
   it('displays accounts for list and filters by search', () => {

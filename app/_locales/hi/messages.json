@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "अतिरिक्त नेटवर्क"
   },
-  "additionalRpcUrl": {
-    "message": "अतिरिक्त RPC URL"
-  },
   "address": {
     "message": "एड्रेस"
   },
@@ -666,9 +663,6 @@
   "back": {
     "message": "वापस"
   },
-  "backup": {
-    "message": "बैकअप"
-  },
   "backupApprovalInfo": {
     "message": "यदि आप अपना डिवाइस खो देते हैं, अपना पासवर्ड भूल जाते हैं, MetaMask को फिर से इनस्टॉल करना हो या दूसरे डिवाइस पर अपने वॉलेट को एक्सेस करना चाहते हों, तो आपके वॉलेट को रिकवर करने के लिए यह सीक्रेट कोड आवश्यक है।"
   },
@@ -680,12 +674,6 @@
   },
   "backupNow": {
     "message": "अभी बैकअप लें"
-  },
-  "backupUserData": {
-    "message": "अपने डेटा का बैकअप लें"
-  },
-  "backupUserDataDescription": {
-    "message": "आप अपने डेटा, जैसे कि अपने कॉन्टेक्ट्स और अपनी प्रेफेरेंस, का बैकअप ले सकते हैं।"
   },
   "balance": {
     "message": "बैलेंस"
@@ -1039,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "इस संदेश को केवल तभी कन्फर्म करें जब आप कंटेंट को एप्रूव करते हैं और अनुरोध करने वाली साइट पर भरोसा करते हैं।"
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "खर्च करने की सीमा का अनुरोध"
   },
   "confirmTitleSIWESignature": {
@@ -4358,9 +4346,6 @@
   },
   "restoreUserData": {
     "message": "यूज़र डेटा रीस्टोर करें"
-  },
-  "restoreUserDataDescription": {
-    "message": "एक बैकअप फाइल की मदद से आप अपने डेटा, जैसे कि अपने कॉन्टेक्ट्स और अपनी प्रेफेरेंस, को रिस्टोर कर सकते हैं।"
   },
   "resultPageError": {
     "message": "गड़बड़ी"

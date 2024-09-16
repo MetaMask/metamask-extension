@@ -33,9 +33,8 @@ export const EditGasFeesRow = ({
   const { useNativeCurrencyAsPrimaryCurrency: isNativeCurrencyUsed } =
     useSelector(getPreferences);
 
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   return (
     <ConfirmInfoAlertRow

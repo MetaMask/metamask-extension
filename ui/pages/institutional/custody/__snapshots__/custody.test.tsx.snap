@@ -25,6 +25,7 @@ exports[`CustodyPage renders jwt token list when first custodian is selected, sh
     <button
       class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
       data-testid="custody-connect-button"
+      data-theme="light"
     >
       Select
     </button>
@@ -50,6 +51,7 @@ exports[`CustodyPage renders jwt token list when first custodian is selected, sh
     <button
       class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
       data-testid="custody-connect-button"
+      data-theme="light"
     >
       Select
     </button>
@@ -69,6 +71,7 @@ exports[`CustodyPage renders jwt token list when first custodian is selected, sh
     <button
       class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
       data-testid="custody-connect-button"
+      data-theme="light"
     >
       Select
     </button>
