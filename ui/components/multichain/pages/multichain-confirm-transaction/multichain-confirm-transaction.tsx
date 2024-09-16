@@ -69,6 +69,7 @@ export const MultichainConfirmTransactionPage = () => {
         transactionId,
       }),
     );
+    history.push('/');
   };
 
   return (
