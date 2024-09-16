@@ -4890,6 +4890,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/base-controller@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "@metamask/base-controller@npm:7.0.1"
+  dependencies:
+    "@metamask/utils": "npm:^9.1.0"
+    immer: "npm:^9.0.6"
+  checksum: 10/774b6d68ac95a5ec187e890d321bede50065f8a6f1ba7b49a19f5971366274054ac0e401548b51d3b014d0bca5d650409fb554dd13ce120e7fb3495b4e8e67b1
+  languageName: node
+  linkType: hard
+
 "@metamask/bitcoin-wallet-snap@npm:^0.5.0":
   version: 0.5.0
   resolution: "@metamask/bitcoin-wallet-snap@npm:0.5.0"
@@ -5524,6 +5534,17 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^3.0.0"
     "@metamask/utils": "npm:^9.1.0"
   checksum: 10/1649c0aac59fddf50f995b4b40ec2d90e6c1fa1982a3adfcf984a37daa5bd8db8a3764609f97e88275151815fe49d457f9d30e7f89c43d62d6a0c7db7f867cc0
+  languageName: node
+  linkType: hard
+
+"@metamask/json-rpc-engine@npm:^9.0.3":
+  version: 9.0.3
+  resolution: "@metamask/json-rpc-engine@npm:9.0.3"
+  dependencies:
+    "@metamask/rpc-errors": "npm:^6.3.1"
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    "@metamask/utils": "npm:^9.1.0"
+  checksum: 10/23a3cafb5869f6d5867105e3570ac4e214a72dda0b4b428cde6bae8856ec838c822b174f8cea054108122531d662cf93a65e92e1ee07da0485d5d0c0e5a1fca6
   languageName: node
   linkType: hard
 
@@ -6172,33 +6193,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/selected-network-controller@npm:18.0.0":
-  version: 18.0.0
-  resolution: "@metamask/selected-network-controller@npm:18.0.0"
+"@metamask/selected-network-controller@npm:^18.0.1":
+  version: 18.0.1
+  resolution: "@metamask/selected-network-controller@npm:18.0.1"
   dependencies:
-    "@metamask/base-controller": "npm:^7.0.0"
-    "@metamask/json-rpc-engine": "npm:^9.0.2"
+    "@metamask/base-controller": "npm:^7.0.1"
+    "@metamask/json-rpc-engine": "npm:^9.0.3"
     "@metamask/swappable-obj-proxy": "npm:^2.2.0"
     "@metamask/utils": "npm:^9.1.0"
   peerDependencies:
     "@metamask/network-controller": ^21.0.0
     "@metamask/permission-controller": ^11.0.0
-  checksum: 10/2135e2971604b817238ff7a91ccb7624d024e50e96bc6171bc4a5375df0f4f55353f79f40d2a2a4ba6b01f957441cdc40089b9904ab14bcd905c64251127efae
-  languageName: node
-  linkType: hard
-
-"@metamask/selected-network-controller@patch:@metamask/selected-network-controller@npm%3A18.0.0#~/.yarn/patches/@metamask-selected-network-controller-npm-18.0.0-2e967a6d5c.patch":
-  version: 18.0.0
-  resolution: "@metamask/selected-network-controller@patch:@metamask/selected-network-controller@npm%3A18.0.0#~/.yarn/patches/@metamask-selected-network-controller-npm-18.0.0-2e967a6d5c.patch::version=18.0.0&hash=8adf16"
-  dependencies:
-    "@metamask/base-controller": "npm:^7.0.0"
-    "@metamask/json-rpc-engine": "npm:^9.0.2"
-    "@metamask/swappable-obj-proxy": "npm:^2.2.0"
-    "@metamask/utils": "npm:^9.1.0"
-  peerDependencies:
-    "@metamask/network-controller": ^21.0.0
-    "@metamask/permission-controller": ^11.0.0
-  checksum: 10/2b1aabadb0103120396cec50b11bcd75d059df21b59ecda6897a7d3d535420c4713df4b177bd390b3fea5db53c48fd36d63bddc3a049a381783d4e9c05740ff4
+  checksum: 10/79a862f352a819185a7bcc87f380a03bcc929db125467fa7e2ec0fc06647899b611a8cafe6aac14f2a02622f704b77e29cc833ab465b8c233eeb0a37b9a1dffc
   languageName: node
   linkType: hard
 
@@ -26063,7 +26069,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/selected-network-controller": "patch:@metamask/selected-network-controller@npm%3A18.0.0#~/.yarn/patches/@metamask-selected-network-controller-npm-18.0.0-2e967a6d5c.patch"
+    "@metamask/selected-network-controller": "npm:^18.0.1"
     "@metamask/signature-controller": "npm:^19.0.0"
     "@metamask/smart-transactions-controller": "npm:^13.0.0"
     "@metamask/snaps-controllers": "npm:^9.5.0"
