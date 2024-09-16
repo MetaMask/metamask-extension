@@ -245,7 +245,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       const { next } = getNext();
       const handler = createHandler();
       await handler(req, res, next);
-      expect(trackEventSpy).toHaveBeenCalledTimes(2);
+      expect(trackEventSpy).toHaveBeenCalledTimes(1);
       expect(trackEventSpy.mock.calls[0][0]).toStrictEqual({
         ...expectedMetametricsEventUndefinedProps,
         category: MetaMetricsEventCategory.InpageProvider,
@@ -262,12 +262,11 @@ describe('createRPCMethodTrackingMiddleware', () => {
       });
     });
 
-    it(`should track a ${MetaMetricsEventName.SignatureApproved} and ${MetaMetricsEventName.SignatureApprovedAnon} if the user approves`, async () => {
+    it(`should track a ${MetaMetricsEventName.SignatureApproved} event if the user approves`, async () => {
       const req = {
         id: MOCK_ID,
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         origin: 'some.dapp',
-        params: [undefined, permitSignatureMsg.msgParams.data],
       };
 
       const res = {
@@ -277,27 +276,12 @@ describe('createRPCMethodTrackingMiddleware', () => {
       const handler = createHandler();
       await handler(req, res, next);
       await executeMiddlewareStack();
-      expect(trackEventSpy).toHaveBeenCalledTimes(4);
-      expect(trackEventSpy.mock.calls[2][0]).toMatchObject({
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
+      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-        },
-        referrer: { url: 'some.dapp' },
-      });
-
-      expect(trackEventSpy.mock.calls[3][0]).toMatchObject({
-        category: MetaMetricsEventCategory.InpageProvider,
-        event: MetaMetricsEventName.SignatureApprovedAnon,
-        properties: {
-          signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-        },
-        sensitiveProperties: {
-          eip712_verifyingContract:
-            '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-          eip712_domain_version: '1',
-          eip712_domain_name: 'MyToken',
         },
         referrer: { url: 'some.dapp' },
       });
@@ -327,100 +311,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
         properties: {
           signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
           location: 'some_location',
-        },
-        referrer: { url: 'some.dapp' },
-      });
-    });
-
-    it(`should track ${MetaMetricsEventName.SignatureRejected} and ${MetaMetricsEventName.SignatureRejectedAnon} event if the user approves signTypedData_v4 signature`, async () => {
-      const req = {
-        id: MOCK_ID,
-        method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-        origin: 'some.dapp',
-        params: [undefined, permitSignatureMsg.msgParams.data],
-      };
-
-      const res = {
-        error: {
-          code: errorCodes.provider.userRejectedRequest,
-          data: { location: 'some_location' },
-        },
-      };
-      const { next, executeMiddlewareStack } = getNext();
-      const handler = createHandler();
-      await handler(req, res, next);
-      await executeMiddlewareStack();
-
-      expect(trackEventSpy).toHaveBeenCalledTimes(4);
-      expect(trackEventSpy.mock.calls[2][0]).toMatchObject({
-        category: MetaMetricsEventCategory.InpageProvider,
-        event: MetaMetricsEventName.SignatureRejected,
-        properties: {
-          signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-          location: 'some_location',
-        },
-        referrer: { url: 'some.dapp' },
-      });
-
-      expect(trackEventSpy.mock.calls[3][0]).toMatchObject({
-        category: MetaMetricsEventCategory.InpageProvider,
-        event: MetaMetricsEventName.SignatureRejectedAnon,
-        properties: {
-          signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-          location: 'some_location',
-        },
-        sensitiveProperties: {
-          eip712_verifyingContract:
-            '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-          eip712_domain_version: '1',
-          eip712_domain_name: 'MyToken',
-        },
-        referrer: { url: 'some.dapp' },
-      });
-    });
-
-    it(`should track ${MetaMetricsEventName.SignatureRequested} and ${MetaMetricsEventName.SignatureRequestedAnon} event if the user approves signTypedData_v4 signature`, async () => {
-      const req = {
-        id: MOCK_ID,
-        method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-        origin: 'some.dapp',
-        params: [undefined, permitSignatureMsg.msgParams.data],
-      };
-
-      const res = {
-        error: {
-          code: errorCodes.provider.userRejectedRequest,
-          data: { location: 'some_location' },
-        },
-      };
-      const { next, executeMiddlewareStack } = getNext();
-      const handler = createHandler();
-      await handler(req, res, next);
-      await executeMiddlewareStack();
-
-      expect(trackEventSpy).toHaveBeenCalledTimes(4);
-      expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
-        category: MetaMetricsEventCategory.InpageProvider,
-        event: MetaMetricsEventName.SignatureRequested,
-        properties: {
-          signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-          location: 'some_location',
-        },
-        referrer: { url: 'some.dapp' },
-      });
-
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
-        category: MetaMetricsEventCategory.InpageProvider,
-        event: MetaMetricsEventName.SignatureRequestedAnon,
-        properties: {
-          signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-          location: 'some_location',
-        },
-        sensitiveProperties: {
-          eip712_verifyingContract:
-            '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-          eip712_domain_version: '1',
-          eip712_domain_name: 'MyToken',
         },
         referrer: { url: 'some.dapp' },
       });
@@ -696,9 +586,9 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
       await executeMiddlewareStack();
 
-      expect(trackEventSpy).toHaveBeenCalledTimes(4);
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
 
-      expect(trackEventSpy.mock.calls[2][0]).toMatchObject({
+      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -725,7 +615,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
         await handler(req, res, next);
 
-        expect(trackEventSpy).toHaveBeenCalledTimes(2);
+        expect(trackEventSpy).toHaveBeenCalledTimes(1);
         expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
           category: MetaMetricsEventCategory.InpageProvider,
           event: MetaMetricsEventName.SignatureRequested,
