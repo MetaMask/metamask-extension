@@ -2,10 +2,10 @@ name: Sonar
 on:
   push:
     branches:
-      - develop
+      - merge-queue-test
   pull_request:
     branches:
-      - develop
+      - merge-queue-test
 
 jobs:
   sonarcloud:
