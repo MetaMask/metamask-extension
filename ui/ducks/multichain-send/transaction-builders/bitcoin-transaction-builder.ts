@@ -35,7 +35,6 @@ import { MultichainNativeAssets } from '../../../../shared/constants/multichain/
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { handleSnapRequest } from '../../../store/actions';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap';
-import { isBtcMainnetAddress } from '../../../../shared/lib/multichain';
 import { getBtcCachedBalance } from '../../../selectors/multichain';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../../pages/confirmations/send/send.constants';
@@ -59,7 +58,7 @@ export const defaultSendManyTransaction: SendManyTransaction = {
   comment: '',
   subtractFeeFrom: [],
   replaceable: true,
-  dryrun: true,
+  dryrun: false,
 };
 
 export type SendManyTransaction = Infer<typeof SendManyTransactionStruct>;
@@ -114,7 +113,7 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
       comment: '', // Optional value. Default to empty.
       subtractFeeFrom: [], // Optional value. Default to sender if left empty.
       replaceable: true, // Default to true.
-      dryrun: true, // Default to false.
+      dryrun: false, // Default to false.
     };
 
     this.transaction = sendManyTransaction;
@@ -390,10 +389,10 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
       },
     })) as {
       txId: string;
-      transaction: string;
+      signedTransaction: string;
     };
 
-    return tx.transaction;
+    return tx.txId;
   }
 
   async sendTransaction(): Promise<string> {
@@ -429,8 +428,6 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
         unit: string; // Bitcoin Manager returns btc
       };
     };
-
-    console.log('maxAmount returned', maxAmount);
 
     const maxAmountInSats = new BigNumber(maxAmount.balance.amount)
       .mul(new BigNumber(10).pow(8))
