@@ -9,10 +9,8 @@ import {
   getSelectedAccount,
 } from '../../../../selectors';
 import {
-  getMultichainNativeCurrency,
   getMultichainIsEvm,
   getMultichainCurrencyImage,
-  getMultichainIsMainnet,
   getMultichainSelectedAccountCachedBalance,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMultichainIsBitcoin,
@@ -64,8 +62,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const [sorted, setSorted] = useState(false); // TODO: Set to preferences
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const selectedAccount = useSelector(getSelectedAccount);
-  const nativeCurrency = useSelector(getMultichainNativeCurrency);
-  const isMainnet = useSelector(getMultichainIsMainnet);
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
@@ -77,7 +73,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
     numberOfDecimals: primaryNumberOfDecimals,
   } = useUserPreferencedCurrency(PRIMARY, { ethNumberOfDecimals: 4 });
 
-  const [_, primaryCurrencyProperties] = useCurrencyDisplay(balance, {
+  const [, primaryCurrencyProperties] = useCurrencyDisplay(balance, {
     numberOfDecimals: primaryNumberOfDecimals,
     currency: primaryCurrency,
   });
@@ -114,17 +110,12 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const isBtc = useSelector(getMultichainIsBitcoin);
   ///: END:ONLY_INCLUDE_IF
 
-  let isStakeable = isMainnet && isEvm;
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  isStakeable = false;
-  ///: END:ONLY_INCLUDE_IF
-
   // we need to calculate these values here in order to sort native token correctly
   // native token is computed differently than normal tokens, and is rendered as a ReactNode native-token.tsx
   // the data here is passed into sort control along with the other non-native tokens, in order to determine the order of the native token in the larger list list
   const nativeTokenWithBalance: TokenWithBalance = {
     address: '',
-    symbol: nativeCurrency,
+    symbol: tokenSymbol || '',
     string: primaryBalance || '',
     image: primaryTokenImage,
     tokenFiatAmount: secondaryBalance || '',

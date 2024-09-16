@@ -1,24 +1,15 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
-import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';
-import { getPreferences } from '../../../../../selectors';
 import {
   getMultichainCurrentNetwork,
   getMultichainNativeCurrency,
   getMultichainIsEvm,
-  getMultichainShouldShowFiat,
   getMultichainCurrencyImage,
   getMultichainIsMainnet,
   getMultichainSelectedAccountCachedBalance,
 } from '../../../../../selectors/multichain';
-import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';
 import { TokenListItem } from '../../../../multichain';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
-import {
-  showPrimaryCurrency,
-  showSecondaryCurrency,
-} from '../../../../../../shared/modules/currency-display.utils';
 import { AssetListProps } from '../asset-list';
 import { useNativeTokenBalance } from './use-native-balance';
 

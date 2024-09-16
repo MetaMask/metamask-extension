@@ -38,8 +38,13 @@ export function sortAssets<T>(array: T[], criteria: SortCriteria): T[] {
     const bValue = getNestedValue(b, key);
 
     // Always move undefined values to the end, regardless of sort order
-    if (aValue === undefined) return 1;
-    if (bValue === undefined) return -1;
+    if (aValue === undefined) {
+      return 1;
+    }
+
+    if (bValue === undefined) {
+      return -1;
+    }
 
     let comparison: number;
 
@@ -61,7 +66,13 @@ export function sortAssets<T>(array: T[], criteria: SortCriteria): T[] {
         comparison = sortingCallbacks.date(aValue as Date, bValue as Date);
         break;
       default:
-        comparison = aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+        if (aValue < bValue) {
+          comparison = -1;
+        } else if (aValue > bValue) {
+          comparison = 1;
+        } else {
+          comparison = 0;
+        }
     }
 
     // Modify to sort in ascending or descending order
