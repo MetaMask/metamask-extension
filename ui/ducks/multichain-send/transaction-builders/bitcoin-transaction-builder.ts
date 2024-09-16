@@ -388,15 +388,21 @@ export class BitcoinTransactionBuilder extends AbstractTransactionBuilder {
         },
       },
     })) as {
-      txId: string;
-      signedTransaction: string;
+      pending: boolean;
+      result: {
+        txId: string;
+        signedTransaction: string;
+      };
     };
 
-    return tx.txId;
+    console.log('signed transaction', tx);
+
+    return tx.result.txId;
   }
 
-  async sendTransaction(): Promise<string> {
-    return await this.signTransaction();
+  async sendTransaction(transaction: string): Promise<string> {
+    // already sent in the sign
+    return transaction;
   }
 
   getCachedAccountBalance(): string {
