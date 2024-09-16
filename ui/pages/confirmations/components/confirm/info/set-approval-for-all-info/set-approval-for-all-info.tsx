@@ -9,9 +9,8 @@ import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import { SetApprovalForAllStaticSimulation } from './set-approval-for-all-static-simulation/set-approval-for-all-static-simulation';
 
 const SetApprovalForAllInfo = () => {
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,

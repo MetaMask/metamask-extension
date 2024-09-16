@@ -20,7 +20,7 @@ import {
 import { useIsNFT } from '../hooks/use-is-nft';
 
 const Spender = ({
-  isSetApprovalForAll,
+  isSetApprovalForAll = false,
 }: {
   isSetApprovalForAll?: boolean;
 }) => {
@@ -63,7 +63,7 @@ const Spender = ({
 };
 
 export const ApproveDetails = ({
-  isSetApprovalForAll,
+  isSetApprovalForAll = false,
 }: {
   isSetApprovalForAll?: boolean;
 }) => {
