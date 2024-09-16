@@ -45,9 +45,9 @@ import NativeToken from './native-token';
 export type TokenWithBalance = {
   address: string;
   symbol: string;
-  string: string;
+  string?: string;
   image: string;
-  tokenFiatAmount: string;
+  tokenFiatAmount?: string;
   isNative?: boolean;
 };
 
@@ -116,9 +116,9 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const nativeTokenWithBalance: TokenWithBalance = {
     address: '',
     symbol: tokenSymbol || '',
-    string: primaryBalance || '',
+    string: primaryBalance,
     image: primaryTokenImage,
-    tokenFiatAmount: secondaryBalance || '',
+    tokenFiatAmount: secondaryBalance,
     isNative: true,
   };
 
