@@ -19,8 +19,11 @@ then
     exit 1
 fi
 
+TIMEOUT_MINUTES=$(yarn tsx .circleci/scripts/test-run-e2e-timeout-minutes.ts)
+echo "TIMEOUT_MINUTES: $TIMEOUT_MINUTES"
+
 # Run the actual test command from the parameters
-timeout 25m "$@" --retries 1
+timeout ${TIMEOUT_MINUTES}m "$@" --retries 1
 
 # Error code 124 means the command timed out
 if [ $? -eq 124 ]
