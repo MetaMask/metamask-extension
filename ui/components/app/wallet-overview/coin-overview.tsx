@@ -311,8 +311,8 @@ export const CoinOverview = ({
                                 }}
                                 as="a"
                                 href={`#${GENERAL_ROUTE}`}
-                                // target="_blank"
                                 rel="noopener noreferrer"
+                                onClick={handleClick}
                               >
                                 {t('settings')}
                               </ButtonLink>,
