@@ -175,6 +175,18 @@ class FixtureBuilder {
     return this;
   }
 
+  withConversionRateDisabled() {
+    return this.withPreferencesController({
+      useCurrencyRateCheck: false,
+    });
+  }
+
+  withConversionRateEnabled() {
+    return this.withPreferencesController({
+      useCurrencyRateCheck: true,
+    });
+  }
+
   withGasFeeController(data) {
     merge(this.fixture.data.GasFeeController, data);
     return this;

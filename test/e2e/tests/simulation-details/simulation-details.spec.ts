@@ -120,7 +120,7 @@ export async function mockRequest(
 ) {
   await server
     .forPost(TX_SENTINEL_URL)
-    .withJsonBody(request)
+    .withJsonBodyIncluding(request)
     .thenJson(200, response);
 }
 
