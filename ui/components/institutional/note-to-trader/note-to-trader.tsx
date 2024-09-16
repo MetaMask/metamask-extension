@@ -24,9 +24,8 @@ const NoteToTrader: React.FC = () => {
   const t = useI18nContext();
   const [noteText, setNoteText] = useState('');
 
-  const { currentConfirmation } = useConfirmContext() as unknown as {
-    currentConfirmation: TransactionMeta | undefined;
-  };
+  const { currentConfirmation } = useConfirmContext();
+
   const { from } = getConfirmationSender(currentConfirmation);
   const fromChecksumHexAddress = toChecksumHexAddress(from || '');
   const isNoteToTraderSupported = useSelector((state: State) =>

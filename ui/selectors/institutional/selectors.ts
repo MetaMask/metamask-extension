@@ -228,7 +228,7 @@ export function getIsNoteToTraderSupported(
 ) {
   const { custodyAccountDetails, mmiConfiguration } = state.metamask;
   const accountDetails = custodyAccountDetails?.[fromChecksumHexAddress];
-  console.log(accountDetails);
+
   if (!accountDetails) {
     return false;
   }
@@ -236,7 +236,7 @@ export function getIsNoteToTraderSupported(
   const foundCustodian = mmiConfiguration?.custodians?.find(
     (custodian) => custodian.envName === accountDetails.custodianName,
   );
-  console.log(foundCustodian);
+
   return foundCustodian ? foundCustodian.isNoteToTraderSupported : false;
 }
 
