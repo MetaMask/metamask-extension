@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "其他网络"
   },
-  "additionalRpcUrl": {
-    "message": "其他 RPC（远程过程调用）URL"
-  },
   "address": {
     "message": "地址"
   },
@@ -1030,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "仅在您批准该内容并信任请求网站的情况下，才能确认此消息。"
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "支出上限请求"
   },
   "confirmTitleSIWESignature": {
