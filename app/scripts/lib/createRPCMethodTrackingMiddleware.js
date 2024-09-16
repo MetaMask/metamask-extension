@@ -86,6 +86,7 @@ const EVENT_NAME_MAP = {
     APPROVED: MetaMetricsEventName.SignatureApproved,
     REJECTED: MetaMetricsEventName.SignatureRejected,
     REQUESTED: MetaMetricsEventName.SignatureRequested,
+
     APPROVED_ANON: MetaMetricsEventName.SignatureApprovedAnon,
     REJECTED_ANON: MetaMetricsEventName.SignatureRejectedAnon,
     REQUESTED_ANON: MetaMetricsEventName.SignatureRequestedAnon,
