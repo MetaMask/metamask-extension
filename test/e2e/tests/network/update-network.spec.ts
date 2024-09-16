@@ -8,8 +8,6 @@ import {
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 
-// Temp comment to trigger extra CI run for testing
-
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
   informationSymbol: '[data-testid="info-tooltip"]',

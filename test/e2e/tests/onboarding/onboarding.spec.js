@@ -25,8 +25,6 @@ const {
   FirstTimeFlowType,
 } = require('../../../../shared/constants/onboarding');
 
-// Temp comment to trigger extra CI run for testing
-
 describe('MetaMask onboarding @no-mmi', function () {
   const wrongSeedPhrase =
     'test test test test test test test test test test test test';
