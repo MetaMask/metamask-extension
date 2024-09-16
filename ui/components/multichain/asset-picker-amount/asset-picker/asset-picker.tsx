@@ -187,7 +187,11 @@ export function AssetPicker({
             position="bottom"
             wrapperClassName="mm-box"
           >
-            <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+            <Text
+              className="asset-picker__symbol"
+              variant={TextVariant.bodyMd}
+              color={TextColor.textDefault}
+            >
               {formattedSymbol}
             </Text>
             {isNFT && asset?.tokenId && (
