@@ -36,20 +36,28 @@ import {
   getCurrentMultichainDraftTransaction,
   getCurrentMultichainDraftTransactionRecipient,
 } from '../../../../../selectors/multichain';
-import { getSelectedInternalAccount } from '../../../../../selectors';
-import { MULTICHAIN_CAIP_19_TO_NETWORK_NAME } from '../../../../../../shared/constants/multichain/networks';
+import {
+  MULTICHAIN_CAIP_19_TO_NETWORK_NAME,
+  MultichainNetworks,
+} from '../../../../../../shared/constants/multichain/networks';
 
-export const SendPageRecipientInput = () => {
+export type SendPageRecipientInputProps = {
+  transactionId: string;
+};
+
+export const SendPageRecipientInput = ({
+  transactionId,
+}: SendPageRecipientInputProps) => {
   const ref = useRef<HTMLInputElement>(null);
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
+  const { transactionParams } = useSelector(
+    getCurrentMultichainDraftTransaction,
+  );
 
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-
-  const transactionParams = useSelector(getCurrentMultichainDraftTransaction);
   const networkName: string =
     MULTICHAIN_CAIP_19_TO_NETWORK_NAME[
-      transactionParams?.transactionParams.network.network as string
+      transactionParams?.network.network as MultichainNetworks
     ] ?? '';
 
   const {
@@ -68,8 +76,7 @@ export const SendPageRecipientInput = () => {
 
     await dispatch(
       updateAndValidateRecipient({
-        account: selectedAccount,
-        transactionParams,
+        transactionId,
         recipient: input,
       }),
     );

@@ -4771,6 +4771,9 @@
     "message": "Approve $1 with no spend limit",
     "description": "The token symbol that is being approved"
   },
+  "setMaxAmountError": {
+    "message": "Error setting max amount"
+  },
   "settingAddSnapAccount": {
     "message": "Add account Snap"
   },

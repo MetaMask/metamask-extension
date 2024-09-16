@@ -5,16 +5,19 @@ import { Box } from '../../component-library';
 import { BlockSize } from '../../../helpers/constants/design-system';
 import UnitInput from '../../ui/unit-input';
 import CurrencyDisplay from '../../ui/currency-display';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
-import { getCurrentChainId, getShouldShowFiat } from '../../../selectors';
+import { getShouldShowFiat } from '../../../selectors';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
+  getMultichainConversionRate,
+  getMultichainCurrentChainId,
   getMultichainCurrentCurrency,
   getMultichainNativeCurrency,
+  getMultichainProviderConfig,
+  getMultichainIsEvm,
 } from '../../../selectors/multichain';
 import useTokenExchangeRate from './hooks/useTokenExchangeRate';
 import useProcessNewDecimalValue from './hooks/useProcessNewDecimalValue';
@@ -71,8 +74,10 @@ export default function CurrencyInput({
 
   const [fiatDecimalValue, setFiatDecimalValue] = useState('0');
 
-  const chainId = useSelector(getCurrentChainId);
-  const { ticker, type, rpcUrl } = useSelector(getProviderConfig);
+  const chainId = useMultichainSelector(getMultichainCurrentChainId);
+  const { ticker, type, rpcUrl } = useMultichainSelector(
+    getMultichainProviderConfig,
+  );
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     ticker,
@@ -83,15 +88,21 @@ export default function CurrencyInput({
   const inputRef = useRef();
 
   const tokenToFiatConversionRate = useTokenExchangeRate(asset?.address);
-
-  const isNonZeroConversionRate = Boolean(
-    tokenToFiatConversionRate?.toNumber(),
+  const isEvmChainSelected = useMultichainSelector(getMultichainIsEvm);
+  const multichainConversionRate = useMultichainSelector(
+    getMultichainConversionRate,
   );
+
+  const tokenRateToUse = isEvmChainSelected
+    ? tokenToFiatConversionRate?.toNumber()
+    : new Numeric(multichainConversionRate, 10); // non-EVM rates are stored as numbers and needs to be converted
+
+  const isNonZeroConversionRate = Boolean(tokenRateToUse);
 
   const processNewDecimalValue = useProcessNewDecimalValue(
     assetDecimals,
     isTokenPrimary,
-    tokenToFiatConversionRate,
+    tokenRateToUse,
   );
 
   const isDisabled = onChange === undefined;
@@ -239,9 +250,7 @@ export default function CurrencyInput({
       value={isTokenPrimary ? tokenDecimalValue : fiatDecimalValue}
       className={className}
       actionComponent={
-        isFiatAvailable && tokenToFiatConversionRate
-          ? renderSwapButton()
-          : undefined
+        isFiatAvailable && tokenRateToUse ? renderSwapButton() : undefined
       }
     >
       {renderConversionComponent()}

@@ -1,6 +1,7 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
   ButtonIcon,
@@ -41,6 +42,7 @@ import { MultichainAssetPickerAmount } from './components/asset-picker-amount';
 import { MultichainNotices } from './components/multichain-notices';
 
 export const MultichainSendPage = () => {
+  const [loading, setLoading] = useState(true);
   const t = useContext(I18nContext);
   const history = useHistory();
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -54,14 +56,34 @@ export const MultichainSendPage = () => {
   );
 
   useEffect(() => {
-    if (!draftTransactionExists) {
-      dispatch(
+    if (isEvmAccountType(selectedAccount.type)) {
+      history.push('/send');
+    }
+  }, [selectedAccount]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const createNewDraft = async () => {
+      await dispatch(
         startNewMultichainDraftTransaction({
           account: selectedAccount,
           network: multichainNetwork.chainId,
         }),
       );
+      if (isMounted) {
+        setLoading(false);
+      }
+    };
+
+    if (draftTransactionExists) {
+      setLoading(false);
+    } else {
+      createNewDraft();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [draftTransactionExists]);
 
   const draftTransaction = useSelector(getCurrentMultichainDraftTransaction);
@@ -100,7 +122,7 @@ export const MultichainSendPage = () => {
       >
         {t('send')}
       </Header>
-      {draftTransaction ? (
+      {!loading && draftTransaction ? (
         <Content backgroundColor={BackgroundColor.backgroundAlternative}>
           <SendPageAccountPicker />
           {isSendFormShown && (
@@ -114,7 +136,9 @@ export const MultichainSendPage = () => {
             />
           )}
           <Box marginTop={6}>
-            {isSendFormShown && <SendPageRecipientInput />}
+            {isSendFormShown && (
+              <SendPageRecipientInput transactionId={draftTransaction.id} />
+            )}
           </Box>
           {isSendFormShown && (
             <MultichainFee

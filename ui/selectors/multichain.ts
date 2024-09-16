@@ -28,6 +28,7 @@ import {
 import {
   DraftTransaction,
   FeeLevel,
+  initialMultichainDraftTransaction,
   MultichainSendState,
 } from '../ducks/multichain-send/multichain-send';
 import { AccountsState } from './accounts';
@@ -443,10 +444,10 @@ export function getCurrentMultichainDraftTransactionId(
 
 export function getCurrentMultichainDraftTransaction(
   state: MultichainReduxSendState,
-): DraftTransaction | null {
+): DraftTransaction {
   const draftTransactionExists = getCurrentMultichainDraftTransactionId(state);
   if (!draftTransactionExists) {
-    return null;
+    return initialMultichainDraftTransaction;
   }
   const draftTransaction =
     state.multichainSend.draftTransactions[draftTransactionExists];
@@ -476,6 +477,7 @@ export function getMultichainDraftTransactionFee(
 
   if (!draftTransaction) {
     return {
+      valid: false,
       fee: '0',
       unit: '',
       feeInFiat: '',

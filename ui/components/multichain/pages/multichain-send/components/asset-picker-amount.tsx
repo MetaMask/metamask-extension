@@ -87,7 +87,6 @@ export const MultichainAssetPickerAmount = ({
         borderWidth={1}
         marginBottom={1}
         padding={1}
-        // apply extra padding if there isn't an input component to apply it
         paddingTop={1}
         paddingBottom={1}
       >
