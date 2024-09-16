@@ -576,7 +576,7 @@ describe('Custom network', function () {
 
           await driver.clickElement('[data-testid="network-display"]');
 
-          // check if arbitrm is on the list of popular network
+          // check if arbitrum is on the list of popular network
           const popularNetworkArbitrum = await driver.findElement(
             '[data-testid="popular-network-0xa4b1"]',
           );
@@ -699,7 +699,7 @@ describe('Custom network', function () {
           await driver.fill(selectors.chainIdInputField, TEST_CHAIN_ID);
           await driver.fill(selectors.tickerInputField, 'XDAI');
 
-          // Add rcp url
+          // Add rpc url
           const rpcUrlInputDropDown = await driver.waitForSelector(
             '[data-testid="test-add-rpc-drop-down"]',
           );
@@ -816,7 +816,7 @@ describe('Custom network', function () {
           await driver.fill(selectors.chainIdInputField, '1');
           await driver.fill(selectors.tickerInputField, 'TST');
 
-          // Add rcp url
+          // Add rpc url
           const rpcUrlInputDropDown = await driver.waitForSelector(
             '[data-testid="test-add-rpc-drop-down"]',
           );
@@ -916,7 +916,7 @@ describe('Custom network', function () {
           await driver.fill(selectors.chainIdInputField, inputData.chainId);
           await driver.fill(selectors.tickerInputField, inputData.ticker);
 
-          // Add rcp url
+          // Add rpc url
           const rpcUrlInputDropDown = await driver.waitForSelector(
             '[data-testid="test-add-rpc-drop-down"]',
           );

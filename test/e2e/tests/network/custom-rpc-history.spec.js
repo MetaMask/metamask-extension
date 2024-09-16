@@ -47,7 +47,7 @@ describe('Custom RPC history', function () {
         );
         await driver.fill('[data-testid="network-form-ticker-input"]', symbol);
 
-        // Add rcp url
+        // Add rpc url
         const rpcUrlInputDropDown = await driver.waitForSelector(
           '[data-testid="test-add-rpc-drop-down"]',
         );
@@ -112,7 +112,7 @@ describe('Custom RPC history', function () {
           tag: 'button',
         });
 
-        // Add rcp url
+        // Add rpc url
         const rpcUrlInputDropDown = await driver.waitForSelector(
           '[data-testid="test-add-rpc-drop-down"]',
         );
