@@ -1249,7 +1249,8 @@
   "multichainSend": {
     "currentTransactionUUID": "",
     "draftTransactions": {},
-    "stage": "draft"
+    "stage": "draft",
+    "error": ""
   },
   "ramps": {
     "buyableChains": [

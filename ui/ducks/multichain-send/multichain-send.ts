@@ -132,6 +132,7 @@ export type TransactionParams = {
 
 export enum SendStage {
   DRAFT = 'DRAFT',
+  PENDING_CONFIRMATION = 'PENDING_CONFIRMATION',
   PUBLISHING = 'PUBLISHING',
   PUBLISHED = 'PUBLISHED',
   FAILURE = 'FAILURE',
@@ -453,6 +454,7 @@ export const multichainSendSlice = createSlice({
           },
         },
       };
+      console.log('finished creating new draft');
     },
     editTransaction: (
       state,

@@ -34,6 +34,7 @@ import {
   clearDraft,
   SendStage,
   startNewMultichainDraftTransaction,
+  updateStage,
 } from '../../../../ducks/multichain-send/multichain-send';
 import Spinner from '../../../ui/spinner';
 import { MultichainFee } from './components/fee';
@@ -94,6 +95,7 @@ export const MultichainSendPage = () => {
   };
 
   const onSubmit = () => {
+    dispatch(updateStage({ stage: SendStage.PENDING_CONFIRMATION }));
     history.push(`/multichain-confirm-transaction/${draftTransactionExists}`);
   };
 
