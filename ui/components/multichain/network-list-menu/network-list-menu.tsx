@@ -42,6 +42,7 @@ import {
   getOrderedNetworksList,
   getIsAddingNewNetwork,
   getIsMultiRpcOnboarding,
+  getAllDomains,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -108,6 +109,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const useRequestQueue = useSelector(getUseRequestQueue);
   const isUnlocked = useSelector(getIsUnlocked);
+  const domains = useSelector(getAllDomains);
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const isAddingNewNetwork = useSelector(getIsAddingNewNetwork);
   const isMultiRpcOnboarding = useSelector(getIsMultiRpcOnboarding);
@@ -268,7 +270,11 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           // If presently on a dapp, communicate a change to
           // the dapp via silent switchEthereumChain that the
           // network has changed due to user action
-          if (useRequestQueue && selectedTabOrigin) {
+          if (
+            useRequestQueue &&
+            selectedTabOrigin &&
+            domains[selectedTabOrigin]
+          ) {
             setNetworkClientIdForDomain(selectedTabOrigin, networkClientId);
           }
 
