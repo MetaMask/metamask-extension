@@ -88,7 +88,7 @@ const getTitle = (
       if (isNFT) {
         return t('confirmTitleApproveTransaction');
       }
-      if (customSpendingCap) {
+      if (customSpendingCap === '0') {
         return t('confirmTitleRevokeApproveTransaction');
       }
       return t('confirmTitlePermitTokens');
@@ -129,7 +129,7 @@ const getDescription = (
       if (isNFT) {
         return t('confirmTitleDescApproveTransaction');
       }
-      if (customSpendingCap) {
+      if (customSpendingCap === '0') {
         return '';
       }
       return t('confirmTitleDescERC20ApproveTransaction');
