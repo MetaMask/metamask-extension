@@ -1,8 +1,5 @@
 import { Suite } from 'mocha';
-import {
-  defaultGanacheOptions,
-  withFixtures,
-} from '../../helpers';
+import { defaultGanacheOptions, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import HomePage from '../../page-objects/pages/homepage';
 import { Driver } from '../../webdriver/driver';

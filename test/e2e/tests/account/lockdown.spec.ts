@@ -5,11 +5,9 @@ import {
   testIntrinsic,
 } from '../../../helpers/protect-intrinsics-helpers';
 import { convertToHexValue, withFixtures } from '../../helpers';
-import { PAGES } from '../../webdriver/driver';
+import { PAGES, Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
-import { Driver } from '../../webdriver/driver';
-import LockdownPage from '../../page-objects/lockdown-page';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
@@ -73,10 +71,9 @@ describe('lockdown', function (this: Mocha.Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        const lockdownPage = new LockdownPage(driver);
-        await lockdownPage.navigateToHomePage();
+        await driver.navigate(PAGES.HOME);
         assert.equal(
-          await lockdownPage.testUIEnvironmentLockdown(),
+          await driver.executeScript(lockdownTestScript),
           true,
           'The UI environment should be locked down.',
         );
@@ -92,10 +89,15 @@ describe('lockdown', function (this: Mocha.Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        const lockdownPage = new LockdownPage(driver);
-        await lockdownPage.navigateToBackgroundPage();
+        if (isManifestV3) {
+          // TODO: add logic for testing the Service-Worker on MV3
+          await driver.navigate(PAGES.OFFSCREEN);
+        } else {
+          await driver.navigate(PAGES.BACKGROUND);
+        }
+        await driver.delay(1000);
         assert.equal(
-          await lockdownPage.testBackgroundEnvironmentLockdown(),
+          await driver.executeScript(lockdownTestScript),
           true,
           'The background environment should be locked down.',
         );

@@ -1,54 +1,91 @@
 import { Driver } from '../../webdriver/driver';
 
 class AccountListPage {
-  private readonly driver: Driver;
+  private driver: Driver;
+
+  private accountListItem: object;
+
+  private accountOptionsMenuButton: string;
+
+  private hideUnhideAccountButton: string;
+
+  private pinUnpinAccountButton: string;
+
+  private hiddenAccountsList: string;
+
+  private pinnedIcon: string;
+
+  private hiddenAccountOptionsMenuButton: string;
 
   constructor(driver: Driver) {
     this.driver = driver;
+    this.accountOptionsMenuButton =
+      '[data-testid="account-list-item-menu-button"]';
+    this.hideUnhideAccountButton = '[data-testid="account-list-menu-hide"]';
+    this.pinUnpinAccountButton = '[data-testid="account-list-menu-pin"]';
+    this.hiddenAccountsList = '[data-testid="hidden-accounts-list"]';
+    this.pinnedIcon = '[data-testid="account-pinned-icon"]';
+    this.accountListItem = {
+      text: 'Account',
+      css: '.multichain-account-menu-popover__list--menu-item',
+    };
+    this.hiddenAccountOptionsMenuButton =
+      '.multichain-account-menu-popover__list--menu-item-hidden-account [data-testid="account-list-item-menu-button"]';
   }
 
-  async openAccountOptions(): Promise<void> {
-    await this.driver.clickElement('[data-testid="account-options-menu-button"]');
+  async openAccountOptionsMenu(): Promise<void> {
+    console.log(`Open account option menu`);
+    await this.driver.clickElement(this.accountOptionsMenuButton);
   }
 
   async hideAccount(): Promise<void> {
-    await this.driver.clickElement('[data-testid="account-options-menu__hide-account"]');
+    console.log(`Hide account in account list`);
+    await this.driver.clickElement(this.hideUnhideAccountButton);
   }
 
-  async assertHiddenAccountsListExists(): Promise<void> {
-    await this.driver.waitForSelector('[data-testid="hidden-accounts-list"]');
+  async check_hiddenAccountsListExists(): Promise<void> {
+    console.log(`Check that hidden accounts list is displayed in account list`);
+    await this.driver.waitForSelector(this.hiddenAccountsList);
   }
 
   async openHiddenAccountsList(): Promise<void> {
-    await this.driver.clickElement('[data-testid="hidden-accounts-list"]');
+    console.log(`Open hidden accounts option menu`);
+    await this.driver.clickElement(this.hiddenAccountsList);
   }
 
   async openHiddenAccountOptions(): Promise<void> {
-    await this.driver.clickElement('[data-testid="hidden-account-options-menu-button"]');
+    console.log(`Open hidden accounts options menu`);
+    await this.driver.clickElement(this.hiddenAccountOptionsMenuButton);
   }
 
   async unhideAccount(): Promise<void> {
-    await this.driver.clickElement('[data-testid="account-options-menu__unhide-account"]');
+    console.log(`Unhide account in account list`);
+    await this.driver.clickElement(this.hideUnhideAccountButton);
   }
 
-  async assertAccountExists(): Promise<void> {
-    await this.driver.waitForSelector('[data-testid="account-menu-item"]');
+  async check_accountIsDisplayed(): Promise<void> {
+    console.log(`Check that account is displayed in account list`);
+    await this.driver.waitForSelector(this.accountListItem);
   }
 
   async pinAccount(): Promise<void> {
-    await this.driver.clickElement('[data-testid="account-list-menu-pin"]');
+    console.log(`Pin account in account list`);
+    await this.driver.clickElement(this.pinUnpinAccountButton);
   }
 
   async unpinAccount(): Promise<void> {
-    await this.driver.clickElement('[data-testid="account-list-menu-pin"]');
+    console.log(`Unpin account in account list`);
+    await this.driver.clickElement(this.pinUnpinAccountButton);
   }
 
-  async assertAccountIsPinned(): Promise<void> {
-    await this.driver.waitForSelector('.account-pinned-icon');
+  async check_accountIsPinned(): Promise<void> {
+    console.log(`Check that account is pinned`);
+    await this.driver.waitForSelector(this.pinnedIcon);
   }
 
-  async assertAccountIsUnpinned(): Promise<void> {
-    await this.driver.assertElementNotPresent('.account-pinned-icon');
+  async check_accountIsUnpinned(): Promise<void> {
+    console.log(`Check that account is unpinned`);
+    await this.driver.assertElementNotPresent(this.pinnedIcon);
   }
 }
 

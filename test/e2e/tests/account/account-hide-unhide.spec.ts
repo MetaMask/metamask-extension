@@ -7,7 +7,7 @@ import HomePage from '../../page-objects/pages/homepage';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 
 describe('Account list - hide/unhide functionality', function (this: Suite) {
-  it('hide account by clicking hide button', async function () {
+  it('hide and unhide account by clicking hide and unhide button', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -16,39 +16,19 @@ describe('Account list - hide/unhide functionality', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
-        const homePage = new HomePage(driver);
+        new HomePage(driver).openAccountMenu();
+
+        // hide account
         const accountListPage = new AccountListPage(driver);
-
-        await homePage.openAccountMenu();
-        await accountListPage.openAccountOptions();
+        await accountListPage.openAccountOptionsMenu();
         await accountListPage.hideAccount();
+        await accountListPage.check_hiddenAccountsListExists();
 
-        await accountListPage.assertHiddenAccountsListExists();
-      },
-    );
-  });
-
-  it('unhide account by clicking show account button', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
-        const homePage = new HomePage(driver);
-        const accountListPage = new AccountListPage(driver);
-
-        await homePage.openAccountMenu();
-        await accountListPage.openAccountOptions();
-        await accountListPage.hideAccount();
-
+        // unhide account
         await accountListPage.openHiddenAccountsList();
         await accountListPage.openHiddenAccountOptions();
         await accountListPage.unhideAccount();
-
-        await accountListPage.assertAccountExists();
+        await accountListPage.check_accountIsDisplayed();
       },
     );
   });
