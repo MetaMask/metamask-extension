@@ -1222,26 +1222,11 @@
       "packages": {
         "@ethereumjs/tx": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/eth-snap-keyring>@metamask/utils": true,
         "@metamask/eth-snap-keyring>uuid": true,
         "@metamask/keyring-api": true,
-        "superstruct": true,
-        "webpack>events": true
-      }
-    },
-    "@metamask/eth-snap-keyring>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
+        "@metamask/utils": true,
         "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
+        "webpack>events": true
       }
     },
     "@metamask/eth-snap-keyring>uuid": {
@@ -2220,23 +2205,8 @@
         "removeEventListener": true
       },
       "packages": {
-        "@metamask/post-message-stream>@metamask/utils": true,
+        "@metamask/utils": true,
         "readable-stream": true
-      }
-    },
-    "@metamask/post-message-stream>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
       }
     },
     "@metamask/ppom-validator": {
