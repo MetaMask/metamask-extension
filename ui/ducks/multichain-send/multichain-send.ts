@@ -10,8 +10,10 @@ import { CaipAccountAddress, CaipChainId } from '@metamask/utils';
 import { CaipAssetId, InternalAccount } from '@metamask/keyring-api';
 import { Json } from 'json-rpc-engine';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import messages from '../../../app/_locales/en/messages.json';
 import {
   getMultichainNetwork,
+  MultichainReduxSendState,
   MultichainState,
 } from '../../selectors/multichain';
 import { AssetType } from '../../../shared/constants/transaction';
@@ -21,7 +23,10 @@ import {
   INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
   NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
 } from '../../pages/confirmations/send/send.constants';
-import { getSelectedInternalAccount } from '../../selectors';
+import {
+  getInternalAccount,
+  getSelectedInternalAccount,
+} from '../../selectors';
 import { TransactionBuilderFactory } from './transaction-builders/transaction-builder';
 import { SendManyTransaction } from './transaction-builders/bitcoin-transaction-builder';
 
@@ -143,7 +148,7 @@ export type DraftTransaction = {
 };
 
 export type MultichainSendState = {
-  currentTransactionUUID: string | undefined;
+  currentTransactionUUID: string;
   draftTransactions: {
     [key: string]: DraftTransaction;
   };
@@ -151,7 +156,7 @@ export type MultichainSendState = {
 };
 
 export const initialMultichainSendState: MultichainSendState = {
-  currentTransactionUUID: undefined,
+  currentTransactionUUID: '',
   draftTransactions: {},
   stage: SendStage.DRAFT,
 };
@@ -223,7 +228,7 @@ export const initializeSendState = createAsyncThunk<
   { id: string; transactionParams: TransactionParams },
   { account: InternalAccount; network: CaipChainId },
   {
-    state: { multichainSend: MultichainSendState };
+    state: MultichainReduxSendState;
     dispatch: Dispatch<AnyAction>;
     rejectValue: {
       error: string;
@@ -232,15 +237,6 @@ export const initializeSendState = createAsyncThunk<
 >(
   'multichainSend/initializeSendState',
   async ({ account, network }, thunkApi) => {
-    // Create a new draft
-    thunkApi.dispatch({
-      type: 'multichainSend/addNewDraft',
-      payload: {
-        account,
-        network,
-      },
-    });
-
     let state = thunkApi.getState();
 
     if (!state.multichainSend.currentTransactionUUID) {
@@ -253,7 +249,7 @@ export const initializeSendState = createAsyncThunk<
 
     const draftTransaction =
       state.multichainSend.draftTransactions[
-        state.multichainSend.currentTransactionUUID as string // This was checked in the previous if statement
+        state.multichainSend.currentTransactionUUID
       ];
     const transactionBuilder = TransactionBuilderFactory.getBuilder(
       thunkApi,
@@ -323,8 +319,7 @@ export const estimateFee = createAsyncThunk<
 export const updateAndValidateRecipient = createAsyncThunk<
   DraftTransaction['transactionParams']['recipient'],
   {
-    account: InternalAccount;
-    transactionParams: TransactionParams;
+    transactionId: string;
     recipient: string;
   },
   {
@@ -334,8 +329,14 @@ export const updateAndValidateRecipient = createAsyncThunk<
   }
 >(
   'multichainSend/updateAndValidateRecipient',
-  async ({ account, transactionParams, recipient }, thunkApi) => {
+  async ({ transactionId, recipient }, thunkApi) => {
     const state = thunkApi.getState();
+    const transaction = state.multichainSend.draftTransactions[transactionId];
+    const account = getInternalAccount(
+      state,
+      transaction.transactionParams.sender.id,
+    );
+
     // @ts-expect-error TODO: fix type error
     const multichainNetwork = getMultichainNetwork(state, account);
 
@@ -343,7 +344,7 @@ export const updateAndValidateRecipient = createAsyncThunk<
       thunkApi,
       account,
       multichainNetwork.chainId,
-      transactionParams,
+      transaction.transactionParams,
     );
 
     const updatedRecipient = transactionBuilder.setRecipient(recipient);
@@ -388,7 +389,7 @@ export const setMaxSendAssetAmount = createAsyncThunk<
 );
 
 export const signAndSend = createAsyncThunk<
-  void,
+  string,
   { account: InternalAccount; transactionId: string },
   MultichainSendAsyncThunkConfig
 >(
@@ -409,25 +410,7 @@ export const signAndSend = createAsyncThunk<
 
     // sign and send transaction
     // send to keyring / snap
-    const txHash = await transactionBuilder.sendTransaction();
-    console.log('txHash', txHash);
-
-    thunkApi.dispatch({
-      type: 'multichainSend/updateStage',
-      payload: { stage: SendStage.PUBLISHED },
-    });
-
-    // propagate to network
-    // thunkApi.dispatch(actions.updateStatus(SEND_STATUSES.SIGNING));
-
-    // update stage
-    // thunkApi.dispatch(actions.updateStage(SEND_STAGES.SIGNING));
-
-    // update status
-    // thunkApi.dispatch(actions.updateStatus(SEND_STATUSES.SENDING));
-
-    // update stage
-    // thunkApi.dispatch(actions.updateStage(SEND_STAGES.SENDING));
+    return await transactionBuilder.sendTransaction();
   },
 );
 
@@ -505,7 +488,8 @@ export const multichainSendSlice = createSlice({
     },
     clearDraft: (state) => {
       state.draftTransactions = {};
-      state.currentTransactionUUID = undefined;
+      state.currentTransactionUUID = '';
+      state.stage = SendStage.DRAFT;
     },
     updateSendAmount: (state, action: { payload: string }) => {
       if (!state.currentTransactionUUID) {
@@ -688,8 +672,7 @@ export const multichainSendSlice = createSlice({
         ].transactionParams.sendAsset.amount = action.payload;
         multichainSendSlice.caseReducers.validateAmountField(state);
       })
-      .addCase(setMaxSendAssetAmount.rejected, (state, action) => {
-        console.log('rejected', action);
+      .addCase(setMaxSendAssetAmount.rejected, (state) => {
         if (!state.currentTransactionUUID) {
           return;
         }
@@ -697,10 +680,30 @@ export const multichainSendSlice = createSlice({
         state.draftTransactions[
           state.currentTransactionUUID
         ].transactionParams.sendAsset.error =
-          action.error.message ?? 'Unable to set max amount';
+          messages.setMaxAmountError.message;
         state.draftTransactions[
           state.currentTransactionUUID
         ].transactionParams.sendAsset.valid = false;
+      })
+      .addCase(signAndSend.pending, (state) => {
+        if (!state.currentTransactionUUID) {
+          return;
+        }
+
+        state.stage = SendStage.PUBLISHING;
+      })
+      .addCase(signAndSend.fulfilled, (state, _payload) => {
+        if (!state.currentTransactionUUID) {
+          return;
+        }
+
+        // TODO: do something with the transaction hash after it is sent
+
+        state.stage = SendStage.PUBLISHED;
+        multichainSendSlice.caseReducers.clearDraft(state);
+      })
+      .addCase(signAndSend.rejected, (state) => {
+        state.stage = SendStage.DRAFT;
       });
   },
 });

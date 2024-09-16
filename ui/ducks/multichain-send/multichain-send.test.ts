@@ -1,9 +1,16 @@
-import { BtcAccountType } from '@metamask/keyring-api';
+import { BtcAccountType, InternalAccount } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
+import {
+  AnyAction,
+  configureStore,
+  createListenerMiddleware,
+} from '@reduxjs/toolkit';
 import {
   createMockInternalAccount,
   INITIAL_MULTICHAIN_SEND_STATE_FOR_EXISTING_DRAFT,
 } from '../../../test/jest/mocks';
+import messages from '../../../app/_locales/en/messages.json';
+import mockMultichainSendStateWithoutDraft from '../../../test/data/mock-multichain-send-state-with-empty-draft.json';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { SEND_STAGES } from '../send';
 import {
@@ -13,6 +20,8 @@ import {
 } from '../../pages/confirmations/send/send.constants';
 import { AssetType } from '../../../shared/constants/transaction';
 import { MultichainNativeAssets } from '../../../shared/constants/multichain/assets';
+import rootReducer from '..';
+import { CombinedBackgroundAndReduxState } from '../../store/store';
 import multichainSendReducer, {
   multichainSendSlice,
   initializeSendState,
@@ -21,7 +30,6 @@ import multichainSendReducer, {
   setMaxSendAssetAmount,
   signAndSend,
   addNewDraft,
-  editTransaction,
   clearDraft,
   updateSendAmount,
   updateStage,
@@ -41,8 +49,11 @@ const mockBtcAccount = createMockInternalAccount({
 });
 const network = MultichainNetworks.BITCOIN;
 
-const stateWithBTCDraft: MultichainSendState = {
+const stateWithBTCDraft: MultichainSendState & {
+  currentTransactionUUID: string;
+} = {
   ...INITIAL_MULTICHAIN_SEND_STATE_FOR_EXISTING_DRAFT,
+  currentTransactionUUID: 'test-uuid',
   draftTransactions: {
     'test-uuid': {
       id: 'test-uuid',
@@ -101,14 +112,59 @@ const stateWithBTCDraft: MultichainSendState = {
   },
 };
 
-// jest.mock('./transaction-builders/transaction-builder.ts', () => ({
-//   TransactionBuilderFactory: jest.fn(() => ({
-//     getBuilder: jest.fn(() => {
-//       // @ts-expect-error mock
-//       return new MockTransactionBuilder();
-//     }),
-//   })),
-// }));
+const createCombinedStateWithUser = (
+  multichainSendState: MultichainSendState,
+  account?: InternalAccount,
+): Partial<CombinedBackgroundAndReduxState> => {
+  return {
+    ...mockMultichainSendStateWithoutDraft,
+    metamask: {
+      ...mockMultichainSendStateWithoutDraft.metamask,
+      internalAccounts: {
+        ...mockMultichainSendStateWithoutDraft.metamask.internalAccounts,
+        // @ts-expect-error account type as string is not compatible with enum
+        accounts: {
+          ...mockMultichainSendStateWithoutDraft.metamask.internalAccounts
+            .accounts,
+          // conditionally add account here if its defined
+          ...(account ? { [account.id]: account } : {}),
+        },
+        selectedAccount: account
+          ? account.id
+          : mockMultichainSendStateWithoutDraft.metamask.internalAccounts
+              .selectedAccount,
+      },
+    },
+    multichainSend: multichainSendState,
+  };
+};
+
+// This is only used to test async actions that has side effects
+// This store only contains the multichainSend slice
+// TODO: fix combined reducer state type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const createRealStore = (state: any) => {
+  const actions: AnyAction[] = [];
+  const listenerMiddleware = createListenerMiddleware();
+
+  listenerMiddleware.startListening({
+    predicate: () => true, // Listen to all actions
+    effect: (action) => {
+      actions.push(action);
+    },
+  });
+  const store = configureStore({
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().prepend(listenerMiddleware.middleware),
+    preloadedState: state,
+  });
+
+  return {
+    actions,
+    store,
+  };
+};
 
 jest.mock('./transaction-builders/transaction-builder.ts', () => {
   return {
@@ -121,7 +177,7 @@ jest.mock('./transaction-builders/transaction-builder.ts', () => {
   };
 });
 
-describe('multichain-send slice', () => {
+describe('multichainSend slice', () => {
   describe('Reducers', () => {
     describe('addNewDraft', () => {
       it('should add a new draft transaction', () => {
@@ -530,41 +586,241 @@ describe('multichain-send slice', () => {
 
   describe('Extra Reducers', () => {
     describe('initializeSendState', () => {
-      let dispatchSpy: jest.Mock;
-
-      beforeEach(() => {
-        dispatchSpy = jest.fn();
-      });
-
-      afterEach(() => {
-        jest.resetAllMocks();
-      });
-
       it('should dispatch async action thunk first with pending, then finally fulfilling from minimal state', async () => {
-        const action = initializeSendState({
-          account: mockBtcAccount,
-          network,
-        });
-
-        await action(
-          dispatchSpy,
-          () => ({
-            multichainSend: stateWithBTCDraft,
-          }),
-          undefined, // extra argument for thunk thats unused.
+        const { actions, store } = createRealStore(
+          mockMultichainSendStateWithoutDraft,
         );
 
-        expect(dispatchSpy).toHaveBeenCalledTimes(3);
-        expect(dispatchSpy.mock.calls[0][0].type).toStrictEqual(
+        await store.dispatch(
+          initializeSendState({
+            account: mockBtcAccount,
+            network: MultichainNetworks.BITCOIN,
+          }),
+        );
+
+        expect(actions[0].type).toStrictEqual(
           'multichainSend/initializeSendState/pending',
         );
-        expect(dispatchSpy.mock.calls[2][0].type).toStrictEqual(
+        expect(actions[1].type).toStrictEqual('multichainSend/addNewDraft');
+        expect(actions[2].type).toStrictEqual(
           'multichainSend/initializeSendState/fulfilled',
         );
       });
     });
-    describe('estimateFee', () => {});
-    describe('updateAndValidateRecipient', () => {});
-    describe('setMaxSendAssetAmount', () => {});
+    describe('estimateFee', () => {
+      it('updates the loading status of the fee', async () => {
+        // @ts-expect-error we don't need to provide args for mock builder
+        const expectedFee = await new MockTransactionBuilder().estimateGas();
+
+        const { store, actions } = createRealStore(
+          createCombinedStateWithUser(stateWithBTCDraft, mockBtcAccount),
+        );
+
+        await store.dispatch(
+          estimateFee({
+            account: mockBtcAccount,
+            transactionId: stateWithBTCDraft.currentTransactionUUID,
+          }),
+        );
+
+        const newState = store.getState();
+
+        expect(actions[0]).toStrictEqual({
+          type: 'multichainSend/estimateFee/pending',
+          payload: undefined,
+          meta: expect.any(Object),
+        });
+        expect(actions[1]).toStrictEqual({
+          type: 'multichainSend/estimateFee/fulfilled',
+          payload: expectedFee,
+          meta: expect.any(Object),
+        });
+        expect(
+          newState.multichainSend.draftTransactions[
+            stateWithBTCDraft.currentTransactionUUID
+          ].transactionParams.fee,
+        ).toEqual(expectedFee);
+      });
+    });
+
+    describe('updateAndValidateRecipient', () => {
+      const mockRecipient = 'bc1qa4muxuheal3suc3hyn9d8k45urqsc4tj2n7c6x';
+      it('updates the recipient address', async () => {
+        const { store, actions } = createRealStore(
+          createCombinedStateWithUser(stateWithBTCDraft, mockBtcAccount),
+        );
+
+        await store.dispatch(
+          updateAndValidateRecipient({
+            transactionId: stateWithBTCDraft.currentTransactionUUID,
+            recipient: mockRecipient,
+          }),
+        );
+
+        expect(actions[1]).toStrictEqual({
+          type: 'multichainSend/updateAndValidateRecipient/fulfilled',
+          payload: {
+            address: mockRecipient,
+            valid: true,
+            error: '',
+          },
+          meta: expect.any(Object),
+        });
+      });
+
+      it('rejects if the address is invalid', async () => {
+        const { store, actions } = createRealStore(
+          createCombinedStateWithUser(stateWithBTCDraft, mockBtcAccount),
+        );
+
+        await store.dispatch(
+          updateAndValidateRecipient({
+            transactionId: stateWithBTCDraft.currentTransactionUUID,
+            recipient: 'mock', // invalid address
+          }),
+        );
+
+        const updatedState = store.getState();
+
+        expect(actions[1]).toStrictEqual({
+          type: 'multichainSend/updateAndValidateRecipient/rejected',
+          payload: undefined,
+          error: expect.any(Object),
+          meta: expect.any(Object),
+        });
+
+        // The state should be the same
+        expect(
+          updatedState.multichainSend.draftTransactions[
+            stateWithBTCDraft.currentTransactionUUID
+          ].transactionParams.recipient,
+        ).toEqual(
+          stateWithBTCDraft.draftTransactions['test-uuid'].transactionParams
+            .recipient,
+        );
+      });
+    });
+
+    describe('setMaxSendAssetAmount', () => {
+      afterEach(() => {
+        jest.restoreAllMocks();
+      });
+      it('sets max send asset amount', async () => {
+        const expectedAmount = '333333';
+        const { store, actions } = createRealStore(
+          createCombinedStateWithUser(stateWithBTCDraft, mockBtcAccount),
+        );
+
+        await store.dispatch(
+          setMaxSendAssetAmount({
+            transactionId: stateWithBTCDraft.currentTransactionUUID,
+          }),
+        );
+
+        const updatedState = store.getState();
+
+        expect(actions[0]).toStrictEqual({
+          type: 'multichainSend/setMaxSendAssetAmount/pending',
+          meta: expect.any(Object),
+          payload: undefined,
+        });
+        expect(actions[1]).toStrictEqual({
+          type: 'multichainSend/setMaxSendAssetAmount/fulfilled',
+          payload: expectedAmount,
+          meta: expect.any(Object),
+        });
+        expect(
+          updatedState.multichainSend.draftTransactions[
+            stateWithBTCDraft.currentTransactionUUID
+          ].transactionParams.sendAsset.amount,
+        ).toStrictEqual(expectedAmount);
+      });
+
+      it('rejects if there is an error while setting max amount', async () => {
+        jest
+          .spyOn(MockTransactionBuilder.prototype, 'setMaxSendAmount')
+          .mockRejectedValue(undefined);
+        const { store, actions } = createRealStore(
+          createCombinedStateWithUser(stateWithBTCDraft, mockBtcAccount),
+        );
+
+        await store.dispatch(
+          setMaxSendAssetAmount({
+            transactionId: stateWithBTCDraft.currentTransactionUUID,
+          }),
+        );
+
+        const updatedState = store.getState();
+
+        expect(actions[0]).toStrictEqual({
+          type: 'multichainSend/setMaxSendAssetAmount/pending',
+          meta: expect.any(Object),
+          payload: undefined,
+        });
+        expect(actions[1]).toStrictEqual({
+          type: 'multichainSend/setMaxSendAssetAmount/rejected',
+          payload: undefined,
+          meta: expect.any(Object),
+          error: expect.any(Object),
+        });
+
+        expect(
+          updatedState.multichainSend.draftTransactions[
+            stateWithBTCDraft.currentTransactionUUID
+          ].transactionParams.sendAsset.error,
+        ).toBe(messages.setMaxAmountError.message);
+
+        expect(
+          updatedState.multichainSend.draftTransactions[
+            stateWithBTCDraft.currentTransactionUUID
+          ].transactionParams.sendAsset.valid,
+        ).toBe(false);
+      });
+    });
+
+    describe('signAndSend', () => {
+      afterEach(() => {
+        jest.restoreAllMocks();
+      });
+      it('calls sendTranasaction to the builder', async () => {
+        const mockTxHash = 'mock-tx-hash';
+        const sendSpy = jest
+          .spyOn(MockTransactionBuilder.prototype, 'sendTransaction')
+          .mockResolvedValue(mockTxHash);
+        const { store, actions } = createRealStore(
+          createCombinedStateWithUser(stateWithBTCDraft, mockBtcAccount),
+        );
+
+        await store.dispatch(
+          signAndSend({
+            account: mockBtcAccount,
+            transactionId: stateWithBTCDraft.currentTransactionUUID,
+          }),
+        );
+
+        const updatedState = store.getState();
+
+        expect(actions[0]).toStrictEqual({
+          type: 'multichainSend/signAndSend/pending',
+          meta: expect.any(Object),
+          payload: undefined,
+        });
+        expect(actions[1]).toStrictEqual({
+          type: 'multichainSend/signAndSend/fulfilled',
+          meta: expect.any(Object),
+          payload: mockTxHash,
+        });
+        expect(sendSpy).toHaveBeenCalled();
+        expect(updatedState.multichainSend.stage).toBe(SEND_STAGES.DRAFT);
+        expect(
+          updatedState.multichainSend.currentTransactionUUID,
+        ).toBeUndefined();
+        expect(updatedState.multichainSend.draftTransactions).toEqual({});
+      });
+
+      it('displays error if there is an error signing', async () => {});
+
+      it('displays error if there is an error propagating the tranaction', async () => {});
+    });
   });
 });
