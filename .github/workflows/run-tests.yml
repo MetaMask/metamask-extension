@@ -108,28 +108,29 @@ jobs:
           name: lcov.info
           path: coverage/lcov.info
 
-      - name: Get current coverage
-        id: get-current-coverage
+      - name: Get Sonar coverage
+        id: get-sonar-coverage
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           organization=$(grep 'sonar.organization=' sonar-project.properties | cut -d'=' -f2)
           projectKey=$(grep 'sonar.projectKey=' sonar-project.properties | cut -d'=' -f2)
           component="${organization}_${projectKey}"
-          current_coverage=$(curl --header "Authorization: Bearer $SONAR_TOKEN" 'https://sonarcloud.io/api/measures/component?component='$component'&metricKeys=coverage' | jq -r '.component.measures[0].value // 0')
-          echo 'CURRENT_COVERAGE='"$current_coverage" >> "$GITHUB_OUTPUT"
+          sonar_coverage=$(curl --header "Authorization: Bearer $SONAR_TOKEN" "https://sonarcloud.io/api/measures/component?component=$component&metricKeys=coverage" | jq -r '.component.measures[0].value // 0')
+          echo "The Sonar coverage of $component is $sonar_coverage%."
+          echo 'SONAR_COVERAGE='"$sonar_coverage" >> "$GITHUB_OUTPUT"
 
       - name: Validate test coverage
         env:
-            CURRENT_COVERAGE: ${{ steps.get-current-coverage.outputs.CURRENT_COVERAGE }}
+            SONAR_COVERAGE: ${{ steps.get-sonar-coverage.outputs.SONAR_COVERAGE }}
         run: |
           coverage=$(yarn nyc report --reporter=text-summary | grep 'Lines' | awk '{gsub(/%/, ""); print $3}')
           if [ -z "$coverage" ]; then
             echo "::error::Could not retrieve test coverage."
             exit 1
           fi
-          if (( $(echo "$coverage < $CURRENT_COVERAGE" | bc -l) )); then
-            echo "::error::Quality gate failed for test coverage. The current test coverage is $coverage%, please increase coverage to at least $CURRENT_COVERAGE%."
+          if (( $(echo "$coverage < $SONAR_COVERAGE" | bc -l) )); then
+            echo "::error::Quality gate failed for test coverage. Current test coverage is $coverage%, please increase coverage to at least $SONAR_COVERAGE%."
             exit 1
           else
             echo "Test coverage is $coverage%. Quality gate passed."
