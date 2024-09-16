@@ -1,15 +1,14 @@
 import React from 'react';
-
-import { Box } from '../../../../../../../components/component-library';
 import { PrimaryType } from '../../../../../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../../../../../shared/modules/transaction.utils';
+import { Box } from '../../../../../../../components/component-library';
 import {
   Display,
   FlexDirection,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { SignatureRequestType } from '../../../../../types/confirm';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { SignatureRequestType } from '../../../../../types/confirm';
 import StaticSimulation from '../../shared/static-simulation/static-simulation';
 import PermitSimulationValueDisplay from './value-display/value-display';
 
@@ -39,10 +38,7 @@ function extractTokenDetailsByPrimaryType(
 
 const PermitSimulation: React.FC<object> = () => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext() as {
-    currentConfirmation: SignatureRequestType;
-  };
-
+  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const msgData = currentConfirmation.msgParams?.data;
   const {
     domain: { verifyingContract },

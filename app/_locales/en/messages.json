@@ -345,9 +345,6 @@
   "additionalNetworks": {
     "message": "Additional networks"
   },
-  "additionalRpcUrl": {
-    "message": "Additional RPC URL"
-  },
   "address": {
     "message": "Address"
   },
@@ -693,9 +690,6 @@
   "back": {
     "message": "Back"
   },
-  "backup": {
-    "message": "Back up"
-  },
   "backupApprovalInfo": {
     "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
   },
@@ -707,12 +701,6 @@
   },
   "backupNow": {
     "message": "Back up now"
-  },
-  "backupUserData": {
-    "message": "Back up your data"
-  },
-  "backupUserDataDescription": {
-    "message": "You can back up data like your contacts and preferences."
   },
   "balance": {
     "message": "Balance"
@@ -896,6 +884,12 @@
   "buyAsset": {
     "message": "Buy $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
+  "buyCrypto": {
+    "message": "Buy crypto"
+  },
+  "buyFirstCrypto": {
+    "message": "Buy your first crypto with a debit or credit card."
   },
   "buyMoreAsset": {
     "message": "Buy more $1",
@@ -1081,7 +1075,7 @@
   "confirmTitleDescSignature": {
     "message": "Only confirm this message if you approve the content and trust the requesting site."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Spending cap request"
   },
   "confirmTitleSIWESignature": {
@@ -1165,6 +1159,9 @@
   "connectedSites": {
     "message": "Connected sites"
   },
+  "connectedSitesAndSnaps": {
+    "message": "Connected sites and Snaps"
+  },
   "connectedSitesDescription": {
     "message": "$1 is connected to these sites. They can view your account address.",
     "description": "$1 is the account name"
@@ -1175,6 +1172,9 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask is connected to this site, but no accounts are connected yet"
+  },
+  "connectedSnaps": {
+    "message": "Connected Snaps"
   },
   "connectedWith": {
     "message": "Connected with"
@@ -1563,6 +1563,9 @@
   "deposit": {
     "message": "Deposit"
   },
+  "depositCrypto": {
+    "message": "Deposit crypto from another account with a wallet address or QR code."
+  },
   "deprecatedGoerliNtwrkMsg": {
     "message": "Because of updates to the Ethereum system, the Goerli test network will be phased out soon."
   },
@@ -1785,6 +1788,15 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Edit speed up gas fee"
   },
+  "editSpendingCap": {
+    "message": "Edit spending cap"
+  },
+  "editSpendingCapAccountBalance": {
+    "message": "Account balance: $1 $2"
+  },
+  "editSpendingCapDesc": {
+    "message": "Enter the amount that you feel comfortable being spent on your behalf."
+  },
   "enable": {
     "message": "Enable"
   },
@@ -1845,6 +1857,9 @@
   "ensUnknownError": {
     "message": "ENS lookup failed."
   },
+  "enterANameToIdentifyTheUrl": {
+    "message": "Enter a name to identify the URL"
+  },
   "enterANumber": {
     "message": "Enter a number"
   },
@@ -1859,6 +1874,9 @@
   },
   "enterPasswordContinue": {
     "message": "Enter password to continue"
+  },
+  "enterRpcUrl": {
+    "message": "Enter RPC URL"
   },
   "enterTokenNameOrAddress": {
     "message": "Enter token name or paste address"
@@ -1947,6 +1965,15 @@
   },
   "experimental": {
     "message": "Experimental"
+  },
+  "exportYourData": {
+    "message": "Export your data"
+  },
+  "exportYourDataButton": {
+    "message": "Download"
+  },
+  "exportYourDataDescription": {
+    "message": "You can export data like your contacts and preferences."
   },
   "extendWalletWithSnaps": {
     "message": "Explore community-built Snaps to customize your web3 experience",
@@ -2152,6 +2179,12 @@
   },
   "genericExplorerView": {
     "message": "View account on $1"
+  },
+  "getStarted": {
+    "message": "Get Started"
+  },
+  "getStartedByFundingWallet": {
+    "message": "Get started by adding some crypto to your wallet."
   },
   "getStartedWithNFTs": {
     "message": "Get $1 to buy NFTs",
@@ -2719,6 +2752,9 @@
   },
   "link": {
     "message": "Link"
+  },
+  "linkCentralizedExchanges": {
+    "message": "Link your Coinbase or Binance accounts to transfer crypto to MetaMask for free."
   },
   "links": {
     "message": "Links"
@@ -4251,6 +4287,9 @@
   "receive": {
     "message": "Receive"
   },
+  "receiveCrypto": {
+    "message": "Receive crypto"
+  },
   "recipientAddressPlaceholder": {
     "message": "Enter public address (0x) or ENS name"
   },
@@ -4432,9 +4471,6 @@
   "restoreUserData": {
     "message": "Restore user data"
   },
-  "restoreUserDataDescription": {
-    "message": "You can restore data like contacts and preferences from a backup file."
-  },
   "resultPageError": {
     "message": "Error"
   },
@@ -4524,6 +4560,9 @@
   },
   "revokeSpendingCapTooltipText": {
     "message": "This third party will be unable to spend any more of your current or future tokens."
+  },
+  "rpcNameOptional": {
+    "message": "RPC Name (Optional)"
   },
   "rpcUrl": {
     "message": "New RPC URL"
@@ -4665,6 +4704,9 @@
   },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Turn on Display NFT Media"
+  },
+  "selectFundingMethod": {
+    "message": "Select a funding method"
   },
   "selectHdPath": {
     "message": "Select HD path"
@@ -5432,6 +5474,9 @@
   "supportCenter": {
     "message": "Visit our support center"
   },
+  "supportMultiRpcInformation": {
+    "message": "We now support multiple RPCs for a single network. Your most recent RPC has been selected as the default one to resolve conflicting information."
+  },
   "surveyConversion": {
     "message": "Take our survey"
   },
@@ -6146,6 +6191,9 @@
   "transfer": {
     "message": "Transfer"
   },
+  "transferCrypto": {
+    "message": "Transfer crypto"
+  },
   "transferFrom": {
     "message": "Transfer from"
   },
@@ -6243,6 +6291,9 @@
   "unknown": {
     "message": "Unknown"
   },
+  "unknownChainWarning": {
+    "message": "We can’t verify custom networks. To avoid malicious providers from recording your network activity, only add networks you trust."
+  },
   "unknownCollection": {
     "message": "Unnamed collection"
   },
@@ -6290,6 +6341,9 @@
   },
   "updateRequest": {
     "message": "Update request"
+  },
+  "updatedRpcForNetworks": {
+    "message": "Network RPCs Updated"
   },
   "updatedWithDate": {
     "message": "Updated $1"

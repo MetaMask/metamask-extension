@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "Zusätzliche Netzwerke"
   },
-  "additionalRpcUrl": {
-    "message": "Weitere RPC-URL"
-  },
   "address": {
     "message": "Adresse"
   },
@@ -666,9 +663,6 @@
   "back": {
     "message": "Zurück"
   },
-  "backup": {
-    "message": "Sichern"
-  },
   "backupApprovalInfo": {
     "message": "Dieser geheime Code ist zum Wiedererlangen Ihrer Wallet erforderlich, falls Sie Ihr Gerät verlieren, Ihr Passwort vergessen, MetaMask neu installieren müssen oder auf einem anderen Gerät auf Ihre Wallet zugreifen möchten."
   },
@@ -680,12 +674,6 @@
   },
   "backupNow": {
     "message": "Jetzt sichern"
-  },
-  "backupUserData": {
-    "message": "Sichern Sie Ihre Daten"
-  },
-  "backupUserDataDescription": {
-    "message": "Sie können Daten wie Ihre Kontakte und Einstellungen sichern."
   },
   "balance": {
     "message": "Guthaben:"
@@ -1039,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "Bestätigen Sie diese Nachricht nur, wenn Sie dem Inhalt zustimmen und der anfragenden Website vertrauen."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Antrag auf Ausgabenobergrenze"
   },
   "confirmTitleSIWESignature": {
@@ -4358,9 +4346,6 @@
   },
   "restoreUserData": {
     "message": "Benutzerdaten wiederherstellen"
-  },
-  "restoreUserDataDescription": {
-    "message": "Sie können Daten wie Kontakte und Einstellungen aus einer Sicherungsdatei wiederherstellen."
   },
   "resultPageError": {
     "message": "Fehler"

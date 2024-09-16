@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
+import { ReactNodeLike } from 'prop-types';
+
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { MMISignatureMismatchBanner } from '../../../components/institutional/signature-mismatch-banner';
 ///: END:ONLY_INCLUDE_IF
@@ -18,9 +20,8 @@ import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { Title } from '../components/confirm/title';
 import EditGasFeePopover from '../components/edit-gas-fee-popover';
 import { NetworkChangeToast } from '../components/confirm/network-change-toast';
-import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
-import { ConfirmContextProvider } from '../context/confirm';
 import NoteToTrader from '../../../components/institutional/note-to-trader';
+import { ConfirmContextProvider, useConfirmContext } from '../context/confirm';
 
 const EIP1559TransactionGasModal = () => {
   return (
@@ -31,44 +32,51 @@ const EIP1559TransactionGasModal = () => {
   );
 };
 
-const Confirm = () => {
-  const currentConfirmation = setCurrentConfirmation();
-
+const GasFeeContextProviderWrapper: React.FC<{
+  children: ReactNode;
+}> = ({ children }) => {
+  const { currentConfirmation } = useConfirmContext();
   return (
-    <ConfirmContextProvider>
-      <TransactionModalContextProvider>
-        {/* This context should be removed once we implement the new edit gas fees popovers */}
-        <GasFeeContextProvider transaction={currentConfirmation}>
-          <EIP1559TransactionGasModal />
-          <ConfirmAlerts>
-            <Page className="confirm_wrapper">
-              <Nav />
-              <Header />
-              <ScrollToBottom>
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                  <MMISignatureMismatchBanner />
-                  ///: END:ONLY_INCLUDE_IF
-                }
-                <BlockaidLoadingIndicator />
-                <LedgerInfo />
-                <Title />
-                <Info />
-                <PluggableSection />
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                  <NoteToTrader />
-                  ///: END:ONLY_INCLUDE_IF
-                }
-              </ScrollToBottom>
-              <Footer />
-              <NetworkChangeToast />
-            </Page>
-          </ConfirmAlerts>
-        </GasFeeContextProvider>
-      </TransactionModalContextProvider>
-    </ConfirmContextProvider>
+    <GasFeeContextProvider transaction={currentConfirmation}>
+      {children as NonNullable<ReactNodeLike>}
+    </GasFeeContextProvider>
   );
 };
+
+const Confirm = () => (
+  <ConfirmContextProvider>
+    <TransactionModalContextProvider>
+      {/* This context should be removed once we implement the new edit gas fees popovers */}
+      <GasFeeContextProviderWrapper>
+        <EIP1559TransactionGasModal />
+        <ConfirmAlerts>
+          <Page className="confirm_wrapper">
+            <Nav />
+            <Header />
+            <ScrollToBottom>
+              {
+                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+                <MMISignatureMismatchBanner />
+                ///: END:ONLY_INCLUDE_IF
+              }
+              <BlockaidLoadingIndicator />
+              <LedgerInfo />
+              <Title />
+              <Info />
+              <PluggableSection />
+              {
+                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+                <NoteToTrader />
+                ///: END:ONLY_INCLUDE_IF
+              }
+            </ScrollToBottom>
+            <Footer />
+            <NetworkChangeToast />
+          </Page>
+        </ConfirmAlerts>
+      </GasFeeContextProviderWrapper>
+    </TransactionModalContextProvider>
+  </ConfirmContextProvider>
+);
 
 export default Confirm;

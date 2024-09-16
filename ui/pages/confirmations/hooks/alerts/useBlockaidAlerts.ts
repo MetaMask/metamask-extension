@@ -25,7 +25,6 @@ import {
   SignatureRequestType,
 } from '../../types/confirm';
 import { useConfirmContext } from '../../context/confirm';
-
 import useCurrentSignatureSecurityAlertResponse from '../useCurrentSignatureSecurityAlertResponse';
 import { normalizeProviderAlert } from './utils';
 

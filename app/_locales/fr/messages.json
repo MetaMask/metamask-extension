@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "Réseaux supplémentaires"
   },
-  "additionalRpcUrl": {
-    "message": "URL supplémentaire de RPC"
-  },
   "address": {
     "message": "Adresse"
   },
@@ -666,9 +663,6 @@
   "back": {
     "message": "Retour"
   },
-  "backup": {
-    "message": "Sauvegarder"
-  },
   "backupApprovalInfo": {
     "message": "Ce code secret est requis pour récupérer votre portefeuille si jamais vous perdez votre appareil, oubliez votre mot de passe, devez réinstaller MetaMask ou souhaitez accéder à votre portefeuille depuis un autre appareil."
   },
@@ -680,12 +674,6 @@
   },
   "backupNow": {
     "message": "Sauvegarder maintenant"
-  },
-  "backupUserData": {
-    "message": "Sauvegardez vos données"
-  },
-  "backupUserDataDescription": {
-    "message": "Vous pouvez sauvegarder des paramètres tels que vos contacts et vos préférences."
   },
   "balance": {
     "message": "Solde"
@@ -1039,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "Ne confirmez ce message que si vous approuvez son contenu et faites confiance au site demandeur."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Demande de plafonnement des dépenses"
   },
   "confirmTitleSIWESignature": {
@@ -4358,9 +4346,6 @@
   },
   "restoreUserData": {
     "message": "Restaurer les données de l’utilisateur"
-  },
-  "restoreUserDataDescription": {
-    "message": "Vous pouvez restaurer des données telles que des contacts et des préférences à partir d’un fichier de sauvegarde."
   },
   "resultPageError": {
     "message": "Erreur"

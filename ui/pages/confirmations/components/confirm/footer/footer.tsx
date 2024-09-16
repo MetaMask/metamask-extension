@@ -26,8 +26,13 @@ import {
   updateAndApproveTx,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../../store/actions';
-import { confirmSelector } from '../../../selectors';
-import { REDESIGN_DEV_TRANSACTION_TYPES } from '../../../utils';
+import { selectUseTransactionSimulations } from '../../../selectors/preferences';
+
+import {
+  isPermitSignatureRequest,
+  isSIWESignatureRequest,
+  REDESIGN_DEV_TRANSACTION_TYPES,
+} from '../../../utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { getConfirmationSender } from '../utils';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
@@ -105,11 +110,12 @@ const ConfirmButton = ({
 const Footer = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const confirm = useSelector(confirmSelector);
   const customNonceValue = useSelector(getCustomNonceValue);
-
-  const { currentConfirmation } = useConfirmContext();
-  const { isScrollToBottomNeeded } = confirm;
+  const useTransactionSimulations = useSelector(
+    selectUseTransactionSimulations,
+  );
+  const { currentConfirmation, isScrollToBottomCompleted } =
+    useConfirmContext();
   const { from } = getConfirmationSender(currentConfirmation);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -123,6 +129,17 @@ const Footer = () => {
     }
     return false;
   });
+
+  const isSIWE = isSIWESignatureRequest(currentConfirmation);
+  const isPermit = isPermitSignatureRequest(currentConfirmation);
+  const isPermitSimulationShown = isPermit && useTransactionSimulations;
+
+  const isConfirmDisabled =
+    (!isScrollToBottomCompleted && !isSIWE && !isPermitSimulationShown) ||
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    mmiSubmitDisabled ||
+    ///: END:ONLY_INCLUDE_IF
+    hardwareWalletRequiresConnection;
 
   const onCancel = useCallback(
     ({ location }: { location?: MetaMetricsEventLocation }) => {
@@ -151,7 +168,10 @@ const Footer = () => {
     if (isTransactionConfirmation) {
       const mergeTxDataWithNonce = (transactionData: TransactionMeta) =>
         customNonceValue
-          ? { ...transactionData, customNonceValue }
+          ? {
+              ...transactionData,
+              customNonceValue,
+            }
           : transactionData;
 
       const updatedTx = mergeTxDataWithNonce(
@@ -192,13 +212,7 @@ const Footer = () => {
       <ConfirmButton
         alertOwnerId={currentConfirmation?.id}
         onSubmit={() => onSubmit()}
-        disabled={
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          mmiSubmitDisabled ||
-          ///: END:ONLY_INCLUDE_IF
-          isScrollToBottomNeeded ||
-          hardwareWalletRequiresConnection
-        }
+        disabled={isConfirmDisabled}
         onCancel={onCancel}
       />
     </PageFooter>
