@@ -10,11 +10,7 @@ import { getIntlLocale } from '../../../../ducks/locale/locale';
 type TokenCellProps = {
   address: string;
   symbol: string;
-<<<<<<< HEAD
   string?: string;
-=======
-  string: string;
->>>>>>> develop
   image: string;
   onClick?: (arg: string) => void;
 };

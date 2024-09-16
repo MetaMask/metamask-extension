@@ -119,6 +119,9 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   isStakeable = false;
   ///: END:ONLY_INCLUDE_IF
 
+  // we need to calculate these values here in order to sort native token correctly
+  // native token is computed differently than normal tokens, and is rendered as a ReactNode native-token.tsx
+  // the data here is passed into sort control along with the other non-native tokens, in order to determine the order of the native token in the larger list list
   const nativeTokenWithBalance: TokenWithBalance = {
     address: '',
     symbol: nativeCurrency,
