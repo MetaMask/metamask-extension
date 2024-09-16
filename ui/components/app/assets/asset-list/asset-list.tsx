@@ -38,7 +38,7 @@ import {
 } from '../../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 import AssetListControlBar from './asset-list-control-bar';
-import { useNativeTokenBalance } from './native-token/use-native-balance';
+import { useNativeTokenBalance } from './native-token/use-native-token-balance';
 import NativeToken from './native-token';
 ///: END:ONLY_INCLUDE_IF
 

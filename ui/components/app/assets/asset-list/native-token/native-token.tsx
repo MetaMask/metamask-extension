@@ -11,7 +11,7 @@ import {
 import { TokenListItem } from '../../../../multichain';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { AssetListProps } from '../asset-list';
-import { useNativeTokenBalance } from './use-native-balance';
+import { useNativeTokenBalance } from './use-native-token-balance';
 
 const NativeToken = ({ onClickAsset }: AssetListProps) => {
   const nativeCurrency = useSelector(getMultichainNativeCurrency);
@@ -39,6 +39,7 @@ const NativeToken = ({ onClickAsset }: AssetListProps) => {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   isStakeable = false;
   ///: END:ONLY_INCLUDE_IF
+
   return (
     <TokenListItem
       onClick={() => onClickAsset(nativeCurrency)}
