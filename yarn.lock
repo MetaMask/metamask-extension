@@ -26052,7 +26052,7 @@ __metadata:
     "@metamask/smart-transactions-controller": "npm:^13.0.0"
     "@metamask/snaps-controllers": "npm:^9.5.0"
     "@metamask/snaps-execution-environments": "npm:^6.6.2"
-    "@metamask/snaps-rpc-methods": "npm:^11.0.0"
+    "@metamask/snaps-rpc-methods": "npm:^11.1.1"
     "@metamask/snaps-sdk": "npm:^6.3.0"
     "@metamask/snaps-utils": "npm:^8.0.1"
     "@metamask/test-bundler": "npm:^1.0.0"
