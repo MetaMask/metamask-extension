@@ -1024,7 +1024,7 @@
   "confirmTitleDescSignature": {
     "message": "Solo confirme este mensaje si aprueba el contenido y confía en el sitio solicitante."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Solicitud de límite de gasto"
   },
   "confirmTitleSIWESignature": {

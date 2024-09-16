@@ -1039,7 +1039,7 @@
   "confirmTitleDescSignature": {
     "message": "Only confirm this message if you approve the content and trust the requesting site."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Spending cap request"
   },
   "confirmTitleSIWESignature": {

@@ -1,10 +1,26 @@
 import { ObservableStore } from '@metamask/obs-store';
 import {
+  AccountsControllerChangeEvent,
+  AccountsControllerGetAccountByAddressAction,
+  AccountsControllerGetSelectedAccountAction,
+  AccountsControllerSetAccountNameAction,
+  AccountsControllerSetSelectedAccountAction,
+  AccountsControllerState,
+} from '@metamask/accounts-controller';
+import { Hex } from '@metamask/utils';
+import { RestrictedControllerMessenger } from '@metamask/base-controller';
+import {
   CHAIN_IDS,
   IPFS_DEFAULT_GATEWAY_URL,
 } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
+
+type AccountIdentityEntry = {
+  address: string;
+  name: string;
+  lastSelected: number | undefined;
+};
 
 const mainNetworks = {
   [CHAIN_IDS.MAINNET]: true,
@@ -17,32 +33,151 @@ const testNetworks = {
   [CHAIN_IDS.LINEA_SEPOLIA]: true,
 };
 
+const controllerName = 'PreferencesController';
+
+/**
+ * Returns the state of the {@link PreferencesController}.
+ */
+export type PreferencesControllerGetStateAction = {
+  type: 'PreferencesController:getState';
+  handler: () => PreferencesControllerState;
+};
+
+/**
+ * Actions exposed by the {@link PreferencesController}.
+ */
+export type PreferencesControllerActions = PreferencesControllerGetStateAction;
+
+/**
+ * Event emitted when the state of the {@link PreferencesController} changes.
+ */
+export type PreferencesControllerStateChangeEvent = {
+  type: 'PreferencesController:stateChange';
+  payload: [PreferencesControllerState, []];
+};
+
+/**
+ * Events emitted by {@link PreferencesController}.
+ */
+export type PreferencesControllerEvents = PreferencesControllerStateChangeEvent;
+
+/**
+ * Actions that this controller is allowed to call.
+ */
+export type AllowedActions =
+  | AccountsControllerGetAccountByAddressAction
+  | AccountsControllerSetAccountNameAction
+  | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerSetSelectedAccountAction;
+
+/**
+ * Events that this controller is allowed to subscribe.
+ */
+export type AllowedEvents = AccountsControllerChangeEvent;
+
+export type PreferencesControllerMessenger = RestrictedControllerMessenger<
+  typeof controllerName,
+  PreferencesControllerActions | AllowedActions,
+  PreferencesControllerEvents | AllowedEvents,
+  AllowedActions['type'],
+  AllowedEvents['type']
+>;
+
+type PreferencesControllerOptions = {
+  networkConfigurations?: Record<string, { chainId: Hex }>;
+  initState?: Partial<PreferencesControllerState>;
+  initLangCode?: string;
+  messenger: PreferencesControllerMessenger;
+};
+
+export type Preferences = {
+  autoLockTimeLimit?: number;
+  showExtensionInFullSizeView: boolean;
+  showFiatInTestnets: boolean;
+  showTestNetworks: boolean;
+  smartTransactionsOptInStatus: boolean | null;
+  useNativeCurrencyAsPrimaryCurrency: boolean;
+  hideZeroBalanceTokens: boolean;
+  petnamesEnabled: boolean;
+  redesignedConfirmationsEnabled: boolean;
+  redesignedTransactionsEnabled: boolean;
+  featureNotificationsEnabled: boolean;
+  isRedesignedConfirmationsDeveloperEnabled: boolean;
+  showConfirmationAdvancedDetails: boolean;
+};
+
+export type PreferencesControllerState = {
+  selectedAddress: string;
+  useBlockie: boolean;
+  useNonceField: boolean;
+  usePhishDetect: boolean;
+  dismissSeedBackUpReminder: boolean;
+  useMultiAccountBalanceChecker: boolean;
+  useSafeChainsListValidation: boolean;
+  useTokenDetection: boolean;
+  useNftDetection: boolean;
+  use4ByteResolution: boolean;
+  useCurrencyRateCheck: boolean;
+  useRequestQueue: boolean;
+  openSeaEnabled: boolean;
+  securityAlertsEnabled: boolean;
+  watchEthereumAccountEnabled: boolean;
+  bitcoinSupportEnabled: boolean;
+  bitcoinTestnetSupportEnabled: boolean;
+  addSnapAccountEnabled: boolean;
+  advancedGasFee: Record<string, Record<string, string>>;
+  featureFlags: Record<string, boolean>;
+  incomingTransactionsPreferences: Record<number, boolean>;
+  knownMethodData: Record<string, string>;
+  currentLocale: string;
+  identities: Record<string, AccountIdentityEntry>;
+  lostIdentities: Record<string, object>;
+  forgottenPassword: boolean;
+  preferences: Preferences;
+  ipfsGateway: string;
+  isIpfsGatewayEnabled: boolean;
+  useAddressBarEnsResolution: boolean;
+  ledgerTransportType: LedgerTransportTypes;
+  snapRegistryList: Record<string, object>;
+  theme: ThemeType;
+  snapsAddSnapAccountModalDismissed: boolean;
+  useExternalNameSources: boolean;
+  useTransactionSimulations: boolean;
+  enableMV3TimestampSave: boolean;
+  useExternalServices: boolean;
+  textDirection?: string;
+};
+
 export default class PreferencesController {
+  store: ObservableStore<PreferencesControllerState>;
+
+  private messagingSystem: PreferencesControllerMessenger;
+
   /**
    *
-   * @typedef {object} PreferencesController
-   * @param {object} opts - Overrides the defaults for the initial state of this.store
-   * @property {object} messenger - The controller messenger
-   * @property {object} store The stored object containing a users preferences, stored in local storage
-   * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
-   * @property {boolean} store.useNonceField The users preference for nonce field within the UI
-   * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
+   * @param opts - Overrides the defaults for the initial state of this.store
+   * @property messenger - The controller messenger
+   * @property initState The stored object containing a users preferences, stored in local storage
+   * @property initState.useBlockie The users preference for blockie identicons within the UI
+   * @property initState.useNonceField The users preference for nonce field within the UI
+   * @property initState.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
    * user wishes to see that feature.
    *
    * Feature flags can be set by the global function `setPreference(feature, enabled)`, and so should not expose any sensitive behavior.
-   * @property {object} store.knownMethodData Contains all data methods known by the user
-   * @property {string} store.currentLocale The preferred language locale key
-   * @property {string} store.selectedAddress A hex string that matches the currently selected address in the app
+   * @property initState.knownMethodData Contains all data methods known by the user
+   * @property initState.currentLocale The preferred language locale key
+   * @property initState.selectedAddress A hex string that matches the currently selected address in the app
    */
-  constructor(opts = {}) {
-    const addedNonMainNetwork = Object.values(
-      opts.networkConfigurations,
-    ).reduce((acc, element) => {
+  constructor(opts: PreferencesControllerOptions) {
+    const addedNonMainNetwork: Record<Hex, boolean> = Object.values(
+      opts.networkConfigurations ?? {},
+    ).reduce((acc: Record<Hex, boolean>, element) => {
       acc[element.chainId] = true;
       return acc;
     }, {});
 
-    const initState = {
+    const initState: PreferencesControllerState = {
+      selectedAddress: '',
       useBlockie: false,
       useNonceField: false,
       usePhishDetect: true,
@@ -56,7 +191,7 @@ export default class PreferencesController {
       use4ByteResolution: true,
       useCurrencyRateCheck: true,
       useRequestQueue: true,
-      openSeaEnabled: true, // todo set this to true
+      openSeaEnabled: true,
       securityAlertsEnabled: true,
       watchEthereumAccountEnabled: false,
       bitcoinSupportEnabled: false,
@@ -77,7 +212,7 @@ export default class PreferencesController {
         ...testNetworks,
       },
       knownMethodData: {},
-      currentLocale: opts.initLangCode,
+      currentLocale: opts.initLangCode ?? '',
       identities: {},
       lostIdentities: {},
       forgottenPassword: false,
@@ -121,87 +256,84 @@ export default class PreferencesController {
       ...opts.initState,
     };
 
-    this.network = opts.network;
-
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(13);
 
     this.messagingSystem = opts.messenger;
-    this.messagingSystem?.registerActionHandler(
+    this.messagingSystem.registerActionHandler(
       `PreferencesController:getState`,
       () => this.store.getState(),
     );
-    this.messagingSystem?.registerInitialEventPayload({
+    this.messagingSystem.registerInitialEventPayload({
       eventType: `PreferencesController:stateChange`,
       getPayload: () => [this.store.getState(), []],
     });
 
-    this.messagingSystem?.subscribe(
+    this.messagingSystem.subscribe(
       'AccountsController:stateChange',
       this.#handleAccountsControllerSync.bind(this),
     );
 
-    global.setPreference = (key, value) => {
+    globalThis.setPreference = (key: keyof Preferences, value: boolean) => {
       return this.setFeatureFlag(key, value);
     };
   }
-  // PUBLIC METHODS
 
   /**
    * Sets the {@code forgottenPassword} state property
    *
-   * @param {boolean} forgottenPassword - whether or not the user has forgotten their password
+   * @param forgottenPassword - whether or not the user has forgotten their password
    */
-  setPasswordForgotten(forgottenPassword) {
+  setPasswordForgotten(forgottenPassword: boolean): void {
     this.store.updateState({ forgottenPassword });
   }
 
   /**
    * Setter for the `useBlockie` property
    *
-   * @param {boolean} val - Whether or not the user prefers blockie indicators
+   * @param val - Whether or not the user prefers blockie indicators
    */
-  setUseBlockie(val) {
+  setUseBlockie(val: boolean): void {
     this.store.updateState({ useBlockie: val });
   }
 
   /**
    * Setter for the `useNonceField` property
    *
-   * @param {boolean} val - Whether or not the user prefers to set nonce
+   * @param val - Whether or not the user prefers to set nonce
    */
-  setUseNonceField(val) {
+  setUseNonceField(val: boolean): void {
     this.store.updateState({ useNonceField: val });
   }
 
   /**
    * Setter for the `usePhishDetect` property
    *
-   * @param {boolean} val - Whether or not the user prefers phishing domain protection
+   * @param val - Whether or not the user prefers phishing domain protection
    */
-  setUsePhishDetect(val) {
+  setUsePhishDetect(val: boolean): void {
     this.store.updateState({ usePhishDetect: val });
   }
 
   /**
    * Setter for the `useMultiAccountBalanceChecker` property
    *
-   * @param {boolean} val - Whether or not the user prefers to turn off/on all security settings
+   * @param val - Whether or not the user prefers to turn off/on all security settings
    */
-  setUseMultiAccountBalanceChecker(val) {
+  setUseMultiAccountBalanceChecker(val: boolean): void {
     this.store.updateState({ useMultiAccountBalanceChecker: val });
   }
 
   /**
    * Setter for the `useSafeChainsListValidation` property
    *
-   * @param {boolean} val - Whether or not the user prefers to turn off/on validation for manually adding networks
+   * @param val - Whether or not the user prefers to turn off/on validation for manually adding networks
    */
-  setUseSafeChainsListValidation(val) {
+  setUseSafeChainsListValidation(val: boolean): void {
     this.store.updateState({ useSafeChainsListValidation: val });
   }
 
-  toggleExternalServices(useExternalServices) {
+  toggleExternalServices(useExternalServices: boolean): void {
     this.store.updateState({ useExternalServices });
     this.setUseTokenDetection(useExternalServices);
     this.setUseCurrencyRateCheck(useExternalServices);
@@ -214,54 +346,54 @@ export default class PreferencesController {
   /**
    * Setter for the `useTokenDetection` property
    *
-   * @param {boolean} val - Whether or not the user prefers to use the static token list or dynamic token list from the API
+   * @param val - Whether or not the user prefers to use the static token list or dynamic token list from the API
    */
-  setUseTokenDetection(val) {
+  setUseTokenDetection(val: boolean): void {
     this.store.updateState({ useTokenDetection: val });
   }
 
   /**
    * Setter for the `useNftDetection` property
    *
-   * @param {boolean} useNftDetection - Whether or not the user prefers to autodetect NFTs.
+   * @param useNftDetection - Whether or not the user prefers to autodetect NFTs.
    */
-  setUseNftDetection(useNftDetection) {
+  setUseNftDetection(useNftDetection: boolean): void {
     this.store.updateState({ useNftDetection });
   }
 
   /**
    * Setter for the `use4ByteResolution` property
    *
-   * @param {boolean} use4ByteResolution - (Privacy) Whether or not the user prefers to have smart contract name details resolved with 4byte.directory
+   * @param use4ByteResolution - (Privacy) Whether or not the user prefers to have smart contract name details resolved with 4byte.directory
    */
-  setUse4ByteResolution(use4ByteResolution) {
+  setUse4ByteResolution(use4ByteResolution: boolean): void {
     this.store.updateState({ use4ByteResolution });
   }
 
   /**
    * Setter for the `useCurrencyRateCheck` property
    *
-   * @param {boolean} val - Whether or not the user prefers to use currency rate check for ETH and tokens.
+   * @param val - Whether or not the user prefers to use currency rate check for ETH and tokens.
    */
-  setUseCurrencyRateCheck(val) {
+  setUseCurrencyRateCheck(val: boolean): void {
     this.store.updateState({ useCurrencyRateCheck: val });
   }
 
   /**
    * Setter for the `useRequestQueue` property
    *
-   * @param {boolean} val - Whether or not the user wants to have requests queued if network change is required.
+   * @param val - Whether or not the user wants to have requests queued if network change is required.
    */
-  setUseRequestQueue(val) {
+  setUseRequestQueue(val: boolean): void {
     this.store.updateState({ useRequestQueue: val });
   }
 
   /**
    * Setter for the `openSeaEnabled` property
    *
-   * @param {boolean} openSeaEnabled - Whether or not the user prefers to use the OpenSea API for NFTs data.
+   * @param openSeaEnabled - Whether or not the user prefers to use the OpenSea API for NFTs data.
    */
-  setOpenSeaEnabled(openSeaEnabled) {
+  setOpenSeaEnabled(openSeaEnabled: boolean): void {
     this.store.updateState({
       openSeaEnabled,
     });
@@ -270,9 +402,9 @@ export default class PreferencesController {
   /**
    * Setter for the `securityAlertsEnabled` property
    *
-   * @param {boolean} securityAlertsEnabled - Whether or not the user prefers to use the security alerts.
+   * @param securityAlertsEnabled - Whether or not the user prefers to use the security alerts.
    */
-  setSecurityAlertsEnabled(securityAlertsEnabled) {
+  setSecurityAlertsEnabled(securityAlertsEnabled: boolean): void {
     this.store.updateState({
       securityAlertsEnabled,
     });
@@ -282,10 +414,10 @@ export default class PreferencesController {
   /**
    * Setter for the `addSnapAccountEnabled` property.
    *
-   * @param {boolean} addSnapAccountEnabled - Whether or not the user wants to
+   * @param addSnapAccountEnabled - Whether or not the user wants to
    * enable the "Add Snap accounts" button.
    */
-  setAddSnapAccountEnabled(addSnapAccountEnabled) {
+  setAddSnapAccountEnabled(addSnapAccountEnabled: boolean): void {
     this.store.updateState({
       addSnapAccountEnabled,
     });
@@ -295,10 +427,10 @@ export default class PreferencesController {
   /**
    * Setter for the `watchEthereumAccountEnabled` property.
    *
-   * @param {boolean} watchEthereumAccountEnabled - Whether or not the user wants to
+   * @param watchEthereumAccountEnabled - Whether or not the user wants to
    * enable the "Watch Ethereum account (Beta)" button.
    */
-  setWatchEthereumAccountEnabled(watchEthereumAccountEnabled) {
+  setWatchEthereumAccountEnabled(watchEthereumAccountEnabled: boolean): void {
     this.store.updateState({
       watchEthereumAccountEnabled,
     });
@@ -307,10 +439,10 @@ export default class PreferencesController {
   /**
    * Setter for the `bitcoinSupportEnabled` property.
    *
-   * @param {boolean} bitcoinSupportEnabled - Whether or not the user wants to
+   * @param bitcoinSupportEnabled - Whether or not the user wants to
    * enable the "Add a new Bitcoin account (Beta)" button.
    */
-  setBitcoinSupportEnabled(bitcoinSupportEnabled) {
+  setBitcoinSupportEnabled(bitcoinSupportEnabled: boolean): void {
     this.store.updateState({
       bitcoinSupportEnabled,
     });
@@ -319,10 +451,10 @@ export default class PreferencesController {
   /**
    * Setter for the `bitcoinTestnetSupportEnabled` property.
    *
-   * @param {boolean} bitcoinTestnetSupportEnabled - Whether or not the user wants to
+   * @param bitcoinTestnetSupportEnabled - Whether or not the user wants to
    * enable the "Add a new Bitcoin account (Testnet)" button.
    */
-  setBitcoinTestnetSupportEnabled(bitcoinTestnetSupportEnabled) {
+  setBitcoinTestnetSupportEnabled(bitcoinTestnetSupportEnabled: boolean): void {
     this.store.updateState({
       bitcoinTestnetSupportEnabled,
     });
@@ -331,9 +463,9 @@ export default class PreferencesController {
   /**
    * Setter for the `useExternalNameSources` property
    *
-   * @param {boolean} useExternalNameSources - Whether or not to use external name providers in the name controller.
+   * @param useExternalNameSources - Whether or not to use external name providers in the name controller.
    */
-  setUseExternalNameSources(useExternalNameSources) {
+  setUseExternalNameSources(useExternalNameSources: boolean): void {
     this.store.updateState({
       useExternalNameSources,
     });
@@ -342,9 +474,9 @@ export default class PreferencesController {
   /**
    * Setter for the `useTransactionSimulations` property
    *
-   * @param {boolean} useTransactionSimulations - Whether or not to use simulations in the transaction confirmations.
+   * @param useTransactionSimulations - Whether or not to use simulations in the transaction confirmations.
    */
-  setUseTransactionSimulations(useTransactionSimulations) {
+  setUseTransactionSimulations(useTransactionSimulations: boolean): void {
     this.store.updateState({
       useTransactionSimulations,
     });
@@ -353,11 +485,17 @@ export default class PreferencesController {
   /**
    * Setter for the `advancedGasFee` property
    *
-   * @param {object} options
-   * @param {string} options.chainId - The chainId the advancedGasFees should be set on
-   * @param {object} options.gasFeePreferences - The advancedGasFee options to set
+   * @param options
+   * @param options.chainId - The chainId the advancedGasFees should be set on
+   * @param options.gasFeePreferences - The advancedGasFee options to set
    */
-  setAdvancedGasFee({ chainId, gasFeePreferences }) {
+  setAdvancedGasFee({
+    chainId,
+    gasFeePreferences,
+  }: {
+    chainId: string;
+    gasFeePreferences: Record<string, string>;
+  }): void {
     const { advancedGasFee } = this.store.getState();
     this.store.updateState({
       advancedGasFee: {
@@ -370,19 +508,19 @@ export default class PreferencesController {
   /**
    * Setter for the `theme` property
    *
-   * @param {string} val - 'default' or 'dark' value based on the mode selected by user.
+   * @param val - 'default' or 'dark' value based on the mode selected by user.
    */
-  setTheme(val) {
+  setTheme(val: ThemeType): void {
     this.store.updateState({ theme: val });
   }
 
   /**
    * Add new methodData to state, to avoid requesting this information again through Infura
    *
-   * @param {string} fourBytePrefix - Four-byte method signature
-   * @param {string} methodData - Corresponding data method
+   * @param fourBytePrefix - Four-byte method signature
+   * @param methodData - Corresponding data method
    */
-  addKnownMethodData(fourBytePrefix, methodData) {
+  addKnownMethodData(fourBytePrefix: string, methodData: string): void {
     const { knownMethodData } = this.store.getState();
     knownMethodData[fourBytePrefix] = methodData;
     this.store.updateState({ knownMethodData });
@@ -391,9 +529,9 @@ export default class PreferencesController {
   /**
    * Setter for the `currentLocale` property
    *
-   * @param {string} key - he preferred language locale key
+   * @param key - he preferred language locale key
    */
-  setCurrentLocale(key) {
+  setCurrentLocale(key: string): string {
     const textDirection = ['ar', 'dv', 'fa', 'he', 'ku'].includes(key)
       ? 'rtl'
       : 'auto';
@@ -408,9 +546,9 @@ export default class PreferencesController {
    * Setter for the `selectedAddress` property
    *
    * @deprecated - Use setSelectedAccount from the AccountsController
-   * @param {string} address - A new hex address for an account
+   * @param address - A new hex address for an account
    */
-  setSelectedAddress(address) {
+  setSelectedAddress(address: string): void {
     const account = this.messagingSystem.call(
       'AccountsController:getAccountByAddress',
       address,
@@ -429,9 +567,9 @@ export default class PreferencesController {
    * Getter for the `selectedAddress` property
    *
    * @deprecated - Use the getSelectedAccount from the AccountsController
-   * @returns {string} The hex address for the currently selected account
+   * @returns The hex address for the currently selected account
    */
-  getSelectedAddress() {
+  getSelectedAddress(): string {
     const selectedAccount = this.messagingSystem.call(
       'AccountsController:getSelectedAccount',
     );
@@ -442,9 +580,9 @@ export default class PreferencesController {
   /**
    * Getter for the `useRequestQueue` property
    *
-   * @returns {boolean} whether this option is on or off.
+   * @returns whether this option is on or off.
    */
-  getUseRequestQueue() {
+  getUseRequestQueue(): boolean {
     return this.store.getState().useRequestQueue;
   }
 
@@ -452,38 +590,42 @@ export default class PreferencesController {
    * Sets a custom label for an account
    *
    * @deprecated - Use setAccountName from the AccountsController
-   * @param {string} address - the account to set a label for
-   * @param {string} label - the custom label for the account
-   * @returns {Promise<string>}
+   * @param address - the account to set a label for
+   * @param label - the custom label for the account
+   * @returns the account label
    */
-  async setAccountLabel(address, label) {
-    const account = this.messagingSystem.call(
-      'AccountsController:getAccountByAddress',
-      address,
-    );
+  setAccountLabel(address: string, label: string): string | undefined {
     if (!address) {
       throw new Error(
         `setAccountLabel requires a valid address, got ${String(address)}`,
       );
     }
 
-    this.messagingSystem.call(
-      'AccountsController:setAccountName',
-      account.id,
-      label,
+    const account = this.messagingSystem.call(
+      'AccountsController:getAccountByAddress',
+      address,
     );
+    if (account) {
+      this.messagingSystem.call(
+        'AccountsController:setAccountName',
+        account.id,
+        label,
+      );
 
-    return label;
+      return label;
+    }
+
+    return undefined;
   }
 
   /**
    * Updates the `featureFlags` property, which is an object. One property within that object will be set to a boolean.
    *
-   * @param {string} feature - A key that corresponds to a UI feature.
-   * @param {boolean} activated - Indicates whether or not the UI feature should be displayed
-   * @returns {Promise<object>} Promises a new object; the updated featureFlags object.
+   * @param feature - A key that corresponds to a UI feature.
+   * @param activated - Indicates whether or not the UI feature should be displayed
+   * @returns the updated featureFlags object.
    */
-  async setFeatureFlag(feature, activated) {
+  setFeatureFlag(feature: string, activated: boolean): Record<string, boolean> {
     const currentFeatureFlags = this.store.getState().featureFlags;
     const updatedFeatureFlags = {
       ...currentFeatureFlags,
@@ -499,11 +641,14 @@ export default class PreferencesController {
    * Updates the `preferences` property, which is an object. These are user-controlled features
    * found in the settings page.
    *
-   * @param {string} preference - The preference to enable or disable.
-   * @param {boolean |object} value - Indicates whether or not the preference should be enabled or disabled.
-   * @returns {Promise<object>} Promises a new object; the updated preferences object.
+   * @param preference - The preference to enable or disable.
+   * @param value - Indicates whether or not the preference should be enabled or disabled.
+   * @returns Promises a updated Preferences object.
    */
-  async setPreference(preference, value) {
+  setPreference(
+    preference: keyof Preferences,
+    value: Preferences[typeof preference],
+  ): Preferences {
     const currentPreferences = this.getPreferences();
     const updatedPreferences = {
       ...currentPreferences,
@@ -517,28 +662,28 @@ export default class PreferencesController {
   /**
    * A getter for the `preferences` property
    *
-   * @returns {object} A key-boolean map of user-selected preferences.
+   * @returns A map of user-selected preferences.
    */
-  getPreferences() {
+  getPreferences(): Preferences {
     return this.store.getState().preferences;
   }
 
   /**
    * A getter for the `ipfsGateway` property
    *
-   * @returns {string} The current IPFS gateway domain
+   * @returns The current IPFS gateway domain
    */
-  getIpfsGateway() {
+  getIpfsGateway(): string {
     return this.store.getState().ipfsGateway;
   }
 
   /**
    * A setter for the `ipfsGateway` property
    *
-   * @param {string} domain - The new IPFS gateway domain
-   * @returns {Promise<string>} A promise of the update IPFS gateway domain
+   * @param domain - The new IPFS gateway domain
+   * @returns the update IPFS gateway domain
    */
-  async setIpfsGateway(domain) {
+  setIpfsGateway(domain: string): string {
     this.store.updateState({ ipfsGateway: domain });
     return domain;
   }
@@ -546,18 +691,18 @@ export default class PreferencesController {
   /**
    * A setter for the `isIpfsGatewayEnabled` property
    *
-   * @param {boolean} enabled - Whether or not IPFS is enabled
+   * @param enabled - Whether or not IPFS is enabled
    */
-  async setIsIpfsGatewayEnabled(enabled) {
+  setIsIpfsGatewayEnabled(enabled: boolean): void {
     this.store.updateState({ isIpfsGatewayEnabled: enabled });
   }
 
   /**
    * A setter for the `useAddressBarEnsResolution` property
    *
-   * @param {boolean} useAddressBarEnsResolution - Whether or not user prefers IPFS resolution for domains
+   * @param useAddressBarEnsResolution - Whether or not user prefers IPFS resolution for domains
    */
-  async setUseAddressBarEnsResolution(useAddressBarEnsResolution) {
+  setUseAddressBarEnsResolution(useAddressBarEnsResolution: boolean): void {
     this.store.updateState({ useAddressBarEnsResolution });
   }
 
@@ -566,10 +711,12 @@ export default class PreferencesController {
    *
    * @deprecated We no longer support specifying a ledger transport type other
    * than webhid, therefore managing a preference is no longer necessary.
-   * @param {LedgerTransportTypes.webhid} ledgerTransportType - 'webhid'
-   * @returns {string} The transport type that was set.
+   * @param ledgerTransportType - 'webhid'
+   * @returns The transport type that was set.
    */
-  setLedgerTransportPreference(ledgerTransportType) {
+  setLedgerTransportPreference(
+    ledgerTransportType: LedgerTransportTypes,
+  ): string {
     this.store.updateState({ ledgerTransportType });
     return ledgerTransportType;
   }
@@ -577,10 +724,10 @@ export default class PreferencesController {
   /**
    * A setter for the user preference to dismiss the seed phrase backup reminder
    *
-   * @param {bool} dismissSeedBackUpReminder - User preference for dismissing the back up reminder.
+   * @param dismissSeedBackUpReminder - User preference for dismissing the back up reminder.
    */
-  async setDismissSeedBackUpReminder(dismissSeedBackUpReminder) {
-    await this.store.updateState({
+  setDismissSeedBackUpReminder(dismissSeedBackUpReminder: boolean): void {
+    this.store.updateState({
       dismissSeedBackUpReminder,
     });
   }
@@ -588,29 +735,30 @@ export default class PreferencesController {
   /**
    * A setter for the incomingTransactions in preference to be updated
    *
-   * @param {string} chainId - chainId of the network
-   * @param {bool} value - preference of certain network, true to be enabled
+   * @param chainId - chainId of the network
+   * @param value - preference of certain network, true to be enabled
    */
-  setIncomingTransactionsPreferences(chainId, value) {
+  setIncomingTransactionsPreferences(chainId: Hex, value: boolean): void {
     const previousValue = this.store.getState().incomingTransactionsPreferences;
     const updatedValue = { ...previousValue, [chainId]: value };
     this.store.updateState({ incomingTransactionsPreferences: updatedValue });
   }
 
-  setServiceWorkerKeepAlivePreference(value) {
+  setServiceWorkerKeepAlivePreference(value: boolean): void {
     this.store.updateState({ enableMV3TimestampSave: value });
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  setSnapsAddSnapAccountModalDismissed(value) {
+  setSnapsAddSnapAccountModalDismissed(value: boolean): void {
     this.store.updateState({ snapsAddSnapAccountModalDismissed: value });
   }
   ///: END:ONLY_INCLUDE_IF
 
-  #handleAccountsControllerSync(newAccountsControllerState) {
+  #handleAccountsControllerSync(
+    newAccountsControllerState: AccountsControllerState,
+  ): void {
     const { accounts, selectedAccount: selectedAccountId } =
       newAccountsControllerState.internalAccounts;
-
     const selectedAccount = accounts[selectedAccountId];
 
     const { identities, lostIdentities } = this.store.getState();
@@ -625,7 +773,7 @@ export default class PreferencesController {
     });
 
     const updatedIdentities = Object.values(accounts).reduce(
-      (identitiesMap, account) => {
+      (identitiesMap: Record<string, AccountIdentityEntry>, account) => {
         identitiesMap[account.address] = {
           address: account.address,
           name: account.metadata.name,

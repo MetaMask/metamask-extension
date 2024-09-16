@@ -1027,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "仅在您批准该内容并信任请求网站的情况下，才能确认此消息。"
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "支出上限请求"
   },
   "confirmTitleSIWESignature": {
