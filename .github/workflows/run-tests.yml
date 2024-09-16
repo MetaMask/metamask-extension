@@ -109,14 +109,16 @@ jobs:
           path: coverage/lcov.info
 
       - name: Validate test coverage
+        env:
+            MINIMUM_REQUIRED_TEST_COVERAGE: 80
         run: |
           coverage=$(yarn nyc report --reporter=text-summary | grep 'Lines' | awk '{gsub(/%/, ""); print $3}')
           if [ -z "$coverage" ]; then
             echo "::error::Could not retrieve test coverage."
             exit 1
           fi
-          if (( $(echo "$coverage < 70" | bc -l) )); then
-            echo "::error::Quality gate failed for test coverage. The current test coverage is $coverage%, please increase coverage to at least 70%."
+          if (( $(echo "$coverage < $MINIMUM_REQUIRED_TEST_COVERAGE" | bc -l) )); then
+            echo "::error::Quality gate failed for test coverage. The current test coverage is $coverage%, please increase coverage to at least $MINIMUM_REQUIRED_TEST_COVERAGE%."
             exit 1
           else
             echo "Test coverage is $coverage%. Quality gate passed."
