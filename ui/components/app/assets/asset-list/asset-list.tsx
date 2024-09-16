@@ -1,19 +1,16 @@
 import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import TokenList from '../token-list';
-import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
+import { PRIMARY } from '../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import {
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
-  getPreferences,
   getSelectedAccount,
 } from '../../../../selectors';
 import {
-  getMultichainCurrentNetwork,
   getMultichainNativeCurrency,
   getMultichainIsEvm,
-  getMultichainShouldShowFiat,
   getMultichainCurrencyImage,
   getMultichainIsMainnet,
   getMultichainSelectedAccountCachedBalance,
@@ -31,16 +28,10 @@ import {
 import DetectedToken from '../../detected-token/detected-token';
 import {
   DetectedTokensBanner,
-  TokenListItem,
   ImportTokenLink,
   ReceiveModal,
 } from '../../../multichain';
-import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  showPrimaryCurrency,
-  showSecondaryCurrency,
-} from '../../../../../shared/modules/currency-display.utils';
 import { FundingMethodModal } from '../../../multichain/funding-method-modal/funding-method-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
@@ -49,70 +40,47 @@ import {
 } from '../../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 import AssetListControlBar from './asset-list-control-bar';
+import { useNativeTokenBalance } from './native-token/use-native-balance';
+import NativeToken from './native-token';
 ///: END:ONLY_INCLUDE_IF
 
 export type TokenWithBalance = {
   address: string;
   symbol: string;
-  string?: string;
+  string: string;
   image: string;
-  tokenFiatAmount?: string;
-  // bottom is for Native token
-  title?: string;
-  isOriginalTokenSymbol?: boolean | null;
-  isNativeCurrency?: boolean;
-  isStakeable?: boolean;
-  showPercentage?: boolean;
+  tokenFiatAmount: string;
+  isNative?: boolean;
 };
 
-type AssetListProps = {
+export type AssetListProps = {
   onClickAsset: (arg: string) => void;
-  showTokensLinks: boolean;
+  showTokensLinks?: boolean;
 };
 
 const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const [tokenList, setTokenList] = useState<TokenWithBalance[]>([]);
   const [loading, setLoading] = useState(false);
+  const [sorted, setSorted] = useState(false); // TODO: Set to preferences
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const selectedAccount = useSelector(getSelectedAccount);
   const nativeCurrency = useSelector(getMultichainNativeCurrency);
-  const showFiat = useSelector(getMultichainShouldShowFiat);
   const isMainnet = useSelector(getMultichainIsMainnet);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  const { chainId, ticker, type, rpcUrl } = useSelector(
-    getMultichainCurrentNetwork,
-  );
-  const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
-    chainId,
-    ticker,
-    type,
-    rpcUrl,
-  );
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
-  const balanceIsLoading = !balance;
+  const { primaryBalance, secondaryBalance, tokenSymbol } =
+    useNativeTokenBalance();
 
   const {
     currency: primaryCurrency,
     numberOfDecimals: primaryNumberOfDecimals,
   } = useUserPreferencedCurrency(PRIMARY, { ethNumberOfDecimals: 4 });
-  const {
-    currency: secondaryCurrency,
-    numberOfDecimals: secondaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 });
 
-  const [primaryCurrencyDisplay, primaryCurrencyProperties] =
-    useCurrencyDisplay(balance, {
-      numberOfDecimals: primaryNumberOfDecimals,
-      currency: primaryCurrency,
-    });
-
-  const [secondaryCurrencyDisplay, secondaryCurrencyProperties] =
-    useCurrencyDisplay(balance, {
-      numberOfDecimals: secondaryNumberOfDecimals,
-      currency: secondaryCurrency,
-    });
+  const [_, primaryCurrencyProperties] = useCurrencyDisplay(balance, {
+    numberOfDecimals: primaryNumberOfDecimals,
+    currency: primaryCurrency,
+  });
 
   const primaryTokenImage = useSelector(getMultichainCurrencyImage);
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
@@ -152,31 +120,13 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   ///: END:ONLY_INCLUDE_IF
 
   const nativeTokenWithBalance: TokenWithBalance = {
-    title: nativeCurrency,
     address: '',
     symbol: nativeCurrency,
-    string: showSecondaryCurrency(
-      isOriginalNativeSymbol,
-      useNativeCurrencyAsPrimaryCurrency,
-    )
-      ? secondaryCurrencyDisplay
-      : undefined,
+    string: primaryBalance || '',
     image: primaryTokenImage,
-    tokenFiatAmount:
-      showFiat &&
-      showPrimaryCurrency(
-        isOriginalNativeSymbol,
-        useNativeCurrencyAsPrimaryCurrency,
-      )
-        ? primaryCurrencyDisplay
-        : undefined,
-    isOriginalTokenSymbol: isOriginalNativeSymbol,
-    isNativeCurrency: true,
-    isStakeable: isStakeable,
-    showPercentage: true,
+    tokenFiatAmount: secondaryBalance || '',
+    isNative: true,
   };
-
-  console.log('nativeTokenWithBalance: ', nativeTokenWithBalance);
 
   return (
     <>
@@ -205,46 +155,16 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         ///: END:ONLY_INCLUDE_IF
       }
       <AssetListControlBar
-        tokenList={tokenList}
+        tokenList={[nativeTokenWithBalance, ...tokenList]}
         setTokenList={setTokenList}
         setLoading={setLoading}
+        sorted={sorted}
+        setSorted={setSorted}
       />
-
-      <TokenListItem
-        onClick={() => onClickAsset(nativeCurrency)}
-        title={nativeCurrency}
-        // The primary and secondary currencies are subject to change based on the user's settings
-        // TODO: rename this primary/secondary concept here to be more intuitive, regardless of setting
-        primary={
-          showSecondaryCurrency(
-            isOriginalNativeSymbol,
-            useNativeCurrencyAsPrimaryCurrency,
-          )
-            ? secondaryCurrencyDisplay
-            : undefined
-        }
-        tokenSymbol={
-          useNativeCurrencyAsPrimaryCurrency
-            ? primaryCurrencyProperties.suffix
-            : secondaryCurrencyProperties.suffix
-        }
-        secondary={
-          showFiat &&
-          showPrimaryCurrency(
-            isOriginalNativeSymbol,
-            useNativeCurrencyAsPrimaryCurrency,
-          )
-            ? primaryCurrencyDisplay
-            : undefined
-        }
-        tokenImage={balanceIsLoading ? null : primaryTokenImage}
-        isOriginalTokenSymbol={isOriginalNativeSymbol}
-        isNativeCurrency
-        isStakeable={isStakeable}
-        showPercentage
-      />
+      {!sorted && <NativeToken onClickAsset={onClickAsset} />}
       <TokenList
-        tokens={[nativeTokenWithBalance, ...tokenList]}
+        nativeToken={<NativeToken onClickAsset={onClickAsset} />}
+        tokens={tokenList}
         loading={loading}
         onTokenClick={(tokenAddress: string) => {
           onClickAsset(tokenAddress);

@@ -33,12 +33,16 @@ type AssetListControlBarProps = {
   tokenList: TokenWithBalance[];
   setTokenList: (arg: TokenWithBalance[]) => void;
   setLoading: (arg: boolean) => void;
+  sorted: boolean;
+  setSorted: (arg: boolean) => void;
 };
 
 const AssetListControlBar = ({
   tokenList,
   setTokenList,
   setLoading,
+  sorted,
+  setSorted,
 }: AssetListControlBarProps) => {
   const controlBarRef = useRef<HTMLDivElement>(null); // Create a ref
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -65,8 +69,6 @@ const AssetListControlBar = ({
   );
 
   const { loading } = accountTotalFiatBalance;
-
-  const [sorted, setSorted] = useState(false);
 
   useEffect(() => {
     if (!sorted) {
@@ -108,6 +110,7 @@ const AssetListControlBar = ({
       setLoading(loading);
     }
   }, [accountTotalFiatBalance]);
+
   const handleOpenPopover = () => {
     setIsPopoverOpen(!isPopoverOpen);
   };

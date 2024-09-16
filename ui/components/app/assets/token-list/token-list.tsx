@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import TokenCell from '../token-cell';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Box } from '../../../component-library';
@@ -11,12 +11,14 @@ import { TokenWithBalance } from '../asset-list/asset-list';
 
 type TokenListProps = {
   onTokenClick: (arg: string) => void;
+  nativeToken: ReactNode;
   tokens: TokenWithBalance[];
   loading: boolean;
 };
 
 export default function TokenList({
   onTokenClick,
+  nativeToken,
   tokens,
   loading = false,
 }: TokenListProps) {
@@ -38,9 +40,12 @@ export default function TokenList({
 
   return (
     <div>
-      {tokens.map((tokenData, index) => (
-        <TokenCell key={index} {...tokenData} onClick={onTokenClick} />
-      ))}
+      {tokens.map((tokenData, index) => {
+        if (tokenData?.isNative) {
+          return nativeToken;
+        }
+        return <TokenCell key={index} {...tokenData} onClick={onTokenClick} />;
+      })}
     </div>
   );
 }

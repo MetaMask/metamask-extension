@@ -61,12 +61,17 @@ const SortControl = ({
     sortCallback: keyof SortingCallbacksT,
     order: SortOrder,
   ) => {
+    const [nativeToken] = tokenList.filter((token) => token.isNative);
+    const nonNativeTokens = tokenList.filter((token) => !token.isNative);
+    const dedupedTokenList = [nativeToken, ...nonNativeTokens];
+
     setSortKey(key);
-    const sorted = sortAssets(tokenList, {
+    const sorted = sortAssets(dedupedTokenList, {
       key,
       sortCallback,
       order,
     });
+
     setSorted(true);
     setTokenList(sorted);
   };
