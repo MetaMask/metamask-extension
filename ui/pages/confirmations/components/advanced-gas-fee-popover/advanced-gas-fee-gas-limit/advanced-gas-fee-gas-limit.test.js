@@ -119,14 +119,14 @@ describe('AdvancedGasFeeGasLimit', () => {
   });
 
   it('should validate gas limit against minimumGasLimit it is passed to context', async () => {
-    await render({ minimumGasLimit: '0x7530' });
+    await render({ minimumGasLimit: '0x5208' });
     fireEvent.click(screen.queryByText('Edit'));
     fireEvent.change(document.getElementsByTagName('input')[0], {
-      target: { value: 25000 },
+      target: { value: 2500 },
     });
     expect(
       screen.queryByText(
-        `Gas limit must be greater than 29999 and less than ${MAX_GAS_LIMIT_DEC}`,
+        `Gas limit must be greater than 20999 and less than ${MAX_GAS_LIMIT_DEC}`,
       ),
     ).toBeInTheDocument();
   });
@@ -152,11 +152,6 @@ describe('AdvancedGasFeeGasLimit', () => {
         origin: 'metamask',
       },
     );
-    fireEvent.click(screen.queryByText('Edit'));
-    fireEvent.change(document.getElementsByTagName('input')[0], {
-      target: { value: 25000 },
-    });
-
     expect(
       screen.queryByText(
         `Gas limit must be greater than 29999 and less than 7920050`,
