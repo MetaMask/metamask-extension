@@ -127,12 +127,14 @@ export type TransactionParams = {
     network: CaipChainId;
     error: string;
   };
+  error: string;
 };
 
 export enum SendStage {
   DRAFT = 'DRAFT',
   PUBLISHING = 'PUBLISHING',
   PUBLISHED = 'PUBLISHED',
+  FAILURE = 'FAILURE',
 }
 
 export enum SendStatus {
@@ -153,12 +155,14 @@ export type MultichainSendState = {
     [key: string]: DraftTransaction;
   };
   stage: SendStage;
+  error: string;
 };
 
 export const initialMultichainSendState: MultichainSendState = {
   currentTransactionUUID: '',
   draftTransactions: {},
   stage: SendStage.DRAFT,
+  error: '',
 };
 
 export const initialMultichainDraftTransaction: DraftTransaction = {
@@ -215,6 +219,7 @@ export const initialMultichainDraftTransaction: DraftTransaction = {
   },
   transaction: null,
   valid: false,
+  error: '',
 };
 
 export type MultichainSendAsyncThunkConfig = {
@@ -408,9 +413,9 @@ export const signAndSend = createAsyncThunk<
 
     await transactionBuilder.buildTransaction();
 
-    // sign and send transaction
-    // send to keyring / snap
-    return await transactionBuilder.sendTransaction();
+    // Confirmation to be displayed on snap
+    const signedTransaction = await transactionBuilder.signTransaction();
+    return await transactionBuilder.sendTransaction(signedTransaction);
   },
 );
 
@@ -702,8 +707,9 @@ export const multichainSendSlice = createSlice({
         state.stage = SendStage.PUBLISHED;
         multichainSendSlice.caseReducers.clearDraft(state);
       })
-      .addCase(signAndSend.rejected, (state) => {
-        state.stage = SendStage.DRAFT;
+      .addCase(signAndSend.rejected, (state, action) => {
+        state.stage = SendStage.FAILURE;
+        state.error = action.error.message ?? 'Unknown error';
       });
   },
 });

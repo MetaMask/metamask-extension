@@ -75,7 +75,7 @@ export abstract class AbstractTransactionBuilder {
   // The result should be the raw signed transaction
   abstract signTransaction(): Promise<string>;
 
-  abstract sendTransaction(): Promise<string>;
+  abstract sendTransaction(signedTransaction: string): Promise<string>;
 
   // The maximum amount the user can send after fees
   abstract setMaxSendAmount(): Promise<string>;

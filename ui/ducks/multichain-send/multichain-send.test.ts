@@ -818,9 +818,75 @@ describe('multichainSend slice', () => {
         expect(updatedState.multichainSend.draftTransactions).toEqual({});
       });
 
-      it('displays error if there is an error signing', async () => {});
+      it('displays error if there is an error signing', async () => {
+        const mockError = 'error';
+        jest
+          .spyOn(MockTransactionBuilder.prototype, 'signTransaction')
+          .mockRejectedValue(mockError);
+        const { store, actions } = createRealStore(
+          createCombinedStateWithUser(stateWithBTCDraft, mockBtcAccount),
+        );
 
-      it('displays error if there is an error propagating the tranaction', async () => {});
+        await store.dispatch(
+          signAndSend({
+            account: mockBtcAccount,
+            transactionId: stateWithBTCDraft.currentTransactionUUID,
+          }),
+        );
+
+        const updatedState = store.getState();
+
+        expect(actions[0]).toStrictEqual({
+          type: 'multichainSend/signAndSend/pending',
+          meta: expect.any(Object),
+          payload: undefined,
+        });
+        expect(actions[1]).toStrictEqual({
+          type: 'multichainSend/signAndSend/rejected',
+          meta: expect.any(Object),
+          payload: undefined,
+          error: {
+            message: mockError,
+          },
+        });
+        expect(updatedState.multichainSend.stage).toBe(SendStage.FAILURE);
+        expect(updatedState.multichainSend.error).toBe(mockError);
+      });
+
+      it('displays error if there is an error propagating the tranaction', async () => {
+        const mockError = 'error';
+        jest
+          .spyOn(MockTransactionBuilder.prototype, 'sendTransaction')
+          .mockRejectedValue(mockError);
+        const { store, actions } = createRealStore(
+          createCombinedStateWithUser(stateWithBTCDraft, mockBtcAccount),
+        );
+
+        await store.dispatch(
+          signAndSend({
+            account: mockBtcAccount,
+            transactionId: stateWithBTCDraft.currentTransactionUUID,
+          }),
+        );
+
+        const updatedState = store.getState();
+
+        expect(actions[0]).toStrictEqual({
+          type: 'multichainSend/signAndSend/pending',
+          meta: expect.any(Object),
+          payload: undefined,
+        });
+        expect(actions[1]).toStrictEqual({
+          type: 'multichainSend/signAndSend/rejected',
+          meta: expect.any(Object),
+          payload: undefined,
+          error: {
+            message: mockError,
+          },
+        });
+        expect(updatedState.multichainSend.stage).toBe(SendStage.FAILURE);
+        expect(updatedState.multichainSend.error).toBe(mockError);
+      });
     });
   });
 });
