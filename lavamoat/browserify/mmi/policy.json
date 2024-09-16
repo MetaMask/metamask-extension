@@ -2533,7 +2533,6 @@
     "@metamask/selected-network-controller": {
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/network-controller": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true
       }
     },
