@@ -1,7 +1,8 @@
 import { memoize } from 'lodash';
 import { Hex } from '@metamask/utils';
 import { getTokenStandardAndDetails } from '../../../store/actions';
-import { ERC20_DEFAULT_DECIMALS } from '../constants/token';
+
+export const ERC20_DEFAULT_DECIMALS = 18;
 
 /**
  * Fetches the decimals for the given token address.

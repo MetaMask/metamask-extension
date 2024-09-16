@@ -13,8 +13,7 @@ import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { getCurrentChainId, getCurrentCurrency } from '../../../../selectors';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
-import { ERC20_DEFAULT_DECIMALS } from '../../constants/token';
-import { fetchErc20Decimals } from '../../utils/token';
+import { ERC20_DEFAULT_DECIMALS, fetchErc20Decimals } from '../../utils/token';
 
 import {
   BalanceChange,
