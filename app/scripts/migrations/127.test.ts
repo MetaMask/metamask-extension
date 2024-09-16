@@ -553,6 +553,43 @@ describe(`migration #${version}`, () => {
     );
   });
 
+  it('handles the case where selectedNetworkClientId doesnt point to a valid endpoint and a custom endpoint is the default', async () => {
+    const oldState = {
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          selectedNetworkClientId: 'dont-point-to-anyuthing',
+          networkConfigurations: {
+            'custom-mainnet': {
+              id: 'custom-mainnet',
+              chainId: '0x1',
+              nickname: 'Custom Mainnet',
+              ticker: 'ETH',
+              rpcUrl: 'http://localhost/rpc',
+            },
+          },
+        },
+        TransactionController: {
+          transactions: [
+            {
+              chainId: '0x1',
+              time: 1,
+              networkClientId: 'custom-mainnet',
+            },
+          ],
+        },
+      },
+    };
+
+    const newState = await migrate(oldState);
+
+    // selectedNetworkClientId should fall back to custom mainnet
+    expect(
+      (newState.data.NetworkController as { selectedNetworkClientId: string })
+        .selectedNetworkClientId,
+    ).toStrictEqual('custom-mainnet');
+  });
+
   it('migrates the netork order controller', async () => {
     const oldState = {
       meta: { version: oldVersion },

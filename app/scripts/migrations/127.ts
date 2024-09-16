@@ -287,16 +287,27 @@ function transformState(
     return acc;
   }, {});
 
-  // Ensure that selectedNetworkClientId points to some endpoint of
-  // some network configuration. It may not, if its endpoint was not
-  // well formed or a duplicate.  In that case, fallback to mainnet.
-  const selectedNetworkClientId =
-    Object.values(networkConfigurationsByChainId)
-      .flatMap((n) =>
-        isObject(n) && Array.isArray(n.rpcEndpoints) ? n.rpcEndpoints : [],
-      )
-      .find((e) => e.networkClientId === networkState.selectedNetworkClientId)
-      ?.networkClientId ?? 'mainnet';
+  // Ensure that selectedNetworkClientId points to
+  // some endpoint of some network configuration.
+  let selectedNetworkClientId = Object.values(networkConfigurationsByChainId)
+    .flatMap((n) =>
+      isObject(n) && Array.isArray(n.rpcEndpoints) ? n.rpcEndpoints : [],
+    )
+    .find(
+      (e) => e.networkClientId === networkState.selectedNetworkClientId,
+    )?.networkClientId;
+
+  // It may not, if its endpoint was not well formed
+  // or a duplicate. In that case, fallback to mainnet
+  if (!selectedNetworkClientId) {
+    const mainnet = networkConfigurationsByChainId['0x1'];
+    selectedNetworkClientId =
+      isObject(mainnet) &&
+      Array.isArray(mainnet.rpcEndpoints) &&
+      typeof mainnet.defaultRpcEndpointIndex === 'number'
+        ? mainnet.rpcEndpoints[mainnet.defaultRpcEndpointIndex].networkClientId
+        : 'mainnet';
+  }
 
   // Redirect domains in the selected network controller to
   // point to the default RPC endpoint for the corresponding chain
