@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import TokenCell from '../token-cell';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Box } from '../../../component-library';
@@ -8,8 +7,19 @@ import {
   Display,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
+import { TokenWithBalance } from '../asset-list/asset-list';
 
-export default function TokenList({ onTokenClick, tokens, loading = false }) {
+type TokenListProps = {
+  onTokenClick: (arg: string) => void;
+  tokens: TokenWithBalance[];
+  loading: boolean;
+};
+
+export default function TokenList({
+  onTokenClick,
+  tokens,
+  loading = false,
+}: TokenListProps) {
   const t = useI18nContext();
 
   if (loading) {
@@ -34,9 +44,3 @@ export default function TokenList({ onTokenClick, tokens, loading = false }) {
     </div>
   );
 }
-
-TokenList.propTypes = {
-  onTokenClick: PropTypes.func.isRequired,
-  tokens: PropTypes.array.isRequired,
-  loading: PropTypes.bool,
-};
