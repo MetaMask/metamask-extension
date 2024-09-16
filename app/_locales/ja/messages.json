@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "他のネットワーク"
   },
-  "additionalRpcUrl": {
-    "message": "他のRPC URL"
-  },
   "address": {
     "message": "アドレス"
   },
@@ -1030,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "このメッセージの内容を承認し、要求元のサイトを信頼する場合にのみ確定してください。"
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "使用上限リクエスト"
   },
   "confirmTitleSIWESignature": {

@@ -800,6 +800,20 @@ export function getSwitchedNetworkDetails(state) {
   return null;
 }
 
+export function getNetworkDetails(state, chainId) {
+  const allNetworks = getAllNetworks(state);
+  if (chainId) {
+    const network = allNetworks.find(({ chainId: id }) => chainId === id);
+    return {
+      nickname: network?.nickname,
+      imageUrl: network?.rpcPrefs?.imageUrl,
+      origin: network?.origin,
+    };
+  }
+
+  return null;
+}
+
 export function getAppIsLoading(state) {
   return state.appState.isLoading;
 }

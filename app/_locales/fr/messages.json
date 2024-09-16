@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "Réseaux supplémentaires"
   },
-  "additionalRpcUrl": {
-    "message": "URL supplémentaire de RPC"
-  },
   "address": {
     "message": "Adresse"
   },
@@ -1030,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "Ne confirmez ce message que si vous approuvez son contenu et faites confiance au site demandeur."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Demande de plafonnement des dépenses"
   },
   "confirmTitleSIWESignature": {

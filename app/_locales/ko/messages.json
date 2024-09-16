@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "추가 네트워크"
   },
-  "additionalRpcUrl": {
-    "message": "추가 RPC URL"
-  },
   "address": {
     "message": "주소"
   },
@@ -1030,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "요청하는 사이트를 신뢰하고 그 내용을 완전히 이해하는 경우에만 이 메시지를 컨펌하세요."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "지출 한도 요청"
   },
   "confirmTitleSIWESignature": {
