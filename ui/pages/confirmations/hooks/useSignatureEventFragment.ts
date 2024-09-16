@@ -13,18 +13,20 @@ import type { MetaMetricsEventFragment } from '../../../../shared/constants/meta
  * This hook method is used to update an existing signature event fragment for a signature confirmation.
  */
 export const useSignatureEventFragment = () => {
-  const { currentConfirmation } = useConfirmContext() as {
-    currentConfirmation: SignatureRequestType;
-  };
+  const { currentConfirmation } = useConfirmContext();
 
-  const requestId = currentConfirmation?.msgParams?.requestId as number;
+  const requestId =
+    isSignatureTransactionType(currentConfirmation) &&
+    ((currentConfirmation as SignatureRequestType)?.msgParams
+      ?.requestId as number);
   const fragmentId = requestId ? generateSignatureUniqueId(requestId) : null;
 
   const updateSignatureEventFragment = useCallback(
     async (fragmentPayload: Partial<MetaMetricsEventFragment>) => {
-      if (!isSignatureTransactionType(currentConfirmation) || !fragmentId) {
+      if (!fragmentId) {
         return;
       }
+
       updateEventFragment(fragmentId, fragmentPayload);
     },
     [fragmentId],
