@@ -1075,7 +1075,7 @@
   "confirmTitleDescSignature": {
     "message": "Only confirm this message if you approve the content and trust the requesting site."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Spending cap request"
   },
   "confirmTitleSIWESignature": {
@@ -1787,6 +1787,15 @@
   },
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Edit speed up gas fee"
+  },
+  "editSpendingCap": {
+    "message": "Edit spending cap"
+  },
+  "editSpendingCapAccountBalance": {
+    "message": "Account balance: $1 $2"
+  },
+  "editSpendingCapDesc": {
+    "message": "Enter the amount that you feel comfortable being spent on your behalf."
   },
   "enable": {
     "message": "Enable"
