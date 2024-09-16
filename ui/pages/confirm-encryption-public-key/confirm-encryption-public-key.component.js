@@ -11,7 +11,6 @@ import SiteOrigin from '../../components/ui/site-origin';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
 
-// This component is only being used in stories and test file
 export default class ConfirmEncryptionPublicKey extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,

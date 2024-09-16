@@ -85,11 +85,3 @@ export function useUserPreferencedCurrency(type, opts = {}) {
   }
   return type === PRIMARY ? fiatReturn : nativeReturn;
 }
-
-/*
-if ((withCheck && showNat) || !withCheck) {
-  return primary ? native : fiat;
-} else {
-  return primary ? fiat : native;
-}
-*/

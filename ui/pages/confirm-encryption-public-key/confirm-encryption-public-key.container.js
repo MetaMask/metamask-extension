@@ -18,7 +18,6 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
 import ConfirmEncryptionPublicKey from './confirm-encryption-public-key.component';
 
-// Removing usage of useNativeCurrencyAsPrimaryCurrency because component ConfirmEncryptionPublicKey is not
 function mapStateToProps(state) {
   const {
     metamask: { subjectMetadata = {} },
