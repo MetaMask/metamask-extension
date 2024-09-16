@@ -70,6 +70,13 @@ const AssetListControlBar = ({
 
   const { loading } = accountTotalFiatBalance;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const appState = useSelector((state: any) => {
+    return state;
+  });
+  console.log('APP STATE: ', appState);
+
   useEffect(() => {
     if (!sorted) {
       setLoading(loading);

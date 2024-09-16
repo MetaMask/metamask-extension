@@ -5,6 +5,7 @@ import {
   HardwareTransportStates,
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
+import { SortCriteria } from '../../components/app/assets/util/sort';
 
 type AppState = {
   shouldClose: boolean;
@@ -101,6 +102,7 @@ type AppState = {
   snapsInstallPrivacyWarningShown: boolean;
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
+  tokenSortCriteria: undefined | SortCriteria;
 };
 
 type AppSliceState = {
@@ -185,6 +187,7 @@ const initialState: AppState = {
   snapsInstallPrivacyWarningShown: false,
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
+  tokenSortCriteria: undefined,
 };
 
 export default function reduceApp(
@@ -611,6 +614,11 @@ export default function reduceApp(
           result: 'none',
         },
       };
+    case actionConstants.TOKEN_SORT_CRITERIA:
+      return {
+        ...appState,
+        tokenSortCriteria: { ...action.payload },
+      };
     ///: END:ONLY_INCLUDE_IF
 
     default:
@@ -701,4 +709,8 @@ export function getLedgerWebHidConnectedStatus(
 
 export function getLedgerTransportStatus(state: AppSliceState): string | null {
   return state.appState.ledgerTransportStatus;
+}
+
+export function setSortOrderCriteria(payload: SortCriteria) {
+  return { type: actionConstants.TOKEN_SORT_CRITERIA, payload };
 }

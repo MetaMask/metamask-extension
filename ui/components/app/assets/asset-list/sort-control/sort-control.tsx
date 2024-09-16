@@ -7,6 +7,8 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../helpers/constants/design-system';
+import { useDispatch } from 'react-redux';
+import { setSortOrderCriteria } from '../../../../../ducks/app/app';
 
 // intentionally used generic naming convention for styled selectable list item
 // inspired from ui/components/multichain/network-list-item
@@ -54,6 +56,7 @@ const SortControl = ({
   setTokenList,
   setSorted,
 }: SortControlProps) => {
+  const dispatch = useDispatch();
   const [sortKey, setSortKey] = useState<string | null>(null);
 
   const handleSort = (
@@ -73,6 +76,13 @@ const SortControl = ({
     });
 
     setSorted(true);
+    dispatch(
+      setSortOrderCriteria({
+        key,
+        sortCallback,
+        order,
+      }),
+    );
     setTokenList(sorted);
   };
 
