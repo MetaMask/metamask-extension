@@ -7,7 +7,7 @@ const {
 const FixtureBuilder = require('../fixture-builder');
 
 describe('eth_accounts', function () {
-  it.only('executes a eth_accounts json rpc call', async function () {
+  it('executes a eth_accounts json rpc call', async function () {
     await withFixtures(
       {
         dapp: true,
