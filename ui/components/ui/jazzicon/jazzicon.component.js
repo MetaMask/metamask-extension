@@ -1,9 +1,21 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import jazzicon from '@metamask/jazzicon';
-import iconFactoryGenerator from '../../../helpers/utils/icon-factory';
+import { stringToBytes } from '@metamask/utils';
+import iconFactoryGenerator, {
+  IconFactory,
+} from '../../../helpers/utils/icon-factory';
 
-const iconFactory = iconFactoryGenerator(jazzicon);
+// Our existing seed generation for Ethereum addresses does not work with arbitrary string inputs.
+// Since it assumes the address can be parsed as hexadecimal, however that assumption does not hold for all multichain addresses.
+// Therefore we choose to use a byte array as the seed for multichain addresses.
+// This works since the underlying Mersenne Twister PRNG can be seeded with an array as well.
+function generateSeed(address) {
+  return Array.from(stringToBytes(address.normalize('NFKC').toLowerCase()));
+}
+
+const ethereumIconFactory = iconFactoryGenerator(jazzicon);
+const multichainIconFactory = new IconFactory(jazzicon, generateSeed);
 
 /**
  * Wrapper around the jazzicon library to return a React component, as the library returns an
@@ -16,11 +28,15 @@ function Jazzicon({
   diameter = 46,
   style,
   tokenList = {},
+  namespace = 'eip155',
 }) {
   const container = useRef();
 
   useEffect(() => {
     const _container = container.current;
+
+    const iconFactory =
+      namespace === 'eip155' ? ethereumIconFactory : multichainIconFactory;
 
     // add icon
     const imageNode = iconFactory.iconForAddress(
@@ -64,6 +80,10 @@ Jazzicon.propTypes = {
    * Add list of token in object
    */
   tokenList: PropTypes.object,
+  /**
+   * Must be a CAIP-10 namespace, defaults to eip155 (EVM).
+   */
+  namespace: PropTypes.string,
 };
 
 export default Jazzicon;
