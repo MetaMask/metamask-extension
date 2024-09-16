@@ -420,25 +420,6 @@ export const AccountListMenu = ({
               ) : null
               ///: END:ONLY_INCLUDE_IF
             }
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-              bitcoinTestnetSupportEnabled ? (
-                <Box marginTop={4}>
-                  <ButtonLink
-                    disabled={isBtcTestnetAccountAlreadyCreated}
-                    size={ButtonLinkSize.Sm}
-                    startIconName={IconName.Add}
-                    onClick={() => {
-                      setActionMode(ACTION_MODES.ADD_BITCOIN_TESTNET);
-                    }}
-                    data-testid="multichain-account-menu-popover-add-account-testnet"
-                  >
-                    {t('addNewBitcoinTestnetAccount')}
-                  </ButtonLink>
-                </Box>
-              ) : null
-              ///: END:ONLY_INCLUDE_IF
-            }
             <Box marginTop={4}>
               <ButtonLink
                 size={ButtonLinkSize.Sm}
