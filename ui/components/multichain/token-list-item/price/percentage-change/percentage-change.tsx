@@ -36,7 +36,7 @@ export const PercentageChange = ({
     <Box display={Display.Flex}>
       <Text
         fontWeight={FontWeight.Normal}
-        variant={TextVariant.bodyMd}
+        variant={TextVariant.bodySmMedium}
         color={color}
         data-testid={`token-increase-decrease-percentage-${address}`}
         ellipsis
