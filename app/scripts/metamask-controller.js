@@ -188,7 +188,6 @@ import {
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
-  MESSAGE_TYPE,
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
@@ -326,7 +325,7 @@ import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IF
 import { encryptorFactory } from './lib/encryptor-factory';
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
-import { addSignatureMessage } from './lib/signature/util';
+import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
 import PREINSTALLED_SNAPS from './snaps/preinstalled-snaps';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
@@ -2177,26 +2176,25 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 
       processTypedMessage: (...args) =>
-        addSignatureMessage({
+        addTypedMessage({
           SignatureController: this.signatureController,
           signatureParams: args,
-          type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
         }),
-      processTypedMessageV3: addSignatureMessage({
-        SignatureController: this.signatureController,
-        signatureParams: args,
-        type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3,
-      }),
-      processTypedMessageV4: addSignatureMessage({
-        SignatureController: this.signatureController,
-        signatureParams: args,
-        type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-      }),
-      processPersonalMessage: addSignatureMessage({
-        SignatureController: this.signatureController,
-        signatureParams: args,
-        type: MESSAGE_TYPE.PERSONAL_SIGN,
-      }),
+      processTypedMessageV3: (...args) =>
+        addTypedMessage({
+          SignatureController: this.signatureController,
+          signatureParams: args,
+        }),
+      processTypedMessageV4: (...args) =>
+        addTypedMessage({
+          SignatureController: this.signatureController,
+          signatureParams: args,
+        }),
+      processPersonalMessage: (...args) =>
+        addPersonalMessage({
+          SignatureController: this.signatureController,
+          signatureParams: args,
+        }),
       ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

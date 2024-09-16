@@ -16,26 +16,14 @@ export type AddSignatureMessageRequest = {
   type: MessageType;
 };
 
-const MESSAGE_TYPE_TO_FUNCTION = {
-  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA as MessageType]: 'newUnsignedTypedMessage',
-  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1 as MessageType]:
-    'newUnsignedTypedMessage',
-  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3 as MessageType]:
-    'newUnsignedTypedMessage',
-  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4 as MessageType]:
-    'newUnsignedTypedMessage',
-  [MESSAGE_TYPE.PERSONAL_SIGN as MessageType]: 'newUnsignedPersonalMessage',
-} as Record<MessageType, keyof SignatureController>;
-
-export async function addSignatureMessage(request: AddSignatureMessageRequest) {
-  const { signatureParams, signatureController, type } = request;
+async function handleSignature(
+  signatureParams: SignatureParams,
+  signatureController: SignatureController,
+  functionName: keyof SignatureController,
+) {
   const [_messageParams, signatureRequest] = signatureParams;
   const { id } = signatureRequest;
   const actionId = id?.toString();
-  const functionName = MESSAGE_TYPE_TO_FUNCTION[type] as keyof Pick<
-    SignatureController,
-    'newUnsignedTypedMessage' | 'newUnsignedPersonalMessage'
-  >;
 
   endTrace({ name: TraceName.Middleware, id: actionId });
 
@@ -46,4 +34,26 @@ export async function addSignatureMessage(request: AddSignatureMessageRequest) {
   endTrace({ name: TraceName.Signature, id: actionId });
 
   return hash;
+}
+
+export async function addTypedMessage(
+  signatureParams: SignatureParams,
+  signatureController: SignatureController,
+) {
+  return handleSignature(
+    signatureParams,
+    signatureController,
+    'newUnsignedTypedMessage',
+  );
+}
+
+export async function addPersonalMessage(
+  signatureParams: SignatureParams,
+  signatureController: SignatureController,
+) {
+  return handleSignature(
+    signatureParams,
+    signatureController,
+    'newUnsignedPersonalMessage',
+  );
 }

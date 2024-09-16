@@ -35,7 +35,7 @@ export default function createTracingMiddleware() {
       });
 
       await trace({
-        name: traceName,
+        name: TraceName.Middleware,
         id,
         parentContext: req.traceContext,
       });
