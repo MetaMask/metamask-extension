@@ -5763,21 +5763,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@metamask/notification-services-controller@npm:0.5.0"
+"@metamask/notification-services-controller@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@metamask/notification-services-controller@npm:0.6.0"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
-    "@metamask/base-controller": "npm:^7.0.0"
-    "@metamask/controller-utils": "npm:^11.2.0"
+    "@metamask/base-controller": "npm:^7.0.1"
+    "@metamask/controller-utils": "npm:^11.3.0"
     bignumber.js: "npm:^4.1.0"
     firebase: "npm:^10.11.0"
     loglevel: "npm:^1.8.1"
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/keyring-controller": ^17.0.0
-    "@metamask/profile-sync-controller": ^0.5.0
-  checksum: 10/e945cbf0b7138d22f1078844575dc89c990ddc6669724d1ce0db5ad43c74a86da1c5e1ab12614afbcc5c49125b09365689de2a2c9548af426932f4c1397a66bd
+    "@metamask/profile-sync-controller": ^0.0.0
+  checksum: 10/aae75eb9c3b94bf8187373d145a9fcc95c94135c239952ded8fde89f7e2464d8902bde82945461d2caa773d04ae47ed8264d42a127999e682671861fb6979d60
   languageName: node
   linkType: hard
 
@@ -5989,9 +5989,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@metamask/profile-sync-controller@npm:0.6.0"
+"@metamask/profile-sync-controller@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@metamask/profile-sync-controller@npm:0.7.0"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.1"
     "@metamask/snaps-sdk": "npm:^6.5.0"
@@ -6005,7 +6005,7 @@ __metadata:
     "@metamask/accounts-controller": ^18.1.1
     "@metamask/keyring-controller": ^17.2.0
     "@metamask/snaps-controllers": ^9.7.0
-  checksum: 10/d82acb7db550c3918d5e1f838393e03e8c2229a10f01a494fef181b2a7795b96502208b36f8bfc26a4de654ce080c4142d8ef32a9c065ba41f1db0d4f24d0482
+  checksum: 10/644fdf6e082e516b0ec1b76fa86b371c941dc12f357767ed5ec2e3b731b00f8009eea6b7ea734c2d68ad457e2f9471a31ca1f2b771f66cda5ac63c5d31df3432
   languageName: node
   linkType: hard
 
@@ -6345,6 +6345,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/snaps-rpc-methods@npm:11.1.0":
+  version: 11.1.0
+  resolution: "@metamask/snaps-rpc-methods@npm:11.1.0"
+  dependencies:
+    "@metamask/key-tree": "npm:^9.1.2"
+    "@metamask/permission-controller": "npm:^11.0.0"
+    "@metamask/rpc-errors": "npm:^6.3.1"
+    "@metamask/snaps-sdk": "npm:^6.4.0"
+    "@metamask/snaps-utils": "npm:^8.1.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^9.2.1"
+    "@noble/hashes": "npm:^1.3.1"
+  checksum: 10/96c068ce171553b743287237fc5f382234ed1e00d028e16b7f9779a8681317145cf89bc88e5fec6e2ea7edb0dc5d2b76c415a3116b1a4254c0173cb65c149a09
+  languageName: node
+  linkType: hard
+
 "@metamask/snaps-rpc-methods@npm:^11.0.0, @metamask/snaps-rpc-methods@npm:^11.1.1":
   version: 11.1.1
   resolution: "@metamask/snaps-rpc-methods@npm:11.1.1"
@@ -6405,7 +6421,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^8.0.1, @metamask/snaps-utils@npm:^8.1.1":
+"@metamask/snaps-utils@npm:^8.0.1, @metamask/snaps-utils@npm:^8.1.0, @metamask/snaps-utils@npm:^8.1.1":
   version: 8.1.1
   resolution: "@metamask/snaps-utils@npm:8.1.1"
   dependencies:
@@ -26031,7 +26047,7 @@ __metadata:
     "@metamask/name-controller": "npm:^8.0.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A20.2.0#~/.yarn/patches/@metamask-network-controller-npm-20.2.0-98b1a5ae59.patch"
     "@metamask/notification-controller": "npm:^6.0.0"
-    "@metamask/notification-services-controller": "npm:^0.5.0"
+    "@metamask/notification-services-controller": "npm:^0.6.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^10.0.0"
@@ -26040,7 +26056,7 @@ __metadata:
     "@metamask/phishing-warning": "npm:^4.0.0"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:0.34.0"
-    "@metamask/profile-sync-controller": "npm:^0.6.0"
+    "@metamask/profile-sync-controller": "npm:^0.7.0"
     "@metamask/providers": "npm:^14.0.2"
     "@metamask/queued-request-controller": "npm:^2.0.0"
     "@metamask/rate-limit-controller": "npm:^6.0.0"
@@ -26052,7 +26068,7 @@ __metadata:
     "@metamask/smart-transactions-controller": "npm:^13.0.0"
     "@metamask/snaps-controllers": "npm:^9.5.0"
     "@metamask/snaps-execution-environments": "npm:^6.6.2"
-    "@metamask/snaps-rpc-methods": "npm:^11.1.1"
+    "@metamask/snaps-rpc-methods": "npm:11.1.0"
     "@metamask/snaps-sdk": "npm:^6.3.0"
     "@metamask/snaps-utils": "npm:^8.0.1"
     "@metamask/test-bundler": "npm:^1.0.0"
