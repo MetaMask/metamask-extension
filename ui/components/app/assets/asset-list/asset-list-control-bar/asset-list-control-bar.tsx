@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   ButtonBase,
@@ -24,6 +24,8 @@ import {
 import { sortAssets } from '../../util/sort';
 import { useNativeTokenBalance } from '../native-token/use-native-token-balance';
 import { useAccountTotalFiatBalancesHook } from './use-account-total-fiat-balances';
+import { showImportTokensModal } from '../../../../../store/actions';
+import ImportControl from '../import-control';
 
 type AssetListControlBarProps = {
   tokenList: TokenWithBalance[];
@@ -131,20 +133,7 @@ const AssetListControlBar = ({
         >
           Sort By
         </ButtonBase>
-        <ButtonBase
-          size={ButtonBaseSize.Sm}
-          startIconName={IconName.Add}
-          backgroundColor={
-            isPopoverOpen
-              ? BackgroundColor.backgroundPressed
-              : BackgroundColor.backgroundDefault
-          }
-          borderColor={BorderColor.borderMuted}
-          borderStyle={BorderStyle.solid}
-          color={TextColor.textDefault}
-        >
-          Import
-        </ButtonBase>
+        <ImportControl />
         <Popover
           isOpen={isPopoverOpen}
           position={PopoverPosition.BottomStart}
