@@ -151,13 +151,13 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         ///: END:ONLY_INCLUDE_IF
       }
       <AssetListControlBar
-        tokenList={[nativeTokenWithBalance, ...tokenList]}
+        tokenList={tokenList}
         setTokenList={setTokenList}
         setLoading={setLoading}
         sorted={sorted}
         setSorted={setSorted}
       />
-      {!sorted && <NativeToken onClickAsset={onClickAsset} />}
+      {/* {!sorted && <NativeToken onClickAsset={onClickAsset} />} */}
       <TokenList
         nativeToken={<NativeToken onClickAsset={onClickAsset} />}
         tokens={tokenList}

@@ -67,11 +67,12 @@ const SortControl = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const [nativeToken] = tokenList.filter((token) => token.isNative);
-    const nonNativeTokens = tokenList.filter((token) => !token.isNative);
-    const dedupedTokenList = [nativeToken, ...nonNativeTokens];
+    // const [nativeToken] = tokenList.filter((token) => token.isNative);
+    // const nonNativeTokens = tokenList.filter((token) => !token.isNative);
+    // const dedupedTokenList = [nativeToken, ...nonNativeTokens];
 
-    const sortedAssets = sortAssets(dedupedTokenList, tokenSortConfig);
+    // const sortedAssets = sortAssets(dedupedTokenList, tokenSortConfig);
+    const sortedAssets = sortAssets(tokenList, tokenSortConfig);
     setSorted(true);
     setTokenList(sortedAssets);
   }, [tokenSortConfig]);

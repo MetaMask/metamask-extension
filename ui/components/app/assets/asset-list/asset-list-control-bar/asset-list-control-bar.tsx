@@ -28,6 +28,7 @@ import {
   BorderStyle,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
+import { sortAssets } from '../../util/sort';
 
 type AssetListControlBarProps = {
   tokenList: TokenWithBalance[];
@@ -53,6 +54,12 @@ const AssetListControlBar = ({
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const tokenSortConfig = useSelector((state: any) => {
+    return state.metamask.preferences.tokenSortConfig;
+  });
+
   // tokenExchangeRate
   const contractExchangeRates = useSelector(
     getTokenExchangeRates,
@@ -69,6 +76,8 @@ const AssetListControlBar = ({
   );
 
   const { loading } = accountTotalFiatBalance;
+
+  console.log(tokenList);
 
   useEffect(() => {
     if (!sorted) {
@@ -106,10 +115,16 @@ const AssetListControlBar = ({
           ) || '0';
       });
 
-      setTokenList(tokensWithBalances);
+      if (tokenSortConfig) {
+        const sortedTokenList = sortAssets(tokensWithBalances, tokenSortConfig);
+        setTokenList(sortedTokenList);
+      } else {
+        setTokenList(tokensWithBalances);
+      }
+
       setLoading(loading);
     }
-  }, [accountTotalFiatBalance]);
+  }, [tokenSortConfig]);
 
   const handleOpenPopover = () => {
     setIsPopoverOpen(!isPopoverOpen);
