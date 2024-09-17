@@ -37,10 +37,10 @@ import {
   RampsCard,
 } from '../../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
+///: END:ONLY_INCLUDE_IF
 import AssetListControlBar from './asset-list-control-bar';
 import { useNativeTokenBalance } from './native-token/use-native-token-balance';
 import NativeToken from './native-token';
-///: END:ONLY_INCLUDE_IF
 
 export type TokenWithBalance = {
   address: string;
