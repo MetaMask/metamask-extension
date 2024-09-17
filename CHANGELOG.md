@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.2.4]
+### Fixed
+- Fixes token approvals for users who have the "Decode smart contracts" setting toggled off ([#27203](https://github.com/MetaMask/metamask-extension/pull/27203))
 
 ## [12.2.3]
 ### Fixed
