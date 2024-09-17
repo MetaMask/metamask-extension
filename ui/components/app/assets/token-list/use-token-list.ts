@@ -13,9 +13,6 @@ import { TokenWithBalance } from '../asset-list/asset-list';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { getTokenFiatAmount } from '../../../../helpers/utils/token-util';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
-// import useAccountTotalFiatBalance from './useAccountTotalFiatBalance';
-// import { roundToDecimalPlacesRemovingExtraZeroes, getTokenFiatAmount } from './utils';
-// import isEqualCaseInsensitive from './isEqualCaseInsensitive'; // Assume this is a utility function
 
 export const useTokenList = () => {
   const selectedAccount = useSelector(getSelectedAccount);

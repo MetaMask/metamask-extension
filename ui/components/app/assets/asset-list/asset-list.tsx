@@ -138,7 +138,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         sorted={sorted}
         setSorted={setSorted}
       />
-      {/* {!sorted && <NativeToken onClickAsset={onClickAsset} />} */}
       <TokenList
         nativeToken={<NativeToken onClickAsset={onClickAsset} />}
         tokens={tokenList}

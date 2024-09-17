@@ -3008,13 +3008,11 @@ export function setPreferenceWithoutLoader(
   AnyAction
 > {
   return (dispatch: MetaMaskReduxDispatch) => {
-    // dispatch(showLoadingIndication());
     return new Promise<TemporaryPreferenceFlagDef>((resolve, reject) => {
       callBackgroundMethod<TemporaryPreferenceFlagDef>(
         'setPreference',
         [preference, value],
         (err, updatedPreferences) => {
-          // dispatch(hideLoadingIndication());
           if (err) {
             dispatch(displayWarning(err));
             reject(err);
