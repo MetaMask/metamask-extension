@@ -1,7 +1,7 @@
 import { JSXElementStruct } from '@metamask/snaps-sdk/jsx';
 import { COMPONENT_MAPPING } from './components';
 
-const EXCLUDED_COMPONENTS = ['Option', 'Radio', 'SelectorOption'];
+const EXCLUDED_COMPONENTS = ['Option', 'Radio', 'SelectorOption', 'Section'];
 
 describe('Snap UI mapping', () => {
   it('supports all exposed components', () => {
