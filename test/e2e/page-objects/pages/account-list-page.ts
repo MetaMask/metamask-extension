@@ -2,12 +2,19 @@ import { Driver } from '../../webdriver/driver';
 
 class AccountListPage {
   private driver: Driver;
+
   private accountListItem: object;
+
   private accountOptionsMenuButton: string;
+
   private hideUnhideAccountButton: string;
+
   private hiddenAccountsList: string;
+
   private hiddenAccountOptionsMenuButton: string;
+
   private pinnedIcon: string;
+
   private pinUnpinAccountButton: string;
 
   constructor(driver: Driver) {
