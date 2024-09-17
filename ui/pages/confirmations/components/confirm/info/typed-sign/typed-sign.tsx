@@ -46,12 +46,10 @@ const TypedSignInfo: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      console.log('useEffect');
       if (!isPermit && !isOrder) {
         return;
       }
       const tokenDetails = await getTokenStandardAndDetails(verifyingContract);
-      console.log('tokenDetails: ', tokenDetails);
       const tokenDecimals = tokenDetails?.decimals;
 
       setDecimals(parseInt(tokenDecimals ?? '0', 10));
