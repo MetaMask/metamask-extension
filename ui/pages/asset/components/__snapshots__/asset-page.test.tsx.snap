@@ -515,7 +515,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                   class="mm-box mm-box--display-flex"
                 >
                   <p
-                    class="mm-box mm-text mm-text--body-sm-medium mm-text--font-weight-normal mm-text--ellipsis mm-box--color-text-default"
+                    class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
                     data-testid="token-increase-decrease-percentage-0x309375769E79382beFDEc5bdab51063AeBDC4936"
                   />
                 </div>
@@ -998,7 +998,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                   class="mm-box mm-box--display-flex"
                 >
                   <p
-                    class="mm-box mm-text mm-text--body-sm-medium mm-text--font-weight-normal mm-text--ellipsis mm-box--color-text-default"
+                    class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
                     data-testid="token-increase-decrease-percentage-0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55"
                   />
                 </div>
