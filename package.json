@@ -265,7 +265,7 @@
     "@metamask/nonce-tracker@npm:^5.0.0": "patch:@metamask/nonce-tracker@npm%3A5.0.0#~/.yarn/patches/@metamask-nonce-tracker-npm-5.0.0-d81478218e.patch",
     "@metamask/keyring-controller@npm:^17.1.0": "patch:@metamask/keyring-controller@npm%3A17.1.1#~/.yarn/patches/@metamask-keyring-controller-npm-17.1.1-098cb41930.patch",
     "@trezor/connect-web@npm:^9.1.11": "patch:@trezor/connect-web@npm%3A9.3.0#~/.yarn/patches/@trezor-connect-web-npm-9.3.0-040ab10d9a.patch",
-    "@metamask/transaction-controller@npm:^34.0.0": "patch:@metamask/transaction-controller@npm%3A34.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-34.0.0-8bdfa87aaf.patch"
+    "@metamask/transaction-controller@npm:^34.0.0": "patch:@metamask/transaction-controller@npm%3A34.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-34.0.0-8bdfa87aaf.patch",
     "path-to-regexp": "1.9.0"
   },
   "dependencies": {
