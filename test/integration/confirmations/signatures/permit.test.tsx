@@ -12,6 +12,11 @@ import {
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { createMockImplementation } from '../../helpers';
 
+jest.mock('../../../../ui/store/institutional/institution-background', () => ({
+  ...jest.requireActual('../../../../ui/store/institutional/institution-background'),
+  setNoteToTraderMessage: jest.fn(),
+}));
+
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
