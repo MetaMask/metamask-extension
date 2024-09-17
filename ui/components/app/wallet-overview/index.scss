@@ -35,9 +35,12 @@
   }
   &__portfolio_text{
     font-family: "Euclid Circular B" !important;
-    font-size: 14px !important;
+    font-size: 16px !important;
     font-weight: 500 !important;
     line-height: 22px !important;
+    @include design-system.screen-sm-max {
+      font-size: 14px !important;
+    }
   }
 
   &__currency-wrapper {
