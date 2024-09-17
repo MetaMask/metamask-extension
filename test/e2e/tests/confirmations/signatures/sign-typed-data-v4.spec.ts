@@ -39,6 +39,7 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
           driver,
           SignatureType.SignTypedDataV4,
         );
+        await driver.delay(200);
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
