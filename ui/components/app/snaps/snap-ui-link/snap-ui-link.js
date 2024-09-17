@@ -9,34 +9,65 @@ import {
   IconSize,
 } from '../../../component-library';
 import SnapLinkWarning from '../snap-link-warning';
+import useNavigation from '../../../../hooks/snaps/useNavigation';
 
 export const SnapUILink = ({ href, children }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const isMetaMaskUrl = href.startsWith('metamask:');
+  const { navigate } = useNavigation();
+
   const handleLinkClick = () => {
-    setIsOpen(true);
+    if (isMetaMaskUrl) {
+      navigate(href);
+    } else {
+      setIsOpen(true);
+    }
   };
 
   const handleModalClose = () => {
     setIsOpen(false);
   };
 
-  return (
-    <>
-      <SnapLinkWarning isOpen={isOpen} onClose={handleModalClose} url={href} />
-      <ButtonLink
-        as="a"
-        onClick={handleLinkClick}
-        externalLink
-        size={ButtonLinkSize.Inherit}
-        display={Display.Inline}
-        className="snap-ui-link"
-      >
-        {children}
-        <Icon name={IconName.Export} size={IconSize.Inherit} marginLeft={1} />
-      </ButtonLink>
-    </>
-  );
+  const ExternalLink = () => {
+    return (
+      <>
+        <SnapLinkWarning
+          isOpen={isOpen}
+          onClose={handleModalClose}
+          url={href}
+        />
+        <ButtonLink
+          as="a"
+          onClick={handleLinkClick}
+          externalLink
+          size={ButtonLinkSize.Inherit}
+          display={Display.Inline}
+          className="snap-ui-link"
+        >
+          {children}
+          <Icon name={IconName.Export} size={IconSize.Inherit} marginLeft={1} />
+        </ButtonLink>
+      </>
+    );
+  };
+
+  const DeepLink = () => {
+    return (
+      <>
+        <ButtonLink
+          as="a"
+          size={ButtonLinkSize.Inherit}
+          className="snap-ui-link"
+          onClick={handleLinkClick}
+        >
+          {children}
+        </ButtonLink>
+      </>
+    );
+  };
+
+  return isMetaMaskUrl ? <DeepLink /> : <ExternalLink />;
 };
 
 SnapUILink.propTypes = {
