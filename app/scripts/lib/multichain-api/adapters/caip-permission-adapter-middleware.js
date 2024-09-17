@@ -41,7 +41,7 @@ export async function CaipPermissionAdapterMiddleware(
   if (
     !scopesObject[scope]?.methods?.includes(method) &&
     !scopesObject['wallet:eip155']?.methods?.includes(method) &&
-    !scopesObject['wallet']?.methods?.includes(method)
+    !scopesObject.wallet?.methods?.includes(method)
   ) {
     return end(providerErrors.unauthorized());
   }

@@ -9,7 +9,7 @@ const transformOpenRPCDocument = (
   openrpcDocument: OpenrpcDocument,
   chainId: number,
   account: string,
-) => {
+): [OpenrpcDocument, string[], string[]] => {
   // transform the document here
 
   const transaction =
@@ -284,7 +284,41 @@ const transformOpenRPCDocument = (
     //   },
     // },
   ];
-  return openrpcDocument;
+  // TODO: move these to a "Confirmation" tag in api-specs
+  const methodsWithConfirmations = [
+    'wallet_requestPermissions',
+    'eth_requestAccounts',
+    'wallet_watchAsset',
+    'personal_sign', // requires permissions for eth_accounts
+    'wallet_addEthereumChain',
+    'eth_signTypedData_v4', // requires permissions for eth_accounts
+    'wallet_switchEthereumChain',
+
+    // commented out because its not returning 4001 error.
+    // see here https://github.com/MetaMask/metamask-extension/issues/24227
+    // 'eth_getEncryptionPublicKey', // requires permissions for eth_accounts
+  ];
+  const filteredMethods = openrpcDocument.methods
+    .filter((_m: unknown) => {
+      const m = _m as MethodObject;
+      return (
+        m.name.includes('snap') ||
+        m.name.includes('Snap') ||
+        m.name.toLowerCase().includes('account') ||
+        m.name.includes('crypt') ||
+        m.name.includes('blob') ||
+        m.name.includes('sendTransaction') ||
+        m.name.startsWith('wallet_scanQRCode') ||
+        methodsWithConfirmations.includes(m.name) ||
+        // filters are currently 0 prefixed for odd length on
+        // extension which doesn't pass spec
+        // see here: https://github.com/MetaMask/eth-json-rpc-filters/issues/152
+        m.name.includes('filter') ||
+        m.name.includes('Filter')
+      );
+    })
+    .map((m) => (m as MethodObject).name);
+  return [openrpcDocument, filteredMethods, methodsWithConfirmations];
 };
 
 export default transformOpenRPCDocument;

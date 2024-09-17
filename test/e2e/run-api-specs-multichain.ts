@@ -9,7 +9,10 @@ import {
 import { MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
 import { Driver, PAGES } from './webdriver/driver';
 
-import { createMultichainDriverTransport } from './api-specs/helpers';
+import {
+  createCaip27DriverTransport,
+  createMultichainDriverTransport,
+} from './api-specs/helpers';
 
 import FixtureBuilder from './fixture-builder';
 import {
@@ -22,6 +25,9 @@ import {
 import { MultichainAuthorizationConfirmation } from './api-specs/MultichainAuthorizationConfirmation';
 import transformOpenRPCDocument from './api-specs/transform';
 import { MultichainAuthorizationConfirmationErrors } from './api-specs/MultichainAuthorizationConfirmationErrors';
+import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
+import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
+import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -44,12 +50,52 @@ async function main() {
 
       // Open Dapp
       await openDapp(driver, undefined, DAPP_URL);
+
       const doc = await parseOpenRPCDocument(
         MultiChainOpenRPCDocument as OpenrpcDocument,
       );
       const providerAuthorize = doc.methods.find(
         (m) => (m as MethodObject).name === 'wallet_createSession',
       );
+
+      const walletRpcMethods: string[] = [
+        'wallet_registerOnboarding',
+        'wallet_scanQRCode',
+      ];
+      const walletEip155Methods = [
+        'wallet_addEthereumChain',
+        'personal_sign',
+        'eth_signTypedData_v4',
+      ];
+
+      const ignoreMethods = [
+        'wallet_switchEthereumChain',
+        'wallet_getPermissions',
+        'wallet_requestPermissions',
+        'wallet_revokePermissions',
+        'eth_requestAccounts',
+        'eth_accounts',
+        'eth_coinbase',
+        'net_version',
+      ];
+
+      const transport = createMultichainDriverTransport(driver);
+      const [transformedDoc, filteredMethods, methodsWithConfirmations] =
+        transformOpenRPCDocument(
+          MetaMaskOpenRPCDocument as OpenrpcDocument,
+          chainId,
+          ACCOUNT_1,
+        );
+      const ethereumMethods = transformedDoc.methods
+        .map((m) => (m as MethodObject).name)
+        .filter((m) => {
+          const match =
+            walletRpcMethods.includes(m) ||
+            walletEip155Methods.includes(m) ||
+            ignoreMethods.includes(m);
+          return !match;
+        });
+      console.log('ethereumMethods', ethereumMethods);
 
       // fix the example for wallet_createSession
       (providerAuthorize as MethodObject).examples = [
@@ -61,17 +107,16 @@ async function main() {
               name: 'requiredScopes',
               value: {
                 eip155: {
-                  scopes: ['eip155:1'],
-                  methods: ['eth_sendTransaction', 'eth_getBalance'],
+                  scopes: ['eip155:1337'],
+                  methods: ethereumMethods,
+                  notifications: ['eth_subscription'],
+                },
+                'wallet:eip155': {
+                  methods: walletEip155Methods,
                   notifications: [],
                 },
-              },
-            },
-            {
-              name: 'optionalScopes',
-              value: {
-                'eip155:1337': {
-                  methods: ['eth_sendTransaction', 'eth_getBalance'],
+                wallet: {
+                  methods: walletRpcMethods,
                   notifications: [],
                 },
               },
@@ -82,14 +127,19 @@ async function main() {
             value: {
               sessionId: '0xdeadbeef',
               sessionScopes: {
-                'eip155:1': {
-                  accounts: [`eip155:1:${ACCOUNT_1}`],
-                  methods: ['eth_sendTransaction', 'eth_getBalance'],
-                  notifications: [],
-                },
                 [`eip155:${chainId}`]: {
                   accounts: [`eip155:${chainId}:${ACCOUNT_1}`],
-                  methods: ['eth_sendTransaction', 'eth_getBalance'],
+                  methods: ethereumMethods,
+                  notifications: ['eth_subscription'],
+                },
+                'wallet:eip155': {
+                  accounts: [`wallet:eip155:${ACCOUNT_1}`],
+                  methods: walletEip155Methods,
+                  notifications: [],
+                },
+                wallet: {
+                  accounts: [],
+                  methods: walletRpcMethods,
                   notifications: [],
                 },
               },
@@ -97,13 +147,6 @@ async function main() {
           },
         },
       ];
-
-      const transport = createMultichainDriverTransport(driver);
-      const transformedDoc = transformOpenRPCDocument(
-        MetaMaskOpenRPCDocument as OpenrpcDocument,
-        chainId,
-        ACCOUNT_1,
-      );
 
       const server = mockServer(port, transformedDoc);
       server.start();
@@ -131,10 +174,54 @@ async function main() {
         ],
       });
 
+      const testCoverageResultsCaip27 = await testCoverage({
+        openrpcDocument: MetaMaskOpenRPCDocument as OpenrpcDocument,
+        transport: createCaip27DriverTransport(driver, `eip155:${chainId}`),
+        reporters: [
+          'console-streaming',
+          new HtmlReporter({
+            autoOpen: !process.env.CI,
+            destination: `${process.cwd()}/html-report-caip27`,
+          }),
+        ],
+        skip: [
+          'eth_coinbase',
+          // these 2 methods below are not supported by MetaMask extension yet and
+          // don't get passed through. See here: https://github.com/MetaMask/metamask-extension/issues/24225
+          'eth_getBlockReceipts',
+          'eth_maxPriorityFeePerGas',
+          'wallet_revokePermissions',
+          'wallet_requestPermissions',
+          'wallet_getPermissions',
+          'eth_accounts',
+          'eth_requestAccounts',
+          'net_version', // not in the spec yet for some reason
+        ],
+        rules: [
+          new JsonSchemaFakerRule({
+            only: [],
+            skip: filteredMethods,
+            numCalls: 2,
+          }),
+          new ExamplesRule({
+            only: [],
+            skip: filteredMethods,
+          }),
+          // new ConfirmationsRejectRule({
+          //   driver,
+          //   only: methodsWithConfirmations,
+          // }),
+        ],
+      });
+
+      const joinedResults = testCoverageResults.concat(
+        testCoverageResultsCaip27,
+      );
+
       await driver.quit();
 
       // if any of the tests failed, exit with a non-zero code
-      if (testCoverageResults.every((r) => r.valid)) {
+      if (joinedResults.every((r) => r.valid)) {
         process.exit(0);
       } else {
         process.exit(1);

@@ -21,9 +21,13 @@ export const assertScopeSupported = (
     throw new EthereumRpcError(5100, 'Requested chains are not supported');
   }
 
-  const allMethodsSupported = methods.every((method) =>
-    isSupportedMethod(scopeString, method),
-  );
+  const notSupportedMethods: string[] = [];
+  const allMethodsSupported = methods.every((method) => {
+    const isSupported = isSupportedMethod(scopeString, method);
+    notSupportedMethods.push(method);
+    return isSupported;
+  });
+
   if (!allMethodsSupported) {
     // not sure which one of these to use
     // When provider evaluates requested methods to not be supported
@@ -33,7 +37,12 @@ export const assertScopeSupported = (
     //   code = 5201
     //   message = "Unknown method(s) requested"
 
-    throw new EthereumRpcError(5101, 'Requested methods are not supported');
+    throw new EthereumRpcError(
+      5101,
+      `Requested methods are not supported ${JSON.stringify(
+        notSupportedMethods,
+      )}`,
+    );
   }
 
   if (
