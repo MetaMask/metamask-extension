@@ -92,8 +92,8 @@ buildTypes:
       - REQUIRE_SNAPS_ALLOWLIST: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.6.2/index.html
       - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
-      - SUPPORT_LINK: https://mmi-support.metamask.io/hc/en-us
-      - SUPPORT_REQUEST_LINK: https://mmi-support.metamask.io/hc/en-us/requests/new
+      - SUPPORT_LINK: https://support.metamask-institutional.io
+      - SUPPORT_REQUEST_LINK: https://support.metamask-institutional.io
       - SENTRY_DSN: SENTRY_MMI_DSN
     # For some reason, MMI uses this type of versioning
     # Leaving it on for backwards compatibility
@@ -230,6 +230,10 @@ env:
   - INFURA_PROJECT_ID
   # Modified in <root>/development/build/scripts.js:@getSegmentWriteKey
   - SEGMENT_WRITE_KEY: ''
+  # Modified in <root>/development/build/scripts.js:@getAnalyticsDataDeletionSourceId
+  - ANALYTICS_DATA_DELETION_SOURCE_ID: null
+  # Modified in <root>/development/build/scripts.js:@getAnalyticsDataDeletionEndpoint
+  - ANALYTICS_DATA_DELETION_ENDPOINT: null
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   # Also see DEBUG and NODE_DEBUG
   - METAMASK_DEBUG: false

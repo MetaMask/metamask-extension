@@ -53,13 +53,6 @@ develop_master_rc_only: &develop_master_rc_only
         - master
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 
-exclude_develop_master_rc: &exclude_develop_master_rc
-  filters:
-    branches:
-      ignore:
-        - develop
-        - master
-        - /^Version-v(\d+)[.](\d+)[.](\d+)/
 aliases:
   # Shallow Git Clone
   - &shallow-git-clone-and-enable-vnc
@@ -124,7 +117,10 @@ workflows:
       - check-pr-tag
       - prep-deps
       - get-changed-files-with-git-diff:
-          <<: *exclude_develop_master_rc
+          filters:
+              branches:
+                ignore:
+                  - master
           requires:
             - prep-deps
       - test-deps-audit:
@@ -505,6 +501,7 @@ jobs:
       - run: sudo corepack enable
       - attach_workspace:
           at: .
+      - gh/install
       - run:
           name: Get changed files with git diff
           command: npx tsx .circleci/scripts/git-diff-develop.ts

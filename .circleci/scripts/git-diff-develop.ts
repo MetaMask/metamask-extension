@@ -6,6 +6,26 @@ import { promisify } from 'util';
 
 const exec = promisify(execCallback);
 
+const MAIN_BRANCH = 'develop';
+
+/**
+ * Get the target branch for the given pull request.
+ *
+ * @returns The name of the branch targeted by the PR.
+ */
+async function getBaseRef(): Promise<string | null> {
+  if (!process.env.CIRCLE_PULL_REQUEST) {
+    return null;
+  }
+
+  // We're referencing the CIRCLE_PULL_REQUEST environment variable within the script rather than
+  // passing it in because this makes it easier to use Bash parameter expansion to extract the
+  // PR number from the URL.
+  const result = await exec(`gh pr view --json baseRefName "\${CIRCLE_PULL_REQUEST##*/}" --jq '.baseRefName'`);
+  const baseRef = result.stdout.trim();
+  return baseRef;
+}
+
 /**
  * Fetches the git repository with a specified depth.
  *
@@ -76,13 +96,30 @@ async function gitDiff(): Promise<string> {
  */
 async function storeGitDiffOutput() {
   try {
+    // Create the directory
+    // This is done first because our CirleCI config requires that this directory is present,
+    // even if we want to skip this step.
+    const outputDir = 'changed-files';
+    fs.mkdirSync(outputDir, { recursive: true });
+
+    console.log(`Determining whether this run is for a PR targetting ${MAIN_BRANCH}`)
+    if (!process.env.CIRCLE_PULL_REQUEST) {
+      console.log("Not a PR, skipping git diff");
+      return;
+    }
+
+    const baseRef = await getBaseRef();
+    if (baseRef === null) {
+      console.log("Not a PR, skipping git diff");
+      return;
+    } else if (baseRef !== MAIN_BRANCH) {
+      console.log(`This is for a PR targeting '${baseRef}', skipping git diff`);
+      return;
+    }
+
     console.log("Attempting to get git diff...");
     const diffOutput = await gitDiff();
     console.log(diffOutput);
-
-    // Create the directory
-    const outputDir = 'changed-files';
-    fs.mkdirSync(outputDir, { recursive: true });
 
     // Store the output of git diff
     const outputPath = path.resolve(outputDir, 'changed-files.txt');
