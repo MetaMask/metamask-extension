@@ -273,8 +273,6 @@ export default function createRPCMethodTrackingMiddleware({
       // Don't track if the user isn't participating in metametrics
       userParticipatingInMetaMetrics === true;
 
-    let signatureUniqueId;
-
     if (shouldTrackEvent) {
       // We track an initial "requested" event as soon as the dapp calls the
       // provider method. For the events not special cased this is the only
@@ -453,7 +451,10 @@ export default function createRPCMethodTrackingMiddleware({
         location,
       };
 
-      if (signatureUniqueId) {
+      if (
+        event === MetaMetricsEventName.SignatureRejected ||
+        event === MetaMetricsEventName.SignatureApproved
+      ) {
         const finalizeOptions = {
           abandoned: event === eventType.REJECTED,
         };
@@ -476,7 +477,6 @@ export default function createRPCMethodTrackingMiddleware({
             url: origin,
           },
           properties,
-          sensitiveProperties: sensitiveEventProperties,
         });
       }
       return callback();
