@@ -1,12 +1,11 @@
 import React, {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   useState,
-  useContext,
   ///: END:ONLY_INCLUDE_IF
 } from 'react';
 import { useHistory } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import { setCompletedOnboarding } from '../../../store/actions';
 ///: END:ONLY_INCLUDE_IF
@@ -31,13 +30,6 @@ import OnboardingPinMmiBillboard from '../../institutional/pin-mmi-billboard/pin
 ///: END:ONLY_INCLUDE_IF
 import { Text } from '../../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getFirstTimeFlowType } from '../../../selectors';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import OnboardingPinBillboard from './pin-billboard';
 ///: END:ONLY_INCLUDE_IF
 
@@ -47,8 +39,6 @@ export default function OnboardingPinExtension() {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const [selectedIndex, setSelectedIndex] = useState(0);
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
-  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -57,15 +47,6 @@ export default function OnboardingPinExtension() {
       setSelectedIndex(1);
     } else {
       await dispatch(setCompletedOnboarding());
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.OnboardingWalletSetupComplete,
-        properties: {
-          wallet_setup_type:
-            firstTimeFlowType === FirstTimeFlowType.import ? 'import' : 'new',
-          new_wallet: firstTimeFlowType === FirstTimeFlowType.create,
-        },
-      });
       history.push(DEFAULT_ROUTE);
     }
   };
