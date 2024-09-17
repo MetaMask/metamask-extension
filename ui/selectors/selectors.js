@@ -46,6 +46,7 @@ import {
   MOONBEAM_DISPLAY_NAME,
   MOONRIVER_DISPLAY_NAME,
   BUILT_IN_NETWORKS,
+  TEST_NETWORK_IDS,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -799,6 +800,20 @@ export function getSwitchedNetworkDetails(state) {
   return null;
 }
 
+export function getNetworkDetails(state, chainId) {
+  const allNetworks = getAllNetworks(state);
+  if (chainId) {
+    const network = allNetworks.find(({ chainId: id }) => chainId === id);
+    return {
+      nickname: network?.nickname,
+      imageUrl: network?.rpcPrefs?.imageUrl,
+      origin: network?.origin,
+    };
+  }
+
+  return null;
+}
+
 export function getAppIsLoading(state) {
   return state.appState.isLoading;
 }
@@ -962,17 +977,18 @@ export function getTestNetworkBackgroundColor(state) {
 }
 
 export function getShouldShowFiat(state) {
-  const isMainNet = getIsMainnet(state);
-  const isLineaMainNet = getIsLineaMainnet(state);
-  const isCustomNetwork = getIsCustomNetwork(state);
+  const currentChainId = getCurrentChainId(state);
+  const isTestnet = TEST_NETWORK_IDS.includes(currentChainId);
+  const { showFiatInTestnets } = getPreferences(state);
   const conversionRate = getConversionRate(state);
   const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
-  const { showFiatInTestnets } = getPreferences(state);
-  return Boolean(
-    (isMainNet || isLineaMainNet || isCustomNetwork || showFiatInTestnets) &&
-      useCurrencyRateCheck &&
-      conversionRate,
-  );
+  const isConvertibleToFiat = Boolean(useCurrencyRateCheck && conversionRate);
+
+  if (isTestnet) {
+    return showFiatInTestnets && isConvertibleToFiat;
+  }
+
+  return isConvertibleToFiat;
 }
 
 export function getShouldHideZeroBalanceTokens(state) {
@@ -1246,7 +1262,7 @@ export function getKnownMethodData(state, data) {
   const fourBytePrefix = prefixedData.slice(0, 10);
   const { knownMethodData, use4ByteResolution } = state.metamask;
   // If 4byte setting is off, we do not want to return the knownMethodData
-  return use4ByteResolution ? knownMethodData?.[fourBytePrefix] : undefined;
+  return use4ByteResolution ? knownMethodData?.[fourBytePrefix] ?? {} : {};
 }
 
 export function getFeatureFlags(state) {
