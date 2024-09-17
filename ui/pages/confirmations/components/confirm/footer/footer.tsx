@@ -17,6 +17,7 @@ import {
 } from '../../../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useMMIConfirmations } from '../../../../../hooks/useMMIConfirmations';
+import { getNoteToTraderMessage } from '../../../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IF
 import useAlerts from '../../../../../hooks/useAlerts';
 import {
@@ -119,6 +120,7 @@ const Footer = () => {
   const { from } = getConfirmationSender(currentConfirmation);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  const noteToTraderMessage = useSelector(getNoteToTraderMessage);
   const { mmiOnTransactionCallback, mmiOnSignCallback, mmiSubmitDisabled } =
     useMMIConfirmations();
   ///: END:ONLY_INCLUDE_IF
@@ -179,7 +181,7 @@ const Footer = () => {
       );
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      mmiOnTransactionCallback(updatedTx);
+      mmiOnTransactionCallback(updatedTx, noteToTraderMessage);
       ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -192,7 +194,13 @@ const Footer = () => {
       mmiOnSignCallback();
       ///: END:ONLY_INCLUDE_IF
     }
-  }, [currentConfirmation, customNonceValue]);
+  }, [
+    currentConfirmation,
+    customNonceValue,
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    noteToTraderMessage,
+    ///: END:ONLY_INCLUDE_IF
+  ]);
 
   const onFooterCancel = useCallback(() => {
     onCancel({ location: MetaMetricsEventLocation.Confirmation });

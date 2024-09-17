@@ -12,7 +12,6 @@ import { showCustodyConfirmLink } from '../store/institutional/institution-actio
 import {
   getIsNoteToTraderSupported,
   getIsCustodianPublishesTransactionSupported,
-  getNoteToTraderMessage,
   State,
 } from '../selectors/institutional/selectors';
 import { useConfirmContext } from '../pages/confirmations/context/confirm';
@@ -49,10 +48,6 @@ export function useMMICustodySendTransaction() {
     getIsCustodianPublishesTransactionSupported(state, fromChecksumHexAddress),
   );
 
-  const noteToTraderMessage = useSelector((state: State) =>
-    getNoteToTraderMessage(state),
-  );
-
   const isSmartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
 
   const { chainId, rpcUrl: customRpcUrl } =
@@ -63,7 +58,10 @@ export function useMMICustodySendTransaction() {
 
   const rpcUrl = customRpcUrl || builtinRpcUrl;
 
-  const custodyTransactionFn = async (_transactionData: TransactionMeta) => {
+  const custodyTransactionFn = async (
+    _transactionData: TransactionMeta,
+    noteToTraderMessage: string,
+  ) => {
     const confirmation = _transactionData as MMITransactionMeta;
 
     if (confirmation && accountType === AccountType.CUSTODY) {
