@@ -116,6 +116,7 @@ import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import { EndTraceRequest } from '../../shared/lib/trace';
+import { SortCriteria } from '../components/app/assets/util/sort';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -130,7 +131,6 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
-import { SortCriteria } from '../components/app/assets/util/sort';
 
 type CustomGasSettings = {
   gas?: string;
