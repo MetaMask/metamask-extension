@@ -20,6 +20,8 @@ import { useMultichainSelector } from './useMultichainSelector';
  *                                             when using ETH
  * @property {number} [fiatNumberOfDecimals] - Number of significant decimals to display
  *                                            when using fiat
+ * @property {boolean} [shouldCheckShowNativeToken] - Boolean to know if checking the setting
+ *                                                  show native token as main balance is needed
  */
 
 /**
