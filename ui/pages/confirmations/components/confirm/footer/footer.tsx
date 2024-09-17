@@ -171,7 +171,10 @@ const Footer = () => {
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       const mergeTxDataWithNonce = (transactionData: TransactionMeta) =>
         customNonceValue
-          ? { ...transactionData, customNonceValue }
+          ? {
+              ...transactionData,
+              customNonceValue,
+            }
           : transactionData;
 
       const updatedTx = mergeTxDataWithNonce(

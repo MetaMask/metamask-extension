@@ -1027,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "Подтверждайте это сообщение только в том случае, если вы одобряете его содержание и доверяете запрашивающему сайту."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Запрос лимита расходов"
   },
   "confirmTitleSIWESignature": {
