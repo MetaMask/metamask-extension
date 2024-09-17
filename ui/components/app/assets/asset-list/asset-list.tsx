@@ -40,6 +40,7 @@ import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 import AssetListControlBar from './asset-list-control-bar';
 import { useNativeTokenBalance } from './native-token/use-native-token-balance';
 import NativeToken from './native-token';
+import { useTokenList } from '../token-list/use-token-list';
 ///: END:ONLY_INCLUDE_IF
 
 export type TokenWithBalance = {
@@ -58,6 +59,7 @@ export type AssetListProps = {
 
 const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const [tokenList, setTokenList] = useState<TokenWithBalance[]>([]);
+  // const { tokenList } = useTokenList();
   const [loading, setLoading] = useState(false);
   const [sorted, setSorted] = useState(false); // TODO: Set to preferences
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);

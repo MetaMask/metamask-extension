@@ -1,4 +1,4 @@
-import React, { useState, ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { Box } from '../../../../component-library';
@@ -10,6 +10,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 // import { setSortOrderCriteria } from '../../../../../ducks/app/app';
 import { setTokenSortConfig } from '../../../../../store/actions';
+// import { useTokenList } from '../../token-list/use-token-list';
 
 // intentionally used generic naming convention for styled selectable list item
 // inspired from ui/components/multichain/network-list-item
@@ -50,6 +51,7 @@ type SortControlProps = {
   tokenList: TokenWithBalance[];
   setTokenList: (arg: TokenWithBalance[]) => void;
   setSorted: (arg: boolean) => void;
+  sorted: boolean;
 };
 
 const SortControl = ({
@@ -69,9 +71,9 @@ const SortControl = ({
     const nonNativeTokens = tokenList.filter((token) => !token.isNative);
     const dedupedTokenList = [nativeToken, ...nonNativeTokens];
 
-    const sorted = sortAssets(dedupedTokenList, tokenSortConfig);
-    setTokenList(sorted);
+    const sortedAssets = sortAssets(dedupedTokenList, tokenSortConfig);
     setSorted(true);
+    setTokenList(sortedAssets);
   }, [tokenSortConfig]);
 
   const handleSort = (

@@ -14,13 +14,6 @@ import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';
 
-export type SafeChain = {
-  chainId: string;
-  name: string;
-  nativeCurrency: { symbol: string };
-  rpc: string[];
-};
-
 export const useNativeTokenBalance = () => {
   const showFiat = useSelector(getMultichainShouldShowFiat);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
