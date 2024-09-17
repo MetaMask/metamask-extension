@@ -260,7 +260,7 @@ export default function createRPCMethodTrackingMiddleware({
     const eventType = EVENT_NAME_MAP[method];
 
     const eventProperties = {};
-    const sensitiveEventProperties = {};
+    let sensitiveEventProperties;
 
     // Boolean variable that reduces code duplication and increases legibility
     const shouldTrackEvent =
@@ -350,6 +350,7 @@ export default function createRPCMethodTrackingMiddleware({
             }
           } else if (method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4) {
             const parsedMessageData = parseTypedDataMessage(data);
+            sensitiveEventProperties = {};
 
             eventProperties.eip712_primary_type = parsedMessageData.primaryType;
             sensitiveEventProperties.eip712_verifyingContract =
@@ -475,6 +476,7 @@ export default function createRPCMethodTrackingMiddleware({
             url: origin,
           },
           properties,
+          sensitiveProperties: sensitiveEventProperties,
         });
       }
       return callback();
