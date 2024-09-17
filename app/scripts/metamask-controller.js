@@ -146,6 +146,7 @@ import {
   AuthenticationController,
   UserStorageController,
 } from '@metamask/profile-sync-controller';
+import { AuthType } from '@metamask/profile-sync-controller/sdk';
 import {
   NotificationsServicesPushController,
   NotificationServicesController,
@@ -339,6 +340,8 @@ import {
   onPushNotificationClicked,
   onPushNotificationReceived,
 } from './controllers/push-notifications';
+
+console.log('testing', AuthType.SiWE);
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
