@@ -31,6 +31,8 @@ describe('Incremental Security', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
+        await driver.delay(200);
+
         // agree to terms of use
         await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
 
