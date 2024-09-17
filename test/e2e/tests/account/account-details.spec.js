@@ -29,6 +29,7 @@ describe('Show account details', function () {
     await driver.fill('#account-details-authenticate', PASSWORD);
     await driver.press('#account-details-authenticate', driver.Key.ENTER);
 
+    await driver.delay(200);
     await driver.holdMouseDownOnElement(
       {
         text: tEn('holdToRevealPrivateKey'),
