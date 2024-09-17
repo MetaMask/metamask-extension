@@ -1643,16 +1643,11 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/message-manager>jsonschema": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
+        "jsonschema": true,
         "uuid": true,
         "webpack>events": true
-      }
-    },
-    "@metamask/message-manager>jsonschema": {
-      "packages": {
-        "browserify>url": true
       }
     },
     "@metamask/message-signing-snap>@noble/ciphers": {
@@ -3229,6 +3224,62 @@
         "crypto": true
       }
     },
+    "@open-rpc/schema-utils-js": {
+      "packages": {
+        "@open-rpc/meta-schema": true,
+        "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": true,
+        "@open-rpc/schema-utils-js>@json-schema-tools/meta-schema": true,
+        "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
+        "@open-rpc/schema-utils-js>ajv": true,
+        "@open-rpc/schema-utils-js>is-url": true,
+        "eth-rpc-errors>fast-safe-stringify": true
+      }
+    },
+    "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": {
+      "packages": {
+        "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer>@json-schema-tools/traverse": true,
+        "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
+        "eth-rpc-errors>fast-safe-stringify": true
+      }
+    },
+    "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": {
+      "packages": {
+        "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver>@json-schema-spec/json-pointer": true,
+        "@open-rpc/test-coverage>isomorphic-fetch": true
+      }
+    },
+    "@open-rpc/schema-utils-js>ajv": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "@open-rpc/schema-utils-js>ajv>json-schema-traverse": true,
+        "eslint>ajv>uri-js": true,
+        "eslint>fast-deep-equal": true
+      }
+    },
+    "@open-rpc/test-coverage>isomorphic-fetch": {
+      "globals": {
+        "fetch.bind": true
+      },
+      "packages": {
+        "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": true
+      }
+    },
+    "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": {
+      "globals": {
+        "AbortController": true,
+        "Blob": true,
+        "FileReader": true,
+        "FormData": true,
+        "URLSearchParams.prototype.isPrototypeOf": true,
+        "XMLHttpRequest": true,
+        "console.warn": true,
+        "define": true,
+        "setTimeout": true
+      }
+    },
     "@popperjs/core": {
       "globals": {
         "Element": true,
@@ -4125,6 +4176,11 @@
         "koa>is-generator-function>has-tostringtag": true
       }
     },
+    "eslint>ajv>uri-js": {
+      "globals": {
+        "define": true
+      }
+    },
     "eth-ens-namehash": {
       "globals": {
         "name": "write"
@@ -4595,6 +4651,11 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "readable-stream": true
+      }
+    },
+    "jsonschema": {
+      "packages": {
+        "browserify>url": true
       }
     },
     "koa>content-disposition>safe-buffer": {
