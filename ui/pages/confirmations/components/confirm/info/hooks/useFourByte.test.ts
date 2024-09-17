@@ -75,6 +75,6 @@ describe('useFourByte', () => {
       },
     );
 
-    expect(result.current).toBeUndefined();
+    expect(result.current).toEqual({});
   });
 });
