@@ -72,6 +72,11 @@ function onboardingFixture() {
           petnamesEnabled: true,
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
+          tokenSortConfig: {
+            key: 'tokenFiatAmount',
+            order: 'dsc',
+            sortCriteria: 'stringNumeric',
+          },
         },
         useExternalServices: true,
         theme: 'light',
