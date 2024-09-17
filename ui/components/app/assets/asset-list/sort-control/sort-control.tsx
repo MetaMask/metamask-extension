@@ -1,4 +1,5 @@
-import React, { useState, ReactNode } from 'react';
+import React, { useState, ReactNode, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { Box } from '../../../../component-library';
 import { TokenWithBalance } from '../asset-list';
@@ -7,8 +8,8 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../helpers/constants/design-system';
-import { useDispatch } from 'react-redux';
-import { setSortOrderCriteria } from '../../../../../ducks/app/app';
+// import { setSortOrderCriteria } from '../../../../../ducks/app/app';
+import { setTokenSortConfig } from '../../../../../store/actions';
 
 // intentionally used generic naming convention for styled selectable list item
 // inspired from ui/components/multichain/network-list-item
@@ -56,46 +57,46 @@ const SortControl = ({
   setTokenList,
   setSorted,
 }: SortControlProps) => {
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const tokenSortConfig = useSelector((state: any) => {
+    return state.metamask.preferences.tokenSortConfig;
+  });
   const dispatch = useDispatch();
-  const [sortKey, setSortKey] = useState<string | null>(null);
+
+  useEffect(() => {
+    const [nativeToken] = tokenList.filter((token) => token.isNative);
+    const nonNativeTokens = tokenList.filter((token) => !token.isNative);
+    const dedupedTokenList = [nativeToken, ...nonNativeTokens];
+
+    const sorted = sortAssets(dedupedTokenList, tokenSortConfig);
+    setTokenList(sorted);
+    setSorted(true);
+  }, [tokenSortConfig]);
 
   const handleSort = (
     key: string,
     sortCallback: keyof SortingCallbacksT,
     order: SortOrder,
   ) => {
-    const [nativeToken] = tokenList.filter((token) => token.isNative);
-    const nonNativeTokens = tokenList.filter((token) => !token.isNative);
-    const dedupedTokenList = [nativeToken, ...nonNativeTokens];
-
-    setSortKey(key);
-    const sorted = sortAssets(dedupedTokenList, {
-      key,
-      sortCallback,
-      order,
-    });
-
-    setSorted(true);
     dispatch(
-      setSortOrderCriteria({
+      setTokenSortConfig({
         key,
         sortCallback,
         order,
       }),
     );
-    setTokenList(sorted);
   };
-
   return (
     <>
       <SelectableListItem
-        isSelected={sortKey === 'symbol'}
+        isSelected={tokenSortConfig.key === 'symbol'}
         onClick={() => handleSort('symbol', 'alphaNumeric', 'asc')}
       >
         Alphabetically (A-Z)
       </SelectableListItem>
       <SelectableListItem
-        isSelected={sortKey === 'tokenFiatAmount'}
+        isSelected={tokenSortConfig.key === 'tokenFiatAmount'}
         onClick={() => handleSort('tokenFiatAmount', 'stringNumeric', 'dsc')}
       >
         Declining balance ($ high-low)

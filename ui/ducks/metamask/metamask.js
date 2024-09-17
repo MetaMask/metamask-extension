@@ -54,6 +54,7 @@ const initialState = {
     useNativeCurrencyAsPrimaryCurrency: true,
     petnamesEnabled: true,
     featureNotificationsEnabled: false,
+    tokenSortConfig: {},
   },
   firstTimeFlowType: null,
   completedOnboarding: false,

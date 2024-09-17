@@ -130,6 +130,7 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { SortCriteria } from '../components/app/assets/util/sort';
 
 type CustomGasSettings = {
   gas?: string;
@@ -2989,6 +2990,7 @@ export function setPreference(
             reject(err);
             return;
           }
+          console.log('updatedPreferences', updatedPreferences);
           resolve(updatedPreferences as TemporaryPreferenceFlagDef);
         },
       );
@@ -3045,6 +3047,10 @@ export function setShowExtensionInFullSizeView(value: boolean) {
 
 export function setRedesignedConfirmationsDeveloperEnabled(value: boolean) {
   return setPreference('isRedesignedConfirmationsDeveloperEnabled', value);
+}
+
+export function setTokenSortConfig(value: SortCriteria) {
+  return setPreference('tokenSortConfig', value);
 }
 
 export function setSmartTransactionsOptInStatus(
