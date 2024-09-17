@@ -33,12 +33,16 @@ export async function CaipPermissionAdapterMiddleware(
 
   const scope = `eip155:${parseInt(chainId, 16)}`;
 
-  const scopeObject = mergeScopes(
+  const scopesObject = mergeScopes(
     caveat.value.requiredScopes,
     caveat.value.optionalScopes,
-  )[scope];
+  );
 
-  if (!scopeObject?.methods?.includes(method)) {
+  if (
+    !scopesObject[scope]?.methods?.includes(method) &&
+    !scopesObject['wallet:eip155']?.methods?.includes(method) &&
+    !scopesObject['wallet']?.methods?.includes(method)
+  ) {
     return end(providerErrors.unauthorized());
   }
 
