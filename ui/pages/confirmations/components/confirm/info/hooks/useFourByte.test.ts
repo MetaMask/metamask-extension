@@ -34,7 +34,7 @@ describe('useFourByte', () => {
     expect(result.current.params).toEqual([]);
   });
 
-  it('returns undefined if resolution is turned off', () => {
+  it('returns empty object if resolution is turned off', () => {
     const currentConfirmation = genUnapprovedContractInteractionConfirmation({
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,
       txData: depositHexData,
@@ -54,7 +54,7 @@ describe('useFourByte', () => {
       },
     );
 
-    expect(result.current).toBeUndefined();
+    expect(result.current).toEqual({});
   });
 
   it("returns undefined if it's not known even if resolution is enabled", () => {
