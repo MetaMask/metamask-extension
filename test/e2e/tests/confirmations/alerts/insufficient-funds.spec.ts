@@ -15,7 +15,7 @@ import {
 import { Driver } from '../../../webdriver/driver';
 
 describe('Alert for insufficient funds @no-mmi', function () {
-  it.only('Shows an alert when the user tries to send a transaction with insufficient funds', async function () {
+  it('Shows an alert when the user tries to send a transaction with insufficient funds', async function () {
     const nftSmartContract = SMART_CONTRACTS.NFTS;
     const ganacheOptions = {
       accounts: [
