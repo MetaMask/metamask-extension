@@ -1019,10 +1019,10 @@
     "message": "I have acknowledged the alert and still want to proceed"
   },
   "confirmAlertModalDetails": {
-    "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
+    "message": "To protect your assets and login information, we suggest you reject the request."
   },
   "confirmAlertModalTitle": {
-    "message": "Your assets may be at risk"
+    "message": "This request is suspicious"
   },
   "confirmConnectCustodianRedirect": {
     "message": "We will redirect you to $1 upon clicking continue."
@@ -4528,6 +4528,9 @@
   },
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
+  },
+  "reviewAlert": {
+    "message": "Review alert"
   },
   "reviewAlerts": {
     "message": "Review alerts"
