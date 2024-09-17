@@ -972,8 +972,6 @@ export function setupController(
     updateBadge,
   );
 
-  controller.txController.initApprovals();
-
   /**
    * Formats a count for display as a badge label.
    *

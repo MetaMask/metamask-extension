@@ -19,6 +19,7 @@ const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const {
   ERC_4337_ACCOUNT,
   DEFAULT_GANACHE_ETH_BALANCE_DEC,
+  DEFAULT_FIXTURE_ACCOUNT,
 } = require('./constants');
 const {
   getServerMochaToBackground,
@@ -707,6 +708,18 @@ const createDappTransaction = async (driver, transaction) => {
   );
 };
 
+const createDappTransactionTypeTwo = async (driver) => {
+  await createDappTransaction(driver, {
+    data: '0x',
+    from: DEFAULT_FIXTURE_ACCOUNT,
+    maxFeePerGas: '0x0',
+    maxPriorityFeePerGas: '0x0',
+    to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+    value: '0x38d7ea4c68000',
+    type: '0x2',
+  });
+};
+
 const switchToOrOpenDapp = async (
   driver,
   contract = null,
@@ -849,6 +862,7 @@ const sendTransaction = async (
   recipientAddress,
   quantity,
   isAsyncFlow = false,
+  skipConfirm = false,
 ) => {
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
@@ -858,10 +872,13 @@ const sendTransaction = async (
     text: 'Continue',
     tag: 'button',
   });
-  await driver.clickElement({
-    text: 'Confirm',
-    tag: 'button',
-  });
+
+  if (skipConfirm !== true) {
+    await driver.clickElement({
+      text: 'Confirm',
+      tag: 'button',
+    });
+  }
 
   // the default is to do this block, but if we're testing an async flow, it would get stuck here
   if (!isAsyncFlow) {
@@ -869,6 +886,19 @@ const sendTransaction = async (
     await driver.assertElementNotPresent('.transaction-list-item--unconfirmed');
     await driver.findElement('.transaction-list-item');
   }
+};
+
+const createInternalTransaction = async (driver) => {
+  // Firefox has incorrect balance if send flow started too quickly.
+  await driver.delay(1000);
+
+  await sendTransaction(
+    driver,
+    '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+    '1',
+    true,
+    true,
+  );
 };
 
 const findAnotherAccountFromAccountList = async (
@@ -1276,4 +1306,6 @@ module.exports = {
   getSelectedAccountAddress,
   tempToggleSettingRedesignedConfirmations,
   openMenuSafe,
+  createDappTransactionTypeTwo,
+  createInternalTransaction,
 };
