@@ -41,6 +41,11 @@ export const isSupportedScopeString = (
   if (isChainScoped) {
     const { namespace, reference } = parseCaipChainId(scopeString);
     switch (namespace) {
+      case KnownCaipNamespace.Wallet:
+        if (reference === KnownCaipNamespace.Eip155) {
+          return true;
+        }
+        return false;
       case KnownCaipNamespace.Eip155:
         return isChainIdSupported(toHex(reference));
       default:
