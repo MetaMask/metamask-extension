@@ -265,7 +265,7 @@ export const AccountListMenu = ({
   );
 
   // eslint-disable-next-line no-empty-function
-  let onBack = () => {};
+  let onBack;
   if (actionMode !== ACTION_MODES.LIST) {
     if (actionMode === ACTION_MODES.MENU) {
       onBack = () => setActionMode(ACTION_MODES.LIST);
@@ -413,25 +413,6 @@ export const AccountListMenu = ({
                       );
                     }}
                     data-testid="multichain-account-menu-popover-add-btc-account-testnet"
-                  >
-                    {t('addNewBitcoinTestnetAccount')}
-                  </ButtonLink>
-                </Box>
-              ) : null
-              ///: END:ONLY_INCLUDE_IF
-            }
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-              bitcoinTestnetSupportEnabled ? (
-                <Box marginTop={4}>
-                  <ButtonLink
-                    disabled={isBtcTestnetAccountAlreadyCreated}
-                    size={ButtonLinkSize.Sm}
-                    startIconName={IconName.Add}
-                    onClick={() => {
-                      setActionMode(ACTION_MODES.ADD_BITCOIN_TESTNET);
-                    }}
-                    data-testid="multichain-account-menu-popover-add-account-testnet"
                   >
                     {t('addNewBitcoinTestnetAccount')}
                   </ButtonLink>
