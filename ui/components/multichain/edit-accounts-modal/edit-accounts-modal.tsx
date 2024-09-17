@@ -71,7 +71,6 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   activeTabOrigin,
   currentTabHasNoAccounts,
 }) => {
-  console.log(approvedAccounts, 'approvedAccounts');
   const t = useI18nContext();
   const accounts = useSelector(getUpdatedAndSortedAccounts);
   const internalAccounts = useSelector(getInternalAccounts);
