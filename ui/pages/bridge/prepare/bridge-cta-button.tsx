@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '../../../components/component-library';
 import {
   getBridgeQuotes,
@@ -11,8 +11,10 @@ import {
   getToToken,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { signBridgeTransaction } from '../../../ducks/bridge/actions';
 
 export const BridgeCTAButton = () => {
+  const dispatch = useDispatch();
   const t = useI18nContext();
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
@@ -53,6 +55,8 @@ export const BridgeCTAButton = () => {
       onClick={() => {
         if (isTxSubmittable) {
           // dispatch tx submission
+          console.log('bridge CTA button clicked');
+          dispatch(signBridgeTransaction());
         }
       }}
       disabled={!isTxSubmittable}
