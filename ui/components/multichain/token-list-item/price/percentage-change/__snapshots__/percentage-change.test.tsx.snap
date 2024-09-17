@@ -6,7 +6,7 @@ exports[`PercentageChange Component - Percentage Display render renders correctl
     class="mm-box mm-box--display-flex"
   >
     <p
-      class="mm-box mm-text mm-text--body-sm-medium mm-text--font-weight-normal mm-text--ellipsis mm-box--color-success-default"
+      class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-success-default"
       data-testid="token-increase-decrease-percentage-0xAddress"
     >
       +5.12%
