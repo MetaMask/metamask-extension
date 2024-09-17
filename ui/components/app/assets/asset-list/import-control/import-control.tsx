@@ -18,10 +18,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
-import {
-  getIsTokenDetectionInactiveOnMainnet,
-  getIsTokenDetectionSupported,
-} from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 type AssetListControlBarProps = {
@@ -32,19 +28,10 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
-  const isTokenDetectionSupported = useSelector(getIsTokenDetectionSupported);
-  const isTokenDetectionInactiveOnMainnet = useSelector(
-    getIsTokenDetectionInactiveOnMainnet,
-  );
   const isEvm = useSelector(getMultichainIsEvm);
   // NOTE: Since we can parametrize it now, we keep the original behavior
   // for EVM assets
   const shouldShowTokensLinks = showTokensLinks ?? isEvm;
-
-  const isTokenDetectionAvailable =
-    isTokenDetectionSupported ||
-    isTokenDetectionInactiveOnMainnet ||
-    Boolean(process.env.IN_TEST);
 
   return (
     <ButtonBase
