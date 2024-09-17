@@ -8,7 +8,10 @@ import { SubjectType } from '@metamask/permission-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { PageContainerFooter } from '../../ui/page-container';
 import PermissionsConnectFooter from '../permissions-connect-footer';
-import { CaveatTypes, RestrictedMethods } from '../../../../shared/constants/permissions';
+import {
+  CaveatTypes,
+  RestrictedMethods,
+} from '../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
 
 import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
@@ -147,7 +150,9 @@ export default class PermissionPageContainer extends Component {
         ),
       }),
       ...(_request.permissions[PermissionNames.permittedChains] && {
-        approvedChainIds: _request.permissions[PermissionNames.permittedChains]?.caveats.find(
+        approvedChainIds: _request.permissions[
+          PermissionNames.permittedChains
+        ]?.caveats.find(
           (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
         )?.value,
       }),
