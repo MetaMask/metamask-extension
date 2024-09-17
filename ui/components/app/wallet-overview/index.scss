@@ -33,11 +33,13 @@
   &__portfolio_button {
     margin-left: 8px;
   }
-  &__portfolio_text{
+
+  &__portfolio_text {
     font-family: "Euclid Circular B" !important;
     font-size: 16px !important;
     font-weight: 500 !important;
     line-height: 22px !important;
+
     @include design-system.screen-sm-max {
       font-size: 14px !important;
     }
