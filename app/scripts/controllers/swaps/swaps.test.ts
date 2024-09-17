@@ -1171,6 +1171,7 @@ describe('SwapsController', function () {
         const swapsQuotePrefetchingRefreshTime = 0;
         const swapsStxBatchStatusRefreshTime = 0;
         const swapsStxGetTransactionsRefreshTime = 0;
+        const swapsStxStatusDeadline = 0;
         swapsController.__test__updateState({
           swapsState: {
             ...swapsController.state.swapsState,
