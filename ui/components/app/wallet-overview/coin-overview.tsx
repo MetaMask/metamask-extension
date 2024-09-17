@@ -11,7 +11,6 @@ import {
   ButtonLink,
   ButtonLinkSize,
   IconName,
-  IconSize,
   Popover,
   PopoverPosition,
   Text,
@@ -19,7 +18,6 @@ import {
 import {
   AlignItems,
   Display,
-  IconColor,
   JustifyContent,
   TextAlign,
   TextVariant,
@@ -178,18 +176,13 @@ export const CoinOverview = ({
             <PercentageAndAmountChange
               value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
             />
+
             <ButtonLink
               endIconName={IconName.Export}
-              endIconProps={{
-                size: IconSize.Sm,
-                color: IconColor.primaryDefault,
-                marginLeft: 2,
-              }}
-              size={ButtonLinkSize.Inherit}
               onClick={handlePortfolioOnClick}
               as="a"
               data-testid="portfolio-link"
-              className="wallet-overview__portfolio_text"
+              textProps={{ variant: TextVariant.bodyMdMedium }}
             >
               {t('portfolio')}
             </ButtonLink>
@@ -201,16 +194,10 @@ export const CoinOverview = ({
           <AggregatedPercentageOverview />
           <ButtonLink
             endIconName={IconName.Export}
-            endIconProps={{
-              size: IconSize.Sm,
-              color: IconColor.primaryDefault,
-              marginLeft: 2,
-            }}
-            size={ButtonLinkSize.Inherit}
             onClick={handlePortfolioOnClick}
             as="a"
             data-testid="portfolio-link"
-            className="wallet-overview__portfolio_text"
+            textProps={{ variant: TextVariant.bodyMdMedium }}
           >
             {t('portfolio')}
           </ButtonLink>

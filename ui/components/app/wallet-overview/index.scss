@@ -30,17 +30,6 @@
     padding: 0 16px;
   }
 
-  &__portfolio_text {
-    font-family: "Euclid Circular B" !important;
-    font-size: 16px !important;
-    font-weight: 500 !important;
-    line-height: 22px !important;
-
-    @include design-system.screen-sm-max {
-      font-size: 14px !important;
-    }
-  }
-
   &__currency-wrapper {
     display: flex;
     flex-direction: row;
@@ -93,11 +82,6 @@
 
   &__cached-star {
     margin-left: 4px;
-  }
-
-  &__portfolio-button {
-    height: inherit;
-    padding-inline-start: 16px;
   }
 
   &__cached-balance,
@@ -165,11 +149,6 @@
     @include design-system.H5;
 
     color: var(--color-text-alternative);
-  }
-
-  &__portfolio-button {
-    height: inherit;
-    padding-inline-start: 16px;
   }
 
   &__button:last-of-type {
