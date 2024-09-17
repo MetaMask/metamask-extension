@@ -23,15 +23,15 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { sortAssets } from '../../util/sort';
 import { useNativeTokenBalance } from '../native-token/use-native-token-balance';
-import { useAccountTotalFiatBalancesHook } from './use-account-total-fiat-balances';
-import { showImportTokensModal } from '../../../../../store/actions';
 import ImportControl from '../import-control';
+import { useAccountTotalFiatBalancesHook } from './use-account-total-fiat-balances';
 
 type AssetListControlBarProps = {
   tokenList: TokenWithBalance[];
   setTokenList: (arg: TokenWithBalance[]) => void;
   sorted: boolean;
   setSorted: (arg: boolean) => void;
+  showTokensLinks?: boolean;
 };
 
 const AssetListControlBar = ({
@@ -39,6 +39,7 @@ const AssetListControlBar = ({
   setTokenList,
   sorted,
   setSorted,
+  showTokensLinks,
 }: AssetListControlBarProps) => {
   const controlBarRef = useRef<HTMLDivElement>(null); // Create a ref
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -133,7 +134,7 @@ const AssetListControlBar = ({
         >
           Sort By
         </ButtonBase>
-        <ImportControl />
+        <ImportControl showTokensLinks={showTokensLinks} />
         <Popover
           isOpen={isPopoverOpen}
           position={PopoverPosition.BottomStart}

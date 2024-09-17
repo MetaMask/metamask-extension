@@ -96,16 +96,13 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
+  const isBtc = useSelector(getMultichainIsBitcoin);
   ///: END:ONLY_INCLUDE_IF
 
   const isEvm = useSelector(getMultichainIsEvm);
   // NOTE: Since we can parametrize it now, we keep the original behavior
   // for EVM assets
   const shouldShowTokensLinks = showTokensLinks ?? isEvm;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const isBtc = useSelector(getMultichainIsBitcoin);
-  ///: END:ONLY_INCLUDE_IF
 
   return (
     <>
@@ -138,6 +135,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         setTokenList={setTokenList}
         sorted={sorted}
         setSorted={setSorted}
+        showTokensLinks={showTokensLinks}
       />
       <TokenList
         nativeToken={<NativeToken onClickAsset={onClickAsset} />}
