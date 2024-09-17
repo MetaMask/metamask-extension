@@ -20,7 +20,7 @@ async function handleSignature(
   signatureController: SignatureController,
   functionName: keyof SignatureController,
 ) {
-  const [_messageParams, signatureRequest] = signatureParams;
+  const [, signatureRequest] = signatureParams;
   const { id } = signatureRequest;
   const actionId = id?.toString();
 

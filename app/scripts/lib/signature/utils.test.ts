@@ -3,9 +3,9 @@ import type {
   OriginalRequest,
   TypedMessageParams,
 } from '@metamask/message-manager';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { addTypedMessage } from './util';
 import type { AddSignatureMessageRequest, SignatureParams } from './util';
-import { endTrace, TraceName } from '../../../../shared/lib/trace';
 
 jest.mock('../../../../shared/lib/trace', () => ({
   ...jest.requireActual('../../../../shared/lib/trace'),

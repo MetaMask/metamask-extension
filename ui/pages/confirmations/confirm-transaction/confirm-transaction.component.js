@@ -4,7 +4,6 @@ import { Route, Switch, useHistory, useParams } from 'react-router-dom';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
-  MESSAGE_TYPE,
   TRACE_ENABLED_SIGN_METHODS,
 } from '../../../../shared/constants/app';
 import Loading from '../../../components/ui/loading-screen';
