@@ -95,6 +95,8 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
 
         await scrollAndConfirmAndAssertConfirm(driver);
 
+        await acknowledgeAlert(driver);
+
         await driver.clickElement(
           '[data-testid="confirm-alert-modal-cancel-button"]',
         );
@@ -118,8 +120,8 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
           expectedProps: {
             alert_action_clicked: [],
             alert_key_clicked: [],
-            alert_resolved: [],
-            alert_resolved_count: 0,
+            alert_resolved: ['requestFrom'],
+            alert_resolved_count: 1,
             alert_triggered: ['requestFrom'],
             alert_triggered_count: 1,
             alert_visualized: ['requestFrom'],
