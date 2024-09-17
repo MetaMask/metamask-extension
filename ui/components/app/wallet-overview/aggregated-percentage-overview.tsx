@@ -17,7 +17,6 @@ import {
   Display,
   TextColor,
   TextVariant,
-  FontWeight,
 } from '../../../helpers/constants/design-system';
 import { Box, Text } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
