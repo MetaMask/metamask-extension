@@ -4,6 +4,7 @@ import {
   showSecondaryCurrency,
 } from '../../../../../../shared/modules/currency-display.utils';
 import {
+  getMultichainCurrencyImage,
   getMultichainCurrentNetwork,
   getMultichainSelectedAccountCachedBalance,
   getMultichainShouldShowFiat,
@@ -16,6 +17,7 @@ import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';
 
 export const useNativeTokenBalance = () => {
   const showFiat = useSelector(getMultichainShouldShowFiat);
+  const primaryTokenImage = useSelector(getMultichainCurrencyImage);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const { chainId, ticker, type, rpcUrl } = useSelector(
     getMultichainCurrentNetwork,
@@ -69,5 +71,5 @@ export const useNativeTokenBalance = () => {
     ? primaryCurrencyProperties.suffix
     : secondaryCurrencyProperties.suffix;
 
-  return { primaryBalance, secondaryBalance, tokenSymbol };
+  return { primaryBalance, secondaryBalance, tokenSymbol, primaryTokenImage };
 };

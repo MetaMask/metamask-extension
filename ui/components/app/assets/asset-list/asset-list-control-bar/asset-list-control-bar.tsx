@@ -30,7 +30,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { sortAssets } from '../../util/sort';
 import { useNativeTokenBalance } from '../native-token/use-native-token-balance';
-import { getMultichainCurrencyImage } from '../../../../../selectors/multichain';
+import { useAccountTotalFiatBalancesHook } from './use-account-total-fiat-balances';
 
 type AssetListControlBarProps = {
   tokenList: TokenWithBalance[];
@@ -49,39 +49,18 @@ const AssetListControlBar = ({
 }: AssetListControlBarProps) => {
   const controlBarRef = useRef<HTMLDivElement>(null); // Create a ref
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const selectedAccount = useSelector(getSelectedAccount);
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
-  );
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
-
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tokenSortConfig = useSelector((state: any) => {
     return state.metamask.preferences.tokenSortConfig;
   });
+  const { accountTotalFiatBalance, mergedRates, loading } =
+    useAccountTotalFiatBalancesHook();
 
-  // tokenExchangeRate
-  const contractExchangeRates = useSelector(
-    getTokenExchangeRates,
-    shallowEqual,
-  );
-  const confirmationExchangeRates = useSelector(getConfirmationExchangeRates);
-  const mergedRates = {
-    ...contractExchangeRates,
-    ...confirmationExchangeRates,
-  };
-  const accountTotalFiatBalance = useAccountTotalFiatBalance(
-    selectedAccount,
-    shouldHideZeroBalanceTokens,
-  );
-
-  const { loading } = accountTotalFiatBalance;
-
-  const { primaryBalance, secondaryBalance, tokenSymbol } =
+  const { primaryBalance, secondaryBalance, tokenSymbol, primaryTokenImage } =
     useNativeTokenBalance();
-  const primaryTokenImage = useSelector(getMultichainCurrencyImage);
 
   const nativeTokenWithBalance: TokenWithBalance = {
     address: '',
