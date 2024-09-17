@@ -561,6 +561,7 @@ export enum MetaMetricsEventName {
   NavBuyButtonClicked = 'Buy Button Clicked',
   NavSendButtonClicked = 'Send Button Clicked',
   NavSwapButtonClicked = 'Swap Button Clicked',
+  NavReceiveButtonClicked = 'Receive Button Clicked',
   NftAdded = 'NFT Added',
   OnboardingWalletCreationStarted = 'Wallet Setup Selected',
   OnboardingWalletImportStarted = 'Wallet Import Started',
@@ -573,7 +574,6 @@ export enum MetaMetricsEventName {
   OnboardingWalletSecurityPhraseWrittenDown = 'SRP Backup Confirm Display',
   OnboardingWalletSecurityPhraseConfirmed = 'SRP Backup Confirmed',
   OnboardingWalletCreationComplete = 'Wallet Created',
-  OnboardingWalletSetupComplete = 'Application Opened',
   OnboardingWalletAdvancedSettings = 'Settings Updated',
   OnboardingWalletImportAttempted = 'Wallet Import Attempted',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
@@ -852,4 +852,19 @@ export enum MetaMetricsEventUiCustomization {
  */
 export enum MetaMetricsContextProp {
   PageTitle = 'location',
+}
+
+/**
+ * The status on which to filter the returned regulations.
+ * Mentioned here: https://docs.segmentapis.com/tag/Deletion-and-Suppression#operation/listRegulationsFromSource
+ */
+export enum DeleteRegulationStatus {
+  Failed = 'FAILED',
+  Finished = 'FINISHED',
+  Initialized = 'INITIALIZED',
+  Invalid = 'INVALID',
+  NotSupported = 'NOT_SUPPORTED',
+  PartialSuccess = 'PARTIAL_SUCCESS',
+  Running = 'RUNNING',
+  Unknown = 'UNKNOWN',
 }
