@@ -81,6 +81,7 @@ describe('Sign Typed Data Signature Request', function () {
           await tempToggleSettingRedesignedConfirmations(driver);
 
           await openDapp(driver);
+          await driver.delay(200);
 
           // creates a sign typed data signature request
           await driver.clickElement(data.buttonId);
@@ -110,6 +111,7 @@ describe('Sign Typed Data Signature Request', function () {
           );
           await driver.waitUntilXWindowHandles(2);
           windowHandles = await driver.getAllWindowHandles();
+          await driver.delay(200);
 
           // switch to the Dapp and verify the signed address
           await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
@@ -118,6 +120,7 @@ describe('Sign Typed Data Signature Request', function () {
             data.verifyResultId,
           );
 
+          await driver.delay(200);
           assert.equal(await recoveredAddress.getText(), publicAddress);
         },
       );
