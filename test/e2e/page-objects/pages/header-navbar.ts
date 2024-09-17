@@ -4,7 +4,9 @@ class HeaderNavbar {
   private driver: Driver;
 
   private accountMenuButton: string;
+
   private accountOptionMenu: string;
+
   private lockMetaMaskButton: string;
 
   constructor(driver: Driver) {
