@@ -32,9 +32,8 @@ describe('Localization', function () {
           '[data-testid="eth-overview__primary-currency"]',
         );
         const balanceText = await primaryBalance.getText();
-        const [fiatAmount, fiatUnit] = balanceText.trim().split(/\s+/u);
-        assert.ok(fiatAmount.startsWith('₱'));
-        assert.equal(fiatUnit, 'PHP');
+        assert.ok(balanceText.startsWith('₱'));
+        assert.ok(balanceText.endsWith('PHP'));
       },
     );
   });
