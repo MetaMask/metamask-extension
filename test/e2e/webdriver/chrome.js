@@ -34,6 +34,7 @@ class ChromeDriver {
       '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying', // Stop chrome from calling home so much (auto-downloads of AI models; time sync)
       '--disable-component-update', // Stop chrome from calling home so much (auto-update)
       '--disable-dev-shm-usage',
+      '--verbose'
     ];
 
     if (process.env.MULTIPROVIDER) {
