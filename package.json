@@ -306,7 +306,7 @@
     "@metamask/approval-controller": "^7.0.0",
     "@metamask/assets-controllers": "^36.0.0",
     "@metamask/base-controller": "^7.0.0",
-    "@metamask/bitcoin-wallet-snap": "^0.5.0",
+    "@metamask/bitcoin-wallet-snap": "^0.6.0",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^11.2.0",
