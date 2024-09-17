@@ -1,13 +1,13 @@
-const { strict: assert } = require('assert');
-const { Browser } = require('selenium-webdriver');
-const {
+import { strict as assert } from 'assert';
+import { Browser } from 'selenium-webdriver';
+import {
   getGlobalProperties,
   testIntrinsic,
-} = require('../../../helpers/protect-intrinsics-helpers');
-const { convertToHexValue, withFixtures } = require('../../helpers');
-const { PAGES } = require('../../webdriver/driver');
-const FixtureBuilder = require('../../fixture-builder');
-const { isManifestV3 } = require('../../../../shared/modules/mv3.utils');
+} from '../../../helpers/protect-intrinsics-helpers';
+import { convertToHexValue, withFixtures } from '../../helpers';
+import { PAGES, Driver } from '../../webdriver/driver';
+import FixtureBuilder from '../../fixture-builder';
+import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
@@ -52,7 +52,7 @@ try {
 }
 `;
 
-describe('lockdown', function () {
+describe('lockdown', function (this: Mocha.Suite) {
   const ganacheOptions = {
     accounts: [
       {
@@ -66,12 +66,11 @@ describe('lockdown', function () {
   it('the UI environment is locked down', async function () {
     await withFixtures(
       {
-        // The fixtures used here is arbitrary. Any fixture would do.
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await driver.navigate(PAGES.HOME);
         assert.equal(
           await driver.executeScript(lockdownTestScript),
@@ -85,12 +84,11 @@ describe('lockdown', function () {
   it('the background environment is locked down', async function () {
     await withFixtures(
       {
-        // The fixtures used here is arbitrary. Any fixture would do.
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         if (isManifestV3) {
           // TODO: add logic for testing the Service-Worker on MV3
           await driver.navigate(PAGES.OFFSCREEN);
