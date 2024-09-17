@@ -122,7 +122,8 @@ export function ConfirmAlertModal({
   ownerId,
 }: ConfirmAlertModalProps) {
   const t = useI18nContext();
-  const { alerts, unconfirmedDangerAlerts } = useAlerts(ownerId);
+  const { alerts, unconfirmedDangerAlerts, hasDangerAlerts, dangerAlerts } =
+    useAlerts(ownerId);
 
   const [confirmCheckbox, setConfirmCheckbox] = useState<boolean>(false);
 
@@ -159,7 +160,8 @@ export function ConfirmAlertModal({
     );
   }
 
-  const selectedAlert = alerts[0];
+  // use highest severity alert for the selected alert
+  const selectedAlert = hasDangerAlerts ? dangerAlerts[0] : alerts[0];
 
   if (!selectedAlert) {
     return null;
