@@ -46,9 +46,10 @@ export type OnCancelHandler = ({
   location: MetaMetricsEventLocation;
 }) => void;
 
-function reviewAlertButtonText(unconfirmedDangerAlerts: Alert[]) {
-  const t = useI18nContext();
-
+function reviewAlertButtonText(
+  unconfirmedDangerAlerts: Alert[],
+  t: ReturnType<typeof useI18nContext>,
+) {
   if (unconfirmedDangerAlerts.length === 1) {
     return t('reviewAlert');
   }
@@ -110,7 +111,7 @@ const ConfirmButton = ({
           size={ButtonSize.Lg}
           startIconName={IconName.Danger}
         >
-          {reviewAlertButtonText(unconfirmedDangerAlerts)}
+          {reviewAlertButtonText(unconfirmedDangerAlerts, t)}
         </Button>
       ) : (
         <Button
