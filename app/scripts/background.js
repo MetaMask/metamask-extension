@@ -228,8 +228,8 @@ function maybeDetectPhishing(theController) {
         return {};
       }
 
-      const onboardState = theController.onboardingController.store.getState();
-      if (!onboardState.completedOnboarding) {
+      const { completedOnboarding } = theController.onboardingController.state;
+      if (!completedOnboarding) {
         return {};
       }
 
@@ -1004,8 +1004,6 @@ export function setupController(
     METAMASK_CONTROLLER_EVENTS.NOTIFICATIONS_STATE_CHANGE,
     updateBadge,
   );
-
-  controller.txController.initApprovals();
 
   /**
    * Formats a count for display as a badge label.
