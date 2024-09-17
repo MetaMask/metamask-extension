@@ -3,29 +3,42 @@
   transition: background-color background 0.2s;
 
   & .show-more__button {
-    background: linear-gradient(90deg, transparent 0%, var(--color-background-alternative) 33%);
+    background: linear-gradient(90deg, transparent 0%, var(--color-background-primary-muted) 33%);
   }
 
   &:hover {
-    background-color: var(--color-background-alternative-hover);
+    background-color: var(--color-primary-muted);
+    color: var(--color-primary-default) !important;
 
     & .show-more__button {
-      background: linear-gradient(90deg, transparent 0%, var(--color-background-alternative-hover) 33%);
+      background: linear-gradient(90deg, transparent 0%, var(--color-background-primary-muted) 33%);
+    }
+
+    p,
+    .copyable__icon {
+      color: var(--color-primary-default);
+    }
+
+    .copyable__tooltip {
+      .mm-icon {
+        color: var(--color-primary-default);
+      }
     }
   }
 
   &.clicked {
-    background-color: var(--color-background-alternative-pressed);
+    background-color: var(--color-primary-muted);
+    opacity: 0.75;
 
     & .show-more__button {
-      background: linear-gradient(90deg, transparent 0%, var(--color-background-alternative-pressed) 33%);
+      background: linear-gradient(90deg, transparent 0%, var(--color-background-primary-muted) 33%);
     }
 
     &:hover {
-      background-color: var(--color-background-alternative-pressed);
+      background-color: var(--color-primary-muted);
 
       & .show-more__button {
-        background: linear-gradient(90deg, transparent 0%, var(--color-background-alternative-pressed) 33%);
+        background: linear-gradient(90deg, transparent 0%, var(--color-background-primary-muted) 33%);
       }
     }
   }
@@ -45,9 +58,21 @@
         & .show-more__button {
           background: linear-gradient(90deg, transparent 0%, var(--color-error-muted-hover) 33%);
         }
+
+        p,
+        .copyable__icon {
+          color: var(--color-error-default);
+        }
+
+        .copyable__tooltip {
+          .mm-icon {
+            color: var(--color-error-default);
+          }
+        }
       }
 
       &.clicked {
+        opacity: 0.75;
         background-color: var(--color-error-muted-pressed);
 
         & .show-more__button {

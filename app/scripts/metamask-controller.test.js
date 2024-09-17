@@ -118,11 +118,11 @@ const rpcMethodMiddlewareMock = {
 jest.mock('./lib/rpc-method-middleware', () => rpcMethodMiddlewareMock);
 
 jest.mock(
-  './controllers/preferences',
+  './controllers/preferences-controller',
   () =>
     function (...args) {
       const PreferencesController = jest.requireActual(
-        './controllers/preferences',
+        './controllers/preferences-controller',
       ).default;
       const controller = new PreferencesController(...args);
       // jest.spyOn gets hoisted to the top of this function before controller is initialized.
@@ -708,7 +708,7 @@ describe('MetaMaskController', () => {
           });
 
         jest
-          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
 
         // Give account 2 a token
@@ -1188,7 +1188,7 @@ describe('MetaMaskController', () => {
           false,
         );
         jest
-          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
         metamaskController.preferencesController.setUsePhishDetect(true);
       });
@@ -1583,7 +1583,7 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController, 'triggerNetworkrequests')
           .mockImplementation();
         jest
-          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
         const mockControllerConnectionChangedHandler = jest.fn();
 

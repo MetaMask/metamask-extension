@@ -8,7 +8,7 @@ const { mockNetworkState } = require('../stub/networks');
 
 const { CHAIN_IDS } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
-const { DAPP_URL, DAPP_ONE_URL, ACCOUNT_1 } = require('./helpers');
+const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
 const { DEFAULT_FIXTURE_ACCOUNT, ERC_4337_ACCOUNT } = require('./constants');
 const {
   defaultFixture,
@@ -129,6 +129,11 @@ class FixtureBuilder {
       onboarding === true ? onboardingFixture() : defaultFixture(inputChainId);
   }
 
+  withAccountTracker(data) {
+    merge(this.fixture.data.AccountTracker, data);
+    return this;
+  }
+
   withAddressBookController(data) {
     merge(
       this.fixture.data.AddressBookController
@@ -167,6 +172,18 @@ class FixtureBuilder {
   withCurrencyController(data) {
     merge(this.fixture.data.CurrencyController, data);
     return this;
+  }
+
+  withConversionRateDisabled() {
+    return this.withPreferencesController({
+      useCurrencyRateCheck: false,
+    });
+  }
+
+  withConversionRateEnabled() {
+    return this.withPreferencesController({
+      useCurrencyRateCheck: true,
+    });
   }
 
   withGasFeeController(data) {
@@ -215,6 +232,22 @@ class FixtureBuilder {
 
   withNetworkControllerOnMainnet() {
     return this.withNetworkController({ selectedNetworkClientId: 'mainnet' });
+  }
+
+  withNetworkControllerOnOptimism() {
+    return this.withNetworkController({
+      networkConfigurations: {
+        networkConfigurationId: {
+          chainId: CHAIN_IDS.OPTIMISM,
+          nickname: 'Localhost 8545',
+          rpcPrefs: {},
+          rpcUrl: 'https://mainnet.infura.io',
+          ticker: 'ETH',
+          networkConfigurationId: 'networkConfigurationId',
+          id: 'networkConfigurationId',
+        },
+      },
+    });
   }
 
   withNetworkControllerDoubleGanache() {
@@ -844,587 +877,6 @@ class FixtureBuilder {
     return this;
   }
 
-  withTransactionControllerMultipleTransactions() {
-    return this.withTransactionController({
-      transactions: {
-        '7087d1d7-f0e8-4c0f-a903-6d9daa392baf': {
-          chainId: CHAIN_IDS.LOCALHOST,
-          dappSuggestedGasFees: {
-            gas: '0x5208',
-            maxFeePerGas: '0x59682f0c',
-            maxPriorityFeePerGas: '0x59682f00',
-          },
-          history: [
-            {
-              chainId: CHAIN_IDS.LOCALHOST,
-              dappSuggestedGasFees: {
-                gas: '0x5208',
-                maxFeePerGas: '0x59682f0c',
-                maxPriorityFeePerGas: '0x59682f00',
-              },
-              id: '7087d1d7-f0e8-4c0f-a903-6d9daa392baf',
-              loadingDefaults: true,
-              origin: 'https://metamask.github.io',
-              status: 'unapproved',
-              time: 1631545991949,
-              txParams: {
-                from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                gas: '0x5208',
-                maxFeePerGas: '0x59682f0c',
-                maxPriorityFeePerGas: '0x59682f00',
-                to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
-                value: '0x29a2241af62c0000',
-              },
-              type: 'simpleSend',
-            },
-            [
-              {
-                note: 'Added new unapproved transaction.',
-                op: 'replace',
-                path: '/loadingDefaults',
-                timestamp: 1631545992244,
-                value: false,
-              },
-              {
-                op: 'add',
-                path: '/simulationData',
-                value: {
-                  error: {
-                    code: 'disabled',
-                    message: 'Simulation disabled',
-                  },
-                  tokenBalanceChanges: [],
-                },
-                note: 'TransactionController#updateSimulationData - Update simulation data',
-                timestamp: 1631545992244,
-              },
-            ],
-          ],
-          simulationData: {
-            error: {
-              code: 'disabled',
-              message: 'Simulation disabled',
-            },
-            tokenBalanceChanges: [],
-          },
-          id: '7087d1d7-f0e8-4c0f-a903-6d9daa392baf',
-          loadingDefaults: false,
-          origin: 'https://metamask.github.io',
-          status: 'unapproved',
-          time: 1631545991949,
-          txParams: {
-            from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-            gas: '0x5208',
-            maxFeePerGas: '0x59682f0c',
-            maxPriorityFeePerGas: '0x59682f00',
-            to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
-            value: '0x29a2241af62c0000',
-          },
-          type: 'simpleSend',
-        },
-        '6eab4240-3762-4581-abc5-cd91eab6964e': {
-          chainId: CHAIN_IDS.LOCALHOST,
-          dappSuggestedGasFees: {
-            gas: '0x5208',
-            maxFeePerGas: '0x59682f0c',
-            maxPriorityFeePerGas: '0x59682f00',
-          },
-          history: [
-            {
-              chainId: CHAIN_IDS.LOCALHOST,
-              dappSuggestedGasFees: {
-                gas: '0x5208',
-                maxFeePerGas: '0x59682f0c',
-                maxPriorityFeePerGas: '0x59682f00',
-              },
-              id: '6eab4240-3762-4581-abc5-cd91eab6964e',
-              loadingDefaults: true,
-              origin: 'https://metamask.github.io',
-              status: 'unapproved',
-              time: 1631545994578,
-              txParams: {
-                from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                gas: '0x5208',
-                maxFeePerGas: '0x59682f0c',
-                maxPriorityFeePerGas: '0x59682f00',
-                to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
-                value: '0x29a2241af62c0000',
-              },
-              type: 'simpleSend',
-            },
-            [
-              {
-                note: 'Added new unapproved transaction.',
-                op: 'replace',
-                path: '/loadingDefaults',
-                timestamp: 1631545994695,
-                value: false,
-              },
-              {
-                op: 'add',
-                path: '/simulationData',
-                value: {
-                  error: {
-                    code: 'disabled',
-                    message: 'Simulation disabled',
-                  },
-                  tokenBalanceChanges: [],
-                },
-                note: 'TransactionController#updateSimulationData - Update simulation data',
-                timestamp: 1631545992244,
-              },
-            ],
-          ],
-          simulationData: {
-            error: {
-              code: 'disabled',
-              message: 'Simulation disabled',
-            },
-            tokenBalanceChanges: [],
-          },
-          id: '6eab4240-3762-4581-abc5-cd91eab6964e',
-          loadingDefaults: false,
-          origin: 'https://metamask.github.io',
-          status: 'unapproved',
-          time: 1631545994578,
-          txParams: {
-            from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-            gas: '0x5208',
-            maxFeePerGas: '0x59682f0c',
-            maxPriorityFeePerGas: '0x59682f00',
-            to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
-            value: '0x29a2241af62c0000',
-          },
-          type: 'simpleSend',
-        },
-        'c15eee26-11d6-4914-a70e-36ef9a3bcacb': {
-          chainId: CHAIN_IDS.LOCALHOST,
-          dappSuggestedGasFees: {
-            gas: '0x5208',
-            maxFeePerGas: '0x59682f0c',
-            maxPriorityFeePerGas: '0x59682f00',
-          },
-          history: [
-            {
-              chainId: CHAIN_IDS.LOCALHOST,
-              dappSuggestedGasFees: {
-                gas: '0x5208',
-                maxFeePerGas: '0x59682f0c',
-                maxPriorityFeePerGas: '0x59682f00',
-              },
-              id: 'c15eee26-11d6-4914-a70e-36ef9a3bcacb',
-              loadingDefaults: true,
-              origin: 'https://metamask.github.io',
-              status: 'unapproved',
-              time: 1631545996673,
-              txParams: {
-                from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                gas: '0x5208',
-                maxFeePerGas: '0x59682f0c',
-                maxPriorityFeePerGas: '0x59682f00',
-                to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
-                value: '0x29a2241af62c0000',
-              },
-              type: 'simpleSend',
-            },
-            [
-              {
-                note: 'Added new unapproved transaction.',
-                op: 'replace',
-                path: '/loadingDefaults',
-                timestamp: 1631545996678,
-                value: false,
-              },
-              {
-                op: 'add',
-                path: '/simulationData',
-                value: {
-                  error: {
-                    code: 'disabled',
-                    message: 'Simulation disabled',
-                  },
-                  tokenBalanceChanges: [],
-                },
-                note: 'TransactionController#updateSimulationData - Update simulation data',
-                timestamp: 1631545992244,
-              },
-            ],
-          ],
-          simulationData: {
-            error: {
-              code: 'disabled',
-              message: 'Simulation disabled',
-            },
-            tokenBalanceChanges: [],
-          },
-          id: 'c15eee26-11d6-4914-a70e-36ef9a3bcacb',
-          loadingDefaults: false,
-          origin: 'https://metamask.github.io',
-          status: 'unapproved',
-          time: 1631545996673,
-          txParams: {
-            from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-            gas: '0x5208',
-            maxFeePerGas: '0x59682f0c',
-            maxPriorityFeePerGas: '0x59682f00',
-            to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
-            value: '0x29a2241af62c0000',
-          },
-          type: 'simpleSend',
-        },
-        'dfa9e5ad-d069-46b1-976e-a23734971d87': {
-          chainId: CHAIN_IDS.LOCALHOST,
-          dappSuggestedGasFees: {
-            gas: '0x5208',
-            maxFeePerGas: '0x59682f0c',
-            maxPriorityFeePerGas: '0x59682f00',
-          },
-          history: [
-            {
-              chainId: CHAIN_IDS.LOCALHOST,
-              dappSuggestedGasFees: {
-                gas: '0x5208',
-                maxFeePerGas: '0x59682f0c',
-                maxPriorityFeePerGas: '0x59682f00',
-              },
-              id: 'dfa9e5ad-d069-46b1-976e-a23734971d87',
-              loadingDefaults: true,
-              origin: 'https://metamask.github.io',
-              status: 'unapproved',
-              time: 1631545998675,
-              txParams: {
-                from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                gas: '0x5208',
-                maxFeePerGas: '0x59682f0c',
-                maxPriorityFeePerGas: '0x59682f00',
-                to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
-                value: '0x29a2241af62c0000',
-              },
-              type: 'simpleSend',
-            },
-            [
-              {
-                note: 'Added new unapproved transaction.',
-                op: 'replace',
-                path: '/loadingDefaults',
-                timestamp: 1631545998677,
-                value: false,
-              },
-              {
-                op: 'add',
-                path: '/simulationData',
-                value: {
-                  error: {
-                    code: 'disabled',
-                    message: 'Simulation disabled',
-                  },
-                  tokenBalanceChanges: [],
-                },
-                note: 'TransactionController#updateSimulationData - Update simulation data',
-                timestamp: 1631545992244,
-              },
-            ],
-          ],
-          simulationData: {
-            error: {
-              code: 'disabled',
-              message: 'Simulation disabled',
-            },
-            tokenBalanceChanges: [],
-          },
-          id: 'dfa9e5ad-d069-46b1-976e-a23734971d87',
-          loadingDefaults: false,
-          origin: 'https://metamask.github.io',
-          status: 'unapproved',
-          time: 1631545998675,
-          txParams: {
-            from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-            gas: '0x5208',
-            maxFeePerGas: '0x59682f0c',
-            maxPriorityFeePerGas: '0x59682f00',
-            to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
-            value: '0x29a2241af62c0000',
-          },
-          type: 'simpleSend',
-        },
-      },
-    });
-  }
-
-  withTransactionControllerTypeOneTransaction() {
-    return this.withTransactionController({
-      transactions: {
-        '13a01e77-a368-4bb9-aba9-e7435580e3b9': {
-          chainId: CHAIN_IDS.LOCALHOST,
-          history: [
-            {
-              chainId: CHAIN_IDS.LOCALHOST,
-              id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
-              loadingDefaults: true,
-              origin: 'metamask',
-              status: 'unapproved',
-              time: 1617228030067,
-              txParams: {
-                from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                gas: '0x61a8',
-                gasPrice: '0x2540be400',
-                to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-                value: '0xde0b6b3a7640000',
-              },
-              type: 'simpleSend',
-            },
-            [
-              {
-                note: 'Added new unapproved transaction.',
-                op: 'replace',
-                path: '/loadingDefaults',
-                timestamp: 1617228030069,
-                value: false,
-              },
-            ],
-          ],
-          id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
-          loadingDefaults: false,
-          origin: 'metamask',
-          primaryTransaction: {
-            chainId: CHAIN_IDS.LOCALHOST,
-            id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
-            loadingDefaults: true,
-            origin: 'metamask',
-            status: 'unapproved',
-            time: 1617228030067,
-            txParams: {
-              from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-              gas: '0x61a8',
-              gasPrice: '0x2540be400',
-              to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-              value: '0xde0b6b3a7640000',
-            },
-            type: 'sentEther',
-          },
-          status: 'unapproved',
-          time: 1617228030067,
-          txParams: {
-            from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-            gas: '0x61a8',
-            gasPrice: '0x2540be400',
-            to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-            value: '0xde0b6b3a7640000',
-          },
-          type: 'simpleSend',
-        },
-      },
-    });
-  }
-
-  withTransactionControllerTypeTwoTransaction() {
-    return this.withTransactionController({
-      transactions: {
-        '13a01e77-a368-4bb9-aba9-e7435580e3b9': {
-          chainId: CHAIN_IDS.LOCALHOST,
-          history: [
-            {
-              chainId: CHAIN_IDS.LOCALHOST,
-              id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
-              loadingDefaults: true,
-              origin: 'metamask',
-              status: 'unapproved',
-              time: 1617228030067,
-              txParams: {
-                from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                gas: '0x61a8',
-                maxFeePerGas: '0x59682f0c',
-                maxPriorityFeePerGas: '0x59682f00',
-                to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-                type: '0x2',
-                value: '0xde0b6b3a7640000',
-              },
-              type: 'simpleSend',
-            },
-            [
-              {
-                note: 'Added new unapproved transaction.',
-                op: 'replace',
-                path: '/loadingDefaults',
-                timestamp: 1617228030069,
-                value: false,
-              },
-            ],
-          ],
-          id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
-          loadingDefaults: false,
-          origin: 'metamask',
-          primaryTransaction: {
-            chainId: CHAIN_IDS.LOCALHOST,
-            id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
-            loadingDefaults: true,
-            origin: 'metamask',
-            status: 'unapproved',
-            time: 1617228030067,
-            txParams: {
-              from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-              gas: '0x61a8',
-              maxFeePerGas: '0x59682f0c',
-              maxPriorityFeePerGas: '0x59682f00',
-              to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-              type: '0x2',
-              value: '0xde0b6b3a7640000',
-            },
-            type: 'sentEther',
-          },
-          status: 'unapproved',
-          time: 1617228030067,
-          txParams: {
-            from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-            gas: '0x61a8',
-            maxFeePerGas: '0x59682f0c',
-            maxPriorityFeePerGas: '0x59682f00',
-            to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-            type: '0x2',
-            value: '0xde0b6b3a7640000',
-          },
-          type: 'simpleSend',
-        },
-      },
-    });
-  }
-
-  withTransactionControllerOPLayer2Transaction() {
-    const FROM_ADDRESS = ACCOUNT_1;
-    const TRANSACTION_ID = 'f0fc75d0-181d-11ef-9546-8b2366f13afd';
-    const TRANSACTION_TYPE = 'contractInteraction';
-    const TEST_NETWORK_CLIENT_ID = 'networkConfigurationId';
-
-    return this.withTransactionController({
-      transactions: {
-        [TRANSACTION_ID]: {
-          actionId: 3577139671,
-          chainId: '0xa',
-          dappSuggestedGasFees: { gas: '0x31f10' },
-          defaultGasEstimates: {
-            estimateType: 'dappSuggested',
-            gas: '0x31f10',
-            maxFeePerGas: '0x3b014b3',
-            maxPriorityFeePerGas: '0x3b014b3',
-          },
-          gasFeeEstimates: { gasPrice: '0x3b202d0', type: 'eth_gasPrice' },
-          gasFeeEstimatesLoaded: true,
-          history: [
-            {
-              actionId: 3577139671,
-              chainId: '0xa',
-              dappSuggestedGasFees: { gas: '0x31f10' },
-              defaultGasEstimates: {
-                estimateType: 'dappSuggested',
-                gas: '0x31f10',
-                maxFeePerGas: '0x3b014b3',
-                maxPriorityFeePerGas: '0x3b014b3',
-              },
-              id: TRANSACTION_ID,
-              layer1GasFee: '0x175283ae57',
-              networkClientId: TEST_NETWORK_CLIENT_ID,
-              origin: 'https://metamask.github.io',
-              securityAlertResponse: {
-                reason: 'loading',
-                result_type: 'validation_in_progress',
-                securityAlertId: '30626504-0069-4278-9e2e-3d7fba2e6aef',
-              },
-              sendFlowHistory: [],
-              status: 'unapproved',
-              time: 1716370234797,
-              txParams: {
-                data: '0x608060405234801561001057600080fd5b5033600160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506000808190555061023b806100686000396000f300608060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680632e1a7d4d1461005c5780638da5cb5b1461009d578063d0e30db0146100f4575b600080fd5b34801561006857600080fd5b5061008760048036038101908080359060200190929190505050610112565b6040518082815260200191505060405180910390f35b3480156100a957600080fd5b506100b26101d0565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6100fc6101f6565b6040518082815260200191505060405180910390f35b6000600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561017057600080fd5b8160008082825403925050819055503373ffffffffffffffffffffffffffffffffffffffff166108fc839081150290604051600060405180830381858888f193505050501580156101c5573d6000803e3d6000fd5b506000549050919050565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b60003460008082825401925050819055506000549050905600a165627a7a72305820f237db3ec816a52589d82512117bc85bc08d3537683ffeff9059108caf3e5d400029',
-                from: FROM_ADDRESS,
-                gas: '0x31f10',
-                maxFeePerGas: '0x3b014b3',
-                maxPriorityFeePerGas: '0x3b014b3',
-                value: '0x0',
-              },
-              type: TRANSACTION_TYPE,
-              userEditedGasLimit: false,
-              userFeeLevel: 'dappSuggested',
-              verifiedOnBlockchain: false,
-            },
-            [
-              {
-                note: 'TransactionController#updateSimulationData - Update simulation data',
-                op: 'add',
-                path: '/simulationData',
-                timestamp: 1716370235743,
-                value: {
-                  error: { code: 'disabled', message: 'Simulation disabled' },
-                  tokenBalanceChanges: [],
-                },
-              },
-            ],
-            [
-              {
-                note: 'TransactionController:updatesecurityAlertResponse - securityAlertResponse updated',
-                op: 'replace',
-                path: '/securityAlertResponse/result_type',
-                timestamp: 1716370236091,
-                value: 'Benign',
-              },
-              {
-                op: 'replace',
-                path: '/securityAlertResponse/reason',
-                value: '',
-              },
-              {
-                op: 'add',
-                path: '/securityAlertResponse/description',
-                value: '',
-              },
-              { op: 'add', path: '/securityAlertResponse/features', value: [] },
-              {
-                op: 'add',
-                path: '/securityAlertResponse/block',
-                value: 120385722,
-              },
-              {
-                op: 'add',
-                path: '/gasFeeEstimates',
-                value: { gasPrice: '0x3b014b3', type: 'eth_gasPrice' },
-              },
-              { op: 'add', path: '/gasFeeEstimatesLoaded', value: true },
-            ],
-          ],
-          id: TRANSACTION_ID,
-          layer1GasFee: '0x19fdabf615',
-          networkClientId: TEST_NETWORK_CLIENT_ID,
-          origin: 'https://metamask.github.io',
-          securityAlertResponse: {
-            block: 120385722,
-            description: '',
-            features: [],
-            reason: '',
-            result_type: 'Benign',
-            securityAlertId: '30626504-0069-4278-9e2e-3d7fba2e6aef',
-          },
-          sendFlowHistory: [],
-          simulationData: {
-            error: { code: 'disabled', message: 'Simulation disabled' },
-            tokenBalanceChanges: [],
-          },
-          status: 'unapproved',
-          time: 1716370234797,
-          txParams: {
-            data: '0x608060405234801561001057600080fd5b5033600160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506000808190555061023b806100686000396000f300608060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680632e1a7d4d1461005c5780638da5cb5b1461009d578063d0e30db0146100f4575b600080fd5b34801561006857600080fd5b5061008760048036038101908080359060200190929190505050610112565b6040518082815260200191505060405180910390f35b3480156100a957600080fd5b506100b26101d0565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6100fc6101f6565b6040518082815260200191505060405180910390f35b6000600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561017057600080fd5b8160008082825403925050819055503373ffffffffffffffffffffffffffffffffffffffff166108fc839081150290604051600060405180830381858888f193505050501580156101c5573d6000803e3d6000fd5b506000549050919050565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b60003460008082825401925050819055506000549050905600a165627a7a72305820f237db3ec816a52589d82512117bc85bc08d3537683ffeff9059108caf3e5d400029',
-            from: FROM_ADDRESS,
-            gas: '0x31f10',
-            maxFeePerGas: '0x3b014b3',
-            maxPriorityFeePerGas: '0x3b014b3',
-            value: '0x0',
-          },
-          type: TRANSACTION_TYPE,
-          userEditedGasLimit: false,
-          userFeeLevel: 'dappSuggested',
-          verifiedOnBlockchain: false,
-        },
-      },
-    });
-  }
-
   withTransactionControllerApprovedTransaction() {
     return this.withTransactionController({
       transactions: {
@@ -1881,6 +1333,141 @@ class FixtureBuilder {
 
   withNoNames() {
     return this.withNameController({ names: {} });
+  }
+
+  withTrezorAccount() {
+    return this.withAccountTracker({
+      accounts: {
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+          address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          balance: '0x15af1d78b58c40000',
+        },
+        '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
+          address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+          balance: '0x100000000000000000000',
+        },
+      },
+      currentBlockGasLimit: '0x1c9c380',
+      accountsByChainId: {
+        '0x539': {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            balance: '0x15af1d78b58c40000',
+          },
+          '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
+            address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+            balance: '0x100000000000000000000',
+          },
+        },
+      },
+      currentBlockGasLimitByChainId: {
+        '0x539': '0x1c9c380',
+      },
+    })
+      .withAccountsController({
+        internalAccounts: {
+          accounts: {
+            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+              address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+              options: {},
+              methods: [
+                'personal_sign',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+              metadata: {
+                name: 'Account 1',
+                importTime: 1724486724986,
+                lastSelected: 1665507600000,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+            },
+            '221ecb67-0d29-4c04-83b2-dff07c263634': {
+              id: '221ecb67-0d29-4c04-83b2-dff07c263634',
+              address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+              options: {},
+              methods: [
+                'personal_sign',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+              metadata: {
+                name: 'Trezor 1',
+                importTime: 1724486729079,
+                keyring: {
+                  type: 'Trezor Hardware',
+                },
+                lastSelected: 1724486729083,
+              },
+            },
+          },
+          selectedAccount: '221ecb67-0d29-4c04-83b2-dff07c263634',
+        },
+      })
+      .withKeyringController({
+        vault:
+          '{"data":"NPUZE4s9SQOrsw1GtJSnQ9ptC3J1nf3O+hWT3N8Oh5MDcyO0XojQfSBZL88FgjuAGMT+oFEnX8gzsd1x0/Z7iinNSOD+U22LJ6w37Pkfw4mqAYvKJDbnb2HAdjNbjGD99PKn1qe5eR0vohL5taFW2lTKdlE3dficITFM9wm9mQTegQVvYClTSktweumFSTMxqO1fUPj7oacLmw69ZAk2/am4fhI4c6ZeJoAkvPTJvYZDOne3WkUlcuUoeJjCX7b/59NQNHeCry8OyWVMCZDMYFsJT9Pk2vlFgnVL69n9dRGHrZNuNGFOhFawta5TqDUn1Ya7Iq0FjBW1WQv+HKktMM+RA8KZZyAAJkXYHRMpmUhQkw4wQFELgHjKFm/NIYcFVT5t6/XIj9kLqh4+55krUGoEHygzX41uSNie/wNmLjTgNAZv/eK9R81vyv1FR8N1fgkr13KxQT/0o/bQZhnaVClFa/3t13epiRrU/1plVh2TaI7HLFLj69d4c7w96J7Z33osjCywpNCJLam3Xx5OLAaPVe+L7a9u/zOMmryxX37xCrQhn9YSzZ0+E9Hik9CZU9ZXqmNgRhYAoqpcRWgMVmEC2HRLBIXXF0VTyYvfUvEfn87iAsqw0KeoQagDpUPsEr8UU9zs6cGRqZZTfR6/Wa3UwuIwV5XnCRg3Eifiz2BHKG4kutxKIJJak9habIfXBjxMrrwrHns7tWmWmE3JRYoekJQxFdWP3mcnDHVNz2VscgWeW5bZEoBim91iPRbsXimX9605xE0WOaHpwu27G9LwTNwL+0f8BgwoCcfMbaKwoDGVqKFOSbKurYBByPmWsm1b10vVrnsxA3VZMd2HWhicD7DE5h/4R+7Z90VthpVwt4NQ7+QmXeSXqCpPcoq7UTrchdYgV95xbKna1r0lSnZSfUMALji1I2Nh96ki24SbbUEeFZGm4dxNSnub07hTKF6xeqS1FvV79hBpZi/6v+pS+SDNSlwEcfRWW3S02Ec6JAhK2rVCQqSwasFcVcznYB5OaKL6QCmriIpqH0ATsthAwsf9naHSU+36wwi3xogxbpzecjaZ8gxKs2wmJk+Rz6VoGB+z9DTzvha5sm4DmfuQ2CtbQNYZq20VG3hO9g7wzWwa5xZmbH7njBDqlpaNgmxMrAX1S+T8D7X6ElD+aH0MyP9UD5E5tT5xxgUAV0wi+LY0+uCi2Y2lragFM7ihmPr1MP5wEy/1eIf45cY3imfl9w0F/FrCo+Hy2Au9AueCCab2eabA8QAum3lhXtdOyc123sSghIPjC6RUlZE53skLx1cPaV5JJAkneQJ44QMWecLQjh3YyCzRQ8XCnFAL+Kmf7zW5t+l25PLCkcfuLE7zxvLsTz3w2TCIXzEJyw1vXjBzPTUdKCNSva0WGsbq5B93zYot6bmvK1RKHeje8Ed/4N/l8uwxulUAjYQ+94qDKkxTVxvAZ8ydoxwKuB8QCTXgbymDsF/Y5l+RDXmzMT8BdN/QtdjsCXJ2PjvBG+srQOPntOCZMS7FVMk9yc6MWE/DBDm7HtY5CiY3af4A5sOZmLSP3Ek91ijmYdr/nO32DnkV4NJ2/Hj8SWAK5OD8zq8q5uRlR8BDcj7oLnzJX4S+yJNJ/nZSleUyTsv5v6YZ8hno","iv":"6SgfUVcvgUDGbCuqmdZgbA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"nk4xdpmMR+1s5BYe4Vnk++XAQwrISI2bCtbMg7V1wUA="}',
+      })
+      .withNameController({
+        names: {
+          ethereumAddress: {
+            '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+              '*': {
+                name: 'Account 1',
+                sourceId: null,
+                proposedNames: {},
+                origin: 'account-identity',
+              },
+            },
+            '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
+              '*': {
+                proposedNames: {},
+                name: 'Trezor 1',
+                sourceId: null,
+                origin: 'account-identity',
+              },
+            },
+          },
+        },
+      })
+      .withPreferencesController({
+        identities: {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            lastSelected: 1665507600000,
+            name: 'Account 1',
+          },
+          '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
+            address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+            lastSelected: 1665507800000,
+            name: 'Trezor 1',
+          },
+        },
+        lostIdentities: {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            name: 'Account 1',
+            lastSelected: 1665507600000,
+          },
+          '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
+            address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+            name: 'Trezor 1',
+            lastSelected: 1665507800000,
+          },
+        },
+        selectedAddress: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+      });
   }
 
   build() {

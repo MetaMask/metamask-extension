@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "추가 네트워크"
   },
-  "additionalRpcUrl": {
-    "message": "추가 RPC URL"
-  },
   "address": {
     "message": "주소"
   },
@@ -666,9 +663,6 @@
   "back": {
     "message": "뒤로"
   },
-  "backup": {
-    "message": "백업"
-  },
   "backupApprovalInfo": {
     "message": "이 비밀 코드는 장치를 분실하여 지갑을 복구해야 하거나, 비밀번호를 잊은 경우, MetaMask를 다시 설치해야 하거나, 다른 장치에서 지갑에 액세스해야 할 때 필요합니다."
   },
@@ -680,12 +674,6 @@
   },
   "backupNow": {
     "message": "지금 백업"
-  },
-  "backupUserData": {
-    "message": "데이터를 백업하세요"
-  },
-  "backupUserDataDescription": {
-    "message": "기본 설정과 계약이 포함된 사용자 설정을 JSON 파일로 백업할 수 있습니다."
   },
   "balance": {
     "message": "잔액"
@@ -1039,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "요청하는 사이트를 신뢰하고 그 내용을 완전히 이해하는 경우에만 이 메시지를 컨펌하세요."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "지출 한도 요청"
   },
   "confirmTitleSIWESignature": {
@@ -4358,9 +4346,6 @@
   },
   "restoreUserData": {
     "message": "사용자 데이터 복구"
-  },
-  "restoreUserDataDescription": {
-    "message": "이전에 백업한 JSON 파일에서 기본 설정과 계정 주소가 포함된 사용자 설정을 복구할 수 있습니다."
   },
   "resultPageError": {
     "message": "오류"
