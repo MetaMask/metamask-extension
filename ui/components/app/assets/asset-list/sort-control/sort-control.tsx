@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { Box } from '../../../../component-library';
@@ -9,6 +9,12 @@ import {
   BorderRadius,
 } from '../../../../../helpers/constants/design-system';
 import { setTokenSortConfig } from '../../../../../store/actions';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsUserTrait,
+} from '../../../../../../shared/constants/metametrics';
 
 // intentionally used generic naming convention for styled selectable list item
 // inspired from ui/components/multichain/network-list-item
@@ -57,6 +63,7 @@ const SortControl = ({
   setTokenList,
   setSorted,
 }: SortControlProps) => {
+  const trackEvent = useContext(MetaMetricsContext);
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tokenSortConfig = useSelector((state: any) => {
@@ -86,6 +93,13 @@ const SortControl = ({
         order,
       }),
     );
+    trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.TokenSortPreference,
+      properties: {
+        [MetaMetricsUserTrait.TokenSortPreference]: key,
+      },
+    });
   };
   return (
     <>

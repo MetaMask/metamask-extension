@@ -468,6 +468,7 @@ export enum MetaMetricsUserTrait {
   MmiIsCustodian = 'mmi_is_custodian',
   ///: END:ONLY_INCLUDE_IF
   PetnameAddressCount = 'petname_addresses_count',
+  TokenSortPreference = 'token_sort_preference',
 }
 
 /**
@@ -618,6 +619,7 @@ export enum MetaMetricsEventName {
   TokenScreenOpened = 'Token Screen Opened',
   TokenAdded = 'Token Added',
   TokenRemoved = 'Token Removed',
+  TokenSortPreference = 'Token Sort Preference',
   NFTRemoved = 'NFT Removed',
   TokenDetected = 'Token Detected',
   TokenHidden = 'Token Hidden',
