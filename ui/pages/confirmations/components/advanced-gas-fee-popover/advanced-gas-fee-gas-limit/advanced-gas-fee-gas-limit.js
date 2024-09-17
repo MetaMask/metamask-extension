@@ -68,7 +68,6 @@ const AdvancedGasFeeGasLimit = () => {
     }
   }, [minimumGasLimitDec, originalGasEstimateDec, setMaxGasLimit]);
 
-  console.log('**', minimumGasLimitDec - 1, maxGasLimit);
   if (isEditing) {
     return (
       <FormField
