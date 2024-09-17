@@ -1704,10 +1704,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blockaid/ppom_release@npm:^1.5.2":
-  version: 1.5.2
-  resolution: "@blockaid/ppom_release@npm:1.5.2"
-  checksum: 10/b47af74e8a315d996abb8371a7b28f9923bf78272cc408b2307024e2050b57f36c53b6b9a57b276b0910b449ebb384897e293abad356131ccf65c6c3c5ca31ae
+"@blockaid/ppom_release@npm:^1.5.3":
+  version: 1.5.3
+  resolution: "@blockaid/ppom_release@npm:1.5.3"
+  checksum: 10/3e8a16866b477eef247c4a65c80d361e7429389e7e760c0497bc69269526e2325fa15cdbf93455c1655877a7760c6b4fc9ce87d80f0290483160632300bcfbc8
   languageName: node
   linkType: hard
 
@@ -4890,10 +4890,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@metamask/bitcoin-wallet-snap@npm:0.5.0"
-  checksum: 10/eeb2c11316d58fcd26b73c11b6c8cd6ed0c5d4beb28ae3237bc08c8100fbdde4f8e38ad3efb25c85f8a6722cfec8290bbbfee71718d54735beb86064a9e9435c
+"@metamask/bitcoin-wallet-snap@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@metamask/bitcoin-wallet-snap@npm:0.6.0"
+  checksum: 10/baf4d7a43ddb5f210437c722e90abc6a3b4056390cc1d075e1a09acb82e934db338fce36fb897560e7f9ecd8ff3fcbd4795b3076dc7243af7ac93ea5d47b63f5
   languageName: node
   linkType: hard
 
@@ -23313,7 +23313,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-environment-jsdom@npm:^29.7.0":
+"jest-environment-jsdom@npm:29.7.0":
   version: 29.7.0
   resolution: "jest-environment-jsdom@npm:29.7.0"
   dependencies:
@@ -23331,6 +23331,27 @@ __metadata:
     canvas:
       optional: true
   checksum: 10/23bbfc9bca914baef4b654f7983175a4d49b0f515a5094ebcb8f819f28ec186f53c0ba06af1855eac04bab1457f4ea79dae05f70052cf899863e8096daa6e0f5
+  languageName: node
+  linkType: hard
+
+"jest-environment-jsdom@patch:jest-environment-jsdom@npm%3A29.7.0#~/.yarn/patches/jest-environment-jsdom-npm-29.7.0-0b72dd0e0b.patch":
+  version: 29.7.0
+  resolution: "jest-environment-jsdom@patch:jest-environment-jsdom@npm%3A29.7.0#~/.yarn/patches/jest-environment-jsdom-npm-29.7.0-0b72dd0e0b.patch::version=29.7.0&hash=a6aa71"
+  dependencies:
+    "@jest/environment": "npm:^29.7.0"
+    "@jest/fake-timers": "npm:^29.7.0"
+    "@jest/types": "npm:^29.6.3"
+    "@types/jsdom": "npm:^20.0.0"
+    "@types/node": "npm:*"
+    jest-mock: "npm:^29.7.0"
+    jest-util: "npm:^29.7.0"
+    jsdom: "npm:^20.0.0"
+  peerDependencies:
+    canvas: ^2.5.0
+  peerDependenciesMeta:
+    canvas:
+      optional: true
+  checksum: 10/ccc6dc855d841cbcaac17c3f8b25bd63827c7766bf4ee555ee7b7c2b9707ae172659be4a813fdddbdd2a933d9d6c23a97e13924e176a68cf44299c57bf1e3009
   languageName: node
   linkType: hard
 
@@ -25936,7 +25957,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.2"
     "@babel/register": "npm:^7.22.15"
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch"
-    "@blockaid/ppom_release": "npm:^1.5.2"
+    "@blockaid/ppom_release": "npm:^1.5.3"
     "@ensdomains/content-hash": "npm:^2.5.7"
     "@ethereumjs/tx": "npm:^4.1.1"
     "@ethersproject/abi": "npm:^5.6.4"
@@ -25977,7 +25998,7 @@ __metadata:
     "@metamask/assets-controllers": "npm:^36.0.0"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^7.0.0"
-    "@metamask/bitcoin-wallet-snap": "npm:^0.5.0"
+    "@metamask/bitcoin-wallet-snap": "npm:^0.6.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
@@ -26216,7 +26237,7 @@ __metadata:
     is-retry-allowed: "npm:^2.2.0"
     jest: "npm:^29.7.0"
     jest-canvas-mock: "npm:^2.3.1"
-    jest-environment-jsdom: "npm:^29.7.0"
+    jest-environment-jsdom: "patch:jest-environment-jsdom@npm%3A29.7.0#~/.yarn/patches/jest-environment-jsdom-npm-29.7.0-0b72dd0e0b.patch"
     jest-junit: "npm:^14.0.1"
     jsdom: "npm:^16.7.0"
     json-rpc-engine: "npm:^6.1.0"
