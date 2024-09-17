@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
 const {
+  createInternalTransaction,
+} = require('../../page-objects/flows/transaction');
+
+const {
   withFixtures,
   openDapp,
   unlockWallet,
