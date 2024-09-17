@@ -6,14 +6,14 @@ exports[`AggregatedPercentageOverview render renders correctly 1`] = `
     class="mm-box mm-box--display-flex"
   >
     <p
-      class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-box--color-text-default"
+      class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
       data-testid="aggregated-value-change"
       style="white-space: pre;"
     >
       +$0.00 
     </p>
     <p
-      class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-box--color-text-default"
+      class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
       data-testid="aggregated-percentage-change"
     >
       (+0.00%)
