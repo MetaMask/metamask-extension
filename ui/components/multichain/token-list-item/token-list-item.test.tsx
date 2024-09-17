@@ -33,7 +33,7 @@ const state = {
   },
 };
 
-let openTabSpy;
+let openTabSpy: jest.SpyInstance<void, [opts: { url: string }], unknown>;
 
 jest.mock('../../../ducks/locale/locale', () => ({
   getIntlLocale: jest.fn(),
@@ -43,18 +43,19 @@ const mockGetIntlLocale = getIntlLocale;
 
 describe('TokenListItem', () => {
   beforeAll(() => {
-    global.platform = { openTab: jest.fn() };
+    global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
     openTabSpy = jest.spyOn(global.platform, 'openTab');
-    mockGetIntlLocale.mockReturnValue('en-US');
+    (mockGetIntlLocale as unknown as jest.Mock).mockReturnValue('en-US');
   });
   const props = {
     onClick: jest.fn(),
+    tokenImage: '',
+    title: '',
   };
   it('should render correctly', () => {
     const store = configureMockStore()(state);
     const { getByTestId, container } = renderWithProvider(
-      // eslint-disable-next-line no-empty-function
-      <TokenListItem onClick={() => {}} />,
+      <TokenListItem {...props} />,
       store,
     );
     expect(getByTestId('multichain-token-list-item')).toBeDefined();
@@ -64,7 +65,7 @@ describe('TokenListItem', () => {
   it('should render with custom className', () => {
     const store = configureMockStore()(state);
     const { getByTestId } = renderWithProvider(
-      <TokenListItem className="multichain-token-list-item-test" />,
+      <TokenListItem className="multichain-token-list-item-test" {...props} />,
       store,
     );
     expect(getByTestId('multichain-token-list-item')).toHaveClass(
@@ -78,6 +79,8 @@ describe('TokenListItem', () => {
       primary: '11.9751 ETH',
       isNativeCurrency: true,
       isOriginalTokenSymbol: false,
+      tokenImage: '',
+      title: '',
     };
     const { getByText } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
@@ -93,6 +96,8 @@ describe('TokenListItem', () => {
       isNativeCurrency: true,
       isOriginalTokenSymbol: false,
       showPercentage: true,
+      tokenImage: '',
+      title: '',
     };
     const { getByTestId, getByText } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
@@ -114,6 +119,8 @@ describe('TokenListItem', () => {
       primary: '11.9751 ETH',
       isNativeCurrency: true,
       isOriginalTokenSymbol: false,
+      tokenImage: '',
+      title: '',
     };
 
     const { getByText } = renderWithProvider(
@@ -126,11 +133,13 @@ describe('TokenListItem', () => {
   it('handles click action and fires onClick', () => {
     const store = configureMockStore()(state);
     const { queryByTestId } = renderWithProvider(
-      <TokenListItem {...props} />,
+      <TokenListItem {...props} tokenImage="" title="" />,
       store,
     );
 
-    fireEvent.click(queryByTestId('multichain-token-list-button'));
+    const targetElem = queryByTestId('multichain-token-list-button');
+
+    targetElem && fireEvent.click(targetElem);
 
     expect(props.onClick).toHaveBeenCalled();
   });
@@ -149,7 +158,7 @@ describe('TokenListItem', () => {
     expect(stakeButton).toBeInTheDocument();
     expect(stakeButton).not.toBeDisabled();
 
-    fireEvent.click(stakeButton);
+    stakeButton && fireEvent.click(stakeButton);
     expect(openTabSpy).toHaveBeenCalledTimes(1);
 
     await waitFor(() =>

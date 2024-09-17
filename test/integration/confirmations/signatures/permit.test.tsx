@@ -1,4 +1,5 @@
-import { fireEvent, waitFor } from '@testing-library/react';
+import { act, fireEvent, waitFor, screen } from '@testing-library/react';
+import nock from 'nock';
 import { ApprovalType } from '@metamask/controller-utils';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { integrationTestRender } from '../../../lib/render-helpers';
@@ -72,9 +73,13 @@ describe('Permit Confirmation', () => {
     jest.resetAllMocks();
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       createMockImplementation({
-        getTokenStandardAndDetails: { decimal: '10' },
+        getTokenStandardAndDetails: { decimals: '2' },
       }),
     );
+  });
+
+  afterEach(() => {
+    nock.cleanAll();
   });
 
   it('displays the header account modal with correct data', async () => {
@@ -89,32 +94,32 @@ describe('Permit Confirmation', () => {
       account.address,
     );
 
-    const { getByTestId, queryByTestId } = await integrationTestRender({
-      preloadedState: mockedMetaMaskState,
-      backgroundConnection: backgroundConnectionMocked,
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
     });
 
-    expect(getByTestId('header-account-name')).toHaveTextContent(accountName);
-    expect(getByTestId('header-network-display-name')).toHaveTextContent(
+    expect(screen.getByTestId('header-account-name')).toHaveTextContent(
+      accountName,
+    );
+    expect(screen.getByTestId('header-network-display-name')).toHaveTextContent(
       'Chain 5',
     );
 
-    fireEvent.click(getByTestId('header-info__account-details-button'));
-
-    await waitFor(() => {
-      expect(
-        getByTestId('confirmation-account-details-modal__account-name'),
-      ).toBeInTheDocument();
-    });
+    fireEvent.click(screen.getByTestId('header-info__account-details-button'));
 
     expect(
-      getByTestId('confirmation-account-details-modal__account-name'),
+      await screen.findByTestId(
+        'confirmation-account-details-modal__account-name',
+      ),
     ).toHaveTextContent(accountName);
-    expect(getByTestId('address-copy-button-text')).toHaveTextContent(
+    expect(screen.getByTestId('address-copy-button-text')).toHaveTextContent(
       '0x0DCD5...3E7bc',
     );
     expect(
-      getByTestId('confirmation-account-details-modal__account-balance'),
+      screen.getByTestId('confirmation-account-details-modal__account-balance'),
     ).toHaveTextContent('1.58271596ETH');
 
     let confirmAccountDetailsModalMetricsEvent;
@@ -147,12 +152,14 @@ describe('Permit Confirmation', () => {
     );
 
     fireEvent.click(
-      getByTestId('confirmation-account-details-modal__close-button'),
+      screen.getByTestId('confirmation-account-details-modal__close-button'),
     );
 
     await waitFor(() => {
       expect(
-        queryByTestId('confirmation-account-details-modal__account-name'),
+        screen.queryByTestId(
+          'confirmation-account-details-modal__account-name',
+        ),
       ).not.toBeInTheDocument();
     });
   });
@@ -168,18 +175,52 @@ describe('Permit Confirmation', () => {
       account.address,
     );
 
-    const { getByText } = await integrationTestRender({
-      preloadedState: mockedMetaMaskState,
-      backgroundConnection: backgroundConnectionMocked,
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
     });
 
-    expect(getByText('Spending cap request')).toBeInTheDocument();
+    expect(screen.getByText('Spending cap request')).toBeInTheDocument();
     expect(
-      getByText('This site wants permission to spend your tokens.'),
+      screen.getByText('This site wants permission to spend your tokens.'),
     ).toBeInTheDocument();
   });
 
   it('displays the simulation section', async () => {
+    const scope = nock('https://price.api.cx.metamask.io')
+      .persist()
+      .get('/v2/chains/1/spot-prices')
+      .query({
+        tokenAddresses:
+          '0x0000000000000000000000000000000000000000,0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+        vsCurrency: 'ETH',
+        includeMarketData: 'true',
+      })
+      .reply(200, {
+        '0xcccccccccccccccccccccccccccccccccccccccc': {
+          allTimeHigh: 12,
+          allTimeLow: 1,
+          circulatingSupply: 50000,
+          dilutedMarketCap: 50000,
+          high1d: 11,
+          low1d: 9.9,
+          marketCap: 10000,
+          marketCapPercentChange1d: 1,
+          price: 10,
+          priceChange1d: 0.5,
+          pricePercentChange1d: 1,
+          pricePercentChange1h: 0,
+          pricePercentChange1y: 80,
+          pricePercentChange7d: 2,
+          pricePercentChange14d: 5,
+          pricePercentChange30d: 10,
+          pricePercentChange200d: 50,
+          totalVolume: 100,
+        },
+      });
+
     const account =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
@@ -190,12 +231,26 @@ describe('Permit Confirmation', () => {
       account.address,
     );
 
-    const { getByTestId } = await integrationTestRender({
-      preloadedState: mockedMetaMaskState,
-      backgroundConnection: backgroundConnectionMocked,
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: {
+          ...mockedMetaMaskState,
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+          providerConfig: {
+            type: 'rpc',
+            nickname: 'test mainnet',
+            chainId: '0x1',
+            ticker: 'ETH',
+            id: 'chain1',
+          },
+        },
+        backgroundConnection: backgroundConnectionMocked,
+      });
     });
 
-    const simulationSection = getByTestId('confirmation__simulation_section');
+    const simulationSection = screen.getByTestId(
+      'confirmation__simulation_section',
+    );
     expect(simulationSection).toBeInTheDocument();
     expect(simulationSection).toHaveTextContent('Estimated changes');
     expect(simulationSection).toHaveTextContent(
@@ -203,7 +258,17 @@ describe('Permit Confirmation', () => {
     );
     expect(simulationSection).toHaveTextContent('Spending cap');
     expect(simulationSection).toHaveTextContent('0xCcCCc...ccccC');
-    expect(getByTestId('simulation-token-value')).toHaveTextContent('3,000');
+    expect(screen.getByTestId('simulation-token-value')).toHaveTextContent(
+      '30',
+    );
+
+    const individualFiatDisplay = await screen.findByTestId(
+      'individual-fiat-display',
+    );
+    expect(individualFiatDisplay).toHaveTextContent('$166,836.00');
+
+    scope.done();
+    expect(scope.isDone()).toBe(true);
   });
 
   it('displays the MMI header warning when account signing is not the same as the account selected', async () => {
@@ -221,9 +286,11 @@ describe('Permit Confirmation', () => {
       account.address,
     );
 
-    const { getByText } = await integrationTestRender({
-      preloadedState: mockedMetaMaskState,
-      backgroundConnection: backgroundConnectionMocked,
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
     });
 
     const mismatchAccountText = `Your selected account (${shortenAddress(
@@ -232,6 +299,6 @@ describe('Permit Confirmation', () => {
       account.address,
     )})`;
 
-    expect(getByText(mismatchAccountText)).toBeInTheDocument();
+    expect(screen.getByText(mismatchAccountText)).toBeInTheDocument();
   });
 });

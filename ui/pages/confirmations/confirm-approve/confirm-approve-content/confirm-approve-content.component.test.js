@@ -12,6 +12,7 @@ const renderComponent = (props) => {
     metamask: {
       ...mockNetworkState({ chainId: '0x0' }),
       preferences: {},
+      currencyRates: {},
     },
   });
   return renderWithProvider(<ConfirmApproveContent {...props} />, store);
