@@ -716,6 +716,12 @@
         "1559": true
       },
       "status": "available"
+    },
+    "testNetworkConfigurationId": {
+      "EIPS": {
+        "1559": true
+      },
+      "status": "available"
     }
   },
   "nftsDropdownState": {

@@ -251,7 +251,6 @@ import {
   afterTransactionSign as afterTransactionSignMMI,
   beforeCheckPendingTransaction as beforeCheckPendingTransactionMMI,
   beforeTransactionPublish as beforeTransactionPublishMMI,
-  beforeTransactionApproveOnInit as beforeApproveOnInitMMI,
   getAdditionalSignArguments as getAdditionalSignArgumentsMMI,
 } from './lib/transaction/mmi-hooks';
 ///: END:ONLY_INCLUDE_IF
@@ -1874,7 +1873,6 @@ export default class MetamaskController extends EventEmitter {
           ),
         beforeCheckPendingTransaction:
           beforeCheckPendingTransactionMMI.bind(this),
-        beforeApproveOnInit: beforeApproveOnInitMMI.bind(this),
         beforePublish: beforeTransactionPublishMMI.bind(this),
         getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
         ///: END:ONLY_INCLUDE_IF
@@ -4898,11 +4896,11 @@ export default class MetamaskController extends EventEmitter {
    * by creating a new transaction.
    *
    * @param {number} originalTxId - the id of the txMeta that you want to
-   *  attempt to cancel
+   * attempt to cancel
    * @param {import(
    *  './controllers/transactions'
    * ).CustomGasSettings} [customGasSettings] - overrides to use for gas params
-   *  instead of allowing this method to generate them
+   * instead of allowing this method to generate them
    * @param options
    * @returns {object} MetaMask state
    */
@@ -4921,11 +4919,11 @@ export default class MetamaskController extends EventEmitter {
    * by creating a new transaction.
    *
    * @param {number} originalTxId - the id of the txMeta that you want to
-   *  attempt to speed up
+   * attempt to speed up
    * @param {import(
    *  './controllers/transactions'
    * ).CustomGasSettings} [customGasSettings] - overrides to use for gas params
-   *  instead of allowing this method to generate them
+   * instead of allowing this method to generate them
    * @param options
    * @returns {object} MetaMask state
    */
