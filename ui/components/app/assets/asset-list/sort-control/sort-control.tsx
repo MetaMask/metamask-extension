@@ -8,9 +8,7 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../helpers/constants/design-system';
-// import { setSortOrderCriteria } from '../../../../../ducks/app/app';
 import { setTokenSortConfig } from '../../../../../store/actions';
-// import { useTokenList } from '../../token-list/use-token-list';
 
 // intentionally used generic naming convention for styled selectable list item
 // inspired from ui/components/multichain/network-list-item
@@ -67,12 +65,11 @@ const SortControl = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // const [nativeToken] = tokenList.filter((token) => token.isNative);
-    // const nonNativeTokens = tokenList.filter((token) => !token.isNative);
-    // const dedupedTokenList = [nativeToken, ...nonNativeTokens];
+    const [nativeToken] = tokenList.filter((token) => token.isNative);
+    const nonNativeTokens = tokenList.filter((token) => !token.isNative);
+    const dedupedTokenList = [nativeToken, ...nonNativeTokens];
 
-    // const sortedAssets = sortAssets(dedupedTokenList, tokenSortConfig);
-    const sortedAssets = sortAssets(tokenList, tokenSortConfig);
+    const sortedAssets = sortAssets(dedupedTokenList, tokenSortConfig);
     setSorted(true);
     setTokenList(sortedAssets);
   }, [tokenSortConfig]);

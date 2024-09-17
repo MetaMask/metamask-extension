@@ -29,6 +29,8 @@ import {
   TextColor,
 } from '../../../../../helpers/constants/design-system';
 import { sortAssets } from '../../util/sort';
+import { useNativeTokenBalance } from '../native-token/use-native-token-balance';
+import { getMultichainCurrencyImage } from '../../../../../selectors/multichain';
 
 type AssetListControlBarProps = {
   tokenList: TokenWithBalance[];
@@ -77,7 +79,18 @@ const AssetListControlBar = ({
 
   const { loading } = accountTotalFiatBalance;
 
-  console.log(tokenList);
+  const { primaryBalance, secondaryBalance, tokenSymbol } =
+    useNativeTokenBalance();
+  const primaryTokenImage = useSelector(getMultichainCurrencyImage);
+
+  const nativeTokenWithBalance: TokenWithBalance = {
+    address: '',
+    symbol: tokenSymbol || '',
+    string: primaryBalance,
+    image: primaryTokenImage,
+    tokenFiatAmount: secondaryBalance,
+    isNative: true,
+  };
 
   useEffect(() => {
     if (!sorted) {
@@ -116,7 +129,10 @@ const AssetListControlBar = ({
       });
 
       if (tokenSortConfig) {
-        const sortedTokenList = sortAssets(tokensWithBalances, tokenSortConfig);
+        const sortedTokenList = sortAssets(
+          [nativeTokenWithBalance, ...tokensWithBalances],
+          tokenSortConfig,
+        );
         setTokenList(sortedTokenList);
       } else {
         setTokenList(tokensWithBalances);

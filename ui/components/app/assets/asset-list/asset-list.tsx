@@ -10,7 +10,6 @@ import {
 } from '../../../../selectors';
 import {
   getMultichainIsEvm,
-  getMultichainCurrencyImage,
   getMultichainSelectedAccountCachedBalance,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMultichainIsBitcoin,
@@ -38,9 +37,7 @@ import {
 } from '../../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 import AssetListControlBar from './asset-list-control-bar';
-import { useNativeTokenBalance } from './native-token/use-native-token-balance';
 import NativeToken from './native-token';
-import { useTokenList } from '../token-list/use-token-list';
 ///: END:ONLY_INCLUDE_IF
 
 export type TokenWithBalance = {
@@ -59,7 +56,6 @@ export type AssetListProps = {
 
 const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const [tokenList, setTokenList] = useState<TokenWithBalance[]>([]);
-  // const { tokenList } = useTokenList();
   const [loading, setLoading] = useState(false);
   const [sorted, setSorted] = useState(false); // TODO: Set to preferences
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
@@ -67,8 +63,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
-  const { primaryBalance, secondaryBalance, tokenSymbol } =
-    useNativeTokenBalance();
 
   const {
     currency: primaryCurrency,
@@ -80,7 +74,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
     currency: primaryCurrency,
   });
 
-  const primaryTokenImage = useSelector(getMultichainCurrencyImage);
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
   const isTokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
@@ -111,18 +104,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBtc = useSelector(getMultichainIsBitcoin);
   ///: END:ONLY_INCLUDE_IF
-
-  // we need to calculate these values here in order to sort native token correctly
-  // native token is computed differently than normal tokens, and is rendered as a ReactNode native-token.tsx
-  // the data here is passed into sort control along with the other non-native tokens, in order to determine the order of the native token in the larger list list
-  const nativeTokenWithBalance: TokenWithBalance = {
-    address: '',
-    symbol: tokenSymbol || '',
-    string: primaryBalance,
-    image: primaryTokenImage,
-    tokenFiatAmount: secondaryBalance,
-    isNative: true,
-  };
 
   return (
     <>

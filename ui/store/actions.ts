@@ -2998,6 +2998,36 @@ export function setPreference(
   };
 }
 
+export function setPreferenceWithoutLoader(
+  preference: string,
+  value: boolean | string | object,
+): ThunkAction<
+  Promise<TemporaryPreferenceFlagDef>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    // dispatch(showLoadingIndication());
+    return new Promise<TemporaryPreferenceFlagDef>((resolve, reject) => {
+      callBackgroundMethod<TemporaryPreferenceFlagDef>(
+        'setPreference',
+        [preference, value],
+        (err, updatedPreferences) => {
+          // dispatch(hideLoadingIndication());
+          if (err) {
+            dispatch(displayWarning(err));
+            reject(err);
+            return;
+          }
+          console.log('updatedPreferences', updatedPreferences);
+          resolve(updatedPreferences as TemporaryPreferenceFlagDef);
+        },
+      );
+    });
+  };
+}
+
 export function setDefaultHomeActiveTabName(
   value: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -3050,7 +3080,7 @@ export function setRedesignedConfirmationsDeveloperEnabled(value: boolean) {
 }
 
 export function setTokenSortConfig(value: SortCriteria) {
-  return setPreference('tokenSortConfig', value);
+  return setPreferenceWithoutLoader('tokenSortConfig', value);
 }
 
 export function setSmartTransactionsOptInStatus(

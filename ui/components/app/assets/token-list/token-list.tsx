@@ -41,9 +41,9 @@ export default function TokenList({
   return (
     <div>
       {tokens.map((tokenData, index) => {
-        // if (tokenData?.isNative) {
-        //   return nativeToken;
-        // }
+        if (tokenData?.isNative) {
+          return nativeToken;
+        }
         return <TokenCell key={index} {...tokenData} onClick={onTokenClick} />;
       })}
     </div>
