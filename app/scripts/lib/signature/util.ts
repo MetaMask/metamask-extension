@@ -13,7 +13,6 @@ export type MessageType = keyof typeof MESSAGE_TYPE;
 export type AddSignatureMessageRequest = {
   signatureParams: SignatureParams;
   signatureController: SignatureController;
-  type: MessageType;
 };
 
 async function handleSignature(
@@ -36,10 +35,13 @@ async function handleSignature(
   return hash;
 }
 
-export async function addTypedMessage(
-  signatureParams: SignatureParams,
-  signatureController: SignatureController,
-) {
+export async function addTypedMessage({
+  signatureParams,
+  signatureController,
+}: {
+  signatureParams: SignatureParams;
+  signatureController: SignatureController;
+}) {
   return handleSignature(
     signatureParams,
     signatureController,
@@ -47,10 +49,13 @@ export async function addTypedMessage(
   );
 }
 
-export async function addPersonalMessage(
-  signatureParams: SignatureParams,
-  signatureController: SignatureController,
-) {
+export async function addPersonalMessage({
+  signatureParams,
+  signatureController,
+}: {
+  signatureParams: SignatureParams;
+  signatureController: SignatureController;
+}) {
   return handleSignature(
     signatureParams,
     signatureController,

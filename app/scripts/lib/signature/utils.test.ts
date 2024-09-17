@@ -3,13 +3,8 @@ import type {
   OriginalRequest,
   TypedMessageParams,
 } from '@metamask/message-manager';
-import { addSignatureMessage } from './util';
-import type {
-  AddSignatureMessageRequest,
-  MessageType,
-  SignatureParams,
-} from './util';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { addTypedMessage } from './util';
+import type { AddSignatureMessageRequest, SignatureParams } from './util';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 
 jest.mock('../../../../shared/lib/trace', () => ({
@@ -45,33 +40,19 @@ describe('addSignatureMessage', () => {
     const request: AddSignatureMessageRequest = {
       signatureParams: signatureParamsMock,
       signatureController: signatureControllerMock,
-      type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA as MessageType,
     };
 
-    const result = await addSignatureMessage(request);
+    const result = await addTypedMessage(request);
     expect(result).toBe(hashMock);
-  });
-
-  it('should throw an error when called with invalid type', async () => {
-    const request: AddSignatureMessageRequest = {
-      signatureParams: signatureParamsMock,
-      signatureController: signatureControllerMock,
-      type: 'invalid-type' as MessageType,
-    };
-
-    await expect(addSignatureMessage(request)).rejects.toThrowError(
-      'signatureController[functionName] is not a function',
-    );
   });
 
   it('should call endTrace with correct parameters', async () => {
     const request: AddSignatureMessageRequest = {
       signatureParams: signatureParamsMock,
       signatureController: signatureControllerMock,
-      type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA as MessageType,
     };
 
-    await addSignatureMessage(request);
+    await addTypedMessage(request);
 
     expect(endTrace).toHaveBeenCalledTimes(2);
     expect(endTrace).toHaveBeenCalledWith({
