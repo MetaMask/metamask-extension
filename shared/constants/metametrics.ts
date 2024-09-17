@@ -468,6 +468,10 @@ export enum MetaMetricsUserTrait {
   MmiIsCustodian = 'mmi_is_custodian',
   ///: END:ONLY_INCLUDE_IF
   PetnameAddressCount = 'petname_addresses_count',
+  /**
+   * Identified when the user selects a currency from settings
+   */
+  CurrentCurrency = 'current_currency',
 }
 
 /**
@@ -514,6 +518,7 @@ export enum MetaMetricsEventName {
   BridgeLinkClicked = 'Bridge Link Clicked',
   BitcoinSupportToggled = 'Bitcoin Support Toggled',
   BitcoinTestnetSupportToggled = 'Bitcoin Testnet Support Toggled',
+  CurrentCurrency = 'Current Currency',
   DappViewed = 'Dapp Viewed',
   DecryptionApproved = 'Decryption Approved',
   DecryptionRejected = 'Decryption Rejected',
