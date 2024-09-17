@@ -14,16 +14,15 @@ import {
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
-import { useAssetDetails } from '../../../hooks/useAssetDetails';
 import { Confirmation, SignatureRequestType } from '../../../types/confirm';
 import {
   isPermitSignatureRequest,
   isSIWESignatureRequest,
 } from '../../../utils';
-import { useApproveTokenSimulation } from '../info/approve/hooks/use-approve-token-simulation';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 import { useDecodedTransactionData } from '../info/hooks/useDecodedTransactionData';
 import { getIsRevokeSetApprovalForAll } from '../info/utils';
+import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const t = useI18nContext();
@@ -146,49 +145,13 @@ const getDescription = (
   }
 };
 
-const isTransactionMeta = (
-  confirmation: Confirmation | undefined,
-): confirmation is TransactionMeta => {
-  return (
-    confirmation !== undefined &&
-    (confirmation as TransactionMeta).txParams !== undefined
-  );
-};
-
 const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
-  const isTxWithSpendingCap =
-    isTransactionMeta(currentConfirmation) &&
-    [
-      TransactionType.tokenMethodApprove,
-      TransactionType.tokenMethodIncreaseAllowance,
-    ].includes(currentConfirmation.type as TransactionType);
-
-  const txParamsTo = isTxWithSpendingCap
-    ? currentConfirmation.txParams.to
-    : null;
-  const txParamsFrom = isTxWithSpendingCap
-    ? currentConfirmation.txParams.from
-    : null;
-  const txParamsData = isTxWithSpendingCap
-    ? currentConfirmation.txParams.data
-    : null;
-
-  const { decimals } = useAssetDetails(txParamsTo, txParamsFrom, txParamsData);
-
-  const { spendingCap } = useApproveTokenSimulation(
-    currentConfirmation as TransactionMeta,
-    decimals || '0',
-  );
-
-  let customSpendingCap = '';
-  if (isTxWithSpendingCap) {
-    customSpendingCap = spendingCap;
-  }
+  const { customSpendingCap } = useCurrentSpendingCap(currentConfirmation);
 
   let isRevokeSetApprovalForAll = false;
   if (
