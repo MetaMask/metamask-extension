@@ -61,6 +61,7 @@ describe('addEthereumChainHandler', () => {
         .mockReturnValue(createMockMainnetConfiguration().rpcUrl),
       requestUserApproval: jest.fn().mockResolvedValue(123),
       requestPermittedChainsPermission: jest.fn(),
+      grantPermittedChainsPermissionIncremental: jest.fn(),
       getCaveat: jest.fn().mockReturnValue({ value: permissionedChainIds }),
       upsertNetworkConfiguration: jest.fn().mockResolvedValue(123),
       startApprovalFlow: () => ({ id: 'approvalFlowId' }),
@@ -316,10 +317,12 @@ describe('addEthereumChainHandler', () => {
         createMockNonInfuraConfiguration(),
         { referrer: 'example.com', source: 'dapp' },
       );
-      expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledTimes(1);
-      expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledWith([
-        createMockNonInfuraConfiguration().chainId,
-      ]);
+      expect(
+        mocks.grantPermittedChainsPermissionIncremental,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mocks.grantPermittedChainsPermissionIncremental,
+      ).toHaveBeenCalledWith([createMockNonInfuraConfiguration().chainId]);
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123);
     });
@@ -397,12 +400,12 @@ describe('addEthereumChainHandler', () => {
           );
 
           expect(mocks.upsertNetworkConfiguration).toHaveBeenCalledTimes(1);
-          expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledTimes(
-            1,
-          );
-          expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledWith([
-            NON_INFURA_CHAIN_ID,
-          ]);
+          expect(
+            mocks.grantPermittedChainsPermissionIncremental,
+          ).toHaveBeenCalledTimes(1);
+          expect(
+            mocks.grantPermittedChainsPermissionIncremental,
+          ).toHaveBeenCalledWith([NON_INFURA_CHAIN_ID]);
           expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
         });
       });
@@ -501,7 +504,7 @@ describe('addEthereumChainHandler', () => {
       permissionsFeatureFlagIsActive: true,
       permissionedChainIds: [],
       overrides: {
-        requestPermittedChainsPermission: jest
+        grantPermittedChainsPermissionIncremental: jest
           .fn()
           .mockRejectedValue(mockError),
       },
@@ -530,7 +533,9 @@ describe('addEthereumChainHandler', () => {
       mocks,
     );
 
-    expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledTimes(1);
+    expect(
+      mocks.grantPermittedChainsPermissionIncremental,
+    ).toHaveBeenCalledTimes(1);
     expect(mockEnd).toHaveBeenCalledWith(mockError);
     expect(mocks.setActiveNetwork).not.toHaveBeenCalled();
   });
