@@ -2,6 +2,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import * as URI from 'uri-js';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { ethErrors } from 'eth-rpc-errors';
+import { cloneDeep } from 'lodash';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   validateAddEthereumChainParams,
@@ -120,7 +121,7 @@ async function addEthereumChainHandler(
         // A network for this chain id already exists.
         // Update it with any new information.
 
-        const clonedNetwork = { ...existingNetwork };
+        const clonedNetwork = cloneDeep(existingNetwork);
 
         // If the RPC endpoint doesn't exist, add a new one
         if (rpcIndex === -1) {
