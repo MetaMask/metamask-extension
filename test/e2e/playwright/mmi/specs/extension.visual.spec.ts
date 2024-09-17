@@ -154,7 +154,7 @@ test.describe('MMI extension', () => {
     );
     const accountNamesWithCustodian = await accountsPopup.getAccountNames();
 
-    const containsAccount = arrayWithCustodianAccounts.some(account =>
+    const containsAccount = arrayWithCustodianAccounts.some((account) =>
       accountNamesWithCustodian.includes(account),
     );
     expect(containsAccount).toBeTruthy();
