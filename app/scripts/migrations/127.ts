@@ -28,6 +28,9 @@ export const version = 127;
  * custom configurations.  Then all configurations are grouped by chain id,
  * and merged to produce one network configuration per chain id.
  *
+ * The `SelectedNetworkController` is also migrated, so that dapp domains
+ * point to the new default RPC endpoint for the chain they were on.
+ *
  * The `NetworkOrderController` is also migrated, which manages
  * the user's drag + drop preference order for the network menu.
  *
