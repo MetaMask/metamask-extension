@@ -183,7 +183,7 @@ export const CoinOverview = ({
               endIconProps={{
                 size: IconSize.Sm,
                 color: IconColor.primaryDefault,
-                className: 'wallet-overview__portfolio_button',
+                marginLeft: 2,
               }}
               size={ButtonLinkSize.Inherit}
               onClick={handlePortfolioOnClick}
@@ -204,7 +204,7 @@ export const CoinOverview = ({
             endIconProps={{
               size: IconSize.Sm,
               color: IconColor.primaryDefault,
-              className: 'wallet-overview__portfolio_button',
+              marginLeft: 2,
             }}
             size={ButtonLinkSize.Inherit}
             onClick={handlePortfolioOnClick}
