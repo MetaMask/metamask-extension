@@ -1016,11 +1016,11 @@ export default class ConfirmTransactionBase extends Component {
 
     // If the user somehow finds themselves seeing a confirmation
     // on a network which is not presently selected, throw
-    if (txChainId === undefined || txChainId !== chainId) {
-      throw new Error(
-        `Currently selected chainId (${chainId}) does not match chainId (${txChainId}) on which the transaction was proposed.`,
-      );
-    }
+    // if (txChainId === undefined || txChainId !== chainId) {
+    //   throw new Error(
+    //     `Currently selected chainId (${chainId}) does not match chainId (${txChainId}) on which the transaction was proposed.`,
+    //   );
+    // }
 
     const { trackEvent } = this.context;
     trackEvent({

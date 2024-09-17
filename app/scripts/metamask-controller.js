@@ -468,7 +468,8 @@ export default class MetamaskController extends EventEmitter {
         allowedEvents: ['SelectedNetworkController:stateChange'],
       }),
       shouldRequestSwitchNetwork: ({ method }) =>
-        methodsRequiringNetworkSwitch.includes(method),
+        false,
+        // methodsRequiringNetworkSwitch.includes(method),
       clearPendingConfirmations,
       showApprovalRequest: opts.showUserConfirmation,
     });
@@ -4850,12 +4851,14 @@ export default class MetamaskController extends EventEmitter {
     transactionOptions,
     dappRequest,
   }) {
+    const networkClientId = dappRequest?.networkClientId ??
+        this.networkController.state.selectedNetworkClientId
+    const { chainId } = this.networkController.getNetworkConfigurationByNetworkClientId(networkClientId)
+
     return {
       internalAccounts: this.accountsController.listAccounts(),
       dappRequest,
-      networkClientId:
-        dappRequest?.networkClientId ??
-        this.networkController.state.selectedNetworkClientId,
+      networkClientId,
       selectedAccount: this.accountsController.getAccountByAddress(
         transactionParams.from,
       ),
@@ -4863,7 +4866,7 @@ export default class MetamaskController extends EventEmitter {
       transactionOptions,
       transactionParams,
       userOperationController: this.userOperationController,
-      chainId: getCurrentChainId({ metamask: this.networkController.state }),
+      chainId,
       ppomController: this.ppomController,
       securityAlertsEnabled:
         this.preferencesController.store.getState()?.securityAlertsEnabled,
