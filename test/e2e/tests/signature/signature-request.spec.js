@@ -81,6 +81,7 @@ describe('Sign Typed Data Signature Request', function () {
           await tempToggleSettingRedesignedConfirmations(driver);
 
           await openDapp(driver);
+          await driver.delay(200);
 
           // creates a sign typed data signature request
           await driver.clickElement(data.buttonId);
