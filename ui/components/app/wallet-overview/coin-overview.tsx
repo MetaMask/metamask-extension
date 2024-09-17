@@ -185,6 +185,7 @@ export const CoinOverview = ({
               }}
               onClick={handlePortfolioOnClick}
               as="a"
+              data-testid="portfolio-link"
             >
               {t('portfolio')}
             </ButtonLink>
@@ -207,6 +208,7 @@ export const CoinOverview = ({
             }}
             onClick={handlePortfolioOnClick}
             as="a"
+            data-testid="portfolio-link"
           >
             {t('portfolio')}
           </ButtonLink>
