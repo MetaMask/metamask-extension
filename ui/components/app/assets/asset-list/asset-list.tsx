@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import TokenList from '../token-list';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
@@ -54,7 +53,19 @@ import {
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 
-const AssetList = ({ onClickAsset, showTokensLinks }) => {
+export type TokenWithBalance = {
+  address: string;
+  symbol: string;
+  string: string;
+  image: string;
+};
+
+type AssetListProps = {
+  onClickAsset: (arg: string) => void;
+  showTokensLinks: boolean;
+};
+
+const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const nativeCurrency = useSelector(getMultichainNativeCurrency);
   const showFiat = useSelector(getMultichainShouldShowFiat);
@@ -119,13 +130,21 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
     setShowReceiveModal(true);
   };
 
-  const { tokensWithBalances, loading } = useAccountTotalFiatBalance(
+  const accountTotalFiatBalance = useAccountTotalFiatBalance(
     selectedAccount,
     shouldHideZeroBalanceTokens,
   );
+
+  const tokensWithBalances =
+    accountTotalFiatBalance.tokensWithBalances as TokenWithBalance[];
+
+  const { loading } = accountTotalFiatBalance;
+
   tokensWithBalances.forEach((token) => {
-    // token.string is the balance displayed in the TokenList UI
-    token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
+    token.string = roundToDecimalPlacesRemovingExtraZeroes(
+      token.string,
+      5,
+    ) as string;
   });
 
   const balanceIsZero = useSelector(
@@ -156,6 +175,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
       {detectedTokens.length > 0 &&
         !isTokenDetectionInactiveOnNonMainnetSupportedNetwork && (
           <DetectedTokensBanner
+            className=""
             actionButtonOnClick={() => setShowDetectedTokens(true)}
             margin={4}
           />
@@ -212,7 +232,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
       <TokenList
         tokens={tokensWithBalances}
         loading={loading}
-        onTokenClick={(tokenAddress) => {
+        onTokenClick={(tokenAddress: string) => {
           onClickAsset(tokenAddress);
           trackEvent({
             event: MetaMetricsEventName.TokenScreenOpened,
@@ -250,11 +270,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
       )}
     </>
   );
-};
-
-AssetList.propTypes = {
-  onClickAsset: PropTypes.func.isRequired,
-  showTokensLinks: PropTypes.bool,
 };
 
 export default AssetList;

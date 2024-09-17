@@ -2531,4 +2531,43 @@ describe('Actions', () => {
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
+  describe('#createMetaMetricsDataDeletionTask', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls createMetaMetricsDataDeletionTask in background', async () => {
+      const createMetaMetricsDataDeletionTaskStub = sinon
+        .stub()
+        .callsFake((cb) => cb());
+      background.getApi.returns({
+        createMetaMetricsDataDeletionTask:
+          createMetaMetricsDataDeletionTaskStub,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await actions.createMetaMetricsDataDeletionTask();
+      expect(createMetaMetricsDataDeletionTaskStub.callCount).toStrictEqual(1);
+    });
+  });
+  describe('#updateDataDeletionTaskStatus', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls updateDataDeletionTaskStatus in background', async () => {
+      const updateDataDeletionTaskStatusStub = sinon
+        .stub()
+        .callsFake((cb) => cb());
+      background.getApi.returns({
+        updateDataDeletionTaskStatus: updateDataDeletionTaskStatusStub,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await actions.updateDataDeletionTaskStatus();
+      expect(updateDataDeletionTaskStatusStub.callCount).toStrictEqual(1);
+    });
+  });
 });

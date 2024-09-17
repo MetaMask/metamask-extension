@@ -11,7 +11,7 @@ describe('Settings', function () {
   it('Should match the value of token list item and account list item for eth conversion', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
@@ -41,7 +41,7 @@ describe('Settings', function () {
   it('Should match the value of token list item and account list item for fiat conversion', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder().withConversionRateEnabled().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
@@ -78,6 +78,7 @@ describe('Settings', function () {
         const tokenListAmount = await driver.findElement(
           '.eth-overview__primary-container',
         );
+        await driver.delay(1000);
         assert.equal(await tokenListAmount.getText(), '$42,500.00USD');
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountTokenValue = await driver.waitForSelector(

@@ -15,7 +15,7 @@ const renderUseUserPreferencedCurrency = (state, value, restProps) => {
       ...mockState.metamask,
       completedOnboarding: true,
       ...mockNetworkState({
-        chainId: state.showFiat ? CHAIN_IDS.MAINNET : CHAIN_IDS.LOCALHOST,
+        chainId: state.showFiat ? CHAIN_IDS.MAINNET : CHAIN_IDS.SEPOLIA,
         ticker: state?.nativeCurrency,
       }),
       currentCurrency: state.currentCurrency,

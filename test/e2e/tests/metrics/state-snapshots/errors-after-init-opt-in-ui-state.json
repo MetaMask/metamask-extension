@@ -129,6 +129,8 @@
     "selectedAddress": "string",
     "metaMetricsId": "fake-metrics-id",
     "marketingCampaignCookieId": null,
+    "metaMetricsDataDeletionId": null,
+    "metaMetricsDataDeletionTimestamp": 0,
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "previousUserTraits": "object",
