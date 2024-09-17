@@ -34,7 +34,6 @@ import {
 import { NetworkListItem } from '..';
 import {
   grantPermittedChains,
-  removePermittedChain,
   setSelectedNetworksForDappConnection,
 } from '../../../store/actions';
 import { getURLHost } from '../../../helpers/utils/util';
@@ -95,18 +94,8 @@ export const EditNetworksModal = ({
     isIndeterminate = true;
   }
 
-  const managePermittedChains = (chains, permittedChains, tabOrigin) => {
-    dispatch(grantPermittedChains(activeTabOrigin, chains));
-
-    const removedElements = permittedChains.filter(
-      (chain) => !chains.includes(chain),
-    );
-
-    // Dispatch removePermittedChains for each removed element
-    removedElements.forEach((chain) => {
-      const selectedChain = [chain];
-      dispatch(removePermittedChain(tabOrigin, selectedChain));
-    });
+  const managePermittedChains = (chains) => {
+    grantPermittedChains(activeTabOrigin, chains);
   };
 
   const hostName = getURLHost(activeTabOrigin);
@@ -220,11 +209,7 @@ export const EditNetworksModal = ({
                       setSelectedNetworksForDappConnection(selectedChains),
                     );
                   } else {
-                    managePermittedChains(
-                      selectedChains,
-                      selectedPermittedChains,
-                      activeTabOrigin,
-                    );
+                    managePermittedChains(selectedChains);
                   }
                 }}
                 size={ButtonPrimarySize.Lg}
