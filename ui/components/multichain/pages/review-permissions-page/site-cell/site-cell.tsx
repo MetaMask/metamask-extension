@@ -29,27 +29,26 @@ import {
 import { EditAccountsModal, EditNetworksModal } from '../../..';
 import { getPermittedAccountsByOrigin } from '../../../../../selectors/permissions';
 import { SiteCellTooltip } from './site-cell-tooltip';
+import { AccountType } from '../../../connect-accounts-modal/connect-account-modal.types';
 
-type SiteCellProps = {
-  networks: {
-    rpcPrefs?: { imageUrl?: string };
-    nickname: string;
-    chainId?: string;
-  }[];
-  accounts: {
-    address: string;
-    label: string;
-    metadata: {
-      name: string;
-    };
-  }[];
+// Define types for networks, accounts, and other props
+interface Network {
+  rpcPrefs?: { imageUrl?: string };
+  nickname: string;
+  chainId?: string;
+}
+
+interface SiteCellProps {
+  networks: Network[];
+  accounts: AccountType[];
   onAccountsClick: () => void;
   onNetworksClick: () => void;
   onDisconnectClick: () => void;
   approvedAccounts: { address: string }[];
   activeTabOrigin: string;
-  combinedNetworks;
-};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  combinedNetworks: any;
+}
 
 export const SiteCell: React.FC<SiteCellProps> = ({
   networks,
@@ -62,16 +61,21 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   onDisconnectClick,
 }) => {
   const t = useI18nContext();
+  console.log(networks, combinedNetworks);
+  // Map networks and accounts to avatar data
   const avatarNetworksData = networks.map((network) => ({
-    avatarValue: network?.rpcPrefs?.imageUrl || '',
+    avatarValue: network.rpcPrefs?.imageUrl || '',
     symbol: network.nickname,
   }));
+
   const avatarAccountsData = accounts.map((account) => ({
     avatarValue: account.address,
   }));
 
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
   const [showEditNetworksModal, setShowEditNetworksModal] = useState(false);
+
+  // Determine the messages for connected and not connected states
   const accountMessageConnectedState =
     accounts.length > 1
       ? t('connectedWith')
@@ -85,7 +89,12 @@ export const SiteCell: React.FC<SiteCellProps> = ({
           accounts[0].label || accounts[0].metadata.name,
         ]);
 
-  const permittedAccountsByOrigin = useSelector(getPermittedAccountsByOrigin);
+  // Use selector to get permitted accounts by origin
+  const permittedAccountsByOrigin = useSelector(
+    getPermittedAccountsByOrigin,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ) as { [key: string]: any[] };
   const currentTabHasNoAccounts =
     !permittedAccountsByOrigin[activeTabOrigin]?.length;
 
@@ -106,7 +115,6 @@ export const SiteCell: React.FC<SiteCellProps> = ({
         <AvatarIcon
           iconName={IconName.Wallet}
           size={AvatarIconSize.Md}
-          iconProps={{ size: IconSize.Sm }}
           color={IconColor.iconAlternative}
           backgroundColor={BackgroundColor.backgroundAlternative}
         />
@@ -193,7 +201,6 @@ export const SiteCell: React.FC<SiteCellProps> = ({
         <AvatarIcon
           iconName={IconName.Data}
           size={AvatarIconSize.Md}
-          iconProps={{ size: IconSize.Sm }}
           color={IconColor.iconAlternative}
           backgroundColor={BackgroundColor.backgroundAlternative}
         />
@@ -258,7 +265,6 @@ export const SiteCell: React.FC<SiteCellProps> = ({
 
       {showEditNetworksModal && (
         <EditNetworksModal
-          defaultNetworks={networks}
           onClose={() => setShowEditNetworksModal(false)}
           onClick={onNetworksClick}
           currentTabHasNoAccounts={currentTabHasNoAccounts}
@@ -271,8 +277,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
         <EditAccountsModal
           onClose={() => setShowEditAccountsModal(false)}
           onClick={onAccountsClick}
-          selAccounts={accounts}
-          approvedAccounts={approvedAccounts}
+          approvedAccounts={approvedAccounts.map((account) => account.address)} // Extracting addresses as strings
           activeTabOrigin={activeTabOrigin}
           currentTabHasNoAccounts={currentTabHasNoAccounts}
           onDisconnectClick={onDisconnectClick}
