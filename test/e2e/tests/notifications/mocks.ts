@@ -23,7 +23,7 @@ type MockResponse = {
  *
  * @param server - server obj used to mock our endpoints
  */
-export function mockNotificationServices(server: Mockttp) {
+export async function mockNotificationServices(server: Mockttp) {
   // Auth
   mockAPICall(server, AuthMocks.getMockAuthNonceResponse());
   mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
@@ -46,7 +46,7 @@ export function mockNotificationServices(server: Mockttp) {
     requestMethod: 'PUT',
     response: null,
   });
-
+  
   // Notifications
   mockAPICall(server, NotificationMocks.getMockFeatureAnnouncementResponse());
   mockAPICall(server, NotificationMocks.getMockBatchCreateTriggersResponse());

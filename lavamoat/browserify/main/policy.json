@@ -774,20 +774,12 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/accounts-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/utils": true,
         "uuid": true
-      }
-    },
-    "@metamask/accounts-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/address-book-controller": {
@@ -861,7 +853,6 @@
         "@metamask/abi-utils": true,
         "@metamask/assets-controllers>@metamask/base-controller": true,
         "@metamask/assets-controllers>@metamask/polling-controller": true,
-        "@metamask/assets-controllers>cockatiel": true,
         "@metamask/assets-controllers>multiformats": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
@@ -871,6 +862,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "bn.js": true,
+        "cockatiel": true,
         "lodash": true,
         "single-call-balance-checker-abi": true,
         "uuid": true
@@ -894,19 +886,6 @@
         "@metamask/assets-controllers>@metamask/base-controller": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "uuid": true
-      }
-    },
-    "@metamask/assets-controllers>cockatiel": {
-      "globals": {
-        "AbortController": true,
-        "AbortSignal": true,
-        "WeakRef": true,
-        "clearTimeout": true,
-        "performance": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "process": true
       }
     },
     "@metamask/assets-controllers>multiformats": {
@@ -1641,16 +1620,8 @@
     },
     "@metamask/logging-controller": {
       "packages": {
-        "@metamask/logging-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "uuid": true
-      }
-    },
-    "@metamask/logging-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/logo": {
@@ -1903,9 +1874,9 @@
         "removeEventListener": true
       },
       "packages": {
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": true,
-        "@metamask/notification-services-controller>@metamask/base-controller": true,
         "@metamask/notification-services-controller>firebase": true,
         "@metamask/profile-sync-controller": true,
         "bignumber.js": true,
@@ -1916,14 +1887,6 @@
     "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": {
       "globals": {
         "SuppressedError": true
-      }
-    },
-    "@metamask/notification-services-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/notification-services-controller>firebase": {
@@ -2289,20 +2252,12 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/base-controller": true,
         "@metamask/message-signing-snap>@noble/ciphers": true,
-        "@metamask/profile-sync-controller>@metamask/base-controller": true,
         "@metamask/profile-sync-controller>siwe": true,
         "@noble/hashes": true,
         "browserify>buffer": true,
         "loglevel": true
-      }
-    },
-    "@metamask/profile-sync-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/profile-sync-controller>siwe": {
@@ -2466,20 +2421,12 @@
         "console.info": true
       },
       "packages": {
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/logging-controller": true,
         "@metamask/message-manager": true,
-        "@metamask/signature-controller>@metamask/base-controller": true,
         "lodash": true,
         "webpack>events": true
-      }
-    },
-    "@metamask/signature-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/smart-transactions-controller": {
@@ -3931,6 +3878,19 @@
         "define": true
       }
     },
+    "cockatiel": {
+      "globals": {
+        "AbortController": true,
+        "AbortSignal": true,
+        "WeakRef": true,
+        "clearTimeout": true,
+        "performance": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "process": true
+      }
+    },
     "copy-to-clipboard": {
       "globals": {
         "clipboardData": true,
@@ -5219,7 +5179,7 @@
         "react-router-dom>react-router>mini-create-react-context": true,
         "react-router-dom>tiny-invariant": true,
         "react-router-dom>tiny-warning": true,
-        "sinon>nise>path-to-regexp": true
+        "serve-handler>path-to-regexp": true
       }
     },
     "react-router-dom>react-router>history": {
@@ -5369,9 +5329,9 @@
         "process": true
       }
     },
-    "sinon>nise>path-to-regexp": {
+    "serve-handler>path-to-regexp": {
       "packages": {
-        "sinon>nise>path-to-regexp>isarray": true
+        "serve-handler>path-to-regexp>isarray": true
       }
     },
     "stream-browserify": {
