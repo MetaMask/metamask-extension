@@ -126,9 +126,9 @@ export function ConfirmAlertModal({
 
   const [confirmCheckbox, setConfirmCheckbox] = useState<boolean>(false);
 
-  // if there are multiple alerts, show the multiple alert modal
+  // if there are unconfirmed danger alerts, show the multiple alert modal
   const [multipleAlertModalVisible, setMultipleAlertModalVisible] =
-    useState<boolean>(unconfirmedDangerAlerts.length > 1);
+    useState<boolean>(unconfirmedDangerAlerts.length > 0);
 
   const handleCloseMultipleAlertModal = useCallback(
     (request?: { recursive?: boolean }) => {
