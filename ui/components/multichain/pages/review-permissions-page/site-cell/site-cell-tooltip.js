@@ -174,7 +174,7 @@ SiteCellTooltip.propTypes = {
    */
   avatarAccountsData: PropTypes.arrayOf(
     PropTypes.shape({
-      address: PropTypes.string // The account address to display.
+      address: PropTypes.string, // The account address to display.
     }),
   ),
 

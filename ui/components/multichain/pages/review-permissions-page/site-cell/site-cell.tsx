@@ -28,17 +28,17 @@ import {
 } from '../../../../component-library';
 import { EditAccountsModal, EditNetworksModal } from '../../..';
 import { getPermittedAccountsByOrigin } from '../../../../../selectors/permissions';
-import { SiteCellTooltip } from './site-cell-tooltip';
 import { AccountType } from '../../../connect-accounts-modal/connect-account-modal.types';
+import { SiteCellTooltip } from './site-cell-tooltip';
 
 // Define types for networks, accounts, and other props
-interface Network {
+type Network = {
   rpcPrefs?: { imageUrl?: string };
   nickname: string;
   chainId?: string;
-}
+};
 
-interface SiteCellProps {
+type SiteCellProps = {
   networks: Network[];
   accounts: AccountType[];
   onAccountsClick: () => void;
@@ -48,7 +48,7 @@ interface SiteCellProps {
   activeTabOrigin: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   combinedNetworks: any;
-}
+};
 
 export const SiteCell: React.FC<SiteCellProps> = ({
   networks,
