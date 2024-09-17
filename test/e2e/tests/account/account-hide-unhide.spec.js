@@ -17,6 +17,7 @@ describe('Account list - hide/unhide functionality - ', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
+        await driver.delay(200);
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
           '[data-testid="account-list-item-menu-button"]',
