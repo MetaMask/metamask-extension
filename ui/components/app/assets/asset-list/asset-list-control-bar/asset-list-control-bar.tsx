@@ -28,7 +28,6 @@ import { useAccountTotalFiatBalancesHook } from './use-account-total-fiat-balanc
 type AssetListControlBarProps = {
   tokenList: TokenWithBalance[];
   setTokenList: (arg: TokenWithBalance[]) => void;
-  // setLoading: (arg: boolean) => void;
   sorted: boolean;
   setSorted: (arg: boolean) => void;
 };
@@ -36,7 +35,6 @@ type AssetListControlBarProps = {
 const AssetListControlBar = ({
   tokenList,
   setTokenList,
-  // setLoading,
   sorted,
   setSorted,
 }: AssetListControlBarProps) => {

@@ -136,7 +136,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
       <AssetListControlBar
         tokenList={tokenList}
         setTokenList={setTokenList}
-        // setLoading={setLoading}
         sorted={sorted}
         setSorted={setSorted}
       />
