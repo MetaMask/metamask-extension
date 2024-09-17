@@ -108,7 +108,7 @@ export const ReviewPermissions = () => {
   const connectedAccounts = useSelector((state) =>
     getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin),
   ) as AccountType[];
-
+  console.log(connectedAccounts, 'connectedAccounts');
   const subjects = useSelector(getPermissionSubjects);
   const grantedNetworks = combinedNetworks.filter(
     (net: { chainId: string }) => connectedNetworks.indexOf(net.chainId) !== -1,

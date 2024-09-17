@@ -61,7 +61,6 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   onDisconnectClick,
 }) => {
   const t = useI18nContext();
-  console.log(networks, combinedNetworks);
   // Map networks and accounts to avatar data
   const avatarNetworksData = networks.map((network) => ({
     avatarValue: network.rpcPrefs?.imageUrl || '',
