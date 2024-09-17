@@ -335,7 +335,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       const handler = createHandler();
       await handler(req, res, next);
       await executeMiddlewareStack();
-      expect(trackEventSpy).toHaveBeenCalledTimes(1);
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
       expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.PermissionsApproved,
@@ -593,9 +593,9 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
       await executeMiddlewareStack();
 
-      expect(trackEventSpy).toHaveBeenCalledTimes(4);
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
 
-      expect(trackEventSpy.mock.calls[2][0]).toMatchObject({
+      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -613,6 +613,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           id: MOCK_ID,
           method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           origin: 'some.dapp',
+          params: [undefined, permitSignatureMsg.msgParams.data],
         };
         const res = {
           error: null,
@@ -622,12 +623,18 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
         await handler(req, res, next);
 
-        expect(trackEventSpy).toHaveBeenCalledTimes(2);
+        expect(trackEventSpy).toHaveBeenCalledTimes(1);
         expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
           category: MetaMetricsEventCategory.InpageProvider,
           event: MetaMetricsEventName.SignatureRequested,
           properties: {
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+          },
+          sensitiveProperties: {
+            eip712_verifyingContract:
+              '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+            eip712_domain_version: '1',
+            eip712_domain_name: 'MyToken',
           },
           referrer: { url: 'some.dapp' },
         });
