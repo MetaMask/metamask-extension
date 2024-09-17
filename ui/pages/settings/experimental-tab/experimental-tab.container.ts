@@ -12,6 +12,7 @@ import {
   setFeatureNotificationsEnabled,
   setRedesignedConfirmationsEnabled,
   setRedesignedTransactionsEnabled,
+  setWatchEthereumAccountEnabled,
 } from '../../../store/actions';
 import {
   getIsBitcoinSupportEnabled,
@@ -24,6 +25,7 @@ import {
   getFeatureNotificationsEnabled,
   getRedesignedConfirmationsEnabled,
   getRedesignedTransactionsEnabled,
+  getIsWatchEthereumAccountEnabled,
 } from '../../../selectors';
 import type {
   MetaMaskReduxDispatch,
@@ -35,6 +37,7 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
   const petnamesEnabled = getPetnamesEnabled(state);
   const featureNotificationsEnabled = getFeatureNotificationsEnabled(state);
   return {
+    watchAccountEnabled: getIsWatchEthereumAccountEnabled(state),
     bitcoinSupportEnabled: getIsBitcoinSupportEnabled(state),
     bitcoinTestnetSupportEnabled: getIsBitcoinTestnetSupportEnabled(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -50,6 +53,8 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
 
 const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
   return {
+    setWatchAccountEnabled: (value: boolean) =>
+      setWatchEthereumAccountEnabled(value),
     setBitcoinSupportEnabled: (value: boolean) =>
       setBitcoinSupportEnabled(value),
     setBitcoinTestnetSupportEnabled: (value: boolean) =>

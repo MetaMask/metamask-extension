@@ -110,7 +110,6 @@ export default function SmartTransactionStatusPage() {
     cancellationFeeWei =
       latestSmartTransaction?.statusMetadata?.cancellationFeeWei;
   }
-
   const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] = useState(
     swapsNetworkConfig.stxStatusDeadline,
   );

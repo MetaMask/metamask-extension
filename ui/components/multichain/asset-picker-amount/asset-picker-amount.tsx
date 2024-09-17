@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { TokenListMap } from '@metamask/assets-controllers';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, Text } from '../../component-library';
 import {
@@ -12,7 +13,12 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { getSelectedInternalAccount } from '../../../selectors';
+import {
+  getIpfsGateway,
+  getNativeCurrencyImage,
+  getSelectedInternalAccount,
+  getTokenList,
+} from '../../../selectors';
 
 import {
   AssetType,
@@ -26,6 +32,8 @@ import {
   type Asset,
 } from '../../../ducks/send';
 import { NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR } from '../../../pages/confirmations/send/send.constants';
+import { getAssetImageURL } from '../../../helpers/utils/util';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -72,6 +80,12 @@ export const AssetPickerAmount = ({
 
   const isMaxMode = useSelector(getSendMaxModeState);
   const isNativeSendPossible = useSelector(getIsNativeSendPossible);
+
+  const nativeCurrencySymbol = useSelector(getNativeCurrency);
+  const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
+  const tokenList = useSelector(getTokenList) as TokenListMap;
+
+  const ipfsGateway = useSelector(getIpfsGateway);
 
   useEffect(() => {
     // if this input is immutable – avoids double fire
@@ -143,6 +157,37 @@ export const AssetPickerAmount = ({
     sendAsset.type === AssetType.native &&
     receiveAsset.type !== AssetType.native;
 
+  let standardizedAsset;
+  if (asset?.type === AssetType.native) {
+    standardizedAsset = {
+      type: asset.type,
+      image: nativeCurrencyImageUrl,
+      symbol: nativeCurrencySymbol as string,
+    };
+  } else if (asset?.type === AssetType.token && asset?.details?.symbol) {
+    standardizedAsset = {
+      type: asset.type,
+      image:
+        getAssetImageURL(asset.details.image, ipfsGateway) ||
+        (tokenList &&
+          asset.details?.address &&
+          tokenList[asset.details.address.toLowerCase()]?.iconUrl),
+      symbol: asset.details.symbol,
+      address: asset.details.address,
+    };
+  } else if (
+    asset?.type === AssetType.NFT &&
+    asset?.details?.tokenId !== undefined &&
+    asset?.details?.image
+  ) {
+    standardizedAsset = {
+      type: asset.type as AssetType.NFT,
+      tokenId: asset.details.tokenId,
+      image: asset.details.image,
+      symbol: asset.details.symbol,
+    };
+  }
+
   return (
     <Box className="asset-picker-amount">
       <Box
@@ -161,7 +206,7 @@ export const AssetPickerAmount = ({
         paddingTop={asset.details?.standard === TokenStandard.ERC721 ? 4 : 1}
         paddingBottom={asset.details?.standard === TokenStandard.ERC721 ? 4 : 1}
       >
-        <AssetPicker asset={asset} {...assetPickerProps} />
+        <AssetPicker asset={standardizedAsset} {...assetPickerProps} />
         <SwappableCurrencyInput
           onAmountChange={onAmountChange ? handleChange : undefined}
           assetType={asset.type}

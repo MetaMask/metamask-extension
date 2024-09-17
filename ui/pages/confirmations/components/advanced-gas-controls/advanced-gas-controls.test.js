@@ -1,15 +1,11 @@
 import React from 'react';
-import configureMockStore from 'redux-mock-store';
 
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 
 import AdvancedGasControls from './advanced-gas-controls.component';
 
 const renderComponent = (props) => {
-  const store = configureMockStore([])({
-    metamask: { providerConfig: {} },
-  });
-  return renderWithProvider(<AdvancedGasControls {...props} />, store);
+  return renderWithProvider(<AdvancedGasControls {...props} />);
 };
 
 describe('AdvancedGasControls Component', () => {

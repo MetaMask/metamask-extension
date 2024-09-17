@@ -4,6 +4,7 @@ export enum RowAlertKey {
   EstimatedFee = 'estimatedFee',
   SigningInWith = 'signingInWith',
   Speed = 'speed',
+  RequestFrom = 'requestFrom',
 }
 
 export enum AlertActionKey {

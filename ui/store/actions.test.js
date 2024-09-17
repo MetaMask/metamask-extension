@@ -11,6 +11,8 @@ import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
 import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametrics';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../test/stub/networks';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -21,12 +23,12 @@ const middleware = [thunk];
 const defaultState = {
   metamask: {
     currentLocale: 'test',
-    providerConfig: { chainId: '0x1' },
     accounts: {
       '0xFirstAddress': {
         balance: '0x0',
       },
     },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -246,10 +248,8 @@ describe('Actions', () => {
 
       background.getState.callsFake((cb) =>
         cb(null, {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           currentLocale: 'test',
-          providerConfig: {
-            chainId: '0x1',
-          },
           accounts: {
             '0xAnotherAddress': {
               balance: '0x0',
@@ -1021,49 +1021,6 @@ describe('Actions', () => {
         actions.ignoreTokens({ tokensToIgnore: '0x0000001' }),
       );
 
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
-  describe('#setProviderType', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls setProviderType', async () => {
-      const store = mockStore();
-
-      const setProviderTypeStub = sinon.stub().callsFake((_, cb) => cb());
-
-      background.getApi.returns({
-        setProviderType: setProviderTypeStub,
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      await store.dispatch(actions.setProviderType());
-      expect(setProviderTypeStub.callCount).toStrictEqual(1);
-    });
-
-    it('displays warning when setProviderType throws', async () => {
-      const store = mockStore();
-
-      background.getApi.returns({
-        setProviderType: sinon
-          .stub()
-          .callsFake((_, cb) => cb(new Error('error'))),
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      const expectedActions = [
-        {
-          type: 'DISPLAY_WARNING',
-          payload: 'Had a problem changing networks!',
-        },
-      ];
-
-      await store.dispatch(actions.setProviderType());
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
@@ -1962,10 +1919,8 @@ describe('Actions', () => {
         }),
         getState: sinon.stub().callsFake((cb) =>
           cb(null, {
+            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
             currentLocale: 'test',
-            providerConfig: {
-              chainId: '0x1',
-            },
             accounts: {
               '0xFirstAddress': {
                 balance: '0x0',
@@ -2574,6 +2529,45 @@ describe('Actions', () => {
       ];
 
       expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+  describe('#createMetaMetricsDataDeletionTask', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls createMetaMetricsDataDeletionTask in background', async () => {
+      const createMetaMetricsDataDeletionTaskStub = sinon
+        .stub()
+        .callsFake((cb) => cb());
+      background.getApi.returns({
+        createMetaMetricsDataDeletionTask:
+          createMetaMetricsDataDeletionTaskStub,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await actions.createMetaMetricsDataDeletionTask();
+      expect(createMetaMetricsDataDeletionTaskStub.callCount).toStrictEqual(1);
+    });
+  });
+  describe('#updateDataDeletionTaskStatus', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls updateDataDeletionTaskStatus in background', async () => {
+      const updateDataDeletionTaskStatusStub = sinon
+        .stub()
+        .callsFake((cb) => cb());
+      background.getApi.returns({
+        updateDataDeletionTaskStatus: updateDataDeletionTaskStatusStub,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await actions.updateDataDeletionTaskStatus();
+      expect(updateDataDeletionTaskStatusStub.callCount).toStrictEqual(1);
     });
   });
 });

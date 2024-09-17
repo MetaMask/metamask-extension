@@ -1,12 +1,10 @@
 import PropTypes from 'prop-types';
 import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
-import {
-  NetworkConfiguration,
-  ProviderConfig,
-} from '@metamask/network-controller';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import type { RatesControllerState } from '@metamask/assets-controllers';
-import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
+import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
 import { createSelector } from '@reduxjs/toolkit';
+import { NetworkType } from '@metamask/controller-utils';
 import { Numeric } from '../../shared/modules/Numeric';
 import {
   MultichainProviderConfig,
@@ -52,7 +50,14 @@ export type BalancesState = {
 export type MultichainState = AccountsState & RatesState & BalancesState;
 
 // TODO: Remove after updating to @metamask/network-controller 20.0.0
-export type ProviderConfigWithImageUrlAndExplorerUrl = ProviderConfig & {
+export type ProviderConfigWithImageUrlAndExplorerUrl = {
+  rpcUrl?: string;
+  type: NetworkType;
+  chainId: Hex;
+  ticker: string;
+  nickname?: string;
+  id?: string;
+} & {
   rpcPrefs?: { blockExplorerUrl?: string; imageUrl?: string };
 };
 
@@ -364,9 +369,7 @@ export function getMultichainIsTestnet(
       // current implementation differ between each other. So we do not use
       // `getIsTestnet` here and uses the actual `TEST_NETWORK_IDS` which seems
       // more up-to-date
-      (TEST_NETWORK_IDS as string[]).includes(
-        (providerConfig as ProviderConfig).chainId,
-      )
+      (TEST_NETWORK_IDS as string[]).includes(providerConfig.chainId)
     : // TODO: For now we only check for bitcoin, but we will need to
       // update this for other non-EVM networks later!
       (providerConfig as MultichainProviderConfig).chainId ===

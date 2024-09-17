@@ -11,7 +11,8 @@ exports[`PermitSimulation renders component correctly 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -50,7 +51,8 @@ exports[`PermitSimulation renders component correctly 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -63,50 +65,55 @@ exports[`PermitSimulation renders component correctly 1`] = `
         style="margin-left: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box"
         >
           <div
-            class="mm-box mm-box--margin-inline-end-1 mm-box--display-inline mm-box--min-width-0"
+            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
           >
             <div
-              style="min-width: 0;"
+              class="mm-box mm-box--margin-inline-end-1 mm-box--display-inline mm-box--min-width-0"
             >
               <div
-                aria-describedby="tippy-tooltip-2"
-                class=""
-                data-original-title="30"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
+                style="min-width: 0;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
-                  data-testid="simulation-token-value"
+                <div
+                  aria-describedby="tippy-tooltip-2"
+                  class=""
+                  data-original-title="30"
+                  data-tooltipped=""
+                  style="display: inline;"
+                  tabindex="0"
                 >
-                  30
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
+                    data-testid="simulation-token-value"
+                    style="padding-top: 1px; padding-bottom: 1px;"
+                  >
+                    30
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div
+                class="name name__missing"
+              >
+                <span
+                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+                <p
+                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                >
+                  0xCcCCc...ccccC
                 </p>
               </div>
             </div>
           </div>
-          <div>
-            <div
-              class="name name__missing"
-            >
-              <span
-                class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-              <p
-                class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
-              >
-                0xCcCCc...ccccC
-              </p>
-            </div>
-          </div>
+          <div
+            class="mm-box"
+          />
         </div>
-        <div
-          class="mm-box"
-        />
       </div>
     </div>
   </div>

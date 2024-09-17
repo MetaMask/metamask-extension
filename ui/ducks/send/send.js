@@ -2679,7 +2679,7 @@ export function updateSendAsset(
 
       if (details.standard === TokenStandard.ERC20) {
         asset.balance =
-          details.balance && details.decimals
+          details.balance && typeof details.decimals === 'number'
             ? addHexPrefix(
                 calcTokenAmount(details.balance, details.decimals).toString(16),
               )
@@ -3548,15 +3548,15 @@ export function getSwapsBlockedTokens(state) {
 }
 
 export const getIsSwapAndSendDisabledForNetwork = createSelector(
-  (state) => state.metamask.providerConfig,
+  (state) => getCurrentChainId(state),
   (state) => state[name]?.disabledSwapAndSendNetworks ?? [],
-  ({ chainId }, disabledSwapAndSendNetworks) => {
+  (chainId, disabledSwapAndSendNetworks) => {
     return disabledSwapAndSendNetworks.includes(chainId);
   },
 );
 
 export const getSendAnalyticProperties = createSelector(
-  (state) => state.metamask.providerConfig,
+  getProviderConfig,
   getCurrentDraftTransaction,
   getBestQuote,
   ({ chainId, ticker: nativeCurrencySymbol }, draftTransaction, bestQuote) => {

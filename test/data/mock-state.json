@@ -29,7 +29,6 @@
     "warning": null,
     "customTokenAmount": "10"
   },
-  "confirm": {},
   "confirmAlerts": {
     "alerts": [],
     "confirmed": []
@@ -381,13 +380,6 @@
       "unconnectedAccount": true
     },
     "featureFlags": {},
-    "providerConfig": {
-      "type": "rpc",
-      "nickname": "goerli",
-      "chainId": "0x5",
-      "ticker": "ETH",
-      "id": "chain5"
-    },
     "networkConfigurations": {
       "testNetworkConfigurationId": {
         "rpcUrl": "https://testrpc.com",
@@ -396,12 +388,12 @@
         "type": "rpc",
         "id": "testNetworkConfigurationId"
       },
-      "chain5": {
+      "goerli": {
         "type": "rpc",
         "chainId": "0x5",
         "ticker": "ETH",
         "nickname": "Chain 5",
-        "id": "chain5"
+        "id": "goerli"
       }
     },
     "internalAccounts": {
@@ -1873,6 +1865,7 @@
       }
     ],
     "addSnapAccountEnabled": false,
+    "watchEthereumAccountEnabled": false,
     "bitcoinSupportEnabled": false,
     "bitcoinTestnetSupportEnabled": false,
     "pendingApprovals": {
@@ -1982,6 +1975,24 @@
             "id": "R9tggB2pDzyCcbt6dIebN",
             "invoker": "npm:@metamask/test-snap-bip44",
             "parentCapability": "snap_getBip44Entropy"
+          }
+        }
+      },
+      "https://snaps.metamask.io": {
+        "origin": "https://snaps.metamask.io",
+        "permissions": {
+          "wallet_snap": {
+            "caveats": [
+              {
+                "type": "snapIds",
+                "value": {
+                  "npm:@metamask/test-snap-bip44": {}
+                }
+              }
+            ],
+            "date": 1718117256761,
+            "id": "sBxmdvnow7QiN9aS4uSdn",
+            "invoker": "https://snaps.metamask.io"
           }
         }
       }

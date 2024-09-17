@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "Ikonekta ang iyong QR na wallet na hardware"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "Ang address sa kahilingan sa pag-sign in ay hindi tugma sa address ng account na ginagamit mo sa pag-sign in."
   },
@@ -195,6 +192,9 @@
   "addAccount": {
     "message": "Magdagdag ng account"
   },
+  "addAccountToMetaMask": {
+    "message": "Idagdag ang account sa MetaMask"
+  },
   "addAcquiredTokens": {
     "message": "Idagdag ang mga token na nakuha mo gamit ang MetaMask"
   },
@@ -320,6 +320,9 @@
   "addUrl": {
     "message": "Idagdag ang URL"
   },
+  "addingAccount": {
+    "message": "Idinaragdag ang account"
+  },
   "addingCustomNetwork": {
     "message": "Nagdaragdag ng Network"
   },
@@ -328,9 +331,6 @@
   },
   "additionalNetworks": {
     "message": "Mga karagdagang network"
-  },
-  "additionalRpcUrl": {
-    "message": "Karagdagang RPC URL"
   },
   "address": {
     "message": "Address"
@@ -663,9 +663,6 @@
   "back": {
     "message": "Bumalik"
   },
-  "backup": {
-    "message": "I-backup"
-  },
   "backupApprovalInfo": {
     "message": "Ang lihim na code na ito ay kinakailangan para ma-recover ang iyong wallet sakaling maiwala mo ang iyong device, makalimutan ang iyong password, kailanganin mong i-install ulit ang MetaMask, o gusto mong i-access ang iyong wallet sa ibang device."
   },
@@ -677,12 +674,6 @@
   },
   "backupNow": {
     "message": "I-back up na"
-  },
-  "backupUserData": {
-    "message": "I-back up ang iyong datos"
-  },
-  "backupUserDataDescription": {
-    "message": "Maaari mong i-backup ang mga setting ng user na naglalaman ng mga kagustuhan at mga address ng account mula sa isang file na JSON."
   },
   "balance": {
     "message": "Balanse"
@@ -1027,9 +1018,6 @@
   "confirmRpcUrlDeletionMessage": {
     "message": "Sigurado ka ba na nais mong tanggalin ang RPC URL? Ang iyong impormasyon ay hindi mase-save sa network na ito."
   },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "Kumpirmahin lamang ang transaksyong ito kung ganap mong nauunawaan ang nilalaman at nagtitiwala sa site na humihiling."
-  },
   "confirmTitleDescPermitSignature": {
     "message": "Ang site na ito ay nais ng permiso para gamitin ang iyong mga token."
   },
@@ -1039,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "Kumpirmahin lamang ang mensaheng ito kung ganap mong nauunawaan ang nilalaman at nagtitiwala sa site na humihiling."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Hiling sa limitasyon ng paggastos"
   },
   "confirmTitleSIWESignature": {
@@ -1540,6 +1528,9 @@
   "details": {
     "message": "Mga Detalye"
   },
+  "developerOptions": {
+    "message": "Mga Opsyon ng Developer"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "Ang “$1” ay hindi pinagagana dahil hindi nito naabot ang pinakamababang 10% na dagdag mula sa orihinal na bayad sa gas.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1881,6 +1872,9 @@
   },
   "existingChainId": {
     "message": "Ang impormasyon na iyong inilagay ay nauugnay sa isang umiiral na ID ng chain."
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "Para tingnan at kumpirmahin ang iyong pinakabagong hiling, kailangan mo munang aprubahan o tanggihan ang mga umiiral na hiling."
   },
   "existingRpcUrl": {
     "message": "Ang URL na ito ay nauugnay sa ibang ID ng chain."
@@ -2908,6 +2902,10 @@
     "message": "Pumili ng palayaw...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "Ang $1 ay humihiling ng iyong pag-apruba para:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "Gusto mo bang gawin ng site na ito ang mga sumusunod?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3523,6 +3521,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opsyonal:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Matuto kung paano namin pinoprotektahan ang iyong pagkapribado habang kinokolekta ang data sa paggamit para sa iyong profile."
   },
   "onboardingMetametricsTitle": {
     "message": "Tulungan kaming mapahusay ang MetaMask"
@@ -4165,9 +4166,6 @@
   "receive": {
     "message": "Tumanggap"
   },
-  "receiveTokensCamelCase": {
-    "message": "Tumanggap ng mga token"
-  },
   "recipientAddressPlaceholder": {
     "message": "Ilagay ang pampublikong address (0x) o ENS name"
   },
@@ -4206,6 +4204,12 @@
   },
   "redesignedConfirmationsToggleDescription": {
     "message": "I-on ito upang makita ang mga hiling sa pirma sa isang pinahusay na format."
+  },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "Pinahusay na mga hiling sa transaksyon"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "I-on ito upang makita ang mga hiling sa transaksyon sa isang pinahusay na format."
   },
   "refreshList": {
     "message": "I-refresh ang listahan"
@@ -4343,9 +4347,6 @@
   "restoreUserData": {
     "message": "Ibalik ang data ng user"
   },
-  "restoreUserDataDescription": {
-    "message": "Maaari mong ibalik ang mga setting ng user na naglalaman ng mga kagustuhan at mga address ng account mula sa isang dating na-back up na file na JSON."
-  },
   "resultPageError": {
     "message": "Error"
   },
@@ -4406,6 +4407,9 @@
   },
   "reviewAlerts": {
     "message": "Suriin ang mga alerto"
+  },
+  "reviewPermissions": {
+    "message": "Suriin ang mga pahintulot"
   },
   "revokeAllTokensTitle": {
     "message": "Bawiin ang pahintulot na i-access at ilipat ang lahat ng iyong $1?",

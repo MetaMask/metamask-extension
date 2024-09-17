@@ -18,11 +18,7 @@ jest.mock('react-redux', () => ({
 }));
 
 const STATE_MOCK = {
-  metamask: {
-    providerConfig: {
-      chainId: '0x1',
-    },
-  },
+  metamask: {},
 };
 
 describe('PopularNetworkList', () => {

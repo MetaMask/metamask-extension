@@ -11,7 +11,7 @@ exports[`NetworkListItem renders properly 1`] = `
       <img
         alt="Polygon logo"
         class="mm-avatar-network__network-image"
-        src="./images/matic-token.svg"
+        src="./images/pol-token.svg"
       />
     </div>
     <div

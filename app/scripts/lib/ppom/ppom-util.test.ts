@@ -7,7 +7,7 @@ import {
   normalizeTransactionParams,
 } from '@metamask/transaction-controller';
 import { SignatureController } from '@metamask/signature-controller';
-import { Message } from '@metamask/message-manager';
+import type { PersonalMessage } from '@metamask/message-manager';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -35,6 +35,8 @@ const CHAIN_ID_MOCK = '0x1';
 const REQUEST_MOCK = {
   method: 'eth_signTypedData_v4',
   params: [],
+  id: '',
+  jsonrpc: '2.0' as const,
 };
 
 const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
@@ -244,7 +246,7 @@ describe('PPOM Utils', () => {
             ...SECURITY_ALERT_RESPONSE_MOCK,
             securityAlertId: SECURITY_ALERT_ID_MOCK,
           },
-        } as unknown as Message,
+        } as unknown as PersonalMessage,
       });
 
       await updateSecurityAlertResponse({

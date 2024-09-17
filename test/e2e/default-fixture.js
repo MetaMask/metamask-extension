@@ -1,4 +1,4 @@
-const { NetworkStatus } = require('@metamask/network-controller');
+const { mockNetworkState } = require('../stub/networks');
 const { CHAIN_IDS } = require('../../shared/constants/network');
 const { FirstTimeFlowType } = require('../../shared/constants/onboarding');
 
@@ -120,6 +120,8 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         bridgeState: {
           bridgeFeatureFlags: {
             extensionSupport: false,
+            srcNetworkAllowlist: ['0x1', '0xa', '0xe708'],
+            destNetworkAllowlist: ['0x1', '0xa', '0xe708'],
           },
         },
       },
@@ -149,34 +151,22 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         participateInMetaMetrics: false,
         dataCollectionForMarketing: false,
         traits: {},
+        latestNonAnonymousEventTimestamp: 0,
+      },
+      MetaMetricsDataDeletionController: {
+        metaMetricsDataDeletionId: null,
+        metaMetricsDataDeletionTimestamp: 0,
       },
       NetworkController: {
-        selectedNetworkClientId: 'networkConfigurationId',
-        networksMetadata: {
-          networkConfigurationId: {
-            EIPS: {},
-            status: NetworkStatus.Available,
-          },
-        },
-        providerConfig: {
+        ...mockNetworkState({
+          id: 'networkConfigurationId',
           chainId: inputChainId,
           nickname: 'Localhost 8545',
-          rpcPrefs: {},
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
-          type: 'rpc',
-          id: 'networkConfigurationId',
-        },
-        networkConfigurations: {
-          networkConfigurationId: {
-            chainId: inputChainId,
-            nickname: 'Localhost 8545',
-            rpcPrefs: {},
-            rpcUrl: 'http://localhost:8545',
-            ticker: 'ETH',
-            networkConfigurationId: 'networkConfigurationId',
-          },
-        },
+          blockExplorerUrl: undefined,
+        }),
+        providerConfig: { id: 'networkConfigurationId' },
       },
       OnboardingController: {
         completedOnboarding: true,

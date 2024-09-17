@@ -18,7 +18,10 @@ import {
   PRIMARY_TYPES_PERMIT,
 } from '../../../shared/constants/signatures';
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
-import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
+import {
+  generateSignatureUniqueId,
+  getBlockaidMetricsProps,
+} from '../../../ui/helpers/utils/metrics';
 import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
@@ -124,13 +127,57 @@ const rateLimitTimeoutsByMethod = {};
 let globalRateLimitCount = 0;
 
 /**
+ * Create signature request event fragment with an assigned unique identifier
+ *
+ * @param {MetaMetricsController} metaMetricsController
+ * @param {OriginalRequest} req
+ * @param {object} properties
+ */
+function createSignatureFragment(metaMetricsController, req, properties) {
+  metaMetricsController.createEventFragment({
+    category: MetaMetricsEventCategory.InpageProvider,
+    initialEvent: MetaMetricsEventName.SignatureRequested,
+    successEvent: MetaMetricsEventName.SignatureApproved,
+    failureEvent: MetaMetricsEventName.SignatureRejected,
+    uniqueIdentifier: generateSignatureUniqueId(req.id),
+    persist: true,
+    referrer: {
+      url: req.origin,
+    },
+    properties,
+  });
+}
+
+/**
+ * Updates and finalizes event fragment for signature requests
+ *
+ * @param {MetaMetricsController} metaMetricsController
+ * @param {OriginalRequest} req
+ * @param {object}  options
+ * @param {boolean} options.abandoned
+ * @param {object}  options.properties
+ */
+function finalizeSignatureFragment(
+  metaMetricsController,
+  req,
+  { abandoned, properties },
+) {
+  const signatureUniqueId = generateSignatureUniqueId(req.id);
+
+  metaMetricsController.updateEventFragment(signatureUniqueId, {
+    properties,
+  });
+  metaMetricsController.finalizeEventFragment(signatureUniqueId, {
+    abandoned,
+  });
+}
+
+/**
  * Returns a middleware that tracks inpage_provider usage using sampling for
  * each type of event except those that require user interaction, such as
  * signature requests
  *
  * @param {object} opts - options for the rpc method tracking middleware
- * @param {Function} opts.trackEvent - trackEvent method from
- *  MetaMetricsController
  * @param {Function} opts.getMetricsState - get the state of
  *  MetaMetricsController
  * @param {number} [opts.rateLimitTimeout] - time, in milliseconds, to wait before
@@ -145,11 +192,12 @@ let globalRateLimitCount = 0;
  * time window that should limit the number of method calls tracked to globalRateLimitMaxAmount.
  * @param {number} [opts.globalRateLimitMaxAmount] - max number of method calls that should
  * tracked within the globalRateLimitTimeout time window.
+ * @param {AppStateController} [opts.appStateController]
+ * @param {MetaMetricsController} [opts.metaMetricsController]
  * @returns {Function}
  */
 
 export default function createRPCMethodTrackingMiddleware({
-  trackEvent,
   getMetricsState,
   rateLimitTimeout = 60 * 5 * 1000, // 5 minutes
   rateLimitSamplePercent = 0.001, // 0.1%
@@ -160,6 +208,7 @@ export default function createRPCMethodTrackingMiddleware({
   isConfirmationRedesignEnabled,
   snapAndHardwareMessenger,
   appStateController,
+  metaMetricsController,
 }) {
   return async function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,
@@ -215,6 +264,8 @@ export default function createRPCMethodTrackingMiddleware({
       !isGlobalRateLimited &&
       // Don't track if the user isn't participating in metametrics
       userParticipatingInMetaMetrics === true;
+
+    let signatureUniqueId;
 
     if (shouldTrackEvent) {
       // We track an initial "requested" event as soon as the dapp calls the
@@ -316,14 +367,18 @@ export default function createRPCMethodTrackingMiddleware({
         eventProperties.params = transformParams(params);
       }
 
-      trackEvent({
-        event,
-        category: MetaMetricsEventCategory.InpageProvider,
-        referrer: {
-          url: origin,
-        },
-        properties: eventProperties,
-      });
+      if (event === MetaMetricsEventName.SignatureRequested) {
+        createSignatureFragment(metaMetricsController, req, eventProperties);
+      } else {
+        metaMetricsController.trackEvent({
+          event,
+          category: MetaMetricsEventCategory.InpageProvider,
+          referrer: {
+            url: origin,
+          },
+          properties: eventProperties,
+        });
+      }
 
       if (rateLimitType === RATE_LIMIT_TYPES.TIMEOUT) {
         rateLimitTimeoutsByMethod[method] = setTimeout(() => {
@@ -341,6 +396,7 @@ export default function createRPCMethodTrackingMiddleware({
       if (shouldTrackEvent === false || typeof eventType === 'undefined') {
         return callback();
       }
+      const location = res.error?.data?.location;
 
       let event;
       if (res.error?.code === errorCodes.provider.userRejectedRequest) {
@@ -367,26 +423,27 @@ export default function createRPCMethodTrackingMiddleware({
           securityAlertResponse,
         });
       }
-
       const properties = {
         ...eventProperties,
         ...blockaidMetricProps,
-        // if security_alert_response from blockaidMetricProps is Benign, force set security_alert_reason to empty string
-        security_alert_reason:
-          blockaidMetricProps.security_alert_response ===
-          BlockaidResultType.Benign
-            ? ''
-            : blockaidMetricProps.security_alert_reason,
+        location,
       };
 
-      trackEvent({
-        event,
-        category: MetaMetricsEventCategory.InpageProvider,
-        referrer: {
-          url: origin,
-        },
-        properties,
-      });
+      if (signatureUniqueId) {
+        finalizeSignatureFragment(metaMetricsController, req, {
+          abandoned: event === eventType.REJECTED,
+          properties,
+        });
+      } else {
+        metaMetricsController.trackEvent({
+          event,
+          category: MetaMetricsEventCategory.InpageProvider,
+          referrer: {
+            url: origin,
+          },
+          properties,
+        });
+      }
 
       return callback();
     });

@@ -211,6 +211,12 @@ const NetworksForm = ({
     safeChainsList.current = [
       ...safeChains,
       {
+        chainId: 137,
+        nativeCurrency: {
+          symbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.MATIC,
+        },
+      },
+      {
         chainId: 78,
         nativeCurrency: {
           symbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.WETHIO,

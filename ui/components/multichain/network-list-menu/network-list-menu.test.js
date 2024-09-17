@@ -12,14 +12,12 @@ import {
 import { NetworkListMenu } from '.';
 
 const mockSetShowTestNetworks = jest.fn();
-const mockSetProviderType = jest.fn();
 const mockToggleNetworkMenu = jest.fn();
 const mockSetNetworkClientIdForDomain = jest.fn();
 const mockSetActiveNetwork = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => mockSetShowTestNetworks,
-  setProviderType: () => mockSetProviderType,
   setActiveNetwork: () => mockSetActiveNetwork,
   toggleNetworkMenu: () => mockToggleNetworkMenu,
   setNetworkClientIdForDomain: (network, id) =>
@@ -30,8 +28,7 @@ const MOCK_ORIGIN = 'https://portfolio.metamask.io';
 
 const render = ({
   showTestNetworks = false,
-  currentChainId = '0x5',
-  providerConfigId = 'chain5',
+  selectedNetworkClientId = 'goerli',
   isUnlocked = true,
   origin = MOCK_ORIGIN,
   selectedTabOriginInDomainsState = true,
@@ -40,18 +37,14 @@ const render = ({
     metamask: {
       ...mockState.metamask,
       isUnlocked,
-      providerConfig: {
-        ...mockState.metamask.providerConfig,
-        chainId: currentChainId,
-        id: providerConfigId,
-      },
+      selectedNetworkClientId,
       preferences: {
         showTestNetworks,
       },
       useRequestQueue: true,
       domains: {
         ...(selectedTabOriginInDomainsState
-          ? { [origin]: providerConfigId }
+          ? { [origin]: selectedNetworkClientId }
           : {}),
       },
     },
@@ -108,7 +101,7 @@ describe('NetworkListMenu', () => {
     const { getByText } = render();
     fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
     expect(mockToggleNetworkMenu).toHaveBeenCalled();
-    expect(mockSetProviderType).toHaveBeenCalled();
+    expect(mockSetActiveNetwork).toHaveBeenCalled();
   });
 
   it('shows the correct selected network when networks share the same chain ID', () => {
@@ -116,7 +109,7 @@ describe('NetworkListMenu', () => {
     render({
       showTestNetworks: false,
       currentChainId: CHAIN_IDS.MAINNET,
-      providerConfigId: 'testNetworkConfigurationId',
+      selectedNetworkClientId: 'testNetworkConfigurationId',
     });
 
     // Contains Mainnet, Linea Mainnet and the two custom networks

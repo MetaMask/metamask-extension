@@ -23,6 +23,8 @@ const PAGES = {
   POPUP: 'popup',
 };
 
+const artifactDir = (title) => `./test-artifacts/${this.browser}/${title}`;
+
 /**
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
@@ -124,8 +126,8 @@ class Driver {
   /**
    * @param {!ThenableWebDriver} driver - A {@code WebDriver} instance
    * @param {string} browser - The type of browser this driver is controlling
-   * @param extensionUrl
-   * @param {number} timeout
+   * @param {string} extensionUrl
+   * @param {number} timeout - Defaults to 10000 milliseconds (10 seconds)
    */
   constructor(driver, browser, extensionUrl, timeout = 10 * 1000) {
     this.driver = driver;
@@ -589,6 +591,17 @@ class Driver {
     }
   }
 
+  /** @param {string} title - The title of the window or tab the screenshot is being taken in */
+  async takeScreenshot(title) {
+    const filepathBase = `${artifactDir(title)}/test-screenshot`;
+    await fs.mkdir(artifactDir(title), { recursive: true });
+
+    const screenshot = await this.driver.takeScreenshot();
+    await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
+      encoding: 'base64',
+    });
+  }
+
   /**
    * Clicks on an element identified by the provided locator and waits for it to disappear.
    * For scenarios where the clicked element, such as a notification or popup, needs to disappear afterward.
@@ -863,6 +876,47 @@ class Driver {
   }
 
   /**
+   * Function that aims to simulate a click action on a specified web element
+   * within a web page and waits for the current window to close.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @param {number} [retries] - The number of times to retry the click action if it fails
+   * @returns {Promise<void>} promise that resolves to the WebElement
+   */
+  async clickElementAndWaitForWindowToClose(rawLocator, retries = 3) {
+    const handle = await this.driver.getWindowHandle();
+    await this.clickElement(rawLocator, retries);
+    await this.waitForWindowToClose(handle);
+  }
+
+  /**
+   * Waits for the specified window handle to close before returning.
+   *
+   * @param {string} handle - The handle of the window or tab we'll wait for.
+   * @param {number} [timeout] - The amount of time in milliseconds to wait
+   * before timing out. Defaults to `this.timeout`.
+   * @throws {Error} throws an error if the window handle doesn't close within
+   * the timeout.
+   */
+  async waitForWindowToClose(handle, timeout = this.timeout) {
+    const start = Date.now();
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const handles = await this.getAllWindowHandles();
+      if (!handles.includes(handle)) {
+        return;
+      }
+
+      const timeElapsed = Date.now() - start;
+      if (timeElapsed > timeout) {
+        throw new Error(
+          `waitForWindowToClose timed out waiting for window handle '${handle}' to close.`,
+        );
+      }
+    }
+  }
+
+  /**
    * Waits until the specified number of window handles are present.
    *
    * @param {number} _x - The number of window handles to wait for
@@ -1046,9 +1100,8 @@ class Driver {
     );
     console.error(`${error}\n`);
 
-    const artifactDir = `./test-artifacts/${this.browser}/${title}`;
-    const filepathBase = `${artifactDir}/test-failure`;
-    await fs.mkdir(artifactDir, { recursive: true });
+    const filepathBase = `${artifactDir(title)}/test-failure`;
+    await fs.mkdir(artifactDir(title), { recursive: true });
     // On occasion there may be a bug in the offscreen document which does
     // not render visibly to the user and therefore no screenshot can be
     // taken. In this case we skip the screenshot and log the error.

@@ -167,7 +167,7 @@ describe('switchEthereumChainHandler', () => {
   describe('with permittedChains permissioning active', () => {
     const permissionsFeatureFlagIsActive = true;
 
-    it('should call requestPermittedChainsPermission and setActiveNetwork when chainId is not in permittedChains', async () => {
+    it('should call requestPermittedChainsPermission and setActiveNetwork when chainId is not in `endowment:permitted-chains`', async () => {
       const mockrequestPermittedChainsPermission = jest
         .fn()
         .mockResolvedValue();
@@ -200,7 +200,7 @@ describe('switchEthereumChainHandler', () => {
       );
     });
 
-    it('should call setActiveNetwork without calling requestPermittedChainsPermission when requested chainId is in permittedChains', async () => {
+    it('should call setActiveNetwork without calling requestPermittedChainsPermission when requested chainId is in `endowment:permitted-chains`', async () => {
       const mocks = makeMocks({
         permissionsFeatureFlagIsActive,
         permissionedChainIds: [CHAIN_IDS.MAINNET],

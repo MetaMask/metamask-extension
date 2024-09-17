@@ -8,4 +8,8 @@
   position: fixed;
   width: 100%;
   z-index: design-system.$modal-z-index;
+
+  @media screen and (min-width: design-system.$screen-sm-max) {
+    max-width: 408px;
+  }
 }

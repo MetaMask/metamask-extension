@@ -67,14 +67,17 @@ export const SendPageRecipient = () => {
         `sendFlow - User clicked recipient from ${type}. address: ${address}, nickname ${nickname}`,
       ),
     );
-    trackEvent({
-      event: MetaMetricsEventName.sendRecipientSelected,
-      category: MetaMetricsEventCategory.Send,
-      properties: {
-        location: 'send page recipient screen',
-        inputType: type,
+    trackEvent(
+      {
+        event: MetaMetricsEventName.sendRecipientSelected,
+        category: MetaMetricsEventCategory.Send,
+        properties: {
+          location: 'send page recipient screen',
+          inputType: type,
+        },
       },
-    });
+      { excludeMetaMetricsId: false },
+    );
     dispatch(updateRecipient({ address, nickname }));
     dispatch(updateRecipientUserInput(address));
   };

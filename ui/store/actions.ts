@@ -10,7 +10,7 @@ import { capitalize, isEqual } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import { Hex, Json, JsonRpcRequest } from '@metamask/utils';
+import type { Hex, Json } from '@metamask/utils';
 import {
   AssetsContractController,
   BalanceMap,
@@ -104,7 +104,7 @@ import {
 } from '../../shared/modules/i18n';
 import { decimalToHex } from '../../shared/modules/conversion.utils';
 import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
-import { NetworkType, RPCDefinition } from '../../shared/constants/network';
+import { RPCDefinition } from '../../shared/constants/network';
 import { EtherDenomination } from '../../shared/constants/common';
 import {
   isErrorWithMessage,
@@ -115,6 +115,7 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
+import { EndTraceRequest } from '../../shared/lib/trace';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -1240,11 +1241,13 @@ export function removeSnap(
   };
 }
 
-export async function handleSnapRequest(args: {
+export async function handleSnapRequest<
+  Params extends JsonRpcParams = JsonRpcParams,
+>(args: {
   snapId: string;
   origin: string;
   handler: string;
-  request: JsonRpcRequest;
+  request: JsonRpcRequest<Params>;
 }): Promise<unknown> {
   return submitRequestToBackground('handleSnapRequest', [args]);
 }
@@ -1567,8 +1570,8 @@ export function updateMetamaskState(
     const { currentLocale } = currentState;
     const currentInternalAccount = getSelectedInternalAccount(state);
     const selectedAddress = currentInternalAccount?.address;
-    const { currentLocale: newLocale, providerConfig: newProviderConfig } =
-      newState;
+    const { currentLocale: newLocale } = newState;
+    const newProviderConfig = getProviderConfig({ metamask: newState });
     const newInternalAccount = getSelectedInternalAccount({
       metamask: newState,
     });
@@ -2367,20 +2370,6 @@ export function createRetryTransaction(
 // config
 //
 
-export function setProviderType(
-  type: NetworkType,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.setProviderType`, type);
-    try {
-      await submitRequestToBackground('setProviderType', [type]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem changing networks!'));
-    }
-  };
-}
-
 export function upsertNetworkConfiguration(
   {
     id,
@@ -3078,6 +3067,10 @@ export function setSmartTransactionsOptInStatus(
   };
 }
 
+export function setShowMultiRpcModal(value: boolean) {
+  return setPreference('showMultiRpcModal', value);
+}
+
 export function setAutoLockTimeLimit(value: number | null) {
   return setPreference('autoLockTimeLimit', value);
 }
@@ -3189,9 +3182,13 @@ export function toggleAccountMenu() {
   };
 }
 
-export function toggleNetworkMenu() {
+export function toggleNetworkMenu(payload?: {
+  isAddingNewNetwork: boolean;
+  isMultiRpcOnboarding: boolean;
+}) {
   return {
     type: actionConstants.TOGGLE_NETWORK_MENU,
+    payload,
   };
 }
 
@@ -4069,9 +4066,10 @@ export function setNewNetworkAdded({
 export function setEditedNetwork(
   payload:
     | {
-        networkConfigurationId: string;
+        chainId: string;
+        networkConfigurationId?: string;
         nickname: string;
-        editCompleted: boolean;
+        editCompleted?: boolean;
       }
     | undefined = undefined,
 ): PayloadAction<object> {
@@ -4877,6 +4875,14 @@ export function setSecurityAlertsEnabled(val: boolean): void {
   }
 }
 
+export async function setWatchEthereumAccountEnabled(value: boolean) {
+  try {
+    await submitRequestToBackground('setWatchEthereumAccountEnabled', [value]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+
 export async function setBitcoinSupportEnabled(value: boolean) {
   try {
     await submitRequestToBackground('setBitcoinSupportEnabled', [value]);
@@ -5079,6 +5085,20 @@ export function setName(
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
+}
+
+/**
+ * To create a data deletion regulation for MetaMetrics data deletion
+ */
+export async function createMetaMetricsDataDeletionTask() {
+  return await submitRequestToBackground('createMetaMetricsDataDeletionTask');
+}
+
+/**
+ * To check the status of the current delete regulation.
+ */
+export async function updateDataDeletionTaskStatus() {
+  return await submitRequestToBackground('updateDataDeletionTaskStatus');
 }
 
 /**
@@ -5604,4 +5624,16 @@ export async function setLastInteractedConfirmationInfo(
     'setLastInteractedConfirmationInfo',
     [info],
   );
+}
+
+export async function endBackgroundTrace(request: EndTraceRequest) {
+  // We want to record the timestamp immediately, not after the request reaches the background.
+  // Sentry uses the Performance interface for more accuracy, so we also must use it to align with
+  // other timings.
+  const timestamp =
+    request.timestamp || performance.timeOrigin + performance.now();
+
+  await submitRequestToBackground<void>('endTrace', [
+    { ...request, timestamp },
+  ]);
 }

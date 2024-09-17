@@ -50,6 +50,10 @@ const mockInternalAccount = {
       name: mockSnapName,
     },
     name: accountNameSuggestion,
+    keyring: {
+      type: '',
+    },
+    importTime: 0,
   },
 };
 

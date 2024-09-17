@@ -4,12 +4,17 @@ import { MemoryRouter, Route } from 'react-router-dom';
 import { cloneDeep } from 'lodash';
 import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
-import ConfirmPage from '../confirm';
+import { ConfirmContextProvider } from '../../context/confirm';
 import { SignatureRequestType } from '../../types/confirm';
+import ConfirmPage from '../confirm';
 
 export const CONFIRM_PAGE_DECORATOR = [
   (story: () => React.ReactFragment) => {
-    return <div style={{ height: '600px' }}>{story()}</div>;
+    return (
+      <ConfirmContextProvider>
+        <div style={{ height: '600px' }}>{story()}</div>
+      </ConfirmContextProvider>
+    );
   },
 ];
 
@@ -22,14 +27,9 @@ export const ARG_TYPES_SIGNATURE = {
 
 export function ConfirmStoryTemplate(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  currentConfirmation: any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metamaskState: any = {},
 ): JSX.Element {
   const store = configureStore({
-    confirm: {
-      currentConfirmation,
-    },
     metamask: {
       ...mockState.metamask,
       ...metamaskState,

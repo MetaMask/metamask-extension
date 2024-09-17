@@ -1,0 +1,57 @@
+diff --git a/lib/impl/core-in-iframe.js b/lib/impl/core-in-iframe.js
+index c47cf3bff860d6b1855341c00b80fc6c40f9d6d5..0151bcaac6689ecb26f1b4575ece4f3760ca1b87 100644
+--- a/lib/impl/core-in-iframe.js
++++ b/lib/impl/core-in-iframe.js
+@@ -116,7 +116,9 @@ class CoreInIframe {
+         this._log.enabled = !!this._settings.debug;
+         window.addEventListener('message', this.boundHandleMessage);
+         window.addEventListener('unload', this.boundDispose);
+-        await iframe.init(this._settings);
++        var modifiedSettings = Object.assign({}, this._settings);
++        modifiedSettings.env = 'webextension';
++        await iframe.init(modifiedSettings);
+         if (this._settings.sharedLogger !== false) {
+             iframe.initIframeLogger();
+         }
+@@ -132,7 +134,9 @@ class CoreInIframe {
+             }
+             this._popupManager.request();
+             try {
+-                await this.init(this._settings);
++                var modifiedSettings = Object.assign({}, this._settings);
++                modifiedSettings.env = 'webextension';
++                await this.init(modifiedSettings);
+             }
+             catch (error) {
+                 if (this._popupManager) {
+diff --git a/lib/popup/index.js b/lib/popup/index.js
+index 9b13c370a5ac8b4e4fc0315ed40cdf615d0bb0cb..595a7d9e1aa397b3aa53ba5d75e4ccf22a61bcf1 100644
+--- a/lib/popup/index.js
++++ b/lib/popup/index.js
+@@ -229,10 +229,12 @@ class PopupManager extends events_1.default {
+         }
+         else if (message.type === events_2.POPUP.LOADED) {
+             this.handleMessage(message);
++            var modifiedSettings = Object.assign({}, this.settings);
++            modifiedSettings.env = 'webextension';
+             this.channel.postMessage({
+                 type: events_2.POPUP.INIT,
+                 payload: {
+-                    settings: this.settings,
++                    settings: modifiedSettings,
+                     useCore: true,
+                 },
+             });
+@@ -292,9 +294,11 @@ class PopupManager extends events_1.default {
+                 this.popupPromise = undefined;
+             }
+             (_b = this.iframeHandshakePromise) === null || _b === void 0 ? void 0 : _b.promise.then(payload => {
++                var modifiedSettings = Object.assign({}, this.settings);
++                modifiedSettings.env = 'webextension';
+                 this.channel.postMessage({
+                     type: events_2.POPUP.INIT,
+-                    payload: Object.assign(Object.assign({}, payload), { settings: this.settings }),
++                    payload: Object.assign(Object.assign({}, payload), { settings: modifiedSettings }),
+                 });
+             });
+         }
