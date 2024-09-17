@@ -1090,6 +1090,11 @@ describe('MetaMetricsController', function () {
             },
           },
         },
+        tokenSortConfig: {
+          key: 'token-sort-key',
+          order: 'dsc',
+          sortCriteria: 'stringNumeric',
+        },
       });
 
       expect(traits).toStrictEqual({
@@ -1121,6 +1126,7 @@ describe('MetaMetricsController', function () {
         ///: BEGIN:ONLY_INCLUDE_IF(petnames)
         [MetaMetricsUserTrait.PetnameAddressCount]: 3,
         ///: END:ONLY_INCLUDE_IF
+        [MetaMetricsUserTrait.TokenSortPreference]: 'token-sort-key',
       });
     });
 
@@ -1150,6 +1156,11 @@ describe('MetaMetricsController', function () {
         theme: 'default',
         useTokenDetection: true,
         useNativeCurrencyAsPrimaryCurrency: true,
+        tokenSortConfig: {
+          key: 'token-sort-key',
+          order: 'dsc',
+          sortCriteria: 'stringNumeric',
+        },
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -1177,6 +1188,11 @@ describe('MetaMetricsController', function () {
         theme: 'default',
         useTokenDetection: true,
         useNativeCurrencyAsPrimaryCurrency: false,
+        tokenSortConfig: {
+          key: 'token-sort-key',
+          order: 'dsc',
+          sortCriteria: 'stringNumeric',
+        },
       });
 
       expect(updatedTraits).toStrictEqual({
@@ -1214,6 +1230,11 @@ describe('MetaMetricsController', function () {
         theme: 'default',
         useTokenDetection: true,
         useNativeCurrencyAsPrimaryCurrency: true,
+        tokenSortConfig: {
+          key: 'token-sort-key',
+          order: 'dsc',
+          sortCriteria: 'stringNumeric',
+        },
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -1236,6 +1257,11 @@ describe('MetaMetricsController', function () {
         theme: 'default',
         useTokenDetection: true,
         useNativeCurrencyAsPrimaryCurrency: true,
+        tokenSortConfig: {
+          key: 'token-sort-key',
+          order: 'dsc',
+          sortCriteria: 'stringNumeric',
+        },
       });
       expect(updatedTraits).toStrictEqual(null);
     });
