@@ -39,6 +39,7 @@ import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 import AssetListControlBar from './asset-list-control-bar';
 import NativeToken from './native-token';
+import { useAccountTotalFiatBalancesHook } from './asset-list-control-bar/use-account-total-fiat-balances';
 
 export type TokenWithBalance = {
   address: string;
@@ -56,13 +57,14 @@ export type AssetListProps = {
 
 const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const [tokenList, setTokenList] = useState<TokenWithBalance[]>([]);
-  const [loading, setLoading] = useState(false);
   const [sorted, setSorted] = useState(false); // TODO: Set to preferences
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const selectedAccount = useSelector(getSelectedAccount);
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
+
+  const { loading } = useAccountTotalFiatBalancesHook();
 
   const {
     currency: primaryCurrency,
@@ -134,7 +136,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
       <AssetListControlBar
         tokenList={tokenList}
         setTokenList={setTokenList}
-        setLoading={setLoading}
+        // setLoading={setLoading}
         sorted={sorted}
         setSorted={setSorted}
       />

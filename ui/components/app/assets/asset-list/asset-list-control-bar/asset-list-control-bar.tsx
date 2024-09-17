@@ -28,7 +28,7 @@ import { useAccountTotalFiatBalancesHook } from './use-account-total-fiat-balanc
 type AssetListControlBarProps = {
   tokenList: TokenWithBalance[];
   setTokenList: (arg: TokenWithBalance[]) => void;
-  setLoading: (arg: boolean) => void;
+  // setLoading: (arg: boolean) => void;
   sorted: boolean;
   setSorted: (arg: boolean) => void;
 };
@@ -36,7 +36,7 @@ type AssetListControlBarProps = {
 const AssetListControlBar = ({
   tokenList,
   setTokenList,
-  setLoading,
+  // setLoading,
   sorted,
   setSorted,
 }: AssetListControlBarProps) => {
@@ -49,7 +49,7 @@ const AssetListControlBar = ({
   const tokenSortConfig = useSelector((state: any) => {
     return state.metamask.preferences.tokenSortConfig;
   });
-  const { accountTotalFiatBalance, mergedRates, loading } =
+  const { accountTotalFiatBalance, mergedRates } =
     useAccountTotalFiatBalancesHook();
 
   const { primaryBalance, secondaryBalance, tokenSymbol, primaryTokenImage } =
@@ -66,7 +66,6 @@ const AssetListControlBar = ({
 
   useEffect(() => {
     if (!sorted) {
-      setLoading(loading);
       const tokensWithBalances =
         accountTotalFiatBalance.tokensWithBalances as TokenWithBalance[];
 
@@ -109,8 +108,6 @@ const AssetListControlBar = ({
       } else {
         setTokenList(tokensWithBalances);
       }
-
-      setLoading(loading);
     }
   }, [tokenSortConfig]);
 
