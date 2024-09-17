@@ -19,10 +19,7 @@ import { useConfirmContext } from '../../../context/confirm';
 export function useNoGasPriceAlerts(): Alert[] {
   const t = useI18nContext();
   const isNoGasPriceFetched = useSelector(getNoGasPriceFetched);
-
-  const { currentConfirmation } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta | undefined;
-  };
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const isNotCustomGasPrice =
     currentConfirmation?.userFeeLevel &&

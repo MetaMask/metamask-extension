@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "Redes adicionales"
   },
-  "additionalRpcUrl": {
-    "message": "URL RPC adicional"
-  },
   "address": {
     "message": "Dirección"
   },
@@ -666,9 +663,6 @@
   "back": {
     "message": "Volver"
   },
-  "backup": {
-    "message": "Respaldo"
-  },
   "backupApprovalInfo": {
     "message": "Este código secreto es necesario para que recupere la cartera en caso de que pierda el dispositivo, olvide su contraseña, tenga que volver a instalar MetaMask o quiera acceder a su monedero en otro dispositivo."
   },
@@ -677,15 +671,6 @@
   },
   "backupKeyringSnapReminder": {
     "message": "Asegúrese de poder acceder a cualquier cuenta creada por este Snap por si mismo antes de eliminarlo"
-  },
-  "backupNow": {
-    "message": "Respaldar ahora"
-  },
-  "backupUserData": {
-    "message": "Respalde sus datos"
-  },
-  "backupUserDataDescription": {
-    "message": "Puede hacer una copia de seguridad de datos tal y como sus contactos y preferencias."
   },
   "balance": {
     "message": "Saldo"
@@ -1039,7 +1024,7 @@
   "confirmTitleDescSignature": {
     "message": "Solo confirme este mensaje si aprueba el contenido y confía en el sitio solicitante."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Solicitud de límite de gasto"
   },
   "confirmTitleSIWESignature": {
@@ -4358,9 +4343,6 @@
   },
   "restoreUserData": {
     "message": "Restaure sus datos de usuario"
-  },
-  "restoreUserDataDescription": {
-    "message": "Puede restaurar datos tal y como contactos y preferencias desde un archivo de copia de seguridad."
   },
   "resultPageError": {
     "message": "Error"

@@ -11,10 +11,7 @@ import { useConfirmContext } from '../../../context/confirm';
 
 export function useGasEstimateFailedAlerts(): Alert[] {
   const t = useI18nContext();
-
-  const { currentConfirmation } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta | undefined;
-  };
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const estimationFailed = Boolean(currentConfirmation?.simulationFails);
 

@@ -17,9 +17,7 @@ import { ConfirmInfoSection } from '../../../../../../components/app/confirm/inf
 
 const TypedSignV1Info: React.FC = () => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext() as {
-    currentConfirmation: SignatureRequestType;
-  };
+  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
 
   if (!(currentConfirmation as SignatureRequestType)?.msgParams) {
     return null;
