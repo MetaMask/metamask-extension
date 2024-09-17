@@ -46,6 +46,7 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
           mockedEndpoints as MockedEndpoint[],
           'personal_sign',
         );
+        await driver.delay(200);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await assertInfoValues(driver);
 
