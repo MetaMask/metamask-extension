@@ -53,9 +53,9 @@ import Spinner from '../../ui/spinner';
 import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
-import { GENERAL_ROUTE } from '../../../helpers/constants/routes';
 import { setAggregatedBalancePopover } from '../../../store/actions';
 import { useTheme } from '../../../hooks/useTheme';
+import { getSpecificSettingsRoute } from '../../../helpers/utils/settings-search';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
@@ -100,6 +100,12 @@ export const CoinOverview = ({
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+
+  const showNativeTokenAsMainBalanceRoute = getSpecificSettingsRoute(
+    t,
+    t('general'),
+    t('showNativeTokenAsMainBalance'),
+  );
 
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
@@ -181,7 +187,7 @@ export const CoinOverview = ({
               }}
               size={ButtonLinkSize.Inherit}
               textProps={{
-                variant: TextVariant.bodyMd,
+                variant: TextVariant.bodyMdMedium,
               }}
               onClick={handlePortfolioOnClick}
               as="a"
@@ -204,7 +210,7 @@ export const CoinOverview = ({
             }}
             size={ButtonLinkSize.Inherit}
             textProps={{
-              variant: TextVariant.bodyMd,
+              variant: TextVariant.bodyMdMedium,
             }}
             onClick={handlePortfolioOnClick}
             as="a"
@@ -281,7 +287,7 @@ export const CoinOverview = ({
                             {t('yourBalanceIsAggregated')}
                           </Text>
                           <ButtonIcon
-                            size={ButtonIconSize.Sm}
+                            size={ButtonIconSize.Xs}
                             onClick={handleClick}
                             iconName={IconName.Close}
                             justifyContent={JustifyContent.flexEnd}
@@ -304,7 +310,7 @@ export const CoinOverview = ({
                                   alignItems: AlignItems.flexStart,
                                 }}
                                 as="a"
-                                href={`#${GENERAL_ROUTE}`}
+                                href={`#${showNativeTokenAsMainBalanceRoute.route}`}
                                 rel="noopener noreferrer"
                                 onClick={handleClick}
                               >

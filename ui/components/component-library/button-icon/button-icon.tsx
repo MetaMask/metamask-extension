@@ -23,6 +23,7 @@ const buttonIconSizeToIconSize: Record<ButtonIconSize, IconSize> = {
   [ButtonIconSize.Sm]: IconSize.Sm,
   [ButtonIconSize.Md]: IconSize.Md,
   [ButtonIconSize.Lg]: IconSize.Lg,
+  [ButtonIconSize.Xs]: IconSize.Xs,
 };
 
 export const ButtonIcon: ButtonIconComponent = React.forwardRef(
