@@ -186,12 +186,10 @@ export const CoinOverview = ({
                 className: 'wallet-overview__portfolio_button',
               }}
               size={ButtonLinkSize.Inherit}
-              textProps={{
-                variant: TextVariant.bodyMdMedium,
-              }}
               onClick={handlePortfolioOnClick}
               as="a"
               data-testid="portfolio-link"
+              className="wallet-overview__portfolio_text"
             >
               {t('portfolio')}
             </ButtonLink>
@@ -209,12 +207,10 @@ export const CoinOverview = ({
               className: 'wallet-overview__portfolio_button',
             }}
             size={ButtonLinkSize.Inherit}
-            textProps={{
-              variant: TextVariant.bodyMdMedium,
-            }}
             onClick={handlePortfolioOnClick}
             as="a"
             data-testid="portfolio-link"
+            className="wallet-overview__portfolio_text"
           >
             {t('portfolio')}
           </ButtonLink>
