@@ -656,18 +656,19 @@
   },
   "networkConfigurations": {
     "testNetworkConfigurationId": {
-      "rpcUrl": "https://testrpc.com",
       "chainId": "0x1",
+      "id": "testNetworkConfigurationId",
       "nickname": "Custom Mainnet RPC",
-      "type": "rpc",
-      "id": "testNetworkConfigurationId"
+      "rpcUrl": "https://testrpc.com",
+      "ticker": "ETH",
+      "type": "rpc"
     },
     "goerli-network-id": {
-      "type": "rpc",
       "chainId": "0x5",
-      "ticker": "ETH",
+      "id": "goerli-network-id",
       "nickname": "Chain 5",
-      "id": "goerli-network-id"
+      "ticker": "ETH",
+      "type": "rpc"
     }
   },
   "networksMetadata": {
@@ -678,6 +679,12 @@
       "status": "available"
     },
     "sepolia": {
+      "EIPS": {
+        "1559": true
+      },
+      "status": "available"
+    },
+    "testNetworkConfigurationId": {
       "EIPS": {
         "1559": true
       },

@@ -609,7 +609,7 @@
     "ini": "^3.0.0",
     "jest": "^29.7.0",
     "jest-canvas-mock": "^2.3.1",
-    "jest-environment-jsdom": "^29.7.0",
+    "jest-environment-jsdom": "patch:jest-environment-jsdom@npm%3A29.7.0#~/.yarn/patches/jest-environment-jsdom-npm-29.7.0-0b72dd0e0b.patch",
     "jsdom": "^16.7.0",
     "json-schema-to-ts": "^3.0.1",
     "koa": "^2.7.0",
