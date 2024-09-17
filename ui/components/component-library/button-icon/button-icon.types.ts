@@ -6,7 +6,6 @@ export enum ButtonIconSize {
   Sm = 'sm',
   Md = 'md',
   Lg = 'lg',
-  Xs = 'Xs',
 }
 
 /**

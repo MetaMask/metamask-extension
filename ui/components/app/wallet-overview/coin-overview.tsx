@@ -270,7 +270,7 @@ export const CoinOverview = ({
                             {t('yourBalanceIsAggregated')}
                           </Text>
                           <ButtonIcon
-                            size={ButtonIconSize.Xs}
+                            size={ButtonIconSize.Sm}
                             onClick={handleClick}
                             iconName={IconName.Close}
                             justifyContent={JustifyContent.center}
