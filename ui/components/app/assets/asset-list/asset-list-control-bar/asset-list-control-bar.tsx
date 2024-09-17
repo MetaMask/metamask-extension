@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   ButtonBase,
@@ -9,14 +9,7 @@ import {
   PopoverPosition,
 } from '../../../../component-library';
 import { TokenWithBalance } from '../asset-list';
-import { useAccountTotalFiatBalance } from '../../../../../hooks/useAccountTotalFiatBalance';
-import {
-  getConfirmationExchangeRates,
-  getCurrentCurrency,
-  getSelectedAccount,
-  getShouldHideZeroBalanceTokens,
-  getTokenExchangeRates,
-} from '../../../../../selectors';
+import { getCurrentCurrency } from '../../../../../selectors';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../../helpers/utils/util';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { getConversionRate } from '../../../../../ducks/metamask/metamask';
