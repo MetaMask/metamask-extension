@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "Zusätzliche Netzwerke"
   },
-  "additionalRpcUrl": {
-    "message": "Weitere RPC-URL"
-  },
   "address": {
     "message": "Adresse"
   },
@@ -1030,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "Bestätigen Sie diese Nachricht nur, wenn Sie dem Inhalt zustimmen und der anfragenden Website vertrauen."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Antrag auf Ausgabenobergrenze"
   },
   "confirmTitleSIWESignature": {

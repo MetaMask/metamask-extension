@@ -332,9 +332,6 @@
   "additionalNetworks": {
     "message": "İlave ağlar"
   },
-  "additionalRpcUrl": {
-    "message": "Diğer RPC URL"
-  },
   "address": {
     "message": "Adres"
   },
@@ -1030,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "Bu mesajı sadece içeriği onaylıyorsanız ve talepte bulunan siteye güveniyorsanız onaylayın."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Harcama üst limiti talebi"
   },
   "confirmTitleSIWESignature": {

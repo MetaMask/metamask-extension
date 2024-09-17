@@ -31,6 +31,7 @@ export type SignatureRequestType = {
     origin: string;
     data: string | TypedSignDataV1Type;
     version?: string;
+    requestId?: number;
     signatureMethod?: string;
     siwe?: SIWEMessage;
   };
@@ -42,9 +43,6 @@ export type SignatureRequestType = {
 export type Confirmation = SignatureRequestType | TransactionMeta;
 
 export type ConfirmMetamaskState = {
-  confirm: {
-    isScrollToBottomCompleted?: boolean;
-  };
   metamask: {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
     approvalFlows: ApprovalControllerState['approvalFlows'];
