@@ -111,6 +111,7 @@ describe('Sign Typed Data Signature Request', function () {
           );
           await driver.waitUntilXWindowHandles(2);
           windowHandles = await driver.getAllWindowHandles();
+          await driver.delay(200);
 
           // switch to the Dapp and verify the signed address
           await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
