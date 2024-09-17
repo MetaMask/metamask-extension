@@ -454,7 +454,7 @@ export default class MMIController extends EventEmitter {
     const allAccounts = await this.keyringController.getAccounts();
 
     const accountsToTrack = [
-      ...new Set(
+      ...new Set<string>(
         oldAccounts.concat(allAccounts.map((a: string) => a.toLowerCase())),
       ),
     ];
