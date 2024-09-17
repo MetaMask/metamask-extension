@@ -6345,19 +6345,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-rpc-methods@npm:11.1.0":
-  version: 11.1.0
-  resolution: "@metamask/snaps-rpc-methods@npm:11.1.0"
+"@metamask/snaps-rpc-methods@npm:11.0.0":
+  version: 11.0.0
+  resolution: "@metamask/snaps-rpc-methods@npm:11.0.0"
   dependencies:
     "@metamask/key-tree": "npm:^9.1.2"
     "@metamask/permission-controller": "npm:^11.0.0"
     "@metamask/rpc-errors": "npm:^6.3.1"
-    "@metamask/snaps-sdk": "npm:^6.4.0"
-    "@metamask/snaps-utils": "npm:^8.1.0"
+    "@metamask/snaps-sdk": "npm:^6.2.0"
+    "@metamask/snaps-utils": "npm:^8.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^9.2.1"
+    "@metamask/utils": "npm:^9.1.0"
     "@noble/hashes": "npm:^1.3.1"
-  checksum: 10/96c068ce171553b743287237fc5f382234ed1e00d028e16b7f9779a8681317145cf89bc88e5fec6e2ea7edb0dc5d2b76c415a3116b1a4254c0173cb65c149a09
+  checksum: 10/2e594d7f9fde910e87525a6ded9a162d2ea8631249b7868ca710df0d8d25c127674079956976c7443e30c96bedb84bf818748a01aad41cfe69f88524781b994f
   languageName: node
   linkType: hard
 
@@ -6421,7 +6421,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^8.0.1, @metamask/snaps-utils@npm:^8.1.0, @metamask/snaps-utils@npm:^8.1.1":
+"@metamask/snaps-utils@npm:^8.0.0, @metamask/snaps-utils@npm:^8.0.1, @metamask/snaps-utils@npm:^8.1.1":
   version: 8.1.1
   resolution: "@metamask/snaps-utils@npm:8.1.1"
   dependencies:
@@ -26089,7 +26089,7 @@ __metadata:
     "@metamask/smart-transactions-controller": "npm:^13.0.0"
     "@metamask/snaps-controllers": "npm:^9.5.0"
     "@metamask/snaps-execution-environments": "npm:^6.6.2"
-    "@metamask/snaps-rpc-methods": "npm:11.1.0"
+    "@metamask/snaps-rpc-methods": "npm:11.0.0"
     "@metamask/snaps-sdk": "npm:^6.3.0"
     "@metamask/snaps-utils": "npm:^8.0.1"
     "@metamask/test-bundler": "npm:^1.0.0"
