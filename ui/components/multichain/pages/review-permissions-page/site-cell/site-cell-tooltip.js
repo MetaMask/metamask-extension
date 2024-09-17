@@ -160,13 +160,13 @@ SiteCellTooltip.propTypes = {
    */
   accounts: PropTypes.arrayOf(
     PropTypes.shape({
-      address: PropTypes.string.isRequired, // The unique address of the account.
+      address: PropTypes.string, // The unique address of the account.
       label: PropTypes.string, // Optional label for the account.
       metadata: PropTypes.shape({
-        name: PropTypes.string.isRequired, // Account's name from metadata.
-      }).isRequired,
+        name: PropTypes.string, // Account's name from metadata.
+      }),
     }),
-  ).isRequired,
+  ),
 
   /**
    * Data for the avatar group component related to accounts.
@@ -174,33 +174,30 @@ SiteCellTooltip.propTypes = {
    */
   avatarAccountsData: PropTypes.arrayOf(
     PropTypes.shape({
-      address: PropTypes.string.isRequired, // The account address to display.
-      name: PropTypes.string, // The account's name.
-      avatarUrl: PropTypes.string, // Optional URL for the avatar image.
+      address: PropTypes.string // The account address to display.
     }),
-  ).isRequired,
+  ),
 
   /**
    * An array of network objects to display in the tooltip.
    */
   networks: PropTypes.arrayOf(
     PropTypes.shape({
-      chainId: PropTypes.string.isRequired, // The unique chain ID of the network.
-      nickname: PropTypes.string.isRequired, // The network's name.
+      chainId: PropTypes.string, // The unique chain ID of the network.
+      nickname: PropTypes.string, // The network's name.
       rpcPrefs: PropTypes.shape({
         imageUrl: PropTypes.string, // Optional URL for the network's image.
       }),
     }),
-  ).isRequired,
+  ),
 
   /**
    * Data for the avatar group component related to networks.
    */
   avatarNetworksData: PropTypes.arrayOf(
     PropTypes.shape({
-      chainId: PropTypes.string.isRequired, // The unique chain ID of the network.
       name: PropTypes.string, // The network's name.
       avatarUrl: PropTypes.string, // Optional URL for the network's avatar image.
     }),
-  ).isRequired,
+  ),
 };
