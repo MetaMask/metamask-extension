@@ -14,7 +14,7 @@ import { createMockImplementation } from '../../helpers';
 
 jest.mock('../../../../ui/store/institutional/institution-background', () => ({
   ...jest.requireActual('../../../../ui/store/institutional/institution-background'),
-  setNoteToTraderMessage: jest.fn().mockImplementation((message) => ({
+  setNoteToTraderMessage: jest.fn().mockImplementation((message) => () => ({
     type: 'SET_NOTE_TO_TRADER_MESSAGE',
     payload: message,
   })),
