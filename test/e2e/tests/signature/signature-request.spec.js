@@ -119,6 +119,7 @@ describe('Sign Typed Data Signature Request', function () {
             data.verifyResultId,
           );
 
+          await driver.delay(200);
           assert.equal(await recoveredAddress.getText(), publicAddress);
         },
       );
