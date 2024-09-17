@@ -9,8 +9,6 @@ import { MockedEndpoint, Mockttp } from '../../mock-e2e';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 
-const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
-
 export async function scrollAndConfirmAndAssertConfirm(driver: Driver) {
   await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
   await driver.clickElement('[data-testid="confirm-footer-button"]');
