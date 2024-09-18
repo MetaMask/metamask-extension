@@ -373,7 +373,8 @@ workflows:
     jobs:
       - prep-deps
       - prep-test-deps:
-        - prep-deps
+        requires:
+          - prep-deps
       - get-changed-files-with-git-diff:
           requires:
             - prep-deps
