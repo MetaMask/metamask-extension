@@ -107,7 +107,7 @@ const AssetListControlBar = ({
         );
         setTokenList(sortedTokenList);
       } else {
-        setTokenList(tokensWithBalances);
+        setTokenList([nativeTokenWithBalance, ...tokensWithBalances]);
       }
     }
   }, [tokenSortConfig, loading]);
