@@ -55,7 +55,6 @@ export class AddressBookPetnamesBridge extends AbstractPetnamesBridge<
       const chainEntries = state.addressBook[chainId as Hex];
 
       for (const address of Object.keys(chainEntries)) {
-
         const entry = state.addressBook[chainId as Hex][address];
         const normalizedChainId = chainId.toLowerCase();
         const { name, isEns } = entry;
@@ -82,18 +81,15 @@ export class AddressBookPetnamesBridge extends AbstractPetnamesBridge<
    */
   protected updateSourceEntry(type: ChangeType, entry: PetnameEntry): void {
     if (type === ChangeType.DELETED) {
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      this.#addressBookController.delete(entry.variation as any, entry.value);
+      this.#addressBookController.delete(
+        entry.variation as Hex,
+        entry.value as string,
+      );
     } else {
       this.#addressBookController.set(
-        entry.value,
-        // TODO: Replace `any` with type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        entry.name as any,
-        // TODO: Replace `any` with type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        entry.variation as any,
+        entry.value as string,
+        entry.name as string,
+        entry.variation as Hex | undefined,
       );
     }
   }
