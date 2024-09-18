@@ -98,9 +98,11 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation__approve-details"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation__approve-spender"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
@@ -123,6 +125,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="confirmation__approve-spender-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -214,6 +217,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="transaction-details-origin-row-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -254,6 +258,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="transaction-details-recipient-row-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -320,6 +325,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation__approve-spending-cap-section"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
@@ -351,6 +357,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
     />
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation__approve-spending-cap-group"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
@@ -373,6 +380,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="confirmation__approve-spending-cap-group-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -430,6 +438,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="edit-gas-fees-row-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -529,6 +538,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="gas-fee-details-max-fee-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -674,6 +684,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="advanced-details-data-param-0-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -762,6 +773,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="advanced-details-data-param-1-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
