@@ -1,6 +1,9 @@
 import { AccountsController } from '@metamask/accounts-controller';
 import { PPOMController } from '@metamask/ppom-validator';
-import { NetworkController } from '@metamask/network-controller';
+import {
+  NetworkClientId,
+  NetworkController,
+} from '@metamask/network-controller';
 import {
   Json,
   JsonRpcParams,
@@ -9,7 +12,6 @@ import {
 } from '@metamask/utils';
 import { detectSIWE } from '@metamask/controller-utils';
 
-import { QueuedRequestMiddlewareJsonRpcRequest } from '@metamask/queued-request-controller';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import PreferencesController from '../../controllers/preferences-controller';
@@ -33,6 +35,7 @@ const CONFIRMATION_METHODS = Object.freeze([
 export type PPOMMiddlewareRequest<
   Params extends JsonRpcParams = JsonRpcParams,
 > = Required<JsonRpcRequest<Params>> & {
+  networkClientId: NetworkClientId;
   securityAlertResponse?: SecurityAlertResponse | undefined;
   traceContext?: TraceContext;
 };
@@ -70,7 +73,7 @@ export function createPPOMMiddleware<
   ) => void,
 ) {
   return async (
-    req: PPOMMiddlewareRequest<Params> & QueuedRequestMiddlewareJsonRpcRequest,
+    req: PPOMMiddlewareRequest<Params>,
     _res: JsonRpcResponse<Result>,
     next: () => void,
   ) => {
