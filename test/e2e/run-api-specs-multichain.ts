@@ -28,6 +28,7 @@ import { MultichainAuthorizationConfirmationErrors } from './api-specs/Multichai
 import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
 import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
+import { ScopeString } from '../../app/scripts/lib/multichain-api/scope';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -95,7 +96,23 @@ async function main() {
             ignoreMethods.includes(m);
           return !match;
         });
+      const confirmationMethods = methodsWithConfirmations.filter((m) =>
+        !ignoreMethods.includes(m),
+      );
+      const scopeMap: Record<ScopeString, string[]> = {
+        [`eip155:${chainId}`]: ethereumMethods,
+        'wallet:eip155': walletEip155Methods,
+        wallet: walletRpcMethods,
+      }
+
+      const reverseScopeMap = Object.entries(scopeMap).reduce((acc, [scope, methods]) => {
+        methods.forEach((method) => {
+          acc[method] = scope;
+        });
+        return acc;
+      }, {} as any);
       console.log('ethereumMethods', ethereumMethods);
+      console.log('confirmationMethods', confirmationMethods, methodsWithConfirmations);
 
       // fix the example for wallet_createSession
       (providerAuthorize as MethodObject).examples = [
@@ -176,7 +193,7 @@ async function main() {
 
       const testCoverageResultsCaip27 = await testCoverage({
         openrpcDocument: MetaMaskOpenRPCDocument as OpenrpcDocument,
-        transport: createCaip27DriverTransport(driver, `eip155:${chainId}`),
+        transport: createCaip27DriverTransport(driver, reverseScopeMap),
         reporters: [
           'console-streaming',
           new HtmlReporter({
@@ -207,10 +224,10 @@ async function main() {
             only: [],
             skip: filteredMethods,
           }),
-          // new ConfirmationsRejectRule({
-          //   driver,
-          //   only: methodsWithConfirmations,
-          // }),
+          new ConfirmationsRejectRule({
+            driver,
+            only: confirmationMethods,
+          }),
         ],
       });
 
