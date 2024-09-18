@@ -39,15 +39,15 @@ export const ConnectAccountsModal = ({
     setSelectedAccounts(newSelectedAccounts);
   };
 
+  const deselectAll = () => {
+    setSelectedAccounts([]);
+  };
+
   const selectAll = () => {
     const newSelectedAccounts = accounts.map(
       (account: { address: string }) => account.address,
     );
     setSelectedAccounts(newSelectedAccounts);
-  };
-
-  const deselectAll = () => {
-    setSelectedAccounts([]);
   };
 
   const allAreSelected = () => {
@@ -60,6 +60,7 @@ export const ConnectAccountsModal = ({
   } else if (selectedAccounts.length > 0 && !allAreSelected()) {
     isIndeterminate = true;
   }
+
   return (
     <ConnectAccountsModalList
       accounts={accounts}
