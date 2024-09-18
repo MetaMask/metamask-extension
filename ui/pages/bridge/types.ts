@@ -1,11 +1,16 @@
 // Types copied from Metabridge API
 export enum BridgeFlag {
+  EXTENSION_CONFIG = 'extension-config',
   EXTENSION_SUPPORT = 'extension-support',
   NETWORK_SRC_ALLOWLIST = 'src-network-allowlist',
   NETWORK_DEST_ALLOWLIST = 'dest-network-allowlist',
 }
 
 export type FeatureFlagResponse = {
+  [BridgeFlag.EXTENSION_CONFIG]: {
+    refreshRate: number;
+    maxRefreshCount: number;
+  };
   [BridgeFlag.EXTENSION_SUPPORT]: boolean;
   [BridgeFlag.NETWORK_SRC_ALLOWLIST]: number[];
   [BridgeFlag.NETWORK_DEST_ALLOWLIST]: number[];
