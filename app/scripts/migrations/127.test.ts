@@ -51,9 +51,12 @@ describe(`migration #${version}`, () => {
       },
     };
 
-    const expectedState = defaultPostMigrationState();
-    const expectedNetwork =
-      expectedState.networkConfigurationsByChainId[customNetwork.chainId];
+    const defaultStateToExpect = defaultPostMigrationState();
+    const expectedNetwork = {
+      ...defaultStateToExpect.networkConfigurationsByChainId[
+        customNetwork.chainId
+      ],
+    };
 
     // The custom network's rpc url should be added to the existing network
     expectedNetwork.rpcEndpoints.push({
@@ -67,6 +70,14 @@ describe(`migration #${version}`, () => {
     expectedNetwork.blockExplorerUrls.push(
       customNetwork.rpcPrefs.blockExplorerUrl,
     );
+
+    const expectedState = {
+      ...defaultStateToExpect,
+      networkConfigurationsByChainId: {
+        ...defaultStateToExpect.networkConfigurationsByChainId,
+        [customNetwork.chainId]: expectedNetwork,
+      },
+    };
 
     const newState = await migrate(oldState);
     expect(newState.data.NetworkController).toStrictEqual(expectedState);
@@ -144,12 +155,14 @@ describe(`migration #${version}`, () => {
       },
     };
 
-    const expectedState = defaultPostMigrationState();
-    const expectedNetwork =
-      expectedState.networkConfigurationsByChainId[customNetwork.chainId];
+    const defaultStateToExpect = defaultPostMigrationState();
+    const expectedNetwork = {
+      ...defaultStateToExpect.networkConfigurationsByChainId[
+        customNetwork.chainId
+      ],
+    };
 
-    // The custom network should remain selected, and become the default RPC url
-    expectedState.selectedNetworkClientId = customNetwork.id;
+    // The custom network should become the default RPC url
     expectedNetwork.defaultRpcEndpointIndex =
       expectedNetwork.rpcEndpoints.push({
         networkClientId: customNetwork.id,
@@ -164,6 +177,16 @@ describe(`migration #${version}`, () => {
       expectedNetwork.blockExplorerUrls.push(
         customNetwork.rpcPrefs.blockExplorerUrl,
       ) - 1;
+
+    const expectedState = {
+      ...defaultStateToExpect,
+      // The custom network should remain selected
+      selectedNetworkClientId: customNetwork.id,
+      networkConfigurationsByChainId: {
+        ...defaultStateToExpect.networkConfigurationsByChainId,
+        [customNetwork.chainId]: expectedNetwork,
+      },
+    };
 
     const newState = await migrate(oldState);
     expect(newState.data.NetworkController).toStrictEqual(expectedState);
@@ -207,13 +230,12 @@ describe(`migration #${version}`, () => {
       },
     };
 
-    // Selected network shouldn't change
-    const expectedState = defaultPostMigrationState();
-    expectedState.selectedNetworkClientId =
-      oldState.data.NetworkController.selectedNetworkClientId;
-
-    const expectedNetwork =
-      expectedState.networkConfigurationsByChainId[customNetwork.chainId];
+    const defaultStateToExpect = defaultPostMigrationState();
+    const expectedNetwork = {
+      ...defaultStateToExpect.networkConfigurationsByChainId[
+        customNetwork.chainId
+      ],
+    };
 
     // The custom network's rpc url should be added to the
     // existing network, and become the default RPC url
@@ -231,6 +253,17 @@ describe(`migration #${version}`, () => {
       expectedNetwork.blockExplorerUrls.push(
         customNetwork.rpcPrefs.blockExplorerUrl,
       ) - 1;
+
+    const expectedState = {
+      ...defaultStateToExpect,
+      // Selected network shouldn't change
+      selectedNetworkClientId:
+        oldState.data.NetworkController.selectedNetworkClientId,
+      networkConfigurationsByChainId: {
+        ...defaultStateToExpect.networkConfigurationsByChainId,
+        [customNetwork.chainId]: expectedNetwork,
+      },
+    };
 
     const newState = await migrate(oldState);
     expect(newState.data.NetworkController).toStrictEqual(expectedState);
