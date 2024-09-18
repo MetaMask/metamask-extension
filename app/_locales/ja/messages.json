@@ -1597,9 +1597,6 @@
   "domain": {
     "message": "ドメイン"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "ネットワークがドメイン検索をサポートしていません"
-  },
   "done": {
     "message": "完了"
   },
@@ -1772,12 +1769,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "アドレスバーにENSドメインを表示する"
-  },
-  "ensIllegalCharacter": {
-    "message": "ENSにサポートされていない文字が使用されています。"
-  },
-  "ensRegistrationError": {
-    "message": "ENS名の登録エラー"
   },
   "ensUnknownError": {
     "message": "ENSの検索に失敗しました。"
@@ -2421,9 +2412,6 @@
   },
   "invalidAddressRecipient": {
     "message": "送金先アドレスが無効です"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "ETHネットワークではありません。小文字にしてください。"
   },
   "invalidAssetType": {
     "message": "このアセットはNFTであるため、「NFT」タブの「NFTのインポート」ページで追加しなおす必要があります"
@@ -3151,9 +3139,6 @@
   },
   "noAccountsFound": {
     "message": "指定された検索クエリでアカウントが見つかりませんでした"
-  },
-  "noAddressForName": {
-    "message": "この名前にアドレスが設定されていません。"
   },
   "noConnectedAccountDescription": {
     "message": "続行するには、このサイトで使用するアカウントを選択してください。"
@@ -4165,12 +4150,6 @@
   },
   "receive": {
     "message": "受取"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "パブリックアドレス (0x) またはENS名を入力してください"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "パブリックアドレス (0x) またはドメイン名を入力してください"
   },
   "recommendedGasLabel": {
     "message": "推奨"
