@@ -39,6 +39,7 @@ export enum BridgeUserAction {
   SELECT_SRC_NETWORK = 'selectSrcNetwork',
   SELECT_DEST_NETWORK = 'selectDestNetwork',
   UPDATE_QUOTE_PARAMS = 'updateBridgeQuoteRequestParams',
+  SWITCH_TO_AND_FROM_INPUTS = 'switchToAndFromInputs',
 }
 export enum BridgeBackgroundAction {
   SET_FEATURE_FLAGS = 'setBridgeFeatureFlags',
@@ -56,7 +57,8 @@ type BridgeControllerActions =
   | BridgeControllerAction<BridgeBackgroundAction.RESET_STATE>
   | BridgeControllerAction<BridgeUserAction.SELECT_SRC_NETWORK>
   | BridgeControllerAction<BridgeUserAction.SELECT_DEST_NETWORK>
-  | BridgeControllerAction<BridgeUserAction.UPDATE_QUOTE_PARAMS>;
+  | BridgeControllerAction<BridgeUserAction.UPDATE_QUOTE_PARAMS>
+  | BridgeControllerAction<BridgeUserAction.SWITCH_TO_AND_FROM_INPUTS>;
 
 type BridgeControllerEvents = ControllerStateChangeEvent<
   typeof BRIDGE_CONTROLLER_NAME,

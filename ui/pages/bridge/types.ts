@@ -22,12 +22,12 @@ export type BridgeAsset = {
 
 export const isValidQuoteRequest = (
   partialRequest: Partial<QuoteRequest>,
+  requireAmount = true,
 ): partialRequest is QuoteRequest => {
-  const STRING_FIELDS = [
-    'srcTokenAddress',
-    'srcTokenAmount',
-    'destTokenAddress',
-  ];
+  const STRING_FIELDS = ['srcTokenAddress', 'destTokenAddress'];
+  if (requireAmount) {
+    STRING_FIELDS.push('srcTokenAmount');
+  }
   const NUMBER_FIELDS = ['srcChainId', 'destChainId', 'slippage'];
 
   return (

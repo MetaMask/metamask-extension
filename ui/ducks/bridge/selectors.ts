@@ -114,17 +114,13 @@ export const getToTokens = (state: BridgeAppState) => {
   return state.bridge.toChainId ? state.metamask.bridgeState.destTokens : {};
 };
 
-export const getFromToken = (
-  state: BridgeAppState,
-): SwapsTokenObject | SwapsEthToken => {
+export const getFromToken = (state: BridgeAppState) => {
   return state.bridge.fromToken?.address
     ? state.bridge.fromToken
     : getSwapsDefaultToken(state);
 };
 
-export const getToToken = (
-  state: BridgeAppState,
-): SwapsTokenObject | SwapsEthToken | null => {
+export const getToToken = (state: BridgeAppState) => {
   return state.bridge.toToken;
 };
 
@@ -150,7 +146,7 @@ export const getRecommendedQuote = createSelector(
 
 export const getQuoteRequest = (state: BridgeAppState) => {
   const { quoteRequest } = state.metamask.bridgeState;
-  return { isValid: isValidQuoteRequest(quoteRequest), ...quoteRequest };
+  return { isValid: isValidQuoteRequest(quoteRequest, false), ...quoteRequest };
 };
 
 export const getToAmount = createSelector(getRecommendedQuote, (quote) =>

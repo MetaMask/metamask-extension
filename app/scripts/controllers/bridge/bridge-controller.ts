@@ -71,6 +71,10 @@ export default class BridgeController extends StaticIntervalPollingController<
       this.updateBridgeQuoteRequestParams.bind(this),
     );
     this.messagingSystem.registerActionHandler(
+      `${BRIDGE_CONTROLLER_NAME}:switchToAndFromInputs`,
+      this.switchToAndFromInputs.bind(this),
+    );
+    this.messagingSystem.registerActionHandler(
       `${BRIDGE_CONTROLLER_NAME}:resetState`,
       this.resetState.bind(this),
     );
@@ -166,6 +170,32 @@ export default class BridgeController extends StaticIntervalPollingController<
     });
     await this.#setTopAssets(chainId, 'destTopAssets');
     await this.#setTokens(chainId, 'destTokens');
+  };
+
+  switchToAndFromInputs = () => {
+    const { bridgeState } = this.state;
+    const { quotes, quotesLastFetched, quotesLoadingStatus, quoteRequest } =
+      DEFAULT_BRIDGE_CONTROLLER_STATE;
+    this.stopAllPolling();
+    this.update((_state) => {
+      _state.bridgeState = {
+        ...bridgeState,
+        srcTopAssets: bridgeState.destTopAssets,
+        destTopAssets: bridgeState.srcTopAssets,
+        srcTokens: bridgeState.destTokens,
+        destTokens: bridgeState.srcTokens,
+        quotes,
+        quotesLastFetched,
+        quotesLoadingStatus,
+        quoteRequest: {
+          ...quoteRequest,
+          srcChainId: bridgeState.quoteRequest.destChainId,
+          destChainId: bridgeState.quoteRequest.srcChainId,
+          srcTokenAddress: bridgeState.quoteRequest.destTokenAddress,
+          destTokenAddress: bridgeState.quoteRequest.srcTokenAddress,
+        },
+      };
+    });
   };
 
   #fetchBridgeQuotes = async (request: QuoteRequest) => {
