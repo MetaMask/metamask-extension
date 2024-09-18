@@ -116,6 +116,9 @@ workflows:
             - prep-deps
       - check-pr-tag
       - prep-deps
+      - prep-test-deps:
+          requires:
+            - prep-deps
       - get-changed-files-with-git-diff:
           filters:
               branches:
@@ -372,9 +375,6 @@ workflows:
         value: << pipeline.git.branch >>
     jobs:
       - prep-deps
-      - prep-test-deps:
-          requires:
-            - prep-deps
       - get-changed-files-with-git-diff:
           requires:
             - prep-deps
