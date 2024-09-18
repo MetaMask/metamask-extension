@@ -1,8 +1,6 @@
-import {
-  withFixtures,
-  TEST_SEED_PHRASE_TWO,
-} from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
+import { E2E_SRP } from '../../default-fixture';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
@@ -29,10 +27,7 @@ describe('Forgot password', function () {
         await new LoginPage(driver).gotoResetPasswordPage();
 
         // Reset password with a new password
-        await new ResetPasswordPage(driver).resetPassword(
-          TEST_SEED_PHRASE_TWO,
-          newPassword,
-        );
+        await new ResetPasswordPage(driver).resetPassword(E2E_SRP, newPassword);
 
         // Lock wallet again
         await homePage.headerNavbar.lockMetaMask();

@@ -20,6 +20,7 @@ describe('Account list - pin/unpin functionality', function (this: Suite) {
 
         // pin account
         const accountListPage = new AccountListPage(driver);
+        await accountListPage.check_pageIsLoaded();
         await accountListPage.openAccountOptionsMenu();
         await accountListPage.pinAccount();
         await accountListPage.check_accountIsPinned();
@@ -45,6 +46,7 @@ describe('Account list - pin/unpin functionality', function (this: Suite) {
 
         // pin account
         const accountListPage = new AccountListPage(driver);
+        await accountListPage.check_pageIsLoaded();
         await accountListPage.openAccountOptionsMenu();
         await accountListPage.pinAccount();
         await accountListPage.check_accountIsPinned();
