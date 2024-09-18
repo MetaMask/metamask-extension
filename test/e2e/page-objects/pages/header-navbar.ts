@@ -8,6 +8,10 @@ class HeaderNavbar {
   private accountOptionsMenuButton: string;
   private lockMetaMaskButton: string;
 
+  private accountOptionMenu: string;
+
+  private lockMetaMaskButton: string;
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.lockMetaMaskButton = testId('global-menu-lock');
