@@ -113,6 +113,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="transaction-details-origin-row-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -153,6 +154,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="transaction-details-recipient-row-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -233,7 +235,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
         >
-          Estimated fee
+          Network fee
         </p>
         <div>
           <div
@@ -246,6 +248,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="edit-gas-fees-row-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -284,10 +287,10 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
       data-testid="gas-fee-details-speed"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-info-default"
         style="align-items: center;"
       >
         <p
@@ -473,6 +476,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="transaction-details-origin-row-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -513,6 +517,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="transaction-details-recipient-row-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -593,7 +598,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
         >
-          Estimated fee
+          Network fee
         </p>
         <div>
           <div
@@ -606,6 +611,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="edit-gas-fees-row-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -644,10 +650,10 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
       data-testid="gas-fee-details-speed"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-info-default"
         style="align-items: center;"
       >
         <p
@@ -830,6 +836,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="transaction-details-origin-row-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -870,6 +877,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="transaction-details-recipient-row-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -950,7 +958,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
         >
-          Estimated fee
+          Network fee
         </p>
         <div>
           <div
@@ -963,6 +971,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="edit-gas-fees-row-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -1001,10 +1010,10 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
       data-testid="gas-fee-details-speed"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-info-default"
         style="align-items: center;"
       >
         <p

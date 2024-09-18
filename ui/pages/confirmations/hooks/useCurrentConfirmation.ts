@@ -27,7 +27,7 @@ import { isMMI } from '../../../helpers/utils/build-types';
  * Determine the current confirmation based on the pending approvals and controller state.
  *
  * DO NOT USE within a redesigned confirmation.
- * Instead use currentConfirmationSelector to read the current confirmation directly from the Redux state.
+ * Instead use ConfirmContext to read the current confirmation.
  *
  * @returns The current confirmation data.
  */

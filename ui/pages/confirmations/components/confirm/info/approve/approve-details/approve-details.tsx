@@ -35,7 +35,11 @@ const Spender = () => {
 
   return (
     <>
-      <ConfirmInfoRow label={t('spender')} tooltip={t('spenderTooltipDesc')}>
+      <ConfirmInfoRow
+        label={t('spender')}
+        tooltip={t('spenderTooltipDesc')}
+        data-testid="confirmation__approve-spender"
+      >
         <ConfirmInfoRowAddress address={spender} />
       </ConfirmInfoRow>
 
@@ -50,7 +54,7 @@ export const ApproveDetails = () => {
   );
 
   return (
-    <ConfirmInfoSection>
+    <ConfirmInfoSection data-testid="confirmation__approve-details">
       <Spender />
       <OriginRow />
       {showAdvancedDetails && (

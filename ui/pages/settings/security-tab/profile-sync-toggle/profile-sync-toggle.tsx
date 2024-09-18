@@ -15,6 +15,7 @@ import {
   selectIsProfileSyncingEnabled,
   selectIsProfileSyncingUpdateLoading,
 } from '../../../../selectors/metamask-notifications/profile-syncing';
+import { selectIsMetamaskNotificationsEnabled } from '../../../../selectors/metamask-notifications/metamask-notifications';
 import { showModal } from '../../../../store/actions';
 import { Box, Text } from '../../../../components/component-library';
 import ToggleButton from '../../../../components/ui/toggle-button';
@@ -61,6 +62,9 @@ const ProfileSyncToggle = () => {
   const isProfileSyncingUpdateLoading = useSelector(
     selectIsProfileSyncingUpdateLoading,
   );
+  const isMetamaskNotificationsEnabled = useSelector(
+    selectIsMetamaskNotificationsEnabled,
+  );
 
   const handleUseProfileSync = async () => {
     if (isProfileSyncingEnabled) {
@@ -73,10 +77,11 @@ const ProfileSyncToggle = () => {
               category: MetaMetricsEventCategory.Settings,
               event: MetaMetricsEventName.SettingsUpdated,
               properties: {
-                settings_group: 'security',
+                settings_group: 'security_privacy',
                 settings_type: 'profile_syncing',
                 old_value: true,
                 new_value: false,
+                was_notifications_on: isMetamaskNotificationsEnabled,
               },
             });
           },
@@ -88,10 +93,11 @@ const ProfileSyncToggle = () => {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,
         properties: {
-          settings_group: 'security',
+          settings_group: 'security_privacy',
           settings_type: 'profile_syncing',
           old_value: false,
           new_value: true,
+          was_notifications_on: isMetamaskNotificationsEnabled,
         },
       });
     }
