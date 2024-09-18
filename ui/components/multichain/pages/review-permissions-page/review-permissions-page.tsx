@@ -68,7 +68,7 @@ export const ReviewPermissions = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
-  const urlParams = useParams<UrlParams>();
+  const urlParams: { origin: string } = useParams();
   const securedOrigin = decodeURIComponent(urlParams.origin);
   const [showAccountToast, setShowAccountToast] = useState(false);
   const [showNetworkToast, setShowNetworkToast] = useState(false);
