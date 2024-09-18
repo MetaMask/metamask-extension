@@ -58,10 +58,16 @@ const AssetListControlBar = ({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-  const accountTotalFiatBalance = useAccountTotalFiatBalance(
-    selectedAccount,
-    shouldHideZeroBalanceTokens,
-  );
+  const { tokensWithBalances, mergedRates, loading } =
+    useAccountTotalFiatBalance(
+      selectedAccount,
+      shouldHideZeroBalanceTokens,
+    ) as {
+      tokensWithBalances: TokenWithBalance[];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      mergedRates: any;
+      loading: boolean;
+    };
 
   const { primaryBalance, secondaryBalance, tokenSymbol, primaryTokenImage } =
     useNativeTokenBalance();
@@ -77,9 +83,6 @@ const AssetListControlBar = ({
 
   const handleSort = () => {
     if (!sorted) {
-      const tokensWithBalances =
-        accountTotalFiatBalance.tokensWithBalances as TokenWithBalance[];
-
       tokensWithBalances.forEach((token) => {
         // token.string is the balance displayed in the TokenList UI
         token.string = roundToDecimalPlacesRemovingExtraZeroes(
@@ -124,11 +127,7 @@ const AssetListControlBar = ({
 
   useEffect(() => {
     handleSort();
-  }, [
-    tokenSortConfig,
-    loading,
-    accountTotalFiatBalance.tokensWithBalances.length,
-  ]);
+  }, [tokenSortConfig, loading, tokensWithBalances.length]);
 
   const handleOpenPopover = () => {
     setIsPopoverOpen(!isPopoverOpen);
