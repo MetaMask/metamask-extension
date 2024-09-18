@@ -29,10 +29,12 @@ exports[`NoteToTrader should render the Note to trader component 1`] = `
         class="mm-box note-field mm-box--display-flex mm-box--flex-direction-column"
       >
         <textarea
+          class="mm-box mm-text mm-textarea mm-textarea--resize-vertical mm-text--body-md mm-box--padding-2 mm-box--padding-top-1 mm-box--padding-right-4 mm-box--padding-bottom-1 mm-box--padding-left-4 mm-box--width-full mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
           data-testid="transaction-note"
           id="transaction-note"
           maxlength="280"
           placeholder="The approver will see this note when approving the transaction at the custodian."
+          resize="vertical"
         />
       </div>
     </div>

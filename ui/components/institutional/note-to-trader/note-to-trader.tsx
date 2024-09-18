@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   BackgroundColor,
+  BlockSize,
   BorderRadius,
   Display,
   FlexDirection,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { Label, Box, Text } from '../../component-library';
+import { Textarea } from '../../component-library/textarea';
 import { setNoteToTraderMessage } from '../../../store/institutional/institution-background';
 import {
   getIsNoteToTraderSupported,
@@ -67,14 +69,16 @@ const NoteToTrader: React.FC = () => {
           flexDirection={FlexDirection.Column}
           className="note-field"
         >
-          <textarea
+          <Textarea
             id="transaction-note"
             data-testid="transaction-note"
             onChange={({ target: { value } }) => setNoteText(value)}
-            autoFocus
+            value={noteText}
+            height={BlockSize.Full}
+            width={BlockSize.Full}
             maxLength={280}
             placeholder={t('notePlaceholder')}
-            value={noteText}
+            padding={2}
           />
         </Box>
       </Box>
