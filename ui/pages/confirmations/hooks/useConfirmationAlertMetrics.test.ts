@@ -47,7 +47,13 @@ const contractInteraction = genUnapprovedContractInteractionConfirmation({
 const STATE_MOCK = getMockConfirmStateForTransaction(
   { ...contractInteraction, id: OWNER_ID_MOCK } as TransactionMeta,
   {
-    metamask: {},
+    metamask: {
+      tokenSortConfig: {
+        key: 'token-sort-key',
+        order: 'dsc',
+        sortCriteria: 'stringNumeric',
+      },
+    },
     confirmAlerts: {
       alerts: { [OWNER_ID_MOCK]: alertsMock },
       confirmed: {

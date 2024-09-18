@@ -851,7 +851,7 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.HasMarketingConsent]:
         metamaskState.dataCollectionForMarketing,
       [MetaMetricsUserTrait.TokenSortPreference]:
-        metamaskState.tokenSortConfig.key,
+        metamaskState.tokenSortConfig?.key || '',
     };
 
     if (!previousUserTraits) {
