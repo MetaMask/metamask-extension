@@ -6465,7 +6465,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^8.0.0, @metamask/snaps-utils@npm:^8.0.1, @metamask/snaps-utils@npm:^8.1.1":
+"@metamask/snaps-utils@npm:^8.0.1, @metamask/snaps-utils@npm:^8.1.1":
   version: 8.1.1
   resolution: "@metamask/snaps-utils@npm:8.1.1"
   dependencies:
@@ -26121,11 +26121,11 @@ __metadata:
     "@metamask/phishing-warning": "npm:^4.0.0"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:0.34.0"
-<<<<<<< HEAD
-    "@metamask/profile-sync-controller": "npm:^0.7.0"
-=======
     "@metamask/profile-sync-controller": "npm:^0.8.0"
+    "@metamask/providers": "npm:^14.0.2"
+    "@metamask/queued-request-controller": "npm:^2.0.0"
     "@metamask/rate-limit-controller": "npm:^6.0.0"
+    "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^15.0.2"
