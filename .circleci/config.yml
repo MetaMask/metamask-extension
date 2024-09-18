@@ -517,15 +517,12 @@ jobs:
             set -u
             set -o pipefail
 
-            # Install Foundry
-            curl -L https://foundry.paradigm.xyz | bash
-
             # Add Foundry to PATH
-            echo 'export PATH=${HOME}/.foundry/bin:$PATH' >> ~/.bashrc
-            source ~/.bashrc
+            echo "export PATH=${HOME}/.foundry/bin:${PATH}" >> $BASH_ENV
+            source $BASH_ENV
 
-            # Verify Foundry Installation
-            foundryup --version
+            # Install Foundry
+            foundryup
 
   # This job is used for the e2e quality gate.
   # It must be run before any job which uses the run-all.js script.
