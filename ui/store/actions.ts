@@ -2971,6 +2971,7 @@ export function setFeatureFlag(
 export function setPreference(
   preference: string,
   value: boolean | string | object,
+  showLoading: boolan = true,
 ): ThunkAction<
   Promise<TemporaryPreferenceFlagDef>,
   MetaMaskReduxState,
@@ -2978,41 +2979,13 @@ export function setPreference(
   AnyAction
 > {
   return (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
+    showLoading && dispatch(showLoadingIndication());
     return new Promise<TemporaryPreferenceFlagDef>((resolve, reject) => {
       callBackgroundMethod<TemporaryPreferenceFlagDef>(
         'setPreference',
         [preference, value],
         (err, updatedPreferences) => {
-          dispatch(hideLoadingIndication());
-          if (err) {
-            dispatch(displayWarning(err));
-            reject(err);
-            return;
-          }
-          console.log('updatedPreferences', updatedPreferences);
-          resolve(updatedPreferences as TemporaryPreferenceFlagDef);
-        },
-      );
-    });
-  };
-}
-
-export function setPreferenceWithoutLoader(
-  preference: string,
-  value: boolean | string | object,
-): ThunkAction<
-  Promise<TemporaryPreferenceFlagDef>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    return new Promise<TemporaryPreferenceFlagDef>((resolve, reject) => {
-      callBackgroundMethod<TemporaryPreferenceFlagDef>(
-        'setPreference',
-        [preference, value],
-        (err, updatedPreferences) => {
+          showLoading && dispatch(hideLoadingIndication());
           if (err) {
             dispatch(displayWarning(err));
             reject(err);
@@ -3078,7 +3051,7 @@ export function setRedesignedConfirmationsDeveloperEnabled(value: boolean) {
 }
 
 export function setTokenSortConfig(value: SortCriteria) {
-  return setPreferenceWithoutLoader('tokenSortConfig', value);
+  return setPreference('tokenSortConfig', value, false);
 }
 
 export function setSmartTransactionsOptInStatus(
