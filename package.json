@@ -341,7 +341,7 @@
     "@metamask/phishing-controller": "^9.0.3",
     "@metamask/post-message-stream": "^8.0.0",
     "@metamask/ppom-validator": "^0.32.0",
-    "@metamask/profile-sync-controller": "^0.2.0",
+    "@metamask/profile-sync-controller": "patch:@metamask/profile-sync-controller@npm%3A0.2.0#~/.yarn/patches/@metamask-profile-sync-controller-npm-0.2.0-4d922a9e03.patch",
     "@metamask/providers": "^14.0.2",
     "@metamask/queued-request-controller": "^2.0.0",
     "@metamask/rate-limit-controller": "^5.0.1",

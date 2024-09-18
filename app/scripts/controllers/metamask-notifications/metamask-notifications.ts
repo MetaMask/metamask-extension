@@ -289,13 +289,13 @@ export class MetamaskNotificationsController extends BaseController<
     getNotificationStorage: async () => {
       return await this.messagingSystem.call(
         'UserStorageController:performGetStorage',
-        'notifications.notificationSettings',
+        'notifications.notification_settings',
       );
     },
     setNotificationStorage: async (state: string) => {
       return await this.messagingSystem.call(
         'UserStorageController:performSetStorage',
-        'notifications.notificationSettings',
+        'notifications.notification_settings',
         state,
       );
     },
