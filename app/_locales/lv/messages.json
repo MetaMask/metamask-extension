@@ -229,9 +229,6 @@
   "editContact": {
     "message": "Rediģēt līgumu"
   },
-  "ensRegistrationError": {
-    "message": "Kļūda ENS vārda reģistrācijā"
-  },
   "enterPasswordContinue": {
     "message": "Ievadiet paroli, lai turpinātu"
   },
@@ -350,9 +347,6 @@
   "invalidAddressRecipient": {
     "message": "Nederīga saņēmēja adrese"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Nav ETH tīkls, iestatīti mazie burti"
-  },
   "invalidBlockExplorerURL": {
     "message": "Nederīgs Block Explorer URL"
   },
@@ -455,9 +449,6 @@
   "next": {
     "message": "Nākamais"
   },
-  "noAddressForName": {
-    "message": "Šim vārdam nav iestatīta adrese."
-  },
   "noConversionRateAvailable": {
     "message": "Konversijas kurss nav pieejams"
   },
@@ -540,9 +531,6 @@
   },
   "readdToken": {
     "message": "Jūs varat šo marķieri iestatīt atpakaļ nākotnē, konta opciju izvēlnē atverot \"Pievienot marķieri\"."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Meklēšana, publiskā adrese (0x) vai ENS"
   },
   "reject": {
     "message": "Noraidīt"
