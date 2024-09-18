@@ -57,7 +57,6 @@ export type AssetListProps = {
 
 const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const [tokenList, setTokenList] = useState<TokenWithBalance[]>([]);
-  const [sorted, setSorted] = useState(false); // TODO: Set to preferences
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const selectedAccount = useSelector(getSelectedAccount);
   const t = useI18nContext();
@@ -133,8 +132,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
       <AssetListControlBar
         tokenList={tokenList}
         setTokenList={setTokenList}
-        sorted={sorted}
-        setSorted={setSorted}
         showTokensLinks={showTokensLinks}
       />
       <TokenList

@@ -10,14 +10,9 @@ import {
 } from '../../../../component-library';
 import { TokenWithBalance } from '../asset-list';
 import {
-  getCurrentCurrency,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
 } from '../../../../../selectors';
-import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../../helpers/utils/util';
-import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
-import { getConversionRate } from '../../../../../ducks/metamask/metamask';
-import { getTokenFiatAmount } from '../../../../../helpers/utils/token-util';
 import SortControl from '../sort-control';
 import {
   BackgroundColor,
@@ -33,22 +28,17 @@ import { useAccountTotalFiatBalance } from '../../../../../hooks/useAccountTotal
 type AssetListControlBarProps = {
   tokenList: TokenWithBalance[];
   setTokenList: (arg: TokenWithBalance[]) => void;
-  sorted: boolean;
-  setSorted: (arg: boolean) => void;
   showTokensLinks?: boolean;
 };
 
 const AssetListControlBar = ({
   tokenList,
   setTokenList,
-  sorted,
-  setSorted,
   showTokensLinks,
 }: AssetListControlBarProps) => {
+  const [sorted, setSorted] = useState(false);
   const controlBarRef = useRef<HTMLDivElement>(null); // Create a ref
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const conversionRate = useSelector(getConversionRate);
-  const currentCurrency = useSelector(getCurrentCurrency);
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tokenSortConfig = useSelector((state: any) => {
@@ -58,16 +48,15 @@ const AssetListControlBar = ({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-  const { tokensWithBalances, mergedRates, loading } =
-    useAccountTotalFiatBalance(
-      selectedAccount,
-      shouldHideZeroBalanceTokens,
-    ) as {
-      tokensWithBalances: TokenWithBalance[];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      mergedRates: any;
-      loading: boolean;
-    };
+  const { tokensWithBalances, loading } = useAccountTotalFiatBalance(
+    selectedAccount,
+    shouldHideZeroBalanceTokens,
+  ) as {
+    tokensWithBalances: TokenWithBalance[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mergedRates: any;
+    loading: boolean;
+  };
 
   const { primaryBalance, secondaryBalance, tokenSymbol, primaryTokenImage } =
     useNativeTokenBalance();
@@ -83,36 +72,6 @@ const AssetListControlBar = ({
 
   const handleSort = () => {
     if (!sorted) {
-      tokensWithBalances.forEach((token) => {
-        // token.string is the balance displayed in the TokenList UI
-        token.string = roundToDecimalPlacesRemovingExtraZeroes(
-          token.string,
-          5,
-        ) as string;
-      });
-
-      // to sort by fiat balance, we need to compute this at this level
-      // should this get passed down as props to token-cell as props, rather than recomputing there?
-      tokensWithBalances.forEach((token) => {
-        const contractExchangeTokenKey = Object.keys(mergedRates).find((key) =>
-          isEqualCaseInsensitive(key, token.address),
-        );
-
-        const tokenExchangeRate =
-          contractExchangeTokenKey && mergedRates[contractExchangeTokenKey];
-
-        token.tokenFiatAmount =
-          getTokenFiatAmount(
-            tokenExchangeRate,
-            conversionRate,
-            currentCurrency,
-            token.string, // tokenAmount
-            token.symbol, // tokenSymbol
-            false, // no currency symbol prefix
-            false, // no ticker symbol suffix
-          ) || '0';
-      });
-
       if (tokenSortConfig) {
         const sortedTokenList = sortAssets(
           [nativeTokenWithBalance, ...tokensWithBalances],
