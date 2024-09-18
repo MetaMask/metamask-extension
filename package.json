@@ -47,7 +47,7 @@
     "test:unit:watch": "jest --watch",
     "test:unit:coverage": "jest --coverage",
     "test:unit:webpack": "tsx --test development/webpack/test/*.test.ts",
-    "test:unit:webpack:coverage": "nyc --reporter=html --reporter=json --reporter=text tsx --test development/webpack/test/*.test.ts",
+    "test:unit:webpack:coverage": "nyc --reporter=html --reporter=json --reporter=text --report-dir=./coverage/webpack tsx --test development/webpack/test/*.test.ts",
     "test:integration": "jest --config jest.integration.config.js",
     "test:integration:coverage": "jest --config jest.integration.config.js --coverage",
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
