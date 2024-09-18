@@ -25,6 +25,8 @@ describe('Personal sign', function () {
         const addresses = await ganacheServer.getAccounts();
         const publicAddress = addresses[0];
         await unlockWallet(driver);
+        await driver.delay(200);
+
         await tempToggleSettingRedesignedConfirmations(driver);
 
         await openDapp(driver);
