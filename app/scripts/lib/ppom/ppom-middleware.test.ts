@@ -17,7 +17,6 @@ import {
   validateRequestWithPPOM,
 } from './ppom-util';
 import { SecurityAlertResponse } from './types';
-import { startSpan, startSpanManual } from '@sentry/browser';
 
 jest.mock('./ppom-util');
 jest.mock('@metamask/controller-utils');
