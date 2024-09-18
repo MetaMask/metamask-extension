@@ -9,7 +9,11 @@ import {
   PopoverPosition,
 } from '../../../../component-library';
 import { TokenWithBalance } from '../asset-list';
-import { getCurrentCurrency } from '../../../../../selectors';
+import {
+  getCurrentCurrency,
+  getSelectedAccount,
+  getShouldHideZeroBalanceTokens,
+} from '../../../../../selectors';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../../helpers/utils/util';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { getConversionRate } from '../../../../../ducks/metamask/metamask';
@@ -24,7 +28,7 @@ import {
 import { sortAssets } from '../../util/sort';
 import { useNativeTokenBalance } from '../native-token/use-native-token-balance';
 import ImportControl from '../import-control';
-import { useAccountTotalFiatBalancesHook } from './use-account-total-fiat-balances';
+import { useAccountTotalFiatBalance } from '../../../../../hooks/useAccountTotalFiatBalance';
 
 type AssetListControlBarProps = {
   tokenList: TokenWithBalance[];
@@ -50,8 +54,14 @@ const AssetListControlBar = ({
   const tokenSortConfig = useSelector((state: any) => {
     return state.metamask.preferences.tokenSortConfig;
   });
-  const { accountTotalFiatBalance, mergedRates, loading } =
-    useAccountTotalFiatBalancesHook();
+  const selectedAccount = useSelector(getSelectedAccount);
+  const shouldHideZeroBalanceTokens = useSelector(
+    getShouldHideZeroBalanceTokens,
+  );
+  const accountTotalFiatBalance = useAccountTotalFiatBalance(
+    selectedAccount,
+    shouldHideZeroBalanceTokens,
+  );
 
   const { primaryBalance, secondaryBalance, tokenSymbol, primaryTokenImage } =
     useNativeTokenBalance();

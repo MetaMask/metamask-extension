@@ -37,9 +37,9 @@ import {
 } from '../../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
+import { useAccountTotalFiatBalance } from '../../../../hooks/useAccountTotalFiatBalance';
 import AssetListControlBar from './asset-list-control-bar';
 import NativeToken from './native-token';
-import { useAccountTotalFiatBalancesHook } from './asset-list-control-bar/use-account-total-fiat-balances';
 
 export type TokenWithBalance = {
   address: string;
@@ -64,7 +64,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
 
-  const { loading } = useAccountTotalFiatBalancesHook();
+  const { loading } = useAccountTotalFiatBalance();
 
   const {
     currency: primaryCurrency,

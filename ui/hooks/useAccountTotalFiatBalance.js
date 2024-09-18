@@ -5,6 +5,7 @@ import {
   getCurrentCurrency,
   getMetaMaskCachedBalances,
   getTokenExchangeRates,
+  getConfirmationExchangeRates,
   getNativeCurrencyImage,
   getTokenList,
 } from '../selectors';
@@ -34,6 +35,7 @@ export const useAccountTotalFiatBalance = (
     getTokenExchangeRates,
     shallowEqual,
   );
+  const confirmationExchangeRates = useSelector(getConfirmationExchangeRates);
 
   const cachedBalances = useSelector(getMetaMaskCachedBalances);
   const balance = cachedBalances?.[account?.address] ?? 0;
@@ -81,6 +83,11 @@ export const useAccountTotalFiatBalance = (
 
     return totalFiatValue;
   });
+
+  const mergedRates = {
+    ...contractExchangeRates,
+    ...confirmationExchangeRates,
+  };
 
   // Create an object with native token info. NOTE: Native token info is fetched from a separate controller
   const nativeTokenValues = {
@@ -160,5 +167,6 @@ export const useAccountTotalFiatBalance = (
     tokensWithBalances,
     loading,
     orderedTokenList,
+    mergedRates,
   };
 };
