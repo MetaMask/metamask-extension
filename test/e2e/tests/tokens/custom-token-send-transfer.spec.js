@@ -136,6 +136,9 @@ describe('Transfer custom tokens @no-mmi', function () {
           text: '-1.5 TST',
         });
 
+        // this delay helps prevent flakiness. it allows driver to wait until send transer is "confirmed"
+        await driver.delay(5000);
+
         // check token amount is correct after transaction
         await clickNestedButton(driver, 'Tokens');
         const tokenAmount = await driver.findElement(
@@ -192,6 +195,9 @@ describe('Transfer custom tokens @no-mmi', function () {
           text: 'Send TST',
         });
 
+        // this delay helps prevent flakiness. it allows driver to wait until send transer is "confirmed"
+        await driver.delay(5000);
+
         // check token amount is correct after transaction
         await clickNestedButton(driver, 'Tokens');
         const tokenAmount = await driver.findElement(
@@ -199,7 +205,7 @@ describe('Transfer custom tokens @no-mmi', function () {
             css: '[data-testid="multichain-token-list-item-value"]',
             text: '8.5 TST',
           },
-          { timeout: 10000 },
+          { timeout: 1000 },
         );
         assert.ok(tokenAmount, 'Token amount is not correct');
       },
