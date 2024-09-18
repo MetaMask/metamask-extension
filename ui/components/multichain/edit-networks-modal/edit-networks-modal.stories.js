@@ -14,7 +14,7 @@ export default {
       {
         chainId: '0x1',
         nickname: 'Ethereum Mainnet',
-        rpcUrl: 'https://mainnet.infura.io/v3/cb3fa73a8bdf4342b8ed8b07e0740be9',
+        rpcUrl: 'https://mainnet.infura.io/v3/',
         rpcPrefs: {
           imageUrl: './images/eth_logo.svg',
         },
@@ -28,7 +28,7 @@ export default {
         chainId: '0xe708',
         nickname: 'Linea Mainnet',
         rpcUrl:
-          'https://linea-mainnet.infura.io/v3/cb3fa73a8bdf4342b8ed8b07e0740be9',
+          'https://linea-mainnet.infura.io/v3/',
         rpcPrefs: {
           imageUrl: './images/linea-logo-mainnet.svg',
         },
