@@ -67,48 +67,45 @@ export const getPermittedChainsByOrigin = createSelector(
 );
 
 /**
- * Given the current and previous exposed origins for each PermissionController
- * subject, returns a new map containing all origins that have changed.
- * The values of each map must be immutable values directly from the
- * PermissionController state, or an empty array instantiated in this
- * function.
+ * Returns a map containing key/value pairs for those that have been
+ * added, changed, or removed between two string:string[] maps
  *
- * @param {Map<string, string[]>} newOriginsMap - The new origin:string[] map.
- * @param {Map<string, string[]>} [previousOriginsMap] - The previous origin:string[] map.
- * @returns {Map<string, string[]>} The origin:string[] map of changed origins.
+ * @param {Map<string, string[]>} currentMap - The new string:string[] map.
+ * @param {Map<string, string[]>} previousMap - The previous string:string[] map.
+ * @returns {Map<string, string[]>} The string:string[] map of changed key/values.
  */
-export const getChangedOrigins = (newOriginsMap, previousOriginsMap) => {
-  if (previousOriginsMap === undefined) {
-    return newOriginsMap;
+export const diffMap = (currentMap, previousMap) => {
+  if (previousMap === undefined) {
+    return currentMap;
   }
 
-  const changedOriginsMap = new Map();
-  if (newOriginsMap === previousOriginsMap) {
-    return changedOriginsMap;
+  const changedMap = new Map();
+  if (currentMap === previousMap) {
+    return changedMap;
   }
 
-  const newOrigins = new Set([...newOriginsMap.keys()]);
+  const newKeys = new Set([...currentMap.keys()]);
 
-  for (const origin of previousOriginsMap.keys()) {
-    const newValue = newOriginsMap.get(origin) ?? [];
-    const previousValue = previousOriginsMap.get(origin);
+  for (const key of previousMap.keys()) {
+    const currentValue = currentMap.get(key) ?? [];
+    const previousValue = previousMap.get(key);
 
     // The values of these maps are references to immutable values, which is why
     // a strict equality check is enough for diffing. The values are either from
     // PermissionController state, or an empty array initialized in the previous
-    // call to this function. `newOriginsMap` will never contain any empty
+    // call to this function. `currentMap` will never contain any empty
     // arrays.
-    if (newValue !== previousValue) {
-      changedOriginsMap.set(origin, newValue);
+    if (currentValue !== previousValue) {
+      changedMap.set(key, currentValue);
     }
 
-    newOrigins.delete(origin);
+    newKeys.delete(key);
   }
 
-  // By now, newOrigins is either empty or contains some number of previously
+  // By now, newKeys is either empty or contains some number of previously
   // unencountered origins, and all of their origins have "changed".
-  for (const origin of newOrigins.keys()) {
-    changedOriginsMap.set(origin, newOriginsMap.get(origin));
+  for (const origin of newKeys.keys()) {
+    changedMap.set(origin, currentMap.get(origin));
   }
-  return changedOriginsMap;
+  return changedMap;
 };

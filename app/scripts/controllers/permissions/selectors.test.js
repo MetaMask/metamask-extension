@@ -1,27 +1,25 @@
 import { cloneDeep } from 'lodash';
 import { CaveatTypes } from '../../../../shared/constants/permissions';
 import {
-  getChangedOrigins,
+  diffMap,
   getPermittedAccountsByOrigin,
   getPermittedChainsByOrigin,
 } from './selectors';
 import { PermissionNames } from './specifications';
 
 describe('PermissionController selectors', () => {
-  describe('getChangedOrigins', () => {
+  describe('diffMap', () => {
     it('returns the new value if the previous value is undefined', () => {
       const newAccounts = new Map([['foo.bar', ['0x1']]]);
-      expect(getChangedOrigins(newAccounts)).toBe(newAccounts);
+      expect(diffMap(newAccounts)).toBe(newAccounts);
     });
 
     it('returns an empty map if the new and previous values are the same', () => {
       const newAccounts = new Map([['foo.bar', ['0x1']]]);
-      expect(getChangedOrigins(newAccounts, newAccounts)).toStrictEqual(
-        new Map(),
-      );
+      expect(diffMap(newAccounts, newAccounts)).toStrictEqual(new Map());
     });
 
-    it('returns a new map of the changed accounts if the new and previous values differ', () => {
+    it('returns a new map of the changed key/value pairs if the new and previous maps differ', () => {
       // We set this on the new and previous value under the key 'foo.bar' to
       // check that identical values are excluded.
       const identicalValue = ['0x1'];
@@ -38,7 +36,7 @@ describe('PermissionController selectors', () => {
       ]);
       newAccounts.set('foo.bar', identicalValue);
 
-      expect(getChangedOrigins(newAccounts, previousAccounts)).toStrictEqual(
+      expect(diffMap(newAccounts, previousAccounts)).toStrictEqual(
         new Map([
           ['bar.baz', ['0x1', '0x2']],
           ['fizz.buzz', []],

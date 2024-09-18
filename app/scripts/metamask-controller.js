@@ -306,7 +306,7 @@ import {
   CaveatFactories,
   CaveatMutatorFactories,
   getCaveatSpecifications,
-  getChangedOrigins,
+  diffMap,
   getPermissionBackgroundApiMethods,
   getPermissionSpecifications,
   getPermittedAccountsByOrigin,
@@ -2779,7 +2779,7 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       `${this.permissionController.name}:stateChange`,
       async (currentValue, previousValue) => {
-        const changedAccounts = getChangedOrigins(currentValue, previousValue);
+        const changedAccounts = diffMap(currentValue, previousValue);
 
         for (const [origin, accounts] of changedAccounts.entries()) {
           this._notifyAccountsChange(origin, accounts);
@@ -2791,7 +2791,7 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       `${this.permissionController.name}:stateChange`,
       async (currentValue, previousValue) => {
-        const changedChains = getChangedOrigins(currentValue, previousValue);
+        const changedChains = diffMap(currentValue, previousValue);
 
         // This operates under the assumption that there will be at maximum
         // one origin permittedChains value change per event handler call
