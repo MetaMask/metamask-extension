@@ -15,7 +15,6 @@ import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import PreferencesController from '../../controllers/preferences-controller';
 import { AppStateController } from '../../controllers/app-state';
 import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
-import { getProviderConfig } from '../../../../ui/ducks/metamask/metamask';
 import { trace, TraceContext, TraceName } from '../../../../shared/lib/trace';
 import {
   generateSecurityAlertId,
@@ -79,7 +78,10 @@ export function createPPOMMiddleware<
       const securityAlertsEnabled =
         preferencesController.store.getState()?.securityAlertsEnabled;
 
+      // This will always exist as the SelectedNetworkMiddleware
+      // adds networkClientId to the request before this middleware runs
       const { chainId } =
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         networkController.getNetworkConfigurationByNetworkClientId(
           req.networkClientId,
         )!;
