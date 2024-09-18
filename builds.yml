@@ -145,7 +145,7 @@ env:
   # The unlock password
   - PASSWORD: null
   - TEST_SRP: null
-  - SKIP_ONBOARDING: null
+  - WITH_STATE: null
   # Also see METAMASK_DEBUG and NODE_DEBUG
   - DEBUG: null
   - SUPPORT_LINK: https://support.metamask.io
