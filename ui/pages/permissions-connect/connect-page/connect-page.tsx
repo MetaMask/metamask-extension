@@ -27,7 +27,7 @@ import {
   Display,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { AccountType } from '../../../components/multichain/pages/connections/components/connections.types';
+import { AccountType } from '../../../components/multichain/pages/review-permissions-page/review-permission.types';
 
 type Request = {
   id: string;

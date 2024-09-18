@@ -25,7 +25,6 @@ export type AccountType = InternalAccount & {
   balance: string;
   keyring: KeyringType;
   label: string;
-  name: string;
 };
 
 export type Subject = {

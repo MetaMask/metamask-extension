@@ -22,6 +22,7 @@ export type KeyringType = {
 
 // Define AccountType interface
 export type AccountType = InternalAccount & {
+  name: string;
   balance: string;
   keyring: KeyringType;
   label: string;
