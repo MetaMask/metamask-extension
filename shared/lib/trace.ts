@@ -157,7 +157,7 @@ function startSpan<T>(
     startTime,
   };
 
-  return globalThis.sentry.withIsolationScope((scope) => {
+  return globalThis.sentry.withIsolationScope((scope: Sentry.Scope) => {
     scope.setTags(tags as Record<string, Primitive>);
 
     return callback(spanOptions);
