@@ -2,14 +2,18 @@ const {
   WALLET_SNAP_PERMISSION_KEY,
   SnapCaveatType,
 } = require('@metamask/snaps-utils');
-const { merge } = require('lodash');
+const { merge, mergeWith } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
 const { mockNetworkStateOld } = require('../stub/networks');
 
 const { CHAIN_IDS } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
-const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
-const { DEFAULT_FIXTURE_ACCOUNT, ERC_4337_ACCOUNT } = require('./constants');
+const {
+  DAPP_URL,
+  DAPP_ONE_URL,
+  DEFAULT_FIXTURE_ACCOUNT,
+  ERC_4337_ACCOUNT,
+} = require('./constants');
 const {
   defaultFixture,
   FIXTURE_STATE_METADATA_VERSION,
@@ -352,6 +356,20 @@ class FixtureBuilder {
       },
       ignoredNfts: [],
     });
+  }
+
+  withNotificationServicesController(data) {
+    mergeWith(
+      this.fixture.data.NotificationServicesController,
+      data,
+      (objValue, srcValue) => {
+        if (Array.isArray(objValue)) {
+          objValue.concat(srcValue);
+        }
+        return undefined;
+      },
+    );
+    return this;
   }
 
   withOnboardingController(data) {
