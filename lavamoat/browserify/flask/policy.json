@@ -174,9 +174,15 @@
         "crypto": true
       },
       "packages": {
+        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
         "@metamask/message-signing-snap>@noble/curves": true,
-        "@noble/hashes": true,
         "viem>@scure/bip32": true
+      }
+    },
+    "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@ethersproject/abi": {
@@ -1660,7 +1666,13 @@
         "TextEncoder": true
       },
       "packages": {
-        "@noble/hashes": true
+        "@metamask/message-signing-snap>@noble/curves>@noble/hashes": true
+      }
+    },
+    "@metamask/message-signing-snap>@noble/curves>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@metamask/name-controller": {
@@ -5517,7 +5529,13 @@
       "packages": {
         "@metamask/message-signing-snap>@noble/curves": true,
         "@metamask/utils>@scure/base": true,
-        "@noble/hashes": true
+        "viem>@scure/bip32>@noble/hashes": true
+      }
+    },
+    "viem>@scure/bip32>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "web3": {
