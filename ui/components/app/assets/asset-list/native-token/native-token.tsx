@@ -28,8 +28,7 @@ const NativeToken = ({ onClickAsset }: AssetListProps) => {
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
 
-  const { primaryBalance, secondaryBalance, tokenSymbol } =
-    useNativeTokenBalance();
+  const { string, symbol, tokenFiatAmount } = useNativeTokenBalance();
 
   const primaryTokenImage = useSelector(getMultichainCurrencyImage);
 
@@ -46,9 +45,9 @@ const NativeToken = ({ onClickAsset }: AssetListProps) => {
       title={nativeCurrency}
       // The primary and secondary currencies are subject to change based on the user's settings
       // TODO: rename this primary/secondary concept here to be more intuitive, regardless of setting
-      primary={primaryBalance}
-      tokenSymbol={tokenSymbol}
-      secondary={secondaryBalance}
+      primary={string}
+      tokenSymbol={symbol}
+      secondary={tokenFiatAmount}
       tokenImage={balanceIsLoading ? null : primaryTokenImage}
       isOriginalTokenSymbol={isOriginalNativeSymbol}
       isNativeCurrency

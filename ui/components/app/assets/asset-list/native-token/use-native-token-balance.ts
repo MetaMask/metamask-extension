@@ -14,6 +14,7 @@ import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOrigin
 import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';
+import { TokenWithBalance } from '../asset-list';
 
 export const useNativeTokenBalance = () => {
   const showFiat = useSelector(getMultichainShouldShowFiat);
@@ -71,5 +72,14 @@ export const useNativeTokenBalance = () => {
     ? primaryCurrencyProperties.suffix
     : secondaryCurrencyProperties.suffix;
 
-  return { primaryBalance, secondaryBalance, tokenSymbol, primaryTokenImage };
+  const nativeTokenWithBalance: TokenWithBalance = {
+    address: '',
+    symbol: tokenSymbol || '',
+    string: primaryBalance,
+    image: primaryTokenImage,
+    tokenFiatAmount: secondaryBalance,
+    isNative: true,
+  };
+
+  return nativeTokenWithBalance;
 };

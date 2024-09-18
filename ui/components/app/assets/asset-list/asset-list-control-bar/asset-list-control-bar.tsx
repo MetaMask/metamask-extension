@@ -58,17 +58,7 @@ const AssetListControlBar = ({
     loading: boolean;
   };
 
-  const { primaryBalance, secondaryBalance, tokenSymbol, primaryTokenImage } =
-    useNativeTokenBalance();
-
-  const nativeTokenWithBalance: TokenWithBalance = {
-    address: '',
-    symbol: tokenSymbol || '',
-    string: primaryBalance,
-    image: primaryTokenImage,
-    tokenFiatAmount: secondaryBalance,
-    isNative: true,
-  };
+  const nativeTokenWithBalance = useNativeTokenBalance();
 
   const handleSort = () => {
     if (!sorted) {
