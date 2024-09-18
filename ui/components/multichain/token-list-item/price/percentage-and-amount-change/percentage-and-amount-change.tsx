@@ -138,6 +138,7 @@ export const PercentageAndAmountChange = ({
       // Non-standard Currency Codes
       formattedValuePrice += `${Intl.NumberFormat(locale, {
         ...options,
+        minimumFractionDigits: 2,
         style: 'decimal',
       }).format(balanceChange as number)} `;
     }
