@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 
-import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import {
   Box,
   Button,
@@ -132,6 +131,8 @@ export function ConfirmAlertModal({
       !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
   );
 
+  const hasBlockingAlerts = fieldAlerts.some((alert) => alert.isBlocking);
+
   // if there are unconfirmed danger alerts, show the multiple alert modal
   const [multipleAlertModalVisible, setMultipleAlertModalVisible] =
     useState<boolean>(unconfirmedDangerFieldAlerts.length > 0);
@@ -140,7 +141,7 @@ export function ConfirmAlertModal({
     (request?: { recursive?: boolean }) => {
       setMultipleAlertModalVisible(false);
 
-      if (request?.recursive) {
+      if (request?.recursive || hasBlockingAlerts) {
         onClose();
       }
     },
@@ -156,7 +157,6 @@ export function ConfirmAlertModal({
   }, [confirmCheckbox]);
 
   if (multipleAlertModalVisible) {
-    console.log('open multiple alert modal >>>>>');
     return (
       <MultipleAlertModal
         ownerId={ownerId}
@@ -171,7 +171,7 @@ export function ConfirmAlertModal({
   if (!selectedAlert) {
     return null;
   }
-  console.log('open friction modal >>>>>');
+
   return (
     <AlertModal
       ownerId={ownerId}
