@@ -52,12 +52,21 @@ export async function migrate(
 function transformState(
   state: Record<string, unknown>,
 ): Record<string, unknown> {
-  // Get the network controller state, or initialize
-  // it if it's missing for some unexpected reason
-  const networkState =
-    hasProperty(state, 'NetworkController') && isObject(state.NetworkController)
-      ? state.NetworkController
-      : {};
+  if (!hasProperty(state, 'NetworkController')) {
+    global.sentry?.captureException?.(
+      new Error(`state.NetworkController is not defined`),
+    );
+    return state;
+  } else if (!isObject(state.NetworkController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `typeof state.NetworkController is ${typeof state.NetworkController}`,
+      ),
+    );
+    return state;
+  }
+
+  const networkState = state.NetworkController;
 
   // Get the existing custom network configurations
   let networkConfigurations = isObject(networkState.networkConfigurations)
