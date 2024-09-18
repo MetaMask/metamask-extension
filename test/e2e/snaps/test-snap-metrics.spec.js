@@ -501,7 +501,7 @@ describe('Test Snap Metrics', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
-          version: '2.1.3',
+          version: '2.1.4',
           category: 'Snaps',
           locale: 'en',
           chain_id: '0x539',
