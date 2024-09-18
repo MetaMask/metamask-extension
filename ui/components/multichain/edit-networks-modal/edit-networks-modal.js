@@ -88,9 +88,7 @@ export const EditNetworksModal = ({
   let isIndeterminate = false;
   if (allAreSelected()) {
     checked = true;
-    isIndeterminate = false;
   } else if (selectedChains.length > 0 && !allAreSelected()) {
-    checked = false;
     isIndeterminate = true;
   }
 

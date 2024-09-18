@@ -60,9 +60,7 @@ const AccountList = ({
     let isIndeterminate = false;
     if (allAreSelected()) {
       checked = true;
-    } else if (selectedAccounts.size === 0) {
-      checked = false;
-    } else {
+    } else if (selectedAccounts.size !== 0) {
       isIndeterminate = true;
     }
 
