@@ -202,44 +202,55 @@ workflows:
           requires:
             - prep-build-test-webpack
             - get-changed-files-with-git-diff
+            - prep-test-deps
       - test-e2e-chrome:
           requires:
             - prep-build-test
             - get-changed-files-with-git-diff
+            - prep-test-deps
       - test-e2e-firefox:
           requires:
             - prep-build-test-mv2
             - get-changed-files-with-git-diff
+            - prep-test-deps
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
             - get-changed-files-with-git-diff
+            - prep-test-deps
       - test-api-specs:
           requires:
             - prep-build-test
+            - prep-test-deps
       - test-e2e-chrome-multiple-providers:
           requires:
             - prep-build-test
             - get-changed-files-with-git-diff
+            - prep-test-deps
       - test-e2e-chrome-flask:
           requires:
             - prep-build-test-flask
             - get-changed-files-with-git-diff
+            - prep-test-deps
       - test-e2e-firefox-flask:
           <<: *develop_master_rc_only
           requires:
             - prep-build-test-flask-mv2
+            - prep-test-deps
       - test-e2e-chrome-mmi:
           requires:
             - prep-build-test-mmi
             - get-changed-files-with-git-diff
+            - prep-test-deps
       - test-e2e-mmi-playwright - OPTIONAL:
           requires:
             - prep-build-test-mmi-playwright
+            - prep-test-deps
       - test-e2e-chrome-rpc-mmi:
           requires:
             - prep-build-test-mmi
             - get-changed-files-with-git-diff
+            - prep-test-deps
       - test-e2e-chrome-vault-decryption:
           filters:
             branches:
@@ -248,6 +259,7 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
+            - prep-test-deps
       - test-storybook:
           requires:
             - prep-deps
@@ -490,6 +502,13 @@ jobs:
           paths:
             - node_modules
             - build-artifacts
+
+  prep-test-deps:
+    executor: node-browsers-medium
+    steps:
+      - run:
+          name: Install Foundry package for Anvil Testing Dependency
+          command: curl -L https://foundry.paradigm.xyz | bash
 
   # This job is used for the e2e quality gate.
   # It must be run before any job which uses the run-all.js script.

@@ -9,6 +9,7 @@ const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
 const { Ganache } = require('./seeder/ganache');
+const { LocalNetwork } = require('./seeder/anvil');
 const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
@@ -59,6 +60,8 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
  */
 async function withFixtures(options, testSuite) {
   const {
+    anvil,
+    anvilOptions,
     dapp,
     fixtures,
     ganacheOptions,
@@ -85,6 +88,12 @@ async function withFixtures(options, testSuite) {
   if (!disableGanache) {
     ganacheServer = new Ganache();
   }
+
+  let anvilServer;
+  if (anvil) {
+    anvilServer = new LocalNetwork();
+  }
+
   const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
@@ -104,6 +113,11 @@ async function withFixtures(options, testSuite) {
     if (!disableGanache) {
       await ganacheServer.start(ganacheOptions);
     }
+
+    if (anvil) {
+      await anvilServer.start(anvilOptions);
+    }
+
     let contractRegistry;
 
     if (smartContract && !disableGanache) {
@@ -303,6 +317,10 @@ async function withFixtures(options, testSuite) {
       await fixtureServer.stop();
       if (ganacheServer) {
         await ganacheServer.quit();
+      }
+
+      if (anvil) {
+        await anvilServer.quit();
       }
 
       if (ganacheOptions?.concurrent) {
@@ -782,6 +800,10 @@ const defaultGanacheOptions = {
       balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
     },
   ],
+};
+
+const defaultAnvilOptions = {
+  balance: 25,
 };
 
 const defaultGanacheOptionsForType2Transactions = {
@@ -1269,6 +1291,7 @@ module.exports = {
   connectToDapp,
   multipleGanacheOptions,
   defaultGanacheOptions,
+  defaultAnvilOptions,
   defaultGanacheOptionsForType2Transactions,
   multipleGanacheOptionsForType2Transactions,
   sendTransaction,
