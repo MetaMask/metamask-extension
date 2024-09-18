@@ -112,6 +112,7 @@ function onboardingFixture() {
         ignoredTokens: [],
         tokens: [],
       },
+      TransactionController: {},
       config: {},
       firstTimeInfo: {
         date: 1665507600000,
