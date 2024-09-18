@@ -143,20 +143,21 @@ export default class PermissionPageContainer extends Component {
 
     const approvedAccounts = selectedAccounts.map(
       (selectedAccount) => selectedAccount.address,
-    )
+    );
 
-    const permittedChainsPermission = _request.permissions[
-      PermissionNames.permittedChains
-    ]
+    const permittedChainsPermission =
+      _request.permissions[PermissionNames.permittedChains];
     const approvedChainIds = permittedChainsPermission?.caveats.find(
       (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
-    )?.value
+    )?.value;
 
     const request = {
       ..._request,
       permissions: { ..._request.permissions },
       ...(_request.permissions.eth_accounts && { approvedAccounts }),
-      ...(_request.permissions[PermissionNames.permittedChains] && { approvedChainIds }),
+      ...(_request.permissions[PermissionNames.permittedChains] && {
+        approvedChainIds,
+      }),
     };
 
     if (Object.keys(request.permissions).length > 0) {
