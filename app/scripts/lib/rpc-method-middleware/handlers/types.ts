@@ -1,4 +1,6 @@
+import { MessageType } from '../../../../../shared/constants/app';
+
 export type HandlerWrapper = {
-  methodNames: [string] | string[];
+  methodNames: [MessageType] | MessageType[];
   hookNames: Record<string, boolean>;
 };
