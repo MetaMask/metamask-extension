@@ -6,11 +6,13 @@ class HeaderNavbar {
 
   private accountMenuButton: string;
   private accountOptionsMenuButton: string;
+  private lockMetaMaskButton: string;
 
   constructor(driver: Driver) {
     this.driver = driver;
     this.accountMenuButton = testId('account-menu-icon');
     this.accountOptionsMenuButton = testId('account-options-menu-button');
+    this.lockMetaMaskButton = testId('global-menu-lock');
   }
 
   async openAccountMenu(): Promise<void> {
@@ -19,6 +21,11 @@ class HeaderNavbar {
 
   async openAccountOptionsMenu(): Promise<void> {
     await this.driver.clickElement(this.accountOptionsMenuButton);
+  }
+
+  async lockMetaMask(): Promise<void> {
+    await this.openAccountOptionsMenu();
+    await this.driver.clickElement(this.lockMetaMaskButton);
   }
 }
 

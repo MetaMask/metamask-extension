@@ -21,6 +21,8 @@ class HomePage {
 
   private transactionAmountsInActivity: string;
 
+  private accountMenuButton: string;
+
   public headerNavbar: HeaderNavbar;
   public accountOptionsMenu: AccountOptionsMenu;
 
@@ -39,6 +41,7 @@ class HomePage {
     this.completedTransactions = '[data-testid="activity-list-item"]';
     this.transactionAmountsInActivity =
       '[data-testid="transaction-list-item-primary-currency"]';
+    this.accountMenuButton = '[data-testid="account-menu-icon"]';
   }
 
   async check_pageIsLoaded(): Promise<void> {
@@ -87,6 +90,11 @@ class HomePage {
   async goToNotifiationsList(): Promise<void> {
     this.headerNavbar.openAccountOptionsMenu();
     this.accountOptionsMenu.clickNotificationsMenuItem();
+  }
+
+  async openAccountMenu(): Promise<void> {
+    console.log(`Opening account menu`);
+    await this.driver.clickElement(this.accountMenuButton);
   }
 
   /**
