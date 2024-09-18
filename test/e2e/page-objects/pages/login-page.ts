@@ -9,6 +9,8 @@ class LoginPage {
 
   private welcomeBackMessage: object;
 
+  private forgotPasswordButton: object;
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.passwordInput = '[data-testid="unlock-password"]';
@@ -17,6 +19,10 @@ class LoginPage {
       css: '[data-testid="unlock-page-title"]',
       text: 'Welcome back!',
     };
+    this.forgotPasswordButton = {
+      text: 'Forgot password?',
+      tag: 'a',
+    }
   }
 
   async check_pageIsLoaded(): Promise<void> {
@@ -39,6 +45,11 @@ class LoginPage {
 
   async clickUnlockButton(): Promise<void> {
     await this.driver.clickElement(this.unlockButton);
+  }
+
+  async gotoResetPasswordPage(): Promise<void> {
+    console.log('Navigating to reset password page');
+    await this.driver.clickElement(this.forgotPasswordButton);
   }
 }
 
