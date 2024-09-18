@@ -40,7 +40,7 @@ const NoteToTrader: React.FC = () => {
     return () => clearTimeout(timer);
   }, [noteText]);
 
-  return isNoteToTraderSupported && !isSignature? (
+  return isNoteToTraderSupported && !isSignature ? (
     <Box
       backgroundColor={BackgroundColor.backgroundDefault}
       borderRadius={BorderRadius.MD}
