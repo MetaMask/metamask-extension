@@ -47,16 +47,14 @@ import {
 import { ToastContainer, Toast } from '../..';
 import { NoConnectionContent } from '../connections/components/no-connection';
 import { Content, Footer, Header, Page } from '../page';
-import {
-  SubjectsType,
-} from '../connections/components/connections.types';
+import { SubjectsType } from '../connections/components/connections.types';
 import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
 import {
   DisconnectAllModal,
   DisconnectType,
 } from '../../disconnect-all-modal/disconnect-all-modal';
-import { SiteCell } from '.';
 import { AccountType } from './review-permission.types';
+import { SiteCell } from '.';
 
 type UrlParams = {
   origin: string;
