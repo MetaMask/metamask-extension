@@ -35,6 +35,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
 
   return (
     <ButtonBase
+      className="asset-list-control-bar__button"
       data-testid="import-token-button"
       disabled={!shouldShowTokensLinks}
       size={ButtonBaseSize.Sm}

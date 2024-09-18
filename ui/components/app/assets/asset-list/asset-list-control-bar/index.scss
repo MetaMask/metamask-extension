@@ -1,12 +1,7 @@
 .asset-list-control-bar {
-  display: flex;
-  justify-content: space-between;
   cursor: pointer;
-  padding-top: 16px;
-  margin-left: 16px;
-  margin-right: 16px;
 
-  button:hover {
+  &__button:hover {
     background-color: var(--color-background-hover);
   }
 }
