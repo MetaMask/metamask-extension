@@ -132,7 +132,7 @@ describe('MetaMask Responsive UI', function () {
         // starts to send a transaction
         await openActionMenuAndStartSendFlow(driver);
         await driver.fill(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          'input[placeholder="Enter public address (0x) or domain name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
 
