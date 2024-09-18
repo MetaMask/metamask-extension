@@ -124,6 +124,9 @@ const AssetListControlBar = ({
         ref={controlBarRef}
         display={Display.Flex}
         justifyContent={JustifyContent.spaceBetween}
+        marginLeft={4}
+        marginRight={4}
+        paddingTop={4}
       >
         <ButtonBase
           className="asset-list-control-bar__button"
