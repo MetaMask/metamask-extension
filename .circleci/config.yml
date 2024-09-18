@@ -511,7 +511,21 @@ jobs:
     steps:
       - run:
           name: Install Foundry package for Anvil Testing Dependency
-          command: curl -L https://foundry.paradigm.xyz | bash
+          command: |
+            #!/bin/bash
+            set -e
+            set -u
+            set -o pipefail
+
+            # Install Foundry
+            curl -L https://foundry.paradigm.xyz | bash
+
+            # Add Foundry to PATH
+            echo 'export PATH=${HOME}/.foundry/bin:$PATH' >> ~/.bashrc
+            source ~/.bashrc
+
+            # Verify Foundry Installation
+            foundryup --version
 
   # This job is used for the e2e quality gate.
   # It must be run before any job which uses the run-all.js script.
