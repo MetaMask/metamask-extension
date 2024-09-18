@@ -746,7 +746,7 @@ export default class Routes extends Component {
               <AvatarNetwork
                 size={AvatarAccountSize.Md}
                 borderColor={BorderColor.transparent}
-                src={switchedNetworkDetails?.imageUrl}
+                src={switchedNetworkDetails?.imageUrl || ''}
                 name={switchedNetworkDetails?.nickname}
               />
             }
