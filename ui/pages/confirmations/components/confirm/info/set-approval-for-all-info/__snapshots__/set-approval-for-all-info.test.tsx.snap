@@ -98,6 +98,7 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation__approve-details"
   >
     <div
       class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -187,6 +188,7 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="transaction-details-origin-row-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -232,6 +234,7 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="edit-gas-fees-row-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
