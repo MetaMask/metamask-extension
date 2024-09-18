@@ -7,7 +7,7 @@ import {
   setFromTokenInputValue,
   setToChain,
   setToToken,
-  switchToAndFromTokens,
+  switchToAndFromInputs,
 } from '../../../ducks/bridge/actions';
 import {
   getFromAmount,
@@ -130,12 +130,19 @@ const PrepareBridgePage = () => {
             onClick={() => {
               setRotateSwitchTokens(!rotateSwitchTokens);
               const toChainClientId =
-                toChain?.defaultRpcEndpointIndex && toChain?.rpcEndpoints
-                  ? toChain.rpcEndpoints?.[toChain.defaultRpcEndpointIndex]
+                toChain?.defaultRpcEndpointIndex !== undefined &&
+                toChain?.rpcEndpoints
+                  ? toChain.rpcEndpoints[toChain.defaultRpcEndpointIndex]
                       .networkClientId
                   : undefined;
               toChainClientId && dispatch(setActiveNetwork(toChainClientId));
-              dispatch(switchToAndFromTokens({ fromChain }));
+              toChain && dispatch(setFromChain(toChain.chainId));
+              fromChain?.chainId &&
+                toChain?.chainId &&
+                toToken &&
+                dispatch(
+                  switchToAndFromInputs(fromChain.chainId, fromToken, toToken),
+                );
             }}
           />
         </Box>

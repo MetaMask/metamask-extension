@@ -18,7 +18,7 @@ import {
   setToToken,
   setFromChain,
   resetInputFields,
-  switchToAndFromTokens,
+  switchToAndFromInputs,
 } from './actions';
 
 const middleware = [thunk];
@@ -137,7 +137,7 @@ describe('Ducks - Bridge', () => {
     });
   });
 
-  describe('switchToAndFromTokens', () => {
+  describe('switchToAndFromInputs', () => {
     it('switches to and from input values', async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const bridgeStore = configureMockStore<any>(middleware)(
@@ -152,7 +152,7 @@ describe('Ducks - Bridge', () => {
         ),
       );
       const state = bridgeStore.getState().bridge;
-      bridgeStore.dispatch(switchToAndFromTokens(CHAIN_IDS.POLYGON));
+      bridgeStore.dispatch(switchToAndFromInputs(CHAIN_IDS.POLYGON));
       const actions = bridgeStore.getActions();
       expect(actions[0].type).toStrictEqual('bridge/switchToAndFromTokens');
       const newState = bridgeReducer(state, actions[0]);

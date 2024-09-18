@@ -19,6 +19,8 @@ import {
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { Numeric } from '../../../shared/modules/Numeric';
+import { SwapsTokenObject } from '../../../shared/constants/swaps';
+import { SwapsEthToken } from '../../selectors';
 import { bridgeSlice } from './bridge';
 
 const {
@@ -26,11 +28,10 @@ const {
   setFromToken: setFromToken_,
   setToToken: setToToken_,
   setFromTokenInputValue: setFromTokenInputValue_,
-  resetInputFields: resetInputFields_,
-  switchToAndFromTokens,
+  resetInputFields,
 } = bridgeSlice.actions;
 
-export { switchToAndFromTokens };
+export { resetInputFields };
 
 const callBridgeControllerMethod = <T extends string | Partial<QuoteRequest>>(
   bridgeAction: BridgeUserAction | BridgeBackgroundAction,
@@ -93,7 +94,7 @@ export const setToToken = (
     dispatch(setToToken_(payload));
     dispatch(
       updateQuoteRequestParams<Pick<QuoteRequest, 'destTokenAddress'>>({
-        destTokenAddress: payload.address ?? '',
+        destTokenAddress: payload.address ?? zeroAddress(),
       }),
     );
   };
@@ -138,3 +139,21 @@ export const setToChain = (chainId: Hex) => {
     );
   };
 };
+
+export const switchToAndFromInputs =
+  (
+    fromChainId: Hex,
+    fromToken: SwapsTokenObject | SwapsEthToken,
+    toToken: SwapsTokenObject | SwapsEthToken,
+  ) =>
+  async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(setFromToken(toToken));
+    dispatch(setToChain(fromChainId));
+    dispatch(setToToken(fromToken));
+    dispatch(
+      setFromTokenInputValue({
+        amount: '',
+        decimals: 1,
+      }),
+    );
+  };
