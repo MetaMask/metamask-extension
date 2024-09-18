@@ -157,7 +157,7 @@ const DataField = memo(
     }
 
     if (isDateField(label, primaryType) && value) {
-      return <ConfirmInfoRowDate date={parseInt(value, 10)} />;
+      return <ConfirmInfoRowDate unixTimestamp={parseInt(value, 10)} />;
     }
 
     if (isTokenUnitsField(label, primaryType)) {
