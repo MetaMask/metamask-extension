@@ -87,6 +87,53 @@ class AccountListPage {
     console.log(`Check that hidden accounts list is displayed in account list`);
     await this.driver.waitForSelector(this.hiddenAccountsList);
   }
+
+  async changeAccountLabel(newLabel: string): Promise<void> {
+    console.log(`Changing account label to: ${newLabel}`);
+    try {
+      await this.driver.clickElement('[data-testid="account-list-menu-details"]');
+      await this.driver.clickElement('[data-testid="editable-label-button"]');
+      await this.driver.fill('input[placeholder="Account name"]', newLabel);
+      await this.driver.clickElement('[data-testid="save-account-label-input"]');
+      await this.driver.clickElement('button[aria-label="Close"]');
+      console.log(`Account label changed to: ${newLabel}`);
+    } catch (error) {
+      console.error(`Failed to change account label to: ${newLabel}`, error);
+      throw new Error(`Unable to change account label: ${(error as Error).message}`);
+    }
+  }
+
+  async verifyAccountLabel(expectedLabel: string): Promise<void> {
+    console.log(`Verifying account label: ${expectedLabel}`);
+    try {
+      await this.driver.findElement({
+        css: '[data-testid="account-menu-icon"]',
+        text: expectedLabel,
+      });
+      console.log(`Account label verified: ${expectedLabel}`);
+    } catch (error) {
+      console.error(`Failed to verify account label: ${expectedLabel}`, error);
+      throw new Error(`Account label verification failed: ${(error as Error).message}`);
+    }
+  }
+
+  async addNewAccountWithCustomLabel(customLabel: string): Promise<void> {
+    console.log(`Adding new account with custom label: ${customLabel}`);
+    try {
+      await this.driver.clickElement('[data-testid="account-menu-icon"]');
+      await this.driver.clickElement('[data-testid="multichain-account-menu-popover-action-button"]');
+      await this.driver.clickElement('[data-testid="multichain-account-menu-popover-add-account"]');
+      await this.driver.fill('[placeholder="Account 2"]', customLabel);
+      await this.driver.clickElementAndWaitToDisappear({
+        text: 'Add account',
+        tag: 'button',
+      });
+      console.log(`New account added with custom label: ${customLabel}`);
+    } catch (error) {
+      console.error(`Failed to add new account with custom label: ${customLabel}`, error);
+      throw new Error(`Unable to add new account with custom label: ${(error as Error).message}`);
+    }
+  }
 }
 
 export default AccountListPage;

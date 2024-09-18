@@ -1,10 +1,10 @@
 import { Suite } from 'mocha';
-import { Driver } from '../../../webdriver/driver';
-import { withFixtures, defaultGanacheOptions } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import HomePage from '../../../page-objects/pages/homepage';
-import AccountListPage from '../../../page-objects/pages/account-list-page';
+import { Driver } from '../../webdriver/driver';
+import { withFixtures, defaultGanacheOptions } from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import HomePage from '../../page-objects/pages/homepage';
+import AccountListPage from '../../page-objects/pages/account-list-page';
 
 const newAccountLabel = 'Custom name';
 const anotherAccountLabel = '2nd custom name';
