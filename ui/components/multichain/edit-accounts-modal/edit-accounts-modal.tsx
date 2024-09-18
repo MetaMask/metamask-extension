@@ -145,13 +145,8 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
     return accounts.length === selectedAccounts.length;
   };
 
-  let checked = false;
-  let isIndeterminate = false;
-  if (allAreSelected()) {
-    checked = true;
-  } else if (selectedAccounts.length > 0 && !allAreSelected()) {
-    isIndeterminate = true;
-  }
+  const checked = allAreSelected();
+  const isIndeterminate = selectedAccounts.length > 0 && !checked;
 
   return (
     <>
