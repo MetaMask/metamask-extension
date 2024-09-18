@@ -1,4 +1,5 @@
 import { Driver } from '../../webdriver/driver';
+import { strict as assert } from 'assert';
 
 class AccountCustomNamePage {
   private readonly driver: Driver;
@@ -23,8 +24,26 @@ class AccountCustomNamePage {
   async check_pageIsLoaded(): Promise<void> {
     console.log('Checking if Account Custom Name page is loaded');
     try {
-      await this.driver.waitForSelector(this.accountOptionsMenuButton);
-      console.log('Account Custom Name page is loaded');
+      const selectors = [
+        this.accountOptionsMenuButton,
+        this.accountMenuIcon,
+        this.newAccountButton,
+        this.addAccountButton,
+      ];
+
+      await this.driver.waitForMultipleSelectors(selectors);
+
+      // Additional checks for interactivity and visibility
+      for (const selector of selectors) {
+        const element = await this.driver.findElement(selector);
+        const isVisible = await element.isDisplayed();
+        const isEnabled = await element.isEnabled();
+        if (!isVisible || !isEnabled) {
+          throw new Error(`Element ${selector} is not visible or not interactive`);
+        }
+      }
+
+      console.log('Account Custom Name page is loaded successfully');
     } catch (error) {
       console.error('Failed to load Account Custom Name page', error);
       throw new Error(`Account Custom Name page failed to load: ${(error as Error).message}`);
@@ -40,6 +59,9 @@ class AccountCustomNamePage {
       await this.driver.fill(this.accountNameInput, newLabel);
       await this.driver.clickElement(this.saveAccountLabelButton);
       await this.driver.clickElement(this.closeButton);
+
+      // Verify the label change
+      await this.verifyAccountLabel(newLabel);
       console.log(`Account label changed to: ${newLabel}`);
     } catch (error) {
       console.error(`Failed to change account label to: ${newLabel}`, error);
@@ -58,6 +80,9 @@ class AccountCustomNamePage {
         text: 'Add account',
         tag: this.addAccountConfirmButton,
       });
+
+      // Verify the new account was added
+      await this.verifyAccountLabel(customLabel);
       console.log(`New account added with custom label: ${customLabel}`);
     } catch (error) {
       console.error(`Failed to add new account with custom label: ${customLabel}`, error);
@@ -68,14 +93,27 @@ class AccountCustomNamePage {
   async verifyAccountLabel(expectedLabel: string): Promise<void> {
     console.log(`Verifying account label: ${expectedLabel}`);
     try {
-      await this.driver.findElement({
+      const element = await this.driver.findElement({
         css: this.accountMenuIcon,
         text: expectedLabel,
       });
+      const actualLabel = await element.getText();
+      assert.strictEqual(actualLabel, expectedLabel, `Account label mismatch. Expected: ${expectedLabel}, Actual: ${actualLabel}`);
       console.log(`Account label verified: ${expectedLabel}`);
     } catch (error) {
       console.error(`Failed to verify account label: ${expectedLabel}`, error);
       throw new Error(`Account label verification failed: ${(error as Error).message}`);
+    }
+  }
+
+  async closeAccountMenu(): Promise<void> {
+    console.log('Closing account menu');
+    try {
+      await this.driver.clickElement(this.closeButton);
+      console.log('Account menu closed successfully');
+    } catch (error) {
+      console.error('Failed to close account menu', error);
+      throw new Error(`Unable to close account menu: ${(error as Error).message}`);
     }
   }
 }
