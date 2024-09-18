@@ -271,7 +271,7 @@ export const ReviewPermissions = () => {
                   danger
                   onClick={disconnectAllAccounts}
                 >
-                  {t('disconnectAllAccounts')}
+                  {t('disconnect')}
                 </Button>
               </Box>
             ) : (

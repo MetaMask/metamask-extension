@@ -2,6 +2,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { CaveatTypes } from '../../shared/constants/permissions';
+import { PermissionNames } from '../../app/scripts/controllers/permissions';
 import { getApprovalRequestsByType } from './approvals';
 import { createDeepEqualSelector } from './util';
 import {
@@ -286,7 +287,7 @@ function getChainsFromSubject(subject) {
 }
 
 function getChainsPermissionFromSubject(subject = {}) {
-  return subject.permissions?.['endowment:permitted-chains'] || {};
+  return subject.permissions?.[PermissionNames.permittedChains] || {};
 }
 
 function getAccountsFromPermission(accountsPermission) {

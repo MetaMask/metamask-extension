@@ -176,7 +176,6 @@ export const NetworkListMenu = ({ onClose }) => {
     return sortedNonTestNetworks;
   };
 
-  // check if not granted chain is clicked, then show the toast and grant permission
   const networksList = newOrderNetworks();
 
   const [items, setItems] = useState([...networksList]);
