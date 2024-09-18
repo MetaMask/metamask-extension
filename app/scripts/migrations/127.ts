@@ -64,6 +64,18 @@ function transformState(
       ),
     );
     return state;
+  } else if (!hasProperty(state, 'TransactionController')) {
+    global.sentry?.captureException?.(
+      new Error(`state.TransactionController is not defined`),
+    );
+    return state;
+  } else if (!isObject(state.TransactionController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `typeof state.TransactionController is ${typeof state.TransactionController}`,
+      ),
+    );
+    return state;
   }
 
   const networkState = state.NetworkController;
@@ -131,19 +143,18 @@ function transformState(
   );
 
   // Get transaction history in reverse chronological order to help with tie breaks
-  const transactions: RuntimeObject[] =
-    hasProperty(state, 'TransactionController') &&
-    isObject(state.TransactionController) &&
-    Array.isArray(state.TransactionController.transactions)
-      ? state.TransactionController.transactions
-          .filter(
-            (tx) =>
-              isObject(tx) &&
-              typeof tx.time === 'number' &&
-              typeof tx.networkClientId === 'string',
-          )
-          .sort((a, b) => b.time - a.time)
-      : [];
+  const transactions: RuntimeObject[] = Array.isArray(
+    state.TransactionController.transactions,
+  )
+    ? state.TransactionController.transactions
+        .filter(
+          (tx) =>
+            isObject(tx) &&
+            typeof tx.time === 'number' &&
+            typeof tx.networkClientId === 'string',
+        )
+        .sort((a, b) => b.time - a.time)
+    : [];
 
   // For each chain id, merge the array of network configurations
   const networkConfigurationsByChainId = Object.entries(
