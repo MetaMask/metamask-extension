@@ -168,17 +168,6 @@ describe('PersonalSign Confirmation', () => {
       ),
     ).toBeInTheDocument();
   });
-});
-
-describe('MMI header warning', () => {
-  beforeEach(() => {
-    jest.resetAllMocks();
-    process.env.METAMASK_BUILD_TYPE = 'mmi';
-  });
-
-  afterAll(() => {
-    process.env.METAMASK_BUILD_TYPE = 'main';
-  });
 
   it('displays the MMI header warning when account signing is not the same as the account selected', async () => {
     const account =
