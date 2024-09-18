@@ -114,7 +114,7 @@ const HeaderInfo = () => {
           alignSelf: 'flex-end',
         }}
       >
-        <Tooltip position="bottom" title={t('accountDetails')} interactive>
+        <Tooltip position="bottom" title={t('accountDetails')}>
           <ButtonIcon
             ariaLabel={t('accountDetails')}
             color={IconColor.iconDefault}
