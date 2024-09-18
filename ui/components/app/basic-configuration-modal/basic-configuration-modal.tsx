@@ -150,7 +150,7 @@ export function BasicConfigurationModal() {
                       category: MetaMetricsEventCategory.Onboarding,
                       event: MetaMetricsEventName.SettingsUpdated,
                       properties: {
-                        settings_group: 'advanced',
+                        settings_group: 'onboarding_advanced_configuration',
                         settings_type: 'basic_functionality',
                         old_value: true,
                         new_value: false,
