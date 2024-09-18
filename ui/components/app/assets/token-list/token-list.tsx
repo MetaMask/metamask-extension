@@ -42,7 +42,10 @@ export default function TokenList({
     <div>
       {tokens.map((tokenData, index) => {
         if (tokenData?.isNative) {
-          return nativeToken;
+          // we need cloneElement so that we can pass the unique key
+          return React.cloneElement(nativeToken as React.ReactElement, {
+            key: index,
+          });
         }
         return <TokenCell key={index} {...tokenData} onClick={onTokenClick} />;
       })}
