@@ -198,7 +198,7 @@ export const EditNetworksModal = ({
               </Box>
             ) : (
               <ButtonPrimary
-                data-testid="connect-more-accounts-button"
+                data-testid="connect-more-chains-button"
                 onClick={() => {
                   onClick();
                   onClose();

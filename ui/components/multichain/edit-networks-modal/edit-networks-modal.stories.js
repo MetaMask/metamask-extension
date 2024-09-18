@@ -27,8 +27,7 @@ export default {
       {
         chainId: '0xe708',
         nickname: 'Linea Mainnet',
-        rpcUrl:
-          'https://linea-mainnet.infura.io/v3/',
+        rpcUrl: 'https://linea-mainnet.infura.io/v3/',
         rpcPrefs: {
           imageUrl: './images/linea-logo-mainnet.svg',
         },

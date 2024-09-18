@@ -221,7 +221,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                     </Text>
                   </Box>
                   <ButtonPrimary
-                    data-testid="disconnect-chains-button"
+                    data-testid="disconnect-accounts-button"
                     onClick={() => {
                       onDisconnectClick();
                       onClose();
@@ -235,7 +235,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                 </Box>
               ) : (
                 <ButtonPrimary
-                  data-testid="confirm-selection-button"
+                  data-testid="connect-more-accounts-button"
                   onClick={() => {
                     onClick();
                     if (currentTabHasNoAccounts) {
