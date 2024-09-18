@@ -60,8 +60,6 @@ export function setNoteToTraderMessage(message: string) {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       await submitRequestToBackground('setNoteToTraderMessage', [message]);
-
-      await forceUpdateMetamaskState(dispatch);
       // TODO: Replace `any` with type
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

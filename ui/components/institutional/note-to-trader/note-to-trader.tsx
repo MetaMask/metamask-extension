@@ -17,6 +17,7 @@ import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils
 import { useConfirmContext } from '../../../pages/confirmations/context/confirm';
 import { getConfirmationSender } from '../../../pages/confirmations/components/confirm/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { isSignatureTransactionType } from '../../../pages/confirmations/utils';
 
 const NoteToTrader: React.FC = () => {
   const dispatch = useDispatch();
@@ -24,7 +25,7 @@ const NoteToTrader: React.FC = () => {
   const [noteText, setNoteText] = useState('');
 
   const { currentConfirmation } = useConfirmContext();
-
+  const isSignature = isSignatureTransactionType(currentConfirmation);
   const { from } = getConfirmationSender(currentConfirmation);
   const fromChecksumHexAddress = toChecksumHexAddress(from || '');
   const isNoteToTraderSupported = useSelector((state: State) =>
@@ -39,7 +40,7 @@ const NoteToTrader: React.FC = () => {
     return () => clearTimeout(timer);
   }, [noteText]);
 
-  return isNoteToTraderSupported ? (
+  return isNoteToTraderSupported && !isSignature? (
     <Box
       backgroundColor={BackgroundColor.backgroundDefault}
       borderRadius={BorderRadius.MD}
