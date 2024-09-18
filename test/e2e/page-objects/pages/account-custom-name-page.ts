@@ -50,14 +50,25 @@ class AccountCustomNamePage {
     }
   }
 
+  /**
+   * Changes the label of the current account.
+   * @param newLabel - The new label to set for the account.
+   * @throws Will throw an error if any step in the account label change process fails.
+   */
   async changeAccountLabel(newLabel: string): Promise<void> {
     console.log(`Changing account label to: ${newLabel}`);
     try {
+      await this.driver.waitForSelector(this.accountOptionsMenuButton);
       await this.driver.clickElement(this.accountOptionsMenuButton);
+      await this.driver.waitForSelector(this.accountDetailsButton);
       await this.driver.clickElement(this.accountDetailsButton);
+      await this.driver.waitForSelector(this.editableLabelButton);
       await this.driver.clickElement(this.editableLabelButton);
+      await this.driver.waitForSelector(this.accountNameInput);
       await this.driver.fill(this.accountNameInput, newLabel);
+      await this.driver.waitForSelector(this.saveAccountLabelButton);
       await this.driver.clickElement(this.saveAccountLabelButton);
+      await this.driver.waitForSelector(this.closeButton);
       await this.driver.clickElement(this.closeButton);
 
       // Verify the label change
@@ -69,13 +80,23 @@ class AccountCustomNamePage {
     }
   }
 
+  /**
+   * Adds a new account with a custom label.
+   * @param customLabel - The custom label for the new account.
+   * @throws Will throw an error if any step in the account creation process fails.
+   */
   async addNewAccountWithCustomLabel(customLabel: string): Promise<void> {
     console.log(`Adding new account with custom label: ${customLabel}`);
     try {
+      await this.driver.waitForSelector(this.accountMenuIcon);
       await this.driver.clickElement(this.accountMenuIcon);
+      await this.driver.waitForSelector(this.newAccountButton);
       await this.driver.clickElement(this.newAccountButton);
+      await this.driver.waitForSelector(this.addAccountButton);
       await this.driver.clickElement(this.addAccountButton);
+      await this.driver.waitForSelector(this.newAccountNameInput);
       await this.driver.fill(this.newAccountNameInput, customLabel);
+      await this.driver.waitForSelector(this.addAccountConfirmButton);
       await this.driver.clickElementAndWaitToDisappear({
         text: 'Add account',
         tag: this.addAccountConfirmButton,
@@ -90,9 +111,15 @@ class AccountCustomNamePage {
     }
   }
 
+  /**
+   * Verifies that the account label matches the expected label.
+   * @param expectedLabel - The expected label of the account.
+   * @throws Will throw an error if the account label verification fails or if the element is not found.
+   */
   async verifyAccountLabel(expectedLabel: string): Promise<void> {
     console.log(`Verifying account label: ${expectedLabel}`);
     try {
+      await this.driver.waitForSelector(this.accountMenuIcon);
       const element = await this.driver.findElement({
         css: this.accountMenuIcon,
         text: expectedLabel,
@@ -106,10 +133,16 @@ class AccountCustomNamePage {
     }
   }
 
+  /**
+   * Closes the account menu.
+   * @throws Will throw an error if the account menu fails to close or if the close button is not found.
+   */
   async closeAccountMenu(): Promise<void> {
     console.log('Closing account menu');
     try {
+      await this.driver.waitForSelector(this.closeButton);
       await this.driver.clickElement(this.closeButton);
+      await this.driver.assertElementNotPresent(this.closeButton);
       console.log('Account menu closed successfully');
     } catch (error) {
       console.error('Failed to close account menu', error);
