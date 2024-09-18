@@ -76,7 +76,15 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/assets-controllers>multiformats": true
+        "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true
+      }
+    },
+    "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "console.warn": true,
+        "crypto.subtle.digest": true
       }
     },
     "@ensdomains/content-hash>multihashes": {
@@ -785,13 +793,13 @@
         "setTimeout": true
       },
       "packages": {
+        "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/abi-utils": true,
         "@metamask/assets-controllers>@metamask/base-controller": true,
         "@metamask/assets-controllers>@metamask/polling-controller": true,
-        "@metamask/assets-controllers>multiformats": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
@@ -825,14 +833,6 @@
         "@metamask/assets-controllers>@metamask/base-controller": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "uuid": true
-      }
-    },
-    "@metamask/assets-controllers>multiformats": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "console.warn": true,
-        "crypto.subtle.digest": true
       }
     },
     "@metamask/base-controller": {

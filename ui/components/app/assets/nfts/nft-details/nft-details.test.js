@@ -19,7 +19,16 @@ import {
 } from '../../../../../store/actions';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
+import {
+  getAssetImageURL,
+  shortenAddress,
+} from '../../../../../helpers/utils/util';
 import NftDetails from './nft-details';
+
+jest.mock('../../../../../helpers/utils/util', () => ({
+  getAssetImageURL: jest.fn(),
+  shortenAddress: jest.fn(),
+}));
 
 jest.mock('copy-to-clipboard');
 
@@ -62,13 +71,20 @@ describe('NFT Details', () => {
     jest.clearAllMocks();
   });
 
-  it('should match minimal props and state snapshot', () => {
+  it('should match minimal props and state snapshot', async () => {
+    getAssetImageURL.mockResolvedValue(
+      'https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link',
+    );
+    shortenAddress.mockReturnValue('0xDc738...06414');
+
     const { container } = renderWithProvider(
       <NftDetails {...props} />,
       mockStore,
     );
 
-    expect(container).toMatchSnapshot();
+    await waitFor(() => {
+      expect(container).toMatchSnapshot();
+    });
   });
 
   it(`should route to '/' route when the back button is clicked`, () => {
