@@ -7,6 +7,7 @@ const ZENDESK_URLS = {
     'https://support.metamask.io/privacy-and-security/basic-safety-and-security-tips-for-metamask/',
   CUSTOMIZE_NONCE:
     'https://support.metamask.io/transactions-and-gas/transactions/how-to-customize-a-transaction-nonce/',
+  GAS_FEES: 'https://support.metamask.io/transactions-and-gas/gas-fees/',
   HARDWARE_CONNECTION:
     'https://support.metamask.io/privacy-and-security/hardware-wallet-hub/',
   IMPORT_ACCOUNTS:
