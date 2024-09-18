@@ -372,6 +372,8 @@ workflows:
         value: << pipeline.git.branch >>
     jobs:
       - prep-deps
+      - prep-test-deps:
+        - prep-deps
       - get-changed-files-with-git-diff:
           requires:
             - prep-deps
