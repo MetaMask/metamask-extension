@@ -1,8 +1,5 @@
 import { Mockttp, RequestRuleBuilder } from 'mockttp';
-import {
-  AuthenticationController,
-  UserStorageController,
-} from '@metamask/profile-sync-controller';
+import { AuthenticationController } from '@metamask/profile-sync-controller';
 import {
   NotificationServicesController,
   NotificationServicesPushController,
@@ -33,8 +30,7 @@ export async function mockNotificationServices(server: Mockttp) {
   const NOTIFICATIONS_USER_STORAGE_ENDPOINT =
     'https://user-storage.api.cx.metamask.io/api/v1/userstorage/notifications';
   const NOTIFICATION_USER_STORAGE_ID =
-    'd1d70f77627f7e33a42734be088b316e9f8762c00ab91c91996a5893640d259c';
-
+    'df1d90e0a8c2c7c48a84cfc80c979b68c7e7d5624b89986a83a280ab92511bd4';
   mockAPICall(server, {
     url: `${NOTIFICATIONS_USER_STORAGE_ENDPOINT}/${NOTIFICATION_USER_STORAGE_ID}`,
     requestMethod: 'GET',
