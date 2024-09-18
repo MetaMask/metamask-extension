@@ -1,10 +1,8 @@
 import React, { ReactNode } from 'react';
 import { ReactNodeLike } from 'prop-types';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { MMISignatureMismatchBanner } from '../../../components/institutional/signature-mismatch-banner';
 import NoteToTrader from '../../../components/institutional/note-to-trader';
-///: END:ONLY_INCLUDE_IF
 import { Page } from '../../../components/multichain/pages/page';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
@@ -22,6 +20,7 @@ import { Title } from '../components/confirm/title';
 import EditGasFeePopover from '../components/edit-gas-fee-popover';
 import { NetworkChangeToast } from '../components/confirm/network-change-toast';
 import { ConfirmContextProvider, useConfirmContext } from '../context/confirm';
+import { isMMI } from '../../../helpers/utils/build-types';
 
 const EIP1559TransactionGasModal = () => {
   return (
@@ -54,21 +53,13 @@ const Confirm = () => (
             <Nav />
             <Header />
             <ScrollToBottom>
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                <MMISignatureMismatchBanner />
-                ///: END:ONLY_INCLUDE_IF
-              }
+              {isMMI() && <MMISignatureMismatchBanner />}
               <BlockaidLoadingIndicator />
               <LedgerInfo />
               <Title />
               <Info />
               <PluggableSection />
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                <NoteToTrader />
-                ///: END:ONLY_INCLUDE_IF
-              }
+              {isMMI() && <NoteToTrader />}
             </ScrollToBottom>
             <Footer />
             <NetworkChangeToast />

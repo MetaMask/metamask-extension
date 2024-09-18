@@ -13,8 +13,10 @@ import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { createMockImplementation } from '../../helpers';
 
 jest.mock('../../../../ui/store/institutional/institution-background', () => ({
-  ...jest.requireActual('../../../../ui/store/institutional/institution-background'),
-  setNoteToTraderMessage: jest.fn().mockImplementation((message) => () => ({
+  ...jest.requireActual(
+    '../../../../ui/store/institutional/institution-background',
+  ),
+  setNoteToTraderMessage: jest.fn().mockImplementation((message) => ({
     type: 'SET_NOTE_TO_TRADER_MESSAGE',
     payload: message,
   })),
@@ -212,6 +214,22 @@ describe('Permit Confirmation', () => {
     expect(simulationSection).toHaveTextContent('Spending cap');
     expect(simulationSection).toHaveTextContent('0xCcCCc...ccccC');
     expect(getByTestId('simulation-token-value')).toHaveTextContent('3,000');
+  });
+});
+
+describe('MMI header warning', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+    mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
+      createMockImplementation({
+        getTokenStandardAndDetails: { decimal: '10' },
+      }),
+    );
+    process.env.METAMASK_BUILD_TYPE = 'mmi';
+  });
+
+  afterAll(() => {
+    process.env.METAMASK_BUILD_TYPE = 'main';
   });
 
   it('displays the MMI header warning when account signing is not the same as the account selected', async () => {
