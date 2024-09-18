@@ -80,6 +80,7 @@ import { createOffscreen } from './offscreen';
 /* eslint-enable import/first */
 
 import { TRIGGER_TYPES } from './controllers/metamask-notifications/constants/notification-schema';
+import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -123,6 +124,7 @@ if (inTest || process.env.METAMASK_DEBUG) {
 }
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
+
 // normalized (adds a trailing slash to the end of the domain if it's missing)
 // the URL once and reuse it:
 const phishingPageHref = phishingPageUrl.toString();
@@ -865,10 +867,10 @@ export function setupController(
       senderUrl.origin === phishingPageUrl.origin &&
       senderUrl.pathname === phishingPageUrl.pathname
     ) {
-      const portStream =
+      const portStreamForPhishingPage =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
       controller.setupPhishingCommunication({
-        connectionStream: portStream,
+        connectionStream: portStreamForPhishingPage,
       });
     } else {
       // this is triggered when a new tab is opened, or origin(url) is changed
@@ -886,6 +888,18 @@ export function setupController(
           ) {
             requestAccountTabIds[origin] = tabId;
           }
+        });
+      }
+      if (
+        senderUrl &&
+        COOKIE_ID_MARKETING_WHITELIST_ORIGINS.some(
+          (origin) => origin === senderUrl.origin,
+        )
+      ) {
+        const portStreamForCookieHandlerPage =
+          overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        controller.setUpCookieHandlerCommunication({
+          connectionStream: portStreamForCookieHandlerPage,
         });
       }
       connectExternalExtension(remotePort);
