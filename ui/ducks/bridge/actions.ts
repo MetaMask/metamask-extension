@@ -110,12 +110,12 @@ export const signBridgeTransaction = () => {
     // const bestQuote = DUMMY_QUOTES_APPROVAL[0]; // TODO: actually use live quotes
     const bestQuote = DUMMY_QUOTES_NO_APPROVAL[0]; // TODO: actually use live quotes
 
-    // Track event: bridgeStarted
+    // Track event: bridgeStarted TODO
     // trackEvent({
 
     // })
 
-    // Approval tx
+    // Approval tx fn
     const handleApprovalTx = async () => {
       console.log('Bridge', 'handleApprovalTx');
 
@@ -150,7 +150,7 @@ export const signBridgeTransaction = () => {
       return approvalTxId;
     };
 
-    // The actual bridge tx
+    // Bridge tx fn
     const handleBridgeTx = async (approvalTxId: string | undefined) => {
       console.log('Bridge', 'handleBridgeTx');
       const hexChainId = new Numeric(bestQuote.trade.chainId, 10)
@@ -195,6 +195,7 @@ export const signBridgeTransaction = () => {
       return bridgeTxId;
     };
 
+    // Actually execute approval and/or bridge tx
     let approvalTxId: string | undefined;
     if (bestQuote?.approval) {
       approvalTxId = await handleApprovalTx();
