@@ -16,8 +16,8 @@ import { Severity } from '../helpers/constants/design-system';
 const useAlerts = (ownerId: string) => {
   const dispatch = useDispatch();
 
-  const alerts: Alert[] = useSelector((state) =>
-    selectAlerts(state as AlertsState, ownerId),
+  const alerts: Alert[] = sortAlertsBySeverity(
+    useSelector((state) => selectAlerts(state as AlertsState, ownerId)),
   );
 
   const confirmedAlertKeys = useSelector((state) =>
@@ -28,8 +28,8 @@ const useAlerts = (ownerId: string) => {
     selectGeneralAlerts(state as AlertsState, ownerId),
   );
 
-  const fieldAlerts = useSelector((state) =>
-    selectFieldAlerts(state as AlertsState, ownerId),
+  const fieldAlerts = sortAlertsBySeverity(
+    useSelector((state) => selectFieldAlerts(state as AlertsState, ownerId)),
   );
 
   const getFieldAlerts = useCallback(
@@ -81,5 +81,17 @@ const useAlerts = (ownerId: string) => {
     unconfirmedDangerAlerts,
   };
 };
+
+function sortAlertsBySeverity(alerts: Alert[]): Alert[] {
+  const severityOrder = {
+    [Severity.Danger]: 3,
+    [Severity.Warning]: 2,
+    [Severity.Info]: 1,
+  };
+
+  return alerts.sort(
+    (a, b) => severityOrder[b.severity] - severityOrder[a.severity],
+  );
+}
 
 export default useAlerts;

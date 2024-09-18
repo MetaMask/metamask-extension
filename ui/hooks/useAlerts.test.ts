@@ -11,17 +11,24 @@ describe('useAlerts', () => {
   const ownerId2Mock = '321';
   const fromAlertKeyMock = 'from';
   const dataAlertKeyMock = 'data';
+  const toAlertKeyMock = 'to';
   const alertsMock = [
     {
-      key: fromAlertKeyMock,
-      field: fromAlertKeyMock,
-      severity: Severity.Danger as AlertSeverity,
-      message: 'Alert 1',
+      key: toAlertKeyMock,
+      field: toAlertKeyMock,
+      severity: Severity.Info as AlertSeverity,
+      message: 'Alert 3',
     },
     {
       key: dataAlertKeyMock,
       severity: Severity.Warning as AlertSeverity,
       message: 'Alert 2',
+    },
+    {
+      key: fromAlertKeyMock,
+      field: fromAlertKeyMock,
+      severity: Severity.Danger as AlertSeverity,
+      message: 'Alert 1',
     },
   ];
 
@@ -29,7 +36,11 @@ describe('useAlerts', () => {
     confirmAlerts: {
       alerts: { [ownerIdMock]: alertsMock, [ownerId2Mock]: [alertsMock[0]] },
       confirmed: {
-        [ownerIdMock]: { [fromAlertKeyMock]: true, [dataAlertKeyMock]: false },
+        [ownerIdMock]: {
+          [fromAlertKeyMock]: true,
+          [dataAlertKeyMock]: false,
+          [toAlertKeyMock]: false,
+        },
         [ownerId2Mock]: { [fromAlertKeyMock]: false },
       },
     },
@@ -53,6 +64,11 @@ describe('useAlerts', () => {
       expect(result.current.hasAlerts).toEqual(true);
       expect(result.current.hasDangerAlerts).toEqual(true);
       expect(result.current.hasUnconfirmedDangerAlerts).toEqual(false);
+    });
+
+    it('returns alerts ordered by severity', () => {
+      const orderedAlerts = result.current.alerts;
+      expect(orderedAlerts[0].severity).toEqual(Severity.Danger);
     });
   });
 
@@ -103,10 +119,10 @@ describe('useAlerts', () => {
 
   describe('fieldAlerts', () => {
     it('returns all alerts with field property', () => {
-      const expectedFieldAlerts = alertsMock.find(
-        (alert) => alert.field === fromAlertKeyMock,
-      );
-      expect(result.current.fieldAlerts).toEqual([expectedFieldAlerts]);
+      expect(result.current.fieldAlerts).toEqual([
+        alertsMock[0],
+        alertsMock[2],
+      ]);
     });
 
     it('returns empty array if no alerts with field property', () => {

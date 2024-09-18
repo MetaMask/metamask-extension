@@ -15,6 +15,7 @@ import {
 } from '../../../component-library';
 import {
   AlignItems,
+  Severity,
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -122,14 +123,18 @@ export function ConfirmAlertModal({
   ownerId,
 }: ConfirmAlertModalProps) {
   const t = useI18nContext();
-  const { alerts, unconfirmedDangerAlerts, hasDangerAlerts, dangerAlerts } =
-    useAlerts(ownerId);
+  const { fieldAlerts, alerts, isAlertConfirmed } = useAlerts(ownerId);
 
   const [confirmCheckbox, setConfirmCheckbox] = useState<boolean>(false);
 
+  const unconfirmedDangerFieldAlerts = fieldAlerts.filter(
+    (alert) =>
+      !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
+  );
+
   // if there are unconfirmed danger alerts, show the multiple alert modal
   const [multipleAlertModalVisible, setMultipleAlertModalVisible] =
-    useState<boolean>(unconfirmedDangerAlerts.length > 0);
+    useState<boolean>(unconfirmedDangerFieldAlerts.length > 0);
 
   const handleCloseMultipleAlertModal = useCallback(
     (request?: { recursive?: boolean }) => {
@@ -151,6 +156,7 @@ export function ConfirmAlertModal({
   }, [confirmCheckbox]);
 
   if (multipleAlertModalVisible) {
+    console.log('open multiple alert modal >>>>>');
     return (
       <MultipleAlertModal
         ownerId={ownerId}
@@ -160,13 +166,12 @@ export function ConfirmAlertModal({
     );
   }
 
-  // use highest severity alert for the selected alert
-  const selectedAlert = hasDangerAlerts ? dangerAlerts[0] : alerts[0];
+  const selectedAlert = alerts[0];
 
   if (!selectedAlert) {
     return null;
   }
-
+  console.log('open friction modal >>>>>');
   return (
     <AlertModal
       ownerId={ownerId}
@@ -175,11 +180,7 @@ export function ConfirmAlertModal({
       onClose={onClose}
       customTitle={t('confirmAlertModalTitle')}
       customDetails={
-        selectedAlert.provider === SecurityProvider.Blockaid ? (
-          SecurityProvider.Blockaid
-        ) : (
-          <ConfirmDetails onAlertLinkClick={handleOpenMultipleAlertModal} />
-        )
+        <ConfirmDetails onAlertLinkClick={handleOpenMultipleAlertModal} />
       }
       customAcknowledgeCheckbox={
         <AcknowledgeCheckboxBase
@@ -187,7 +188,7 @@ export function ConfirmAlertModal({
           isConfirmed={confirmCheckbox}
           onCheckboxClick={handleConfirmCheckbox}
           label={
-            selectedAlert?.provider === SecurityProvider.Blockaid
+            alerts.length === 1
               ? t('confirmAlertModalAcknowledgeSingle')
               : t('confirmAlertModalAcknowledgeMultiple')
           }
@@ -200,7 +201,6 @@ export function ConfirmAlertModal({
           isConfirmed={confirmCheckbox}
         />
       }
-      enableProvider={false}
     />
   );
 }

@@ -39,6 +39,7 @@ import { useConfirmContext } from '../../../context/confirm';
 import { getConfirmationSender } from '../utils';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../../../../../helpers/constants/design-system';
 
 export type OnCancelHandler = ({
   location,
@@ -80,8 +81,14 @@ const ConfirmButton = ({
   const {
     hasDangerAlerts,
     hasUnconfirmedDangerAlerts,
-    unconfirmedDangerAlerts,
+    fieldAlerts,
+    isAlertConfirmed,
   } = useAlerts(alertOwnerId);
+
+  const unconfirmedDangerAlertsFields = fieldAlerts.filter(
+    (alert) =>
+      !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
+  );
 
   const handleCloseConfirmModal = useCallback(() => {
     setConfirmModalVisible(false);
@@ -109,9 +116,13 @@ const ConfirmButton = ({
           disabled={hasUnconfirmedDangerAlerts ? false : disabled}
           onClick={handleOpenConfirmModal}
           size={ButtonSize.Lg}
-          startIconName={IconName.Danger}
+          startIconName={
+            unconfirmedDangerAlertsFields.length > 0
+              ? IconName.SecuritySearch
+              : IconName.Danger
+          }
         >
-          {reviewAlertButtonText(unconfirmedDangerAlerts, t)}
+          {reviewAlertButtonText(unconfirmedDangerAlertsFields, t)}
         </Button>
       ) : (
         <Button

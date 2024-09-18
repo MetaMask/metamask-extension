@@ -60,10 +60,6 @@ export type AlertModalProps = {
    */
   customTitle?: string;
   /**
-   * The flag to enable the provider. It's enabled by default.
-   */
-  enableProvider?: boolean;
-  /**
    * The start (left) content area of ModalHeader.
    * It overrides `startAccessory` of ModalHeaderDefault and by default no content is present.
    */
@@ -313,7 +309,6 @@ export function AlertModal({
   customDetails,
   customAcknowledgeCheckbox,
   customAcknowledgeButton,
-  enableProvider = true,
 }: AlertModalProps) {
   const { isAlertConfirmed, setAlertConfirmed, alerts } = useAlerts(ownerId);
   const { trackAlertRender } = useAlertMetrics();
@@ -324,8 +319,9 @@ export function AlertModal({
     },
     [onClose],
   );
-
+  console.log('alertKey >>>>>>', alertKey, alerts);
   const selectedAlert = alerts.find((alert: Alert) => alert.key === alertKey);
+  console.log('selectedAlert >>>>>>', selectedAlert);
 
   useEffect(() => {
     if (selectedAlert) {
@@ -373,13 +369,6 @@ export function AlertModal({
               onCheckboxClick={handleCheckboxClick}
             />
           )}
-          {enableProvider ? (
-            <AlertProvider
-              provider={selectedAlert.provider}
-              paddingTop={2}
-              textAlign={TextAlign.Center}
-            />
-          ) : null}
         </ModalBody>
         <ModalFooter>
           <Box

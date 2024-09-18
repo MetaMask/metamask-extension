@@ -146,7 +146,7 @@ export function MultipleAlertModal({
   onFinalAcknowledgeClick,
   ownerId,
 }: MultipleAlertModalProps) {
-  const { isAlertConfirmed, alerts } = useAlerts(ownerId);
+  const { isAlertConfirmed, fieldAlerts: alerts } = useAlerts(ownerId);
 
   const initialAlertIndex = alerts.findIndex(
     (alert: Alert) => alert.key === alertKey,

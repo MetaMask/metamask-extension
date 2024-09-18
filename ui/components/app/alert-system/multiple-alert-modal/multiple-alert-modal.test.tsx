@@ -127,7 +127,7 @@ describe('MultipleAlertModal', () => {
 
     fireEvent.click(getByTestId('alert-modal-button'));
 
-    expect(getByText(alertsMock[2].message)).toBeInTheDocument();
+    expect(getByText(alertsMock[1].message)).toBeInTheDocument();
   });
 
   describe('Navigation', () => {
@@ -139,11 +139,14 @@ describe('MultipleAlertModal', () => {
 
       fireEvent.click(getByTestId('alert-modal-next-button'));
 
-      expect(getByText(alertsMock[1].message)).toBeInTheDocument();
+      expect(getByText(alertsMock[2].message)).toBeInTheDocument();
     });
 
     it('calls previous alert when the previous button is clicked', () => {
-      const selectSecondAlertMock = { ...defaultProps, alertKey: 'data' };
+      const selectSecondAlertMock = {
+        ...defaultProps,
+        alertKey: CONTRACT_ALERT_KEY_MOCK,
+      };
       const { getByTestId, getByText } = renderWithProvider(
         <MultipleAlertModal {...selectSecondAlertMock} />,
         mockStore,
@@ -151,7 +154,7 @@ describe('MultipleAlertModal', () => {
 
       fireEvent.click(getByTestId('alert-modal-back-button'));
 
-      expect(getByText(alertsMock[0].message)).toBeInTheDocument();
+      expect(getByText(alertsMock[1].message)).toBeInTheDocument();
     });
   });
 });
