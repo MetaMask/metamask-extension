@@ -13,7 +13,11 @@ import {
   BRIDGE_CONTROLLER_NAME,
   DEFAULT_BRIDGE_CONTROLLER_STATE,
 } from './constants';
-import { BridgeControllerState, BridgeControllerMessenger } from './types';
+import {
+  BridgeControllerState,
+  BridgeControllerMessenger,
+  BridgeFeatureFlagsKey,
+} from './types';
 
 const metadata: StateMetadata<{ bridgeState: BridgeControllerState }> = {
   bridgeState: {
@@ -63,6 +67,9 @@ export default class BridgeController extends BaseController<
     this.update((_state) => {
       _state.bridgeState = { ...bridgeState, bridgeFeatureFlags };
     });
+    this.setIntervalLength(
+      bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].refreshRate,
+    );
   };
 
   selectSrcNetwork = async (chainId: Hex) => {
