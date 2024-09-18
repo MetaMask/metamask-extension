@@ -56,10 +56,6 @@ import {
 import { AccountType } from './review-permission.types';
 import { SiteCell } from '.';
 
-type UrlParams = {
-  origin: string;
-};
-
 type PermittedAccountsByOrigin = {
   [key: string]: { address: string }[];
 };
