@@ -18,12 +18,14 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        const homePage = new HomePage(driver);
-        const accountListPage = new AccountListPage(driver);
-
         await loginWithBalanceValidation(driver);
 
+        const homePage = new HomePage(driver);
+        await homePage.openAccountMenu();
+
         // Change account label for existing account
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.check_pageIsLoaded();
         await accountListPage.openAccountOptionsMenu();
         await accountListPage.changeAccountLabel(newAccountLabel);
 
@@ -47,6 +49,7 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         // Verify both account labels persist after unlock
         await accountListPage.verifyAccountLabel(newAccountLabel);
         await homePage.openAccountMenu();
+        await accountListPage.check_pageIsLoaded();
         await accountListPage.verifyAccountLabel(anotherAccountLabel);
       },
     );

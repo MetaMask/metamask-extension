@@ -33,6 +33,19 @@ class AccountListPage {
       '.multichain-account-menu-popover__list--menu-item-hidden-account [data-testid="account-list-item-menu-button"]';
   }
 
+  async check_pageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.accountListItem,
+        this.accountOptionsMenuButton,
+      ]);
+    } catch (e) {
+      console.log('Timeout while waiting for account list to be loaded', e);
+      throw e;
+    }
+    console.log('Account list is loaded');
+  }
+
   async hideAccount(): Promise<void> {
     console.log(`Hide account in account list`);
     await this.driver.clickElement(this.hideUnhideAccountButton);
@@ -90,17 +103,12 @@ class AccountListPage {
 
   async changeAccountLabel(newLabel: string): Promise<void> {
     console.log(`Changing account label to: ${newLabel}`);
-    try {
-      await this.driver.clickElement('[data-testid="account-list-menu-details"]');
-      await this.driver.clickElement('[data-testid="editable-label-button"]');
-      await this.driver.fill('input[placeholder="Account name"]', newLabel);
-      await this.driver.clickElement('[data-testid="save-account-label-input"]');
-      await this.driver.clickElement('button[aria-label="Close"]');
-      console.log(`Account label changed to: ${newLabel}`);
-    } catch (error) {
-      console.error(`Failed to change account label to: ${newLabel}`, error);
-      throw new Error(`Unable to change account label: ${(error as Error).message}`);
-    }
+    await this.driver.clickElement('[data-testid="account-list-menu-details"]');
+    await this.driver.clickElement('[data-testid="editable-label-button"]');
+    await this.driver.fill('input[placeholder="Account name"]', newLabel);
+    await this.driver.clickElement('[data-testid="save-account-label-input"]');
+    await this.driver.clickElement('button[aria-label="Close"]');
+    console.log(`Account label changed to: ${newLabel}`);
   }
 
   async verifyAccountLabel(expectedLabel: string): Promise<void> {
