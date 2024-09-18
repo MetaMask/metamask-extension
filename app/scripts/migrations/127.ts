@@ -173,7 +173,7 @@ function transformState(
         if (network.id && network.rpcUrl) {
           //
           // Check if the endpoint is a duplicate, which the network controller doesn't allow
-          const findDuplicate = (endpoint: unknown) =>
+          const isDuplicate = (endpoint: unknown) =>
             isObject(endpoint) &&
             ((typeof endpoint.url === 'string' &&
               typeof network.rpcUrl === 'string' &&
@@ -182,10 +182,10 @@ function transformState(
               endpoint.networkClientId === network.id);
 
           // The endpoint must be unique across all chains, not just within each
-          const duplicateWithinChain = endpoints.find(findDuplicate);
+          const duplicateWithinChain = endpoints.find(isDuplicate);
           const duplicateAcrossChains = Object.values(acc)
             .flatMap((n) => (isObject(n) ? n.rpcEndpoints : []))
-            .find(findDuplicate);
+            .find(isDuplicate);
 
           if (
             duplicateWithinChain &&
@@ -208,6 +208,7 @@ function transformState(
               type: network.type === 'infura' ? 'infura' : 'custom',
               ...(network.type !== 'infura' &&
                 typeof network.nickname === 'string' &&
+                // The old network name becomes the endpoint name
                 network.nickname && { name: network.nickname }),
             });
           }
