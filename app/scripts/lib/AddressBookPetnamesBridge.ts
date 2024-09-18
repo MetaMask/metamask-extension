@@ -55,9 +55,8 @@ export class AddressBookPetnamesBridge extends AbstractPetnamesBridge<
       const chainEntries = state.addressBook[chainId as Hex];
 
       for (const address of Object.keys(chainEntries)) {
-        // TODO: Replace `any` with type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const entry = state.addressBook[chainId as any][address];
+
+        const entry = state.addressBook[chainId as Hex][address];
         const normalizedChainId = chainId.toLowerCase();
         const { name, isEns } = entry;
 
