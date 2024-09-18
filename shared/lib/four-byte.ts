@@ -57,7 +57,6 @@ export async function getMethodDataAsync(
         console.error(e);
         return null;
       });
-      console.log('fourByteSig = ', fourByteSig);
     }
 
     if (!registry) {
