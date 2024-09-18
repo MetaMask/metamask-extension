@@ -101,23 +101,47 @@ class AccountListPage {
     await this.driver.waitForSelector(this.hiddenAccountsList);
   }
 
+  /**
+   * Changes the label of the currently selected account.
+   * @param newLabel - The new label to set for the account.
+   * @throws Will throw an error if any step in the process fails.
+   */
   async changeAccountLabel(newLabel: string): Promise<void> {
     console.log(`Changing account label to: ${newLabel}`);
-    await this.driver.clickElement('[data-testid="account-list-menu-details"]');
-    await this.driver.clickElement('[data-testid="editable-label-button"]');
-    await this.driver.fill('input[placeholder="Account name"]', newLabel);
-    await this.driver.clickElement('[data-testid="save-account-label-input"]');
-    await this.driver.clickElement('button[aria-label="Close"]');
-    console.log(`Account label changed to: ${newLabel}`);
+    try {
+      await this.driver.waitForSelector('[data-testid="account-list-menu-details"]');
+      await this.driver.clickElement('[data-testid="account-list-menu-details"]');
+      await this.driver.waitForSelector('[data-testid="editable-label-button"]');
+      await this.driver.clickElement('[data-testid="editable-label-button"]');
+      await this.driver.fill('[data-testid="editable-label-input"]', newLabel);
+      await this.driver.waitForSelector('[data-testid="save-account-label-input"]');
+      await this.driver.clickElement('[data-testid="save-account-label-input"]');
+      await this.driver.waitForSelector('button[aria-label="Close"]');
+      await this.driver.clickElement('button[aria-label="Close"]');
+      console.log(`Account label changed to: ${newLabel}`);
+    } catch (error) {
+      console.error(`Failed to change account label to: ${newLabel}`, error);
+      throw new Error(`Unable to change account label: ${(error as Error).message}`);
+    }
   }
 
+  /**
+   * Verifies that the account label matches the expected label.
+   * @param expectedLabel - The expected label of the account.
+   * @throws Will throw an error if the account label verification fails.
+   */
   async verifyAccountLabel(expectedLabel: string): Promise<void> {
     console.log(`Verifying account label: ${expectedLabel}`);
     try {
-      await this.driver.findElement({
+      await this.driver.waitForSelector('[data-testid="account-menu-icon"]');
+      const accountLabel = await this.driver.findElement({
         css: '[data-testid="account-menu-icon"]',
         text: expectedLabel,
       });
+      const actualLabel = await accountLabel.getText();
+      if (actualLabel !== expectedLabel) {
+        throw new Error(`Account label mismatch. Expected: ${expectedLabel}, Actual: ${actualLabel}`);
+      }
       console.log(`Account label verified: ${expectedLabel}`);
     } catch (error) {
       console.error(`Failed to verify account label: ${expectedLabel}`, error);
@@ -125,12 +149,21 @@ class AccountListPage {
     }
   }
 
+  /**
+   * Adds a new account with a custom label.
+   * @param customLabel - The custom label for the new account.
+   * @throws Will throw an error if any step in the account creation process fails.
+   */
   async addNewAccountWithCustomLabel(customLabel: string): Promise<void> {
     console.log(`Adding new account with custom label: ${customLabel}`);
     try {
+      await this.driver.waitForSelector('[data-testid="account-menu-icon"]');
       await this.driver.clickElement('[data-testid="account-menu-icon"]');
+      await this.driver.waitForSelector('[data-testid="multichain-account-menu-popover-action-button"]');
       await this.driver.clickElement('[data-testid="multichain-account-menu-popover-action-button"]');
+      await this.driver.waitForSelector('[data-testid="multichain-account-menu-popover-add-account"]');
       await this.driver.clickElement('[data-testid="multichain-account-menu-popover-add-account"]');
+      await this.driver.waitForSelector('[placeholder="Account 2"]');
       await this.driver.fill('[placeholder="Account 2"]', customLabel);
       await this.driver.clickElementAndWaitToDisappear({
         text: 'Add account',
@@ -140,6 +173,22 @@ class AccountListPage {
     } catch (error) {
       console.error(`Failed to add new account with custom label: ${customLabel}`, error);
       throw new Error(`Unable to add new account with custom label: ${(error as Error).message}`);
+    }
+  }
+
+  /**
+   * Closes the account menu.
+   * @throws Will throw an error if the account menu fails to close.
+   */
+  async closeAccountMenu(): Promise<void> {
+    console.log('Closing account menu');
+    try {
+      await this.driver.waitForSelector('button[aria-label="Close"]');
+      await this.driver.clickElement('button[aria-label="Close"]');
+      console.log('Account menu closed successfully');
+    } catch (error) {
+      console.error('Failed to close account menu', error);
+      throw new Error(`Unable to close account menu: ${(error as Error).message}`);
     }
   }
 }
