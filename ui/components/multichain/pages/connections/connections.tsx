@@ -110,7 +110,10 @@ export const Connections = () => {
   );
   const selectedAccount = useSelector(getSelectedAccount);
   const internalAccounts = useSelector(getInternalAccounts);
-  const mergedAccounts = mergeAccounts(connectedAccounts, internalAccounts);
+  const mergedAccounts = mergeAccounts(
+    connectedAccounts,
+    internalAccounts,
+  ) as AccountType[];
 
   const permittedAccountsByOrigin = useSelector(
     getPermittedAccountsByOrigin,
@@ -174,16 +177,24 @@ export const Connections = () => {
         index ===
         mergedAccounts.reduce(
           (
-            acc: number,
-            cur: { metadata: { lastSelected: number } },
+            indexOfAccountWIthHighestLastSelected: number,
+            currentAccountToCompare: AccountType,
             // TODO: Replace `any` with type
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             i: any,
-          ) =>
-            cur.metadata.lastSelected >
-            mergedAccounts[acc].metadata.lastSelected
+          ) => {
+            const currentLastSelected =
+              currentAccountToCompare.metadata.lastSelected ?? 0;
+            const accountAtIndexLastSelected = mergedAccounts[
+              indexOfAccountWIthHighestLastSelected
+            ].metadata.lastSelected
               ? i
-              : acc,
+              : indexOfAccountWIthHighestLastSelected;
+
+            return currentLastSelected > accountAtIndexLastSelected
+              ? i
+              : indexOfAccountWIthHighestLastSelected;
+          },
           0,
         )
       );
@@ -252,12 +263,10 @@ export const Connections = () => {
               const isSelectedAccount =
                 selectedAccount.address === account.address;
               // Match the index of latestSelected Account with the index of all the accounts and set the active status
-              let mergedAccountsProps;
-              if (index === latestSelected) {
-                mergedAccountsProps = { ...account, isAccountActive: true };
-              } else {
-                mergedAccountsProps = { ...account };
-              }
+              const mergedAccountsProps = {
+                ...account,
+                isAccountActive: index === latestSelected,
+              };
               return (
                 <AccountListItem
                   account={mergedAccountsProps}

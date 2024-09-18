@@ -7,12 +7,12 @@ export const getUnapprovedTransaction = (
 ) => {
   return {
     actionId: 4256525906,
-    chainId: '0x5',
+    chainId: '0xaa36a7',
     dappSuggestedGasFees: {
       gas: '0x16a92',
     },
     id: pendingTransactionId,
-    origin: 'origin',
+    origin: 'local:http://localhost:8086/',
     securityAlertResponse: {},
     status: 'unapproved',
     time: pendingTransactionTime,

@@ -4,6 +4,7 @@ exports[`<ApproveDetails /> renders component for approve details 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation__approve-details"
   >
     <div
       class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -15,6 +16,7 @@ exports[`<ApproveDetails /> renders component for approve details 1`] = `
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          style="align-items: center;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"

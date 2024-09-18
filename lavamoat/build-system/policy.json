@@ -34,12 +34,7 @@
     },
     "@babel/code-frame>@babel/highlight>chalk>ansi-styles": {
       "packages": {
-        "@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
+        "@metamask/jazzicon>color>color-convert": true
       }
     },
     "@babel/code-frame>@babel/highlight>chalk>supports-color": {
@@ -1195,25 +1190,10 @@
     },
     "@metamask/build-utils": {
       "packages": {
-        "@metamask/utils": true
+        "@metamask/build-utils>@metamask/utils": true
       }
     },
-    "@metamask/eth-token-tracker>deep-equal>is-date-object": {
-      "packages": {
-        "koa>is-generator-function>has-tostringtag": true
-      }
-    },
-    "@metamask/jazzicon>color>clone": {
-      "globals": {
-        "Buffer": true
-      }
-    },
-    "@metamask/object-multiplex>once": {
-      "packages": {
-        "@metamask/object-multiplex>once>wrappy": true
-      }
-    },
-    "@metamask/utils": {
+    "@metamask/build-utils>@metamask/utils": {
       "globals": {
         "Buffer": true,
         "TextDecoder": true,
@@ -1226,6 +1206,26 @@
         "@noble/hashes": true,
         "nock>debug": true,
         "semver": true
+      }
+    },
+    "@metamask/eth-token-tracker>deep-equal>is-date-object": {
+      "packages": {
+        "koa>is-generator-function>has-tostringtag": true
+      }
+    },
+    "@metamask/jazzicon>color>clone": {
+      "globals": {
+        "Buffer": true
+      }
+    },
+    "@metamask/jazzicon>color>color-convert": {
+      "packages": {
+        "@metamask/jazzicon>color>color-convert>color-name": true
+      }
+    },
+    "@metamask/object-multiplex>once": {
+      "packages": {
+        "@metamask/object-multiplex>once>wrappy": true
       }
     },
     "@metamask/utils>@scure/base": {
@@ -3574,12 +3574,7 @@
     },
     "gulp-livereload>chalk>ansi-styles": {
       "packages": {
-        "gulp-livereload>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "gulp-livereload>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "gulp-livereload>chalk>ansi-styles>color-convert>color-name": true
+        "@metamask/jazzicon>color>color-convert": true
       }
     },
     "gulp-livereload>chalk>supports-color": {
@@ -6771,7 +6766,7 @@
         "tty.isatty": true
       },
       "globals": {
-        "process.argv": true,
+        "process.argv.includes": true,
         "process.env": true,
         "process.platform": true
       }
@@ -8683,12 +8678,7 @@
     },
     "stylelint>table>slice-ansi>ansi-styles": {
       "packages": {
-        "stylelint>table>slice-ansi>ansi-styles>color-convert": true
-      }
-    },
-    "stylelint>table>slice-ansi>ansi-styles>color-convert": {
-      "packages": {
-        "stylelint>table>slice-ansi>ansi-styles>color-convert>color-name": true
+        "@metamask/jazzicon>color>color-convert": true
       }
     },
     "stylelint>table>string-width": {

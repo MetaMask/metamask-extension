@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "Kết nối với ví cứng QR của bạn"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "Địa chỉ trong yêu cầu đăng nhập không trùng khớp với địa chỉ của tài khoản bạn đang sử dụng để đăng nhập."
   },
@@ -195,6 +192,9 @@
   "addAccount": {
     "message": "Thêm tài khoản"
   },
+  "addAccountToMetaMask": {
+    "message": "Thêm tài khoản vào MetaMask"
+  },
   "addAcquiredTokens": {
     "message": "Thêm token mà bạn đã mua bằng MetaMask"
   },
@@ -320,6 +320,9 @@
   "addUrl": {
     "message": "Thêm URL"
   },
+  "addingAccount": {
+    "message": "Thêm tài khoản"
+  },
   "addingCustomNetwork": {
     "message": "Thêm mạng"
   },
@@ -328,9 +331,6 @@
   },
   "additionalNetworks": {
     "message": "Mạng bổ sung"
-  },
-  "additionalRpcUrl": {
-    "message": "URL RPC Bổ sung"
   },
   "address": {
     "message": "Địa chỉ"
@@ -663,9 +663,6 @@
   "back": {
     "message": "Quay lại"
   },
-  "backup": {
-    "message": "Sao lưu"
-  },
   "backupApprovalInfo": {
     "message": "Đây là mã bí mật bắt buộc phải dùng để khôi phục ví trong trường hợp bạn bị mất thiết bị, quên mật khẩu, phải cài đặt lại MetaMask hoặc muốn truy cập ví của mình trên một thiết bị khác."
   },
@@ -677,12 +674,6 @@
   },
   "backupNow": {
     "message": "Sao lưu ngay"
-  },
-  "backupUserData": {
-    "message": "Sao lưu dữ liệu của bạn"
-  },
-  "backupUserDataDescription": {
-    "message": "Bạn có thể sao lưu các dữ liệu như địa chỉ liên hệ và tùy chọn của mình."
   },
   "balance": {
     "message": "Số dư"
@@ -1027,9 +1018,6 @@
   "confirmRpcUrlDeletionMessage": {
     "message": "Bạn có chắc chắn muốn xóa URL RPC? Thông tin của bạn sẽ không được lưu cho mạng này."
   },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "Chỉ xác nhận giao dịch này nếu bạn hoàn toàn hiểu nội dung và tin tưởng trang web yêu cầu."
-  },
   "confirmTitleDescPermitSignature": {
     "message": "Trang web này muốn được cấp quyền để chi tiêu số token của bạn."
   },
@@ -1039,7 +1027,7 @@
   "confirmTitleDescSignature": {
     "message": "Chỉ xác nhận thông báo này nếu bạn chấp thuận nội dung và tin tưởng trang web yêu cầu."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Yêu cầu hạn mức chi tiêu"
   },
   "confirmTitleSIWESignature": {
@@ -1540,6 +1528,9 @@
   "details": {
     "message": "Chi tiết"
   },
+  "developerOptions": {
+    "message": "Tùy chọn Nhà phát triển"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” bị vô hiệu hóa vì không đạt mức tăng tối thiểu 10% so với phí gas ban đầu.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1605,9 +1596,6 @@
   },
   "domain": {
     "message": "Tên miền"
-  },
-  "domainNotSupportedOnNetwork": {
-    "message": "Mạng không hỗ trợ tra cứu tên miền"
   },
   "done": {
     "message": "Hoàn tất"
@@ -1782,12 +1770,6 @@
   "ensDomainsSettingTitle": {
     "message": "Hiển thị tên miền ENS trong thanh địa chỉ"
   },
-  "ensIllegalCharacter": {
-    "message": "Ký tự không hợp lệ đối với ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Lỗi khi đăng ký tên ENS"
-  },
   "ensUnknownError": {
     "message": "Tra cứu ENS thất bại."
   },
@@ -1881,6 +1863,9 @@
   },
   "existingChainId": {
     "message": "Thông tin bạn đã nhập được liên kết với một ID chuỗi hiện có."
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "Để xem và xác nhận yêu cầu gần đây nhất của bạn, trước tiên bạn cần phải chấp thuận hoặc từ chối các yêu cầu hiện có."
   },
   "existingRpcUrl": {
     "message": "URL này được liên kết với một ID chuỗi khác."
@@ -2428,9 +2413,6 @@
   "invalidAddressRecipient": {
     "message": "Địa chỉ người nhận không hợp lệ"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Không phải mạng ETH, hãy đặt thành chữ viết thường"
-  },
   "invalidAssetType": {
     "message": "Tài sản này là một NFT và cần được thêm lại trên trang Nhập NFT bên dưới thẻ NFT"
   },
@@ -2908,6 +2890,10 @@
     "message": "Chọn một biệt danh...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1 đang yêu cầu sự chấp thuận của bạn cho:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "Bạn có muốn trang web này thực hiện những điều sau không?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3153,9 +3139,6 @@
   },
   "noAccountsFound": {
     "message": "Không tìm thấy tài khoản nào cho cụm từ tìm kiếm đã đưa ra"
-  },
-  "noAddressForName": {
-    "message": "Chưa có địa chỉ nào được đặt cho tên này."
   },
   "noConnectedAccountDescription": {
     "message": "Chọn tài khoản mà bạn muốn sử dụng trên trang web này để tiếp tục."
@@ -3523,6 +3506,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Không bắt buộc:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn khi thu thập dữ liệu sử dụng cho hồ sơ của bạn."
   },
   "onboardingMetametricsTitle": {
     "message": "Giúp chúng tôi cải thiện MetaMask"
@@ -4165,15 +4151,6 @@
   "receive": {
     "message": "Nhận"
   },
-  "receiveTokensCamelCase": {
-    "message": "Nhận token"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Nhập địa chỉ công khai (0x) hoặc tên ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Nhập địa chỉ công khai (0x) hoặc tên miền"
-  },
   "recommendedGasLabel": {
     "message": "Được đề xuất"
   },
@@ -4206,6 +4183,12 @@
   },
   "redesignedConfirmationsToggleDescription": {
     "message": "Bật tính năng này để xem các yêu cầu chữ ký ở định dạng nâng cao."
+  },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "Yêu cầu giao dịch được cải thiện"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "Bật tính năng này để xem các yêu cầu giao dịch ở định dạng nâng cao."
   },
   "refreshList": {
     "message": "Làm mới danh sách"
@@ -4343,9 +4326,6 @@
   "restoreUserData": {
     "message": "Khôi phục dữ liệu người dùng"
   },
-  "restoreUserDataDescription": {
-    "message": "Bạn có thể khôi phục các dữ liệu như địa chỉ liên hệ và tùy chọn từ tập tin sao lưu."
-  },
   "resultPageError": {
     "message": "Lỗi"
   },
@@ -4406,6 +4386,9 @@
   },
   "reviewAlerts": {
     "message": "Xem lại cảnh báo"
+  },
+  "reviewPermissions": {
+    "message": "Xem lại quyền"
   },
   "revokeAllTokensTitle": {
     "message": "Thu hồi quyền truy cập và chuyển tất cả $1 của bạn?",

@@ -16,6 +16,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       />
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -33,6 +34,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -82,6 +84,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
             >
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -99,6 +102,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-0-tooltip"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                 </div>
@@ -133,6 +137,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
             >
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -150,6 +155,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-1-tooltip"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                 </div>
@@ -178,6 +184,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -227,6 +234,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
             >
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -244,6 +252,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-0-tooltip"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                 </div>
@@ -278,6 +287,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
             >
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -295,6 +305,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-1-tooltip"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                 </div>
@@ -318,6 +329,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
             >
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -335,6 +347,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-2-tooltip"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                 </div>
@@ -358,6 +371,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
             >
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -375,6 +389,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-3-tooltip"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                 </div>
@@ -475,6 +490,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
             >
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -492,6 +508,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-4-tooltip"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                 </div>
@@ -520,6 +537,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -569,6 +587,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
             >
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -586,6 +605,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-0-tooltip"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                 </div>
@@ -620,6 +640,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
             >
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -637,6 +658,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-1-tooltip"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                 </div>
@@ -671,6 +693,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
             >
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -688,6 +711,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-2-tooltip"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                 </div>
@@ -716,6 +740,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -765,6 +790,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
             >
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -782,6 +808,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-0-tooltip"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                 </div>
@@ -816,6 +843,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
             >
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -833,6 +861,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-1-tooltip"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                 </div>
@@ -867,6 +896,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
             >
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -884,6 +914,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-2-tooltip"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                 </div>
@@ -923,6 +954,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
       />
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -941,6 +973,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -969,6 +1002,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          style="align-items: center;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -986,6 +1020,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="advanced-details-data-param-0-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -1009,6 +1044,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          style="align-items: center;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1026,6 +1062,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="advanced-details-data-param-1-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -1060,6 +1097,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          style="align-items: center;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1077,6 +1115,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="advanced-details-data-param-2-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -1114,6 +1153,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
       />
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1132,6 +1172,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1149,6 +1190,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              data-testid="advanced-details-data-function-tooltip"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -1175,6 +1217,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          style="align-items: center;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1192,6 +1235,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="advanced-details-data-param-0-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -1226,6 +1270,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          style="align-items: center;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1243,6 +1288,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="advanced-details-data-param-1-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -1259,6 +1305,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+            style="align-items: center;"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1276,6 +1323,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="advanced-details-data-param-0-tooltip"
                   style="mask-image: url('./images/icons/question.svg');"
                 />
               </div>
@@ -1292,6 +1340,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
             >
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1309,6 +1358,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-0-tooltip"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                 </div>
@@ -1325,6 +1375,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1342,6 +1393,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                   >
                     <span
                       class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-0-tooltip"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                   </div>
@@ -1376,6 +1428,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1393,6 +1446,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                   >
                     <span
                       class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-1-tooltip"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                   </div>
@@ -1416,6 +1470,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1433,6 +1488,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                   >
                     <span
                       class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-2-tooltip"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                   </div>
@@ -1456,6 +1512,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1473,6 +1530,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                   >
                     <span
                       class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-3-tooltip"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                   </div>
@@ -1497,6 +1555,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
             >
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1514,6 +1573,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-1-tooltip"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                 </div>
@@ -1530,6 +1590,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1547,6 +1608,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                   >
                     <span
                       class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-0-tooltip"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                   </div>
@@ -1581,6 +1643,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1598,6 +1661,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                   >
                     <span
                       class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-1-tooltip"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                   </div>
@@ -1621,6 +1685,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1638,6 +1703,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                   >
                     <span
                       class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-2-tooltip"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                   </div>
@@ -1661,6 +1727,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1678,6 +1745,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                   >
                     <span
                       class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-3-tooltip"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                   </div>
@@ -1702,6 +1770,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              style="align-items: center;"
             >
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1719,6 +1788,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-2-tooltip"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                 </div>
@@ -1735,6 +1805,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1752,6 +1823,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                   >
                     <span
                       class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-0-tooltip"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                   </div>
@@ -1786,6 +1858,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1803,6 +1876,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                   >
                     <span
                       class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-1-tooltip"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                   </div>
@@ -1826,6 +1900,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1843,6 +1918,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                   >
                     <span
                       class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-2-tooltip"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                   </div>
@@ -1866,6 +1942,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                style="align-items: center;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1883,6 +1960,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                   >
                     <span
                       class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-3-tooltip"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                   </div>
@@ -1908,6 +1986,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+            style="align-items: center;"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1925,6 +2004,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="advanced-details-data-param-1-tooltip"
                   style="mask-image: url('./images/icons/question.svg');"
                 />
               </div>
@@ -1959,6 +2039,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+            style="align-items: center;"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1976,6 +2057,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="advanced-details-data-param-2-tooltip"
                   style="mask-image: url('./images/icons/question.svg');"
                 />
               </div>
@@ -2000,6 +2082,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          style="align-items: center;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2017,6 +2100,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="advanced-details-data-param-2-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -2056,6 +2140,7 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
       />
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2073,6 +2158,7 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        style="align-items: center;"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"

@@ -8,6 +8,7 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { createPPOMMiddleware, PPOMMiddlewareRequest } from './ppom-middleware';
 import {
   generateSecurityAlertId,
@@ -18,6 +19,7 @@ import {
 import { SecurityAlertResponse } from './types';
 
 jest.mock('./ppom-util');
+jest.mock('@metamask/controller-utils');
 
 const SECURITY_ALERT_ID_MOCK = '123';
 const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
@@ -66,7 +68,7 @@ const createMiddleware = (
   }
 
   const networkController = {
-    state: { providerConfig: { chainId: chainId || CHAIN_IDS.MAINNET } },
+    state: mockNetworkState({ chainId: chainId || CHAIN_IDS.MAINNET }),
   };
 
   const appStateController = {

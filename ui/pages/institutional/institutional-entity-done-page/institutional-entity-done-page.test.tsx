@@ -18,11 +18,6 @@ const props = {
 const render = () => {
   const store = configureStore({
     ...mockState,
-    metamask: {
-      providerConfig: {
-        type: 'test',
-      },
-    },
     history: {
       mostRecentOverviewPage: 'test',
     },

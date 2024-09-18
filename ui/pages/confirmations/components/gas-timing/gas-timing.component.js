@@ -135,7 +135,6 @@ export default function GasTiming({
   const estimateEmoji = PRIORITY_LEVEL_ICON_MAP[estimateToUse];
   let text = `${estimateEmoji} ${t(estimateToUse)}`;
   let time = '';
-  let attitude = 'positive';
 
   if (estimateToUse === 'low') {
     text = `${estimateEmoji} ${t('gasTimingLow')}`;
@@ -159,9 +158,6 @@ export default function GasTiming({
     // If the user has chosen a value less than our low estimate,
     // calculate a potential wait time
 
-    if (estimateToUse === 'low') {
-      attitude = 'negative';
-    }
     // If we didn't get any useful information, show the
     // "unknown processing time" message
     if (
@@ -170,7 +166,6 @@ export default function GasTiming({
       customEstimatedTime?.upperTimeBound === 'unknown'
     ) {
       text = t('editGasTooLow');
-      attitude = 'negative';
     } else {
       time = toHumanReadableTime(
         Number(customEstimatedTime?.upperTimeBound),
@@ -181,32 +176,21 @@ export default function GasTiming({
     time = toHumanReadableTime(low.maxWaitTimeEstimate, t);
   }
 
-  const getColorFromAttitude = () => {
-    switch (attitude) {
-      case 'positive':
-        return TextColor.successDefault;
-      case 'warning':
-        return TextColor.warningDefault;
-      case 'negative':
-        return TextColor.errorDefault;
-      default:
-        return TextColor.successDefault;
-    }
-  };
-
   return (
     <Box display={Display.Flex} flexWrap={FlexWrap.Wrap}>
       <Text
-        color={TextColor.textMuted}
-        variant={TextVariant.bodySm}
+        color={TextColor.textAlternative}
+        variant={TextVariant.bodyMd}
         paddingInlineEnd={1}
       >
         {text}
       </Text>
 
-      <Text variant={TextVariant.bodySm} color={getColorFromAttitude()}>
-        <span data-testid="gas-timing-time">~{time}</span>
-      </Text>
+      {time && (
+        <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+          <span data-testid="gas-timing-time">~{time}</span>
+        </Text>
+      )}
     </Box>
   );
 }

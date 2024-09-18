@@ -10,6 +10,7 @@ import {
 } from '../../../../../shared/constants/multichain/networks';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import NicknamePopover from './nickname-popovers.component';
 
 const mockAccount = createMockInternalAccount({
@@ -50,18 +51,10 @@ const render = (
         },
         selectedAccount: mockAccount.id,
       },
-      networkConfigurations: {
-        chain5: {
-          type: 'rpc',
-          chainId: '0x5',
-          ticker: 'ETH',
-          nickname: 'Chain 5',
-          id: 'chain5',
-          rpcPrefs: {
-            blockExplorerUrl: mockEvmExplorer,
-          },
-        },
-      },
+      ...mockNetworkState({
+        chainId: '0x5',
+        blockExplorerUrl: mockEvmExplorer,
+      }),
       completedOnboarding: true,
     },
   });
@@ -91,7 +84,7 @@ describe('NicknamePopover', () => {
     });
   });
 
-  it.only('opens non-EVM block explorer', () => {
+  it('opens non-EVM block explorer', () => {
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
     const expectedExplorerUrl = `${
       MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[MultichainNetworks.BITCOIN]

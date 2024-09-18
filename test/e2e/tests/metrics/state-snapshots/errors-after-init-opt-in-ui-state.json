@@ -3,7 +3,6 @@
   "activeTab": "object",
   "appState": "object",
   "bridge": "object",
-  "confirm": "object",
   "confirmAlerts": "object",
   "confirmTransaction": "object",
   "gas": { "customData": { "price": null, "limit": null } },
@@ -52,15 +51,6 @@
         "usdConversionRate": 1700
       }
     },
-    "providerConfig": {
-      "chainId": "0x539",
-      "nickname": "Localhost 8545",
-      "rpcPrefs": "object",
-      "rpcUrl": "string",
-      "ticker": "ETH",
-      "type": "rpc",
-      "id": "networkConfigurationId"
-    },
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
     "browserEnvironment": { "os": "string", "browser": "string" },
@@ -77,7 +67,7 @@
     "showNetworkBanner": true,
     "showAccountBanner": true,
     "trezorModel": null,
-    "onboardingDate": "object",
+    "onboardingDate": null,
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -88,7 +78,7 @@
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
     "signatureSecurityAlertResponses": "object",
-    "switchedNetworkDetails": "object",
+    "switchedNetworkDetails": null,
     "switchedNetworkNeverShowMessage": "boolean",
     "currentExtensionPopupId": "number",
     "currentAppVersion": "string",
@@ -109,7 +99,7 @@
     "dismissSeedBackUpReminder": true,
     "useMultiAccountBalanceChecker": true,
     "useSafeChainsListValidation": true,
-    "useTokenDetection": false,
+    "useTokenDetection": true,
     "useNftDetection": false,
     "useCurrencyRateCheck": true,
     "useRequestQueue": true,
@@ -137,6 +127,9 @@
     "useExternalServices": "boolean",
     "selectedAddress": "string",
     "metaMetricsId": "fake-metrics-id",
+    "marketingCampaignCookieId": null,
+    "metaMetricsDataDeletionId": null,
+    "metaMetricsDataDeletionTimestamp": 0,
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "previousUserTraits": "object",
@@ -189,8 +182,8 @@
     "snapStates": "object",
     "unencryptedSnapStates": "object",
     "jobs": "object",
-    "database": "object",
-    "lastUpdated": "object",
+    "database": null,
+    "lastUpdated": null,
     "databaseUnavailable": "boolean",
     "notifications": "object",
     "interfaces": "object",
@@ -228,9 +221,9 @@
       "quotes": "object",
       "quotesPollingLimitEnabled": false,
       "fetchParams": null,
-      "tokens": "object",
-      "tradeTxId": "object",
-      "approveTxId": "object",
+      "tokens": null,
+      "tradeTxId": null,
+      "approveTxId": null,
       "quotesLastFetched": null,
       "customMaxGas": "",
       "customGasPrice": null,
@@ -240,7 +233,7 @@
       "selectedAggId": null,
       "customApproveTxData": "string",
       "errorKey": "",
-      "topAggId": "object",
+      "topAggId": null,
       "routeState": "",
       "swapsFeatureIsLive": true,
       "saveFetchedQuotes": false,
@@ -252,7 +245,21 @@
       "swapsStxMaxFeeMultiplier": 2,
       "swapsFeatureFlags": {}
     },
-    "bridgeState": { "bridgeFeatureFlags": { "extensionSupport": "boolean" } },
+    "bridgeState": {
+      "bridgeFeatureFlags": {
+        "extensionSupport": "boolean",
+        "srcNetworkAllowlist": {
+          "0": "string",
+          "1": "string",
+          "2": "string"
+        },
+        "destNetworkAllowlist": {
+          "0": "string",
+          "1": "string",
+          "2": "string"
+        }
+      }
+    },
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",

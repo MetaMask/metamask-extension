@@ -50,7 +50,9 @@ describe('ConfirmSubTitle', () => {
     mockState.metamask.preferences.showFiatInTestnets = false;
     mockState.metamask.allNftContracts = {
       [mockSelectedInternalAccount.address]: {
-        [mockState.metamask.providerConfig.chainId]: [{ address: '0x9' }],
+        [mockState.metamask.networkConfigurations[
+          mockState.metamask.selectedNetworkClientId
+        ].chainId]: [{ address: '0x9' }],
       },
     };
     store = configureStore(mockState);

@@ -11,9 +11,11 @@ import { detectSIWE } from '@metamask/controller-utils';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
-import { PreferencesController } from '../../controllers/preferences';
+import PreferencesController from '../../controllers/preferences-controller';
 import { AppStateController } from '../../controllers/app-state';
 import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
+import { getProviderConfig } from '../../../../ui/ducks/metamask/metamask';
+import { trace, TraceContext, TraceName } from '../../../../shared/lib/trace';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -32,6 +34,7 @@ export type PPOMMiddlewareRequest<
   Params extends JsonRpcParams = JsonRpcParams,
 > = Required<JsonRpcRequest<Params>> & {
   securityAlertResponse?: SecurityAlertResponse | undefined;
+  traceContext?: TraceContext;
 };
 
 /**
@@ -75,7 +78,9 @@ export function createPPOMMiddleware<
       const securityAlertsEnabled =
         preferencesController.store.getState()?.securityAlertsEnabled;
 
-      const { chainId } = networkController.state.providerConfig;
+      const { chainId } = getProviderConfig({
+        metamask: networkController.state,
+      });
       const isSupportedChain = await isChainSupported(chainId);
 
       if (
@@ -105,18 +110,22 @@ export function createPPOMMiddleware<
 
       const securityAlertId = generateSecurityAlertId();
 
-      validateRequestWithPPOM({
-        ppomController,
-        request: req,
-        securityAlertId,
-        chainId,
-      }).then((securityAlertResponse) => {
-        updateSecurityAlertResponse(
-          req.method,
-          securityAlertId,
-          securityAlertResponse,
-        );
-      });
+      trace(
+        { name: TraceName.PPOMValidation, parentContext: req.traceContext },
+        () =>
+          validateRequestWithPPOM({
+            ppomController,
+            request: req,
+            securityAlertId,
+            chainId,
+          }).then((securityAlertResponse) => {
+            updateSecurityAlertResponse(
+              req.method,
+              securityAlertId,
+              securityAlertResponse,
+            );
+          }),
+      );
 
       const loadingSecurityAlertResponse: SecurityAlertResponse = {
         ...LOADING_SECURITY_ALERT_RESPONSE,

@@ -19,7 +19,6 @@ import {
   BtcMethod,
   EthAccountType,
 } from '@metamask/keyring-api';
-import { NetworkType } from '@metamask/controller-utils';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { TransactionController } from '@metamask/transaction-controller';
@@ -30,7 +29,6 @@ import {
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { TrezorKeyring } from '@metamask/eth-trezor-keyring';
 import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
-import { NETWORK_TYPES } from '../../shared/constants/network';
 import { createTestProviderTools } from '../../test/stub/provider';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
@@ -40,6 +38,7 @@ import * as tokenUtils from '../../shared/lib/token-util';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
+import { mockNetworkState } from '../../test/stub/networks';
 import {
   BalancesController as MultichainBalancesController,
   BALANCES_UPDATE_TIME as MULTICHAIN_BALANCES_UPDATE_TIME,
@@ -116,11 +115,11 @@ const rpcMethodMiddlewareMock = {
 jest.mock('./lib/rpc-method-middleware', () => rpcMethodMiddlewareMock);
 
 jest.mock(
-  './controllers/preferences',
+  './controllers/preferences-controller',
   () =>
     function (...args) {
       const PreferencesController = jest.requireActual(
-        './controllers/preferences',
+        './controllers/preferences-controller',
       ).default;
       const controller = new PreferencesController(...args);
       // jest.spyOn gets hoisted to the top of this function before controller is initialized.
@@ -245,49 +244,32 @@ const firstTimeState = {
     },
   },
   NetworkController: {
-    providerConfig: {
-      type: NETWORK_TYPES.RPC,
-      rpcUrl: ALT_MAINNET_RPC_URL,
-      chainId: MAINNET_CHAIN_ID,
-      ticker: ETH,
-      nickname: 'Alt Mainnet',
-      id: NETWORK_CONFIGURATION_ID_1,
-    },
-    networkConfigurations: {
-      [NETWORK_CONFIGURATION_ID_1]: {
+    ...mockNetworkState(
+      {
         rpcUrl: ALT_MAINNET_RPC_URL,
-        type: NETWORK_TYPES.RPC,
         chainId: MAINNET_CHAIN_ID,
         ticker: ETH,
         nickname: 'Alt Mainnet',
         id: NETWORK_CONFIGURATION_ID_1,
+        blockExplorerUrl: undefined,
       },
-      [NETWORK_CONFIGURATION_ID_2]: {
+      {
         rpcUrl: POLYGON_RPC_URL,
-        type: NETWORK_TYPES.RPC,
         chainId: POLYGON_CHAIN_ID,
         ticker: MATIC,
         nickname: 'Polygon',
         id: NETWORK_CONFIGURATION_ID_2,
+        blockExplorerUrl: undefined,
       },
-      [NETWORK_CONFIGURATION_ID_3]: {
+      {
         rpcUrl: POLYGON_RPC_URL_2,
-        type: NETWORK_TYPES.RPC,
         chainId: POLYGON_CHAIN_ID,
         ticker: MATIC,
         nickname: 'Alt Polygon',
-        id: NETWORK_CONFIGURATION_ID_1,
+        id: NETWORK_CONFIGURATION_ID_3,
+        blockExplorerUrl: undefined,
       },
-    },
-    selectedNetworkClientId: NetworkType.mainnet,
-    networksMetadata: {
-      [NetworkType.mainnet]: {
-        EIPS: {
-          1559: false,
-        },
-        status: 'available',
-      },
-    },
+    ),
   },
   NotificationController: {
     notifications: {
@@ -340,10 +322,6 @@ describe('MetaMaskController', () => {
             allowlist: [],
             blocklist: ['test.metamask-phishing.io'],
             name: ListNames.MetaMask,
-          },
-          phishfort_hotlist: {
-            blocklist: [],
-            name: ListNames.Phishfort,
           },
         }),
       )
@@ -727,7 +705,7 @@ describe('MetaMaskController', () => {
           });
 
         jest
-          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
 
         // Give account 2 a token
@@ -1207,7 +1185,7 @@ describe('MetaMaskController', () => {
           false,
         );
         jest
-          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
         metamaskController.preferencesController.setUsePhishDetect(true);
       });
@@ -1598,7 +1576,7 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController, 'triggerNetworkrequests')
           .mockImplementation();
         jest
-          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
         const mockControllerConnectionChangedHandler = jest.fn();
 
@@ -2093,7 +2071,6 @@ describe('MetaMaskController', () => {
             id: NETWORK_CONFIGURATION_ID_1,
             rpcUrl: ALT_MAINNET_RPC_URL,
             ticker: ETH,
-            type: NETWORK_TYPES.RPC,
           });
         });
 
@@ -2104,7 +2081,6 @@ describe('MetaMaskController', () => {
             }),
           ).toStrictEqual({
             rpcUrl: POLYGON_RPC_URL,
-            type: NETWORK_TYPES.RPC,
             chainId: POLYGON_CHAIN_ID,
             ticker: MATIC,
             nickname: 'Polygon',
@@ -2123,7 +2099,6 @@ describe('MetaMaskController', () => {
             id: NETWORK_CONFIGURATION_ID_1,
             rpcUrl: ALT_MAINNET_RPC_URL,
             ticker: ETH,
-            type: NETWORK_TYPES.RPC,
           });
         });
 
@@ -2142,7 +2117,6 @@ describe('MetaMaskController', () => {
             }),
           ).toStrictEqual({
             rpcUrl: POLYGON_RPC_URL,
-            type: NETWORK_TYPES.RPC,
             chainId: POLYGON_CHAIN_ID,
             ticker: MATIC,
             nickname: 'Polygon',

@@ -1,7 +1,7 @@
 import React from 'react';
 import AddNetwork from './add-network';
 
-const MATIC_TOKEN_IMAGE_URL = './images/matic-token.svg';
+const POL_TOKEN_IMAGE_URL = './images/pol-token.svg';
 const ARBITRUM_IMAGE_URL = './images/arbitrum.svg';
 const OPTIMISM_IMAGE_URL = './images/optimism.svg';
 const AVALANCHE_IMAGE_URL = './images/avax-token.svg';
@@ -93,7 +93,7 @@ export default {
         ticker: 'MATIC',
         rpcPrefs: {
           blockExplorerUrl: 'https://polygonscan.com/',
-          imageUrl: MATIC_TOKEN_IMAGE_URL,
+          imageUrl: POL_TOKEN_IMAGE_URL,
         },
       },
       {

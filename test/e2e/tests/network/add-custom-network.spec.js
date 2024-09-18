@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { toHex } = require('@metamask/controller-utils');
+const { mockNetworkState } = require('../../../stub/networks');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   defaultGanacheOptions,
@@ -586,15 +587,13 @@ describe('Custom network', function () {
         {
           fixtures: new FixtureBuilder()
             .withNetworkController({
-              networkConfigurations: {
-                networkConfigurationId: {
-                  rpcUrl: networkURL,
-                  chainId: chainID,
-                  nickname: networkNAME,
-                  ticker: currencySYMBOL,
-                  rpcPrefs: {},
-                },
-              },
+              ...mockNetworkState({
+                rpcUrl: networkURL,
+                chainId: chainID,
+                nickname: networkNAME,
+                ticker: currencySYMBOL,
+              }),
+              selectedNetworkClientId: 'mainnet',
             })
             .build(),
           ganacheOptions: defaultGanacheOptions,
@@ -752,8 +751,7 @@ describe('Custom network', function () {
           assert.equal(suggestedTicker, false);
           assert.equal(tickerWarning, false);
 
-          driver.clickElement(selectors.tickerButton);
-          driver.clickElement(selectors.saveButton);
+          await driver.clickElement(selectors.saveButton);
 
           // Validate the network was added
           const networkAdded = await driver.isElementPresent(
@@ -867,8 +865,8 @@ describe('Custom network', function () {
           assert.equal(suggestedTicker, true);
           assert.equal(tickerWarning, true);
 
-          driver.clickElement(selectors.tickerButton);
-          driver.clickElement(selectors.saveButton);
+          await driver.clickElement(selectors.tickerButton);
+          await driver.clickElement(selectors.saveButton);
 
           // Validate the network was added
           const networkAdded = await driver.isElementPresent(
@@ -1014,7 +1012,7 @@ async function toggleOffSafeChainsListValidation(driver) {
     'Safe chains list validation toggle is ON',
   );
 
-  driver.delay(regularDelayMs);
+  await driver.delay(regularDelayMs);
 
   // return to the home screen
   const appHeaderSelector = '[data-testid="app-header-logo"]';

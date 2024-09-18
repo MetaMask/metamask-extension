@@ -38,9 +38,10 @@ import {
   ConnectionRequest,
 } from '../../../shared/constants/mmi-controller';
 import AccountTracker from '../lib/account-tracker';
+import { getCurrentChainId } from '../../../ui/selectors';
 import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
-import { PreferencesController } from './preferences';
+import PreferencesController from './preferences-controller';
 import { AppStateController } from './app-state';
 
 type UpdateCustodianTransactionsParameters = {
@@ -853,11 +854,11 @@ export default class MMIController extends EventEmitter {
       );
     }
     const selectedChainId = parseInt(
-      this.networkController.state.providerConfig.chainId,
+      getCurrentChainId({ metamask: this.networkController.state }),
       16,
     );
     if (selectedChainId !== chainId && chainId === 1) {
-      await this.networkController.setProviderType('mainnet');
+      await this.networkController.setActiveNetwork('mainnet');
     } else if (selectedChainId !== chainId) {
       const { networkConfigurations } = this.networkController.state;
 

@@ -7,6 +7,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { AvatarNetwork } from '../../../../components/component-library/avatar-network';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import { AssetPill } from './asset-pill';
 import { NATIVE_ASSET_IDENTIFIER, TokenAssetIdentifier } from './types';
 
@@ -37,8 +38,8 @@ describe('AssetPill', () => {
       {
         chainId: CHAIN_IDS.POLYGON,
         expected: {
-          ticker: 'MATIC',
-          imgSrc: './images/matic-token.svg',
+          ticker: 'POL',
+          imgSrc: './images/pol-token.svg',
         },
       },
     ];
@@ -54,7 +55,9 @@ describe('AssetPill', () => {
         expected: { ticker: string; imgSrc: string };
       }) => {
         const store = configureStore({
-          metamask: { providerConfig: { chainId, ticker: expected.ticker } },
+          metamask: {
+            ...mockNetworkState({ chainId }),
+          },
         });
 
         renderWithProvider(

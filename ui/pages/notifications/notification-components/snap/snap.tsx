@@ -33,8 +33,7 @@ export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
       properties: {
         notification_id: snapNotification.id,
         notification_type: snapNotification.type,
-        notification_is_read: snapNotification.isRead,
-        click_type: 'item',
+        previously_read: snapNotification.isRead,
       },
     });
   };
@@ -47,8 +46,7 @@ export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
       properties: {
         notification_id: snapNotification.id,
         notification_type: snapNotification.type,
-        notification_is_read: snapNotification.isRead,
-        click_type: 'item',
+        previously_read: snapNotification.isRead,
       },
     });
     history.push(getSnapRoute(snapNotification.data.origin));
@@ -57,6 +55,7 @@ export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
   return (
     <NotificationListItemSnap
       id={snapNotification.id}
+      snapId={snapNotification.data.origin}
       isRead={snapNotification.isRead}
       createdAt={new Date(snapNotification.createdAt)}
       title={{

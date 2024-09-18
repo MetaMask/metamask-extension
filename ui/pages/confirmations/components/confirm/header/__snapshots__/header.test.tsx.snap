@@ -20,7 +20,7 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
             style="height: 32px; width: 32px; border-radius: 16px;"
           >
             <div
-              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 73, 94);"
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
             >
               <svg
                 height="32"
@@ -29,25 +29,25 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
                 y="0"
               >
                 <rect
-                  fill="#FB184D"
+                  fill="#18CDF2"
                   height="32"
-                  transform="translate(-0.010232866814926739 -2.467961361206475) rotate(274.3 16 16)"
+                  transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
                   width="32"
                   x="0"
                   y="0"
                 />
                 <rect
-                  fill="#1888F2"
+                  fill="#035E56"
                   height="32"
-                  transform="translate(0.7019171336752298 13.759175028660584) rotate(203.5 16 16)"
+                  transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
                   width="32"
                   x="0"
                   y="0"
                 />
                 <rect
-                  fill="#FA8900"
+                  fill="#F26602"
                   height="32"
-                  transform="translate(28.820219003567207 11.830135279564011) rotate(192.7 16 16)"
+                  transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
                   width="32"
                   x="0"
                   y="0"
@@ -68,7 +68,9 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
           data-testid="header-account-name"
-        />
+        >
+          Test Account
+        </p>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           data-testid="header-network-display-name"
@@ -131,7 +133,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
             style="height: 32px; width: 32px; border-radius: 16px;"
           >
             <div
-              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 100, 242);"
             >
               <svg
                 height="32"
@@ -140,25 +142,25 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
                 y="0"
               >
                 <rect
-                  fill="#18CDF2"
+                  fill="#C81420"
                   height="32"
-                  transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                  transform="translate(-5.505236904904678 -5.265123363737541) rotate(385.9 16 16)"
                   width="32"
                   x="0"
                   y="0"
                 />
                 <rect
-                  fill="#035E56"
+                  fill="#E9F500"
                   height="32"
-                  transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                  transform="translate(10.674469406726399 12.429928159193388) rotate(184.5 16 16)"
                   width="32"
                   x="0"
                   y="0"
                 />
                 <rect
-                  fill="#F26602"
+                  fill="#FAB300"
                   height="32"
-                  transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                  transform="translate(1.815455199236231 -26.03028190637629) rotate(431.3 16 16)"
                   width="32"
                   x="0"
                   y="0"
@@ -170,7 +172,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
         >
-          ?
+          C
         </div>
       </div>
       <div
@@ -179,13 +181,13 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
           data-testid="header-account-name"
-        >
-          Test Account
-        </p>
+        />
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           data-testid="header-network-display-name"
-        />
+        >
+          Chain 5
+        </p>
       </div>
     </div>
     <div
@@ -217,7 +219,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--background-color-transparent mm-box--rounded-md"
+          class="mm-box mm-box--margin-left-4 mm-box--background-color-transparent mm-box--rounded-md"
         >
           <button
             aria-label="Advanced tx details"

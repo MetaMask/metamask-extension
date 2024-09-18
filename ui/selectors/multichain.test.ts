@@ -19,9 +19,10 @@ import {
   CHAIN_IDS,
   ETH_TOKEN_IMAGE_URL,
   MAINNET_DISPLAY_NAME,
-  TEST_NETWORK_IDS,
+  NETWORK_TYPES,
 } from '../../shared/constants/network';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
+import { mockNetworkState } from '../../test/stub/networks';
 import { AccountsState } from './accounts';
 import {
   MultichainState,
@@ -51,10 +52,10 @@ type TestState = MultichainState &
     metamask: {
       preferences: { showFiatInTestnets: boolean };
       accountsByChainId: Record<string, Record<string, { balance: string }>>;
-      providerConfig: { type: string; ticker: string; chainId: string };
       currentCurrency: string;
       currencyRates: Record<string, { conversionRate: string }>;
       completedOnboarding: boolean;
+      selectedNetworkClientId?: string;
     };
   };
 
@@ -64,11 +65,8 @@ function getEvmState(): TestState {
       preferences: {
         showFiatInTestnets: false,
       },
-      providerConfig: {
-        type: 'mainnet',
-        ticker: 'ETH',
-        chainId: '0x1',
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
       currentCurrency: 'ETH',
       currencyRates: {
         ETH: {
@@ -183,22 +181,17 @@ describe('Multichain Selectors', () => {
     it('returns rpcUrl as its nickname if its not defined', () => {
       const mockNetworkRpc = 'https://mock-rpc.com';
       const mockNetwork = {
-        id: 'mock-network',
-        type: 'rpc',
         ticker: 'MOCK',
         chainId: '0x123123123',
         rpcUrl: mockNetworkRpc,
         // `nickname` is undefined here
-      };
+      } as const;
 
       const state = {
         ...getEvmState(),
         metamask: {
           ...getEvmState().metamask,
-          providerConfig: mockNetwork,
-          networkConfigurations: {
-            [mockNetwork.id]: mockNetwork,
-          },
+          ...mockNetworkState(mockNetwork),
         },
       };
 
@@ -227,7 +220,9 @@ describe('Multichain Selectors', () => {
       const state = getEvmState();
 
       const evmMainnetNetwork = getProviderConfig(state);
-      expect(getMultichainProviderConfig(state)).toBe(evmMainnetNetwork);
+      const multichainProviderConfig = getMultichainProviderConfig(state);
+      delete multichainProviderConfig?.rpcPrefs?.imageUrl;
+      expect(multichainProviderConfig).toStrictEqual(evmMainnetNetwork);
     });
 
     it('returns a MultichainProviderConfig if account is non-EVM (bip122:*)', () => {
@@ -330,7 +325,7 @@ describe('Multichain Selectors', () => {
     it('returns current chain ID if account is EVM (other)', () => {
       const state = getEvmState();
 
-      state.metamask.providerConfig.chainId = CHAIN_IDS.SEPOLIA;
+      state.metamask.selectedNetworkClientId = 'sepolia';
       expect(getMultichainCurrentChainId(state)).toEqual(CHAIN_IDS.SEPOLIA);
     });
 
@@ -355,7 +350,7 @@ describe('Multichain Selectors', () => {
     it('returns false if account is EVM (testnet)', () => {
       const state = getEvmState();
 
-      state.metamask.providerConfig.chainId = CHAIN_IDS.SEPOLIA;
+      state.metamask.selectedNetworkClientId = 'sepolia';
       expect(getMultichainIsMainnet(state)).toBe(false);
     });
 
@@ -387,12 +382,11 @@ describe('Multichain Selectors', () => {
     });
 
     // @ts-expect-error This is missing from the Mocha type definitions
-    it.each(TEST_NETWORK_IDS)(
+    it.each([NETWORK_TYPES.SEPOLIA, NETWORK_TYPES.LINEA_SEPOLIA])(
       'returns true if account is EVM (testnet): %s',
-      (chainId: string) => {
+      (network: string) => {
         const state = getEvmState();
-
-        state.metamask.providerConfig.chainId = chainId;
+        state.metamask.selectedNetworkClientId = network;
         expect(getMultichainIsTestnet(state)).toBe(true);
       },
     );

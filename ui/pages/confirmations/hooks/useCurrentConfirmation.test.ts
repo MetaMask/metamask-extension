@@ -8,10 +8,11 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Hex, Json } from '@metamask/utils';
+import { Json } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import useCurrentConfirmation from './useCurrentConfirmation';
 
 const ID_MOCK = '123-456';
@@ -35,7 +36,7 @@ const APPROVAL_MOCK = {
 
 const TRANSACTION_MOCK = {
   id: ID_MOCK,
-  chainId: mockState.metamask.providerConfig.chainId as Hex,
+  chainId: CHAIN_IDS.GOERLI,
   status: TransactionStatus.unapproved,
   type: TransactionType.contractInteraction,
 };
@@ -294,6 +295,33 @@ describe('useCurrentConfirmation', () => {
     });
 
     it('returns undefined if redesign developer setting is disabled, user setting is enabled and transaction has correct type', () => {
+      const currentConfirmation = runHook({
+        pendingApprovals: [
+          { ...APPROVAL_MOCK, type: ApprovalType.Transaction },
+        ],
+        redesignedConfirmationsEnabled: true,
+        transaction: {
+          ...TRANSACTION_MOCK,
+          type: TransactionType.contractInteraction,
+        },
+        isRedesignedConfirmationsDeveloperEnabled: false,
+      });
+
+      expect(currentConfirmation).toBeUndefined();
+    });
+  });
+
+  describe('useCurrentConfirmation with MM build type env var (MMI)', () => {
+    beforeAll(() => {
+      jest.resetModules();
+      process.env.METAMASK_BUILD_TYPE = 'mmi';
+    });
+
+    afterAll(() => {
+      process.env.METAMASK_BUILD_TYPE = 'main';
+    });
+
+    it('returns undefined if build type is MMI, user setting is enabled and transaction has correct type', () => {
       const currentConfirmation = runHook({
         pendingApprovals: [
           { ...APPROVAL_MOCK, type: ApprovalType.Transaction },

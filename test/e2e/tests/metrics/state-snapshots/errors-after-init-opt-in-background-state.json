@@ -37,7 +37,7 @@
     "showNetworkBanner": true,
     "showAccountBanner": true,
     "trezorModel": null,
-    "onboardingDate": "object",
+    "onboardingDate": null,
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -48,7 +48,7 @@
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
     "signatureSecurityAlertResponses": "object",
-    "switchedNetworkDetails": "object",
+    "switchedNetworkDetails": null,
     "switchedNetworkNeverShowMessage": "boolean",
     "currentExtensionPopupId": "number"
   },
@@ -59,7 +59,21 @@
   },
   "AuthenticationController": { "isSignedIn": "boolean" },
   "BridgeController": {
-    "bridgeState": { "bridgeFeatureFlags": { "extensionSupport": "boolean" } }
+    "bridgeState": {
+      "bridgeFeatureFlags": {
+        "extensionSupport": "boolean",
+        "srcNetworkAllowlist": {
+          "0": "string",
+          "1": "string",
+          "2": "string"
+        },
+        "destNetworkAllowlist": {
+          "0": "string",
+          "1": "string",
+          "2": "string"
+        }
+      }
+    }
   },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
@@ -103,11 +117,16 @@
     "participateInMetaMetrics": true,
     "metaMetricsId": "fake-metrics-id",
     "dataCollectionForMarketing": "boolean",
+    "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "previousUserTraits": "object",
     "fragments": "object",
     "segmentApiCalls": "object"
+  },
+  "MetaMetricsDataDeletionController": {
+    "metaMetricsDataDeletionId": null,
+    "metaMetricsDataDeletionTimestamp": 0
   },
   "MultichainBalancesController": { "balances": "object" },
   "MultichainRatesController": {
@@ -118,15 +137,6 @@
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
     "selectedNetworkClientId": "string",
-    "providerConfig": {
-      "chainId": "0x539",
-      "nickname": "Localhost 8545",
-      "rpcPrefs": "object",
-      "rpcUrl": "string",
-      "ticker": "ETH",
-      "type": "rpc",
-      "id": "networkConfigurationId"
-    },
     "networksMetadata": {
       "networkConfigurationId": {
         "EIPS": { "1559": false },
@@ -176,7 +186,7 @@
     "dismissSeedBackUpReminder": true,
     "useMultiAccountBalanceChecker": true,
     "useSafeChainsListValidation": "boolean",
-    "useTokenDetection": false,
+    "useTokenDetection": true,
     "useNftDetection": false,
     "use4ByteResolution": true,
     "useCurrencyRateCheck": true,
@@ -243,8 +253,8 @@
   "SnapInsightsController": { "insights": "object" },
   "SnapInterfaceController": { "interfaces": "object" },
   "SnapsRegistry": {
-    "database": "object",
-    "lastUpdated": "object",
+    "database": null,
+    "lastUpdated": null,
     "databaseUnavailable": "boolean"
   },
   "SubjectMetadataController": { "subjectMetadata": "object" },
@@ -253,9 +263,9 @@
       "quotes": "object",
       "quotesPollingLimitEnabled": false,
       "fetchParams": null,
-      "tokens": "object",
-      "tradeTxId": "object",
-      "approveTxId": "object",
+      "tokens": null,
+      "tradeTxId": null,
+      "approveTxId": null,
       "quotesLastFetched": null,
       "customMaxGas": "",
       "customGasPrice": null,
@@ -265,7 +275,7 @@
       "selectedAggId": null,
       "customApproveTxData": "string",
       "errorKey": "",
-      "topAggId": "object",
+      "topAggId": null,
       "routeState": "",
       "swapsFeatureIsLive": true,
       "saveFetchedQuotes": false,

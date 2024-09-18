@@ -41,9 +41,6 @@
   "QRHardwareWalletSteps1Title": {
     "message": "Conecte su monedero físico QR"
   },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SIWEAddressInvalid": {
     "message": "La dirección de la solicitud de inicio de sesión no coincide con la dirección de la cuenta que está utilizando para iniciar sesión."
   },
@@ -195,6 +192,9 @@
   "addAccount": {
     "message": "Añadir cuenta"
   },
+  "addAccountToMetaMask": {
+    "message": "Añadir cuenta a MetaMask"
+  },
   "addAcquiredTokens": {
     "message": "Agregar los tokens que adquirió con MetaMask"
   },
@@ -320,6 +320,9 @@
   "addUrl": {
     "message": "Agregar URL"
   },
+  "addingAccount": {
+    "message": "Añadiendo cuenta"
+  },
   "addingCustomNetwork": {
     "message": "Agregando red"
   },
@@ -328,9 +331,6 @@
   },
   "additionalNetworks": {
     "message": "Redes adicionales"
-  },
-  "additionalRpcUrl": {
-    "message": "URL RPC adicional"
   },
   "address": {
     "message": "Dirección"
@@ -663,9 +663,6 @@
   "back": {
     "message": "Volver"
   },
-  "backup": {
-    "message": "Respaldo"
-  },
   "backupApprovalInfo": {
     "message": "Este código secreto es necesario para que recupere la cartera en caso de que pierda el dispositivo, olvide su contraseña, tenga que volver a instalar MetaMask o quiera acceder a su monedero en otro dispositivo."
   },
@@ -674,15 +671,6 @@
   },
   "backupKeyringSnapReminder": {
     "message": "Asegúrese de poder acceder a cualquier cuenta creada por este Snap por si mismo antes de eliminarlo"
-  },
-  "backupNow": {
-    "message": "Respaldar ahora"
-  },
-  "backupUserData": {
-    "message": "Respalde sus datos"
-  },
-  "backupUserDataDescription": {
-    "message": "Puede hacer una copia de seguridad de datos tal y como sus contactos y preferencias."
   },
   "balance": {
     "message": "Saldo"
@@ -1027,9 +1015,6 @@
   "confirmRpcUrlDeletionMessage": {
     "message": "¿Está seguro de que desea eliminar la URL RPC? Su información no se guardará para esta red."
   },
-  "confirmTitleDescContractInteractionTransaction": {
-    "message": "Solo confirme esta transacción si entiende completamente el contenido y confía en el sitio solicitante."
-  },
   "confirmTitleDescPermitSignature": {
     "message": "Este sitio solicita permiso para gastar sus tokens."
   },
@@ -1039,7 +1024,7 @@
   "confirmTitleDescSignature": {
     "message": "Solo confirme este mensaje si aprueba el contenido y confía en el sitio solicitante."
   },
-  "confirmTitlePermitSignature": {
+  "confirmTitlePermitTokens": {
     "message": "Solicitud de límite de gasto"
   },
   "confirmTitleSIWESignature": {
@@ -1540,6 +1525,9 @@
   "details": {
     "message": "Detalles"
   },
+  "developerOptions": {
+    "message": "Opciones de desarrollador"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” está desactivado porque no cumple el mínimo de un aumento del 10 % respecto a la tarifa de gas original.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1605,9 +1593,6 @@
   },
   "domain": {
     "message": "Dominio"
-  },
-  "domainNotSupportedOnNetwork": {
-    "message": "La red no admite la búsqueda de dominios"
   },
   "done": {
     "message": "Hecho"
@@ -1782,12 +1767,6 @@
   "ensDomainsSettingTitle": {
     "message": "Mostrar dominios ENS en la barra de direcciones"
   },
-  "ensIllegalCharacter": {
-    "message": "Caracter ilegal para ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Error en el registro del nombre de ENS"
-  },
   "ensUnknownError": {
     "message": "Error al buscar ENS."
   },
@@ -1881,6 +1860,9 @@
   },
   "existingChainId": {
     "message": "La información que ha ingresado está asociada con un ID de cadena existente."
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "Para ver y confirmar su solicitud más reciente, primero deberá aprobar o rechazar las solicitudes existentes."
   },
   "existingRpcUrl": {
     "message": "Esta URL está asociada a otro ID de cadena."
@@ -2428,9 +2410,6 @@
   "invalidAddressRecipient": {
     "message": "La dirección del destinatario no es válida"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "No es una red ETH; configurar en minúsculas"
-  },
   "invalidAssetType": {
     "message": "Este activo es un NFT y debe volver a añadirse en la página de Importar NFTs que se encuentra en la pestaña de NFTs"
   },
@@ -2908,6 +2887,10 @@
     "message": "Elija un apodo...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1 solicita su aprobación para:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "¿Desea que este sitio haga lo siguiente?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3153,9 +3136,6 @@
   },
   "noAccountsFound": {
     "message": "No se encuentran cuentas para la consulta de búsqueda determinada"
-  },
-  "noAddressForName": {
-    "message": "No se estableció ninguna dirección para este nombre."
   },
   "noConnectedAccountDescription": {
     "message": "Seleccione una cuenta que desee utilizar en este sitio para continuar."
@@ -3523,6 +3503,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opcionales:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Descubra cómo protegemos su privacidad al recopilar datos de uso para su perfil."
   },
   "onboardingMetametricsTitle": {
     "message": "Ayúdenos a mejorar MetaMask"
@@ -4165,15 +4148,6 @@
   "receive": {
     "message": "Recibir"
   },
-  "receiveTokensCamelCase": {
-    "message": "Recibir tokens"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Ingrese la dirección pública (0x) o el nombre de ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Ingrese la dirección pública (0x) o el nombre de dominio"
-  },
   "recommendedGasLabel": {
     "message": "Recomendado"
   },
@@ -4206,6 +4180,12 @@
   },
   "redesignedConfirmationsToggleDescription": {
     "message": "Active esta opción para ver las solicitudes de firma en un formato mejorado."
+  },
+  "redesignedTransactionsEnabledToggle": {
+    "message": "Solicitudes de transacción mejoradas"
+  },
+  "redesignedTransactionsToggleDescription": {
+    "message": "Active esta opción para ver las solicitudes de transacciones en un formato mejorado."
   },
   "refreshList": {
     "message": "Actualizar lista"
@@ -4343,9 +4323,6 @@
   "restoreUserData": {
     "message": "Restaure sus datos de usuario"
   },
-  "restoreUserDataDescription": {
-    "message": "Puede restaurar datos tal y como contactos y preferencias desde un archivo de copia de seguridad."
-  },
   "resultPageError": {
     "message": "Error"
   },
@@ -4406,6 +4383,9 @@
   },
   "reviewAlerts": {
     "message": "Revisar alertas"
+  },
+  "reviewPermissions": {
+    "message": "Revisar permisos"
   },
   "revokeAllTokensTitle": {
     "message": "¿Revocar el permiso para acceder y transferir todos sus $1?",

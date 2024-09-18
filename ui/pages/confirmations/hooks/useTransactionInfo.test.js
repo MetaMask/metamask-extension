@@ -21,7 +21,9 @@ describe('useTransactionInfo', () => {
     it('should return true if transaction is NFT transfer', () => {
       mockState.metamask.allNftContracts = {
         [mockSelectedInternalAccount.address]: {
-          [mockState.metamask.providerConfig.chainId]: [{ address: '0x9' }],
+          [mockState.metamask.networkConfigurations[
+            mockState.metamask.selectedNetworkClientId
+          ].chainId]: [{ address: '0x9' }],
         },
       };
 

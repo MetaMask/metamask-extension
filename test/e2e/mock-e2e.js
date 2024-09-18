@@ -1,11 +1,17 @@
 const fs = require('fs');
 
-const { BRIDGE_API_BASE_URL } = require('../../shared/constants/bridge');
+const {
+  BRIDGE_DEV_API_BASE_URL,
+  BRIDGE_PROD_API_BASE_URL,
+} = require('../../shared/constants/bridge');
 const {
   GAS_API_BASE_URL,
   SWAPS_API_V2_BASE_URL,
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
+const {
+  DEFAULT_FEATURE_FLAGS_RESPONSE: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
+} = require('./tests/bridge/constants');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -294,16 +300,18 @@ async function setupMocking(
       };
     });
 
-  await server
-    .forGet(`${BRIDGE_API_BASE_URL}/getAllFeatureFlags`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          'extension-support': false,
-        },
-      };
-    });
+  [
+    `${BRIDGE_DEV_API_BASE_URL}/getAllFeatureFlags`,
+    `${BRIDGE_PROD_API_BASE_URL}/getAllFeatureFlags`,
+  ].forEach(
+    async (url) =>
+      await server.forGet(url).thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
+        };
+      }),
+  );
 
   await server
     .forGet(`https://token.api.cx.metamask.io/tokens/${chainId}`)
@@ -629,7 +637,7 @@ async function setupMocking(
     });
 
   // Notification APIs
-  mockNotificationServices(server);
+  await mockNotificationServices(server);
 
   await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
     return {

@@ -92,6 +92,7 @@ const exceptionsToFilter = {
  * @property {boolean} [participateInMetaMetrics] - The user's preference for
  *  participating in the MetaMetrics analytics program. This setting controls
  *  whether or not events are tracked
+ *  @property {boolean} [latestNonAnonymousEventTimestamp] - The timestamp at which last non anonymous event is tracked.
  * @property {{[string]: MetaMetricsEventFragment}} [fragments] - Object keyed
  *  by UUID with stored fragments as values.
  * @property {Array} [eventsBeforeMetricsOptIn] - Array of queued events added before
@@ -155,6 +156,8 @@ export default class MetaMetricsController {
       participateInMetaMetrics: null,
       metaMetricsId: null,
       dataCollectionForMarketing: null,
+      marketingCampaignCookieId: null,
+      latestNonAnonymousEventTimestamp: 0,
       eventsBeforeMetricsOptIn: [],
       traits: {},
       previousUserTraits: {},
@@ -466,6 +469,8 @@ export default class MetaMetricsController {
     if (participateInMetaMetrics) {
       this.trackEventsAfterMetricsOptIn();
       this.clearEventsAfterMetricsOptIn();
+    } else if (this.state.marketingCampaignCookieId) {
+      this.setMarketingCampaignCookieId(null);
     }
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -477,8 +482,18 @@ export default class MetaMetricsController {
 
   setDataCollectionForMarketing(dataCollectionForMarketing) {
     const { metaMetricsId } = this.state;
+
     this.store.updateState({ dataCollectionForMarketing });
+
+    if (!dataCollectionForMarketing && this.state.marketingCampaignCookieId) {
+      this.setMarketingCampaignCookieId(null);
+    }
+
     return metaMetricsId;
+  }
+
+  setMarketingCampaignCookieId(marketingCampaignCookieId) {
+    this.store.updateState({ marketingCampaignCookieId });
   }
 
   get state() {
@@ -704,6 +719,7 @@ export default class MetaMetricsController {
       userAgent: window.navigator.userAgent,
       page,
       referrer,
+      marketingCampaignCookieId: this.state.marketingCampaignCookieId,
     };
   }
 
@@ -821,6 +837,7 @@ export default class MetaMetricsController {
         metamaskState.useTokenDetection,
       [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]:
         metamaskState.useNativeCurrencyAsPrimaryCurrency,
+      [MetaMetricsUserTrait.CurrentCurrency]: metamaskState.currentCurrency,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       [MetaMetricsUserTrait.MmiExtensionId]: this.extension?.runtime?.id,
       [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress,
@@ -1016,7 +1033,8 @@ export default class MetaMetricsController {
     // to be updated to work with the new tracking plan. I think we should use
     // a config setting for this instead of trying to match the event name
     const isSendFlow = Boolean(payload.event.match(/^send|^confirm/iu));
-    if (isSendFlow) {
+    // do not filter if excludeMetaMetricsId is explicitly set to false
+    if (options?.excludeMetaMetricsId !== false && isSendFlow) {
       excludeMetaMetricsId = true;
     }
     // If we are tracking sensitive data we will always use the anonymousId
@@ -1074,7 +1092,11 @@ export default class MetaMetricsController {
   // Saving segmentApiCalls in controller store in MV3 ensures that events are tracked
   // even if service worker terminates before events are submiteed to segment.
   _submitSegmentAPICall(eventType, payload, callback) {
-    const { metaMetricsId, participateInMetaMetrics } = this.state;
+    const {
+      metaMetricsId,
+      participateInMetaMetrics,
+      latestNonAnonymousEventTimestamp,
+    } = this.state;
     if (!participateInMetaMetrics || !metaMetricsId) {
       return;
     }
@@ -1089,6 +1111,11 @@ export default class MetaMetricsController {
     }
     const modifiedPayload = { ...payload, messageId, timestamp };
     this.store.updateState({
+      ...this.store.getState(),
+      latestNonAnonymousEventTimestamp:
+        modifiedPayload.anonymousId === METAMETRICS_ANONYMOUS_ID
+          ? latestNonAnonymousEventTimestamp
+          : timestamp.valueOf(),
       segmentApiCalls: {
         ...this.store.getState().segmentApiCalls,
         [messageId]: {

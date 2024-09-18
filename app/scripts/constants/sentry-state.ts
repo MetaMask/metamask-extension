@@ -99,6 +99,8 @@ export const SENTRY_BACKGROUND_STATE = {
     bridgeState: {
       bridgeFeatureFlags: {
         extensionSupport: false,
+        destNetworkAllowlist: [],
+        srcNetworkAllowlist: [],
       },
     },
   },
@@ -156,6 +158,12 @@ export const SENTRY_BACKGROUND_STATE = {
     segmentApiCalls: false,
     traits: false,
     dataCollectionForMarketing: false,
+    marketingCampaignCookieId: true,
+    latestNonAnonymousEventTimestamp: true,
+  },
+  MetaMetricsDataDeletionController: {
+    metaMetricsDataDeletionId: true,
+    metaMetricsDataDeletionTimestamp: true,
   },
   NameController: {
     names: false,
@@ -165,15 +173,6 @@ export const SENTRY_BACKGROUND_STATE = {
   NetworkController: {
     networkConfigurations: false,
     networksMetadata: true,
-    providerConfig: {
-      chainId: true,
-      id: true,
-      nickname: true,
-      rpcPrefs: false,
-      rpcUrl: false,
-      ticker: true,
-      type: true,
-    },
     selectedNetworkClientId: false,
   },
   NftController: {

@@ -111,6 +111,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.flexStart}
         color={color}
+        style={{ alignItems: AlignItems.center }}
       >
         <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
           {label}
@@ -127,6 +128,9 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
               marginLeft={1}
               color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
               size={IconSize.Sm}
+              {...(dataTestId
+                ? { 'data-testid': `${dataTestId}-tooltip` }
+                : {})}
             />
           </Tooltip>
         )}
