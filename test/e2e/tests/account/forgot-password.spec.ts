@@ -1,4 +1,4 @@
-import { withFixtures } from '../../helpers';
+import { withFixtures, defaultGanacheOptions } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { E2E_SRP } from '../../default-fixture';
 import { Driver } from '../../webdriver/driver';
@@ -14,6 +14,7 @@ describe('Forgot password', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -23,11 +24,12 @@ describe('Forgot password', function () {
         const homePage = new HomePage(driver);
         await homePage.headerNavbar.lockMetaMask();
 
-        // Click forgot password button to go to reset password page
+        // Click forgot password button and reset password
         await new LoginPage(driver).gotoResetPasswordPage();
 
-        // Reset password with a new password
-        await new ResetPasswordPage(driver).resetPassword(E2E_SRP, newPassword);
+        const resetPasswordPage = new ResetPasswordPage(driver);
+        await resetPasswordPage.check_pageIsLoaded();
+        await resetPasswordPage.resetPassword(E2E_SRP, newPassword);
 
         // Lock wallet again
         await homePage.headerNavbar.lockMetaMask();
