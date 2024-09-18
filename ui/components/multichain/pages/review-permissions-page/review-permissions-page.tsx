@@ -135,15 +135,11 @@ export const ReviewPermissions = () => {
           parentCapability,
       ) as string[];
       if (permissionMethodNames.length > 0) {
-        const permissionsRecord: Record<string, string[]> = {
-          [activeTabOrigin]: permissionMethodNames,
+        const permissionsRecord = {
+          [activeTabOrigin]: permissionMethodNames as NonEmptyArray<string>,
         };
 
-        dispatch(
-          removePermissionsFor(
-            permissionsRecord as Record<string, NonEmptyArray<string>>,
-          ),
-        );
+        dispatch(removePermissionsFor(permissionsRecord));
       }
     }
   };
