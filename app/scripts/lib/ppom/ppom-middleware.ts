@@ -9,6 +9,7 @@ import {
 } from '@metamask/utils';
 import { detectSIWE } from '@metamask/controller-utils';
 
+import { QueuedRequestMiddlewareJsonRpcRequest } from '@metamask/queued-request-controller';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import PreferencesController from '../../controllers/preferences-controller';
@@ -70,7 +71,7 @@ export function createPPOMMiddleware<
   ) => void,
 ) {
   return async (
-    req: PPOMMiddlewareRequest<Params>,
+    req: PPOMMiddlewareRequest<Params> & QueuedRequestMiddlewareJsonRpcRequest,
     _res: JsonRpcResponse<Result>,
     next: () => void,
   ) => {
@@ -78,9 +79,10 @@ export function createPPOMMiddleware<
       const securityAlertsEnabled =
         preferencesController.store.getState()?.securityAlertsEnabled;
 
-      const { chainId } = getProviderConfig({
-        metamask: networkController.state,
-      });
+      const { chainId } =
+        networkController.getNetworkConfigurationByNetworkClientId(
+          req.networkClientId,
+        )!;
       const isSupportedChain = await isChainSupported(chainId);
 
       if (
