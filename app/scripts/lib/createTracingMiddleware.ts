@@ -1,4 +1,4 @@
-// Request and repsones are currently untyped.
+// Request and repsonses are currently untyped.
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
