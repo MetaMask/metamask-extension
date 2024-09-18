@@ -157,14 +157,7 @@
 }
 
 .balance-popover {
-  &__text {
-    font-size: 12px;
-    line-height: 20px;
-    letter-spacing: 0.25px;
-  }
-
   &__container {
-    width: 248px !important;
     z-index: design-system.$modal-z-index;
   }
 }

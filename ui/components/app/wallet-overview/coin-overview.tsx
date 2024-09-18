@@ -17,6 +17,7 @@ import {
 } from '../../component-library';
 import {
   AlignItems,
+  BlockSize,
   Display,
   JustifyContent,
   TextAlign,
@@ -251,6 +252,7 @@ export const CoinOverview = ({
                       flip
                       data-theme={theme === 'light' ? 'dark' : 'light'}
                       className="balance-popover__container"
+                      width={BlockSize.Full}
                       padding={3}
                       onClickOutside={handleClick}
                       onPressEscKey={handleClick}
@@ -265,7 +267,6 @@ export const CoinOverview = ({
                             variant={TextVariant.bodySmBold}
                             textAlign={TextAlign.Left}
                             alignItems={AlignItems.flexStart}
-                            className="balance-popover__text"
                           >
                             {t('yourBalanceIsAggregated')}
                           </Text>
@@ -278,10 +279,7 @@ export const CoinOverview = ({
                           />
                         </Box>
 
-                        <Text
-                          variant={TextVariant.bodySm}
-                          className="balance-popover__text"
-                        >
+                        <Text variant={TextVariant.bodySm}>
                           {
                             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                             // @ts-ignore: Expected 0-1 arguments, but got 2.
