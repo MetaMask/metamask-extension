@@ -220,9 +220,6 @@
   "editContact": {
     "message": "Redigera kontakt"
   },
-  "ensRegistrationError": {
-    "message": "Fel i ENS-namnregistrering"
-  },
   "enterPasswordContinue": {
     "message": "Ange lösenord för att fortsätta"
   },
@@ -341,9 +338,6 @@
   "invalidAddressRecipient": {
     "message": "Mottagarens adress är ogiltig"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Ej ETH-nätverk, ange med små bokstäver"
-  },
   "invalidRPC": {
     "message": "Ogiltig RPC-URL"
   },
@@ -437,9 +431,6 @@
   "next": {
     "message": "Nästa"
   },
-  "noAddressForName": {
-    "message": "Inga adresser har angetts för detta namn."
-  },
   "noConversionRateAvailable": {
     "message": "Ingen omräkningskurs tillgänglig"
   },
@@ -522,9 +513,6 @@
   },
   "readdToken": {
     "message": "Du kan lägga till denna token i framtiden genom att välja \"Lägg till token\" i kontots alternativmeny."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Sök, allmän adress (0x) eller ENS"
   },
   "reject": {
     "message": "Avvisa"

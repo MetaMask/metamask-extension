@@ -702,12 +702,6 @@
     "message": "O endpoint retornou um ID diferente da chain: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "ensIllegalCharacter": {
-    "message": "Caractere inválido para ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Erro no registro do nome ENS"
-  },
   "ensUnknownError": {
     "message": "Falha na busca de ENS."
   },
@@ -1016,9 +1010,6 @@
   },
   "invalidAddressRecipient": {
     "message": "O endereço do destinatário é inválido"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Não é uma rede de ETH; configurar em minúsculas"
   },
   "invalidChainIdTooBig": {
     "message": "ID de cadeia inválido. O ID de cadeia é muito grande."
@@ -1330,9 +1321,6 @@
   "noAccountsFound": {
     "message": "Nenhuma conta encontrada para a busca efetuada"
   },
-  "noAddressForName": {
-    "message": "Não foi configurado nenhum endereço para esse nome."
-  },
   "noConversionDateAvailable": {
     "message": "Não há uma data de conversão de moeda disponível"
   },
@@ -1550,9 +1538,6 @@
   },
   "receive": {
     "message": "Receber"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Busca, endereço público (0x) ou ENS"
   },
   "recommendedGasLabel": {
     "message": "Recomendado"

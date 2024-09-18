@@ -223,9 +223,6 @@
   "editContact": {
     "message": "Rediger kontakt"
   },
-  "ensRegistrationError": {
-    "message": "Feil i ENS-navneregistrering"
-  },
   "enterPasswordContinue": {
     "message": "Skriv inn passord for å fortsette"
   },
@@ -338,9 +335,6 @@
   "invalidAddressRecipient": {
     "message": "Mottaksadresse er ugyldig "
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Ikke ETH-nettverk, bruk små bokstaver"
-  },
   "invalidRPC": {
     "message": "Ugyldig RPC URL"
   },
@@ -437,9 +431,6 @@
   "next": {
     "message": "Neste"
   },
-  "noAddressForName": {
-    "message": "Ingen adresse har blitt angitt for dette navnet. "
-  },
   "noConversionRateAvailable": {
     "message": "Ingen konverteringsrate tilgjengelig "
   },
@@ -522,9 +513,6 @@
   },
   "readdToken": {
     "message": "Du kan legge til dette tokenet igjen i fremtiden ved å gå til \"Legg til token\" i menyen for kontoalternativer."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Søk, offentlig adresse (0x) eller ENS"
   },
   "reject": {
     "message": "Avslå"

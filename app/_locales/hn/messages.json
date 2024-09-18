@@ -200,9 +200,6 @@
   "next": {
     "message": "अगला"
   },
-  "noAddressForName": {
-    "message": "इस नाम के लिए कोई पता सेट नहीं किया गया है।"
-  },
   "noTransactions": {
     "message": "कोई लेन-देन नहीं"
   },

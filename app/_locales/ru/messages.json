@@ -1569,9 +1569,6 @@
   "domain": {
     "message": "Домен"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "Сеть не поддерживает поиск домена"
-  },
   "done": {
     "message": "Выполнено"
   },
@@ -1744,12 +1741,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "Показать домены ENS в адресной строке"
-  },
-  "ensIllegalCharacter": {
-    "message": "Недопустимый символ для ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Ошибка при регистрации имени ENS"
   },
   "ensUnknownError": {
     "message": "Ошибка поиска ENS."
@@ -2384,9 +2375,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Неверный адрес получателя"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Не сеть ETH, задана в нижнем регистре"
   },
   "invalidAssetType": {
     "message": "Этот актив является NFT, и его необходимо повторно добавить на странице «Импорт NFT», которая находится на вкладке NFT."
@@ -3105,9 +3093,6 @@
   },
   "noAccountsFound": {
     "message": "По данному поисковому запросу счетов не найдено"
-  },
-  "noAddressForName": {
-    "message": "Для этого имени не задан адрес."
   },
   "noConnectedAccountDescription": {
     "message": "Для продолжения выберите счет, который вы хотите использовать на этом сайте."
@@ -4104,12 +4089,6 @@
   },
   "receive": {
     "message": "Получить"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Введите публичный адрес (0x) или имя ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Введите публичный адрес (0x) или имя домена"
   },
   "recommendedGasLabel": {
     "message": "Рекомендовано"

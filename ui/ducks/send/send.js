@@ -25,7 +25,6 @@ import {
   INSUFFICIENT_TOKENS_ERROR,
   NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
-  INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
   RECIPIENT_TYPES,
   SWAPS_NO_QUOTES,
@@ -95,11 +94,8 @@ import {
   getTokenIdParam,
 } from '../../helpers/utils/token-util';
 import {
-  IS_FLASK,
   checkExistingAddresses,
-  isDefaultMetaMaskChain,
   isOriginContractAddress,
-  isValidDomainName,
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
@@ -111,6 +107,7 @@ import {
 import { resetDomainResolution } from '../domains';
 import {
   isBurnAddress,
+  isPossibleAddress,
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../shared/modules/hexstring-utils';
@@ -1598,24 +1595,17 @@ const slice = createSlice({
           draftTransaction.recipient.error = null;
           draftTransaction.recipient.warning = null;
         } else {
-          const {
-            chainId,
-            tokens,
-            tokenAddressList,
-            isProbablyAnAssetContract,
-          } = action.payload;
+          const { tokens, tokenAddressList, isProbablyAnAssetContract } =
+            action.payload;
 
           if (
             isBurnAddress(state.recipientInput) ||
-            (!isValidHexAddress(state.recipientInput, {
-              mixedCaseUseChecksum: true,
-            }) &&
-              !IS_FLASK &&
-              !isValidDomainName(state.recipientInput))
+            (isPossibleAddress(state.recipientInput) &&
+              !isValidHexAddress(state.recipientInput, {
+                mixedCaseUseChecksum: true,
+              }))
           ) {
-            draftTransaction.recipient.error = isDefaultMetaMaskChain(chainId)
-              ? INVALID_RECIPIENT_ADDRESS_ERROR
-              : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR;
+            draftTransaction.recipient.error = INVALID_RECIPIENT_ADDRESS_ERROR;
           } else if (
             isOriginContractAddress(
               state.recipientInput,

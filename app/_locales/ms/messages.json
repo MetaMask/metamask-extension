@@ -223,9 +223,6 @@
   "editContact": {
     "message": "Edit Kenalan"
   },
-  "ensRegistrationError": {
-    "message": "Ralat dalam pendaftaran nama ENS"
-  },
   "enterPasswordContinue": {
     "message": "Masukkan kata laluan untuk teruskan"
   },
@@ -340,9 +337,6 @@
   "invalidAddressRecipient": {
     "message": "Alamat penerima tidak sah"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Bukan rangkaian ETH, tetapkan kepada huruf kecil"
-  },
   "invalidRPC": {
     "message": "URL RPC tidak sah"
   },
@@ -436,9 +430,6 @@
   "next": {
     "message": "Seterusnya"
   },
-  "noAddressForName": {
-    "message": "Tiada alamat yang ditetapkan untuk nama ini."
-  },
   "noConversionRateAvailable": {
     "message": "Tiada Kadar Penukaran yang Tersedia"
   },
@@ -518,9 +509,6 @@
   },
   "readdToken": {
     "message": "Anda boleh tambah token ini kembali pada masa depan dengan pergi ke \"Tambah token\" di dalam menu pilihan akaun anda."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Cari, alamat awam (0x), atau ENS"
   },
   "reject": {
     "message": "Tolak"

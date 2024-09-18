@@ -260,9 +260,6 @@
   "next": {
     "message": "அடுத்தது"
   },
-  "noAddressForName": {
-    "message": "இந்த பெயருக்கான முகவரி அமைக்கப்படவில்லை."
-  },
   "noTransactions": {
     "message": "பரிவர்த்தனைகள் இல்லை"
   },

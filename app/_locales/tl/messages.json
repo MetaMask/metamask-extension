@@ -1569,9 +1569,6 @@
   "domain": {
     "message": "Domain"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "Hindi sinusuportahan ng network ang domain lookup"
-  },
   "done": {
     "message": "Tapos na"
   },
@@ -1744,12 +1741,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "Ipinapakita ang mga ENS domain sa address bar"
-  },
-  "ensIllegalCharacter": {
-    "message": "Mga ilegal na character para sa ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Nagka-error sa pag-register ng ENS name"
   },
   "ensUnknownError": {
     "message": "Nabigong makita ang ENS."
@@ -2384,9 +2375,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Ang address ng tatanggap ay hindi wasto"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Hindi ETH network, itakda sa maliliit na letra"
   },
   "invalidAssetType": {
     "message": "Ang asset na ito ay isang NFT at kailangang idagdag muli sa pahina ng Mag-import ng mga NFT na matatagpuan sa ilalim ng tab ng mga NFT"
@@ -3105,9 +3093,6 @@
   },
   "noAccountsFound": {
     "message": "Walang nakitang account para sa ibinigay na query sa paghahanap"
-  },
-  "noAddressForName": {
-    "message": "Walang naitakdang address para sa pangalang ito."
   },
   "noConnectedAccountDescription": {
     "message": "Pumili ng account na gusto mong gamitin sa site na ito para magpatuloy."
@@ -4104,12 +4089,6 @@
   },
   "receive": {
     "message": "Tumanggap"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Ilagay ang pampublikong address (0x) o ENS name"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Ilagay ang pampublikong address (0x) o pangalan ng domain"
   },
   "recommendedGasLabel": {
     "message": "Nirekomenda"

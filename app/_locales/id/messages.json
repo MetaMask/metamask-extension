@@ -1569,9 +1569,6 @@
   "domain": {
     "message": "Domain"
   },
-  "domainNotSupportedOnNetwork": {
-    "message": "Jaringan tidak mendukung pencarian domain"
-  },
   "done": {
     "message": "Selesai"
   },
@@ -1744,12 +1741,6 @@
   },
   "ensDomainsSettingTitle": {
     "message": "Tampilkan domain ENS di bilah alamat"
-  },
-  "ensIllegalCharacter": {
-    "message": "Karakter tidak sah untuk ENS."
-  },
-  "ensRegistrationError": {
-    "message": "Terjadi kesalahan pada pendaftaran nama ENS"
   },
   "ensUnknownError": {
     "message": "Pencarian ENS gagal."
@@ -2384,9 +2375,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Alamat penerima tidak valid"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Bukan jaringan ETH, atur ke huruf kecil"
   },
   "invalidAssetType": {
     "message": "Aset ini merupakan NFT dan harus ditambahkan kembali di halaman Impor NFT yang ada di bawah tab NFT"
@@ -3105,9 +3093,6 @@
   },
   "noAccountsFound": {
     "message": "Tidak ditemukan akun untuk kueri pencarian yang diberikan"
-  },
-  "noAddressForName": {
-    "message": "Alamat untuk nama ini belum diatur."
   },
   "noConnectedAccountDescription": {
     "message": "Pilih akun yang ingin Anda gunakan di situs ini untuk melanjutkan."
@@ -4104,12 +4089,6 @@
   },
   "receive": {
     "message": "Terima"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Masukkan alamat publik (0x) atau nama ENS"
-  },
-  "recipientAddressPlaceholderFlask": {
-    "message": "Masukkan alamat publik (0x) atau nama domain"
   },
   "recommendedGasLabel": {
     "message": "Direkomendasikan"

@@ -190,9 +190,6 @@
   "next": {
     "message": "volgende"
   },
-  "noAddressForName": {
-    "message": "Er is geen adres ingesteld voor deze naam."
-  },
   "noTransactions": {
     "message": "Geen transacties"
   },

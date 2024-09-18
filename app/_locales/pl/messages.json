@@ -226,9 +226,6 @@
   "editContact": {
     "message": "Edytuj kontakt"
   },
-  "ensRegistrationError": {
-    "message": "Błąd w rejestracji nazwy ENS"
-  },
   "enterPasswordContinue": {
     "message": "Podaj hasło żeby kontynuować"
   },
@@ -351,9 +348,6 @@
   "invalidAddressRecipient": {
     "message": "Nieprawidłowy adres odbiorcy"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "To nie jest sieć ETH, zmień na małe litery"
-  },
   "invalidRPC": {
     "message": "Nieprawidłowe RPC URI"
   },
@@ -450,9 +444,6 @@
   "next": {
     "message": "Dalej"
   },
-  "noAddressForName": {
-    "message": "Nie wybrano żadnego adresu dla tej nazwy."
-  },
   "noConversionRateAvailable": {
     "message": "Brak kursu waluty"
   },
@@ -532,9 +523,6 @@
   },
   "readdToken": {
     "message": "Możesz później ponownie dodać ten token poprzez \"Dodaj token\" w opcjach menu swojego konta."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Szukaj, adres publiczny (0x) lub ENS"
   },
   "reject": {
     "message": "Odrzuć"

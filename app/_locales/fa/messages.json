@@ -226,9 +226,6 @@
   "editContact": {
     "message": "ویرایش تماس"
   },
-  "ensRegistrationError": {
-    "message": "خطا در ثبت نام ENS"
-  },
   "enterPasswordContinue": {
     "message": "برای ادامه رمز عبور را وارد کنید"
   },
@@ -351,9 +348,6 @@
   "invalidAddressRecipient": {
     "message": "آدرس دریافت کننده نامعتبر است"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "شبکه ETH نه، به حروف کوچک تنظیم کنید"
-  },
   "invalidRPC": {
     "message": "RPC URL نا معتبر"
   },
@@ -453,9 +447,6 @@
   "next": {
     "message": "بعدی"
   },
-  "noAddressForName": {
-    "message": "هیچ آدرسی برای این نام تنظیم نشده است."
-  },
   "noConversionRateAvailable": {
     "message": "هیچ نرخ تغییر موجود نمیباشد"
   },
@@ -538,9 +529,6 @@
   },
   "readdToken": {
     "message": "شما میتوانید این رمزیاب را دوباره برای آینده با رفتن به گزینه \"Add token\" در مینوی تنظیمات حساب ها، اضافه نمایید."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "جستجو، آدرس عمومی (0x)، یا ENS"
   },
   "reject": {
     "message": "عدم پذیرش"
