@@ -6306,9 +6306,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-execution-environments@npm:^6.7.1":
-  version: 6.7.1
-  resolution: "@metamask/snaps-execution-environments@npm:6.7.1"
+"@metamask/snaps-execution-environments@npm:^6.7.2":
+  version: 6.7.2
+  resolution: "@metamask/snaps-execution-environments@npm:6.7.2"
   dependencies:
     "@metamask/json-rpc-engine": "npm:^9.0.2"
     "@metamask/object-multiplex": "npm:^2.0.0"
@@ -6321,7 +6321,7 @@ __metadata:
     "@metamask/utils": "npm:^9.2.1"
     nanoid: "npm:^3.1.31"
     readable-stream: "npm:^3.6.2"
-  checksum: 10/d2e226d22c248a6ad7cd83a9d380504aec45e271fc7c97af6cdf57723e0c42259cdc54c17d2111423576906dac5c1951eae8c46963f9fdb11fb4340d4e10e700
+  checksum: 10/4b8ec4c0f6e628feeffd92fe4378fd204d2ed78012a1ed5282b24b00c78cebc3b6d7cb1306903b045a2ca887ecc0adafb2c96da4a19f2730a268f4912b36bec3
   languageName: node
   linkType: hard
 
@@ -26151,7 +26151,7 @@ __metadata:
     "@metamask/signature-controller": "npm:^19.0.0"
     "@metamask/smart-transactions-controller": "npm:^13.0.0"
     "@metamask/snaps-controllers": "npm:^9.7.0"
-    "@metamask/snaps-execution-environments": "npm:^6.7.1"
+    "@metamask/snaps-execution-environments": "npm:^6.7.2"
     "@metamask/snaps-rpc-methods": "npm:^11.1.1"
     "@metamask/snaps-sdk": "npm:^6.5.0"
     "@metamask/snaps-utils": "npm:^8.1.1"
