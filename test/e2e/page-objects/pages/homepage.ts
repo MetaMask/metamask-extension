@@ -24,6 +24,7 @@ class HomePage {
   private accountMenuButton: string;
 
   public headerNavbar: HeaderNavbar;
+
   public accountOptionsMenu: AccountOptionsMenu;
 
   constructor(driver: Driver) {

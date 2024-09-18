@@ -1,13 +1,12 @@
-import { enableNotificationsFirstTime } from '../../page-objects/flows/enable-notifications';
-import NotificationsListPage from '../../page-objects/pages/notifications/notifications-list';
-import { mockNotificationServices } from './mocks';
-
-const {
+import {
   withFixtures,
   logInWithBalanceValidation,
   defaultGanacheOptions,
-} = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
+} from '../../helpers';
+import { enableNotificationsFirstTime } from '../../page-objects/flows/enable-notifications';
+import FixtureBuilder from '../../fixture-builder';
+import NotificationsListPage from '../../page-objects/pages/notifications/notifications-list';
+import { mockNotificationServices } from './mocks';
 
 describe('Notifications', function () {
   describe('from inside MetaMask', function () {
@@ -16,7 +15,7 @@ describe('Notifications', function () {
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions: defaultGanacheOptions,
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
           testSpecificMock: mockNotificationServices,
         },
         async ({ driver, ganacheServer }) => {

@@ -5,10 +5,8 @@ class HeaderNavbar {
   private driver: Driver;
 
   private accountMenuButton: string;
-  private accountOptionsMenuButton: string;
-  private lockMetaMaskButton: string;
 
-  private accountOptionMenu: string;
+  private accountOptionsMenuButton: string;
 
   private lockMetaMaskButton: string;
 

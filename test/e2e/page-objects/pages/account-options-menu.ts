@@ -3,6 +3,7 @@ import { Driver } from '../../webdriver/driver';
 
 class AccountOptionsMenu {
   private driver: Driver;
+
   private readonly notificationsMenuItem = testId('notifications-menu-item');
 
   constructor(driver: Driver) {
