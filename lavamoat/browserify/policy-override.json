@@ -163,21 +163,6 @@
       "packages": {
         "immer": true
       }
-    },
-    "@sentry/browser": {
-      "globals": {
-        "__SENTRY__": true
-      }
-    },
-    "@sentry/browser>@sentry/core": {
-      "globals": {
-        "__SENTRY__": true
-      }
-    },
-    "@sentry/utils": {
-      "globals": {
-        "__SENTRY__": true
-      }
     }
   }
 }

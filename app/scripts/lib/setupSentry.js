@@ -20,7 +20,7 @@ const internalLog = createModuleLogger(log, 'internal');
 /* eslint-disable prefer-destructuring */
 // Destructuring breaks the inlining of the environment variables
 const METAMASK_BUILD_TYPE = process.env.METAMASK_BUILD_TYPE;
-const METAMASK_DEBUG = process.env.METAMASK_DEBUG;
+const METAMASK_DEBUG = true;
 const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT;
 const RELEASE = process.env.METAMASK_VERSION;
 const SENTRY_DSN = process.env.SENTRY_DSN;

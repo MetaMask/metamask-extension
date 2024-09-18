@@ -24645,7 +24645,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:15.4.0":
+"lavamoat-core@npm:15.1.1":
+  version: 15.1.1
+  resolution: "lavamoat-core@npm:15.1.1"
+  dependencies:
+    json-stable-stringify: "npm:1.0.2"
+    lavamoat-tofu: "npm:^7.1.0"
+    merge-deep: "npm:3.0.3"
+    type-fest: "npm:4.7.1"
+  checksum: 10/7564f6d6f5c5e7934ec93a87d46c687928c8635ec0dabaf4aaea5595df0a097c3cb23131180cff7a23ed6bf444ef01b627168e08546e8f654844a11be31864fa
+  languageName: node
+  linkType: hard
+
+"lavamoat-core@npm:^15.1.2, lavamoat-core@npm:^15.2.1, lavamoat-core@npm:^15.4.0":
   version: 15.4.0
   resolution: "lavamoat-core@npm:15.4.0"
   dependencies:
@@ -24658,16 +24670,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@patch:lavamoat-core@npm%3A15.4.0#~/.yarn/patches/lavamoat-core-npm-15.4.0-f0f68a8c72.patch":
-  version: 15.4.0
-  resolution: "lavamoat-core@patch:lavamoat-core@npm%3A15.4.0#~/.yarn/patches/lavamoat-core-npm-15.4.0-f0f68a8c72.patch::version=15.4.0&hash=060cb4"
+"lavamoat-core@patch:lavamoat-core@npm%3A15.1.1#~/.yarn/patches/lavamoat-core-npm-15.1.1-51fbe39988.patch":
+  version: 15.1.1
+  resolution: "lavamoat-core@patch:lavamoat-core@npm%3A15.1.1#~/.yarn/patches/lavamoat-core-npm-15.1.1-51fbe39988.patch::version=15.1.1&hash=95165a"
   dependencies:
-    "@babel/types": "npm:7.24.6"
-    json-stable-stringify: "npm:1.1.1"
-    lavamoat-tofu: "npm:^7.3.0"
+    json-stable-stringify: "npm:1.0.2"
+    lavamoat-tofu: "npm:^7.1.0"
     merge-deep: "npm:3.0.3"
-    type-fest: "npm:4.15.0"
-  checksum: 10/1586ff1d45bc8e23469e143e40d8566402a0eea1fc34ec648e79cf4e89d68166a1852f816992a8bb3d3eaa870d5571b12ad488604474c18d5067d575ea356303
+    type-fest: "npm:4.7.1"
+  checksum: 10/e408e3fd65987e0083a4649da3b158ace2eb55379add58a2a0c9a2d1b9b5aee86d03dd44dc616796a5c1c07f303c0691db7c41877b2c3cc4ce86d80af229844b
   languageName: node
   linkType: hard
 
@@ -34940,6 +34951,13 @@ __metadata:
   version: 4.15.0
   resolution: "type-fest@npm:4.15.0"
   checksum: 10/8f897551877daa0df7bb17a21b6acd8a21ac5a0bdb14dbfd353b16013fed99f23c6d9c12a2c7685c8dededb4739ec8bfb120a914330f8b11a478a89758a11acc
+  languageName: node
+  linkType: hard
+
+"type-fest@npm:4.7.1":
+  version: 4.7.1
+  resolution: "type-fest@npm:4.7.1"
+  checksum: 10/ef21f317738080d71d8603a65bd7136e1e0246980b407e9fe6b4c35cc239b712dd737b06c391e7cde8213d8a733449930b6cc5a3417324b90dddeb84fa167629
   languageName: node
   linkType: hard
 
