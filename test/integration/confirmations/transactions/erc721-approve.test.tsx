@@ -1,12 +1,13 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import nock from 'nock';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { integrationTestRender } from '../../../lib/render-helpers';
+import { createTestProviderTools } from '../../../stub/provider';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
-import { TokenStandard } from '../../../../shared/constants/transaction';
-import { createTestProviderTools } from '../../../stub/provider';
 import { getUnapprovedApproveTransaction } from './transactionDataHelpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
@@ -23,14 +24,21 @@ const backgroundConnectionMocked = {
 export const pendingTransactionId = '48a75190-45ca-11ef-9001-f3886ec2397c';
 export const pendingTransactionTime = new Date().getTime();
 
-const getMetaMaskStateWithUnapprovedApproveTransaction = (
-  accountAddress: string,
-) => {
+const getMetaMaskStateWithUnapprovedApproveTransaction = (opts?: {
+  showAdvanceDetails: boolean;
+}) => {
+  const account =
+    mockMetaMaskState.internalAccounts.accounts[
+      mockMetaMaskState.internalAccounts
+        .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+    ];
+
   return {
     ...mockMetaMaskState,
     preferences: {
       ...mockMetaMaskState.preferences,
       redesignedConfirmationsEnabled: true,
+      showConfirmationAdvancedDetails: opts?.showAdvanceDetails ?? false,
     },
     pendingApprovals: {
       [pendingTransactionId]: {
@@ -61,7 +69,7 @@ const getMetaMaskStateWithUnapprovedApproveTransaction = (
     },
     transactions: [
       getUnapprovedApproveTransaction(
-        accountAddress,
+        account.address,
         pendingTransactionId,
         pendingTransactionTime,
       ),
@@ -78,7 +86,7 @@ const advancedDetailsMockedRequests = {
   decodeTransactionData: {
     data: [
       {
-        name: 'approve',
+        name: 'Approve',
         params: [
           {
             type: 'address',
@@ -129,7 +137,8 @@ describe('ERC721 Approve Confirmation', () => {
       },
     });
     const APPROVE_NFT_HEX_SIG = '0x095ea7b3';
-    mock4byte(APPROVE_NFT_HEX_SIG);
+    const APPROVE_NFT_TEXT_SIG = 'approve(address,uint256)';
+    mock4byte(APPROVE_NFT_HEX_SIG, APPROVE_NFT_TEXT_SIG);
   });
 
   afterEach(() => {
@@ -141,15 +150,9 @@ describe('ERC721 Approve Confirmation', () => {
     delete (global as any).ethereumProvider;
   });
 
-  it('displays approve details with correct data', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
+  it('displays spending cap request title', async () => {
     const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedApproveTransaction(account.address);
+      getMetaMaskStateWithUnapprovedApproveTransaction();
 
     await act(async () => {
       await integrationTestRender({
@@ -158,12 +161,173 @@ describe('ERC721 Approve Confirmation', () => {
       });
     });
 
-    await waitFor(() => {
-      expect(screen.getByText('Allowance request')).toBeInTheDocument();
+    expect(screen.getByText('Allowance request')).toBeInTheDocument();
+    expect(
+      screen.getByText('This site wants permission to withdraw your NFTs'),
+    ).toBeInTheDocument();
+  });
+
+  it('displays approve simulation section', async () => {
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedApproveTransaction();
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
     });
 
-    await waitFor(() => {
-      expect(screen.getByText('Request from')).toBeInTheDocument();
+    const simulationSection = screen.getByTestId(
+      'confirmation__simulation_section',
+    );
+    expect(simulationSection).toBeInTheDocument();
+
+    // TODO - fix this copy
+    expect(simulationSection).toHaveTextContent(
+      "You're giving someone else permission to withdraw NFTs from your account",
+    );
+    expect(simulationSection).toHaveTextContent('Withdraw');
+    const spendingCapValue = screen.getByTestId('simulation-token-value');
+    expect(simulationSection).toContainElement(spendingCapValue);
+    expect(spendingCapValue).toHaveTextContent('1');
+    expect(simulationSection).toHaveTextContent('0x07614...3ad68');
+  });
+
+  it('displays approve details with correct data', async () => {
+    const testUser = userEvent.setup();
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedApproveTransaction();
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
     });
+
+    const approveDetails = screen.getByTestId('confirmation__approve-details');
+    expect(approveDetails).toBeInTheDocument();
+    const approveDetailsSpender = screen.getByTestId(
+      'confirmation__approve-spender',
+    );
+
+    expect(approveDetails).toContainElement(approveDetailsSpender);
+    expect(approveDetailsSpender).toHaveTextContent('Spender');
+    expect(approveDetailsSpender).toHaveTextContent('0x2e0D7...5d09B');
+    const spenderTooltip = screen.getByTestId(
+      'confirmation__approve-spender-tooltip',
+    );
+    expect(approveDetailsSpender).toContainElement(spenderTooltip);
+    await testUser.hover(spenderTooltip);
+    const spenderTooltipContent = await screen.findByText(
+      'This is the address that will be able to withdraw your NFTs.',
+    );
+    expect(spenderTooltipContent).toBeInTheDocument();
+
+    const approveDetailsRequestFrom = screen.getByTestId(
+      'transaction-details-origin-row',
+    );
+    expect(approveDetails).toContainElement(approveDetailsRequestFrom);
+    expect(approveDetailsRequestFrom).toHaveTextContent('Request from');
+    expect(approveDetailsRequestFrom).toHaveTextContent(
+      'http://localhost:8086/',
+    );
+
+    const approveDetailsRequestFromTooltip = screen.getByTestId(
+      'transaction-details-origin-row-tooltip',
+    );
+    expect(approveDetailsRequestFrom).toContainElement(
+      approveDetailsRequestFromTooltip,
+    );
+    await testUser.hover(approveDetailsRequestFromTooltip);
+    const requestFromTooltipContent = await screen.findByText(
+      'This is the site asking for your confirmation.',
+    );
+    expect(requestFromTooltipContent).toBeInTheDocument();
+  });
+
+  it('displays the advanced transaction details section', async () => {
+    const testUser = userEvent.setup();
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedApproveTransaction({
+        showAdvanceDetails: true,
+      });
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    const approveDetails = screen.getByTestId('confirmation__approve-details');
+    expect(approveDetails).toBeInTheDocument();
+
+    const approveDetailsRecipient = screen.getByTestId(
+      'transaction-details-recipient-row',
+    );
+    expect(approveDetails).toContainElement(approveDetailsRecipient);
+    expect(approveDetailsRecipient).toHaveTextContent('Interacting with');
+    expect(approveDetailsRecipient).toHaveTextContent('0x07614...3ad68');
+
+    const approveDetailsRecipientTooltip = screen.getByTestId(
+      'transaction-details-recipient-row-tooltip',
+    );
+    expect(approveDetailsRecipient).toContainElement(
+      approveDetailsRecipientTooltip,
+    );
+    await testUser.hover(approveDetailsRecipientTooltip);
+    const recipientTooltipContent = await screen.findByText(
+      "This is the contract you're interacting with. Protect yourself from scammers by verifying the details.",
+    );
+    expect(recipientTooltipContent).toBeInTheDocument();
+
+    const approveMethodData = await screen.findByTestId(
+      'transaction-details-method-data-row',
+    );
+    expect(approveDetails).toContainElement(approveMethodData);
+    expect(approveMethodData).toHaveTextContent('Method');
+    expect(approveMethodData).toHaveTextContent('Approve');
+    const approveMethodDataTooltip = screen.getByTestId(
+      'transaction-details-method-data-row-tooltip',
+    );
+    expect(approveMethodData).toContainElement(approveMethodDataTooltip);
+    await testUser.hover(approveMethodDataTooltip);
+    const approveMethodDataTooltipContent = await screen.findByText(
+      'Function executed based on decoded input data.',
+    );
+    expect(approveMethodDataTooltipContent).toBeInTheDocument();
+
+    const approveDetailsNonce = screen.getByTestId(
+      'advanced-details-nonce-section',
+    );
+    expect(approveDetailsNonce).toBeInTheDocument();
+
+    const dataSection = screen.getByTestId('advanced-details-data-section');
+    expect(dataSection).toBeInTheDocument();
+
+    const dataSectionFunction = screen.getByTestId(
+      'advanced-details-data-function',
+    );
+    expect(dataSection).toContainElement(dataSectionFunction);
+    expect(dataSectionFunction).toHaveTextContent('Function');
+    expect(dataSectionFunction).toHaveTextContent('Approve');
+
+    const approveDataParams1 = screen.getByTestId(
+      'advanced-details-data-param-0',
+    );
+    expect(dataSection).toContainElement(approveDataParams1);
+    expect(approveDataParams1).toHaveTextContent('Param #1');
+    expect(approveDataParams1).toHaveTextContent('0x2e0D7...5d09B');
+
+    const approveDataParams2 = screen.getByTestId(
+      'advanced-details-data-param-1',
+    );
+    expect(dataSection).toContainElement(approveDataParams2);
+    expect(approveDataParams2).toHaveTextContent('Param #2');
+    expect(approveDataParams2).toHaveTextContent('1');
   });
 });
