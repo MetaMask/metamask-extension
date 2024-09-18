@@ -1,14 +1,14 @@
 import React from 'react';
 import { screen, act, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/jest';
-import configureStore from '../../../../store/store';
+import configureStore, { MetaMaskReduxState } from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getTokenSymbol } from '../../../../store/actions';
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import { mockNetworkState } from '../../../../../test/stub/networks';
-import AssetList from './asset-list';
+import AssetList from '.';
 
 // Specific to just the ETH FIAT conversion
 const CONVERSION_RATE = 1597.32;
@@ -67,8 +67,9 @@ jest.mock('../../../../store/actions', () => {
   };
 });
 
-const mockSelectedInternalAccount =
-  getSelectedInternalAccountFromMockState(mockState);
+const mockSelectedInternalAccount = getSelectedInternalAccountFromMockState(
+  mockState as unknown as MetaMaskReduxState,
+);
 
 const render = (balance = ETH_BALANCE, chainId = CHAIN_IDS.MAINNET) => {
   const state = {
@@ -102,15 +103,15 @@ const render = (balance = ETH_BALANCE, chainId = CHAIN_IDS.MAINNET) => {
   };
   const store = configureStore(state);
   return renderWithProvider(
-    <AssetList onClickAsset={() => undefined} />,
+    <AssetList onClickAsset={() => undefined} showTokensLinks />,
     store,
   );
 };
 
 describe('AssetList', () => {
-  useIsOriginalNativeTokenSymbol.mockReturnValue(true);
+  (useIsOriginalNativeTokenSymbol as jest.Mock).mockReturnValue(true);
 
-  getTokenSymbol.mockImplementation(async (address) => {
+  (getTokenSymbol as jest.Mock).mockImplementation(async (address) => {
     if (address === USDC_CONTRACT) {
       return 'USDC';
     }
