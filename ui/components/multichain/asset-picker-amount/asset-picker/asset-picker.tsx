@@ -183,7 +183,11 @@ export function AssetPicker({
         justifyContent={isNFT ? JustifyContent.spaceBetween : undefined}
         backgroundColor={BackgroundColor.transparent}
         onClick={() => {
-          setShowAssetPickerModal(true);
+          if (networkProps && !networkProps.network) {
+            setIsSelectingNetwork(true);
+          } else {
+            setShowAssetPickerModal(true);
+          }
           onClick?.();
         }}
         endIconName={IconName.ArrowDown}
