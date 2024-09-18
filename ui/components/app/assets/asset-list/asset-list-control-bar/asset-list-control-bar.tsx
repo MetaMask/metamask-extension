@@ -65,7 +65,7 @@ const AssetListControlBar = ({
     isNative: true,
   };
 
-  useEffect(() => {
+  const handleSort = () => {
     if (!sorted) {
       const tokensWithBalances =
         accountTotalFiatBalance.tokensWithBalances as TokenWithBalance[];
@@ -110,7 +110,15 @@ const AssetListControlBar = ({
         setTokenList([nativeTokenWithBalance, ...tokensWithBalances]);
       }
     }
-  }, [tokenSortConfig, loading]);
+  };
+
+  useEffect(() => {
+    handleSort();
+  }, [
+    tokenSortConfig,
+    loading,
+    accountTotalFiatBalance.tokensWithBalances.length,
+  ]);
 
   const handleOpenPopover = () => {
     setIsPopoverOpen(!isPopoverOpen);
