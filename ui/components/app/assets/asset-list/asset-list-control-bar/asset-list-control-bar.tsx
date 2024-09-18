@@ -26,6 +26,8 @@ import {
   BackgroundColor,
   BorderColor,
   BorderStyle,
+  Display,
+  JustifyContent,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
 
@@ -117,8 +119,14 @@ const AssetListControlBar = ({
 
   return (
     <>
-      <Box className="asset-list-control-bar" ref={controlBarRef}>
+      <Box
+        className="asset-list-control-bar"
+        ref={controlBarRef}
+        display={Display.Flex}
+        justifyContent={JustifyContent.spaceBetween}
+      >
         <ButtonBase
+          className="asset-list-control-bar__button"
           onClick={handleOpenPopover}
           size={ButtonBaseSize.Sm}
           endIconName={IconName.ArrowDown}
@@ -134,6 +142,7 @@ const AssetListControlBar = ({
           Sort By
         </ButtonBase>
         <ButtonBase
+          className="asset-list-control-bar__button"
           size={ButtonBaseSize.Sm}
           startIconName={IconName.Add}
           backgroundColor={
