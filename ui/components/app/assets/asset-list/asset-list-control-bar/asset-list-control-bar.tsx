@@ -50,7 +50,7 @@ const AssetListControlBar = ({
   const tokenSortConfig = useSelector((state: any) => {
     return state.metamask.preferences.tokenSortConfig;
   });
-  const { accountTotalFiatBalance, mergedRates } =
+  const { accountTotalFiatBalance, mergedRates, loading } =
     useAccountTotalFiatBalancesHook();
 
   const { primaryBalance, secondaryBalance, tokenSymbol, primaryTokenImage } =
@@ -110,7 +110,7 @@ const AssetListControlBar = ({
         setTokenList(tokensWithBalances);
       }
     }
-  }, [tokenSortConfig]);
+  }, [tokenSortConfig, loading]);
 
   const handleOpenPopover = () => {
     setIsPopoverOpen(!isPopoverOpen);
