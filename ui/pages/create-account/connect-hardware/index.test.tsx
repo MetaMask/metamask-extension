@@ -30,6 +30,10 @@ jest.mock('../../../selectors', () => ({
   },
 }));
 
+jest.mock('../../../ducks/bridge/selectors', () => ({
+  getAllBridgeableNetworks: () => [],
+}));
+
 const MOCK_RECENT_PAGE = '/home';
 jest.mock('../../../ducks/history/history', () => ({
   getMostRecentOverviewPage: jest
