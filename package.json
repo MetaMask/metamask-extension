@@ -12,7 +12,7 @@
     "postinstall": "yarn webpack:clearcache",
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",
     "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
-    "start:skip-onboarding": "SKIP_ONBOARDING=true yarn start",
+    "start:with-state": "node ./app/scripts/start-with-wallet-state.mjs",
     "start:mv2": "ENABLE_MV3=false yarn build:dev dev --apply-lavamoat=false --snow=false",
     "start:flask": "yarn start --build-type flask",
     "start:mmi": "yarn start --build-type mmi",
