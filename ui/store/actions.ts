@@ -1014,7 +1014,6 @@ export function addTransactionAndRouteToConfirmationPage(
       dispatch(displayWarning(error));
       throw error;
     }
-    return null;
   };
 }
 
@@ -4570,7 +4569,7 @@ export function createTransactionEventFragment(
 
 export function updateEventFragment(
   id: string,
-  payload: MetaMetricsEventFragment,
+  payload: Partial<MetaMetricsEventFragment>,
 ) {
   return submitRequestToBackground('updateEventFragment', [id, payload]);
 }
