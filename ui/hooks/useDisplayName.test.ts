@@ -1,12 +1,12 @@
 import { NameEntry, NameType } from '@metamask/name-controller';
 import { NftContract } from '@metamask/assets-controllers';
+import { renderHook } from '@testing-library/react-hooks';
 import { getRemoteTokens } from '../selectors';
 import { getNftContractsByAddressOnCurrentChain } from '../selectors/nft';
 import { useDisplayName } from './useDisplayName';
 import { useNames } from './useName';
 import { useFirstPartyContractNames } from './useFirstPartyContractName';
 import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
-import { renderHook } from '@testing-library/react-hooks';
 
 jest.mock('react-redux', () => ({
   // TODO: Replace `any` with type
