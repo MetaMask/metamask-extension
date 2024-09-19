@@ -181,10 +181,10 @@ function transformState(
         );
     }
 
-    // If no transactions were found for the chain id,
-    // try to fall back to the built in infura network
+    // If no transactions were found for the chain id, fall back
+    // to an arbitrary custom network that is not built in infura
     if (!tieBreaker) {
-      tieBreaker = networks.find((network) => network.type === 'infura');
+      tieBreaker = networks.find((network) => network.type !== 'infura');
     }
 
     // Calculate the unique set of valid rpc endpoints for this chain id

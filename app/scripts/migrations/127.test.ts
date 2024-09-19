@@ -327,6 +327,68 @@ describe(`migration #${version}`, () => {
     expect(newState.data.NetworkController).toStrictEqual(expectedState);
   });
 
+  it('tie breaks with the custom network that is not built in infura', async () => {
+    const customNetwork = {
+      id: 'network-configuration-id',
+      chainId: '0x1',
+      nickname: 'My Local Node',
+      ticker: 'FOO',
+      rpcUrl: 'https://localhost/rpc',
+      rpcPrefs: {
+        blockExplorerUrl: 'https://localhost/explorer',
+      },
+    };
+
+    const oldState = {
+      meta: { version: oldVersion },
+      data: {
+        TransactionController: {},
+        NetworkController: {
+          selectedNetworkClientId: 'sepolia',
+          networkConfigurations: {
+            [customNetwork.id]: customNetwork,
+          },
+        },
+      },
+    };
+
+    const defaultStateToExpect = defaultPostMigrationState();
+    const expectedNetwork = {
+      ...defaultStateToExpect.networkConfigurationsByChainId[
+        customNetwork.chainId
+      ],
+    };
+
+    // The custom network should become the default RPC url
+    expectedNetwork.defaultRpcEndpointIndex =
+      expectedNetwork.rpcEndpoints.push({
+        networkClientId: customNetwork.id,
+        name: customNetwork.nickname,
+        url: customNetwork.rpcUrl,
+        type: 'custom',
+      }) - 1;
+
+    // The custom network's block explorer should be added to
+    // the existing network, and it should become the default.
+    expectedNetwork.defaultBlockExplorerUrlIndex =
+      expectedNetwork.blockExplorerUrls.push(
+        customNetwork.rpcPrefs.blockExplorerUrl,
+      ) - 1;
+
+    const expectedState = {
+      ...defaultStateToExpect,
+      selectedNetworkClientId:
+        oldState.data.NetworkController.selectedNetworkClientId,
+      networkConfigurationsByChainId: {
+        ...defaultStateToExpect.networkConfigurationsByChainId,
+        [customNetwork.chainId]: expectedNetwork,
+      },
+    };
+
+    const newState = await migrate(oldState);
+    expect(newState.data.NetworkController).toStrictEqual(expectedState);
+  });
+
   it('dedupes if there are multiple block explorers within a chain id', async () => {
     const randomChainId = '0x123456';
 
