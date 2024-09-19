@@ -125,15 +125,13 @@ export const SnapInterfaceContextProvider: FunctionComponent<
 
   // The submission of user input events is debounced or throttled to avoid
   // crashing the snap if there's too many events sent at the same time.
-  const snapRequestDebounced = debounce(rawSnapRequestFunction, 200);
-  const snapRequestThrottled = throttle(rawSnapRequestFunction, 200);
+  const snapRequestDebounced = rawSnapRequestFunction;
+  const snapRequestThrottled = rawSnapRequestFunction;
 
   // The update of the state is debounced to avoid crashes due to too many
   // updates in a short amount of time.
-  const updateStateDebounced = debounce(
-    (state) => dispatch(updateInterfaceState(interfaceId, state)),
-    200,
-  );
+  const updateStateDebounced = (state) =>
+    dispatch(updateInterfaceState(interfaceId, state));
 
   /**
    * Handle the submission of an user input event to the Snap.
@@ -152,7 +150,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     flush = false,
   }) => {
     // We always flush the debounced request for updating the state.
-    updateStateDebounced.flush();
+    // updateStateDebounced.flush();
 
     const fn = THROTTLED_EVENTS.includes(event)
       ? snapRequestThrottled
@@ -163,20 +161,17 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     // Certain events have their own debounce or throttling logic
     // and therefore may want to flush
     if (flush) {
-      fn.flush();
+      // fn.flush();
     }
   };
 
-  const handleInputChangeDebounced = debounce(
-    (name, value) =>
-      handleEvent({
-        event: UserInputEventType.InputChangeEvent,
-        name,
-        value,
-        flush: true,
-      }),
-    300,
-  );
+  const handleInputChangeDebounced = (name, value) =>
+    handleEvent({
+      event: UserInputEventType.InputChangeEvent,
+      name,
+      value,
+      flush: true,
+    });
 
   /**
    * Handle the value change of an input.
@@ -245,7 +240,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
 
           internalState.current = state;
           updateStateDebounced(state);
-          updateStateDebounced.flush();
+          //updateStateDebounced.flush();
           uploadFile(name, fileObject);
         });
 
@@ -256,7 +251,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
 
     internalState.current = state;
     updateStateDebounced(state);
-    updateStateDebounced.flush();
+    //updateStateDebounced.flush();
     uploadFile(name, null);
   };
 
