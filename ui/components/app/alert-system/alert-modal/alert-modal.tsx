@@ -35,7 +35,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import useAlerts from '../../../../hooks/useAlerts';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { useAlertActionHandler } from '../contexts/alertActionHandler';
-import { AlertProvider } from '../alert-provider';
 import { useAlertMetrics } from '../contexts/alertMetricsContext';
 
 export type AlertModalProps = {
